@@ -43,66 +43,31 @@
             "workflow": {
               "type": "array",
               "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "ref": {
-                        "type": "string",
-                        "description": "Rule-fragment reference: `[workflow::]name`, resolved against `fragments.rules` (bare name: declaring workflow, then meta). Spliced in place at load."
-                      }
-                    },
-                    "required": [
-                      "ref"
-                    ],
-                    "additionalProperties": false
-                  }
-                ]
+                "type": "string"
               },
-              "description": "Orchestrator-only rules governing workflow execution; surfaced in get_workflow. Entries are rule strings or `{ ref }` fragment references."
+              "description": "Orchestrator-only rules governing workflow execution; surfaced in get_workflow."
             },
             "activity": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/workflow/properties/rules/properties/workflow/items"
+                "type": "string"
               },
-              "description": "Worker-facing rules inherited by every activity; injected into every get_activity response. Entries are rule strings or `{ ref }` fragment references."
+              "description": "Worker-facing rules inherited by every activity; injected into every get_activity response."
             },
             "universal": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/workflow/properties/rules/properties/workflow/items"
+                "type": "string"
               },
-              "description": "Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity. Entries are rule strings or `{ ref }` fragment references."
+              "description": "Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity."
             }
           },
           "additionalProperties": false,
-          "description": "Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity). Entries are rule strings or `{ ref }` references into `fragments.rules`."
+          "description": "Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds."
         },
         "fragments": {
           "type": "object",
           "properties": {
-            "rules": {
-              "type": "object",
-              "additionalProperties": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "minItems": 1
-                  }
-                ]
-              },
-              "description": "Named rule texts. A string value is one rule; a string-list value expands to that many rules at the referencing slot."
-            },
             "checkpoints": {
               "type": "object",
               "additionalProperties": {
@@ -274,7 +239,7 @@
             }
           },
           "additionalProperties": false,
-          "description": "Shared rule texts and checkpoint bodies, declared once and imported by reference (`[workflow::]name`) from rules slots and kind:checkpoint steps — this workflow's or another's. Resolved at load; agents always receive materialized content."
+          "description": "Shared checkpoint bodies, declared once and imported by `ref` (`[workflow::]name`) from a kind:checkpoint step — this workflow's or another's. Resolved at load; agents always receive materialized content."
         },
         "variables": {
           "type": "array",
@@ -365,6 +330,14 @@
               },
               "description": {
                 "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "description": "The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type."
               },
               "defaultValue": {
                 "description": "Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this)."

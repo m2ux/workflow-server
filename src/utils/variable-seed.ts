@@ -1,4 +1,5 @@
 import type { VariableDefinition } from '../schema/workflow.schema.js';
+import { isOutsideValueSet } from '../schema/variable.schema.js';
 import type { HistoryEntry } from './../schema/state.schema.js';
 
 /**
@@ -49,11 +50,16 @@ interface VariableWriteTarget {
   history: HistoryEntry[];
 }
 
+/** What a declaration constrains a write to: the parts of it this module reads. */
+type DeclaredConstraints = Pick<VariableDefinition, 'type' | 'values'>;
+
 /**
  * Apply a map of variable assignments to the session bag, appending one
  * `variable_set` history event per name and returning warn-only messages for
- * declared-type mismatches. Values are stored as written either way; `{name}`
- * template passthroughs are exempt because they are resolved agent-side.
+ * writes that disagree with the declaration — a value of the wrong type, and a
+ * value outside a declared value set. Values are stored as written either way;
+ * `{name}` template passthroughs are exempt from both because they are
+ * resolved agent-side.
  *
  * Shared by both write paths so they stay honest with one another: checkpoint
  * `setVariable` effects (respond_checkpoint) and worker-reported
@@ -62,17 +68,26 @@ interface VariableWriteTarget {
 export function applyVariableWrites(
   draft: VariableWriteTarget,
   values: Record<string, unknown>,
-  declaredTypes: Map<string, string>,
+  declarations: Map<string, DeclaredConstraints>,
   ctx: { timestamp: string; activity?: string; source: VariableWriteSource },
 ): string[] {
   const warnings: string[] = [];
   for (const [name, value] of Object.entries(values)) {
-    const declaredType = declaredTypes.get(name);
+    const declaration = declarations.get(name);
+    const declaredType = declaration?.type;
     const valueType = jsonTypeOf(value);
-    const mismatch = declaredType !== undefined && !isTemplateReference(value) && valueType !== declaredType;
+    const passthrough = isTemplateReference(value);
+    const mismatch = declaredType !== undefined && !passthrough && valueType !== declaredType;
     if (mismatch) {
       warnings.push(
         `${ctx.source} '${name}': value is ${valueType} but the variable is declared ${declaredType}; stored as written.`,
+      );
+    }
+    const offSet = declaration !== undefined && !passthrough && isOutsideValueSet(declaration, value);
+    if (offSet) {
+      warnings.push(
+        `${ctx.source} '${name}': value ${JSON.stringify(value)} is outside the declared value set ` +
+        `[${declaration.values!.join(', ')}]; stored as written.`,
       );
     }
     draft.variables[name] = value;
@@ -80,7 +95,13 @@ export function applyVariableWrites(
       timestamp: ctx.timestamp,
       type: 'variable_set',
       ...(ctx.activity !== undefined ? { activity: ctx.activity } : {}),
-      data: { name, value, source: ctx.source, ...(mismatch ? { declaredType, valueType, typeMismatch: true } : {}) },
+      data: {
+        name,
+        value,
+        source: ctx.source,
+        ...(mismatch ? { declaredType, valueType, typeMismatch: true } : {}),
+        ...(offSet ? { declaredValues: declaration.values, valueOutsideSet: true } : {}),
+      },
     });
   }
   return warnings;

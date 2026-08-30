@@ -17,6 +17,8 @@
  *   passthroughs are references resolved agent-side and are exempt.
  * - `setvariable-undeclared` — a `setVariable` targets a variable that is not
  *   declared in the workflow's `variables[]`.
+ * - `setvariable-outside-value-set` — a `setVariable` literal is outside the
+ *   target variable's declared `values`. `{name}` passthroughs are exempt.
  *
  * Only structured conditions are walked; the `when:` string dialect has no
  * exists-shaped predicate (verified against the corpus during B7). Dotted
@@ -32,6 +34,7 @@ import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
+import { isOutsideValueSet } from '../src/schema/variable.schema.js';
 import { resolveWorkflowsRoot } from './workflows-root.js';
 import { declaredVariables } from './workflow-declarations.js';
 
@@ -45,7 +48,8 @@ export interface VariableModelViolation {
     | 'exists-on-defaulted'
     | 'default-type-mismatch'
     | 'setvariable-type-mismatch'
-    | 'setvariable-undeclared';
+    | 'setvariable-undeclared'
+    | 'setvariable-outside-value-set';
   /** The offending variable and the observed shape. */
   detail: string;
 }
@@ -54,6 +58,7 @@ interface VariableDeclaration {
   type?: string;
   hasDefault: boolean;
   defaultValue?: unknown;
+  values?: string[] | undefined;
 }
 
 /**
@@ -67,6 +72,7 @@ function readDeclarations(root: string, workflowId: string): Map<string, Variabl
       type: declaration.type,
       hasDefault: declaration.defaultValue !== undefined,
       defaultValue: declaration.defaultValue,
+      values: declaration.values,
     });
   }
   return decls;
@@ -117,6 +123,13 @@ export function lintDocument(
             file,
             rule: 'setvariable-type-mismatch',
             detail: `setVariable '${name}': value is ${jsonTypeOf(value)} but the variable is declared ${decl.type}`,
+          });
+        }
+        if (!isTemplateReference(value) && isOutsideValueSet(decl, value)) {
+          violations.push({
+            file,
+            rule: 'setvariable-outside-value-set',
+            detail: `setVariable '${name}': ${JSON.stringify(value)} is outside the declared value set [${decl.values!.join(', ')}]`,
           });
         }
       }

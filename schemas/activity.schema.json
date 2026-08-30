@@ -124,6 +124,14 @@
                   "description": {
                     "type": "string"
                   },
+                  "values": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "description": "The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type."
+                  },
                   "defaultValue": {
                     "description": "Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this)."
                   },

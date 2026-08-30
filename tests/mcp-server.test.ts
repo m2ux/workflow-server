@@ -1002,7 +1002,9 @@ describe('mcp-server integration', () => {
       const wf = parseWorkflowResponse(result);
       expect(wf.id).toBe('work-package');
       expect(wf.version).toMatch(SEMVER_RE);
-      expect(wf.rules).toBeDefined();
+      // work-package declares no orchestrator rules of its own — its conduct comes from the
+      // conduct home via the bundle — so the key is absent rather than an empty list.
+      expect(wf.rules).toBeUndefined();
       expect(wf.variables).toBeDefined();
       expect(wf.activities).toBeDefined();
       expect(wf.activities[0].id).toBeDefined();
@@ -1026,9 +1028,10 @@ describe('mcp-server integration', () => {
       const bundled = Object.keys(preamble['techniques'] as Record<string, unknown>);
       expect(bundled).not.toContain('variable-binding');
 
-      // The metadata body carries the flattened orchestrator `rules` list (workflow + universal) as
-      // an array, and no `techniques` field — the worker buckets stay out of the orchestrator response.
-      expect(Array.isArray(body.rules)).toBe(true);
+      // The metadata body carries the flattened orchestrator `rules` list (workflow + universal),
+      // and no `techniques` field — the worker buckets stay out of the orchestrator response.
+      // work-package declares neither bucket, so both are absent here.
+      expect(body.rules).toBeUndefined();
       expect(body.techniques).toBeUndefined();
     });
   });

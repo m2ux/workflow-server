@@ -8,8 +8,12 @@
  * union of the activity's declared technique refs and the core worker techniques.
  *
  * These techniques live in the meta workflow's capability techniques
- * (workflow-engine, agent-conduct). The lists below name the core technique refs
- * that constitute the runtime baseline.
+ * (workflow-engine, agent-conduct, orchestrator-conduct, worker-conduct). The lists
+ * below name the core technique refs that constitute the runtime baseline.
+ *
+ * Conduct is the engine's baseline rather than a workflow's choice, so both lists
+ * name it and no workflow declares it. `agent-conduct` binds every agent and is in
+ * both; each role's own file specialises it and is in that role's list alone.
  */
 
 /**
@@ -59,10 +63,11 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   'harness-compat::cursor',
   'harness-compat::cline',
   'harness-compat::generic',
-  // Cross-cutting orchestrator rules (group-prefix refs → all `<group>-*` rules)
-  'agent-conduct::orchestrator',
-  'agent-conduct::checkpoint-discipline',
-  'agent-conduct::operational-discipline',
+  // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
+  // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
+  // writing rules are not an orchestrator's to honour.
+  'agent-conduct',
+  'orchestrator-conduct',
 ];
 
 /**
@@ -78,9 +83,9 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   'workflow-engine::yield-checkpoint',
   'workflow-engine::resume-from-checkpoint',
   'workflow-engine::finalize-activity',
-  // Cross-cutting worker rules
-  'agent-conduct::checkpoint-discipline',
-  'agent-conduct::operational-discipline',
-  'agent-conduct::file-sensitivity',
-  'agent-conduct::code-commentary',
+  // Conduct: the boundaries every agent is held to, then the worker's specialisation of them.
+  // `orchestrator-conduct` is absent — a worker cannot dispatch, advance an activity or resolve a
+  // gate, so those boundaries reach an agent with no way to honour or breach them.
+  'agent-conduct',
+  'worker-conduct',
 ];

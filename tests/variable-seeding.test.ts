@@ -315,6 +315,28 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(event.data.typeMismatch).toBeUndefined();
   });
 
+  it('respond_checkpoint stores a value outside the declared set as written and warns (#518 W5.4)', async () => {
+    const sessionIndex = await startAtCheckpoint('2026-07-07-off-set');
+    const result = await call('respond_checkpoint', { session_index: sessionIndex, option_id: 'off-set-assignment' });
+    const validation = (result._meta as { validation: { status: string; warnings: string[] } }).validation;
+    expect(validation.status).toBe('warning');
+    expect(validation.warnings.join('\n')).toMatch(/operation_type.*"audit".*outside the declared value set \[create, review\]/);
+
+    const stored = readSession('2026-07-07-off-set');
+    expect(stored.variables.operation_type).toBe('audit');
+    const event = stored.history.find((h: { type: string; data?: Record<string, unknown> }) => h.type === 'variable_set' && h.data?.name === 'operation_type');
+    expect(event.data).toMatchObject({ valueOutsideSet: true, declaredValues: ['create', 'review'] });
+  });
+
+  it('respond_checkpoint is silent for a member of the declared set', async () => {
+    const sessionIndex = await startAtCheckpoint('2026-07-07-in-set');
+    const result = await call('respond_checkpoint', { session_index: sessionIndex, option_id: 'in-set-assignment' });
+    const validation = (result._meta as { validation: { warnings: string[] } }).validation;
+    expect(validation.warnings.filter(w => w.includes('value set'))).toEqual([]);
+    const event = readSession('2026-07-07-in-set').history.find((h: { type: string; data?: Record<string, unknown> }) => h.type === 'variable_set' && h.data?.name === 'operation_type');
+    expect(event.data.valueOutsideSet).toBeUndefined();
+  });
+
   it('respond_checkpoint exempts {name} template passthroughs from type validation', async () => {
     const sessionIndex = await startAtCheckpoint('2026-07-07-type-template');
     const result = await call('respond_checkpoint', { session_index: sessionIndex, option_id: 'template-assignment' });

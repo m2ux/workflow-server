@@ -1,12 +1,13 @@
 /**
  * Shared-fragment resolution (#166 B10).
  *
- * A workflow declares reusable content once under `fragments` in its workflow.yaml — rule texts
- * (`fragments.rules`) and checkpoint bodies (`fragments.checkpoints`) — and imports it by
- * reference: a `{ ref }` entry in a rules partition, or `ref` on a kind:checkpoint step. This
- * module resolves those references and materializes them in place, so everything downstream of
- * the loaders (tool payloads, checkpoint yield/respond, guards) sees plain rules and full
- * checkpoint steps and never a reference.
+ * A workflow declares a checkpoint body once under `fragments.checkpoints` in its workflow.yaml
+ * and imports it by `ref` on a kind:checkpoint step. This module resolves those references and
+ * materializes them in place, so everything downstream of the loaders (tool payloads, checkpoint
+ * yield/respond, guards) sees full checkpoint steps and never a reference.
+ *
+ * Rules are not shared this way: a rule two workflows both need is neither one's to own, so its
+ * home is the conduct technique whose audience it binds and the bundle delivers it (#518, #519).
  *
  * Reference addressing mirrors the technique convention:
  *   - `workflow::name` — resolved ONLY in that workflow's fragments (no fallback).
@@ -17,7 +18,7 @@
  * a fragment cannot itself contain a reference — so resolution never recurses.
  */
 import type { CheckpointFragmentBody, CheckpointStep, Step } from '../schema/activity.schema.js';
-import type { RuleEntry, WorkflowFragments } from '../schema/workflow.schema.js';
+import type { WorkflowFragments } from '../schema/workflow.schema.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 
 /** The meta workflow: the fallback namespace for bare fragment (and technique) references. */
@@ -52,18 +53,6 @@ function candidateWorkflows(ref: string, currentWorkflowId: string): { workflowI
   return { workflowIds, name };
 }
 
-/** Resolve a rule-fragment ref to its rule strings (a string fragment yields one). */
-export function resolveRuleFragment(lookup: FragmentsLookup, currentWorkflowId: string, ref: string): string[] {
-  const { workflowIds, name } = candidateWorkflows(ref, currentWorkflowId);
-  for (const wf of workflowIds) {
-    const body = lookup(wf)?.rules?.[name];
-    if (body !== undefined) return typeof body === 'string' ? [body] : [...body];
-  }
-  throw new FragmentResolutionError(
-    `Unresolved rule fragment '${ref}' — no fragments.rules entry '${name}' in ${workflowIds.map(w => `'${w}'`).join(' or ')}.`,
-  );
-}
-
 /** Resolve a checkpoint-fragment ref to its body. */
 export function resolveCheckpointFragment(lookup: FragmentsLookup, currentWorkflowId: string, ref: string): CheckpointFragmentBody {
   const { workflowIds, name } = candidateWorkflows(ref, currentWorkflowId);
@@ -74,24 +63,6 @@ export function resolveCheckpointFragment(lookup: FragmentsLookup, currentWorkfl
   throw new FragmentResolutionError(
     `Unresolved checkpoint fragment '${ref}' — no fragments.checkpoints entry '${name}' in ${workflowIds.map(w => `'${w}'`).join(' or ')}.`,
   );
-}
-
-/**
- * Splice rule-fragment refs in place: each `{ ref }` entry is replaced by its fragment's rule
- * string(s), preserving order. Returns plain strings — the only shape delivered to agents.
- */
-export function materializeRuleEntries(
-  entries: RuleEntry[] | undefined,
-  lookup: FragmentsLookup,
-  currentWorkflowId: string,
-): string[] | undefined {
-  if (!entries) return undefined;
-  const out: string[] = [];
-  for (const entry of entries) {
-    if (typeof entry === 'string') out.push(entry);
-    else out.push(...resolveRuleFragment(lookup, currentWorkflowId, entry.ref));
-  }
-  return out;
 }
 
 /** The body fields a ref-form checkpoint step must NOT declare locally (the fragment owns them). */
@@ -265,14 +236,3 @@ export function collectCheckpointRefs(activity: { steps?: Step[] | undefined }):
   return refs;
 }
 
-/** Every fragment ref used by a workflow's rules partitions. */
-export function collectRuleRefs(rules: { workflow?: RuleEntry[] | undefined; activity?: RuleEntry[] | undefined; universal?: RuleEntry[] | undefined } | undefined): string[] {
-  if (!rules) return [];
-  const refs: string[] = [];
-  for (const partition of [rules.workflow, rules.activity, rules.universal]) {
-    for (const entry of partition ?? []) {
-      if (typeof entry !== 'string') refs.push(entry.ref);
-    }
-  }
-  return refs;
-}

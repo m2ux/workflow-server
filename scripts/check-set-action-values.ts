@@ -22,7 +22,9 @@
  * number, null, an empty collection, or hyphenated prose, and none of those matches. A rename written
  * bare is refused too, though none exists; one spelling for reading a variable is the point.
  *
- * Hard zero, no baseline. Every `set` in the corpus already satisfies both, which is the cheapest
+ * A third fault is available once the target declares a value set: a literal the set does not admit.
+ *
+ * Hard zero, no baseline. Every `set` in the corpus already satisfies all three, which is the cheapest
  * moment to hold the line — added later this arrives with a debt list and an argument over each entry.
  *
  * Run: npx tsx scripts/check-set-action-values.ts [--root <workflows-dir>] [--json]
@@ -33,6 +35,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
+import { isTemplateReference } from '../src/utils/variable-seed.js';
+import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
@@ -72,7 +76,10 @@ function readsAsBagName(value: string): boolean {
 
 interface SetAction { action?: unknown; target?: unknown; value?: unknown }
 
-function checkAction(action: SetAction, site: string, findings: Finding[]): void {
+/** The value sets the workflow being scanned declares, by variable name. */
+type ValueSets = (name: string) => string[] | undefined;
+
+function checkAction(action: SetAction, site: string, findings: Finding[], valueSets: ValueSets): void {
   if (action.action !== 'set') return;
 
   if (typeof action.target !== 'string' || action.target.trim() === '') {
@@ -86,7 +93,19 @@ function checkAction(action: SetAction, site: string, findings: Finding[]): void
   }
 
   // No `value` is the agent-derived form, which is the majority of them and carries nothing to check.
-  if (typeof action.value !== 'string' || !readsAsBagName(action.value)) return;
+  if (typeof action.value !== 'string') return;
+
+  const declared = valueSets(action.target);
+  if (declared && !isTemplateReference(action.value) && !declared.includes(action.value)) {
+    findings.push({
+      check: 'value-outside-declared-set',
+      site,
+      detail: `value '${action.value}' is outside the set '${action.target}' declares [${declared.join(', ')}]`,
+    });
+    return;
+  }
+
+  if (!readsAsBagName(action.value)) return;
   findings.push({
     check: 'unbraced-reference',
     site,
@@ -113,22 +132,22 @@ function checkSetVariable(effect: Record<string, unknown>, site: string, finding
 }
 
 /** Every `set` action under any `steps[]`, loops and nested steps included. */
-function walk(node: unknown, file: string, stepId: string, findings: Finding[]): void {
-  if (Array.isArray(node)) { for (const child of node) walk(child, file, stepId, findings); return; }
+function walk(node: unknown, file: string, stepId: string, findings: Finding[], valueSets: ValueSets): void {
+  if (Array.isArray(node)) { for (const child of node) walk(child, file, stepId, findings, valueSets); return; }
   if (!node || typeof node !== 'object') return;
   const record = node as Record<string, unknown>;
   const id = typeof record.id === 'string' ? record.id : stepId;
   if (Array.isArray(record.actions)) {
     for (const action of record.actions) {
       if (action && typeof action === 'object' && !Array.isArray(action)) {
-        checkAction(action as SetAction, `${file}[${id || '?'}]`, findings);
+        checkAction(action as SetAction, `${file}[${id || '?'}]`, findings, valueSets);
       }
     }
   }
   if (record.setVariable && typeof record.setVariable === 'object' && !Array.isArray(record.setVariable)) {
     checkSetVariable(record.setVariable as Record<string, unknown>, `${file}[${id || '?'}]`, findings);
   }
-  for (const value of Object.values(record)) walk(value, file, id, findings);
+  for (const value of Object.values(record)) walk(value, file, id, findings, valueSets);
 }
 
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
@@ -149,6 +168,8 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     });
 
   for (const workflow of workflows.sort()) {
+    const declarations = declaredVariables(root, workflow);
+    const valueSets: ValueSets = (name) => declarations.get(name)?.values;
     // `workflow.yaml` too: a workflow root carries checkpoint fragments, and a `setVariable` there
     // writes the bag exactly as one inside an activity does.
     const roots = [join(root, workflow, 'workflow.yaml')].filter((path) => existsSync(path));
@@ -156,7 +177,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       const rel = relative(root, path);
       scanned++;
       try {
-        walk(parseDefinition(readFileSync(path, 'utf-8')), rel, '', findings);
+        walk(parseDefinition(readFileSync(path, 'utf-8')), rel, '', findings, valueSets);
       } catch {
         // Malformed YAML is validate-workflow-yaml's finding, not this guard's.
       }

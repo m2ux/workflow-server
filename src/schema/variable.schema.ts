@@ -12,10 +12,40 @@ export const VariableDefinitionSchema = z.object({
   name: VariableNameSchema,
   type: z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes.'),
   description: z.string().optional(),
+  values: z.array(z.string()).min(1).optional().describe('The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type.'),
   defaultValue: z.unknown().optional().describe('Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this).'),
   required: z.boolean().default(false).describe('Authoring metadata; the server does not check that the variable is ever set.'),
+}).superRefine((variable, ctx) => {
+  if (variable.values === undefined) return;
+  if (variable.type !== 'string') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['values'],
+      message: `variable '${variable.name}': a value set is declared on a string variable, not on ${variable.type}`,
+    });
+  }
+  const duplicates = variable.values.filter((v, i) => variable.values!.indexOf(v) !== i);
+  if (duplicates.length > 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['values'],
+      message: `variable '${variable.name}': value set repeats [${[...new Set(duplicates)].join(', ')}]`,
+    });
+  }
+  if (variable.defaultValue !== undefined && !variable.values.includes(variable.defaultValue as string)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['defaultValue'],
+      message: `variable '${variable.name}': default ${JSON.stringify(variable.defaultValue)} is outside its declared value set [${variable.values.join(', ')}]`,
+    });
+  }
 });
 export type VariableDefinition = z.infer<typeof VariableDefinitionSchema>;
+
+/** True when `value` is outside the variable's declared value set. A variable with no set admits any value. */
+export function isOutsideValueSet(variable: Pick<VariableDefinition, 'values'>, value: unknown): boolean {
+  return variable.values !== undefined && !variable.values.includes(value as string);
+}
 
 /**
  * An activity's variable contract (#493): the session variables it reads, and the variables it

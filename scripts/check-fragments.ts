@@ -1,31 +1,33 @@
 /**
  * Shared-fragment guard (#166 B10).
  *
- * Fragments exist to end copy-paste drift: a rule text or checkpoint body is declared once under
- * `fragments` in a workflow.yaml and imported by reference. This guard keeps the mechanism honest
- * in both directions — every reference resolves, and content that should be a reference is not
- * quietly re-inlined (the drift vector the mechanism was built against):
+ * Fragments exist to end copy-paste drift: a checkpoint body is declared once under `fragments` in
+ * a workflow.yaml and imported by `ref`. This guard keeps the mechanism honest in both directions —
+ * every reference resolves, and content that should be a reference is not quietly re-inlined (the
+ * drift vector the mechanism was built against). Rules are not shared this way; the inline rule
+ * texts this guard indexes are for `duplicate-rule`, whose remedy is a shared home rather than a
+ * fragment.
  *
- * - `malformed-ref` / `unresolved-ref` — a rules `{ ref }` or checkpoint `ref` that does not
- *   parse, or names no fragment under the resolver's semantics (bare: declaring workflow, then
- *   meta; `workflow::name`: that workflow only).
+ * - `malformed-ref` / `unresolved-ref` — a checkpoint `ref` that does not parse, or names no
+ *   fragment under the resolver's semantics (bare: declaring workflow, then meta;
+ *   `workflow::name`: that workflow only).
  * - `ref-body-conflict` — a checkpoint ref step that also declares body fields, or a condition
  *   declared on both the step and its fragment (two homes for one fact).
  * - `ref-opens-step` — a checkpoint step whose `- ` line is the `ref:` itself. The raw-YAML
  *   delivery path replaces standalone `ref:` lines only; give the step its `id:` first.
  * - `unused-fragment` — a declared fragment nothing references, corpus-wide.
- * - `inline-duplicate-of-fragment` — an inline rule or checkpoint body identical (normalized) to
- *   a declared fragment: the inline copy must become a reference.
- * - `duplicate-rule` / `duplicate-checkpoint` — identical (normalized) content authored inline at
- *   two or more sites: extract a fragment.
+ * - `inline-duplicate-of-fragment` — an inline checkpoint body identical (normalized) to a declared
+ *   fragment: the inline copy must become a reference.
+ * - `duplicate-rule` — identical (normalized) rule text authored inline in two or more workflows.
+ *   A rule two workflows both need belongs in the conduct technique whose audience it binds, and
+ *   both copies go.
+ * - `duplicate-checkpoint` — identical (normalized) checkpoint body authored inline at two or more
+ *   sites: extract a fragment.
  * - `undeclared-effect-variable` — a referencing workflow whose variables[] does not declare a
  *   variable the fragment's setVariable effects write. The effect fires in the REFERENCING
  *   workflow's session bag (check:variable-model sees only the declaring workflow).
  *
- * Near-duplicates (token-Jaccard >= 0.85 against a fragment) are reported as warnings, not
- * failures — they catch an inline copy that has already begun to drift.
- *
- * Hard-zero: every error is a defect in the corpus, not the guard.
+ * Hard-zero: every finding is a defect in the corpus, not the guard.
  *
  * Run: npx tsx scripts/check-fragments.ts [--root <workflows-dir>]
  */
@@ -37,7 +39,6 @@ import {
   type FragmentsLookup,
   parseFragmentRef,
   resolveCheckpointFragment,
-  resolveRuleFragment,
   META_WORKFLOW_ID,
 } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
@@ -49,7 +50,6 @@ const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
 
 /** Rules shorter than this are generic connective phrases, not drift-worthy shared content. */
 const MIN_DUP_RULE_LENGTH = 30;
-const NEAR_DUP_THRESHOLD = 0.85;
 
 export interface FragmentViolation {
   file: string;
@@ -66,18 +66,8 @@ export interface FragmentViolation {
   detail: string;
 }
 
-export interface FragmentWarning { file: string; detail: string; }
 
 const normalizeText = (s: string): string => s.trim().replace(/\s+/g, ' ').toLowerCase();
-
-const tokenSet = (s: string): Set<string> => new Set(normalizeText(s).split(' '));
-
-function jaccard(a: string, b: string): number {
-  const sa = tokenSet(a); const sb = tokenSet(b);
-  let inter = 0;
-  for (const t of sa) if (sb.has(t)) inter++;
-  return inter / (sa.size + sb.size - inter);
-}
 
 /** Canonical form of a checkpoint body for duplicate detection: content fields only (no step id,
  *  no site gates), key order fixed, strings whitespace/case-normalized. */
@@ -121,9 +111,8 @@ function collectCheckpointSteps(doc: unknown): CheckpointSite['node'][] {
 
 const CHECKPOINT_BODY_FIELDS = ['message', 'options', 'defaultOption', 'autoAdvanceMs', 'blocking'] as const;
 
-export function collectFragmentViolations(root: string = ROOT): { violations: FragmentViolation[]; warnings: FragmentWarning[] } {
+export function collectFragmentViolations(root: string = ROOT): FragmentViolation[] {
   const violations: FragmentViolation[] = [];
-  const warnings: FragmentWarning[] = [];
   const lookup: FragmentsLookup = fragmentsLookupSync(root);
 
   const workflowIds = readdirSync(root)
@@ -131,15 +120,14 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     .sort();
 
   // Fragment registry + usage tracking for the unused-fragment check.
-  const usedRuleFragments = new Set<string>();       // `${wf}::${name}` canonical
   const usedCheckpointFragments = new Set<string>();
 
-  const canonicalTarget = (kind: 'rules' | 'checkpoints', declaringWf: string, ref: string): string | null => {
+  const canonicalTarget = (declaringWf: string, ref: string): string | null => {
     try {
       const { workflowId, name } = parseFragmentRef(ref);
       const candidates = workflowId ? [workflowId] : declaringWf === META_WORKFLOW_ID ? [META_WORKFLOW_ID] : [declaringWf, META_WORKFLOW_ID];
       for (const wf of candidates) {
-        const block = lookup(wf)?.[kind];
+        const block = lookup(wf)?.checkpoints;
         if (block && block[name] !== undefined) return `${wf}::${name}`;
       }
       return null;
@@ -167,24 +155,12 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
       const entries = rules[partition];
       if (!Array.isArray(entries)) continue;
       for (const entry of entries) {
-        if (typeof entry === 'string') {
-          if (entry.length >= MIN_DUP_RULE_LENGTH) {
-            const key = normalizeText(entry);
-            const sites = inlineRuleSites.get(key) ?? [];
-            sites.push({ file: wfRel, wf, text: entry });
-            inlineRuleSites.set(key, sites);
-          }
-          continue;
-        }
-        const ref = entry && typeof entry === 'object' ? (entry as { ref?: unknown }).ref : undefined;
-        if (typeof ref !== 'string') continue;
-        try {
-          resolveRuleFragment(lookup, wf, ref);
-          const target = canonicalTarget('rules', wf, ref);
-          if (target) usedRuleFragments.add(target);
-        } catch (error) {
-          const rule = error instanceof Error && error.message.startsWith('Malformed') ? 'malformed-ref' : 'unresolved-ref';
-          violations.push({ file: wfRel, rule, detail: `rules.${partition}: ${error instanceof Error ? error.message : String(error)}` });
+        if (typeof entry !== 'string') continue;
+        if (entry.length >= MIN_DUP_RULE_LENGTH) {
+          const key = normalizeText(entry);
+          const sites = inlineRuleSites.get(key) ?? [];
+          sites.push({ file: wfRel, wf, text: entry });
+          inlineRuleSites.set(key, sites);
         }
       }
     }
@@ -225,7 +201,7 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
           let body;
           try {
             body = resolveCheckpointFragment(lookup, wf, ref);
-            const target = canonicalTarget('checkpoints', wf, ref);
+            const target = canonicalTarget(wf, ref);
             if (target) usedCheckpointFragments.add(target);
           } catch (error) {
             const rule = error instanceof Error && error.message.startsWith('Malformed') ? 'malformed-ref' : 'unresolved-ref';
@@ -260,28 +236,6 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     const fragments = lookup(wf);
     if (!fragments) continue;
     const wfRel = join(wf, 'workflow.yaml');
-    for (const [name, value] of Object.entries(fragments.rules ?? {})) {
-      const canonical = `${wf}::${name}`;
-      if (!usedRuleFragments.has(canonical)) {
-        violations.push({ file: wfRel, rule: 'unused-fragment', detail: `fragments.rules.${name} is referenced nowhere in the corpus` });
-      }
-      for (const text of typeof value === 'string' ? [value] : value) {
-        const exact = inlineRuleSites.get(normalizeText(text)) ?? [];
-        for (const site of exact) {
-          violations.push({ file: site.file, rule: 'inline-duplicate-of-fragment', detail: `inline rule "${site.text.slice(0, 60)}…" duplicates fragment '${canonical}' — reference it instead` });
-        }
-        if (exact.length === 0) {
-          for (const [key, sites] of inlineRuleSites) {
-            const sim = jaccard(text, key);
-            if (sim >= NEAR_DUP_THRESHOLD) {
-              for (const site of sites) {
-                warnings.push({ file: site.file, detail: `inline rule "${site.text.slice(0, 60)}…" is a near-duplicate (${sim.toFixed(2)}) of fragment '${canonical}' — likely drifted copy` });
-              }
-            }
-          }
-        }
-      }
-    }
     for (const [name, body] of Object.entries(fragments.checkpoints ?? {})) {
       const canonical = `${wf}::${name}`;
       if (!usedCheckpointFragments.has(canonical)) {
@@ -300,7 +254,13 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     const distinctWf = new Set(sites.map((s) => s.wf));
     if (distinctWf.size >= 2) {
       const list = sites.map((s) => s.file).join(', ');
-      violations.push({ file: sites[0]!.file, rule: 'duplicate-rule', detail: `rule "${sites[0]!.text.slice(0, 60)}…" is authored inline in ${distinctWf.size} workflows (${list}) — extract a fragment` });
+      violations.push({
+        file: sites[0]!.file,
+        rule: 'duplicate-rule',
+        detail:
+          `rule "${sites[0]!.text.slice(0, 60)}…" is authored inline in ${distinctWf.size} workflows (${list}) — ` +
+          'move it to the meta conduct technique whose audience it binds and delete every copy',
+      });
     }
   }
   for (const sites of inlineCheckpointSites.values()) {
@@ -310,13 +270,12 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     }
   }
 
-  return { violations, warnings };
+  return violations;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const { violations, warnings } = collectFragmentViolations();
-  for (const w of warnings) process.stdout.write(`  warning: ${w.file}: ${w.detail}\n`);
+  const violations = collectFragmentViolations();
   if (violations.length === 0) {
     process.stdout.write('fragments: OK — every ref resolves, every fragment is used, no inline duplicates\n');
     process.exit(0);

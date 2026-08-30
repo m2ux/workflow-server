@@ -158,6 +158,32 @@ describe('set action values', () => {
     expect(collectFindings(root).map((f) => f.check)).toEqual(['unbraced-reference']);
   });
 
+  it('flags a value the target variable does not admit', () => {
+    const root = mkdtempSync(join(tmpdir(), 'set-values-set-'));
+    roots.push(root);
+    const dir = join(root, 'demo', 'activities');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(root, 'demo', 'workflow.yaml'), [
+      'id: demo', 'version: 1.0.0', 'title: Demo', 'variables:',
+      '  - name: operation_type', '    type: string',
+      '    values:', '      - create', '      - review', '',
+    ].join('\n'));
+    const activity = (value: string): string => [
+      'id: demo', 'name: Demo', 'steps:',
+      '  - kind: action', '    id: choose', '    actions:',
+      '      - action: set', '        target: operation_type', `        value: ${value}`, '',
+    ].join('\n');
+
+    writeFileSync(join(dir, '01-demo.yaml'), activity('audit'));
+    expect(collectFindings(root).map((f) => f.check)).toEqual(['value-outside-declared-set']);
+
+    // A member passes, and a braced reference is resolved agent-side so the set cannot judge it.
+    writeFileSync(join(dir, '01-demo.yaml'), activity('review'));
+    expect(collectFindings(root)).toEqual([]);
+    writeFileSync(join(dir, '01-demo.yaml'), activity('"{chosen_operation}"'));
+    expect(collectFindings(root)).toEqual([]);
+  });
+
   it('refuses to call an empty corpus clean', () => {
     // Nothing scanned and nothing wrong look identical in a hard-zero guard.
     expect(() => collectFindings(mkdtempSync(join(tmpdir(), 'set-values-empty-')))).toThrow();

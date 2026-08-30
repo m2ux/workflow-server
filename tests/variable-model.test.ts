@@ -59,4 +59,27 @@ options:
     const doc = parse('effect: { setVariable: { review_needed: true, repo_root: some/path } }');
     expect(lintDocument(doc, DECLS, 'x.yaml')).toEqual([]);
   });
+
+  describe('declared value sets (#518 W5.4)', () => {
+    const SET_DECLS = new Map([
+      ...DECLS,
+      ['operation_type', { type: 'string', hasDefault: false, defaultValue: undefined, values: ['create', 'update', 'review'] }],
+    ]);
+
+    it('flags a setVariable literal outside the declared set', () => {
+      const doc = parse('effect: { setVariable: { operation_type: audit } }');
+      expect(lintDocument(doc, SET_DECLS, 'x.yaml').map(v => `${v.rule} ${v.detail}`))
+        .toEqual(['setvariable-outside-value-set setVariable \'operation_type\': "audit" is outside the declared value set [create, update, review]']);
+    });
+
+    it('admits a member, and exempts a {name} passthrough', () => {
+      const doc = parse('options: [{ effect: { setVariable: { operation_type: update } } }, { effect: { setVariable: { operation_type: "{chosen_operation}" } } }]');
+      expect(lintDocument(doc, SET_DECLS, 'x.yaml')).toEqual([]);
+    });
+
+    it('leaves a variable with no declared set unconstrained', () => {
+      const doc = parse('effect: { setVariable: { repo_root: anything/at/all } }');
+      expect(lintDocument(doc, SET_DECLS, 'x.yaml')).toEqual([]);
+    });
+  });
 });

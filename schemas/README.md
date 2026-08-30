@@ -27,8 +27,8 @@ The server enforces structure at load time plus a small runtime core; most schem
 
 | Construct | Engine-enforced | Advisory (incl. warn-only checks) | Agent-interpreted |
 |---|---|---|---|
-| Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly); `variables[].defaultValue` (seeded into the session variable bag at session creation, recorded as a `variables_seeded` history event) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (the file's own, plus every `variables.writes` declaration the activities in its graph contribute; rendered in `get_workflow`); `initialActivity` (wrong first activity warns); `variables[].type` (checkpoint `setVariable` values validated warn-only — mismatches stored as written) | `author`; `variables[].required` (never checked — authoring metadata) |
-| Activity | `variables.writes[]` (contributed to the including workflow's variable set at load; two declarations of one name that disagree on `type` or `defaultValue` fail the load); `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle); `bundleTechniques` (hybrid step-technique bundling in `get_activity`) | `variables.reads[]` (the names the activity needs the workflow to supply; `check:activity-variables` holds the graph to them); `name`, `description`, `required`, `rules[]`; `exits[]` (every one bound in the workflow's `graph` or the load fails; the destination reached warns only — `next_activity` moves anywhere) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
+| Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly); `variables[].defaultValue` (seeded into the session variable bag at session creation, recorded as a `variables_seeded` history event) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (the file's own, plus every `variables.writes` declaration the activities in its graph contribute; rendered in `get_workflow`); `initialActivity` (wrong first activity warns); `variables[].type` and `variables[].values` (checkpoint `setVariable` values validated warn-only — mismatches stored as written) | `author`; `variables[].required` (never checked — authoring metadata) |
+| Activity | `variables.writes[]` (contributed to the including workflow's variable set at load; two declarations of one name that disagree on `type`, `defaultValue` or `values` fail the load); `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle); `bundleTechniques` (hybrid step-technique bundling in `get_activity`) | `variables.reads[]` (the names the activity needs the workflow to supply; `check:activity-variables` holds the graph to them); `name`, `description`, `required`, `rules[]`; `exits[]` (every one bound in the workflow's `graph` or the load fails; the destination reached warns only — `next_activity` moves anywhere) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
 | Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` / `condition` gates (the server never evaluates a condition; on a checkpoint step only `condition` enables `condition_not_met` dismissal); `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag and is slated for removal at the next schema major, #166 B7/B12) |
 | Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.exit` (checked at load against the activity's `exits`; the destination is read from the workflow graph, recorded and returned, and the orchestrator enacts it via `next_activity`) | — |
 | Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
@@ -230,6 +230,7 @@ erDiagram
         string name PK
         enum type
         string description
+        array values
         any defaultValue
         boolean required
     }
@@ -274,8 +275,8 @@ A workflow is the top-level container representing a complete process definition
 | `description`     | string     | Detailed description                                       |
 | `author`          | string     | Author metadata (not read by the server)                   |
 | `tags`            | string[]   | Categorization labels                                      |
-| `rules`           | { workflow?, activity?, universal?: (string \| { ref })[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`). An entry is the rule text inline or a `{ ref }` import of a rule fragment |
-| `fragments`       | { rules?, checkpoints? } | Shared rule texts (string or string-list) and checkpoint bodies, declared once and imported by reference (`[workflow::]name`) from rules slots and `kind: checkpoint` steps — this workflow's or another's. Resolved at load; agents always receive materialized content |
+| `rules`           | { workflow?, activity?, universal?: string[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds |
+| `fragments`       | { checkpoints? } | Shared checkpoint bodies, declared once and imported by `ref` (`[workflow::]name`) from a `kind: checkpoint` step — this workflow's or another's. Resolved at load; agents always receive materialized content |
 | `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
 | `variables`       | Variable[] | State variables                                            |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
@@ -413,13 +414,14 @@ An action performed during workflow execution. Action verbs are interpreted by t
 
 #### Variable
 
-A workflow variable definition. Declarations are rendered to agents via `get_workflow`; the session variable bag is seeded from each declaration's `defaultValue` at session creation (recorded as one `variables_seeded` history event) and thereafter written only by checkpoint `setVariable` effects, whose values are validated against `type` warn-only (mismatches are stored as written and surfaced in `_meta.validation`). `required` is never checked — agents honor it from the declaration.
+A workflow variable definition. Declarations are rendered to agents via `get_workflow`; the session variable bag is seeded from each declaration's `defaultValue` at session creation (recorded as one `variables_seeded` history event) and thereafter written only by checkpoint `setVariable` effects, whose values are validated against `type` and `values` warn-only (mismatches are stored as written and surfaced in `_meta.validation`). `required` is never checked — agents honor it from the declaration.
 
 | Field          | Type    | Purpose                                          |
 | -------------- | ------- | ------------------------------------------------ |
 | `name`         | string  | Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption (see `src/schema/identifiers.ts`) |
 | `type`         | enum    | "string", "number", "boolean", "array", "object" (warn-only validated on checkpoint `setVariable`; mismatched values are stored as written) |
-| `description`  | string  | Variable purpose                                 |
+| `description`  | string  | What the variable holds, and what its absence means |
+| `values`       | array   | The complete set of values a `string` variable admits. A `defaultValue` outside it fails the load; a `setVariable` or `set` literal outside it warns |
 | `defaultValue` | any     | Initial value, seeded into the session bag at session creation. Never combine with an `exists`/`notExists` gate on the same variable (`check:variable-model`) |
 | `required`     | boolean | Whether variable must be set (agent-honored)     |
 
@@ -495,7 +497,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
 | `rules` | { workflow?, activity?, universal?: (string \| { ref })[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both). Entries are rule strings or `{ ref }` fragment imports |
-| `fragments` | { rules?, checkpoints? } | Shared rule texts and checkpoint bodies importable by reference (`[workflow::]name`); resolved at load so delivered content is always materialized |
+| `fragments` | { checkpoints? } | Shared checkpoint bodies importable by `ref` (`[workflow::]name`); resolved at load so delivered content is always materialized |
 | `techniques` | { workflow?, activity?: string[] } | Orchestrator techniques (`workflow`, bundled into `get_workflow`) + techniques inherited by every activity (`activity`, injected into every `get_activity`) |
 | `variables` | array | Variable definitions with types and defaults |
 | `initialActivity` | string | ID of first activity (required for sequential workflows) |

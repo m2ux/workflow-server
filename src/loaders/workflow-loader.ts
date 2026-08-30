@@ -14,9 +14,7 @@ import {
   type FragmentsLookup,
   parseFragmentRef,
   collectCheckpointRefs,
-  collectRuleRefs,
   materializeActivityFragments,
-  materializeRuleEntries,
 } from './fragment-resolver.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
@@ -312,33 +310,21 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     // a bare ref misses locally (meta fallback) — a workflow whose refs all resolve locally costs
     // no extra reads on the per-call load path.
     const wanted = new Set<string>();
-    const noteRef = (ref: string, kind: 'rules' | 'checkpoints', scopeWf: string): void => {
+    const noteRef = (ref: string, scopeWf: string): void => {
       try {
         const { workflowId: qualified, name } = parseFragmentRef(ref);
         if (qualified) { if (qualified !== workflowId) wanted.add(qualified); return; }
         if (scopeWf !== workflowId) { wanted.add(scopeWf); wanted.add(META_WORKFLOW_ID); return; }
-        if (workflow.fragments?.[kind]?.[name] === undefined) wanted.add(META_WORKFLOW_ID);
+        if (workflow.fragments?.checkpoints?.[name] === undefined) wanted.add(META_WORKFLOW_ID);
       } catch { /* malformed: surfaces at materialization */ }
     };
-    for (const ref of collectRuleRefs(workflow.rules)) noteRef(ref, 'rules', workflowId);
     for (const activity of workflow.activities ?? []) {
       const scope = activitySourceWorkflow.get(activity.id) ?? workflowId;
-      for (const ref of collectCheckpointRefs(activity)) noteRef(ref, 'checkpoints', scope);
+      for (const ref of collectCheckpointRefs(activity)) noteRef(ref, scope);
     }
     const fragmentCache = new Map<string, WorkflowFragments | undefined>([[workflowId, workflow.fragments]]);
     await Promise.all([...wanted].map(async (id) => fragmentCache.set(id, await readWorkflowFragments(workflowDir, id))));
     const lookup: FragmentsLookup = (id) => fragmentCache.get(id);
-    if (workflow.rules) {
-      try {
-        workflow.rules = {
-          ...(workflow.rules.workflow ? { workflow: materializeRuleEntries(workflow.rules.workflow, lookup, workflowId) } : {}),
-          ...(workflow.rules.activity ? { activity: materializeRuleEntries(workflow.rules.activity, lookup, workflowId) } : {}),
-          ...(workflow.rules.universal ? { universal: materializeRuleEntries(workflow.rules.universal, lookup, workflowId) } : {}),
-        };
-      } catch (error) {
-        return err(new WorkflowValidationError(workflowId, [error instanceof Error ? error.message : String(error)]));
-      }
-    }
     const materialized: Activity[] = [];
     for (const activity of workflow.activities ?? []) {
       try {

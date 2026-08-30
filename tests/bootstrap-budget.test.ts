@@ -29,8 +29,15 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
  * this bundle, because the orchestrator reading it is the agent that resolves gates. The same text
  * previously sat in four workflow rule buckets, three of them delivered to workers who cannot
  * resolve a gate at all; those copies are gone, but they were never counted here.
+ *
+ * 112,000 since conduct took homes named by audience (#518 W5.2, #519). Two movements, and the
+ * bundle came out smaller. Five conduct rules that were homed in two domain workflows, and so
+ * never reached the agent that talks to the user, now arrive from the shared home and cost about
+ * 1,200 characters. Against that, a technique declaring no interface and no procedure stopped
+ * receiving the inherited bind contract it has nothing to bind, which took about 5,100 characters
+ * out of this bundle — the conduct techniques and the harness adapters were each carrying it.
  */
-const BUDGET = 113_000;
+const BUDGET = 112_000;
 
 describe('bootstrap-time fixed content', () => {
   it('stays inside the budget this suite sets', async () => {

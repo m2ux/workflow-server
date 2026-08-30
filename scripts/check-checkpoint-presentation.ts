@@ -42,13 +42,15 @@ const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 
 /**
  * The homes that own the contract, by domain: the engine operations own when a gate is presented and
- * how it resolves, and agent-conduct owns the role split and the obligations that follow from it.
- * Rule text here states the contract; anywhere else restates it. These are the engine and conduct
- * surfaces `no-engine-mechanics-as-rules` carves out as the homes a leaf must defer to.
+ * how it resolves, agent-conduct owns the role split and the obligations that follow from it, and
+ * orchestrator-conduct owns the boundaries on the role that resolves a gate. Rule text here states
+ * the contract; anywhere else restates it. These are the engine and conduct surfaces
+ * `no-engine-mechanics-as-rules` carves out as the homes a leaf must defer to.
  */
 const CONTRACT_HOMES = [
   join('meta', 'techniques', 'workflow-engine'),
   join('meta', 'techniques', 'agent-conduct.md'),
+  join('meta', 'techniques', 'orchestrator-conduct.md'),
 ];
 
 function isContractHome(rel: string): boolean {
