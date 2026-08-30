@@ -1,0 +1,1286 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.23.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "PDTEPM",
+  "currentActivity": "dispatch-client-workflow",
+  "currentTechnique": "",
+  "exit": "done",
+  "seq": 15,
+  "ts": 1788073504,
+  "startedAt": "2026-08-30T06:54:22.593Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target"
+  ],
+  "variables": {
+    "client_initial_activity": "intake-and-analyze",
+    "client_planning_slug": "2026-08-30-runner-execution-protocol",
+    "client_session_index": "LG2YFD",
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "component_selection_needed": false,
+    "has_saved_state": false,
+    "host_binding_mismatch": false,
+    "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+    "identifying_context": {
+      "issue_number": 523,
+      "work_package": "specification for the runner execution protocol"
+    },
+    "initiative_name": "runner-execution-protocol",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-runner-execution-protocol",
+    "resume_intent_requested": false,
+    "submodules": [],
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "requirements-refinement",
+    "user_request": "Run the requirements-refinement workflow to generate a specification from the runner proposal at .engineering/artifacts/planning/2026-08-28-runner-execution-protocol/README.md, which is the design record for issue #523 (a runner that executes the mechanical parts of a workflow). The proposal has settled decisions recorded in decisions.md alongside it, plus supporting evidence in investigation.md, protocol-verification.md, cost-model.md and attestation.md.",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-08-30T06:54:22.593Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "component_selection_needed": false,
+          "has_saved_state": false,
+          "host_binding_mismatch": false,
+          "is_monorepo": false,
+          "is_resuming": false,
+          "resume_intent_requested": false,
+          "submodules": [],
+          "user_request": "Run the requirements-refinement workflow to generate a specification from the runner proposal at .engineering/artifacts/planning/2026-08-28-runner-execution-protocol/README.md, which is the design record for issue #523 (a runner that executes the mechanical parts of a workflow). The proposal has settled decisions recorded in decisions.md alongside it, plus supporting evidence in investigation.md, protocol-verification.md, cost-model.md and attestation.md.",
+          "workflow_match_ambiguous": false
+        }
+      },
+      "timestamp": "2026-08-30T06:54:22.593Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-30T06:55:36.187Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 85173,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 7947,
+        "delivery": "full",
+        "stepId": "resolve-host-repo",
+        "techniqueId": "version-control::resolve-host-repo"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 10264,
+        "delivery": "full",
+        "stepId": "list-available-workflows",
+        "techniqueId": "workflow-engine::list-workflows"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 11661,
+        "delivery": "full",
+        "stepId": "match-target",
+        "techniqueId": "workflow-engine::match-target-workflow"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 10585,
+        "delivery": "full",
+        "stepId": "detect-resume-intent",
+        "techniqueId": "workflow-engine::detect-resume-intent"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 11122,
+        "delivery": "full",
+        "stepId": "extract-context",
+        "techniqueId": "workflow-engine::extract-identifying-context"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 11594,
+        "delivery": "full",
+        "stepId": "name-initiative",
+        "techniqueId": "workflow-engine::derive-initiative-name"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-08-30T06:55:58.695Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 1431,
+        "delivery": "full",
+        "resourceId": "meta/resume-intent-lexicon"
+      },
+      "timestamp": "2026-08-30T06:56:50.483Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 143444,
+          "subagent_tokens": 72881,
+          "tool_uses": 13
+        }
+      },
+      "timestamp": "2026-08-30T06:58:41.499Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_repo_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_repo",
+        "source": "variables_changed",
+        "value": "m2ux/workflow-server"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_binding_mismatch",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_workflow_id",
+        "source": "variables_changed",
+        "value": "requirements-refinement"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "workflow_match_ambiguous",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "resume_intent_requested",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "identifying_context",
+        "source": "variables_changed",
+        "value": {
+          "issue_number": 523,
+          "work_package": "specification for the runner execution protocol"
+        }
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "initiative_name",
+        "source": "variables_changed",
+        "value": "runner-execution-protocol"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "has_saved_state",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "record-no-match"
+      },
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-30T06:58:46.211Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 12960,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-30T06:59:07.163Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 5997,
+        "delivery": "full",
+        "stepId": "derive-planning-slug",
+        "techniqueId": "version-control::initialize-folder"
+      },
+      "timestamp": "2026-08-30T06:59:07.163Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-30T06:59:07.163Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 12531,
+        "delivery": "full",
+        "stepId": "start-or-resume-session",
+        "techniqueId": "workflow-engine::create-session"
+      },
+      "timestamp": "2026-08-30T06:59:07.163Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-30T06:59:07.163Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "LG2YFD",
+        "workflowId": "requirements-refinement"
+      },
+      "timestamp": "2026-08-30T06:59:38.953Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 58827,
+          "subagent_tokens": 81632,
+          "tool_uses": 6
+        }
+      },
+      "timestamp": "2026-08-30T07:00:17.638Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-30T07:00:20.284Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-08-30-runner-execution-protocol"
+      },
+      "timestamp": "2026-08-30T07:00:20.284Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "LG2YFD"
+      },
+      "timestamp": "2026-08-30T07:00:20.284Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-runner-execution-protocol"
+      },
+      "timestamp": "2026-08-30T07:00:20.284Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_initial_activity",
+        "source": "variables_changed",
+        "value": "intake-and-analyze"
+      },
+      "timestamp": "2026-08-30T07:00:20.284Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-30T07:00:20.284Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-30T07:00:20.284Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-30T07:00:20.284Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 9593,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-30T07:00:28.770Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-discover-01",
+        "chars": 5864,
+        "delivery": "full",
+        "stepId": "detect-monorepo",
+        "techniqueId": "version-control::detect-repo-type"
+      },
+      "timestamp": "2026-08-30T07:00:28.770Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-30T07:00:28.770Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-discover-01",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 132395,
+          "subagent_tokens": 89476,
+          "tool_uses": 9
+        }
+      },
+      "timestamp": "2026-08-30T07:01:36.207Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-30T07:01:59.542Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-30T07:01:59.542Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "component_path",
+        "source": "variables_changed",
+        "value": "."
+      },
+      "timestamp": "2026-08-30T07:01:59.542Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "announce-start"
+      },
+      "timestamp": "2026-08-30T07:01:59.542Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-30T07:01:59.542Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "validate-binding-agreement"
+      },
+      "timestamp": "2026-08-30T07:01:59.542Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-discover-01",
+        "stepId": "validate-git-tree"
+      },
+      "timestamp": "2026-08-30T07:01:59.542Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-30T07:01:59.542Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "w-dispatch-02",
+        "chars": 39945,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-30T07:02:10.899Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "w-dispatch-02",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 143021,
+          "note": "mis-dispatch: worker refused, executed no steps",
+          "subagent_tokens": 60461,
+          "tool_uses": 10
+        }
+      },
+      "timestamp": "2026-08-30T07:05:04.640Z",
+      "type": "activity_usage"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "LG2YFD",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {
+          "intake-and-analyze-analysis-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "analysis_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-08-30T07:26:14.000Z"
+          },
+          "intake-and-analyze-sources-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-08-30T07:17:01.000Z"
+          }
+        },
+        "completedActivities": [],
+        "currentActivity": "intake-and-analyze",
+        "currentTechnique": "",
+        "deliveredContent": {
+          "c-intake-01": {
+            "activity_rules:57246eafc8bcd38d": "57246eafc8bcd38d",
+            "bundle:rules:8cc2632a07a9c671": "8cc2632a07a9c671",
+            "bundle:variable-binding": "a1804a00823e45d8",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "resource:intake-record#template": "1a3b9af9d6310504",
+            "resource:requirements-analysis-report#conventions": "f3fd78f4823f17b9",
+            "resource:requirements-analysis-report#source-coverage-matrix": "1471db17ec1aedf2",
+            "resource:requirements-analysis-report#template": "5d8e87cc5b6a1c17",
+            "resource:specification-protocol": "71131396a86e9d41",
+            "resource:specification-protocol#identifier-schemes": "7324f54cb90e5533",
+            "resource:specification-protocol#requirement-entry-format": "71bfaba692d53574",
+            "resource:specification-protocol#section-structure": "8a588eec64e6da10",
+            "resource:specification-protocol#source-reference-format": "322383bf956d7818",
+            "resource:specification-protocol#status-conventions": "06f8dd4261563f03",
+            "resource:validation-rubric#source-coverage": "9966c7bc76e0fe70",
+            "technique:analyze-source": "ea25da0bbf4eb7d5",
+            "technique:inherited_inputs.items:b89d62a8bf581e8f": "b89d62a8bf581e8f",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:468820181f22d525": "468820181f22d525",
+            "technique:intake-sources": "8b097921354948e9",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:080d39f22ecf925f": "080d39f22ecf925f",
+            "technique:rules:fe7ac9bb9d4ac42a": "fe7ac9bb9d4ac42a"
+          }
+        },
+        "exit": "",
+        "history": [
+          {
+            "timestamp": "2026-08-30T06:59:38.954Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "analysis_confirmed": false,
+                "change_summary_path": "",
+                "correction_iteration": 0,
+                "failure_report_path": "",
+                "final_specification_path": "",
+                "has_correctable_issues": false,
+                "has_critical_issues": false,
+                "intake_record_path": "",
+                "requirements_analysis_path": "",
+                "source_type": "",
+                "spec_basename": "",
+                "target_doc_exists": false,
+                "user_request": "Run the requirements-refinement workflow to generate a specification from the runner proposal at .engineering/artifacts/planning/2026-08-28-runner-execution-protocol/README.md, which is the design record for issue #523 (a runner that executes the mechanical parts of a workflow). The proposal has settled decisions recorded in decisions.md alongside it, plus supporting evidence in investigation.md, protocol-verification.md, cost-model.md and attestation.md.",
+                "validation_passed": false,
+                "validation_report_path": "",
+                "working_specification_path": ""
+              }
+            },
+            "timestamp": "2026-08-30T06:59:38.954Z",
+            "type": "variables_seeded"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "timestamp": "2026-08-30T07:05:17.869Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 53278,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-30T07:05:29.220Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 4860,
+              "delivery": "full",
+              "stepId": "intake-sources",
+              "techniqueId": "intake-sources"
+            },
+            "timestamp": "2026-08-30T07:05:29.220Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "stepId": "intake-sources"
+            },
+            "timestamp": "2026-08-30T07:05:29.220Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 5750,
+              "delivery": "full",
+              "stepId": "analyze-source",
+              "techniqueId": "analyze-source"
+            },
+            "timestamp": "2026-08-30T07:05:29.220Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "stepId": "analyze-source"
+            },
+            "timestamp": "2026-08-30T07:05:29.220Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 4228,
+              "delivery": "full",
+              "resourceId": "specification-protocol"
+            },
+            "timestamp": "2026-08-30T07:06:26.539Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 398,
+              "delivery": "full",
+              "resourceId": "intake-record#template"
+            },
+            "timestamp": "2026-08-30T07:06:28.929Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "checkpoint": "sources-confirmed",
+            "timestamp": "2026-08-30T07:07:48.054Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "checkpoint": "sources-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-08-30T07:17:01.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 15666,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 4860,
+              "delivery": "unchanged",
+              "stepId": "intake-sources",
+              "techniqueId": "intake-sources"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 5750,
+              "delivery": "unchanged",
+              "stepId": "analyze-source",
+              "techniqueId": "analyze-source"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 728,
+              "delivery": "full",
+              "resourceId": "specification-protocol#source-reference-format"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 321,
+              "delivery": "unchanged",
+              "resourceId": "intake-record#template"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 1042,
+              "delivery": "full",
+              "resourceId": "specification-protocol#section-structure"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 518,
+              "delivery": "full",
+              "resourceId": "specification-protocol#requirement-entry-format"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 679,
+              "delivery": "full",
+              "resourceId": "specification-protocol#identifier-schemes"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 355,
+              "delivery": "full",
+              "resourceId": "specification-protocol#status-conventions"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 478,
+              "delivery": "full",
+              "resourceId": "validation-rubric#source-coverage"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 1177,
+              "delivery": "full",
+              "resourceId": "requirements-analysis-report#template"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 512,
+              "delivery": "full",
+              "resourceId": "requirements-analysis-report#conventions"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 448,
+              "delivery": "full",
+              "resourceId": "requirements-analysis-report#source-coverage-matrix"
+            },
+            "timestamp": "2026-08-30T07:17:27.947Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "checkpoint": "analysis-confirmed",
+            "timestamp": "2026-08-30T07:22:41.599Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "checkpoint": "analysis-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-08-30T07:26:14.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "analysis_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-30T07:26:14.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 9179,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 4860,
+              "delivery": "unchanged",
+              "stepId": "intake-sources",
+              "techniqueId": "intake-sources"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 5750,
+              "delivery": "unchanged",
+              "stepId": "analyze-source",
+              "techniqueId": "analyze-source"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 728,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#source-reference-format"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 321,
+              "delivery": "unchanged",
+              "resourceId": "intake-record#template"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 1042,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#section-structure"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 518,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#requirement-entry-format"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 679,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#identifier-schemes"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 355,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#status-conventions"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 478,
+              "delivery": "unchanged",
+              "resourceId": "validation-rubric#source-coverage"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 1177,
+              "delivery": "unchanged",
+              "resourceId": "requirements-analysis-report#template"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 512,
+              "delivery": "unchanged",
+              "resourceId": "requirements-analysis-report#conventions"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 448,
+              "delivery": "unchanged",
+              "resourceId": "requirements-analysis-report#source-coverage-matrix"
+            },
+            "timestamp": "2026-08-30T07:26:26.266Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 49314,
+                "note": "cumulative across three resumes of this worker context",
+                "subagent_tokens": 151985,
+                "tool_uses": 4
+              }
+            },
+            "timestamp": "2026-08-30T07:27:38.663Z",
+            "type": "activity_usage"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 13,
+        "sessionIndex": "LG2YFD",
+        "startedAt": "2026-08-30T06:59:38.954Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1788074858,
+        "variables": {
+          "analysis_confirmed": true,
+          "change_summary_path": "",
+          "correction_iteration": 0,
+          "failure_report_path": "",
+          "final_specification_path": "",
+          "has_correctable_issues": false,
+          "has_critical_issues": false,
+          "intake_record_path": "",
+          "requirements_analysis_path": "",
+          "source_type": "",
+          "spec_basename": "",
+          "target_doc_exists": false,
+          "user_request": "Run the requirements-refinement workflow to generate a specification from the runner proposal at .engineering/artifacts/planning/2026-08-28-runner-execution-protocol/README.md, which is the design record for issue #523 (a runner that executes the mechanical parts of a workflow). The proposal has settled decisions recorded in decisions.md alongside it, plus supporting evidence in investigation.md, protocol-verification.md, cost-model.md and attestation.md.",
+          "validation_passed": false,
+          "validation_report_path": "",
+          "working_specification_path": ""
+        },
+        "workflowId": "requirements-refinement",
+        "workflowVersion": "1.3.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-08-30T06:59:38.953Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "requirements-refinement"
+    }
+  ],
+  "deliveredContent": {
+    "w-discover-01": {
+      "bundle:rules:8081cab95df67fbf": "8081cab95df67fbf",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "resource:meta/resume-intent-lexicon": "08e10eaac04cac5d",
+      "technique:inherited_inputs.items:13b9f9019e9b2d7b": "13b9f9019e9b2d7b",
+      "technique:inherited_inputs.items:7f611a069f20416a": "7f611a069f20416a",
+      "technique:inherited_inputs.items:bc00dc1c96282770": "bc00dc1c96282770",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:8523594312b4a179": "8523594312b4a179",
+      "technique:inherited_inputs:b142eecc28c90202": "b142eecc28c90202",
+      "technique:inherited_inputs:ef999f0b85d386ef": "ef999f0b85d386ef",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:0dc19d41349208db": "0dc19d41349208db",
+      "technique:rules:747dfeb00117d373": "747dfeb00117d373",
+      "technique:rules:b7415c0f0d1a9c70": "b7415c0f0d1a9c70",
+      "technique:rules:be94a1e5beea0046": "be94a1e5beea0046",
+      "technique:rules:bebf7182af1f0a1d": "bebf7182af1f0a1d",
+      "technique:version-control::detect-repo-type": "12a6bff445fbf872",
+      "technique:version-control::initialize-folder": "6d42879983c06fbc",
+      "technique:version-control::resolve-host-repo": "da0a8d216d72dbcd",
+      "technique:workflow-engine::create-session": "d0fe7af461e03e40",
+      "technique:workflow-engine::derive-initiative-name": "bfbcf5bbb11aaaca",
+      "technique:workflow-engine::detect-resume-intent": "b98260c8b411f2d9",
+      "technique:workflow-engine::extract-identifying-context": "7900198316102095",
+      "technique:workflow-engine::list-workflows": "fb76525498c90f02",
+      "technique:workflow-engine::match-target-workflow": "41806d93ecb8056f"
+    },
+    "w-dispatch-02": {
+      "bundle:rules:8081cab95df67fbf": "8081cab95df67fbf",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}
