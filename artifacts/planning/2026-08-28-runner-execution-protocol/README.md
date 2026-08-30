@@ -905,15 +905,17 @@ Each is useful alone and assumes nothing after it.
 |---|---|---|---|
 | 1. Correct and widen | Stale documentation fixed; the condition guard covers endings, nested directories and validation targets; an unparseable condition fails the load; the unused early-exit field deleted | A condition is well-formed — **refused at load** | — |
 | 2. Server answers | A dismissed decision is verified against the values rather than taken on the agent's word; an activity's ending is computed and reconciled | Dismissal honesty and branch truth move from convention to **refused** | 1 |
-| 3. Write authority | A step's declared outputs land when the step finishes | Makes branch truth checkable at all; unblocks the rest | — |
-| 4. Position and repetition | A durable cursor with a frame per loop; something that drives iteration | Repeat calls and iteration bounds — **refused**; order becomes **unrepresentable** | 3 |
-| 5. The runner | The three calls, prompt composition, the three-shaped reply | Step execution becomes **unrepresentable**; input resolution and return shape **refused** | 3, 4 |
-| 6. The runner as host *(later)* | The runner spawns workers directly and reaches the person over a chat platform, so no agent sits above it | Decision presence rises from **detected** to **refused**, third-party attested | 5 |
+| 3. Binding resolution | A bare supplied value always means a literal and a reference is always braced, migrated across 193 sites; the two placeholder grammars unified on the dotted form; a guard for both | Input resolution stops being a heuristic — **refused at load** | — |
+| 4. Write authority | A step's declared outputs land when the step finishes, and the session store gains an index or cache so per-step writes are affordable | Makes branch truth checkable at all; unblocks the rest | — |
+| 5. Position and repetition | A durable cursor with a frame per loop; something that drives iteration | Repeat calls and iteration bounds — **refused**; order becomes **unrepresentable** | 4 |
+| 6. The runner | The three calls, prompt composition, the three-shaped reply, artifact writing, and the commit and progress techniques dispatched at each boundary | Step execution becomes **unrepresentable**; input resolution and return shape **refused** | 3, 4, 5 |
+| 7. The runner as host *(later)* | The runner spawns workers directly and reaches the person over a chat platform, so no agent sits above it | Decision presence rises from **detected** to **refused**, third-party attested | 6 |
 
 Stage 2 is where the conceptual step happens, and it is worth doing for its own sake: it is the first
-time a server verdict overrules an agent's claim. Stage 3 is the load-bearing one — until a step's
+time a server verdict overrules an agent's claim. Stage 4 is the load-bearing one — until a step's
 outputs land when the step finishes, most conditions cannot be decided by anyone but the agent that
-produced them, and the fidelity argument has no purchase.
+produced them, and the fidelity argument has no purchase. Stages 3 and 4 are independent of each other
+and both precede the runner.
 
 ## Future features
 
@@ -1019,28 +1021,71 @@ Over chat it could be started from a channel, outlive the machine that began it,
 somebody other than whoever started it. That is arguably a better product; it is also a product decision
 and not only an architectural one.
 
-## Open decisions
+## Decisions taken
 
-Ordered by what blocks what. The first three constrain the schema or the session file.
+Settled on 2026-08-30. Each is recorded with the reason, since the reason is what a later reader will
+need in order to reopen one honestly.
 
-1. **Do a step's declared outputs enter the session when the step finishes?** The majority of conditions
-   depend on it, and nothing else can be settled first.
-2. **Does the runner author every prompt, or only some?** Twenty-two sites compose briefs as domain work.
-   Whether a worker-composed brief is a first-class prompt with a different author or an opaque string
-   the runner relays shapes the whole protocol.
-3. **Which condition verdict is authoritative** — the three-valued delivery check or the plain
-   evaluators — and does the runner receive expressions or verdicts?
-4. **What becomes of the orchestration workflow?** Its five activities *are* the orchestration procedure,
-   and the runner subsumes them. Nobody has priced removing it, the bootstrap call, or the guard that
-   protects it. This is the largest unpriced item.
-5. **Who commits, and who writes the progress table?** The runner retires the driver and reassigns none
-   of this.
-6. **Sequence the bare-string migration** — 193 sites — ahead of the runner, or inbound resolution is a
-   coin flip on 85% of bindings.
-7. **Unify the two token grammars** on the dotted form. Prerequisite for both input resolution and
-   artifact naming, and it fixes an existing silent mis-report at 17 sites.
-8. **Decide the artifact path**: retire the 45 artifact-writing steps in favour of a declared
-   destination, or accept that artifact bodies round-trip through the runner.
+**A step's declared outputs are applied and written when the step finishes.** More than half of all
+conditions read a value an earlier step of the same activity produced, so without this the runner can
+decide only the minority fed by earlier activities and the rest stay with an agent. The cost is real and
+has to be paid first: roughly 1,085 writes per run instead of 79, against a session store that currently
+reads and parses every session file on every call. An index or a cache is a prerequisite, not a
+follow-up.
+
+**A brief composed at run time is a first-class prompt, not an opaque string.** The 22 sites that compose
+their own briefs are also the sites that fan out widest, so relaying untouched text would leave the
+largest dispatches outside every guarantee the runner otherwise gives. Roughly 25 brief-composing
+techniques change to declare structured output rather than free text, and in exchange there is one prompt
+shape and one set of checks.
+
+**The server sends conditions, not verdicts, and a missing value fails a positive test loudly.** Verdicts
+computed when an activity opens are stale by its second step, which is the problem being solved rather
+than a detail. Evaluating at the step is the only point the answer is correct. Absence keeps its meaning
+for negative and presence tests, because the corpus deliberately spells "not in that mode" as a value
+nobody set — so the rule applies to positive reads only, and the two collectors that currently disagree
+about inequality have to be reconciled before it lands.
+
+**The orchestration workflow keeps its four working activities and loses its loop.** Session discovery,
+initialisation, target resolution and close-out are ordinary work with side effects and stay activities
+the runner executes. The client-dispatch activity is the loop the runner becomes, so it is deleted rather
+than left unreachable. The bootstrap is rewritten to point an agent at the runner instead of at a
+procedure to follow, and the guard that keeps that procedure self-contained goes with it.
+
+**Committing and writing the progress table stay agent work, dispatched as ordinary units.** Both look
+mechanical and are not: a commit message and a progress summary are prose a person reads. Keeping them as
+techniques holds the line that the runner never composes text, and keeps git out of the runner entirely.
+The price is two dispatches at each activity boundary that a code path would not need.
+
+**The binding-resolution work lands before the runner, as its own change.** A bare supplied value becomes
+a literal always, a reference is always braced, and the two placeholder grammars unify on the dotted
+form. That is 193 sites migrated plus a guard, and it closes an existing silent fault where 17 dotted
+placeholders report as resolved while naming no producer. Doing it first means the runner never infers;
+doing it later would mean shipping a component whose argument is that it removes guessing, with a
+near coin-flip heuristic on 85% of its inputs.
+
+**The runner writes artifacts; a technique declaring one says where its output belongs.** This removes 45
+invocations, one technique file and the whole class of defect where an agent writes under the wrong name,
+and it halves document traffic — content still returns from whoever wrote it, but no longer goes out
+again as an input. Twenty sites that read back a written path need rewiring, and the runner gains
+filesystem access it would otherwise not need.
+
+## Still open
+
+These were not settled and are not blocked by anything above.
+
+1. **Does equality coerce numerically the way ordering already does, or does the write path enforce the
+   declared type?** A number arriving as text currently satisfies an ordering test and fails an equality
+   one. Picking neither leaves the runner acting on that difference across 81 equality comparisons.
+2. **Where does a repeat-until loop keep its continuation condition?** All 19 such loops carry a
+   structured condition the schema describes as an entry gate, and both mechanical readers treat it as
+   one. The unused early-exit field is the right shape, so this is a rename rather than an addition.
+3. **Are value-setting actions re-authored as technique outputs?** Of 84, only 28 carry a value a program
+   could apply, and the construct is already slated for removal — so building an interpreter for them
+   would institutionalise something on its way out.
+4. **What happens to the 137 techniques invoked from inside other techniques' prose?** Either the runner
+   accepts invocations it cannot see, or they become steps. The 21 identical artifact-writing sites are
+   resolved by the artifact decision above; the remaining 116 are not.
 
 ## Companion records
 
