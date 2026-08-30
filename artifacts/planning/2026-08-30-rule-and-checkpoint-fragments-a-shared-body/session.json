@@ -875,9 +875,10 @@
           }
         },
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "scope-and-draft"
         ],
-        "currentActivity": "scope-and-draft",
+        "currentActivity": "quality-review",
         "currentTechnique": "verify-artifact-conforms",
         "declaredArtifacts": [
           {
@@ -894,6 +895,11 @@
             "id": "impact_analysis",
             "name": "impact-analysis.md",
             "path": ".engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-impact-analysis.md"
+          },
+          {
+            "id": "scope_manifest",
+            "name": "scope-manifest.md",
+            "path": ".engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/06-scope-manifest.md"
           }
         ],
         "deliveredContent": {
@@ -919,9 +925,23 @@
             "resource:update-mode-guide#change-categories": "f6348ffc15b63e02",
             "resource:workflow-authoring/README#planning-artifact-to-guide-map": "6e13aca458fbf0ba",
             "resource:workflow-authoring/readme-seed": "0786e88762f20da4",
+            "resource:workflow-design/anti-patterns#authoring-guidance-mr": "260efdd8223e3ef0",
+            "resource:workflow-design/anti-patterns#canon-hygiene-anti-patterns": "ee9cb58981cc7f7b",
+            "resource:workflow-design/anti-patterns#coupling-anti-patterns": "990fabf5d517f810",
+            "resource:workflow-design/anti-patterns#creation-rules": "e92a986dfeb4921f",
             "resource:workflow-design/anti-patterns#description-hygiene-anti-patterns": "e2f73cefe2ff7c27",
+            "resource:workflow-design/anti-patterns#execution-anti-patterns": "71f58b2086e2d8a7",
+            "resource:workflow-design/anti-patterns#interaction-anti-patterns": "e86cbbf0978f860c",
+            "resource:workflow-design/anti-patterns#output-economy-anti-patterns": "8f59156ef7dfdced",
+            "resource:workflow-design/anti-patterns#rule-hygiene-anti-patterns": "852c46e6fe2f4b91",
             "resource:workflow-design/anti-patterns#schema-expressiveness-anti-patterns": "d488c8683a7846d0",
+            "resource:workflow-design/anti-patterns#structural-anti-patterns": "fb78878b1d30063e",
+            "resource:workflow-design/anti-patterns#technique-protocol-anti-patterns": "afc28a9ca4194840",
+            "resource:workflow-design/anti-patterns#tool-technique-doc-consistency-anti-patterns": "59d32e2116d778c3",
+            "resource:workflow-design/convention-conformance": "500d14cda4b67cb5",
             "resource:workflow-design/convention-conformance#reference-conventions": "ea9d06e6b88fd1d6",
+            "resource:workflow-design/design-principles": "f6b30b8a759ce556",
+            "resource:workflow-design/schema-construct-inventory": "4c2aa442f1b43d74",
             "technique:inherited_inputs.items:e583a6b5fb21ffbb": "e583a6b5fb21ffbb",
             "technique:inherited_inputs.items:e92de7508907a537": "e92de7508907a537",
             "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
@@ -931,26 +951,39 @@
             "technique:rules:0b7cf11d129c5ed0": "0b7cf11d129c5ed0",
             "technique:rules:1deb909c38acf6f7": "1deb909c38acf6f7",
             "technique:rules:34ddcb57fc8496df": "34ddcb57fc8496df",
+            "technique:rules:5a267368c885429a": "5a267368c885429a",
+            "technique:rules:6c3bed81b99dcf00": "6c3bed81b99dcf00",
             "technique:rules:7e2036e223c7afba": "7e2036e223c7afba",
+            "technique:rules:8181d56156699005": "8181d56156699005",
             "technique:rules:a9587aafb8b1aaab": "a9587aafb8b1aaab",
             "technique:rules:c2928461303b79e4": "c2928461303b79e4",
             "technique:rules:c4c9c835d6324b3e": "c4c9c835d6324b3e",
             "technique:rules:d24376e0e8a64123": "d24376e0e8a64123",
+            "technique:rules:dcb3fa857e03de8c": "dcb3fa857e03de8c",
             "technique:rules:ef3c02ff13e89d10": "ef3c02ff13e89d10",
+            "technique:rules:f31ae9a623bd5859": "f31ae9a623bd5859",
+            "technique:rules:f9ce52f48d9855c3": "f9ce52f48d9855c3",
             "technique:verify-artifact-conforms": "58cf009979f2c68c",
             "technique:version-control::derive-workflows-target-path": "9fe9268eb6be5881",
             "technique:work-package::manage-artifacts::write-artifact": "dac5b6434101d36c",
             "technique:work-package::manage-git::create-worktree": "f9ab8a75c099991a",
+            "technique:workflow-definition::audit-canon": "0e628374f366965f",
+            "technique:workflow-definition::audit-schema-validation": "2109df6693022981",
             "technique:workflow-definition::derive-workflow-branch": "9a6a026f4674db3e",
             "technique:workflow-definition::impact-analysis": "460ebffa6c0bccc9",
             "technique:workflow-definition::intake-classification": "8e9abce44881ed21",
+            "technique:workflow-definition::inventory-prose-fields": "8826a68e0eb06a5c",
+            "technique:workflow-definition::load-known-findings": "2fb70db87321d496",
             "technique:workflow-definition::readme-authoring": "18e294d2fb2e349b",
+            "technique:workflow-definition::reload-workflow": "566a4d89b59cace2",
+            "technique:workflow-definition::resolve-consumer-surface": "023c13ed6b1741a3",
             "technique:workflow-definition::scope-definition": "6356b17e83aecc96",
             "technique:workflow-definition::synthesize-change-brief": "5fae63b225ee146c",
-            "technique:workflow-engine::create-readme": "fa88a0970aad115a"
+            "technique:workflow-engine::create-readme": "fa88a0970aad115a",
+            "technique:workflow-engine::list-workflows": "722f8755d06db223"
           }
         },
-        "exit": "authoring",
+        "exit": "done",
         "history": [
           {
             "timestamp": "2026-08-30T17:11:29.661Z",
@@ -1951,18 +1984,569 @@
             },
             "timestamp": "2026-08-30T18:52:13.193Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_branch",
+              "source": "variables_changed",
+              "value": "workflow/work-package-borrowed-gate-variables"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "file_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/06-scope-manifest.md"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "has_unflagged_removals",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "artifact_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": true,
+                "unmeasured": [],
+                "violations_fixed": 4
+              }
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "ensure-worktree"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "persist-scope-manifest"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "scope-confirmed#0"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "bump-scope-round"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "file-drafting-loop"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "author-workflow-readme"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-08-30T18:52:43.459Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 237878,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 4594,
+              "delivery": "full",
+              "stepId": "load-known-findings",
+              "techniqueId": "workflow-definition::load-known-findings"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "load-known-findings"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 3178,
+              "delivery": "full",
+              "stepId": "survey-reference-workflows",
+              "techniqueId": "workflow-engine::list-workflows"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "survey-reference-workflows"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 6528,
+              "delivery": "full",
+              "stepId": "rebind-target-baseline",
+              "techniqueId": "workflow-definition::reload-workflow"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "rebind-target-baseline"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 5067,
+              "delivery": "full",
+              "stepId": "resolve-consumer-surface",
+              "techniqueId": "workflow-definition::resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 5854,
+              "delivery": "full",
+              "stepId": "inventory-prose-fields",
+              "techniqueId": "workflow-definition::inventory-prose-fields"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "inventory-prose-fields"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 13513,
+              "delivery": "full",
+              "stepId": "sweep-canon",
+              "techniqueId": "workflow-definition::audit-canon"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "sweep-canon"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 7037,
+              "delivery": "full",
+              "stepId": "validate-schema",
+              "techniqueId": "workflow-definition::audit-schema-validation"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "validate-schema"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 18031,
+              "delivery": "full",
+              "resourceId": "workflow-design/design-principles"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 13718,
+              "delivery": "full",
+              "resourceId": "workflow-design/schema-construct-inventory"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 1417,
+              "delivery": "full",
+              "resourceId": "workflow-design/convention-conformance"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 6849,
+              "delivery": "unchanged",
+              "resourceId": "workflow-design/anti-patterns#schema-expressiveness-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 14754,
+              "delivery": "unchanged",
+              "resourceId": "workflow-design/anti-patterns#description-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 3815,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#creation-rules"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 2291,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#structural-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 2109,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#interaction-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 5727,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#rule-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 28399,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#coupling-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 4247,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#tool-technique-doc-consistency-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 4096,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#execution-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 15504,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#output-economy-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 5265,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#canon-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 29887,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#technique-protocol-anti-patterns"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 46696,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#authoring-guidance-mr"
+            },
+            "timestamp": "2026-08-30T18:52:59.261Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 751640,
+                "subagent_tokens": 361224,
+                "tool_uses": 62
+              }
+            },
+            "timestamp": "2026-08-30T18:57:29.296Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 33,
+        "seq": 36,
         "sessionIndex": "3IXIS7",
         "startedAt": "2026-08-30T17:11:29.661Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788115933,
+        "ts": 1788116249,
         "variables": {
           "addressed_count": 0,
+          "artifact_conformance": {
+            "conforms": true,
+            "unmeasured": [],
+            "violations_fixed": 4
+          },
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-change-brief.md",
           "change_category": [
             "Structural refactor"
@@ -1973,6 +2557,7 @@
           "commit_approved": false,
           "component_git_dir": "/home/mike1/projects/dev/workflow-server/workflows",
           "fail_count": 0,
+          "file_count": 0,
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
@@ -1994,8 +2579,9 @@
           "report_path": "",
           "review_closed": false,
           "review_scope_confirmed": false,
+          "scope_manifest": [],
           "scope_manifest_confirmed": true,
-          "scope_manifest_path": "",
+          "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/06-scope-manifest.md",
           "scope_round": 0,
           "structural_inventory": "work-package v4.0.0 — 15 activity files, 115 technique files, 37 resource files, 223-line workflow.yaml, README. Activities 01-15. Change touches remediate-vuln/workflow.yaml variables[] only; work-package definition files unedited.",
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/",
@@ -2008,9 +2594,9 @@
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "Start a workflow authoring workflow to address https://github.com/m2ux/workflow-server/issues/519 — \"Rule and checkpoint fragments: a shared body needs a shared home, not a host workflow\". Decide whether the `fragments` construct survives, and carry out whichever migration that decision selects: give generic rules a shared home, move shared checkpoint gates into shared activities beside the variables they name, eliminate single-reference fragments, stop referencing workflows from declaring variables they never produce, and give the duplicate-rule guard a shared-home remedy.",
-          "workflow_branch": "",
+          "workflow_branch": "workflow/work-package-borrowed-gate-variables",
           "workflow_id": "work-package",
-          "worktree_created": false
+          "worktree_created": true
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.6.0"
