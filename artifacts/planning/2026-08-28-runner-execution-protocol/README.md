@@ -917,6 +917,54 @@ outputs land when the step finishes, most conditions cannot be decided by anyone
 produced them, and the fidelity argument has no purchase. Stages 3 and 4 are independent of each other
 and both precede the runner.
 
+### One dependency that has to be discharged before stage 6
+
+A technique's protocol prose sometimes tells the reader to apply another technique. There are **137 such
+references across 75 files**, and the loader resolves none of them. Today that works because a worker can
+fetch what it is told to apply. Under the runner it does not: a worker receives prose and values and has
+no server access, so it reaches an instruction to apply something and has nothing to apply. This is
+already documented in the loader, which notes that a technique named inside another's protocol has no
+delivery path of its own — which is why nine such references are hand-listed into the core orchestrator
+set as a workaround. At 137 that workaround does not scale, and the failure is functional rather than
+untidy: the worker improvises the invocation.
+
+There are two shapes for resolving it, and they are not exclusive.
+
+**Resolve a closure into the prompt.** The runner follows each inline reference and includes what it
+names, transitively. Needs a depth and cycle policy, and it changes the prompt-size arithmetic the
+[cost model](cost-model.md) rests on, since a prompt now carries an unknown number of additional bodies.
+
+**Turn them into steps.** An invocation written in prose becomes a step in the structure, which is what
+[#520](https://github.com/m2ux/workflow-server/issues/520) exists to make possible — the shared run of
+steps gets a name and a home, and the caller references it instead of describing it. Twenty-one of the
+137 are the identical artifact-writing invocation and are already removed by the artifact decision above,
+since a technique declaring an artifact now says where its output belongs and the runner writes it.
+
+**What decides the split is unmeasured.** Nobody has broken the remaining 116 down by kind. They are
+likely to divide between mechanical sub-tasks that convert cleanly, compositional cases where one
+technique applies another per item and wants a routine holding a loop, and cross-cutting references that
+are closer to *consult this* than *invoke this* and should not be converted at all. That breakdown decides
+how much converts and therefore how much closure resolution the runner still needs — possibly none,
+possibly a bounded amount for the residue.
+
+**So a census of the 137 by kind is a prerequisite**, and it is cheap. It sharpens #520's scope and the
+runner's prompt design at the same time.
+
+### Where the routine work sits
+
+[#520](https://github.com/m2ux/workflow-server/issues/520) is independent of the runner in both
+directions: routines resolve at load into ordinary steps, so today's agent-driven execution handles the
+result unchanged, and the runner walks a resolved tree without caring how a step got there. It should
+still land **before** the runner, for three reasons. It isolates risk, validating a new definition
+construct against an execution path that is stable rather than one changing underneath it. It pays off
+alone, retiring the shared-checkpoint mechanism whether or not a runner ships. And it discharges part of
+the inline-invocation dependency above, which the runner would otherwise have to solve in flight.
+
+One cost to accept knowingly: the routine design splices bodies both as objects and into the raw text
+delivered to an agent. The runner never delivers activity text, so that second implementation is built
+for an arrangement that is ending and is deleted at stage 6 — and while it lives, the two implementations
+have to agree on every generated identifier.
+
 ## Future features
 
 This work unlocks or cheapens several things it does not deliver. They are gathered here so the scope
@@ -1083,9 +1131,6 @@ These were not settled and are not blocked by anything above.
 3. **Are value-setting actions re-authored as technique outputs?** Of 84, only 28 carry a value a program
    could apply, and the construct is already slated for removal — so building an interpreter for them
    would institutionalise something on its way out.
-4. **What happens to the 137 techniques invoked from inside other techniques' prose?** Either the runner
-   accepts invocations it cannot see, or they become steps. The 21 identical artifact-writing sites are
-   resolved by the artifact decision above; the remaining 116 are not.
 
 ## Companion records
 
