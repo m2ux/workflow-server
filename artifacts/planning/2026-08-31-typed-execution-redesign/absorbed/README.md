@@ -10,17 +10,22 @@ This file is the index of those redistributions.
 
 ## The eight epics work was redistributed into
 
-| Epic | Phase | Items | Item hours | Epic effort |
-|---|---|---|---|---|
-| [#528 Safe Ground](https://github.com/m2ux/workflow-server/issues/528) | P0 | 6 | 24–39 h | 7–10 days |
-| [#529 One Predicate](https://github.com/m2ux/workflow-server/issues/529) | P1 | 7 | 36–60 h | 10–14 days |
-| [#530 Resolved References](https://github.com/m2ux/workflow-server/issues/530) | P2 | 4 | 29–46 h | 7–10 days |
-| [#531 Definition Shape](https://github.com/m2ux/workflow-server/issues/531) | P3 | 4 | 37–60 h | 8–12 days |
-| [#532 Mechanical Execution](https://github.com/m2ux/workflow-server/issues/532) | P4 | 5 | 69–117 h | 14–22 days |
-| [#533 Session Record](https://github.com/m2ux/workflow-server/issues/533) | P5 | 3 | 35–55 h | 7–11 days |
-| [#534 Compiled Delivery](https://github.com/m2ux/workflow-server/issues/534) | P6 | 5 | 48–75 h | 11–15 days |
-| [#535 Typed Definitions](https://github.com/m2ux/workflow-server/issues/535) | P7 | 8 | 129–205 h | 26–38 days |
-| **Total** | | **42** | **407–657 h** | **90–132 days** |
+Each epic's title carries its phase number, so the running order reads off a sorted issue list without
+anyone opening one: **`[Epic] P<n>: Name: The Broad Concern`**. That extends the epic title convention
+rather than replacing it — the name still handles the area of concern and the description still names
+it in five to eight words; the phase prefix is what makes the sequence legible on the tracker itself.
+
+| Epic | Items | Item hours | Epic effort |
+|---|---|---|---|
+| [#528 P0: Safe Ground](https://github.com/m2ux/workflow-server/issues/528) | 6 | 24–39 h | 7–10 days |
+| [#529 P1: One Predicate](https://github.com/m2ux/workflow-server/issues/529) | 7 | 36–60 h | 10–14 days |
+| [#530 P2: Resolved References](https://github.com/m2ux/workflow-server/issues/530) | 4 | 29–46 h | 7–10 days |
+| [#531 P3: Definition Shape](https://github.com/m2ux/workflow-server/issues/531) | 4 | 37–60 h | 8–12 days |
+| [#532 P4: Mechanical Execution](https://github.com/m2ux/workflow-server/issues/532) | 5 | 69–117 h | 14–22 days |
+| [#533 P5: Session Record](https://github.com/m2ux/workflow-server/issues/533) | 3 | 35–55 h | 7–11 days |
+| [#534 P6: Compiled Delivery](https://github.com/m2ux/workflow-server/issues/534) | 5 | 48–75 h | 11–15 days |
+| [#535 P7: Typed Definitions](https://github.com/m2ux/workflow-server/issues/535) | 8 | 129–205 h | 26–38 days |
+| **Total** | **42** | **407–657 h** | **90–132 days** |
 
 A work item is estimated in agent hours — one uninterrupted implementation run. An epic is estimated
 in effort-days: that work at six productive hours a day, plus half a day per item for the review and
