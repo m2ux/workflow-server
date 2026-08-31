@@ -49,15 +49,40 @@ decisions a gated item waits on, and neither is elapsed time.
 | #402 Server unblocks | [issue-402](./issue-402-server-unblocks.md) | W1 → #529 W3; W2 → #535 W6 |
 | #401 Session creation | [issue-401](./issue-401-session-creation.md) | W2 → #528 W2; W3 split #528 W1 / #533 W2; W1 → #535 W4 |
 | #397 Protocol structure | [issue-397](./issue-397-protocol-structure.md) | W2 + batches → #530; W1/W4 → #535 W5; W3a → #534 W4; **W3b stopped** |
+| #338 Corpus backlog | [issue-338](./issue-338-corpus-backlog.md) | W1 → #536 as its own issue; W2 → #535 W6; W3 → #529 W5; W4 **absorbed** by #531 W2 |
 
 ## Issues that stayed open
 
-Six kept their remaining items and gained a comment recording what moved and which gates were
-retargeted: **#338** (W1 and a retargeted W4), **#398** (W2, W3), **#399** (W1, W2, W4), **#400** (all
-four, W1 narrowed to one of the two branches it offered), **#437** (W1), **#491** (findings 2–4).
+Four kept their remaining items and gained a comment recording what moved and which gates were
+retargeted: **#398** (W2, W3), **#399** (W1, W2, W4), **#400** (all four, W1 narrowed to one of the two
+branches it offered), **#491** (findings 2–4).
 
 Three were left untouched on the independent track and gained only a note saying so: **#438**,
 **#310**, **#511**.
+
+One was retitled from an epic to an ordinary issue: **#437**, whose second gap went to #533 W3, leaving
+one work item. Its subject still describes that item exactly; what it stopped describing was two gaps.
+
+One was filed: **#536**, carrying #338's five enumerated content defects, which had no relationship to
+the transition beyond both touching definition files.
+
+## Two epics were hollowed out, and each was handled on its own terms
+
+An epic with one live work item is a heading rather than a grouping, and both were resolved by asking
+whether the epic's *subject* survived the loss of its other items.
+
+**#338's did not.** Its subject was the definition debt left behind when earlier issues closed
+part-merged. Three of four remainders went to the transition, and five enumerated content defects are
+not that subject. Closed, with the defects re-filed as #536.
+
+**#437's did.** "The server outside a developer's machine" still describes dependency pinning exactly.
+Retitled, body unchanged, nothing re-filed.
+
+The re-check that produced this also corrected an error in the first pass: **#338 W4 was recorded as
+gated on #531 W1 when it is absorbed by #531 W2.** A retire sweep of constructs registered for removal
+was dormant because it needed a breaking version to execute against; under the transition there is no
+breaking version, there is a conversion, and a converter drops such constructs rather than carrying
+them. The register becomes an input to the converter, which is recorded on #531.
 
 ## What was stopped
 
