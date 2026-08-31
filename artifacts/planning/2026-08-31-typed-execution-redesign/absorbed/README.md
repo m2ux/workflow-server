@@ -10,22 +10,46 @@ This file is the index of those redistributions.
 
 ## The eight epics work was redistributed into
 
-Each epic's title carries its phase number, so the running order reads off a sorted issue list without
-anyone opening one: **`[Epic] P<n>: Name: The Broad Concern`**. That extends the epic title convention
-rather than replacing it — the name still handles the area of concern and the description still names
-it in five to eight words; the phase prefix is what makes the sequence legible on the tracker itself.
+The reorganisation produced **two initiatives**, and every open epic belongs to one of them.
+
+- **[#527 — I0: Two Paths](https://github.com/m2ux/workflow-server/issues/527)** — changing the engine
+  while the server runs. Eight phases, 42 items, 90–132 effort-days.
+- **[#540 — I1: Standing Work](https://github.com/m2ux/workflow-server/issues/540)** — what the
+  definitions owe regardless of the engine. Five phases, 23 items, 34–50 effort-days.
+
+Every epic title carries the initiative and the phase, so both running orders read off a sorted issue
+list without anyone opening one: **`[Epic] I<n> P<n>: Name: The Broad Concern`**. That extends the epic
+title convention rather than replacing it — the name still handles the area of concern and the
+description still names it in five to eight words. Both initiatives number their phases from zero, so
+the initiative prefix is what keeps `I0 P0` and `I1 P0` apart.
+
+**I0 — Two Paths** (#527)
 
 | Epic | Items | Item hours | Epic effort |
 |---|---|---|---|
-| [#528 P0: Safe Ground](https://github.com/m2ux/workflow-server/issues/528) | 6 | 24–39 h | 7–10 days |
-| [#529 P1: One Predicate](https://github.com/m2ux/workflow-server/issues/529) | 7 | 36–60 h | 10–14 days |
-| [#530 P2: Resolved References](https://github.com/m2ux/workflow-server/issues/530) | 4 | 29–46 h | 7–10 days |
-| [#531 P3: Definition Shape](https://github.com/m2ux/workflow-server/issues/531) | 4 | 37–60 h | 8–12 days |
-| [#532 P4: Mechanical Execution](https://github.com/m2ux/workflow-server/issues/532) | 5 | 69–117 h | 14–22 days |
-| [#533 P5: Session Record](https://github.com/m2ux/workflow-server/issues/533) | 3 | 35–55 h | 7–11 days |
-| [#534 P6: Compiled Delivery](https://github.com/m2ux/workflow-server/issues/534) | 5 | 48–75 h | 11–15 days |
-| [#535 P7: Typed Definitions](https://github.com/m2ux/workflow-server/issues/535) | 8 | 129–205 h | 26–38 days |
+| [#528 I0 P0: Safe Ground](https://github.com/m2ux/workflow-server/issues/528) | 6 | 24–39 h | 7–10 days |
+| [#529 I0 P1: One Predicate](https://github.com/m2ux/workflow-server/issues/529) | 7 | 36–60 h | 10–14 days |
+| [#530 I0 P2: Resolved References](https://github.com/m2ux/workflow-server/issues/530) | 4 | 29–46 h | 7–10 days |
+| [#531 I0 P3: Definition Shape](https://github.com/m2ux/workflow-server/issues/531) | 4 | 37–60 h | 8–12 days |
+| [#532 I0 P4: Mechanical Execution](https://github.com/m2ux/workflow-server/issues/532) | 5 | 69–117 h | 14–22 days |
+| [#533 I0 P5: Session Record](https://github.com/m2ux/workflow-server/issues/533) | 3 | 35–55 h | 7–11 days |
+| [#534 I0 P6: Compiled Delivery](https://github.com/m2ux/workflow-server/issues/534) | 5 | 48–75 h | 11–15 days |
+| [#535 I0 P7: Typed Definitions](https://github.com/m2ux/workflow-server/issues/535) | 8 | 129–205 h | 26–38 days |
 | **Total** | **42** | **407–657 h** | **90–132 days** |
+
+**I1 — Standing Work** (#540)
+
+| Epic | Items | Item hours | Epic effort |
+|---|---|---|---|
+| [#537 I1 P0: Live Faults](https://github.com/m2ux/workflow-server/issues/537) | 6 | 27–45 h | 8–11 days |
+| [#538 I1 P1: Decisions That Take Effect](https://github.com/m2ux/workflow-server/issues/538) | 3 | 22–38 h | 5–8 days |
+| [#438 I1 P2: Review by Definition](https://github.com/m2ux/workflow-server/issues/438) | 6 | 31–50 h | 8–11 days |
+| [#539 I1 P3: Shared Capability and Delivery Grain](https://github.com/m2ux/workflow-server/issues/539) | 5 | 34–57 h | 8–12 days |
+| [#310 I1 P4: Reach](https://github.com/m2ux/workflow-server/issues/310) | 3 | 22–36 h | 5–8 days |
+| **Total** | **23** | **136–226 h** | **34–50 days** |
+
+**Both tracks: 65 work items, 543–883 agent hours, 124–182 effort-days.** Neither is gated on the
+other. Three overlaps are named on both sides, each resolved by whichever lands second.
 
 A work item is estimated in agent hours — one uninterrupted implementation run. An epic is estimated
 in effort-days: that work at six productive hours a day, plus half a day per item for the review and
@@ -51,20 +75,24 @@ decisions a gated item waits on, and neither is elapsed time.
 | #397 Protocol structure | [issue-397](./issue-397-protocol-structure.md) | W2 + batches → #530; W1/W4 → #535 W5; W3a → #534 W4; **W3b stopped** |
 | #338 Corpus backlog | [issue-338](./issue-338-corpus-backlog.md) | W1 → #536 as its own issue; W2 → #535 W6; W3 → #529 W5; W4 **absorbed** by #531 W2 |
 
-## Issues that stayed open
+## Absorbed into I1
 
-Four kept their remaining items and gained a comment recording what moved and which gates were
-retargeted: **#398** (W2, W3), **#399** (W1, W2, W4), **#400** (all four, W1 narrowed to one of the two
-branches it offered), **#491** (findings 2–4).
+| Absorbed | Capture | Where its work went |
+|---|---|---|
+| #400 Decision integrity | [issue-400](./issue-400-decision-integrity.md) | W1 narrowed / W2 / W4 → #538; W3 → #537 W2 |
+| #399 Shared homes | [issue-399](./issue-399-shared-homes.md) | W1/W2/W4 → #539; W3 → #531 W4 (I0) |
+| #398 Section delivery | [issue-398](./issue-398-section-delivery.md) | W2/W3 → #539; W1 → #530 W1 (I0) |
+| #491 Found by running | [issue-491](./issue-491-found-by-running.md) | f2/f3 → #537; f4 → #438 W6; f1 → #530 W3 (I0) |
+| #536 Content defects | [issue-536](./issue-536-content-defects.md) | #537 W1 |
+| #511 Issue creation | [issue-511](./issue-511-issue-creation.md) | #537 W5 |
+| #437 Deployment hardening | [issue-437](./issue-437-deployment-hardening.md) | W1 → #537 W6; W2 → #533 W3 (I0) |
 
-Three were left untouched on the independent track and gained only a note saying so: **#438**,
-**#310**, **#511**.
+Two epics mapped onto a phase without regrouping and were **retitled rather than replaced**: #438
+became I1 P2 and gained one item from #491; #310 became I1 P4 unchanged.
 
-One was retitled from an epic to an ordinary issue: **#437**, whose second gap went to #533 W3, leaving
-one work item. Its subject still describes that item exactly; what it stopped describing was two gaps.
-
-One was filed: **#536**, carrying #338's five enumerated content defects, which had no relationship to
-the transition beyond both touching definition files.
+#536 was itself filed during this reorganisation, carrying #338's five enumerated content defects, and
+absorbed into #537 in the same pass — a two-step that reflects the order the work was done in rather
+than a change of mind about where the defects belong.
 
 ## Two epics were hollowed out, and each was handled on its own terms
 

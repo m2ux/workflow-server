@@ -22,12 +22,17 @@ The running order that carries the design into a system in production use is the
 | [rejected-alternatives.md](./rejected-alternatives.md) | Designs weighed and dropped, with the reason |
 | [absorbed/](./absorbed/) | The thirteen absorbed issue bodies, verbatim, with the redistribution map |
 
-**The tracker was reorganised to match this record on 2026-08-31.** Eight phase-ordered epics
-([#528](https://github.com/m2ux/workflow-server/issues/528) to
-[#535](https://github.com/m2ux/workflow-server/issues/535)) hold 42 work items — 407–657 agent hours,
-or 90–132 effort-days once each item's review and integration cycle is counted. Thirteen issues were
-absorbed and closed; six kept their remaining items; three were left untouched on an independent
-track. The map is in [absorbed/README.md](./absorbed/README.md).
+**The tracker was reorganised to match this record on 2026-08-31**, into two initiatives whose thirteen
+phase-ordered epics hold every open work item.
+
+- **[#527 — I0: Two Paths](https://github.com/m2ux/workflow-server/issues/527)** carries this design
+  into a system in production use. Eight phases, 42 items, 90–132 effort-days.
+- **[#540 — I1: Standing Work](https://github.com/m2ux/workflow-server/issues/540)** carries what the
+  definitions owe regardless of the engine. Five phases, 23 items, 34–50 effort-days.
+
+Twenty issues were absorbed and closed, their bodies captured verbatim; two mapped onto a phase and
+were retitled rather than replaced. Neither initiative gates the other. The map is in
+[absorbed/README.md](./absorbed/README.md).
 
 ---
 
