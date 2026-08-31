@@ -20,11 +20,9 @@ stands on its own subject; neither is defined against the other, and neither gat
   definitions carry twenty-three known faults, each found, written down, and owned by nobody. Five
   phases, 23 items, 34–50 effort-days.
 
-Every epic title carries the initiative and the phase, so both running orders read off a sorted issue
-list without anyone opening one: **`[Epic] I<n> P<n>: Name: The Broad Concern`**. That extends the epic
-title convention rather than replacing it — the name still handles the area of concern and the
-description still names it in five to eight words. Both initiatives number their phases from zero, so
-the initiative prefix is what keeps `I0 P0` and `I1 P0` apart.
+Initiatives take the form `[Initiative] I<n>: Name: The Broad Concern`; their epics take
+`[Epic] I<n> P<n>: Name: The Broad Concern`. The name handles the area of concern and the description
+names it in five to eight words, as the epic title convention already requires.
 
 **I0 — Two Paths** (#527)
 
