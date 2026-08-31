@@ -26,9 +26,9 @@ The running order that carries the design into a system in production use is the
 phase-ordered epics hold every open work item.
 
 - **[#527 — I0: Two Paths](https://github.com/m2ux/workflow-server/issues/527)** carries this design
-  into a system in production use. Eight phases, 42 items, 90–132 effort-days.
+  into a system in production use. Eight phases, 42 items, 37–58 effort-days.
 - **[#540 — I1: Standing Work](https://github.com/m2ux/workflow-server/issues/540)** carries what the
-  definitions owe regardless of the engine. Five phases, 23 items, 34–50 effort-days.
+  definitions owe regardless of the engine. Five phases, 23 items, 12–19 effort-days.
 
 Twenty issues were absorbed and closed, their bodies captured verbatim; two mapped onto a phase and
 were retitled rather than replaced. Neither initiative gates the other. The map is in

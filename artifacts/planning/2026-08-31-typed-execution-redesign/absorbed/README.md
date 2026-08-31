@@ -1,24 +1,23 @@
 # Absorbed issues — verbatim captures
 
-The tracker was reorganised on 2026-08-31 so that its epics match the running order of the two-paths
-initiative ([#527](https://github.com/m2ux/workflow-server/issues/527)) and so that interdependent
-work shares a home. Thirteen issues were absorbed and closed. Each body is captured here verbatim at
-the moment it closed, so the evidence, tables and acceptance detail stay reachable.
+The tracker was reorganised on 2026-08-31 so that every epic sits in a running order and interdependent
+work shares a home. Twenty issues were absorbed and closed. Each body is captured here verbatim at the
+moment it closed, so the evidence, tables and acceptance detail stay reachable.
 
 Each closed issue also carries a closing comment naming where every one of its work items now lives.
 This file is the index of those redistributions.
 
-## The eight epics work was redistributed into
+## The thirteen epics work was redistributed into
 
 The reorganisation produced **two initiatives**, and every open epic belongs to one of them. Each
 stands on its own subject; neither is defined against the other, and neither gates the other.
 
 - **[#527 — I0: Two Paths](https://github.com/m2ux/workflow-server/issues/527)** — the mechanical part
   of a run moves to a program, in stages, while the server stays in production use. Eight phases,
-  42 items, 90–132 effort-days.
+  42 items, 37–58 effort-days.
 - **[#540 — I1: Standing Work](https://github.com/m2ux/workflow-server/issues/540)** — the workflow
   definitions carry twenty-three known faults, each found, written down, and owned by nobody. Five
-  phases, 23 items, 34–50 effort-days.
+  phases, 23 items, 12–19 effort-days.
 
 Initiatives take the form `[Initiative] I<n>: Name: The Broad Concern`; their epics take
 `[Epic] I<n> P<n>: Name: The Broad Concern`. The name handles the area of concern and the description
@@ -28,34 +27,34 @@ names it in five to eight words, as the epic title convention already requires.
 
 | Epic | Items | Item hours | Epic effort |
 |---|---|---|---|
-| [#528 I0 P0: Safe Ground](https://github.com/m2ux/workflow-server/issues/528) | 6 | 24–39 h | 7–10 days |
-| [#529 I0 P1: One Predicate](https://github.com/m2ux/workflow-server/issues/529) | 7 | 36–60 h | 10–14 days |
-| [#530 I0 P2: Resolved References](https://github.com/m2ux/workflow-server/issues/530) | 4 | 29–46 h | 7–10 days |
-| [#531 I0 P3: Definition Shape](https://github.com/m2ux/workflow-server/issues/531) | 4 | 37–60 h | 8–12 days |
-| [#532 I0 P4: Mechanical Execution](https://github.com/m2ux/workflow-server/issues/532) | 5 | 69–117 h | 14–22 days |
-| [#533 I0 P5: Session Record](https://github.com/m2ux/workflow-server/issues/533) | 3 | 35–55 h | 7–11 days |
-| [#534 I0 P6: Compiled Delivery](https://github.com/m2ux/workflow-server/issues/534) | 5 | 48–75 h | 11–15 days |
-| [#535 I0 P7: Typed Definitions](https://github.com/m2ux/workflow-server/issues/535) | 8 | 129–205 h | 26–38 days |
-| **Total** | **42** | **407–657 h** | **90–132 days** |
+| [#528 I0 P0: Safe Ground](https://github.com/m2ux/workflow-server/issues/528) | 6 | 15.5–24 h | 3–4 days |
+| [#529 I0 P1: One Predicate](https://github.com/m2ux/workflow-server/issues/529) | 7 | 21–34 h | 4–6 days |
+| [#530 I0 P2: Resolved References](https://github.com/m2ux/workflow-server/issues/530) | 4 | 15–26 h | 3–4 days |
+| [#531 I0 P3: Definition Shape](https://github.com/m2ux/workflow-server/issues/531) | 4 | 20–31 h | 3–5 days |
+| [#532 I0 P4: Mechanical Execution](https://github.com/m2ux/workflow-server/issues/532) | 5 | 34–58 h | 6–10 days |
+| [#533 I0 P5: Session Record](https://github.com/m2ux/workflow-server/issues/533) | 3 | 17–27 h | 3–5 days |
+| [#534 I0 P6: Compiled Delivery](https://github.com/m2ux/workflow-server/issues/534) | 5 | 23–37 h | 4–6 days |
+| [#535 I0 P7: Typed Definitions](https://github.com/m2ux/workflow-server/issues/535) | 8 | 67–110 h | 11–18 days |
+| **Total** | **42** | **212–347 h** | **37–58 days** |
 
 **I1 — Standing Work** (#540)
 
 | Epic | Items | Item hours | Epic effort |
 |---|---|---|---|
-| [#537 I1 P0: Live Faults](https://github.com/m2ux/workflow-server/issues/537) | 6 | 27–45 h | 8–11 days |
-| [#538 I1 P1: Decisions That Take Effect](https://github.com/m2ux/workflow-server/issues/538) | 3 | 22–38 h | 5–8 days |
-| [#438 I1 P2: Review by Definition](https://github.com/m2ux/workflow-server/issues/438) | 6 | 31–50 h | 8–11 days |
-| [#539 I1 P3: Shared Capability and Delivery Grain](https://github.com/m2ux/workflow-server/issues/539) | 5 | 34–57 h | 8–12 days |
-| [#310 I1 P4: Reach](https://github.com/m2ux/workflow-server/issues/310) | 3 | 22–36 h | 5–8 days |
-| **Total** | **23** | **136–226 h** | **34–50 days** |
+| [#537 I1 P0: Live Faults](https://github.com/m2ux/workflow-server/issues/537) | 6 | 13.5–22.5 h | 2–4 days |
+| [#538 I1 P1: Decisions That Take Effect](https://github.com/m2ux/workflow-server/issues/538) | 3 | 11–19 h | 2–3 days |
+| [#438 I1 P2: Review by Definition](https://github.com/m2ux/workflow-server/issues/438) | 6 | 15.5–24.5 h | 3–4 days |
+| [#539 I1 P3: Shared Capability and Delivery Grain](https://github.com/m2ux/workflow-server/issues/539) | 5 | 17–29 h | 3–5 days |
+| [#310 I1 P4: Reach](https://github.com/m2ux/workflow-server/issues/310) | 3 | 11–18 h | 2–3 days |
+| **Total** | **23** | **68–113 h** | **12–19 days** |
 
-**Both tracks: 65 work items, 543–883 agent hours, 124–182 effort-days.** Neither is gated on the
+**Both tracks: 65 work items, 280–460 agent hours, 49–77 effort-days.** Neither is gated on the
 other. Three overlaps are named on both sides, each resolved by whichever lands second.
 
-A work item is estimated in agent hours — one uninterrupted implementation run. An epic is estimated
-in effort-days: that work at six productive hours a day, plus half a day per item for the review and
-integration cycle each pull request carries. Neither includes the coverage walk's runtime or the human
-decisions a gated item waits on, and neither is elapsed time.
+A work item is estimated in agent hours — one uninterrupted run at agent pace. An epic is estimated in
+effort-days: that work aggregated at six productive hours a day, and nothing else. Review latency, the
+coverage walk's runtime and the human decisions a gated item waits on are elapsed time and are
+excluded from both.
 
 ## Redistribution map
 
