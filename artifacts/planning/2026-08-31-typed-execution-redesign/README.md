@@ -5,9 +5,10 @@
 **Purpose:** Record a from-scratch redesign of the workflow server aimed at fidelity, efficiency and
 cost, and state what each of the twenty-one open issues becomes under it.
 
-This folder is the investigation-detail home for the typed-execution epic. It holds the diagnosis,
-the design, the measured evidence behind every number the epic carries, the per-issue disposition,
-and the alternatives that were weighed and dropped.
+This folder is the investigation-detail home for the typed-execution epic
+([#526](https://github.com/m2ux/workflow-server/issues/526)). It holds the diagnosis, the design, the
+measured evidence behind every number the epic carries, the per-issue disposition, and the
+alternatives that were weighed and dropped.
 
 | File | Holds |
 |---|---|
