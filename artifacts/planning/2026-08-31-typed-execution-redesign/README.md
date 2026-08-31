@@ -24,9 +24,10 @@ The running order that carries the design into a system in production use is the
 
 **The tracker was reorganised to match this record on 2026-08-31.** Eight phase-ordered epics
 ([#528](https://github.com/m2ux/workflow-server/issues/528) to
-[#535](https://github.com/m2ux/workflow-server/issues/535)) hold 42 work items across 407–657 agent
-hours; thirteen issues were absorbed and closed; six kept their remaining items; three were left
-untouched on an independent track. The map is in [absorbed/README.md](./absorbed/README.md).
+[#535](https://github.com/m2ux/workflow-server/issues/535)) hold 42 work items — 407–657 agent hours,
+or 90–132 effort-days once each item's review and integration cycle is counted. Thirteen issues were
+absorbed and closed; six kept their remaining items; three were left untouched on an independent
+track. The map is in [absorbed/README.md](./absorbed/README.md).
 
 ---
 
