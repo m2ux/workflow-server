@@ -872,13 +872,24 @@
             },
             "optionId": "confirmed",
             "respondedAt": "2026-08-30T18:48:34.000Z"
+          },
+          "validate-and-commit-audit-disposition#0": {
+            "effects": {
+              "exit": "remediation-selected",
+              "variablesSet": {
+                "remediation_selected": true
+              }
+            },
+            "optionId": "remediate",
+            "respondedAt": "2026-08-31T03:41:29.000Z"
           }
         },
         "completedActivities": [
           "intake-and-context",
-          "scope-and-draft"
+          "scope-and-draft",
+          "quality-review"
         ],
-        "currentActivity": "quality-review",
+        "currentActivity": "validate-and-commit",
         "currentTechnique": "verify-artifact-conforms",
         "declaredArtifacts": [
           {
@@ -981,6 +992,30 @@
             "technique:workflow-definition::synthesize-change-brief": "5fae63b225ee146c",
             "technique:workflow-engine::create-readme": "fa88a0970aad115a",
             "technique:workflow-engine::list-workflows": "722f8755d06db223"
+          },
+          "worker-3IXIS7-02": {
+            "activity_rules:d590df427abf37e5": "d590df427abf37e5",
+            "bundle:agent-conduct": "7cdbe94abebf8c98",
+            "bundle:rules:6df7e956d8504725": "6df7e956d8504725",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:worker-conduct": "8b7346bbc1a36872",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "resource:findings-register": "de8cede84937be93",
+            "resource:findings-register#template": "64fb5b0bc119a7ac",
+            "resource:meta/writing-register": "8f96a660e5f6617f",
+            "technique:inherited_inputs.items:e92de7508907a537": "e92de7508907a537",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:f80b14e590785e6a": "f80b14e590785e6a",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:1e6f9cbbc3eef434": "1e6f9cbbc3eef434",
+            "technique:rules:7e2036e223c7afba": "7e2036e223c7afba",
+            "technique:rules:b7b36ba1e42c37fa": "b7b36ba1e42c37fa",
+            "technique:work-package::manage-artifacts::write-artifact": "804d78e71ce67158",
+            "technique:workflow-definition::compile-report": "ba77dfe345b1d620",
+            "technique:workflow-definition::verify-high-findings": "8b38d49786af35c0"
           }
         },
         "exit": "done",
@@ -2530,16 +2565,327 @@
             },
             "timestamp": "2026-08-30T18:57:29.296Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "base_ref",
+              "source": "variables_changed",
+              "value": "bc52c6968eb3f603d77adb03474b6bde48f2aaff"
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "touched_files",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "changed_files",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 2
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "audit_findings",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "entry": "anchored-protocol-references",
+                  "files": [
+                    "meta/techniques/agent-conduct.md",
+                    "meta/techniques/verify-artifact-conforms.md"
+                  ],
+                  "known": false,
+                  "origin": "pre-existing",
+                  "severity": "High",
+                  "summary": "writing-register projects to an unqualified resource id when a meta technique is bundled into a non-meta workflow, so 15 activity files across 15 workflows run a protocol step that cannot load the register they must measure against"
+                },
+                {
+                  "entry": "schema-construct-inventory",
+                  "files": [
+                    "workflow-design/resources/schema-construct-inventory.md"
+                  ],
+                  "known": false,
+                  "origin": "pre-existing",
+                  "severity": "Medium",
+                  "summary": "the inventory carries no row for fragments.checkpoints, a workflow-scope construct the schema declares"
+                }
+              ]
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "declaredType": "array",
+              "name": "coverage_ledger",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": {
+                "blocked": 1,
+                "caveat": "13 baselined exclusions rest on triage against corpus 3569e937, 287 commits behind the bc52c696 checkout",
+                "not_applicable": "all remaining canon units - change surface empty",
+                "walked": 2
+              },
+              "valueType": "object"
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "author-fixes"
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "record-fixes"
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "inventory-remediation-removals"
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "load-known-findings"
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "survey-reference-workflows"
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "target-sweep-loop"
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-08-30T18:57:52.202Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 68296,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-30T18:58:18.059Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 7030,
+              "delivery": "full",
+              "stepId": "verify-audit-findings",
+              "techniqueId": "workflow-definition::verify-high-findings"
+            },
+            "timestamp": "2026-08-30T18:58:18.059Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-08-30T18:58:18.059Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 7127,
+              "delivery": "full",
+              "stepId": "compile-register",
+              "techniqueId": "workflow-definition::compile-report"
+            },
+            "timestamp": "2026-08-30T18:58:18.059Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-08-30T18:58:18.059Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 5639,
+              "delivery": "full",
+              "stepId": "persist-register",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-30T18:58:18.059Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-08-30T18:58:18.059Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 1378,
+              "delivery": "full",
+              "resourceId": "findings-register#template"
+            },
+            "timestamp": "2026-08-30T19:01:14.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 7015,
+              "delivery": "full",
+              "resourceId": "findings-register"
+            },
+            "timestamp": "2026-08-30T19:01:20.217Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "audit-disposition#0",
+            "timestamp": "2026-08-30T19:04:36.942Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "audit-disposition#0",
+            "data": {
+              "optionId": "remediate"
+            },
+            "timestamp": "2026-08-31T03:41:29.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "remediation_selected",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-31T03:41:29.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 1986,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-08-31T03:42:23.454Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 568836,
+                "subagent_tokens": 125406,
+                "tool_uses": 61
+              }
+            },
+            "timestamp": "2026-08-31T03:44:43.731Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 36,
+        "seq": 45,
         "sessionIndex": "3IXIS7",
         "startedAt": "2026-08-30T17:11:29.661Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788116249,
+        "ts": 1788147883,
         "variables": {
           "addressed_count": 0,
           "artifact_conformance": {
@@ -2547,6 +2893,30 @@
             "unmeasured": [],
             "violations_fixed": 4
           },
+          "audit_findings": [
+            {
+              "entry": "anchored-protocol-references",
+              "files": [
+                "meta/techniques/agent-conduct.md",
+                "meta/techniques/verify-artifact-conforms.md"
+              ],
+              "known": false,
+              "origin": "pre-existing",
+              "severity": "High",
+              "summary": "writing-register projects to an unqualified resource id when a meta technique is bundled into a non-meta workflow, so 15 activity files across 15 workflows run a protocol step that cannot load the register they must measure against"
+            },
+            {
+              "entry": "schema-construct-inventory",
+              "files": [
+                "workflow-design/resources/schema-construct-inventory.md"
+              ],
+              "known": false,
+              "origin": "pre-existing",
+              "severity": "Medium",
+              "summary": "the inventory carries no row for fragments.checkpoints, a workflow-scope construct the schema declares"
+            }
+          ],
+          "base_ref": "bc52c6968eb3f603d77adb03474b6bde48f2aaff",
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-change-brief.md",
           "change_category": [
             "Structural refactor"
@@ -2556,6 +2926,12 @@
           "changed_files": [],
           "commit_approved": false,
           "component_git_dir": "/home/mike1/projects/dev/workflow-server/workflows",
+          "coverage_ledger": {
+            "blocked": 1,
+            "caveat": "13 baselined exclusions rest on triage against corpus 3569e937, 287 commits behind the bc52c696 checkout",
+            "not_applicable": "all remaining canon units - change surface empty",
+            "walked": 2
+          },
           "fail_count": 0,
           "file_count": 0,
           "has_coverage_gap": false,
@@ -2566,14 +2942,14 @@
           "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-impact-analysis.md",
           "intent_needs_confirmation": false,
           "judgements_disposition": "carried-open",
-          "open_finding_count": 0,
+          "open_finding_count": 2,
           "open_judgements_count": 3,
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body",
           "register_sections": [],
           "remediation_round": 0,
-          "remediation_selected": false,
+          "remediation_selected": true,
           "removal_count": 0,
           "removals_approved": false,
           "report_path": "",
@@ -2591,6 +2967,7 @@
             "remediate-vuln"
           ],
           "total_count": 0,
+          "touched_files": [],
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "Start a workflow authoring workflow to address https://github.com/m2ux/workflow-server/issues/519 — \"Rule and checkpoint fragments: a shared body needs a shared home, not a host workflow\". Decide whether the `fragments` construct survives, and carry out whichever migration that decision selects: give generic rules a shared home, move shared checkpoint gates into shared activities beside the variables they name, eliminate single-reference fragments, stop referencing workflows from declaring variables they never produce, and give the duplicate-rule guard a shared-home remedy.",
