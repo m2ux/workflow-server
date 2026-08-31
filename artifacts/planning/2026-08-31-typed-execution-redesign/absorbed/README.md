@@ -10,12 +10,15 @@ This file is the index of those redistributions.
 
 ## The eight epics work was redistributed into
 
-The reorganisation produced **two initiatives**, and every open epic belongs to one of them.
+The reorganisation produced **two initiatives**, and every open epic belongs to one of them. Each
+stands on its own subject; neither is defined against the other, and neither gates the other.
 
-- **[#527 — I0: Two Paths](https://github.com/m2ux/workflow-server/issues/527)** — changing the engine
-  while the server runs. Eight phases, 42 items, 90–132 effort-days.
-- **[#540 — I1: Standing Work](https://github.com/m2ux/workflow-server/issues/540)** — what the
-  definitions owe regardless of the engine. Five phases, 23 items, 34–50 effort-days.
+- **[#527 — I0: Two Paths](https://github.com/m2ux/workflow-server/issues/527)** — the mechanical part
+  of a run moves to a program, in stages, while the server stays in production use. Eight phases,
+  42 items, 90–132 effort-days.
+- **[#540 — I1: Standing Work](https://github.com/m2ux/workflow-server/issues/540)** — the workflow
+  definitions carry twenty-three known faults, each found, written down, and owned by nobody. Five
+  phases, 23 items, 34–50 effort-days.
 
 Every epic title carries the initiative and the phase, so both running orders read off a sorted issue
 list without anyone opening one: **`[Epic] I<n> P<n>: Name: The Broad Concern`**. That extends the epic
