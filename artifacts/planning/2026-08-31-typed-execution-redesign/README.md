@@ -20,6 +20,13 @@ The running order that carries the design into a system in production use is the
 | [issue-disposition.md](./issue-disposition.md) | All twenty-one open issues: dissolves, survives, or becomes a work item |
 | [migration-disposition.md](./migration-disposition.md) | All ~55 work items: safety, keep, reshape, defer, abandon — what to work while the server stays up |
 | [rejected-alternatives.md](./rejected-alternatives.md) | Designs weighed and dropped, with the reason |
+| [absorbed/](./absorbed/) | The thirteen absorbed issue bodies, verbatim, with the redistribution map |
+
+**The tracker was reorganised to match this record on 2026-08-31.** Eight phase-ordered epics
+([#528](https://github.com/m2ux/workflow-server/issues/528) to
+[#535](https://github.com/m2ux/workflow-server/issues/535)) hold 42 work items across 407–657 agent
+hours; thirteen issues were absorbed and closed; six kept their remaining items; three were left
+untouched on an independent track. The map is in [absorbed/README.md](./absorbed/README.md).
 
 ---
 
