@@ -10,11 +10,15 @@ This folder is the investigation-detail home for the typed-execution epic
 measured evidence behind every number the epic carries, the per-issue disposition, and the
 alternatives that were weighed and dropped.
 
+The running order that carries the design into a system in production use is the two-paths initiative
+([#527](https://github.com/m2ux/workflow-server/issues/527)), which this folder also serves.
+
 | File | Holds |
 |---|---|
 | `README.md` | The diagnosis, the design, the sequencing, and the risks |
 | [evidence.md](./evidence.md) | Every count in the epic, with how it was taken and against what |
 | [issue-disposition.md](./issue-disposition.md) | All twenty-one open issues: dissolves, survives, or becomes a work item |
+| [migration-disposition.md](./migration-disposition.md) | All ~55 work items: safety, keep, reshape, defer, abandon — what to work while the server stays up |
 | [rejected-alternatives.md](./rejected-alternatives.md) | Designs weighed and dropped, with the reason |
 
 ---
