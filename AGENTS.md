@@ -19,39 +19,15 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - **A worktree is named for the branch it holds.** `.worktrees/workflow/353-context-scoped-delivery` holds `workflow/353-context-scoped-delivery` — the branch name in full, slashes and all, as nested directories. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`. Rename with `git worktree move`, which fixes the administrative files a `mv` leaves dangling.
 - **Workflow data:** `git worktree add ./workflows workflows` (see [README.md](README.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)).
 
-## Code and doc style
-
-- TypeScript; follow existing patterns in `src/` and `schemas/`.
-- Use clear, professional language; no process attribution in code comments (e.g. “Added by agent”).
-- **Describe the design, not the change to it.** Definitions (workflow, activity, technique, resource prose), code comments, doc comments, and **commit subjects** state the system as it is, in the present tense, without naming the design they replaced. A reader next year has no memory of the previous design, so naming it makes them learn a dead design just to parse the sentence — and the sentence rots the moment the thing it contrasts against is gone. Write `account for token usage per dispatch`, not `move usage accounting off the transition and onto the dispatch`; write `cost travels on its own call`, not `a transition can only account for a dispatch it exits`. Same for a value's absence: say what holds when it is missing, not what the old path did. Cut “instead of”, “no longer”, “previously”, “unchanged behaviour”, and any example that was true before the change and false after it. The workflow canon states the same discipline for definition prose as [Document in Positive Present](workflows/workflow-design/resources/design-principles.md#17-document-in-positive-present).
-  - **Keep a hazard that is still live, stated as an invariant.** *A marker is unreadable to a context that never received the bytes* survives; *this is why the old rule forbade it* does not.
-  - **PR and issue bodies are the exception, and so is a commit body.** They exist to explain a change against what preceded it, and stop being read once merged — a reviewer needs the before-state to judge the change. Keep the narrative there and out of everything that persists. A measurement that is a tool's reason to exist may likewise be cited with its provenance.
-  - After a behaviour change, sweep for surviving descriptions of the old behaviour: doc comments, tool descriptions, technique `## Rules`, resource prose, READMEs. A grep for the old phrasing finds most of them; a stale claim reads as current fact.
-- **Prefer removing the thing that needs a prohibition.** When a change leaves prose warning "do not also use X", that usually means two paths now do one job. Retire one and the warning has nothing left to say — along with any validation or edge-case handling that existed only to police the overlap.
-- **Keep `CLAUDE.md` and `AGENTS.md` in sync by merging, never by copying.** They have diverged before, each gaining content the other lacked; overwriting one with the other silently drops the difference.
-
-## Task management
-
-- Complete **one** task at a time unless the user asks for multiple.
-- For multi-step work, use todos and mark them complete as you finish; only one todo in progress at a time.
-- Request permission before starting a new task or making changes outside the current request.
-- *ALWAYS* use a local work-tree when working on a branch
-
 ## Boundaries
 
 - Do **not** modify server source (`src/`, `schemas/`) or workflow YAML files unless the user explicitly asks.
 - When following workflows, respect workflow fidelity as defined in YAML files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`list_workflows` / `start_session` / `get_workflow` / `next_activity` / `get_activity`). Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
 
-## Testing and PR instructions
+## Testing
 
 - After code or schema changes, run `npm run typecheck` and `npm test` before committing.
 - After workflow-corpus changes, run `npm run check:all`. To see only what your change added, run `npm run check:delta`. Corpus debt is triaged per finding in `scripts/binding-fidelity-triage.json` — classify a new finding there (`harmless` / `fix-later` / `live-bug`) rather than suppressing it; there is no re-snapshot command.
-- Follow the repo’s PR/commit conventions.
-- **Commit incrementally. Do not amend or squash to tidy up.** Each change lands as its own commit with its own message, so the branch carries a readable record of how it was built. Push with plain `git push`; when a push will not fast-forward, stop and ask rather than rewriting.
-  - **`--force`/`--force-with-lease` has exactly one use:** correcting a genuine error in an earlier commit, on a branch with **no other contributors**. Not for squashing, not for rewording, not for folding a follow-up into the commit it fixes, and never on a shared branch.
-  - Repeated amending is the failure mode to avoid: it silently collapses distinct pieces of work into one commit, and the intermediate states survive only in a local reflog. Once collapsed, the history cannot be recovered — only reconstructed by hand, which is a rewrite of its own.
-- **GitHub CLI: do not use GraphQL.** Prefer REST only (`gh api repos/...`, `gh api --method PATCH|POST|GET ...`). Avoid `gh pr view/create/list` and any path that hits `api.github.com/graphql` — GraphQL is deprecated/unreliable here.
-- **Inspecting a backticked construct takes a script, not a shell one-liner.** Rule names, code spans and fenced blocks all carry backticks, and this corpus is mostly made of them, so counting or extracting one is a routine need. A literal backtick anywhere in a Bash command is refused before the permission prompt, and the scan is textual — single quotes, `grep -F`, and a trailing comment do not exempt it. Put the pattern in a Python or Node file, run it under `sbx`, and compose the character as `chr(96)` where the pattern itself needs one. The same applies to a commit message quoting a rule name: write it to a file and use `git commit -F <file>`.
 
 ## Where to look
 
@@ -62,7 +38,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **workflow-server** (13661 symbols, 18447 relationships, 294 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **workflow-server** (15467 symbols, 21142 relationships, 300 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
