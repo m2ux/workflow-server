@@ -1,3 +1,10 @@
+---
+name: intake-record
+description: Creation guide for the intake record a run persists.
+metadata:
+  order: 5
+---
+
 # Intake Record
 
 Creation guide for bare filename `intake.md`. The record of what a refinement run was given: which source, which target specification, how the source was classified, and whether the run augments an existing specification or creates one. Written before any analysis, so a later reader can tell what the run was working from.

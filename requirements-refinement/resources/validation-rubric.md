@@ -1,3 +1,10 @@
+---
+name: validation-rubric
+description: Validation checks and the severity and type categorization that drives routing.
+metadata:
+  order: 3
+---
+
 # Validation Rubric
 
 The checks applied to an updated specification and the scheme for categorizing each issue. The verdict

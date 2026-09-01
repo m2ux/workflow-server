@@ -1,3 +1,10 @@
+---
+name: change-summary
+description: Structure for the change summary accompanying a finalized specification.
+metadata:
+  order: 4
+---
+
 # Change Summary
 
 The structure for the human-readable summary that accompanies a finalized specification, so a reviewer
