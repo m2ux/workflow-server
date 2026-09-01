@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -48,6 +48,7 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
   - **Superseded** — the concern was valid but a later commit or a subsequent comment resolves it; record the resolving change.
 - Tag each row with the author class (human / bot) and whether the original concern is blocker-class (it asserts a correctness, safety, data-loss, or runtime-failure defect) or non-blocker (style, preference, question).
 - Tag any reported runtime error so it is traceable as a reported failure downstream — captured once here.
+- Disposition a reported check failure against the base branch, not against the report alone: a check failing on both the branch and `{$base_branch}` is Refuted as pre-existing, and one failing only on the branch is Confirmed. The comment reporting it says a check is red, which is true either way.
 
 ### 3. Derive the Rating Cap
 
@@ -71,6 +72,10 @@ Every prior comment and review thread receives an explicit Confirmed / Refuted /
 ### unaddressed-blocker-caps-rating
 
 An unaddressed blocker-class concern sets the rating cap; the Overall Rating may not exceed it. A blocker is never rated away by the review's own findings being light.
+
+### base-comparison-dispositions-a-check-failure
+
+A reported check failure is dispositioned by comparing the branch against `{$base_branch}`. The report establishes that a check is red; only the comparison establishes whether this branch turned it red, which is what the disposition records.
 
 ### single-ingest-of-reported-failures
 

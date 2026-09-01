@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -53,6 +53,12 @@ Code-correctness is one axis of severity; system impact is another, orthogonal t
 - **migration-upgrade** — a change to persisted shape, encoding, or governance binding leaves existing on-chain or on-disk state unreadable, mis-governed, or un-upgradeable without an accompanying migration.
 
 A finding that is correct on the code-correctness axis but lands on any impact axis is **correct-but-harmful**. Classify a correct-but-harmful finding at **Major** at minimum, and at **Critical** when the impact is unrecoverable without intervention (state already corrupted, funds already lost, chain already halted). Because correct-but-harmful classifies Major or above, it is ≥ Minor and therefore sets `{code_findings_actionable}` through the existing routing rule — the impact axes add severity without changing the routing threshold.
+
+#### Facts only an operator can settle
+
+Some findings turn on a fact a read-only review cannot reach — whether a continuous-integration secret is set, whether a deployment target holds the value the change assumes, whether an external account has the access a step needs. The reviewer can see that the change depends on it and cannot see whether it holds.
+
+Record such a finding as a recommended operator confirmation, naming the fact and where it is confirmed, at Informational. Rating it a blocker asserts the fact is false, which the review has no more basis for than asserting it is true, and either assertion makes the verdict rest on something nobody checked.
 
 ### 2. Tier for Delivery
 

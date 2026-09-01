@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -47,6 +47,7 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 ### 4. Merge-In Guard
 
 - When HEAD is a merge commit or the branch contains merges of `{$base_branch}`, recompute the three-dot set against a freshly resolved merge-base and **log** the merge-in.
+- When the authored surface is a document describing code that lives outside it — a specification, a design record, an interface note — re-read its claims against the recomputed base. A merge-in moves that code without touching the document, so the pair drifts with nothing in the diff to show it, and the diff is where a review looks.
 
 ## Rules
 
@@ -60,7 +61,7 @@ This technique applies only when the work package is in review mode. In normal (
 
 ### merge-in-guard
 
-When HEAD is a merge commit or the branch has merged `{$base_branch}` in, recompute the diff with a fresh three-dot range against the merge-base and log that a merge-in was detected. The guard's sole action is to log.
+When HEAD is a merge commit or the branch has merged `{$base_branch}` in, recompute the diff with a fresh three-dot range against the merge-base and log that a merge-in was detected. Logging is the guard's whole action on code; where the authored surface is a document describing code outside it, the merge-in also sends that document back to be re-read against the new base, since the code it describes can move without appearing in the diff.
 
 ### baseline-before-evaluation
 
