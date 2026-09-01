@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { CORPUS_GUARDS, GUARDS, guardById } from '../scripts/guards.js';
 import { findingKey, sortFindings, wantsJson } from '../scripts/guard-protocol.js';
@@ -61,6 +61,42 @@ describe('guard registry', () => {
       .filter((name) => name.startsWith('check:') && !aggregate.has(name))
       .filter((name) => !GUARDS.some((g) => g.npmScript === name));
     expect(uncovered).toEqual([]);
+  });
+
+  /**
+   * The other two directions start from something that already names the guard — a registry entry,
+   * or a `check:*` script. A guard that has neither is named by nothing, so both pass while the
+   * sweep never runs it. That is how the branch-as-step guard sat with a script and a test and no
+   * entry (#491). This one starts from the files on disk, which is where a forgotten guard is.
+   *
+   * A script that cannot run in the sweep says so here, with the reason, the same way an
+   * unreachable checkpoint option is carried in the option-coverage groups.
+   */
+  it('registers every guard script on disk, or records why one runs outside the sweep', () => {
+    const outsideTheSweep: Record<string, string> = {
+      'scripts/check-all.ts': 'the runner that walks the registry',
+      'scripts/check-delta.ts': 'the runner that diffs a walk against the merge-base',
+      'scripts/check-session-contract.ts':
+        'asks whether a run stayed inside its contracts, so it needs a session and has no corpus-wide form',
+    };
+
+    const onDisk = readdirSync(join(REPO, 'scripts'))
+      .filter((name) => /^(check|validate)-.*\.ts$/.test(name))
+      .map((name) => `scripts/${name}`);
+
+    const registered = new Set(GUARDS.map((g) => g.script));
+    const unaccounted = onDisk
+      .filter((path) => !registered.has(path) && !(path in outsideTheSweep))
+      .sort();
+
+    expect(
+      unaccounted,
+      'a guard script the registry does not name and no reason excuses — add an entry, or record why it runs outside the sweep',
+    ).toEqual([]);
+
+    // A reason that outlives its script reads as coverage nothing provides.
+    const stale = Object.keys(outsideTheSweep).filter((path) => !existsSync(join(REPO, path)));
+    expect(stale, 'a reason naming a script that no longer exists').toEqual([]);
   });
 });
 
