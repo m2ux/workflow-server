@@ -1,24 +1,20 @@
 {
-  "note": "One-time triage of the binding-fidelity findings the retired baseline had suppressed (issue #327 R3). Every finding carries a verdict and a named rationale, so \"harmless\" and \"live bug\" are no longer the same silence. harmless = correct by design, suppressed. fix-later = real debt, suppressed but counted. live-bug = REPORTED, so the guard stays red until it is fixed. A finding absent from this file is untriaged and reported; an entry that matches nothing is stale and reported. There is no regenerate flag — an entry is a human judgement, which is exactly what the baseline never required. The triage also found and FIXED three live defects, so they appear here as history rather than as entries: work-package auto-created GitHub/Jira issues in a headless review run (two review-reachable checkpoints with a create default); substrate-node-security-audit required user_request without declaring it; and the stealth push path computed push_remote_verified and commits_signed without gating on either.",
-  "corpusSha": "3569e93786d3d9620ff835755bc6d641e925aae9",
+  "note": "One-time triage of the binding-fidelity findings the retired baseline had suppressed (issue #327 R3). Every finding carries a verdict and a named rationale, so \"harmless\" and \"live bug\" are no longer the same silence. harmless = correct by design, suppressed. fix-later = real debt, suppressed but counted. live-bug = REPORTED, so the guard stays red until it is fixed. A finding absent from this file is untriaged and reported; an entry that matches nothing is stale and reported. There is no regenerate flag — an entry is a human judgement, which is exactly what the baseline never required. The triage also found and FIXED three live defects, so they appear here as history rather than as entries: work-package auto-created GitHub/Jira issues in a headless review run (two review-reachable checkpoints with a create default); substrate-node-security-audit required user_request without declaring it; and the stealth push path computed push_remote_verified and commits_signed without gating on either. The file carries one entry per emitted violation, so a designator read twice on one line has two entries with the same normalised key; the matcher keys on check, site without its trailing line number, and detail, and resolves both to the same verdict. What the key does not compare is the rationale name and the line number, so every rationale here is cited by at least one entry, and a line number is corrected when the site it names moves. Four reason classes have closed since the triage and are recorded here rather than kept as unused keys: a brace belonging to an external tool's own syntax rather than the designator namespace; a value no operation declares, which the executing agent improvised at the point of use; a declared output with no destination, whose design-time home is output-without-destination in workflow-design/resources/anti-patterns.md; and a finding a test pinned as its fixture for the UNRESOLVED provenance annotation.",
+  "corpusSha": "76d31311288a28de40b6277292c600bfb8907d89",
   "rationales": {
     "shared-op-return-contract": "A shared library operation declares what it returns — one under meta/, or one a workflow publishes for reuse in its own README and workflow description. Library ops are bound ad hoc by any workflow, so having no consumer inside the corpus is the expected state of a library, not a broken seam; the caller that binds the op consumes the value in its own context. This is the first do-not-flag carve-out of `output-without-destination`.",
     "shared-op-caller-argument": "A shared meta operation input that the binding step supplies as a deviation when it needs a non-default value. No workflow-level producer is expected: callers that need it bind it, and callers that do not take the op default path.",
     "pattern-library-seed": "A borrowable pattern activity binds an op whose input the BORROWING workflow seeds — the contract documented in meta/activities/patterns/README.md. Producers resolve per-workflow, so the library home can never show one.",
     "artifact-template-placeholder": "The brace names a field of a rendered artifact or commit-trailer template, not a value read from the variable bag.",
     "documentation-notation": "The brace is metasyntax or an illustrative example inside a spec sentence, not a read.",
-    "external-tool-syntax": "The brace belongs to an external tool's own syntax (a jq object constructor), not to the designator namespace.",
-    "undeclared-seed": "No operation anywhere in the corpus declares this value as an output and no workflow variable holds it, so the executing agent improvises it at the point of use. Runs work today because the agent has the context; the value is simply not state. This is the seam that becomes prompt-stuffing (#324 A1), so it is debt to close — declare and seed it — not a false positive.",
-    "terminal-product-unconsumed": "A declared output with no destination: nothing binds it, no gate reads it, and it carries no #### artifact block, so the value exists only in the producing worker's report. The design-time home for this smell is `output-without-destination` in workflow-design/resources/anti-patterns.md, which also names the four dispositions — declare the artifact, fold the value into a sibling output as a #### component, bind it at the step that needs it, or surface it from the binding activity. Being the last step of a workflow is not itself a licence: the delivery is, and a terminal activity that surfaces {id} closes the finding honestly.",
     "container-contract-shape": "A workflow-root or group TECHNIQUE.md output naming the shape the whole group contributes to, not a value one step produces and another remaps. No single bind site can consume it — the descendants each fill part of it — so having no consumer is what the contract looks like when it is correct. The second do-not-flag carve-out of `output-without-destination`.",
     "verdict-component-of-composite": "A component verdict the operation folds into its own overall verdict, which the gates and transitions consume. The component stays declared because the artifact reports it; the composite is what routing reads.",
-    "sub-agent-brief-seed": "Every bind site of the op sits in a Sub-Agent activity, dispatched by an orchestrator that composes its brief. The input arrives in that brief, so no workflow variable or sibling step produces it.",
-    "test-fixture-pins-the-defect": "A test pins this finding as its fixture for the UNRESOLVED provenance annotation. The wiring fix exists (rename the consumer to the declared variable holding the same value) but lands only together with a change to that fixture."
+    "sub-agent-brief-seed": "Every bind site of the op sits in a Sub-Agent activity, dispatched by an orchestrator that composes its brief. The input arrives in that brief, so no workflow variable or sibling step produces it."
   },
   "entries": [
     {
       "check": "read-resolution",
-      "site": "substrate-node-security-audit/workflow.yaml:67",
+      "site": "substrate-node-security-audit/workflow.yaml:51",
       "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
@@ -223,13 +219,6 @@
       "check": "dead-output",
       "site": "meta/techniques/version-control/identify-path-type.md",
       "detail": "output 'kind' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "meta/techniques/workflow-engine/dispatch-activity.md",
-      "detail": "output 'trace_token' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
@@ -473,14 +462,14 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/review-summary.md:81",
+      "site": "work-package/techniques/review-summary.md:91",
       "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/review-summary.md:81",
+      "site": "work-package/techniques/review-summary.md:91",
       "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"

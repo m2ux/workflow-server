@@ -778,7 +778,7 @@ export function triageStampNote(corpusSha: string, root: string = ROOT): string 
 
 export interface TriagedResult {
   findings: Finding[];
-  counts: Record<TriageVerdict | 'untriaged' | 'stale', number>;
+  counts: Record<TriageVerdict | 'untriaged' | 'stale' | 'misplaced', number>;
   total: number;
 }
 
@@ -787,7 +787,16 @@ export function applyTriage(violations: Violation[] = collectViolations()): Tria
   const byKey = new Map(triage.entries.map((e) => [violationKey(e), e]));
   const seen = new Set<string>();
   const findings: Finding[] = [];
-  const counts = { harmless: 0, 'fix-later': 0, 'live-bug': 0, untriaged: 0, stale: 0 };
+  const counts = { harmless: 0, 'fix-later': 0, 'live-bug': 0, untriaged: 0, stale: 0, misplaced: 0 };
+  // Where each key's findings actually sit, so an entry's own line can be checked against them.
+  const linesByKey = new Map<string, Set<number>>();
+  for (const v of violations) {
+    const line = /:(\d+)$/.exec(v.site)?.[1];
+    if (line === undefined) continue;
+    const at = linesByKey.get(violationKey(v)) ?? new Set<number>();
+    at.add(Number(line));
+    linesByKey.set(violationKey(v), at);
+  }
   for (const v of violations) {
     const key = violationKey(v);
     const entry = byKey.get(key);
@@ -820,6 +829,22 @@ export function applyTriage(violations: Violation[] = collectViolations()): Tria
         : `triaged '${entry.check}' finding no longer occurs — delete the entry from scripts/binding-fidelity-triage.json`,
     });
   }
+  // The key drops a trailing line so a finding survives the file above it growing, which leaves the
+  // line an entry cites compared against nothing. It is what a reader opens to re-affirm a verdict,
+  // so it is held to the lines the finding is actually emitted at.
+  for (const [key, entry] of byKey) {
+    const cited = /:(\d+)$/.exec(entry.site)?.[1];
+    if (cited === undefined || !seen.has(key)) continue;
+    const at = linesByKey.get(key);
+    if (!at || at.has(Number(cited))) continue;
+    counts.misplaced++;
+    const actual = [...at].sort((a, b) => a - b).join(', ');
+    findings.push({
+      check: 'misplaced-triage',
+      site: entry.site,
+      detail: `triaged '${entry.check}' finding sits at line ${actual}, not ${cited} — correct the site in scripts/binding-fidelity-triage.json`,
+    });
+  }
   return { findings, counts, total: violations.length };
 }
 
@@ -844,7 +869,8 @@ if (isMain) {
   if (!wantsJson()) {
     process.stdout.write(`binding-fidelity: ${total} violation(s) — ${counts.harmless} harmless, `
       + `${counts['fix-later']} fix-later, ${counts['live-bug']} live bug(s), ${counts.untriaged} untriaged`
-      + `${counts.stale ? `, ${counts.stale} stale triage entr(ies)` : ''}\n`);
+      + `${counts.stale ? `, ${counts.stale} stale triage entr(ies)` : ''}`
+      + `${counts.misplaced ? `, ${counts.misplaced} misplaced triage cite(s)` : ''}\n`);
     const stamp = triageStampNote(loadTriage().corpusSha);
     if (stamp) process.stdout.write(`binding-fidelity: ${stamp}\n`);
   }
