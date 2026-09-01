@@ -43,3 +43,6 @@ graph:
     validation-passed: finalize-specification
     correctable: update-specification
     uncorrectable: report-failure
+  finalize-specification:
+    accepted: __terminal__
+    revision-requested: update-specification

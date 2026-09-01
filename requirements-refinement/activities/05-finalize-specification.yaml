@@ -16,6 +16,10 @@ variables:
       type: string
       description: Absolute path to the staged final specification
       defaultValue: ""
+    - name: finalization_accepted
+      type: boolean
+      description: Whether the user endorsed the staged specification and change summary for promotion.
+      defaultValue: false
 required: true
 steps:
   - kind: technique
@@ -37,9 +41,20 @@ steps:
       - id: accepted
         label: Accept — staged for promotion
         description: Final specification and change summary are accepted; the user will promote them to the canonical location.
+        effect:
+          setVariable:
+            finalization_accepted: true
       - id: revise
         label: Revise before finalizing
         description: The final specification or change summary needs revision before acceptance.
+        effect:
+          setVariable:
+            finalization_accepted: false
+exits:
+  - id: accepted
+    when: finalization_accepted == true
+  - id: revision-requested
+    isDefault: true
 outcome:
   - The user has a promotion-ready specification alongside a human-readable account of what changed, so they can review and promote in one step
   - The user has explicitly accepted the result for promotion, so the workflow can complete knowing the outcome is endorsed
