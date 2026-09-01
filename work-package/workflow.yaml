@@ -1,8 +1,8 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 4.0.0
+version: 4.1.0
 title: Work Package Implementation Workflow
-description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
+description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, an audit of an existing pull request, or any other deliverable. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
 tags:
   - implementation
