@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Atomically create and verify a GitHub or Jira issue with appropriate type, labels, and metadata
+A GitHub or Jira issue that exists and is verified for the work package, carrying the type, labels and metadata its tracker expects
 
 ## Inputs
 
