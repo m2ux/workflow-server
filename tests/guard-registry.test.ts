@@ -41,10 +41,11 @@ describe('guard registry', () => {
   it('separates corpus-scoped guards from repo-scoped ones', () => {
     expect(CORPUS_GUARDS.length).toBeGreaterThan(0);
     expect(CORPUS_GUARDS.every((g) => g.scope === 'corpus')).toBe(true);
-    // The site guards read `site/` and the encoding guard reads this repo's own sources — neither
-    // reads the corpus, so a delta run must not aim them at a corpus root.
+    // The site guards read `site/`, the encoding guard reads this repo's own sources, and the
+    // lockfile guard reads its lockfile — none reads the corpus, so a delta run must not aim them
+    // at a corpus root.
     expect(GUARDS.filter((g) => g.scope === 'repo').map((g) => g.id).sort())
-      .toEqual(['site-links', 'source-encoding', 'svg-layout']);
+      .toEqual(['lockfile-denylist', 'site-links', 'source-encoding', 'svg-layout']);
   });
 
   /** No test re-runs a guard against the live corpus; the sweep in this job is what holds it at zero. */

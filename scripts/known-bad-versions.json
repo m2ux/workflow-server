@@ -1,0 +1,28 @@
+{
+  "note": "Package versions this repository refuses to resolve. Each entry names a published release known to carry an install-time payload, with the campaign that published it and the advisory the judgement rests on. A version is listed because a source says it is malicious, never because it looks suspicious: the guard fails a build on a match, so a guess here is an outage. Refresh from the trackers named under each campaign when they publish updates, and add the campaign rather than folding new versions into an existing one.",
+  "campaigns": {
+    "keyv-cacheable-2026-08": {
+      "published": "2026-08-04",
+      "summary": "Trojanized releases of keyv and the cacheable helper family. A preinstall script steals credentials from the machine and from CI, and republishes the payload into further packages.",
+      "trackers": [
+        "https://snyk.io/blog/inside-keyv-npm-compromise-preinstall-malware-trusted-provenance-ide-hooks/",
+        "https://www.wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack",
+        "https://research.jfrog.com/post/shai-hulud-is-back-august/",
+        "https://socket.dev/blog/popular-npm-packages-in-the-keyv-and-cacheable-namespaces-compromised-in-active-supply-chain"
+      ],
+      "versions": {
+        "keyv": ["6.0.0"],
+        "flat-cache": ["6.1.24"],
+        "file-entry-cache": ["11.1.6"],
+        "cacheable-request": ["13.0.20"],
+        "cacheable": ["2.5.1"],
+        "cache-manager": ["7.2.10"],
+        "@cacheable/memory": ["2.2.1"],
+        "@cacheable/utils": ["2.5.1"],
+        "@cacheable/node-cache": ["3.1.2"],
+        "@cacheable/net": ["2.1.1"],
+        "ecto": ["5.0.1"]
+      }
+    }
+  }
+}

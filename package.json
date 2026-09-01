@@ -12,6 +12,7 @@
     "check:site": "tsx scripts/check-site-links.ts",
     "check:svg": "tsx scripts/check-svg-layout.ts",
     "check:encoding": "tsx scripts/check-source-encoding.ts",
+    "check:lockfile": "tsx scripts/check-lockfile-denylist.ts",
     "start": "node dist/index.js",
     "start:http": "node dist/index.js --transport=http",
     "dev": "tsx src/index.ts",
@@ -73,5 +74,18 @@
     "yaml": "^2.9.0",
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.22.4"
+  },
+  "overrides": {
+    "keyv": "5.6.0",
+    "flat-cache": "6.1.23",
+    "file-entry-cache": "11.1.5",
+    "cacheable-request": "13.0.19",
+    "cacheable": "2.5.0",
+    "cache-manager": "7.2.9",
+    "@cacheable/memory": "2.2.0",
+    "@cacheable/utils": "2.5.0",
+    "@cacheable/node-cache": "3.1.1",
+    "@cacheable/net": "2.1.0",
+    "ecto": "5.0.0"
   }
 }

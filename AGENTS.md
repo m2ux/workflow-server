@@ -9,6 +9,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 ## Setup commands
 
 - **Install:** `npm install`
+- **Installs resolve from the lockfile.** CI and worktree provisioning both run `npm ci`; use it locally too, and reach for `npm install` only when deliberately changing a dependency. Never delete the lockfile or run `npm update` to refresh everything — an install-time payload runs before any of this repo's code does, so the lockfile is the last point at which a build can refuse. New direct dependencies take an exact version. Versions known to carry such a payload are listed in `scripts/known-bad-versions.json`, held out of resolution by the `overrides` block in `package.json`, and failed by `npm run check:lockfile`; the file's own note says how to refresh it. A blanket `ignore-scripts` is not turned on without an allowlist and a green build behind it, because native addons need their install hooks.
 - **Build:** `npm run build`
 - **Run (stdio, default):** `npm start` or `npm run dev`
 - **Run (HTTP):** `npm run start:http` or `npm run dev:http`
