@@ -90,8 +90,9 @@ Required MCP servers written into mcp.json (workflows depend on these):
 
 Claude baseline (workspace-local only):
   copies scripts/claude/ → <workspace>/scripts/claude/
-  copies .claude/skills/ → <workspace>/.claude/skills/ (per skill dir, so a
-    workspace keeps skills the template does not carry)
+  links .claude/skills/<skill> → the template checkout (per skill dir, so a
+    workspace keeps skills the template does not carry; an edit in the
+    workspace lands in the checkout that versions it)
   writes .claude/settings.json from settings.template.json
 
 Workspace-owned (written when absent, kept as-is once present):
@@ -309,11 +310,23 @@ else
     "${DEST_DIR}/.claude/settings.example.json"
   # Skills land per directory, so a workspace keeps skills the template does not
   # carry (gitnexus, anything hand-written) while template skills refresh.
+  # A template skill is a link to the checkout that versions it, so an edit made
+  # in the workspace lands where it is reviewed rather than in a copy the source
+  # then drifts from. Skills the template does not carry are left alone.
   for skills_sub in .cursor/skills .claude/skills; do
     if [[ -d "${TEMPLATE_DIR}/${skills_sub}" ]] \
       && compgen -G "${TEMPLATE_DIR}/${skills_sub}/*" >/dev/null; then
       mkdir -p "${DEST_DIR}/${skills_sub}"
-      cp -a "${TEMPLATE_DIR}/${skills_sub}/." "${DEST_DIR}/${skills_sub}/"
+      for skill_src in "${TEMPLATE_DIR}/${skills_sub}"/*/; do
+        [[ -d "$skill_src" ]] || continue
+        skill_name="$(basename "$skill_src")"
+        skill_dest="${DEST_DIR}/${skills_sub}/${skill_name}"
+        if [[ -d "$skill_dest" && ! -L "$skill_dest" ]]; then
+          log "  replacing copied skill with a link: ${skills_sub}/${skill_name}"
+        fi
+        rm -rf "$skill_dest"
+        ln -sfn "${skill_src%/}" "$skill_dest"
+      done
     fi
   done
 
@@ -326,7 +339,9 @@ import os, pathlib
 workspace = os.environ["DEST_DIR"].rstrip("/")
 home = os.environ["HOME_DIR"].rstrip("/")
 
-for sub in (".claude/rules", ".cursor/rules", ".claude/skills", ".cursor/skills"):
+# Rules only. A skill is a link to the checkout, so writing an expansion through
+# one would edit the versioned source.
+for sub in (".claude/rules", ".cursor/rules"):
     d = pathlib.Path(workspace) / sub
     if not d.is_dir():
         continue
