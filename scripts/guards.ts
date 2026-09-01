@@ -280,6 +280,14 @@ export const GUARDS: GuardSpec[] = [
     json: true,
     proves: 'no text source carries a literal control character, so grep and git diff stay honest',
   },
+  {
+    id: 'lockfile-denylist',
+    script: 'scripts/check-lockfile-denylist.ts',
+    npmScript: 'check:lockfile',
+    scope: 'repo',
+    json: true,
+    proves: 'no lockfile entry resolves to a version published with an install-time payload',
+  },
 ];
 
 export const CORPUS_GUARDS = GUARDS.filter((g) => g.scope === 'corpus');
