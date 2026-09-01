@@ -134,6 +134,7 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 **Before running**
 
 - **Take the verdict at the branch point.** A corpus moves under you, and a check failing on definitions you did not write reads as your defect.
+- **Hold the checkout still for the run.** A walk reads the corpus for its whole duration, so switching the checkout it reads mid-run invalidates the result and disguises the cause. Work a corpus branch in its own worktree and leave the shared checkout on the integration branch.
 - **The walk is opt-in — `npm run test:ci` skips it.** Run it whenever the change touches a step list, exit, gate or graph. A definition that reduces coverage passes every other check and fails later on the code branch's main line. It runs in tens of minutes, so baseline it once per branch and start it before editing rather than waiting on it after.
 
 **Reading a result**
@@ -159,6 +160,7 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 - **Structural evidence or it is not a finding.** A finding names the field, shape, or phrase its entry's Detect keys on. Inferred intent is never that evidence. Where an entry keys on the harness tool surface or an authoritative bootstrap resource, the evidence is that surface read directly — not the authored claim about it.
 - **Cite by name.** Kebab-case entry name and principle title. No bare `AP-XX`, no entry counts — both drift.
 - **One violation, one home.** Do not report the same bad sentence under a principle and its covering anti-pattern.
+- **A search locates; it does not conclude.** A hit names a candidate site, and the finding comes from reading the construct enclosing it — a declared output says nothing about who reads it, and a value set under a gate says nothing about what the loop around that gate guarantees. A search that returns nothing is weaker still: the constraint may be met by a construct the pattern never named. Cite the construct read, never the pattern run.
 - **An empty hand-check proves nothing until it has found something.** Most entries have no guard behind them, so Detect is applied by hand or by an ad-hoc scan. Before trusting an empty result, confirm the check reports a case you already know is there. An untested scan that finds nothing is `blocked`, not a clean walk — and a scan worth keeping belongs in the guard registry, not in a report.
 
 **Changing content**
