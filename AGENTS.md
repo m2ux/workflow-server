@@ -26,6 +26,11 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - Do **not** modify server source (`src/`, `schemas/`) or workflow YAML files unless the user explicitly asks.
 - When following workflows, respect workflow fidelity as defined in YAML files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`list_workflows` / `start_session` / `get_workflow` / `next_activity` / `get_activity`). Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
 
+## Branches and pull requests
+
+- **A pull request lands on `main` or on `workflows`.** Code and definitions sit on separate long-lived branches, so a base is a choice rather than a default, and one aimed anywhere else is a stack: it merges, it reads as delivered, and the change reaches neither branch until the base lands too. Check the base before merging, and re-target a stacked request the moment its base merges.
+- **A branch is absorbed when its content is on the target, not when its commits are.** The same change reaching the target by another route leaves the branch reading as unmerged work. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.
+
 ## Testing
 
 - After code or schema changes, run `npm run typecheck` and `npm test` before committing.
