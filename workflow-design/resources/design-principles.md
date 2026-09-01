@@ -52,7 +52,7 @@ Critical constraints must be backed by structural enforcement (checkpoints, cond
 
 ## 10. Non-Destructive Updates
 
-Compare new content against existing content. Flag any material being removed. Content-reducing updates require explicit user approval.
+Compare new content against existing content. Flag any material being removed. Content-reducing updates require explicit user approval. A restructuring that removes a gate, re-routes an exit, relocates an operation, or collapses a rule into another home names the outcome, option, input or audience that still has to hold, and the check confirming it — content approval is not evidence that behaviour survived.
 
 ## 11. Complete Documentation Structure
 
@@ -157,3 +157,7 @@ Prose delivered before the framework that resolves references exists must be exe
 A definition is a contract between constructs, so the five principles that govern code contracts govern it. **Single responsibility** — a construct holds one job and changes for one reason ([One Authoritative Home](#6-one-authoritative-home), [Atomic Techniques; Compose at Activities](#26-atomic-techniques-compose-at-activities)). **Open to extension, closed to modification** — a surface other work is calibrated or validated against, such as a schema or a measured prompt, gains a consumer's need through the construct that wraps it ([Prefer Shared Capability](#18-prefer-shared-capability)). **Substitutability** — a definition that declares a shared contract is usable wherever that contract is expected, so a consumer binds the contract and not the particular definition that satisfied it today. **Interface segregation** — a consumer declares and receives the slice it uses, and no more ([Cite Resources at Section Grain](#32-cite-resources-at-section-grain)). **Dependency inversion** — prose and bindings depend on the home that owns a fact, never on a copy of it ([Cite Resource Policy; Do Not Restate It](#29-cite-resource-policy-do-not-restate-it), [Maximize Schema Expressiveness](#5-maximize-schema-expressiveness)).
 
 The test a change runs against itself: name every file a later extension of this contract would force an edit to. A file that must change only to keep agreeing — a restated count, a duplicated field list, a copied criteria set — is coupled to content it does not own, and the citation is what survives removing the copy.
+
+## 35. Prefer Removing the Thing That Needs a Prohibition
+
+Prose warning against a path — *do not also use X*, *never combine this with Y* — usually means two constructs now do one job. Retire one and the warning has nothing left to say, along with the validation and carve-outs that existed only to police the overlap. Where both paths must survive, the prohibition names the home that owns the surviving behaviour rather than restating it.
