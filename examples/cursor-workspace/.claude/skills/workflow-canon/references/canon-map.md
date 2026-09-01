@@ -46,7 +46,9 @@ One unit: Reference Conventions. It is explicitly *not* a substitute for reading
 
 The registry is the enumeration; each entry carries a one-line `proves`. Read it rather than assuming a roster. `npm run check:all` runs every entry; `npx tsx scripts/check-delta.ts --base <ref>` reports only what the change added.
 
-## Change-surface scope (audit)
+## Change-surface scope (audit and implement)
+
+On the **Implement** path the surface starts from the constructs the specification names, resolved to files; rules 2 and 3 below then apply to that set unchanged.
 
 When the path is **Audit** (SKILL.md), the walk's **change surface** is not the diff hunk list:
 
@@ -69,6 +71,8 @@ Do not summarise a section into working notes and then audit against the notes. 
 
 Which units a given file kind can actually violate. Use it to scope a draft self-check or a narrow review. A full audit walks every unit regardless — this table narrows effort, not coverage, and a unit skipped on its strength is `not-applicable` with this table as the reason.
 
+Load the row for a file kind **before** editing that kind — it is the shape the content takes, and it is the same row a later walk uses.
+
 | Authoring / auditing | Principles (by title) | Anti-pattern units | Inventory units |
 |---|---|---|---|
 | **Technique** `techniques/*.md` | Separate Contract from Procedure · Phase by Sequenced Outcome · Distinguish Designators from Parameters · Keep Orchestration in Structure · Keep Session Interaction in Activities · Bind Sibling Operations as Steps · Atomic Techniques; Compose at Activities · Prefer Shared Capability · Cite Resource Policy; Do Not Restate It · Name Symbols Affirmatively · Match the Harness Surface · Single Source of Truth | Technique Protocol · Coupling · Rule Hygiene · Description Hygiene · Tool-Technique-Doc Consistency | Technique-Level Constructs |
@@ -86,7 +90,7 @@ The homes overlap by design; taking the wrong thing from one double-counts a sin
 
 | Home | Take | Do not take |
 |------|------|-------------|
-| Anti-Patterns | Detect, the Do-not-flag carve-outs, Fix | Positive authoring stance — Detect is not its home |
+| Anti-Patterns | **Before writing:** Fix and Do-not-flag, as the shape the content takes. **On existing content:** Detect, honouring the carve-outs | The *prefer X before Y* stance — that is the principles' home |
 | Design Principles | Whether authored content honours the stance | Detect. Scoring a principle is not a second finding for a defect a catalog entry already named |
 | Construct Inventory | The informal→formal mapping, as Detect for prose that substitutes for a construct | Field-level schema truth; `schemas/*.schema.json` and `schemas/README.md` are that home |
 | Convention Conformance | The concerns to compare, and the justified-vs-conform disposition | The conventions themselves — the live sibling files are the baseline |

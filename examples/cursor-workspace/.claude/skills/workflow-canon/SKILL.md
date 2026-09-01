@@ -7,6 +7,8 @@ description: "Apply the workflow-server design canon — design principles, the 
 
 The canon is four criteria homes plus a guard suite, all on disk in this repo.
 
+**Read the canon forward.** The inventory maps an informal pattern to the construct that carries it, the principles state a stance to author toward, conformance names a sibling to match, and a catalog entry's **Do not flag** and **Fix** describe the shape compliant content takes. Load what binds before writing and the content lands compliant. **Detect** is the fallback for content that already exists — reaching for it first turns every change into a fix-and-recheck loop that ends when someone gets tired.
+
 **This skill holds no criteria of its own.** It locates the homes, enumerates their units, walks them, and reports. Copying Detect or stance text into this file would create a second home that drifts from the first — the defect the catalog itself names as `canon-layer-cites-not-restates` and `no-duplicated-guidance`. Cite entries by their kebab-case **name**; never by a bare `AP-XX` number and never by any count of the catalog's entries.
 
 ## Homes
@@ -14,6 +16,8 @@ The canon is four criteria homes plus a guard suite, all on disk in this repo.
 **Locate the checkout first.** Every path below is relative to the workflow-server repo root. When the cwd is inside the checkout, `git rev-parse --show-toplevel` gives it. When the session is rooted in a cursor workspace instead — a directory holding `.mcp.json` and a `*.code-workspace` but no `workflows/` — the checkout is the `project` folder that `*.code-workspace` names, and it is an additional working directory of the session.
 
 Confirm the resolved root holds `workflows/workflow-design/resources/` before reading anything. `workflows/` is a git submodule, so a shallow checkout may not have it; if the canon files are absent, say so rather than auditing from memory.
+
+**Definitions and code sit on different branches.** A schema-reading guard failing on the corpus branch may be reading a field the code branch has not merged; that clears on the code merge and is not a corpus defect. Establish which before recording one.
 
 | Home | Path | Owns |
 |------|------|------|
@@ -31,21 +35,33 @@ Read [references/canon-map.md](references/canon-map.md) before the first fetch: 
 
 | Situation | Path |
 |-----------|------|
-| About to write or edit a definition file | **Draft** below |
+| Authoring a definition file from scratch | **Draft** below |
+| Carrying out a change that is already specified — a work item, a finding to fix, a defect with a location | **Implement** below |
 | Reviewing or auditing existing definitions | **Audit** below |
 | One narrow question ("is X an anti-pattern?", "which construct for Y?") | Fetch that single entry or inventory row, answer, stop. No walk, no report. |
 
 ## Draft
 
-Applied *before* content exists, so the stance does the work and the Detect pass finds nothing.
+For content that does not exist yet.
 
 1. **Fix the construct before the prose.** Fetch the construct-inventory section for the kind you are authoring (activity / workflow / technique / condition) and pick the most specific formal construct it offers. Prose that an inventory row maps to a construct is a defect the moment it is written, not at audit time.
-2. **Load the stance that binds this file kind.** Use the routing table in [references/canon-map.md](references/canon-map.md#file-kind-routing) — it names the principles and the anti-pattern families a technique, activity, resource, or README can actually violate. Read the stance sections, not a summary of them.
+2. **Load what binds this file kind.** The routing table in [references/canon-map.md](references/canon-map.md#file-kind-routing) names the principles and anti-pattern families a technique, activity, resource, or README can actually violate. Read the sections, not a summary of them.
 3. **Read a live sibling.** Convention conformance is defined relative to existing workflows; the reference files are the baseline, and this skill does not substitute for opening them.
 4. **Write.**
-5. **Self-check before saving.** Re-walk only the units step 2 routed you to, against the file you just wrote. Then run the guards from the repo root — `npm run check:all`, or `npx tsx scripts/check-all.ts --only <id>,<id>` for a fast subset. Schema validity, reference resolution, and binding fidelity are cheaper to settle mechanically than by reading.
+5. **Self-check before saving.** Re-walk only the units step 2 routed you to, against the file you just wrote, then run § Mechanical checks. Schema validity, reference resolution and binding fidelity are cheaper to settle mechanically than by reading.
 
-A draft self-check is not an audit and does not produce a findings register. If the change is going to commit, run the Audit path.
+A draft self-check is not an audit and produces no findings register. If the change is going to commit, run the Audit path.
+
+## Implement
+
+Applied when the change is already specified. The surface comes from the specification, not from a diff.
+
+1. **Resolve the specification to files.** Resolve every construct it names to a concrete path, then take the I/O-contract closure and consumer surface over that set per § Audit → Scope the surface. A specification naming one technique still reaches its referencers.
+2. **Fix the construct before the prose**, as Draft step 1. A specification says what to change, not which construct to change it into.
+3. **Load what binds**, as Draft step 2 — plus, where the change answers a finding, that entry's **Fix** and **Do not flag**. Together they are the shape the replacement takes, read as its specification rather than as a test applied afterwards.
+4. **Name what the change preserves**, per the non-negotiable below.
+5. **Write into that shape**, then run § Mechanical checks.
+6. **Audit** with the base ref set to the branch point. Finding nothing is the expected result of steps 3 and 5; finding something means the shape was read wrong, not that the audit earned its keep.
 
 ## Audit
 
@@ -66,11 +82,11 @@ Name, before reading criteria. Build the **change surface** first; the walk is a
 
 **Forbidden scopes.** Do not treat "the lines the diff shows" as the audit surface. Do not mark a unit `walked` on a touched file after reading only the hunk. Do not omit a silent referencer because the bind site was not edited.
 
-### 2. Run the mechanical guards first
+### 2. Run the mechanical checks first
 
-`npm run check:all` for the whole registry, or `npx tsx scripts/check-delta.ts --base <ref>` to get only what *this change* added — the delta runner materialises the merge-base in a throwaway worktree and diffs the two runs, which does the attribution of step 5 mechanically and exactly.
+Per § Mechanical checks. Here prefer `npx tsx scripts/check-delta.ts --base <ref>` over `check:all`: the delta runner materialises the merge-base in a throwaway worktree and diffs the two runs, which does step 5's attribution mechanically and exactly.
 
-Guard findings are evidence, not judgment: they settle the schema-invalid, unresolved-reference, and binding-drift classes before any reading starts, and a guard failure is `Critical` on sight. Exit 2 means a guard could not measure — that is `blocked` coverage, never a pass.
+Findings are evidence, not judgment — they settle the schema-invalid, unresolved-reference and binding-drift classes before any reading starts, and a failure is `Critical` on sight. Exit 2 means a check could not measure: `blocked` coverage, never a pass.
 
 ### 3. Enumerate the criteria units
 
@@ -106,14 +122,50 @@ Only confirmed findings are eligible to drive fixes.
 
 Per [references/reporting.md](references/reporting.md): the finding row shape, the coverage ledger, the severity scale, and which report shape applies. The standalone header **must** state change-surface counts: touched (whole files), I/O-contract closure, and consumers pulled in — never "N hunks" or "diff lines only". Inside a workflow-authoring or workflow-design run, that run's creation guides own the layout and this skill defers to them.
 
+## Mechanical checks
+
+Shared by all three paths. **`AGENTS.md` owns how they run** — the guard commands, the worktree provisioning that makes them measure the checkout you edited, and the triage contract a binding-fidelity finding is classified under. What follows is only what an audit needs on top.
+
+| Check | Command | Covers |
+|---|---|---|
+| Guard suite | `npm run check:all`, or `--only <id>,<id>` for a subset | The whole registry, or a named subset |
+| Option coverage | `npm run test:coverage-walk` | Whether a walk still reaches every option and exit |
+
+**Before running**
+
+- **Take the verdict at the branch point.** A corpus moves under you, and a check failing on definitions you did not write reads as your defect.
+- **The walk is opt-in — `npm run test:ci` skips it.** Run it whenever the change touches a step list, exit, gate or graph. A definition that reduces coverage passes every other check and fails later on the code branch's main line. It runs in tens of minutes, so baseline it once per branch and start it before editing rather than waiting on it after.
+
+**Reading a result**
+
+- **The walk ratchets over a reasoned exemption list.** `tests/e2e/option-coverage.json` groups options under stated reasons. An unreachable option is either made reachable or placed in the group whose reason covers it — matching the reason is the work. Where no reason fits, it is a finding, not an entry.
+- **A triaged binding-fidelity finding is not `Critical` on sight**, since that guard exits `OK` carrying accepted debt. Its verdicts also carry the corpus commit they were made against; on a large drift a clean result says the verdicts are old, and the walk records `blocked`.
+- **A clean run is not a clean change.** These read structure, not whether the workflow still does what it did. The preservation the canon requires, and the option-coverage walk, carry that.
+
+**After merge**
+
+- **A definition change owes the code branch an adoption commit.** The submodule pointer, the walk baseline and the stamp move together; `tests/e2e/__snapshots__/corpus-sha.json` states the command and the rule in its own note.
+
 ## Non-negotiables
+
+**Surface**
 
 - **Whole file on the change surface.** Every touched path is audited as a complete definition file. Diff hunks discover which paths joined the surface; they do not limit Detect.
 - **I/O contract pulls referencers.** A modified Inputs/Outputs (or activity bind contract) expands the change surface to every activity and technique that references that file, in-tree and cross-workflow.
+- **A second entry pulls the exits.** An activity's outcomes are correct relative to where the graph enters it. Where a graph gives one activity two entry points, the surface includes both, and each outcome is read against the state each entry arrives in — an outcome sound for the first entry can route the second into work already done. Compute the entries the same way as the closure: from every graph that includes the activity, not from the file itself.
+
+**Evidence**
+
 - **Structural evidence or it is not a finding.** A finding names the field, shape, or phrase its entry's Detect keys on. Inferred intent is never that evidence. Where an entry keys on the harness tool surface or an authoritative bootstrap resource, the evidence is that surface read directly — not the authored claim about it.
 - **Cite by name.** Kebab-case entry name and principle title. No bare `AP-XX`, no entry counts — both drift.
 - **One violation, one home.** Do not report the same bad sentence under a principle and its covering anti-pattern.
+- **An empty hand-check proves nothing until it has found something.** Most entries have no guard behind them, so Detect is applied by hand or by an ad-hoc scan. Before trusting an empty result, confirm the check reports a case you already know is there. An untested scan that finds nothing is `blocked`, not a clean walk — and a scan worth keeping belongs in the guard registry, not in a report.
+
+**Changing content**
+
+- **A restructuring owes a preservation statement, and a collapse owes a reach statement.** Both are the canon's — Non-Destructive Updates states what a change still has to hold, and the construct inventory states the reach each rule construct carries. The audit's job is to require them as evidence and refuse a finding that asserts either without naming it.
 - **Fix, do not merely file.** When the request is to bring content into compliance, apply the Fix each entry prescribes rather than handing back the register. Enumerate findings before proposing to accept any of them.
+- **A fix is subject to the criteria it was made under.** Replacement text is walked by the entry that prescribed it and by every unit its file kind routes to; prose moved between constructs lands on whatever criteria own the destination. An application that leaves new findings behind has moved the defect, not closed it.
 - **Never edit the schema to make content validate.** That is `schema-is-constraint`; content conforms to the schema.
 
 ## References
