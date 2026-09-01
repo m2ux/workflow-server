@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -53,6 +53,7 @@ Code changes for a single task
 
 - Check for obvious regressions in affected code
 - If the code changes do not compile, review the error messages, fix the issues, and retry
+- Where the suite cannot run here, update any test this diff invalidates on its own face — a reordered positional assertion, an assertion naming a renamed symbol — and record which tests remain unrun in `{task_implementation}`
 - Apply the [task-completion-review](../techniques/task-completion-review.md) technique to self-review the completed changes
 
 ### 5. Post Edit Verification
@@ -65,3 +66,7 @@ Code changes for a single task
 ### single-task-focus
 
 Implement exactly one task — do not scope-creep into adjacent tasks
+
+### comment-proportionality
+
+Comment bulk stays proportional to the code it annotates, per [Comment proportionality](../../ponytail/resources/review-taxonomy.md#comment-proportionality). Rationale already recorded in a plan or design artifact is cited rather than restated inline, so the two cannot drift apart.
