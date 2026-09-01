@@ -19,7 +19,7 @@ Write in measured technical language, with each claim sized to the evidence behi
 
 ### communication-artifact-writing-register
 
-An artifact whose declared audience is a person is written to the [Artifact Writing Register](../resources/writing-register.md).
+An artifact whose declared audience is a person is written to the [Artifact Writing Register](../../meta/resources/writing-register.md).
 
 ### attribution-prohibition
 

@@ -55,7 +55,7 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 
 - Check each artifact against the `## Rules` of its guide and, when `{canonical_home_map}` is bound, against that map; apply each rule by cite and do not restate its criteria here
 - An artifact carrying a fact the map homes elsewhere is a finding whether or not the fact is accurate
-- Check each human-audience artifact's prose and tables against [Artifact Writing Register](../resources/writing-register.md); a passage or table that breaks the register is a `writing-register` violation
+- Check each human-audience artifact's prose and tables against [Artifact Writing Register](../../meta/resources/writing-register.md); a passage or table that breaks the register is a `writing-register` violation
 
 ### 3. Correct in Place
 
