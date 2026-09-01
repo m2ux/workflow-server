@@ -1,3 +1,10 @@
+---
+name: specification-protocol
+description: The canonical specification layout preserved verbatim: section structure, identifier schemes, requirement-entry format, status conventions, and source-reference format.
+metadata:
+  order: 1
+---
+
 # Specification Protocol
 
 The canonical layout and conventions a requirements specification follows. This protocol is preserved

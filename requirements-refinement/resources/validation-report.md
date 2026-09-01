@@ -1,3 +1,10 @@
+---
+name: validation-report
+description: Creation guide for the validation report each pass persists.
+metadata:
+  order: 6
+---
+
 # Validation Report
 
 Creation guide for bare filename `validation-report-{correction_iteration}.md`. One report per correction pass. Answers: did the specification pass, does it cover the source in full, and which issues are blocking versus correctable.
