@@ -68,10 +68,4 @@ Overall verdict — `true` when the specification is conformant and covers the s
 ### 4. Compile Verdict
 
 - Write `{validation_report}` to `{planning_folder_path}` per [validation-report](../resources/validation-report.md#template) and its [Rules](../resources/validation-report.md#rules); capture its written location as `{validation_report_path}`.
-
-### 5. Derive Routing Verdict
-
-- Set `{source_coverage_complete}` to `true` when every normative source statement maps to at least one requirement.
-- Set `{has_critical_issues}` to `true` when any issue is critical or irreconcilable.
-- Set `{has_correctable_issues}` to `true` when correctable issues remain — including source-coverage gaps — and no critical issue is present.
-- Set `{validation_passed}` to `true` when no critical or correctable issues remain and `{source_coverage_complete}` is `true`.
+- Emit `{source_coverage_complete}`, `{has_critical_issues}`, `{has_correctable_issues}` and `{validation_passed}` from the categorized issues, each as its declared contract defines it.
