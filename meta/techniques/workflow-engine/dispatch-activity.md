@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.20.0
+  version: 1.21.0
 ---
 
 ## Capability
@@ -39,9 +39,9 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 Server-side worker identity this dispatch bound — the identity the delivery ledger is keyed on.
 
-### trace_token
+### trace_tokens
 
-Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_token`.
+The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_activity` call that returned `_meta.trace_token`. Empty when the server returned none; the close-out path resolves the list once, and individual tokens stay opaque.
 
 ## Protocol
 
