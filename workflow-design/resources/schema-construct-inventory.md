@@ -63,6 +63,7 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 | "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`). Activity-local `techniques[]` is STRATEGY only — per-step ops bind via `step.technique` (`techniques-list-disjoint`). |
 | "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |
 | "After X, go to Y" / "this activity can end the run" | **Graph** | `graph.<activity>.<exit>` naming the destination activity, or `__terminal__` to end the run. Every exit of every activity the workflow includes is bound here, or the load fails; a workflow that borrows an activity binds that activity's exits itself, so two workflows can run one activity in different orders. |
+| "Several activities ask the user the same question" | **Checkpoint fragment** | `fragments.checkpoints.<name>` holds the gate body — `condition`, `message`, `options[]` with their effects — and a `kind: checkpoint` step reaches it by `ref: [workflow::]name` (bare name resolves against the declaring workflow, then meta). `ref` is mutually exclusive with the body fields: a ref step carries its `id`, and a `condition` only where the fragment declares none. |
 
 ## Technique-Level Constructs (technique.schema.json)
 
