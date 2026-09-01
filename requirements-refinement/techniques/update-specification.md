@@ -45,20 +45,14 @@ Count of correction passes performed: `0` on the initial pass, and one greater t
 
 ## Protocol
 
-### 1. Determine Mode
+### 1. Apply Changes
 
 - Operate in correction mode when `{validation_report}` carries correctable findings; otherwise operate in initial mode.
+- In initial mode, apply each change in `{requirements_analysis}`: add source references, create new requirements with sequential identifiers, update existing requirements, and deprecate as directed.
+  - Set every newly added requirement's status to `pending` per [specification-protocol](../resources/specification-protocol.md#status-conventions).
+  - Preserve the existing section structure when `{target_doc_exists}`; instantiate the full [specification-protocol](../resources/specification-protocol.md#section-structure) structure when creating from scratch.
+- In correction mode, address each correctable finding in `{validation_report}`: resolve a source-coverage finding by adding the missing requirement(s); otherwise change no requirement's meaning and introduce no new requirement.
 
-### 2. Apply Changes — Initial Mode
-
-- Apply each change in `{requirements_analysis}`: add source references, create new requirements with sequential identifiers, update existing requirements, and deprecate as directed.
-- Set every newly added requirement's status to `pending` per [specification-protocol](../resources/specification-protocol.md#status-conventions).
-- Preserve the existing section structure when `{target_doc_exists}`; instantiate the full [specification-protocol](../resources/specification-protocol.md#section-structure) structure when creating from scratch.
-
-### 3. Apply Corrections — Correction Mode
-
-- Address each correctable finding in `{validation_report}`: resolve a source-coverage finding by adding the missing requirement(s); otherwise change no requirement's meaning and introduce no new requirement.
-
-### 4. Write Working Specification
+### 2. Write Working Specification
 
 - Write the complete `{working_specification}` to `{planning_folder_path}`; capture its written location as `{working_specification_path}` and emit `{correction_iteration}` for the pass just written.

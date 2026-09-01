@@ -33,7 +33,7 @@ Basename of the component the work package targets (e.g., midnight-node, midnigh
 
 ### needs_issue_creation
 
-Boolean gate — `false` when step 1 verified an existing issue, otherwise `true` (a new issue must be created).
+Whether the run creates a new issue: `true` when no existing issue was supplied, `false` when one was.
 
 ### issue_number
 
