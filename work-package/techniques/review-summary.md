@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 1.13.0
 ---
 
 ## Capability
@@ -66,14 +66,19 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 
 - Read the whole-document skeleton from [Review Comment Template](../resources/review-mode.md#review-comment-template). Read each category's findings fragment from that category's own section as it is populated (e.g. [#prior-feedback-triage](../resources/review-mode.md#prior-feedback-triage), [#code-review](../resources/review-mode.md#code-review), [#test-review](../resources/review-mode.md#test-review), [#documentation-review](../resources/review-mode.md#documentation-review), [#validation](../resources/review-mode.md#validation), [#branch-hygiene](../resources/review-mode.md#branch-hygiene), [#strategic-review](../resources/review-mode.md#strategic-review)).
 
-### 2. Resolve the Two Refs
+### 2. Read the Merge State
+
+- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{host_repo_path}`) and read the pull request's merge state before composing anything.
+- Where it merged while this review ran, the deliverable is advice on a change already in the base branch, not a request against a change awaiting one. Frame the summary as post-merge advisory and say so in it, so a reader is not asked to act on a decision that has already been taken. A review that discovers this after composing has written the wrong document and rewrites it by hand.
+
+### 3. Resolve the Two Refs
 
 - Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{host_repo_path}`.
 - Resolve `{$eng_publish_ref}`: `{artifact_publish_ref}` when it is non-empty; otherwise `git -C {eng_git_dir} branch --show-current` — never hardcode `main`. This is a branch, so the linked tree carries every artifact the run writes after this render.
 - Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{reviewed_code_base_url}` from the op.
 - Supply `{eng_publish_ref}` as the ref in every engineering-artifact hyperlink and `{reviewed_code_base}` as the prefix of every reviewed-code citation, per the ref split in [Header Fields](../resources/review-mode.md#header-fields) — that section owns the URL shapes and their slots; this step supplies only the two refs.
 
-### 3. Render the Summary
+### 4. Render the Summary
 
 - Enforce the findings-constraint: every rendered finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` render as the PR's findings; findings on other files render under a separate "pre-existing" grouping.
 - Populate the template from `{classified_findings}`: executive summary, per-category findings (code, test, structural analysis, lean-coding audit, documentation, validation, branch hygiene, strategic review), what the change gets right, action items, and severity definitions.
@@ -92,14 +97,14 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 - Produce `{review_summary}` as the rendered text.
 - Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is the verbatim source the posting step (`update-pr::post-review-comment`) emits — the bytes bound here are the bytes posted.
 
-### 4. Measure Against the Budget
+### 5. Measure Against the Budget
 
 - Measure each budgeted slot of `{review_summary}` against the table in [Reference, Don't Restate](../resources/review-mode.md#reference-dont-restate): every `Finding` cell, every category section's prose outside its table, the Executive Summary, every Action Items entry, and the whole-summary line count.
 - Record every slot over its budget as a `{summary_budget_overruns}` entry with its measured size and its budget.
 - Cut each overrun by moving the absorbed content to the report section that owns it and leaving the link, then re-measure — a shorter paraphrase of report content is still restatement.
 - Emit `{summary_budget_overruns}` so the binding activity can gate on it; leave it empty when every slot is within budget.
 
-### 5. Check the Summary Against Its Sources
+### 6. Check the Summary Against Its Sources
 
 Five checks, each mechanical against the reports the summary renders from, and each catching a class a reader would otherwise catch after publication.
 
@@ -115,3 +120,5 @@ Five checks, each mechanical against the reports the summary renders from, and e
 ### rating-cap-carve-in
 
 When `{rating_cap}` is the request-changes tier because a prior blocker-class concern was dispositioned Confirmed during triage, but this review's own findings refute that concern (the consolidated analysis shows the mechanism does not fail as claimed, with evidence in `{classified_findings}` or a Refuted disposition backed by this review's independent analysis), lift the cap — the Overall Rating follows `{classified_findings}` only. When the cap is not lifted, hold the Overall Rating at or below Request Changes — never Approve or Comment Only — even if the review's own findings are light.
+
+The cap also lifts where the review found no code defect and every action it asks for is something the author says rather than something the author changes — a confirmation, a rationale, an operator check. Request Changes names a change the author must make, so a review asking for none states Comment Only directly instead of reaching a tier it does not mean and relying on the approval gate to be overridden back.

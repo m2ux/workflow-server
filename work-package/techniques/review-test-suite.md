@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 ## Capability
@@ -61,6 +61,7 @@ Method [record](../resources/test-suite-review.md#method-record-template) of how
 
 - Run the test suite to establish a passing baseline
 - If the test suite is not passing, fix the failing tests before continuing with the review
+- Where the suite did not run here, name continuous integration at the reviewed head as the authority for every claim this review makes about it — the run, its conclusion, and the head it ran against. A review of someone else's change routinely lacks the toolchain, and a suite claim whose basis goes unstated reads as one the reviewer executed.
 
 ### 4. Review Tests
 
@@ -96,6 +97,10 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 - Create the `{test_suite_review_method}` in `{planning_folder_path}` from the [Method Record Template](../resources/test-suite-review.md#method-record-template): the suite baseline and the command that reproduces it, the coverage map, the anti-pattern sweep with its counts, the pyramid and redundancy assessments, and the reported-failure triage. A finding's own evidence stays on the finding, per [Report and Methodology](../resources/findings-report.md#report-and-methodology)
 
 ## Rules
+
+### suite-claims-name-their-authority
+
+Every claim about the suite names what establishes it: the run performed here, or the continuous-integration run at the reviewed head. An unattributed claim asserts the stronger of the two, and a reader has no way to tell which was meant.
 
 ### coverage-relative
 

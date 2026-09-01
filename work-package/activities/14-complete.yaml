@@ -1,7 +1,7 @@
 id: complete
-version: 1.10.0
+version: 1.11.0
 name: Complete Work Package
-description: Wrap up the work package after PR merge (or after review-mode close-out).
+description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
   reads:
     - branch_name
@@ -193,4 +193,5 @@ outcome:
   - Every link a reader follows out of the planning folder resolves at the ref the artifacts are published on
   - The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces
   - Reference monorepo left untouched
+  - A review run ends complete with its review posted and the author's disposition outstanding, since deciding on it belongs to the author and not to this run
   - Ready for next work package
