@@ -30,6 +30,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
 - After code or schema changes, run `npm run typecheck` and `npm test` before committing.
 - After workflow-corpus changes, run `npm run check:all`. To see only what your change added, run `npm run check:delta`. Corpus debt is triaged per finding in `scripts/binding-fidelity-triage.json` — classify a new finding there (`harmless` / `fix-later` / `live-bug`) rather than suppressing it; there is no re-snapshot command.
+- **Adopting merged definitions is one commit.** The submodule pointer, the walk baseline, the corpus stamp (`npm run baseline:stamp`) and every triage entry the definitions settled move together. The ledger is what forces this: a definition change that closes a binding finding leaves its entry matching nothing, so a pointer bump alone reports a stale entry, and deleting the entry alone leaves the finding untriaged. The two failures point opposite ways, and no ordering inside the commit avoids both.
 
 ## Where to look
 

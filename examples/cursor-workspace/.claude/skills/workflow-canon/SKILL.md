@@ -141,12 +141,12 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 
 - **The walk ratchets over a reasoned exemption list.** `tests/e2e/option-coverage.json` groups options under stated reasons. An unreachable option is either made reachable or placed in the group whose reason covers it — matching the reason is the work. Where no reason fits, it is a finding, not an entry.
 - **A triaged binding-fidelity finding is not `Critical` on sight**, since that guard exits `OK` carrying accepted debt. Its verdicts also carry the corpus commit they were made against; on a large drift a clean result says the verdicts are old, and the walk records `blocked`. Re-affirming them is bounded by the drift rather than by the ledger: the entries at risk are the ones whose cited file changed since the stamp, which is a diff away and is usually a small fraction of the whole.
-- **A ledger states its judgement in fields no check reads.** A suppression entry is matched on a normalised key, so the reason it cites, the line it points at, and a second copy of itself sit outside what the guard compares — each can be wrong while the guard reports clean. Where the repo runs more than one ratchet, the one that already validates its own list is the reference for what the other's check should be.
+- **A ledger states its judgement in fields no check reads.** A suppression entry is matched on a normalised key, so the reason it cites and the line it points at sit outside what the guard compares, and either can be wrong while the guard reports clean. Two entries sharing a key are not evidence of one: the key drops the line number, so a designator read twice on one line yields two findings and earns two entries. Count the findings at the site before calling an entry redundant.
 - **A clean run is not a clean change.** These read structure, not whether the workflow still does what it did. The preservation the canon requires, and the option-coverage walk, carry that.
 
 **After merge**
 
-- **A definition change owes the code branch an adoption commit.** The submodule pointer, the walk baseline and the stamp move together; `tests/e2e/__snapshots__/corpus-sha.json` states the command and the rule in its own note.
+- **A definition change owes the code branch an adoption commit.** The pointer, the walk baseline, the stamp and every triage entry the change settled move together — `AGENTS.md` owns the sequence and why it admits no ordering. A change that closes a binding finding is the case to watch for, since the entry suppressing it goes stale on the same commit that adopts it.
 
 ## Non-negotiables
 
