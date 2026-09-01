@@ -5,22 +5,23 @@
   "workflowVersion": "6.1.0",
   "agentId": "orchestrator",
   "sessionIndex": "QZAMAD",
-  "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::resume-worker",
-  "exit": "done",
-  "seq": 18,
-  "ts": 1788111342,
+  "currentActivity": "end-workflow",
+  "currentTechnique": "workflow-engine::revise-session-metrics",
+  "exit": "null",
+  "seq": 26,
+  "ts": 1788261603,
   "startedAt": "2026-08-30T17:07:32.689Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "variables": {
     "client_initial_activity": "intake-and-context",
     "client_planning_slug": "2026-08-30-rule-and-checkpoint-fragments-a-shared-body",
     "client_session_index": "3IXIS7",
-    "client_workflow_completed": false,
+    "client_workflow_completed": true,
     "component_path": ".",
     "component_selection_needed": false,
     "has_saved_state": false,
@@ -42,7 +43,12 @@
     "user_request": "Start a workflow authoring workflow to address https://github.com/m2ux/workflow-server/issues/519 — \"Rule and checkpoint fragments: a shared body needs a shared home, not a host workflow\". Decide whether the `fragments` construct survives, and carry out whichever migration that decision selects: give generic rules a shared home, move shared checkpoint gates into shared activities beside the variables they name, eliminate single-reference fragments, stop referencing workflows from declaring variables they never produce, and give the duplicate-rule guard a shared-home remedy.",
     "workflow_match_ambiguous": false
   },
-  "checkpointResponses": {},
+  "checkpointResponses": {
+    "end-workflow-completion-confirmed": {
+      "optionId": "confirm",
+      "respondedAt": "2026-09-01T11:19:09.000Z"
+    }
+  },
   "history": [
     {
       "timestamp": "2026-08-30T17:07:32.689Z",
@@ -846,6 +852,198 @@
         }
       },
       "timestamp": "2026-08-30T17:35:42.384Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-09-01T09:19:12.938Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-09-01T09:19:12.938Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "3IXIS7"
+      },
+      "timestamp": "2026-09-01T09:19:12.938Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-08-30-rule-and-checkpoint-fragments-a-shared-body"
+      },
+      "timestamp": "2026-09-01T09:19:12.938Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body"
+      },
+      "timestamp": "2026-09-01T09:19:12.938Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-09-01T09:19:12.938Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "published": true
+      },
+      "timestamp": "2026-09-01T09:19:12.938Z",
+      "type": "progress_published"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "chars": 71403,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-01T09:19:38.503Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "chars": 10897,
+        "delivery": "full",
+        "stepId": "read-session",
+        "techniqueId": "workflow-engine::read-session"
+      },
+      "timestamp": "2026-09-01T09:19:38.503Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "stepId": "read-session"
+      },
+      "timestamp": "2026-09-01T09:19:38.503Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "chars": 11702,
+        "delivery": "full",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-09-01T09:19:38.503Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "stepId": "verify-outcomes"
+      },
+      "timestamp": "2026-09-01T09:19:38.503Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "chars": 10879,
+        "delivery": "full",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-09-01T09:19:38.503Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "stepId": "generate-summary"
+      },
+      "timestamp": "2026-09-01T09:19:38.503Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "chars": 13046,
+        "delivery": "full",
+        "stepId": "revise-session-metrics",
+        "techniqueId": "workflow-engine::revise-session-metrics"
+      },
+      "timestamp": "2026-09-01T09:20:24.968Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "stepId": "revise-session-metrics"
+      },
+      "timestamp": "2026-09-01T09:20:24.968Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "chars": 1059,
+        "delivery": "full",
+        "resourceId": "meta/session-summary-template#session-summary-template"
+      },
+      "timestamp": "2026-09-01T09:24:34.069Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-09-01T09:24:42.934Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-09-01T11:19:09.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-QZAMAD-03",
+        "basis": "cumulative",
+        "usage": {
+          "duration_ms": 378099,
+          "subagent_tokens": 108918,
+          "tool_uses": 25
+        }
+      },
+      "timestamp": "2026-09-01T11:20:03.690Z",
       "type": "activity_usage"
     }
   ],
@@ -4347,6 +4545,29 @@
       "technique:rules:be94a1e5beea0046": "be94a1e5beea0046",
       "technique:workflow-engine::dispatch-activity": "58148cef79f1ff4c",
       "technique:workflow-engine::resume-worker": "32d4059bf337dd44"
+    },
+    "worker-QZAMAD-03": {
+      "bundle:agent-conduct": "7cdbe94abebf8c98",
+      "bundle:rules:d220751ff7918244": "d220751ff7918244",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:worker-conduct": "8b7346bbc1a36872",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "resource:meta/session-summary-template#session-summary-template": "e97f312ea982c73b",
+      "technique:inherited_inputs.items:f351d5762d78fa43": "f351d5762d78fa43",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:ae2b09344c726b6f": "ae2b09344c726b6f",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:0c7e15e42d2963d4": "0c7e15e42d2963d4",
+      "technique:rules:5569a8f3bc688ce4": "5569a8f3bc688ce4",
+      "technique:rules:94968caa25984717": "94968caa25984717",
+      "technique:rules:bd27357e8be2a96b": "bd27357e8be2a96b",
+      "technique:workflow-engine::generate-summary": "ff077b06c2bfd749",
+      "technique:workflow-engine::read-session": "589a3097d8ecfff6",
+      "technique:workflow-engine::revise-session-metrics": "967e3e75c3578c07",
+      "technique:workflow-engine::verify-outcomes": "ceed0022dd94679c"
     }
   },
   "repo": "m2ux/workflow-server"

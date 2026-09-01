@@ -4,6 +4,8 @@
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
+> **Token use:** 108.8 min of accounted execution across 12 dispatches, at least 686,637 subagent tokens — a floor, and an estimate rather than a bill. Detail in [token usage](09-token-usage.md); mechanical record in [session trace](09-session-trace.md).
+
 ## 🎯 Executive Summary
 
 Issue #519 asks whether the `fragments` construct earns its place, or whether it stands in for two things the corpus lacks: a shared home for generic rules, and shared activities for shared gates. Both halves have found homes elsewhere since it was raised — [#522](https://github.com/m2ux/workflow-server/pull/522) built the shared home and deleted all seven rule fragments, and [#520](https://github.com/m2ux/workflow-server/issues/520) specifies the `routines/` construct that retires the checkpoint half.
