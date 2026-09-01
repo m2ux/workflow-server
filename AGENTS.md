@@ -15,6 +15,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - **Tests:** `npm test` (watch) / `npm run test:ci` (single run)
 - **Typecheck:** `npm run typecheck`
 - **Guards:** `npm run check:all` (every guard, one table) / `npm run check:delta` (only what your change added, against the merge-base)
+- **Work a branch in its own worktree.** The checkout at `workflows/` stays on the `workflows` branch, and a feature branch lives under `.worktrees/`. Switching the shared checkout moves the corpus under anything reading it — a guard sweep, a coverage walk, another agent — and the result is wrong in a way that reads as a defect in the change.
 - **Worktree setup:** `npm run worktree:provision` — checks out the submodules and makes `node_modules` resolvable, so guards and tests measure the worktree you are editing
 - **A worktree is named for the branch it holds.** `.worktrees/workflow/353-context-scoped-delivery` holds `workflow/353-context-scoped-delivery` — the branch name in full, slashes and all, as nested directories. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`. Rename with `git worktree move`, which fixes the administrative files a `mv` leaves dangling.
 - **Workflow data:** `git worktree add ./workflows workflows` (see [README.md](README.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)).
