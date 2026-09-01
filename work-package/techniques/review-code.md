@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.6.0
+  version: 2.7.0
 ---
 
 ## Capability
@@ -75,6 +75,14 @@ When the diff changes a `Config` impl, an associated type, or any trait-implemen
 - Verify Substrate-specific patterns (weights, storage, hooks, extrinsics)
 - Evaluate architecture and design pattern adherence before low-level details
 - When `{project_type}` is rust-substrate, check weight annotations, storage migrations, hook implementations, and extrinsic validation
+
+#### Relocated manifest
+
+When the diff moves a package manifest, lockfile, or build file, the paths that name its old location live outside the diff and keep resolving to nothing. Automated dependency configuration is the common one — a directory entry naming the old path stops updating silently rather than erroring — and continuous-integration working directories, container build contexts and documentation paths carry the same exposure. Search the repository for the old path and review every site that still names it.
+
+#### Configuration against the document that describes it
+
+When a change touches configuration alone, the documentation describing that configuration is in scope even though the diff does not touch it. A key renamed in a keystore and named in a readme, a default changed in one place and quoted in another — the change is internally consistent and the pair contradicts. Read the configuration against every document that states its values.
 
 ### 4. Document Findings
 
