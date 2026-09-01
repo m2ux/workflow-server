@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
 
-Validate the updated specification against structural, identifier-uniqueness, consistency, source-coverage, and protocol-conformance checks, categorize each issue as critical or correctable, and derive the routing verdict — whether validation passed, whether source coverage is complete, and whether critical or correctable issues remain.
+Validate the updated specification against structural, identifier-uniqueness, consistency, source-coverage, and protocol-conformance checks, categorize each issue as critical or correctable, and derive the routing verdict — whether validation passed, and whether critical or correctable issues remain — with the source-coverage result recorded in the report.
 
 ## Inputs
 
@@ -34,10 +34,6 @@ Categorized validation findings with an overall verdict and the source-coverage 
 ### validation_report_path
 
 Absolute path to the written validation report for this pass.
-
-### source_coverage_complete
-
-Coverage verdict for the source document — `true` when no normative statement remains unmapped, `false` while any gap stands.
 
 ### has_critical_issues
 
@@ -68,4 +64,4 @@ Overall verdict — `true` when the specification is conformant and covers the s
 ### 4. Compile Verdict
 
 - Write `{validation_report}` to `{planning_folder_path}` per [validation-report](../resources/validation-report.md#template) and its [Rules](../resources/validation-report.md#rules); capture its written location as `{validation_report_path}`.
-- Emit `{source_coverage_complete}`, `{has_critical_issues}`, `{has_correctable_issues}` and `{validation_passed}` from the categorized issues, each as its declared contract defines it.
+- Emit `{has_critical_issues}`, `{has_correctable_issues}` and `{validation_passed}` from the categorized issues, each as its declared contract defines it. The source-coverage result is recorded in `{validation_report}` alongside them, per that output's contract.
