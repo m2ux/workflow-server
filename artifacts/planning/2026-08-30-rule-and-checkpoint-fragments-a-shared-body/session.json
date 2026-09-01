@@ -873,6 +873,15 @@
             "optionId": "confirmed",
             "respondedAt": "2026-08-30T18:48:34.000Z"
           },
+          "validate-and-commit-approve-to-commit#1": {
+            "effects": {
+              "variablesSet": {
+                "commit_approved": true
+              }
+            },
+            "optionId": "approved",
+            "respondedAt": "2026-09-01T09:12:27.000Z"
+          },
           "validate-and-commit-audit-disposition#0": {
             "effects": {
               "exit": "remediation-selected",
@@ -882,6 +891,16 @@
             },
             "optionId": "remediate",
             "respondedAt": "2026-08-31T03:41:29.000Z"
+          },
+          "validate-and-commit-audit-disposition#1": {
+            "effects": {
+              "variablesSet": {
+                "has_critical_finding": false,
+                "remediation_selected": false
+              }
+            },
+            "optionId": "accept-and-record",
+            "respondedAt": "2026-08-31T04:00:29.000Z"
           }
         },
         "completedActivities": [
@@ -890,8 +909,8 @@
           "quality-review",
           "validate-and-commit"
         ],
-        "currentActivity": "quality-review",
-        "currentTechnique": "verify-artifact-conforms",
+        "currentActivity": "validate-and-commit",
+        "currentTechnique": "work-package::manage-git::remove-worktree",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -1009,10 +1028,13 @@
             "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
             "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
             "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "resource:completion-artifact#template": "d360eb9ff71bef0f",
             "resource:findings-register": "de8cede84937be93",
             "resource:findings-register#template": "64fb5b0bc119a7ac",
             "resource:impact-analysis#template": "23e4fb1258b8e871",
+            "resource:meta/planning-readme#template": "9898f2dff053b58b",
             "resource:meta/writing-register": "8f96a660e5f6617f",
+            "resource:workflow-authoring/readme-seed": "0786e88762f20da4",
             "resource:workflow-design/anti-patterns#authoring-guidance-mr": "260efdd8223e3ef0",
             "resource:workflow-design/anti-patterns#canon-hygiene-anti-patterns": "ee9cb58981cc7f7b",
             "resource:workflow-design/anti-patterns#coupling-anti-patterns": "990fabf5d517f810",
@@ -1035,30 +1057,38 @@
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
             "technique:rules:10426436ece98817": "10426436ece98817",
             "technique:rules:1e6f9cbbc3eef434": "1e6f9cbbc3eef434",
+            "technique:rules:38475bdb75f3f036": "38475bdb75f3f036",
             "technique:rules:5a267368c885429a": "5a267368c885429a",
+            "technique:rules:5b756bfad0b8f1e8": "5b756bfad0b8f1e8",
             "technique:rules:6c3bed81b99dcf00": "6c3bed81b99dcf00",
             "technique:rules:7e2036e223c7afba": "7e2036e223c7afba",
             "technique:rules:8181d56156699005": "8181d56156699005",
             "technique:rules:8aea01629cd243f9": "8aea01629cd243f9",
             "technique:rules:b7b36ba1e42c37fa": "b7b36ba1e42c37fa",
+            "technique:rules:bce79cb157b6b1d3": "bce79cb157b6b1d3",
             "technique:rules:dcb3fa857e03de8c": "dcb3fa857e03de8c",
             "technique:rules:f31ae9a623bd5859": "f31ae9a623bd5859",
             "technique:rules:f9ce52f48d9855c3": "f9ce52f48d9855c3",
-            "technique:work-package::manage-artifacts::write-artifact": "f51e1a33851ee27e",
+            "technique:work-package::manage-artifacts::write-artifact": "804d78e71ce67158",
+            "technique:work-package::manage-git::remove-worktree": "f29898cbd7416478",
             "technique:workflow-definition::apply-audit-fixes": "108d0b86c5216f3a",
             "technique:workflow-definition::audit-canon": "0e628374f366965f",
             "technique:workflow-definition::audit-schema-validation": "2109df6693022981",
             "technique:workflow-definition::compile-report": "ba77dfe345b1d620",
+            "technique:workflow-definition::compose-publication": "fc9e6a4d6dee3d3e",
+            "technique:workflow-definition::create-completion-doc": "36bcdd48fa1450c0",
             "technique:workflow-definition::inventory-prose-fields": "8826a68e0eb06a5c",
             "technique:workflow-definition::load-known-findings": "2fb70db87321d496",
             "technique:workflow-definition::reload-workflow": "566a4d89b59cace2",
             "technique:workflow-definition::resolve-consumer-surface": "023c13ed6b1741a3",
+            "technique:workflow-definition::scope-verification": "893acba846b76bde",
             "technique:workflow-definition::verify-high-findings": "8b38d49786af35c0",
             "technique:workflow-definition::yaml-authoring": "abef07fcce7980af",
-            "technique:workflow-engine::list-workflows": "722f8755d06db223"
+            "technique:workflow-engine::list-workflows": "722f8755d06db223",
+            "technique:workflow-engine::verify-readme-conforms": "bad36b79e4a8c907"
           }
         },
-        "exit": "remediation-selected",
+        "exit": "done",
         "history": [
           {
             "timestamp": "2026-08-30T17:11:29.661Z",
@@ -3627,16 +3657,516 @@
             },
             "timestamp": "2026-08-31T03:54:28.558Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 1
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_coverage_gap",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "remediation_selected",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "remediation_round",
+              "source": "variables_changed",
+              "value": 1
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "changed_files",
+              "source": "variables_changed",
+              "value": [
+                "meta/techniques/agent-conduct.md",
+                "meta/techniques/verify-artifact-conforms.md",
+                "workflow-design/resources/schema-construct-inventory.md"
+              ]
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "register_sections",
+              "source": "variables_changed",
+              "value": [
+                "work-package",
+                "remediate-vuln",
+                "round-1-change-surface"
+              ]
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "reference_workflows",
+              "source": "variables_changed",
+              "value": 16
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "target_workflow_id",
+              "source": "variables_changed",
+              "value": "remediate-vuln"
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "audit_findings",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "entry": "anchored-protocol-references",
+                  "status": "resolved-this-round"
+                },
+                {
+                  "entry": "schema-construct-inventory",
+                  "status": "resolved-this-round"
+                },
+                {
+                  "entry": "stale-triage-entry",
+                  "location": "scripts/binding-fidelity-triage.json -> prism-update/workflow.yaml:15",
+                  "origin": "pre-existing",
+                  "outside_edit_surface": true,
+                  "severity": "Low"
+                }
+              ]
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "author-fixes"
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "record-fixes"
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "inventory-remediation-removals"
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "load-known-findings"
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "survey-reference-workflows"
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "target-sweep-loop"
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-08-31T03:55:00.913Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 18370,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-31T03:55:21.322Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 7030,
+              "delivery": "unchanged",
+              "stepId": "verify-audit-findings",
+              "techniqueId": "workflow-definition::verify-high-findings"
+            },
+            "timestamp": "2026-08-31T03:55:21.322Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 7127,
+              "delivery": "unchanged",
+              "stepId": "compile-register",
+              "techniqueId": "workflow-definition::compile-report"
+            },
+            "timestamp": "2026-08-31T03:55:21.322Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 5639,
+              "delivery": "full",
+              "stepId": "persist-register",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-31T03:55:21.322Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "bundled": true,
+              "chars": 6849,
+              "delivery": "unchanged",
+              "resourceId": "workflow-design/anti-patterns#schema-expressiveness-anti-patterns"
+            },
+            "timestamp": "2026-08-31T03:55:21.322Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "bundled": true,
+              "chars": 14754,
+              "delivery": "unchanged",
+              "resourceId": "workflow-design/anti-patterns#description-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-08-31T03:55:21.322Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "bundled": true,
+              "chars": 1278,
+              "delivery": "unchanged",
+              "resourceId": "findings-register#template"
+            },
+            "timestamp": "2026-08-31T03:55:21.322Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "audit-disposition#1",
+            "timestamp": "2026-08-31T03:57:21.073Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "audit-disposition#1",
+            "data": {
+              "optionId": "accept-and-record"
+            },
+            "timestamp": "2026-08-31T04:00:29.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "remediation_selected",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-31T04:00:29.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-31T04:00:29.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 4651,
+              "delivery": "full",
+              "stepId": "verify-scope-manifest",
+              "techniqueId": "workflow-definition::scope-verification"
+            },
+            "timestamp": "2026-08-31T04:01:01.266Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "verify-scope-manifest"
+            },
+            "timestamp": "2026-08-31T04:01:01.266Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 4645,
+              "delivery": "full",
+              "stepId": "verify-planning-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-08-31T04:02:14.222Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "verify-planning-readme"
+            },
+            "timestamp": "2026-08-31T04:02:14.222Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 1250,
+              "delivery": "full",
+              "resourceId": "meta/planning-readme#template"
+            },
+            "timestamp": "2026-08-31T04:02:19.453Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 2770,
+              "delivery": "full",
+              "resourceId": "workflow-authoring/readme-seed"
+            },
+            "timestamp": "2026-08-31T04:02:19.775Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit#1",
+            "timestamp": "2026-08-31T04:02:49.410Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit#1",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-09-01T09:12:27.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-09-01T09:12:27.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 5447,
+              "delivery": "full",
+              "stepId": "compose-publication",
+              "techniqueId": "workflow-definition::compose-publication"
+            },
+            "timestamp": "2026-09-01T09:12:54.782Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "compose-publication"
+            },
+            "timestamp": "2026-09-01T09:12:54.782Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 6710,
+              "delivery": "full",
+              "stepId": "compose-close-out",
+              "techniqueId": "workflow-definition::create-completion-doc"
+            },
+            "timestamp": "2026-09-01T09:15:50.541Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "compose-close-out"
+            },
+            "timestamp": "2026-09-01T09:15:50.541Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 1438,
+              "delivery": "full",
+              "resourceId": "completion-artifact#template"
+            },
+            "timestamp": "2026-09-01T09:15:53.760Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "chars": 3621,
+              "delivery": "full",
+              "stepId": "remove-worktree",
+              "techniqueId": "work-package::manage-git::remove-worktree"
+            },
+            "timestamp": "2026-09-01T09:16:51.081Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "stepId": "remove-worktree"
+            },
+            "timestamp": "2026-09-01T09:16:51.081Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-3IXIS7-02",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 1207392,
+                "subagent_tokens": 276558,
+                "tool_uses": 136
+              }
+            },
+            "timestamp": "2026-09-01T09:18:49.496Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 48,
+        "seq": 65,
         "sessionIndex": "3IXIS7",
         "startedAt": "2026-08-30T17:11:29.661Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788148468,
+        "ts": 1788254329,
         "variables": {
           "addressed_count": 0,
           "artifact_conformance": {
@@ -3647,24 +4177,18 @@
           "audit_findings": [
             {
               "entry": "anchored-protocol-references",
-              "files": [
-                "meta/techniques/agent-conduct.md",
-                "meta/techniques/verify-artifact-conforms.md"
-              ],
-              "known": false,
-              "origin": "pre-existing",
-              "severity": "High",
-              "summary": "writing-register projects to an unqualified resource id when a meta technique is bundled into a non-meta workflow, so 15 activity files across 15 workflows run a protocol step that cannot load the register they must measure against"
+              "status": "resolved-this-round"
             },
             {
               "entry": "schema-construct-inventory",
-              "files": [
-                "workflow-design/resources/schema-construct-inventory.md"
-              ],
-              "known": false,
+              "status": "resolved-this-round"
+            },
+            {
+              "entry": "stale-triage-entry",
+              "location": "scripts/binding-fidelity-triage.json -> prism-update/workflow.yaml:15",
               "origin": "pre-existing",
-              "severity": "Medium",
-              "summary": "the inventory carries no row for fragments.checkpoints, a workflow-scope construct the schema declares"
+              "outside_edit_surface": true,
+              "severity": "Low"
             }
           ],
           "base_ref": "bc52c6968eb3f603d77adb03474b6bde48f2aaff",
@@ -3674,8 +4198,12 @@
           ],
           "change_constraints": "Co-change: remediate-vuln/workflow.yaml + scripts/check-fragments.ts, split across the workflows branch and main — two PRs, corpus red until the server one merges. Collisions: fragment names assumption-interview/assumption-decision; loop ids assumption-interview (04-research) and assumption-interview-loop (07-assumptions-review); nine existing guard finding ids. Environment: branch any worktree from fetched origin/workflows bc52c69, not local 09b6067.",
           "change_request_clear": true,
-          "changed_files": [],
-          "commit_approved": false,
+          "changed_files": [
+            "meta/techniques/agent-conduct.md",
+            "meta/techniques/verify-artifact-conforms.md",
+            "workflow-design/resources/schema-construct-inventory.md"
+          ],
+          "commit_approved": true,
           "component_git_dir": "/home/mike1/projects/dev/workflow-server/workflows",
           "coverage_ledger": {
             "blocked": 1,
@@ -3693,14 +4221,19 @@
           "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-impact-analysis.md",
           "intent_needs_confirmation": false,
           "judgements_disposition": "carried-open",
-          "open_finding_count": 2,
+          "open_finding_count": 1,
           "open_judgements_count": 3,
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body",
-          "register_sections": [],
+          "reference_workflows": 16,
+          "register_sections": [
+            "work-package",
+            "remediate-vuln",
+            "round-1-change-surface"
+          ],
           "remediation_round": 1,
-          "remediation_selected": true,
+          "remediation_selected": false,
           "removal_count": 0,
           "removals_approved": false,
           "report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/09-findings-register.md",
@@ -3712,7 +4245,7 @@
           "scope_round": 0,
           "structural_inventory": "work-package v4.0.0 — 15 activity files, 115 technique files, 37 resource files, 223-line workflow.yaml, README. Activities 01-15. Change touches remediate-vuln/workflow.yaml variables[] only; work-package definition files unedited.",
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/",
-          "target_workflow_id": "work-package",
+          "target_workflow_id": "remediate-vuln",
           "target_workflow_ids": [
             "work-package",
             "remediate-vuln"

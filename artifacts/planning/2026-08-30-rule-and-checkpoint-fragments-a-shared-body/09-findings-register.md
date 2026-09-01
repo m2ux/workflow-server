@@ -1,59 +1,56 @@
 # Findings Register — `work-package`, `remediate-vuln`
 
-**Date:** 2026-08-30 · **Mode:** Update
-**Base ref:** [`bc52c69`](https://github.com/m2ux/workflow-server/tree/bc52c6968eb3f603d77adb03474b6bde48f2aaff) · **Targets:** `work-package` v4.0.0, `remediate-vuln`
-**Change surface:** 0 files (touched: 0 whole files · I/O-contract closure: 0 · consumers: 0)
+**Date:** 2026-08-31 · **Mode:** Update · **Remediation round:** 1
+**Base ref:** [`bc52c69`](https://github.com/m2ux/workflow-server/tree/bc52c6968eb3f603d77adb03474b6bde48f2aaff) · **Targets:** `work-package` v4.0.0, `remediate-vuln` v3.0.0
+**Change surface:** 3 files (touched: 3 whole files · I/O-contract closure: 0 · consumers: 0)
 
 ## Summary
 
 | Severity | Open | Known |
 |----------|-----:|------:|
 | Critical | 0 | 0 |
-| High     | 1 | 0 |
-| Medium   | 1 | 0 |
-| Low      | 0 | 0 |
+| High     | 0 | 0 |
+| Medium   | 0 | 0 |
+| Low      | 1 | 0 |
 
-**Coverage:** walked 2 · not-applicable 53 · blocked 1 · evidence rows 0
+**Coverage:** walked 9 · not-applicable 114 · blocked 2 · evidence rows 12
 
-The change surface is empty, so the Change surface section is omitted and no walked unit
-carries an evidence obligation. Both findings sit in shared canon reached from the targets,
-neither in a target's own files; both are pre-existing at the base ref and off the change
-surface, so neither bears on what this run commits.
+Round 1 resolved the High and the Medium. One Low stays open: its remedy is in the server
+repository, outside this run's edit surface.
+
+## Change surface
+
+| Path | How it joined |
+|------|----------------|
+| `meta/techniques/agent-conduct.md` | touched (whole file) |
+| `meta/techniques/verify-artifact-conforms.md` | touched (whole file) |
+| `workflow-design/resources/schema-construct-inventory.md` | touched (whole file) |
+
+All three sit outside both targets. `work-package` and `remediate-vuln` each measure an empty
+change surface, because the two defects the walk found live in the shared canon both targets
+read rather than in either target's own files.
 
 ## Findings
 
 | ID | Severity | Entry | Location | Evidence | Origin | Known | Fix |
 |----|----------|-------|----------|----------|--------|-------|-----|
-| F1 | High | `anchored-protocol-references` | `meta/techniques/agent-conduct.md`, rule `communication-artifact-writing-register`; `meta/techniques/verify-artifact-conforms.md`, protocol step at line 58 | Both write `[Artifact Writing Register](../resources/writing-register.md)`, which is correct on disk — `meta/resources/writing-register.md` is the corpus's only copy. Projected into a non-meta workflow the link collapses to the bare id `writing-register`: this run's own `get_activity` bundle for `workflow-authoring` renders the rule as `](writing-register)`, and `get_resource { writing-register }` under that session returns `Resource not found: writing-register in workflow workflow-authoring`. 15 activity files across 15 workflows bind `verify-artifact-conforms`; the `agent-conduct` rule reaches every workflow's activity rule block. | pre-existing | — | Spell both citations `../../meta/resources/writing-register.md`. The path is correct on disk, and both projections then emit the qualified id `meta/writing-register`. |
-| F2 | Medium | `schema-construct-inventory` | `workflow-design/resources/schema-construct-inventory.md`, § Workflow-Level Constructs (workflow.schema.json) | The section's rows map `variables[]`, the activation variable, `rules`, `techniques`, `initialActivity` and `graph`; the file carries no occurrence of `fragments` at all, while `schemas/workflow.schema.json` declares `fragments` at workflow scope and eight `$ref` sites in that schema resolve through `fragments.checkpoints`. | pre-existing | — | Add a Workflow-Level Constructs row mapping the informal pattern — one gate body several activities present — to `fragments.checkpoints` and the `{ ref }` checkpoint-step form that reaches it. |
+| F1 | High | `anchored-protocol-references` | `meta/techniques/agent-conduct.md` rule `communication-artifact-writing-register`; `meta/techniques/verify-artifact-conforms.md` protocol step 2 | Both cited the register by a path correct on disk that projected to the bare id `writing-register`, which resolves only under `meta`. `get_resource { writing-register }` returned *Resource not found … in workflow workflow-authoring*. 15 activity files across 15 workflows bind `verify-artifact-conforms`; the `agent-conduct` rule reaches every workflow's activity rule block. | pre-existing | — | **Resolved (round 1)** — both citations respelled `../../meta/resources/writing-register.md`; each now projects to `meta/writing-register` in the rendered link and in `resource_refs`. |
+| F2 | Medium | `schema-construct-inventory` | `workflow-design/resources/schema-construct-inventory.md` § Workflow-Level Constructs | The section mapped six constructs and the file carried no occurrence of `fragments`, while `schemas/workflow.schema.json` declares it at workflow scope with eight `$ref` sites resolving through `fragments.checkpoints`. | pre-existing | — | **Resolved (round 1)** — one row added mapping the shared-gate pattern to `fragments.checkpoints` and the `ref` step form. |
+| F3 | Low | `stale-triage-entry` | `scripts/binding-fidelity-triage.json`, entry for `prism-update/workflow.yaml:15` | `check-binding-fidelity` reports the triaged `read-resolution` finding no longer occurs, so the entry matches nothing and the guard stays red on it. The path is outside both targets and outside round 1's three files. | pre-existing | — | **Open** — delete the stale entry. The file is in the server repository, outside this run's edit surface, so this run does not fix it. |
 
-### Remediation routing
+### Round 1 record
 
-Round 1 was selected at the disposition gate. Both fixes land in the corpus, in the
-existing worktree on `workflow/work-package-borrowed-gate-variables`. Neither needs a
-server-source branch.
+| Finding | Files | Change | Post-edit validation |
+|---------|-------|--------|----------------------|
+| F1 | `meta/techniques/agent-conduct.md`, `meta/techniques/verify-artifact-conforms.md` | Citation respelled, `+1 / −1` each | Projection yields `meta/writing-register`; `resource-anchors` OK; `no unanchored protocol references` PASS |
+| F2 | `workflow-design/resources/schema-construct-inventory.md` | One table row, `+1 / −0` | `workflow-yaml` OK for `workflow-design` |
 
-| ID | Component | Path | Edit |
-|----|-----------|------|------|
-| F1 | corpus (`meta`) | `meta/techniques/agent-conduct.md`, `meta/techniques/verify-artifact-conforms.md` | Two citations respelled `../../meta/resources/writing-register.md` |
-| F2 | corpus (`workflow-design`) | `workflow-design/resources/schema-construct-inventory.md` | One row added to § Workflow-Level Constructs |
+No collateral change, and no reduction — the round is additive, so the [removals inventory](01-impact-analysis.md) stays at zero.
 
-F1 was expected to need a change to server source under `src/`, on a branch cut from
-`main`, on the reasoning that a `meta/`-qualified relative path would be wrong on disk.
-Measurement refutes that. `meta/techniques/../../meta/resources/writing-register.md`
-resolves to the file that exists, and both projection paths already handle the qualifier:
-`rewriteResourceLinks` captures an optional `<workflow>/` segment before `resources/`, and
-`extractResourceIds` reads the same segment as the id's owner. Run against both spellings,
-the current one yields the bare `writing-register` for the rendered link and for
-`resource_refs`, and the proposed one yields `meta/writing-register` for both.
-`get_resource { meta/writing-register }` resolves from this `workflow-authoring` session.
-The form is already used in the corpus — `workflow-authoring/techniques/TECHNIQUE.md`
-cites `../../workflow-design/resources/anti-patterns.md` and projects qualified.
-
-Leaving the server's same-workflow behaviour alone is deliberate, not an omission. A bare
-id is the correct projection for a technique that is only ever delivered under its own
-workflow; the defect is specific to techniques bundled into other workflows, which is what
-`meta` techniques are, and the citation is where that fact is known.
+The respelling matches established convention rather than introducing one: every other meta
+technique citing a meta resource already uses the qualified form, 32 citations across nine
+files under `meta/techniques/workflow-engine/`. After round 1 no `../resources/` citation
+remains anywhere in `meta/techniques/`.
 
 ## Coverage
 
@@ -61,22 +58,43 @@ workflow; the defect is specific to techniques bundled into other workflows, whi
 
 | Home | Unit | Status |
 |------|------|--------|
-| All four homes | Full-surface sweep of `{surface_files}` | `blocked` — with the change surface empty, the sweep that keeps pre-existing defects attributable spans both targets whole (`work-package`: 15 activity files, 115 technique files, 37 resource files, a 223-line `workflow.yaml`, a README; plus `remediate-vuln`). It was not walked. The two findings above come from partial inspection, so the corpus is not evidenced clean beyond them. |
-| Design Principles | 34 units, all remaining | `not-applicable` — a principle is applied to authored content, and this run authors none |
-| Anti-Patterns | 12 of 13 units | `not-applicable` — no file is created, modified or removed, so no entry's Detect has a construct on the change surface to key on |
-| Schema Construct Inventory | 6 of 7 units | `not-applicable` — same reason |
-| Convention Conformance | 1 unit | `not-applicable` — no file is created, so no name, field order or version is minted to compare against sibling convention |
+| All four homes (`work-package`) | Full-surface sweep of 171 files | `blocked` — not walked; the target's own change surface is empty, and the round's edits lie outside it |
+| All four homes (`remediate-vuln`) | Full-surface sweep of 14 files | `blocked` — same |
+| Design Principles | 34 units × 2 targets | `not-applicable` — a principle is applied to authored content, and neither target's files are authored by this run |
+| Anti-Patterns, Schema Construct Inventory, Convention Conformance | 21 units × 2 targets | `not-applicable` — no file under either target is created, modified or removed |
+| Anti-Patterns (round surface) | `creation-rules`, `interaction-`, `tool-technique-doc-consistency-`, `execution-` | `not-applicable` — no file created, and no gate, tool surface or activity construct on the three files |
 
-Walked: `coupling-anti-patterns` (yielding F1) and Schema Construct Inventory
-§ Workflow-Level Constructs (yielding F2). Coverage evidence is omitted because neither
-reaches a change-surface file — there are none.
+### Coverage evidence
 
-**Caveat on the baselined exclusions.** The binding-fidelity exclusions this run rests on
-were triaged against corpus `3569e937`, which `git rev-list --count` puts exactly 287
-commits behind the `bc52c696` checkout; `scripts/binding-fidelity-triage.json` carries that
-sha in its own `corpusSha` field. The file holds 70 entries, all verdict `harmless`, of
-which 7 sit on this run's two targets. An exclusion triaged 287 commits ago is a judgement
-about a corpus that has since moved, so it is carried rather than relied on.
+Nine units walked against the round's three whole files, 12 evidence rows.
+
+| Unit | File | Field | Disposition | Quote |
+|------|------|-------|-------------|-------|
+| `coupling-anti-patterns` | `agent-conduct.md` | rule `communication-artifact-writing-register` | `anchored-protocol-references` → fixed | `](../../meta/resources/writing-register.md)` |
+| `coupling-anti-patterns` | `verify-artifact-conforms.md` | protocol step 2, bullet 3 | `anchored-protocol-references` → fixed | `](../../meta/resources/writing-register.md)` |
+| `rule-hygiene-anti-patterns` | `agent-conduct.md` | 14 `### rule-name` bodies | clean | rules cite homes rather than restating them |
+| `description-hygiene-anti-patterns` | `agent-conduct.md` | `## Capability` | clean | "Cross-cutting behavioral boundaries every agent in a run is held to" |
+| `description-hygiene-anti-patterns` | `verify-artifact-conforms.md` | `## Capability` | clean | "Conformance of a folder's persisted artifacts to the guide each filename maps to" |
+| `description-hygiene-anti-patterns` | `schema-construct-inventory.md` | purpose paragraph | clean | "Maps informal patterns … to their formal schema equivalents" |
+| `technique-protocol-anti-patterns` | `verify-artifact-conforms.md` | `## Protocol` steps 1–4 | clean | atomic produce path, no `::` invocation for work |
+| `output-economy-anti-patterns` | `verify-artifact-conforms.md` | `artifact_conformance` + 3 components | clean | `conforms` / `violations` / `unmeasured` |
+| `structural-anti-patterns` | all three | section structure | clean | template-conformant per `check-technique-template` |
+| `canon-hygiene-anti-patterns` | `schema-construct-inventory.md` | § Workflow-Level Constructs | clean | new row cites the construct, restates no criteria |
+| `schema-expressiveness-anti-patterns` | `schema-construct-inventory.md` | new row, 3 cells | clean | `fragments.checkpoints.<name>` … `ref: [workflow::]name` |
+| `reference-conventions` | `agent-conduct.md`, `verify-artifact-conforms.md` | citation form | clean | matches 32 sibling citations under `meta/techniques/workflow-engine/` |
+
+**Caveat on the baselined exclusions.** 42 class-keyed exclusions fall inside the walk's
+scope (`work-package` 7, `remediate-vuln` 0, `meta` 34, `workflow-design` 1), every one
+verdict `harmless`, and none suppressed a finding this run raised. All rest on triage against
+corpus `3569e937`, which the guard itself reports as 287 commits behind the `bc52c696`
+checkout. An exclusion triaged 287 commits ago is a judgement about a corpus that has moved,
+so it is carried rather than relied on.
+
+**A property of the sweep, not of this change.** The per-target walk scopes touched files to
+`{target_path}/{target_workflow_id}`, so a remediation round whose edits land outside every
+named target cannot be reached by it. Both targets therefore report an empty change surface
+while the run changes three files. The evidence above exists because the round's own change
+surface was walked as its own section.
 
 ## Sources
 

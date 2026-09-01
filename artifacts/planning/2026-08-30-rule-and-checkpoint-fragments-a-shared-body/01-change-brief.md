@@ -17,7 +17,8 @@ Issue #519 asks whether `fragments` earns its place or stands in for two absence
 |------|---------|
 | Record the decision #519 asks for | `fragments` survives, narrowed to checkpoints, and #520 is where its remaining migration is carried out |
 | Establish each criterion's standing with evidence | Every one of the six criteria is measured against the corpus tip rather than asserted, so closing the issue rests on what the files say |
-| Change no definition file | The run enumerates nothing to draft, because nothing in the corpus is left in the state #519 describes |
+| Leave both targets untouched | No criterion of #519 leaves a definition change under `work-package` or `remediate-vuln`, and neither target is edited |
+| Repair what the walk found in shared canon | Remediation round 1 fixes the two pre-existing findings the criteria walk surfaced, in three files both targets read |
 
 **Out of scope:**
 
@@ -77,12 +78,16 @@ The guard passes because the declarations exist, not because it cannot see them.
 | 5 | A referencing workflow declares no variable it never produces | Met | 118 declarations resolve for `remediate-vuln`, covering all eight |
 | 6 | The `duplicate-rule` remedy names the shared home | Met | Guard text on `origin/main` |
 
-Four are met at the corpus tip. The two that are not are #520's to carry out. No criterion is left for a definition change here, which is why the [scope manifest](06-scope-manifest.md) enumerates no file.
+Four are met at the corpus tip. The two that are not are #520's to carry out. No criterion is left for a definition change under either target, so the [scope manifest](06-scope-manifest.md) names no file belonging to one.
+
+The three files it does name entered through remediation, not through #519. The criteria walk that measured these standings surfaced two pre-existing defects in the shared canon both targets read, and the operator chose to repair them rather than record them and move on. The [findings register](09-findings-register.md) holds what they were and what the repair changed.
 
 The guard text behind criterion 6 reads *move it to the meta conduct technique whose audience it binds and delete every copy*. `check-fragments.ts` run against this run's worktree reports `fragments: OK — every ref resolves, every fragment is used, no inline duplicates`.
 
 ---
 
-## Confirmation ask
+## What the run delivered
 
-Approving this brief commits the run to changing no definition file, and to closing #519 on the record: four criteria met at the corpus tip, two carried out under #520.
+#519 closes on the record: four criteria met at the corpus tip, two carried out under #520, and no definition change owed under either target.
+
+Alongside that record the run delivers three files of shared canon, repairing the two findings its own criteria walk raised — the Artifact Writing Register made reachable from any workflow, and the schema construct inventory given its missing `fragments.checkpoints` row. One finding stays open and unfixed here: a stale entry in the binding-fidelity triage baseline, whose remedy is in the server repository, outside this run's edit surface.
