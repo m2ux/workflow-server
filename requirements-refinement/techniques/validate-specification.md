@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -51,7 +51,7 @@ Overall verdict — `true` when the specification is conformant and covers the s
 
 ### 1. Run Conformance Checks
 
-- Validate `{working_specification}` against the checks in [validation-rubric](../resources/validation-rubric.md): section structure, requirement-identifier uniqueness, source-reference accuracy, markdown syntax, and cross-section consistency.
+- Validate `{working_specification}` against the checks in [validation-rubric](../resources/validation-rubric.md#checks): section structure, requirement-identifier uniqueness, source-reference accuracy, markdown syntax, and cross-section consistency.
 
 ### 2. Check Source Coverage
 
