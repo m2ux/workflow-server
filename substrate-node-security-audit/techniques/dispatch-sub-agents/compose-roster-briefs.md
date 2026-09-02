@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compose each roster agent's sub-agent prompt with workflow-server bootstrap instructions, context variables, supplementary files, output-schema requirements, and calibration benchmarks — producing `{worker_briefs}` for meta [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[dispatch-workers](../../../meta/techniques/orchestration-patterns/dispatch-workers.md). Domain prompt assembly only; dispatch is a separate activity step.
+One sub-agent brief per roster agent, each carrying workflow-server bootstrap instructions, its context variables and supplementary files, the output-schema requirement, and the calibration benchmarks.
 
 ## Outputs
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compose domain-specific scanner / verification / merge / gap-remediation worker briefs, project gathered results into the CI/CD dispatch shape, verify output-file persistence, and enforce coverage and reconciliation gates. Concurrent dispatch and ordered gather bind meta [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[dispatch-workers](../../../meta/techniques/orchestration-patterns/dispatch-workers.md) / [gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md) from the activity. Each phase is a named operation; a step binds the one operation for its phase.
+Shared contract for the CI/CD audit's sub-agent dispatch surface — the domain shapes its worker briefs and gathered results take, the persistence check over the output files, and the coverage and reconciliation gates.
 
 ## Inputs
 

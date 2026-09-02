@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compose the verification (V) sub-agent brief — producing a singleton `{worker_briefs}` for meta [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[dispatch-workers](../../../meta/techniques/orchestration-patterns/dispatch-workers.md). Domain prompt assembly only; dispatch is a separate activity step.
+The verification (V) sub-agent's brief, as a single-element brief set.
 
 ## Outputs
 

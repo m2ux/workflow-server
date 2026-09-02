@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Component identity for this work package, assembled from the derived host repository. Edits are never performed under `{host_repo_path}` — they use a separate worktree path.
+Component identity for this work package, assembled from the derived host repository.
 
 ## Inputs
 

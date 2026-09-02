@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Sole cost home for a run — the token-use and cost-estimate artifact, reconciled against the run's actual dispatch count, with a one-line README link. A draft written mid-`complete` is revised after the client exits by [workflow-engine::revise-session-metrics](../../../meta/techniques/workflow-engine/revise-session-metrics.md) so the terminal activity is included.
+Sole cost home for a run — the token-use and cost-estimate artifact, reconciled against the run's actual dispatch count, with a one-line README link.
 
 ## Inputs
 

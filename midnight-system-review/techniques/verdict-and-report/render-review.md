@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Render the review in the canonical [review structure](../../resources/review-format.md#structure) — verdict, per-area findings, grade tuples, blocked validations, and the Review Details accounting per the [accounting rules](../../resources/review-format.md#accounting-rules) — producing both the report artifact and the summary text that publication posts verbatim.
+The review in its canonical structure — verdict, per-area findings, grade tuples, blocked validations, and the Review Details accounting — as both the report artifact and the byte-identical summary text publication posts.
 
 ## Inputs
 

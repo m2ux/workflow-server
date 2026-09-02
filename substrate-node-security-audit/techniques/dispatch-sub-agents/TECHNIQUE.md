@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assign crates to sub-agent groups, route reconnaissance leads to those agents, compose domain-specific worker briefs, project gathered results into the audit dispatch shape, and confirm every expected output file persisted. Concurrent dispatch and ordered gather bind meta [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[dispatch-workers](../../../meta/techniques/orchestration-patterns/dispatch-workers.md) / [gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md) from the activity. Each phase is a named operation; a step binds the one operation for its phase.
+Shared contract for the audit's sub-agent dispatch surface — the crate-to-agent assignment, the routing of reconnaissance leads, the domain shapes its worker briefs and gathered results take, and the persistence check over the expected output files.
 
 ## Inputs
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Execute the planned probes for one investigation area — source tracing, code-graph queries, metadata comparison, or runtime/SCALE checks per the [probe-catalog](../../resources/probe-catalog.md) — within the probe budget, degrading gracefully where a toolchain gate is false, and emit the area's evidence record.
+The evidence record for one investigation area, from the probes its plan selected — source tracing, code-graph queries, metadata comparison, or runtime and SCALE checks — within the area's probe budget.
 
 ## Inputs
 

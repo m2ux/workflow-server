@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compute the 1-5 merge-readiness verdict from the accepted findings — mechanically, per the [verdict scale](../../resources/verdict-rubric.md#the-scale) and [calibration anchors](../../resources/verdict-rubric.md#calibration-anchors) — and derive the review type from the verdict per the [verdict-to-review-type](../../resources/verdict-rubric.md#verdict-to-review-type) mapping, so publishing never relies on a downstream default.
+The 1-5 merge-readiness verdict the accepted findings mechanically determine, together with the review type that verdict carries, so publication rests on a stated pair.
 
 ## Inputs
 
