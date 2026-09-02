@@ -11,6 +11,7 @@ variables:
     - plan_approved
     - planning_folder_path
     - probe_budget_per_area
+    - repo_name
     - target_repo_path
   writes:
     - name: candidate_findings

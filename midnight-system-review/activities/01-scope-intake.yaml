@@ -28,6 +28,10 @@ variables:
     - name: pr_number
       type: string
       description: The pull request number.
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph covering the target checkout; every code-graph probe addresses it, and it is empty when no graph covers the checkout
+      defaultValue: ""
 required: true
 techniques:
   - variable-binding

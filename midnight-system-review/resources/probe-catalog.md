@@ -22,9 +22,10 @@ Failure-class discharge records use three-way disposition: **confirmed** (eviden
 ## P2 — Code-graph queries
 
 - Validates: structural claims — callers/callees of a changed symbol, reachability, blast radius, cross-function comparison (e.g. do the root and internal execution paths build the same event tuple?).
-- Instrument: the meta `gitnexus-operations` group (`query`, `context`, `impact`, `diff-coverage-map`).
+- Instrument: the meta [`gitnexus-operations`](../../meta/techniques/gitnexus-operations/TECHNIQUE.md) group, each call addressed at `{repo_name}` — [`query`](../../meta/techniques/gitnexus-operations/query.md) for the execution flows a concept lands in, [`context`](../../meta/techniques/gitnexus-operations/context.md) for one symbol's callers, callees and flow membership, [`impact`](../../meta/techniques/gitnexus-operations/impact.md) for a changed symbol's blast radius, and [`diff-coverage-map`](../../meta/techniques/gitnexus-operations/diff-coverage-map.md) for the changed symbols a test reaches.
 - Gate: `gitnexus_available`; fallback is grep-based enumeration plus targeted file reads (P1 discipline).
 - Bounding: one named structural question per probe; take the graph answer with its symbol references as the anchor.
+- Limit: a caller inside a macro body and a symbol named only in a type position carry no edge, per `gitnexus-operations.edges-the-parser-cannot-see`. On a pallet dispatchable or a runtime-API declaration an empty caller set is absence of evidence, so a refutation resting on one re-derives the callers by grep and says which instrument answered.
 - Evidence form: graph query results with symbol/file references.
 
 ## P3 — Metadata comparison

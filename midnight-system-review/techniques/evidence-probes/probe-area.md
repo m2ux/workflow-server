@@ -15,7 +15,11 @@ The investigation area for this iteration — its `planned_probes`, `subsystems`
 
 ### gitnexus_available
 
-Routes code-graph probes: true routes through the meta `gitnexus-operations` group (`query`, `context`, `impact`, `diff-coverage-map`); false degrades them to grep and full-file reads.
+Routes code-graph probes: true routes through the meta [`gitnexus-operations`](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md) operations the catalog's P2 class names; false degrades them to grep and full-file reads.
+
+### repo_name
+
+Name of the indexed graph every code-graph probe addresses, as `scope-intake` resolved it. Where more than one graph is indexed an unnamed call fails without answering, per `gitnexus-operations.address-a-named-graph`, so a P2 probe carries this value.
 
 ### cargo_available
 
@@ -56,7 +60,7 @@ Preliminary issue candidates surfaced by this area's evidence, with their suppor
 ### 1. Execute Probes
 
 - Execute `{current_area}.planned_probes` in plan order, at most `{probe_budget_per_area}` probes; the budget is a hard stop, not a target — stop early once the area's planned validations are answered.
-- Route each probe by its catalog class: code-graph probes through `gitnexus-operations` when `{gitnexus_available}` is true, otherwise grep and full-file reads; build/metadata probes only when `{cargo_available}` is true; runtime and SCALE-metadata probes only when `{node_binary_available}` is true. Cross-record correlation questions run as P7 (source trace of each join-key to its origin with a mandatory join-key discharge table). Downstream-caller propagation questions run as P8a (error propagation from changed callee through caller control flow). Post-call storage questions run as P8b (caller persistent-state mutations after a non-propagating call — the accounting-consumed-before-success class). Operational-tooling questions run as P9 (subsystem-map entrypoints and advertised-control verification). P8a and P8b each consume one probe slot per enumerated caller for the relevant half.
+- Route each probe by its catalog class: code-graph probes through the [`gitnexus-operations`](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md) operations the P2 class names, each addressed at `{repo_name}`, when `{gitnexus_available}` is true, otherwise grep and full-file reads; build/metadata probes only when `{cargo_available}` is true; runtime and SCALE-metadata probes only when `{node_binary_available}` is true. Cross-record correlation questions run as P7 (source trace of each join-key to its origin with a mandatory join-key discharge table). Downstream-caller propagation questions run as P8a (error propagation from changed callee through caller control flow). Post-call storage questions run as P8b (caller persistent-state mutations after a non-propagating call — the accounting-consumed-before-success class). Operational-tooling questions run as P9 (subsystem-map entrypoints and advertised-control verification). P8a and P8b each consume one probe slot per enumerated caller for the relevant half.
 - Record a blocked validation for every probe whose gate is false — what could not be validated and with which instrument — and continue; a blocked probe never fails the area.
 
 ### 2. Record Evidence
