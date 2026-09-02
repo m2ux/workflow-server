@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -43,6 +43,8 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ## Rules
 
-### one-index-per-addressed-tree
+### index-every-addressed-tree
 
-Index the tree whose answers the caller will ask for, and index that tree once. A component folded into a superproject's index is reachable only under the superproject's name, so an operation addressing the component by its own name finds nothing; a component indexed both separately and as part of its superproject answers from two graphs of different scope.
+Index each tree whose answers a caller will ask for by name. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
+
+A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and a member without one is reported missing by [group-freshness](./group-freshness.md) while a group-wide search simply returns fewer results. Where a component is indexed both on its own and as part of a containing tree, both names resolve and answer at different scope — `address-a-named-graph` governs which to address.
