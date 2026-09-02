@@ -57,6 +57,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no resource strands prose above its first section from a consumer that cites it by anchor',
   },
   {
+    id: 'citation-grain',
+    script: 'scripts/check-citation-grain.ts',
+    npmScript: 'check:citations',
+    scope: 'corpus',
+    json: true,
+    proves: 'no technique cites one resource both bare and by anchor, so a file never arrives alongside its own sections',
+  },
+  {
     id: 'identifier-qualification',
     script: 'scripts/check-identifier-qualification.ts',
     npmScript: 'check:identifiers',

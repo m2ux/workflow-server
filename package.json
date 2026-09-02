@@ -24,6 +24,7 @@
     "check:binding": "tsx scripts/check-binding-fidelity.ts",
     "check:identifiers": "tsx scripts/check-identifier-qualification.ts",
     "check:inherited-inputs": "tsx scripts/check-inherited-inputs.ts",
+    "check:citations": "tsx scripts/check-citation-grain.ts",
     "check:framing": "tsx scripts/check-section-framing.ts",
     "check:self-input": "tsx scripts/check-self-provisioned-input.ts",
     "check:self-composed-set": "tsx scripts/check-self-composed-set.ts",
