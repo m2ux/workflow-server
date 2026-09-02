@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -42,6 +42,7 @@ The input findings, each carrying its assigned severity, its `action_tier` (the 
 - Assign every finding in `{findings_to_classify}` a severity on the single scale: Critical, Major, Minor, Nit, or Informational.
 - Judge severity by impact, not surface: Critical for security or data-loss risks and failing tests; Major for correctness defects and build failures; Minor for maintainability and lint issues; Nit for style; Informational for observations carrying no required action.
 - When the findings are validation diagnostics (test/build/lint failures), map them onto the same scale — test failures are Critical, build failures are Major — and do NOT attempt to fix them here; classification only.
+- Findings arrive here from several passes, which is where one defect stated twice becomes visible. Two entries naming the same defect are one finding: keep the designator of the pass that owns it and drop the restatement, per [Report and Methodology](../resources/findings-report.md#report-and-methodology). A review whose passes have little to separate them — a documentation-only change, where post-implementation review and validation reach the same blockers — produces these in bulk.
 
 #### Impact-based severity axes
 
