@@ -1,17 +1,25 @@
 ---
 metadata:
-  version: 3.4.0
+  version: 3.6.0
 ---
 
 ## Capability
 
-Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, and graph operations.
+Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, and graph operations across a repository and its siblings.
 
 ## Rules
 
+### address-a-named-graph
+
+Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`. Where more than one graph is indexed, an unnamed call fails and lists what is available — so the name costs a turn when it is left out and nothing when it is supplied. Apply [resolve-graph](./resolve-graph.md) for that name, for the graphs a sibling component is reachable under, and for the repository groups configured over them.
+
+A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape. Record which graph an answer came from wherever the answer is reported.
+
 ### query-not-grep
 
-Apply [query](./query.md) / [context](./context.md) for execution flows and relationships among code symbols — that is what the graph holds. For a markdown tree it holds paths and no prose, so a question about which text states a claim is a grep question, and [query](./query.md) answers it with unrelated matches rather than nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
+Apply [query](./query.md) / [context](./context.md) for execution flows and relationships among code symbols — that is what the graph holds, and what those two return.
+
+For a markdown tree the graph holds each heading and each link between files, which [heading-search](./heading-search.md) and [reference-lookup](./reference-lookup.md) read. It holds no prose, so a question about which sentence states a claim stays a grep question — and [query](./query.md) answers such a question with unrelated code matches rather than with nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
 
 ### detect-changes-after-edit
 
@@ -20,6 +28,8 @@ Always apply [detect-changes](./detect-changes.md) after applying a rename or ba
 ### index-freshness-first
 
 Apply [verify-index](./verify-index.md) at the start of any GitNexus session, and again before any operation whose answer turns on the current tree — [impact](./impact.md), [detect-changes](./detect-changes.md), [orphan-scan](./orphan-scan.md), [diff-coverage-map](./diff-coverage-map.md). A stale index answers in the same shape as a fresh one and says nothing about its own age, so an unverified answer is indistinguishable from a correct one.
+
+[group-freshness](./group-freshness.md) is the same check for an answer drawn from a whole repository group, and it reads one failure more than age — which it states.
 
 ### edges-the-parser-cannot-see
 
@@ -32,7 +42,7 @@ An operation's answer is therefore evidence of what the graph holds, never of wh
 
 ### keyword-shaped-queries
 
-Phrase [query](./query.md) as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings — which is a property of how the repo was indexed, not something the query can assert. Keyword-shaped input is the phrasing that works either way.
+Phrase [query](./query.md) as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings. Embeddings are built only where the index was asked for them, which is why a repository commonly reports none; and headings and files are never embedded at any setting, so no setting gives semantic search over prose. Keyword-shaped input is the phrasing that works either way.
 
 ### must-use-operations
 

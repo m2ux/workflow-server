@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Enumerate exactly the public/exported APIs in the diff that need doc comments â€
 
 ### repo_name
 
-Name of the indexed repository whose graph the operations query (the `{name}` in `gitnexus://repo/{name}/context`).
+Optional. Name of the indexed graph to address, as [resolve-graph](./resolve-graph.md) reports it. Omit only where exactly one graph is indexed.
 
 ### diff
 
@@ -25,7 +25,7 @@ the exported symbols present in the diff that require documentation
 
 ## Protocol
 
-1. Apply [detect-changes](./detect-changes.md) to obtain the changed-symbol set.
+1. Apply [detect-changes](./detect-changes.md) against `{repo_name}` to obtain the changed-symbol set.
    - If the index is out of date, run `npx gitnexus analyze` and then retry.
-2. Apply [cypher](./cypher.md) with a visibility filter to keep only public/exported symbols from that set.
+2. Apply [cypher](./cypher.md) against `{repo_name}` with a visibility filter to keep only public/exported symbols from that set.
 3. Return the filtered set as `{public_api_symbols}` â€” the doc-comment work list.
