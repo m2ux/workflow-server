@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -74,6 +74,7 @@ One row per enumeration unit walked, each carrying the unit's home, the unit's a
   - [Canon Hygiene Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#canon-hygiene-anti-patterns)
   - [Technique Protocol Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#technique-protocol-anti-patterns)
   - [Authoring Guidance (MR)](../../../workflow-design/resources/anti-patterns.md#authoring-guidance-mr)
+- Where the corpus is indexed, apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[heading-search](../../../meta/techniques/gitnexus-operations/heading-search.md) on each unit's title and read its `{heading_matches}` for the heading that home now carries. An anchor whose heading has been renamed fetches nothing, and a unit fetched as nothing is walked as nothing while the ledger records it walked
 - Do not restate, summarize or number the entries a unit contains; follow each entry as written, and cite entries by their kebab-case name
 
 ### 2. Walk Every Unit Against the Surface

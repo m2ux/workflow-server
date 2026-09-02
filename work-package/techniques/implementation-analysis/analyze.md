@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -36,6 +36,8 @@ Gaps linked to measurable success criteria from `{requirements}`, with documente
 
 - When the `{component_name}` codebase has a GitNexus index, apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../../meta/techniques/gitnexus-operations/query.md)(query: `{$concept}`, repo_name: `{component_name}`) to find execution flows by concept and [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md)(name: `{$symbol}`, repo_name: `{component_name}`) for 360-degree symbol usage (callers, callees, process membership)
 - Read `gitnexus://repo/{component_name}/clusters` to identify functional areas and `gitnexus://repo/{component_name}/processes` for end-to-end flow inventory
+- Where the component belongs to a repository group, apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[group-freshness](../../../meta/techniques/gitnexus-operations/group-freshness.md) first and read its `{group_freshness_report}`: a member carrying no index contributes nothing to the search below, and its absence there looks the same as a member holding no match
+- Then apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[group-search](../../../meta/techniques/gitnexus-operations/group-search.md) for `{$concept}` and read its `{group_query_report}` for the sibling components implementing the same concept — an implementation decision here is better for seeing how they made it
 - Fall back to grep/Read/glob only when the codebase is not indexed or the index is stale.
 
 ### 3. Locate Implementation
