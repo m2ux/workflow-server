@@ -1,13 +1,19 @@
 ---
 metadata:
-  version: 3.4.0
+  version: 3.5.0
 ---
 
 ## Capability
 
-Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, and graph operations.
+Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, and graph operations across a repository and its siblings.
 
 ## Rules
+
+### address-a-named-graph
+
+Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`. Where more than one graph is indexed, an unnamed call fails and lists what is available — so the name costs a turn when it is left out and nothing when it is supplied. Apply [resolve-graph](./resolve-graph.md) for that name, for the graphs a sibling component is reachable under, and for the repository groups configured over them.
+
+A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape. Record which graph an answer came from wherever the answer is reported.
 
 ### query-not-grep
 
@@ -20,6 +26,8 @@ Always apply [detect-changes](./detect-changes.md) after applying a rename or ba
 ### index-freshness-first
 
 Apply [verify-index](./verify-index.md) at the start of any GitNexus session, and again before any operation whose answer turns on the current tree — [impact](./impact.md), [detect-changes](./detect-changes.md), [orphan-scan](./orphan-scan.md), [diff-coverage-map](./diff-coverage-map.md). A stale index answers in the same shape as a fresh one and says nothing about its own age, so an unverified answer is indistinguishable from a correct one.
+
+[group-freshness](./group-freshness.md) is the same check for an answer drawn from a whole repository group, and it carries one more failure: a member with no index at all contributes nothing to a group-wide search, and the merged result reports the absence no differently from a member that held no match.
 
 ### edges-the-parser-cannot-see
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -8,6 +8,10 @@ metadata:
 Symbol blast radius — what depends on a symbol, at depth 1/2/3, with confidence and a risk level. The primary pre-edit safety check.
 
 ## Inputs
+
+### repo_name
+
+Optional. Name of the indexed graph to address, as [resolve-graph](./resolve-graph.md) reports it. Omit only where exactly one graph is indexed.
 
 ### target
 
@@ -35,7 +39,7 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 
 ### 1. Invoke
 
-- Call `gitnexus_impact {target, direction, max_depth, min_confidence}`.
+- Call `gitnexus_impact {target, direction, max_depth, min_confidence, repo_name}`.
 - If the call reports the index is out of date, run `npx gitnexus analyze` in terminal, then retry.
 - If `{target}` does not resolve in the graph, verify the symbol name; if it is new or unindexed, fall back to grep for callers.
 

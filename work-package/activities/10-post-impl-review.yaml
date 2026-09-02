@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.24.0
+version: 1.25.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -80,7 +80,10 @@ steps:
         message: Starting post-implementation review
   - kind: technique
     id: gitnexus-detect-changes-preflight
-    technique: gitnexus-operations::detect-changes
+    technique:
+      name: gitnexus-operations::detect-changes
+      inputs:
+        repo_name: component_name
     when: gitnexus_indexed == true
   - kind: technique
     id: manual-diff-review
