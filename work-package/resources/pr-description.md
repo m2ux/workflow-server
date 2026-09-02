@@ -197,3 +197,7 @@ The Changes section does not enumerate file paths. File-level detail is already 
 ### Changes carry no code
 
 The Changes section is plain-language bullets saying what changed and why: no fenced blocks, no snippets, no pasted signatures, and no inline code beyond an unavoidable bare identifier. The diff is the source of truth for code.
+
+### Changes state the substance, not the surface
+
+Each bullet says what the change makes true and why that matters, in the words a reader who has not opened the diff would use. The file list, the diff and the commits already state the surface, and a bullet that restates one of them tells a reader something three other views already show — which is why the rules above rule out paths, code and commit headers one at a time. A bullet naming the behaviour that changed, the constraint now enforced, or the failure now impossible passes all three without being written against them.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -50,6 +50,7 @@ Path to the written close-out document, for user-facing links.
    > When `{is_review_mode}` is true, the delivered thing is a verdict: name the audited PR in the header, state the verdict posted, and link the review summary.
 3. Record known limitations — this document is their canonical home.
 4. Read the in-task follow-ups register and the out-of-scope deferred-items register (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one link line per register that exists, carrying each register's open count and nothing else. Omit the section when neither register exists.
+   > Work still open at close-out and held by no register row goes to the register that owns it first — in-task to follow-ups, out-of-scope to deferred-items, creating that register when this is its first row — and Open Work links it like any other. Writing it into the close-out instead is the second home the guide forbids, and it is the one place where the alternative to a register row is silence.
 5. Link `token-usage.md` for cost when it exists — one line, no figure restated.
 6. Link the validation artifact for test results and the change-block index for files changed — link, don't copy the tables.
 7. Report success criteria exception-only: one line when all are met, rows only for divergences.
