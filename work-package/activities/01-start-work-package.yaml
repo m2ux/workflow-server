@@ -615,11 +615,10 @@ steps:
           variable: needs_issue_creation
           operator: ==
           value: true
-    message: Here is the drafted issue. Select whether to create it, edit it, or cancel.
+    message: The drafted issue stands ready as written.
     options:
       - id: create
         label: Create issue
-        description: Proceed to create the issue
       - id: edit
         label: Edit issue
         description: Make changes before creating

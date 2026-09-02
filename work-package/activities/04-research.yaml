@@ -97,7 +97,7 @@ steps:
           variable: has_reconcilable_research
           operator: ==
           value: false
-        message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}. Select whether to accept research and proceed to planning, or direct further research on a specific item."
+        message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}."
         defaultOption: accept-research
         autoAdvanceMs: 30000
         options:

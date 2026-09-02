@@ -124,7 +124,7 @@ steps:
     options:
       - id: deliver-with-issues
         label: Deliver with recorded issues
-        description: Accept the remaining open issues and proceed to delivery.
+        description: The remaining open issues are acceptable as recorded.
         effect:
           setVariable:
             needs_revision: false

@@ -328,7 +328,7 @@ steps:
           exit: redraft
       - id: attest-with-deferral
         label: Attest, recording the finding as a deferral
-        description: Proceed to attestation, accepting the Critical finding as a recorded deferral rather than a blocker.
+        description: The Critical finding stands as a recorded deferral rather than a blocker.
         effect:
           setVariable:
             has_critical_finding: false

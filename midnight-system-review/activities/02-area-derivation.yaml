@@ -39,11 +39,11 @@ steps:
     steps:
       - kind: checkpoint
         id: investigation-plan-approved
-        message: "Here is the investigation plan: the derived areas, their subsystem rationale, and the planned probes per area (at most {probe_budget_per_area} each) are recorded in investigation-plan.md. Approve the plan, or direct an amendment."
+        message: "The investigation plan — derived areas, their subsystem rationale, and the planned probes per area (at most {probe_budget_per_area} each) — is recorded in investigation-plan.md."
         options:
           - id: approve
             label: Approve the investigation plan
-            description: Area coverage and planned probes are right — proceed to evidence probing.
+            description: Area coverage and the planned probes per area are right.
             effect:
               setVariable:
                 plan_approved: true

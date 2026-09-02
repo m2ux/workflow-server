@@ -148,7 +148,7 @@ steps:
           exit: remediation-selected
       - id: accept-and-record
         label: Accept the findings as recorded
-        description: The open findings stand as recorded in the register; proceed to attestation.
+        description: The open findings stand as recorded in the register.
         effect:
           setVariable:
             remediation_selected: false
