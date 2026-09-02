@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.5.0
+  version: 3.6.0
 ---
 
 ## Capability
@@ -17,7 +17,9 @@ A component and a containing tree that also holds it are separate graphs whose a
 
 ### query-not-grep
 
-Apply [query](./query.md) / [context](./context.md) for execution flows and relationships among code symbols — that is what the graph holds. For a markdown tree it holds paths and no prose, so a question about which text states a claim is a grep question, and [query](./query.md) answers it with unrelated matches rather than nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
+Apply [query](./query.md) / [context](./context.md) for execution flows and relationships among code symbols — that is what the graph holds, and what those two return.
+
+For a markdown tree the graph holds each heading and each link between files, which [heading-search](./heading-search.md) and [reference-lookup](./reference-lookup.md) read. It holds no prose, so a question about which sentence states a claim stays a grep question — and [query](./query.md) answers such a question with unrelated code matches rather than with nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
 
 ### detect-changes-after-edit
 
@@ -40,7 +42,7 @@ An operation's answer is therefore evidence of what the graph holds, never of wh
 
 ### keyword-shaped-queries
 
-Phrase [query](./query.md) as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings — which is a property of how the repo was indexed, not something the query can assert. Keyword-shaped input is the phrasing that works either way.
+Phrase [query](./query.md) as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings. Embeddings are built only where the index was asked for them, which is why a repository commonly reports none; and headings and files are never embedded at any setting, so no setting gives semantic search over prose. Keyword-shaped input is the phrasing that works either way.
 
 ### must-use-operations
 
