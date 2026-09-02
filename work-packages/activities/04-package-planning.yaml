@@ -28,7 +28,7 @@ steps:
         technique: plan-work-package-scope::plan-package
   - kind: checkpoint
     id: plans-created
-    message: Work package plans created. Ready for prioritization?
+    message: Every work package now carries scope, dependencies, effort, and success criteria.
     options:
       - id: proceed
         label: Proceed to prioritization

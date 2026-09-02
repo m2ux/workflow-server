@@ -382,11 +382,11 @@ steps:
           variable: project_type
           operator: ==
           value: rust-substrate
-    message: Do any build-dependent artifacts need user-owned regeneration (e.g. .scale / node metadata)?
+    message: "Build-dependent artifacts on a rust-substrate project — `.scale` files and node metadata — regenerate outside the working tree, so their currency is the user's to settle."
     options:
       - id: none-needed
         label: None needed
-        description: No build-dependent regen is owed; proceed to mark-ready
+        description: No build-dependent regeneration is owed
         effect:
           setVariable:
             build_dependent_artifacts_pending: false
@@ -519,7 +519,7 @@ steps:
     options:
       - id: approved
         label: Approved - No changes required
-        description: PR approved, proceed to completion
+        description: The PR is approved as submitted
         effect:
           setVariable:
             review_requires_changes: false

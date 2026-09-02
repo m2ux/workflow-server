@@ -41,7 +41,7 @@ steps:
         description: Ordered execution units.
   - kind: checkpoint
     id: confirm-mode
-    message: Based on your request, I recommend the following analysis configuration. Would you like to proceed or adjust?
+    message: Recommended analysis configuration for {target}.
     condition:
       type: simple
       variable: pipeline_mode

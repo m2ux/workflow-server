@@ -109,7 +109,7 @@ steps:
         message: "The 'security' remote is not registered against the private fork inside {target_path}. Add it with git remote add security {private_fork_url} and re-run."
   - kind: checkpoint
     id: confirm-security-remote
-    message: "CRITICAL: Isolation check. Confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
+    message: "Isolation check — `git remote -v` reports where the `security` remote points, and this run requires a private repository there."
     options:
       - id: confirmed
         label: Yes, security remote is private
@@ -133,7 +133,7 @@ steps:
     technique: security-setup::initialize-security-branch
   - kind: checkpoint
     id: verify-isolation
-    message: The 'security' remote and local branch are configured, and no public PR or Issue will be created. Is the private remote URL {sec_vuln_url} correct and authorized?
+    message: "The `security` remote and local branch are configured against {sec_vuln_url}, and this run creates no public PR or issue."
     options:
       - id: authorized
         label: Yes, proceed

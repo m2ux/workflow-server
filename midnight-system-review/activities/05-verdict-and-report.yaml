@@ -54,7 +54,7 @@ steps:
         message: Verdict presentation is blocked until the report's per-area accounting reconciles — every investigation area reports its probe and finding counts, every finding maps to exactly one area, and totals match the findings register (accounting reconciliation gate)
   - kind: checkpoint
     id: verdict-review
-    message: "Merge-readiness verdict: {merge_readiness_verdict}/5 ({review_type}). The full report with per-area accounting is in review-report.md. Accept the verdict, or reopen the investigation?"
+    message: "Merge-readiness verdict: {merge_readiness_verdict}/5 ({review_type}). The full report with per-area accounting is in review-report.md."
     options:
       - id: accept-verdict
         label: Accept verdict and report
@@ -73,7 +73,7 @@ steps:
       variable: has_pr_surface
       operator: ==
       value: true
-    message: The target has a pull-request surface. Publish this review to the PR as a formal review comment?
+    message: The target has a pull-request surface that accepts a formal review comment.
     options:
       - id: publish
         label: Publish review to the PR
