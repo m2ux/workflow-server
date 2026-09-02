@@ -126,6 +126,12 @@ Most capabilities are operation-groups: a `<group>/` directory holding a `TECHNI
 | 07 | [write-cicd-report](./techniques/write-cicd-report/) | group | Report generation | Report Generation (step-level) |
 | 08 | [execute-sub-agent](./techniques/execute-sub-agent.md) | standalone | Sub-agent bootstrap + structured output | Supporting, sub-agents S1-Sn, V, M |
 
+### Why the knowledge graph is absent
+
+No technique here binds a [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) operation, and the group's own `subjects-the-index-holds` rule is the reason. This audit's subject is the pipeline definitions under `.github/workflows/`, and an index walks no path beneath a dot-directory — so the files every one of the seven patterns reads are absent from a fresh graph as much as a stale one. Measured against the indexed graphs on the development host, each reports zero files under any dot-directory while holding the rest of the same tree.
+
+The source-to-sink flows the audit traces also run from a pipeline expression to a shell sink inside a `run:` block, which is a text relationship in YAML rather than a call between indexed symbols. Discovery, classification and scanning are therefore file reads and text search throughout.
+
 ## Resources
 
 Reference material loaded by the agent at runtime — pattern catalogs, scoring rubrics, and schemas that inform scan and reporting logic.
