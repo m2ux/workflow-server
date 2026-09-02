@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -77,6 +77,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 - Skip this phase when `{pr_number}` is unset (no PR exists — stealth mode).
 - Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); take the live body from `{pr_body}`.
 - Run [update-pr](../update-pr/TECHNIQUE.md)::[verify-body](../update-pr/verify-body.md) against the live body.
+- A review run checked the body at intake, so record here only what has changed since: a finding the intake check already stated is cited by its designator, and a body edited during the run is re-judged whole. On a create run this is the first check and every finding is its own.
 - If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.
 
 ## Rules

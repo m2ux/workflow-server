@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -31,6 +31,14 @@ The triage table: one row per prior comment or review thread, each marked Confir
 
 The ceiling the Overall Rating may not exceed, derived from the triage. When any prior comment is a blocker-class concern left unaddressed by the PR, the cap is the request-changes tier; otherwise the cap is unset and the rating is governed solely by the review's own findings.
 
+### body_conforms
+
+True when the reviewed pull request's body satisfies every conformance criterion in the pr-description guide.
+
+### body_findings
+
+Each way the body departs from that guide, so an author can repair it while the review is still being written.
+
 ## Protocol
 
 ### 1. Ingest All Prior Feedback
@@ -55,7 +63,13 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 - Set `{rating_cap}` to the request-changes tier when any blocker-class concern is dispositioned Confirmed (valid and unaddressed); leave it unset when every blocker-class concern is Refuted or Superseded.
 - An unaddressed external blocker therefore prevents an "approve" or "comment only" verdict regardless of the review's own findings.
 
-### 4. Create the Triage
+### 4. Check the Body Against Its Guide
+
+- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); take the live body from `{pr_body}`.
+- Run [update-pr](./update-pr/TECHNIQUE.md)::[verify-body](./update-pr/verify-body.md) against it, emitting `{body_conforms}` and `{body_findings}`.
+- The body is read here because a body defect is cheap while the author is still holding the change and dear once the review has been composed around it. The strategic pass re-reads it for what has changed since.
+
+### 5. Create the Triage
 
 - Create the `{prior_feedback_triage}` artifact in `{planning_folder_path}` per [prior-feedback-triage](../resources/prior-feedback-triage.md#template) and its [Rules](../resources/prior-feedback-triage.md#rules).
 
