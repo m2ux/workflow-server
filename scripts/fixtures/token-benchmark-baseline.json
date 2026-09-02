@@ -3,8 +3,8 @@
   "label": "baseline",
   "contextMode": "fresh",
   "agentId": "bench-solo",
-  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/fix/400-w1-presentation-contract/workflows",
-  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/fix/400-w1-presentation-contract",
+  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/fix/delivery-baseline-rerecord/workflows",
+  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/fix/delivery-baseline-rerecord",
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -32,11 +32,11 @@
     "get_technique": 24
   },
   "chars": {
-    "start_session": 789,
-    "get_workflow": 114401,
+    "start_session": 869,
+    "get_workflow": 112548,
     "next_activity": 1195,
-    "get_activity": 553988,
-    "get_resource": 563636,
+    "get_activity": 562073,
+    "get_resource": 572354,
     "yield_checkpoint": 2930,
     "respond_checkpoint": 1984,
     "resume_checkpoint": 3679,
@@ -45,7 +45,7 @@
   "history": {
     "technique_bundled": 66,
     "technique_fetched": 24,
-    "resource_fetched": 143
+    "resource_fetched": 144
   },
   "repeatedResources": [
     {
@@ -75,14 +75,14 @@
   ],
   "contextModeOnDisk": "fresh",
   "agentIdOnDisk": "bench-solo",
-  "deliveredContentKeys": 263,
-  "resourceLedgerKeys": 74,
+  "deliveredContentKeys": 265,
+  "resourceLedgerKeys": 75,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 553988,
-  "getWorkflowChars": 114401,
-  "getResourceChars": 563636,
+  "getActivityChars": 562073,
+  "getWorkflowChars": 112548,
+  "getResourceChars": 572354,
   "getTechniqueChars": 147495,
-  "workflowsRev": "11faffbd",
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-27 against workflows@11faffbd. Delivery is 21,677 characters above the previous recording of 1,357,843, which is the checkpoint presentation contract taking one home. What the corpus gained: when a gate is presented, what makes it soft, and which gate may never be soft are stated once, in the two workflow-engine operations that present and resolve a checkpoint, and the four workflow-level rules that each stated a version of it are gone. get_workflow rises 9,649 because that contract is in the operations bundle, and get_activity rises 8,566 because eager step-technique bundling delivers the same operations again in each activity that binds one \u2014 so roughly 4,000 characters of contract text costs about four times that across one walk. The deletions this change also makes \u2014 88 blocking declarations, 16 auto-advance fields on gates that now wait for a person, and the four rule licences \u2014 sit in activity bodies and workflow rules rather than in the delivered bundle, so they do not offset it here. get_technique rises 3,619; get_resource falls 157."
+  "workflowsRev": "c56b51ca",
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-02 against workflows@c56b51ca. Delivery is 14,950 characters above the previous recording of 1,379,520 at workflows@11faffbd, and the whole of that is corpus the code branch has since adopted: the review-basis work items that state what a review run reaches and what its claims rest on, the five hand-checks a reviewer used to perform from memory, the inventories each built once, the authoring-conformance body check, the citation-grain rule that reads a citation at the grain its target is delivered at, and the graph-reach operations that open the sibling repositories and the markdown half of the knowledge graph. get_resource rises 8,718 because those work items cite rubrics and registers at the section a step reads, and each cited section is delivered; get_activity rises 8,085 because eager step-technique bundling delivers a widened operation again in each activity that binds it. get_workflow falls 1,853, the rules those operations replaced coming out of the workflow body. get_technique is unchanged: the graph operations are bound rather than bundled on this walk. One resource ledger key is added, the review register."
 }

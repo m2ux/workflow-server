@@ -63,6 +63,8 @@ interface Metrics {
   contextMode: ContextMode;
   agentId: string;
   workflowsDir: string;
+  /** Corpus commit the walk read, so a fixture recorded from this output carries its own provenance. */
+  workflowsRev?: string;
   serverRoot: string;
   path: string[];
   finalStatus: string;
@@ -511,6 +513,7 @@ async function main(): Promise<void> {
       contextMode,
       agentId,
       workflowsDir: process.env.WORKFLOWS_DIR ?? join(serverRoot, 'workflows'),
+      workflowsRev: resolveCorpusRev(process.env.WORKFLOWS_DIR ?? join(serverRoot, 'workflows')),
       serverRoot,
       path: walkResult.path,
       finalStatus: walkResult.finalStatus,
