@@ -22,7 +22,7 @@ variables:
     description: Root of the wiki tree — holds index.md, log.md, overview.md, and the typed-page subfolders.
   - name: raw_baseline_commit
     type: string
-    description: The pinned source commit every citation is relative to. The raw baseline is the source tree at this commit, referenced in place — there is no physical copy.
+    description: The pinned source commit every citation is relative to, read in place from the source tree.
 initialActivity: confirm-scope
 graph:
   confirm-scope:

@@ -30,7 +30,7 @@ techniques:
 variables:
   - name: has_pr_surface
     type: boolean
-    description: Whether review_target resolved to a pull request with a postable review surface; set during scope-intake, gates the publish-decision checkpoint and the publish-review activity
+    description: Whether review_target resolved to a pull request with a postable review surface
     defaultValue: false
   - name: review_target
     type: string
@@ -47,7 +47,7 @@ variables:
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{target}-system-review"
   - name: probe_budget_per_area
     type: number
-    description: Maximum evidence probes per investigation area; the two-probe lower bound stays guidance
+    description: Maximum evidence probes per investigation area
     defaultValue: 4
 initialActivity: scope-intake
 graph:

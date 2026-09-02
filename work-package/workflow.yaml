@@ -82,7 +82,7 @@ variables:
     description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
   - name: target_repo
     type: string
-    description: GitHub repository as owner/repo. Supplies github-cli-protocol ops via name-match.
+    description: GitHub repository as owner/repo.
   - name: component_git_dir
     type: string
     description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
@@ -104,7 +104,7 @@ variables:
     description: The repository's default branch, which feature branches sync from and merge into.
   - name: headless_mode
     type: boolean
-    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person. A review run sets it true.
+    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
     defaultValue: false
   - name: safety_floor_cleared
     type: boolean
@@ -158,7 +158,7 @@ variables:
     description: Implementation plan.
   - name: issue_title
     type: string
-    description: Tracker issue/ticket title; used by naming-conventions to derive the branch name.
+    description: Tracker issue/ticket title.
   - name: stealth_mode
     type: boolean
     description: Suppresses public-disclosure side-effects (PR rendering and creation, issue-tracker posting, PR review lifecycle) when a private.
@@ -169,7 +169,7 @@ variables:
     defaultValue: origin
   - name: assumption_outcome
     type: string
-    description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
+    description: The outcome the deciding gate gave the assumption under discussion, empty before any gate has decided one.
     defaultValue: ""
   - name: issue_request
     type: string

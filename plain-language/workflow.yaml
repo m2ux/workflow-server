@@ -28,7 +28,7 @@ variables:
     defaultValue: true
   - name: source_document_path
     type: string
-    description: Path to the existing document a rewrite or audit run reads. Empty on an author run.
+    description: Path to the existing document a rewrite or audit run reads, empty on an author run.
     defaultValue: ""
   - name: output_path
     type: string
