@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.6.0
+  version: 3.7.0
 ---
 
 ## Capability
@@ -14,6 +14,15 @@ Codebase intelligence via the GitNexus knowledge graph — indexing, structural 
 Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`. Where more than one graph is indexed, an unnamed call fails and lists what is available — so the name costs a turn when it is left out and nothing when it is supplied. Apply [resolve-graph](./resolve-graph.md) for that name, for the graphs a sibling component is reachable under, and for the repository groups configured over them.
 
 A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape. Record which graph an answer came from wherever the answer is reported.
+
+### subjects-the-index-holds
+
+Each operation answers from the tree its index walked, and reports on that tree rather than failing when it is addressed at something outside it. Two kinds of subject sit outside every index:
+
+- **A document the index never walked** — a transcript, a specification under revision, a page handed over by its author. It carries no node, so an answer about it is an answer about other files whose names happen to rank.
+- **Anything beneath a dot-directory** — the walk skips them, so `.github/workflows/` pipeline definitions, hooks and tool configuration are as absent from a fresh index as from a stale one.
+
+Grep and a direct read are the whole instrument for both, as they are for prose beneath a heading per `query-not-grep`. Settle which tree holds the subject before reaching for an operation.
 
 ### query-not-grep
 
