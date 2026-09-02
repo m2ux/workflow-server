@@ -47,4 +47,4 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 Index each tree whose answers a caller will ask for by name. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
 
-A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and a member without one is reported missing by [group-freshness](./group-freshness.md) while a group-wide search simply returns fewer results. Where a component is indexed both on its own and as part of a containing tree, both names resolve and answer at different scope — `address-a-named-graph` governs which to address.
+A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and [group-freshness](./group-freshness.md) reports a member that has none. Where a component is indexed both on its own and as part of a containing tree, both names resolve and answer at different scope — `address-a-named-graph` governs which to address.

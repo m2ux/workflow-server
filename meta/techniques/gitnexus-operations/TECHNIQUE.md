@@ -29,7 +29,7 @@ Always apply [detect-changes](./detect-changes.md) after applying a rename or ba
 
 Apply [verify-index](./verify-index.md) at the start of any GitNexus session, and again before any operation whose answer turns on the current tree — [impact](./impact.md), [detect-changes](./detect-changes.md), [orphan-scan](./orphan-scan.md), [diff-coverage-map](./diff-coverage-map.md). A stale index answers in the same shape as a fresh one and says nothing about its own age, so an unverified answer is indistinguishable from a correct one.
 
-[group-freshness](./group-freshness.md) is the same check for an answer drawn from a whole repository group, and it carries one more failure: a member with no index at all contributes nothing to a group-wide search, and the merged result reports the absence no differently from a member that held no match.
+[group-freshness](./group-freshness.md) is the same check for an answer drawn from a whole repository group, and it reads one failure more than age — which it states.
 
 ### edges-the-parser-cannot-see
 
