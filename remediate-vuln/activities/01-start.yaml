@@ -116,7 +116,9 @@ steps:
         description: Confirmed security remote is correctly configured for isolation
       - id: wrong-remote
         label: No, fix remote
-        description: Remote is incorrect; must be fixed before proceeding
+        description: The remote points somewhere other than the private fork
+        effect:
+          exit: abort
   - kind: checkpoint
     id: short-id-input
     condition:
@@ -140,7 +142,9 @@ steps:
         description: Confirmed private remote and isolation
       - id: cancel
         label: No, abort
-        description: Stop immediately
+        description: The remote or the branch is not the isolated pair this run requires
+        effect:
+          exit: abort
   - kind: technique
     id: initialize-planning-folder
     technique: security-setup::initialize-planning-folder
@@ -171,6 +175,8 @@ steps:
 exits:
   - id: done
     isDefault: true
+  - id: abort
+    immediate: true
 outcome:
   - "The workflow is locked into isolation: every public disclosure path is disabled for the rest of the fix"
   - All git operations have a private-only destination — the fix cannot be pushed to a public repository

@@ -158,6 +158,7 @@ initialActivity: start
 graph:
   start:
     done: design-philosophy
+    abort: __terminal__
   design-philosophy:
     done: codebase-comprehension
   requirements-elicitation:
