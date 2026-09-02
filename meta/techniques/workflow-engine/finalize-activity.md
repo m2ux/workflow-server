@@ -53,7 +53,7 @@ array of artifact entries (`id`, `name`, `path`).
 
 #### selected_exit
 
-optional — the exit id a checkpoint option named, set when a checkpoint effect carried one (see Protocol step 2).
+optional — the exit id a checkpoint option named, set when a checkpoint effect carried one.
 
 #### next_activity_id
 
