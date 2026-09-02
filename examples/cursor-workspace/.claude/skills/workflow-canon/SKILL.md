@@ -145,6 +145,11 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 - **A ledger states its judgement in fields no check reads.** A suppression entry is matched on a normalised key, so the reason it cites and the line it points at sit outside what the guard compares, and either can be wrong while the guard reports clean. Two entries sharing a key are not evidence of one: the key drops the line number, so a designator read twice on one line yields two findings and earns two entries. Count the findings at the site before calling an entry redundant.
 - **A clean run is not a clean change.** These read structure, not whether the workflow still does what it did. The preservation the canon requires, and the option-coverage walk, carry that.
 
+**Adding a check**
+
+- **A guard that lands green proves nothing.** The corpus fix that motivated it merges first, so the tree it runs against has no defect left and a passing run is indistinguishable from a pattern that matches nothing. Run it against the corpus at the commit before that fix — what it names there is what it detects, and what it stays silent on there bounds its reach.
+- **Prefer a carve-out the guard settles to one a ledger records.** A ledger buys judgement about specific content, and costs a file, a staleness check, and a re-affirmation every time the corpus moves. An exemption that follows from the entry's own terms is structure: it belongs in the condition, where it needs no upkeep and cannot go stale.
+
 **After merge**
 
 - **A definition change owes the code branch an adoption commit.** The pointer, the walk baseline, the stamp and every triage entry the change settled move together — `AGENTS.md` owns the sequence and why it admits no ordering. A change that closes a binding finding is the case to watch for, since the entry suppressing it goes stale on the same commit that adopts it.
