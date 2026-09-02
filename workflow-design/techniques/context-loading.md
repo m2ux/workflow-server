@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -51,7 +51,7 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 4. Ground YAML Syntax
 
-- Survey live workflow / activity / technique YAML for syntax grounding; operative YAML invariants live in [yaml-authoring](./yaml-authoring.md) Rules and [format-conventions](../resources/format-conventions.md)
+- Survey live workflow / activity / technique YAML for syntax grounding; operative YAML invariants live in [yaml-authoring](./yaml-authoring.md) Rules and [format-conventions](../resources/format-conventions.md#rules)
 
 ### 5. Identify Constructs
 
