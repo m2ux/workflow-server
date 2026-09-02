@@ -57,6 +57,7 @@ A draft self-check is not an audit and produces no findings register. If the cha
 Applied when the change is already specified. The surface comes from the specification, not from a diff.
 
 1. **Resolve the specification to files.** Resolve every construct it names to a concrete path, then take the I/O-contract closure and consumer surface over that set per § Audit → Scope the surface. A specification naming one technique still reaches its referencers.
+   - **A specification describes the corpus at the moment it was written; you are changing the corpus now.** Confirm what it asserts still holds before building to it — the construct is where it says, the count is what it says, the thing it calls absent is absent. What it got right is the surface; what has moved since is the first thing to report, and where nothing is left to change the finding is that, not a change made anyway.
 2. **Fix the construct before the prose**, as Draft step 1. A specification says what to change, not which construct to change it into.
 3. **Load what binds**, as Draft step 2 — plus, where the change answers a finding, that entry's **Fix** and **Do not flag**. Together they are the shape the replacement takes, read as its specification rather than as a test applied afterwards.
 4. **Name what the change preserves**, per the non-negotiable below.
