@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -57,7 +57,10 @@ A one-line description of this ingest for the log ledger — the area covered (`
 ### 2. Read Raw Source
 
 - Read the raw source for `{target_area}` in place at `{raw_baseline_commit}` — the immutable baseline. Do not copy source into the wiki.
-- Where a graph index is available, use it to resolve the area's entry points, exported symbols, and caller/callee relationships so claims about structure and impact rest on evidence rather than inference.
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[resolve-graph](../../meta/techniques/gitnexus-operations/resolve-graph.md)(tree_path: the source tree the baseline was pinned from) and take its `{repo_name}` as the graph every operation below addresses. An empty `{repo_name}` means the tree carries no index, and the reads below are grep and file reads instead.
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md) against `{repo_name}` and read its `{stats}` for the commit the index was built at, per `index-freshness-first` — an index built before `{raw_baseline_commit}` describes a tree the citations do not point at.
+- Take the area's structure from the graph so claims about it rest on evidence rather than inference: [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md)(query: `{target_area}` as keywords, repo_name: `{repo_name}`) whose `{query_report}` gives the execution flows the area participates in, and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: `{$symbol}`, repo_name: `{repo_name}`) for each symbol a page names, whose `{context_report}` gives the callers and callees that become the `related[]` the cascade in step 5 acts on.
+  > - A caller reached through a macro body or named only in a type position is absent from either answer, per `edges-the-parser-cannot-see`. Where the area is built on generated code, a claim of completeness rests on a grep alongside the graph, and the page says which was done.
 - If `{task_knowledge}` was supplied, read it as a second source of claims for the same pages.
 
 ### 3. Classify Into Typed Pages
