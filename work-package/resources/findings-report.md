@@ -28,6 +28,8 @@ Two boundaries decide what goes where:
 - **A finding's own evidence stays with the finding.** The split is between the review's method and its conclusions, never between a conclusion and its support. The arithmetic that shows a limit is exceeded belongs to the finding; the sweep that found no occurrences anywhere is method.
 - **The record states the derivation, not what was missing.** It names the sources read and the commands and tools that produced each enumeration, so a reader can rebuild it. A capability the review did not have is a finding, recorded where findings go — narrating its absence here leaves the reader neither the derivation nor an actionable finding.
 - **The methodology record is checked like the report.** It is the half nobody re-reads, so it is the half a stale claim survives in. Whatever conformance pass runs over the report runs over it.
+- **An enumeration is built once and read thereafter.** A later pass needing a set an earlier pass already walked — the call sites of a symbol, the keys a topology aligns across its configuration files, the branches a refactored function admits — reads it from the record that holds it, citing that record, and extends it where this pass reached further. Rebuilding it costs the walk twice and produces two enumerations that can disagree, which no reader can tell apart from one enumeration and a real change.
+- **A pass that reaches a finding another pass already stated cites its designator.** The finding keeps the one home its own pass gave it. A second statement of it is a second designator for one defect: it doubles the totals, splits the author's attention across two rows, and leaves the two wordings free to drift.
 
 ## Fields
 

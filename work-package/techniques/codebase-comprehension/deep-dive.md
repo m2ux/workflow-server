@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -64,6 +64,7 @@ Targeted exploration findings for the selected area: traced data flows, implemen
 
 - Write `{comprehension_log}` per the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template)
 - Record this investigation alongside the ones earlier passes wrote, rather than in place of them
+- Record every set this investigation walked in full — the call sites a symbol has, the keys a topology aligns across its configuration files, the branches a function admits — naming the query or command that produced it. A later pass reads the set from here rather than walking it again, per [Report and Methodology](../../resources/findings-report.md#report-and-methodology); an enumeration left as prose about what was learned is one the next pass has to rebuild.
 
 ### 3. Promote Settled Outcomes
 
