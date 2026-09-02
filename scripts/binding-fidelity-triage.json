@@ -1,13 +1,13 @@
 {
-  "note": "One-time triage of the binding-fidelity findings the retired baseline had suppressed (issue #327 R3). Every finding carries a verdict and a named rationale, so \"harmless\" and \"live bug\" are no longer the same silence. harmless = correct by design, suppressed. fix-later = real debt, suppressed but counted. live-bug = REPORTED, so the guard stays red until it is fixed. A finding absent from this file is untriaged and reported; an entry that matches nothing is stale and reported. There is no regenerate flag — an entry is a human judgement, which is exactly what the baseline never required. The triage also found and FIXED three live defects, so they appear here as history rather than as entries: work-package auto-created GitHub/Jira issues in a headless review run (two review-reachable checkpoints with a create default); substrate-node-security-audit required user_request without declaring it; and the stealth push path computed push_remote_verified and commits_signed without gating on either. The file carries one entry per emitted violation, so a designator read twice on one line has two entries with the same normalised key; the matcher keys on check, site without its trailing line number, and detail, and resolves both to the same verdict. What the key does not compare is the rationale name and the line number, so every rationale here is cited by at least one entry, and a line number is corrected when the site it names moves. Four reason classes have closed since the triage and are recorded here rather than kept as unused keys: a brace belonging to an external tool's own syntax rather than the designator namespace; a value no operation declares, which the executing agent improvised at the point of use; a declared output with no destination, whose design-time home is output-without-destination in workflow-design/resources/anti-patterns.md; and a finding a test pinned as its fixture for the UNRESOLVED provenance annotation. A fifth closed with #561: a component verdict declared as a product of its own while the artifact was what carried it, which the operation now records in its report instead of declaring.",
-  "corpusSha": "c56b51ca671c3e61dacfc202b1e128ca237a6454",
+  "note": "One-time triage of the binding-fidelity findings the retired baseline had suppressed (issue #327 R3). Every finding carries a verdict and a named rationale, so \"harmless\" and \"live bug\" are no longer the same silence. harmless = correct by design, suppressed. fix-later = real debt, suppressed but counted. live-bug = REPORTED, so the guard stays red until it is fixed. A finding absent from this file is untriaged and reported; an entry that matches nothing is stale and reported. There is no regenerate flag \u2014 an entry is a human judgement, which is exactly what the baseline never required. The triage also found and FIXED three live defects, so they appear here as history rather than as entries: work-package auto-created GitHub/Jira issues in a headless review run (two review-reachable checkpoints with a create default); substrate-node-security-audit required user_request without declaring it; and the stealth push path computed push_remote_verified and commits_signed without gating on either. The file carries one entry per emitted violation, so a designator read twice on one line has two entries with the same normalised key; the matcher keys on check, site without its trailing line number, and detail, and resolves both to the same verdict. What the key does not compare is the rationale name and the line number, so every rationale here is cited by at least one entry, and a line number is corrected when the site it names moves. Four reason classes have closed since the triage and are recorded here rather than kept as unused keys: a brace belonging to an external tool's own syntax rather than the designator namespace; a value no operation declares, which the executing agent improvised at the point of use; a declared output with no destination, whose design-time home is output-without-destination in workflow-design/resources/anti-patterns.md; and a finding a test pinned as its fixture for the UNRESOLVED provenance annotation. A fifth closed with #561: a component verdict declared as a product of its own while the artifact was what carried it, which the operation now records in its report instead of declaring.",
+  "corpusSha": "131e2942c15cbcf16680980be7e15b107abf051d",
   "rationales": {
-    "shared-op-return-contract": "A shared library operation declares what it returns — one under meta/, or one a workflow publishes for reuse in its own README and workflow description. Library ops are bound ad hoc by any workflow, so having no consumer inside the corpus is the expected state of a library, not a broken seam; the caller that binds the op consumes the value in its own context. This is the first do-not-flag carve-out of `output-without-destination`.",
+    "shared-op-return-contract": "A shared library operation declares what it returns \u2014 one under meta/, or one a workflow publishes for reuse in its own README and workflow description. Library ops are bound ad hoc by any workflow, so having no consumer inside the corpus is the expected state of a library, not a broken seam; the caller that binds the op consumes the value in its own context. This is the first do-not-flag carve-out of `output-without-destination`.",
     "shared-op-caller-argument": "A shared meta operation input that the binding step supplies as a deviation when it needs a non-default value. No workflow-level producer is expected: callers that need it bind it, and callers that do not take the op default path.",
-    "pattern-library-seed": "A borrowable pattern activity binds an op whose input the BORROWING workflow seeds — the contract documented in meta/activities/patterns/README.md. Producers resolve per-workflow, so the library home can never show one.",
+    "pattern-library-seed": "A borrowable pattern activity binds an op whose input the BORROWING workflow seeds \u2014 the contract documented in meta/activities/patterns/README.md. Producers resolve per-workflow, so the library home can never show one.",
     "artifact-template-placeholder": "The brace names a field of a rendered artifact or commit-trailer template, not a value read from the variable bag.",
     "documentation-notation": "The brace is metasyntax or an illustrative example inside a spec sentence, not a read.",
-    "container-contract-shape": "A workflow-root or group TECHNIQUE.md output naming the shape the whole group contributes to, not a value one step produces and another remaps. No single bind site can consume it — the descendants each fill part of it — so having no consumer is what the contract looks like when it is correct. The second do-not-flag carve-out of `output-without-destination`.",
+    "container-contract-shape": "A workflow-root or group TECHNIQUE.md output naming the shape the whole group contributes to, not a value one step produces and another remaps. No single bind site can consume it \u2014 the descendants each fill part of it \u2014 so having no consumer is what the contract looks like when it is correct. The second do-not-flag carve-out of `output-without-destination`.",
     "sub-agent-brief-seed": "Every bind site of the op sits in a Sub-Agent activity, dispatched by an orchestrator that composes its brief. The input arrives in that brief, so no workflow variable or sibling step produces it."
   },
   "entries": [
@@ -83,13 +83,6 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/context.md",
-      "detail": "output 'context_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "meta/techniques/gitnexus-operations/cypher.md",
       "detail": "output 'result_rows' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
@@ -125,13 +118,6 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/impact.md",
-      "detail": "output 'impact_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "meta/techniques/gitnexus-operations/orphan-scan.md",
       "detail": "output 'orphan_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
@@ -141,13 +127,6 @@
       "check": "dead-output",
       "site": "meta/techniques/gitnexus-operations/public-api-enum.md",
       "detail": "output 'public_api_symbols' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/query.md",
-      "detail": "output 'query_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
