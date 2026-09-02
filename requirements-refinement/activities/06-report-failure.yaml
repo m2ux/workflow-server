@@ -18,14 +18,7 @@ steps:
     technique: report-failure
     actions:
       - action: message
-        message: "The unresolved critical issues, the correction history, and the manual resolution each issue needs are on record ([failure report]({failure_report_path}))."
-  - kind: checkpoint
-    id: failure-acknowledged
-    message: "Refinement stops with unresolved critical issues and stages no specification for promotion ([failure report]({failure_report_path}))."
-    options:
-      - id: acknowledged
-        label: Acknowledged
-        description: The failure report has been reviewed; manual intervention will follow outside the workflow.
+        message: "Refinement stops with unresolved critical issues and stages no specification for promotion. The issues, the correction history, and the manual resolution each one needs are on record ([failure report]({failure_report_path}))."
 outcome:
   - The user knows exactly which critical issues blocked refinement and what manual resolution each one needs
   - No unvalidated specification reaches the canonical location — the prior state is preserved until a human intervenes
