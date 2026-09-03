@@ -376,6 +376,7 @@ exits:
   - id: done
     isDefault: true
   - id: redraft
+    immediate: true
 outcome:
   - Every file the change requires is enumerated up front, closing the most common gap — work begun against an incomplete picture of what must be touched
   - The folder structure and activity flow are agreed against established patterns, so the workflow's shape is sound before any file is written

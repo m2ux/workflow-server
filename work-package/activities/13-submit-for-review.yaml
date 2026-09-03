@@ -551,6 +551,7 @@ exits:
     when: review_requires_changes == false
     isDefault: true
   - id: provide-input
+    immediate: true
   - id: abort
     immediate: true
 outcome:
