@@ -81,7 +81,7 @@ Change-request category vocabulary (activity, technique, resource, metadata, str
 
 ### 04–07, 11–21 — Creation guides
 
-Template + Rules for planning-folder artifacts. See the map above.
+Template + Rules for planning-folder artifacts. See [Planning artifact to guide map](#planning-artifact-to-guide-map).
 
 ### 08 — Design Assumption Reconciliation
 

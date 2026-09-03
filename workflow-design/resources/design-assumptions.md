@@ -63,5 +63,5 @@ One row per assumption, updated in place across its lifecycle — surfaced, reco
 - **Table is the record** — no prose duplicate of the log elsewhere (README / COMPLETE link here).
 - **One row per assumption**, updated in place through reconcile.
 - **Null row format:** if none significant, one row stating that (same shape as a normal log row).
-- **Categories** use the design set in the table above.
+- **Categories** use the design set in [Assumption Categories](#assumption-categories).
 - **Line budget:** summary + log rows only; keep under ~80 lines unless the open-judgement set is large.
