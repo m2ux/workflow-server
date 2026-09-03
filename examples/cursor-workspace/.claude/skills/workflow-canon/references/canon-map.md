@@ -78,7 +78,11 @@ carve-out.
 | Guards | Verdicts and findings as evidence | A restated roster; read `scripts/guards.ts` |
 
 Where a principle and a catalog entry share a concern, the entry carries the operative criterion and
-the principle carries the framing: report the entry, cite the principle. A principle names its
-covering entry where one exists, so the pairing is read from the principle rather than listed here.
-Where a principle names none, establish whether an entry's Detect reaches the shape before treating
-the principle as the sole detector — the principle's own text is what fires when none does.
+the principle carries the framing: report the entry, cite the principle.
+
+A principle names its covering entry where one exists, and that name settles the pairing **only for
+the shapes the entry's Detect reaches**. A stance spans every spelling of its defect; an entry keys
+on the spellings it names. So read the entry's Detect against the construct in hand before deferring
+to it: where the stance reaches a spelling the Detect does not, the principle is the sole detector
+for that spelling, and the distance between them is itself a finding against
+`operative-criteria-need-a-home`.
