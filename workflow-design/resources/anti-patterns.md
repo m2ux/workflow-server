@@ -797,15 +797,18 @@ Symbol ids use the wrong case convention.
 
 ### AP-59. constraint-as-blockquote
 
-"`  - If the PR has not merged, wait`"
+"`  - If the PR has not merged, wait`" / "`Compose {status} = {…}. When passed is false, surface the offending entries.`"
 
-A caveat is a protocol sub-bullet instead of a blockquote note.
+A caveat qualifying one instruction sits outside the blockquote note that carries it.
 
-**Detect:** A constraint that qualifies a SINGLE primary instruction — conditional caveat, fallback, error-path, or prohibition — is an indented sub-bullet (`  - …`). The protocol parser's step regex strips leading whitespace, so that line becomes a disconnected *peer* step.
+**Detect:** A constraint that qualifies a SINGLE primary instruction — conditional caveat, fallback, error-path, or prohibition — sits anywhere other than a `>` note beneath that instruction. Two spellings carry it:
 
-**Do not flag:** Genuine enumerations or sequential sub-steps (per-harness branch tables, ordered sub-actions). Global/cross-step constraints belong in `## Rules` (`structure-backed-constraints`, `no-rule-protocol-restatement`). Single-block Rules misfiled as global — see `local-rule-as-note`. Distinct from `no-one-step-rules`.
+- **As an indented sub-bullet** (`  - …`). The protocol parser's step regex strips leading whitespace, so the line becomes a disconnected *peer* step.
+- **As a `when` / `if` / `otherwise` clause inside the step's own sentence.** The step's outcome and a branch off it read as one instruction, so a reader evaluates every clause to learn which part applies to their run. Two clauses restating one predicate in different words (`when {passed} is false` beside `if the run emitted warnings`) read as two branches over one condition.
 
-**Fix:** Move the caveat into a `>` note under the primary instruction. A lone caveat is the note's prose (`  > If the PR has not merged, wait`); two or more items each take a bullet within the note (`  > - When …`). A line opening with `>` is not a step — it folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#31-isolate-conditional-branches-as-notes).
+**Do not flag:** Genuine enumerations or sequential sub-steps (ordered sub-actions, precedence ladders). A complete selection ladder — `If` / `Else if` / `Otherwise` arms over one choice — is a branch table, and stands whichever way it is indented. Global/cross-step constraints belong in `## Rules` (`structure-backed-constraints`, `no-rule-protocol-restatement`). Single-block Rules misfiled as global — see `local-rule-as-note`. Distinct from `no-one-step-rules`.
+
+**Fix:** Move the caveat into a `>` note under the primary instruction, and leave the step stating its outcome alone. A lone caveat is the note's prose (`  > If the PR has not merged, wait`); two or more items each take a bullet within the note (`  > - When …`). Where two clauses name one predicate, the note states it once. A line opening with `>` is not a step — it folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#31-isolate-conditional-branches-as-notes).
 
 ### AP-60. local-rule-as-note
 

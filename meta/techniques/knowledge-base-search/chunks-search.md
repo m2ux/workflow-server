@@ -20,4 +20,4 @@ Search query
 ## Protocol
 
 1. Call `chunks_search { source_path, query }`.
-   - If this returns no results for an indexed path, the local index may be stale (the knowledge base was updated since it was created); fall back to [catalog-search](./catalog-search.md) to rediscover.
+   > If this returns no results for an indexed path, the local index may be stale (the knowledge base was updated since it was created); fall back to [catalog-search](./catalog-search.md) to rediscover.

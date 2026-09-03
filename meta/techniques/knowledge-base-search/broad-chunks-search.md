@@ -16,4 +16,4 @@ Mapped concept from the index.
 ## Protocol
 
 1. Call `broad_chunks_search { concept: concept_term }`.
-   - If the local index has no mapping for the search term, retry broad-chunks-search with the natural term and note the gap for future index updates.
+   > If the local index has no mapping for the search term, retry broad-chunks-search with the natural term and note the gap for future index updates.

@@ -22,7 +22,7 @@ Maps informal patterns (what agents tend to write as prose) to their formal sche
 | Condition | `schemas/condition.schema.json` | `schemas/README.md — Condition Schema` |
 | State | `schemas/state.schema.json` | `schemas/README.md — State Schema` |
 
-URI `workflow-server://schemas` aggregates the five schemas. Full ontology, field tables, examples, and validation guidance: `schemas/README.md`.
+URI `workflow-server://schemas` aggregates the schemas listed above. Full ontology, field tables, examples, and validation guidance: `schemas/README.md`.
 
 ---
 
