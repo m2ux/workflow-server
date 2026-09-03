@@ -9,7 +9,7 @@ variables:
     - operation_type
     - planning_folder_path
     - removals_approved
-    - scope_round
+    - scope_manifest_confirmed
     - target_path
     - workflow_id
   writes:
@@ -87,6 +87,13 @@ steps:
       outputs:
         written_artifact: scope_manifest_path
     when: operation_type != 'review'
+  - kind: action
+    id: bump-scope-round
+    when: operation_type != 'review' && scope_manifest_confirmed != true
+    actions:
+      - action: set
+        target: scope_round
+        message: The scope-confirmation round this gate presents, one higher than the round already answered.
   - kind: checkpoint
     id: scope-confirmed#{scope_round}
     condition:
@@ -109,13 +116,6 @@ steps:
           setVariable:
             scope_manifest_confirmed: false
           exit: revise
-  - kind: action
-    id: bump-scope-round
-    when: operation_type != 'review' && scope_manifest_confirmed != true
-    actions:
-      - action: set
-        target: scope_round
-        message: The next scope-confirmation round for this run, one higher than the round just answered.
   - kind: loop
     id: file-drafting-loop
     name: File Drafting Loop
@@ -182,6 +182,7 @@ exits:
   - id: done
     isDefault: true
   - id: revise
+    immediate: true
 outcome:
   - Create and update runs hold a dedicated worktree on their own branch, so no edit lands in the shared library checkout
   - The complete set of files the change touches is enumerated and confirmed before any of them is written
