@@ -415,7 +415,8 @@ describe('mcp-server integration', () => {
     });
 
     // submit-for-review's body-non-conformant gate offers a re-entry and an abort, with eleven
-    // steps after it. The ungated ones before it are what a worker that aborts there has run.
+    // steps after it. Both exits are immediate, so either answer leaves those eleven unrun; the
+    // ungated steps before the gate are what a worker that answers there has run.
     const RAN_BEFORE_ABORT = [
       { step_id: 'announce-start', output: 'announced' },
       { step_id: 'review-summary-approval', output: 'approved' },
@@ -440,7 +441,7 @@ describe('mcp-server integration', () => {
       const options = checkpoint.options as Array<{ id: string; consequence?: Record<string, unknown> }>;
 
       expect(options.find(o => o.id === 'provide-input')?.consequence)
-        .toEqual({ exit: 'provide-input', next_activity: 'submit-for-review' });
+        .toEqual({ exit: 'provide-input', next_activity: 'submit-for-review', ends_activity: true });
       expect(options.find(o => o.id === 'abort')?.consequence)
         .toEqual({ exit: 'abort', next_activity: 'complete', ends_activity: true });
     });
