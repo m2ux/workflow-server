@@ -99,6 +99,7 @@ exits:
   - id: report-only
     isDefault: true
   - id: revise-investigation
+    immediate: true
 outcome:
   - The merge-readiness verdict is computed from accepted findings only, per rubric, so it is reproducible and defensible
   - The report's per-area accounting reconciles before anyone reads a verdict, closing the silent-coverage-gap failure mode

@@ -262,10 +262,13 @@ steps:
 exits:
   - id: remediation-selected
     when: remediation_selected == true && remediation_round < 3
+    immediate: true
   - id: committed
     isDefault: true
   - id: fix-issues
+    immediate: true
   - id: return-to-draft
+    immediate: true
 outcome:
   - Every high-severity finding is re-derived independently before it drives an edit, so a finding that cannot be reproduced never reaches remediation
   - The register is the run's durable audit record, and a review run terminates on it with nothing committed
