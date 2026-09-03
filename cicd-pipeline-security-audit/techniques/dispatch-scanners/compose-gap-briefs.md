@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compose targeted re-dispatch briefs for each coverage gap in the verification report — producing `{worker_briefs}` (possibly empty) for meta [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[dispatch-workers](../../../meta/techniques/orchestration-patterns/dispatch-workers.md). Domain prompt assembly only; dispatch is a separate activity step.
+Targeted re-dispatch briefs, one for each coverage gap the verification report names, and an empty set where it names none.
 
 ## Outputs
 

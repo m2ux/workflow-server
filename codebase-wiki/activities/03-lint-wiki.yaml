@@ -47,7 +47,7 @@ steps:
             needs_reingest: true
       - id: accept
         label: Accept findings and publish
-        description: The findings are acceptable as recorded; proceed to publish without a further build pass.
+        description: The findings are acceptable as recorded, and no further build pass is owed.
         effect:
           setVariable:
             needs_reingest: false

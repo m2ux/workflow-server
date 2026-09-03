@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Render the review in the canonical [review structure](../../resources/review-format.md#structure) — verdict, per-area findings, grade tuples, blocked validations, and the Review Details accounting per the [accounting rules](../../resources/review-format.md#accounting-rules) — producing both the report artifact and the summary text that publication posts verbatim.
+The review in its canonical structure — verdict, per-area findings, grade tuples, blocked validations, and the Review Details accounting — as both the report artifact and the byte-identical summary text publication posts.
 
 ## Inputs
 
@@ -39,6 +39,10 @@ The full review report in the canonical format, persisted for the planning recor
 
 `human`
 
+### review_report_path
+
+Absolute path to the written review report.
+
 ### review_summary
 
 The rendered review text destined for the pull request — posted verbatim by the publish operation, byte-for-byte what sign-off approved.
@@ -52,4 +56,4 @@ The rendered review text destined for the pull request — posted verbatim by th
 ### 2. Reconcile and Emit
 
 - Reconcile the accounting table against the evidence log and findings register in the planning folder — every area accounted, every finding mapped to exactly one area, totals matching — before anything is emitted; this reconciliation is what the accounting gate validates.
-- Write `{review_report}` to the planning folder and emit `{review_summary}` as the exact review text (the report's publishable body, byte-for-byte).
+- Write `{review_report}` to the planning folder, capture its written location as `{review_report_path}`, and emit `{review_summary}` as the exact review text (the report's publishable body, byte-for-byte).

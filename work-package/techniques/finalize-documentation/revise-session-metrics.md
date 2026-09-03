@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Client-side pointer: the authoritative post-exit rewrite of session-trace and token-usage lives on the meta universal layer as [workflow-engine::revise-session-metrics](../../../meta/techniques/workflow-engine/revise-session-metrics.md). Meta `end-workflow` applies it after the client session completes so the terminal activity is included.
+Client-side pointer to the meta universal layer, which owns the post-exit rewrite of session-trace and token-usage after the client session completes, so the terminal activity is counted.
 
 ## Inputs
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Working directory materialised as a git worktree of the component at `{target_path}` on `{branch_name}` (new feature branch or existing branch). `{create_branch}` selects between the two.
+Working directory materialised as a git worktree of the component, on either a feature branch created fresh or an existing branch checked out.
 
 ## Inputs
 

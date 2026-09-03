@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Behavioral boundaries on a dispatched worker — how it writes the artifacts its activity declares, and what it reports having written. The boundaries every agent shares are in [agent-conduct](./agent-conduct.md).
+Behavioral boundaries on a dispatched worker — how it writes the artifacts its activity declares, and what it reports having written. The boundaries every agent shares belong to the agent-conduct contract.
 
 ## Rules
 

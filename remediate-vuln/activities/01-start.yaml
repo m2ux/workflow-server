@@ -109,14 +109,16 @@ steps:
         message: "The 'security' remote is not registered against the private fork inside {target_path}. Add it with git remote add security {private_fork_url} and re-run."
   - kind: checkpoint
     id: confirm-security-remote
-    message: "CRITICAL: Isolation check. Confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
+    message: "Isolation check — `git remote -v` reports where the `security` remote points, and this run requires a private repository there."
     options:
       - id: confirmed
         label: Yes, security remote is private
         description: Confirmed security remote is correctly configured for isolation
       - id: wrong-remote
         label: No, fix remote
-        description: Remote is incorrect; must be fixed before proceeding
+        description: The remote points somewhere other than the private fork
+        effect:
+          exit: abort
   - kind: checkpoint
     id: short-id-input
     condition:
@@ -133,14 +135,16 @@ steps:
     technique: security-setup::initialize-security-branch
   - kind: checkpoint
     id: verify-isolation
-    message: The 'security' remote and local branch are configured, and no public PR or Issue will be created. Is the private remote URL {sec_vuln_url} correct and authorized?
+    message: "The `security` remote and local branch are configured against {sec_vuln_url}, and this run creates no public PR or issue."
     options:
       - id: authorized
         label: Yes, proceed
         description: Confirmed private remote and isolation
       - id: cancel
         label: No, abort
-        description: Stop immediately
+        description: The remote or the branch is not the isolated pair this run requires
+        effect:
+          exit: abort
   - kind: technique
     id: initialize-planning-folder
     technique: security-setup::initialize-planning-folder
@@ -171,6 +175,8 @@ steps:
 exits:
   - id: done
     isDefault: true
+  - id: abort
+    immediate: true
 outcome:
   - "The workflow is locked into isolation: every public disclosure path is disabled for the rest of the fix"
   - All git operations have a private-only destination — the fix cannot be pushed to a public repository

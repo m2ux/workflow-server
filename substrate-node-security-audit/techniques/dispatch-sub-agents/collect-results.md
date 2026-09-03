@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Project meta [gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md) output plus the domain `{agent_roster}` into the audit `{dispatch_results}` shape (per-agent structured output, summary counts, crate-aware manifest).
+Gathered worker output and the agent roster projected into the audit dispatch shape — per-agent structured output, summary counts, and a crate-aware manifest.
 
 ## Inputs
 

@@ -25,7 +25,7 @@ steps:
     technique: setup-planning-folder
   - kind: checkpoint
     id: analysis-type-selection
-    message: Is this continuing previous work or a new initiative?
+    message: The analysis {initiative_name} receives depends on whether it continues previous work or opens a new initiative.
     options:
       - id: continuing
         label: Continuing previous work
@@ -41,7 +41,7 @@ steps:
             analysis_type: context
   - kind: checkpoint
     id: folder-created
-    message: Planning folder created. Proceed with analysis?
+    message: The planning folder and its entry-point scaffolds stand at [planning folder]({planning_folder_path}).
     options:
       - id: proceed
         label: Proceed with analysis

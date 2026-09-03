@@ -26,7 +26,7 @@ variables:
   # constant, owned by the file that runs the borrowed operation.
   - name: assumption_outcome
     type: string
-    description: What the gate that decided an assumption gave it. Always empty here — open judgements stay in the assumptions log until the commit gate rather than being decided one at a time.
+    description: What the gate that decided an assumption gave it — always empty in this workflow.
     defaultValue: ""
   - name: scope_manifest
     type: array

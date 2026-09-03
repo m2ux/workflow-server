@@ -44,7 +44,7 @@ variables:
     description: The user's free-form request that opened this session.
   - name: meta_session_index
     type: string
-    description: 6-character base32 session_index of the meta session itself — read by initialize-session and passed as parent_session_index when create-session creates the client session
+    description: 6-character base32 session_index of the meta session itself.
   - name: host_repo_path
     type: string
     description: Absolute path to the host repository the session belongs to.

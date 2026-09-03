@@ -773,9 +773,9 @@ Invocation argument names or lists use the wrong typographic namespace.
 
 ### AP-57. escape-literal-dollar
 
-"costs $0.05 per call" / "the $schema field"
+"costs \$0.05 per call" / "the \$schema field"
 
-A literal $ is unescaped in rendered prose.
+A literal \$ is unescaped in rendered prose.
 
 **Detect:** Unescaped `$` in **rendered prose** outside fenced code blocks and inline code spans — prices (`$0.05`), `$schema`, shell `${VAR}` shown in text. GFM treats `$…$` as inline math; two unescaped `$` in one paragraph (or even one) can mis-render. Protocol variables are backticked (`backtick-code-tokens`), so their `$` is already math-exempt (do not use `{\$name}` outside code).
 
@@ -835,7 +835,7 @@ A repeated path literal is not factored into a designator.
 
 "`git -C {$component_git_dir} …` with no bind" / "`Maintain {$resolution_counts}` never read"
 
-A {$local} is dead or unbound at the consumer.
+A `{$local}` is dead or unbound at the consumer.
 
 **Detect:** (a) **Unbound local** — bare `{name}` that is not a declared I/O (nor ambient activity input such as `{target_path}` / `{branch_name}`) and has no `{$name}` bind in the protocol. (b) **Dead binding** — `{$name}` never read as `{name}`. Declare-once: `{$name}` only at the producing step; reads are bare `{name}` (backticked per `backtick-code-tokens`); bind textually before every read.
 

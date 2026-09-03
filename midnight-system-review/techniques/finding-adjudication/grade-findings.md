@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Grade every candidate finding with the complete grade tuple defined by the [grade tuple](../../resources/grading-rubric.md#the-grade-tuple) — verifying each candidate's evidence anchor first, then assigning every tuple dimension from the rubric's definitions and [calibration anchors](../../resources/grading-rubric.md#calibration-anchors), never from intuition.
+Every candidate finding carrying a complete grade tuple, each dimension taken from the grading rubric rather than intuition, and each grade resting on a verified evidence anchor.
 
 ## Inputs
 

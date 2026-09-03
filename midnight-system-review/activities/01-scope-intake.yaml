@@ -73,13 +73,13 @@ steps:
     technique: detect-toolchain
   - kind: checkpoint
     id: scope-confirmed
-    message: "Change surface resolved for '{review_target}': the changed-file inventory and review scope are recorded in change-surface.md. Proceeding to area derivation in 30s unless you want to revise the scope."
+    message: "Change surface resolved for '{review_target}': the changed-file inventory and review scope are recorded in change-surface.md."
     defaultOption: proceed
     autoAdvanceMs: 30000
     options:
       - id: proceed
         label: Scope is correct
-        description: The resolved change surface and review scope are accurate (default — auto-accepts after 30s).
+        description: The resolved change surface and review scope are accurate.
       - id: revise-scope
         label: Revise scope
         description: The change surface or review scope needs adjustment — provide the correction; the surface is re-resolved before proceeding.

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Run a single-shot integrity pass over the whole wiki, applying each check in the [lint-checklist](../resources/lint-checklist.md) — citation coverage, confidence presence, contradictions, orphan pages, missing referenced concepts, stale claims, and index/log integrity — and emit a count of findings plus a per-finding report. Lint surfaces problems; it does not fix them. The count drives the workflow's re-ingest decision.
+A single-shot integrity verdict over the whole wiki — a finding count and a per-finding report covering citation coverage, confidence presence, contradictions, orphan pages, missing referenced concepts, stale claims, and index and log integrity.
 
 ## Inputs
 

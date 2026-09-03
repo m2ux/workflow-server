@@ -31,13 +31,13 @@ variables:
     defaultValue: .
   - name: lens_name
     type: string
-    description: Lens name used for per-lens artifact naming in portfolio mode (e.g. portfolio-{lens_name}.md). Distinct from the per-unit current_unit.lens_name that selects the single-mode lens.
+    description: Portfolio-mode lens name for per-lens artifact naming, distinct from the per-unit current_unit.lens_name.
   - name: analysis_focus
     type: string
     description: Optional focus area to guide the analysis
   - name: target_description
     type: string
-    description: Short description of what is being analysed — used in the report's Executive Summary scope statement. Supplied by a triggering workflow; falls back to the target path when absent.
+    description: Short description of what is being analysed, standing as the target path when absent.
 initialActivity: select-mode
 graph:
   select-mode:

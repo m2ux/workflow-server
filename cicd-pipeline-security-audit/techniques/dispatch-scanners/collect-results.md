@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Project meta [gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md) output plus the domain `{scanner_assignments}` roster into the CI/CD `{dispatch_status}` shape (per-scanner structured output, summary counts, submodule-aware manifest).
+Gathered worker output and the scanner roster projected into the CI/CD dispatch shape — per-scanner structured output, summary counts, and a submodule-aware manifest.
 
 ## Inputs
 

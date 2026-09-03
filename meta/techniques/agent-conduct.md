@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Cross-cutting behavioral boundaries every agent in a run is held to — file sensitivity, communication, attribution, interaction, operational discipline and the checkpoint role split. The boundaries a single role carries live in [orchestrator-conduct](./orchestrator-conduct.md) and [worker-conduct](./worker-conduct.md).
+Cross-cutting behavioral boundaries every agent in a run is held to — file sensitivity, communication, attribution, interaction, operational discipline and the checkpoint role split. The boundaries a single role carries belong to the orchestrator-conduct and worker-conduct contracts.
 
 ## Rules
 

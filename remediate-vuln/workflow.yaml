@@ -24,11 +24,11 @@ variables:
   # so they are constants, owned by the file that runs the borrowed activity reading them.
   - name: prior_feedback_triage
     type: object
-    description: Triage of a reviewed PR's prior feedback. Always empty here — this workflow remediates a vulnerability rather than reviewing a pull request.
+    description: Triage of a reviewed PR's prior feedback, always empty in this workflow.
     defaultValue: {}
   - name: rating_cap
     type: string
-    description: Ceiling a review's Overall Rating may not exceed. Always empty here — this workflow remediates a vulnerability and issues no review rating to cap.
+    description: Ceiling a review's Overall Rating may not exceed, always empty in this workflow.
     defaultValue: ""
   - name: target_path
     type: string
@@ -45,7 +45,7 @@ variables:
     description: Absolute path of the component's git working tree, whose security remote names the private fork.
   - name: target_repo
     type: string
-    description: Private fork as owner/repo. Supplies github-cli-protocol ops via name-match; every push targets the security remote.
+    description: Private fork as owner/repo.
   - name: default_branch
     type: string
     description: The repository's default branch, which the security branch syncs from and merges into.
@@ -57,29 +57,29 @@ variables:
       - jira
   - name: issue_number
     type: string
-    description: GitHub or Jira issue number. Empty while the advisory is restricted.
+    description: GitHub or Jira issue number, empty while the advisory is restricted.
     defaultValue: ""
   - name: issue_url
     type: string
-    description: URL of the tracker issue for this remediation (alongside issue_number). Empty while the advisory is restricted.
+    description: URL of the tracker issue for this remediation, empty while the advisory is restricted.
     defaultValue: ""
   - name: issue_title
     type: string
-    description: Tracker issue/ticket title; used by naming-conventions to derive the branch name.
+    description: Tracker issue/ticket title.
   - name: issue_record
     type: object
     description: The tracked issue as its platform returned it.
   - name: pr_number
     type: string
-    description: Pull request number. Empty while disclosure stays private.
+    description: Pull request number, empty while disclosure stays private.
     defaultValue: ""
   - name: pr_url
     type: string
-    description: URL of the pull request for this remediation (alongside pr_number). Empty while disclosure stays private.
+    description: URL of the pull request for this remediation, empty while disclosure stays private.
     defaultValue: ""
   - name: assumption_outcome
     type: string
-    description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
+    description: The outcome the deciding gate gave the assumption under discussion, empty before any gate has decided one.
     defaultValue: ""
   - name: safety_floor_cleared
     type: boolean
@@ -103,7 +103,7 @@ variables:
     description: URL of the private fork backing the security remote.
   - name: is_review_mode
     type: boolean
-    description: Always false; review-mode shared steps gate out.
+    description: Whether the run reviews an existing pull request, always false in this workflow.
     defaultValue: false
   - name: skip_optional_activities
     type: boolean
@@ -152,12 +152,13 @@ variables:
     defaultValue: security
   - name: squash_merge_supported
     type: boolean
-    description: Kept false; public merge-strategy guidance is stealth-gated out.
+    description: Whether the host supports squash merge, always false in this workflow.
     defaultValue: false
 initialActivity: start
 graph:
   start:
     done: design-philosophy
+    abort: __terminal__
   design-philosophy:
     done: codebase-comprehension
   requirements-elicitation:

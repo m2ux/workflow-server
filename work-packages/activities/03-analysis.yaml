@@ -21,7 +21,7 @@ steps:
     when: "analysis_type == context"
   - kind: checkpoint
     id: analysis-confirmed
-    message: Analysis complete. Does this context look correct?
+    message: The initiative's starting-point context is captured in [analysis document]({analysis_document}).
     options:
       - id: proceed
         label: Context is correct, proceed

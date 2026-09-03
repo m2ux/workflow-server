@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Behavioral boundaries on an orchestrator — what it may not execute, how deep the agent tree goes, how it resumes, where a commit runs, how it advances between activities, and when it may speak to the user. The boundaries every agent shares are in [agent-conduct](./agent-conduct.md).
+Behavioral boundaries on an orchestrator — what it may not execute, how deep the agent tree goes, how it resumes, where a commit runs, how it advances between activities, and when it may speak to the user. The boundaries every agent shares belong to the agent-conduct contract.
 
 ## Rules
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Resolve the initiative planning-folder path from its slug, create the initial `START-HERE.md` and `README.md` skeletons there from the planning-folder template as placeholder structures that subsequent work populates, and present the created folder structure for confirmation.
+The initiative's planning folder resolved from its slug, holding the `START-HERE.md` and `README.md` skeletons as placeholder structures that subsequent work populates.
 
 ## Inputs
 
@@ -56,7 +56,3 @@ Navigation and document-index skeleton, written to `{planning_folder_path}` from
 ### 3. Create Readme Skeleton
 
 - Write `{readme_skeleton}` to `{planning_folder_path}` for navigation, from the [README.md skeleton](../resources/planning-folder-template.md#readmemd-skeleton)
-
-### 4. Present Structure
-
-- Present the created `{planning_folder_path}` structure for confirmation, listing the `{start_here_skeleton}` and `{readme_skeleton}` artifacts written to it

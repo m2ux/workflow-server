@@ -249,14 +249,16 @@ steps:
       variable: stealth_mode
       operator: ==
       value: true
-    message: "FINAL ISOLATION CHECK: push target is remote '{push_remote}' ({push_remote_url}). Select whether this is the verified PRIVATE remote — never push to a public remote in stealth mode."
+    message: "Final isolation check — the push target is remote '{push_remote}' ({push_remote_url}), and a stealth-mode run reaches a private remote only."
     options:
       - id: confirmed
         label: Yes, push to the private remote
-        description: Proceed with the push to the verified private remote
+        description: The remote is the verified private fork
       - id: abort
         label: No, abort push
-        description: Push aborted due to remote verification failure
+        description: The remote did not verify as private
+        effect:
+          exit: abort
   - kind: technique
     id: verify-push-signatures
     technique: manage-git::verify-commit-signatures
@@ -272,14 +274,14 @@ steps:
       variable: stealth_mode
       operator: ==
       value: true
-    message: Push to the private remote '{push_remote}' is prepared. Select whether to confirm the push or cancel.
+    message: The push to the private remote '{push_remote}' is prepared and its commits carry valid signatures.
     options:
       - id: confirm
         label: Confirm push
-        description: Push to the private remote
       - id: cancel
         label: Cancel
-        description: Do not push
+        effect:
+          exit: abort
   - kind: technique
     id: push-commits
     technique: manage-git::push-commits
@@ -382,11 +384,11 @@ steps:
           variable: project_type
           operator: ==
           value: rust-substrate
-    message: Do any build-dependent artifacts need user-owned regeneration (e.g. .scale / node metadata)?
+    message: "Build-dependent artifacts on a rust-substrate project — `.scale` files and node metadata — regenerate outside the working tree, so their currency is the user's to settle."
     options:
       - id: none-needed
         label: None needed
-        description: No build-dependent regen is owed; proceed to mark-ready
+        description: No build-dependent regeneration is owed
         effect:
           setVariable:
             build_dependent_artifacts_pending: false
@@ -519,7 +521,7 @@ steps:
     options:
       - id: approved
         label: Approved - No changes required
-        description: PR approved, proceed to completion
+        description: The PR is approved as submitted
         effect:
           setVariable:
             review_requires_changes: false

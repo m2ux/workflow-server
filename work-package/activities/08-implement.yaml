@@ -8,6 +8,7 @@ variables:
     - component_git_dir
     - has_open_questions
     - has_resolvable_assumptions
+    - has_uncertain_symbols
     - host_repo_path
     - implementation_plan
     - is_review_mode
@@ -79,6 +80,11 @@ steps:
     loopType: forEach
     variable: current_task
     over: implementation_plan.tasks
+    breakCondition:
+      type: simple
+      variable: has_uncertain_symbols
+      operator: "=="
+      value: true
     steps:
       - kind: technique
         id: implement-task
@@ -113,15 +119,19 @@ steps:
           One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
 
           {uncertain_symbols}
-
-          Investigate before proceeding, or confirm they were introduced intentionally by this task.
         options:
           - id: confirmed
             label: Symbols are intentional — proceed
-            description: The flagged symbols were introduced intentionally by this task or were verified manually; continue.
+            description: The flagged symbols were introduced intentionally by this task, or were verified by hand.
+            effect:
+              setVariable:
+                has_uncertain_symbols: false
           - id: uncertain
             label: Investigate before proceeding
-            description: Pause the loop and investigate symbol provenance before continuing.
+            description: The flagged symbols remain unaccounted for.
+            effect:
+              setVariable:
+                has_uncertain_symbols: true
       - kind: technique
         id: collect-assumptions
         technique: review-assumptions::collect
