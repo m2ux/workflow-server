@@ -16,7 +16,7 @@ The optimized release binary for `{build_scope}` AND the runtime wasm artifact, 
 ## Protocol
 
 1. `{build_budget} cargo build --release {build_scope} {features}`
-   - If the build runs out of memory (release link/LTO plus the nested wasm build together exceed available RAM), halve `CARGO_BUILD_JOBS`; on tight hosts, run `-p <crate>` for the binary first, then a separate workspace pass for the runtime.
+   > If the build runs out of memory (release link/LTO plus the nested wasm build together exceed available RAM), halve `CARGO_BUILD_JOBS`; on tight hosts, run `-p <crate>` for the binary first, then a separate workspace pass for the runtime.
 
 ## Rules
 
