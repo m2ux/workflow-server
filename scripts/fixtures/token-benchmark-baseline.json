@@ -3,8 +3,8 @@
   "label": "baseline",
   "contextMode": "fresh",
   "agentId": "bench-solo",
-  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/fix/delivery-baseline-rerecord/workflows",
-  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/fix/delivery-baseline-rerecord",
+  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-588/workflows",
+  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-588",
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -33,14 +33,14 @@
   },
   "chars": {
     "start_session": 869,
-    "get_workflow": 112548,
+    "get_workflow": 112376,
     "next_activity": 1195,
-    "get_activity": 562073,
-    "get_resource": 572354,
+    "get_activity": 560462,
+    "get_resource": 572371,
     "yield_checkpoint": 2930,
     "respond_checkpoint": 1984,
-    "resume_checkpoint": 3679,
-    "get_technique": 147495
+    "resume_checkpoint": 3672,
+    "get_technique": 147450
   },
   "history": {
     "technique_bundled": 66,
@@ -79,10 +79,10 @@
   "resourceLedgerKeys": 75,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 562073,
-  "getWorkflowChars": 112548,
-  "getResourceChars": 572354,
-  "getTechniqueChars": 147495,
-  "workflowsRev": "c56b51ca",
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-02 against workflows@c56b51ca. Delivery is 14,950 characters above the previous recording of 1,379,520 at workflows@11faffbd, and the whole of that is corpus the code branch has since adopted: the review-basis work items that state what a review run reaches and what its claims rest on, the five hand-checks a reviewer used to perform from memory, the inventories each built once, the authoring-conformance body check, the citation-grain rule that reads a citation at the grain its target is delivered at, and the graph-reach operations that open the sibling repositories and the markdown half of the knowledge graph. get_resource rises 8,718 because those work items cite rubrics and registers at the section a step reads, and each cited section is delivered; get_activity rises 8,085 because eager step-technique bundling delivers a widened operation again in each activity that binds it. get_workflow falls 1,853, the rules those operations replaced coming out of the workflow body. get_technique is unchanged: the graph operations are bound rather than bundled on this walk. One resource ledger key is added, the review register."
+  "getActivityChars": 560462,
+  "getWorkflowChars": 112376,
+  "getResourceChars": 572371,
+  "getTechniqueChars": 147450,
+  "workflowsRev": "875a36dc",
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-02 against workflows@c56b51ca. Delivery is 14,950 characters above the previous recording of 1,379,520 at workflows@11faffbd, and the whole of that is corpus the code branch has since adopted: the review-basis work items that state what a review run reaches and what its claims rest on, the five hand-checks a reviewer used to perform from memory, the inventories each built once, the authoring-conformance body check, the citation-grain rule that reads a citation at the grain its target is delivered at, and the graph-reach operations that open the sibling repositories and the markdown half of the knowledge graph. get_resource rises 8,718 because those work items cite rubrics and registers at the section a step reads, and each cited section is delivered; get_activity rises 8,085 because eager step-technique bundling delivers a widened operation again in each activity that binds it. get_workflow falls 1,853, the rules those operations replaced coming out of the workflow body. get_technique is unchanged: the graph operations are bound rather than bundled on this walk. One resource ledger key is added, the review register. Re-verified at workflows@131e2942, which binds graph operations across the workflows that reached none: every metric was identical, because those operations are bound rather than bundled on this walk, so a rule added to their shared contract is delivered to no activity the walk visits. Re-recorded 2026-09-03 at workflows@875a36dc, which adopts the canon audit, the decisionless-checkpoint fixes and the section-delivery work. Delivery falls 1,811 characters to 1,392,659, the first recording to fall. get_activity falls 1,611 and get_workflow 172, both from prose the canon audit removed where a rule restated a Protocol phase or a schema owned the routing; get_technique falls 45 and resume_checkpoint 7 for the same reason. get_resource rises 17, the one increase, and it has a single source: the findings-report guide is the only resource this walk reads that changed, and its finding-layout section now names the field order as a link rather than saying \"above\", which a reader given only that section could not follow. The section-delivery work's citation-grain changes are in workflow-design and plain-language, which this walk does not visit."
 }
