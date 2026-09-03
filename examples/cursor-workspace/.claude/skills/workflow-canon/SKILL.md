@@ -5,7 +5,7 @@ description: "Apply the workflow-server design canon — design principles, the 
 
 # Workflow Canon
 
-The canon is four criteria homes plus a guard suite, all on disk in this repo.
+The canon is a set of criteria homes plus a guard suite, all on disk in this repo and enumerated below.
 
 **Read the canon forward.** The inventory maps an informal pattern to the construct that carries it, the principles state a stance to author toward, conformance names a sibling to match, and a catalog entry's **Do not flag** and **Fix** describe the shape compliant content takes. Load what binds before writing and the content lands compliant. **Detect** is the fallback for content that already exists — reaching for it first turns every change into a fix-and-recheck loop that ends when someone gets tired.
 
@@ -21,15 +21,15 @@ Confirm the resolved root holds `workflows/workflow-design/resources/` before re
 
 | Home | Path | Owns |
 |------|------|------|
-| Design Principles | `workflows/workflow-design/resources/design-principles.md` | *Prefer / before / only after* stance. One unit per `##` section. |
-| Anti-Patterns | `workflows/workflow-design/resources/anti-patterns.md` | Specific smells as **Detect / Do not flag / Fix**. One unit per `##` family section. ~1700 lines — fetch by anchor. |
-| Schema Construct Inventory | `workflows/workflow-design/resources/schema-construct-inventory.md` | Informal-prose → formal-construct mappings. One unit per `##` section. |
-| Convention Conformance | `workflows/workflow-design/resources/convention-conformance.md` | Comparison against sibling workflows. One unit. |
-| Guard suite | `scripts/guards.ts` (registry) | Mechanical checks. The registry is the enumeration — never maintain a parallel list. |
+| Design Principles | `workflows/workflow-design/resources/design-principles.md` | *Prefer / before / only after* stance |
+| Anti-Patterns | `workflows/workflow-design/resources/anti-patterns.md` | Specific smells as **Detect / Do not flag / Fix**. Exceeds the eager-delivery cap — fetch by anchor |
+| Schema Construct Inventory | `workflows/workflow-design/resources/schema-construct-inventory.md` | Informal-prose → formal-construct mappings |
+| Convention Conformance | `workflows/workflow-design/resources/convention-conformance.md` | Comparison against sibling workflows |
+| Guard suite | `scripts/guards.ts` (registry) | Mechanical checks. The registry is the enumeration — never maintain a parallel list |
 
-Anchors on the principles home embed the ordinal (`#13-separate-contract-from-procedure`). Cite by **title**; if an anchor fails to resolve, the section was renumbered — re-read the heading rather than guessing.
+Anchors on the principles home embed the section ordinal (`#13-separate-contract-from-procedure`), so an anchor breaks when the canon gains a principle ahead of it while the heading survives. Cite by **title**; where an anchor fails to resolve, re-read the heading rather than guessing.
 
-Read [references/canon-map.md](references/canon-map.md) before the first fetch: it carries the explicit unit inventory, the fetch-by-section anchors, the file-kind → binding-unit routing, and what must *not* be taken from each home.
+Read [references/canon-map.md](references/canon-map.md) before the first fetch: it names where each home's unit enumeration is read from, the fetch-by-section mechanics, and what must *not* be taken from each home.
 
 ## Pick the path
 
@@ -45,7 +45,7 @@ Read [references/canon-map.md](references/canon-map.md) before the first fetch: 
 For content that does not exist yet.
 
 1. **Fix the construct before the prose.** Fetch the construct-inventory section for the kind you are authoring (activity / workflow / technique / condition) and pick the most specific formal construct it offers. Prose that an inventory row maps to a construct is a defect the moment it is written, not at audit time.
-2. **Load what binds this file kind.** The routing table in [references/canon-map.md](references/canon-map.md#file-kind-routing) names the principles and anti-pattern families a technique, activity, resource, or README can actually violate. Read the sections, not a summary of them.
+2. **Load what binds this file kind.** Every unit binds until its own text excludes the kind you are authoring, so read the homes and let each unit's wording settle its own reach — see [references/canon-map.md](references/canon-map.md#which-units-bind-a-file-kind). Read the sections, not a summary of them.
 3. **Read a live sibling.** Convention conformance is defined relative to existing workflows; the reference files are the baseline, and this skill does not substitute for opening them.
 4. **Write.**
 5. **Self-check before saving.** Re-walk only the units step 2 routed you to, against the file you just wrote, then run § Mechanical checks. Schema validity, reference resolution and binding fidelity are cheaper to settle mechanically than by reading.
@@ -91,7 +91,9 @@ Findings are evidence, not judgment — they settle the schema-invalid, unresolv
 
 ### 3. Enumerate the criteria units
 
-Take the explicit unit list from [references/canon-map.md](references/canon-map.md#unit-inventory). **Enumerate that list; do not pattern-match section titles.** Catalog entries sit outside the family sections, and a title pattern drops them with no error, no warning, and no coverage signal.
+Read each home's units from its own headings, per [references/canon-map.md](references/canon-map.md#unit-inventory) — that file names where the enumeration is read from and the judgement each home needs on top of it. **Enumerate against the home at the commit audited.** A list held anywhere else agrees with the canon only until the canon next moves, and a walk measured against the stale copy reports a clean sweep having never reached the units the copy omits.
+
+Two properties of the catalog do not follow from a heading scan, and canon-map states both: its last family absorbs newly appended entries, so read it to its end; and its first family binds only when the change edits the catalog.
 
 Do not restate, summarise, or renumber the entries a unit contains. Follow each as written.
 
@@ -182,5 +184,5 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 
 ## References
 
-- [references/canon-map.md](references/canon-map.md) — unit inventory, fetch anchors, file-kind routing, per-home boundaries.
+- [references/canon-map.md](references/canon-map.md) — where each home's units are read from, fetch mechanics, unit reach, per-home boundaries.
 - [references/reporting.md](references/reporting.md) — severity scale, finding and coverage row shapes, report templates.
