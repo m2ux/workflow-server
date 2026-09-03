@@ -133,7 +133,7 @@ The node binary covers three distinct security surfaces. To avoid prompt saturat
 **Files:** `service.rs`, `command.rs`, `cfg/**`, `chain_spec/**`
 
 **Primary checks:**
-- Config struct invariant validation (§3.4 extended to off-chain config) — verify every struct in the "Consensus-Critical Configuration Structs" table below
+- Config struct invariant validation (§3.4 extended to off-chain config) — verify every struct in [Consensus-Critical Configuration Structs](#consensus-critical-configuration-structs)
 - Genesis construction paths (§3.5) — online vs offline divergence, StorageInit construction sites
 - Panic triage (Check 25) — configuration-variant triage table for all expect()/unwrap() in service.rs and command.rs
 - Genesis parsing truncation (Check 26) — trace all genesis extrinsic decoding paths for silent truncation
@@ -163,7 +163,7 @@ Dispatched after all primary agents return. Receives all collected agent outputs
 1. Dispatch completeness — every assigned agent dispatched and returned
 2. Coverage gate — every >200-line file in priority-1/2 crates read by a §3-applying agent
 3. Mandatory table presence — per-field event trace, struct diff, config-variant triage, genesis parsing paths, storage lifecycle pairing, toolkit matrix
-4. Target profile config struct coverage — every struct in the table below appears in at least one agent's output
+4. Target profile config struct coverage — every struct in [Consensus-Critical Configuration Structs](#consensus-critical-configuration-structs) appears in at least one agent's output
 5. Table-derived finding extraction — mechanical scan of all mandatory tables for FAIL/DIFF/Missing/No cells
 6. Error-path persistence audit — every StorageMap::insert site has an error-path assessment
 

@@ -94,11 +94,11 @@ Re-evaluate Feasibility from the attacker's perspective for all High/Critical fi
 - Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility = 2.
 - Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility = 4.
 
-**Procedure:** For each finding rated Critical or High, verify: (1) Is the affected code reachable from the production node binary? (2) What is the minimum privilege level to trigger? No privileges → F ≥ 3; Config file → F = 2; Validator key → F = 1. (3) Does the finding affect consensus, availability, or neither? Consensus → I = 4; **availability of a running node (crash while syncing or at the tip) → I = 3 (or I = 4 for a deterministic network-wide halt); a startup/config/genesis-parse crash → I = 1 (diagnostic, not a security finding — see "Availability findings: node lifecycle phase gates Impact" above);** Off-chain → I ≤ 2. If I + F < 6, not Critical. If I + F < 5, not High.
+**Procedure:** For each finding rated Critical or High, verify: (1) Is the affected code reachable from the production node binary? (2) What is the minimum privilege level to trigger? No privileges → F ≥ 3; Config file → F = 2; Validator key → F = 1. (3) Does the finding affect consensus, availability, or neither? Consensus → I = 4; **availability of a running node (crash while syncing or at the tip) → I = 3 (or I = 4 for a deterministic network-wide halt); a startup/config/genesis-parse crash → I = 1 (diagnostic, not a security finding — see [Availability findings: node lifecycle phase gates Impact](#availability-findings-node-lifecycle-phase-gates-impact));** Off-chain → I ≤ 2. If I + F < 6, not Critical. If I + F < 5, not High.
 
 ## Bias Correction
 
-Correct by comparing against the calibration benchmark table above — do not rely on narrative rules alone.
+Correct by comparing against the [Calibration Benchmark Table](#calibration-benchmark-table) — do not rely on narrative rules alone.
 
 ### Under-Rating (AI agent tendency)
 

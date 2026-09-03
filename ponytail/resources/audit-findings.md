@@ -20,7 +20,7 @@ net: -{N} lines, -{M} deps possible.
 
 ## Rules
 
-- **One line per finding, in the grammar above.** Designator, tag, what to cut, the replacement, the path locator. A finding needing a paragraph is a finding that has not been reduced to a cut.
+- **One line per finding, in the grammar the [Template](#template) gives.** Designator, tag, what to cut, the replacement, the path locator. A finding needing a paragraph is a finding that has not been reduced to a cut.
 - **Each finding carries its own designator**, per [Finding Format](./review-taxonomy.md#finding-format) — the handle a later pass or a caller's summary refers to it by. One finding, one designator: a line standing for several hides each of them from anything that counts findings.
 - **The tag comes from the taxonomy.** Classification is a lookup, not a description — see [review-taxonomy](./review-taxonomy.md#tags).
 - **Ranked biggest-cut-first.** Order by lines removed plus dependencies dropped, so the largest wins surface first rather than the ones found first.

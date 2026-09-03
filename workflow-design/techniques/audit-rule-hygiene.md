@@ -33,8 +33,8 @@ Absolute path to the persisted findings artifact when `{rule_hygiene_finding_cou
 
 ### 1. Load Catalog Section
 
-- Load [anti-patterns](../resources/anti-patterns.md) — sole source of Rule Hygiene detect, exclusion, and fix criteria
-- Scope this pass to subsections under `## Rule Hygiene Anti-Patterns` only (`no-rule-protocol-restatement` through `no-one-step-rules`, including `worker-rule-reach`)
+- Load [Rule Hygiene Anti-Patterns](../resources/anti-patterns.md#rule-hygiene-anti-patterns) — sole source of Rule Hygiene detect, exclusion, and fix criteria
+- That section is this pass's whole scope: `no-rule-protocol-restatement` through `no-one-step-rules`, including `worker-rule-reach`
 - Do not restate, summarize, or number those entries here; follow each as written
 
 ### 2. Apply Rule Hygiene Entries

@@ -53,7 +53,7 @@ A field that restates one of the six is not an extension: `Action` names the ver
 
 ## Finding Layout
 
-A finding is a heading, then one labelled paragraph per field, in the order above, with any extension field the report declares after them.
+A finding is a heading, then one labelled paragraph per field, in the order [Fields](#fields) sets, with any extension field the report declares after them.
 
 ```markdown
 ### CR-1 — the cursor advances before the bounds check

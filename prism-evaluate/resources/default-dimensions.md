@@ -34,7 +34,7 @@ Combine the document and code patterns in the proportion the evaluation's stated
 
 ## Custom Targets
 
-For a target none of the above patterns fit, each dimension is inferred from the evaluation's stated goals. A dimension is worth naming only where it is an independent analytical axis — one that contributes a reading the others do not.
+For a target none of [Proposal / Strategy Document](#proposal-strategy-document), [Codebase](#codebase) or [Mixed Targets](#mixed-targets) fits, each dimension is inferred from the evaluation's stated goals. A dimension is worth naming only where it is an independent analytical axis — one that contributes a reading the others do not.
 
 ### Dimension Object Structure
 

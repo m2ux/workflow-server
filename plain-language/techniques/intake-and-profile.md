@@ -60,7 +60,7 @@ True when the operation type is ambiguous or the reader profile cannot be settle
 
 ### 2. Detect the Controlled-Language Mode
 
-- Determine whether the document is technical documentation to be held to [ASD-STE100](../resources/asd-ste100.md) — procedures and descriptions in a technical domain, or an explicit user request — and set `{controlled_language}`
+- Determine whether the document is technical documentation to be held to the ASD-STE100 overlay, per [When It Applies](../resources/asd-ste100.md#when-it-applies) — procedures and descriptions in a technical domain, or an explicit user request — and set `{controlled_language}`
 
 ### 3. Settle the Reader Profile
 
