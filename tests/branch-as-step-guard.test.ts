@@ -84,14 +84,51 @@ describe('branch-as-step guard', () => {
   });
 
   /**
-   * The real corpus is not clean: eleven sites across eight workflows carry a conditional caveat as
-   * a sub-bullet, all of them predating the guard. Landing it green needs those eleven converted to
-   * notes — a corpus change, in the submodule, separate from this script. Pinned as a ceiling so the
-   * count cannot grow unnoticed in the meantime.
+   * A Protocol takes either shape, and the flat numbered sequence is the majority of the corpus —
+   * every `atlassian-operations`, `cargo-operations`, `gitnexus-operations` and
+   * `knowledge-base-search` op is written that way. A caveat is reached under both.
    */
-  it('holds the corpus at its known eleven sites', () => {
-    const findings = collectFindings(corpusRoot());
-    expect(findings.length).toBeLessThanOrEqual(11);
-    expect(findings.every(f => f.check === 'qualifier-as-sub-bullet')).toBe(true);
+  it('flags a caveat under a flat numbered protocol', () => {
+    const findings = findingsFor(
+      `${header}1. Run the check, capturing its output as \`{diagnostics}\`.\n`
+      + '   - If the run exceeds available memory, halve the job budget and retry.\n',
+    );
+    expect(findings.map(f => f.check)).toEqual(['qualifier-as-sub-bullet']);
+    expect(findings[0].site).toMatch(/op\.md:\d+$/);
+  });
+
+  it('passes a flat numbered protocol whose caveat is a note', () => {
+    expect(findingsFor(
+      `${header}1. Run the check, capturing its output as \`{diagnostics}\`.\n`
+      + '   > If the run exceeds available memory, halve the job budget and retry.\n',
+    )).toEqual([]);
+  });
+
+  it('passes a selection ladder, which AP-59 keeps as a branch table', () => {
+    expect(findingsFor(
+      `${header}1. Select the template:\n`
+      + '   - If `{is_review_mode}` is true → the review template\n'
+      + '   - Else if `{variant}` is `initial` → the initial template\n'
+      + '   - Else if `{variant}` is `final` → the final template\n',
+    )).toEqual([]);
+  });
+
+  it('flags independent caveats that are not ladder arms', () => {
+    expect(findingsFor(
+      `${header}1. Append the section.\n`
+      + '   - If the selection is absent, wait for it rather than appending.\n'
+      + '   - If the log is missing, surface that before retrying.\n',
+    )).toHaveLength(2);
+  });
+
+  /**
+   * The corpus carries no caveat as a sub-bullet. Definitions and code sit on different branches, so
+   * this reads whichever submodule pointer is checked out and turns over on the corpus merge that
+   * converts the last of them; `WORKFLOWS_DIR` points it at a corpus worktree to verify ahead of
+   * that. A ceiling would let the count sit wherever it landed, which is the state this guard exists
+   * to end.
+   */
+  it('holds the corpus clean of caveats written as sub-bullets', () => {
+    expect(collectFindings(corpusRoot())).toEqual([]);
   });
 });
