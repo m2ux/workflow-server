@@ -74,8 +74,15 @@ const stepCommonFields = {
   when: z.string().optional().describe(
     'Inline boolean expression that gates this step. Operators: ==, !=, >, <, >=, <=, bare identifier truthiness, unary !, &&, ||, and parentheses. Precedence (C-style, tightest first): () > ! > comparisons > && > ||. Mixing && and || at the same nesting depth requires parentheses. Examples: "has_saved_state == true", "remediation_round > 0", "a == true && b != false", "(a && b) || c", "is_review_mode != true && (problem_complexity == \\"moderate\\" || problem_complexity == \\"complex\\")". Evaluated by the executing agent against current variable state; the server never evaluates gates. Mechanical nets (e2e walker, guards) use the shared reference evaluator and treat invalid expressions as false (step does not run). On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal.',
   ),
-  condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met.'),
   required: z.literal(false).optional().describe('Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it.'),
+};
+
+// The structured entry gate, carried by the step kinds whose only gate is an entry gate. A loop
+// step is the exception: `when` alone decides whether it is entered, and `continueWhile` decides
+// whether it goes round again. One field per question, so neither reader has to ask which kind of
+// step it is holding.
+const stepEntryCondition = {
+  condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met.'),
 };
 
 /**
@@ -91,6 +98,7 @@ export const TechniqueStepSchema = z.object({
   technique: z.union([z.string(), TechniqueBindingSchema]).describe('Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.'),
   actions: z.array(ActionSchema).optional(),
   ...stepCommonFields,
+  ...stepEntryCondition,
 }).strict();
 export type TechniqueStep = z.infer<typeof TechniqueStepSchema>;
 
@@ -99,6 +107,7 @@ export const ActionStepSchema = z.object({
   id: z.string().describe('Identifier for this step within the activity.'),
   actions: z.array(ActionSchema).optional().describe('Control actions; may be empty for marker steps.'),
   ...stepCommonFields,
+  ...stepEntryCondition,
 }).strict();
 export type ActionStep = z.infer<typeof ActionStepSchema>;
 
@@ -128,20 +137,27 @@ export const CheckpointStepSchema = z.object({
   defaultOption: z.string().optional().describe('The answer a soft gate takes when no person is reached.'),
   autoAdvanceMs: z.number().int().positive().optional().describe('The interval the server spends before applying a soft gate\'s default on respond_checkpoint { auto_advance: true }.'),
   ...stepCommonFields,
+  ...stepEntryCondition,
 }).strict();
 export type CheckpointStep = z.infer<typeof CheckpointStepSchema>;
 
 // kind:loop — a compound step whose body is a nested ordered steps[] (named `loopType` to avoid
 // clashing with Condition.type). The recursion lives on the `steps` FIELD via z.lazy:
 // discriminatedUnion requires plain object members, so the union itself cannot be lazy.
+//
+// Five fields decide whether and how often the body runs, one question each: `when` whether the
+// loop is entered at all, `loopType` when the continuation test is taken, `continueWhile` what
+// that test is, `over`/`variable` the collection and the item, `maxIterations` the ceiling. A loop
+// carries no `condition`, so its entry gate is `when` — uniformly with every other step kind.
 export const LoopStepSchema = z.object({
   kind: z.literal('loop').describe('Step-kind discriminator.'),
   id: z.string().describe('Identifier for this step within the activity.'),
   name: z.string().optional().describe('Structural label for the iteration (the one step kind that carries a name).'),
-  loopType: z.enum(['forEach', 'while', 'doWhile']).describe('Iteration type.'),
+  loopType: z.enum(['forEach', 'while', 'doWhile']).describe('Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after.'),
+  continueWhile: ConditionSchema.optional().describe('The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken.'),
   variable: z.string().optional().describe('Current-item variable bound each iteration.'),
   over: z.string().optional().describe('Collection expression iterated by a forEach loop.'),
-  breakCondition: ConditionSchema.optional().describe('Early-exit condition, evaluated by the executing agent each iteration.'),
+  breakCondition: ConditionSchema.optional().describe('Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead.'),
   maxIterations: z.number().int().positive().optional().describe('Safety bound on iteration count, enforced by the executing agent.'),
   steps: z.array(z.lazy((): z.ZodTypeAny => StepSchema)).describe('The loop body, a nested ordered list of steps.'),
   ...stepCommonFields,

@@ -110,9 +110,11 @@ export function validateStepManifest(
   const cut = immediateExitCut(workflow, activityId, checkpointResponses);
   const inSequence = cut === -1 ? steps : steps.slice(0, cut + 1);
   // `when`/`condition` gates are evaluated agent-side; a gated step may be
-  // legitimately skipped, so only ungated top-level steps are required.
+  // legitimately skipped, so only ungated top-level steps are required. A loop's continuation
+  // test decides the same thing for its body, so a loop carrying one is gated too.
   const requiredIds = inSequence
-    .filter(s => s.when === undefined && s.condition === undefined)
+    .filter(s => s.when === undefined
+      && (s.kind === 'loop' ? s.continueWhile === undefined : s.condition === undefined))
     .map(s => s.id)
     .filter((id): id is string => id !== undefined);
   // Loop-body step ids are legitimate manifest entries (executed per

@@ -108,7 +108,7 @@ interface OuterStep {
   steps?: LoopStep[];
   loopType?: string;
   maxIterations?: number;
-  condition?: { type?: string; variable?: string; operator?: string; value?: unknown };
+  continueWhile?: { type?: string; variable?: string; operator?: string; value?: unknown };
   actions?: SetAction[];
 }
 interface LoopDef extends OuterStep { steps: LoopStep[] }
@@ -126,17 +126,18 @@ function loop(): LoopDef {
 }
 
 /**
- * The loop's exit test, read from its declared `condition` and evaluated by the server's own evaluator.
+ * The loop's continuation test, read from its declared `continueWhile` and evaluated by the server's
+ * own evaluator.
  *
- * Both halves matter. Restating the condition lets a change to the operator, the variable, or the whole
+ * Both halves matter. Restating the test lets a change to the operator, the variable, or the whole
  * block leave every walk below passing. Hand-rolling the comparison is worse: coalescing the two sides
  * to null reads an ABSENT `value` as `null`, where `evaluateCondition` compares strictly — so `!=` with
  * no declared value holds against a null pointer and the loop never exits. Coalescing turned that
- * runaway into a clean stop. Parsing through `validateCondition` also proves the condition is
+ * runaway into a clean stop. Parsing through `validateCondition` also proves the test is
  * schema-valid, and fails by naming the field when it is not.
  */
 function loopHolds(def: LoopDef, bag: Bag): boolean {
-  return evaluateCondition(validateCondition(def.condition), bag);
+  return evaluateCondition(validateCondition(def.continueWhile), bag);
 }
 
 interface Walk {
@@ -151,9 +152,10 @@ interface Walk {
 }
 
 /**
- * Walk the loop until its condition fails or the scripted envelopes run out. `initialActivity` primes
- * the pointer the way `prime-initial-activity` does; the loop's own condition is `current_activity !=
- * null`, which the YAML declares as a structured condition rather than a `when:` string.
+ * Walk the loop until its continuation test fails or the scripted envelopes run out.
+ * `initialActivity` primes the pointer the way `prime-initial-activity` does; the loop's own test is
+ * `current_activity != null`, which the YAML declares as a structured condition under
+ * `continueWhile`.
  */
 function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'): Walk {
   const def = loop();
@@ -250,11 +252,11 @@ describe('client activity loop walked (#407)', () => {
     const l = loop();
 
     // Nothing in the body checks that a client session exists, and nothing primes the pointer the
-    // condition tests. Both live ahead of the loop, and a walk that starts inside the body cannot see
-    // either — so they are asserted here rather than assumed.
+    // continuation test reads. Both live ahead of the loop, and a walk that starts inside the body
+    // cannot see either — so they are asserted here rather than assumed.
     expect(precondition?.actions?.some((a) => a.action === 'validate' && a.target === 'client_session_index')).toBe(true);
     const primeWrite = prime?.actions?.find((a) => a.action === 'set');
-    expect(primeWrite?.target).toBe(l.condition?.variable);
+    expect(primeWrite?.target).toBe(l.continueWhile?.variable);
     // Primed from a bound variable, braced like every other reference in the corpus. Written bare it
     // reads as the literal string, and no workflow declares an activity by that name, so the first
     // `next_activity` fails outright — an error naming the id it could not find, not the one to use.
@@ -262,20 +264,20 @@ describe('client activity loop walked (#407)', () => {
     expect(l.loopType).toBe('while');
     // The exit test is on the pointer the body advances, against null — the two have to agree, or the
     // walk either never enters or never leaves.
-    expect(l.condition?.variable).toBe('current_activity');
-    expect(l.condition?.operator).toBe('!=');
+    expect(l.continueWhile?.variable).toBe('current_activity');
+    expect(l.continueWhile?.operator).toBe('!=');
     // Declared null, not merely absent: `value` is schema-optional, and the server compares strictly, so
     // omitting it makes `!= null` hold against a null pointer and the loop runs to its ceiling.
-    expect(l.condition && 'value' in l.condition).toBe(true);
-    expect(l.condition?.value).toBeNull();
+    expect(l.continueWhile && 'value' in l.continueWhile).toBe(true);
+    expect(l.continueWhile?.value).toBeNull();
     // The ceiling has to clear the longest workflow the corpus carries, with room for rework — a bound
     // tuned to this file's longest scenario would certify a frame that truncates real batches.
     expect(l.maxIterations ?? 0).toBeGreaterThan(longestWorkflowActivityCount());
 
-    // The body's one pointer write lands on the variable the condition tests, carrying the id the worker
-    // returned. Either half retargeted and the pointer never moves, so the loop runs to its ceiling.
+    // The body's one pointer write lands on the variable the continuation test reads, carrying the id the
+    // worker returned. Either half retargeted and the pointer never moves, so the loop runs to its ceiling.
     const advanceWrite = l.steps.find((s) => s.id === 'advance-activity')?.actions?.find((a) => a.action === 'set');
-    expect(advanceWrite?.target).toBe(l.condition?.variable);
+    expect(advanceWrite?.target).toBe(l.continueWhile?.variable);
     expect(advanceWrite?.value).toBe('{worker_result.next_activity_id}');
 
     // And the activity leaves for close-out on the same condition the loop exits by.

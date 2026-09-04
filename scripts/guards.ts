@@ -241,6 +241,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every when: gate parses under the reference dialect and parenthesizes mixed &&/||',
   },
   {
+    id: 'loop-shape',
+    script: 'scripts/check-loop-shape.ts',
+    npmScript: 'check:loop-shape',
+    scope: 'corpus',
+    json: true,
+    proves: 'an item loop declares its collection and item, a repeat-until loop its continuation test, and neither declares the other\'s',
+  },
+  {
     id: 'refs',
     script: 'scripts/check-all-refs.ts',
     npmScript: 'check:refs',
