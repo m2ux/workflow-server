@@ -109,6 +109,8 @@ steps:
       - id: fix
         label: Fix failures first
         description: Validation failures must be addressed before committing.
+        effect:
+          exit: return-to-draft
   - kind: technique
     id: verify-scope-manifest
     technique: scope-verification
@@ -142,6 +144,8 @@ steps:
       - id: fix
         label: Address remaining items
         description: Some scope-manifest items remain unaddressed and require attention.
+        effect:
+          exit: return-to-draft
   - kind: technique
     id: verify-planning-readme
     technique:

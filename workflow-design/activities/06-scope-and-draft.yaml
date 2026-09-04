@@ -349,6 +349,8 @@ steps:
       - id: revise-block
         label: Revise a flagged block
         description: One or more drafted blocks require targeted revision before the audit passes.
+        effect:
+          exit: redraft
   - kind: checkpoint
     id: batch-review-attested
     condition:
@@ -366,12 +368,18 @@ steps:
       - id: revise-specific
         label: Revise a specific file
         description: One particular file requires further modification.
+        effect:
+          exit: redraft
       - id: revise-block
         label: Revise a flagged block
         description: One or more drafted blocks require targeted revision before the audit passes.
+        effect:
+          exit: redraft
       - id: redraft-all
         label: Redraft all changes
         description: Entire drafting pass requires restart from scratch.
+        effect:
+          exit: redraft
 exits:
   - id: done
     isDefault: true
