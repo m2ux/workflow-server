@@ -1203,7 +1203,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           for (const s of steps ?? []) {
             const verdict = bothGates(outer, gateAnswer({
               when: s.when,
-              condition: s.condition,
+              // A loop's entry gate is `when` alone: whether its body runs at all is a different
+              // question from whether it runs again, which `continueWhile` answers.
+              condition: s.kind === 'loop' ? undefined : s.condition,
               variables: bagAtOpen,
               writtenInActivity,
             }));

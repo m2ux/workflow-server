@@ -354,7 +354,7 @@
             ],
             "additionalProperties": false
           },
-          "description": "The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow's graph — get_workflow renders the whole set, and two declarations of one name that disagree on type or default fail the load. The session variable bag is seeded from each declaration's defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity's variables_changed."
+          "description": "The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow's graph — get_workflow renders the whole set, and two declarations of one name that each name a different type, starting value or value set fail the load — one silent about a starting value takes the value another site names. The session variable bag is seeded from each declaration's defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity's variables_changed."
         },
         "techniques": {
           "type": "object",
@@ -553,14 +553,14 @@
                           "type": "string",
                           "description": "Inline boolean expression that gates this step. Operators: ==, !=, >, <, >=, <=, bare identifier truthiness, unary !, &&, ||, and parentheses. Precedence (C-style, tightest first): () > ! > comparisons > && > ||. Mixing && and || at the same nesting depth requires parentheses. Examples: \"has_saved_state == true\", \"remediation_round > 0\", \"a == true && b != false\", \"(a && b) || c\", \"is_review_mode != true && (problem_complexity == \\\"moderate\\\" || problem_complexity == \\\"complex\\\")\". Evaluated by the executing agent against current variable state; the server never evaluates gates. Mechanical nets (e2e walker, guards) use the shared reference evaluator and treat invalid expressions as false (step does not run). On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal."
                         },
-                        "condition": {
-                          "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
-                          "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
-                        },
                         "required": {
                           "type": "boolean",
                           "const": false,
                           "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it."
+                        },
+                        "condition": {
+                          "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
+                          "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
                         }
                       },
                       "required": [
@@ -591,11 +591,11 @@
                         "when": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
                         },
-                        "condition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
-                        },
                         "required": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
+                        },
+                        "condition": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
                         }
                       },
                       "required": [
@@ -644,11 +644,11 @@
                         "when": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
                         },
-                        "condition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
-                        },
                         "required": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
+                        },
+                        "condition": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
                         }
                       },
                       "required": [
@@ -680,7 +680,11 @@
                             "while",
                             "doWhile"
                           ],
-                          "description": "Iteration type."
+                          "description": "Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after."
+                        },
+                        "continueWhile": {
+                          "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
+                          "description": "The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken."
                         },
                         "variable": {
                           "type": "string",
@@ -692,7 +696,7 @@
                         },
                         "breakCondition": {
                           "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
-                          "description": "Early-exit condition, evaluated by the executing agent each iteration."
+                          "description": "Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead."
                         },
                         "maxIterations": {
                           "type": "integer",
@@ -708,9 +712,6 @@
                         },
                         "when": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
-                        },
-                        "condition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
                         },
                         "required": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"

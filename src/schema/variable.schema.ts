@@ -56,7 +56,8 @@ export function isOutsideValueSet(variable: Pick<VariableDefinition, 'values'>, 
  * declaration, because the writing activity is where the variable is owned. Including the activity
  * in a workflow's graph contributes its writes to that workflow's variable set — one flat
  * namespace, so two activities naming one variable mean one variable. Two declarations of one name
- * that disagree on type or default fail the load.
+ * that each name a different type, starting value or value set fail the load; one that is silent
+ * about a starting value takes the value another site names.
  */
 export const ActivityVariablesSchema = z.object({
   reads: z.array(VariableNameSchema).optional().describe('Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound operations\' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here.'),

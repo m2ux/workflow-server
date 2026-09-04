@@ -45,6 +45,7 @@
     "check:harness-set": "tsx scripts/check-harness-adapter-set.ts",
     "check:stealth": "tsx scripts/check-stealth-isolation.ts",
     "check:when": "tsx scripts/check-when-expression.ts",
+    "check:loop-shape": "tsx scripts/check-loop-shape.ts",
     "check:audience": "tsx scripts/check-audience.ts",
     "check:artifact-guides": "tsx scripts/check-artifact-guides.ts",
     "check:description-hygiene": "tsx scripts/check-description-hygiene.ts",

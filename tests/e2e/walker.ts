@@ -80,6 +80,8 @@ export interface StepDef {
   autoAdvanceMs?: number;
   // kind:loop — compound body.
   loopType?: string;
+  /** The continuation test of a while/doWhile loop. */
+  continueWhile?: Condition;
   steps?: StepDef[];
 }
 
@@ -486,13 +488,25 @@ async function executeActivitySteps(
       // A gate this activity itself decides later, read before that decision is taken, is false for
       // want of an answer — and once the step is skipped that is indistinguishable from a real "no".
       // Record it, because a step absent from stepsExecuted is otherwise silent about why (#469).
-      for (const name of unboundPositiveReads(step.when, step.condition as Condition | undefined, variables)) {
+      // A `while` loop's continuation test decides its first pass, so it is one of these gates; a
+      // `doWhile`'s is taken after a pass the walk has already made.
+      const preGate = step.loopType === 'while' ? step.continueWhile : step.condition;
+      for (const name of unboundPositiveReads(step.when, preGate as Condition | undefined, variables)) {
         if (decidedLater.has(name)) gatesReadUnbound.push(`${step.id ?? '?'}:${name}`);
       }
       if (step.condition && !evaluateCondition(step.condition, variables)) continue;
       if (step.when && !evaluateWhen(step.when, variables)) continue;
       if (step.kind === 'checkpoint') { await fireCheckpoint(step as unknown as CheckpointDef); continue; }
-      if (step.kind === 'loop') { await walk(step.steps); continue; }
+      if (step.kind === 'loop') {
+        // A `while` takes its continuation test before the first pass, so a false test means no
+        // pass. A `doWhile` is owed one pass whatever the test says — that is what makes it a
+        // doWhile. Either way the walk makes a single deterministic pass; iterating is the
+        // runner's job.
+        if (step.loopType === 'while' && step.continueWhile
+            && !evaluateCondition(step.continueWhile, variables)) continue;
+        await walk(step.steps);
+        continue;
+      }
       if (step.kind === 'technique') await fetchTechnique(step.id);
       stepsExecuted.push(step.id);
       manifest.push({ step_id: step.id, output: 'done' });

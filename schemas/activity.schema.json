@@ -371,14 +371,14 @@
                     "type": "string",
                     "description": "Inline boolean expression that gates this step. Operators: ==, !=, >, <, >=, <=, bare identifier truthiness, unary !, &&, ||, and parentheses. Precedence (C-style, tightest first): () > ! > comparisons > && > ||. Mixing && and || at the same nesting depth requires parentheses. Examples: \"has_saved_state == true\", \"remediation_round > 0\", \"a == true && b != false\", \"(a && b) || c\", \"is_review_mode != true && (problem_complexity == \\\"moderate\\\" || problem_complexity == \\\"complex\\\")\". Evaluated by the executing agent against current variable state; the server never evaluates gates. Mechanical nets (e2e walker, guards) use the shared reference evaluator and treat invalid expressions as false (step does not run). On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal."
                   },
-                  "condition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                    "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
-                  },
                   "required": {
                     "type": "boolean",
                     "const": false,
                     "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it."
+                  },
+                  "condition": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                    "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
                   }
                 },
                 "required": [
@@ -409,11 +409,11 @@
                   "when": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
                   },
-                  "condition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
-                  },
                   "required": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                  },
+                  "condition": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
                   }
                 },
                 "required": [
@@ -493,11 +493,11 @@
                   "when": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
                   },
-                  "condition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
-                  },
                   "required": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                  },
+                  "condition": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
                   }
                 },
                 "required": [
@@ -529,7 +529,11 @@
                       "while",
                       "doWhile"
                     ],
-                    "description": "Iteration type."
+                    "description": "Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after."
+                  },
+                  "continueWhile": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                    "description": "The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken."
                   },
                   "variable": {
                     "type": "string",
@@ -541,7 +545,7 @@
                   },
                   "breakCondition": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                    "description": "Early-exit condition, evaluated by the executing agent each iteration."
+                    "description": "Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead."
                   },
                   "maxIterations": {
                     "type": "integer",
@@ -557,9 +561,6 @@
                   },
                   "when": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
-                  },
-                  "condition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
                   },
                   "required": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"

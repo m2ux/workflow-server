@@ -10,7 +10,8 @@
  * Including an activity in a workflow's graph contributes its write declarations to that
  * workflow's variable set — one flat namespace, so two activities naming one variable mean one
  * variable and a later activity reads what an earlier one produced. Two declarations of one name
- * that disagree on type or default are a contradiction and fail the load.
+ * that each name a different type, starting value or value set are a contradiction and fail the
+ * load; one that is silent about a starting value takes the value another site names.
  *
  * This module holds three things the server and the guards share, so they cannot drift:
  *
@@ -52,15 +53,40 @@ interface DeclarationSite {
 const WORKFLOW_SOURCE = 'workflow.yaml';
 
 /** Whether two declarations of one name agree on the facts that make them the same variable. */
+/**
+ * What two declarations of one name disagree about, or null when they agree. Silence is no
+ * opinion: a declaration that names no starting value, and one that names no value set, agrees
+ * with whatever another declaration says about it. Two declarations that both name one and differ
+ * are a contradiction.
+ */
 function disagreement(a: VariableDefinition, b: VariableDefinition): string | null {
   if (a.type !== b.type) return `declared '${a.type}' and '${b.type}'`;
-  const left = JSON.stringify(a.defaultValue ?? null);
-  const right = JSON.stringify(b.defaultValue ?? null);
-  if (left !== right) return `defaults ${left} and ${right}`;
-  const leftValues = JSON.stringify(a.values ?? null);
-  const rightValues = JSON.stringify(b.values ?? null);
-  if (leftValues !== rightValues) return `value sets ${leftValues} and ${rightValues}`;
+  if (a.defaultValue !== undefined && b.defaultValue !== undefined) {
+    const left = JSON.stringify(a.defaultValue);
+    const right = JSON.stringify(b.defaultValue);
+    if (left !== right) return `defaults ${left} and ${right}`;
+  }
+  if (a.values !== undefined && b.values !== undefined) {
+    const left = JSON.stringify(a.values);
+    const right = JSON.stringify(b.values);
+    if (left !== right) return `value sets ${left} and ${right}`;
+  }
   return null;
+}
+
+/**
+ * The declaration the merge keeps: the one already seen, filled in from the newcomer wherever it
+ * is silent. A starting value declared at one site is the session's starting value whichever site
+ * declared it, so the order two declarations arrive in does not decide what a session seeds.
+ */
+function fillSilences(seen: VariableDefinition, next: VariableDefinition): VariableDefinition {
+  if (seen.defaultValue !== undefined && seen.values !== undefined) return seen;
+  const filled = { ...seen };
+  if (filled.defaultValue === undefined && next.defaultValue !== undefined) {
+    filled.defaultValue = next.defaultValue;
+  }
+  if (filled.values === undefined && next.values !== undefined) filled.values = next.values;
+  return filled;
 }
 
 /** What the merge needs of an activity: which one it is, and what it declares. */
@@ -105,7 +131,9 @@ export function mergeActivityVariables(
         name: declaration.name,
         detail: `'${declaration.name}': ${seen.source} and ${source} ${conflict}`,
       });
+      return;
     }
+    seen.declaration = fillSilences(seen.declaration, declaration);
   };
 
   for (const declaration of own ?? []) contribute(declaration, WORKFLOW_SOURCE);
@@ -363,16 +391,20 @@ export async function deriveActivityContract(args: {
   for (const step of flattenActivitySteps(activity)) {
     // Gates and conditions are read before the step's own work.
     if (step.when) whenReads(step.when).forEach(read);
-    conditionReads(step.condition).forEach(read);
 
     if (step.kind === 'loop') {
+      // A loop's predicates are its continuation test and its item-iteration early exit; its entry
+      // gate is `when` alone.
+      conditionReads(step.continueWhile).forEach(read);
+      conditionReads(step.breakCondition).forEach(read);
       // `over` is a plain collection reference (`open_assumptions`, `implementation_plan.tasks`),
       // not a gate expression.
       if (step.over) { const name = bagName(step.over); if (isBagRead(name)) read(name); }
-      conditionReads(step.breakCondition).forEach(read);
       // The loop binds its item variable each iteration: a write, whose readers are the body's
       // own steps.
       if (step.variable) write(step.variable);
+    } else {
+      conditionReads(step.condition).forEach(read);
     }
 
     if (step.kind === 'technique') {
