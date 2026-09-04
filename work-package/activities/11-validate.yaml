@@ -78,14 +78,11 @@ steps:
     id: triage-reported-failures
     technique: review-test-suite
     when: is_review_mode == true
-  - kind: action
-    id: fix-failures
-    when: is_review_mode != true && run_local_validation == true && validation_results.validation_passed == false
-    actions: []
   - kind: loop
     id: fix-revalidate-cycle
     name: Fix and Revalidate Cycle
-    loopType: doWhile
+    loopType: while
+    when: is_review_mode != true
     continueWhile:
       type: and
       conditions:

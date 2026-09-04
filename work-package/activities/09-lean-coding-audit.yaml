@@ -65,7 +65,7 @@ steps:
   - kind: loop
     id: simplification-apply-cycle
     name: Simplification Apply Cycle
-    loopType: doWhile
+    loopType: while
     when: is_review_mode != true
     continueWhile:
       type: simple
