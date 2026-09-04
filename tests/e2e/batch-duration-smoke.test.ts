@@ -22,8 +22,16 @@ describe('batch duration smoke (#407)', () => {
     expect(batched.dispatches).toBe(1);
 
     // Content collapses against what the one context already holds. The floor sits close under the
-    // measured 27.8%, so a regression that quietly halves the saving fails here.
+    // measured 18.1%, so a regression that quietly halves the saving fails here.
+    //
+    // The saving is composition-sensitive, which is why the floor is stated against a measurement
+    // rather than an ambition. Collapse works item by item on what a held context already has, so
+    // content delivered as one activity bundle collapses only when the whole bundle matches. Seeding
+    // `is_review_mode` moved 21 operations out of individual fetches and into the activity that binds
+    // them (#599) — worth 54,981 characters and 21 round trips on a fresh-context walk, and worth
+    // 24,142 characters of this run's collapse, because a bundle that grew is a bundle that no longer
+    // matches. Both halves are real; the tension between them is #603.
     const charSavingPct = ((perActivity.deliveredChars - batched.deliveredChars) / perActivity.deliveredChars) * 100;
-    expect(charSavingPct).toBeGreaterThan(20);
+    expect(charSavingPct).toBeGreaterThan(15);
   }, 120_000);
 });
