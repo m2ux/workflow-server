@@ -6,7 +6,9 @@ variables:
   reads:
     - impact_analysis_path
     - operation_type
+    - pattern_adoption
     - planning_folder_path
+    - preservation_required
     - verified_findings
     - workflow_id
   writes:
@@ -48,6 +50,19 @@ variables:
       type: boolean
       description: True when content drafting detects removals not flagged during impact analysis.
       defaultValue: false
+    - name: file_approach_disposition
+      type: string
+      description: What the reader decided about the drafting approach for the current file. Absent until an approach is presented.
+      values:
+        - confirmed
+        - revise
+    - name: file_draft_disposition
+      type: string
+      description: What the reader decided about the drafted content of the current file. Absent until a draft is reviewed.
+      values:
+        - accepted
+        - revise
+        - redraft
     - name: removal_disposition
       type: string
       description: What the review decided about an unflagged removal. Absent until one is reviewed.
@@ -148,7 +163,11 @@ steps:
     steps:
       - kind: technique
         id: assemble-file-approach
-        technique: assemble-file-approach
+        technique:
+          name: assemble-file-approach
+          inputs:
+            pattern_adoption: pattern_adoption
+            preservation_required: preservation_required
       - kind: technique
         id: persist-drafting-plan
         technique:
@@ -171,9 +190,19 @@ steps:
           - id: confirmed
             label: Yes, proceed with this approach
             description: Drafting approach for this file is approved.
+            effect:
+              setVariable:
+                file_approach_disposition: confirmed
           - id: revise
             label: Change approach
             description: Drafting approach for this file requires revision.
+            effect:
+              setVariable:
+                file_approach_disposition: revise
+      - kind: technique
+        id: revise-file-approach
+        technique: assemble-file-approach
+        when: file_approach_disposition == 'revise'
       - kind: technique
         id: yaml-authoring
         technique:
@@ -205,12 +234,28 @@ steps:
           - id: accepted
             label: Accepted
             description: Drafted file content is accurate as presented.
+            effect:
+              setVariable:
+                file_draft_disposition: accepted
           - id: revise
             label: Needs revision
             description: Drafted file content requires targeted changes.
+            effect:
+              setVariable:
+                file_draft_disposition: revise
           - id: redraft
             label: Redraft from scratch
             description: Drafted file content requires a fresh approach from scratch.
+            effect:
+              setVariable:
+                file_draft_disposition: redraft
+      - kind: technique
+        id: re-author-drafted-file
+        technique:
+          name: yaml-authoring
+          inputs:
+            schema_type: "{current_file.type}"
+        when: file_draft_disposition == 'revise' || file_draft_disposition == 'redraft'
       - kind: checkpoint
         id: preservation-check
         condition:
