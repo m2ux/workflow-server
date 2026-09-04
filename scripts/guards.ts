@@ -246,7 +246,7 @@ export const GUARDS: GuardSpec[] = [
     npmScript: 'check:loop-shape',
     scope: 'corpus',
     json: true,
-    proves: 'an item loop declares its collection and item, a repeat-until loop its continuation test, and neither declares the other\'s',
+    proves: 'an item loop declares its collection, item and early exit, a repeat-until loop its continuation test, and neither declares the other\'s',
   },
   {
     id: 'refs',
