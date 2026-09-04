@@ -3,8 +3,9 @@
   "label": "baseline",
   "contextMode": "fresh",
   "agentId": "bench-solo",
-  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-588/workflows",
-  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-588",
+  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-460aba43/workflows",
+  "workflowsRev": "460aba43",
+  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-460aba43",
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -25,26 +26,26 @@
     "get_workflow": 1,
     "next_activity": 12,
     "get_activity": 12,
-    "get_resource": 165,
-    "yield_checkpoint": 10,
-    "respond_checkpoint": 10,
-    "resume_checkpoint": 10,
-    "get_technique": 24
+    "get_resource": 169,
+    "yield_checkpoint": 11,
+    "respond_checkpoint": 11,
+    "resume_checkpoint": 11,
+    "get_technique": 27
   },
   "chars": {
     "start_session": 869,
-    "get_workflow": 112376,
+    "get_workflow": 112601,
     "next_activity": 1195,
-    "get_activity": 560462,
-    "get_resource": 572371,
-    "yield_checkpoint": 2930,
-    "respond_checkpoint": 1984,
-    "resume_checkpoint": 3672,
-    "get_technique": 147450
+    "get_activity": 589775,
+    "get_resource": 572593,
+    "yield_checkpoint": 3212,
+    "respond_checkpoint": 2185,
+    "resume_checkpoint": 4052,
+    "get_technique": 153490
   },
   "history": {
-    "technique_bundled": 66,
-    "technique_fetched": 24,
+    "technique_bundled": 72,
+    "technique_fetched": 27,
     "resource_fetched": 144
   },
   "repeatedResources": [
@@ -75,14 +76,13 @@
   ],
   "contextModeOnDisk": "fresh",
   "agentIdOnDisk": "bench-solo",
-  "deliveredContentKeys": 265,
+  "deliveredContentKeys": 273,
   "resourceLedgerKeys": 75,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 560462,
-  "getWorkflowChars": 112376,
-  "getResourceChars": 572371,
-  "getTechniqueChars": 147450,
-  "workflowsRev": "875a36dc",
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-02 against workflows@c56b51ca. Delivery is 14,950 characters above the previous recording of 1,379,520 at workflows@11faffbd, and the whole of that is corpus the code branch has since adopted: the review-basis work items that state what a review run reaches and what its claims rest on, the five hand-checks a reviewer used to perform from memory, the inventories each built once, the authoring-conformance body check, the citation-grain rule that reads a citation at the grain its target is delivered at, and the graph-reach operations that open the sibling repositories and the markdown half of the knowledge graph. get_resource rises 8,718 because those work items cite rubrics and registers at the section a step reads, and each cited section is delivered; get_activity rises 8,085 because eager step-technique bundling delivers a widened operation again in each activity that binds it. get_workflow falls 1,853, the rules those operations replaced coming out of the workflow body. get_technique is unchanged: the graph operations are bound rather than bundled on this walk. One resource ledger key is added, the review register. Re-verified at workflows@131e2942, which binds graph operations across the workflows that reached none: every metric was identical, because those operations are bound rather than bundled on this walk, so a rule added to their shared contract is delivered to no activity the walk visits. Re-recorded 2026-09-03 at workflows@875a36dc, which adopts the canon audit, the decisionless-checkpoint fixes and the section-delivery work. Delivery falls 1,811 characters to 1,392,659, the first recording to fall. get_activity falls 1,611 and get_workflow 172, both from prose the canon audit removed where a rule restated a Protocol phase or a schema owned the routing; get_technique falls 45 and resume_checkpoint 7 for the same reason. get_resource rises 17, the one increase, and it has a single source: the findings-report guide is the only resource this walk reads that changed, and its finding-layout section now names the field order as a link rather than saying \"above\", which a reader given only that section could not follow. The section-delivery work's citation-grain changes are in workflow-design and plain-language, which this walk does not visit."
+  "getActivityChars": 589775,
+  "getWorkflowChars": 112601,
+  "getResourceChars": 572593,
+  "getTechniqueChars": 153490,
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-04 against workflows@460aba43. Delivery is 35,800 characters above the previous recording of 1,392,659 at workflows@875a36dc, a 2.6% rise, and the corpus jump spans three merges: the workflows-branch canon audit, the contract blind spots that gave the convergence loop its declared writes, and the loop-continuation migration that moved every repeat-until test off `condition` and onto `continueWhile`. The third dominates, and it buys steps that had never run. A doWhile loop runs its body and then decides whether to run it again; while the continuation test lived on `condition`, both mechanical readers took it as an entry gate and read an unbound variable as false, so six of the eight top-level doWhile loops entered nothing at all. Their bodies now walk. The walk reaches nine more techniques than it did \u2014 six more bundled and three more fetched, 66 to 72 and 24 to 27 \u2014 and eight more delivered content keys, 265 to 273. get_activity rises 29,313 of the total, which is those bodies arriving in the activities that own them: the simplification apply cycle, the review-fix cycle, the validate fix-and-revalidate cycle and the await-review loop. get_technique rises 6,040 for the operations those bodies bind. get_workflow rises 225 and get_resource 222, both from the canon audit and the contract work rather than from the loops. The resource ledger is unchanged at 75 keys: no body reads a resource the walk had not already fetched."
 }
