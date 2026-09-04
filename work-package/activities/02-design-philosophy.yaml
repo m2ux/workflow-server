@@ -65,6 +65,13 @@ variables:
       type: boolean
       description: Whether to skip optional discovery activities (elicitation and research).
       defaultValue: false
+    - name: ticket_disposition
+      type: string
+      description: What the reviewer decided about the ticket's completeness gaps. Absent outside review mode, where the gaps are not assessed.
+      values:
+        - refactor
+        - gaps-noted
+        - complete
     - name: ticket_gaps_documented
       type: boolean
       description: Whether ticket completeness gaps were documented during review mode design-philosophy assessment.
@@ -190,12 +197,21 @@ steps:
       - id: refactor-ticket
         label: Refactor ticket
         description: Update the ticket to address identified gaps
+        effect:
+          setVariable:
+            ticket_disposition: refactor
       - id: proceed-with-gaps
         label: Proceed with gaps noted
         description: Continue review with the recorded gaps as tracked findings in the [assumptions log]({assumptions_log})
+        effect:
+          setVariable:
+            ticket_disposition: gaps-noted
       - id: no-gaps
         label: Ticket is complete
         description: No significant gaps were found
+        effect:
+          setVariable:
+            ticket_disposition: complete
   - kind: action
     id: set-review-mode-path
     when: is_review_mode == true

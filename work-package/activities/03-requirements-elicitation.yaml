@@ -56,16 +56,6 @@ steps:
   - kind: technique
     id: stakeholder-discussion
     technique: discuss
-  - kind: checkpoint
-    id: stakeholder-transcript
-    message: Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here.
-    options:
-      - id: provide-transcript
-        label: Provide transcript/summary
-        description: Paste or attach the stakeholder discussion content
-      - id: skip-discussion
-        label: Skip stakeholder discussion
-        description: Proceed directly to agent-led elicitation (not recommended)
   - kind: technique
     id: elicit-requirements
     technique: elicit

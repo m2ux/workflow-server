@@ -48,6 +48,12 @@ variables:
       type: boolean
       description: True when content drafting detects removals not flagged during impact analysis.
       defaultValue: false
+    - name: removal_disposition
+      type: string
+      description: What the review decided about an unflagged removal. Absent until one is reviewed.
+      values:
+        - flagged
+        - restored
     - name: needs_audit_fixes
       type: boolean
       description: Whether audit passes surfaced findings that still need remedia.
@@ -223,12 +229,28 @@ steps:
           - id: proceed
             label: Proceed with changes
             description: Detected removals are intentional and the modifications stand.
+            effect:
+              setVariable:
+                removal_disposition: flagged
           - id: preserve-more
             label: Preserve more content
             description: Some content flagged for removal must be preserved.
+            effect:
+              setVariable:
+                removal_disposition: restored
           - id: rewrite
             label: Rewrite approach
             description: File-level approach requires a different framing entirely.
+            effect:
+              setVariable:
+                removal_disposition: restored
+      - kind: technique
+        id: apply-removal-disposition
+        technique:
+          name: yaml-authoring
+          inputs:
+            schema_type: "{current_file.type}"
+        when: has_unflagged_removals == true && removal_disposition == 'restored'
   - kind: technique
     id: review-draft-yaml
     technique: review-draft-yaml

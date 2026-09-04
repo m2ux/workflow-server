@@ -2,6 +2,12 @@ id: plan-and-execute
 version: 1.0.0
 name: Plan and Execute
 description: Plan once, gate optionally, execute steps in order, and replan while surprise remains — borrowable mid-phase plan-and-execute pattern.
+variables:
+  writes:
+    - name: plan_needs_replan
+      type: boolean
+      description: Whether the confirmed plan needs revising before its steps run — set at the plan gate, read by the step loop it holds back and by the replan loop it drives.
+      defaultValue: false
 required: false
 steps:
   - kind: technique
@@ -16,9 +22,15 @@ steps:
       - id: confirmed
         label: Proceed with plan
         description: Execute the planned steps in order.
+        effect:
+          setVariable:
+            plan_needs_replan: false
       - id: revise
         label: Revise plan
         description: Return to planning with feedback before executing.
+        effect:
+          setVariable:
+            plan_needs_replan: true
   - kind: loop
     id: execute-steps
     name: Execute Plan Steps
