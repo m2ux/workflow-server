@@ -27,6 +27,10 @@ variables:
     - name: comprehension_dir
       type: string
       description: Absolute path of the cumulative codebase-comprehension corpus, outside any one session's planning folder.
+    - name: has_open_questions
+      type: boolean
+      description: Whether unresolved open questions remain after the codebase comprehension deep-dive.
+      defaultValue: false
     - name: needs_comprehension
       type: boolean
       description: Whether codebase comprehension is needed (mandatory after design-philosophy; may be re-requested after stakeholder feedback).
@@ -91,9 +95,13 @@ steps:
             concern_kind: open_questions
             analyse_technique: codebase-comprehension::deep-dive
             challenge_perspectives: '["pedagogy", "rejected-paths"]'
+            concern_document: comprehension_artifact
             convergence_flag: needs_comprehension
             residue_flag: has_open_questions
             iteration_mode: once
+          outputs:
+            convergence_flag: needs_comprehension
+            residue_flag: has_open_questions
       - kind: technique
         id: update-artifact
         technique:

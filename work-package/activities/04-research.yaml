@@ -7,10 +7,8 @@ variables:
     - assumption_outcome
     - branch_name
     - component_git_dir
-    - has_open_questions
     - has_resolvable_assumptions
     - is_review_mode
-    - needs_comprehension
     - planning_folder_path
     - pr_number
     - problem_statement
@@ -25,6 +23,9 @@ variables:
     - name: assumption_review_presentation
       type: object
       description: Structured judgement-augmentation context for decision, shaped like the Open Assumptions entry fields of the assumptions log template (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
+    - name: assumptions_log
+      type: object
+      description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: context_scope
       type: string
       description: Provenance scope of AI-generated code in this work package.
@@ -47,6 +48,10 @@ variables:
     - name: has_reconcilable_research
       type: boolean
       description: Whether open research-reconcilable candidates remain — gaps further knowledge-base or web research could close.
+      defaultValue: false
+    - name: has_resolvable_assumptions
+      type: boolean
+      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
       defaultValue: false
     - name: needs_individual_interview
       type: boolean
@@ -130,6 +135,11 @@ steps:
         concern_kind: assumptions
         analyse_technique: review-assumptions::reconcile
         challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+        concern_document: assumptions_log
+        convergence_flag: has_resolvable_assumptions
+        residue_flag: has_open_assumptions
+        residue_collection: open_assumptions
+      outputs:
         convergence_flag: has_resolvable_assumptions
         residue_flag: has_open_assumptions
         residue_collection: open_assumptions

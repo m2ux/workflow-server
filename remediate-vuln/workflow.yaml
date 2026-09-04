@@ -112,10 +112,6 @@ variables:
   - name: question_domains
     type: array
     description: Question domains for requirements elicitation.
-  - name: has_open_questions
-    type: boolean
-    description: Whether unresolved open questions remain after comprehension.
-    defaultValue: false
   - name: needs_plan_revision
     type: boolean
     description: Whether feedback requires returning to plan-prepare.

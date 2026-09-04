@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -13,27 +13,15 @@ Challenge findings folded into the concern set with convergence/residue flags fo
 
 Ordered per-perspective findings from the challenge pass.
 
-### assumptions_log
-
-*(optional)* Assumptions log to update in place when `concern_kind` is `assumptions`.
-
-### comprehension_artifact
-
-*(optional)* Comprehension artifact whose Open Questions table is updated when `concern_kind` is `open_questions`.
-
 ### residue_collection
 
 *(optional)* Bag name for the residual open collection to emit.
 
 ## Outputs
 
-### assumptions_log
+### concern_document
 
-*(when applicable)* Log updated with challenge resolutions and newly surfaced items.
-
-### comprehension_artifact
-
-*(when applicable)* Artifact with Open Questions updated from the challenge-pass outcomes.
+The concern document with challenge resolutions applied and newly surfaced items appended.
 
 ### convergence_flag
 
@@ -47,43 +35,22 @@ Bound flag: true iff irreducible opens remain for activity-level residual interv
 
 *(optional)* Residual open items when a collection name was supplied.
 
-### open_assumptions
-
-*(when concern_kind is assumptions)* Residual stakeholder-dependent opens — empty when none remain.
-
-### has_resolvable_assumptions
-
-*(when concern_kind is assumptions)* Same semantics as the convergence flag for the assumptions domain.
-
-### has_open_assumptions
-
-*(when concern_kind is assumptions)* Same semantics as the residue flag for the assumptions domain.
-
-### needs_comprehension
-
-*(when concern_kind is open_questions)* Convergence flag for comprehension bindings.
-
-### has_open_questions
-
-*(when concern_kind is open_questions)* Residue flag for comprehension bindings.
-
 ## Protocol
 
 ### 1. Merge Findings
 
 - Walk `{challenge_findings}` in order; for each concern id, reconcile perspective outcomes (prefer evidence-backed `resolved-by-challenge` over bare `confirmed`)
-- Apply resolutions to `{assumptions_log}` or the Open Questions table: resolved items get Outcome/resolution text; newly surfaced items are appended as open with classification
+- Apply resolutions to `{concern_document}`: resolved items get Outcome/resolution text; newly surfaced items are appended as open with classification
 - Items marked `weakened` stay open but gain challenge notes for residual presentation
 
 ### 2. Reclassify and Set Flags
 
 - Reclassify remaining opens: agent-resolvable → keep `{convergence_flag}` true; stakeholder/irreducible only → `{convergence_flag}` false and `{residue_flag}` true; none open → both false
-- Emit `{residue_collection}` / `{open_assumptions}` as the irreducible set (empty when none)
-- When `concern_kind` is `assumptions`, also bind `{has_resolvable_assumptions}` and `{has_open_assumptions}` to the same truths for existing activity conditions
+- Emit `{residue_collection}` as the irreducible set (empty when none)
 
 ### 3. Authority
 
-- The log (or Open Questions table) remains the single source of truth — do not restate concern bodies elsewhere
+- `{concern_document}` remains the single source of truth — do not restate concern bodies elsewhere
 
 ## Rules
 
