@@ -69,6 +69,7 @@ techniques:
 variables:
   - name: is_review_mode
     type: boolean
+    defaultValue: false
     description: True when the work package reviews an existing PR instead of producing a new implementation.
   - name: skip_optional_activities
     type: boolean
