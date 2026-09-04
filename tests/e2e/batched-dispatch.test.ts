@@ -225,7 +225,11 @@ describe('batched dispatch (#407)', () => {
       arguments: { session_index: sessionIndex, context_tokens: 2_000_000, agent_id: scope },
     });
     if (isError(first)) throw new Error(`get_activity ${RUN[0]} failed: ${rawText(first)}`);
-    const firstChars = rawText(first).length;
+    // Some of this collapses already: a technique two steps of one activity bind is deduped within
+    // the single delivery. That intra-activity reuse is the floor the second delivery is read
+    // against, so it is counted rather than assumed absent.
+    const reusedByFirst = rawText(first).split('delivery: unchanged').length - 1;
+    expect(reusedByFirst).toBeGreaterThan(0);
 
     // The worker reaches a gate and stops.
     const yielded = await client.callTool({
@@ -267,7 +271,20 @@ describe('batched dispatch (#407)', () => {
     expect(secondBatch['activities']).toBe(2);
     expect(secondBatch['may_continue']).toBe(true);
     expect(rawText(second)).toContain('delivery: unchanged');
-    expect(rawText(second).length).toBeLessThan(firstChars);
+    // The claim, stated as reuse rather than as a size: arriving into a context that has held the
+    // first activity since before the gate was answered, this delivery reuses strictly more than
+    // that first activity could on its own. Only cross-activity reuse can put it ahead — were the
+    // held context being ignored, this would collapse its own duplicates and no more, landing level
+    // with the first.
+    //
+    // A comparison of the two deliveries' SIZES said this until seeding the review-mode flag (#599)
+    // moved 21 operations into this activity's bundle, making it the larger of the two while it
+    // still reuses everything the context holds. Size was never the invariant; two different
+    // activities have no reason to stand in a fixed ratio. What the reuse saves in characters is
+    // `batch-duration-smoke`'s floor to defend; that it happens across the gate is this test's.
+    const reusedBySecond = rawText(second).split('delivery: unchanged').length - 1;
+    expect(reusedBySecond, 'entries the second activity reuses from the held context')
+      .toBeGreaterThan(reusedByFirst);
 
     const history = (JSON.parse(readFileSync(join(planningFolder, 'session.json'), 'utf8')) as { history: HistoryEntry[] }).history;
     // One dispatch, then the same context arriving twice more — across a gate and across an activity
