@@ -84,7 +84,7 @@ steps:
     id: research-reconciliation
     name: Research Reconciliation Loop
     loopType: doWhile
-    condition:
+    continueWhile:
       type: simple
       variable: has_reconcilable_research
       operator: ==

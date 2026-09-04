@@ -67,7 +67,7 @@ steps:
     name: Simplification Apply Cycle
     loopType: doWhile
     when: is_review_mode != true
-    condition:
+    continueWhile:
       type: simple
       variable: needs_simplification
       operator: ==

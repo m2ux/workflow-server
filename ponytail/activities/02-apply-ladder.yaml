@@ -17,7 +17,7 @@ steps:
     id: climb-until-safe
     name: Climb Until Safe
     loopType: doWhile
-    condition:
+    continueWhile:
       type: simple
       variable: safety_floor_cleared
       operator: ==

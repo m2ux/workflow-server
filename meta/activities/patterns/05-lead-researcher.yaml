@@ -32,7 +32,7 @@ steps:
     name: Research Gap Follow-up
     loopType: while
     maxIterations: 3
-    condition:
+    continueWhile:
       type: simple
       variable: has_research_gaps
       operator: "=="
