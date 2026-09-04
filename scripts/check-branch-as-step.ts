@@ -19,8 +19,13 @@
  *
  * Mutually exclusive branches written as *top-level* peer bullets are the same defect, and are
  * deliberately not covered: separating them from a phase that legitimately handles several cases in
- * sequence needs judgement this guard cannot supply, and a guard that needs a 57-entry triage list
- * on the day it lands is bookkeeping rather than measurement.
+ * sequence needs judgement this guard cannot supply, and a guard that needs a large triage list on
+ * the day it lands is bookkeeping rather than measurement.
+ *
+ * An indented *numbered* sub-item is likewise out of scope. The numbered form carries ordered
+ * sub-actions and precedence ladders — `variable-binding` resolves a bind through four numbered
+ * `If`/`Else if` branches under a step that declares them a precedence — which is the Do-not-flag
+ * carve-out for genuine enumerations. The dash form is what qualifies rather than enumerates.
  *
  * Run: npx tsx scripts/check-branch-as-step.ts [--root <workflows-dir>] [--json]
  */
@@ -42,9 +47,27 @@ const INDENTED_BULLET = /^\s+- \S/;
 const QUALIFIER =
   /^\s+- (?:\*\*)?(?:If\b|When\b|Where\b|Unless\b|Otherwise\b|On failure\b|Fall(?:ing)? back\b|Never\b|Do not\b|Don't\b|Avoid\b|Skip\b(?!.*\bstep\b.*:)|For a\b|For the\b|At `?(?:lite|full|ultra)\b)/i;
 
+/**
+ * An arm of a mutually-exclusive selection written as a sub-bullet chain. A complete `If` / `Else if`
+ * ladder is a branch table, which AP-59's Do-not-flag keeps: telling it apart from a caveat that
+ * qualifies one instruction needs judgement beyond a line pattern, so the whole ladder stands.
+ */
+const LADDER_ARM = /^\s+- (?:\*\*)?(?:Else\b|Otherwise\b)/i;
+
+/** The leading whitespace of a list item, so siblings are compared at one depth. */
+function indentOf(text: string): number {
+  return /^(\s*)/.exec(text)![1]!.length;
+}
+
 interface Phase { title: string; line: number; bullets: { line: number; text: string }[] }
 
-/** Every `### N. Title` block of a technique's `## Protocol`, fenced code excluded. */
+/**
+ * Every instruction-bearing block of a technique's `## Protocol`, fenced code excluded.
+ *
+ * A Protocol takes either shape: `### N. Title` phase headings, or a flat numbered sequence directly
+ * under the `## Protocol` heading. Entering Protocol opens a block covering the flat shape, and each
+ * `### ` closes it and opens the named phase, so a caveat is reached under both.
+ */
 function protocolPhases(body: string): Phase[] {
   const phases: Phase[] = [];
   let inProtocol = false;
@@ -54,8 +77,9 @@ function protocolPhases(body: string): Phase[] {
     if (/^```/.test(line)) { fenced = !fenced; return; }
     if (fenced) return;
     if (/^## /.test(line)) {
-      inProtocol = /^## Protocol\s*$/.test(line);
       if (current) { phases.push(current); current = null; }
+      inProtocol = /^## Protocol\s*$/.test(line);
+      if (inProtocol) current = { title: 'Protocol', line: i + 1, bullets: [] };
       return;
     }
     if (!inProtocol) return;
@@ -72,6 +96,22 @@ function protocolPhases(body: string): Phase[] {
   return phases;
 }
 
+/**
+ * Whether the bullet at `i` belongs to a selection ladder — it is an `Else`/`Otherwise` arm, or the
+ * head whose next sibling at the same depth is one.
+ */
+function inLadder(bullets: { text: string }[], i: number): boolean {
+  if (LADDER_ARM.test(bullets[i]!.text)) return true;
+  const depth = indentOf(bullets[i]!.text);
+  for (let j = i + 1; j < bullets.length; j++) {
+    const sibling = bullets[j]!.text;
+    if (indentOf(sibling) > depth) continue;
+    if (indentOf(sibling) < depth) return false;
+    return LADDER_ARM.test(sibling);
+  }
+  return false;
+}
+
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
@@ -83,8 +123,9 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       scanned++;
       const rel = relative(root, path);
       for (const phase of protocolPhases(readFileSync(path, 'utf-8'))) {
-        for (const b of phase.bullets) {
+        for (const [i, b] of phase.bullets.entries()) {
           if (!INDENTED_BULLET.test(b.text) || !QUALIFIER.test(b.text)) continue;
+          if (inLadder(phase.bullets, i)) continue;
           findings.push({
             check: 'qualifier-as-sub-bullet',
             site: `${rel}:${b.line}`,
