@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -8,14 +8,6 @@ metadata:
 Adversarial challenge perspectives over the current concern set for the combine step.
 
 ## Inputs
-
-### assumptions_log
-
-*(optional)* Assumptions log when challenging assumptions.
-
-### comprehension_artifact
-
-*(optional)* Comprehension artifact / open-questions table when challenging open questions.
 
 ### target_path
 
@@ -39,12 +31,11 @@ Ordered collection of per-perspective findings (keyed by perspective name): conc
 
 - For the bound perspective, attack the open set: look for missing evidence, rejected alternatives, stakeholder gaps misclassified as code-resolvable, and questions answerable from `{target_path}` or artifacts
 - Record for each item: `confirmed` | `weakened` | `resolved-by-challenge` | `newly-surfaced` | `irreducible`, with a one-line evidence note
-- Do not write `{has_resolvable_assumptions}`, `{has_open_assumptions}`, `{needs_comprehension}`, or `{has_open_questions}` from a unit — isolation-then-combine
 
 ### 3. Gather
 
 - Assemble `{challenge_findings}` in input-perspective order
-- Return the collection to [combine](./combine.md); do not merge into the log here
+- Return the collection to [combine](./combine.md); do not merge into `{concern_document}` here
 
 ## Rules
 

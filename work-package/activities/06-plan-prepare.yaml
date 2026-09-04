@@ -8,11 +8,9 @@ variables:
     - branch_name
     - component_git_dir
     - default_branch
-    - has_open_questions
     - has_resolvable_assumptions
     - host_repo_path
     - is_review_mode
-    - needs_comprehension
     - planning_folder_path
     - pr_number
     - problem_statement
@@ -22,6 +20,9 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: assumptions_log
+      type: object
+      description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: body_conforms
       type: boolean
       description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
@@ -37,6 +38,10 @@ variables:
     - name: has_open_assumptions
       type: boolean
       description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      defaultValue: false
+    - name: has_resolvable_assumptions
+      type: boolean
+      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
       defaultValue: false
     - name: open_assumptions
       type: array
@@ -112,6 +117,11 @@ steps:
         concern_kind: assumptions
         analyse_technique: review-assumptions::reconcile
         challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+        concern_document: assumptions_log
+        convergence_flag: has_resolvable_assumptions
+        residue_flag: has_open_assumptions
+        residue_collection: open_assumptions
+      outputs:
         convergence_flag: has_resolvable_assumptions
         residue_flag: has_open_assumptions
         residue_collection: open_assumptions

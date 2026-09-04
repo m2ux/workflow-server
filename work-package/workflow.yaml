@@ -127,10 +127,6 @@ variables:
     type: boolean
     description: Whether stakeholder feedback requires returning to plan-prepare for significant approach revision.
     defaultValue: false
-  - name: has_open_questions
-    type: boolean
-    description: Whether unresolved open questions remain after the codebase comprehension deep-dive.
-    defaultValue: false
   - name: skip_architecture_summary
     type: boolean
     description: Whether to skip architecture summary creation.

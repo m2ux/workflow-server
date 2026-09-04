@@ -18,6 +18,9 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: assumptions_log
+      type: object
+      description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: current_domain
       type: string
       description: Current question domain during elicitation loop (from question_domains).

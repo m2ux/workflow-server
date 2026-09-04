@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -21,6 +21,10 @@ Technique path invoked each iteration to deepen or resolve agent-resolvable item
 
 List of adversarial perspectives (or lens names) for the challenge pass.
 
+### concern_document
+
+*(optional)* The document holding the concern set for this `{concern_kind}` — the log or table this binding maintains.
+
 ### convergence_flag
 
 Name of the boolean bag variable that drives the loop — true while another analyse/challenge iteration is needed.
@@ -32,21 +36,6 @@ Name of the boolean bag variable that is true iff irreducible opens remain after
 ### residue_collection
 
 *(optional)* Name of the collection holding residual open items for batch/interview presentation.
-
-## Outputs
-
-### convergence_flag
-
-Bound convergence variable after the loop — false when analyse-challenge has converged.
-
-### residue_flag
-
-Bound residue variable — true iff irreducible opens remain for activity-level residual UX.
-
-### residue_collection
-
-*(optional)* Residual open items after combine, when a collection name was supplied.
-
 
 ## Rules
 
