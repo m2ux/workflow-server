@@ -37,12 +37,12 @@ Divergences only. A unit walked cleanly gets no row — the absence of a row is 
 | Column | Carries |
 |--------|---------|
 | Home | The criteria home the unit belongs to |
-| Unit | The unit's own section title or anchor |
+| Unit | The unit's own section title or anchor, as the home spells it |
 | Status | `not-applicable` with the reason it does not reach this surface, or `blocked` with what prevented the walk |
 
 Only `blocked` represents missing coverage. `not-applicable` is an evidenced negative and must carry its reason; a bare skip is not one.
 
-The obligation is one row per unwalked unit of every home in the inventory. If the ledger cannot account for all thirteen anti-pattern units, the six inventory units, the thirty principles, and the conformance unit, the walk was partial — say so rather than reporting a clean sweep.
+The obligation is one row per unwalked unit of every home. Account for the units each home holds at the commit audited, read from its own headings per [canon-map.md](./canon-map.md#unit-inventory) — a walk measured against a count carried here would certify itself complete against a canon that has since grown. Where the ledger cannot account for every unit of every home, the walk was partial: say so rather than reporting a clean sweep.
 
 ## Which report
 
