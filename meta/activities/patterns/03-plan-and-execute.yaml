@@ -36,7 +36,7 @@ steps:
     name: Replan Until Stable
     loopType: while
     maxIterations: 5
-    condition:
+    continueWhile:
       type: simple
       variable: plan_needs_replan
       operator: "=="

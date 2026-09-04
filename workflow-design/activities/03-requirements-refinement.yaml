@@ -124,7 +124,7 @@ steps:
     id: assumption-reconciliation
     name: Assumption Reconciliation Loop
     loopType: while
-    condition:
+    continueWhile:
       type: simple
       variable: has_resolvable_assumptions
       operator: ==

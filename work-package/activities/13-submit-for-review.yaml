@@ -295,7 +295,7 @@ steps:
     name: PR Body Verification Re-render Loop
     loopType: while
     when: is_review_mode != true && stealth_mode != true
-    condition:
+    continueWhile:
       type: simple
       variable: body_conforms
       operator: ==
@@ -453,7 +453,7 @@ steps:
     id: await-review-loop
     name: Await Review Loop
     loopType: doWhile
-    condition:
+    continueWhile:
       type: simple
       variable: awaiting_review
       operator: ==

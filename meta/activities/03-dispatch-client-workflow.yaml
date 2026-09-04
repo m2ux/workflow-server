@@ -32,7 +32,7 @@ steps:
     id: client-activity-loop
     name: Client Activity Loop
     loopType: while
-    condition:
+    continueWhile:
       type: simple
       variable: current_activity
       operator: "!="

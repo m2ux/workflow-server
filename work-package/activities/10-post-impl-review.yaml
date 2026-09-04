@@ -156,7 +156,7 @@ steps:
     name: Review-Fix Cycle
     loopType: doWhile
     when: is_review_mode != true
-    condition:
+    continueWhile:
       type: or
       conditions:
         - type: simple

@@ -30,7 +30,7 @@ steps:
     id: plan-approval-loop
     name: Plan Approval Loop
     loopType: doWhile
-    condition:
+    continueWhile:
       type: simple
       variable: plan_approved
       operator: ==

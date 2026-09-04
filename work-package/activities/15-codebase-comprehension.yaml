@@ -81,7 +81,7 @@ steps:
     id: deep-dive-iteration
     name: Deep-Dive Iteration
     loopType: while
-    condition:
+    continueWhile:
       type: simple
       variable: needs_comprehension
       operator: ==

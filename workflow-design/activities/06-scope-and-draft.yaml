@@ -275,7 +275,7 @@ steps:
     id: pre-attestation-fix-cycle
     name: Pre-Attestation Fix Cycle
     loopType: while
-    condition:
+    continueWhile:
       type: simple
       variable: needs_audit_fixes
       operator: "=="

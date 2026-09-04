@@ -86,7 +86,7 @@ steps:
     id: fix-revalidate-cycle
     name: Fix and Revalidate Cycle
     loopType: doWhile
-    condition:
+    continueWhile:
       type: and
       conditions:
         - type: simple

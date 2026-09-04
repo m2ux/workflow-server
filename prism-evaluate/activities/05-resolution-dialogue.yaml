@@ -55,7 +55,7 @@ steps:
         name: Proposal Refinement
         loopType: doWhile
         maxIterations: 5
-        condition:
+        continueWhile:
           type: simple
           variable: finding_disposition
           operator: ==

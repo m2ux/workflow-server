@@ -188,7 +188,7 @@ steps:
     id: post-update-remedia-cycle
     name: Post-Update Remedia Cycle
     loopType: while
-    condition:
+    continueWhile:
       type: simple
       variable: needs_audit_fixes
       operator: ==
