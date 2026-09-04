@@ -79,6 +79,22 @@ describe('loop shape', () => {
     expect(checks(withVariable)).toEqual(['repeat-loop-with-collection']);
   });
 
+  const BREAK = ['    breakCondition:', '      type: simple',
+    '      variable: has_uncertain_symbols', '      operator: "=="', '      value: true'].join('\n');
+
+  it('accepts an item loop that stops part way through its collection', () => {
+    // The field's one live site: the task cycle stops once a symbol's provenance is unaccounted for.
+    expect(checks([ITEM_LOOP, BREAK].join('\n'))).toEqual([]);
+  });
+
+  it('refuses a repeat-until loop that also declares an early exit', () => {
+    // Its continuation test is taken every pass, so an exit beside it is the same decision made
+    // twice at two different moments.
+    expect(checks([REPEAT_LOOP, BREAK].join('\n'))).toEqual(['repeat-loop-with-break']);
+    expect(checks([REPEAT_LOOP.replace('doWhile', 'while'), BREAK].join('\n')))
+      .toEqual(['repeat-loop-with-break']);
+  });
+
   it('reaches a loop nested inside another loop body', () => {
     const root = mkdtempSync(join(tmpdir(), 'loop-shape-nested-'));
     roots.push(root);

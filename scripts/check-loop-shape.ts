@@ -8,8 +8,17 @@
  * partitions apart afterwards.
  *
  * An item loop is bounded by its collection: it declares `over` and `variable`, and has no
- * continuation test to state. A repeat-until loop is bounded by its test: it declares
- * `continueWhile`, and iterates no collection. Each rule below is one half of that.
+ * continuation test to state. Its one early exit is `breakCondition`, which stops the walk part way
+ * through the collection. A repeat-until loop is bounded by its test: it declares `continueWhile`,
+ * iterates no collection, and needs no separate exit, because the test it already takes each pass is
+ * where an exit belongs. The rules below are the halves of that partition.
+ *
+ * `breakCondition` earns a rule of its own rather than a deletion. It was measured unused while this
+ * work was designed, and gained its only site two days earlier on a branch that had not merged:
+ * `08-implement`'s task cycle stops iterating tasks once a symbol's provenance is unaccounted for.
+ * So the field carries live meaning on an item loop, and the thing worth refusing is not the field
+ * but its appearance on a loop that already has a continuation test — one field, one job, which is
+ * the whole point of splitting `condition`.
  *
  * A repeat-until loop with no continuation test is also the unbounded case — nothing in the
  * definition says when it stops — so `repeat-loop-without-continuation` covers it and no separate
@@ -82,6 +91,15 @@ function checkLoop(loop: LoopStep, site: string, findings: Finding[]): void {
       site,
       detail: `a ${loopType} loop repeats until its test fails rather than walking a collection, so `
         + `\`${field}\` belongs to a forEach — move the loop to \`loopType: forEach\` or drop the field`,
+    });
+  }
+  if (has('breakCondition')) {
+    findings.push({
+      check: 'repeat-loop-with-break',
+      site,
+      detail: `a ${loopType} loop already decides each pass in \`continueWhile\`, so a \`breakCondition\` `
+        + 'is a second stopping rule beside it, evaluated at a different moment — fold the exit into '
+        + 'the continuation test',
     });
   }
 }
