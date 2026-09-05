@@ -49,7 +49,6 @@
         "checkpoint:lint-wiki:lint-findings-confirmed=reingest",
         "checkpoint:requirements-elicitation:elicitation-complete=add-requirements",
         "checkpoint:requirements-elicitation:elicitation-complete=revisit-domain",
-        "checkpoint:requirements-elicitation:stakeholder-transcript=skip-discussion",
         "checkpoint:research:context-scope-declaration=mixed",
         "checkpoint:research:context-scope-declaration=repo-only",
         "checkpoint:research:context-scope-declaration=web-retrieval",

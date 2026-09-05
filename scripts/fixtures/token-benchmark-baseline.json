@@ -3,9 +3,9 @@
   "label": "baseline",
   "contextMode": "fresh",
   "agentId": "bench-solo",
-  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-95c299af/workflows",
-  "workflowsRev": "95c299af",
-  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-95c299af",
+  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-69a01ca1/workflows",
+  "workflowsRev": "69a01ca1",
+  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-69a01ca1",
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -34,14 +34,14 @@
   },
   "chars": {
     "start_session": 869,
-    "get_workflow": 112625,
+    "get_workflow": 112923,
     "next_activity": 1195,
-    "get_activity": 657606,
-    "get_resource": 572593,
+    "get_activity": 658296,
+    "get_resource": 572485,
     "yield_checkpoint": 3212,
     "respond_checkpoint": 2185,
-    "resume_checkpoint": 4032,
-    "get_technique": 30654
+    "resume_checkpoint": 4039,
+    "get_technique": 30672
   },
   "history": {
     "technique_bundled": 93,
@@ -80,9 +80,9 @@
   "resourceLedgerKeys": 75,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 657606,
-  "getWorkflowChars": 112625,
-  "getResourceChars": 572593,
-  "getTechniqueChars": 30654,
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-04 against workflows@95c299af. Delivery falls 54,981 characters from the previous recording of 1,428,459 at workflows@460aba43, to 1,373,478, and the corpus jump is one commit: the review-mode flag gains the starting value a session already knows. A work package either reviews an existing pull request or produces a new implementation, settled before the first activity runs, and the flag saying so carried no starting value \u2014 so every step gated on it met a gate with no answer and left the bundle to be fetched a round trip later. Twenty-one operations cross from fetched to bundled. get_technique falls from 27 calls to 6 and from 153,490 characters to 30,654; get_activity rises 67,831 to 657,606 carrying them; the walk ends 54,981 characters lighter and 21 round trips shorter. Delivered content keys rise 273 to 287, which is those operations arriving as addressable entries rather than as separate answers. get_workflow rises 24 for the declaration itself and get_resource is unchanged at 572,593: no newly bundled operation reads a resource the walk had not already fetched, and the resource ledger stays at 75 keys. The walk baseline records the other half of the same change \u2014 nine steps of the opening activity, and steps across six further activities, stop being recorded as reading a gate nothing had bound. Where this trades against a held context rather than a fresh one, and why the batch floor moves with it, is issue #603."
+  "getActivityChars": 658296,
+  "getWorkflowChars": 112923,
+  "getResourceChars": 572485,
+  "getTechniqueChars": 30672,
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-05 against workflows@69a01ca1. Delivery is 1,374,376 characters, 898 above the previous recording of 1,373,478 at workflows@95c299af \u2014 a 0.1% move that passes the gate on its own terms. This is re-recorded for provenance rather than to price a rise: left alone, the fixture would name a corpus the server no longer pins, and every later run would carry a corpus-mismatch warning that makes a code delta indistinguishable from a definition one. The corpus jump spans three merges: the conditions-that-take-effect work, an activity diagram correction, and a canon-audit pass over the definitions. What moved is prose, not structure \u2014 the walk reaches the same 93 bundled and 6 fetched operations as before, and the same 287 delivered content keys. get_activity rises 690 and get_workflow 298, both from the audit's rewording; get_resource falls 108 for the same reason; get_technique rises 18. The resource ledger is unchanged at 75 keys. The other half of the same corpus jump shows in the walk baseline, which loses rather than gains: twelve remedial body steps stop running now that three loops ask before applying a remedy, and a stakeholder gate that duplicated a bound operation is gone."
 }
