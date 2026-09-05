@@ -8,20 +8,13 @@ The technique library for the work-package workflow. Each technique is one capab
 
 The cross-cutting meta strategy techniques [`variable-binding`](../../meta/techniques/variable-binding.md) and [`scatter-gather`](../../meta/techniques/scatter-gather.md) are declared at `workflow.techniques.activity` / activity level, not bound per step.
 
-For the full technique-to-activity table with capability summaries, see the [workflow README](../README.md#overview).
-
 ---
 
-## Technique groups by area
+## Layout
 
-| Area | Group / techniques |
-|------|--------------------|
-| **Start & setup** | `start-work-package/`, `manage-git/`, `manage-artifacts/` |
-| **Design & requirements** | `design-philosophy/`, `requirements-elicitation/`, `review-assumptions/`, `stakeholder-overview` |
-| **Research & analysis** | `research/`, `implementation-analysis/`, `codebase-comprehension/` |
-| **Plan & implement** | `plan-prepare/`, `implement/`, `cargo-operations/` |
-| **Review & quality** | `post-impl-review/`, `strategic-review/`, `lean-coding-audit/`, `validate/` |
-| **Submit & complete** | `submit-for-review/`, `finalize-documentation/`, `complete/` |
+A capability with one operation is a standalone `<op>.md` in this folder. A capability with several is a directory holding a group `TECHNIQUE.md` for the shared contract and one file per operation, which an activity binds as `<group>::<op>`. The directory listing is the membership of both sets.
+
+Which technique each activity step binds is declared in `activities/NN-<id>.yaml` and served by `get_activity`.
 
 ## Cross-workflow techniques
 
