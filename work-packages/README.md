@@ -46,7 +46,7 @@ graph TD
 
 ## Activities
 
-The seven activities run as a sequential chain (see the flow diagram above). Each links to its authoritative definition — steps, checkpoints, decisions, loops, and transitions live in the activity YAML and are served by `get_activity`.
+The activities run as a sequential chain (see the flow diagram above). Each links to its authoritative definition — steps, checkpoints, decisions, loops, and transitions live in the activity YAML and are served by `get_activity`.
 
 ### 1. [Scope Assessment](activities/01-scope-assessment.yaml)
 

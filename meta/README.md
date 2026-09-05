@@ -1,6 +1,6 @@
 # Meta Workflow
 
-> v5.12.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs five activities that derive the host repository from git and identify a target client workflow, match any saved session when the request states resume intent, create or resume the client session as a child of meta, resolve component_path, drive the client workflow's activity loop and mediate its checkpoint yields, and close out. Provides the universal technique repository for all client workflows.
+> v5.12.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs activities that derive the host repository from git and identify a target client workflow, match any saved session when the request states resume intent, create or resume the client session as a child of meta, resolve component_path, drive the client workflow's activity loop and mediate its checkpoint yields, and close out. Provides the universal technique repository for all client workflows.
 
 ---
 

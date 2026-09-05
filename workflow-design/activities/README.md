@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Nine activities that guide an agent from free-form description to validated, committed workflow files and a closing retrospective. `requirements-refinement`, `pattern-analysis`, `impact-analysis`, and `scope-and-draft` are mode-dependent (skipped in review mode); `pattern-analysis` is also skipped in update mode. `post-update-review` runs only in update mode as an automatic post-commit compliance audit. `retrospective` is the terminal activity in every mode.
+Activities that guide an agent from free-form description to validated, committed workflow files and a closing retrospective. `requirements-refinement`, `pattern-analysis`, `impact-analysis`, and `scope-and-draft` are mode-dependent (skipped in review mode); `pattern-analysis` is also skipped in update mode. `post-update-review` runs only in update mode as an automatic post-commit compliance audit. `retrospective` is the terminal activity in every mode.
 
 Heading numbers below match on-disk `NN-` file prefixes (gaps at 02/07 are intentional).
 

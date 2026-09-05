@@ -2,7 +2,7 @@
 
 > Part of the [Ponytail Lean-Coding Workflow](../README.md)
 
-Five activities that carry a coding task from intake through to a harvested debt ledger and honest gain report. The spine is linear — intake, climb, review — with one gated branch: the repo-wide audit is reached only when the lazy lens is set to its widest.
+Activities that carry a coding task from intake through to a harvested debt ledger and honest gain report. The spine is linear — intake, climb, review — with one gated branch: the repo-wide audit is reached only when the lazy lens is set to its widest.
 
 This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, transitions, and gates — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
 

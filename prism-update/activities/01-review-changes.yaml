@@ -8,17 +8,25 @@ variables:
     - next_index
     - upstream_path
   writes:
+    - name: change_summary
+      type: string
+      description: Categorized change table with per-prism detail for new entries and the referencing files each rename or deletion breaks.
     - name: change_set
       type: object
       description: "Categorized diff result: { new: [{name, upstream_file, family, optimal_model}], modified: [{name, resource_file, upstream_file}], renamed: [{old_name, new_name, resource_file, upstream_file}], deleted: [{name, resource_file}] }"
 required: true
 steps:
   - kind: technique
-    id: present-summary
-    technique: review-change-set::present-summary
+    id: compose-summary
+    technique: review-change-set::compose-summary
+  - kind: action
+    id: show-change-summary
+    actions:
+      - action: message
+        message: "{change_summary}"
   - kind: checkpoint
     id: change-review
-    message: Here are the upstream changes. Review the summary above and confirm which changes to apply.
+    message: "The upstream change set, categorized, with what each rename and deletion breaks."
     options:
       - id: confirm
         label: Confirm — apply all changes

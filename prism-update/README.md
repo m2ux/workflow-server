@@ -61,7 +61,7 @@ Each activity's authoritative definition lives in its [`activities/NN-<id>.yaml`
 | Technique | Capability |
 |-----------|------------|
 | [`diff-upstream`](techniques/diff-upstream.md) | Diff upstream prisms against current resources, classify changes by type and family |
-| [`review-change-set::present-summary`](techniques/review-change-set/present-summary.md) | Present the categorized change set to the user as a reviewable summary |
+| [`review-change-set::compose-summary`](techniques/review-change-set/compose-summary.md) | A reviewable summary of the categorized change set |
 | [`review-change-set::apply-exclusions`](techniques/review-change-set/apply-exclusions.md) | Apply user-requested exclusion adjustments, yielding the approved change set |
 | [`sync-resources`](techniques/sync-resources.md) | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
 | [`update-skill-routing`](techniques/update-skill-routing.md) | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
@@ -121,6 +121,6 @@ workflows/prism-update/
     ├── submit-update.md
     └── review-change-set/
         ├── TECHNIQUE.md
-        ├── present-summary.md
+        ├── compose-summary.md
         └── apply-exclusions.md
 ```

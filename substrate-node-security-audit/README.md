@@ -193,7 +193,7 @@ Evaluates every priority-1/2 crate against the full [§3 checklist](./resources/
 
 ### 4. [Adversarial Verification](./activities/04-adversarial-verification.yaml)
 
-Re-checks every high-stakes PASS verdict at the property level to recover findings primary agents missed as false PASSes, so first-positive-signal bias can no longer hide a real finding behind a premature PASS. The agent's role is to refute, not confirm.
+Re-checks every high-stakes PASS verdict at the property level to recover findings primary agents missed as false PASSes, so a high-stakes verdict rests on a property-level re-check rather than on a first positive signal. The agent's role is to refute, not confirm.
 
 ---
 

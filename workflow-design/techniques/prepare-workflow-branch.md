@@ -52,7 +52,7 @@ True when the worktree at `{target_path}` on `{workflow_branch}` was created or 
   - `component_git_dir` = `{component_git_dir}`
   >
   > Compose only the declared create-worktree inputs — no parallel git recipe and no undeclared compose params. create-worktree bases the new branch on that component's `origin/HEAD` default; the workflows library's HEAD must resolve to `workflows` (intervene before compose when it does not).
-- Reuse when `{target_path}` is already a registered worktree on that branch; surface path conflicts to the user (do not delete)
+- Reuse when `{target_path}` is already a registered worktree on that branch; a conflicting path at `{target_path}` stands as it is — never delete it
 
 ### 3. Capture Outputs
 

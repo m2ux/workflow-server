@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v2.1.0 — Structured analytical prompts that find what asking a model directly misses. Ten modes, 58 lenses, isolated multi-pass pipelines, and a stable output contract (REPORT.md, DEFINITIVE-FINDINGS.md, RUN-MANIFEST.json) that consumer workflows build on.
+> v2.1.0 — Structured analytical prompts that find what asking a model directly misses. Lens modes, isolated multi-pass pipelines, and a stable output contract (REPORT.md, DEFINITIVE-FINDINGS.md, RUN-MANIFEST.json) that consumer workflows build on.
 
 ---
 
@@ -310,7 +310,7 @@ A prism run always produces three artifacts in `output_path`, regardless of pipe
 
 ```
 workflows/prism/
-├── workflow.yaml                            # Workflow definition (10 modes, 31 variables, 10 rules, 13 activities)
+├── workflow.yaml                            # Workflow definition
 ├── README.md                                # This file
 ├── concept-lexicon.md                       # Analytical concept definitions (49 concepts)
 ├── activities/
@@ -388,5 +388,5 @@ workflows/prism/
     ├── 56, 60: Meta/epistemic (falsify, significance)
     ├── 52: Meta (blindspot)
     ├── 59, 61: Task/verification (prereq, verify-claims)
-    └── README.md (58 resources)
+    └── README.md
 ```

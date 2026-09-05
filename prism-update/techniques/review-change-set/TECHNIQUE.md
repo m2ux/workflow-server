@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Review a categorized change set with the user: present it as a reviewable summary and apply any user-requested exclusion adjustments, yielding the approved change set to import.
+Review of a categorized change set: a reviewable summary of it, and the exclusion adjustments applied to it, yielding the approved change set to import.
 
 ## Outputs
 
