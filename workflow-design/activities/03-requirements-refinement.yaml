@@ -12,6 +12,13 @@ variables:
     - name: assumptions_log
       type: object
       description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk.
+    - name: design_context
+      type: string
+      description: Reference workflows, integration points, operators and triggers the reader supplied before elicitation. Absent where the context step was skipped.
+    - name: design_context_supplied
+      type: boolean
+      description: Whether the reader supplied design context before elicitation, or chose to proceed without it.
+      defaultValue: false
     - name: design_dimensions
       type: array
       description: The ordered design dimensions to elicit for this run's mode.
@@ -52,9 +59,22 @@ steps:
       - id: provide-context
         label: Provide design context
         description: Capture reference workflows, integration points, and operators before elicitation.
+        effect:
+          setVariable:
+            design_context_supplied: true
       - id: skip-context
         label: Skip — proceed to elicitation
         description: Proceed without additional design context
+        effect:
+          setVariable:
+            design_context_supplied: false
+  - kind: action
+    id: record-design-context
+    when: design_context_supplied == true
+    actions:
+      - action: set
+        target: design_context
+        message: Record the reference workflows, integration points, operators and triggers the reader supplied, so dimension elicitation reads them from the bag rather than from the exchange.
   - kind: technique
     id: synthesize-update-specification
     technique: synthesize-update-specification
@@ -70,7 +90,10 @@ steps:
     steps:
       - kind: technique
         id: prepare-dimension
-        technique: prepare-dimension
+        technique:
+          name: prepare-dimension
+          inputs:
+            design_context: design_context
       - kind: action
         id: surface-dimension-questions
         actions:
@@ -105,6 +128,8 @@ steps:
       - id: refine
         label: Needs changes
         description: One or more dimensions require additions, removals, or modifications before drafting.
+        effect:
+          exit: refine
   - kind: action
     id: announce-specification
     actions:
@@ -147,6 +172,8 @@ exits:
     when: operation_type == "update"
   - id: create
     isDefault: true
+  - id: refine
+    immediate: true
 outcome:
   - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — persisted for drafting, with stakeholder attestation at Gate 2
   - Audit-resolvable design assumptions converge via a while-loop; open judgements remain in the assumptions log for the late approve-to-commit batch

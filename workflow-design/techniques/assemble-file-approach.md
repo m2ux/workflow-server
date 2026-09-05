@@ -17,6 +17,14 @@ The scope-manifest entry being drafted — its path, action (create/modify/remov
 
 The classified operation. When `update`, the approach frames the change against the file's existing content rather than a from-scratch draft.
 
+### preservation_required
+
+*(optional)* Whether the reader asked at impact analysis for flagged content to survive. Where it holds, the approach states what each file keeps and how the change works around it, so the decision is honoured at drafting rather than raised again once a removal is detected.
+
+### pattern_adoption
+
+*(optional)* How far the pattern analysis is adopted. `all` frames the approach on the extracted conventions throughout; `selective` applies the subset the reader chose and states which; `diverge` frames the approach on the workflow's own requirements and records why the comparable structures do not fit. `none` where no pattern analysis ran, which is the update path — there the approach is framed against the file's existing content alone.
+
 ## Outputs
 
 ### drafting_plan

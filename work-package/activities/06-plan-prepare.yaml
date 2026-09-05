@@ -155,9 +155,13 @@ steps:
       - id: revise
         label: Revise approach
         description: Adjust the approach before planning continues
+        effect:
+          exit: revise
 exits:
   - id: done
     isDefault: true
+  - id: revise
+    immediate: true
 outcome:
   - A sequenced approach the implement activity can execute against task by task, put to the user for a decision before implementation begins
   - A defined verification strategy that validation will run the implementation against

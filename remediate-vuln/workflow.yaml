@@ -167,6 +167,7 @@ graph:
     done: plan-prepare
   plan-prepare:
     done: assumptions-review
+    revise: plan-prepare
   assumptions-review:
     needs-comprehension: codebase-comprehension
     needs-plan-revision: plan-prepare

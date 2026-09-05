@@ -154,7 +154,7 @@ steps:
   - kind: loop
     id: review-fix-cycle
     name: Review-Fix Cycle
-    loopType: doWhile
+    loopType: while
     when: is_review_mode != true
     continueWhile:
       type: or

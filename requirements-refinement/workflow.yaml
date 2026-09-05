@@ -31,6 +31,7 @@ initialActivity: intake-and-analyze
 graph:
   intake-and-analyze:
     analysis-confirmed: update-specification
+    revise: intake-and-analyze
   update-specification:
     done: validate-specification
   validate-specification:

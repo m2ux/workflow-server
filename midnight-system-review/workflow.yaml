@@ -53,6 +53,7 @@ initialActivity: scope-intake
 graph:
   scope-intake:
     done: area-derivation
+    revise-scope: scope-intake
   area-derivation:
     done: evidence-probes
   evidence-probes:

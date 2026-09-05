@@ -11,6 +11,10 @@ variables:
       type: string
       description: Absolute path to the persisted impact-analysis artifact.
       defaultValue: ""
+    - name: preservation_required
+      type: boolean
+      description: Whether the reader asked for flagged content to survive the change, so drafting frames each file to keep it. False while no removal has been reviewed, which is the whole of the create path — that route reaches drafting without visiting this activity.
+      defaultValue: false
     - name: removal_count
       type: number
       description: Count of content removals inventoried by impact-analysis.
@@ -50,12 +54,18 @@ steps:
       - id: confirmed
         label: Impact and removals look correct
         description: Impact scope is accurate and every flagged removal is intentional
+        effect:
+          setVariable:
+            preservation_required: false
       - id: revise-impact
         label: Revise impact scope
         description: Impact scope is incomplete or over-inclusive.
       - id: preserve
         label: Preserve some flagged content
         description: Some flagged content must be preserved rather than removed.
+        effect:
+          setVariable:
+            preservation_required: true
 exits:
   - id: done
     isDefault: true

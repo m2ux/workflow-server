@@ -9,6 +9,12 @@ variables:
     - planning_folder_path
     - source_document_path
   writes:
+    - name: analysis_disposition
+      type: string
+      description: What the reader decided about the recorded findings on an audit run. Absent on a rewrite run, where the findings are not reviewed.
+      values:
+        - accepted
+        - revise
     - name: finding_count
       type: number
       description: Count of plain-language findings recorded against the existing document.
@@ -49,9 +55,19 @@ steps:
       - id: accepted
         label: Accepted
         description: The findings accurately record where the document fails its readers.
+        effect:
+          setVariable:
+            analysis_disposition: accepted
       - id: revise
         label: Needs revision
         description: The findings miss failures or misstate the guidelines they cite.
+        effect:
+          setVariable:
+            analysis_disposition: revise
+  - kind: technique
+    id: revise-source-analysis
+    technique: analyze-source
+    when: analysis_disposition == 'revise'
 exits:
   - id: audit
     when: operation_type == "audit"

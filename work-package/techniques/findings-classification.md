@@ -21,6 +21,10 @@ The findings or diagnostics to classify. Each entry carries enough context to ju
 
 *(optional)* The test-suite-review findings subset, when present, that drives `test_findings_actionable`.
 
+### ticket_disposition
+
+*(optional)* What the reviewer decided about the ticket's completeness gaps. Where it is present, the consolidated findings carry that judgement to the author alongside the code findings; where it is absent, the ticket was not assessed.
+
 ## Outputs
 
 ### code_findings_actionable

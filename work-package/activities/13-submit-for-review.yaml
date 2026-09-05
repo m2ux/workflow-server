@@ -25,6 +25,7 @@ variables:
     - stealth_mode
     - target_path
     - target_repo
+    - ticket_disposition
   writes:
     - name: artifact_publish_ref
       type: string
@@ -121,7 +122,10 @@ steps:
         message: Submitting work for review
   - kind: technique
     id: consolidate-review-findings
-    technique: findings-classification
+    technique:
+      name: findings-classification
+      inputs:
+        ticket_disposition: ticket_disposition
     when: is_review_mode == true
   - kind: technique
     id: resolve-artifact-publish

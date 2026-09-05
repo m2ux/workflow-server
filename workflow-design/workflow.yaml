@@ -42,6 +42,7 @@ graph:
   requirements-refinement:
     update: impact-analysis
     create: pattern-analysis
+    refine: requirements-refinement
   pattern-analysis:
     done: scope-and-draft
   impact-analysis:

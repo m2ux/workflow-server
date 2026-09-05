@@ -49,6 +49,8 @@ steps:
       - id: revise
         label: Correct the sources
         description: A source path, the classified source type, or the augment/create mode is wrong and must be corrected before proceeding.
+        effect:
+          exit: revise
   - kind: technique
     id: analyze-source
     technique: analyze-source
@@ -68,10 +70,14 @@ steps:
       - id: revise
         label: Revise the analysis
         description: Analysis misreads the source or misses changes and must be revised before proceeding.
+        effect:
+          exit: revise
 exits:
   - id: analysis-confirmed
     when: analysis_confirmed == true
     isDefault: true
+  - id: revise
+    immediate: true
 outcome:
   - The workflow can trust where to read from and where to write to — both paths exist and are confirmed correct by the user
   - Downstream activities know how to read the source and whether they are augmenting an existing specification or creating a new one

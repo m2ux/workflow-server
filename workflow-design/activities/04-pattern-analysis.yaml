@@ -6,6 +6,15 @@ variables:
   reads:
     - planning_folder_path
   writes:
+    - name: pattern_adoption
+      type: string
+      description: How far the extracted patterns are adopted by the drafting that follows. `none` while no pattern analysis has run, which is the whole of the update path — that route reaches drafting through impact analysis and never visits this activity.
+      defaultValue: none
+      values:
+        - none
+        - all
+        - selective
+        - diverge
     - name: pattern_analysis_path
       type: string
       description: Absolute path to the persisted pattern-analysis artifact.
@@ -32,12 +41,21 @@ steps:
       - id: adopt-all
         label: Adopt all patterns
         description: All extracted conventions are adopted wholesale.
+        effect:
+          setVariable:
+            pattern_adoption: all
       - id: selective
         label: Selective adoption
         description: A user-specified subset of the extracted patterns is adopted.
+        effect:
+          setVariable:
+            pattern_adoption: selective
       - id: diverge
         label: Diverge with justification
         description: The new workflow requires different patterns, with rationale provided.
+        effect:
+          setVariable:
+            pattern_adoption: diverge
 exits:
   - id: done
     isDefault: true
