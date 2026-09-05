@@ -38,4 +38,4 @@ Reference content loaded on demand by the workflow's techniques. The authoritati
 
 ## Addressing
 
-Resources are addressed by bare slug via `get_resource`; a `#section` suffix narrows the load to one anchor. The `audit-template-reference` section index is the single home for the `§X.Y` taxonomy — techniques and activities cite section numbers rather than restating the checklist.
+Resources are addressed by bare slug; a `#section` suffix narrows the load to one anchor. The `audit-template-reference` section index is the single home for the `§X.Y` taxonomy — techniques and activities cite section numbers rather than restating the checklist.

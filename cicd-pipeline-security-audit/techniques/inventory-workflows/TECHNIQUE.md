@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Confirm the audit's target submodules and build the scope inventory: discover and enumerate all `.yml`/`.yaml` files under `.github/workflows/` across the targets, classify each by trigger types, permission scopes, checkout patterns, and referenced scripts, inventory the AI configuration files and CODEOWNERS coverage, assign one scanner agent per submodule, and initialize the planning folder with its session overview. The operations in this set decompose that inventory into target-confirmation, file-discovery, trigger-classification, permission-mapping, checkout-identification, AI-config-and-CODEOWNERS-inventory, summary-assembly, scanner-assignment, and planning-folder-initialization phases.
+Confirm the audit's target submodules and build the scope inventory: discover and enumerate all `.yml`/`.yaml` files under `.github/workflows/` across the targets, classify each by trigger types, permission scopes, checkout patterns, and referenced scripts, inventory the AI configuration files and CODEOWNERS coverage, assign one scanner agent per submodule, and initialize the planning folder with its session overview.
 
 ## Inputs
 

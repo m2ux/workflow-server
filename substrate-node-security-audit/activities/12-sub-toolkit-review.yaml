@@ -25,6 +25,6 @@ steps:
       inputs:
         step_products: "{verdict_matrix}"
 outcome:
-  - Every toolkit function is reviewed against all 8 checklist items, so benign-looking helpers can no longer be skimmed past
+  - Every toolkit function is reviewed against all 8 checklist items, so a benign-looking helper is read as closely as an obviously risky one
   - State, arithmetic, and I/O bugs are surfaced per function rather than only on representative samples
   - Coverage is attested at 100%, giving the orchestrator confidence that no function was selectively skipped

@@ -16,7 +16,7 @@
 
 ## Overview
 
-This workflow manages the complete lifecycle of workflow definition authoring through nine activities, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints. Activity `#` columns below match on-disk `NN-` file prefixes (gaps at 02/07 are intentional).
+This workflow manages the complete lifecycle of workflow definition authoring, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints. Activity `#` columns below match on-disk `NN-` file prefixes (gaps at 02/07 are intentional).
 
 | # | Activity | Mode | Purpose |
 |---|----------|------|---------|
@@ -34,7 +34,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 
 - **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map, with links to the authoritative activity YAML files.
 - **Techniques:** See [techniques/](techniques/) for the full technique library (workflow-local standalone techniques plus the shared `TECHNIQUE.md` base contract) with protocol flows and rules.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (23 resources) with usage context and cross-workflow access.
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index with usage context and cross-workflow access.
 
 ---
 

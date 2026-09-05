@@ -112,17 +112,18 @@ Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.y
 graph TD
     entryNode(["Entry"]) --> discuss["Stakeholder discussion — transcript or skip"]
     discuss --> elicit["Elicit requirements"]
+    elicit --> domainLoop["Question domain loop — one question per domain"]
+    domainLoop --> collect["Collect assumptions"]
+    collect --> document["Create the requirements document"]
+    document --> record["Record and reconcile the assumptions log"]
 
-    elicit --> askQuestion["Ask domain question"]
-    askQuestion --> recordResponse["Record response"]
-    recordResponse --> userIntent{"user-intent decision"}
-    userIntent -->|"continue"| askQuestion
-    userIntent -->|"done"| recordReqs["Record the requirements and reconcile assumptions"]
+    record --> cpComplete{"elicitation-complete checkpoint"}
+    cpComplete -->|"complete"| reconcileLoop["Assumption reconciliation loop"]
+    cpComplete -->|"revisit / add"| reconcileLoop
 
-    recordReqs --> cpComplete{"elicitation-complete checkpoint"}
-    cpComplete -->|"complete + research"| exitResearch(["research"])
-    cpComplete -->|"complete, no research"| exitAnalysis(["implementation-analysis"])
-    cpComplete -->|"revisit / add"| askQuestion
+    reconcileLoop --> exitResearch(["research-needed"])
+    reconcileLoop --> exitNoResearch(["no-research-needed"])
+    reconcileLoop --> exitIncomplete(["elicitation-incomplete"])
 ```
 
 ---

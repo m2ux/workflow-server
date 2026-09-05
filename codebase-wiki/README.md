@@ -57,7 +57,7 @@ Shared Inputs (`wiki_path`, `raw_baseline_commit`), citation and confidence rule
 
 ## Reuse by other workflows
 
-The five operations are standalone, so another workflow binds them at a step with the slash form `codebase-wiki/<op>` — exactly as any standalone technique in another workflow is referenced:
+These operations are standalone, so another workflow binds them at a step with the slash form `codebase-wiki/<op>` — exactly as any standalone technique in another workflow is referenced:
 
 ```yaml
 - kind: technique

@@ -2,7 +2,7 @@
 
 > Part of the [Prism Audit Workflow](../README.md)
 
-Five activities that carry a security audit from a raw target-and-description through a tailored audit prompt, triggered prism analysis, and a finalized, cross-validated report set. The spine is linear — scope, prompt, analyse, finalize, deliver — with two branches: the scope checkpoint can loop back to re-scope, and a target with no security-relevant patterns can abort straight to delivery.
+Activities that carry a security audit from a raw target-and-description through a tailored audit prompt, triggered prism analysis, and a finalized, cross-validated report set. The spine is linear — scope, prompt, analyse, finalize, deliver — with two branches: the scope checkpoint can loop back to re-scope, and a target with no security-relevant patterns can abort straight to delivery.
 
 This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, conditions, loops, and transitions — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
 

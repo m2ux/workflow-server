@@ -11,7 +11,7 @@ Symbol blast radius — what depends on a symbol, at depth 1/2/3, with confidenc
 
 ### repo_name
 
-Optional. Name of the indexed graph to address, as [resolve-graph](./resolve-graph.md) reports it. Omit only where exactly one graph is indexed.
+Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
 
 ### target
 

@@ -2,7 +2,7 @@
 
 > Part of the [Codebase Wiki Workflow](../README.md)
 
-Five Markdown resources that concretize the wiki standard the techniques work to: the Karpathy-adapted page format, the per-type page templates, the lint checklist, the citation conventions, and the creation guide for the catalog and ledger every mutation touches. Each is loaded via `get_resource` by the technique that references it — this file orients, it does not restate the resource content.
+Markdown resources that concretize the wiki standard the techniques work to: the Karpathy-adapted page format, the per-type page templates, the lint checklist, the citation conventions, and the creation guide for the catalog and ledger every mutation touches. Each is cited by the technique that references it — this file orients, it does not restate the resource content.
 
 ---
 

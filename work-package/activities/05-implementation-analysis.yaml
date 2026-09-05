@@ -85,13 +85,13 @@ steps:
         analyse_technique: review-assumptions::reconcile
         challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
         concern_document: assumptions_log
-        convergence_flag: has_resolvable_assumptions
-        residue_flag: has_open_assumptions
-        residue_collection: open_assumptions
+        concerns_agent_resolvable: has_resolvable_assumptions
+        residual_opens_remain: has_open_assumptions
+        residual_opens: open_assumptions
       outputs:
-        convergence_flag: has_resolvable_assumptions
-        residue_flag: has_open_assumptions
-        residue_collection: open_assumptions
+        concerns_agent_resolvable: has_resolvable_assumptions
+        residual_opens_remain: has_open_assumptions
+        residual_opens: open_assumptions
   - kind: technique
     id: present-resolved-assumptions
     technique:

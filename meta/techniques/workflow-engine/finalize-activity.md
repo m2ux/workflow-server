@@ -45,7 +45,7 @@ array of checkpoint responses (`option_id` + effects).
 
 #### variables_changed
 
-state variables the activity mutated, reported by the worker — one of the two sanctioned state-mutation sources (see [dispatch-activity](./dispatch-activity.md)).
+state variables the activity mutated, reported by the worker — one of the two sanctioned state-mutation sources.
 
 #### artifacts_produced
 

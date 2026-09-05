@@ -37,4 +37,4 @@ Reference content loaded on demand by the workflow's techniques. The authoritati
 
 ## Addressing
 
-Resources are addressed by bare slug via `get_resource`; a `#section` suffix narrows the load to one anchor.
+Resources are addressed by bare slug; a `#section` suffix narrows the load to one anchor.

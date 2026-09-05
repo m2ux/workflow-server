@@ -25,24 +25,24 @@ List of adversarial perspectives (or lens names) for the challenge pass.
 
 *(optional)* The document holding the concern set for this `{concern_kind}` — the log or table this binding maintains.
 
-### convergence_flag
+### concerns_agent_resolvable
 
-Name of the boolean bag variable that drives the loop — true while another analyse/challenge iteration is needed.
+True while another analyse/challenge iteration is needed; false once no open item is agent-resolvable.
 
-### residue_flag
+### residual_opens_remain
 
-Name of the boolean bag variable that is true iff irreducible opens remain after convergence (gates residual interview outside this group).
+True iff irreducible opens remain after convergence; false for an empty open set.
 
-### residue_collection
+### residual_opens
 
-*(optional)* Name of the collection holding residual open items for batch/interview presentation.
+*(optional)* The residual open items for this `{concern_kind}`; empty or unset when none remain.
 
 ## Rules
 
 ### structure-enforces-convergence
 
-Call-sites bind this group and gate residual interview on `{residue_flag}`. Do not re-implement the loop body per activity.
+Call-sites bind this group and gate residual interview on `{residual_opens_remain}`. Do not re-implement the loop body per activity.
 
 ### parameterize-dont-fork
 
-Stages differ by inputs (`analyse`, perspectives, flag names) — not by forked copies of the protocol.
+Stages differ by inputs — the concern kind, the analyse operation, the perspectives — not by forked copies of the protocol.

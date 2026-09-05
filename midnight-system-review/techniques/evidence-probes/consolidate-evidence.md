@@ -9,7 +9,7 @@ Combine the per-area evidence records into the consolidated evidence log — ver
 
 ## Inputs
 
-### area_evidence_collection
+### area_evidence_records
 
 The ordered collection of per-area evidence records gathered by the area-probe loop, one record per investigation area in iteration order.
 
@@ -39,7 +39,7 @@ All candidate findings aggregated across areas in area order, each tied to its a
 
 ### 1. Verify Gather
 
-- Verify `{area_evidence_collection}` holds exactly one record per entry in `{investigation_areas}`, in order; a missing or duplicate area record is a hard stop — re-run that area's probes before consolidating.
+- Verify `{area_evidence_records}` holds exactly one record per entry in `{investigation_areas}`, in order; a missing or duplicate area record is a hard stop — re-run that area's probes before consolidating.
 - Verify every record's probe count is within `{probe_budget_per_area}`; record any overage explicitly (it signals a plan or discipline defect, not extra rigor).
 - Verify every failure-class discharge on correlation-class or atomicity-class obligations: refuted entries include a P7 join-key discharge table or a P8a/P8b per-caller path anchor; inconclusive entries are explicitly marked, not relabeled as refuted.
 

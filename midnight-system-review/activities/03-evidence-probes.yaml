@@ -48,7 +48,7 @@ steps:
     id: prepare-gather
     actions:
       - action: set
-        target: area_evidence_collection
+        target: area_evidence_records
         value: "[]"
   - kind: loop
     id: area-probe-loop

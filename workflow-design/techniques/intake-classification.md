@@ -86,7 +86,7 @@ When `{operation_type}` is `update`, the categorized change request derived from
 
 ### 5. Persist Structural Inventory
 
-- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.json` per [structural-inventory](../resources/structural-inventory.md#template)
+- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` per [structural-inventory](../resources/structural-inventory.md#template)
 - When create mode: build no inventory, there being no existing definition to snapshot
 
 ### 6. Parse Change Request

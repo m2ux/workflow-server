@@ -34,6 +34,6 @@ exits:
   - id: done
     isDefault: true
 outcome:
-  - Every high-stakes PASS verdict has survived independent property-level re-checking, so first-positive-signal bias can no longer hide a real finding behind a premature PASS
+  - Every high-stakes PASS verdict has survived independent property-level re-checking, so it rests on a property-level test rather than on a first positive signal
   - Findings that primary agents missed as false PASSes are recovered and promoted into the findings set
   - The report can integrate calibrated verdicts that distinguish confirmed-safe from insufficiently-verified items

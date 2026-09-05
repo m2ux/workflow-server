@@ -15,7 +15,7 @@ The investigation area for this iteration — its `planned_probes`, `subsystems`
 
 ### gitnexus_available
 
-Routes code-graph probes: true routes through the meta [`gitnexus-operations`](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md) operations the catalog's P2 class names; false degrades them to grep and full-file reads.
+Routes code-graph probes: true runs the catalog's P2-class probes against the code graph; false degrades them to grep and full-file reads.
 
 ### repo_name
 
@@ -31,7 +31,7 @@ Gates runtime and SCALE-metadata probes; false records them as blocked validatio
 
 ## Outputs
 
-### area_evidence_collection
+### area_evidence_records
 
 The gathered collection of per-area evidence records — this iteration appends its record in area order. Each record carries:
 
@@ -68,4 +68,4 @@ Preliminary issue candidates surfaced by this area's evidence, with their suppor
 - Record each probe's concrete observations as evidence items with anchors (file:line, command output, or graph result). An expectation without an anchor is not evidence.
 - Flag candidate findings where evidence contradicts expected behavior, with their anchors; grading and disposition belong to adjudication, not here.
 - Discharge every failure-class obligation the plan carried for this area using three-way disposition: **confirmed** (a candidate finding with its anchor), **refuted** (proof the failure mode cannot occur — join keys agree, caller storage is atomic, or the claimed defect path is unreachable), or **inconclusive** (evidence insufficient; never silently treated as refuted). Record **blocked** when a toolchain gate prevented validation. P7 refutations require a side-by-side join-key origin table; P8a/P8b refutations require a per-caller path anchor. An area does not close with a planned failure-class obligation left unaddressed.
-- Append this area's record to `{area_evidence_collection}` for the gather.
+- Append this area's record to `{area_evidence_records}` for the gather.

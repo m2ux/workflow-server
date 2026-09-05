@@ -98,7 +98,7 @@ Every work package should be linked to a GitHub or Jira issue for traceability
 
 Issues should be clear to someone without prior context
 
-### tool-usage
+### capture-issue-identifiers
 
 - `gh_issue_create` after call — Capture `issue_number` and `issue_url` from output
 - `gh_issue_create` sequence — call `gh_issue_view` next

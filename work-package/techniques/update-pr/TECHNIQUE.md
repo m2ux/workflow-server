@@ -81,6 +81,6 @@ Create PRs as drafts initially. Convert to ready-for-review only when a later st
 
 - review-comment-verbatim: The `post-review-comment` op posts the confirmed `{review_summary}` to the PR byte-for-byte via [post-pr-review](../../../meta/techniques/github-cli-protocol/post-pr-review.md) — never re-rendering, paraphrasing, or summarizing it. The summary is authored to [review-mode](../../resources/review-mode.md#review-comment-template); posting is a transport step, not a re-authoring one. This is distinct from `render`, which updates the PR description body from a template.
 
-### tool-usage
+### pr-operations-run-through-gh
 
 Use the shell to push commits and manage the PR via the `gh` CLI.

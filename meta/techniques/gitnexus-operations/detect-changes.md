@@ -11,7 +11,7 @@ Map the current git diff to the changed-symbol set and the execution flows it af
 
 ### repo_name
 
-Optional. Name of the indexed graph to address, as [resolve-graph](./resolve-graph.md) reports it. Omit only where exactly one graph is indexed.
+Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
 
 ### diff_scope
 

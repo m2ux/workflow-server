@@ -11,7 +11,7 @@ Component identity for this work package, assembled from the derived host reposi
 
 ### host_repo_path
 
-Absolute path of the host repository, as produced by [resolve-host-repo](../../meta/techniques/version-control/resolve-host-repo.md).
+Absolute path of the host repository.
 
 ### component_hint
 

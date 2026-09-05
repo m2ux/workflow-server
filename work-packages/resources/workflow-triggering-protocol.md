@@ -27,7 +27,7 @@ Before triggering the work-package workflow, gather context from the roadmap:
 
 ### 2. Start the Workflow
 
-Call `get_workflow("work-package")` to load the work-package workflow definition. The work-package workflow begins with its own intake and planning activities.
+Enter the work-package workflow, which begins with its own intake and planning activities.
 
 **Context to pass:**
 - Package name and description from the roadmap

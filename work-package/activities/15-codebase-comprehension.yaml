@@ -96,12 +96,12 @@ steps:
             analyse_technique: codebase-comprehension::deep-dive
             challenge_perspectives: '["pedagogy", "rejected-paths"]'
             concern_document: comprehension_artifact
-            convergence_flag: needs_comprehension
-            residue_flag: has_open_questions
+            concerns_agent_resolvable: needs_comprehension
+            residual_opens_remain: has_open_questions
             iteration_mode: once
           outputs:
-            convergence_flag: needs_comprehension
-            residue_flag: has_open_questions
+            concerns_agent_resolvable: needs_comprehension
+            residual_opens_remain: has_open_questions
       - kind: technique
         id: update-artifact
         technique:

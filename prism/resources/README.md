@@ -2,7 +2,7 @@
 
 > Part of the [Structural Analysis Prism Workflow](../README.md)
 
-The prism workflow includes 58 lens resources organized into fifteen families. All resources are accessible cross-workflow via `get_resource("prism", index)`.
+Lens resources organized into families, addressable cross-workflow by resource id.
 
 Each lens is a short imperative prompt (60–400 words) that encodes a specific sequence of analytical operations. The model executes these operations as a program — the lens determines *what kind* of analysis is performed, not how intelligent the analysis is.
 
@@ -26,7 +26,7 @@ The L12 pipeline runs three sequential passes with context isolation between eac
 
 ## Portfolio Lenses (single-pass, independent)
 
-Six standalone lenses that each activate a distinct analytical operation. Zero overlap across 5 lenses on 3+ real codebases.
+Standalone lenses that each activate a distinct analytical operation, with no measured overlap between them.
 
 | Index | Resource | Words | Key Question | Best For |
 |-------|----------|-------|-------------|----------|

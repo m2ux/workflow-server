@@ -19,7 +19,7 @@ Workflow the worker is executing an activity for.
 
 ### activity_id
 
-Activity id this worker's current dispatch ([dispatch-activity](./dispatch-activity.md)) or continuation ([continue-batch](./continue-batch.md)) bound — must match the activity returned by `get_activity`.
+Activity id the worker's current dispatch or continuation bound — must match the activity returned by `get_activity`.
 
 ### effects
 
