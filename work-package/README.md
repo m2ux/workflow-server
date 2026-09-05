@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> v3.35.2 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> Carries ONE work package to the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 
 ---
 
@@ -34,7 +34,7 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 - **Techniques:** See [techniques/README.md](./techniques/README.md) for the technique inventory orientation; per-technique protocols live in the technique files.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index.
 
-Each activity binds its step operations through `step.technique`. Every step carries its own `step.technique` operation binding. The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique (governing how steps read and write workflow variables) is declared once at `workflow.techniques.activity` and inherited by every activity — injected into every `get_activity` — so it is never listed per-activity. An activity declares its own `techniques[]` block only for an activity-specific strategy technique such as [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities that aggregate per-item outputs across `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `create-test-plan`) or by namespaced id (e.g. `cargo-operations::run-suite`, `design-philosophy::classify`).
+The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique applies to every activity. An activity declares its own `techniques[]` block only for an activity-specific strategy technique such as [`scatter-gather`](../meta/techniques/scatter-gather.md), on activities that aggregate per-item outputs across iteration.
 
 ---
 
@@ -88,31 +88,19 @@ graph TD
 ---
 ## Orchestration Model
 
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md). Work-package-specific mode behaviour is below (`is_review_mode`); do not restate engine dispatch/checkpoint HOW here.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md). Work-package-specific mode behaviour is below.
 
 ---
 
 ## Review Mode
 
-This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. There is no special mode schema: review mode is expressed entirely through ordinary state. A detection step early in `start-work-package` sets the boolean `is_review_mode` variable, and every mode-specific behaviour is a conditional step/checkpoint/transition gated on that variable.
+This workflow supports **review mode** for reviewing existing pull requests. Review mode is ordinary state: a detection step early in `start-work-package` sets the boolean `is_review_mode` variable, and every mode-specific behaviour is a step, checkpoint or transition gated on it.
 
 **Activation:** A detection step in `start-work-package` recognizes review intent (e.g. "start review work package", "review PR #123", "review existing implementation"), confirms with the user, and sets `is_review_mode = true`. When review mode is known, start-work-package also seeds a review-native `{target_workflow_outcomes}` list for close-out verification.
 
-**Skipped activities:** Requirements Elicitation (03) and Implement (08) are effectively skipped in review mode — not by a schema list, but because their steps and inbound transitions are gated `when is_review_mode != true`. Elicitation is unnecessary because requirements come solely from the associated ticket; implementation is skipped because the code already exists.
+**Skipped activities:** Requirements Elicitation (03) and Implement (08) stand down in review mode, their steps and inbound transitions gated on `is_review_mode`. Requirements come solely from the associated ticket, and the code under review already exists.
 
-**Behavioral overrides per activity:**
-
-| Activity | Override |
-|----------|----------|
-| [Start Work Package](./activities/README.md#01-start-work-package) (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
-| [Design Philosophy](./activities/README.md#02-design-philosophy) (02) | Assess ticket completeness; always skip elicitation |
-| [Implementation Analysis](./activities/README.md#05-implementation-analysis-optional) (05) | Checkout base branch to analyze pre-change state; document expected changes |
-| [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) (09) | Run the audit read-only — document over-engineering findings and the debt ledger; skip the apply checkpoint and simplification cycle (no code changes) |
-| [Post-Implementation Review](./activities/README.md#10-post-implementation-review) (10) | Compare PR changes against expected changes from analysis |
-| [Validate](./activities/README.md#11-validate) (11) | Document failures as findings; do not fix |
-| [Strategic Review](./activities/README.md#12-strategic-review) (12) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
-| [Submit for Review](./activities/README.md#13-submit-for-review) (13) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
-| [Complete](./activities/README.md#14-complete) (14) | Skip ADR and documentation steps; review-mode-native retrospective close-out; status updates apply only to this work package's own PR |
+Per-activity review-mode behaviour is declared on each activity's steps and exits; [REVIEW-MODE.md](./REVIEW-MODE.md) is the complete guide.
 
 **Review mode flow:**
 
@@ -120,7 +108,7 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 start-work-package → design-philosophy → implementation-analysis → plan-prepare → assumptions-review → lean-coding-audit → post-impl-review → validate → strategic-review → submit-for-review → END
 ```
 
-**Headless after activation:** Once review mode is active, the run is headless — a soft checkpoint takes its recommended option without reaching a person, and the rest are gated out or bypassed by an unconditional transition. The gates a review run still pauses at are the activation gap-fills (`review-mode-detection` when mode is ambiguous, `review-pr-reference` when the PR is missing, both skipped on a clear derive path), the `review-summary-approval` confirmation before the review is posted to the PR, the `local-validation-permission` environment decision, the `file-index-table` provenance attestation over the diff, and the `findings-delivery` decision on what the posted review carries.
+**Headless after activation:** Once review mode is active, a soft checkpoint takes its recommended option without reaching a person. The gates a review run still pauses at are the ones its activities declare.
 
 **See [REVIEW-MODE.md](./REVIEW-MODE.md) for complete documentation.**
 

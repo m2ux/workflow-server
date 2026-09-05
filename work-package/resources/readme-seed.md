@@ -7,7 +7,7 @@ metadata:
 
 # Work Package README Seed
 
-Fill data for [create-readme](../../meta/techniques/workflow-engine/create-readme.md). Layout and policy live in [Planning Folder README Guide](../../meta/resources/planning-readme.md) ([Template](../../meta/resources/planning-readme.md#template)).
+Fill data for the planning-folder README. Layout and policy live in [Planning Folder README Guide](../../meta/resources/planning-readme.md) ([Template](../../meta/resources/planning-readme.md#template)).
 
 ## Classifier
 
