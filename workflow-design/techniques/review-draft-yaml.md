@@ -48,7 +48,7 @@ Closing line of the [draft-attestation](../resources/draft-attestation.md#templa
 
 ### 2. Persist Reviewed Blocks
 
-- Persist `{reviewed_blocks}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `draft-attestation.md` per [draft-attestation](../resources/draft-attestation.md#template); capture the written location as `{draft_attestation_path}`
+- Persist `{reviewed_blocks}` per [draft-attestation](../resources/draft-attestation.md#template); capture the written location as `{draft_attestation_path}`
 
 ### 3. Record Draft Attestation
 

@@ -44,5 +44,5 @@ Absolute path to the persisted findings artifact when `{expressiveness_finding_c
 ### 3. Persist Findings
 
 - Set `{expressiveness_finding_count}` to the number of findings
-- When `{expressiveness_finding_count}` is greater than zero: persist `{expressiveness_findings}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `expressiveness-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{expressiveness_findings_path}`
+- When `{expressiveness_finding_count}` is greater than zero: persist `{expressiveness_findings}` following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{expressiveness_findings_path}`
 - When `{expressiveness_finding_count}` is zero: leave `{expressiveness_findings_path}` empty

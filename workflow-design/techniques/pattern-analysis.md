@@ -42,5 +42,5 @@ Absolute path to the written pattern-analysis artifact.
 
 ### 4. Persist Pattern Analysis
 
-- Persist via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md` per [pattern-analysis](../resources/pattern-analysis.md#template)
+- Persist per [pattern-analysis](../resources/pattern-analysis.md#template)
 - Capture the written location as `{pattern_analysis_path}`

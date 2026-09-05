@@ -54,6 +54,6 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 6. Persist Scope Manifest
 
-- Persist `{scope_manifest}` together with `{$structural_design}` and `{$drafting_order}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`, following [scope-manifest](../resources/scope-manifest.md#template)
+- Persist `{scope_manifest}` together with `{$structural_design}` and `{$drafting_order}`, following [scope-manifest](../resources/scope-manifest.md#template)
 - Own facts only: link impact analysis and design specification rather than restating them
 - Capture `{scope_manifest_path}`

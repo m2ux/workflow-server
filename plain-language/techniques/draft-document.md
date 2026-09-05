@@ -55,4 +55,4 @@ The current draft of the plain-language document.
 
 ### 5. Return the Draft
 
-- Return the drafted document as `{document_draft}`; the calling activity persists it via `manage-artifacts::write-artifact`
+- Return the drafted document as `{document_draft}`

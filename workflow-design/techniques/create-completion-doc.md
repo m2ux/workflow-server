@@ -44,4 +44,4 @@ The classified operation. When `update`, the summary frames the delivery as chan
 
 ### 4. Persist Completion Document
 
-- Follow the [Completion Artifact Guide](../resources/completion-artifact.md#template) and its [Rules](../resources/completion-artifact.md#rules), and record `{completion_document}` in `{planning_folder_path}` via the calling activity's bound `manage-artifacts::write-artifact` step
+- Follow the [Completion Artifact Guide](../resources/completion-artifact.md#template) and its [Rules](../resources/completion-artifact.md#rules), and record `{completion_document}` in `{planning_folder_path}`
