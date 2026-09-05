@@ -308,6 +308,12 @@ Document skeletons, as distinct from the lens prompts above. A per-lens analysis
 | `subsystem-synthesis.md` | [subsystem-synthesis](subsystem-synthesis.md) |
 | `smart-prereq.md` | [prereq](prereq.md) |
 | `RUN-MANIFEST.json` | [run-manifest](run-manifest.md) |
+
+## Reference
+
+| Resource | Holds |
+|----------|-------|
+| [target-classification](target-classification.md) | Scope values, project markers, and target-type inference for an analysis target |
 | `portfolio-synthesis.md` | [portfolio-synthesis](portfolio-synthesis.md) |
 | `reflect-synthesis.md` | [reflect-synthesis](reflect-synthesis.md) |
 
