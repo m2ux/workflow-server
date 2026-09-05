@@ -14,8 +14,8 @@ Reference content loaded on demand by the workflow's techniques. The authoritati
 | [`audit-template-reference.md`](audit-template-reference.md) | The authoritative §1–§5 section index; every `§X.Y` reference in the workflow resolves to an entry here |
 | [`audit-prompt-template.md`](audit-prompt-template.md) | The §1 Setup procedure and §4 Reporting Format in full, plus the §1–§5 taxonomy; the operative §2/§3/§5 bodies live in the techniques and resources each section points to |
 | [`severity-rubric.md`](severity-rubric.md) | The Impact/Feasibility scales, severity mapping, the calibration benchmark table, the High/Critical crosscheck, and bias correction |
-| [`static-analysis-patterns.md`](static-analysis-patterns.md) | The §2 grep patterns and mechanical checks executed by [`search-pattern-catalog`](../techniques/search-pattern-catalog.md) |
-| [`toolkit-checklist.md`](toolkit-checklist.md) | The toolkit minimum checklist applied by [`apply-checklist`](../techniques/apply-checklist.md) for Group D |
+| [`static-analysis-patterns.md`](static-analysis-patterns.md) | The §2 grep patterns and the mechanical checks that run against them |
+| [`toolkit-checklist.md`](toolkit-checklist.md) | The toolkit minimum checklist for Group D |
 | [`sub-agent-output-schema.md`](sub-agent-output-schema.md) | The structured output schema every dispatched sub-agent must conform to |
 | [`target-profile.md`](target-profile.md) | Target-specific crate assignments, file paths, node agent scope split, verification-agent spec, calibration benchmarks, and ensemble blind-spot items |
 | [`vulnerability-pattern-vocabulary.md`](vulnerability-pattern-vocabulary.md) | Known cross-project vulnerability patterns used as a recognition aid during architectural analysis |

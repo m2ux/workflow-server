@@ -9,7 +9,7 @@ description: Canonical Template and rules for the README.md entry-point of any w
 
 The `README.md` is the entry point for a workflow's planning folder (git hosting renders it when browsing). It is an **index** — a hub of links answering "what is this work, and what is its current status?" in under two minutes. Each linked artifact is the single home of its own content; the README links to it (single-source-and-link).
 
-This resource owns the **universal Template** and the policy around it, in three parts: the [Template](#template) plus [Rules](#rules) for the sections it lays out, [Status](#status) for the whole Progress status model, and [Matching](#matching) for how writers address rows. [create-readme](../techniques/workflow-engine/create-readme.md) seeds `README.md` from the Template, then splices Progress rows (and optional append headings) from the workflow's **readme-seed** profile; [verify-readme-conforms](../techniques/workflow-engine/verify-readme-conforms.md) drift-checks against it; [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) is the only writer of Progress Status cells.
+This resource owns the **universal Template** and the policy around it, in three parts: the [Template](#template) plus [Rules](#rules) for the sections it lays out, [Status](#status) for the whole Progress status model, and [Matching](#matching) for how writers address rows.
 
 ## Template
 
@@ -79,7 +79,7 @@ Tracks workflow **activities** (primary) and their planning artifacts (siblings 
 - **Seed the optional paths too**, including rows the current mode excludes. Undecided optional-path rows start pending; rows already out of scope for this run start cancelled/N/A (e.g. review-only artifacts in an implement seed, create-only activities when `is_review_mode`) so the exclusion is visible immediately rather than indistinguishable from work still in contention. A later path skip writes the same cancelled/N/A — [Status vocabulary](#status-vocabulary) covers both.
 - Estimate: expected agentic time — adjust template defaults to the work's complexity. The column holds that forecast for the life of the table; what the work cost lives in the run's usage record.
 - **An agent-audience artifact gets no row.** The table is read by a person, and an artifact whose declaration names an agent as its reader is not one they open. The activity that produces it still owns a row, so the work stays visible without linking a file nobody reads.
-- Distinct from the header-line `**Status:**` lifecycle field (Planning/Drafting/…), which remains text and is **not** mutated by Progress Status writers — lifecycle updates stay with [commit-and-persist](../techniques/workflow-engine/commit-and-persist.md).
+- Distinct from the header-line `**Status:**` lifecycle field (Planning/Drafting/…), which remains text and is **not** mutated by Progress Status writers.
 
 #### Item cell
 
@@ -98,7 +98,7 @@ A 3-8 word summary of what the row covers, in plain text. **No hyperlinks** — 
 
 Which activity owns which Progress rows. This is the anchor Progress writers select on, and it is its own declaration in the workflow's **readme-seed profile** — a `## Row ownership` table keyed by activity `artifactPrefix` (two-digit, from the activity filename — `08` from `08-implement.yaml`), whose values are the Item labels that activity owns.
 
-Keeping it separate from the Progress inventory is what lets the inventory rows be the rendered rows: [create-readme](../techniques/workflow-engine/create-readme.md) splices them as authored, with no column to add or remove on the way through. A seed that carried ownership as a sixth inventory column would need every consumer to strip it.
+Keeping it separate from the Progress inventory is what lets the inventory rows be the rendered rows: they are spliced as authored, with no column to add or remove on the way through. A seed that carried ownership as a sixth inventory column would need every consumer to strip it.
 
 Key a run of rows under `—` when they are truly not activity-scoped.
 
@@ -136,7 +136,7 @@ Place an icon key **underneath** the Progress table (not in the Status column) r
 
 ### Status transition policy
 
-Which Progress Status values may overwrite which, and what each write does to the row's Item link. [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) Applies this policy; it does not redefine it.
+Which Progress Status values may overwrite which, and what each write does to the row's Item link.
 
 For each candidate row (selected per [Matching](#matching)), given `{target_status}` and current status-field value:
 

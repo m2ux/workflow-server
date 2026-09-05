@@ -43,7 +43,7 @@ The spine is linear with a single rework back-edge. Definitions live in [`activi
 
 ## Techniques
 
-Five standalone operations plus the shared workflow-root base contract. Definitions live in [`techniques/`](./techniques/README.md).
+Standalone operations plus the shared workflow-root base contract. Definitions live in [`techniques/`](./techniques/README.md).
 
 | Technique | Capability |
 |-----------|------------|
