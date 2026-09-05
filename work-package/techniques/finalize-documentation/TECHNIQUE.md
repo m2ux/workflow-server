@@ -41,6 +41,6 @@ The merged PR number, cross-referenced when recording the ADR implementation out
 
 `COMPLETE.md` is created after implementation is complete and PR is merged. It captures the final delivered state — what was built, tested, and deferred. Update if post-merge changes occur.
 
-### tool-usage
+### doc-build-goes-through-cargo-operations
 
 Rust/Substrate: apply [cargo-operations](../../../meta/techniques/cargo-operations/TECHNIQUE.md)::[doc](../../../meta/techniques/cargo-operations/doc.md) (scope=`--workspace --no-deps`) to verify documentation builds. Other project types: run the equivalent doc command for the project. This technique does not invoke cargo directly.

@@ -38,5 +38,5 @@ Cost: [token-usage.md](NN-token-usage.md) — the run's sole cost home.
 - **Exception-oriented** — omit empty metric rows; prefer compact tables over narrative.
 - **Skip when empty** — when tokens are absent or empty, write the one-line skip (or omit the artifact); do not fabricate events.
 - **Complementary** — mechanical detail lives here; COMPLETE.md retrospective owns signal classes and recommendations.
-- **Revised after client exit** — a mid-`complete` draft cannot include the terminal activity's own dispatch. Meta `end-workflow` rewrites this artifact via [revise-session-metrics](../../meta/techniques/workflow-engine/revise-session-metrics.md) after the client session exits; that rewrite is authoritative.
+- **Revised after client exit** — a mid-`complete` draft cannot include the terminal activity's own dispatch, so what is written then is provisional and a later revision of this artifact supersedes it.
 - **Line budget:** one row per dispatch, with no prose between rows. The trace grows with the run, so the ceiling is per row.

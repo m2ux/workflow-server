@@ -34,5 +34,5 @@ The updated provenance log, with the attestation section appended
 2. Append an `## Attestation` section to the `{provenance_log}` containing: ISO 8601 timestamp, the certifier identity as `name <email>`, and the selected option.  
    > Record the attestation only after the human has explicitly selected `certify` or `flag-legal`. The attestation is a record of a human decision; it must never be synthesised ahead of that decision.
    > - If attestation is requested before the human has made an explicit `certify` or `flag-legal` selection, do not append — wait for the selection first.
-   > - If `provenance-log.md` does not exist at this point — meaning no task rows were appended during the work package — surface this to the user: a missing log means something went wrong during task work, so investigate the missing rows before retrying.
+   > - Where `provenance-log.md` is absent at this point, no task rows were appended during the work package; record the absence and append no attestation over it.
 3. If `attestation_option = flag-legal`, include a `Legal Review Note` field with the provided `{legal_review_note}` text.
