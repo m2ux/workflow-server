@@ -13,7 +13,7 @@ Challenge findings folded into the concern set with convergence/residue flags fo
 
 Ordered per-perspective findings from the challenge pass.
 
-### residue_collection
+### residual_opens
 
 *(optional)* The residual open items carried in from the prior pass; empty or unset on the first.
 
@@ -23,15 +23,15 @@ Ordered per-perspective findings from the challenge pass.
 
 The concern document with challenge resolutions applied and newly surfaced items appended.
 
-### convergence_flag
+### concerns_agent_resolvable
 
 True if any item remains agent-resolvable, or is newly surfaced as such; false when only irreducible residue, or an empty set, remains.
 
-### residue_flag
+### residual_opens_remain
 
 True iff irreducible opens remain after this merge; false for an empty open set.
 
-### residue_collection
+### residual_opens
 
 *(optional)* The irreducible open items after this merge; empty when none remain.
 
@@ -45,8 +45,8 @@ True iff irreducible opens remain after this merge; false for an empty open set.
 
 ### 2. Reclassify and Set Flags
 
-- Reclassify remaining opens: agent-resolvable → keep `{convergence_flag}` true; stakeholder/irreducible only → `{convergence_flag}` false and `{residue_flag}` true; none open → both false
-- Emit `{residue_collection}` as the irreducible set (empty when none)
+- Reclassify remaining opens: agent-resolvable → keep `{concerns_agent_resolvable}` true; stakeholder/irreducible only → `{concerns_agent_resolvable}` false and `{residual_opens_remain}` true; none open → both false
+- Emit `{residual_opens}` as the irreducible set (empty when none)
 
 ### 3. Authority
 
@@ -60,4 +60,4 @@ Only combine writes convergence and residue flags after a challenge pass. Analys
 
 ### empty-set-is-success
 
-An empty open set after combine is a valid terminal state — `{residue_flag}` false, no interview required.
+An empty open set after combine is a valid terminal state — `{residual_opens_remain}` false, no interview required.
