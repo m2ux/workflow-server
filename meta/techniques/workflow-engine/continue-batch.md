@@ -25,7 +25,7 @@ Server-side worker identity the batch is carried under — the identity the deli
 
 One entry per step of the activity the worker just finished — `steps_completed` from the `activity_complete` envelope the preceding dispatch or continuation returned. Feeds the server's step-completion and technique-fetch validation.
 
-### state
+### substitution_state
 
 Current variable state for stub substitution (`session_index`, `workflow_id`, `activity_id`, …).
 
@@ -48,7 +48,7 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 ### 2. Compose the continuation stub
 
-- Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{state}` as substitutions, binding `activity_id` to the advanced activity and `agent_id` to `{worker_agent_id}`.
+- Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{substitution_state}` as substitutions, binding `activity_id` to the advanced activity and `agent_id` to `{worker_agent_id}`.
 
 ### 3. Continue the worker
 

@@ -21,7 +21,7 @@ Activity ID to enter.
 
 Canonical agent technique for the worker — default workflow-engine::activity-worker.
 
-### state
+### substitution_state
 
 Current variable state for stub substitution (`session_index`, `workflow_id`, `activity_id`, `agent_id`, …)
 
@@ -51,7 +51,7 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 2. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
    - **`step_manifest`:** a dispatch whose activity ran steps carries one manifest entry per completed step — the server validates step completion against it, and reports a gap when it is absent. A first dispatch has no prior worker context to attribute it to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
    - **Trace accumulate (required):** when `_meta.trace_token` is present, append it to `trace_tokens[]`. Tokens stay opaque — no routine per-activity `get_trace`. Live `_meta.validation` self-correct remains; do not resolve tokens mid-run (close-out resolve is [resolve-trace-at-close-out](#resolve-trace-at-close-out)).
-3. Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
+3. Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{substitution_state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
 4. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    > - When the harness reports the worker ended without returning an envelope, dispatch a fresh worker for the same `{activity_id}`, which mints its own identity.
    > - When the harness still reports the worker live and what came back is not an accepted result ([reject-partial-worker-result](#reject-partial-worker-result)), apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` with explicit instructions to finish what the result left undone and return the envelope.
@@ -95,7 +95,7 @@ NEVER call `get_technique` to pre-load techniques for the worker. Step technique
 
 ### delivery-keys-on-agent-context
 
-Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held for as long as that worker carries its batch, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the same context collapses what it already received, whether it is resumed on the activity it holds ([resume-worker](./resume-worker.md)) or advanced to the next activity of its batch ([continue-batch](./continue-batch.md)). The orchestrator releases the identity when the batch is spent ([workflow-orchestrator](./workflow-orchestrator.md) step 3), and a retry that spawns a NEW worker for the same activity is a new context, taking full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions.
+Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held for as long as that worker carries its batch, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the same context collapses what it already received, whether it is resumed on the activity it holds ([resume-worker](./resume-worker.md)) or advanced to the next activity of its batch ([continue-batch](./continue-batch.md)). The orchestrator releases the identity when the batch is spent ([workflow-orchestrator](./workflow-orchestrator.md)), and a retry that spawns a NEW worker for the same activity is a new context, taking full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions.
 
 ### batch-is-bounded-by-the-server
 

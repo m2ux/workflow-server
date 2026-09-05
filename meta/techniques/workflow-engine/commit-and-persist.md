@@ -46,7 +46,7 @@ Across the meta workflow's setup activities — every activity up to and includi
 
 - Mark Progress and set the header lifecycle Status as each activity completes: both are local edits to a README someone watches while the ceremony runs.
 - Hold the source-side commit and the engineering commit-and-push until the client workflow is dispatched, then make them once over everything those activities produced. That is the first moment anything outside this session reads the artifacts, since the client workflow's own commits land after it.
-- A session interrupted mid-ceremony still resumes, from the `session.json` and `.session-token` the server writes on every authenticated call rather than from the remote.
+- A session interrupted mid-ceremony still resumes from server-side state rather than from the remote, so holding the commit does not put the resume at risk.
 - Scope: the setup sequence only. Client-workflow activities persist per activity, per [commit-after-activity](#commit-after-activity).
 
 ### session-files-ride-along

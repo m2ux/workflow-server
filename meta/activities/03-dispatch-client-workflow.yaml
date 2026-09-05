@@ -49,7 +49,7 @@ steps:
             session_index: client_session_index
             worker_agent_id: worker_agent_id
             step_manifest: "{worker_result.steps_completed}"
-            state: variables
+            substitution_state: variables
       - kind: technique
         id: dispatch-activity
         when: "!worker_agent_id"
@@ -59,7 +59,7 @@ steps:
             activity_id: current_activity
             session_index: client_session_index
             agent_technique: workflow-engine::activity-worker
-            state: variables
+            substitution_state: variables
       - kind: technique
         id: present-yielded-checkpoint
         when: worker_result.result_type == "checkpoint_pending"
@@ -85,7 +85,7 @@ steps:
             activity_id: current_activity
             worker_agent_id: worker_agent_id
             effects: effects
-            state: variables
+            substitution_state: variables
       - kind: technique
         id: commit-activity-artifacts
         when: worker_result.result_type == "activity_complete"
