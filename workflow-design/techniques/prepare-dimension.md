@@ -13,6 +13,10 @@ Markdown-ready elicitation prompt for a single design dimension from the elicita
 
 The design dimension to elicit — one of the dimensions listed in [Dimensions](../resources/elicitation-guide.md#dimensions).
 
+### design_context
+
+*(optional)* Reference workflows, integration points, operators and triggers the reader supplied before elicitation began. Where it is present, a dimension it already answers is confirmed rather than asked from scratch; where it is absent, every dimension is elicited unaided.
+
 ## Outputs
 
 ### dimension_questions

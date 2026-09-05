@@ -83,6 +83,8 @@ steps:
       - id: revise-scope
         label: Revise scope
         description: The change surface or review scope needs adjustment — provide the correction; the surface is re-resolved before proceeding.
+        effect:
+          exit: revise-scope
   - kind: action
     id: finalize-activity
     actions:
@@ -91,6 +93,8 @@ steps:
 exits:
   - id: done
     isDefault: true
+  - id: revise-scope
+    immediate: true
 outcome:
   - The review runs against the authoritative changed surface — the GitHub-listed file set or three-dot merge-base diff of authored changes
   - Publish eligibility is established up front, so the conditional publish tail is decided by data recorded at intake

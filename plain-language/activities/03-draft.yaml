@@ -30,18 +30,11 @@ steps:
         target_dir: planning_folder_path
       outputs:
         written_artifact: document_path
-  - kind: checkpoint
-    id: draft-reviewed
-    message: "Draft of `{document_title}` ready for evaluation ([draft]({document_path}))."
-    defaultOption: confirmed
-    autoAdvanceMs: 30000
-    options:
-      - id: confirmed
-        label: Ready for evaluation
-        description: The draft is structured and worded for its readers and can be evaluated.
-      - id: revise
-        label: Keep drafting
-        description: The draft needs more work before it is evaluated.
+  - kind: action
+    id: draft-ready
+    actions:
+      - action: message
+        message: "Draft of `{document_title}` ready for evaluation ([draft]({document_path})). Evaluation decides whether it returns here for another pass."
 exits:
   - id: done
     isDefault: true
