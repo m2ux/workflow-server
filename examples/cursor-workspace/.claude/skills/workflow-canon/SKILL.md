@@ -81,7 +81,13 @@ Name, before reading criteria. Build the **change surface** first; the walk is a
 - **Consumer surface** — the references other workflows hold *into* the target, each resolved to the file it names. Always computed; when a resolved target file is on the change surface (touched or pulled in by I/O-contract closure), that consumer file is on the change surface too. `grep -rn "<target-id>/" workflows/ --include=*.md --include=*.yaml` finds the cross-workflow refs; expand with bind and Apply resolution, not path string match alone.
 - **Reference workflows** — the siblings of similar type whose conventions the target is compared against.
 
-**Forbidden scopes.** Do not treat "the lines the diff shows" as the audit surface. Do not mark a unit `walked` on a touched file after reading only the hunk. Do not omit a silent referencer because the bind site was not edited.
+**Enumerate before walking.** Each surface above is a list of paths read from the tree and written down — into the report, or beside it — before the first unit is applied. The list does two jobs, and the second is why it is built up front rather than reconstructed at the end.
+
+It is the **worklist** the walk consumes and the report reconciles against. A size is a summary of it and never a substitute: nothing checks a figure, so a walk reaching a fraction of what the header claims prints the same header as a complete one, and the shortfall surfaces only when someone else walks the rest.
+
+It is also the **resolution domain** every existence claim resolves against. That a cited construct is absent, that an id is declared nowhere, that a file nothing in the tree reaches — each is a claim about the whole set, answerable only against an enumeration of it. Hold none, and a dangling reference reads exactly like a reference into a file not yet opened, and an orphan exactly like a file whose referencer has not been reached. Both come back as silence, which is also what a partial walk returns, so the audit cannot tell its findings from its gaps.
+
+**Forbidden scopes.** Do not treat "the lines the diff shows" as the audit surface. Do not mark a unit `walked` on a touched file after reading only the hunk. Do not omit a silent referencer because the bind site was not edited. Do not report a surface as a size with no enumeration behind it.
 
 ### 2. Run the mechanical checks first
 
@@ -105,6 +111,7 @@ Do not restate, summarise, or renumber the entries a unit contains. Follow each 
 - Compare against the reference workflows wherever a unit states its criteria relative to sibling convention.
 - Record every unit's disposition into the coverage ledger as you go — `walked`, `not-applicable` with the reason it does not reach this surface, or `blocked` with what prevented the walk. Only `blocked` is missing coverage; `not-applicable` is an evidenced negative.
 - Status `walked` on a unit that intersects the change surface requires field-level evidence on **each whole file** in that intersection the unit can reach — not on the diff hunks alone. A narrative "walked the change" without whole-file evidence is `blocked`.
+- **Every path on the worklist takes a disposition too, and a search does not hand one out.** Mark each `read` when its whole contents were inspected, `swept` naming the Detect-derived scan that stood in for reading it, or `unread`. A pattern returns the files it names and no others, so a directory searched is not a directory walked: the files holding what no pattern anticipated are missing from the result and from the walk together, and nothing in the result distinguishes them from files that held nothing. A `swept` path is bounded by what its scan could have found, never by what the file holds — only reading closes that distance. Reconcile the three against the worklist per [references/reporting.md](references/reporting.md#file-coverage).
 
 ### 5. Attribute and exclude
 
@@ -167,6 +174,8 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 - **Whole file on the change surface.** Every touched path is audited as a complete definition file. Diff hunks discover which paths joined the surface; they do not limit Detect.
 - **I/O contract pulls referencers.** A modified Inputs/Outputs (or activity bind contract) expands the change surface to every activity and technique that references that file, in-tree and cross-workflow.
 - **A second entry pulls the exits.** An activity's outcomes are correct relative to where the graph enters it. Where a graph gives one activity two entry points, the surface includes both, and each outcome is read against the state each entry arrives in — an outcome sound for the first entry can route the second into work already done. Compute the entries the same way as the closure: from every graph that includes the activity, not from the file itself.
+- **A surface is an enumeration; its size is a summary of one.** The paths are what the walk consumes, what the report reconciles, and what every existence claim resolves against — that a reference dangles, that an id is declared nowhere, that nothing reaches a file. A figure standing alone answers none of those and reconciles against nothing: not the tree it claims to measure, not the next pass, not the walk that produced it.
+- **An unwalked surface does not certify, and does not drive fixes across itself.** Where the reconciliation leaves paths `unread` or `swept`, the audit either reads them or cuts its remediation scope to the paths it walked and says so in the report as a scope decision. Recording the shortfall as a status discharges nothing: fixes still land against a picture the audit declined to certify, and every entry that fires in the unwalked region arrives as churn on whoever walks it next — charged to the pass that shipped the fixes, not to the one that found it.
 
 **Evidence**
 

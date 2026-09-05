@@ -44,6 +44,24 @@ Only `blocked` represents missing coverage. `not-applicable` is an evidenced neg
 
 The obligation is one row per unwalked unit of every home. Account for the units each home holds at the commit audited, read from its own headings per [canon-map.md](./canon-map.md#unit-inventory) — a walk measured against a count carried here would certify itself complete against a canon that has since grown. Where the ledger cannot account for every unit of every home, the walk was partial: say so rather than reporting a clean sweep.
 
+## File coverage
+
+The coverage ledger accounts for criteria units. This accounts for paths, and the two are independent — every unit can carry a `walked` row while most of the surface stays unopened, because a unit is walked against whatever files the auditor put in front of it.
+
+Reconcile the surface enumeration built in SKILL.md § Audit → Scope the surface:
+
+| Disposition | Means |
+|-------------|-------|
+| `read` | The whole contents were inspected |
+| `swept` | A Detect-derived scan stood in for reading, named here with its terms |
+| `unread` | Neither |
+
+The three sum to the enumeration. Where they do not, the list the walk consumed is not the list the header claims, and the report states the one that was walked.
+
+- **List the paths for everything other than `read`.** A `swept` or `unread` count with no paths behind it cannot be picked up by the next pass, which is the reader this section is for.
+- **`swept` is bounded by the scan, not by the file.** Naming the scan's terms says what it could have found; it says nothing about what the file holds, and no row distinguishes a file the scan cleared from one it never returned.
+- **Existence claims are bounded by the same list.** A finding that a reference dangles, an id is declared nowhere, or a file is unreferenced holds only over the enumeration it was resolved against. Where that enumeration carries `unread` paths, say so on the finding — absence over a partial set is a weaker claim than absence over the target.
+
 ## Which report
 
 **Inside a workflow-authoring or workflow-design run** — that run's creation guides own the layout and this skill defers to them. Do not invent a shape alongside them:
@@ -61,7 +79,7 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 ~~~markdown
 # Canon Audit — `{target}`
 
-**Base ref:** `{ref}` · **Target surface:** N files · **Change surface:** N files (touched: N whole files · I/O-contract closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
+**Base ref:** `{ref}` · **Target surface:** N files (read N · swept N · unread N) · **Change surface:** N files (touched: N whole files · I/O-contract closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
 
 | Severity | Open | Known |
 |----------|-----:|------:|
@@ -89,6 +107,17 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 
 [Divergences only. Omit the section when every unit was walked.]
 
+## File coverage
+
+read N · swept N · unread N — summing to the target surface.
+
+| Disposition | Paths |
+|-------------|-------|
+| `swept` | `{path}` … and the scan's terms |
+| `unread` | `{path}` … |
+
+[Omit the table only when every path is `read`. Never give a count with no paths behind it.]
+
 ## Known
 
 [Findings a prior pass accepted, excluded from the decision surface. Omit when empty.]
@@ -103,3 +132,4 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 - **Cite entries by name.** Never a bare designator, never any count of the catalog's entries.
 - **Report the verify pass honestly.** Say which Highs were withdrawn or downgraded on re-derivation; a register that silently drops them reads as a walk that never found them.
 - **Report the change surface honestly.** Header counts and the Change surface table must match the skill's union (whole touched files ∪ I/O-contract closure ∪ consumers). A report that only lists diff hunks or omits silent referencers is incomplete coverage, not a clean sweep.
+- **Every header figure reconciles against a list in the body.** The target surface reconciles against File coverage, the change surface against the Change surface table. A figure with nothing behind it states a scope the report never walked and no reader can check.
