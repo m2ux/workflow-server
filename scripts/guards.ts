@@ -297,6 +297,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no text source carries a literal control character, so grep and git diff stay honest',
   },
   {
+    id: 'pinned-corpus-paths',
+    script: 'scripts/check-pinned-corpus-paths.ts',
+    npmScript: 'check:pinned-paths',
+    scope: 'corpus',
+    json: true,
+    proves: 'every corpus path a TypeScript source resolves still exists in the pinned corpus',
+  },
+  {
     id: 'lockfile-denylist',
     script: 'scripts/check-lockfile-denylist.ts',
     npmScript: 'check:lockfile',
