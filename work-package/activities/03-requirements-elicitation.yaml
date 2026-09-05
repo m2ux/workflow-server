@@ -30,11 +30,11 @@ variables:
       defaultValue: false
     - name: has_deferred_assumptions
       type: boolean
-      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      description: Whether any assumption was deferred to stakeholders.
       defaultValue: false
     - name: has_open_assumptions
       type: boolean
-      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      description: Whether unresolved assumptions requiring stakeholder input remain.
       defaultValue: false
     - name: has_resolvable_assumptions
       type: boolean
@@ -46,7 +46,7 @@ variables:
       defaultValue: false
     - name: open_assumptions
       type: array
-      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: requirements
       type: array
       description: The captured requirements list elicited across the domains.
@@ -87,7 +87,7 @@ steps:
     technique: review-assumptions::reconcile
   - kind: checkpoint
     id: elicitation-complete
-    message: All question domains have been covered. Select whether elicitation is complete or needs more work.
+    message: Every question domain has been covered.
     defaultOption: complete
     autoAdvanceMs: 30000
     options:

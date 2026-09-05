@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.22.0
+version: 1.23.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -29,7 +29,7 @@ variables:
   writes:
     - name: artifact_publish_ref
       type: string
-      description: Engineering checkout's branch name, the ref engineering-artifact hyperlinks in the consolidated review resolve against.
+      description: Engineering checkout's branch name.
       defaultValue: ""
     - name: attestation_option
       type: string
@@ -50,17 +50,13 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
-    - name: build_dependent_artifact_commands
-      type: string
-      description: Human-readable command list / ownership notes for regenerating build-dependent artifacts; shown at the submit-for-review build-artifact.
-      defaultValue: ""
     - name: build_dependent_artifacts_pending
       type: boolean
       description: True when regen of build-only artifacts (e.g. .scale / node metadata) is required and the agent cannot produce them.
       defaultValue: false
     - name: classified_findings
       type: array
-      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier the finding is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade). Downstream rendering reads the severity to place each finding on the render scale, the tier to place it in the Action Items, and the impact axis to justify a correct-but-harmful classification."
+      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier it is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade)."
     - name: code_findings_actionable
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.
@@ -84,7 +80,7 @@ variables:
       description: The body now live on the PR after the patch.
     - name: review_comments_summary
       type: string
-      description: Concise multi-line summary of reviewer comments captured during submit-for-review (severity tag + one-line description per comment.
+      description: Concise multi-line summary of the reviewer's comments, one tagged line per comment.
       defaultValue: ""
     - name: review_posted
       type: boolean
@@ -152,10 +148,6 @@ steps:
       - action: validate
         target: summary_completeness_findings == []
         message: "Consolidated review summary disagrees with the reports it renders from: {summary_completeness_findings}. Reconcile each entry against the report it names, then re-run."
-  - kind: action
-    id: present-summary-to-user
-    when: is_review_mode == true
-    actions: []
   - kind: checkpoint
     id: review-summary-approval
     condition:
@@ -163,7 +155,7 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: Here is the consolidated review summary. Select a review type to post, refine the summary, or keep it local.
+    message: "Consolidated review summary, ready to post as a pull-request review: {review_summary}"
     options:
       - id: post-approve
         label: Post review — Approve
@@ -224,13 +216,13 @@ steps:
     options:
       - id: certify
         label: I certify all of the above — proceed
-        description: DCO attestation recorded. Timestamp and identity logged to the [provenance log]({provenance_log_path}).
+        description: The certification stands, with its timestamp and identity in the [provenance log]({provenance_log_path})
         effect:
           setVariable:
             attestation_option: certify
       - id: flag-legal
         label: I have reservations — flag for legal review
-        description: Document concern in the [provenance log]({provenance_log_path}) before proceeding. Consider escalating to legal or OSS program review.
+        description: The concern is recorded in the [provenance log]({provenance_log_path}) for legal or OSS program review
         effect:
           setVariable:
             attestation_option: flag-legal
@@ -333,12 +325,10 @@ steps:
           operator: ==
           value: false
     message: |-
-      The PR body still fails update-pr::rules.pr-body-conformance after the verify-pr-body-rerender loop's two iterations.
+      The PR body still fails update-pr.pr-body-conformance.
 
       Findings:
       {body_findings}
-
-      Select whether to proceed with override, provide missing input, or abort submission.
     options:
       - id: proceed-with-override
         label: Proceed with override
@@ -348,7 +338,7 @@ steps:
             body_conforms: true
       - id: provide-input
         label: Provide missing input
-        description: Supply the missing input (e.g., push the engineering branch, add an issue rationale), then re-enter submit-for-review.
+        description: The missing input (a pushed engineering branch, an issue rationale) is available to supply
         effect:
           setVariable:
             body_conforms: false
@@ -368,7 +358,7 @@ steps:
     actions:
       - action: message
         message: |-
-          PR is ready for review. Merge strategy guidance (informational — no response needed):
+          PR is ready for review. Merge strategy guidance:
 
           {presented_merge_guidance}
   - kind: checkpoint
@@ -402,13 +392,6 @@ steps:
         effect:
           setVariable:
             build_dependent_artifacts_pending: true
-  - kind: action
-    id: derive-regen-commands
-    when: build_dependent_artifacts_pending == true
-    actions:
-      - action: set
-        target: build_dependent_artifact_commands
-        message: The commands that regenerate this project's build-dependent artifacts, read from its build manifest and scripts, with a note on who owns each. One command per line.
   - kind: checkpoint
     id: build-artifact-handoff
     condition:
@@ -427,12 +410,7 @@ steps:
           operator: ==
           value: true
     message: |-
-      Build-dependent artifacts need regeneration.
-
-      Commands / ownership notes:
-      {build_dependent_artifact_commands}
-
-      Regenerate locally (or accept ownership) before CI is the first signal.
+      Build-dependent artifacts on this rust-substrate project need regeneration outside the working tree, and CI is otherwise the first signal that they are stale.
     options:
       - id: user-regenerated
         label: Regenerated — continue
@@ -480,7 +458,7 @@ steps:
               variable: stealth_mode
               operator: "!="
               value: true
-        message: Select whether the PR has received manual review feedback, or is still waiting.
+        message: The pull request is open and awaiting reviewer feedback.
         options:
           - id: yes-review
             label: Yes, review comments received
@@ -490,7 +468,7 @@ steps:
                 awaiting_review: false
           - id: no-waiting
             label: No, still waiting for review
-            description: Keep holding; re-presented until review arrives
+            description: No reviewer feedback has arrived yet
             effect:
               setVariable:
                 awaiting_review: true
@@ -537,7 +515,7 @@ steps:
             review_requires_changes: false
       - id: significant-changes
         label: Significant changes required
-        description: Changes require returning to planning stage
+        description: The change needs re-planning before it can land
         effect:
           setVariable:
             review_requires_changes: true
@@ -559,7 +537,7 @@ exits:
   - id: abort
     immediate: true
 outcome:
-  - PR pushed and marked ready for review
-  - Build-dependent artifacts flagged and handed to the user when regen is owed (create / non-stealth, before mark-ready)
+  - The change stands on the remote as a pull request open for review
+  - Build-dependent artifacts are handed to the user wherever regeneration is owed
   - Review comments received and addressed
   - Review outcome determined (proceed or rework)

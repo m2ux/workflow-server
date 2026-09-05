@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.12.0
+version: 1.13.0
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 variables:
@@ -33,7 +33,7 @@ variables:
       defaultValue: false
     - name: needs_comprehension
       type: boolean
-      description: Whether codebase comprehension is needed (mandatory after design-philosophy; may be re-requested after stakeholder feedback).
+      description: Whether codebase comprehension is outstanding.
       defaultValue: true
 required: false
 techniques:
@@ -57,7 +57,7 @@ steps:
         target_dir: comprehension_dir
     actions:
       - action: message
-        message: Comprehension artifact recorded for reference.
+        message: "[Comprehension artifact]({comprehension_artifact}) recorded for the next work package on this area."
   - kind: technique
     id: initial-deep-dive
     technique: deep-dive
@@ -122,7 +122,7 @@ steps:
           variable: has_open_questions
           operator: ==
           value: true
-        message: Open questions remain after analyse-challenge (see above). Select whether understanding is sufficient or further exploration is needed.
+        message: "Open questions remain in the [comprehension artifact]({comprehension_artifact})."
         defaultOption: sufficient
         autoAdvanceMs: 30000
         options:
@@ -134,13 +134,13 @@ steps:
                 needs_comprehension: false
           - id: dive-deeper
             label: Dive deeper
-            description: Investigate remaining open questions in more detail
+            description: The remaining open questions warrant more detail in this area
             effect:
               setVariable:
                 needs_comprehension: true
           - id: different-area
             label: Explore a different area
-            description: Shift focus to a different part of the codebase
+            description: A different part of the codebase warrants comprehension
             effect:
               setVariable:
                 needs_comprehension: true

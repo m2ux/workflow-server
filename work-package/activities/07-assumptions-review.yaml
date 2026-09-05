@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.13.0
+version: 2.14.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
@@ -23,24 +23,24 @@ variables:
   writes:
     - name: assumption_outcome
       type: string
-      description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
+      description: The outcome given the assumption under discussion. Empty before one has been decided.
       defaultValue: ""
     - name: assumption_review_presentation
       type: object
-      description: Structured judgement-augmentation context for decision, shaped like the Open Assumptions entry fields of the assumptions log template (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
+      description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility — with a link to the assumptions log.
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: current_assumption
       type: object
-      description: Current assumption during assumption review loop (from task_assumptions).
+      description: The assumption under individual review.
     - name: has_deferred_assumptions
       type: boolean
-      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      description: Whether any assumption was deferred to stakeholders.
       defaultValue: false
     - name: has_open_assumptions
       type: boolean
-      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      description: Whether unresolved assumptions requiring stakeholder input remain.
       defaultValue: false
     - name: has_resolvable_assumptions
       type: boolean
@@ -48,11 +48,11 @@ variables:
       defaultValue: false
     - name: needs_individual_interview
       type: boolean
-      description: Whether the residual batch checkpoint selected individual drill-down.
+      description: Whether each residual open assumption is reviewed one at a time.
       defaultValue: false
     - name: open_assumptions
       type: array
-      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: post_summary_approved
       type: boolean
       description: Whether the deferred-assumptions summary is posted to the issue tracker, as decided at the post-summary-review gate.
@@ -110,32 +110,12 @@ steps:
             assembly_mode: interview
       - kind: checkpoint
         id: assumption-decision#{current_assumption.id}
+        ref: assumption-decision
         condition:
           type: simple
           variable: is_review_mode
           operator: "!="
           value: true
-        message: "Assumption {current_assumption.id}: {current_assumption.statement}"
-        options:
-          - id: accept
-            label: Accept assumption
-            description: This assumption is valid — proceed with it
-            effect:
-              setVariable:
-                assumption_outcome: confirmed
-          - id: reject
-            label: Reject assumption
-            description: This assumption is wrong — provide a correction
-            effect:
-              setVariable:
-                assumption_outcome: corrected
-          - id: defer
-            label: Defer
-            description: Not enough information to decide now — revisit later
-            effect:
-              setVariable:
-                has_deferred_assumptions: true
-                assumption_outcome: deferred
       - kind: technique
         id: record-decision
         technique: review-assumptions::record
@@ -162,7 +142,7 @@ steps:
           variable: has_deferred_assumptions
           operator: ==
           value: true
-    message: Some assumptions were deferred and need external stakeholder attention. Select whether to post the summary to {issue_platform}.
+    message: Assumptions were deferred and need attention from stakeholders on {issue_platform}.
     options:
       - id: post-summary
         label: Post summary to issue tracker

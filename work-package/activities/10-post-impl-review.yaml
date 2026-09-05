@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.25.0
+version: 1.26.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -31,11 +31,11 @@ variables:
   writes:
     - name: change_block_index
       type: string
-      description: Absolute path to the index file mapping change-block IDs to their per-block artifacts under .engineering/artifacts/change-blocks/.
+      description: Absolute path to the index mapping change-block IDs to their per-block artifacts.
       defaultValue: ""
     - name: classified_findings
       type: array
-      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier the finding is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade). Downstream rendering reads the severity to place each finding on the render scale, the tier to place it in the Action Items, and the impact axis to justify a correct-but-harmful classification."
+      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier it is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade)."
     - name: code_findings_actionable
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.
@@ -50,7 +50,7 @@ variables:
       defaultValue: false
     - name: has_flagged_blocks
       type: boolean
-      description: Whether user flagged any change blocks during manual diff review.
+      description: Whether any change block carries an issue.
       defaultValue: false
     - name: reviewed_code_base_url
       type: string
@@ -67,7 +67,7 @@ variables:
 required: true
 triggers:
   - workflow: prism
-    description: Run the full analytical pipeline over the change surface when the problem is complex; a simpler one binds prism/structural-analysis inline instead.
+    description: The full analytical pipeline over the change surface.
     passContext:
       - target_path
       - component_name
@@ -90,23 +90,27 @@ steps:
     technique: review-diff
   - kind: checkpoint
     id: file-index-table
-    message: "Change-block index: {change_block_index}, Block titles link to file:line. Review the diff in your side-by-side app, then reply with the block numbers of any blocks with issues (e.g. '24, 31') or 'none', plus any rationale corrections (recorded in the [manual diff review report]({code_review_report})). Your confirmation is the provenance attestation for each change."
+    message: "Change-block index, its block titles linking to file:line: {change_block_index}"
     options:
-      - id: rationale-confirmed
-        label: Rationale confirmed — no issues
-        description: Agent rationale paragraphs are accurate. All changes understood. Proceed with automated reviews.
-      - id: rationale-confirmed-with-issues
-        label: Rationale confirmed (with corrections) — issues found
-        description: Provide rationale corrections (recorded in the [manual diff review report]({code_review_report})) and comma-separated block indices with issues
+      - id: no-flagged-blocks
+        label: No blocks carry an issue
+        description: Every change block reads as intended
+      - id: flagged-blocks
+        label: Some blocks carry an issue
+        description: The reply names the block numbers, comma-separated
         effect:
           setVariable:
             has_flagged_blocks: true
-      - id: has-issues
-        label: Issues found — rationale not yet reviewed
-        description: Enter comma-separated list of block indices with issues; rationale review deferred
-        effect:
-          setVariable:
-            has_flagged_blocks: true
+  - kind: checkpoint
+    id: rationale-attestation
+    message: "The agent's rationale paragraph for each change block, which your confirmation attests the provenance of."
+    options:
+      - id: rationale-accurate
+        label: Rationale accurate as written
+        description: Every rationale paragraph describes the change it sits under
+      - id: rationale-corrected
+        label: Rationale needs correction
+        description: The reply carries the corrections, which land in the manual diff review report
   - kind: loop
     id: block-interview-loop
     name: Block Interview Loop
@@ -118,13 +122,13 @@ steps:
     steps:
       - kind: checkpoint
         id: block-interview#{current_block_index}
-        message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. Record the issue with this change, or mark it as a critical blocker — then the next flagged block."
+        message: "Block {current_block_index}: {block_path}:{block_line_range}"
         defaultOption: issue-recorded
         autoAdvanceMs: 30000
         options:
           - id: issue-recorded
             label: Issue recorded - continue
-            description: Move to next flagged block
+            description: The issue with this change is recorded and it does not block
           - id: critical-blocker
             label: This is a critical blocker
             description: Mark as blocking issue that must be fixed
@@ -133,7 +137,7 @@ steps:
                 has_critical_blocker: true
           - id: skip-block
             label: Skip this block
-            description: No longer an issue, move to next
+            description: The block carries no issue after all
   - kind: technique
     id: code-review
     technique: review-code
@@ -203,7 +207,7 @@ steps:
         findings_to_classify: manual_diff_review_report
   - kind: checkpoint
     id: local-validation-permission
-    message: The project's validation suite either runs here against the checked-out head, or its result is recorded as not run.
+    message: The project's validation suite has not been exercised against the checked-out head.
     condition:
       type: simple
       variable: has_critical_blocker
@@ -212,13 +216,13 @@ steps:
     options:
       - id: run-suite
         label: Run the suite against the checked-out head
-        description: The validate activity runs the project suite in this environment and records what it reports
+        description: This environment can run the project suite
         effect:
           setVariable:
             run_local_validation: true
       - id: suite-not-run
         label: Record validation as not run
-        description: Progress Validation is recorded as cancelled/N/A and the run states that the suite was not exercised here
+        description: This environment cannot run the project suite
         effect:
           setVariable:
             run_local_validation: false
