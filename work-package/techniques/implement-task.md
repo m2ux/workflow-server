@@ -40,7 +40,7 @@ Code changes for a single task
 ### 2. Pre Edit Impact Check
 
 - Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: `{target_symbol}`, direction: `upstream`) before any edit
-- Read the resulting `impact_report`; where it reports HIGH or CRITICAL risk, surface that level and the symbols it names before editing, and record them in `{task_implementation}`
+- Read the resulting `impact_report`; where it reports HIGH or CRITICAL risk, record that level and the symbols it names in `{task_implementation}` before editing
 - Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: `{target_symbol}`) to understand callers/callees of the symbol
 
 ### 3. Write Code

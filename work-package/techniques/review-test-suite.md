@@ -15,7 +15,7 @@ List of files changed in the work package (from `git diff`)
 
 ### prior_feedback_triage
 
-*(optional)* The triage of prior PR feedback, when present. Its entries tagged as reported runtime failures are the input to reported-failure triage — each is traced to a code path and state precondition here rather than re-read from the PR thread.
+*(optional)* The triage of prior PR feedback, one entry per thread, each carrying the disposition and class of the original.
 
 ## Outputs
 
@@ -49,7 +49,7 @@ Method [record](../resources/test-suite-review.md#method-record-template) of how
 
 - Review against the attached [Review Criteria](../resources/test-suite-review.md#review-criteria) and [Anti-Patterns](../resources/test-suite-review.md#anti-patterns)
 - From the `{changed_files}` set, identify all test files in the project related to the changed code
-- If no test files are found, document the missing tests as a critical finding and proceed
+  > Where the set holds no test file, document the missing tests as a critical finding and proceed.
 
 ### 2. Diff Aware Coverage Map
 
@@ -60,7 +60,7 @@ Method [record](../resources/test-suite-review.md#method-record-template) of how
 ### 3. Run Tests
 
 - Run the test suite to establish a passing baseline
-- If the test suite is not passing, fix the failing tests before continuing with the review
+  > Where the suite does not pass, fix the failing tests before continuing with the review.
 - Where the suite did not run here, name continuous integration at the reviewed head as the authority for every claim this review makes about it — the run, its conclusion, and the head it ran against. A review of someone else's change routinely lacks the toolchain, and a suite claim whose basis goes unstated reads as one the reviewer executed.
 
 ### 4. Review Tests
@@ -90,7 +90,7 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 
 - State each finding in the shape [Finding Layout](../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../resources/test-suite-review.md#field-list) and no others, with its severity derived through the map per [Severity](../resources/findings-report.md#severity) and its reachability settled from the code the finding cites per [Reachability](../resources/findings-report.md#reachability)
 - Create the `{test_suite_review_report}` in `{planning_folder_path}`
-- Emit a brief summary of coverage gaps and critical issues as part of the bindable report output for the binding activity to surface
+- Emit a brief summary of coverage gaps and critical issues as part of the bindable report output
 
 ### 6. Record the Method
 
@@ -101,10 +101,6 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 ### suite-claims-name-their-authority
 
 Every claim about the suite names what establishes it: the run performed here, or the continuous-integration run at the reviewed head. An unattributed claim asserts the stronger of the two, and a reader has no way to tell which was meant.
-
-### coverage-relative
-
-Assess coverage relative to the changes made, not absolute project coverage
 
 ### actionable-recommendations
 

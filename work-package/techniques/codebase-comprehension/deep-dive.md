@@ -55,7 +55,8 @@ Targeted exploration findings for the selected area: traced data flows, implemen
 
 ### 1. Deep Dive
 
-- Emit candidate areas based on architecture survey and problem relevance as bindable output for the binding activity to surface. When open questions already exist in the log, prefer them as the default selection rather than generating new candidates from scratch (per `question-driven-exploration`).
+- Emit candidate areas based on architecture survey and problem relevance as bindable output
+  > Where open questions already exist in the log, prefer them as the default selection over new candidates, per `question-driven-exploration`.
 - On the mandatory initial pass, attempt to resolve every open question without a selection gate; only subsequent iterations consume an activity-selected area.
 - For selected area: trace data flows, examine implementation details, document edge cases, applying the [Comprehension Techniques](../../resources/codebase-comprehension.md#comprehension-techniques)
 - When `{gitnexus_indexed}` is true: apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../../meta/techniques/gitnexus-operations/cypher.md) for custom call chain queries

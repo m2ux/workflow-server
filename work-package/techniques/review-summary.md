@@ -102,7 +102,7 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 - Measure each budgeted slot of `{review_summary}` against the table in [Reference, Don't Restate](../resources/review-mode.md#reference-dont-restate): every `Finding` cell, every category section's prose outside its table, the Executive Summary, every Action Items entry, and the whole-summary line count.
 - Record every slot over its budget as a `{summary_budget_overruns}` entry with its measured size and its budget.
 - Cut each overrun by moving the absorbed content to the report section that owns it and leaving the link, then re-measure — a shorter paraphrase of report content is still restatement.
-- Emit `{summary_budget_overruns}` so the binding activity can gate on it; leave it empty when every slot is within budget.
+- Emit `{summary_budget_overruns}`, empty when every slot is within budget.
 
 ### 6. Check the Summary Against Its Sources
 
@@ -113,7 +113,7 @@ Five checks, each mechanical against the reports the summary renders from, and e
 - **Every total stated in prose equals the rows counted.** Re-derive each from the rendered table rather than from the figure the source report asserts.
 - **Every finding in a table has an Action Items entry**, and every Action Items entry names a designator a table holds.
 - **Every `Must Address (Blocking)` entry names a finding whose reachability admits that tier** — `reachable` or `conditional`, per [Action Items](../resources/review-mode.md#action-items). Read the value off the finding in the report the entry names.
-- Record each disagreement as a `{summary_completeness_findings}` entry naming the check and what it found; repair the summary and re-run the checks. Emit the list so the binding activity can gate on it, and leave it empty when every check passes.
+- Record each disagreement as a `{summary_completeness_findings}` entry naming the check and what it found; repair the summary and re-run the checks. Emit the list, empty when every check passes.
 
 ## Rules
 

@@ -88,7 +88,7 @@ When a change touches configuration alone, the documentation describing that con
 
 - State each finding in the shape [Finding Layout](../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../resources/rust-substrate-code-review.md#field-list) and no others, with its severity derived through the map per [Severity](../resources/findings-report.md#severity) and its reachability settled from the code the finding cites per [Reachability](../resources/findings-report.md#reachability)
 - Create the `{code_review_report}` in `{planning_folder_path}` — or update it in place when the manual diff review already created it, which owns its own `##` section within it
-- Emit a brief summary of critical and high findings as part of the bindable report output for the binding activity to surface
+- Emit a brief summary of critical and high findings as part of the bindable report output
 
 ### 5. Record the Method
 

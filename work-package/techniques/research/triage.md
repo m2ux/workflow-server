@@ -53,7 +53,7 @@ Boolean gate driving the reconciliation loop — true when at least one candidat
 
 ### no-user-interaction
 
-Triage runs autonomously, without user interaction. Candidates and their classifications are surfaced to the user only at the convergence checkpoint, after reconciliation.
+Triage emits its candidates and their classifications as bindable output.
 
 ### research-reconcilable
 

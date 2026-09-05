@@ -66,4 +66,4 @@ Challenge uses scatter-gather isolation-then-combine; per-perspective outputs ne
 
 ### max-iterations-safety
 
-If the binding activity wraps this op in a `while`, honour that loop's `maxIterations`. When this op owns iteration internally, stop after a sane ceiling (default 10) and leave remaining opens as residue with a note that convergence was iteration-capped.
+Where an enclosing iteration declares a ceiling, honour it. Where this op owns iteration internally, stop after a sane ceiling (default 10) and leave remaining opens as residue with a note that convergence was iteration-capped.

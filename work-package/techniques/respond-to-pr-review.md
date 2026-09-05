@@ -51,7 +51,7 @@ Whether the changes are significant enough to require substantial rework
 
 ### 3. Address Comments
 
-- For each review item with follow-up actions, emit the item and its candidate actions as structured bindable output for the binding activity to surface and collect selection (e.g., '1,3' or 'all' or 'none').
+- For each review item with follow-up actions, emit the item and its candidate actions as structured bindable output.
 - Only implement actions explicitly selected via the activity response
 - Commit fix changes per concern
 - Document which comments require substantial rework vs inline fixes
@@ -60,7 +60,7 @@ Whether the changes are significant enough to require substantial rework
 ### 4. Post Responses
 
 - Draft each response per the [response format template](../resources/pr-review-response.md#response-format-template) and the response-crafting rules below
-- Emit drafted PR responses as bindable output for the binding activity to approve before posting
+- Emit drafted PR responses as bindable output
 - Post approved responses to the PR comment thread
 - If disagreeing with a reviewer, explain reasoning explicitly
 
