@@ -193,6 +193,8 @@ graph:
     review-requires-changes: plan-prepare
     provide-input: submit-for-review
     abort: complete
+  complete:
+    done: __terminal__
   codebase-comprehension:
     needs-elicitation: requirements-elicitation
     research-needed: research

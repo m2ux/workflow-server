@@ -30,7 +30,8 @@ Whether test improvements are in scope for this cycle.
 
 ### 2. Implement Fixes
 
-- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: `{$target_symbol}`, direction: `upstream`) before editing a symbol; surface HIGH or CRITICAL risk to the user before proceeding.
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: `{$target_symbol}`, direction: `upstream`) before editing a symbol
+  > Where the report reads HIGH or CRITICAL, record that level and the symbols it names alongside the fix.
 - Implement each selected finding in `{target_path}`, following existing code patterns and conventions.
 - Apply test improvements alongside the code fixes when `{test_findings_actionable}` is true.
 - Verify locally — confirm the changes compile and the affected tests pass before committing.

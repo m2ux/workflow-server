@@ -52,7 +52,7 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`, distinct from `
    | `bug` | `fix` | restores stated behaviour |
    | `task` | `chore` | maintenance with no change to capability |
 
-   Stop and report when `{issue_type}` is unset, which is what an unsettled category leaves behind: the prefix is part of the branch and pull-request identity and is expensive to change once a pull request is open, so the category is the binding activity's gate to settle, never this step's to guess.
+   Stop and report when `{issue_type}` is unset: the prefix is part of the branch and pull-request identity and is expensive to change once a pull request is open, so an unsettled category is never this step's to guess.
 3. Slugify `{issue_title}` (lowercase, dashes, max ~40 chars) for the description segment.
 4. Set `{branch_name}` to `{$branch_type_prefix}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
 5. Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.

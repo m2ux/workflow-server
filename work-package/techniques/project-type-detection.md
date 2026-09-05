@@ -21,7 +21,7 @@ Basename of the component within `{host_repo_path}`.
 
 ### project_type
 
-Detected project type: `rust-substrate` when Substrate dependencies are present, otherwise `other`. Lands in the session bag under this id so downstream activities bind it by name (no further set step required).
+Detected project type: `rust-substrate` when Substrate dependencies are present, otherwise `other`.
 
 Default when detection cannot run: `other`.
 

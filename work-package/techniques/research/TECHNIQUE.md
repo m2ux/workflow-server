@@ -30,4 +30,4 @@ Patterns should be validated across documents
 
 ### synthesize-directly
 
-Never narrate the search process to the user. Synthesize answers directly and cite sources.
+Findings carry the synthesized answer and its sources, never an account of the search that reached them.

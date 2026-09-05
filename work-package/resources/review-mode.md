@@ -262,7 +262,7 @@ The Overall Rating rendered in the summary maps to the posted review type:
 
 ### Attribution Footer
 
-The attribution footer is the last block of the rendered summary and is posted verbatim as part of the review comment. Resolve `{user}` as `{viewer_login}` from [viewer-login](../../meta/techniques/github-cli-protocol/viewer-login.md) and `{sha}` as the short form of `{head_sha}` from [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md). It is part of the format so it renders into `{review_summary}` and reaches the PR unaltered.
+The attribution footer is the last block of the rendered summary and is posted verbatim as part of the review comment. `{user}` is the authenticated viewer's login and `{sha}` the short form of the reviewed head's commit hash.
 
 # Review Categories
 

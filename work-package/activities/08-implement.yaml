@@ -1,5 +1,5 @@
 id: implement
-version: 2.16.0
+version: 2.17.0
 name: Implement Tasks
 description: Execute the implementation plan task by task.
 variables:
@@ -20,31 +20,31 @@ variables:
   writes:
     - name: assumption_outcome
       type: string
-      description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
+      description: The outcome given the assumption under discussion. Empty before one has been decided.
       defaultValue: ""
     - name: assumption_review_presentation
       type: object
-      description: Structured judgement-augmentation context for decision, shaped like the Open Assumptions entry fields of the assumptions log template (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
+      description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility — with a link to the assumptions log.
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: current_assumption
       type: object
-      description: Current assumption during assumption review loop (from task_assumptions).
+      description: The assumption under individual review.
     - name: current_task
       type: object
-      description: Current task during implementation loop (from implementation_plan.tasks).
+      description: The implementation-plan task under construction.
     - name: failures
       type: array
       description: Per-test failure detail when any failed
       defaultValue: []
     - name: has_deferred_assumptions
       type: boolean
-      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      description: Whether any assumption was deferred to stakeholders.
       defaultValue: false
     - name: has_open_assumptions
       type: boolean
-      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      description: Whether unresolved assumptions requiring stakeholder input remain.
       defaultValue: false
     - name: has_resolvable_assumptions
       type: boolean
@@ -52,44 +52,33 @@ variables:
       defaultValue: false
     - name: has_uncertain_symbols
       type: boolean
-      description: True when the current implement task's self-review flagged one or more symbols whose provenance could not be confirmed.
+      description: True when one or more symbols in the task under construction have unconfirmed provenance.
       defaultValue: false
     - name: needs_individual_interview
       type: boolean
-      description: Whether the residual batch checkpoint selected individual drill-down.
+      description: Whether each residual open assumption is reviewed one at a time.
       defaultValue: false
     - name: open_assumptions
       type: array
-      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: test_status
       type: string
       description: Pass/fail summary
       defaultValue: ""
     - name: uncertain_symbols
       type: string
-      description: "Multi-line list of symbols flagged by the implement task-cycle self-review whose provenance could not be confirmed (one per line: symbol."
+      description: "Symbols whose provenance could not be confirmed against the codebase or declared dependencies, one per line."
       defaultValue: ""
 required: true
 techniques:
   - scatter-gather
 steps:
-  - kind: action
-    id: verify-preconditions
-    actions:
-      - action: validate
-        target: branch
-        message: Verify on correct feature branch before any code changes
   - kind: loop
     id: task-cycle
     name: Task Implementation Cycle
     loopType: forEach
     variable: current_task
     over: implementation_plan.tasks
-    breakCondition:
-      type: simple
-      variable: has_uncertain_symbols
-      operator: "=="
-      value: true
     steps:
       - kind: technique
         id: implement-task
@@ -110,33 +99,44 @@ steps:
           inputs:
             task_id: "{current_task.id}"
             task_description: "{current_task.description}"
-      - kind: technique
-        id: self-review
-        technique: task-completion-review
-      - kind: checkpoint
-        id: symbol-provenance-confirmed
-        condition:
+      - kind: loop
+        id: provenance-settle-cycle
+        name: Symbol Provenance Settle Cycle
+        loopType: doWhile
+        continueWhile:
           type: simple
           variable: has_uncertain_symbols
           operator: ==
           value: true
-        message: |-
-          One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
+        maxIterations: 3
+        steps:
+          - kind: technique
+            id: self-review
+            technique: task-completion-review
+          - kind: checkpoint
+            id: symbol-provenance-confirmed
+            condition:
+              type: simple
+              variable: has_uncertain_symbols
+              operator: ==
+              value: true
+            message: |-
+              One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
 
-          {uncertain_symbols}
-        options:
-          - id: confirmed
-            label: Symbols are intentional — proceed
-            description: The flagged symbols were introduced intentionally by this task, or were verified by hand.
-            effect:
-              setVariable:
-                has_uncertain_symbols: false
-          - id: uncertain
-            label: Investigate before proceeding
-            description: The flagged symbols remain unaccounted for.
-            effect:
-              setVariable:
-                has_uncertain_symbols: true
+              {uncertain_symbols}
+            options:
+              - id: confirmed
+                label: Symbols are intentional
+                description: The flagged symbols were introduced intentionally by this task, or were verified by hand.
+                effect:
+                  setVariable:
+                    has_uncertain_symbols: false
+              - id: uncertain
+                label: Trace the flagged symbols again
+                description: The flagged symbols remain unaccounted for and the task's self-review runs again over them.
+                effect:
+                  setVariable:
+                    has_uncertain_symbols: true
       - kind: technique
         id: collect-assumptions
         technique: review-assumptions::collect
@@ -164,7 +164,10 @@ steps:
         assembly_mode: batch
     actions:
       - action: message
-        message: "**Assumptions** — analyse-challenge outcomes for implementation (residual opens listed when any remain)."
+        message: |-
+          **Assumptions**
+
+          {assumption_review_presentation}
   - kind: checkpoint
     id: implementation-assumption-interview
     ref: assumption-interview

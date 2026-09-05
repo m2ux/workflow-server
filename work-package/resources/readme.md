@@ -13,4 +13,4 @@ Planning-folder `README.md` layout and policy: [Planning Folder README Guide](..
 
 Work-package Progress inventory, classifier, links defaults, and mode-exclusion map: [readme-seed](./readme-seed.md).
 
-Seed via [create-readme](../../meta/techniques/workflow-engine/create-readme.md) with `seed_profile: work-package/readme-seed`.
+Fill data for the planning-folder README lives in [readme-seed](./readme-seed.md); layout and policy live in the meta [planning-readme](../../meta/resources/planning-readme.md) Template.

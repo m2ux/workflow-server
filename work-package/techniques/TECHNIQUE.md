@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Shared Inputs, Outputs, Rules, and Errors for every technique in this set.
+The work package's session context: where its planning artifacts live, what problem and requirements they serve, and which worktree, branch, pull request and repository the work runs against.
 
 ## Inputs
 
 ### planning_folder_path
 
-Path to this work package's planning folder under `.engineering/artifacts/planning/` — where techniques that persist planning artifacts read and write (filename numbering: artifact-prefix); not every technique produces one.
+Path to this work package's planning folder under `.engineering/artifacts/planning/`.
 
 ### requirements
 
@@ -39,4 +39,4 @@ Absolute path of the component's git working tree — the checkout whose `origin
 
 ### target_repo
 
-GitHub repository as `owner/repo` for the repository the session is bound to. Bound into github-cli-protocol ops by name-match; domain techniques do not split it.
+GitHub repository as `owner/repo` for the repository the session is bound to.

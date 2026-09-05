@@ -26,7 +26,7 @@ fragments:
             variable: has_open_assumptions
             operator: ==
             value: true
-      message: "Open assumptions remain after analyse-challenge ({assumption_review_presentation}). Accept the agent's positions for the batch, defer all to stakeholders, or interview individually."
+      message: "Open assumptions remain, each with the agent's favored position: {assumption_review_presentation}"
       options:
         - id: accept-agent-positions
           label: Accept agent positions
@@ -48,14 +48,20 @@ fragments:
             setVariable:
               needs_individual_interview: true
     assumption-decision:
-      message: "Assumption {current_assumption.id}: {current_assumption.statement}. Resolve now or defer."
+      message: "Assumption {current_assumption.id}: {current_assumption.statement}"
       options:
         - id: resolve-inline
-          label: Resolve now
-          description: Provide resolution for this assumption
+          label: Accept the assumption
+          description: The assumption holds as stated
           effect:
             setVariable:
               assumption_outcome: confirmed
+        - id: correct-assumption
+          label: Correct the assumption
+          description: The assumption is wrong and the reply carries its correction
+          effect:
+            setVariable:
+              assumption_outcome: corrected
         - id: defer-to-stakeholder
           label: Defer to stakeholder review
           description: Queue this assumption for stakeholder review
@@ -75,41 +81,24 @@ variables:
     type: boolean
     description: Whether to skip optional discovery activities (elicitation and research).
     defaultValue: false
-  - name: user_request
-    type: string
-    description: The user's free-form request that opened this work package.
   - name: target_path
     type: string
-    description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
+    description: Feature worktree path for edits, builds, and PR ops.
   - name: target_repo
     type: string
     description: GitHub repository as owner/repo.
   - name: component_git_dir
     type: string
     description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
-  - name: planning_folder_path
-    type: string
-    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}."
-  - name: provenance_log_path
-    type: string
-    description: Absolute path to the AI-assistance provenance log (provenance-log.md), created under the planning folder during implementation.
-    defaultValue: ""
   - name: pr_number
     type: string
     description: Pull request number.
   - name: branch_name
     type: string
     description: Feature branch name.
-  - name: default_branch
-    type: string
-    description: The repository's default branch, which feature branches sync from and merge into.
   - name: headless_mode
     type: boolean
     description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
-    defaultValue: false
-  - name: safety_floor_cleared
-    type: boolean
-    description: Whether the applied simplifications hold the ponytail safety floor.
     defaultValue: false
   - name: issue_type
     type: string
@@ -120,13 +109,30 @@ variables:
       - task
       - enhancement
       - epic
+  - name: assumption_outcome
+    type: string
+    description: The outcome given the assumption under discussion. Empty before one has been decided.
+    defaultValue: ""
+  - name: user_request
+    type: string
+    description: The user's free-form request that opened this work package.
+  - name: planning_folder_path
+    type: string
+    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}."
+  - name: provenance_log_path
+    type: string
+    description: Absolute path to the AI-assistance provenance log.
+    defaultValue: ""
+  - name: default_branch
+    type: string
+    description: The repository's default branch, which feature branches sync from and merge into.
   - name: needs_further_discussion
     type: boolean
     description: Whether further stakeholder discussion is needed.
     defaultValue: false
   - name: needs_plan_revision
     type: boolean
-    description: Whether stakeholder feedback requires returning to plan-prepare for significant approach revision.
+    description: Whether the approach needs significant revision.
     defaultValue: false
   - name: skip_architecture_summary
     type: boolean
@@ -134,40 +140,36 @@ variables:
     defaultValue: false
   - name: flagged_block_indices
     type: array
-    description: List of change block indices flagged by user during manual diff review.
+    description: Change-block indices the reviewer flagged as carrying an issue.
   - name: question_domains
     type: array
-    description: Question domains for requirements elicitation iteration.
+    description: The domains elicitation questions are drawn from.
   - name: jira_issue_key
     type: string
-    description: "Jira issue key in PROJ-NNN form, captured during issue verification when issue_platform == 'jira'."
+    description: Jira issue key in PROJ-NNN form.
     defaultValue: ""
   - name: block_path
     type: string
-    description: File path of the code block referenced by the current PR-review comment or implementation block.
+    description: File path of the code block under review.
     defaultValue: ""
   - name: block_line_range
     type: string
-    description: Line range (e.g., 120-145) of the current code block.
+    description: Line range of the code block under review, as `start-end`.
     defaultValue: ""
   - name: implementation_plan
     type: object
-    description: Implementation plan.
+    description: The ordered tasks the change is built from, each with its crate and description.
   - name: issue_title
     type: string
     description: Tracker issue/ticket title.
   - name: stealth_mode
     type: boolean
-    description: Suppresses public-disclosure side-effects (PR rendering and creation, issue-tracker posting, PR review lifecycle) when a private.
+    description: True when the run suppresses every public-disclosure side-effect.
     defaultValue: false
   - name: push_remote
     type: string
-    description: "Git remote that manage-git::push-commits (and the stealth-mode isolation checks) target."
+    description: Git remote the run pushes to.
     defaultValue: origin
-  - name: assumption_outcome
-    type: string
-    description: The outcome the deciding gate gave the assumption under discussion, empty before any gate has decided one.
-    defaultValue: ""
   - name: issue_request
     type: string
     description: The issue key, URL, or surrounding text the user supplied when opening the work package.
@@ -214,6 +216,8 @@ graph:
     review-requires-changes: plan-prepare
     provide-input: submit-for-review
     abort: complete
+  complete:
+    done: __terminal__
   codebase-comprehension:
     needs-elicitation: requirements-elicitation
     research-needed: research

@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.23.0
+version: 3.24.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -47,7 +47,7 @@ variables:
       defaultValue: .
     - name: existing_pr_number
       type: string
-      description: PR number returned by the pulls list API when an existing draft PR is detected during issue/branch initialization.
+      description: PR number of the draft pull request already open for this branch.
       defaultValue: ""
     - name: github_issue_found
       type: boolean
@@ -59,7 +59,7 @@ variables:
       defaultValue: false
     - name: headless_mode
       type: boolean
-      description: Whether the run resolves a soft mid-flow gate to its default without reaching a person. A review run sets it true.
+      description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
       defaultValue: false
     - name: host_repo_path
       type: string
@@ -67,6 +67,7 @@ variables:
     - name: is_review_mode
       type: boolean
       description: True when the work package reviews an existing PR instead of producing a new implementation.
+      defaultValue: false
     - name: issue_cancelled
       type: boolean
       description: Whether issue creation was cancelled by user.
@@ -110,7 +111,7 @@ variables:
       defaultValue: ""
     - name: jira_project
       type: string
-      description: How the Jira project was resolved during issue creation ('selected' from the project list, or 'specified' directly by the user).
+      description: Whether the Jira project came from the project list ('selected') or from the user directly ('specified').
     - name: needs_github_issue_creation
       type: boolean
       description: Whether a GitHub issue should be created to mirror the Jira ticket.
@@ -119,9 +120,6 @@ variables:
       type: boolean
       description: Whether a new issue needs to be created.
       defaultValue: false
-    - name: planning_folder_path
-      type: string
-      description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}."
     - name: pr_exists
       type: boolean
       description: Whether a PR already exists for the current branch.
@@ -139,11 +137,11 @@ variables:
       defaultValue: ""
     - name: prior_feedback_triage
       type: object
-      description: Triage of the reviewed PR's existing comments and review threads, one row per thread with its Confirmed, Refuted or Superseded disposition and the author and class of the original. Written as an artifact and carried in the bag, so the review summary reads the same triage the file records.
+      description: Triage of the reviewed PR's existing comments and review threads, one row per thread with its Confirmed, Refuted or Superseded disposition and the author and class of the original.
       defaultValue: {}
     - name: project_type
       type: string
-      description: Detected project type (e.g. rust-substrate); used to gate rust-substrate-specific validation steps.
+      description: Detected project type (e.g. rust-substrate).
     - name: rating_cap
       type: string
       description: The ceiling the Overall Rating may not exceed, derived from the triage. When any prior comment is a blocker-class concern left unaddressed by the PR, the cap is the request-changes tier; otherwise the cap is unset and the rating is governed solely by the review's own findings.
@@ -169,23 +167,23 @@ variables:
       defaultValue: false
     - name: stakeholder_overview
       type: string
-      description: The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
+      description: The two-paragraph plain-language overview of the problem.
     - name: target_path
       type: string
-      description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
+      description: Feature worktree path for edits, builds, and PR ops.
     - name: target_repo
       type: string
-      description: GitHub repository as owner/repo. Supplies github-cli-protocol ops via name-match.
+      description: GitHub repository as owner/repo.
     - name: target_workflow_outcomes
       type: string
-      description: Plain outcome list a review run is measured against at close-out
+      description: The outcomes a review run is measured against, one per line.
     - name: use_existing_pr
       type: boolean
       description: Whether to use an existing PR instead of creating a new one.
       defaultValue: false
     - name: worktree_created
       type: boolean
-      description: True when a worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for cleanup).
+      description: True when a worktree at `{target_path}` was created or reused by this run.
       defaultValue: false
 required: true
 steps:
@@ -229,7 +227,7 @@ steps:
       variable: review_mode_ambiguous
       operator: ==
       value: true
-    message: Review vs new-implementation intent is unclear from the request. Select whether to continue in review mode or treat this as new implementation.
+    message: Review vs new-implementation intent is unclear from the request.
     options:
       - id: confirm-review
         label: Yes, review existing PR
@@ -328,7 +326,12 @@ steps:
     actions:
       - action: set
         target: target_workflow_outcomes
-        message: "Seed target_workflow_outcomes with the review-native plain list (no mode predicates in prose): (1) The review close-out (findings, disposition, retrospective) is recorded under the planning folder; (2) Lessons learned are captured to improve future work packages; (3) The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces; (4) Reference monorepo left untouched; (5) Ready for next work package. A create run leaves this unset and is measured against the outcomes its own activities reported."
+        value: |-
+          The review close-out — findings, disposition, retrospective — is recorded under the planning folder.
+          Lessons learned are captured to improve future work packages.
+          The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces.
+          Reference monorepo left untouched.
+          Ready for next work package.
   - kind: technique
     id: derive-host-repo
     technique: version-control::resolve-host-repo
@@ -368,7 +371,7 @@ steps:
     id: announce-project-type
     actions:
       - action: message
-        message: "Session bag `project_type`={project_type} (from detect-project-type)."
+        message: "Project type: {project_type}."
   - kind: technique
     id: check-issue
     technique: issue-reference-detection
@@ -385,7 +388,7 @@ steps:
           variable: issue_present
           operator: ==
           value: false
-    message: No GitHub or Jira issue is associated with this work package. Select how to proceed.
+    message: No GitHub or Jira issue is associated with this work package.
     options:
       - id: provide-existing
         label: Provide existing issue
@@ -412,7 +415,7 @@ steps:
       variable: needs_issue_creation
       operator: ==
       value: true
-    message: Select the platform for the new issue.
+    message: The new issue needs a tracker to live in.
     options:
       - id: github
         label: GitHub
@@ -477,10 +480,6 @@ steps:
       - action: set
         target: github_issue_found
         description: true if a GitHub issue referencing jira_issue_key was found, false otherwise
-  - kind: action
-    id: check-github-issue
-    when: issue_platform == 'jira' && github_issue_found == false
-    actions: []
   - kind: checkpoint
     id: github-issue-missing
     condition:
@@ -498,7 +497,7 @@ steps:
           variable: github_issue_found
           operator: ==
           value: false
-    message: No GitHub issue found for Jira ticket {jira_issue_key}. A linked GitHub issue enables PR traceability in the target repo. Select whether to create one.
+    message: No GitHub issue mirrors Jira ticket {jira_issue_key}, so the pull request has nothing to trace to in the target repo.
     defaultOption: create
     autoAdvanceMs: 30000
     options:
@@ -534,7 +533,7 @@ steps:
           variable: needs_issue_creation
           operator: ==
           value: true
-    message: Select the Jira project for the new issue.
+    message: The new Jira issue needs a project to live in.
     options:
       - id: select
         label: Select from list
@@ -565,7 +564,7 @@ steps:
           variable: issue_type_ambiguous
           operator: ==
           value: true
-    message: Select the issue type.
+    message: The drafted issue's type is unsettled.
     options:
       - id: feature
         label: Feature / Story
@@ -659,12 +658,6 @@ steps:
         repo_path: component_git_dir
         assignee: "@me"
     when: issue_skipped != true && issue_platform == 'github'
-  - kind: action
-    id: bind-planning-folder-path
-    actions:
-      - action: set
-        target: planning_folder_path
-        message: Server-resolved canonical absolute planning folder from the get_workflow summary. Write location for ALL of this work package's artifacts.
   - kind: technique
     id: initialize-planning-folder
     technique:
@@ -678,7 +671,7 @@ steps:
       name: stakeholder-overview
       inputs:
         readme_section_heading: "## Problem Overview"
-        source_material: issue details, ticket description, and any context gathered during this activity
+        source_material: "{issue_record}"
     actions:
       - action: message
         message: |-
@@ -752,7 +745,7 @@ steps:
           variable: use_existing_pr
           operator: "!="
           value: true
-    message: "Found existing PR #{existing_pr_number} for this branch. Select whether to use it or create a new one."
+    message: "PR #{existing_pr_number} is already open for this branch."
     options:
       - id: use-existing
         label: Use existing PR
@@ -873,6 +866,6 @@ exits:
 outcome:
   - Issue exists or is created in appropriate platform
   - Issue transitioned to In Progress and assigned to current user
-  - Feature branch created from main
+  - A feature branch off {default_branch} carries the work
   - Draft PR created, assigned to current GitHub user, and linked to issue
   - PR reference recorded on the issue via the platform's native PR linkage

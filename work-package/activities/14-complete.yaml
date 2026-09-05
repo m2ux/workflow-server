@@ -1,5 +1,5 @@
 id: complete
-version: 1.11.0
+version: 1.12.0
 name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
@@ -23,7 +23,7 @@ variables:
   writes:
     - name: artifact_publish_ref
       type: string
-      description: Engineering checkout's branch name, the ref engineering-artifact hyperlinks in the consolidated review resolve against.
+      description: Engineering checkout's branch name.
       defaultValue: ""
     - name: broken_artifact_links
       type: array
@@ -65,7 +65,7 @@ variables:
       description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
     - name: worktree_created
       type: boolean
-      description: True when a worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for cleanup).
+      description: True when a worktree at `{target_path}` was created or reused by this run.
       defaultValue: false
 required: true
 steps:
@@ -185,6 +185,9 @@ steps:
     actions:
       - action: log
         message: Work package workflow complete
+exits:
+  - id: done
+    isDefault: true
 outcome:
   - The key design decision is durably recorded for future reference when complexity is moderate or complex
   - Project documentation reflects the delivered change
@@ -193,5 +196,5 @@ outcome:
   - Every link a reader follows out of the planning folder resolves at the ref the artifacts are published on
   - The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces
   - Reference monorepo left untouched
-  - A review run ends complete with its review posted and the author's disposition outstanding, since deciding on it belongs to the author and not to this run
+  - A review run ends with its review posted and the author's disposition outstanding
   - Ready for next work package

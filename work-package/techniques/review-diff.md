@@ -77,11 +77,11 @@ True if any block marked as critical blocker
 
 - Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one `### [Block N — file:line]` subsection per block, each title linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
 - When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
-- Write index to the `{change_block_index}` under `{planning_folder_path}` — the binding activity surfaces the index for external diff-tool review
+- Write index to the `{change_block_index}` under `{planning_folder_path}`
 
 ### 5. Collect Flagged
 
-- Consume flagged rows from the activity response, reported as block numbers only: `3, 7, 12` (those blocks have issues) or `none` (skip the interview loop, proceed to automated reviews)
+- Consume flagged rows reported as block numbers only: `3, 7, 12` where those blocks carry an issue, or `none` where none does
 - A bare block number covers all changes in that file; a block with a line reference (e.g. `3-L42`) focuses the interview on that specific line
 - Populate `{flagged_block_indices}` from the flagged set so the activity `forEach` can bind `{current_block_index}`
 

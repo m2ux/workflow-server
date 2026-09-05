@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.19.0
+version: 2.20.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -42,7 +42,7 @@ variables:
       description: The body now live on the PR after the patch.
     - name: resign_unsigned_commits_requested
       type: boolean
-      description: User chose to re-sign unsigned commits at the strategic-review unsigned-commits-prompt checkpoint.
+      description: Whether the unsigned commits in the branch range are to be re-signed.
       defaultValue: false
     - name: review_findings
       type: array
@@ -57,11 +57,11 @@ variables:
       defaultValue: ""
     - name: unsigned_commit_list_summary
       type: string
-      description: Short human-readable summary of unsigned commits from the strategic-review signature scan; empty when all commits are signed.
+      description: Short human-readable summary of the unsigned commits; empty when every commit is signed.
       defaultValue: ""
     - name: unsigned_commits_in_pr
       type: boolean
-      description: True when the strategic-review signature scan found any commit in the branch range without a valid GPG signature.
+      description: True when any commit in the branch range lacks a valid GPG signature.
       defaultValue: false
 required: true
 steps:
@@ -88,17 +88,17 @@ steps:
           variable: unsigned_commits_in_pr
           operator: ==
           value: true
-    message: "Signature scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Select whether to re-sign all unsigned commits now. Re-signing rewrites branch history and may require force-with-lease push."
+    message: "Commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-signing rewrites branch history and may require a force-with-lease push."
     options:
       - id: resign-all
         label: Yes — re-sign all unsigned commits
-        description: Rewrites commits with GPG signatures using git rebase; confirm signing key is available
+        description: Every unsigned commit in the range carries a signature afterwards
         effect:
           setVariable:
             resign_unsigned_commits_requested: true
       - id: decline-resign
         label: No — proceed without re-signing
-        description: Keep history as-is; note unsigned commits in strategic-review documentation
+        description: The history stands as it is, with its unsigned commits noted
         effect:
           setVariable:
             resign_unsigned_commits_requested: false
@@ -210,7 +210,7 @@ steps:
           operator: "!="
           value: ""
     message: |-
-      Strategic review complete. Every finding is the pull-request author's to act on; this gate decides which of them the posted review carries.
+      Strategic review findings. Every finding is the pull-request author's to act on.
 
       Findings:
       {strategic_findings_summary}
@@ -247,4 +247,4 @@ outcome:
   - Investigation artifacts and over-engineering removed
   - A record of scope and quality findings exists for reviewers to act on
   - Stakeholders have an architecture overview to understand the change
-  - This work will appear in the project's release notes, traceable to the issue, when the repo uses a root changes/ convention
+  - The change is traceable to its issue from the project's release notes, where the repo carries a root changes/ convention

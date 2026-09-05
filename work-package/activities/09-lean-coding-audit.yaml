@@ -1,5 +1,5 @@
 id: lean-coding-audit
-version: 1.6.0
+version: 1.7.0
 name: Lean-Coding Audit
 description: Apply the ponytail lean-coding lens to the just-implemented change.
 variables:
@@ -11,7 +11,6 @@ variables:
     - pr_number
     - problem_statement
     - requirements
-    - safety_floor_cleared
     - target_path
     - target_repo
   writes:
@@ -21,7 +20,7 @@ variables:
       defaultValue: false
     - name: needs_simplification
       type: boolean
-      description: Whether accepted simplifications remain to apply at the audit-findings-confirmed gate.
+      description: Whether accepted simplifications remain to apply.
       defaultValue: false
     - name: review_findings
       type: array
@@ -45,14 +44,14 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "The lean-coding audit's tagged findings and diff-scoped scoreboard stand as recorded."
+    message: "Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {review_findings}"
     options:
       - id: audit-accepted
         label: Accept audit — no changes to apply
         description: The audit findings and scoreboard are accurate.
       - id: apply-simplifications
         label: Apply recommended simplifications
-        description: Apply the accepted simplifications in a bounded cycle, then re-score.
+        description: The accepted simplifications are worth applying to the change.
         effect:
           setVariable:
             needs_simplification: true
@@ -80,18 +79,28 @@ steps:
       - kind: technique
         id: re-review-over-engineering
         technique: ponytail/review-over-engineering
-      - kind: action
-        id: validate-safety-floor
-        actions:
-          - action: validate
-            target: safety_floor_cleared == true
-            message: Confirm the applied simplifications hold the safety floor — reject any simplification that breaches it.
-      - kind: action
-        id: reassess-simplification
-        actions:
-          - action: set
-            target: needs_simplification
-            message: After applying the accepted simplifications and re-running the over-engineering re-score, set true iff the re-score still surfaces accepted-but-unapplied simplifications that hold the safety floor; false when none remain.
+      - kind: checkpoint
+        id: safety-floor-cleared
+        message: "The applied simplifications stand re-scored against the over-engineering taxonomy, with every safety-floor obligation the change implicates either satisfied or still open."
+        options:
+          - id: floor-held-cycle-complete
+            label: Floor held — no accepted simplifications remain
+            description: Every applied simplification clears the floor and the re-score surfaces none left to apply.
+            effect:
+              setVariable:
+                needs_simplification: false
+          - id: floor-held-more-remain
+            label: Floor held — accepted simplifications remain
+            description: The re-score still surfaces accepted simplifications that clear the floor.
+            effect:
+              setVariable:
+                needs_simplification: true
+          - id: floor-breached
+            label: Floor breached — revert the breaching simplification
+            description: An applied simplification breaches the floor and is reverted before review.
+            effect:
+              setVariable:
+                needs_simplification: false
 exits:
   - id: done
     isDefault: true

@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.16.0
+version: 1.17.0
 name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 variables:
@@ -22,11 +22,11 @@ variables:
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: has_deferred_assumptions
       type: boolean
-      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      description: Whether any assumption was deferred to stakeholders.
       defaultValue: false
     - name: has_open_assumptions
       type: boolean
-      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      description: Whether unresolved assumptions requiring stakeholder input remain.
       defaultValue: false
     - name: has_resolvable_assumptions
       type: boolean
@@ -34,7 +34,7 @@ variables:
       defaultValue: false
     - name: needs_comprehension
       type: boolean
-      description: Whether codebase comprehension is needed (mandatory after design-philosophy; may be re-requested after stakeholder feedback).
+      description: Whether codebase comprehension is outstanding.
       defaultValue: true
     - name: needs_elicitation
       type: boolean
@@ -46,7 +46,7 @@ variables:
       defaultValue: false
     - name: open_assumptions
       type: array
-      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: problem_complexity
       type: string
       description: How complex the problem is, as assessed during design-philosophy.
@@ -96,7 +96,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "Classification: {problem_type}. Rationale: {classification_rationale}. Confirm the recommended path, pick a different path, or revise if the classification itself is wrong."
+    message: "Classification: {problem_type}. Rationale: {classification_rationale}."
     options:
       - id: revise-classification
         label: Revise classification
@@ -142,7 +142,7 @@ steps:
     technique: document
     actions:
       - action: message
-        message: Design philosophy recorded for reference.
+        message: "[Design philosophy]({design_philosophy_doc}) recorded — the record of truth for the classification and path rationale."
   - kind: technique
     id: collect-assumptions
     technique:
@@ -190,7 +190,7 @@ steps:
           variable: ticket_gaps_documented
           operator: ==
           value: true
-    message: Ticket completeness gaps were identified. Select whether to refactor the ticket or proceed with gaps noted.
+    message: The ticket carries completeness gaps.
     defaultOption: proceed-with-gaps
     autoAdvanceMs: 30000
     options:
@@ -202,7 +202,7 @@ steps:
             ticket_disposition: refactor
       - id: proceed-with-gaps
         label: Proceed with gaps noted
-        description: Continue review with the recorded gaps as tracked findings in the [assumptions log]({assumptions_log})
+        description: The recorded gaps stand as tracked findings
         effect:
           setVariable:
             ticket_disposition: gaps-noted

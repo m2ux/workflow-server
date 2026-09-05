@@ -43,4 +43,4 @@ Structured judgement-augmentation context for decision, shaped like the Open Ass
 - `interview` mode: assemble the current assumption only (individual drill-down)
 - Include a clickable markdown link to the assumptions-log for full details
 - Frame as judgement augmentation on genuinely open questions — everything agent-resolvable is already resolved inside analyse-challenge
-- Emit `{assumption_review_presentation}` for the binding activity to surface at the residual batch (or individual) checkpoint
+- Emit `{assumption_review_presentation}`

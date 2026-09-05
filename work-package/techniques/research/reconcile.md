@@ -51,13 +51,13 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 - Re-classify all open candidates after the pass
 - If any open candidate is research-reconcilable (including newly surfaced ones), signal another pass is needed — set `{has_reconcilable_research}` true
 - If no open candidate is research-reconcilable, convergence is reached per the [convergence-definition](#convergence-definition) — set `{has_reconcilable_research}` false; the remaining open set is irreducible through research
-- Present the [scorecard](../../resources/research-reconciliation.md#scorecard) in the session after each pass; do not persist count tables in the artifact — the candidate rows are the record
+- Emit the [scorecard](../../resources/research-reconciliation.md#scorecard) after each pass; the candidate rows are the persisted record, so no count table lands in the artifact
 
 ## Rules
 
 ### no-user-interaction
 
-Reconciliation runs autonomously, without user interaction. Successive passes continue automatically while reconcilable candidates remain; the user sees only the converged inventory at the convergence checkpoint.
+Successive passes continue while reconcilable candidates remain.
 
 ### convergence-definition
 

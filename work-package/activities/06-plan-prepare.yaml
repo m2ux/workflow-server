@@ -33,11 +33,11 @@ variables:
       defaultValue: []
     - name: has_deferred_assumptions
       type: boolean
-      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      description: Whether any assumption was deferred to stakeholders.
       defaultValue: false
     - name: has_open_assumptions
       type: boolean
-      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      description: Whether unresolved assumptions requiring stakeholder input remain.
       defaultValue: false
     - name: has_resolvable_assumptions
       type: boolean
@@ -45,7 +45,7 @@ variables:
       defaultValue: false
     - name: open_assumptions
       type: array
-      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: rendered_pr_body
       type: string
       description: The body now live on the PR after the patch.
@@ -145,7 +145,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: Approach presented above. Select whether to confirm or revise.
+    message: "The approach the [plan]({plan_document}) is built on, summarised above."
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:

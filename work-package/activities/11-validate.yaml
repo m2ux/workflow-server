@@ -1,5 +1,5 @@
 id: validate
-version: 3.8.0
+version: 3.9.0
 name: Verify & Validate Design
 description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
 variables:
@@ -23,14 +23,14 @@ variables:
   writes:
     - name: classified_findings
       type: array
-      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier the finding is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade). Downstream rendering reads the severity to place each finding on the render scale, the tier to place it in the Action Items, and the impact axis to justify a correct-but-harmful classification."
+      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier it is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade)."
     - name: code_findings_actionable
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.
       defaultValue: false
     - name: mark_progress_na
       type: boolean
-      description: When true at activity_complete, commit-and-persist Applies Progress cancelled/N/A for the completed activity instead of complete, then.
+      description: True when the activity's Progress row records cancelled/N/A rather than complete.
       defaultValue: false
     - name: test_findings_actionable
       type: boolean
@@ -74,10 +74,6 @@ steps:
     id: assess-test-coverage
     technique: review-test-suite
     when: is_review_mode == true
-  - kind: technique
-    id: triage-reported-failures
-    technique: review-test-suite
-    when: is_review_mode == true
   - kind: loop
     id: fix-revalidate-cycle
     name: Fix and Revalidate Cycle
@@ -119,5 +115,5 @@ exits:
   - id: done
     isDefault: true
 outcome:
-  - All tests passing when the suite ran locally, or Progress Validation marked cancelled/N/A when local validation was unavailable
-  - Build successful when the agent ran the suite
+  - The suite's verdict on the change is established, or recorded as unavailable in this environment
+  - The build stands green where the suite ran here

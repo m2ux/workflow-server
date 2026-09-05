@@ -17,7 +17,7 @@ Boolean — true when the repo allows squash merges
 
 ### presented_merge_guidance
 
-The DCO-compliant merge guidance for the `{pr_number}` PR, branched on `{squash_merge_supported}`: the local GPG-signed squash-merge flow when squash merge is supported, or the plain-branch-merge note when it is not. This op is advisory and read-only — it sets no workflow state and performs no merge; the output is solely the bindable guidance text for the binding activity to surface.
+The DCO-compliant merge guidance for the `{pr_number}` PR, branched on `{squash_merge_supported}`: the local GPG-signed squash-merge flow when squash merge is supported, or the plain-branch-merge note when it is not. The op is read-only: it sets no workflow state and performs no merge, and the guidance text is its whole product.
 
 ## Protocol
 
