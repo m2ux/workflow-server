@@ -25,5 +25,10 @@ steps:
     id: emit-run-manifest
     technique: emit-run-manifest
   - kind: technique
-    id: present-result
-    technique: present-result
+    id: link-report-references
+    technique: link-report-references
+  - kind: action
+    id: deliver-report
+    actions:
+      - action: message
+        message: "Run `{run_status}` — [report]({report_path}), [definitive findings]({definitive_findings_path}), [run manifest]({run_manifest_path})."

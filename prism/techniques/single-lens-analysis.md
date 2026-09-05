@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Apply one named lens to a target in a single isolated pass and write its output artifact. This is the general single-lens path for any lens the plan selects that is not L12 — the concern-specific SDL lenses (deep-scan, sdl-trust, reachability, state-audit, identity, …), the behavioral singles (error-resilience, optimize, evolution, api-surface), the epistemic lenses (l12g, oracle, knowledge-*), and the generative lenses (architect, codegen, genesis, counterfactual, history, arc-code, writer, strategist). L12 itself belongs to structural-analysis, and two or more complementary lenses to portfolio-analysis.
+One named lens applied to a target in a single isolated pass, with its output artifact. The general single-lens path for any lens the plan selects on its own, whichever family it comes from, as distinct from the structural and portfolio paths that own their own shapes.
 
 ## Inputs
 

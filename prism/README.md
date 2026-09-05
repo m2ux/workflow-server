@@ -203,7 +203,7 @@ The cross-cutting `variable-binding` technique is declared once at the workflow 
 | `adaptive-analysis::*` | Cost-minimizing depth escalation (SDL → L12 → full-prism) |
 | `generate-report` | Produce the clean REPORT.md and the detailed DEFINITIVE-FINDINGS.md from analysis artifacts |
 | `emit-run-manifest` | Write RUN-MANIFEST.json recording produced artifacts + completion status; verify the run completed |
-| `present-result` | Cross-reference-format and present the final report with the definitive-findings and manifest paths |
+| `link-report-references` | The final report with its finding IDs and artifact references resolved to links |
 
 The `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per operation. The rest are standalone `techniques/<slug>.md` files.
 
@@ -337,7 +337,7 @@ workflows/prism/
 │   ├── reflect-analysis.md                  # Reflect pipeline
 │   ├── generate-report.md                   # REPORT.md + DEFINITIVE-FINDINGS.md generation from analysis artifacts
 │   ├── emit-run-manifest.md                 # Write RUN-MANIFEST.json + verify run completion
-│   ├── present-result.md                    # Format and present the final report with artifact paths
+│   ├── link-report-references.md            # Resolve the final report's finding IDs and artifact references
 │   ├── full-prism/                          # Full Prism operation-group
 │   │   ├── TECHNIQUE.md                      # Group contract
 │   │   ├── adversarial.md                    # Adversarial pass + graph verification
