@@ -317,10 +317,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "stepsExecuted": [
         "review-over-engineering",
         "harvest-debt",
-        "apply-simplifications",
-        "re-review-over-engineering",
-        "validate-safety-floor",
-        "reassess-simplification",
       ],
       "unresolved": [],
     },
@@ -373,11 +369,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "code-review",
         "structural-analysis-inline",
         "test-suite-review",
-        "apply-fixes",
-        "reset-fix-flags",
-        "re-manual-diff-review",
-        "re-code-review",
-        "re-test-suite-review",
         "architecture-summary",
         "classify-and-route-findings",
       ],
@@ -403,11 +394,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
-      "stepsExecuted": [
-        "analyze-failure",
-        "apply-fix",
-        "revalidate",
-      ],
+      "stepsExecuted": [],
       "unresolved": [],
     },
     {
@@ -731,11 +718,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "checkpoints": [
         {
-          "id": "stakeholder-transcript",
-          "option": "provide-transcript",
-          "setVariable": undefined,
-        },
-        {
           "id": "elicitation-complete",
           "option": "complete",
           "setVariable": {
@@ -918,10 +900,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "stepsExecuted": [
         "review-over-engineering",
         "harvest-debt",
-        "apply-simplifications",
-        "re-review-over-engineering",
-        "validate-safety-floor",
-        "reassess-simplification",
       ],
       "unresolved": [],
     },
@@ -970,11 +948,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "code-review",
         "structural-analysis-inline",
         "test-suite-review",
-        "apply-fixes",
-        "reset-fix-flags",
-        "re-manual-diff-review",
-        "re-code-review",
-        "re-test-suite-review",
         "architecture-summary",
         "classify-and-route-findings",
       ],
@@ -1000,11 +973,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
-      "stepsExecuted": [
-        "analyze-failure",
-        "apply-fix",
-        "revalidate",
-      ],
+      "stepsExecuted": [],
       "unresolved": [],
     },
     {
@@ -1331,11 +1300,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "checkpoints": [
         {
-          "id": "stakeholder-transcript",
-          "option": "provide-transcript",
-          "setVariable": undefined,
-        },
-        {
           "id": "elicitation-complete",
           "option": "complete",
           "setVariable": {
@@ -1559,10 +1523,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "stepsExecuted": [
         "review-over-engineering",
         "harvest-debt",
-        "apply-simplifications",
-        "re-review-over-engineering",
-        "validate-safety-floor",
-        "reassess-simplification",
       ],
       "unresolved": [],
     },
@@ -1611,11 +1571,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "code-review",
         "dispatch-prism",
         "test-suite-review",
-        "apply-fixes",
-        "reset-fix-flags",
-        "re-manual-diff-review",
-        "re-code-review",
-        "re-test-suite-review",
         "architecture-summary",
         "classify-and-route-findings",
       ],
@@ -1641,11 +1596,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
-      "stepsExecuted": [
-        "analyze-failure",
-        "apply-fix",
-        "revalidate",
-      ],
+      "stepsExecuted": [],
       "unresolved": [],
     },
     {
@@ -2158,10 +2109,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "stepsExecuted": [
         "review-over-engineering",
         "harvest-debt",
-        "apply-simplifications",
-        "re-review-over-engineering",
-        "validate-safety-floor",
-        "reassess-simplification",
       ],
       "unresolved": [],
     },
@@ -2210,11 +2157,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "code-review",
         "structural-analysis-inline",
         "test-suite-review",
-        "apply-fixes",
-        "reset-fix-flags",
-        "re-manual-diff-review",
-        "re-code-review",
-        "re-test-suite-review",
         "architecture-summary",
         "classify-and-route-findings",
       ],
@@ -2240,11 +2182,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
-      "stepsExecuted": [
-        "analyze-failure",
-        "apply-fix",
-        "revalidate",
-      ],
+      "stepsExecuted": [],
       "unresolved": [],
     },
     {
@@ -2724,9 +2662,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "document-failures",
         "assess-test-coverage",
         "triage-reported-failures",
-        "analyze-failure",
-        "apply-fix",
-        "revalidate",
       ],
       "unresolved": [],
     },
@@ -3140,10 +3075,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "stepsExecuted": [
         "review-over-engineering",
         "harvest-debt",
-        "apply-simplifications",
-        "re-review-over-engineering",
-        "validate-safety-floor",
-        "reassess-simplification",
       ],
       "unresolved": [],
     },
@@ -3192,11 +3123,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "code-review",
         "structural-analysis-inline",
         "test-suite-review",
-        "apply-fixes",
-        "reset-fix-flags",
-        "re-manual-diff-review",
-        "re-code-review",
-        "re-test-suite-review",
         "architecture-summary",
         "classify-and-route-findings",
       ],
@@ -3222,11 +3148,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
-      "stepsExecuted": [
-        "analyze-failure",
-        "apply-fix",
-        "revalidate",
-      ],
+      "stepsExecuted": [],
       "unresolved": [],
     },
     {
@@ -3376,8 +3298,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredTotal": 273,
-  "executedTotal": 165,
+  "declaredTotal": 271,
+  "executedTotal": 153,
   "perActivity": [
     {
       "activity": "assumptions-review",
@@ -3412,7 +3334,7 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     {
       "activity": "lean-coding-audit",
       "declared": 9,
-      "executed": 6,
+      "executed": 2,
     },
     {
       "activity": "plan-prepare",
@@ -3422,11 +3344,11 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     {
       "activity": "post-impl-review",
       "declared": 19,
-      "executed": 13,
+      "executed": 8,
     },
     {
       "activity": "requirements-elicitation",
-      "declared": 12,
+      "declared": 11,
       "executed": 7,
     },
     {
@@ -3451,8 +3373,8 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "validate",
-      "declared": 11,
-      "executed": 6,
+      "declared": 10,
+      "executed": 3,
     },
   ],
 }
