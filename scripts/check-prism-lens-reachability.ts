@@ -41,8 +41,9 @@ const PORTFOLIO = join(PRISM, 'techniques', 'portfolio-analysis.md');
  * Lenses that are correctly unreachable from a goal because they run only as an inner pass of a
  * pipeline — their driver forwards them the prior pass's output. These need no goal route.
  *
- * A document template is excluded by its own `type: template` frontmatter instead of by a name here,
- * so adding a creation guide to `prism/resources/` needs no edit to this guard.
+ * A file that is not a lens at all is excluded by its own `type:` frontmatter instead of by a name
+ * here, so adding one to `prism/resources/` needs no edit to this guard. NON_LENS_KINDS is what
+ * that field may say; a kind absent from it reads as a lens and is held to a goal route.
  */
 const PIPELINE_INTERNAL = new Set([
   'l12-complement-adversarial', // full-prism pass 2 (adversarial)
@@ -55,12 +56,20 @@ const PIPELINE_INTERNAL = new Set([
   'writer-synthesis', // writer pipeline pass 3 (cross-workflow-only chain)
 ]);
 
-/** True when a resource declares itself a document template in its own frontmatter. */
-function isDocumentTemplate(slug: string): boolean {
+/**
+ * Frontmatter `type:` values that declare a file under `prism/resources/` to be something other
+ * than a lens: a document skeleton a technique fills, or a vocabulary, criteria table or policy a
+ * technique consults. Neither is reached through a prism mode, so neither owes a goal route.
+ */
+const NON_LENS_KINDS = new Set(['template', 'reference']);
+
+/** True when a resource declares a non-lens kind in its own frontmatter. */
+function isNonLensResource(slug: string): boolean {
   const path = join(RESOURCES, `${slug}.md`);
   if (!existsSync(path)) return false;
   const head = readFileSync(path, 'utf-8').split('\n', 40).join('\n');
-  return /^\s*type:\s*template\s*$/m.test(head);
+  const declared = /^\s*type:\s*([a-z-]+)\s*$/m.exec(head);
+  return declared !== null && NON_LENS_KINDS.has(declared[1]!);
 }
 
 export interface LensReachabilityViolation {
@@ -103,7 +112,7 @@ export function collectLensReachabilityViolations(): LensReachabilityViolation[]
   // coverage — every lens file is routable or explicitly pipeline-internal.
   for (const slug of lensSlugs) {
     if (PIPELINE_INTERNAL.has(slug)) continue;
-    if (isDocumentTemplate(slug)) continue;
+    if (isNonLensResource(slug)) continue;
     // A routable lens is named as a goal target: the literal token `slug (` (e.g. `reachability (`).
     if (routingText.includes(`${slug} (`)) continue;
     out.push({
