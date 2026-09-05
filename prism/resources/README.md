@@ -59,7 +59,7 @@ Single-pass lenses targeting specific architectural concerns. 3 concrete steps e
 
 ## Behavioral Pipeline
 
-Four independent lenses + one synthesis lens forming the behavioral pipeline. Each asks a different question about code behavior. **Code-only** (no optimize_neutral variant exists).
+Independent lenses plus a synthesis lens forming the behavioral pipeline. Each asks a different question about code behavior. **Code-only** (no optimize_neutral variant exists).
 
 | Index | Resource | Words | Role Label | Key Question |
 |-------|----------|-------|-----------|-------------|
