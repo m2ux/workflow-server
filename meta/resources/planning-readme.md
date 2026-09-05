@@ -164,19 +164,17 @@ A re-opened row that later gets its artifact written has the link restored by th
 
 ### Progress Status call sites
 
-Orchestrator guidance for when to Apply [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) — the only writer of Progress status fields. Every write comes from a moment in the table below: not from a per-activity client-workflow Status writer, not from a step in an activity's own YAML, and not from a worker finalizing its activity.
+The moments a Progress status write comes from, and the `{target_status}` each one carries. A caller resolves its moment here and takes that row's status.
 
-| Moment | `{target_status}` | Who Applies |
-|--------|-------------------|-------------|
-| About to dispatch an activity | in progress (`🟡`) | Orchestrator loop / [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md) preamble |
-| `activity_complete` (default) | complete (`✅`) | [commit-and-persist](../techniques/workflow-engine/commit-and-persist.md) |
-| `activity_complete` with `{mark_progress_na}` | cancelled / N/A (`⊘`) | [commit-and-persist](../techniques/workflow-engine/commit-and-persist.md) (e.g. validate when local suite unavailable) |
-| Worker/orchestrator signals blocked | blocked (`❌`) | Orchestrator when blocked is observed |
-| Path skip / cancel / mark N/A | cancelled / N/A (`⊘`) | Orchestrator when path excludes or cancels the activity |
+| Moment | `{target_status}` |
+|--------|-------------------|
+| About to dispatch an activity | in progress (`🟡`) |
+| `activity_complete` (default) | complete (`✅`) |
+| `activity_complete` with `{mark_progress_na}` | cancelled / N/A (`⊘`) |
+| Worker or orchestrator signals blocked | blocked (`❌`) |
+| Path skip / cancel / mark N/A | cancelled / N/A (`⊘`) |
 
 An activity that cannot produce a meaningful Progress complete sets `{mark_progress_na}` — that is what routes it to the cancelled/N/A row in [Status vocabulary](#status-vocabulary), rather than inventing a user-reported hand-off to claim completion with.
-
-The dispatch moment publishes: its write reaches the remote in a commit of its own before the worker spawns, per [dispatch-mark-reaches-the-remote](../techniques/workflow-engine/dispatch-activity.md#dispatch-mark-reaches-the-remote). Every other moment in the table rides the commit its own operation already makes.
 
 ## Matching
 
