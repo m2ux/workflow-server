@@ -55,7 +55,7 @@ URL of the verified or newly created issue.
 ### 2. Resolve Platform For Creation
 
 - Runs when no existing issue key was given. Set `{needs_issue_creation}` to true.
-- `{issue_platform}` carries the choice made at the `platform-selection` gate, which the activity presents before this technique runs. Use it as given; do not re-ask.
+- `{issue_platform}` arrives bound. Use it as given; do not re-ask.
 
 ### 3. Create Github Issue
 
@@ -70,7 +70,8 @@ URL of the verified or newly created issue.
 
 - Runs when `{issue_platform}` is jira and `{needs_issue_creation}` is true. Use the [issue structure](../resources/jira-issue-creation.md#issue-structure) and [issue types](../resources/jira-issue-creation.md#issue-types) (and [anti-patterns](../resources/jira-issue-creation.md#anti-patterns) when checking the draft).
 - Obtain Atlassian cloud ID via `getAccessibleAtlassianResources` and preserve as `{$jira_cloud_id}`. This MUST be the first Jira tool call.
-- Create the issue in the `{jira_project}` chosen at the `jira-project-selection` gate; if it is unset, list available projects via `getVisibleJiraProjects` and obtain the user's project selection. Resolve available issue types for the selected project.
+- Create the issue in `{jira_project}`. Resolve available issue types for that project.
+  > When `{jira_project}` is unset, list the available projects via `getVisibleJiraProjects` and take the selection from the reply.
 - Gather summary, description, and acceptance criteria from `{issue_subject}` where it is supplied and from user context otherwise, scoping the issue to the `{component_name}` the work package targets. Resolve assignee account ID if specified.
 - Create the issue with mapped type using the issue-type mapping below, capturing `{issue_number}` and `{issue_url}` from the resulting issue.
 - Jira issue type mapping: `feature->Story`, `bug->Bug`, `task->Task`, `enhancement->Story`, `epic->Epic`

@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.24.0
+version: 3.25.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -141,7 +141,10 @@ variables:
       defaultValue: {}
     - name: project_type
       type: string
-      description: Detected project type (e.g. rust-substrate).
+      description: The build system and dependency set the target tree is detected as.
+      values:
+        - rust-substrate
+        - other
     - name: rating_cap
       type: string
       description: The ceiling the Overall Rating may not exceed, derived from the triage. When any prior comment is a blocker-class concern left unaddressed by the PR, the cap is the request-changes tier; otherwise the cap is unset and the rating is governed solely by the review's own findings.
