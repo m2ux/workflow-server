@@ -1,7 +1,8 @@
 # Canon Map
 
-Where the criteria live and how to read them. No criteria text and no reproduced enumeration — the
-homes own both.
+Where every authority a walk consults lives, and how to address it. No criteria text, no reproduced
+enumeration and no copied exemption — each authority owns its own contents. SKILL.md § Homes carries
+the canon paths; what follows is how to read what sits at them.
 
 ## Unit inventory
 
@@ -9,13 +10,13 @@ Every home states its own units in its own headings, so the enumeration a walk c
 the home at read time. Take it there; a list reproduced here is a second home that agrees with the
 first only until the canon next moves.
 
-| Home | Path | Unit grain | Read the enumeration by |
-|------|------|-----------|-------------------------|
-| Anti-Patterns | `workflows/workflow-design/resources/anti-patterns.md` | One unit per `##` family section; entries are `###` within a family | `grep -n "^## "` for the families, `grep -n "^### "` for the entries |
-| Design Principles | `workflows/workflow-design/resources/design-principles.md` | One unit per `##` section | `grep -n "^## "` |
-| Schema Construct Inventory | `workflows/workflow-design/resources/schema-construct-inventory.md` | One unit per `##` section | `grep -n "^## "` |
-| Convention Conformance | `workflows/workflow-design/resources/convention-conformance.md` | One unit per `##` section | `grep -n "^## "` |
-| Guards | `scripts/guards.ts` | One unit per registry entry, each carrying a one-line `proves` | Read the registry |
+| Home | Unit grain | Read the enumeration by |
+|------|-----------|-------------------------|
+| Anti-Patterns | One unit per `##` family section; entries are `###` within a family | `grep -n "^## "` for the families, `grep -n "^### "` for the entries |
+| Design Principles | One unit per `##` section | `grep -n "^## "` |
+| Schema Construct Inventory | One unit per `##` section | `grep -n "^## "` |
+| Convention Conformance | One unit per `##` section | `grep -n "^## "` |
+| Guards | One unit per registry entry, each carrying a one-line `proves` | Read the registry |
 
 Two properties of the catalog do not follow from its headings, and are judgement rather than
 enumeration:
@@ -27,9 +28,29 @@ enumeration:
   when the audited change edits `anti-patterns.md`; otherwise it is `not-applicable`, with that as
   the recorded reason.
 
-Anchors on the principles home embed the section ordinal, so an anchor breaks when the canon gains a
-principle while the title survives — see SKILL.md § Homes for the citation rule that follows from
-this.
+## Authorities beyond the prose homes
+
+A criteria entry states when something is a defect. Whether a particular instance has already been
+judged is recorded elsewhere, in surfaces no canon home names — so an entry can fire against content
+somebody already excused, with the reason sitting in a file the walk never opened.
+
+Each row is a place and what it records. None of their contents belong here: an exemption copied into
+this file is a second home for a judgement, and the copy goes stale the moment the original moves.
+
+| Authority | Where | Records |
+|-----------|-------|---------|
+| A guard's own exemption surface | Inside the guard or a module it shares — e.g. `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`, the kind and pipeline sets in `scripts/check-prism-lens-reachability.ts` | Which instances the check excuses, each against a stated reason |
+| Triage ledgers | `scripts/binding-fidelity-triage.json`, `workflows/section-framing-triage.json` | A verdict per finding and a named rationale per verdict. The binding-fidelity ledger also stamps the corpus commit its verdicts were made against, so a clean result on a drifted corpus says the verdicts are old rather than that nothing is wrong |
+| Reasoned exemption lists | `tests/e2e/option-coverage.json` | Which options a walk is not required to reach, grouped under the reason that covers them |
+
+**A guard's silence has two causes, and they point opposite ways.** Out of reach means the entry is
+the sole detector for that spelling and the finding stands. Exempted means the judgement is already
+recorded, and the finding is then against that exemption's stated reason — a different and usually
+weaker claim than one against the construct. A pass does not say which; only the surface does.
+
+An exemption also travels further than the guard that holds it. `EXEMPT_DATA_IDS` is compiled into
+the Zod variable schema and into the published JSON schemas, so a name on it is legal by contract
+rather than by oversight.
 
 ## Change-surface scope (audit and implement)
 
@@ -43,8 +64,7 @@ scopes. Two consequences bear on reading criteria rather than on building the su
 
 ## Fetching
 
-`anti-patterns.md` exceeds the per-resource eager-delivery cap, so it is never bundled whole. Fetch by
-section in every mode:
+The catalog is fetched by section in every mode, for the reason SKILL.md § Homes gives:
 
 - **On disk** — `grep -n "^## "` to get the section line numbers, then Read the one range you need.
   For a single entry, `grep -n "^### "` and read that block.

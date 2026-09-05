@@ -29,7 +29,7 @@ Confirm the resolved root holds `workflows/workflow-design/resources/` before re
 
 Anchors on the principles home embed the section ordinal (`#13-separate-contract-from-procedure`), so an anchor breaks when the canon gains a principle ahead of it while the heading survives. Cite by **title**; where an anchor fails to resolve, re-read the heading rather than guessing.
 
-Read [references/canon-map.md](references/canon-map.md) before the first fetch: it names where each home's unit enumeration is read from, the fetch-by-section mechanics, and what must *not* be taken from each home.
+Read [references/canon-map.md](references/canon-map.md) before the first fetch: it names where each home's unit enumeration is read from, the fetch-by-section mechanics, what must *not* be taken from each home, and the authorities beyond these four — guard exemption surfaces, triage ledgers, reasoned exemption lists — that record whether an instance has already been judged.
 
 ## Pick the path
 
@@ -186,5 +186,5 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 
 ## References
 
-- [references/canon-map.md](references/canon-map.md) — where each home's units are read from, fetch mechanics, unit reach, per-home boundaries.
+- [references/canon-map.md](references/canon-map.md) — where each home's units are read from, fetch mechanics, unit reach, per-home boundaries, and the authorities beyond the prose homes that record what is already judged.
 - [references/reporting.md](references/reporting.md) — severity scale, finding and coverage row shapes, report templates.
