@@ -80,7 +80,7 @@ describe('dead-output scoping', () => {
 
   it('does not let a bare same-named read in an unrelated workflow reach across', () => {
     // `codebase-wiki` neither binds a `prism` op nor dispatches it, and vice versa.
-    expect(consumerReaches('prism/techniques/present-result.md', 'codebase-wiki/techniques/query.md')).toBe(false);
-    expect(consumerReaches('codebase-wiki/techniques/query.md', 'prism/techniques/present-result.md')).toBe(false);
+    expect(consumerReaches('prism/techniques/plan-analysis.md', 'codebase-wiki/techniques/query.md')).toBe(false);
+    expect(consumerReaches('codebase-wiki/techniques/query.md', 'prism/techniques/plan-analysis.md')).toBe(false);
   });
 });

@@ -12,6 +12,7 @@
     "check:site": "tsx scripts/check-site-links.ts",
     "check:svg": "tsx scripts/check-svg-layout.ts",
     "check:encoding": "tsx scripts/check-source-encoding.ts",
+    "check:pinned-paths": "tsx scripts/check-pinned-corpus-paths.ts",
     "check:lockfile": "tsx scripts/check-lockfile-denylist.ts",
     "start": "node dist/index.js",
     "start:http": "node dist/index.js --transport=http",
