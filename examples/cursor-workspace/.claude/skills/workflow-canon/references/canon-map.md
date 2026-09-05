@@ -48,6 +48,11 @@ the sole detector for that spelling and the finding stands. Exempted means the j
 recorded, and the finding is then against that exemption's stated reason — a different and usually
 weaker claim than one against the construct. A pass does not say which; only the surface does.
 
+So read the guard before hand-walking an entry its `proves` line claims. The exemption surface and
+the derivation behind it are a file away, and the walk that skips them rediscovers a carve-out
+already written down — or records against it, which reads as a finding the guard missed and is
+answered by the reason the guard already holds.
+
 An exemption also travels further than the guard that holds it. `EXEMPT_DATA_IDS` is compiled into
 the Zod variable schema and into the published JSON schemas, so a name on it is legal by contract
 rather than by oversight.
