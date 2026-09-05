@@ -11,7 +11,7 @@ Planning-folder artifact write keyed on bare filename — one numbered instance 
 
 ### artifact_prefix
 
-*(optional)* The numeric `artifactPrefix` that orders artifacts (e.g., `09`); server-provided — see [artifact-prefix](./TECHNIQUE.md#artifact-prefix).
+*(optional)* The numeric `artifactPrefix` that orders artifacts (e.g., `09`); server-provided.
 
 ### bare_filename
 

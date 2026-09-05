@@ -11,7 +11,7 @@ Confirm every assigned scanner was gathered with a non-empty return, using meta 
 
 ### gathered_results
 
-Ordered keyed collection from [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md).
+Ordered keyed collection of worker returns, carrying its per-id dispatch manifest and completeness verdict.
 
 ## Protocol
 

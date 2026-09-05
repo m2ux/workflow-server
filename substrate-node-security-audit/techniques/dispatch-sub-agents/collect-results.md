@@ -11,7 +11,7 @@ Gathered worker output and the agent roster projected into the audit dispatch sh
 
 ### gathered_results
 
-Ordered keyed collection from [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md).
+Ordered keyed collection of worker returns, carrying its per-id dispatch manifest and completeness verdict.
 
 ## Outputs
 

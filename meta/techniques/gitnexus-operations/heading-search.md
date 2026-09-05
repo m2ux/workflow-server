@@ -11,7 +11,7 @@ Find sections of a documentation or definition tree by heading text — the grap
 
 ### repo_name
 
-Optional. Name of the indexed graph to address, as [resolve-graph](./resolve-graph.md) reports it. Omit only where exactly one graph is indexed.
+Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
 
 ### heading_pattern
 

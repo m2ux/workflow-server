@@ -11,7 +11,7 @@ Objective complexity estimate for an issue, from the fan-out of a preliminary ta
 
 ### repo_name
 
-Optional. Name of the indexed graph to address, as [resolve-graph](./resolve-graph.md) reports it. Omit only where exactly one graph is indexed.
+Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
 
 ### target
 

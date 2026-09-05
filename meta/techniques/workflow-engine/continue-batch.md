@@ -23,7 +23,7 @@ Server-side worker identity the batch is carried under — the identity the deli
 
 ### step_manifest
 
-One entry per step of the activity the worker just finished — `steps_completed` from the `activity_complete` envelope the preceding [dispatch-activity](./dispatch-activity.md) or continuation returned. Feeds the server's step-completion and technique-fetch validation.
+One entry per step of the activity the worker just finished — `steps_completed` from the `activity_complete` envelope the preceding dispatch or continuation returned. Feeds the server's step-completion and technique-fetch validation.
 
 ### state
 

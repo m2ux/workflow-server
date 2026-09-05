@@ -15,7 +15,7 @@ The investigation area for this iteration — its `planned_probes`, `subsystems`
 
 ### gitnexus_available
 
-Routes code-graph probes: true routes through the meta [`gitnexus-operations`](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md) operations the catalog's P2 class names; false degrades them to grep and full-file reads.
+Routes code-graph probes: true runs the catalog's P2-class probes against the code graph; false degrades them to grep and full-file reads.
 
 ### repo_name
 

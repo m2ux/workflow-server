@@ -11,7 +11,7 @@ Report, for every member of a repository group, how far its graph is behind the 
 
 ### group_name
 
-Name of a configured repository group, as [resolve-graph](./resolve-graph.md) reports it.
+Name of a configured repository group.
 
 ## Outputs
 

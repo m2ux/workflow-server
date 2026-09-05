@@ -11,7 +11,7 @@ Find execution flows related to a concept, symptom, or error string — the stru
 
 ### repo_name
 
-Optional. Name of the indexed graph to address, as [resolve-graph](./resolve-graph.md) reports it. Omit only where exactly one graph is indexed.
+Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
 
 ### search_query
 

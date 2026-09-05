@@ -11,7 +11,7 @@ Search every graph in a repository group at once, with the members' results merg
 
 ### group_name
 
-Name of a configured repository group, as [resolve-graph](./resolve-graph.md) reports it.
+Name of a configured repository group.
 
 ### search_query
 
