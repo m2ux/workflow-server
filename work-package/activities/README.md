@@ -110,9 +110,8 @@ Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.y
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> cpStakeholder{"stakeholder-transcript checkpoint"}
-    cpStakeholder -->|"provide transcript"| elicit["Elicit requirements"]
-    cpStakeholder -->|"skip discussion"| elicit
+    entryNode(["Entry"]) --> discuss["Stakeholder discussion — transcript or skip"]
+    discuss --> elicit["Elicit requirements"]
 
     elicit --> askQuestion["Ask domain question"]
     askQuestion --> recordResponse["Record response"]
