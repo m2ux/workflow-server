@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.8.0
+  version: 3.9.0
 ---
 
 ## Capability
@@ -16,22 +16,7 @@ Every fact has exactly one canonical artifact. When another artifact needs it, l
 
 ### canonical-home-map
 
-The canonical home for each shared fact category. Templates carry link-only slots for every category they don't home; [verify-artifact-conforms](../../../meta/techniques/verify-artifact-conforms.md) enforces the map at the strategic-review boundary.
-
-| Fact category | Canonical home |
-|---|---|
-| Problem statement, scope, success criteria | `requirements-elicitation.md` |
-| Problem classification | `design-philosophy.md` (plus a 2–4 sentence ticket-derived statement — written before requirements exists, so it carries its own budgeted statement) |
-| Assumptions and their outcomes | `assumptions-log.md` |
-| Design decisions, alternatives, planning risks | `work-package-plan.md` (durable decisions graduate to an ADR at completion) |
-| Baseline metrics, gaps, measurement strategy | `implementation-analysis.md` |
-| Research findings and recommended approach | `knowledge-base-research.md` |
-| Test cases and acceptance matrix | `test-plan.md` |
-| Review findings (code, test, structural, lean-coding, manual-diff) | `code-review.md` and the reviews' own artifacts — consolidated surfaces reference findings by ID + disposition |
-| In-task follow-ups | `follow-ups.md` (see [follow-ups](../../resources/follow-ups.md)) |
-| Out-of-scope deferred items | `deferred-items.md` (see [deferred-items](../../resources/deferred-items.md)) |
-| Token counts and cost estimates | `token-usage.md` — the close-out, retrospective and session trace link it and restate no figure, so one ledger produces one artifact |
-| Mechanical execution record (dispatches, tool calls, durations, errors) | `session-trace.md` (see [session-trace](../../resources/session-trace.md)) |
+Which artifact homes each shared fact category is stated in [Map](../../resources/canonical-home-map.md#map), and the slot every other template carries in its place in [link-only-slots](../../resources/canonical-home-map.md#link-only-slots).
 
 ### exception-only-reporting
 

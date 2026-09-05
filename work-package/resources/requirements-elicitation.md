@@ -14,7 +14,7 @@ Requirements elicitation discovers **what** the user needs before planning **how
 
 Goals: discover what the user actually needs (which may differ from the initial ask), clarify ambiguities before they become implementation assumptions, establish scope boundaries, define measurable success criteria.
 
-The document this guide produces is the [canonical home](../techniques/manage-artifacts/TECHNIQUE.md#canonical-home-map) for the problem statement, scope, and success criteria — downstream artifacts (plan, philosophy, test plan, close-out) link here and never restate them.
+The document this guide produces is the [canonical home](./canonical-home-map.md#map) for the problem statement, scope, and success criteria — downstream artifacts (plan, philosophy, test plan, close-out) link here and never restate them.
 
 ## Question Domain Reference
 

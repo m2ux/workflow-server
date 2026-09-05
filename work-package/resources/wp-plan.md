@@ -78,7 +78,7 @@ The work package plan is the detailed implementation specification: enough detai
 
 ## Rules
 
-- **Problem & Scope, Success Criteria, Testing Strategy, Assumptions** — link-only slots: a markdown link to the canonical home plus at most one line (see the [canonical-home map](../techniques/manage-artifacts/TECHNIQUE.md#canonical-home-map)). Restating homed content in these slots is a conformance violation.
+- **Problem & Scope, Success Criteria, Testing Strategy, Assumptions** — link-only slots: a markdown link to the canonical home plus at most one line (see the [canonical-home map](./canonical-home-map.md#map)). Restating homed content in these slots is a conformance violation.
 - **Inputs** — one line per consumed artifact, linking the specific section that shaped the approach; never reproduce findings. The plan documents what it *decided*, the inputs document what was *learned*.
 - **Proposed Approach** — the plan's canonical content: describe the solution, document alternatives considered with pros/cons and decision, and record each design decision's rationale so reviewers and implementers can validate or challenge it. Design decisions home here (durable ones graduate to an ADR at completion).
 - **Implementation Tasks** — discrete, estimable, completable in one session, with concrete deliverable paths and test coverage. Forbidden patterns: verification-as-task (e.g. "Task: Verify compilation", "Task: Verify existing tests pass") and raw cargo invocations (`cargo check`, `cargo test`) as tasks. Vague tasks ("make search better") are also rejected.
