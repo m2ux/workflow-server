@@ -27,15 +27,15 @@ List of adversarial perspectives (or lens names) for the challenge pass.
 
 ### convergence_flag
 
-Name of the boolean bag variable that drives the loop — true while another analyse/challenge iteration is needed.
+True while another analyse/challenge iteration is needed; false once no open item is agent-resolvable.
 
 ### residue_flag
 
-Name of the boolean bag variable that is true iff irreducible opens remain after convergence (gates residual interview outside this group).
+True iff irreducible opens remain after convergence; false for an empty open set.
 
 ### residue_collection
 
-*(optional)* Name of the collection holding residual open items for batch/interview presentation.
+*(optional)* The residual open items for this `{concern_kind}`; empty or unset when none remain.
 
 ## Rules
 

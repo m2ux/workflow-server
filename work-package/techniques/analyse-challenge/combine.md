@@ -15,7 +15,7 @@ Ordered per-perspective findings from the challenge pass.
 
 ### residue_collection
 
-*(optional)* Bag name for the residual open collection to emit.
+*(optional)* The residual open items carried in from the prior pass; empty or unset on the first.
 
 ## Outputs
 
@@ -25,15 +25,15 @@ The concern document with challenge resolutions applied and newly surfaced items
 
 ### convergence_flag
 
-Bound flag: true if any item remains agent-resolvable (or newly surfaced as such); false when only irreducible residue (or empty set) remains.
+True if any item remains agent-resolvable, or is newly surfaced as such; false when only irreducible residue, or an empty set, remains.
 
 ### residue_flag
 
-Bound flag: true iff irreducible opens remain for activity-level residual interview/batch.
+True iff irreducible opens remain after this merge; false for an empty open set.
 
 ### residue_collection
 
-*(optional)* Residual open items when a collection name was supplied.
+*(optional)* The irreducible open items after this merge; empty when none remain.
 
 ## Protocol
 
