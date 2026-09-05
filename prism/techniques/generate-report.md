@@ -15,7 +15,7 @@ The pipeline mode that produced the artifacts: 'single', 'full-prism', 'portfoli
 
 ### analysis_focus
 
-*(optional)* The analytical goal that guided the analysis. When it names dimensions or categories (e.g. an evaluation's "consistency, veracity" or an audit's domain names), the report and definitive findings use dimension-based finding ID prefixes derived from them — CON-xx, VER-xx, and so on (see step 6). A triggering workflow that wants domain-prefixed IDs supplies the names here rather than re-assigning IDs downstream. Also used to determine whether findings warrant a Corrections Required section.
+*(optional)* The analytical goal that guided the analysis — an evaluation's dimensions, an audit's domain names, or free-form intent. Unset where the run had no stated goal.
 
 ### all_artifact_paths
 

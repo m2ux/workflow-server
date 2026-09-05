@@ -59,7 +59,7 @@ Single-pass lenses targeting specific architectural concerns. 3 concrete steps e
 
 ## Behavioral Pipeline
 
-Four independent lenses + one synthesis lens forming the behavioral pipeline. Each asks a different question about code behavior. **Code-only** (no optimize_neutral variant exists).
+Independent lenses plus a synthesis lens forming the behavioral pipeline. Each asks a different question about code behavior. **Code-only** (no optimize_neutral variant exists).
 
 | Index | Resource | Words | Role Label | Key Question |
 |-------|----------|-------|-----------|-------------|
@@ -308,6 +308,12 @@ Document skeletons, as distinct from the lens prompts above. A per-lens analysis
 | `subsystem-synthesis.md` | [subsystem-synthesis](subsystem-synthesis.md) |
 | `smart-prereq.md` | [prereq](prereq.md) |
 | `RUN-MANIFEST.json` | [run-manifest](run-manifest.md) |
+
+## Reference
+
+| Resource | Holds |
+|----------|-------|
+| [target-classification](target-classification.md) | Scope values, project markers, and target-type inference for an analysis target |
 | `portfolio-synthesis.md` | [portfolio-synthesis](portfolio-synthesis.md) |
 | `reflect-synthesis.md` | [reflect-synthesis](reflect-synthesis.md) |
 

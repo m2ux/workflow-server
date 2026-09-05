@@ -48,7 +48,3 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 - Read d=1 items first — these WILL break. Weight high-confidence (>0.8) edges.
 - Derive the risk level and assemble the `{impact_report}`: <5 symbols/few processes = LOW; 5–15 symbols/2–5 processes = MEDIUM; >15 symbols or many processes = HIGH; critical path (auth, payments, consensus) = CRITICAL.
   > When `{target}` is called from a macro body or reached by type-level reference, the graph holds no edge for it — gitnexus-operations.edges-the-parser-cannot-see. Re-derive the caller set by hand and rate against that instead, and record on `{impact_report}` which of the two the rating rests on.
-
-### 3. Act on Risk
-
-- The caller MUST surface HIGH or CRITICAL risk to the user before proceeding with an edit.

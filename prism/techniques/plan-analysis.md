@@ -83,14 +83,9 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 
 ### 1. Detect Scope
 
-- Determine the scope from the `{target}` input
-- If `{target}` is a file path pointing to a single file → scope 'file'
-- If `{target}` is a directory path, check for project markers (`package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`) to distinguish 'codebase' from 'module'. A directory of non-code files → 'document-set'.
-- If `{target}` is inline text, a question, a concept, a strategy, or any non-path input → scope 'query'. Set `{target_type}` to `general` unless the text is clearly source code.
-- If `{target_type}` was not provided, infer it: code file extensions (`.ts`, `.rs`, `.py`, `.go`, `.java`, etc.) → `code`. Everything else → `general`.
-- Proceed to the appropriate planning path based on scope
-- A query, question, concept, or inline text input is always `general` `{target_type}` unless it is clearly source code.
-- If you cannot tell whether the `{target}` is a file path, directory, or query text, check whether it exists on the filesystem: if it does, use the file/directory scope; if not, treat it as a query.
+- Resolve the scope of `{target}` per [Scope values](../resources/target-classification.md#scope-values), reading [Project markers](../resources/target-classification.md#project-markers) where the target is a directory.
+- Resolve `{target_type}` per [Target type](../resources/target-classification.md#target-type) where it was not supplied.
+- Proceed to the planning path that scope selects.
 
 ### 2. Query Recommendation
 
