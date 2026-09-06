@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Challenge findings folded into the concern set with convergence/residue flags for the run-loop.
+Challenge findings folded into the concern set, with the convergence and residue flags that fold implies.
 
 ## Inputs
 

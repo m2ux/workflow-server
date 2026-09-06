@@ -7,7 +7,6 @@ variables:
     - branch_name
     - component_git_dir
     - gitnexus_indexed
-    - has_open_questions
     - host_repo_path
     - needs_comprehension
     - needs_elicitation
@@ -20,6 +19,9 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: challenge_findings
+      type: object
+      description: Per-perspective challenge findings over the concern set, keyed by perspective name.
     - name: comprehension_artifact
       type: string
       description: Absolute path to the comprehension artifact for the current codebase area.
@@ -58,25 +60,6 @@ steps:
     actions:
       - action: message
         message: "[Comprehension artifact]({comprehension_artifact}) recorded for the next work package on this area."
-  - kind: technique
-    id: initial-deep-dive
-    technique: deep-dive
-  - kind: technique
-    id: update-artifact-initial
-    technique:
-      name: manage-artifacts::write-artifact
-      inputs:
-        artifact_content: comprehension_artifact
-        target_dir: comprehension_dir
-  - kind: technique
-    id: revise-initial-questions
-    technique: revise-questions
-  - kind: technique
-    id: record-log-initial
-    technique:
-      name: manage-artifacts::write-artifact
-      inputs:
-        artifact_content: comprehension_log
   - kind: loop
     id: deep-dive-iteration
     name: Deep-Dive Iteration
@@ -88,18 +71,26 @@ steps:
       value: true
     steps:
       - kind: technique
-        id: analyse-challenge-pass
+        id: deep-dive
+        technique: codebase-comprehension::deep-dive
+      - kind: technique
+        id: revise-questions
+        technique: revise-questions
+      - kind: technique
+        id: challenge-open-questions
         technique:
-          name: analyse-challenge::run-loop
+          name: analyse-challenge::challenge
           inputs:
-            concern_kind: open_questions
-            analyse_technique: codebase-comprehension::deep-dive
             challenge_perspectives: '["pedagogy", "rejected-paths"]'
             concern_document: comprehension_artifact
-            concerns_agent_resolvable: needs_comprehension
-            residual_opens_remain: has_open_questions
-            iteration_mode: once
+      - kind: technique
+        id: combine-question-challenges
+        technique:
+          name: analyse-challenge::combine
+          inputs:
+            concern_document: comprehension_artifact
           outputs:
+            concern_document: comprehension_artifact
             concerns_agent_resolvable: needs_comprehension
             residual_opens_remain: has_open_questions
       - kind: technique

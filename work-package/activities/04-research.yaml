@@ -26,6 +26,9 @@ variables:
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+    - name: challenge_findings
+      type: object
+      description: Per-perspective challenge findings over the concern set, keyed by perspective name.
     - name: context_scope
       type: string
       description: Provenance scope of AI-generated code in this work package.
@@ -127,22 +130,38 @@ steps:
   - kind: technique
     id: update-assumptions-log
     technique: review-assumptions::record
-  - kind: technique
-    id: analyse-challenge-loop
-    technique:
-      name: analyse-challenge::run-loop
-      inputs:
-        concern_kind: assumptions
-        analyse_technique: review-assumptions::reconcile
-        challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
-        concern_document: assumptions_log
-        concerns_agent_resolvable: has_resolvable_assumptions
-        residual_opens_remain: has_open_assumptions
-        residual_opens: open_assumptions
-      outputs:
-        concerns_agent_resolvable: has_resolvable_assumptions
-        residual_opens_remain: has_open_assumptions
-        residual_opens: open_assumptions
+  - kind: loop
+    id: assumption-convergence
+    name: Assumption Convergence Loop
+    loopType: doWhile
+    continueWhile:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    maxIterations: 10
+    steps:
+      - kind: technique
+        id: reconcile-assumptions
+        technique: review-assumptions::reconcile
+      - kind: technique
+        id: challenge-assumptions
+        technique:
+          name: analyse-challenge::challenge
+          inputs:
+            challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+            concern_document: assumptions_log
+      - kind: technique
+        id: combine-assumption-challenges
+        technique:
+          name: analyse-challenge::combine
+          inputs:
+            concern_document: assumptions_log
+          outputs:
+            concern_document: assumptions_log
+            concerns_agent_resolvable: has_resolvable_assumptions
+            residual_opens_remain: has_open_assumptions
+            residual_opens: open_assumptions
   - kind: technique
     id: present-resolved-assumptions
     technique:

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Code-analyzable assumptions closed via targeted analysis; callable as the analyse bind for the analyse-challenge run-loop.
+Code-analyzable assumptions closed via targeted analysis.
 
 ## Inputs
 
@@ -114,7 +114,7 @@ Convergence is reached when no open assumption in the log — including assumpti
 
 ### handoff-to-residue
 
-After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assumptions}` from the irreducible open set. When bound as `{analyse_technique}` inside [analyse-challenge](../analyse-challenge/TECHNIQUE.md), [challenge](../analyse-challenge/challenge.md) / [combine](../analyse-challenge/combine.md) may further shrink that set.
+After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assumptions}` from the irreducible open set.
 
 | Element | Source |
 |---------|--------|
