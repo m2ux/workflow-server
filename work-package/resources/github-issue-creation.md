@@ -9,7 +9,7 @@ metadata:
 
 # GitHub Issue Creation Guide
 
-Reference material for creating GitHub issues. Flow and checkpoints are defined in the [Issue Management Activity](../activities/01-issue-management.yaml).
+Reference material for creating GitHub issues.
 
 **Issues define problems, not solutions.** Describe *what* is broken, missing, or suboptimal and *why* it matters; leave *how* for design work. Solutions in issues constrain design options before research is done, conflate problem definition with implementation, skip the planning activity where alternatives are evaluated, and may miss better approaches. If you can't explain the problem without mentioning a specific solution, you may not fully understand the problem yet.
 
