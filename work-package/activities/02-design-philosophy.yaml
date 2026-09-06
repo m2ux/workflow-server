@@ -93,7 +93,7 @@ steps:
     id: determine-path
     technique: determine-path
   - kind: checkpoint
-    id: classification-and-path-confirmed
+    id: classification-confirmed
     condition:
       type: simple
       variable: is_review_mode
@@ -101,9 +101,23 @@ steps:
       value: true
     message: "Classification: {problem_type}. Rationale: {classification_rationale}."
     options:
+      - id: classification-accurate
+        label: Classification accurate
+        description: The problem type and complexity assessment describe the work
       - id: revise-classification
         label: Revise classification
-        description: The problem type or complexity assessment needs adjustment before a path is chosen
+        description: The problem type or complexity assessment needs adjustment
+        effect:
+          exit: revise-classification
+  - kind: checkpoint
+    id: workflow-path-selected
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "The discovery activities this work package runs before planning."
+    options:
       - id: full-workflow
         label: Full workflow (elicitation + research)
         description: Complex feature requiring requirements discovery and research
@@ -241,6 +255,8 @@ steps:
       - action: message
         message: "Review mode: classification recorded ({problem_type}, {problem_complexity} complexity). Rationale: {classification_rationale}."
 exits:
+  - id: revise-classification
+    immediate: true
   - id: done
     isDefault: true
 outcome:

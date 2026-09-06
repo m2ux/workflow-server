@@ -22,7 +22,7 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 | 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
 | 08 | [**Implement**](./activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | yes | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
-| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
+| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | yes | Manual diff review, code review, structural analysis, test review |
 | 11 | [**Validate**](./activities/README.md#11-validate) | yes | Run tests, build, and lint checks |
 | 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | yes | Ensure minimal, focused changes |
 | 13 | [**Submit for Review**](./activities/README.md#13-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
@@ -43,46 +43,45 @@ The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) t
 ```mermaid
 graph TD
     startNode(["Start"]) --> SWP["01 start-work-package"]
-    SWP --> DP["02 design-philosophy"]
+    SWP -->|"done"| DP["02 design-philosophy"]
 
-    DP --> COMP_CHK{"needs comprehension?"}
-    COMP_CHK -->|"yes"| CC["codebase-comprehension"]
-    COMP_CHK -->|"no"| PATH
+    DP -->|"revise-classification"| DP
+    DP -->|"done"| CC["codebase-comprehension"]
 
-    CC --> PATH{"workflow path?"}
-    PATH -->|"full"| REL["03 requirements-elicitation"]
-    PATH -->|"elicit-only"| REL
-    PATH -->|"research-only"| RS
-    PATH -->|"direct"| PP
+    CC -->|"needs-elicitation"| REL["03 requirements-elicitation"]
+    CC -->|"research-needed"| RS["04 research"]
+    CC -->|"skip-optional-activities"| PP["06 plan-prepare"]
+    CC -->|"comprehension-complete"| IA["05 implementation-analysis"]
 
-    REL --> RS["04 research"]
-    RS --> IA["05 implementation-analysis"]
-    IA --> PP["06 plan-prepare"]
+    REL -->|"elicitation-incomplete"| REL
+    REL -->|"research-needed"| RS
+    REL -->|"no-research-needed"| IA
+    RS -->|"done"| IA
+    IA -->|"done"| PP
 
-    PP --> AR["07 assumptions-review"]
-    AR --> ARD{"stakeholder feedback?"}
-    ARD -->|"approved"| IMP["08 implement"]
-    ARD -->|"minor corrections"| AR
-    ARD -->|"significant revision"| PP
-    IMP --> LCA["09 lean-coding-audit"]
-    LCA --> PIR["10 post-impl-review"]
-    PIR --> BLK{"critical blocker?"}
-    BLK -->|"yes"| IMP
-    BLK -->|"no"| VAL["11 validate"]
+    PP -->|"revise"| PP
+    PP -->|"done"| AR["07 assumptions-review"]
 
-    VAL --> SR["12 strategic-review"]
+    AR -->|"needs-further-discussion"| AR
+    AR -->|"needs-comprehension"| CC
+    AR -->|"needs-plan-revision"| PP
+    AR -->|"review-mode"| LCA["09 lean-coding-audit"]
+    AR -->|"assumptions-approved"| IMP["08 implement"]
 
-    SR --> SRD{"review passed?"}
-    SRD -->|"yes"| SFR["13 submit-for-review"]
-    SRD -->|"rework"| PP
+    IMP -->|"done"| LCA
+    LCA -->|"done"| PIR["10 post-impl-review"]
+    PIR -->|"has-blocker"| IMP
+    PIR -->|"done"| VAL["11 validate"]
+    VAL -->|"done"| SR["12 strategic-review"]
 
-    SFR --> RCV{"review received?"}
-    RCV -->|"no, still waiting"| RCV
-    RCV -->|"yes"| RVD{"review outcome?"}
-    RVD -->|"approved/minor"| COMP["14 complete"]
-    RVD -->|"significant changes"| PP
+    SR -->|"review-failed"| PP
+    SR -->|"review-mode / review-passed"| SFR["13 submit-for-review"]
 
-    COMP --> doneNode(["End"])
+    SFR -->|"provide-input"| SFR
+    SFR -->|"review-requires-changes"| PP
+    SFR -->|"review-mode / review-approved / abort"| COMP["14 complete"]
+
+    COMP -->|"done"| doneNode(["End"])
 ```
 
 ---

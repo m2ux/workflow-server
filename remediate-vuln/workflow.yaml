@@ -138,10 +138,6 @@ variables:
   - name: flagged_block_indices
     type: array
     description: Change-block indices flagged during manual diff review.
-  - name: skip_architecture_summary
-    type: boolean
-    description: Whether to skip architecture summary creation.
-    defaultValue: false
   - name: push_remote
     type: string
     description: "Git remote for every push (always 'security' here)."
@@ -157,6 +153,7 @@ graph:
     abort: __terminal__
   design-philosophy:
     done: codebase-comprehension
+    revise-classification: design-philosophy
   requirements-elicitation:
     research-needed: research
     no-research-needed: implementation-analysis
