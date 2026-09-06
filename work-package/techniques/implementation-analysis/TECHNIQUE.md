@@ -19,9 +19,6 @@ Basename of the component the work package targets (e.g., midnight-node, midnigh
 
 Current implementation [analysis](../../resources/implementation-analysis.md#document-template) with baselines and improvement opportunities
 
-#### analysis_artifact
-
-`implementation-analysis.md`
 
 
 ## Rules

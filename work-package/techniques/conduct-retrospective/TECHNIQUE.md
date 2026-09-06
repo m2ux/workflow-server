@@ -27,9 +27,6 @@ Path to the planning folder where the final outcome and retrospective are record
 
 Workflow [retrospective](../../resources/workflow-retrospective.md#output-section-template) with lessons learned, written as the `## Workflow Retrospective` section of the close-out document rather than a standalone artifact
 
-#### retrospective_artifact
-
-`COMPLETE.md`
 
 ### session_trace_document
 

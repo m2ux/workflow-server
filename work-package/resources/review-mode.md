@@ -12,11 +12,11 @@ metadata:
 
 The reference content for a structured pull-request review, organized by review category.
 
-Each **Review Category** has its own section under [Review Categories](#review-categories) carrying that category's findings fragment and population rules, so the technique that renders the category can fetch only its section. The [Review Comment Template](#review-comment-template) holds the whole-document skeleton with per-category placeholders, the shared header/table rules, and the cross-category scales (severity, review-type, category reference) for the consolidating step.
+Each **Review Category** has its own section under [Review Categories](#review-categories) carrying that category's findings fragment and population rules, so a consumer rendering one category fetches only its section. The [Review Comment Template](#review-comment-template) holds the whole-document skeleton with per-category placeholders, the shared header/table rules, and the cross-category scales (severity, review-type, category reference).
 
 ## Review Comment Template
 
-This section is the creation guide for the consolidated review comment posted to the PR. It carries the whole-document skeleton — header, per-category `{placeholder}` markers, Action Items, attribution footer — plus the rules for filling each part. The consolidating step fills each `{category}` placeholder from that category's own section; category techniques fetch only their own category section, not this template.
+This section is the creation guide for the consolidated review comment posted to the PR. It carries the whole-document skeleton — header, per-category `{placeholder}` markers, Action Items, attribution footer — plus the rules for filling each part. Each `{category}` placeholder is filled from that category's own section.
 
 The sub-sections decompose the rules so a consumer fetches only the one it needs:
 
@@ -31,7 +31,7 @@ The sub-sections decompose the rules so a consumer fetches only the one it needs
 
 ### Header Fields
 
-The summary header carries `PR`, `Plan`, `Activities`, `Reports`, and `Date` fields.
+The summary header carries `PR`, `Plan`, `Activities`, `Reports`, and `Date` fields, in that order. Every `Plan`, `Reports` and `Activities` entry is a hyperlink; a bare name in any of the three is a defect.
 
 **Findings constraint:** every finding names a file within the authored surface (the PR's changed-files list). Findings on files in that set form the PR's findings; findings on other files form a separate "pre-existing" grouping.
 

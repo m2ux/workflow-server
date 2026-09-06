@@ -15,7 +15,7 @@ The residual open assumptions to assemble; empty when all assumptions were alrea
 
 ### assembly_mode
 
-*(optional)* `batch` (default) or `interview`. Activities bind `interview` only for individual drill-down after a batch checkpoint selects that path.
+*(optional)* `batch` (default) renders every open item together; `interview` renders the single item under discussion.
 
 ## Outputs
 

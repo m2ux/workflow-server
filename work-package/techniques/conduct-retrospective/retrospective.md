@@ -13,10 +13,6 @@ Close-out retrospective — session history, friction (user-message and mechanic
 
 *(optional)* When true, the run audited an external change rather than implementing one; close-out and status update follow the review-mode path.
 
-### trace_tokens
-
-*(optional)* Opaque trace tokens accumulated across the run.
-
 ### execution_trace
 
 Completed activities, checkpoint decisions, and the event history behind them.

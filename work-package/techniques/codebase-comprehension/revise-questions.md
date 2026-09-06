@@ -15,9 +15,9 @@ The log whose Open Questions are revised; its existing table and the findings fr
 
 ## Outputs
 
-### open_questions
+### comprehension_log
 
-The revised Open Questions set in `{comprehension_log}` — resolved questions cross-referenced to the section that answered them, newly discovered questions added as open, and out-of-scope items listed separately. This is the authoritative unresolved-question set; `{has_open_questions}` is true while any remain.
+The log with its Open Questions set revised — resolved questions cross-referenced to the section that answered them, newly discovered questions added as open, and out-of-scope items listed separately. Its open set is the authoritative unresolved-question set.
 
 
 ## Protocol

@@ -5,17 +5,13 @@ metadata:
 
 ## Capability
 
-Challenge findings folded into the concern set with convergence/residue flags for the run-loop.
+Challenge findings folded into the concern set, with the convergence and residue flags that fold implies.
 
 ## Inputs
 
 ### challenge_findings
 
 Ordered per-perspective findings from the challenge pass.
-
-### residual_opens
-
-*(optional)* The residual open items carried in from the prior pass; empty or unset on the first.
 
 ## Outputs
 

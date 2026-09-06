@@ -23,9 +23,6 @@ Summary, description, and context from the linked issue
 
 Records problem classification, design [rationale](../../resources/design-framework.md#design-philosophy-artifact-template), and workflow path decisions
 
-#### design_philosophy_artifact
-
-`design-philosophy.md`
 
 #### problem_statement
 

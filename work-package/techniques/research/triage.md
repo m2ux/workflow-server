@@ -37,7 +37,7 @@ Boolean gate driving the reconciliation loop — true when at least one candidat
 
 - Read `{findings_synthesis}`, `{applicable_patterns}`, and `{synthesis_assumptions}` against `{requirements}` and `{problem_statement}`
 - Surface every open research gap: a requirement the findings only partially answer, a need no validated pattern covers, a contradiction between sources left unresolved, an inferred pattern fit that evidence has not established, a best-practice or library-behaviour question research has not yet settled
-- If no open gaps remain, record none — set `{research_candidates}` empty and `{has_reconcilable_research}` false; the convergence checkpoint then presents an empty inventory and the flow proceeds
+- If no open gaps remain, record none — set `{research_candidates}` empty and `{has_reconcilable_research}` false
 
 ### 2. Classify Reconcilability
 

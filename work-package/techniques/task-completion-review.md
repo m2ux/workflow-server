@@ -71,4 +71,4 @@ The self-review runs after every task — hidden errors and unvalidated design d
 
 ### assumptions-to-the-log
 
-Assumptions surfaced during the task are collected by the implement activity's review-assumptions steps and recorded as rows in the [assumptions log](../resources/assumptions-review.md#assumptions-log-template) — including a null row when none arise, so the log shows the review ran. This review adds no per-task log sections of its own; symbol-verification failures surface through `{has_uncertain_symbols}`, not the log.
+Assumptions surfaced during the task are recorded as rows in the [assumptions log](../resources/assumptions-review.md#assumptions-log-template) — including a null row when none arise, so the log shows the review ran. This review adds no per-task log sections of its own; symbol-verification failures surface through `{has_uncertain_symbols}`, not the log.

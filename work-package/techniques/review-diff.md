@@ -83,12 +83,12 @@ True if any block marked as critical blocker
 
 - Consume flagged rows reported as block numbers only: `3, 7, 12` where those blocks carry an issue, or `none` where none does
 - A bare block number covers all changes in that file; a block with a line reference (e.g. `3-L42`) focuses the interview on that specific line
-- Populate `{flagged_block_indices}` from the flagged set so the activity `forEach` can bind `{current_block_index}`
+- Populate `{flagged_block_indices}` from the flagged set, one entry per block carrying an issue
 
 ### 6. Interview Blocks
 
-- For each flagged block (activity `forEach` over `{flagged_block_indices}`): assemble the full diff content for that file into the interview context; confirm before continuing to the next block
-- Record the user's description verbatim from the activity response, noting severity if mentioned (critical, minor, etc.)
+- For each flagged block: assemble the full diff content for that file into the interview context; confirm before continuing to the next block
+- Record each supplied block description verbatim, noting severity if mentioned (critical, minor, etc.)
 - If the response marks the block as a critical blocker, set `{has_critical_blocker}`=true
 - Continue to the next flagged block until all are addressed
 - Detect manual review edits: compare the working tree to the last agent-written tip for paths under review; when the reviewer applied edits outside the agent, record each confirmed pattern as a retrospective candidate (in-task follow-up)

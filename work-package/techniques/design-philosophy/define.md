@@ -9,10 +9,6 @@ Define a clear problem statement with system understanding, impact, success crit
 
 ## Inputs
 
-### problem_context
-
-*(optional)* Additional context about the problem from the user or prior context.
-
 ## Outputs
 
 ### problem_statement

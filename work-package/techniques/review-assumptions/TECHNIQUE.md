@@ -27,9 +27,6 @@ The list of categories used to classify assumptions during collection (supplied 
 
 Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows as the work progresses
 
-#### assumptions_log_artifact
-
-`assumptions-log.md`
 
 
 ## Rules

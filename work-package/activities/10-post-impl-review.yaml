@@ -11,7 +11,6 @@ variables:
     - code_findings_actionable
     - component_git_dir
     - component_name
-    - current_block_index
     - flagged_block_indices
     - gitnexus_indexed
     - has_critical_blocker

@@ -9,7 +9,7 @@ metadata:
 
 # Jira Issue Creation Guide
 
-Reference material for Jira issue creation. Flow and checkpoints are defined in the [Issue Management Activity](../activities/01-issue-management.yaml). Issues define problems, not solutions: describe *what* needs to be solved and *why*, leaving *how* for subsequent design work.
+Reference material for Jira issue creation. Issues define problems, not solutions: describe *what* needs to be solved and *why*, leaving *how* for subsequent design work.
 
 ## Jira vs GitHub Terminology
 

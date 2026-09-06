@@ -35,7 +35,7 @@ Ordered collection of per-perspective findings (keyed by perspective name): conc
 ### 3. Gather
 
 - Assemble `{challenge_findings}` in input-perspective order
-- Return the collection to [combine](./combine.md); do not merge into `{concern_document}` here
+- Emit `{challenge_findings}`; do not merge into `{concern_document}` here
 
 ## Rules
 

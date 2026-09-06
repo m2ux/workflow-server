@@ -9,10 +9,6 @@ Assumptions from the work classified against the bound assumption categories in 
 
 ## Inputs
 
-### assumptions_log
-
-*(optional)* The existing assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to append to.
-
 ## Outputs
 
 ### assumptions_log

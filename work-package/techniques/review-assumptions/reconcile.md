@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Code-analyzable assumptions closed via targeted analysis; callable as the analyse bind for the analyse-challenge run-loop.
+Code-analyzable assumptions closed via targeted analysis.
 
 ## Inputs
 
@@ -69,7 +69,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 ### no-user-interaction
 
-Reconciliation runs autonomously, without user interaction. Converged results bind as outputs for the activity to surface.
+Reconciliation runs autonomously, without user interaction. Converged results bind as outputs.
 
 ### classification-transparency
 
@@ -114,7 +114,7 @@ Convergence is reached when no open assumption in the log — including assumpti
 
 ### handoff-to-residue
 
-After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assumptions}` from the irreducible open set. When bound as `{analyse_technique}` inside [analyse-challenge](../analyse-challenge/TECHNIQUE.md), [challenge](../analyse-challenge/challenge.md) / [combine](../analyse-challenge/combine.md) may further shrink that set before the activity gates [interview](./interview.md) on `{has_open_assumptions}`.
+After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assumptions}` from the irreducible open set.
 
 | Element | Source |
 |---------|--------|

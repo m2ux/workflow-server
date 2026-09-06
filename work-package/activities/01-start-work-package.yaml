@@ -353,7 +353,7 @@ steps:
     actions:
       - action: validate
         target: signing.configured == true
-        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing before re-running.
+        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing).
   - kind: technique
     id: analyze-repo-with-gitnexus
     technique:
@@ -442,6 +442,10 @@ steps:
           variable: is_review_mode
           operator: "!="
           value: true
+        - type: simple
+          variable: issue_present
+          operator: ==
+          value: false
         - type: simple
           variable: needs_issue_creation
           operator: "!="

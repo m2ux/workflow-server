@@ -77,7 +77,7 @@ Each way the body departs from that guide, so an author can repair it while the 
 
 ### ingest-before-analysis
 
-Prior feedback is ingested and triaged before any independent analysis activity runs, so existing signal informs the review rather than being reconciled against a verdict already formed.
+Prior feedback is ingested and triaged before any independent analysis, so existing signal informs the review rather than being reconciled against a verdict already formed.
 
 ### every-prior-finding-dispositioned
 
