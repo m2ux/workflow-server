@@ -31,6 +31,13 @@ variables:
     - name: challenge_findings
       type: object
       description: Per-perspective challenge findings over the concern set, keyed by perspective name.
+    - name: changed_paths
+      type: array
+      description: Repository-relative paths the task under construction wrote.
+    - name: commit_sha
+      type: string
+      description: SHA of the commit carrying the task under construction, empty where it staged nothing.
+      defaultValue: ""
     - name: current_assumption
       type: object
       description: The assumption under individual review.
@@ -94,7 +101,11 @@ steps:
             build_scope: -p {current_task.crate}
       - kind: technique
         id: commit
-        technique: manage-git::artifact-commits
+        technique:
+          name: manage-git::commit-paths
+          inputs:
+            paths: changed_paths
+            commit_message: "{current_task.description}"
       - kind: technique
         id: log-provenance
         technique:

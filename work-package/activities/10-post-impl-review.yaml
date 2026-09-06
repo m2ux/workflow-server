@@ -9,11 +9,10 @@ variables:
     - branch_name
     - changed_files
     - code_findings_actionable
+    - commit_sha
     - component_git_dir
     - component_name
-    - flagged_block_indices
     - gitnexus_indexed
-    - has_critical_blocker
     - is_review_mode
     - issue_title
     - planning_folder_path
@@ -42,6 +41,10 @@ variables:
       type: number
       description: Current block index during manual diff review loop (from flagged_block_indices).
       defaultValue: 0
+    - name: flagged_block_indices
+      type: array
+      description: Change-block indices the reviewer flagged as carrying an issue.
+      defaultValue: []
     - name: has_critical_blocker
       type: boolean
       description: Whether any flagged block is a critical blocker.
