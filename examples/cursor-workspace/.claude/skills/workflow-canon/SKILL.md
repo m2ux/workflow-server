@@ -80,7 +80,7 @@ Name, before reading criteria. Build the **change surface** first; the walk is a
 - **Change surface** — the union of **touched files** and **I/O-contract closure**, each entry the full file. Report the two subsets separately in the audit header so a reader can see what git touched versus what contract reach pulled in.
 - **Consumer surface** — the references other workflows hold *into* the target, each resolved to the file it names. Always computed; when a resolved target file is on the change surface (touched or pulled in by I/O-contract closure), that consumer file is on the change surface too. `grep -rn "<target-id>/" workflows/ --include=*.md --include=*.yaml` finds the cross-workflow refs; expand with bind and Apply resolution, not path string match alone.
 - **Reference workflows** — the siblings of similar type whose conventions the target is compared against.
-- **Prior residual** — the `unread` list of the most recent audit of this target, from its findings register under `.engineering/artifacts/planning/`. Re-derive the enumeration from the tree at this commit and inherit only the dispositions, matched by path; a path absent from the tree is absent from the worklist too. Those paths are where this pass's reading starts. A pass re-reading what the last one read whole buys coverage the target already holds and leaves the residual standing, which is how a target carries a full register every pass and stays unaudited.
+- **Prior residual** — the `unread` list of the most recent audit of this target, from its findings register under `.engineering/artifacts/planning/`. Re-derive the enumeration from the tree at this commit and inherit only the dispositions, matched by path; a path absent from the tree is absent from the worklist too. Those paths are where this pass's reading starts. A pass re-reading what the last one read whole buys coverage the target already holds and leaves the residual standing, which is how a target carries a full register every pass and stays unaudited. A pass inheriting a residual hands on a smaller one, or records why not as a scope decision.
 
 **Enumerate before walking.** Each surface above is a list of paths read from the tree and written down — into the report, or beside it — before the first unit is applied. The list does two jobs, and the second is why it is built up front rather than reconstructed at the end.
 
@@ -133,7 +133,7 @@ Only confirmed findings are eligible to drive fixes.
 
 ### 7. Report
 
-Per [references/reporting.md](references/reporting.md): the finding row shape, the coverage ledger, the severity scale, and which report shape applies. The standalone header **must** state the target-surface residual — files read whole, files `unread` — and the change-surface counts: touched (whole files), I/O-contract closure, and consumers pulled in, never "N hunks" or "diff lines only". Inside a workflow-authoring or workflow-design run, that run's creation guides own the layout and this skill defers to them.
+Per [references/reporting.md](references/reporting.md): the finding row shape, the coverage ledger, the severity scale, and which report shape applies. The standalone header **must** state both residuals — files read whole and files `unread`, and the count of `blocked` criteria units — and the change-surface counts: touched (whole files), I/O-contract closure, and consumers pulled in, never "N hunks" or "diff lines only". Inside a workflow-authoring or workflow-design run, that run's creation guides own the layout and this skill defers to them.
 
 ## Mechanical checks
 
