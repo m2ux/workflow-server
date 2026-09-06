@@ -22,7 +22,7 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 | 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
 | 08 | [**Implement**](./activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | yes | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
-| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
+| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | yes | Manual diff review, code review, structural analysis, test review |
 | 11 | [**Validate**](./activities/README.md#11-validate) | yes | Run tests, build, and lint checks |
 | 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | yes | Ensure minimal, focused changes |
 | 13 | [**Submit for Review**](./activities/README.md#13-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
