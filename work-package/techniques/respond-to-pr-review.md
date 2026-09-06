@@ -52,7 +52,7 @@ Whether the changes are significant enough to require substantial rework
 ### 3. Address Comments
 
 - For each review item with follow-up actions, emit the item and its candidate actions as structured bindable output.
-- Only implement actions explicitly selected in the reply
+- Implement the actions recorded against each comment in phase 2
 - Commit fix changes per concern
 - Document which comments require substantial rework vs inline fixes
 - Group related fixes into logical commits, not one giant commit
@@ -61,7 +61,7 @@ Whether the changes are significant enough to require substantial rework
 
 - Draft each response per the [response format template](../resources/pr-review-response.md#response-format-template) and the response-crafting rules below
 - Emit drafted PR responses as bindable output
-- Post approved responses to the PR comment thread
+- Post the drafted responses to the PR comment thread
 - If disagreeing with a reviewer, explain reasoning explicitly
 
 ### 5. Update Pr

@@ -21,7 +21,7 @@ The strategic review document listing the identified artifacts to remove when th
 
 ### 1. Apply Cleanup
 
-- Apply cleanup (removing identified artifacts) when the user approves.
+- Remove the artifacts the `{strategic_review_doc}` records for removal.
 - Use the edit tool for targeted in-place cleanup modifications.
 - When whole files or hunks should match the base again, resolve `{base_ref}` (bound value, else the PR base / default branch as in [review-scope](./review-scope.md)) and Apply [manage-git](../manage-git/TECHNIQUE.md)::[restore-paths-from-ref](../manage-git/restore-paths-from-ref.md) with `{target_path}`, `{base_ref}`, the paths to restore, and `{interactive_restore}` true only when hunk-selective restore is required; keep `{restored_paths}` for the commit phase.
 

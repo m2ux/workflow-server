@@ -62,17 +62,9 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 ## Rules
 
-### significant-findings-route-to-action
-
-Only significant scope, over-engineering, or investigation-artifact findings recommend an action on the findings. Minor observations recommend `acceptable` and are left for the user to defer at their discretion.
-
 ### recommendation-holds-only-its-own-domain
 
 `{recommended_strategic_option}` holds one of the three values its contract declares and nothing else. A decision taken elsewhere is a different fact with a different domain, and each keeps its own record — so a run where the recommendation and the decision diverged still shows both.
-
-### summary-stays-concise
-
-Keep `{strategic_findings_summary}` concise — one severity-tagged line per finding.
 
 ### finding-free-path-signals-passed
 

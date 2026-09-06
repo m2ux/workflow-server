@@ -36,9 +36,3 @@ Specific problem or inventive goal
 
 simple, moderate, or complex
 
-
-## Rules
-
-### path-determines-workflow
-
-Design philosophy determines the path through the workflow — all subsequent work depends on this classification
