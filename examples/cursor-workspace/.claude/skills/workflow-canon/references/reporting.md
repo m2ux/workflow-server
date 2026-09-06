@@ -42,6 +42,8 @@ Divergences only. A unit walked cleanly gets no row — the absence of a row is 
 
 Only `blocked` represents missing coverage. `not-applicable` is an evidenced negative and must carry its reason; a bare skip is not one.
 
+**Total the `blocked` rows.** That figure is the unit residual, and it goes to the verdict line beside the path residual. A ledger of divergences with no total states a shortfall no reader adds up, and a family recorded `blocked` over most of the surface counts once here however many entries it holds.
+
 The obligation is one row per unwalked unit of every home. Account for the units each home holds at the commit audited, read from its own headings per [canon-map.md](./canon-map.md#unit-inventory) — a walk measured against a count carried here would certify itself complete against a canon that has since grown. Where the ledger cannot account for every unit of every home, the walk was partial: say so rather than reporting a clean sweep.
 
 ## File coverage
@@ -82,7 +84,7 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 
 **Base ref:** `{ref}` · **Target surface:** N files — read N · **unread N** · **Change surface:** N files (touched: N whole files · I/O-contract closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
 
-**Verdict:** N findings over the N files read whole. N of the target's N files are unread and what they hold is unmeasured.
+**Verdict:** N findings over the N files read whole. Residual: **N files `unread`** of the target's N, **N criteria units `blocked`** of the homes' N. The target is audited at this commit when both reach zero.
 
 | Severity | Open | Known |
 |----------|-----:|------:|
@@ -133,6 +135,6 @@ read N · unread N — summing to the target surface.
 - **No criteria prose in the report.** Link the entry; the catalog is its home.
 - **Cite entries by name.** Never a bare designator, never any count of the catalog's entries.
 - **Report the verify pass honestly.** Say which Highs were withdrawn or downgraded on re-derivation; a register that silently drops them reads as a walk that never found them.
-- **The verdict states the residual.** A finding count measures the reading, and the `unread` figure is what it is a fraction of. A register leading with findings alone reads as a measurement of the target, and no reader can tell a walked target from a sampled one.
+- **The verdict states both residuals, and a target is audited when both are zero.** A finding count measures the reading: the `unread` figure says how much of the target that reading covered, and the `blocked` total says how many criteria units were brought to it. The two are independent, so each is a ceiling on what the pass could have found and neither substitutes for the other — a register at `unread 0` with families still `blocked` has read every file while applying a fraction of the canon to it. A register leading with findings alone reads as a measurement of the target, and no reader can tell a walked target from a sampled one.
 - **Report the change surface honestly.** Header counts and the Change surface table must match the skill's union (whole touched files ∪ I/O-contract closure ∪ consumers). A report that only lists diff hunks or omits silent referencers is incomplete coverage, not a clean sweep.
 - **Every header figure reconciles against a list in the body.** The target surface reconciles against File coverage, the change surface against the Change surface table. A figure with nothing behind it states a scope the report never walked and no reader can check.
