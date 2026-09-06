@@ -5,43 +5,29 @@ metadata:
 
 ## Capability
 
-Map the assessed complexity to a workflow path and set the elicitation/research/skip gating variables accordingly.
+The rationale behind the selected workflow path, and the comprehension pass every path carries.
 
 ## Inputs
 
 ### problem_complexity
 
-The assessed complexity (simple, moderate, or complex), mapped to a workflow path.
+The assessed complexity (simple, moderate, or complex), against which the selected path is judged proportionate.
 
 ## Outputs
 
-### needs_elicitation
-
-Boolean gate — whether requirements elicitation is needed on the chosen path.
-
-### needs_research
-
-Boolean gate — whether research is needed on the chosen path.
-
-### skip_optional_activities
-
-Boolean gate — whether to skip optional discovery work.
-
 ### needs_comprehension
 
-Always `true` — codebase comprehension is mandatory on every path.
+Whether codebase comprehension is outstanding — `true` on every path, since comprehension precedes planning.
 
 ### path_rationale
 
-The documented rationale for the selected workflow path (full, elicitation-only, research-only, or skip-optional).
+The documented rationale for the selected workflow path (full, elicitation-only, research-only, or skip-optional), including how proportionate it is to `{problem_complexity}`.
 
 ## Protocol
 
-### 1. Determine Path
+### 1. Record the Path Rationale
 
-- Map complexity to workflow path (full, elicitation-only, research-only, or skip optional discovery work): simple, clearly-scoped problems take the lighter paths; moderate and complex problems take the full path
-- The complexity also scopes how much of the [design framework](../../resources/design-framework.md#design-framework-trizics-approach) plan-prepare later applies — simple: problem definition, conventional solutions, synthesis; moderate: add problem classification; complex: include inventive solutions. Do not over-engineer the process for the problem size.
-- Document path rationale
-- Set needs-elicitation, needs-research, skip-optional-activities accordingly
-- Set needs-comprehension to true — codebase comprehension is mandatory before planning, on every path
-- For simple changes, lightweight application is acceptable — not every bug fix needs full elicitation
+- Judge the selected path against `{problem_complexity}`: simple, clearly-scoped problems warrant the lighter paths; moderate and complex problems warrant the full path. Where the selection and the complexity diverge, `{path_rationale}` records the divergence rather than resolving it.
+- `{problem_complexity}` also scopes how much of the [design framework](../../resources/design-framework.md#design-framework-trizics-approach) plan-prepare later applies — simple: problem definition, conventional solutions, synthesis; moderate: add problem classification; complex: include inventive solutions. A lightweight application is proportionate for a simple change.
+- Emit `{path_rationale}`
+- Emit `{needs_comprehension}` as `true`

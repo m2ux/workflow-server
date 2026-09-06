@@ -64,7 +64,7 @@ steps:
     actions:
       - action: validate
         target: workflows.worktree.present == true
-        message: "The workflows worktree is missing. From the parent repo root run `git worktree add ./workflows workflows` (see SETUP.md)."
+        message: "The workflows worktree is missing. Add it per SETUP.md."
       - action: validate
         target: target_path != null
         message: "`{target_path}` is unset, so there is no worktree to plan against."

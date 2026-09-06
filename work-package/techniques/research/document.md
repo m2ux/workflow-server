@@ -29,7 +29,7 @@ Patterns mapped to needs; recorded in the artifact.
 
 ### research_document
 
-Knowledge base and web research synthesis artifact for the work package. Written to `{planning_folder_path}` as `kb-research.md`, capturing `{kb_findings}`, `{web_findings}`, `{findings_synthesis}`, `{applicable_patterns}`, and risks.
+Knowledge base and web research synthesis for the work package, carrying the findings from both sources, their synthesis against the requirements, the patterns that apply, and the risks the research surfaced.
 
 #### artifact
 

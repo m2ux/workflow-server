@@ -81,7 +81,7 @@ Four properties make it checkable:
   ```
 
 - **The labels appear in declared order**, every finding the same.
-- **The site is carried by the link in the prose**, not by a separate location field — the first mention of the named thing is an inline link to it, per manage-artifacts.code-reference-is-an-inline-link. A `Location:` field beside that link states the site twice in one artifact.
+- **The site is carried by the link in the prose**, not by a separate location field — the first mention of the named thing is an inline link to it, per `manage-artifacts.code-reference-is-an-inline-link`. A `Location:` field beside that link states the site twice in one artifact.
 
 ## Designators
 

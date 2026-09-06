@@ -7,8 +7,6 @@ metadata:
 
 Assumptions from the work classified against the bound assumption categories in the assumptions log.
 
-## Inputs
-
 ## Outputs
 
 ### assumptions_log

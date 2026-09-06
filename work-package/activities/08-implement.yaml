@@ -14,6 +14,7 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_statement
+    - project_type
     - requirements
     - target_path
     - target_repo
@@ -99,6 +100,7 @@ steps:
           name: cargo-operations::test
           inputs:
             build_scope: -p {current_task.crate}
+        when: project_type == 'rust-substrate'
       - kind: technique
         id: commit
         technique:

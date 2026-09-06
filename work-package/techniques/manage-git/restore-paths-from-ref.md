@@ -21,7 +21,9 @@ Array of repository-relative paths to restore from `{base_ref}`.
 
 *(optional)* When true, use interactive hunk restore (`checkout -p`) per path. When false or unbound, restore each path whole from `{base_ref}`.
 
-`default: false`
+#### default
+
+`false`
 
 ## Outputs
 

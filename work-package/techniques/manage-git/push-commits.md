@@ -11,9 +11,7 @@ Push local commits on the feature branch to the configured push remote.
 
 ### push_remote
 
-The git remote the push targets. Defaults to `origin`; a private consumer (stealth mode) sets it to its private remote (e.g. `security`) so no commit ever reaches a public destination.
-
-`default: origin`
+The git remote the push targets. A private consumer (stealth mode) sets it to its private remote (e.g. `security`) so no commit ever reaches a public destination.
 
 ## Outputs
 

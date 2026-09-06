@@ -39,7 +39,7 @@ Repository-relative paths this task wrote, as the set a commit stages.
 - Identify affected files, dependencies, and related code
 - Determine the primary edit target `{target_symbol}` — the function, class, or method this task changes — from `{current_task}`
 - Review the `{test_plan}` for acceptance criteria relevant to this task
-- If the task description is ambiguous or missing context, review the plan document and ask the user for clarification before proceeding
+- Where the `{current_task}` description is ambiguous or missing context, read the plan document for what it leaves unstated, and record the residual ambiguity in `{task_implementation}`
 
 ### 2. Pre Edit Impact Check
 
@@ -58,7 +58,6 @@ Repository-relative paths this task wrote, as the set a commit stages.
 - Check for obvious regressions in affected code
 - If the code changes do not compile, review the error messages, fix the issues, and retry
 - Where the suite cannot run here, update any test this diff invalidates on its own face — a reordered positional assertion, an assertion naming a renamed symbol — and record which tests remain unrun in `{task_implementation}`
-- Apply the [task-completion-review](../techniques/task-completion-review.md) technique to self-review the completed changes
 
 ### 5. Post Edit Verification
 

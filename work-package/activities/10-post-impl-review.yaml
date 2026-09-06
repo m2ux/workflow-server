@@ -106,6 +106,10 @@ steps:
         effect:
           setVariable:
             has_flagged_blocks: true
+  - kind: technique
+    id: collect-flagged-blocks
+    technique: review-diff
+    when: has_flagged_blocks == true
   - kind: checkpoint
     id: rationale-attestation
     message: "The agent's rationale paragraph for each change block, which your confirmation attests the provenance of."

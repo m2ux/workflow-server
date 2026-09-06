@@ -7,8 +7,6 @@ metadata:
 
 Define a clear problem statement with system understanding, impact, success criteria, and constraints.
 
-## Inputs
-
 ## Outputs
 
 ### problem_statement

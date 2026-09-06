@@ -63,7 +63,7 @@ URL of the verified or newly created issue.
 - Map `{issue_type}` to GitHub labels using the label mapping below
 - Create the issue, then verify creation succeeded, capturing `{issue_number}` and `{issue_url}` from the verified issue.
 - GitHub label mapping: `feature->enhancement`, `bug->bug`, `task->chore`, `enhancement->enhancement`
-- If a github-cli-protocol op fails (auth, permissions, or network — including the issue verification in step 1), verify `gh` auth status and repository access, then retry or prompt the user to create the issue manually.
+- If a github-cli-protocol op fails (auth, permissions, or network — including the issue verification in step 1), verify `gh` auth status and repository access, then retry. Where it still fails, leave `{needs_issue_creation}` true and `{issue_number}` unset, so the run carries an unsatisfied issue rather than a fabricated one.
 
 ### 4. Create Jira Issue
 
