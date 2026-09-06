@@ -52,6 +52,7 @@
         "checkpoint:research:context-scope-declaration=mixed",
         "checkpoint:research:context-scope-declaration=repo-only",
         "checkpoint:research:context-scope-declaration=web-retrieval",
+        "checkpoint:research:research-assumption-decision#{current_assumption.id}=correct-assumption",
         "checkpoint:research:research-assumption-decision#{current_assumption.id}=defer-to-stakeholder",
         "checkpoint:research:research-assumption-interview=accept-agent-positions",
         "checkpoint:research:research-assumption-interview=defer-all",
