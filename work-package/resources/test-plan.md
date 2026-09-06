@@ -107,7 +107,7 @@ pytest -k "test_name"       # Python
 
 ## Test Plan Structure
 
-Required sections, in order: header link line (ADR, Ticket, PR), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests.
+Required sections, in order: header link line (ADR — a relative path where the record lives in the same repo — Ticket, PR), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests.
 
 ## Rules
 

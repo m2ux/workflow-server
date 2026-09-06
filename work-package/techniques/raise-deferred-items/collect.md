@@ -7,6 +7,16 @@ metadata:
 
 The deferred-items register read for rows that name no issue yet.
 
+## Inputs
+
+### deferred_items_register
+
+The register holding this run's out-of-scope deferrals, named by its bare filename.
+
+#### default
+
+`deferred-items.md`
+
 ## Outputs
 
 ### open_deferred_items
@@ -21,7 +31,7 @@ Boolean gate — true when `{open_deferred_items}` holds at least one row.
 
 ### 1. Locate the Register
 
-- Read `deferred-items.md` in `{planning_folder_path}`.
+- Read `{deferred_items_register}` in `{planning_folder_path}`.
   > The register is created lazily, so a run that deferred nothing has none. `{open_deferred_items}` is empty and `{has_unraised_deferred_items}` false — a run with nothing outstanding, not a missing-file fault.
 
 ### 2. Select the Unraised Rows

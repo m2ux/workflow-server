@@ -9,10 +9,6 @@ Create an Architecture Decision Record for moderate or complex implementations
 
 ## Inputs
 
-### problem_complexity
-
-Problem complexity assessment (simple|moderate|complex)
-
 ### design_philosophy_doc
 
 Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with rationale and alternatives
@@ -41,29 +37,20 @@ Directory holding the project's ADR files
 
 ## Protocol
 
-### 1. Gate On Complexity
-
-- Proceed only when `{problem_complexity}` is moderate or complex. For a simple assessment, do not create an `{adr_document}` — simple changes do not warrant one — and return without one.
-
-### 2. Determine Number
+### 1. Determine Number
 
 - Scan `{adr_dir}` for existing ADR files
 - Determine next sequential NNNN number
 - If the next number cannot be determined, re-scan `{adr_dir}` and use the next available number.
 
-### 3. Gather Context
+### 2. Gather Context
 
 - Read the `{design_philosophy_doc}` for decision rationale, alternatives, and trade-offs.
   > Where it is absent, take the rationale and alternatives from the plan and the implementation analysis instead, and record which of them supplied it.
 - Review implementation analysis and plan from `{planning_folder_path}` for architectural choices
 - Identify alternatives that were considered and rejected
 
-### 4. Write Adr
+### 3. Write Adr
 
 - Write the `{adr_document}` as `NNNN-{$decision_title}.md` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), deriving `{$decision_title}` as a slugified short title of the decision
 
-## Rules
-
-### alternatives-required
-
-Every `{adr_document}` must document at least one alternative that was considered
