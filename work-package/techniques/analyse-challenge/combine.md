@@ -13,10 +13,6 @@ Challenge findings folded into the concern set with convergence/residue flags fo
 
 Ordered per-perspective findings from the challenge pass.
 
-### residual_opens
-
-*(optional)* The residual open items carried in from the prior pass; empty or unset on the first.
-
 ## Outputs
 
 ### concern_document

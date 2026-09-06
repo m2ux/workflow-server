@@ -9,10 +9,6 @@ Parameterized analyse–challenge–combine iterations until agent-resolvable co
 
 ## Inputs
 
-### residual_opens
-
-*(optional)* The residual open items carried into this pass; empty or unset on the first.
-
 ### target_path
 
 *(optional)* Reference codebase root forwarded to analyse / challenge when they require it.

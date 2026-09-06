@@ -9,10 +9,6 @@ Prompt the user for the stakeholder discussion transcript before agent-led elici
 
 ## Inputs
 
-### stakeholder_transcript
-
-*(optional)* Transcript or summary from the user's discussion with key stakeholders.
-
 ## Outputs
 
 ### stakeholder_transcript

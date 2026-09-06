@@ -9,10 +9,6 @@ Initial mental model of the codebase area — architecture, abstractions, design
 
 ## Inputs
 
-### project_type
-
-*(optional)* The project type the target tree is detected as. Confirmed from the build system and used to shape which abstractions and patterns to look for.
-
 ### gitnexus_indexed
 
 Whether the codebase under work has a usable GitNexus index; selects between gitnexus-operations and grep/read/glob for structural analysis.

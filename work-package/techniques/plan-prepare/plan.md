@@ -9,14 +9,6 @@ Work-package plan artifact — task breakdown, dependencies, ordering, and recor
 
 ## Inputs
 
-### analysis_findings
-
-*(optional)* Implementation analysis findings — baselines and gaps. Reviewed to inform the approach when analysis was performed.
-
-### research_findings
-
-*(optional)* Research findings from knowledge base and web. Reviewed to inform the approach when research was performed.
-
 ## Outputs
 
 ### plan_document
