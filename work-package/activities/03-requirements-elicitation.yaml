@@ -51,8 +51,34 @@ variables:
       type: array
       description: The captured requirements list elicited across the domains.
       defaultValue: []
+    - name: stakeholder_baseline
+      type: string
+      description: The stakeholder discussion as elicitation reads it, or the recorded limitation that none was held.
+      defaultValue: ""
+    - name: stakeholder_transcript
+      type: string
+      description: The transcript or summary of the discussion held with stakeholders. Empty where the discussion did not happen.
+      defaultValue: ""
 required: false
 steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Eliciting requirements
+  - kind: checkpoint
+    id: stakeholder-discussion-held
+    message: Stakeholder discussion before agent-led elicitation gives the questions something to build on.
+    options:
+      - id: transcript-provided
+        label: Transcript provided
+        description: The reply carries the discussion transcript or summary
+      - id: skip-discussion
+        label: Proceed without stakeholder discussion
+        description: Elicitation runs on agent-led questions alone, with the limitation recorded against the requirements
+        effect:
+          setVariable:
+            stakeholder_transcript: ""
   - kind: technique
     id: stakeholder-discussion
     technique: discuss
