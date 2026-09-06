@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Create an Architecture Decision Record for moderate or complex implementations
+An Architecture Decision Record for the work package, numbered next in the record directory and opening at Proposed.
 
 ## Inputs
 
