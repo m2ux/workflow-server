@@ -108,10 +108,10 @@ steps:
         options:
           - id: accept-research
             label: Accept — proceed to planning
-            description: Research is complete; remaining open candidates are irreconcilable by research and are carried to their handoff targets (stakeholder interview, assumption reconciliation, or recorded out-of-scope).
+            description: Research is complete; the remaining open candidates are irreconcilable by research.
           - id: request-more
             label: Direct further research
-            description: Reopen the loop to research a named candidate further — provide the focus in your response; the next pass incorporates it.
+            description: The reply names the candidate and the focus for a further research pass.
             effect:
               setVariable:
                 has_reconcilable_research: true
