@@ -165,14 +165,14 @@ steps:
     technique:
       name: review-assumptions::collect
       inputs:
-        activity_context: design-philosophy
+        assumption_source: the problem statement, its classification, and the workflow path chosen from them
         assumption_categories: Problem Interpretation, Complexity Assessment, Workflow Path
   - kind: technique
     id: create-assumptions-log
     technique:
       name: review-assumptions::record
       inputs:
-        activity_context: design-philosophy
+        assumption_source: the problem statement, its classification, and the workflow path chosen from them
         assumption_categories: Problem Interpretation, Complexity Assessment, Workflow Path
   - kind: loop
     id: assumption-convergence

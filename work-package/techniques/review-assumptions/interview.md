@@ -11,7 +11,7 @@ Judgement-augmentation context for residual stakeholder-dependent assumptions, r
 
 ### open_assumptions
 
-The residual open assumptions to assemble; empty when all assumptions were already resolved. In interview mode the current one is bound as `current_assumption`; in batch mode (default) the whole list is assembled together.
+The residual open assumptions to assemble, each carrying its statement, category and the agent's position. Empty where analyse-challenge resolved every assumption.
 
 ### assembly_mode
 
@@ -25,11 +25,7 @@ Structured judgement-augmentation context for decision, shaped like the Open Ass
 
 ## Protocol
 
-### 1. Empty-Set Skip
-
-- If `{open_assumptions}` is empty (or `{has_open_assumptions}` is false), emit a one-line summary that analyse-challenge resolved all assumptions and **do not** assemble judgement context — no user input needed
-
-### 2. Format Judgement Context
+### 1. Format Judgement Context
 
 - For each residual open assumption, assemble structured context: (1) the decision space — what alternatives exist, (2) trade-off analysis for each alternative, (3) why analyse-challenge could not resolve it, (4) relevant technical context from reconcile/challenge — code patterns, constraints, partial evidence, (5) which alternative the agent's current assumption favors and why
 - Order the decision space (alternatives and trade-offs) before the agent's favored option to reduce anchoring bias
@@ -37,7 +33,7 @@ Structured judgement-augmentation context for decision, shaped like the Open Ass
 - If analyse/challenge produced partial evidence, include it so what is already known is clear
 - Flag decision reversibility: easily-reversible or path-committing via [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](../../../meta/techniques/gitnexus-operations/reversibility-signal.md) when a symbol is known
 
-### 3. Emit Presentation Output
+### 2. Emit Presentation Output
 
 - Default `{assembly_mode}` is `batch`: assemble all open assumptions together, ordered by decision impact; when 5 or more, group by theme
 - `interview` mode: assemble the current assumption only (individual drill-down)

@@ -10,12 +10,6 @@ The cross-cutting meta strategy techniques [`variable-binding`](../../meta/techn
 
 ---
 
-## Layout
-
-A capability with one operation is a standalone `<op>.md` in this folder. A capability with several is a directory holding a group `TECHNIQUE.md` for the shared contract and one file per operation, which an activity binds as `<group>::<op>`. The directory listing is the membership of both sets.
-
-Which technique each activity step binds is declared in `activities/NN-<id>.yaml` and served by `get_activity`.
-
 ## Cross-workflow techniques
 
 Operations under `meta/` (e.g. `gitnexus-operations`, `version-control`, `workflow-engine`) are referenced by qualified id from this workflow.

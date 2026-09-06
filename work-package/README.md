@@ -10,23 +10,23 @@ This workflow guides the complete lifecycle of a single work package through its
 
 Assumption and comprehension stages converge agent-resolvable concerns (analyse → challenge → combine) before residual stakeholder asks.
 
-| # | Activity | Required | Description |
-|---|----------|----------|-------------|
-| 01 | [**Start Work Package**](./activities/README.md#01-start-work-package) | yes | Verify/create issue, set up branch, PR, and planning folder |
-| 02 | [**Design Philosophy**](./activities/README.md#02-design-philosophy) | yes | Classify problem, assess complexity, determine workflow path |
-| 15 | [**Codebase Comprehension**](./activities/README.md#codebase-comprehension-optional) | no | Build/augment mental model of codebase via persistent knowledge artifacts |
-| 03 | [**Requirements Elicitation**](./activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
-| 04 | [**Research**](./activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
-| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | conditional | Understand current state, establish baselines |
-| 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | yes | Create implementation and test plans |
-| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
-| 08 | [**Implement**](./activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
-| 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | yes | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
-| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | yes | Manual diff review, code review, structural analysis, test review |
-| 11 | [**Validate**](./activities/README.md#11-validate) | yes | Run tests, build, and lint checks |
-| 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | yes | Ensure minimal, focused changes |
-| 13 | [**Submit for Review**](./activities/README.md#13-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
-| 14 | [**Complete**](./activities/README.md#14-complete) | yes | Finalize documentation, create ADR, resolve session traces, and conduct retrospective |
+| # | Activity | Description |
+|---|----------|-------------|
+| 01 | [**Start Work Package**](./activities/README.md#01-start-work-package) | Verify/create issue, set up branch, PR, and planning folder |
+| 02 | [**Design Philosophy**](./activities/README.md#02-design-philosophy) | Classify problem, assess complexity, determine workflow path |
+| 15 | [**Codebase Comprehension**](./activities/README.md#codebase-comprehension-optional) | Build/augment mental model of codebase via persistent knowledge artifacts |
+| 03 | [**Requirements Elicitation**](./activities/README.md#03-requirements-elicitation-optional) | Clarify requirements through stakeholder conversation |
+| 04 | [**Research**](./activities/README.md#04-research-optional) | Gather best practices from knowledge base and web |
+| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | Understand current state, establish baselines |
+| 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | Create implementation and test plans |
+| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Post plan summary and assumptions to issue tracker for stakeholder review |
+| 08 | [**Implement**](./activities/README.md#08-implement) | Execute tasks with implement-test-commit cycles |
+| 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
+| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | Manual diff review, code review, structural analysis, test review |
+| 11 | [**Validate**](./activities/README.md#11-validate) | Run tests, build, and lint checks |
+| 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | Ensure minimal, focused changes |
+| 13 | [**Submit for Review**](./activities/README.md#13-submit-for-review) | Push PR, mark ready, handle reviewer feedback |
+| 14 | [**Complete**](./activities/README.md#14-complete) | Finalize documentation, create ADR, resolve session traces, and conduct retrospective |
 
 **Detailed documentation:**
 
@@ -107,4 +107,4 @@ The workflow carries a work package over an existing pull request as well as ove
 | Session trace | `{planning_folder_path}/session-trace.md` | Lean mechanical close-out summary (tool counts, durations, errors, validation-warning clusters) when opaque handoff tokens resolve |
 | Reviews | `.engineering/artifacts/reviews` | PR review analysis documents |
 | ADR | `.engineering/artifacts/adr` | Architecture Decision Records |
-| Comprehension | `.engineering/artifacts/comprehension` | Persistent codebase knowledge artifacts (cumulative across work packages) |
+| Comprehension | `{comprehension_dir}` | Persistent codebase knowledge artifacts (cumulative across work packages) |

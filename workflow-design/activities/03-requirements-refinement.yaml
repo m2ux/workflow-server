@@ -140,7 +140,7 @@ steps:
     technique:
       name: work-package::review-assumptions::collect
       inputs:
-        activity_context: workflow requirements refinement
+        assumption_source: the refined workflow requirements and the constructs they name
         assumption_categories: "Activity Boundaries, Checkpoint Necessity, Technique Selection, Rule Scope, Variable State, Schema Construct Choice"
   - kind: technique
     id: reconcile-assumptions

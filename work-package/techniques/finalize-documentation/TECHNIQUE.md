@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Finalize documentation — update ADRs, complete test plans, create completion document, ensure API documentation
+The documentation a closing work package leaves behind, and the planning-folder context every operation here writes into.
 
 ## Inputs
 
@@ -34,10 +34,6 @@ The merged PR number, cross-referenced when recording the ADR implementation out
 
 ## Rules
 
-### completion-timing
+### completion-record-is-final-state
 
-`COMPLETE.md` is created after implementation is complete and PR is merged. It captures the final delivered state — what was built, tested, and deferred. Update if post-merge changes occur.
-
-### doc-build-goes-through-cargo-operations
-
-Rust/Substrate: apply [cargo-operations](../../../meta/techniques/cargo-operations/TECHNIQUE.md)::[doc](../../../meta/techniques/cargo-operations/doc.md) (scope=`--workspace --no-deps`) to verify documentation builds. Other project types: run the equivalent doc command for the project. This technique does not invoke cargo directly.
+`COMPLETE.md` records the delivered state — what was built, tested, and deferred — and any post-merge change is carried into it rather than left beside it.
