@@ -131,10 +131,34 @@ The code branch owes one adoption commit, and its parts move together:
 |---|---|
 | Submodule pointer | `workflows` to the merged corpus tip |
 | Triage cites | `scripts/binding-fidelity-triage.json` — both `read-resolution` entries for `review-summary.md` to line `99` |
-| Reasoned exemptions | `tests/e2e/option-coverage.json` — drop the five work-package entries PRs #622 and #623 made reachable, plus any option this change retires (`push-confirmation` merged into `private-push-confirmation`) |
+| Reasoned exemptions | `tests/e2e/option-coverage.json` — drop the twelve entries named below |
 | Walk baseline and stamp | re-record, then `npm run baseline:stamp` in the same commit |
 
-The walk was re-run against the corpus branch in a provisioned worktree to establish the option set the exemption list has to shrink to; its verdict is in the [reconciliation](./prior-pass-reconciliation.md#the-walk-against-the-fix-branch).
+The walk was re-run against the fix branch in a provisioned worktree, so the exemption list's target is measured rather than guessed. Twelve entries go, in two groups.
+
+**Seven name constructs this change retired** — the walk reports them as listed while no definition declares them:
+
+```
+checkpoint:submit-for-review:build-artifact-check=regen-needed
+checkpoint:submit-for-review:build-artifact-handoff=user-owns-regen
+checkpoint:submit-for-review:build-artifact-handoff=user-regenerated
+checkpoint:submit-for-review:private-remote-confirmation=abort
+checkpoint:submit-for-review:private-remote-confirmation=confirmed
+checkpoint:submit-for-review:push-confirmation=cancel
+checkpoint:submit-for-review:push-confirmation=confirm
+```
+
+**Five are reachable and still listed unreachable**, which corpus PRs #622 and #623 caused and the earlier walk against `c1d07a291510eb13d9ec6e49c73a5aed55b3c538` named:
+
+```
+checkpoint:requirements-elicitation:elicitation-complete=add-requirements
+checkpoint:requirements-elicitation:elicitation-complete=revisit-domain
+checkpoint:research:research-assumption-decision#{current_assumption.id}=correct-assumption
+checkpoint:research:research-assumption-decision#{current_assumption.id}=defer-to-stakeholder
+checkpoint:research:research-convergence=request-more
+```
+
+The test short-circuits on the first failing assertion, so the run that named the seven never reached the check that names the five. Remove both groups, then walk again: this change also declares four option keys the list has never seen (`stakeholder-discussion-held` and the renamed `private-push-confirmation`), and only a walk over the corrected list says whether any of them needs a reason.
 
 ## Sources
 

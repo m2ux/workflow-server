@@ -54,13 +54,11 @@ The prior pass ran the walk to completion in 1,466 seconds against the corpus br
 
 **Against the corpus branch at `c1d07a291510eb13d9ec6e49c73a5aed55b3c538`** — 1,579 seconds, exit 1, both tests failing: the stamp names a different corpus, and five work-package options are covered while still listed unreachable. Both are the pointer gap, not defects.
 
-**Against the fix branch in a provisioned worktree** — run to establish the option set the exemption list has to shrink to once the corpus lands. The fix commits change the option surface in three places, so the exemption list cannot simply be trimmed by the five the earlier run named:
+**Against the fix branch in a provisioned worktree** — 1,677 seconds, exit 1, both tests failing, and the failures are the measurement the adoption commit needs. The stamp names the pinned corpus, as before. The option check reports seven entries the exemption list holds for constructs the fix branch retired: the two `push-confirmation` options and the two `private-remote-confirmation` options, both folded into one `private-push-confirmation` gate; the two `build-artifact-handoff` options and the `build-artifact-check=regen-needed` option, folded into one three-option gate.
 
-- `03-requirements-elicitation` gains the `stakeholder-discussion-held` gate and its two options.
-- `13-submit-for-review` retires `push-confirmation` into `private-push-confirmation`, and merges `build-artifact-handoff` into `build-artifact-check`, so four option keys leave and one arrives.
-- `10-post-impl-review`'s `rationale-attestation` options gain effects, which changes what a walk records without changing the keys.
+That check runs before the covered-but-listed check, so this run never reached the five the earlier one named. Both groups go, and a third walk over the corrected list is what says whether the four option keys this change introduces need reasons of their own. The [register's adoption section](./findings-register.md#adoption) carries all twelve keys.
 
-Its verdict belongs in the adoption commit, which is the only place the exemption list and the stamp can move together with the pointer.
+The lesson generalises past this change: an exemption list is measured against one corpus, and every entry in it is a claim about a construct that may since have been renamed, retired or made reachable. Three walks against three trees produced three different lists, and none of them could be derived from reading the definitions.
 
 ## A note on reading a wrapper's exit
 
