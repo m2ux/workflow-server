@@ -63,40 +63,39 @@ export function makePolicy(spec: PolicySpec): Policy {
 /**
  * Take each gate's declared default, and its first option where the gate is hard.
  *
- * A hard gate has no default to take, so this walk answers it with `options[0]`. That makes the
- * route distinct from every named policy below: where `classification-and-path-confirmed` is
- * answered with its revise option, no path variable is set and the run passes through the discovery
- * activities the named paths each steer around.
+ * A hard gate has no default to take, so this walk answers it with `options[0]`. On
+ * `workflow-path-selected` that is `full-workflow`, so this route runs every discovery activity and
+ * the named policies below each steer around a different one.
  */
 export const defaultPolicy: Policy = makePolicy({ name: 'default' });
 
 /** Direct path: skip optional discovery activities (elicitation, research, analysis). */
 export const skipOptionalPolicy: Policy = makePolicy({
   name: 'skip-optional',
-  choices: { 'classification-and-path-confirmed': 'skip-optional' },
+  choices: { 'workflow-path-selected': 'skip-optional' },
 });
 
 /** Full path: requirements elicitation + research + implementation analysis. */
 export const fullWorkflowPolicy: Policy = makePolicy({
   name: 'full-workflow',
-  choices: { 'classification-and-path-confirmed': 'full-workflow' },
+  choices: { 'workflow-path-selected': 'full-workflow' },
 });
 
 /** Research-only path: skip elicitation, keep research. */
 export const researchOnlyPolicy: Policy = makePolicy({
   name: 'research-only',
-  choices: { 'classification-and-path-confirmed': 'research-only' },
+  choices: { 'workflow-path-selected': 'research-only' },
 });
 
 /** Elicitation-only path: keep elicitation, skip research. */
 export const elicitationOnlyPolicy: Policy = makePolicy({
   name: 'elicitation-only',
-  choices: { 'classification-and-path-confirmed': 'elicitation-only' },
+  choices: { 'workflow-path-selected': 'elicitation-only' },
 });
 
 /** Review mode: review an existing PR rather than implement. */
 export const reviewModePolicy: Policy = makePolicy({
   name: 'review-mode',
   initialVariables: { is_review_mode: true },
-  choices: { 'classification-and-path-confirmed': 'skip-optional' },
+  choices: { 'workflow-path-selected': 'skip-optional' },
 });

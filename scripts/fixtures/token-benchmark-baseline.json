@@ -3,16 +3,13 @@
   "label": "baseline",
   "contextMode": "fresh",
   "agentId": "bench-solo",
-  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-693e49b3/workflows",
+  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-3695f3ab/workflows",
   "workflowsRev": "3695f3ab",
-  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-693e49b3",
+  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/chore/adopt-3695f3ab",
   "path": [
     "start-work-package",
     "design-philosophy",
     "codebase-comprehension",
-    "requirements-elicitation",
-    "research",
-    "implementation-analysis",
     "plan-prepare",
     "assumptions-review",
     "implement",
@@ -27,65 +24,65 @@
   "toolCalls": {
     "start_session": 1,
     "get_workflow": 1,
-    "next_activity": 16,
-    "get_activity": 15,
-    "get_resource": 201,
-    "yield_checkpoint": 16,
-    "respond_checkpoint": 16,
-    "resume_checkpoint": 16,
+    "next_activity": 13,
+    "get_activity": 12,
+    "get_resource": 174,
+    "yield_checkpoint": 13,
+    "respond_checkpoint": 13,
+    "resume_checkpoint": 13,
     "get_technique": 6
   },
   "chars": {
     "start_session": 869,
-    "get_workflow": 112103,
-    "next_activity": 1598,
-    "get_activity": 813475,
-    "get_resource": 693699,
-    "yield_checkpoint": 4674,
-    "respond_checkpoint": 3056,
-    "resume_checkpoint": 5547,
-    "get_technique": 28995
+    "get_workflow": 112075,
+    "next_activity": 1290,
+    "get_activity": 658637,
+    "get_resource": 569749,
+    "yield_checkpoint": 3784,
+    "respond_checkpoint": 2535,
+    "resume_checkpoint": 4701,
+    "get_technique": 29070
   },
   "history": {
-    "technique_bundled": 127,
+    "technique_bundled": 99,
     "technique_fetched": 6,
-    "resource_fetched": 174
+    "resource_fetched": 149
   },
   "repeatedResources": [
     {
       "resourceId": "pr-description#template-initial",
-      "count": 16
+      "count": 13
     },
     {
       "resourceId": "pr-description#template-final",
-      "count": 16
+      "count": 13
     },
     {
       "resourceId": "pr-description#link-row-forms",
-      "count": 16
+      "count": 13
     },
     {
       "resourceId": "pr-description",
-      "count": 15
+      "count": 12
     },
     {
       "resourceId": "review-mode",
-      "count": 15
+      "count": 12
     },
     {
       "resourceId": "review-mode#review-type-selection",
-      "count": 15
+      "count": 12
     }
   ],
   "contextModeOnDisk": "fresh",
   "agentIdOnDisk": "bench-solo",
-  "deliveredContentKeys": 351,
-  "resourceLedgerKeys": 87,
+  "deliveredContentKeys": 297,
+  "resourceLedgerKeys": 80,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 813475,
-  "getWorkflowChars": 112103,
-  "getResourceChars": 693699,
-  "getTechniqueChars": 28995,
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-06 against workflows@693e49b3, adopting from 69a01ca1 across 41 corpus commits. Delivery is 1,648,272 characters, 273,896 above the previous recording of 1,374,376 at workflows@69a01ca1 \u2014 a 19.9% rise, far past the 1% gate, and priced here rather than waived. The characters buy reachability, not new content: the walk dispatches all 15 activities where it dispatched 12, and the three it now enters are the optional discovery activities requirements-elicitation, research and implementation-analysis. None of those three changed its own required flag or gating in the drift; what changed is the gate that routes into them. design-philosophy carried one checkpoint, classification-and-path-confirmed, deciding both the classification and the path; the atomic-checkpoints remediation split it into classification-confirmed and workflow-path-selected, so path selection is now its own decision and the walker's answer routes through discovery where the combined gate left via skip-optional-activities to plan-prepare. Each new dispatch bundles its whole operation set, so bundled operations rise 93 to 127, resource fetches 144 to 174, the resource ledger 75 to 87 keys, and checkpoint traffic 11 to 16 yields. By surface, get_activity rises 658,296 to 813,475 (+23.6%) and get_resource 572,485 to 693,699 (+21.2%); get_workflow falls 0.7%. get_technique is the one surface that drops, 30,672 to 28,995 (-5.5%), because the pass-orchestration remediation deleted analyse-challenge/run-loop.md and moved its work onto an activity-level assumption-convergence loop binding reconcile-assumptions, challenge-assumptions and combine-assumption-challenges as steps. Definition counts confirm nothing was added: 114 technique files where there were 115, the same 37 resources, and step technique binds 186 to 189. The option-coverage walk is unmeasured at this recording. Re-verified 2026-09-06 against workflows@3695f3ab, which adopts a canon-audit remediation across 62 work-package files: delivery falls 0.2% against the numbers above, inside the 1% gate, so those numbers stand and only the revision moves. The fall is the remediation removing duplicated guide, rule and contract material rather than any content leaving the corpus."
+  "getActivityChars": 658637,
+  "getWorkflowChars": 112075,
+  "getResourceChars": 569749,
+  "getTechniqueChars": 29070,
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-09-06 against workflows@3695f3ab. Delivery is 1,369,531 characters over a twelve-activity walk. The previous recording measured fifteen activities and read as a 19.9% rise it priced rather than waived. That rise was not corpus growth: the walker's skip-optional policy keyed on classification-and-path-confirmed, the combined gate the corpus had already split into classification-confirmed and workflow-path-selected. With no matching key the policy fell through to the first option of the unmatched gate, full-workflow, so every named path policy walked the same full discovery route and the baseline recorded a walk no scenario had asked for. The policies now key on workflow-path-selected, skip-optional skips requirements-elicitation, research and implementation-analysis as its name says, and this recording is that walk. The drop against the previous figure is the correction, not a saving."
 }
