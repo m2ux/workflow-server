@@ -15,8 +15,7 @@ Apply this guide to all PRs that introduce features, fix bugs, refactor, make ar
 ## Lifecycle tense
 
 - **Initial** (`pr_template_variant: initial`) — the body before implementation. Future-tense checklist language and an **Implementation (coming next)** Changes block are correct only in this variant.
-- **Final** (`pr_template_variant: final`) — the body once implementation has landed. The Changes section describes what **was** implemented in present/past tense; do not leave “coming next”, unchecked “Ready for review” theatre, or plan-only checklist state after code exists.
-- Re-render with Final as soon as implementation lands, so mid-flow review does not read a stale Initial body.
+- **Final** (`pr_template_variant: final`) — the body once implementation has landed. The Changes section describes what **was** implemented in present/past tense, with no “coming next”, no unchecked “Ready for review” theatre, and no plan-only checklist state.
 
 ## Templates
 

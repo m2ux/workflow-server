@@ -57,7 +57,7 @@ variables:
       defaultValue: false
     - name: classified_findings
       type: array
-      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier it is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade)."
+      description: "The input findings, each carrying its assigned severity, its `action_tier`, and its `impact_axis` where one applies."
     - name: code_findings_actionable
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.

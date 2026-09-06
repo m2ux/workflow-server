@@ -106,5 +106,5 @@ The workflow carries a work package over an existing pull request as well as ove
 | Planning | `{planning_folder_path}` | Work package planning documents and review artifacts |
 | Session trace | `{planning_folder_path}/session-trace.md` | Lean mechanical close-out summary (tool counts, durations, errors, validation-warning clusters) when opaque handoff tokens resolve |
 | Reviews | `.engineering/artifacts/reviews` | PR review analysis documents |
-| ADR | `.engineering/artifacts/adr` | Architecture Decision Records |
+| ADR | `{adr_dir}` | Architecture Decision Records |
 | Comprehension | `{comprehension_dir}` | Persistent codebase knowledge artifacts (cumulative across work packages) |

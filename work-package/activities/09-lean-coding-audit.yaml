@@ -24,7 +24,7 @@ variables:
       defaultValue: false
     - name: review_findings
       type: array
-      description: The tagged findings for the change, each under a stable `LC-{n}` designator so a reader and a caller reference the same finding — carrying a taxonomy tag, the location, the simpler alternative, and the lines it would save — closing with the diff-scoped scoreboard.
+      description: The lean-coding audit's findings, each under a stable `LC-{n}` designator carrying its taxonomy tag, location, simpler alternative and the lines it would save, closing with the diff-scoped scoreboard.
 required: true
 steps:
   - kind: technique

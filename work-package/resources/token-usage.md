@@ -43,5 +43,5 @@ Cost is an estimate, meaningful for API-key per-token billing. On a subscription
 - **A total is a total only when coverage is complete.** With any dispatch unaccounted, the figure is labelled a floor and the unaccounted count sits beside it.
 - **Cost is always an estimate.** The label and the API-key-versus-subscription caveat both stay in the body.
 - **No usage, no artifact.** When session state carries no usage field, this file is not written and no README line is added — a fabricated figure is worse than a missing one.
-- **A mid-run write is a draft.** It cannot include the terminal activity's own dispatch, and the same artifact is rewritten after the client exits.
+- **A mid-run write is a draft.** The terminal activity's own dispatch is absent from it, so a later revision of the same artifact supersedes it.
 - **Line budget:** one row per activity, with the four sections above and no additional prose.

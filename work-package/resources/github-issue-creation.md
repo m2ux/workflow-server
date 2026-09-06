@@ -29,13 +29,13 @@ Skip formal issues for: trivial fixes (typos, formatting); internal refactoring 
 
 ## Anti-Patterns
 
-| Anti-Pattern | Description | Symptoms | Solution |
-|--------------|-------------|----------|----------|
-| **Solution Masquerading as Problem** | Describing implementation rather than need | "Add X table" instead of "Users can't find X" | Reframe: What user need does this solve? |
-| **Vague Problem Statement** | Problem unclear or too broad | "Improve search" with no specifics | Add concrete examples of current failures |
-| **Missing Acceptance Criteria** | No way to know when it's done | Endless scope creep, "one more thing" | Define checkboxes that mark completion |
-| **Kitchen Sink Scope** | Too many unrelated problems in one issue | Touches every part of the system | Split into focused, independent issues |
-| **Assumed Context** | Reader must already know the problem | "Fix the thing we discussed" | Write as if reader has no prior context |
+Each is checkable against a draft:
+
+- **Solution masquerading as problem** — a title naming a construct ("Add X table") states the need instead ("Users can't find X"). The tell is a draft that reads as a fix.
+- **Vague problem statement** — "Improve search" carries concrete examples of what currently fails.
+- **Missing acceptance criteria** — every issue defines the checkboxes that mark it done; without them the scope keeps growing.
+- **Kitchen-sink scope** — an issue touching every part of the system splits into focused, independent issues.
+- **Assumed context** — "Fix the thing we discussed" is written for a reader with no prior context.
 
 ## Issue Template
 

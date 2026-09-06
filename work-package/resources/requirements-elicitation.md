@@ -150,23 +150,21 @@ Criteria must be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.
 **Notes:** [Omit if none]
 ```
 
-## Anti-Patterns to Avoid
+## Question Discipline
 
-| Don't | Why | Do Instead |
-|-------|-----|------------|
-| Ask leading questions | Biases responses | Ask open-ended questions |
-| Accept vague answers | Creates assumptions | Probe for specifics |
-| Skip scope boundaries | Leads to scope creep | Always define in/out |
-| Assume you understand | Hidden misunderstandings | Confirm understanding |
-| Mix requirements and solutions | Constrains design options | Keep "what" separate from "how" |
-| Accept the first answer | May miss deeper needs | Ask "why" and "what else" |
-| Skip stakeholder identification | Miss important perspectives | Always identify who's affected |
+- Questions are open-ended, so the answer carries the stakeholder's framing rather than the asker's.
+- A vague answer is probed for specifics; recorded as given, it becomes an assumption.
+- Every pass defines what is in scope and what is out, which is what holds the scope still.
+- Understanding is confirmed back to the stakeholder before it informs a requirement.
+- "What" stays separate from "how" — a requirement that names a solution has already narrowed the design.
+- The first answer is followed by "why" and "what else", which is where the deeper need surfaces.
+- Who is affected is identified before the requirements are written, so no perspective is missing from them.
 
 ## Minimum Viable Elicitation
 
 For simpler features, at minimum capture: a one-sentence problem statement, the primary user/stakeholder, 3-5 in-scope items, 2-3 explicit exclusions, and 2-3 success criteria.
 
-**Stop eliciting** when you can confidently answer: What problem are we solving? For whom? What's included and excluded? How will we know it's done?
+Elicitation is complete when four questions are confidently answerable: what problem are we solving, for whom, what is included and excluded, and how we will know it is done.
 
 ## Rules
 

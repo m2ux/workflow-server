@@ -142,10 +142,10 @@ The `createJiraIssue` MCP tool accepts markdown format and handles conversion. N
 
 ## Anti-Patterns
 
-| Anti-Pattern | Description | Solution |
-|--------------|-------------|----------|
-| **Solution as Summary** | "Add caching layer" | Describe the problem: "Search response time exceeds 5 seconds" |
-| **Vague Description** | "Fix the bug" | Include reproduction steps, expected vs actual |
-| **Wrong Issue Type** | Using Task for user-facing work | Use Story for user value, Task for technical work |
-| **Missing Acceptance Criteria** | No way to verify completion | Add observable, testable criteria |
-| **Implementation Details** | "Modify SearchService.ts line 42" | Describe the problem, not the fix |
+Each is checkable against a draft:
+
+- **Solution as summary** — "Add caching layer" states the problem instead: "Search response time exceeds 5 seconds".
+- **Vague description** — "Fix the bug" carries reproduction steps and expected versus actual.
+- **Wrong issue type** — user-facing value is a Story and technical work is a Task, per [Issue Types](#issue-types).
+- **Missing acceptance criteria** — every issue carries observable, testable criteria that verify completion.
+- **Implementation details** — "Modify SearchService.ts line 42" describes the problem rather than the fix.
