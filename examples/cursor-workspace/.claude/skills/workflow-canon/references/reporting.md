@@ -53,13 +53,14 @@ Reconcile the surface enumeration built in SKILL.md § Audit → Scope the surfa
 | Disposition | Means |
 |-------------|-------|
 | `read` | The whole contents were inspected |
-| `swept` | A Detect-derived scan stood in for reading, named here with its terms |
-| `unread` | Neither |
+| `unread` | Anything else |
 
-The three sum to the enumeration. Where they do not, the list the walk consumed is not the list the header claims, and the report states the one that was walked.
+A scan hit makes a path `read` only where the hit was followed into the file and the file inspected whole. **A scan result is evidence for a finding and never a disposition for a path.** Its terms say what it could have found and nothing about what the file holds, and no row it produces distinguishes a file it cleared from one it never returned.
 
-- **List the paths for everything other than `read`.** A `swept` or `unread` count with no paths behind it cannot be picked up by the next pass, which is the reader this section is for.
-- **`swept` is bounded by the scan, not by the file.** Naming the scan's terms says what it could have found; it says nothing about what the file holds, and no row distinguishes a file the scan cleared from one it never returned.
+The two sum to the enumeration. Where they do not, the list the walk consumed is not the list the header claims, and the report states the one that was walked.
+
+- **List the `unread` paths.** A count with nothing behind it cannot be picked up by the next pass, which is the reader this section is for.
+- **`unread` is the pass's residual and it carries forward.** The next audit of this target starts its reading from this list, per SKILL.md § Audit → Scope the surface. A register that gives the count alone leaves the next pass to choose its own slice, and consecutive passes then re-read the same files while the residual stands.
 - **Existence claims are bounded by the same list.** A finding that a reference dangles, an id is declared nowhere, or a file is unreferenced holds only over the enumeration it was resolved against. Where that enumeration carries `unread` paths, say so on the finding — absence over a partial set is a weaker claim than absence over the target.
 
 ## Which report
@@ -79,7 +80,9 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 ~~~markdown
 # Canon Audit — `{target}`
 
-**Base ref:** `{ref}` · **Target surface:** N files (read N · swept N · unread N) · **Change surface:** N files (touched: N whole files · I/O-contract closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
+**Base ref:** `{ref}` · **Target surface:** N files — read N · **unread N** · **Change surface:** N files (touched: N whole files · I/O-contract closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
+
+**Verdict:** N findings over the N files read whole. N of the target's N files are unread and what they hold is unmeasured.
 
 | Severity | Open | Known |
 |----------|-----:|------:|
@@ -109,11 +112,10 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 
 ## File coverage
 
-read N · swept N · unread N — summing to the target surface.
+read N · unread N — summing to the target surface.
 
 | Disposition | Paths |
 |-------------|-------|
-| `swept` | `{path}` … and the scan's terms |
 | `unread` | `{path}` … |
 
 [Omit the table only when every path is `read`. Never give a count with no paths behind it.]
@@ -131,5 +133,6 @@ read N · swept N · unread N — summing to the target surface.
 - **No criteria prose in the report.** Link the entry; the catalog is its home.
 - **Cite entries by name.** Never a bare designator, never any count of the catalog's entries.
 - **Report the verify pass honestly.** Say which Highs were withdrawn or downgraded on re-derivation; a register that silently drops them reads as a walk that never found them.
+- **The verdict states the residual.** A finding count measures the reading, and the `unread` figure is what it is a fraction of. A register leading with findings alone reads as a measurement of the target, and no reader can tell a walked target from a sampled one.
 - **Report the change surface honestly.** Header counts and the Change surface table must match the skill's union (whole touched files ∪ I/O-contract closure ∪ consumers). A report that only lists diff hunks or omits silent referencers is incomplete coverage, not a clean sweep.
 - **Every header figure reconciles against a list in the body.** The target surface reconciles against File coverage, the change surface against the Change surface table. A figure with nothing behind it states a scope the report never walked and no reader can check.
