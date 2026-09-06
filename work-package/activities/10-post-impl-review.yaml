@@ -23,7 +23,6 @@ variables:
     - push_remote
     - requirements
     - review_findings
-    - skip_architecture_summary
     - target_path
     - target_repo
     - test_findings_actionable
@@ -194,11 +193,6 @@ steps:
         id: re-test-suite-review
         technique: review-test-suite
   - kind: technique
-    id: architecture-summary
-    technique: summarize-architecture
-    required: false
-    when: skip_architecture_summary != true
-  - kind: technique
     id: classify-and-route-findings
     technique:
       name: findings-classification
@@ -235,4 +229,3 @@ outcome:
   - Code-level defects and risks are surfaced and triaged before validation
   - Structural risks across the change set are identified for triage
   - Test coverage gaps are surfaced so they can be closed before validation
-  - A stakeholder-readable architecture overview is available when the change warrants one
