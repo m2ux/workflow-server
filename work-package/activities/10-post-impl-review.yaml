@@ -53,6 +53,10 @@ variables:
       type: boolean
       description: Whether any change block carries an issue.
       defaultValue: false
+    - name: rationale_attested
+      type: boolean
+      description: True once every change block's rationale paragraph is confirmed to describe the change it sits under.
+      defaultValue: false
     - name: reviewed_code_base_url
       type: string
       description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
@@ -109,9 +113,19 @@ steps:
       - id: rationale-accurate
         label: Rationale accurate as written
         description: Every rationale paragraph describes the change it sits under
+        effect:
+          setVariable:
+            rationale_attested: true
       - id: rationale-corrected
         label: Rationale needs correction
-        description: The reply carries the corrections, which land in the manual diff review report
+        description: The reply carries the corrections
+        effect:
+          setVariable:
+            rationale_attested: false
+  - kind: technique
+    id: re-render-block-rationale
+    technique: review-diff
+    when: rationale_attested == false
   - kind: loop
     id: block-interview-loop
     name: Block Interview Loop

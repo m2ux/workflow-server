@@ -19,6 +19,7 @@ variables:
     - project_type
     - provenance_log_path
     - push_remote
+    - raised_findings_scope
     - rating_cap
     - requirements
     - squash_merge_supported

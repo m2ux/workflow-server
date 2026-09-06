@@ -13,6 +13,10 @@ Consolidated review summary in the consolidated review format.
 
 The findings gathered and classified across code review, test review, validation, and strategic review — the content the summary renders. Each carries the severity it renders at and the `action_tier` it is delivered under.
 
+### raised_findings_scope
+
+How much of `{classified_findings}` the posted review carries to the author: `all`, the `selected` subset the delivery gate named, or `none`.
+
 ### prior_feedback_triage
 
 The triage of prior PR feedback — each prior comment dispositioned Confirmed / Refuted / Superseded — rendered as the summary's Prior Feedback Triage section.
@@ -84,6 +88,7 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 - Populate the template from `{classified_findings}`: executive summary, per-category findings (code, test, structural analysis, lean-coding audit, documentation, validation, branch hygiene, strategic review), what the change gets right, action items, and severity definitions.
 - **Every row of every section comes from `{classified_findings}` and nothing else.** One finding is one row, under the designator its own report defines, in ascending designator order per [Designators](../resources/findings-report.md#designators). A section drawing its order from a second enumeration — a priority list, a remediation order — renders siblings inconsistently, and a row standing for a group of findings hides each of them from the totals and from the Action Items.
 - Reference, don't restate: each finding renders as its item designator, `@` locus link, one-line title, and severity only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `@` cell is a hyperlinked `>` onto the pertinent locus — reviewed code under `{reviewed_code_base}` with a line anchor, or the test, document, CI run, or commit the category declares. Descriptions, evidence, and suggestions stay in the linked report artifacts.
+- Carry `{classified_findings}` into the rendered sections at `{raised_findings_scope}`: every finding at `all`, the named subset at `selected`, and none at `none`, where the linked report artifacts keep whatever the summary leaves out.
 - Render the Strategic Review section from the run's cleanup and scope-fit recommendations as a findings table on the shared format.
 - Render each Action Items tier from `{classified_findings.action_tier}`, the tier each finding is delivered under per [Action Items](../resources/review-mode.md#action-items).
 - Render `What This Change Gets Right` between Strategic Review and Action Items, one bullet per specific strength and no source pointer beside it, per [What This Change Gets Right](../resources/review-mode.md#what-this-change-gets-right); omit the section when the review found none.
