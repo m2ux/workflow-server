@@ -157,6 +157,7 @@ graph:
     abort: __terminal__
   design-philosophy:
     done: codebase-comprehension
+    revise-classification: design-philosophy
   requirements-elicitation:
     research-needed: research
     no-research-needed: implementation-analysis
