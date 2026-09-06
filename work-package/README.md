@@ -94,17 +94,9 @@ Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../met
 
 ## Review Mode
 
-This workflow supports **review mode** for reviewing existing pull requests. Review mode is ordinary state: a detection step early in `start-work-package` sets the boolean `is_review_mode` variable, and every mode-specific behaviour is a step, checkpoint or transition gated on it.
+The workflow carries a work package over an existing pull request as well as over a new implementation. Review mode is ordinary state — a boolean `is_review_mode` variable, with every mode-specific behaviour expressed as a condition on a step, a checkpoint, or an exit predicate.
 
-**Activation:** A detection step in `start-work-package` derives review intent and PR identity from the request (e.g. "start review work package", "review PR #123", "review existing implementation") and sets `is_review_mode = true`. A confirm fires only where derivation leaves a gap — mode ambiguous, or PR reference missing. When review mode is known, start-work-package also seeds a review-native `{target_workflow_outcomes}` list for close-out verification.
-
-**Skipped activities:** Requirements Elicitation (03) and Implement (08) stand down in review mode, their steps and inbound transitions gated on `is_review_mode`. Requirements come solely from the associated ticket, and the code under review already exists.
-
-Per-activity review-mode behaviour is declared on each activity's steps and exits, and the route a review run takes is the `graph` in [workflow.yaml](./workflow.yaml) resolved against those exits.
-
-**Headless after activation:** Once review mode is active, a soft checkpoint takes its default option without reaching a person. The gates a review run still pauses at are the ones its activities declare.
-
-**See [REVIEW-MODE.md](./REVIEW-MODE.md) for complete documentation.**
+[REVIEW-MODE.md](./REVIEW-MODE.md) is where review mode is documented: how it activates, what it changes, and where a review run still stops for a person.
 
 ---
 

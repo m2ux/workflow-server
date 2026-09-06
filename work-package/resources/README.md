@@ -33,7 +33,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact links to |
 | `follow-ups` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope `deferred-items`) |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
-| `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
+| `review-mode` | Review Mode | Review comment template, per-category findings fragments, and the scales they share |
 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, corpus and log artifact templates, promotion criteria, and deep-dive guidance from reverse engineering and code forensics literature |
 | `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration and scorecard formats |
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |

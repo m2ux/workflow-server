@@ -33,21 +33,21 @@ Activities express review-mode behavior through standard conditions on steps and
 - **Review-only checkpoints** have `condition: is_review_mode == true`
 - **Review-mode exits** carry the predicate `is_review_mode == true`
 
-Which constructs each activity gates is declared in that activity's own `activities/NN-<id>.yaml`, and served by `get_activity`. Per-activity review guidance is in `resources/review-mode.md`.
+Which constructs each activity gates is declared in that activity's own `activities/NN-<id>.yaml`. The format of the review a run posts is in [review-mode](./resources/review-mode.md).
+
+Requirements Elicitation and Implement stand down on the review path by routing rather than by step gating. Design-philosophy sets `needs_elicitation` false, so codebase-comprehension routes past elicitation; assumptions-review takes its `review-mode` exit straight to lean-coding-audit. Requirements come from the ticket, and the code under review already exists.
 
 ### Headless After Activation
 
 Once review mode is active, `{headless_mode}` is true, so a soft checkpoint takes its default option without reaching a person. A review-mode run can therefore be dispatched and left to run.
 
-Five gates stay interactive, each for a reason the schema does not carry:
+A gate stays interactive where no default can stand in for the answer. An activity declares a checkpoint without `defaultOption` and `autoAdvanceMs` when its gate is one of these:
 
-- **Activation gap-fills** — `review-mode-detection` (when `review_mode_ambiguous`) and `review-pr-reference` (when `review_pr_missing`) in `start-work-package`. Clear derive paths skip both.
-- **The post-to-PR confirmation** — `review-summary-approval` (`submit-for-review`). Its recommended option has an outward-facing side effect, posting the consolidated review on the pull request, so it confirms before that action.
-- **The validation-environment decision** — `local-validation-permission` (`post-impl-review`). Whether the author's suite can run in this environment is a fact about the machine, and no default option can assert it.
-- **The diff provenance attestation** — `file-index-table` (`post-impl-review`). The confirmation it records is the provenance attestation for every block of the diff, and on the review path there is no author to vouch for that diff, so it is the load-bearing confirmation of the run.
-- **The findings-delivery decision** — `findings-delivery` (`strategic-review`). It settles which findings the posted review carries to the author, which is what the review publishes.
+- **A gap the derivation left** — the mode, or the identity of the pull request, that the request itself did not settle. A clear derive path reaches neither.
+- **A fact about the machine or the diff that the run cannot observe** — whether the author's suite can run in this environment, whether any change block carries an issue, and whether each block's rationale describes the change it sits under. On the review path there is no author to vouch for the diff, so those attestations are the load-bearing confirmations of the run.
+- **An outward-facing side effect** — posting the consolidated review on the pull request, and settling which findings that review carries to the author.
 
-Every other review-reachable checkpoint either declares `defaultOption` with `autoAdvanceMs`, or is gated out on `is_review_mode`. The activity YAML declares which, and `npm run test:coverage-walk` is what holds a review run to reaching only these five.
+Every other review-reachable checkpoint declares `defaultOption` with `autoAdvanceMs`, or is gated out on `is_review_mode`. The activity YAML is where each is declared.
 
 The create path and the review path each carry their own findings gate, because the decision differs. On the create path `review-findings` asks whether to fix now, fix a selection, defer, or accept — the session owns the code and can take all four actions. On the review path `findings-delivery` asks which findings the posted review carries to the author, since raising a finding is the only action a review can take on someone else's branch. Each gate is conditioned on `is_review_mode`, so a run meets exactly one of them and its options name actions that run can perform.
 
@@ -90,7 +90,8 @@ graph TD
     IA -->|checkout base| BASELINE[Analyze pre-change state]
     BASELINE --> PP[plan-prepare]
 
-    PP --> LCA[lean-coding-audit: document findings]
+    PP --> AR[assumptions-review]
+    AR -->|review-mode exit| LCA[lean-coding-audit: document findings]
     LCA --> PIR[post-impl-review]
 
     PIR --> VAL[validate]

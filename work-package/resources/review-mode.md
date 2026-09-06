@@ -31,7 +31,7 @@ The sub-sections decompose the rules so a consumer fetches only the one it needs
 
 ### Header Fields
 
-The summary header carries `PR`, `Plan`, `Activities`, `Reports`, and `Date` fields.
+The summary header carries `PR`, `Plan`, `Activities`, `Reports`, and `Date` fields, in that order. Every `Plan`, `Reports` and `Activities` entry is a hyperlink; a bare name in any of the three is a defect.
 
 **Findings constraint:** every finding names a file within the authored surface (the PR's changed-files list). Findings on files in that set form the PR's findings; findings on other files form a separate "pre-existing" grouping.
 
