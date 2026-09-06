@@ -52,7 +52,7 @@ Whether the changes are significant enough to require substantial rework
 ### 3. Address Comments
 
 - For each review item with follow-up actions, emit the item and its candidate actions as structured bindable output.
-- Only implement actions explicitly selected via the activity response
+- Only implement actions explicitly selected in the reply
 - Commit fix changes per concern
 - Document which comments require substantial rework vs inline fixes
 - Group related fixes into logical commits, not one giant commit
