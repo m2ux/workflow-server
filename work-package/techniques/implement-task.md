@@ -27,6 +27,10 @@ The primary edit target — the function, class, or method this task changes.
 
 Code changes for a single task
 
+### changed_paths
+
+Repository-relative paths this task wrote, as the set a commit stages.
+
 ## Protocol
 
 ### 1. Understand Context
@@ -59,7 +63,8 @@ Code changes for a single task
 ### 5. Post Edit Verification
 
 - Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[detect-changes](../../meta/techniques/gitnexus-operations/detect-changes.md) before commit to confirm the changes affect only the expected symbols and execution flows
-- Record the `{task_implementation}` for this task, capturing the files changed and a brief summary of the approach taken
+- Record the `{task_implementation}` for this task, capturing a brief summary of the approach taken
+- Emit `{changed_paths}` as the repository-relative paths this task wrote
 
 ## Rules
 

@@ -1,25 +1,27 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Prompt the user for the stakeholder discussion transcript before agent-led elicitation begins, offering a skip path with a noted limitation.
+Stakeholder discussion transcript recorded as the elicitation baseline, with the limitation noted where none was supplied.
 
 ## Inputs
 
-## Outputs
-
 ### stakeholder_transcript
 
-The transcript or summary captured from the user, or absent when the user skips.
+*(optional)* The transcript or summary of the discussion held with stakeholders before elicitation. Empty where the discussion did not happen.
+
+## Outputs
+
+### stakeholder_baseline
+
+The stakeholder discussion as elicitation reads it — the recorded transcript, or the noted limitation that agent-led elicitation proceeds without one.
 
 ## Protocol
 
-### 1. Prompt Transcript
+### 1. Record the Baseline
 
-- Prompt user for the `{stakeholder_transcript}` before elicitation  
-  > Stakeholder input comes first: the user should discuss the initiative with key stakeholders before agent elicitation begins.
-- Offer skip option with note about limitation if no `{stakeholder_transcript}` is provided
-- If the user skips stakeholder discussion entirely, note the limitation and proceed with agent-led elicitation
+- Set `{stakeholder_baseline}` from `{stakeholder_transcript}`
+  > Where `{stakeholder_transcript}` is empty, `{stakeholder_baseline}` carries the limitation that elicitation proceeds on agent-led questions alone, without stakeholder input behind them.

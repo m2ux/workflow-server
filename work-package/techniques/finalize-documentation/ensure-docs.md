@@ -25,3 +25,4 @@ The public/exported APIs in the diff, each carrying inline documentation (doc co
 2. Identify public APIs in changed code.
 3. Verify each has inline documentation (doc comments).
 4. Add missing doc comments where absent.
+5. Verify the documentation builds — on Rust/Substrate through [cargo-operations](../../../meta/techniques/cargo-operations/TECHNIQUE.md)::[doc](../../../meta/techniques/cargo-operations/doc.md)(*scope*=`--workspace --no-deps`), on other project types through that project's equivalent doc command.

@@ -39,6 +39,10 @@ Per-block descriptive paragraphs explaining intent, context, and non-obvious des
 
 Permanent blob-URL prefix for citing the reviewed code at the commit under review — repository host, owner, name, `blob`, and the full head sha. A citation appends the repo-relative path and a line anchor.
 
+### flagged_block_indices
+
+The change blocks carrying an issue, one entry per block, in index order. A bare block number covers every change in that file; a number with a line reference (`3-L42`) narrows it to that line. Empty when no block carries one.
+
 ### manual_diff_review_report
 
 Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-section-template) from user-flagged blocks, written as the `## Manual Diff Review` section of the code-review [report](../resources/rust-substrate-code-review.md#report-template) (the review findings' canonical home) — created here when this review runs first, updated in place when the full code-review report is written.
@@ -81,22 +85,18 @@ True if any block marked as critical blocker
 
 ### 5. Collect Flagged
 
-- Consume flagged rows reported as block numbers only: `3, 7, 12` where those blocks carry an issue, or `none` where none does
-- A bare block number covers all changes in that file; a block with a line reference (e.g. `3-L42`) focuses the interview on that specific line
-- Populate `{flagged_block_indices}` from the flagged set, one entry per block carrying an issue
+- Emit `{flagged_block_indices}` as the blocks carrying an issue, in index order
 
-### 6. Interview Blocks
+### 6. Assemble Block Context
 
-- For each flagged block: assemble the full diff content for that file into the interview context; confirm before continuing to the next block
-- Record each supplied block description verbatim, noting severity if mentioned (critical, minor, etc.)
-- If the response marks the block as a critical blocker, set `{has_critical_blocker}`=true
-- Continue to the next flagged block until all are addressed
+- For each entry of `{flagged_block_indices}`, assemble the full diff content for that file, scoped to the line the entry names where it carries one
+- Record each block's issue into `{manual_diff_review_report.block_findings}` verbatim, with its severity where one is stated
 - Detect manual review edits: compare the working tree to the last agent-written tip for paths under review; when the reviewer applied edits outside the agent, record each confirmed pattern as a retrospective candidate (in-task follow-up)
 
 ### 7. Create Report
 
 - Write the `{manual_diff_review_report}` as the `## Manual Diff Review` section of `code-review.md`, following the [section template](../resources/manual-diff-review.md#manual-diff-review-section-template) (creating the artifact if this review runs first)
-- Include flagged rows, interview responses verbatim, and severity; when the user reported `none`, the section is its one-line header only
+- Include each flagged row with its `{manual_diff_review_report.block_findings}` entry verbatim and its severity; where `{flagged_block_indices}` is empty, the section is its one-line header only
 
 ## Rules
 

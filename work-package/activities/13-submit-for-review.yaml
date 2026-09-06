@@ -19,6 +19,7 @@ variables:
     - project_type
     - provenance_log_path
     - push_remote
+    - raised_findings_scope
     - rating_cap
     - requirements
     - squash_merge_supported
@@ -238,23 +239,6 @@ steps:
       - action: validate
         target: push_remote_verified != false
         message: "Push remote '{push_remote}' ({push_remote_url}) did not verify as private. Point {push_remote} at the private fork inside {target_path} and re-run."
-  - kind: checkpoint
-    id: private-remote-confirmation
-    condition:
-      type: simple
-      variable: stealth_mode
-      operator: ==
-      value: true
-    message: "Final isolation check — the push target is remote '{push_remote}' ({push_remote_url}), and a stealth-mode run reaches a private remote only."
-    options:
-      - id: confirmed
-        label: Yes, push to the private remote
-        description: The remote is the verified private fork
-      - id: abort
-        label: No, abort push
-        description: The remote did not verify as private
-        effect:
-          exit: abort
   - kind: technique
     id: verify-push-signatures
     technique: manage-git::verify-commit-signatures
@@ -264,18 +248,20 @@ steps:
         target: commits_signed != false
         message: "Commits staged for the private push carry no valid signature. Sign them in {target_path} and re-run."
   - kind: checkpoint
-    id: push-confirmation
+    id: private-push-confirmation
     condition:
       type: simple
       variable: stealth_mode
       operator: ==
       value: true
-    message: The push to the private remote '{push_remote}' is prepared and its commits carry valid signatures.
+    message: "The push target is remote `{push_remote}` ({push_remote_url}), its commits carry valid signatures, and a stealth-mode run reaches a private remote only."
     options:
-      - id: confirm
-        label: Confirm push
-      - id: cancel
-        label: Cancel
+      - id: confirmed
+        label: Yes, push to the private remote
+        description: The remote is the verified private fork
+      - id: abort
+        label: No, abort push
+        description: The remote did not verify as private
         effect:
           exit: abort
   - kind: technique
@@ -378,7 +364,8 @@ steps:
           variable: project_type
           operator: ==
           value: rust-substrate
-    message: "Build-dependent artifacts on a rust-substrate project — `.scale` files and node metadata — regenerate outside the working tree, so their currency is the user's to settle."
+    message: |-
+      Build-dependent artifacts on a rust-substrate project — `.scale` files and node metadata — regenerate outside the working tree, so their currency is the user's to settle, and CI is otherwise the first signal that they are stale.
     options:
       - id: none-needed
         label: None needed
@@ -386,44 +373,24 @@ steps:
         effect:
           setVariable:
             build_dependent_artifacts_pending: false
-      - id: regen-needed
-        label: Regen needed — hand off
-        description: User must regenerate build-dependent artifacts; continue to the hand-off gate
-        effect:
-          setVariable:
-            build_dependent_artifacts_pending: true
-  - kind: checkpoint
-    id: build-artifact-handoff
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: build_dependent_artifacts_pending
-          operator: ==
-          value: true
-    message: |-
-      Build-dependent artifacts on this rust-substrate project need regeneration outside the working tree, and CI is otherwise the first signal that they are stale.
-    options:
       - id: user-regenerated
         label: Regenerated — continue
-        description: User regenerated the artifacts; clear the pending flag
+        description: The build-dependent artifacts in the tree are current
         effect:
           setVariable:
             build_dependent_artifacts_pending: false
       - id: user-owns-regen
         label: User owns regen — continue
-        description: Record that the user owns regeneration; clear the gate and proceed
+        description: Regeneration stays with the user, and the pull request carries the artifacts as they stand
         effect:
           setVariable:
-            build_dependent_artifacts_pending: false
+            build_dependent_artifacts_pending: true
+  - kind: action
+    id: announce-regen-owed
+    when: build_dependent_artifacts_pending == true
+    actions:
+      - action: message
+        message: "Build-dependent artifacts stay with the user to regenerate; the pull request carries them as they stand."
   - kind: technique
     id: mark-ready
     technique: update-pr::mark-ready

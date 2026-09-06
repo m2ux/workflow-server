@@ -9,13 +9,13 @@ Human-facing assumption lifecycle — collection, residual interview/batch after
 
 ## Inputs
 
-### activity_context
+### assumption_source
 
-The context in which assumptions are generated
+The work the assumptions are drawn from — the design decision, the plan, the analysis, or the change under construction.
 
 ### assumption_categories
 
-The list of categories used to classify assumptions during collection (supplied via `step.technique.inputs`). Collection classifies each assumption into one of these categories.
+The categories an assumption is classified into.
 
 ### assumptions_log
 
@@ -35,6 +35,6 @@ Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template
 
 Make implicit decisions explicit — assumptions should be elevated for validation
 
-### residual-interview-only
+### assumptions-log-is-the-record
 
-[interview](./interview.md) runs only when `{has_open_assumptions}` remains true after analyse-challenge (or a standalone reconcile when the construct is not bound). Empty residue skips user input.
+Every assumption's category, agent position and resolution status lives in the assumptions log, so a later reader settles an outcome from the log rather than from the transcript that produced it.

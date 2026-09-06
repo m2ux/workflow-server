@@ -13,6 +13,10 @@ Structured requirements elicitation across question domains, with stakeholder re
 
 The question domains to iterate one question at a time (per the [Question Domain Reference](../../resources/requirements-elicitation.md#question-domain-reference)).
 
+### stakeholder_baseline
+
+The stakeholder discussion the questions build on, or the recorded limitation that none was held.
+
 ## Outputs
 
 ### requirements
@@ -35,7 +39,7 @@ Record of the questions asked and the responses given across the domain iteratio
 
 ### 1. Iterate Domains
 
-- Use attached [Question Domain Reference](../../resources/requirements-elicitation.md#question-domain-reference) for question domains
+- Use attached [Question Domain Reference](../../resources/requirements-elicitation.md#question-domain-reference) for question domains, narrowing each domain's questions to what `{stakeholder_baseline}` leaves unanswered
 - Iterate through domains one question at a time
 - Record responses and adapt follow-up based on answers
 - Skip irrelevant follow-ups; probe deeper when needed

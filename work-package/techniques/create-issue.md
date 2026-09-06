@@ -49,13 +49,12 @@ URL of the verified or newly created issue.
 
 - Runs only when the user provides an existing issue key. Detect the platform from key format: `#N` or bare number → GitHub, `PROJ-N` → Jira. Set `{issue_platform}`.
 - For GitHub: Apply [view-issue](../../meta/techniques/github-cli-protocol/view-issue.md)(*repo_path*=`{component_git_dir}`); capture `{issue_number}` and `{issue_url}` from the op.
-- For Jira: call `getAccessibleAtlassianResources` FIRST to obtain cloudId, preserve as `{$jira_cloud_id}`. THEN call `getJiraIssue` with cloudId and the issue key. Do NOT call `getJiraIssue` before cloudId is resolved.
+- For Jira: Apply [atlassian-operations](../../meta/techniques/atlassian-operations/TECHNIQUE.md)::[get-jira-issue](../../meta/techniques/atlassian-operations/get-jira-issue.md)(*issueIdOrKey*=the issue key); take `{issue_record}` from the op.
 - Capture `{issue_number}` and `{issue_url}` from the verification result. Set `{needs_issue_creation}` to false.
 
 ### 2. Resolve Platform For Creation
 
 - Runs when no existing issue key was given. Set `{needs_issue_creation}` to true.
-- `{issue_platform}` arrives bound. Use it as given; do not re-ask.
 
 ### 3. Create Github Issue
 
@@ -69,13 +68,12 @@ URL of the verified or newly created issue.
 ### 4. Create Jira Issue
 
 - Runs when `{issue_platform}` is jira and `{needs_issue_creation}` is true. Use the [issue structure](../resources/jira-issue-creation.md#issue-structure) and [issue types](../resources/jira-issue-creation.md#issue-types) (and [anti-patterns](../resources/jira-issue-creation.md#anti-patterns) when checking the draft).
-- Obtain Atlassian cloud ID via `getAccessibleAtlassianResources` and preserve as `{$jira_cloud_id}`. This MUST be the first Jira tool call.
-- Create the issue in `{jira_project}`. Resolve available issue types for that project.
-  > When `{jira_project}` is unset, list the available projects via `getVisibleJiraProjects` and take the selection from the reply.
+- Create the issue in `{jira_project}` by applying [atlassian-operations](../../meta/techniques/atlassian-operations/TECHNIQUE.md)::[create-jira-issue](../../meta/techniques/atlassian-operations/create-jira-issue.md), resolving the available issue types for that project through [list-jira-issue-types](../../meta/techniques/atlassian-operations/list-jira-issue-types.md).
+  > Where `{jira_project}` is unset, Apply [list-jira-projects](../../meta/techniques/atlassian-operations/list-jira-projects.md) and take the project from the returned set.
 - Gather summary, description, and acceptance criteria from `{issue_subject}` where it is supplied and from user context otherwise, scoping the issue to the `{component_name}` the work package targets. Resolve assignee account ID if specified.
 - Create the issue with mapped type using the issue-type mapping below, capturing `{issue_number}` and `{issue_url}` from the resulting issue.
 - Jira issue type mapping: `feature->Story`, `bug->Bug`, `task->Task`, `enhancement->Story`, `epic->Epic`
-- If any Atlassian API call fails (auth, permissions, or invalid request — including the `getJiraIssue` verification in step 1), verify the cloudId and project access, and check the Jira issue type and required fields before retrying.
+- If an atlassian-operations op fails (auth, permissions, or invalid request — including the issue verification), verify the cloud id and project access, and check the Jira issue type and required fields before retrying.
 
 ## Rules
 

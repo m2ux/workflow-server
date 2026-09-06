@@ -25,8 +25,8 @@ Boolean gate — true iff `{open_assumptions}` is non-empty.
 
 ## Protocol
 
-1. Identify all implicit decisions and assumptions made for the current `{activity_context}` — consult the [probe vocabulary](../../resources/assumptions-review.md#probe-vocabulary) and [classification vocabulary](../../resources/assumptions-review.md#classification-vocabulary) when filling rows
-2. Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the `{activity_context}` generating them
+1. Identify all implicit decisions and assumptions made across `{assumption_source}` — consult the [probe vocabulary](../../resources/assumptions-review.md#probe-vocabulary) and [classification vocabulary](../../resources/assumptions-review.md#classification-vocabulary) when filling rows
+2. Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the part of `{assumption_source}` generating them
    > Use the categories supplied for the current phase.
 3. Assign a risk letter (**H** / **M** / **L**) from the classification vocabulary; treat **H** as requiring validation before proceeding and **M** as checkpoint-confirmable for the current task
 4. If no significant assumptions are identified, record a single null row in the log (`No significant assumptions ([reason])`) and proceed — do not prompt the user to confirm a null result

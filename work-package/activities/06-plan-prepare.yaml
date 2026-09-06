@@ -64,16 +64,16 @@ steps:
     actions:
       - action: validate
         target: workflows.worktree.present == true
-        message: The workflows worktree is missing. From the parent repo root run 'git worktree add ./workflows workflows' (see SETUP.md).
+        message: "The workflows worktree is missing. From the parent repo root run `git worktree add ./workflows workflows` (see SETUP.md)."
       - action: validate
         target: target_path != null
-        message: target_path is unset, so there is no worktree to plan against.
+        message: "`target_path` is unset, so there is no worktree to plan against."
       - action: validate
         target: host_repo_path != null
-        message: host_repo_path is unset, so the repository root is unresolved.
+        message: "`host_repo_path` is unset, so the repository root is unresolved."
       - action: validate
         target: planning_folder_path.writable == true
-        message: planning_folder_path is not writable. Confirm the path exists and is writable.
+        message: "`planning_folder_path` is not writable. Confirm the path exists and is writable."
       - action: validate
         target: gh.auth.status == 0
         message: gh CLI is not authenticated.

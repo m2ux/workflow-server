@@ -12,6 +12,7 @@ variables:
     - is_review_mode
     - issue_number
     - issue_platform
+    - issue_record
     - planning_folder_path
     - pr_number
     - problem_complexity

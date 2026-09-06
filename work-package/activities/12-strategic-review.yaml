@@ -30,6 +30,14 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
+    - name: raised_findings_scope
+      type: string
+      description: How much of the findings set the posted review carries to the pull request author.
+      values:
+        - all
+        - selected
+        - none
+      defaultValue: all
     - name: recommended_strategic_option
       type: string
       description: The action the agent recommends after its strategic-review analysis.
@@ -223,18 +231,21 @@ steps:
         effect:
           setVariable:
             review_passed: true
+            raised_findings_scope: all
       - id: raise-selected
         label: Raise selected findings
         description: The posted review carries the findings named in the reply; the report keeps the rest
         effect:
           setVariable:
             review_passed: true
+            raised_findings_scope: selected
       - id: raise-none
         label: Raise none
         description: The report keeps every finding and the posted review carries none of them
         effect:
           setVariable:
             review_passed: true
+            raised_findings_scope: none
 exits:
   - id: review-mode
     when: is_review_mode == true
