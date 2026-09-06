@@ -1654,7 +1654,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-and-path-confirmed'; // Known from the workflow
+      const firstCpId = 'classification-confirmed'; // Known from the workflow
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
@@ -1678,7 +1678,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-and-path-confirmed';
+      const firstCpId = 'classification-confirmed';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
@@ -1856,7 +1856,7 @@ describe('mcp-server integration', () => {
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
-        arguments: { session_index: tokenWithAct, checkpoint_id: 'classification-and-path-confirmed' },
+        arguments: { session_index: tokenWithAct, checkpoint_id: 'classification-confirmed' },
       });
       const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_index'] as string;
 
@@ -1876,7 +1876,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-and-path-confirmed';
+      const firstCpId = 'classification-confirmed';
 
       await client.callTool({
         name: 'yield_checkpoint',
@@ -1900,7 +1900,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-and-path-confirmed';
+      const firstCpId = 'classification-confirmed';
 
       await client.callTool({
         name: 'yield_checkpoint',

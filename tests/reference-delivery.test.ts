@@ -537,19 +537,21 @@ describe('reference-not-repeat delivery (B1)', () => {
       const own = new Map((technique.inputs ?? []).map((i) => [i.id, i.source]));
       expect(own.get('changed_files')).toMatch(/output of step '.+' \(activity '.+'\)/);
       // The optional-with-no-producer form is pinned on a technique that has one: every own input
-      // of `review-code` resolves to a producer, so it cannot exhibit that annotation.
-      await mcp.enter(idx, 'design-philosophy');
+      // of `review-code` resolves to a producer, so it cannot exhibit that annotation. `create-issue`
+      // declares `issue_subject` optional, and no step produces it — a caller that has a subject
+      // passes it as a bind-site deviation.
+      await mcp.enter(idx, 'start-work-package');
       const optionalCase = await client.callTool({
         name: 'get_technique',
-        arguments: { session_index: idx, step_id: 'define-problem' },
+        arguments: { session_index: idx, step_id: 'create-issue' },
       });
       expect(optionalCase.isError).toBeFalsy();
       const optionalText = responseText(optionalCase);
-      const defineTechnique = parse(optionalText.substring(optionalText.indexOf('\n\n') + 2)) as {
+      const optionalTechnique = parse(optionalText.substring(optionalText.indexOf('\n\n') + 2)) as {
         inputs?: Array<{ id: string; source?: string }>;
       };
-      const defineOwn = new Map((defineTechnique.inputs ?? []).map((i) => [i.id, i.source]));
-      expect(defineOwn.get('problem_context')).toContain('optional input');
+      const optionalOwn = new Map((optionalTechnique.inputs ?? []).map((i) => [i.id, i.source]));
+      expect(optionalOwn.get('issue_subject')).toContain('optional input');
       // Inherited entries carry a source only where it says something the block note does not
       // (e.g. a later-positioned producer); settled ambient constants stay bare.
       const inherited = technique.inherited_inputs?.items ?? [];
@@ -785,10 +787,12 @@ describe('reference-not-repeat delivery (B1)', () => {
       const idx = session['session_index'] as string;
       // Two operations of the same group, so the contracts the loader merges into both are
       // identical and a collapse is possible at all. Across groups the inherited blocks differ by
-      // construction, and nothing delivered twice would be there to collapse.
-      const stepA = 'review-strategy';
-      const stepB = 'document-findings';
-      await mcp.enter(idx, 'strategic-review');
+      // construction, and nothing delivered twice would be there to collapse. The pair also has to
+      // inherit the same set: where one leaf overrides a container declaration and the other does
+      // not, their inherited blocks differ and neither can collapse.
+      const stepA = 'evaluate-open-assumptions';
+      const stepB = 'reconcile-assumptions';
+      await mcp.enter(idx, 'assumptions-review');
 
       // Technique A (persistent, no prior get_activity) delivers in full and establishes
       // the shared contract blocks in the ledger.
