@@ -39,23 +39,6 @@ PR identifier, used to read the live PR body for conformance verification
 
 Strategic review [findings](../../resources/strategic-review.md#strategic-review-artifact-template) and recommendations
 
-#### strategic_review_artifact
-
-`strategic-review-{n}.md`
-
-### architecture_summary_doc
-
-Architecture [summary](../../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams for stakeholders
-
-#### artifact
-
-`architecture-summary.md`
-
-#### audience
-
-`human`
-
-
 ## Rules
 
 ### minimal-focused-changes

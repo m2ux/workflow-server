@@ -13,9 +13,6 @@ Knowledge-base and external research synthesized against work-package requiremen
 
 Knowledge base and web research [synthesis](../../resources/knowledge-base-research.md#planning-artifact) for the work package
 
-#### research_artifact
-
-`kb-research.md`
 
 
 ## Rules

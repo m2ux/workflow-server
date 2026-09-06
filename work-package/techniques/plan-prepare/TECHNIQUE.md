@@ -27,9 +27,6 @@ Design philosophy [artifact](../../resources/design-framework.md#design-philosop
 
 Work package [plan](../../resources/wp-plan.md#template) with task breakdown and dependencies
 
-#### plan_artifact
-
-`work-package-plan.md`
 
 #### tasks
 
