@@ -56,7 +56,7 @@ Each way the body departs from that guide, so an author can repair it while the 
   - **Superseded** — the concern was valid but a later commit or a subsequent comment resolves it; record the resolving change.
 - Tag each row with the author class (human / bot) and whether the original concern is blocker-class (it asserts a correctness, safety, data-loss, or runtime-failure defect) or non-blocker (style, preference, question).
 - Tag any reported runtime error so it is traceable as a reported failure downstream — captured once here.
-- Disposition a reported check failure against the base branch, not against the report alone: a check failing on both the branch and `{$base_branch}` is Refuted as pre-existing, and one failing only on the branch is Confirmed. The comment reporting it says a check is red, which is true either way.
+- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and set `{$base_branch}` from `{base_branch}`. Disposition a reported check failure against it, not against the report alone: a check failing on both the branch and `{base_branch}` is Refuted as pre-existing, and one failing only on the branch is Confirmed. The comment reporting it says a check is red, which is true either way.
 
 ### 3. Derive the Rating Cap
 
@@ -75,22 +75,14 @@ Each way the body departs from that guide, so an author can repair it while the 
 
 ## Rules
 
-### ingest-before-analysis
-
-Prior feedback is ingested and triaged before any independent analysis, so existing signal informs the review rather than being reconciled against a verdict already formed.
-
 ### every-prior-finding-dispositioned
 
 Every prior comment and review thread receives an explicit Confirmed / Refuted / Superseded disposition with reasoning — none is silently dropped.
 
 ### unaddressed-blocker-caps-rating
 
-An unaddressed blocker-class concern sets the rating cap; the Overall Rating may not exceed it. A blocker is never rated away by the review's own findings being light.
-
-### base-comparison-dispositions-a-check-failure
-
-A reported check failure is dispositioned by comparing the branch against `{$base_branch}`. The report establishes that a check is red; only the comparison establishes whether this branch turned it red, which is what the disposition records.
+The Overall Rating never exceeds `{rating_cap}`. A blocker is not rated away by the review's own findings being light.
 
 ### single-ingest-of-reported-failures
 
-A runtime error reported in a thread is captured here exactly once and tagged as a reported failure; downstream reported-failure triage consumes the tagged entry rather than re-reading the thread, so it is ingested once and traced once.
+A reported runtime error carries exactly one entry in `{prior_feedback_triage}`, so downstream triage consumes it once rather than re-reading the thread.

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Human-facing assumption lifecycle — collection, residual interview/batch after analyse-challenge converges, and log of decisions.
+The assumption lifecycle a work package runs on: what an assumption is, the categories it is classified into, and the log that holds its outcome.
 
 ## Inputs
 
@@ -34,6 +34,10 @@ Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template
 ### elevate-implicit
 
 Make implicit decisions explicit — assumptions should be elevated for validation
+
+### assembled-entries-carry-their-evidence
+
+An assembled open-assumption entry carries the partial evidence reconcile and challenge produced in its technical context, and resolves reversibility through [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](../../../meta/techniques/gitnexus-operations/reversibility-signal.md) where the assumption names a known symbol.
 
 ### assumptions-log-is-the-record
 
