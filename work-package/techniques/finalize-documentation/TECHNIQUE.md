@@ -11,7 +11,7 @@ The documentation a closing work package leaves behind, and the planning-folder 
 
 ### adr
 
-*(optional)* The [Architecture Decision Record](../../resources/architecture-review.md#adr-template) created for this work package, if one exists
+*(optional)* The [Architecture Decision Record](../../resources/adr.md#template) created for this work package, if one exists
 
 ### test_plan
 

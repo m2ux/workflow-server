@@ -23,6 +23,6 @@ Current implementation [analysis](../../resources/implementation-analysis.md#doc
 
 ## Rules
 
-### measure-before-improve
+### baselines-are-quantitative
 
-You can't improve what you don't measure — establish quantitative baselines
+Every baseline carries a value and the method that measured it, so a later comparison reproduces it.

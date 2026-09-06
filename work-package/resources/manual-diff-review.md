@@ -31,7 +31,7 @@ Open with a lean-header summary line, then one rationale section per changed blo
 [Descriptive paragraph explaining what the change does and why.]
 ```
 
-Reviewers use their side-by-side diff tool with this index for context. Reply with block numbers that have issues (e.g. `3, 7, 12`) or `none`.
+Reviewers use their side-by-side diff tool with this index for context.
 
 ### Block Rationale Form
 

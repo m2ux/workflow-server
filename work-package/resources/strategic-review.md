@@ -21,6 +21,30 @@ Designators use the prefix declared for this report's category at [Strategic Rev
 
 On a strategic finding, `Description` states what the change carries, `Impact` what carrying it costs the reader or the maintainer, and `Recommendation` opens with the verb it asks for — remove, simplify, or keep — followed by the argument for it.
 
+## Speculative Changes Audit
+
+The areas a scope review probes for changes the final solution does not need.
+
+| Category | Questions to Ask |
+|----------|------------------|
+| **Infrastructure** | Were CI/CD changes, build configuration, or environment setup modified speculatively? Are they still needed for the final solution? |
+| **Dependencies** | Were dependencies added, removed, or modified that aren't required by the final implementation? |
+| **Debug Code** | Are there debug statements, verbose logging, or diagnostic outputs that should be removed? |
+| **Fallback Logic** | Were fallback mechanisms added that are unnecessary given the final approach? |
+| **Configuration** | Were configuration files modified beyond what the final solution requires? |
+
+## Minimality Check
+
+Five questions over the change set, each answered "No" carrying the cleanup its row names.
+
+| Question | If "No" |
+|----------|---------|
+| Is every changed file necessary for the fix? | Revert unnecessary file changes |
+| Is every added line of code necessary? | Remove speculative or debug code |
+| Are all new dependencies required? | Remove unused dependencies |
+| Are all configuration changes required? | Revert unnecessary config changes |
+| Is the solution as simple as it could be? | Consider simplification |
+
 ## Strategic Review Artifact Template
 
 ```markdown

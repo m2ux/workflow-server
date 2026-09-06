@@ -136,7 +136,7 @@ steps:
     actions:
       - action: validate
         target: fragment_references_issue != false
-        message: "Change fragment for this work package does not reference issue_url ({issue_url}). Add a 'Closes: #{issue_number}' line (GitHub) or the full issue_url (when sibling fragments use that style) to the fragment body, commit, and re-run."
+        message: "Change fragment for this work package does not reference `{issue_url}`. Add a `Closes: #{issue_number}` line (GitHub) or the full `{issue_url}` (when sibling fragments use that style) to the fragment body, commit, and re-run."
         condition:
           type: simple
           variable: stealth_mode

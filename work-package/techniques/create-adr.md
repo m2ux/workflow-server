@@ -29,7 +29,7 @@ Directory holding the project's ADR files
 
 ### adr_document
 
-[Architecture Decision Record](../resources/architecture-review.md#adr-template)
+[Architecture Decision Record](../resources/adr.md#template)
 
 #### artifact
 
@@ -53,7 +53,8 @@ Directory holding the project's ADR files
 
 ### 3. Gather Context
 
-- Read the `{design_philosophy_doc}` for decision rationale, alternatives, and trade-offs. If the design philosophy document is not found, check `{planning_folder_path}` and prompt the user to locate the artifact.
+- Read the `{design_philosophy_doc}` for decision rationale, alternatives, and trade-offs.
+  > Where it is absent, take the rationale and alternatives from the plan and the implementation analysis instead, and record which of them supplied it.
 - Review implementation analysis and plan from `{planning_folder_path}` for architectural choices
 - Identify alternatives that were considered and rejected
 

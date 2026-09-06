@@ -44,15 +44,11 @@ True iff irreducible opens remain after this merge; false for an empty open set.
 - Reclassify remaining opens: agent-resolvable → keep `{concerns_agent_resolvable}` true; stakeholder/irreducible only → `{concerns_agent_resolvable}` false and `{residual_opens_remain}` true; none open → both false
 - Emit `{residual_opens}` as the irreducible set (empty when none)
 
-### 3. Authority
-
-- `{concern_document}` remains the single source of truth — do not restate concern bodies elsewhere
-
 ## Rules
 
-### combine-owns-flags
+### concern-document-is-the-record
 
-Only combine writes convergence and residue flags after a challenge pass. Analyse may set them during its phase; challenge units must not.
+`{concern_document}` is the single statement of every concern this operation folds; the flags it emits summarise that document rather than standing apart from it.
 
 ### empty-set-is-success
 

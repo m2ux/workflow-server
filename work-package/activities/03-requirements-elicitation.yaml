@@ -7,8 +7,6 @@ variables:
     - assumption_outcome
     - branch_name
     - component_git_dir
-    - issue_number
-    - issue_platform
     - needs_research
     - planning_folder_path
     - pr_number
@@ -55,10 +53,10 @@ variables:
       type: string
       description: The stakeholder discussion as elicitation reads it, or the recorded limitation that none was held.
       defaultValue: ""
-    - name: stakeholder_transcript
-      type: string
-      description: The transcript or summary of the discussion held with stakeholders. Empty where the discussion did not happen.
-      defaultValue: ""
+    - name: stakeholder_discussion_held
+      type: boolean
+      description: Whether a stakeholder discussion took place before agent-led elicitation.
+      defaultValue: false
 required: false
 steps:
   - kind: action
@@ -73,12 +71,15 @@ steps:
       - id: transcript-provided
         label: Transcript provided
         description: The reply carries the discussion transcript or summary
+        effect:
+          setVariable:
+            stakeholder_discussion_held: true
       - id: skip-discussion
         label: Proceed without stakeholder discussion
         description: Elicitation runs on agent-led questions alone, with the limitation recorded against the requirements
         effect:
           setVariable:
-            stakeholder_transcript: ""
+            stakeholder_discussion_held: false
   - kind: technique
     id: stakeholder-discussion
     technique: discuss

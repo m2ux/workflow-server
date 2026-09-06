@@ -11,27 +11,27 @@ Scope-disciplined strategic review of the implementation — findings, changes-f
 
 ### branch_name
 
-Feature branch under review (examined via `git diff` / `git log`)
+The feature branch the change under review sits on.
 
 ### changed_files
 
-List of files changed in the work package. Read for the orphan check; supplied directly rather than produced by an upstream step.
+The set of files the change touches — the authored surface every finding is scoped to.
 
 ### requirements
 
-The work-package requirements, used as the scope baseline for the scope-discipline check
+The work-package requirements the change is judged as minimal against.
 
 ### planning_folder_path
 
-Folder where the strategic review and architecture summary artifacts are written
+The work package's planning folder.
 
 ### target_path
 
-Target repository root — checked for a `changes/` folder and used as the commit scope
+The target repository root the change was made in.
 
 ### pr_number
 
-PR identifier, used to read the live PR body for conformance verification
+The pull request number, where one is open.
 
 ## Outputs
 

@@ -27,11 +27,7 @@ Assistant name (e.g., `claude`, `gpt`, `gemini`) — the selected assistant
 
 ### model_id
 
-Model identifier — the selected model
-
-#### default
-
-`claude-opus-4-8`
+Model identifier of the assistant that did the work, as that assistant reports it.
 
 ### prompt_class
 

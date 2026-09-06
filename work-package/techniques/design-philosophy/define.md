@@ -31,4 +31,4 @@ A clear problem definition with system understanding, impact assessment, success
   - **Constraints**: time, resources, technical limitations
   - **Root Cause**: underlying cause vs. symptoms (if applicable)
 - Ensure problem is understandable without prior context
-- If the problem statement remains too vague, ask the user for more context to clarify system understanding, impact, or success criteria
+- Where the statement cannot be made specific from the context available, record which checklist boxes it leaves unfilled, so the gap is visible rather than papered over

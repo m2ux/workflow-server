@@ -8,7 +8,7 @@ metadata:
 
 # Session Trace Guide
 
-Lean mechanical summary of resolved execution-trace events for a work-package run — what executed, how long it took, and where it went wrong. Complements the COMPLETE.md retrospective section ([workflow-retrospective](workflow-retrospective.md)), which owns signal classes and recommendations.
+What executed in a work-package run, how long it took, and where it went wrong.
 
 ## Template
 

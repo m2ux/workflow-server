@@ -20,25 +20,55 @@ Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records.
 
 {What forces the decision — the constraint, the requirement, or the problem that makes a choice necessary. Written so a reader who never saw the work package understands why this came up.}
 
+## Decision Drivers
+
+{The factors the choice turned on, one per line, each with why it mattered.}
+
 ## Decision
 
 {What was chosen, stated in the present tense as what the system does.}
 
 ## Consequences
 
-{What follows — what becomes easy, what becomes harder, and what a future change would have to revisit.}
+**Positive:**
+- {What becomes easy}
+
+**Negative:**
+- {What becomes harder}
+
+**Neutral:**
+- {What changes without being better or worse}
 
 ## Alternatives Considered
 
 ### {Alternative}
 
 {What it was, and why it was not chosen.}
+
+[Sections below are optional — omit any that does not apply]
+
+## Related Decisions
+
+{Links to related, non-superseding records and what each shares with this one.}
+
+## Confirmation
+
+{How the decision is validated — the measurable criterion, benchmark, or test that settles it.}
+
+## Compliance
+
+{How adherence is enforced, and how a violation is detected.}
+
+## Notes
+
+{Caveats, links to discussions, and considerations not yet decided.}
 ```
 
 ## Rules
 
 - **At least one alternative, with the reason it lost.** A record with no rejected option documents a conclusion rather than a decision.
 - **Status opens at Proposed.** Acceptance is recorded later by the finalization step, not asserted here.
+- **The optional sections are omitted when empty.** A heading over "none" is a section the reader opens for nothing.
 - **The number is the next unused one.** Sequential across the ADR directory; the title slug follows it.
 - **Context explains the force, not the history.** Why a decision was needed, not the order in which the run discovered it.
 - **Consequences include the costs.** A record listing only benefits is not a trade-off, and the cost is what a later reader most needs.

@@ -23,10 +23,6 @@ Absolute path of the cumulative comprehension corpus — the directory whose art
 
 Cumulative [corpus artifact](../../resources/codebase-comprehension.md#corpus-artifact-template) covering the relevant codebase area
 
-#### comprehension_artifact_file
-
-`{$codebase_area}.md`
-
 #### architecture_overview
 
 Module structure, dependencies, and design patterns
@@ -46,10 +42,6 @@ Mapping of domain terms to technical constructs
 ### comprehension_log
 
 Session-local [comprehension log](../../resources/codebase-comprehension.md#comprehension-log-template) holding the reasoning behind the corpus artifact
-
-#### comprehension_log_file
-
-`codebase-comprehension.md`
 
 #### open_questions
 

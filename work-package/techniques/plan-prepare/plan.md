@@ -33,7 +33,6 @@ Atomic tasks with explicit dependencies and ordering — each implementable, tes
 
 - Verify `{design_philosophy_doc}` and `{requirements}` are available
 - Confirm prerequisite inputs are present before proceeding
-- If design philosophy or analysis is not present, prompt the user to provide the prerequisite inputs before planning.
 
 ### 2. Load Guidance
 

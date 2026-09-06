@@ -59,8 +59,8 @@ Method [record](../resources/test-suite-review.md#method-record-template) of how
 
 ### 3. Run Tests
 
-- Run the test suite to establish a passing baseline
-  > Where the suite does not pass, fix the failing tests before continuing with the review.
+- Run the test suite to establish the baseline the review judges against
+  > Where the suite does not pass, record each failing test as a finding and review against the suite as it stands — the review reports the red baseline rather than repairing it.
 - Where the suite did not run here, name continuous integration at the reviewed head as the authority for every claim this review makes about it — the run, its conclusion, and the head it ran against. A review of someone else's change routinely lacks the toolchain, and a suite claim whose basis goes unstated reads as one the reviewer executed.
 
 ### 4. Review Tests

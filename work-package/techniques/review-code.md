@@ -11,7 +11,7 @@ Rust/Substrate code review of implementation changes for architecture, error han
 
 ### changed_files
 
-The authored surface — the PR's changed-files set, produced canonically by `review-baseline-state`.
+The authored surface — the set of files the pull request changes, which bounds every finding this review states.
 
 ### expected_changes
 
@@ -52,8 +52,8 @@ Method [record](../resources/rust-substrate-code-review.md#method-record-templat
 ### 1. Load Guidance
 
 - Review against the attached [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria) ([resource-loading-via-tool](../../meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool) — never read workflow resources from disk).
-- Consume the canonical `{changed_files}` authored surface when it is established (review mode, produced by `review-baseline-state`). In create mode (no PR baseline), derive it from the local working-tree diff against the base branch.
-  > If `{changed_files}` is empty, verify the correct branch and commit range.
+- Review against `{changed_files}` as the authored surface.
+  > Where it is empty, verify the branch and commit range before reviewing an empty set.
 
 ### 2. Bound Review Scope
 

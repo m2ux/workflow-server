@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Structured requirements elicitation across question domains, with stakeholder review of resulting assumptions.
+Requirements, success criteria and scope boundaries elicited across the question domains, with the question-and-response record behind them.
 
 ## Inputs
 
@@ -43,14 +43,7 @@ Record of the questions asked and the responses given across the domain iteratio
 - Iterate through domains one question at a time
 - Record responses and adapt follow-up based on answers
 - Skip irrelevant follow-ups; probe deeper when needed
-- Skip option always available — user can say 'skip' to move to next question
 
-### 2. Post Assumptions Jira
+### 2. Assemble the Elicited Set
 
-- When `{issue_platform}` is `jira`, prepare assumptions as a Jira comment for stakeholder review and post to the ticket identified by `{issue_number}` using `addCommentToJiraIssue`
-- When `{issue_platform}` is `github`, skip the Jira assumptions post
-
-### 3. Await Feedback
-
-- Await stakeholder response on the posted assumptions comment when one was posted
-- Incorporate feedback into the requirements document
+- Emit `{requirements}`, `{success_criteria}` and `{scope_boundaries}` from the recorded responses, and `{elicitation_log}` as the question-and-response record behind them

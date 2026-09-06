@@ -37,8 +37,4 @@ Atomic tasks with explicit dependencies and ordering
 
 ### tasks-are-code-changes-only
 
-Plan tasks describe CODE OR ARTIFACT CHANGES — the source edits, schema changes, doc updates, etc. that must be made to satisfy the goal. Tasks MUST NOT describe verification work (compile, test, lint, format) as separate items: verification runs automatically via the task-cycle (run-tests step → [cargo-operations](../../../meta/techniques/cargo-operations/TECHNIQUE.md)::[test](../../../meta/techniques/cargo-operations/test.md)) and during final validation ([cargo-operations](../../../meta/techniques/cargo-operations/TECHNIQUE.md)::[check](../../../meta/techniques/cargo-operations/check.md) / [fmt-check](../../../meta/techniques/cargo-operations/fmt-check.md) / [clippy](../../../meta/techniques/cargo-operations/clippy.md)). Adding 'Verify compilation', 'Verify tests pass', 'Run cargo X', or similar as a task duplicates that built-in cycle and is forbidden.
-
-### no-raw-commands-in-plan
-
-Plan content MUST NEVER contain raw command invocations/specification
+A plan task names a code or artifact change — the source edits, schema changes and doc updates that satisfy the goal. Verification is not a task, and neither is a raw command; the forbidden shapes are listed under [Rules](../../resources/wp-plan.md#rules).

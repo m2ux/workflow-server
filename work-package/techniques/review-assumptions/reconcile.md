@@ -123,4 +123,4 @@ After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assum
 | **Technical context** | Findings from analyse / challenge cycles — validated assumptions, code patterns, partial evidence |
 | **Alternatives context** | Constraints and patterns that inform the residual decision space |
 
-Trade-off assembly and batch/interview formatting belong to [interview](./interview.md) — reconcile supplies evidence and flags only.
+Reconcile supplies evidence and flags only; it assembles no presentation of the residual set.

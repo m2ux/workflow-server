@@ -47,19 +47,6 @@ True once the rendered body passes every rule in `rules.pr-body-conformance`; fa
 
 List of `{ rule_id, detail }` entries, one per failed conformance rule; empty when the body conforms
 
-## Protocol
-
-### template-selection
-
-Callers bind `{pr_template_variant}` at the step. Selection for [render](./render.md):
-
-1. If `{is_review_mode}` → [Review Comment Template](../../resources/review-mode.md#review-comment-template)
-2. If `{pr_template_variant}` is `initial` → [Template (Initial)](../../resources/pr-description.md#template-initial)
-3. If `{pr_template_variant}` is `final` → [Template (Final)](../../resources/pr-description.md#template-final); apply [lifecycle tense](../../resources/pr-description.md#lifecycle-tense)
-
-Typical binds: `plan-prepare` → `initial`; `strategic-review` and `submit-for-review` → `final`.
-
-
 ## Rules
 
 ### body-composition
@@ -81,6 +68,6 @@ Create PRs as drafts initially. Convert to ready-for-review only when a later st
 
 - review-comment-verbatim: The `post-review-comment` op posts the confirmed `{review_summary}` to the PR byte-for-byte via [post-pr-review](../../../meta/techniques/github-cli-protocol/post-pr-review.md) — never re-rendering, paraphrasing, or summarizing it. The summary is authored to [review-mode](../../resources/review-mode.md#review-comment-template); posting is a transport step, not a re-authoring one. This is distinct from `render`, which updates the PR description body from a template.
 
-### pr-operations-run-through-gh
+### remote-git-runs-on-the-host-shell
 
-Use the shell to push commits and manage the PR via the `gh` CLI.
+Every operation here that reaches the remote runs under [manage-git](../manage-git/TECHNIQUE.md#host-shell-for-remote-git).

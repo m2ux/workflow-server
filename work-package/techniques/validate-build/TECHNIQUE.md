@@ -13,9 +13,9 @@ Triage validation failures and aggregate cross-check results.
 
 This technique MUST NOT invoke cargo, describe cargo invocations, or duplicate cargo command-line text. Cargo execution belongs entirely to [cargo-operations](../../../meta/techniques/cargo-operations/TECHNIQUE.md). validate-build operates on the OUTPUTS of cargo-operations operations.
 
-### no-duplicate-review
+### failure-cause-not-test-design
 
-Test suite quality was already reviewed in post-impl-review. [analyze-failure](./analyze-failure.md) focuses on root cause of execution failures, not test design.
+[analyze-failure](./analyze-failure.md) settles why a check failed. Test-suite quality is a separate judgement and no operation here makes it.
 
 ### do-not-mask-flaky
 

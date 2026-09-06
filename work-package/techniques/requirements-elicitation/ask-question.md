@@ -35,4 +35,3 @@ Boolean signal — set true when the user signals completion; otherwise elicitat
 - Pose one question from the current domain (per [requirements-elicitation](../../resources/requirements-elicitation.md#question-domain-reference))
 - Record the response and adapt the follow-up based on the answer
 - Skip irrelevant follow-ups; probe deeper when needed
-- Skip option always available — user can say 'skip' to move to the next question

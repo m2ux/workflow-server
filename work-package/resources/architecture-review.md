@@ -33,17 +33,11 @@ A decision is architecturally significant when it:
 
 Further signals: future developers need to understand why; changes core abstractions or data models.
 
-**Threshold: 3+ criteria met → create an ADR.**
+**Three or more criteria met marks the decision architecturally significant.**
 
 Also write an ADR when choosing between multiple valid approaches with different trade-offs, introducing a new pattern/library/framework, or changing existing architecture or conventions.
 
 **Skip an ADR for:** trivial or easily reversible decisions; standard patterns followed without deviation; cosmetic/stylistic changes; bug fixes (including complex multi-file fixes); refactoring without behavior change; minor features; performance optimizations (unless architecturally significant).
-
-## Timing
-
-Create the ADR **after implementation is complete**, not before — decisions are not finalized until implementation constraints are encountered. Commit the ADR with the implementation.
-
-Initial status: **Accepted** is typical (implementation validates the decision); **Proposed** only when additional review/approval is needed before merging; **RFC** when seeking broader input before finalizing.
 
 ## Decision-Making Discipline
 
@@ -53,9 +47,9 @@ Avoid three progressive anti-patterns (Ford & Richards): **Covering Your Assets*
 
 ### Status
 
-Vocabulary: **Accepted** (final, implementation complete — typical initial status) · **Proposed** (needs governance review before PR merge — rare) · **RFC** (seeking broader input) · **Deprecated** (no longer recommended, may still exist in codebase) · **Superseded by ADR-XXXX**.
+Vocabulary: **Proposed** (recorded, acceptance not yet asserted) · **RFC** (seeking broader input) · **Accepted** (final, implementation complete) · **Deprecated** (no longer recommended, may still exist in codebase) · **Superseded by ADR-XXXX**.
 
-Lifecycle: `RFC → Accepted → Superseded | Deprecated`. Deprecated/superseded ADRs remain for historical reference.
+Lifecycle: `Proposed | RFC → Accepted → Superseded | Deprecated`. Deprecated and superseded ADRs remain for historical reference.
 
 Superseding requires **bidirectional linking** — the old ADR must point forward, the new one back:
 
@@ -75,7 +69,7 @@ When architectural characteristics drive the decision, add a Quality Attribute R
 
 Numbered list, `**[Driver]** - [why it matters]`. Common drivers: performance requirements, development velocity, maintainability, cost, team expertise, time constraints, risk tolerance, identified risks and their severity, risk-mitigation requirements.
 
-### Considered Options
+### Alternatives Considered
 
 - Include at least 2-3 options; clearly mark the selected one; list pros and cons per option.
 - Be fair to rejected options; for each, explicitly state the blocking factor or unacceptable trade-off that eliminated it.
@@ -105,63 +99,12 @@ Include for standards affecting multiple teams, security-related decisions, or d
 
 Historical context, links to discussions/RFCs, caveats, future considerations not yet decided.
 
-## ADR Template
+## Record Shape
 
-```markdown
-# ADR: [Descriptive Title]
+The record's skeleton and its fill rules are the [ADR creation guide](adr.md#template)'s. The section rules above say what each of its sections holds.
 
-## Status
-[Proposed | RFC | Accepted | Deprecated | Superseded by ADR-XXXX]
+## Storage and Scope
 
-## Context
-[Describe the forces at play - technical, business, operational]
-
-## Decision Drivers
-[List the key factors influencing this decision]
-
-## Considered Options
-[List alternatives with pros/cons; mark the selected option; state each rejected option's blocking factor]
-
-| Option | Pros | Cons |
-|--------|------|------|
-| Option A | Pro 1, Pro 2 | Con 1, Con 2 |
-| Option B | Pro 1, Pro 2 | Con 1, Con 2 |
-
-## Decision
-[State the decision and key design choices]
-
-## Consequences
-
-**Positive:**
-- [Benefit]
-
-**Negative:**
-- [Tradeoff]
-
-**Neutral:**
-- [Observation]
-
-[Sections below are optional — omit any that do not apply]
-
-## Related Decisions
-[Links to related (non-superseding) ADRs]
-
-## Confirmation
-[How will we validate the decision was correct? Measurable success criteria]
-
-## Compliance
-[How will we ensure the decision is followed?]
-
-## Notes
-[Additional context, caveats, or links that don't fit elsewhere]
-
-## References
-[Hyperlinked references — internal ADRs via relative paths, external resources with full URLs]
-```
-
-## Naming, Storage, Scope
-
-- File name: `NNNN-` sequential prefix + kebab-case descriptive name, e.g. `0001-typescript-nodejs-runtime.md`, `0002-vector-storage.md`. Concise but meaningful.
 - ADRs are committed to the repository. Changes to accepted ADRs are new superseding ADRs. Link ADRs in PR descriptions when relevant.
 - Scope: **Project** (this codebase — ADR folder), **Team** (multiple projects — shared team docs repo), **Organization** (all teams — central architecture docs). Start at project scope and escalate only if the decision affects others; reference organization-wide ADRs from project ADRs; keep project ADRs in the project repository for discoverability.
 - Tooling: plain Markdown files with consistent naming are sufficient for most projects; consider ADR-tools or Log4brains only at 20+ ADRs or multi-team coordination.

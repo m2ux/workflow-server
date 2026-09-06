@@ -34,7 +34,6 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 - Judge the change against [Architectural Significance](../../resources/architecture-review.md#architectural-significance) and [Decision-Making Discipline](../../resources/architecture-review.md#decision-making-discipline); the rules below govern the review findings
 - Identify the base branch (`{$base_branch}`): when `{pr_number}` is set, Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{base_branch}`; otherwise (no PR — stealth mode) the default branch of the configured push remote.
 - Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch (`{$base_branch}`):
-  - Consume the canonical `{changed_files}` when it is established (review mode, produced by `review-baseline-state`); otherwise (create mode, no PR baseline) derive it from the local working-tree diff against `{$base_branch}`.
 
   ```bash
   # For each file in {changed_files}, ask: Is this change necessary for the solution?
@@ -60,12 +59,12 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 
 ### 5. Identify Artifacts
 
-- Probe each area of the [speculative-changes-audit](#speculative-changes-audit)
+- Probe each area of the [Speculative Changes Audit](../../resources/strategic-review.md#speculative-changes-audit)
 - Classify every candidate per the group's [finding-categories](./TECHNIQUE.md#finding-categories)
 
 ### 6. Minimality Check
 
-- Answer the five [minimality-check](#minimality-check) questions; record each question answered "No" as a finding for the `{strategic_review_doc}`, with the action from the "If No" column as the cleanup it warrants
+- Answer the five [Minimality Check](../../resources/strategic-review.md#minimality-check) questions; record each question answered "No" as a finding for the `{strategic_review_doc}`, with the action from the "If No" column as the cleanup it warrants
 
 ### 7. Scan Commit Signatures
 
@@ -85,26 +84,6 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### per-file-necessity
 
 For each changed file, verify: the change directly supports the solution (not a speculative attempt); it is minimal (no unnecessary additions); it doesn't include debugging artifacts; and it wasn't superseded by a simpler approach.
-
-### speculative-changes-audit
-
-| Category | Questions to Ask |
-|----------|------------------|
-| **Infrastructure** | Were CI/CD changes, build configuration, or environment setup modified speculatively? Are they still needed for the final solution? |
-| **Dependencies** | Were dependencies added, removed, or modified that aren't required by the final implementation? |
-| **Debug Code** | Are there debug statements, verbose logging, or diagnostic outputs that should be removed? |
-| **Fallback Logic** | Were fallback mechanisms added that are unnecessary given the final approach? |
-| **Configuration** | Were configuration files modified beyond what the final solution requires? |
-
-### minimality-check
-
-| Question | If "No" |
-|----------|---------|
-| Is every changed file necessary for the fix? | Revert unnecessary file changes |
-| Is every added line of code necessary? | Remove speculative or debug code |
-| Are all new dependencies required? | Remove unused dependencies |
-| Are all configuration changes required? | Revert unnecessary config changes |
-| Is the solution as simple as it could be? | Consider simplification |
 
 ### findings-constraint
 

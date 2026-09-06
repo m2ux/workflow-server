@@ -50,24 +50,15 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
 
 ### 2. Run Quality Checks
 
-- Code quality: follows existing patterns and architecture; type-safe (compiler checks pass); error handling implemented; no hardcoded values where constants or configuration belong; documentation comments on public APIs; no debug prints in production code; no TODO comments without issue references.
-- Test quality: unit tests written for new code; edge cases covered; error conditions tested; all tests passing (unit, integration, e2e).
-- Documentation quality: all symbols in docs exist in code (per the provenance verification above); change file accurately describes the actual changes; no fabricated or speculative content; commit messages follow conventional commits.
+- Assess the task's changes against the [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria), scoped to what this task wrote
+- Record what the task leaves behind that the criteria name: debug output still in the tree, a TODO carrying no issue reference, a documented symbol with no implementation
 
 
 ## Rules
 
-### never-fabricate-symbols
+### documentation-reflects-code
 
-Fabricating symbols is unacceptable. Documentation must reflect actual code, not intentions. Always verify against the codebase rather than documenting from memory or pattern-matching a name.
-
-### stop-when-unverifiable
-
-When a symbol cannot be verified, do not proceed on the assumption that it exists. Investigate first; the symbol may not exist. Surface the uncertainty by setting `{has_uncertain_symbols}` true rather than guessing.
-
-### never-skip-review
-
-The self-review runs after every task — hidden errors and unvalidated design decisions compound across tasks; early surfacing enables course correction.
+Every symbol a document names exists in the code it describes. A name that cannot be verified leaves `{has_uncertain_symbols}` true rather than standing on an assumption.
 
 ### assumptions-to-the-log
 
