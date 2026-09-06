@@ -8,7 +8,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 |-------------|-------|---------|
 | `readme` | README pointer | Points at meta planning-readme Template + work-package readme-seed |
 | `readme-seed` | README Seed | Progress inventory, classifier, mode-exclusion map for create-readme |
-| `readme-deprecated-notice` | README Guide redirect | Redirect stub that points loaders at `readme` for planning-folder work |
+| `canonical-home-map` | Canonical Home Map | Which artifact homes each shared fact category, and the link-only slot every other template carries |
 | `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
 | `jira-issue-creation` | Jira Issue Creation | Guide for creating Jira issues with proper field mapping |
 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |

@@ -19,7 +19,7 @@ The authored surface — the PR's changed-files set, produced canonically by `re
 
 ### project_type
 
-*(optional)* Detected project type (rust-substrate or other)
+*(optional)* The project type the target tree is detected as
 
 ## Outputs
 

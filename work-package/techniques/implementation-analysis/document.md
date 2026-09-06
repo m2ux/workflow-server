@@ -44,4 +44,4 @@ Current implementation analysis artifact with baselines and improvement opportun
 ### 1. Create Analysis Artifact
 
 - Create the analysis-document artifact in `{planning_folder_path}`, capturing the located implementation, evaluated effectiveness, established baselines, and identified gaps
-- This artifact is the [canonical home](../manage-artifacts/TECHNIQUE.md#canonical-home-map) for baselines, gaps, and measurement strategy; success criteria home in `requirements-elicitation.md` — fill the template's link-only slot rather than restating them
+- This artifact is the [canonical home](../../resources/canonical-home-map.md#map) for baselines, gaps, and measurement strategy; success criteria home in `requirements-elicitation.md` — fill the template's link-only slot rather than restating them

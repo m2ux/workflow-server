@@ -11,7 +11,7 @@ Initial mental model of the codebase area — architecture, abstractions, design
 
 ### project_type
 
-*(optional)* Detected project type, rust-substrate|other. Confirmed from the build system and used to shape which abstractions and patterns to look for.
+*(optional)* The project type the target tree is detected as. Confirmed from the build system and used to shape which abstractions and patterns to look for.
 
 ### gitnexus_indexed
 
@@ -57,7 +57,7 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 ### 3. Architecture Survey
 
 - Top-down survey: start with the `{target_path}` project root structure, build system, and entry points
-- Confirm the `{project_type}` from the build system and language conventions encountered (rust-substrate|other), and use it to shape which abstractions and patterns to look for in later steps
+- Confirm the `{project_type}` from the build system and language conventions encountered, and use it to shape which abstractions and patterns to look for in later steps
 - When GitNexus is available: apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../../meta/techniques/gitnexus-operations/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md) for dependency mapping — faster than grep and the required primary approach
 - Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs

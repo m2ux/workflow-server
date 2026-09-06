@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.26.0
+version: 1.27.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -90,7 +90,7 @@ steps:
     technique: review-diff
   - kind: checkpoint
     id: file-index-table
-    message: "Change-block index, its block titles linking to file:line: {change_block_index}"
+    message: "[Change-block index]({change_block_index}), its block titles linking to file:line."
     options:
       - id: no-flagged-blocks
         label: No blocks carry an issue

@@ -11,7 +11,7 @@ Progressive codebase comprehension over a cumulative corpus artifact and a sessi
 
 ### project_type
 
-*(optional)* Detected project type (rust-substrate|other)
+*(optional)* The project type the target tree is detected as
 
 ### comprehension_dir
 

@@ -96,19 +96,13 @@ Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../met
 
 This workflow supports **review mode** for reviewing existing pull requests. Review mode is ordinary state: a detection step early in `start-work-package` sets the boolean `is_review_mode` variable, and every mode-specific behaviour is a step, checkpoint or transition gated on it.
 
-**Activation:** A detection step in `start-work-package` recognizes review intent (e.g. "start review work package", "review PR #123", "review existing implementation"), confirms with the user, and sets `is_review_mode = true`. When review mode is known, start-work-package also seeds a review-native `{target_workflow_outcomes}` list for close-out verification.
+**Activation:** A detection step in `start-work-package` derives review intent and PR identity from the request (e.g. "start review work package", "review PR #123", "review existing implementation") and sets `is_review_mode = true`. A confirm fires only where derivation leaves a gap — mode ambiguous, or PR reference missing. When review mode is known, start-work-package also seeds a review-native `{target_workflow_outcomes}` list for close-out verification.
 
 **Skipped activities:** Requirements Elicitation (03) and Implement (08) stand down in review mode, their steps and inbound transitions gated on `is_review_mode`. Requirements come solely from the associated ticket, and the code under review already exists.
 
-Per-activity review-mode behaviour is declared on each activity's steps and exits; [REVIEW-MODE.md](./REVIEW-MODE.md) is the complete guide.
+Per-activity review-mode behaviour is declared on each activity's steps and exits, and the route a review run takes is the `graph` in [workflow.yaml](./workflow.yaml) resolved against those exits.
 
-**Review mode flow:**
-
-```
-start-work-package → design-philosophy → implementation-analysis → plan-prepare → assumptions-review → lean-coding-audit → post-impl-review → validate → strategic-review → submit-for-review → END
-```
-
-**Headless after activation:** Once review mode is active, a soft checkpoint takes its recommended option without reaching a person. The gates a review run still pauses at are the ones its activities declare.
+**Headless after activation:** Once review mode is active, a soft checkpoint takes its default option without reaching a person. The gates a review run still pauses at are the ones its activities declare.
 
 **See [REVIEW-MODE.md](./REVIEW-MODE.md) for complete documentation.**
 
