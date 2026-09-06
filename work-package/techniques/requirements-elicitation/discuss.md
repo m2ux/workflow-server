@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Stakeholder discussion transcript recorded as the elicitation baseline, with the limitation noted where none was supplied.
+The baseline elicitation builds its questions on — the stakeholder discussion where one was held, and the recorded limitation where none was.
 
 ## Inputs
 
-### stakeholder_transcript
+### stakeholder_discussion_held
 
-*(optional)* The transcript or summary of the discussion held with stakeholders before elicitation. Empty where the discussion did not happen.
+Whether a stakeholder discussion took place before elicitation.
 
 ## Outputs
 
@@ -23,5 +23,5 @@ The stakeholder discussion as elicitation reads it — the recorded transcript, 
 
 ### 1. Record the Baseline
 
-- Set `{stakeholder_baseline}` from `{stakeholder_transcript}`
-  > Where `{stakeholder_transcript}` is empty, `{stakeholder_baseline}` carries the limitation that elicitation proceeds on agent-led questions alone, without stakeholder input behind them.
+- Set `{stakeholder_baseline}` from the discussion the run holds when `{stakeholder_discussion_held}` is true
+  > Where `{stakeholder_discussion_held}` is false, `{stakeholder_baseline}` carries the limitation that elicitation proceeds on agent-led questions alone, without stakeholder input behind them.

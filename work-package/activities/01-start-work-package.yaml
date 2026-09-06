@@ -467,7 +467,7 @@ steps:
     actions:
       - action: validate
         target: cloudId != null
-        message: Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool.
+        message: Atlassian cloudId is not resolved, so no Jira operation can run.
   - kind: technique
     id: verify-github-issue
     technique:

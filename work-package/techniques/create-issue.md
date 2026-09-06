@@ -96,13 +96,3 @@ Every work package should be linked to a GitHub or Jira issue for traceability
 ### issue-clarity
 
 Issues should be clear to someone without prior context
-
-### capture-issue-identifiers
-
-- `gh_issue_create` after call — Capture `issue_number` and `issue_url` from output
-- `gh_issue_create` sequence — call `gh_issue_view` next
-- `getAccessibleAtlassianResources` after call — Preserve `cloudId` as `jira_cloud_id`
-- `getAccessibleAtlassianResources` sequence — call `getVisibleJiraProjects` next
-- `getVisibleJiraProjects` sequence — call `getJiraProjectIssueTypesMetadata` next
-- `getJiraProjectIssueTypesMetadata` sequence — call `createJiraIssue` next
-- `createJiraIssue` after call — Capture `issue_number` and `issue_url` from response

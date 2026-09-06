@@ -7,20 +7,6 @@ metadata:
 
 Discover and clarify requirements through structured sequential conversation.
 
-## Inputs
-
-### stakeholder_transcript
-
-*(optional)* Transcript or summary from user's discussion with key stakeholders
-
-### issue_platform
-
-Platform where issue lives (github or jira) — determines if assumptions go to Jira
-
-### issue_number
-
-Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
-
 ## Outputs
 
 ### requirements_document
