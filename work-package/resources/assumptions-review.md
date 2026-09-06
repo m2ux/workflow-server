@@ -91,6 +91,20 @@ line if a pattern emerged. Deferred follow-ups are canonically tracked in the
 [deferred-items register](deferred-items.md) — link them, don't duplicate.
 ```
 
+## Trade-off Dimensions
+
+The dimensions an open assumption's decision space is differentiated on. An entry carries only those that meaningfully separate its alternatives.
+
+| Dimension | Separates on |
+|---|---|
+| Implementation complexity | How much has to be built |
+| Maintenance burden | What the choice costs to keep |
+| Pattern consistency | How far it sits from what the codebase already does |
+| Side-effect risk | What else the change can reach |
+| Reversibility | `easily-reversible` or `path-committing` |
+| Requirements alignment | Which stated requirement it serves |
+| Time and effort cost | What it takes to land |
+
 ## Rules
 
 - **Line budget:** one row per assumption, ~100 lines for the log. A row needing a paragraph links the artifact that holds the reasoning.

@@ -188,10 +188,7 @@ steps:
             residual_opens: open_assumptions
   - kind: technique
     id: present-resolved-assumptions
-    technique:
-      name: review-assumptions::interview
-      inputs:
-        assembly_mode: batch
+    technique: review-assumptions::assemble-open-set
     actions:
       - action: message
         message: |-
@@ -216,10 +213,7 @@ steps:
     steps:
       - kind: technique
         id: present-assumption
-        technique:
-          name: review-assumptions::interview
-          inputs:
-            assembly_mode: interview
+        technique: review-assumptions::assemble-one
       - kind: checkpoint
         id: implementation-assumption-decision#{current_assumption.id}
         ref: assumption-decision
