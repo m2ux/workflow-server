@@ -63,7 +63,7 @@ Items above the budget are cut, not compressed: an observation that does not mak
 
 <!-- One line per signal, ONLY for categories that occurred. No empty-category tables.
      Also record checkpoint anomalies here: expected-vs-actual checkpoints triggered,
-     checkpoints always answered with their default (merge/demote candidates per AP-81/82),
+     checkpoints always answered with their default (candidates for merging with another gate or demoting to a message),
      and any workflow deviations.
      Mechanical lines use [trace-warning] / [trace-retry] / [trace-redundancy]. -->
 - [correction] "[short quote]" — [activity/step] — [root cause]

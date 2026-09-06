@@ -170,4 +170,4 @@ For simpler features, at minimum capture: a one-sentence problem statement, the 
 
 ## Rules
 
-- **Line budget:** ~150 lines. Elicited requirements are the payload; the questions that produced them are not recorded here.
+- **Line budget:** ~150 lines. Elicited requirements are the payload; the Elicitation Log holds one row per question and no transcript.

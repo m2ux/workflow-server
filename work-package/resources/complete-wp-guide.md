@@ -24,8 +24,8 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 
 ## Results
 
-- Validation: all checks green — see [validation report](NN-validation.md).
-  [If anything is not green, say what and why here.]
+- Validation: all checks green.
+  [If anything is not green, say what and why here, and link the report that states it.]
 - Success criteria: all N met ([plan §Success Criteria](NN-work-package-plan.md#success-criteria)).
   [Rows only for divergences:]
   | Criterion | Target | Actual |

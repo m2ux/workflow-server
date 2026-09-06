@@ -62,7 +62,7 @@ flowchart LR
 
 ## Architecture Summary Artifact Template
 
-Planning-folder filename pattern: `architecture-summary-{n}.md` (n increments on successive versions). Template:
+Template:
 
 ````markdown
 # Architecture Summary

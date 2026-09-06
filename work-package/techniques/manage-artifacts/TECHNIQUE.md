@@ -45,7 +45,7 @@ Symbol and test references hyperlink to their definition line (the definition, n
 | Target | Form |
 |---|---|
 | A sibling artifact in the same planning folder | relative path (`NN-code-review.md#anchor`) |
-| Code, a test, or a document in a repo under review | permanent blob URL at the cited commit — repository host, owner, name, `blob`, the full commit sha, the repo-relative path, and an `#L`-prefixed line anchor |
+| Code, a test, or a document in a repo under review | a permanent blob URL in the form [permanent-blob-citations](../../resources/manual-diff-review.md#permanent-blob-citations) states |
 | Anything else outside the planning folder | full URL |
 
 A path relative to a checkout is never a citation form: the checkout it resolves against is removed at close-out, so the link dies inside the run that wrote it. A resource or technique id is never a link target — ids address the loader, not the git host.

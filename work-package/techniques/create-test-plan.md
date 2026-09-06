@@ -36,7 +36,6 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 ### 2. Define Strategy
 
 - Define test strategy for the work package (unit, integration, e2e), using the `{todo_tasks}` breakdown to scope coverage to each task and its dependencies
-- If `{requirements}` are not available, prompt the user to complete elicitation before continuing with test planning
 - Identify which `{requirements}` need which types of tests
 - Determine test infrastructure needs (fixtures, mocks, test doubles)
 
@@ -68,7 +67,7 @@ Required sections, in order: header link line (ADR, Ticket, PR — relative path
 
 ### unified-test-case-table
 
-One table for all test types — never split by type. Fixed column widths via `<div style="width:...px">`: Test ID 120px, Objective 350px, Steps 400px, Expected Result 350px, Type 50px.
+One table for all test types — never split by type. Column widths follow the [test-plan templates](../resources/test-plan.md#templates).
 
 ### test-id-format
 
