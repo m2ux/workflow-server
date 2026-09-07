@@ -13,7 +13,7 @@ Severity and go/no-go recommendation for strategic-review findings (fix now vs a
 
 The strategic-review findings and recommendations, categorized by type (investigation artifacts, over-engineering, orphaned infrastructure, scope creep).
 
-### review_findings
+### strategic_review_findings
 
 *(optional)* The accumulated strategic-review findings, when carried in the bag separately from the artifact document.
 
@@ -39,7 +39,7 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 ### 1. Assess Severity
 
-- Read the findings in `{strategic_review_doc}` (and `{review_findings}` when carried separately).
+- Read the findings in `{strategic_review_doc}` (and `{strategic_review_findings}` when carried separately).
 - Judge each finding by impact: significant scope issues, over-engineering, or investigation artifacts that warrant cleanup before proceeding versus minor observations that can be accepted or deferred.
 
 ### 2. Recommend an Outcome

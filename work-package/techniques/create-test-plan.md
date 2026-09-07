@@ -9,9 +9,9 @@ Create test strategy and test plan with cases and acceptance criteria
 
 ## Inputs
 
-### todo_tasks
+### plan_document
 
-Atomic task breakdown with dependencies and ordering for the work package
+The work package [plan](../resources/wp-plan.md#template), whose task breakdown scopes test coverage to each task and its dependencies.
 
 ## Outputs
 
@@ -35,7 +35,7 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 
 ### 2. Define Strategy
 
-- Define test strategy for the work package (unit, integration, e2e), using the `{todo_tasks}` breakdown to scope coverage to each task and its dependencies
+- Define test strategy for the work package (unit, integration, e2e), using `{plan_document.tasks}` to scope coverage to each task and its dependencies
 - Identify which `{requirements}` need which types of tests
 - Determine test infrastructure needs (fixtures, mocks, test doubles)
 

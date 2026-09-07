@@ -18,18 +18,21 @@ variables:
       type: boolean
       description: Whether at least one ponytail debt marker was found in the tree.
       defaultValue: false
+    - name: lean_audit_findings
+      type: array
+      description: The lean-coding audit's findings, each under a stable `LC-{n}` designator carrying its taxonomy tag, location, simpler alternative and the lines it would save, closing with the diff-scoped scoreboard.
     - name: needs_simplification
       type: boolean
       description: Whether accepted simplifications remain to apply.
       defaultValue: false
-    - name: review_findings
-      type: array
-      description: The lean-coding audit's findings, each under a stable `LC-{n}` designator carrying its taxonomy tag, location, simpler alternative and the lines it would save, closing with the diff-scoped scoreboard.
 required: true
 steps:
   - kind: technique
     id: review-over-engineering
-    technique: ponytail/review-over-engineering
+    technique:
+      name: ponytail/review-over-engineering
+      outputs:
+        review_findings: lean_audit_findings
   - kind: technique
     id: harvest-debt
     technique: ponytail/harvest-debt
@@ -44,7 +47,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {review_findings}"
+    message: "Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {lean_audit_findings}"
     options:
       - id: audit-accepted
         label: Accept audit — no changes to apply
@@ -78,7 +81,10 @@ steps:
         technique: ponytail/apply-ladder
       - kind: technique
         id: re-review-over-engineering
-        technique: ponytail/review-over-engineering
+        technique:
+          name: ponytail/review-over-engineering
+          outputs:
+            review_findings: lean_audit_findings
       - kind: checkpoint
         id: safety-floor-cleared
         message: "The applied simplifications stand re-scored against the over-engineering taxonomy, with every safety-floor obligation the change implicates either satisfied or still open."

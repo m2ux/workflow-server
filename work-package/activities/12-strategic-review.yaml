@@ -52,17 +52,26 @@ variables:
       type: boolean
       description: Whether the unsigned commits in the branch range are to be re-signed.
       defaultValue: false
-    - name: review_findings
-      type: array
-      description: The findings the scope and artifact review produced, each under the designator its report defines.
     - name: review_passed
       type: boolean
       description: Whether strategic review passed.
       defaultValue: false
+    - name: strategic_findings_disposition
+      type: string
+      description: What the user decided about the strategic-review findings. Absent until the findings gate settles one.
+      values:
+        - acceptable
+        - fix-all
+        - fix-selected
+        - deferred
+        - re-review
     - name: strategic_findings_summary
       type: string
       description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding).
       defaultValue: ""
+    - name: strategic_review_findings
+      type: array
+      description: The findings the scope and artifact review produced, each under the designator its report defines.
     - name: unsigned_commit_list_summary
       type: string
       description: Short human-readable summary of the unsigned commits; empty when every commit is signed.
@@ -189,21 +198,32 @@ steps:
         effect:
           setVariable:
             review_passed: true
+            strategic_findings_disposition: acceptable
       - id: fix-findings
         label: Fix findings before proceeding
-        description: Address strategic review findings now
+        description: Every finding is addressed before the change goes further
+        effect:
+          setVariable:
+            strategic_findings_disposition: fix-all
       - id: selective-fixes
         label: Fix selected findings
-        description: Choose which findings to fix, by priority
+        description: The reply names the findings to address, by priority; the report keeps the rest
+        effect:
+          setVariable:
+            strategic_findings_disposition: fix-selected
       - id: defer-findings
         label: Defer findings
         description: Note findings for future but proceed now
         effect:
           setVariable:
             review_passed: true
+            strategic_findings_disposition: deferred
       - id: more-review
         label: Need more review
-        description: Additional areas need examination
+        description: Additional areas need examination before any disposition is settled
+        effect:
+          setVariable:
+            strategic_findings_disposition: re-review
   - kind: checkpoint
     id: findings-delivery
     condition:
@@ -251,6 +271,8 @@ exits:
     when: is_review_mode == true
   - id: review-passed
     when: review_passed == true
+  - id: needs-more-review
+    when: strategic_findings_disposition == 're-review'
   - id: review-failed
     isDefault: true
 outcome:

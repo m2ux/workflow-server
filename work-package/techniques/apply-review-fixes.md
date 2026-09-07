@@ -9,9 +9,9 @@ User-selected code-review findings and/or test improvements implemented and comm
 
 ## Inputs
 
-### review_findings
+### classified_findings
 
-The user-selected review findings in scope for this fix cycle (code-review and/or test-suite findings).
+The classified findings, each carrying its severity and its delivery tier — the set this fix cycle selects the code-review and test-suite entries from.
 
 ### code_findings_actionable
 
@@ -25,7 +25,7 @@ Whether test improvements are in scope for this cycle.
 
 ### 1. Select Fixes
 
-- From `{review_findings}`, gather the code-review findings selected for fixing when `{code_findings_actionable}` is true, and the test-suite findings selected when `{test_findings_actionable}` is true.
+- From `{classified_findings}`, gather the code-review findings selected for fixing when `{code_findings_actionable}` is true, and the test-suite findings selected when `{test_findings_actionable}` is true.
 
 ### 2. Implement Fixes
 

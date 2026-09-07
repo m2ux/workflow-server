@@ -8,7 +8,6 @@ variables:
     - block_path
     - branch_name
     - changed_files
-    - code_findings_actionable
     - commit_sha
     - component_git_dir
     - component_name
@@ -21,10 +20,8 @@ variables:
     - problem_statement
     - push_remote
     - requirements
-    - review_findings
     - target_path
     - target_repo
-    - test_findings_actionable
   writes:
     - name: change_block_index
       type: string
@@ -174,6 +171,12 @@ steps:
   - kind: technique
     id: test-suite-review
     technique: review-test-suite
+  - kind: technique
+    id: classify-and-route-findings
+    technique:
+      name: findings-classification
+      inputs:
+        findings_to_classify: manual_diff_review_report
   - kind: loop
     id: review-fix-cycle
     name: Review-Fix Cycle
@@ -213,12 +216,12 @@ steps:
       - kind: technique
         id: re-test-suite-review
         technique: review-test-suite
-  - kind: technique
-    id: classify-and-route-findings
-    technique:
-      name: findings-classification
-      inputs:
-        findings_to_classify: manual_diff_review_report
+      - kind: technique
+        id: reclassify-findings
+        technique:
+          name: findings-classification
+          inputs:
+            findings_to_classify: manual_diff_review_report
   - kind: checkpoint
     id: local-validation-permission
     message: The project's validation suite has not been exercised against the checked-out head.
