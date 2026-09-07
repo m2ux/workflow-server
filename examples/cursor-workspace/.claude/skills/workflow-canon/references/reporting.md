@@ -2,7 +2,23 @@
 
 Severity, row shapes, and which report the run owes.
 
+## Bands
+
+Findings fall in three bands, and only two of them converge.
+
+| Band | Holds | Target |
+|---|---|---|
+| **Live** | The definition misbehaves as it stands — a value read before its producer runs, a bind whose argument is the wrong value, a gate option that reaches no path. | Zero, every pass |
+| **Contract** | The defect propagates while the run still works — a second home for an owned fact, a constraint with no structural backing, a citation to a home that lacks the claim. | Zero, every pass |
+| **Hygiene** | Contained to the prose it sits in. | A falling ratchet against the prior pass, never zero |
+
+A register that reports one figure across the three cannot be triaged and cannot show convergence. The bands move independently: Live and Contract close by fixing the construct, while Hygiene rises with every fix applied, because replacement prose is walked by the same units the original was. Holding the whole register to zero therefore asks a band that cannot reach zero to reach it, and the pass that tries reads as churn.
+
+State each band's count separately, and define the verdict on Live and Contract alone.
+
 ## Severity
+
+Severity ranks urgency within a band; the band says whether the finding gates.
 
 | Severity | Fires when |
 |----------|-----------|
@@ -18,6 +34,7 @@ A guard that exits 2 has not measured. That is `blocked` coverage, not a pass, a
 | Column | Carries |
 |--------|---------|
 | ID | Stable within the report, so a disposition can name a row |
+| Band | `Live`, `Contract` or `Hygiene`, per the bands above — the column the verdict is computed from |
 | Severity | Per the scale above |
 | Entry | The criteria entry by its kebab-case **name** — never a bare `AP-XX`, never a count of the catalog |
 | Location | File and field, at the depth the evidence sits |
@@ -82,16 +99,15 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 ~~~markdown
 # Canon Audit — `{target}`
 
-**Base ref:** `{ref}` · **Target surface:** N files — read N · **unread N** · **Change surface:** N files (touched: N whole files · I/O-contract closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
+**Base ref:** `{ref}` · **Coverage:** N of N units × N of N paths — **N unit-paths walked of N** · **Change surface:** N files (touched: N whole files · I/O-contract closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
 
-**Verdict:** N findings over the N files read whole. Residual: **N files `unread`** of the target's N, **N criteria units `blocked`** of the homes' N. The target is audited at this commit when both reach zero.
+**Verdict:** Live N · Contract N · Hygiene N, at that coverage. Residual: **N files `unread`** of the target's N, **N criteria units `blocked`** of the homes' N. Live and Contract converge to zero; Hygiene ratchets against the prior pass's N.
 
-| Severity | Open | Known |
-|----------|-----:|------:|
-| Critical | N | N |
-| High     | N | N |
-| Medium   | N | N |
-| Low      | N | N |
+| Band | Open | Known | Prior pass |
+|----------|-----:|------:|-----:|
+| Live     | N | N | N |
+| Contract | N | N | N |
+| Hygiene  | N | N | N |
 
 ## Change surface
 
@@ -105,8 +121,8 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 
 ## Findings
 
-| ID | Severity | Entry | Location | Evidence | Origin | Fix |
-|----|----------|-------|----------|----------|--------|-----|
+| ID | Band | Severity | Entry | Location | Evidence | Origin | Fix |
+|----|------|----------|-------|----------|----------|--------|-----|
 
 ## Coverage
 
@@ -135,6 +151,8 @@ read N · unread N — summing to the target surface.
 - **No criteria prose in the report.** Link the entry; the catalog is its home.
 - **Cite entries by name.** Never a bare designator, never any count of the catalog's entries.
 - **Report the verify pass honestly.** Say which Highs were withdrawn or downgraded on re-derivation; a register that silently drops them reads as a walk that never found them.
-- **The verdict states both residuals, and a target is audited when both are zero.** A finding count measures the reading: the `unread` figure says how much of the target that reading covered, and the `blocked` total says how many criteria units were brought to it. The two are independent, so each is a ceiling on what the pass could have found and neither substitutes for the other — a register at `unread 0` with families still `blocked` has read every file while applying a fraction of the canon to it. A register leading with findings alone reads as a measurement of the target, and no reader can tell a walked target from a sampled one.
+- **Coverage leads, and it is a product.** The header opens with units × paths walked because that product bounds every figure beneath it: a pass over a fraction of the grid cannot present like a pass over the whole of it. A register leading with findings reads as a measurement of the target when it is mostly a measurement of the reading — the same corpus yields one count at a quarter of the surface and a much larger one at all of it, and no reader can tell a walked target from a sampled one.
+- **The verdict states both residuals, and a band converges only over the coverage it was measured at.** The `unread` figure says how much of the target the reading covered, and the `blocked` total says how many criteria units were brought to it. The two are independent, so each is a ceiling on what the pass could have found and neither substitutes for the other — a register at `unread 0` with families still `blocked` has read every file while applying a fraction of the canon to it. Live and Contract at zero over a partial grid is a statement about the part, and says so.
+- **Carry the prior pass's band counts.** Hygiene is a ratchet, so its figure means nothing without the number it is falling from, and a Live or Contract count that rose says a fix moved a defect rather than closing it.
 - **Report the change surface honestly.** Header counts and the Change surface table must match the skill's union (whole touched files ∪ I/O-contract closure ∪ consumers). A report that only lists diff hunks or omits silent referencers is incomplete coverage, not a clean sweep.
 - **Every header figure reconciles against a list in the body.** The target surface reconciles against File coverage, the change surface against the Change surface table. A figure with nothing behind it states a scope the report never walked and no reader can check.
