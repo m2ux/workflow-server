@@ -1,0 +1,82 @@
+# SIMULATED CONVERSION — not part of the corpus.
+# The iterating form: repeat the analyse-challenge pass until the concern set converges.
+# Replaces the `until_converged` half of `analyse-challenge::run-loop`.
+#
+# References another routine, which the first-version spec forbids. See conversion-trial.md,
+# finding 1: the corpus's own shape needs one level of nesting, and the alternative is a
+# duplicated three-step body — the thing the construct exists to remove.
+id: converge-concerns
+version: 1.0.0
+name: Converge Concerns
+description: Repeat the analyse-challenge pass over a concern set until nothing further is agent-resolvable, leaving the irreducible residue for the calling activity to handle.
+
+inputs:
+  - id: analyse_technique
+    kind: technique
+    description: The technique invoked each pass to deepen or resolve agent-resolvable items.
+  - id: challenge_perspectives
+    description: JSON array of adversarial perspective names for the challenge pass.
+  - id: concern_kind
+    description: Domain of the open set — names which log or table the analysis and the fold update.
+  - id: assumptions_log
+    description: (optional) Assumptions log, when the concern kind is assumptions.
+    default: ""
+  - id: comprehension_artifact
+    description: (optional) Comprehension artifact whose Open Questions table the fold updates.
+    default: ""
+  - id: comprehension_log
+    description: (optional) Comprehension log for the current area.
+    default: ""
+  - id: target_path
+    description: (optional) Reference codebase root for evidence-backed challenges.
+    default: ""
+
+outputs:
+  - id: concern_log
+    type: string
+    description: The concern document with each pass's challenge outcomes folded in.
+  - id: convergence_flag
+    type: boolean
+    description: False when the analysis has converged — always false after a normal completion.
+    defaultValue: false
+  - id: residue_flag
+    type: boolean
+    description: True when irreducible opens remain after convergence.
+    defaultValue: false
+  - id: residue_collection
+    type: array
+    description: The irreducible open items after convergence; empty when none remain.
+
+steps:
+  - kind: loop
+    id: pass
+    name: Analyse-Challenge Convergence
+    loopType: while
+    # The continuation test, in the field proposed by continuation-condition.md. Written as
+    # `condition:` today at all 19 repeat-until sites, where both mechanical readers take it at
+    # entry — which is why six of the eight do-while loops in the corpus never run their body.
+    # This routine cannot be given an unambiguous reading until that field exists.
+    continueWhile:
+      type: simple
+      variable: convergence_flag
+      operator: "=="
+      value: true
+    # The safety ceiling the technique states in prose as `max-iterations-safety`, default 10.
+    maxIterations: 10
+    steps:
+      - kind: routine
+        id: iteration
+        routine: analyse-challenge-pass
+        with:
+          analyse_technique: "{analyse_technique}"
+          challenge_perspectives: "{challenge_perspectives}"
+          concern_kind: "{concern_kind}"
+          assumptions_log: "{assumptions_log}"
+          comprehension_artifact: "{comprehension_artifact}"
+          comprehension_log: "{comprehension_log}"
+          target_path: "{target_path}"
+        outputs:
+          concern_log: concern_log
+          convergence_flag: convergence_flag
+          residue_flag: residue_flag
+          residue_collection: residue_collection

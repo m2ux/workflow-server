@@ -1,0 +1,45 @@
+# SIMULATED CONVERSION — not part of the corpus. Excerpt only.
+# One of the six iterating sites, showing the other reference form: the routine owns the loop, so
+# the activity's step count is unchanged and only the binding differs.
+#
+# Live form — work-package/activities/06-plan-prepare.yaml:107-117
+#
+#   - kind: technique
+#     id: analyse-challenge-loop
+#     technique:
+#       name: analyse-challenge::run-loop
+#       inputs:
+#         concern_kind: assumptions
+#         analyse_technique: review-assumptions::reconcile
+#         challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+#         convergence_flag: has_resolvable_assumptions
+#         residue_flag: has_open_assumptions
+#         residue_collection: open_assumptions
+#
+# Converted form:
+
+steps:
+  - kind: routine
+    id: converge-assumptions
+    routine: converge-concerns
+    with:
+      analyse_technique: review-assumptions::reconcile
+      challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+      concern_kind: assumptions
+      assumptions_log: "{assumptions_log}"
+      target_path: "{target_path}"
+    # The three flag-name inputs become output bindings. The same three names, in the same three
+    # places, read by the reader that can act on them: the contract derivation now sees three
+    # writes where it previously saw a technique taking three strings.
+    outputs:
+      convergence_flag: has_resolvable_assumptions
+      residue_flag: has_open_assumptions
+      residue_collection: open_assumptions
+
+# Effect on this activity's declared contract:
+#
+#   writes gains: has_resolvable_assumptions (declared at 0 of its 6 parameter sites today)
+#   writes keeps: has_open_assumptions, open_assumptions (hand-declared at all 6 sites today)
+#
+# The declarations that survive are no longer hand-written: their type, description and default
+# come from the routine, and only the name is this activity's.

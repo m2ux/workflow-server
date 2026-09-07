@@ -1,0 +1,88 @@
+# SIMULATED CONVERSION — not part of the corpus.
+# One analyse-challenge-combine pass, as a routine. Replaces the iterating half of the
+# `analyse-challenge::run-loop` technique's Protocol prose with steps.
+#
+# Home: work-package (every referring activity file is a work-package activity).
+id: analyse-challenge-pass
+version: 1.0.0
+name: Analyse-Challenge Pass
+description: One pass over an open concern set — deepen it with a bound analysis, challenge it adversarially, then fold the challenge findings back and set the convergence and residue flags.
+
+inputs:
+  # A higher-order parameter: the value is a technique reference, substituted into a body step's
+  # `technique:` field at materialisation. Marked so the loader monomorphises it per reference
+  # site and the isolated-contract guard knows this routine's signature is only checkable there.
+  - id: analyse_technique
+    kind: technique
+    description: The technique invoked to deepen or resolve agent-resolvable items in the concern set.
+  - id: challenge_perspectives
+    description: JSON array of adversarial perspective names for the challenge pass.
+  - id: concern_kind
+    description: Domain of the open set — names which log or table the analysis and the fold update.
+  # Forwarded context. Declared because a routine has no free variables: every name the body reads
+  # is an input, so the signature is complete and the body is checkable on its own.
+  - id: assumptions_log
+    description: (optional) Assumptions log, when the concern kind is assumptions.
+    default: ""
+  - id: comprehension_artifact
+    description: (optional) Comprehension artifact whose Open Questions table the fold updates.
+    default: ""
+  - id: comprehension_log
+    description: (optional) Comprehension log for the current area.
+    default: ""
+  - id: target_path
+    description: (optional) Reference codebase root for evidence-backed challenges.
+    default: ""
+
+outputs:
+  # The document the fold updates in place, bound by the reference site to whichever of the two
+  # domain documents applies. The technique used to declare both under their domain names and
+  # therefore credited every caller with writing both.
+  - id: concern_log
+    type: string
+    description: The concern document with the challenge outcomes folded in.
+  # Output ids, not bag names. A reference site binds each to a session variable under `outputs:`;
+  # the declaration travels with the binding, so the host contributes a typed, described,
+  # defaulted variable without restating it.
+  - id: convergence_flag
+    type: boolean
+    description: True while another pass would resolve more of the concern set; false when the analysis has converged.
+    defaultValue: false
+  - id: residue_flag
+    type: boolean
+    description: True when irreducible opens remain after the fold, for the activity's residual handling.
+    defaultValue: false
+  - id: residue_collection
+    type: array
+    description: The irreducible open items after the fold; empty when none remain.
+
+steps:
+  - kind: technique
+    id: analyse
+    technique:
+      name: "{analyse_technique}"
+      inputs:
+        assumptions_log: "{assumptions_log}"
+        comprehension_artifact: "{comprehension_artifact}"
+        comprehension_log: "{comprehension_log}"
+  - kind: technique
+    id: challenge
+    technique:
+      name: analyse-challenge::challenge
+      inputs:
+        challenge_perspectives: "{challenge_perspectives}"
+        assumptions_log: "{assumptions_log}"
+        comprehension_artifact: "{comprehension_artifact}"
+        target_path: "{target_path}"
+  - kind: technique
+    id: combine
+    technique:
+      name: analyse-challenge::combine
+      inputs:
+        concern_kind: "{concern_kind}"
+        concern_log: "{concern_log}"
+      outputs:
+        concern_log: concern_log
+        convergence_flag: convergence_flag
+        residue_flag: residue_flag
+        residue_collection: residue_collection

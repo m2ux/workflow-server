@@ -1,0 +1,143 @@
+# SIMULATED CONVERSION — not part of the corpus.
+# The residual-assumption run, as a routine. Replaces the drifted copies and the two shared gate
+# bodies at the work-package workflow root.
+#
+# Four differences the drift census left to a person are settled here:
+#   - The log pass records the decisions the interview collected, so it sits after the loop. A
+#     site's own pre-analysis log step stays outside the run, seeding rather than closing.
+#   - The per-item gate offers two answers. The third answer one site carried wrote an outcome
+#     value nothing in the corpus reads.
+#   - The run is a once-per-run concern, referenced from assumptions-review and implement. Research
+#     and implementation-analysis reach assumptions-review on every path and drop their copies.
+#   - The announcement is guarded on review mode alone. Guarding it on the residual-assumption flag
+#     as well tests a value the same activity produces, which costs the announcement its place in
+#     the delivered bundle; the gate that follows carries both conditions regardless.
+id: assumption-reconciliation
+version: 1.0.0
+name: Assumption Reconciliation
+description: Present the residual open assumptions, gate them as a batch, record the batch answer, then interview the remaining items one at a time.
+
+inputs:
+  - id: announcement_message
+    description: Text announcing the phase whose assumptions these are.
+  - id: review_mode_flag
+    description: True when the run reviews an existing pull request rather than producing an implementation.
+  - id: open_assumption_flag
+    description: True when residual open assumptions remain after convergence.
+  - id: open_assumption_set
+    description: The residual open assumptions to walk one at a time.
+
+outputs:
+  - id: assumption_outcome
+    type: string
+    description: The outcome the deciding gate gave the assumption under discussion.
+  - id: deferred_flag
+    type: boolean
+    description: True when any assumption was deferred to stakeholder review.
+  - id: individual_interview_flag
+    type: boolean
+    description: True when the batch gate selected individual drill-down.
+
+# Names the body's steps pass between themselves. Neither leaves the run: the presentation is
+# produced by the announce step and read by the batch gate's message, and the current item is the
+# loop's own. Materialisation prefixes both from the reference site, so two references cannot
+# collide, and neither enters the workflow's variable set.
+internals:
+  - id: assumption_presentation
+    description: The judgement-augmentation context the batch gate presents.
+  - id: current_assumption
+    description: The assumption under discussion during the individual interview.
+
+steps:
+  - kind: technique
+    id: announce
+    technique:
+      name: review-assumptions::interview
+      inputs:
+        assembly_mode: batch
+      outputs:
+        assumption_review_presentation: assumption_presentation
+    # Guarded on review mode alone: an earlier activity sets it, so the server can answer this at
+    # hand-over and the announcement ships in the bundle. The gate below carries both conditions.
+    when: review_mode_flag != true
+    actions:
+      - action: message
+        message: "{announcement_message}"
+  - kind: checkpoint
+    id: batch-gate
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: review_mode_flag
+          operator: "!="
+          value: true
+        - type: simple
+          variable: open_assumption_flag
+          operator: ==
+          value: true
+    message: "Open assumptions remain ({assumption_presentation}). Accept the agent's positions for the batch, defer all to stakeholders, or interview individually."
+    options:
+      - id: accept-agent-positions
+        label: Accept agent positions
+        description: Confirm the agent's favored positions for all listed residual open assumptions
+        effect:
+          setVariable:
+            assumption_outcome: confirmed
+      - id: defer-all
+        label: Defer all to stakeholders
+        description: Queue every listed open assumption for stakeholder review
+        effect:
+          setVariable:
+            deferred_flag: true
+            assumption_outcome: deferred
+      - id: interview-individually
+        label: Interview individually
+        description: Walk each residual open assumption one at a time
+        effect:
+          setVariable:
+            individual_interview_flag: true
+  - kind: technique
+    id: record-batch
+    technique: review-assumptions::record
+    when: review_mode_flag != true && open_assumption_flag == true && individual_interview_flag != true
+  - kind: loop
+    id: interview
+    name: Individual Assumption Interview Loop
+    loopType: forEach
+    variable: current_assumption
+    over: open_assumption_set
+    maxIterations: 20
+    when: review_mode_flag != true && individual_interview_flag == true && open_assumption_flag == true
+    steps:
+      - kind: technique
+        id: present
+        technique:
+          name: review-assumptions::interview
+          inputs:
+            assembly_mode: interview
+          outputs:
+            assumption_review_presentation: assumption_presentation
+      - kind: checkpoint
+        id: decision#{current_assumption.id}
+        message: "Assumption {current_assumption.id}: {current_assumption.statement}. Resolve now or defer."
+        options:
+          - id: resolve-inline
+            label: Resolve now
+            description: Provide resolution for this assumption
+            effect:
+              setVariable:
+                assumption_outcome: confirmed
+          - id: defer-to-stakeholder
+            label: Defer to stakeholder review
+            description: Queue this assumption for stakeholder review
+            effect:
+              setVariable:
+                deferred_flag: true
+                assumption_outcome: deferred
+      - kind: technique
+        id: record
+        technique: review-assumptions::record
+  - kind: technique
+    id: record-log
+    technique: review-assumptions::record

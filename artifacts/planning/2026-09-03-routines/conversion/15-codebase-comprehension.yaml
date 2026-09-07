@@ -1,0 +1,186 @@
+# SIMULATED CONVERSION — not part of the corpus.
+# work-package/activities/15-codebase-comprehension.yaml, converted to reference a routine in
+# place of the parameterised convergence technique. Differences from the live file are marked
+# CHANGED / ADDED / REMOVED. Everything else is byte-faithful.
+id: codebase-comprehension
+version: 1.13.0
+name: Codebase Comprehension
+description: Build or augment a mental model of the codebase.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - gitnexus_indexed
+    # REMOVED: has_open_questions was declared a read while nothing in the workflow declared the
+    # write. The routine's residue_flag output, bound below, is now that write — so the name moves
+    # from `reads` to `writes`, and the workflow-root declaration that stood in for a producer goes.
+    - host_repo_path
+    - needs_comprehension
+    - needs_elicitation
+    - needs_research
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
+    - skip_optional_activities
+    - target_path
+    - target_repo
+  writes:
+    - name: comprehension_artifact
+      type: string
+      description: Absolute path to the comprehension artifact for the current codebase area.
+      defaultValue: ""
+    - name: comprehension_dir
+      type: string
+      description: Absolute path of the cumulative codebase-comprehension corpus, outside any one session's planning folder.
+    # ADDED: contributed by the routine reference's `outputs` binding. The type, description and
+    # default come from the routine's declaration of `residue_flag`; only the name is the host's.
+    - name: has_open_questions
+      type: boolean
+      description: True when irreducible open questions remain after convergence.
+      defaultValue: false
+    - name: needs_comprehension
+      type: boolean
+      description: Whether codebase comprehension is needed (mandatory after design-philosophy; may be re-requested after stakeholder feedback).
+      defaultValue: true
+required: false
+techniques:
+  - scatter-gather
+steps:
+  - kind: action
+    id: bind-comprehension-dir
+    actions:
+      - action: set
+        target: comprehension_dir
+        value: "{host_repo_path}/.engineering/artifacts/comprehension"
+  - kind: technique
+    id: build-comprehension
+    technique: survey
+  - kind: technique
+    id: create-comprehension-artifact
+    technique:
+      name: manage-artifacts::write-artifact
+      inputs:
+        artifact_content: comprehension_survey
+        target_dir: comprehension_dir
+    actions:
+      - action: message
+        message: Comprehension artifact recorded for reference.
+  # The seed pass. UNCHANGED, and deliberately not folded into the routine: it runs the analysis
+  # and revises the questions without a challenge or a fold, so it is a different run that reads
+  # like a copy. Recorded rather than converged — see conversion-trial.md, finding 7.
+  - kind: technique
+    id: initial-deep-dive
+    technique: deep-dive
+  - kind: technique
+    id: update-artifact-initial
+    technique:
+      name: manage-artifacts::write-artifact
+      inputs:
+        artifact_content: comprehension_artifact
+        target_dir: comprehension_dir
+  - kind: technique
+    id: revise-initial-questions
+    technique: revise-questions
+  - kind: technique
+    id: record-log-initial
+    technique:
+      name: manage-artifacts::write-artifact
+      inputs:
+        artifact_content: comprehension_log
+  - kind: loop
+    id: deep-dive-iteration
+    name: Deep-Dive Iteration
+    loopType: while
+    # CHANGED: re-keyed from `condition:`, per continuation-condition.md. Same expression, same
+    # polarity — the key states that this is the continuation test rather than an entry gate, so
+    # the delivery path stops narrowing the body by it.
+    continueWhile:
+      type: simple
+      variable: needs_comprehension
+      operator: "=="
+      value: true
+    steps:
+      # CHANGED: was a kind:technique step binding analyse-challenge::run-loop with
+      # `iteration_mode: once` — a parameter whose only job was to switch off the technique's own
+      # prose loop, because this activity iterates for itself around a user gate the technique
+      # cannot contain. The routine carries no iteration, so the parameter has nothing to say and
+      # goes.
+      - kind: routine
+        id: analyse-challenge-pass
+        routine: analyse-challenge-pass
+        with:
+          analyse_technique: codebase-comprehension::deep-dive
+          challenge_perspectives: '["pedagogy", "rejected-paths"]'
+          concern_kind: open_questions
+          comprehension_artifact: "{comprehension_artifact}"
+          comprehension_log: "{comprehension_log}"
+          target_path: "{target_path}"
+        outputs:
+          concern_log: comprehension_artifact
+          convergence_flag: needs_comprehension
+          residue_flag: has_open_questions
+      # REMOVED: nothing. `revise-questions` was invoked from run-loop's protocol prose, in a
+      # sentence conditioned on the analyse technique being deep-dive. It is now a step of the
+      # activity, where the condition is a gate rather than a clause. See finding 4.
+      - kind: technique
+        id: revise-questions
+        technique: revise-questions
+      - kind: technique
+        id: update-artifact
+        technique:
+          name: manage-artifacts::write-artifact
+          inputs:
+            artifact_content: comprehension_artifact
+            target_dir: comprehension_dir
+      - kind: technique
+        id: record-log
+        technique:
+          name: manage-artifacts::write-artifact
+          inputs:
+            artifact_content: comprehension_log
+      - kind: checkpoint
+        id: comprehension-sufficient
+        condition:
+          type: simple
+          variable: has_open_questions
+          operator: "=="
+          value: true
+        message: Open questions remain after analyse-challenge (see above). Select whether understanding is sufficient or further exploration is needed.
+        defaultOption: sufficient
+        autoAdvanceMs: 30000
+        options:
+          - id: sufficient
+            label: Understanding sufficient
+            description: Accept remaining gaps and proceed
+            effect:
+              setVariable:
+                needs_comprehension: false
+          - id: dive-deeper
+            label: Dive deeper
+            description: Investigate remaining open questions in more detail
+            effect:
+              setVariable:
+                needs_comprehension: true
+          - id: different-area
+            label: Explore a different area
+            description: Shift focus to a different part of the codebase
+            effect:
+              setVariable:
+                needs_comprehension: true
+exits:
+  - id: needs-elicitation
+    when: needs_elicitation == true
+  - id: research-needed
+    when: needs_elicitation == false && needs_research == true
+  - id: skip-optional-activities
+    when: skip_optional_activities == true
+  - id: comprehension-complete
+    isDefault: true
+outcome:
+  - Mental model of codebase architecture established
+  - Key abstractions and design rationale documented
+  - Domain concepts mapped to technical constructs
+  - A reusable comprehension reference lands in the cumulative corpus, where the next work package on the same area reads it instead of re-investigating
+  - The questions, investigations and follow-ups behind that reference stay in the session's planning folder as a comprehension log
+  - Open questions converged via analyse-challenge before the soft sufficiency gate
