@@ -285,7 +285,12 @@ steps:
           exit: abort
   - kind: technique
     id: push-commits
-    technique: manage-git::push-commits
+    technique:
+      name: version-control::push-branch
+      inputs:
+        repo_path: target_path
+        branch: branch_name
+        remote_name: push_remote
     when: is_review_mode != true
   - kind: technique
     id: update-description

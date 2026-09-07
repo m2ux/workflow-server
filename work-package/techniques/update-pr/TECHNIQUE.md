@@ -49,13 +49,6 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 
 ## Rules
 
-### body-composition
-
-- motivation-user-perspective: Motivation explains the problem from the user's perspective and the consequences of not addressing it; 1-2 paragraphs.
-- link-not-inline: tickets, ADRs, test plans, and planning artifacts are linked, never inlined (manage-artifacts single-source-and-link); no process attribution and no vague language (manage-artifacts no-process-attribution, plain-technical-language).
-- no-relocated-content: never include a commit list (git log / the PR Commits tab owns it) or line-by-line explanations (inline PR comments own them) — complements no-files-changed-list and no-code-in-changes below.
-- todo-tracks-premerge: the TODO-before-merging section tracks remaining pre-merge items beyond "Ready for review" (e.g. address reviewer feedback, squash if needed); items are checked off as they complete.
-
 ### pr-body-conformance
 
 A rendered body satisfies every criterion in [Rules](../../resources/pr-description.md#rules), which is their home — the guide that lays out the body owns what a conforming body looks like. Each failure is one finding named by the criterion it breaks.
