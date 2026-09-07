@@ -865,9 +865,10 @@
           }
         },
         "completedActivities": [
-          "intake-and-analyze"
+          "intake-and-analyze",
+          "update-specification"
         ],
-        "currentActivity": "update-specification",
+        "currentActivity": "validate-specification",
         "currentTechnique": "analyze-source",
         "declaredArtifacts": [
           {
@@ -879,6 +880,11 @@
             "id": "requirements_analysis",
             "name": "requirements-analysis.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol/01-requirements-analysis.md"
+          },
+          {
+            "id": "working_specification",
+            "name": "working-spec-0.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol/03-working-spec-0.md"
           }
         ],
         "deliveredContent": {
@@ -902,20 +908,27 @@
             "resource:specification-protocol#section-structure": "69612841aa6bda2b",
             "resource:specification-protocol#source-reference-format": "c060902b39a609c4",
             "resource:specification-protocol#status-conventions": "aced77cf3f5f1283",
+            "resource:validation-report#rules": "c0a606c87da09eeb",
+            "resource:validation-report#template": "672650aa4cf841df",
+            "resource:validation-rubric#checks": "3460318d1e33b32f",
+            "resource:validation-rubric#issue-categorization": "35a6ffe27aabcfea",
             "resource:validation-rubric#source-coverage": "629f4547210e07e1",
             "technique:analyze-source": "fa77ee4239426a2a",
+            "technique:inherited_inputs.items:3f7722c147475fcd": "3f7722c147475fcd",
             "technique:inherited_inputs.items:e20b987dccc3e9d1": "e20b987dccc3e9d1",
             "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:6058b47153427724": "6058b47153427724",
             "technique:inherited_inputs:dc1d2b227e7f94d7": "dc1d2b227e7f94d7",
             "technique:intake-sources": "f7e0c9904fa102a9",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
             "technique:rules:1e5c055438681db1": "1e5c055438681db1",
             "technique:rules:50e5c89790640391": "50e5c89790640391",
             "technique:rules:fe7ac9bb9d4ac42a": "fe7ac9bb9d4ac42a",
-            "technique:update-specification": "268e786e7f5f6956"
+            "technique:update-specification": "268e786e7f5f6956",
+            "technique:validate-specification": "8424f0f8f0b85e4e"
           }
         },
-        "exit": "analysis-confirmed",
+        "exit": "done",
         "history": [
           {
             "timestamp": "2026-09-07T13:51:45.347Z",
@@ -1641,16 +1654,217 @@
             },
             "timestamp": "2026-09-07T14:29:11.161Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "update-specification",
+            "timestamp": "2026-09-07T14:29:32.809Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "exit": "done",
+              "outcome": "complete"
+            },
+            "timestamp": "2026-09-07T14:29:32.809Z",
+            "type": "activity_outcome"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "name": "correction_iteration",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-09-07T14:29:32.809Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "name": "working_specification_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol/03-working-spec-0.md"
+            },
+            "timestamp": "2026-09-07T14:29:32.809Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "stepId": "update-specification"
+            },
+            "timestamp": "2026-09-07T14:29:32.809Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-specification",
+            "timestamp": "2026-09-07T14:29:32.809Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "chars": 14219,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "chars": 5082,
+              "delivery": "full",
+              "stepId": "validate-specification",
+              "techniqueId": "validate-specification"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "stepId": "validate-specification"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 1441,
+              "delivery": "full",
+              "resourceId": "validation-rubric#checks"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 533,
+              "delivery": "unchanged",
+              "resourceId": "validation-rubric#source-coverage"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 790,
+              "delivery": "full",
+              "resourceId": "validation-rubric#issue-categorization"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 453,
+              "delivery": "full",
+              "resourceId": "validation-report#template"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 582,
+              "delivery": "full",
+              "resourceId": "validation-report#rules"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 1042,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#section-structure"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 518,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#requirement-entry-format"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 679,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#identifier-schemes"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 355,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#status-conventions"
+            },
+            "timestamp": "2026-09-07T14:29:50.731Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 1727186,
+                "subagent_tokens": 228628,
+                "tool_uses": 47
+              }
+            },
+            "timestamp": "2026-09-07T14:32:27.860Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 21,
+        "seq": 24,
         "sessionIndex": "6CKOVM",
         "startedAt": "2026-09-07T13:51:45.347Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788791351,
+        "ts": 1788791547,
         "variables": {
           "analysis_confirmed": true,
           "change_summary_path": "",
@@ -1688,7 +1902,7 @@
           "user_request": "Start a requirements refinement workflow to develop a requirements spec for the routines protocol. Sources — three records in /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-03-routines: README.md, gap-review.md, decisions.md. Write the spec as a numbered artifact inside the session's own planning folder, not under docs/.",
           "validation_passed": false,
           "validation_report_path": "",
-          "working_specification_path": ""
+          "working_specification_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol/03-working-spec-0.md"
         },
         "workflowId": "requirements-refinement",
         "workflowVersion": "1.5.0"
