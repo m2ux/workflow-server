@@ -7,16 +7,6 @@ metadata:
 
 Conduct structured manual diff review using external side-by-side diff tool with indexed block references
 
-## Inputs
-
-### base_pr_diff
-
-*(optional)* The base↔PR diff to review, when a review-mode baseline already derived it — read in place of re-deriving the three-dot diff.
-
-### base_sha
-
-*(optional)* Commit SHA of the base branch the diff is taken against, so block citations resolve at the reviewed baseline.
-
 ## Outputs
 
 ### change_block_index

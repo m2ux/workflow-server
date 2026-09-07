@@ -51,13 +51,13 @@ variables:
       type: array
       description: Register rows whose Follow-up cell holds no issue link, each carrying its ID, item and rationale.
       defaultValue: []
+    - name: publishable_files
+      type: array
+      description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
     - name: raise_current_deferred_item
       type: boolean
       description: Whether the row under consideration is approved for raising.
       defaultValue: false
-    - name: publishable_files
-      type: array
-      description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
     - name: worktree_created
       type: boolean
       description: True when a worktree at `{target_path}` was created or reused by this run.
