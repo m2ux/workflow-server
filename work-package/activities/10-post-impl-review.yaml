@@ -43,6 +43,14 @@ variables:
       type: array
       description: Change-block indices the reviewer flagged as carrying an issue.
       defaultValue: []
+    - name: follow_up_rows
+      type: array
+      description: In-task follow-ups to append to the register, each with what remains and where it surfaced.
+      defaultValue: []
+    - name: follow_ups_register
+      type: string
+      description: The in-task follow-ups register as it stands after this activity's rows.
+      defaultValue: ""
     - name: has_critical_blocker
       type: boolean
       description: Whether any flagged block is a critical blocker.
@@ -108,6 +116,9 @@ steps:
     id: collect-flagged-blocks
     technique: review-diff
     when: has_flagged_blocks == true
+  - kind: technique
+    id: register-review-follow-ups
+    technique: manage-registers::append-follow-up
   - kind: checkpoint
     id: rationale-attestation
     message: "The agent's rationale paragraph for each change block, which your confirmation attests the provenance of."

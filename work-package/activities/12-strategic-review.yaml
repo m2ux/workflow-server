@@ -34,6 +34,14 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
+    - name: deferred_item_rows
+      type: array
+      description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
+      defaultValue: []
+    - name: deferred_items_register
+      type: string
+      description: The out-of-scope deferrals register as it stands after this activity's rows.
+      defaultValue: ""
     - name: head_sha
       type: string
       description: Commit sha at the head of the pull request's branch.
@@ -194,6 +202,9 @@ steps:
   - kind: technique
     id: document-findings
     technique: document-findings
+  - kind: technique
+    id: register-deferred-findings
+    technique: manage-registers::append-deferred-item
   - kind: technique
     id: document-cleanup-recommendations
     technique: recommend-cleanup
