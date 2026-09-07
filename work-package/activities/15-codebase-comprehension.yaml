@@ -24,11 +24,22 @@ variables:
       description: Per-perspective challenge findings over the concern set, keyed by perspective name.
     - name: comprehension_artifact
       type: string
-      description: Absolute path to the comprehension artifact for the current codebase area.
+      description: The comprehension corpus artifact for the current codebase area, carrying what is settled about it.
+      defaultValue: ""
+    - name: comprehension_artifact_path
+      type: string
+      description: Absolute path the comprehension corpus artifact was written to, for user-facing links.
       defaultValue: ""
     - name: comprehension_dir
       type: string
       description: Absolute path of the cumulative codebase-comprehension corpus, outside any one session's planning folder.
+    - name: comprehension_scope
+      type: string
+      description: Whether the next deep-dive deepens the area under study or moves to a different one.
+      values:
+        - same-area
+        - new-area
+      defaultValue: same-area
     - name: has_open_questions
       type: boolean
       description: Whether unresolved open questions remain after the codebase comprehension deep-dive.
@@ -49,17 +60,22 @@ steps:
         value: "{host_repo_path}/.engineering/artifacts/comprehension"
   - kind: technique
     id: build-comprehension
-    technique: survey
+    technique:
+      name: survey
+      outputs:
+        comprehension_survey: comprehension_artifact
   - kind: technique
     id: create-comprehension-artifact
     technique:
       name: manage-artifacts::write-artifact
       inputs:
-        artifact_content: comprehension_survey
+        artifact_content: comprehension_artifact
         target_dir: comprehension_dir
+      outputs:
+        written_artifact: comprehension_artifact_path
     actions:
       - action: message
-        message: "[Comprehension artifact]({comprehension_artifact}) recorded for the next work package on this area."
+        message: "[Comprehension artifact]({comprehension_artifact_path}) recorded for the next work package on this area."
   - kind: loop
     id: deep-dive-iteration
     name: Deep-Dive Iteration
@@ -100,6 +116,8 @@ steps:
           inputs:
             artifact_content: comprehension_artifact
             target_dir: comprehension_dir
+          outputs:
+            written_artifact: comprehension_artifact_path
       - kind: technique
         id: record-log
         technique:
@@ -113,7 +131,7 @@ steps:
           variable: has_open_questions
           operator: ==
           value: true
-        message: "Open questions remain in the [comprehension artifact]({comprehension_artifact})."
+        message: "Open questions remain in the [comprehension artifact]({comprehension_artifact_path})."
         defaultOption: sufficient
         autoAdvanceMs: 30000
         options:
@@ -129,12 +147,14 @@ steps:
             effect:
               setVariable:
                 needs_comprehension: true
+                comprehension_scope: same-area
           - id: different-area
             label: Explore a different area
             description: A different part of the codebase warrants comprehension
             effect:
               setVariable:
                 needs_comprehension: true
+                comprehension_scope: new-area
 exits:
   - id: needs-elicitation
     when: needs_elicitation == true
