@@ -35,6 +35,7 @@ Lean mechanical summary of resolved trace events (dispatch counts, tool counts, 
 
 `human`
 
+
 ## Protocol
 
 ### 1. Capture History
@@ -57,6 +58,6 @@ Lean mechanical summary of resolved trace events (dispatch counts, tool counts, 
 ### 4. Update Status
 
 - Update the work package plan status only for **this** work package's own PR (`{pr_number}` as defined above).
-  - **Implementation path:** once that PR has merged, update status; if it has not merged yet, wait for merge or address review feedback first.
-  - **Review-mode path:** skip status updates keyed to an audited third-party PR. When this work package itself opened a PR (rare), treat only that PR's merge as the status trigger; otherwise record the review close-out outcome in `COMPLETE.md` without a merge-gated status flip.
+  > - **Implementation path:** the status advances where that pull request has merged, and holds at its current value where it has not.
+  > - **Review-mode path:** a status keyed to an audited third-party pull request does not advance. Where this work package opened one of its own (rare), only that pull request's merge advances the status; otherwise the review close-out outcome is recorded in `COMPLETE.md` with no merge-gated flip.
 - Record the final outcome in the planning artifacts under `{planning_folder_path}`.

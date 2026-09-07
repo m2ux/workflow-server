@@ -25,20 +25,11 @@ Path to the planning folder where the final outcome and retrospective are record
 
 ### retrospective_document
 
-Workflow [retrospective](../../resources/workflow-retrospective.md#output-section-template) with lessons learned, written as the `## Workflow Retrospective` section of the close-out document rather than a standalone artifact
-
+Workflow [retrospective](../../resources/workflow-retrospective.md#output-section-template) with lessons learned, as the `## Workflow Retrospective` section of the close-out document.
 
 ### session_trace_document
 
-Lean mechanical session-trace summary when `{trace_tokens}` resolves to non-empty events — per-activity tool counts, durations, errors, and validation-warning (`vw`) clusters. Omit or one-line skip when tokens are absent/empty.
-
-#### artifact
-
-`session-trace.md`
-
-#### audience
-
-`human`
+Lean mechanical session-trace summary — per-activity tool counts, durations, errors and validation-warning (`vw`) clusters. Empty where the run accumulated no trace events.
 
 ## Rules
 
