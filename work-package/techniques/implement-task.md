@@ -17,11 +17,11 @@ A single atomic task to implement (description, affected files, dependencies)
 
 *(optional)* Test [plan](../resources/test-plan.md#test-plan-structure) with strategy and acceptance criteria for guidance
 
+## Outputs
+
 ### target_symbol
 
-The primary edit target — the function, class, or method this task changes.
-
-## Outputs
+The primary edit target — the function, class, or method this task changes, derived from `{current_task}`.
 
 ### task_implementation
 

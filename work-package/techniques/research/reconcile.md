@@ -13,6 +13,10 @@ Research-reconcilable candidates closed until only irreconcilable residue remain
 
 The running [inventory](../../resources/research-reconciliation.md#inventory-shape) of open and resolved candidates to reconcile. On the first pass this is the triaged set; on later passes it also carries any candidates a `request-more` reopened.
 
+### research_document
+
+The research [artifact](../../resources/knowledge-base-research.md#planning-artifact) as it stands at the start of the pass; this pass appends to it and writes it back.
+
 ## Outputs
 
 ### research_candidates

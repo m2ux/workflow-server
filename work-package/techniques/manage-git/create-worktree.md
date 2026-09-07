@@ -19,11 +19,16 @@ Optional. Boolean, default `true`. When true, create `{branch_name}` fresh off t
 
 Boolean — true when the worktree exists at `{target_path}` on `{branch_name}`
 
+### default_branch
+
+The component's default branch, read off `refs/remotes/origin/HEAD` and falling back to `main`, then `master`. Feature branches are created off it, and sync back from it.
+
 ## Protocol
 
 ### 1. Fetch
 
-- Fetch first: `git -C {component_git_dir} fetch origin` so the remote-tracking refs are current before the worktree is materialised. Resolve `{$default_branch}` via `git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD` (fall back to `main`, then `master`).
+- Fetch first: `git -C {component_git_dir} fetch origin` so the remote-tracking refs are current before the worktree is materialised.
+- Resolve `{default_branch}` via `git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD`, falling back to `main`, then `master`, and emit it.
 
 ### 2. Create Worktree
 

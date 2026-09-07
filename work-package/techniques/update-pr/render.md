@@ -15,10 +15,9 @@ The rendered PR description body now live on the `{pr_number}` PR — composed f
 
 ## Protocol
 
-1. Select the template:
-   - If `{is_review_mode}` is true → [Review Comment Template](../../resources/review-mode.md#review-comment-template)
-   - Else if `{pr_template_variant}` is `initial` → [Template (Initial)](../../resources/pr-description.md#template-initial)
-   - Else if `{pr_template_variant}` is `final` → [Template (Final)](../../resources/pr-description.md#template-final); apply [lifecycle tense](../../resources/pr-description.md#lifecycle-tense) so lingering Initial “coming next” / future-tense checklist wording is replaced
+1. Select the template by `{pr_template_variant}`:
+   - `initial` → [Template (Initial)](../../resources/pr-description.md#template-initial)
+   - `final` → [Template (Final)](../../resources/pr-description.md#template-final); apply [lifecycle tense](../../resources/pr-description.md#lifecycle-tense) so lingering Initial “coming next” / future-tense checklist wording is replaced
 2. Compose the body using the implementation summary drawn from `{planning_folder_path}`, including the test coverage summary and key decisions and trade-offs.
 3. Resolve link URLs from git remotes — NEVER guess or infer repository URLs, issue numbers, or branch names:
    - Resolve `{$eng_git_dir}` as the engineering checkout [directory-scope](../manage-git/TECHNIQUE.md#directory-scope) names.

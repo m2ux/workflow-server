@@ -29,10 +29,6 @@ Path to the repo root; used with `.engineering/` (in-tree or submodule) to resol
 
 Path to the target checkout (where the PR lives), from which the target repo URL is resolved
 
-### is_review_mode
-
-*(optional)* True when the PR is being annotated with a consolidated review comment rather than updated with implementation detail
-
 ### pr_template_variant
 
 *(optional, enum: `initial` | `final`, default `final`)* Which PR body template to render

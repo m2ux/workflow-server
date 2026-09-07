@@ -7,7 +7,6 @@ variables:
     - base_branch
     - branch_name
     - component_git_dir
-    - default_branch
     - issue_request
     - issue_title
     - issue_type
@@ -50,6 +49,9 @@ variables:
       type: string
       description: Path of the component being worked on, relative to the host repository.
       defaultValue: .
+    - name: default_branch
+      type: string
+      description: The component's default branch, read off the remote HEAD. Feature branches are created off it, and sync back from it.
     - name: existing_pr_number
       type: string
       description: PR number of the draft pull request already open for this branch.
