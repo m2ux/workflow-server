@@ -1,11 +1,11 @@
 id: validate-specification
-version: 1.6.0
+version: 1.7.0
 name: Validate Specification
 description: Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting.
 variables:
   reads:
     - correction_iteration
-    - source_path
+    - source_paths
     - target_doc_path
   writes:
     - name: has_correctable_issues

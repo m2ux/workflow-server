@@ -1,10 +1,10 @@
 id: intake-and-analyze
-version: 1.3.0
+version: 1.4.0
 name: Intake and Analyze
-description: Capture the source-document and target-specification paths, record whether the source document is readable, classify the source as a meeting transcript or an unstructured document, and determine whether the specification is being augmented or created; then parse the source against the current specification and produce a structured requirements analysis report, confirming each boundary with the user before proceeding.
+description: Capture the source-document and target-specification paths, record whether every source document is readable, classify each source as a meeting transcript or an unstructured document, and determine whether the specification is being augmented or created; then parse the sources against the current specification and produce a structured requirements analysis report, confirming each boundary with the user before proceeding.
 variables:
   reads:
-    - source_path
+    - source_paths
     - target_doc_path
   writes:
     - name: analysis_confirmed
@@ -13,7 +13,7 @@ variables:
       defaultValue: false
     - name: source_readable
       type: boolean
-      description: True when the source document exists and carries content
+      description: True when every source document exists and carries content
       defaultValue: false
     - name: intake_record_path
       type: string
@@ -23,12 +23,10 @@ variables:
       type: string
       description: Absolute path to the written requirements analysis report
       defaultValue: ""
-    - name: source_type
-      type: string
-      description: Classification of the source document. Absent until intake classifies it.
-      values:
-        - meeting
-        - document
+    - name: classified_sources
+      type: array
+      description: Source documents paired with their classifications, each { path, type } where type is meeting or document. Empty until intake classifies them.
+      defaultValue: []
     - name: spec_basename
       type: string
       description: Basename of the target specification
@@ -44,7 +42,7 @@ steps:
     technique: intake-sources
     actions:
       - action: message
-        message: "The {source_type} source and the target specification are captured and classified ([intake record]({intake_record_path}))."
+        message: "The source set and the target specification are captured, each source with its own classification ([intake record]({intake_record_path}))."
         condition:
           type: simple
           variable: source_readable
@@ -55,18 +53,18 @@ steps:
     when: source_readable == false
     actions:
       - action: message
-        message: "The source document at {source_path} is missing or empty ([intake record]({intake_record_path}))."
+        message: "A source document named for this run is missing or empty; the intake record names which ([intake record]({intake_record_path}))."
   - kind: checkpoint
     id: sources-confirmed
     when: source_readable == true
-    message: "The {source_type} source at {source_path} and the target specification {target_doc_path} (target exists: {target_doc_exists}) are captured and classified ([intake record]({intake_record_path}))."
+    message: "The source set and the target specification {target_doc_path} (target exists: {target_doc_exists}) are captured, each source with its own classification ([intake record]({intake_record_path}))."
     options:
       - id: confirmed
         label: Yes, proceed
-        description: Sources, classified type, and mode are correct.
+        description: The source set, the classification each source carries, and the mode are correct.
       - id: revise
         label: Correct the sources
-        description: A source path, the classified source type, or the augment/create mode is wrong and must be corrected before proceeding.
+        description: A source path, a source's classification, or the augment/create mode is wrong, or the set omits a document it should carry, and must be corrected before proceeding.
         effect:
           exit: revise
   - kind: technique
@@ -75,21 +73,21 @@ steps:
     when: source_readable == true
     actions:
       - action: message
-        message: "The source document is parsed into new, updated, and deprecated requirements with a source-coverage matrix ([analysis report]({requirements_analysis_path}))."
+        message: "The source documents are parsed into new, updated, and deprecated requirements with a source-coverage matrix ([analysis report]({requirements_analysis_path}))."
   - kind: checkpoint
     id: analysis-confirmed
     when: source_readable == true
-    message: "The requirements analysis derived from the source document is ready to apply to the specification ([analysis report]({requirements_analysis_path}))."
+    message: "The requirements analysis derived from the source set is ready to apply to the specification ([analysis report]({requirements_analysis_path}))."
     options:
       - id: confirmed
         label: Yes, apply this analysis
-        description: Analysis is accurate and reflects the source faithfully.
+        description: Analysis is accurate and reflects every source faithfully.
         effect:
           setVariable:
             analysis_confirmed: true
       - id: revise
         label: Revise the analysis
-        description: Analysis misreads the source or misses changes and must be revised before proceeding.
+        description: Analysis misreads a source, misses changes, or leaves a source unread, and must be revised before proceeding.
         effect:
           exit: revise
 exits:
@@ -102,7 +100,7 @@ exits:
     immediate: true
 outcome:
   - The workflow can trust where to read from and where to write to — both paths exist and are confirmed correct by the user
-  - Downstream activities know how to read the source and whether they are augmenting an existing specification or creating a new one
-  - A source with nothing to read is settled at the boundary, so no pass runs against it
-  - Every requirement change the source implies is pinned to a stable identifier the specification can be updated against
-  - The user has signed off that the analysis faithfully reflects the source, so the update can proceed without second-guessing scope
+  - Downstream activities know how to read each source, which classification it carries, and whether they are augmenting an existing specification or creating a new one
+  - A source with nothing to read is settled at the boundary, so no pass runs against an incomplete set
+  - Every requirement change the sources imply is pinned to a stable identifier the specification can be updated against
+  - The user has signed off that the analysis faithfully reflects every source, so the update can proceed without second-guessing scope

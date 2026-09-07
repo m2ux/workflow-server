@@ -1,10 +1,10 @@
 id: report-failure
-version: 1.4.0
+version: 1.5.0
 name: Report Failure
 description: Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically; no specification is promoted.
 variables:
   reads:
-    - source_path
+    - source_paths
     - target_doc_path
   writes:
     - name: failure_report_path

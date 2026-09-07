@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.7.1
 ---
 
 ## Capability
@@ -45,7 +45,7 @@ Presence of a defect another correction pass resolves, with no blocking defect a
 
 ### validation_passed
 
-Overall verdict — `true` when the specification is conformant and covers the source in full, so it is ready to finalize.
+Overall verdict — `true` when the specification is conformant and covers every source in full, so it is ready to finalize.
 
 ## Protocol
 
