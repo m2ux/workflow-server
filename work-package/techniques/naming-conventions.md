@@ -56,9 +56,13 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
 3. Slugify `{issue_title}` (lowercase, dashes, max ~40 chars) for the description segment.
 4. Set `{branch_name}` to `{$branch_type_prefix}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
 5. Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.
-6. Take `{$checkout_root}` as the ancestor of `{planning_folder_path}` above `.engineering/artifacts/planning/`, and set `{target_path}` to `{$checkout_root}/.worktrees/{$wp_slug}/` — the gitignored feature-worktree directory nested in the checkout. From this point on, "inside `{target_path}`" refers to this worktree (not the checkout at `{host_repo_path}`). Never place `{target_path}` under `{planning_folder_path}` or under `{host_repo_path}`, and never anchor it to a home directory or an install root.
+6. Take `{$checkout_root}` as the ancestor of `{planning_folder_path}` above `.engineering/artifacts/planning/`, and set `{target_path}` to `{$checkout_root}/.worktrees/{$wp_slug}/` — the gitignored feature-worktree directory nested in the checkout.
 
 ## Rules
+
+### target-path-is-the-worktree
+
+`{target_path}` names the feature worktree, and "inside `{target_path}`" means that worktree rather than the checkout at `{host_repo_path}`. It sits under `{$checkout_root}/.worktrees/` — never under `{planning_folder_path}`, never under `{host_repo_path}` itself, and never anchored to a home directory or an install root.
 
 ### worktree-distinct-from-planning-folder
 

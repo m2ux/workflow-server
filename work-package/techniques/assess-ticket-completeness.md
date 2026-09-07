@@ -34,4 +34,4 @@ True once any identified gaps have been recorded (in the assumptions log) so the
 
 - For each dimension that is weak or missing, record the gap concisely as a tracked finding in `{assumptions_log}`.
 - Set `{ticket_gaps_documented}` true once gaps are recorded, false when every dimension is present and sufficient.
-- Documented gaps are persistent findings, not ephemeral status text — they live in the assumptions log so review can proceed with them visible regardless of whether the ticket is refactored.
+- Every gap lands in `{assumptions_log}` as a tracked finding, whether or not the ticket is later refactored.

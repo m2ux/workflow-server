@@ -36,7 +36,7 @@ The authored surface of the PR — GitHub's changed-files list. The canonical se
 
 ### 3. Capture Authored Surface
 
-- Check out the PR branch to continue the workflow.
+- Check out the PR branch, so the authored surface is read against it rather than against the base.
 - Apply [list-pr-files](../../meta/techniques/github-cli-protocol/list-pr-files.md)(*repo_path*=`{component_git_dir}`); set `{changed_files}` from the op output.
 - Take the authored diff as `{$base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {$base_branch}...HEAD`.
 

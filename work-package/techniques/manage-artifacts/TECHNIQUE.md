@@ -87,4 +87,4 @@ Artifact filenames are prefixed with the server-provided `artifactPrefix`. Techn
 
 ### push-before-linking
 
-Any engineering link — in a PR body (📐 Engineering), an issue, or a posted review — MUST resolve to a committed file on the remote, or the reader gets a 404. Commit and push the planning folder BEFORE writing a URL that points into it, via [manage-git](../manage-git/TECHNIQUE.md)::[artifact-commits](../manage-git/artifact-commits.md), which owns the checkout the commit lands in.
+Any engineering link — in a PR body (📐 Engineering), an issue, or a posted review — MUST resolve to a committed file on the remote, or the reader gets a 404. [manage-git](../manage-git/TECHNIQUE.md)::[artifact-commits](../manage-git/artifact-commits.md) is what puts the planning folder there, and the activity graph is where it is sequenced ahead of the render that links into it.

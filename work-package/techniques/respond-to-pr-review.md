@@ -88,10 +88,6 @@ Address required changes before suggestions and nits
 
 Tone per [agent-conduct](../../meta/techniques/agent-conduct.md) `communication-*` rules. Address the specific concern with concrete examples and trade-offs where relevant.
 
-### blockquote-paste-format
-
-Format each response as a blockquote (`>`) so it pastes directly into the PR comment; include an "**Optional doc wording:**" block when proposing documentation text changes.
-
 ### acknowledge-then-act
 
 Acknowledge the reviewer's point first, then state the actions taken explicitly; reference specific commits when relevant; be concise.

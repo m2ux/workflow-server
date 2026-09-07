@@ -35,6 +35,6 @@ Engineering branch to push to
 
 ### 2. Rebase and Push
 
-- BEFORE every push, integrate sibling work-package commits onto the same engineering branch: `git -C {eng_git_dir} pull --rebase origin {branch}`. Without this, two work packages running in parallel will produce non-fast-forward push rejections and halt mid-flow. The rebase is cheap because each work package writes only to its own planning subfolder, so conflicts are rare.
+- BEFORE every push, integrate sibling work-package commits onto the same engineering branch: `git -C {eng_git_dir} pull --rebase origin {branch}`.
 - Push: `git -C {eng_git_dir} push origin {branch}`.
 - If the push is still rejected (race with a sibling that pushed between our rebase and our push), retry the `pull --rebase` + `push` cycle once.
