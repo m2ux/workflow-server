@@ -10,6 +10,22 @@ import { corpusRoot } from './corpus-root.js';
 import { createHarness, type Harness } from './e2e/harness.js';
 import { sessionOps, type SessionOps } from './session-ops.js';
 
+/** A step as an activity body carries it — a loop step nests its body under `steps`. */
+interface StepNode {
+  id?: string;
+  technique?: unknown;
+  steps?: StepNode[];
+}
+
+/**
+ * Every step in document order, descending into loop bodies. A bound op sits wherever its activity
+ * puts it, and a loop body is one of those places, so a search that reads only the outer array finds
+ * a bound step in some activities and not others.
+ */
+function flattenSteps(steps: StepNode[] = []): StepNode[] {
+  return steps.flatMap((step) => [step, ...flattenSteps(step.steps)]);
+}
+
 /** An unchanged-reference marker as it appears in a parsed bundle. */
 interface UnchangedMarker {
   delivery: 'unchanged';
@@ -401,8 +417,8 @@ describe('reference-not-repeat delivery (B1)', () => {
   describe('get_technique delta mode', () => {
     async function findTechniqueStepId(idx: string): Promise<string> {
       const parsed = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
-      const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
-      const step = (body.steps ?? []).find(s => typeof s.technique === 'string' && s.id);
+      const body = parse(parsed.bodyText) as { steps?: StepNode[] };
+      const step = flattenSteps(body.steps).find(s => typeof s.technique === 'string' && s.id);
       expect(step, 'expected a technique-bound step').toBeTruthy();
       return step!.id!;
     }
@@ -502,8 +518,8 @@ describe('reference-not-repeat delivery (B1)', () => {
   describe('binding-seam provenance (B3)', () => {
     async function findTechniqueStepId(idx: string): Promise<string> {
       const parsed = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
-      const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
-      const step = (body.steps ?? []).find(s => typeof s.technique === 'string' && s.id);
+      const body = parse(parsed.bodyText) as { steps?: StepNode[] };
+      const step = flattenSteps(body.steps).find(s => typeof s.technique === 'string' && s.id);
       expect(step, 'expected a technique-bound step').toBeTruthy();
       return step!.id!;
     }
