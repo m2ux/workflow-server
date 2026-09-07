@@ -41,9 +41,10 @@ the internal's materialised name, which carries the host activity as well as the
 because a variable name shares one flat namespace across the workflow:
 `#{implement_reconcile_assumptions_current_assumption.id}`. So the worker reads a mangled bag name it
 did not author, takes `.id` from it, and composes the result onto a base prefixed by a different
-rule — which is where item 2's 105-character step id and 124-character response key come from.
+rule — which is where the identifier-length item's 105-character step id and 124-character response
+key come from.
 
-**This is the correctness half of the identifier-length question**, and open item 2 in
+**This is the correctness half of the identifier-length question**, and the identifier-length item in
 [decisions.md](decisions.md) carries both halves. Length is a legibility matter for a runtime that
 emits the key it generated: the generated names are JSON keys in the session record and arguments to
 `get_technique`, never filenames, so nothing truncates or rejects them. A worker composing the key by
@@ -70,10 +71,10 @@ rather than settled here:
 - **The server composes the instance id and the worker echoes it.** The gate is already delivered
   through the server, so the composed id can travel with it and `yield-checkpoint` can lose the
   expand-a-template clause. This removes the latitude as well as the arithmetic.
-- **Internals are scope-resolved rather than name-mangled** — open item 3 in
+- **Internals are scope-resolved rather than name-mangled** — the scoped-names item in
   [decisions.md](decisions.md), arriving here from a fourth direction. A routine's internal needs no
   prefix if the loader records the scope, after which the template interpolates a short name and both
-  numbers in item 2 collapse.
+  numbers in the identifier-length item collapse.
 
 ## 2. A third textual injector, and the order among the three
 
@@ -138,9 +139,9 @@ reference, and a reader meeting both statements has no way to tell they do not c
 |---|---|---|
 | Prefixed `id:` on every spliced step, in the text | Acceptance criterion on stage 3 | Finding 2 |
 | Text-level comparison for worker-read fields | Acceptance criterion on stage 3 | Finding 3 |
-| Identifier length is a correctness question while the worker composes keys | Reclassification of open item 2 | Finding 1 |
-| A step id fails loudly and a checkpoint instance id fails silently | Evidence under open item 3 | Finding 1 |
-| Server-composed instance ids, or scope-resolved internals | Weighed under open item 3 | Finding 1 |
+| Identifier length is a correctness question while the worker composes keys | Reclassification of the identifier-length item | Finding 1 |
+| A step id fails loudly and a checkpoint instance id fails silently | Evidence under the scoped-names item | Finding 1 |
+| Server-composed instance ids, or scope-resolved internals | Weighed under the scoped-names item | Finding 1 |
 | `injectResolvedStepIds` in the delivery-path inventory | One entry | Finding 2 |
 
 None of it blocks the construct. Findings 2 and 3 are cheap to specify now and expensive to discover

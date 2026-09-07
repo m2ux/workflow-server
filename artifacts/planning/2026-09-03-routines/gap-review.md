@@ -116,11 +116,13 @@ says it is.
 
 **What has to be re-derived.** The signature, and everything measured on it: the seven-input union
 the capability decision discusses, the 105-character step id and 124-character response key in open
-item 2, and the substitution examples. The re-derived signature is smaller — three inputs and four
+the identifier-length item, and the substitution examples. The re-derived signature is smaller —
+three inputs and four
 outputs against seven and four — which moves several of those numbers down rather than up.
 
 **Investigate:** re-derive both routines against the landed loop block before stage 6 is planned,
-and re-take open item 2's measurements from the result. The conversion artifacts are marked "read
+and re-take the identifier-length item's measurements from the result. The conversion artifacts are
+marked "read
 before implementing materialisation"; a planner reading them today reads a pre-deletion shape.
 
 ## 4. `breakCondition` survives, and stage 0 was recorded as having deleted it
@@ -319,7 +321,8 @@ its own body binds a technique declaring one **or when any routine it references
 level, the one-reference-per-activity limit is evaded by wrapping: a routine declaring nothing
 itself, referencing one that declares an artifact, could be referenced twice and write one filename
 twice. Depth needs no bound of its own — cycle detection terminates the walk, and how long the
-composed prefix may grow is open item 2, a question about identifiers rather than placement.
+composed prefix may grow is the identifier-length item, a question about identifiers rather
+than placement.
 
 Recorded in [decisions.md](decisions.md), [placement.md](placement.md) and the README. Placement's
 open-questions section now holds one question rather than three.
@@ -387,7 +390,7 @@ now describes the system as it stands and the list below is what remains.
 |---|---|---|
 | 1 | Each finding's state recorded in [findings-register.md](findings-register.md); the four documents arguing from a superseded premise re-based | B3 to fix |
 | 2 | **Settled** — B6 raised as [#637](https://github.com/m2ux/workflow-server/issues/637), and B7, found in the second pass, as [#638](https://github.com/m2ux/workflow-server/issues/638) | Fix both |
-| 3 | **Settled** — [re-derivation.md](re-derivation.md) takes the signature from the landed block: two routines, no capability parameter, no inputs on the outer one | Name the two routines; re-take open item 2's identifier measurements |
+| 3 | **Settled** — [re-derivation.md](re-derivation.md) takes the signature from the landed block: two routines, no capability parameter, no inputs on the outer one | Name the two routines; re-take the identifier-length measurements |
 | 4 | All four statements, and `breakCondition` added to the substitution field list | — |
 | 5 | The decision restated as the corpus took it; census rows 8 and 9 marked converged | — |
 | 6 | **Settled by dataflow** — row 5's conjunct required, row 6's redundant, and two sites recording an unasked answer raised as B7 | Fix B7 |
@@ -444,17 +447,43 @@ read as written it cannot see an overlap a routine introduces, and read through 
 audit generated bindings, so it needs routine awareness in the authored column. Two guards this
 review first listed as unclassified read technique markdown rather than activity files.
 
+## The four questions put to the owner
+
+Settled on 2026-09-07, and one of them by dissolving rather than choosing.
+
+**Where a routine shared by two workflows lives — `meta`, because the resolution is the corpus's
+own.** The question was posed as a choice between reusing the `meta` fallback, inventing a shared
+root, and a workflow declaring its exports. The answer given was to reference a routine the way the
+corpus references a shared technique, which *is* `meta`: a bare technique path already falls back
+there, and a routine resolves as `[workflow::]name` by the same rule. One resolution rule for the
+corpus rather than two is a better argument than the cheapness the record first offered, and the
+exports idea returns to the typed language, which is where the polymorphism survey put it.
+
+**Which side stops writing the findings files — the five write steps go.** The audits keep
+persisting and their reported paths are the contract. Recorded on
+[#637](https://github.com/m2ux/workflow-server/issues/637).
+
+**The overlap guard gains routine awareness in the authored column.** Its overlap test resolves a
+reference step to the routine's own step bindings, keeping the rule hard-zero over what an author
+wrote. It stays the only guard where the authored/materialised split is not by itself enough.
+
+**Both routines, nested.** The challenge pass is named on its own, so the comprehension site shares
+it rather than keeping a copy — carried by the measurement, since that pass is shared by seven
+activities and no other shape lets the seventh site participate. Nesting is therefore load-bearing
+in the first version rather than merely available in it.
+
 ## What is left
 
 1. **Fix B7 and B6**, raised as [#638](https://github.com/m2ux/workflow-server/issues/638) and
    [#637](https://github.com/m2ux/workflow-server/issues/637). B7 is four gate edits and the only
-   live wrong behaviour in the register.
-2. **Re-take open item 2's identifier measurements** against the re-derived signature, whose
-   composed prefix is one segment longer than the earlier conversion produced.
-3. **Cost the four guard moves** the loader column implies (gap 9), and settle
-   `check-activity-technique-overlap`'s routine awareness.
-4. **Decide the two routine names** in the re-derivation, and whether the inner routine is worth
-   naming on its own.
+   live wrong behaviour in the register; B6's disposition is decided.
+2. **Re-take the identifier-length measurements** against the re-derived signature, whose composed
+   prefix runs to four segments. This is the prerequisite for the two remaining open items, which
+   are one question at two depths and should be put to the owner together, after the numbers.
+3. **Cost the four guard moves** the loader column implies (gap 9).
+4. **Name the two routines.** `challenge-concerns` and `converge-assumptions` are proposed in
+   [re-derivation.md](re-derivation.md), not settled — the only open item here that a multiple
+   choice does not fit.
 5. **Sequence stages 5 and 6 against each other** at the two activities where their runs are
    contiguous.
 6. **Fix B3** wherever the loop work next lands.

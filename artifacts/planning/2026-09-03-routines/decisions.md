@@ -235,7 +235,8 @@ parameter. The feature is out of the first version's scope and three guarantees 
 exception: contracts derive in isolation, routines walk from their declared inputs, and the artifact
 check runs once per routine. The reasoning below stands for whenever a site arrives, and
 [re-derivation.md](re-derivation.md) carries the measurement. As originally measured, the
-convergence run took the analysis it performs as a parameter. Refusing higher-order parameters forces one routine per domain, which is the fork the
+convergence run took the analysis it performs as a parameter. Refusing higher-order parameters
+forces one routine per domain, which is the fork the
 technique's own rule forbids. Substituting the literal before the derivation runs makes every
 signature resolve, at the stated price: the guard holding a routine's declaration against its body
 runs once per reference site for such a routine, and the isolated-checking guarantee carries that
@@ -357,7 +358,7 @@ reference: a routine declares an artifact when its own body binds a technique de
 when any routine it references does.** At one level the limit is evaded by wrapping — a routine
 declaring nothing itself, referencing one that declares an artifact, referenced twice, writes one
 filename twice. Depth itself needs no bound: cycle detection terminates the walk, and how long the
-composed prefix may grow is open item 2 below.
+composed prefix may grow is the identifier-length item below.
 
 **A routine declares no outcome and returns none.** Every activity that would refer to one declares a
 single `done` exit, so nothing in the corpus can receive an outcome today. A routine's effect on
@@ -398,6 +399,15 @@ self-provisioned-input guard, description hygiene and activity–technique overl
 run behaves and take the loader's materialised activities: checkpoint entry, decision order,
 review-mode gating and binding fidelity. The harness-adapter guard reads variable values rather than
 steps and is unaffected. The two columns are each forced by a concrete case, below.
+
+**The activity–technique overlap guard resolves a reference step to the routine's step bindings.**
+*(settled 2026-09-07)* The rule is hard-zero: an activity's top-level `techniques[]` list may not
+re-list a technique any of its steps binds. A routine breaks it in a direction neither form shows —
+read as written the overlap is invisible, because the activity lists the technique and the routine
+binds it; read through the loader the guard audits generated bindings, which the classification rules
+out. So it stays in the authored column and learns the one thing it needs: a `kind: routine` step
+contributes the bindings of the routine it names. This is the only guard where reading the authored
+form is not by itself enough.
 
 **A routine file is its own name scope, and the variable-model guard reads it as one.**
 *(settled 2026-09-07)* `check-variable-model` requires a checkpoint effect's `setVariable` to name a
@@ -552,102 +562,109 @@ Seeding it restores the bundling at both sites. The prerequisite is met: the fla
 `defaultValue: false` on the work-package workflow file, and the absent-default merge change that
 seeding it needed landed with it.
 
+**A routine name resolves exactly as a shared technique's does, so the shared home is `meta` and
+there is no separate question.** *(settled 2026-09-07)* This was recorded as open — is the shared
+home `meta` or something new — and the answer is that the construct never needed one of its own.
+A routine resolves as `[workflow::]name`: qualified means that workflow only, bare means the
+referring workflow and then the fallback, which is the resolution shared gate bodies and technique
+paths both already implement. Mirroring that resolution *is* choosing `meta`, because `meta` is what
+a bare technique reference falls back to. One resolution rule for the corpus rather than two is the
+argument, and it is a better one than the cheapness this record first offered.
+
+The measurement supports it independently. Eight technique groups in `meta` are bound as steps, and
+**all eight are bound by a workflow other than `meta`** — `verify-artifact-conforms` by fifteen
+workflows, `workflow-engine` and `version-control` by seven each. Meta's technique layer is not a
+domain workflow's library that others borrow from; it is already the shared library, and nothing in
+it squats. That is a different situation from the one #519 raises, where generic rule texts sat in
+`prism` and `work-package` — domain workflows lending content their subject does not cover.
+
+What was left of the objection is that `meta` also runs: five activity files of its own plus a
+patterns directory. A library that is also a workflow is confusing to read even when nothing in it is
+misplaced. That is a real observation and it is not a placement question — the mechanism that
+addresses it is a workflow declaring which of its definitions it exports, surveyed as module
+visibility in `2026-08-31-typed-execution-redesign/polymorphism-survey.md` and belonging to the
+typed language rather than to this construct. Placement stays computed from referring files, with
+the fallback the rest of the corpus already uses.
+
 ## Still open
 
-These are not blocked by anything above, and nothing above is blocked by them.
+Two items, and they are the same question at two depths. Neither is blocked by anything above and
+nothing above is blocked by them. They are named rather than numbered, because the numbers were
+cited from six files and a list is a poor home for an identifier.
 
-1. **Is the shared home `meta`, or something new?** Bare fragment and technique references already
-   fall back to `meta`, and reusing that fallback is the cheap answer.
+**The identifier-length item — how long may a generated identifier be?** Measured rather than
+guessed:
 
-   The measurement weakens the case against it. Eight technique groups in `meta` are bound as steps,
-   and **all eight are bound by a workflow other than `meta` — not one is used only by meta's own
-   activities.** `verify-artifact-conforms` is bound by fifteen workflows, `workflow-engine` and
-   `version-control` by seven each. Meta's technique layer is not a domain workflow's library that
-   others borrow from; it is already the shared library, and nothing in it squats. That is a
-   different situation from the one #519 raises, where generic rule texts sat in `prism` and
-   `work-package` — domain workflows lending content their subject does not cover.
+| | Characters |
+|---|---|
+| Longest step id in the corpus today | 58 |
+| Longest checkpoint response key today | 76 |
+| Generated step id, one level | 32 |
+| Generated step id, nested routine | 45 |
+| Generated internal variable name | 69 |
+| Generated step id, loop body | **105** |
+| Generated response key, worst case | **124** |
 
-   What is left of the objection is that `meta` also runs: five activity files of its own plus a
-   patterns directory. A library that is also a workflow is confusing to read even when nothing in it
-   is misplaced, and a new shared root would separate the two. Against that, a second root is a
-   second resolution rule for authors to learn, for a construct that today has **no instance spanning
-   two workflows** — every shared run found in the corpus belongs to exactly one.
+So the conversions produce identifiers about 1.6 times the current maximum, not an order of
+magnitude, and nothing anywhere bounds them: these are JSON keys in the session record and
+arguments to `get_technique`, never filenames.
 
-   Nothing is blocked. The first routine that genuinely spans two workflows forces the question, and
-   until then the fallback that already serves eight technique groups is the answer with evidence
-   behind it.
+**It is a legibility question where a runtime emits the key it generated, and a correctness
+question while a worker composes one.** `yield-checkpoint` assigns the per-iteration key to the
+worker — expand the declared `#{...}` template, or choose the loop item's id or slug — so the key
+is assembled by a model out of the delivered text, over a base carrying the reference site's
+prefix and a template interpolating the internal's materialised name. `checkpointBaseId` splits on
+the first `#`, so a mis-composed instance does not fail: it records a new checkpoint and asks a
+question whose answer already exists. The reasoning, and the two answers available — the server
+composing the id and the worker echoing it, or scope-resolved internals under the scoped-names item
+— are in [agent-interpretation.md](agent-interpretation.md).
 
-2. **How long may a generated identifier be?** Measured rather than guessed:
+The interesting part is where the length comes from. The 105-character step id is a loop-body
+checkpoint whose per-iteration discriminator interpolates the internal's materialised name, so the
+internal's prefix inflates the step id as well as the variable. And the internal carries that
+prefix only because materialisation puts it in the bag where the contract derivation sees it and
+the crossing check compares it across activities.
 
-   | | Characters |
-   |---|---|
-   | Longest step id in the corpus today | 58 |
-   | Longest checkpoint response key today | 76 |
-   | Generated step id, one level | 32 |
-   | Generated step id, nested routine | 45 |
-   | Generated internal variable name | 69 |
-   | Generated step id, loop body | **105** |
-   | Generated response key, worst case | **124** |
+**So this item and the internals rule are the same question asked twice.** Encoding uniqueness in
+the name is one answer; the other is teaching the derivation about internals — the loader records
+which names came from a routine's internals and the derivation excludes them — after which
+`current_assumption` needs no prefix at all and both numbers collapse. That is a larger change
+with a real hazard behind it, since two activities would then write one bag name, and it should be
+weighed once there is a reason to care about the length.
 
-   So the conversions produce identifiers about 1.6 times the current maximum, not an order of
-   magnitude, and nothing anywhere bounds them: these are JSON keys in the session record and
-   arguments to `get_technique`, never filenames.
+The scoped-names item below is the third form of the same question, asked at the root.
 
-   **It is a legibility question where a runtime emits the key it generated, and a correctness
-   question while a worker composes one.** `yield-checkpoint` assigns the per-iteration key to the
-   worker — expand the declared `#{...}` template, or choose the loop item's id or slug — so the key
-   is assembled by a model out of the delivered text, over a base carrying the reference site's
-   prefix and a template interpolating the internal's materialised name. `checkpointBaseId` splits on
-   the first `#`, so a mis-composed instance does not fail: it records a new checkpoint and asks a
-   question whose answer already exists. The reasoning, and the two answers available — the server
-   composing the id and the worker echoing it, or scope-resolved internals under item 3 — are in
-   [agent-interpretation.md](agent-interpretation.md).
+**The scoped-names item — does a name inside a routine belong to a scope, or to a mangled global?**
+The bag is one flat
+namespace per workflow, and every workaround in this proposal that concerns names descends from
+that: the internals rule and its underscore-joined activity-plus-site prefix, the 124-character
+worst-case response key above, the crossing check reporting an activity-level production for a
+value that never leaves a loop body, and the injection rule that has to fire only into a gap
+because two declarations of one name are a load failure. A routine is already a lexical scope —
+inputs, outputs and internals *are* its declared bindings, and it has no free variables — so the
+flat bag is what forces the scope to be simulated in the spelling of a name rather than held by
+the loader.
 
-   The interesting part is where the length comes from. The 105-character step id is a loop-body
-   checkpoint whose per-iteration discriminator interpolates the internal's materialised name, so the
-   internal's prefix inflates the step id as well as the variable. And the internal carries that
-   prefix only because materialisation puts it in the bag where the contract derivation sees it and
-   the crossing check compares it across activities.
+Scoping the names is the alternative, and it settles the length by removing the reason a name is
+long — including the correctness half of it, since a worker composing a checkpoint key from a
+short scoped name has far less to get right. It is a larger change than either answer there:
+the session record's key layout, the crossing check, the producer index and `inspect_session`'s
+variable view all read the bag as flat today.
 
-   **So this item and the internals rule are the same question asked twice.** Encoding uniqueness in
-   the name is one answer; the other is teaching the derivation about internals — the loader records
-   which names came from a routine's internals and the derivation excludes them — after which
-   `current_assumption` needs no prefix at all and both numbers collapse. That is a larger change
-   with a real hazard behind it, since two activities would then write one bag name, and it should be
-   weighed once there is a reason to care about the length.
+**The construct is not blocked on it.** The mangled form is measured and materialises correctly,
+and the cheaper answer to the correctness half is the server composing the checkpoint instance id
+rather than the worker — so this item is where the length goes away, not where it becomes safe.
 
-   Item 3 below is the third form of the same question, asked at the root.
-
-3. **Does a name inside a routine belong to a scope, or to a mangled global?** The bag is one flat
-   namespace per workflow, and every workaround in this proposal that concerns names descends from
-   that: the internals rule and its underscore-joined activity-plus-site prefix, the 124-character
-   worst-case response key in item 2, the crossing check reporting an activity-level production for a
-   value that never leaves a loop body, and the injection rule that has to fire only into a gap
-   because two declarations of one name are a load failure. A routine is already a lexical scope —
-   inputs, outputs and internals *are* its declared bindings, and it has no free variables — so the
-   flat bag is what forces the scope to be simulated in the spelling of a name rather than held by
-   the loader.
-
-   Scoping the names is the alternative, and it settles item 2 by removing the reason a name is
-   long — including the correctness half of it, since a worker composing a checkpoint key from a
-   short scoped name has far less to get right. It is a larger change than either answer in item 2:
-   the session record's key layout, the crossing check, the producer index and `inspect_session`'s
-   variable view all read the bag as flat today.
-
-   **The construct is not blocked on it.** The mangled form is measured and materialises correctly,
-   and the cheaper answer to the correctness half is the server composing the checkpoint instance id
-   rather than the worker — so this item is where the length goes away, not where it becomes safe.
-
-   Where this reaches beyond routines is worth stating, because the question arrives from that
-   direction too. Merging the workflow and activity shapes into one nesting construct — a primary
-   activity with nested activities — is the other route to scoped names, and it is not the route to
-   take. Nesting by *reference* is already what a workflow is: `initialActivity` is the primary
-   activity and `activities:` is a reference list that crosses workflow boundaries, fourteen of
-   `remediate-vuln`'s fifteen entries being `work-package` files. Nesting by *containment* would cost
-   the thing the redesign record calls the best structural idea in the system — exits in the activity,
-   destinations in the workflow graph — because containment is the opposite of reference, and 21
-   activities appear in more than one graph. The two levels also differ by runtime boundary rather
-   than by shape: a workflow is a session and an activity is a dispatch, so one construct for both
-   needs a flag deciding which, and a construct plus a mode flag is the shape stage 6 exists to
-   remove. **Scoped names are available without any of that**, which is why the question is recorded
-   here as its own item rather than as an argument about construct shape.
+Where this reaches beyond routines is worth stating, because the question arrives from that
+direction too. Merging the workflow and activity shapes into one nesting construct — a primary
+activity with nested activities — is the other route to scoped names, and it is not the route to
+take. Nesting by *reference* is already what a workflow is: `initialActivity` is the primary
+activity and `activities:` is a reference list that crosses workflow boundaries, fourteen of
+`remediate-vuln`'s fifteen entries being `work-package` files. Nesting by *containment* would cost
+the thing the redesign record calls the best structural idea in the system — exits in the activity,
+destinations in the workflow graph — because containment is the opposite of reference, and 21
+activities appear in more than one graph. The two levels also differ by runtime boundary rather
+than by shape: a workflow is a session and an activity is a dispatch, so one construct for both
+needs a flag deciding which, and a construct plus a mode flag is the shape stage 6 exists to
+remove. **Scoped names are available without any of that**, which is why the question is recorded
+here as its own item rather than as an argument about construct shape.

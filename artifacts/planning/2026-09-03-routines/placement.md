@@ -100,8 +100,8 @@ evaded by wrapping: a routine that declares nothing itself, referencing one that
 artifact, could be referenced twice and write one filename twice.
 
 Depth needs no bound of its own. Cycle detection over the reference graph is what terminates the
-walk, and how long the composed prefix may grow is open item 2 of [decisions.md](decisions.md),
-which is a question about identifiers rather than about placement.
+walk, and how long the composed prefix may grow is the identifier-length item of
+[decisions.md](decisions.md) — a question about identifiers rather than about placement.
 
 ## The consequence for borrowing
 
@@ -118,15 +118,22 @@ declarations and they travel with the activity that refers to it, the same way a
 writes are contributed to every workflow whose graph includes it. The hand-written declaration goes
 and the guard finding goes with it.
 
-## What is left open
+## The shared home is `meta`, because the resolution is the corpus's
 
-**Whether the shared home is `meta` or something new.** Bare fragment references already fall back
-to `meta`, and reusing that fallback is the cheap answer. It is also the answer that made `meta` a
-place things fall into rather than a place things belong, which #519 raised about rule texts and
-which the retirement of the rule half did not settle for anything else. The first routine that
-genuinely spans two workflows will force the question; none of the runs found in the corpus does, so
-nothing is blocked on it.
+The two-owner branch above names a shared home, and it is the one every other shared reference
+already uses. A routine name resolves as `[workflow::]name` — qualified means that workflow only,
+bare means the referring workflow and then the fallback — which is exactly how a shared gate body and
+a technique path resolve, and a bare technique reference falls back to `meta`. So referencing a
+routine the way the corpus references a shared technique *is* choosing `meta`. **One resolution rule
+for the corpus rather than two** is the argument, and it is stronger than the cheapness this file
+first offered.
 
-**Whether the shared home is `meta` or something new** is the only one, and the corresponding entry
-in [decisions.md](decisions.md) carries the measurement that weakens the case against reusing the
-fallback.
+`meta` is already the shared library rather than a domain workflow lending content: all eight of its
+technique groups are bound by some other workflow, `verify-artifact-conforms` by fifteen of them.
+The objection that survives — that `meta` also runs five activities of its own, so a library and a
+workflow share one directory — is real and is not a placement question. The mechanism for it is a
+workflow declaring which of its definitions it exports, surveyed as module visibility in
+`2026-08-31-typed-execution-redesign/polymorphism-survey.md`, and it belongs to the typed language.
+Placement stays computed from referring files, against the fallback the rest of the corpus uses.
+
+Nothing in this file is open.

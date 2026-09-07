@@ -321,7 +321,9 @@ into the session bag.
 A routine name resolves as `[workflow::]name` — a qualified name in that workflow only, a bare name
 against the referring workflow and then the shared home. That is the resolution the existing shared
 gate reference already implements, and a borrowed activity resolves against its **source** workflow
-rather than its borrower, exactly as today.
+rather than its borrower, exactly as today. **The shared home is therefore `meta`**, because that is
+what a bare technique path already falls back to: referencing a routine the way the corpus references
+a shared technique gives the corpus one resolution rule rather than two.
 
 ### A routine may reference another routine
 
@@ -1000,14 +1002,16 @@ files. The second is still relevant to a routine — a routine's input, output a
 symbol ids, and `VariableNameSchema` enforces the same qualified-noun rule on the YAML side — but it
 is not a classification question.
 
-**One guard's column does not fix it, and that is a finding rather than a placement.**
+**One guard's column does not fix it, and it gains routine awareness instead.**
 `check-activity-technique-overlap` is hard-zero: an activity's top-level `techniques[]` list may not
 re-list a technique any of its steps binds, "top-level steps or loop steps". Read as written, an
 overlap a *routine* introduces is invisible — the activity lists a cross-cutting technique, the
 routine binds it as a step, and neither file shows the redundancy. Read through the loader it would
-audit generated bindings. So this one needs **routine awareness in the authored column**: the
-overlap test resolves a reference step to the routine's own step bindings. It is the one place the
-authored/materialised split is not by itself sufficient.
+audit generated bindings, which the classification's own principle rules out. So it stays in the
+authored column and **its overlap test resolves a reference step to the routine's own step
+bindings**, keeping the rule hard-zero over content an author wrote. It is the one place the
+authored/materialised split is not by itself sufficient, and it is settled that way rather than
+carried.
 
 - **`check-variable-model` reads routine files as written, resolving effects against the routine's
   own declarations.** Its `setvariable-undeclared` rule is hard-zero and requires a checkpoint
@@ -1180,8 +1184,9 @@ its continuation test, where a routine lives and what counts as a referrer, whet
 outcome, what happens to its artifacts, which guards read which form, and what becomes of the
 mechanism it replaces.
 
-Open: where the shared home is, how long a generated identifier may be, and whether a name inside a
-routine belongs to a scope or to a mangled global. None blocks the construct.
+Open: how long a generated identifier may be, and whether a name inside a routine belongs to a scope
+or to a mangled global. They are one question at two depths, neither blocks the construct, and both
+want the identifier measurements re-taken against the re-derived signature before they are answered.
 
 Each is recorded with its reasoning in [decisions.md](decisions.md). Five of the settled entries
 carry a 2026-09-06/07 marker where the corpus or the server has moved since, one of them a content

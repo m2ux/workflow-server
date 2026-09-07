@@ -210,10 +210,12 @@ The activity promises the file twice as well: `get_activity` synthesises the art
 the `## Outputs` of the techniques its steps bind, so the audit's declaration is already in the
 delivered contract before the write step adds its own.
 
-**Fix:** one writer. Which one is a judgement for whoever owns the workflow — either the audits stop
-persisting and become pure produce paths whose callers persist, or the write steps go and the
-`*_findings_path` outputs are the contract. The second is the smaller edit and the one the artifact
-declaration already implies, since `#### artifact` is where a technique says its output is persisted.
+**Fix, decided 2026-09-07: the five write steps go**, and the audits' `*_findings_path` outputs are
+the contract. Five steps out of two activity files, no technique changed. It is the smaller edit and
+the one the artifact declaration already implies, since `#### artifact` is where a technique says its
+output is persisted. The alternative — audits stop persisting and become pure produce paths whose
+callers persist — was weighed and would have edited five technique files to reach the same file on
+disk.
 
 **This finding removes a constituency rather than adding one.** Two of the drift census's fourteen
 shared windows are "audit and persist" pairs, and they were also the leading candidate for the

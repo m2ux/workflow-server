@@ -241,7 +241,8 @@ settled against `residue_collection`, now resting on a live site rather than a s
 **The nesting is a routine referencing a routine at four levels of identifier.** The composed
 prefix at the six sites is `assumption-convergence.convergence.challenge.combine` — the reference
 site, the loop, the inner reference, the step. That is one segment longer than the earlier
-conversion produced, which open item 2's measurements have to be re-taken against.
+conversion produced, which the identifier-length item's measurements have to be re-taken
+against.
 
 **An internal survives, and it is the one the guard suite forced.** `challenge_findings` passes from
 the challenge step to the combine step and never leaves. It is declared as a write at six activities
@@ -253,12 +254,20 @@ today, so converting removes six declarations.
 are kebab-case identities, and the outputs reuse the technique's own neutral ids, which satisfies
 `io-id-shape`; nothing here reintroduces the `…_flag` and `*_collection` shapes the artifacts carry.
 
-**Whether the inner routine is worth naming on its own.** Two steps, seven sites. It earns its
-existence because it is the only construct that lets the comprehension site share the pass at all —
-without it the seventh site keeps a copy. If a reader would rather the seventh site keep its copy,
-the outer routine alone still removes 192 lines at six sites, and it needs no inputs.
-
 **Whether stage 5 and stage 6 stay separate.** The corrected window search shows the assumption run
 and the convergence loop are one contiguous six-step run at `07-assumptions-review` and
 `08-implement`. Two stages editing adjacent steps in the same two files can be sequenced, but the
 plan should say so rather than discover it.
+
+## What is settled
+
+**Both routines, nested.** *(2026-09-07)* The inner routine is named on its own rather than folded
+into the outer one, so the comprehension site shares the challenge pass instead of keeping a copy of
+it. The measurement is what carries the decision: the pass is shared by **seven** activities, which
+is the widest sharing in the corpus by activity count, and it is the only shape that lets the
+seventh site participate at all. The outer routine alone would still remove 192 lines at six sites,
+and the two-step run would keep no home.
+
+That makes the nesting rule load-bearing in the first version rather than available in it: a routine
+referencing a routine is what both migrations rest on, and the composed prefix runs to four
+segments — `assumption-convergence.convergence.challenge.combine`.
