@@ -10,6 +10,22 @@ import { corpusRoot } from './corpus-root.js';
 import { createHarness, type Harness } from './e2e/harness.js';
 import { sessionOps, type SessionOps } from './session-ops.js';
 
+/** A step as an activity body carries it — a loop step nests its body under `steps`. */
+interface StepNode {
+  id?: string;
+  technique?: unknown;
+  steps?: StepNode[];
+}
+
+/**
+ * Every step in document order, descending into loop bodies. A bound op sits wherever its activity
+ * puts it, and a loop body is one of those places, so a search that reads only the outer array finds
+ * a bound step in some activities and not others.
+ */
+function flattenSteps(steps: StepNode[] = []): StepNode[] {
+  return steps.flatMap((step) => [step, ...flattenSteps(step.steps)]);
+}
+
 /** An unchanged-reference marker as it appears in a parsed bundle. */
 interface UnchangedMarker {
   delivery: 'unchanged';
@@ -401,8 +417,8 @@ describe('reference-not-repeat delivery (B1)', () => {
   describe('get_technique delta mode', () => {
     async function findTechniqueStepId(idx: string): Promise<string> {
       const parsed = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
-      const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
-      const step = (body.steps ?? []).find(s => typeof s.technique === 'string' && s.id);
+      const body = parse(parsed.bodyText) as { steps?: StepNode[] };
+      const step = flattenSteps(body.steps).find(s => typeof s.technique === 'string' && s.id);
       expect(step, 'expected a technique-bound step').toBeTruthy();
       return step!.id!;
     }
@@ -502,8 +518,8 @@ describe('reference-not-repeat delivery (B1)', () => {
   describe('binding-seam provenance (B3)', () => {
     async function findTechniqueStepId(idx: string): Promise<string> {
       const parsed = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
-      const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
-      const step = (body.steps ?? []).find(s => typeof s.technique === 'string' && s.id);
+      const body = parse(parsed.bodyText) as { steps?: StepNode[] };
+      const step = flattenSteps(body.steps).find(s => typeof s.technique === 'string' && s.id);
       expect(step, 'expected a technique-bound step').toBeTruthy();
       return step!.id!;
     }
@@ -536,14 +552,14 @@ describe('reference-not-repeat delivery (B1)', () => {
       }
       const own = new Map((technique.inputs ?? []).map((i) => [i.id, i.source]));
       expect(own.get('changed_files')).toMatch(/output of step '.+' \(activity '.+'\)/);
-      // The optional-with-no-producer form is pinned on a technique that has one: every own input
-      // of `review-code` resolves to a producer, so it cannot exhibit that annotation. `create-issue`
-      // declares `issue_subject` optional, and no step produces it — a caller that has a subject
-      // passes it as a bind-site deviation.
-      await mcp.enter(idx, 'start-work-package');
+      // The optional-with-no-producer form needs a technique that has one, and review-code does
+      // not: its own optional input resolves to a producing step. `record-attestation` declares
+      // `legal_review_note` optional and nothing in the workflow supplies it, so the annotator
+      // reports it as optional rather than warning it unresolved.
+      await mcp.enter(idx, 'submit-for-review');
       const optionalCase = await client.callTool({
         name: 'get_technique',
-        arguments: { session_index: idx, step_id: 'create-issue' },
+        arguments: { session_index: idx, step_id: 'dco-sign-off' },
       });
       expect(optionalCase.isError).toBeFalsy();
       const optionalText = responseText(optionalCase);
@@ -551,7 +567,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         inputs?: Array<{ id: string; source?: string }>;
       };
       const optionalOwn = new Map((optionalTechnique.inputs ?? []).map((i) => [i.id, i.source]));
-      expect(optionalOwn.get('issue_subject')).toContain('optional input');
+      expect(optionalOwn.get('legal_review_note')).toContain('optional input');
       // Inherited entries carry a source only where it says something the block note does not
       // (e.g. a later-positioned producer); settled ambient constants stay bare.
       const inherited = technique.inherited_inputs?.items ?? [];

@@ -640,7 +640,12 @@ describe('mcp-server integration', () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
       const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
-      const bareStep = (actResponse.steps as Array<{ id?: string; technique?: string }>).find(
+      // A bound step sits wherever its activity puts it, and a loop body is one of those places, so
+      // the search descends into nested steps rather than reading the outer array alone.
+      type StepNode = { id?: string; technique?: string; steps?: StepNode[] };
+      const flatten = (steps: StepNode[] = []): StepNode[] =>
+        steps.flatMap((step) => [step, ...flatten(step.steps)]);
+      const bareStep = flatten(actResponse.steps as StepNode[]).find(
         (s) => typeof s.technique === 'string' && !s.technique.includes('::') && !s.technique.includes('/'),
       );
       expect(bareStep, 'expected a bare-op step in codebase-comprehension').toBeTruthy();
