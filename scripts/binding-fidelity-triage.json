@@ -405,28 +405,28 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
       "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
       "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
       "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
       "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
@@ -449,13 +449,6 @@
       "check": "dead-output",
       "site": "workflow-design/techniques/TECHNIQUE.md",
       "detail": "output 'workflow_files' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "container-contract-shape"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/implementation-analysis/TECHNIQUE.md",
-      "detail": "output 'analysis_document' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "container-contract-shape"
     }
