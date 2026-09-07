@@ -111,7 +111,7 @@ Reference this guide in the header's Author link so readers understand the metho
 
 ## Assessment Criteria
 
-[Exception-only: if all of Relevance & Business Alignment, Coverage Completeness, and Test Effectiveness PASS, state "All 3 assessment criteria PASS" on one line. Otherwise list only the FAILing criteria with notes.]
+[Exception-only: where every criterion under [Review Criteria](#review-criteria) passes, state "all assessment criteria pass" on one line. Otherwise list only the failing criteria with notes.]
 
 ## Individual Test Function Analysis
 

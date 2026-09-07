@@ -121,7 +121,7 @@ Consult when filling the template (not a session procedure):
 |--------|------|----------------|
 | [Log file/dashboard] | Metrics | [Findings] |
 
-**Status:** Ready for plan-prepare activity
+**Status:** Ready for planning
 ```
 
 ## Rules

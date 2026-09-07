@@ -21,7 +21,7 @@ Best practices, documentation, and resources gathered from web research, each ca
 
 ### 1. Load Resources
 
-- Use attached [knowledge-base-research](../../resources/knowledge-base-research.md) for guidance; capture web findings so they can fill the [web research findings template](../../resources/web-research.md#planning-artifact)
+- Use attached [knowledge-base-research](../../resources/knowledge-base-research.md) for guidance; capture web findings so they can fill the [web research findings template](../../resources/web-research.md#section-template)
 - Review `{requirements}` and `{problem_statement}` for research focus
 
 ### 2. Search Knowledge Base

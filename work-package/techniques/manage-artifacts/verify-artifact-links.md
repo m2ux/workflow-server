@@ -50,4 +50,4 @@ Every link in the planning folder that does not resolve, as `{ file, link, targe
 
 ### exhaustive-over-sampled
 
-Every link in every artifact is resolved, not a sample. The three classes are independent — a folder can ship all three at once — so a pass that stops at the first class leaves the others live.
+Every link in every artifact is resolved, not a sample. The classes `{broken_artifact_links}` admits are independent — a folder can ship every one of them at once — so a pass that stops at the first class it finds leaves the rest live.

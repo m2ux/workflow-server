@@ -1,6 +1,6 @@
 ---
 name: jira-issue-creation
-description: Reference material for creating Jira issues. Provides terminology, templates, and MCP tool reference.
+description: Reference material for creating Jira issues — terminology, issue types, structure templates, priority and label vocabulary, and anti-patterns.
 metadata:
   version: 2.1.0
   order: 4
@@ -110,7 +110,7 @@ Selection order: defect in existing functionality → **Bug**; user-facing with 
 
 ### Jira Markdown Notes
 
-The `createJiraIssue` MCP tool accepts markdown format and handles conversion. Native Jira syntax, if needed:
+Issue bodies are authored in markdown; the creating operation converts them. Native Jira syntax, where a body needs it:
 
 | Element | Jira Syntax | Standard Markdown |
 |---------|-------------|-------------------|

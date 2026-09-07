@@ -12,14 +12,6 @@ metadata:
 
 Architecture review evaluates significant design decisions against quality attributes, constraints, and trade-offs, and records them as an **Architecture Decision Record (ADR)** — a lightweight document capturing one decision with its context, rationale, and consequences.
 
-## ADRs Document Decisions, Not Design
-
-An ADR records *what* was decided and *why*; the design work that determines *how* comes afterward.
-
-- Include: the decision and rationale; requirements and constraints; trade-offs between options; expected consequences.
-- Exclude: file paths or module names; code snippets or API signatures; implementation steps; testing strategies.
-- Ticket references describe requirements, not implementation: "TICKET-1234 requires that X be abstracted behind a configurable provider" — not "TICKET-1234 introduces a `FooProvider` trait in `src/foo.ts`".
-
 ## Architectural Significance
 
 A decision is architecturally significant when it:
