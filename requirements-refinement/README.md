@@ -1,29 +1,31 @@
 # Requirements Refinement Workflow
 
-> Refine a canonical requirements specification from a source document (a meeting transcript or an unstructured document): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
+> Refine a canonical requirements specification from a set of source documents (meeting transcripts and unstructured documents): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
 
 ---
 
 ## Overview
 
-This workflow turns a source document — a meeting transcript or an unstructured document (a proposal,
-brief, email, or similar) — into reviewed changes against a canonical requirements specification (an
-SRS-style document). It classifies the source, analyzes it for requirement changes, applies them while
-preserving the [specification protocol](resources/specification-protocol.md) verbatim, validates the
-result, iteratively corrects within a bounded loop, and stages a finalized specification plus a change
-summary in the planning folder for a human to review and promote.
+This workflow turns one or more source documents — meeting transcripts and unstructured documents
+(proposals, briefs, emails, or similar) — into reviewed changes against a canonical requirements
+specification (an SRS-style document). It classifies each source, analyzes them for requirement changes,
+applies them while preserving the [specification protocol](resources/specification-protocol.md)
+verbatim, validates the result, iteratively corrects within a bounded loop, and stages a finalized
+specification plus a change summary in the planning folder for a human to review and promote.
 
-Each source is traced: a meeting transcript is recorded as an `SRC-MTG###` reference, an unstructured
-document as an `SRC-DOC###` reference credited to its author.
+Each source is traced in its own right: a meeting transcript is recorded as an `SRC-MTG###` reference,
+an unstructured document as an `SRC-DOC###` reference credited to its author. The source-coverage
+matrix names the source each section came from, so a set of documents stays as traceable as a single
+one.
 
-It is parameterized: the source document and the target specification are supplied as inputs, so the
+It is parameterized: the source documents and the target specification are supplied as inputs, so the
 workflow both **augments** an existing specification and **creates** one from scratch. Every
 intermediate and final artifact lives in the run's planning folder; the workflow makes no commits and
 never edits the canonical document in place.
 
 **Use this workflow when you want to:**
 
-- Fold the requirement changes from a meeting or a document into a specification, with traceability.
+- Fold the requirement changes from meetings and documents into a specification, with traceability.
 - Keep a specification conformant to a fixed protocol (entry format, identifier schemes, status rules).
 - Review proposed specification changes — analysis, working drafts, validation verdict, and a change
   summary — as artifacts before anything is promoted.

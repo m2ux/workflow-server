@@ -1,21 +1,21 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
 
-Capture the source-document and target-specification paths, record whether the source document is readable, classify the source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and record the intake.
+Capture the source-document and target-specification paths, record whether every source document is readable, classify each source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and record the intake.
 
 ## Outputs
 
 ### source_readable
 
-`true` when a file exists at `{source_path}` and carries content; `false` when it is missing or empty.
+`true` when every document named in `{source_paths}` exists and carries content; `false` when any of them is missing or empty.
 
-### source_type
+### classified_sources
 
-Classification of the source document: `meeting` when it is a meeting transcript, `document` when it is an unstructured document.
+The source documents paired with their classifications, each `{ path, type }` — `type` is `meeting` for a meeting transcript, `document` for an unstructured document. Ordered as `{source_paths}` names them.
 
 ### target_doc_exists
 
@@ -27,7 +27,7 @@ Basename of `{target_doc_path}` — the filename without its directory.
 
 ### intake_record
 
-Record of the captured sources, classified source type, detected augment/create mode, and `{spec_basename}`.
+Record of the captured sources, the classification each carries, the detected augment/create mode, and `{spec_basename}`.
 
 #### artifact
 
@@ -45,17 +45,17 @@ Absolute path to the written intake record.
 
 ### 1. Capture Source Paths
 
-- Capture `{source_path}` and `{target_doc_path}` from the user request.
+- Capture `{source_paths}` and `{target_doc_path}` from the user request.
 - Set `{spec_basename}` to the basename of `{target_doc_path}` (filename without directory).
 
 ### 2. Record Source Readability
 
-- Set `{source_readable}` to `true` when the source document at `{source_path}` exists and carries content, `false` otherwise.
+- Set `{source_readable}` to `true` when every document named in `{source_paths}` exists and carries content, `false` when any of them is missing or empty.
 
-### 3. Classify Source Type
+### 3. Classify Each Source
 
-- Infer from the document's content whether the source is a meeting transcript or an unstructured document, and set `{source_type}` to `meeting` or `document`.
-- A `meeting` source is later referenced as `SRC-MTG###`; a `document` source as `SRC-DOC###` credited to the document's author, per [specification-protocol](../resources/specification-protocol.md#source-reference-format).
+- For each path in `{source_paths}`, infer from that document's content whether it is a meeting transcript or an unstructured document, and record it in `{classified_sources}` as `{ path, type }` with `type` set to `meeting` or `document`.
+- A `meeting` source is later referenced as `SRC-MTG###`; a `document` source as `SRC-DOC###` credited to the document's author, per [specification-protocol](../resources/specification-protocol.md#source-reference-format). Each source carries its own reference, so a mixed set is classified per document rather than as a whole.
   > A source with no content to read carries no classification.
 
 ### 4. Detect Target Existence
@@ -64,7 +64,7 @@ Absolute path to the written intake record.
 
 ### 5. Record Intake
 
-- Write `{intake_record}` to `{planning_folder_path}` per [intake-record](../resources/intake-record.md#template) and its [Rules](../resources/intake-record.md#rules), capturing `{source_path}`, `{target_doc_path}`, `{source_type}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
+- Write `{intake_record}` to `{planning_folder_path}` per [intake-record](../resources/intake-record.md#template) and its [Rules](../resources/intake-record.md#rules), capturing `{classified_sources}`, `{target_doc_path}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
 
 ## Rules
 

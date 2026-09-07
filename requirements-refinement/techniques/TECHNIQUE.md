@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -13,9 +13,9 @@ Shared inputs and specification-fidelity invariants for every requirements-refin
 
 Absolute path to this run's planning folder; each technique reads prior artifacts from, and writes its own artifact into, this folder.
 
-### source_path
+### source_paths
 
-Filesystem path to the source document being processed — a meeting transcript or an unstructured document.
+Filesystem paths of the source documents being processed, each a meeting transcript or an unstructured document. A single-document run carries one entry.
 
 ### target_doc_path
 

@@ -1,8 +1,8 @@
 $schema: ../../schemas/workflow.schema.json
 id: requirements-refinement
-version: 1.4.0
+version: 1.5.0
 title: Requirements Refinement Workflow
-description: Refine a canonical requirements specification from a source document — a meeting transcript or an unstructured document — preserving the specification protocol verbatim and staging the finalized specification and a change summary in the planning folder for human promotion. Operates on local files and performs no version-control operations.
+description: Refine a canonical requirements specification from a set of source documents — meeting transcripts and unstructured documents — preserving the specification protocol verbatim and staging the finalized specification and a change summary in the planning folder for human promotion. Operates on local files and performs no version-control operations.
 author: m2ux
 tags:
   - requirements
@@ -19,9 +19,9 @@ techniques:
   activity:
     - variable-binding
 variables:
-  - name: source_path
-    type: string
-    description: Filesystem path to the local source document being processed (a meeting transcript or an unstructured document)
+  - name: source_paths
+    type: array
+    description: Filesystem paths of the local source documents being processed, each a meeting transcript or an unstructured document. A single-document run carries one entry.
     required: true
   - name: target_doc_path
     type: string
