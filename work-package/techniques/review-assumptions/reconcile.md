@@ -32,7 +32,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 ### 1. Classify Resolvability
 
 - Read all open assumptions from the `{assumptions_log}`
-- For each, determine whether targeted code analysis could validate or invalidate it, classifying per the [code-resolvable](#code-resolvable) and [not-code-resolvable](#not-code-resolvable) rules
+- For each, determine whether targeted code analysis could validate or invalidate it, classifying per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification)
 - If the `{assumptions_log}` contains no open assumptions, there is nothing to resolve — skip reconciliation and set `{has_resolvable_assumptions}` to false and `{has_open_assumptions}` to false.
 - If every open assumption classifies as not code-resolvable, convergence is immediate — set `{has_resolvable_assumptions}` to false and evaluate `{has_open_assumptions}` from the remaining open set.
 
@@ -43,7 +43,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 - Record evidence with file paths and line numbers for every finding
 - Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)
 - Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies
-- If code analysis cannot definitively validate or invalidate an assumption, apply the [partially-resolvable](#partially-resolvable) rule
+- Where code analysis can neither validate nor invalidate an assumption outright, classify it partially resolvable per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification)
 
 ### 3. Update Assumptions
 
@@ -56,7 +56,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 - Re-classify all open assumptions after the analysis pass
 - If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set `{has_resolvable_assumptions}` to true
-- If no open assumptions are code-resolvable, convergence is reached (see the [convergence-definition](#convergence-definition) rule): the assumptions log is now the `{assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
+- If no open assumptions are code-resolvable, convergence is reached per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification): the assumptions log is now the `{assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
 - After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true.
 
 ### 5. Update Comprehension Artifact
@@ -74,43 +74,6 @@ Reconciliation runs autonomously, without user interaction. Converged results bi
 ### classification-transparency
 
 When emitting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis.
-
-### code-resolvable
-
-An assumption is code-resolvable if targeted reading, searching, or diffing of the codebase at `{target_path}` could validate or invalidate it: code behavior, data flows, type structures, API contracts, test coverage, implementation details, library behavior, ordering guarantees, error-handling paths. Examples:
-
-- "Function X produces deterministic output" — trace the implementation
-- "The test suite covers scenario Y" — search for relevant test cases
-- "Data flows through path Z" — trace from source to sink
-- "Library version A changed behavior B" — diff between tags
-- "Type T uses collection C internally" — read the type definition
-- "Error handling follows pattern P" — grep for error propagation
-- "Module M depends on module N" — check imports and Cargo.toml
-- "The override mechanism handles edge case E" — read guard conditions
-
-### not-code-resolvable
-
-An assumption is not code-resolvable if it depends on information outside the codebase: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external-system behavior. Examples:
-
-- "Stakeholders will approve approach A" — requires human decision
-- "Override data is complete for network N" — requires operational verification
-- "Timeline estimate is realistic" — judgment call
-- "The deployment succeeded on environment E" — requires runtime evidence
-- "Business priority favors option X over Y" — strategic decision
-- "External service S behaves according to spec" — requires integration testing
-
-### partially-resolvable
-
-Some assumptions are partially resolvable: code analysis can narrow the uncertainty but not eliminate it. Mark these as Partially Validated with the evidence gathered and a note on what remains unresolved. If further code analysis would not help, reclassify as not-code-resolvable.
-
-### convergence-definition
-
-Convergence is reached when no open assumption in the log — including assumptions surfaced during analysis — is classified as code-resolvable. Convergence does NOT mean all assumptions are resolved: the remaining open set is irreducible through code analysis and requires stakeholder input, operational verification, or other external information. Indicators:
-
-- All code-resolvable assumptions have a resolution status (Validated, Invalidated, Partially Validated)
-- Every resolution cites file paths and code evidence
-- No newly surfaced assumption is classified as code-resolvable
-- The final open set has explicit reasons for non-resolvability
 
 ### handoff-to-residue
 
