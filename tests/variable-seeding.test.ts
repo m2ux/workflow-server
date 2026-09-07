@@ -114,6 +114,55 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(seededEvents[0].data).toEqual({ variables: SEEDED_FIXTURE_BAG });
   });
 
+  it('yield_checkpoint publishes the steps-before-the-gate values into the bag', async () => {
+    const slug = '2026-07-07-yield-publishes';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+    const yielded = await call('yield_checkpoint', {
+      session_index: sessionIndex,
+      checkpoint_id: 'type-check',
+      variables_changed: { reference_note: 'artifacts/intake.md', retry_count: 2 },
+    });
+
+    // The gate's own activity produced these, so without publication a message
+    // interpolating them has nothing to render.
+    const stored = readSession(slug);
+    expect(stored.variables.reference_note).toBe('artifacts/intake.md');
+    expect(stored.variables.retry_count).toBe(2);
+    expect(JSON.parse((yielded.content as { text: string }[])[0]!.text).variables_published)
+      .toEqual(['reference_note', 'retry_count']);
+
+    const setEvents = stored.history.filter((h: { type: string }) => h.type === 'variable_set');
+    expect(setEvents.map((h: { data: { name: string } }) => h.data.name)).toEqual(
+      expect.arrayContaining(['reference_note', 'retry_count']),
+    );
+  });
+
+  it('yield_checkpoint stores a type-mismatched published value as written and warns', async () => {
+    const slug = '2026-07-07-yield-mismatch';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+    const yielded = await call('yield_checkpoint', {
+      session_index: sessionIndex,
+      checkpoint_id: 'type-check',
+      variables_changed: { retry_count: 'three' },
+    });
+
+    expect(readSession(slug).variables.retry_count).toBe('three');
+    const validation = (yielded._meta as { validation: { status: string; warnings: string[] } }).validation;
+    expect(validation.status).toBe('warning');
+    expect(validation.warnings.join(' ')).toContain('retry_count');
+  });
+
+  it('yield_checkpoint without variables_changed leaves the bag as seeded', async () => {
+    const slug = '2026-07-07-yield-nothing';
+    const sessionIndex = await startAtCheckpoint(slug);
+    expect(readSession(slug).variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(sessionIndex).toMatch(/^[A-Z2-7]{6}$/);
+  });
+
   it('start_session with a no-defaults workflow leaves the bag empty with no seeding event', async () => {
     const slug = '2026-07-07-seed-bare';
     await call('start_session', { workflow_id: 'bare-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });

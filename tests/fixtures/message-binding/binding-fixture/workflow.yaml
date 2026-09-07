@@ -1,0 +1,18 @@
+id: binding-fixture
+version: 1.0.0
+title: Message Binding Fixture
+description: Three activities covering the bound and unbound cases a user-facing message can reach.
+author: m2ux
+variables:
+  - name: session_input
+    type: string
+    description: A session fact, seeded before any activity runs
+    required: true
+initialActivity: produce-then-render
+graph:
+  produce-then-render:
+    done: gate-then-render
+  gate-then-render:
+    done: read-prior-state
+  read-prior-state:
+    done: __terminal__

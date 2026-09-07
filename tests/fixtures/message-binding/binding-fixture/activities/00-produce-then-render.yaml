@@ -1,0 +1,42 @@
+id: produce-then-render
+version: 1.0.0
+name: Produce Then Render
+description: A technique step produces a path, and the gate after it cites that path.
+variables:
+  reads:
+    - session_input
+  writes:
+    - name: produced_path
+      type: string
+      description: Path the technique step writes
+      defaultValue: ""
+    - name: undefaulted_note
+      type: string
+      description: Value the technique step writes, carrying no default
+required: true
+steps:
+  - kind: technique
+    id: produce
+    technique: produce-artifact
+  - kind: checkpoint
+    id: cites-own-output
+    message: "The artifact is ready ([artifact]({produced_path})) and the note reads {undefaulted_note}."
+    options:
+      - id: confirmed
+        label: Yes, proceed
+        description: The artifact is correct.
+      - id: revise
+        label: Revise
+        description: The artifact needs another pass.
+        effect:
+          exit: revise
+  - kind: action
+    id: announce
+    actions:
+      - action: message
+        message: "Session input {session_input} is prior state and renders."
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The gate cites a path its own activity produced

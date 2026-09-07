@@ -89,6 +89,14 @@ const variablesChangedSchema = z.record(z.unknown()).optional().describe(
   'validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.',
 );
 
+const yieldVariablesChangedSchema = z.record(z.unknown()).optional().describe(
+  'Values the steps before this gate produced, as a name → value map. The server writes them into the ' +
+  'session variable bag and records one `variable_set` history event per name, so a gate whose message ' +
+  'interpolates a value its own activity produced has that value to render, and the orchestrator reads ' +
+  'it when presenting. Declared types are validated warn-only: a mismatch is stored as written and ' +
+  'surfaced in _meta.validation. Omit when no step before the gate produced anything.',
+);
+
 /**
  * Wrap a tool handler so any thrown `SessionStoreError` is re-thrown with a
  * user-facing message. Keeps the per-handler logic terse — handlers can
@@ -1614,8 +1622,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         label: z.string().min(1).describe('Option text shown to the user.'),
         description: z.string().optional().describe('What choosing this option means.'),
       })).min(2).optional().describe('Only for a decision the activity does not declare: at least two answers. The decision is recorded; an option here sets no variable, so a value the run must read belongs on a declared checkpoint.'),
+      variables_changed: yieldVariablesChangedSchema,
     },
-    withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id, message, options }) => {
+    withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id, message, options, variables_changed }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -1653,6 +1662,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           `Checkpoint '${checkpoint_id}' is not declared by activity '${activity_id}', so it needs both 'message' and 'options'.`,
         );
       }
+
+      // Values the steps before the gate produced. A worker cannot reach the bag
+      // mid-activity by any other route, so a gate whose message interpolates one
+      // of its own activity's outputs has nothing to render until they land here.
+      const declarations = new Map((result.value.variables ?? []).map(v => [v.name, v]));
+      const variableWarnings: string[] = [];
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -1706,6 +1721,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const yieldedAt = new Date().toISOString();
       const next = advanceSession(state, (draft) => {
+        if (variables_changed) {
+          variableWarnings.push(...applyVariableWrites(draft, variables_changed, declarations, {
+            timestamp: yieldedAt,
+            activity: activity_id,
+            source: 'yield_checkpoint',
+          }));
+        }
         draft.activeCheckpoint = {
           checkpointId: checkpoint_id,
           activityId: activity_id,
@@ -1721,14 +1743,26 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded, next);
 
+      if (variableWarnings.length > 0) {
+        logWarn('yield_checkpoint: variables_changed type mismatch', { session_index, warnings: variableWarnings });
+      }
+
+      const publishedNames = Object.keys(variables_changed ?? {});
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'yielded',
           checkpoint_id,
           session_index,
+          ...(publishedNames.length > 0 ? { variables_published: publishedNames } : {}),
           message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this session_index to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
         }, null, 2) }],
-        _meta: { session_index, validation },
+        _meta: {
+          session_index,
+          validation: buildValidation(
+            validateWorkflowVersion(view, result.value),
+            ...variableWarnings,
+          ),
+        },
       };
     }), traceOpts));
 

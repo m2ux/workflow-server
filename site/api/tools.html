@@ -318,6 +318,7 @@
           <tr><td><code>checkpoint_id</code></td><td><code>string</code></td><td>yes</td><td>Id of the checkpoint step you are yielding.</td></tr>
           <tr><td><code>message</code></td><td><code>string</code></td><td>no</td><td>Only for a decision the activity does not declare: the question put to the user. Forbidden on a declared checkpoint, whose definition owns the wording.</td></tr>
           <tr><td><code>options</code></td><td><code>object[]</code></td><td>no</td><td>Only for a decision the activity does not declare: at least two answers. The decision is recorded; an option here sets no variable, so a value the run must read belongs on a declared checkpoint.</td></tr>
+          <tr><td><code>variables_changed</code></td><td><code>object</code></td><td>no</td><td>Values the steps before this gate produced, as a name → value map. The server writes them into the session variable bag and records one <code>variable_set</code> history event per name, so a gate whose message interpolates a value its own activity produced has that value to render, and the orchestrator reads it when presenting. Declared types are validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when no step before the gate produced anything.</td></tr>
           </tbody>
         </table>
         </div>

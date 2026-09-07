@@ -42,7 +42,7 @@ export function isTemplateReference(value: unknown): boolean {
  * on each `variable_set` history event so the stream distinguishes a user
  * decision from a worker's domain output.
  */
-export type VariableWriteSource = 'setVariable' | 'variables_changed';
+export type VariableWriteSource = 'setVariable' | 'variables_changed' | 'yield_checkpoint';
 
 /** The mutable slice of session state a variable write touches. */
 interface VariableWriteTarget {

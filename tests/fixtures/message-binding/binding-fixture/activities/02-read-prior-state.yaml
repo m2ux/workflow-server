@@ -1,0 +1,19 @@
+id: read-prior-state
+version: 1.0.0
+name: Read Prior State
+description: A message cites a value an earlier activity produced, which the bag already holds.
+variables:
+  reads:
+    - produced_path
+required: true
+steps:
+  - kind: action
+    id: announce-prior
+    actions:
+      - action: message
+        message: "The artifact from the earlier activity is at {produced_path}."
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - A message cites a value a prior activity put in the bag
