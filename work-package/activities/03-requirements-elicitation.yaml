@@ -21,11 +21,23 @@ variables:
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: current_domain
       type: string
-      description: Current question domain during elicitation loop (from question_domains).
+      description: The question domain the current elicitation question is drawn from.
+    - name: current_question
+      type: string
+      description: The question posed for the domain under elicitation.
+      defaultValue: ""
+    - name: domain_answered
+      type: boolean
+      description: Whether the posed question was answered, or its domain passed over.
+      defaultValue: false
     - name: elicitation_complete
       type: boolean
       description: Whether requirements elicitation is finished.
       defaultValue: false
+    - name: elicitation_log
+      type: array
+      description: One entry per question posed, carrying its domain, the question and the answer given.
+      defaultValue: []
     - name: has_deferred_assumptions
       type: boolean
       description: Whether any assumption was deferred to stakeholders.
@@ -83,9 +95,6 @@ steps:
   - kind: technique
     id: stakeholder-discussion
     technique: discuss
-  - kind: technique
-    id: elicit-requirements
-    technique: elicit
   - kind: loop
     id: domain-iteration
     name: Question Domain Iteration
@@ -95,8 +104,37 @@ steps:
     maxIterations: 5
     steps:
       - kind: technique
-        id: ask-question
-        technique: ask-question
+        id: pose-question
+        technique: pose-question
+      - kind: checkpoint
+        id: domain-question#{current_domain}
+        message: "{current_domain} — {current_question}"
+        options:
+          - id: answered
+            label: Answer provided
+            description: The reply carries the answer to the question posed
+            effect:
+              setVariable:
+                domain_answered: true
+          - id: skip-domain
+            label: Skip this domain
+            description: The domain does not apply to this work package
+            effect:
+              setVariable:
+                domain_answered: false
+          - id: elicitation-sufficient
+            label: Requirements are captured
+            description: Enough has been elicited; the remaining domains are not needed
+            effect:
+              setVariable:
+                domain_answered: false
+                elicitation_complete: true
+      - kind: technique
+        id: record-answer
+        technique: record-answer
+  - kind: technique
+    id: elicit-requirements
+    technique: elicit
   - kind: technique
     id: collect-assumptions
     technique:

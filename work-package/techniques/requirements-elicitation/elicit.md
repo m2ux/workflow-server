@@ -9,13 +9,13 @@ Requirements, success criteria and scope boundaries elicited across the question
 
 ## Inputs
 
-### question_domains
+### elicitation_log
 
-The question domains to iterate one question at a time (per the [Question Domain Reference](../../resources/requirements-elicitation.md#question-domain-reference)).
+The questions posed across the domains and the answers given to them, as the record the elicited set is derived from.
 
 ### stakeholder_baseline
 
-The stakeholder discussion the questions build on, or the recorded limitation that none was held.
+The stakeholder discussion the questions built on, or the recorded limitation that none was held.
 
 ## Outputs
 
@@ -31,19 +31,10 @@ The defined success criteria with verification methods.
 
 In/out scope definitions captured during elicitation.
 
-### elicitation_log
-
-Record of the questions asked and the responses given across the domain iteration.
-
 ## Protocol
 
-### 1. Iterate Domains
+### 1. Assemble the Elicited Set
 
-- Use attached [Question Domain Reference](../../resources/requirements-elicitation.md#question-domain-reference) for question domains, narrowing each domain's questions to what `{stakeholder_baseline}` leaves unanswered
-- Iterate through domains one question at a time
-- Record responses and adapt follow-up based on answers
-- Skip irrelevant follow-ups; probe deeper when needed
-
-### 2. Assemble the Elicited Set
-
-- Emit `{requirements}`, `{success_criteria}` and `{scope_boundaries}` from the recorded responses, and `{elicitation_log}` as the question-and-response record behind them
+- Emit `{requirements}`, `{success_criteria}` and `{scope_boundaries}` from the answers `{elicitation_log}` holds, read against `{stakeholder_baseline}` for what the discussion already settled
+  > Where the log covers fewer domains than the reference sets out, the elicited set carries the coverage it has and the gap goes to the assumptions log as a scope assumption.
+- Hold the set to the [Minimum Viable Elicitation](../../resources/requirements-elicitation.md#minimum-viable-elicitation) floor, so a light pass still yields a problem statement, a primary stakeholder, in-scope and excluded items, and success criteria
