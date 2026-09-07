@@ -392,15 +392,9 @@ steps:
     message: |-
       Build-dependent artifacts on a rust-substrate project — `.scale` files and node metadata — regenerate outside the working tree, so their currency is the user's to settle, and CI is otherwise the first signal that they are stale.
     options:
-      - id: none-needed
-        label: None needed
-        description: No build-dependent regeneration is owed
-        effect:
-          setVariable:
-            build_dependent_artifacts_pending: false
-      - id: user-regenerated
-        label: Regenerated — continue
-        description: The build-dependent artifacts in the tree are current
+      - id: artifacts-current
+        label: Artifacts current — continue
+        description: Either no build-dependent regeneration is owed, or the tree already carries the regenerated artifacts
         effect:
           setVariable:
             build_dependent_artifacts_pending: false

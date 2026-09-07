@@ -6,6 +6,7 @@ variables:
   reads:
     - branch_name
     - component_git_dir
+    - floor_breached
     - is_review_mode
     - planning_folder_path
     - pr_number
@@ -14,6 +15,10 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: floor_breached
+      type: boolean
+      description: Whether an applied simplification breaches the safety floor and the cycle owes another pass to restore it.
+      defaultValue: false
     - name: has_debt_markers
       type: boolean
       description: Whether at least one ponytail debt marker was found in the tree.
@@ -70,10 +75,16 @@ steps:
     loopType: while
     when: is_review_mode != true
     continueWhile:
-      type: simple
-      variable: needs_simplification
-      operator: ==
-      value: true
+      type: or
+      conditions:
+        - type: simple
+          variable: needs_simplification
+          operator: ==
+          value: true
+        - type: simple
+          variable: floor_breached
+          operator: ==
+          value: true
     maxIterations: 3
     steps:
       - kind: technique
@@ -95,18 +106,21 @@ steps:
             effect:
               setVariable:
                 needs_simplification: false
+                floor_breached: false
           - id: floor-held-more-remain
             label: Floor held — accepted simplifications remain
             description: The re-score still surfaces accepted simplifications that clear the floor.
             effect:
               setVariable:
                 needs_simplification: true
+                floor_breached: false
           - id: floor-breached
-            label: Floor breached — revert the breaching simplification
-            description: An applied simplification breaches the floor and is reverted before review.
+            label: Floor breached — restore the floor before review
+            description: An applied simplification breaches the floor, so the cycle takes another pass to restore the obligation it dropped.
             effect:
               setVariable:
                 needs_simplification: false
+                floor_breached: true
 exits:
   - id: done
     isDefault: true

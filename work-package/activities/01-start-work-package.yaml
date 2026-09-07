@@ -196,9 +196,6 @@ variables:
     - name: target_repo
       type: string
       description: GitHub repository as owner/repo.
-    - name: target_workflow_outcomes
-      type: string
-      description: The outcomes a review run is measured against, one per line.
     - name: use_existing_pr
       type: boolean
       description: Whether to use an existing PR instead of creating a new one.
@@ -342,18 +339,6 @@ steps:
     id: ingest-prior-feedback
     technique: review-existing-feedback
     when: is_review_mode == true
-  - kind: action
-    id: seed-review-mode-outcomes
-    when: is_review_mode == true
-    actions:
-      - action: set
-        target: target_workflow_outcomes
-        value: |-
-          The review close-out — findings, disposition, retrospective — is recorded under the planning folder.
-          Lessons learned are captured to improve future work packages.
-          The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces.
-          Reference monorepo left untouched.
-          Ready for next work package.
   - kind: technique
     id: derive-host-repo
     technique: version-control::resolve-host-repo
