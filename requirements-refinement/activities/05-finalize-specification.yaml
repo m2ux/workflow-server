@@ -28,6 +28,12 @@ steps:
     actions:
       - action: message
         message: "The validation-passed specification and an account of every applied change are staged in the planning folder ([final specification]({final_specification_path}), [change summary]({change_summary_path}))."
+  - kind: action
+    id: enforce-staging-boundary
+    actions:
+      - action: validate
+        target: final_specification_path
+        message: Acceptance is blocked until the final specification is staged under the planning folder, with the canonical target left as it was found (staging-boundary gate)
   - kind: technique
     id: verify-artifact-conformance
     technique:
