@@ -113,18 +113,31 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     const covered: string[] = [];
     const walkErrors: string[] = [];
     const entered = new Set<string>();
-    for (const id of scoped) {
-      const ps = await enumeratePaths(h, id, {
-        maxVisits: 3, maxWalks: 120,
-        // The same convergence signals the hand-tuned policy walks use. Without them the enumerator
-        // stalls at the first activity that needs one, and every checkpoint past that point reads as
-        // uncovered for a reason about the enumerator rather than about the definitions.
-        simulate: baseSimulation,
-        maxDryWalks: DRY_WALKS,
-      });
-      covered.push(...ps.coveredBranches);
-      for (const e of ps.errors) walkErrors.push(`${id}: ${e.message}`);
-      for (const p of ps.paths) for (const a of p.path) entered.add(a);
+    // One walk per workflow, a few at a time. Each drives its own sessions and reads the corpus
+    // without writing it, so the walks share nothing but the server and the wall clock is the sum
+    // of the batches rather than of the walks. Results are folded in `scoped` order whatever order
+    // they finish in, so the coverage figure and the error list stay identical to a serial run.
+    // WALKED is ordered slowest-first, which puts the expensive walks in the same batch and lets
+    // the long ones overlap instead of queueing behind each other.
+    const LANES = 4;
+    for (let i = 0; i < scoped.length; i += LANES) {
+      const batch = scoped.slice(i, i + LANES);
+      const results = await Promise.all(batch.map(async (id) => ({
+        id,
+        ps: await enumeratePaths(h, id, {
+          maxVisits: 3, maxWalks: 120,
+          // The same convergence signals the hand-tuned policy walks use. Without them the
+          // enumerator stalls at the first activity that needs one, and every checkpoint past that
+          // point reads as uncovered for a reason about the enumerator rather than the definitions.
+          simulate: baseSimulation,
+          maxDryWalks: DRY_WALKS,
+        }),
+      })));
+      for (const { id, ps } of results) {
+        covered.push(...ps.coveredBranches);
+        for (const e of ps.errors) walkErrors.push(`${id}: ${e.message}`);
+        for (const p of ps.paths) for (const a of p.path) entered.add(a);
+      }
     }
 
     const c = optionCoverage(declared, covered);
@@ -182,8 +195,13 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
       `these options are now covered but are still listed as unreachable in ${EXPECTED_LABEL}. `
       + 'Remove them — the list is only allowed to shrink.',
     ).toEqual([]);
-    // Fourteen walks measured 794 seconds here and timed out at 900 on a shared runner, having
-    // reached 87 of the 276 options — a partial walk reports a gap it simply had not got to yet, so
-    // the ceiling has to sit well clear of the real cost rather than near it.
+    // A partial walk reports a gap it simply had not got to yet, so this ceiling sits clear of the
+    // real cost rather than near it. The cost measured here, fourteen walks over the whole corpus:
+    // 794 seconds when this test was written, 1,572 serial at corpus 3695f3ab, and 1,244 across the
+    // four lanes above. A shared runner has measured about 1.5x the serial figure, which is what
+    // put the serial walk over a 2,700-second ceiling and prompted the lanes. Where a future corpus
+    // brings the batched cost back to this ceiling, widen the lanes before widening the ceiling —
+    // the walks are independent and the batch cost is its slowest member, so there is headroom in
+    // the first before the second is the only move left.
   }, 2_700_000);
 });
