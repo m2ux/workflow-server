@@ -405,28 +405,28 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
       "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
       "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
       "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
       "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
