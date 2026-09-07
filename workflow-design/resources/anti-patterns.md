@@ -201,9 +201,9 @@ A user decision is written as prose instead of a `kind: checkpoint` step.
 
 Iteration is written as prose instead of a `kind: loop` step.
 
-**Detect:** Description/protocol says to repeat/iterate/for-each without a `kind: loop` (`loopType`, `over`, nested `steps[]`).
+**Detect:** Description or protocol says to repeat/iterate/for-each over a collection the session carries between steps, without a `kind: loop` (`loopType`, `over`, nested `steps[]`).
 
-**Do not flag:** Truly one-shot steps; loops already declared in `steps[]`.
+**Do not flag:** Truly one-shot steps; loops already declared in `steps[]`. Per-item work inside a technique `## Protocol`, where the technique is applied once and handles the set its declared input carries — the phase states what one application does to each entry, not iteration the graph sequences.
 
 **Fix:** Replace the prose with a `kind: loop` step and move repeated work into the loop body.
 
