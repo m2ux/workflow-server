@@ -4,7 +4,7 @@ name: Coverage walk
 # does not reach.
 #
 # This is a job of its own because it is slow — fourteen full coverage walks, each driving a workflow
-# through the real server, about thirteen minutes on a quiet machine. An earlier ratio counted only
+# through the real server, about 21 minutes on a quiet machine. An earlier ratio counted only
 # the checkpoints a walk reached, so it read 100% for nine workflows while three of them were at 20%,
 # 24% and 33% of what they declare (issue #472); this job measures against what the corpus declares.
 #
@@ -38,11 +38,12 @@ jobs:
   coverage-walk:
     name: Every declared checkpoint option is reached
     runs-on: ubuntu-latest
-    # The ceiling that says the walk is stuck rather than merely slow. The fourteen walks measured
-    # about thirteen minutes on a quiet machine and a shared runner is appreciably slower, so this
-    # sits well clear of the real cost: a walk cut off part-way reports a gap it had not reached yet,
-    # which is worse than a slow job. The test carries its own timeout below this one.
-    timeout-minutes: 60
+    # The ceiling that says the walk is stuck rather than merely slow. The roster measures about 21
+    # minutes on a quiet machine and near 38 on a shared runner, so this sits well clear of the real
+    # cost: a walk cut off part-way reports a gap it had not reached yet, which is worse than a slow
+    # job. The test carries its own 60-minute timeout below this one, and setup ahead of it is a
+    # matter of seconds, so the test is what fails first when a walk hangs.
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
         with:

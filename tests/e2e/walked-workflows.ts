@@ -11,8 +11,11 @@
  *
  * Coverage is corpus-wide, because an activity one workflow borrows from another is reached by
  * whichever of them a walk enters — so this is a means to the corpus figure, not a list of subjects.
- * Ordering by cost is what makes the set weighable: the first four account for most of the time the
- * fourteen take between them, so an addition goes near the top only knowingly.
+ *
+ * The roster walks at once, so its wall clock is the cost of the slowest member and not the sum:
+ * `work-package` at the top is the whole of it, and the thirteen below finish inside its window.
+ * Ordering by cost is what keeps that visible. An addition anywhere but the top is free, and one
+ * that lands above `work-package` sets the cost of the job.
  */
 export const WALKED = [
   'workflow-design',

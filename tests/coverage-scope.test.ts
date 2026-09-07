@@ -7,7 +7,7 @@ import { classifyChange, coverageScope } from '../scripts/coverage-scope.js';
 /**
  * Which workflows a coverage walk has to cover for a given corpus change.
  *
- * The walk costs about thirteen minutes over fourteen workflows and most corpus changes touch one,
+ * The walk costs about 21 minutes over fourteen workflows and most corpus changes touch one,
  * so the scope is the lever. It is also the part that can be wrong quietly: too wide only wastes
  * time, while too narrow fails a run for a gap that is not there — an option reachable only through
  * a workflow the run did not walk reads as newly unreached.
