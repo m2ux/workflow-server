@@ -11,7 +11,7 @@ Parse a source document — a meeting transcript or an unstructured document —
 
 ### source_type
 
-Classification of the source document: `meeting` when it is a meeting transcript, `document` when it is an unstructured document.
+Classification of the source document.
 
 ### target_doc_exists
 
@@ -57,15 +57,18 @@ Absolute path to the written analysis report.
 - When `{source_type}` is `document`, assign a document source reference (`SRC-DOC###`) credited to the document's author.
 - Follow [specification-protocol](../resources/specification-protocol.md#source-reference-format) for both forms.
 
-### 4. Completeness Sweep
+### 4. Complete Source Coverage
 
 - Re-walk the source document section by section as a completeness critic: for every normative statement per [Source Coverage](../resources/validation-rubric.md#source-coverage), confirm it maps to an identified requirement.
 - Add any normative statement that has no mapped requirement as a new requirement.
+
+### 5. Record the Coverage Matrix
+
 - Record each source section against the requirement(s) it maps to in `{requirements_analysis.source_coverage_matrix}`, marking any section with no obligation as out of scope.
 
-### 5. Compile Analysis Report
+### 6. Compile Analysis Report
 
-- Write `{requirements_analysis}` to `{planning_folder_path}` using the [Template](../resources/requirements-analysis-report.md#template) and its [Conventions](../resources/requirements-analysis-report.md#conventions): source reference, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes; capture its written location as `{requirements_analysis_path}`.
+- Write `{requirements_analysis}` to `{planning_folder_path}` using the [Template](../resources/requirements-analysis-report.md#template) and its [Rules](../resources/requirements-analysis-report.md#rules): source reference, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes; capture its written location as `{requirements_analysis_path}`.
 
 ## Rules
 

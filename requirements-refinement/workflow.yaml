@@ -32,6 +32,7 @@ graph:
   intake-and-analyze:
     analysis-confirmed: update-specification
     revise: intake-and-analyze
+    source-unreadable: __terminal__
   update-specification:
     done: validate-specification
   validate-specification:

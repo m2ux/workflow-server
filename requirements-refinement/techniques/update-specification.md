@@ -41,7 +41,7 @@ Absolute path to the written working specification for this pass.
 
 ### correction_iteration
 
-Count of correction passes performed: `0` on the initial pass, and one greater than the preceding pass on each correction pass. Validation routes a further correction pass only while this stays below three, and it is the only bound on that cycle — a pass that reports the preceding value leaves the loop with nothing to end it.
+Count of correction passes performed: `0` on the initial pass, and one greater than the preceding pass on each correction pass.
 
 ## Protocol
 

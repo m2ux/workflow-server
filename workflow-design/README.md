@@ -10,7 +10,7 @@
 > at the commit gates that select *proceed to commit* even when files are failing schema validation.
 > Prefer finishing promptly over resuming late.
 
-> v1.30.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
+> Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 

@@ -1,6 +1,6 @@
 # CI/CD Pipeline Security Audit Workflow
 
-> Version 1.0.0 | Fully automated | No user checkpoints
+> Fully automated | No user checkpoints
 
 Detects source-to-sink injection vulnerabilities in GitHub Actions CI/CD pipelines across monorepo submodules. Based on the [hackerbot-claw campaign](https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation) (Feb 21-28, 2026) where an autonomous AI agent exploited misconfigured CI/CD pipelines in 7 major open-source projects using 5 distinct injection techniques.
 

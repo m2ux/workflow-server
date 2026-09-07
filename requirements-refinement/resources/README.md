@@ -11,9 +11,9 @@ and a creation guide for each artifact a run persists.
 | [requirements-analysis-report](requirements-analysis-report.md) | Structure for the analysis of requirement changes derived from a source document |
 | [validation-rubric](validation-rubric.md) | Validation checks and the severity/type categorization that drives routing |
 | [change-summary](change-summary.md) | Structure for the change summary that accompanies a finalized specification |
-| [intake-record](intake-record.md) | Creation guide: `intake.md` |
-| [validation-report](validation-report.md) | Creation guide: `validation-report-{correction_iteration}.md` |
-| [failure-report](failure-report.md) | Creation guide: `failure-report.md` |
+| [intake-record](intake-record.md) | Structure for the record of what a run was given: source, target, classification, and augment-or-create mode |
+| [validation-report](validation-report.md) | Structure for a pass's verdict, its issues, and any coverage gaps |
+| [failure-report](failure-report.md) | Structure for the unresolved issues an uncorrectable run leaves, each with the manual resolution it needs |
 
 ## Planning artifact to guide map
 

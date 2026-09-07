@@ -59,7 +59,7 @@ Absolute path to the written change summary.
 
 ### 2. Write Change Summary
 
-- Summarize the applied changes — new, updated, and deprecated requirements and added sources — from `{requirements_analysis}` into `{change_summary}` using the [change-summary template](../resources/change-summary.md#template) and [conventions](../resources/change-summary.md#conventions); capture its written location as `{change_summary_path}`.
+- Summarize the applied changes — new, updated, and deprecated requirements and added sources — from `{requirements_analysis}` into `{change_summary}` using the [change-summary template](../resources/change-summary.md#template) and its [Rules](../resources/change-summary.md#rules); capture its written location as `{change_summary_path}`.
 
 ## Rules
 
