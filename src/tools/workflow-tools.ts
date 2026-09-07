@@ -1009,7 +1009,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
     'A dispatch carrying a run of activities walks them under ONE `agent_id`: a `batch` block at the end of the response — and the same reading on `_meta.batch` — reports how many that context has taken, what it has been delivered, and `may_continue`, where false means report the next activity as needing its own dispatch and stop. ' +
-    'Asking past the bound is refused with the payload undelivered.',
+    'Asking past the bound is refused with the payload undelivered. ' +
+    'An `exit_destinations` block in the header — and the same map on `_meta.exit_destinations` — gives the activity id each of this activity\'s exits leads to, `__terminal__` where the exit ends the run. ' +
+    'The exits themselves ride the activity body; this is the graph half, which is otherwise reachable only through the orchestrator-only `get_workflow`.',
     {
       ...sessionIndexParam,
       ...contextTokensParam,
@@ -1439,9 +1441,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // the raw activity definition, so surface it in the header (and _meta) — the worker
       // needs it to name artifacts as {artifactPrefix}-{bare_filename}.
       const artifactPrefix = (activity as { artifactPrefix?: string } | undefined)?.artifactPrefix;
-      const header = artifactPrefix
-        ? `session_index: ${session_index}\nartifact_prefix: ${artifactPrefix}`
-        : `session_index: ${session_index}`;
+
+      // Where each of this activity's exits leads. The exits ride the activity body; their
+      // destinations live in the workflow graph, which a worker never receives — `get_workflow` is
+      // an orchestrator tool. So the routing a worker is asked to report is unresolvable from the
+      // body alone, and this block is what closes that. Destination only, keyed by exit id: the
+      // selection predicates are already in the body, and a second copy of them would drift.
+      const exitDestinationsByExit = result.success
+        ? Object.fromEntries(getExitBindings(result.value, activity_id).map((b) => [b.exit, b.to]))
+        : {};
+      const headerLines = [`session_index: ${session_index}`];
+      if (artifactPrefix) headerLines.push(`artifact_prefix: ${artifactPrefix}`);
+      if (Object.keys(exitDestinationsByExit).length) {
+        headerLines.push(stringifyForResponse({ exit_destinations: exitDestinationsByExit }).trimEnd());
+      }
+      const header = headerLines.join('\n');
 
       // The activity's artifact contract is SYNTHESIZED from the `## Outputs` of the techniques its
       // steps bind (activities no longer declare `artifacts[]` — the technique outputs own artifact
@@ -1599,6 +1613,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
           dispatch, batch,
+          ...(Object.keys(exitDestinationsByExit).length > 0 ? { exit_destinations: exitDestinationsByExit } : {}),
           // Why each gated technique step stayed lazy. On the response and not only the log because a
           // caller cannot assert what it has to scrape stderr to read, and `unbound` is the reading
           // worth asserting on: nothing the run has done so far binds that gate (#472).
