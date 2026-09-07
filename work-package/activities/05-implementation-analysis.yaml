@@ -5,6 +5,7 @@ description: Analyze the current implementation to understand effectiveness, est
 variables:
   reads:
     - assumption_outcome
+    - base_branch
     - branch_name
     - component_git_dir
     - component_name

@@ -8,6 +8,7 @@ variables:
     - branch_name
     - changed_files
     - component_git_dir
+    - head_sha
     - host_repo_path
     - is_review_mode
     - issue_number

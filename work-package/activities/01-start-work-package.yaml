@@ -4,6 +4,7 @@ name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
   reads:
+    - base_branch
     - branch_name
     - component_git_dir
     - default_branch
@@ -20,6 +21,10 @@ variables:
     - target_repo
     - user_request
   writes:
+    - name: base_branch
+      type: string
+      description: The branch the pull request targets, as the platform reports it.
+      defaultValue: ""
     - name: body_conforms
       type: boolean
       description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
@@ -57,6 +62,10 @@ variables:
       type: boolean
       description: Whether the component under work has a usable GitNexus index.
       defaultValue: false
+    - name: head_sha
+      type: string
+      description: Commit sha at the head of the pull request's branch.
+      defaultValue: ""
     - name: headless_mode
       type: boolean
       description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
@@ -120,6 +129,10 @@ variables:
       type: boolean
       description: Whether a new issue needs to be created.
       defaultValue: false
+    - name: pr_body
+      type: string
+      description: The pull request's description body as the platform returned it.
+      defaultValue: ""
     - name: pr_exists
       type: boolean
       description: Whether a PR already exists for the current branch.
@@ -164,6 +177,10 @@ variables:
     - name: review_pr_url
       type: string
       description: URL of the PR being reviewed (review mode only).
+    - name: reviewed_code_base_url
+      type: string
+      description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+      defaultValue: ""
     - name: squash_merge_supported
       type: boolean
       description: True when the target repo allows squash merges (allow_squash_merge=true from GitHub API).
@@ -341,6 +358,20 @@ steps:
   - kind: technique
     id: resolve-repo-root
     technique: repo-root-resolution
+  - kind: technique
+    id: read-reviewed-pr-body
+    technique:
+      name: github-cli-protocol::view-pr
+      inputs:
+        repo_path: component_git_dir
+    when: is_review_mode == true
+  - kind: technique
+    id: verify-reviewed-pr-body
+    technique:
+      name: update-pr::verify-body
+      inputs:
+        rendered_pr_body: pr_body
+    when: is_review_mode == true
   - kind: technique
     id: update-repo-submodules
     technique: manage-git::update-repo-submodules

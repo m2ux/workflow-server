@@ -4,6 +4,7 @@ name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
   reads:
+    - base_branch
     - block_line_range
     - block_path
     - branch_name

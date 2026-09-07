@@ -22,6 +22,10 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: base_branch
+      type: string
+      description: The branch the pull request targets, as the platform reports it.
+      defaultValue: ""
     - name: body_conforms
       type: boolean
       description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
@@ -30,6 +34,18 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
+    - name: head_sha
+      type: string
+      description: Commit sha at the head of the pull request's branch.
+      defaultValue: ""
+    - name: pr_body
+      type: string
+      description: The pull request's description body as the platform returned it.
+      defaultValue: ""
+    - name: pr_url
+      type: string
+      description: URL of the pull request for this work package (alongside pr_number).
+      defaultValue: ""
     - name: raised_findings_scope
       type: string
       description: How much of the findings set the posted review carries to the pull request author.
@@ -56,6 +72,10 @@ variables:
       type: boolean
       description: Whether strategic review passed.
       defaultValue: false
+    - name: reviewed_code_base_url
+      type: string
+      description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+      defaultValue: ""
     - name: strategic_findings_disposition
       type: string
       description: What the user decided about the strategic-review findings. Absent until the findings gate settles one.
@@ -82,6 +102,26 @@ variables:
       defaultValue: false
 required: true
 steps:
+  - kind: technique
+    id: read-live-pr-body
+    technique:
+      name: github-cli-protocol::view-pr
+      inputs:
+        repo_path: component_git_dir
+    condition:
+      type: simple
+      variable: pr_number
+      operator: exists
+  - kind: technique
+    id: verify-pr-body
+    technique:
+      name: update-pr::verify-body
+      inputs:
+        rendered_pr_body: pr_body
+    condition:
+      type: simple
+      variable: pr_number
+      operator: exists
   - kind: technique
     id: review-strategy
     technique: review-scope
