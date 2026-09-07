@@ -44,7 +44,7 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 
 - Write each resolution and its citations into the candidate's row in `{research_candidates}` per the [integration shape](../../resources/research-reconciliation.md#inventory-shape); remove resolved candidates from the open set
 - Append the gathered findings to `{research_document}`
-- Add any research gap newly surfaced during this pass as a new candidate, classified per [triage](./triage.md#rules)
+- Add any research gap newly surfaced during this pass as a new candidate, classified per the [Reconcilability statuses](../../resources/research-reconciliation.md#reconcilability-statuses)
 
 ### 4. Check Convergence
 

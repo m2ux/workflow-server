@@ -41,8 +41,8 @@ Boolean gate driving the reconciliation loop — true when at least one candidat
 
 ### 2. Classify Reconcilability
 
-- For each candidate, determine whether further knowledge-base or web research could close it, per the [research-reconcilable](#research-reconcilable) and [research-irreconcilable](#research-irreconcilable) rules
-- Record the classification rationale for every candidate; for an irreconcilable candidate, record its handoff target per [handoff-targets](#handoff-targets)
+- For each candidate, determine whether further knowledge-base or web research could close it, per the [Reconcilability statuses](../../resources/research-reconciliation.md#reconcilability-statuses)
+- Record the classification rationale for every candidate; for an irreconcilable candidate, record its target per [Handoff targets](../../resources/research-reconciliation.md#handoff-targets)
 
 ### 3. Seed the Inventory
 
@@ -51,25 +51,6 @@ Boolean gate driving the reconciliation loop — true when at least one candidat
 
 ## Rules
 
-### research-reconcilable
+### every-candidate-carries-its-rationale
 
-A candidate is reconcilable-by-research if further knowledge-base or web research could plausibly close it — the answer exists in documentation, precedent, or published practice and has simply not been gathered yet. Examples:
-
-- "The recommended retry policy for library X is unclear" — official docs or established practice can settle it
-- "Sources disagree on whether pattern P applies to async contexts" — more authoritative sources can resolve the contradiction
-- "It is unknown whether API A deprecated method M" — changelogs and release notes are researchable
-- "No validated pattern yet covers requirement R" — the knowledge base or web may hold one
-
-### research-irreconcilable
-
-A candidate is irreconcilable-by-research if no amount of knowledge-base or web research could close it — it depends on information outside published knowledge. Examples:
-
-- "Stakeholders must choose between approach A and B" — a human decision, not a researchable fact
-- "The production data volume for network N is unknown" — a project-specific/operational fact
-- "Whether the staging environment already runs version V" — a runtime/environment unknown
-- "Which trade-off the team prefers for this module" — a design judgement
-- "Behaviour of the internal service S" — not documented in any researchable source
-
-### handoff-targets
-
-Every irreconcilable candidate records where it goes next: `stakeholder` (a decision or operational fact for the downstream assumption interview), `code-analysis` (a claim about this codebase, answerable by the assumption-reconciliation loop), or `out-of-scope` (recorded only, no further action). This keeps irreconcilable research gaps from being lost when research ends.
+A candidate's classification is recorded with the reason it holds, and an irreconcilable one with the handoff target that owns it, so no gap is lost when research ends.

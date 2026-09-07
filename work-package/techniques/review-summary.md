@@ -77,7 +77,7 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 
 ### 3. Resolve the Two Refs
 
-- Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{host_repo_path}`.
+- Resolve `{$eng_git_dir}` as the engineering checkout [directory-scope](./manage-git/TECHNIQUE.md#directory-scope) names.
 - Resolve `{$eng_publish_ref}`: `{artifact_publish_ref}` when it is non-empty; otherwise `git -C {eng_git_dir} branch --show-current` — never hardcode `main`. This is a branch, so the linked tree carries every artifact the run writes after this render.
 - Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{reviewed_code_base_url}` from the op.
 - Supply `{eng_publish_ref}` as the ref in every engineering-artifact hyperlink and `{reviewed_code_base}` as the prefix of every reviewed-code citation, per the ref split in [Header Fields](../resources/review-mode.md#header-fields) — that section owns the URL shapes and their slots; this step supplies only the two refs.

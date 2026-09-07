@@ -28,6 +28,6 @@ The documented rationale for the selected workflow path (full, elicitation-only,
 ### 1. Record the Path Rationale
 
 - Judge the selected path against `{problem_complexity}`: simple, clearly-scoped problems warrant the lighter paths; moderate and complex problems warrant the full path. Where the selection and the complexity diverge, `{path_rationale}` records the divergence rather than resolving it.
-- `{problem_complexity}` also scopes how much of the [design framework](../../resources/design-framework.md#design-framework-trizics-approach) plan-prepare later applies — simple: problem definition, conventional solutions, synthesis; moderate: add problem classification; complex: include inventive solutions. A lightweight application is proportionate for a simple change.
+- `{path_rationale}` records how much of the [design framework](../../resources/design-framework.md#design-framework-trizics-approach) the complexity warrants — at `simple`, problem definition, conventional solutions and synthesis; at `moderate`, problem classification as well; at `complex`, inventive solutions too
 - Emit `{path_rationale}`
 - Emit `{needs_comprehension}` as `true`

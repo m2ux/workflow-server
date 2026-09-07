@@ -21,7 +21,7 @@ The rendered PR description body now live on the `{pr_number}` PR — composed f
    - Else if `{pr_template_variant}` is `final` → [Template (Final)](../../resources/pr-description.md#template-final); apply [lifecycle tense](../../resources/pr-description.md#lifecycle-tense) so lingering Initial “coming next” / future-tense checklist wording is replaced
 2. Compose the body using the implementation summary drawn from `{planning_folder_path}`, including the test coverage summary and key decisions and trade-offs.
 3. Resolve link URLs from git remotes — NEVER guess or infer repository URLs, issue numbers, or branch names:
-   - Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout; otherwise `{host_repo_path}`.
+   - Resolve `{$eng_git_dir}` as the engineering checkout [directory-scope](../manage-git/TECHNIQUE.md#directory-scope) names.
    - `{$target_repo_url}`: `git -C {target_path} remote get-url origin`, strip the `.git` suffix, convert SSH form to HTTPS (`git@github.com:org/repo.git` → `https://github.com/org/repo`).
    - `{$eng_repo_url}`: same remote commands against `{eng_git_dir}`. Target and engineering remotes may differ.
    - `{$eng_branch}`: `git -C {eng_git_dir} branch --show-current` — do NOT assume `main`; planning artifacts may live on another branch. When `{eng_git_dir}` is `{host_repo_path}`, the Engineering link path includes `/.engineering/artifacts/planning/…`; when `{eng_git_dir}` is the eng checkout itself, the path is `/artifacts/planning/…` relative to that remote. The link must resolve to a committed file on the remote (`manage-artifacts.push-before-linking`).
