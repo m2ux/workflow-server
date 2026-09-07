@@ -16,17 +16,17 @@ scripts/claude/
 └── hooks/
     ├── allow-project-scripts.py    # optional PreToolUse: bare project-script location allow
     ├── block-dynamic-shell.py      # PreToolUse: deny $() / backticks / $VAR dynamic shell
-    ├── block-gh-api-writes.py      # PreToolUse: ask on mutating gh api (keep GET/HEAD free)
     ├── compound-bash-allow.py      # PreToolUse: auto-allow safe compounds + normalized singles
     ├── compound-bash.json          # extra read-only safe commands for compound-bash-allow.py
     ├── curl-allow.json             # host/path allowlist config for curl-read-allow.py
     ├── curl-read-allow.py          # PreToolUse: auto-allow read-only curl to trusted hosts
+    ├── gate-gh-api-hazards.py      # PreToolUse: ask on hazardous gh api calls; routine writes fall through
     ├── redirect-fs-mutation.py     # PreToolUse: deny bare rm/mv/chmod on writable-root paths; redirect to sbx
-    ├── redirect-inline-eval.py     # PreToolUse: deny bare python -c / node -e; redirect to sbx
+    ├── redirect-inline-eval.py     # PreToolUse: deny bare python -c / node -e and unvetted scripts; redirect to sbx
     ├── webfetch-allow.json         # URL-prefix allowlist config for webfetch-allow.py
     ├── webfetch-allow.py           # PreToolUse: auto-allow WebFetch under configured prefixes
     └── lib/
-        └── project_scripts.py      # shared by compound-bash (location allow)
+        └── project_scripts.py      # script-location resolution, shared by the compound and inline-eval hooks
 ```
 
 ## Note
