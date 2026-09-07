@@ -53,20 +53,14 @@ with the heading — no preamble.
 ## Source Coverage Matrix
 
 The coverage matrix traces every source section to the requirement(s) it is covered by, so completeness
-is verifiable. Each row records a source section, whether it carries a normative obligation
-(`SHALL`/`MUST`/`SHOULD`/`MAY`, a constraint, or a rule), and the requirement identifier(s) covering it.
-A normative section with no covering requirement is a coverage gap; a section with no obligation is
-marked out of scope.
-
-## Conventions
-
-- Map each change to an existing requirement identifier where one applies; otherwise propose a new
-  identifier within the correct category.
-- Assign a source reference for the document and list it under Document Updates Required so it is added
-  to the correct section — a meeting transcript (`SRC-MTG###`) to section 2.2, an unstructured document
-  (`SRC-DOC###`, credited to its author) to section 2.5.
-- State each change precisely enough to be applied without re-reading the source document.
+is verifiable. Each row records a source section, whether it carries a normative obligation, and the
+requirement identifier(s) covering it; a section carrying no obligation is marked out of scope. What
+counts as a normative obligation, and what makes a row a coverage gap, are defined in
+[Source Coverage](./validation-rubric.md#source-coverage).
 
 ## Rules
 
+- **Identifiers are reused where they apply.** Map each change to an existing requirement identifier where one applies; otherwise propose a new identifier within the correct category.
+- **A source reference is listed under Document Updates Required.** Assign one for the document and list it there so it reaches the correct section — a meeting transcript (`SRC-MTG###`) to section 2.2, an unstructured document (`SRC-DOC###`, credited to its author) to section 2.5.
+- **Each change is applicable without the source.** State it precisely enough to be applied without re-reading the source document.
 - **Line budget:** ~120 lines. The source-coverage matrix is the payload; narrative about the source belongs in the intake record.
