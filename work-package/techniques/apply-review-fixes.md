@@ -9,9 +9,9 @@ User-selected code-review findings and/or test improvements implemented and comm
 
 ## Inputs
 
-### review_findings
+### classified_findings
 
-The user-selected review findings in scope for this fix cycle (code-review and/or test-suite findings).
+The classified findings, each carrying its severity and its delivery tier — the set this fix cycle selects the code-review and test-suite entries from.
 
 ### code_findings_actionable
 
@@ -25,7 +25,7 @@ Whether test improvements are in scope for this cycle.
 
 ### 1. Select Fixes
 
-- From `{review_findings}`, gather the code-review findings selected for fixing when `{code_findings_actionable}` is true, and the test-suite findings selected when `{test_findings_actionable}` is true.
+- From `{classified_findings}`, gather the code-review findings selected for fixing when `{code_findings_actionable}` is true, and the test-suite findings selected when `{test_findings_actionable}` is true.
 
 ### 2. Implement Fixes
 
@@ -37,14 +37,10 @@ Whether test improvements are in scope for this cycle.
 
 ### 3. Commit Changes
 
-- Apply [manage-git](./manage-git/TECHNIQUE.md)::[commit-paths](./manage-git/commit-paths.md) with `{target_path}`, `{branch_name}`, the fixed source paths, and a Conventional Commits message for the fix cycle, noting the `{commit_sha}` it returns against the findings the cycle addressed. This is the technique's final phase; no separate source commit step follows.
+- Apply [manage-git](./manage-git/TECHNIQUE.md)::[commit-paths](./manage-git/commit-paths.md) with `{target_path}`, `{branch_name}`, the fixed source paths, and a Conventional Commits message for the fix cycle, recording the `{commit_sha}` it returns against the findings this cycle addressed. This is the technique's final phase; no separate source commit step follows.
 
 ## Rules
 
 ### fix-only-selected
 
 Implement only the findings selected for this cycle — do not scope-creep into adjacent changes or auto-fix Nit/Informational findings.
-
-### commit-is-final-phase
-
-The commit phase is part of this technique. Fixes and their commit are one atomic operation; callers do not append a separate commit step.

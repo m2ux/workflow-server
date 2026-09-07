@@ -40,5 +40,5 @@ The requirements [artifact](../../resources/requirements-elicitation.md#document
 ### 1. Create Document
 
 - Create the `{requirements_document}` artifact in `{planning_folder_path}`
-- Include elicited requirements, success criteria, scope boundaries, and assumptions
+- Record the elicited requirements, `{success_criteria}`, `{scope_boundaries}`, the assumptions, and `{elicitation_log}` as the provenance of what was captured
 - Record assumptions in the assumptions log and deferred scope items in the deferred-items register (link-only slots in this document, per its template)

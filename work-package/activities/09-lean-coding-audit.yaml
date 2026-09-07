@@ -6,6 +6,7 @@ variables:
   reads:
     - branch_name
     - component_git_dir
+    - floor_breached
     - is_review_mode
     - planning_folder_path
     - pr_number
@@ -14,22 +15,29 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: floor_breached
+      type: boolean
+      description: Whether an applied simplification breaches the safety floor and the cycle owes another pass to restore it.
+      defaultValue: false
     - name: has_debt_markers
       type: boolean
       description: Whether at least one ponytail debt marker was found in the tree.
       defaultValue: false
+    - name: lean_audit_findings
+      type: array
+      description: The lean-coding audit's findings, each under a stable `LC-{n}` designator carrying its taxonomy tag, location, simpler alternative and the lines it would save, closing with the diff-scoped scoreboard.
     - name: needs_simplification
       type: boolean
       description: Whether accepted simplifications remain to apply.
       defaultValue: false
-    - name: review_findings
-      type: array
-      description: The lean-coding audit's findings, each under a stable `LC-{n}` designator carrying its taxonomy tag, location, simpler alternative and the lines it would save, closing with the diff-scoped scoreboard.
 required: true
 steps:
   - kind: technique
     id: review-over-engineering
-    technique: ponytail/review-over-engineering
+    technique:
+      name: ponytail/review-over-engineering
+      outputs:
+        review_findings: lean_audit_findings
   - kind: technique
     id: harvest-debt
     technique: ponytail/harvest-debt
@@ -44,7 +52,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {review_findings}"
+    message: "Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {lean_audit_findings}"
     options:
       - id: audit-accepted
         label: Accept audit — no changes to apply
@@ -67,10 +75,16 @@ steps:
     loopType: while
     when: is_review_mode != true
     continueWhile:
-      type: simple
-      variable: needs_simplification
-      operator: ==
-      value: true
+      type: or
+      conditions:
+        - type: simple
+          variable: needs_simplification
+          operator: ==
+          value: true
+        - type: simple
+          variable: floor_breached
+          operator: ==
+          value: true
     maxIterations: 3
     steps:
       - kind: technique
@@ -78,7 +92,10 @@ steps:
         technique: ponytail/apply-ladder
       - kind: technique
         id: re-review-over-engineering
-        technique: ponytail/review-over-engineering
+        technique:
+          name: ponytail/review-over-engineering
+          outputs:
+            review_findings: lean_audit_findings
       - kind: checkpoint
         id: safety-floor-cleared
         message: "The applied simplifications stand re-scored against the over-engineering taxonomy, with every safety-floor obligation the change implicates either satisfied or still open."
@@ -89,18 +106,21 @@ steps:
             effect:
               setVariable:
                 needs_simplification: false
+                floor_breached: false
           - id: floor-held-more-remain
             label: Floor held — accepted simplifications remain
             description: The re-score still surfaces accepted simplifications that clear the floor.
             effect:
               setVariable:
                 needs_simplification: true
+                floor_breached: false
           - id: floor-breached
-            label: Floor breached — revert the breaching simplification
-            description: An applied simplification breaches the floor and is reverted before review.
+            label: Floor breached — restore the floor before review
+            description: An applied simplification breaches the floor, so the cycle takes another pass to restore the obligation it dropped.
             effect:
               setVariable:
                 needs_simplification: false
+                floor_breached: true
 exits:
   - id: done
     isDefault: true

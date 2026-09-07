@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Break the work package plan into actionable, atomic TODO tasks for implementation.
+The plan's task breakdown carried into the harness TODO list implementation is tracked against.
 
 ## Inputs
 
@@ -13,15 +13,9 @@ Break the work package plan into actionable, atomic TODO tasks for implementatio
 
 Work package plan; its task breakdown, dependencies, and ordering are the source for the TODO list.
 
-## Outputs
-
-### todo_tasks
-
-The actionable TODO task list for implementation — one item per atomic task, each implementable, testable, and committable independently.
-
 ## Protocol
 
 ### 1. Create Todos
 
-- Break plan into actionable TODO tasks for implementation
-- Ensure each task is atomic (implementable, testable, committable independently)
+- Register one TODO per task in `{plan_document.tasks}`, in the plan's own order and carrying its dependencies
+- The plan's [Implementation Tasks](../../resources/wp-plan.md#template) section already governs what a task may be; a TODO adds tracking, not a second breakdown

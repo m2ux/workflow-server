@@ -60,13 +60,13 @@ Whether the changes are significant enough to require substantial rework
 
 - Draft each response per the [response format template](../resources/pr-review-response.md#response-format-template) and the response-crafting rules below
 - Emit drafted PR responses as bindable output
-- Post the drafted responses to the PR comment thread
+- Apply [comment-issue](../../meta/techniques/github-cli-protocol/comment-issue.md)(*repo_path*=`{component_git_dir}`, *issue_number*=`{pr_number}`) once per drafted response, posting it verbatim
 - If disagreeing with a reviewer, explain reasoning explicitly
 
 ### 5. Update Pr
 
-- Apply [manage-git](./manage-git/TECHNIQUE.md)::[push-commits](./manage-git/push-commits.md) to advance the PR branch with the fix commits
-- Post response summary to PR, finishing with a summary of all changes made
+- Apply [push-branch](../../meta/techniques/version-control/push-branch.md)(*repo_path*=`{target_path}`, *branch*=`{branch_name}`) to advance the PR branch with the fix commits
+- Apply [comment-issue](../../meta/techniques/github-cli-protocol/comment-issue.md)(*repo_path*=`{component_git_dir}`, *issue_number*=`{pr_number}`) with the closing summary of every change made
 
 ### 6. Assess Outcome
 
@@ -87,10 +87,6 @@ Address required changes before suggestions and nits
 ### measured-response-language
 
 Tone per [agent-conduct](../../meta/techniques/agent-conduct.md) `communication-*` rules. Address the specific concern with concrete examples and trade-offs where relevant.
-
-### blockquote-paste-format
-
-Format each response as a blockquote (`>`) so it pastes directly into the PR comment; include an "**Optional doc wording:**" block when proposing documentation text changes.
 
 ### acknowledge-then-act
 

@@ -21,14 +21,12 @@ Best practices, documentation, and resources gathered from web research, each ca
 
 ### 1. Load Resources
 
-- Use attached [knowledge-base-research](../../resources/knowledge-base-research.md) for guidance; capture web findings so they can fill the [web research findings template](../../resources/web-research.md#planning-artifact)
+- Use attached [knowledge-base-research](../../resources/knowledge-base-research.md) for guidance; capture web findings so they can fill the [web research findings template](../../resources/web-research.md#section-template)
 - Review `{requirements}` and `{problem_statement}` for research focus
 
 ### 2. Search Knowledge Base
 
-- Fetch `concept-rag://activities` resource to load its index
-- Match research goal to an available entry from the index
-- Follow the matched entry's technique workflow and tool sequence
+- Apply [knowledge-base-search](../../../meta/techniques/knowledge-base-search/TECHNIQUE.md)::[load-domain-index](../../../meta/techniques/knowledge-base-search/load-domain-index.md) and match the research goal to an entry of the index it returns
 - Identify key concepts, patterns, and specific guidance from results
 - Map findings to work package requirements
 - If the knowledge base has no relevant content, rely on web research and note the gap in findings

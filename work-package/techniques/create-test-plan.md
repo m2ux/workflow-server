@@ -9,9 +9,9 @@ Create test strategy and test plan with cases and acceptance criteria
 
 ## Inputs
 
-### todo_tasks
+### plan_document
 
-Atomic task breakdown with dependencies and ordering for the work package
+The work package [plan](../resources/wp-plan.md#template), whose task breakdown scopes test coverage to each task and its dependencies.
 
 ## Outputs
 
@@ -35,7 +35,7 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 
 ### 2. Define Strategy
 
-- Define test strategy for the work package (unit, integration, e2e), using the `{todo_tasks}` breakdown to scope coverage to each task and its dependencies
+- Define test strategy for the work package (unit, integration, e2e), using `{plan_document.tasks}` to scope coverage to each task and its dependencies
 - Identify which `{requirements}` need which types of tests
 - Determine test infrastructure needs (fixtures, mocks, test doubles)
 
@@ -57,30 +57,6 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 
 Skip formal test plan for: simple bug fixes with obvious test cases, documentation-only changes, single-test changes, refactoring with existing coverage.
 
-### structure-and-header
+### structure-and-fill
 
-The section set and its order are [Test Plan Structure](../resources/test-plan.md#test-plan-structure)'s. The Overview lists only symbols central to the change (not every modified function), one line each, hyperlinked per [manage-artifacts](./manage-artifacts/TECHNIQUE.md#hyperlink-conventions).
-
-### unified-test-case-table
-
-One table for all test types — never split by type. Column widths follow the [test-plan templates](../resources/test-plan.md#templates).
-
-### test-id-format
-
-Test IDs are `PR<number>-TC-<sequence>` (01, 02, ...), hyperlinked to the test function definition line (`#L<line>`, not the first assertion). Manual tests (RPC endpoints, network behavior, UI verification) use plain-text non-hyperlinked IDs — no source to link. Temporarily disabled tests stay in the same table with a `**` suffix after the Test ID (suffix, not prefix, so the link keeps working), plus a `> [!NOTE]` below the table stating the reason and the specific re-enablement condition — no separate table for ignored tests.
-
-### test-case-content
-
-Objectives start with "Verify..." — never vague ("test the feature"). Steps are numbered, atomic, and verifiable, separated with `  <br>` (two trailing spaces + `<br>` for cross-renderer compatibility). Type is one of: Unit (isolated single function/method behavior), Integration (component interactions), E2E (complete user workflows), Performance (load/latency validation), Manual.
-
-### acceptance-criteria-mapping
-
-One matrix row per requirement (or per acceptance criterion when a requirement has several), referencing tests by their `PR###-TC-##` IDs. Every requirement maps to at least one test case; flag any gaps.
-
-### content-boundaries
-
-The plan covers validation only — no ADR content or implementation details. No References section (links are inline); never inline planning-artifact content or validation results — link the source artifact (manage-artifacts single-source-and-link). Running Tests commands are copy-pasteable, covering all-tests, module, and specific-test scopes, plus build verification if relevant.
-
-### naming-and-storage
-
-When promoted into project docs: file name `test-plan-<kebab-case-name>.md` matching the ADR name where possible, stored alongside the ADR or in the tests documentation folder. The PR description links the test plan on its artifact link line.
+The artifact's section set, its table shape, its test-ID and test-case forms, its acceptance matrix and its content boundaries are the guide's [Rules](../resources/test-plan.md#rules). Symbol and test hyperlinks follow [manage-artifacts](./manage-artifacts/TECHNIQUE.md#hyperlink-conventions).

@@ -221,14 +221,6 @@ Tone / attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Pre
 - [ ] Mocks and dependency isolation used appropriately
 - [ ] Tests are readable and maintainable with minimal duplication
 
-## Review Output Format
-
-**Summary:** overall assessment (1-5 stars), key strengths, primary areas for improvement, urgency level for addressing issues.
-
-**Strengths:** specific examples of effective code quality, well-implemented idiomatic Rust and Substrate patterns, notable solutions, quality documentation and testing.
-
-**Issues requiring attention:** one finding per issue, in the shape [Finding Layout](./findings-report.md#finding-layout) declares, carrying the fields listed under [Field List](#field-list) and no others.
-
 ## Reference Materials
 
 - [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/)

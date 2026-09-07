@@ -35,4 +35,4 @@ The `changes/` changelog fragment for this work package, written under the `{tar
 - Create one new fragment only when none already ties to this issue/PR/work package
 - Match filename convention (e.g. `type.issue.ext`) and section structure of existing entries
 - REQUIRED: reference the GitHub issue for this work package from `{issue_number}` and `{issue_url}`. When `{issue_platform}`=github, include `Closes: #{issue_number}` or `Fixes: #{issue_number}` (or the full `{issue_url}` form when sibling fragments use that style). When `{issue_platform}`=jira, search for a paired GitHub tracker issue and reference it the same way; if none exists, record in `{changes_fragment}` that the fragment carries no GitHub reference and that the project's check-changes job will fail on it.
-- Validate the completed fragment against CI requirements: must contain a GitHub issue reference matching the regex `github\.com/.+/issues/[0-9]+` or `(Fixes|Closes|Resolves):?\s+#[0-9]+`
+- Validate the completed fragment against the [Changes Fragment Issue Reference](../../resources/strategic-review.md#changes-fragment-issue-reference) forms

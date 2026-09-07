@@ -1,6 +1,6 @@
 ---
 name: web-research
-description: Web research findings template appended to the research document.
+description: Web research findings template — search queries, external documentation, community practices and version notes.
 metadata:
   version: 1.2.1
   order: 8
@@ -12,11 +12,9 @@ metadata:
 
 Format skeleton for web research findings.
 
-## Planning Artifact
+## Section Template
 
-Append web research findings to the existing research document (kb-research.md):
-
-**Template:**
+The section web research findings take:
 
 ```markdown
 ## Web Research Findings

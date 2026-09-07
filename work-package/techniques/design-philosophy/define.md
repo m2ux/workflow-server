@@ -21,12 +21,4 @@ A clear problem definition with system understanding, impact assessment, success
 
 ### 2. Define Problem
 
-- Create the problem statement against the definition checklist — every box must hold:
-  - **Problem Statement**: clear, specific, quantified — "The /users endpoint P95 latency exceeds 500ms under load >100 RPS", not "The API is slow"
-  - **System Understanding**: the components, relationships, and context are known
-  - **Impact Assessment**: severity, frequency, and business impact
-  - **Success Criteria**: measurable outcomes that define "solved"
-  - **Constraints**: time, resources, technical limitations
-  - **Root Cause**: underlying cause vs. symptoms (if applicable)
-- Ensure problem is understandable without prior context
-- Where the statement cannot be made specific from the context available, record which checklist boxes it leaves unfilled, so the gap is visible rather than papered over
+- Create `{problem_statement}` against the [Problem Definition Checklist](../../resources/design-framework.md#problem-definition-checklist), filling every box the available context supports and recording which it leaves unfilled

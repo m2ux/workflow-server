@@ -183,6 +183,7 @@ graph:
   strategic-review:
     review-mode: submit-for-review
     review-passed: submit-for-review
+    needs-more-review: strategic-review
     review-failed: plan-prepare
   submit-for-review:
     review-mode: complete

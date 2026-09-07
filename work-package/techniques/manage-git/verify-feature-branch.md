@@ -23,4 +23,4 @@ Boolean — true when the worktree is on a feature branch, false when on `main`/
 
 ### resume-preexisted-worktree
 
-On a fresh [create-worktree](./create-worktree.md) path this check is always true. It exists for resume cases where `{target_path}` already existed and an established worktree was reused — report `{on_feature_branch}` from the live checkout, do not assume create-worktree invariants.
+`{on_feature_branch}` is read off the live checkout at `{target_path}`, whether that worktree was created this run or reused from an earlier one. A [create-worktree](./create-worktree.md) invariant is not a substitute for the reading.

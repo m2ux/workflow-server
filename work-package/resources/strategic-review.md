@@ -45,6 +45,10 @@ Five questions over the change set, each answered "No" carrying the cleanup its 
 | Are all configuration changes required? | Revert unnecessary config changes |
 | Is the solution as simple as it could be? | Consider simplification |
 
+## Changes Fragment Issue Reference
+
+A changes fragment carries a GitHub issue reference, and the project's check-changes job accepts one of two forms: a full issue URL matching `github\.com/.+/issues/[0-9]+`, or a trailer matching `(Fixes|Closes|Resolves):?\s+#[0-9]+`. A fragment carrying neither fails that job.
+
 ## Strategic Review Artifact Template
 
 ```markdown

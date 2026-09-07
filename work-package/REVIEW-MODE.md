@@ -49,7 +49,7 @@ A gate stays interactive where no default can stand in for the answer. An activi
 
 Every other review-reachable checkpoint declares `defaultOption` with `autoAdvanceMs`, or is gated out on `is_review_mode`. The activity YAML is where each is declared.
 
-The create path and the review path each carry their own findings gate, because the decision differs. On the create path `review-findings` asks whether to fix now, fix a selection, defer, or accept — the session owns the code and can take all four actions. On the review path `findings-delivery` asks which findings the posted review carries to the author, since raising a finding is the only action a review can take on someone else's branch. Each gate is conditioned on `is_review_mode`, so a run meets exactly one of them and its options name actions that run can perform.
+The create path and the review path each carry their own findings gate, because the decision differs. On the create path `review-findings` asks what to do about the findings, the session owning the code it would change. On the review path `findings-delivery` asks which findings the posted review carries to the author, since raising a finding is the only action a review can take on someone else's branch. Each gate is conditioned on `is_review_mode`, so a run meets exactly one of them, and each gate's activity YAML declares the options that run can perform.
 
 The same boundary gates the `review-fix-cycle` loop out of review mode. `code_findings_actionable` and `test_findings_actionable` say a finding reached the severity that warrants action; on the review path the action is raising it to the author, and no component file is edited.
 

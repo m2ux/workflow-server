@@ -32,6 +32,10 @@ variables:
     - name: context_scope
       type: string
       description: Provenance scope of AI-generated code in this work package.
+      values:
+        - repo-only
+        - web-retrieval
+        - mixed
       defaultValue: repo-only
     - name: context_scope_uncertain
       type: boolean

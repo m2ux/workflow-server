@@ -25,7 +25,7 @@ Every changed file under `{planning_folder_path}`, including `README.md`, the li
 
 ## Protocol
 
-1. Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{host_repo_path}`. Resolve `{$eng_branch}`: `git -C {eng_git_dir} branch --show-current` — never hardcode `main`.
+1. Resolve `{$eng_git_dir}` as the engineering checkout [directory-scope](./manage-git/TECHNIQUE.md#directory-scope) names. Resolve `{$eng_branch}`: `git -C {eng_git_dir} branch --show-current` — never hardcode `main`.
 2. Collect every changed path under `{planning_folder_path}` as `{publishable_files}` (`git -C {eng_git_dir} status --porcelain` restricted to that folder), and emit `{eng_branch}` as `{artifact_publish_ref}`.
 
 ## Rules

@@ -8,6 +8,7 @@ variables:
     - branch_name
     - changed_files
     - component_git_dir
+    - head_sha
     - host_repo_path
     - is_review_mode
     - issue_number
@@ -24,6 +25,7 @@ variables:
     - requirements
     - squash_merge_supported
     - stealth_mode
+    - summary_refine_requested
     - target_path
     - target_repo
     - ticket_disposition
@@ -106,6 +108,10 @@ variables:
       type: array
       description: Consolidated-review slots over their format budget, each { slot, measured, budget }.
       defaultValue: []
+    - name: summary_refine_requested
+      type: boolean
+      description: Whether the reviewer asked for the consolidated summary to be rendered again before posting.
+      defaultValue: false
     - name: test_findings_actionable
       type: boolean
       description: Whether any test-suite finding is at or above the severity that warrants action.
@@ -138,56 +144,70 @@ steps:
         files: publishable_files
         branch: artifact_publish_ref
     when: is_review_mode == true
-  - kind: technique
-    id: generate-review-summary
-    technique: review-summary
+  - kind: loop
+    id: review-summary-cycle
+    name: Review Summary Approval Cycle
+    loopType: doWhile
     when: is_review_mode == true
-    actions:
-      - action: validate
-        target: summary_budget_overruns == []
-        message: "Consolidated review summary exceeds the review-mode format budget: {summary_budget_overruns}. Move the over-budget content into the report section that owns it, leave the link, and re-run."
-      - action: validate
-        target: summary_completeness_findings == []
-        message: "Consolidated review summary disagrees with the reports it renders from: {summary_completeness_findings}. Reconcile each entry against the report it names, then re-run."
-  - kind: checkpoint
-    id: review-summary-approval
-    condition:
+    continueWhile:
       type: simple
-      variable: is_review_mode
+      variable: summary_refine_requested
       operator: ==
       value: true
-    message: "Consolidated review summary, ready to post as a pull-request review: {review_summary}"
-    options:
-      - id: post-approve
-        label: Post review — Approve
-        description: Post the summary as an approving PR review
-        effect:
-          setVariable:
-            review_posted: true
-            review_type: approve
-      - id: post-request-changes
-        label: Post review — Request changes
-        description: Post the summary as a request-changes PR review
-        effect:
-          setVariable:
-            review_posted: true
-            review_type: request-changes
-      - id: post-comment
-        label: Post review — Comment only
-        description: Post the summary as a comment-only PR review
-        effect:
-          setVariable:
-            review_posted: true
-            review_type: comment
-      - id: refine
-        label: Refine summary
-        description: Adjust the review summary before posting
-      - id: skip-posting
-        label: Skip posting to PR
-        description: Keep the summary local, don't post to GitHub
-        effect:
-          setVariable:
-            review_posted: false
+    maxIterations: 3
+    steps:
+      - kind: technique
+        id: generate-review-summary
+        technique: review-summary
+        actions:
+          - action: validate
+            target: summary_budget_overruns == []
+            message: "Consolidated review summary exceeds the review-mode format budget: {summary_budget_overruns}. Move the over-budget content into the report section that owns it, leave the link, and re-run."
+          - action: validate
+            target: summary_completeness_findings == []
+            message: "Consolidated review summary disagrees with the reports it renders from: {summary_completeness_findings}. Reconcile each entry against the report it names, then re-run."
+      - kind: checkpoint
+        id: review-summary-approval
+        message: "Consolidated review summary, ready to post as a pull-request review: {review_summary}"
+        options:
+          - id: post-approve
+            label: Post review — Approve
+            description: Post the summary as an approving PR review
+            effect:
+              setVariable:
+                review_posted: true
+                review_type: approve
+                summary_refine_requested: false
+          - id: post-request-changes
+            label: Post review — Request changes
+            description: Post the summary as a request-changes PR review
+            effect:
+              setVariable:
+                review_posted: true
+                review_type: request-changes
+                summary_refine_requested: false
+          - id: post-comment
+            label: Post review — Comment only
+            description: Post the summary as a comment-only PR review
+            effect:
+              setVariable:
+                review_posted: true
+                review_type: comment
+                summary_refine_requested: false
+          - id: refine
+            label: Refine summary
+            description: The reply carries the adjustments, and the summary is rendered again for approval
+            effect:
+              setVariable:
+                review_posted: false
+                summary_refine_requested: true
+          - id: skip-posting
+            label: Skip posting to PR
+            description: Keep the summary local, don't post to GitHub
+            effect:
+              setVariable:
+                review_posted: false
+                summary_refine_requested: false
   - kind: technique
     id: persist-review-summary
     technique:
@@ -266,7 +286,12 @@ steps:
           exit: abort
   - kind: technique
     id: push-commits
-    technique: manage-git::push-commits
+    technique:
+      name: version-control::push-branch
+      inputs:
+        repo_path: target_path
+        branch: branch_name
+        remote_name: push_remote
     when: is_review_mode != true
   - kind: technique
     id: update-description
@@ -367,15 +392,9 @@ steps:
     message: |-
       Build-dependent artifacts on a rust-substrate project — `.scale` files and node metadata — regenerate outside the working tree, so their currency is the user's to settle, and CI is otherwise the first signal that they are stale.
     options:
-      - id: none-needed
-        label: None needed
-        description: No build-dependent regeneration is owed
-        effect:
-          setVariable:
-            build_dependent_artifacts_pending: false
-      - id: user-regenerated
-        label: Regenerated — continue
-        description: The build-dependent artifacts in the tree are current
+      - id: artifacts-current
+        label: Artifacts current — continue
+        description: Either no build-dependent regeneration is owed, or the tree already carries the regenerated artifacts
         effect:
           setVariable:
             build_dependent_artifacts_pending: false

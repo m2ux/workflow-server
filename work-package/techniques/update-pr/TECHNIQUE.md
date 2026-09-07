@@ -29,10 +29,6 @@ Path to the repo root; used with `.engineering/` (in-tree or submodule) to resol
 
 Path to the target checkout (where the PR lives), from which the target repo URL is resolved
 
-### is_review_mode
-
-*(optional)* True when the PR is being annotated with a consolidated review comment rather than updated with implementation detail
-
 ### pr_template_variant
 
 *(optional, enum: `initial` | `final`, default `final`)* Which PR body template to render
@@ -48,13 +44,6 @@ True once the rendered body passes every rule in `rules.pr-body-conformance`; fa
 List of `{ rule_id, detail }` entries, one per failed conformance rule; empty when the body conforms
 
 ## Rules
-
-### body-composition
-
-- motivation-user-perspective: Motivation explains the problem from the user's perspective and the consequences of not addressing it; 1-2 paragraphs.
-- link-not-inline: tickets, ADRs, test plans, and planning artifacts are linked, never inlined (manage-artifacts single-source-and-link); no process attribution and no vague language (manage-artifacts no-process-attribution, plain-technical-language).
-- no-relocated-content: never include a commit list (git log / the PR Commits tab owns it) or line-by-line explanations (inline PR comments own them) — complements no-files-changed-list and no-code-in-changes below.
-- todo-tracks-premerge: the TODO-before-merging section tracks remaining pre-merge items beyond "Ready for review" (e.g. address reviewer feedback, squash if needed); items are checked off as they complete.
 
 ### pr-body-conformance
 

@@ -36,7 +36,7 @@ URL to the PR
 
 ### 2. Create Draft PR
 
-- Apply [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md) with `repo_path` `{target_path}`, `branch_name` `{branch_name}`, `base_branch` the repo default (or the configured base), `title` and `body` from step 1, and `as_draft` true; capture `{pr_number}` and `{pr_url}`
+- Apply [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md) (*repo_path*=`{target_path}`, *branch_name*=`{branch_name}`, *base_branch*=the repo default or the configured base, *title* and *body* from step 1, *as_draft*=true); capture `{pr_number}` and `{pr_url}`
 
 ### 3. Assign Current User
 

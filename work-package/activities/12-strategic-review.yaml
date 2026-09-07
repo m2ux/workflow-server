@@ -22,6 +22,10 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: base_branch
+      type: string
+      description: The branch the pull request targets, as the platform reports it.
+      defaultValue: ""
     - name: body_conforms
       type: boolean
       description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
@@ -30,6 +34,26 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
+    - name: deferred_item_rows
+      type: array
+      description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
+      defaultValue: []
+    - name: deferred_items_register
+      type: string
+      description: The out-of-scope deferrals register as it stands after this activity's rows.
+      defaultValue: ""
+    - name: head_sha
+      type: string
+      description: Commit sha at the head of the pull request's branch.
+      defaultValue: ""
+    - name: pr_body
+      type: string
+      description: The pull request's description body as the platform returned it.
+      defaultValue: ""
+    - name: pr_url
+      type: string
+      description: URL of the pull request for this work package (alongside pr_number).
+      defaultValue: ""
     - name: raised_findings_scope
       type: string
       description: How much of the findings set the posted review carries to the pull request author.
@@ -52,17 +76,30 @@ variables:
       type: boolean
       description: Whether the unsigned commits in the branch range are to be re-signed.
       defaultValue: false
-    - name: review_findings
-      type: array
-      description: The findings the scope and artifact review produced, each under the designator its report defines.
     - name: review_passed
       type: boolean
       description: Whether strategic review passed.
       defaultValue: false
+    - name: reviewed_code_base_url
+      type: string
+      description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+      defaultValue: ""
+    - name: strategic_findings_disposition
+      type: string
+      description: What the user decided about the strategic-review findings. Absent until the findings gate settles one.
+      values:
+        - acceptable
+        - fix-all
+        - fix-selected
+        - deferred
+        - re-review
     - name: strategic_findings_summary
       type: string
       description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding).
       defaultValue: ""
+    - name: strategic_review_findings
+      type: array
+      description: The findings the scope and artifact review produced, each under the designator its report defines.
     - name: unsigned_commit_list_summary
       type: string
       description: Short human-readable summary of the unsigned commits; empty when every commit is signed.
@@ -73,6 +110,26 @@ variables:
       defaultValue: false
 required: true
 steps:
+  - kind: technique
+    id: read-live-pr-body
+    technique:
+      name: github-cli-protocol::view-pr
+      inputs:
+        repo_path: component_git_dir
+    condition:
+      type: simple
+      variable: pr_number
+      operator: exists
+  - kind: technique
+    id: verify-pr-body
+    technique:
+      name: update-pr::verify-body
+      inputs:
+        rendered_pr_body: pr_body
+    condition:
+      type: simple
+      variable: pr_number
+      operator: exists
   - kind: technique
     id: review-strategy
     technique: review-scope
@@ -146,6 +203,9 @@ steps:
     id: document-findings
     technique: document-findings
   - kind: technique
+    id: register-deferred-findings
+    technique: manage-registers::append-deferred-item
+  - kind: technique
     id: document-cleanup-recommendations
     technique: recommend-cleanup
     when: is_review_mode == true
@@ -189,21 +249,32 @@ steps:
         effect:
           setVariable:
             review_passed: true
+            strategic_findings_disposition: acceptable
       - id: fix-findings
         label: Fix findings before proceeding
-        description: Address strategic review findings now
+        description: Every finding is addressed before the change goes further
+        effect:
+          setVariable:
+            strategic_findings_disposition: fix-all
       - id: selective-fixes
         label: Fix selected findings
-        description: Choose which findings to fix, by priority
+        description: The reply names the findings to address, by priority; the report keeps the rest
+        effect:
+          setVariable:
+            strategic_findings_disposition: fix-selected
       - id: defer-findings
         label: Defer findings
         description: Note findings for future but proceed now
         effect:
           setVariable:
             review_passed: true
+            strategic_findings_disposition: deferred
       - id: more-review
         label: Need more review
-        description: Additional areas need examination
+        description: Additional areas need examination before any disposition is settled
+        effect:
+          setVariable:
+            strategic_findings_disposition: re-review
   - kind: checkpoint
     id: findings-delivery
     condition:
@@ -251,6 +322,8 @@ exits:
     when: is_review_mode == true
   - id: review-passed
     when: review_passed == true
+  - id: needs-more-review
+    when: strategic_findings_disposition == 're-review'
   - id: review-failed
     isDefault: true
 outcome:

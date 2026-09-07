@@ -13,13 +13,13 @@ Implementation planning — design approach, work-package plan, and actionable T
 
 Design philosophy [artifact](../../resources/design-framework.md#design-philosophy-artifact-template) with problem classification and workflow path
 
-### analysis_findings
+### analysis_document
 
-*(optional)* Implementation analysis findings (baselines, gaps)
+*(optional)* Current implementation [analysis](../../resources/implementation-analysis.md#document-template) carrying the baselines and the gaps they open
 
-### research_findings
+### research_document
 
-*(optional)* Research findings from knowledge base and web
+*(optional)* Knowledge base and web research [synthesis](../../resources/knowledge-base-research.md#planning-artifact) carrying the findings and the approach they recommend
 
 ## Outputs
 

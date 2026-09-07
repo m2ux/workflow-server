@@ -21,10 +21,6 @@ Reference description of the changes that should be made to fulfil the requireme
 
 The authored surface of the PR — GitHub's changed-files list. The canonical set every downstream review finding is scoped to.
 
-### base_pr_diff
-
-The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later comparison
-
 ## Protocol
 
 ### 1. Checkout Baseline State
@@ -40,9 +36,9 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 
 ### 3. Capture Authored Surface
 
-- Check out the PR branch to continue the workflow.
+- Check out the PR branch, so the authored surface is read against it rather than against the base.
 - Apply [list-pr-files](../../meta/techniques/github-cli-protocol/list-pr-files.md)(*repo_path*=`{component_git_dir}`); set `{changed_files}` from the op output.
-- Note the base↔PR diff as `{base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {$base_branch}...HEAD`.
+- Take the authored diff as `{$base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {$base_branch}...HEAD`.
 
 ### 4. Merge-In Guard
 

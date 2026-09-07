@@ -21,6 +21,37 @@ Uses the **TRIZICS Software Design** methodology, adapted from systematic innova
 4. **Inventive Solutions** — Contradictions, inventive principles, ideal solution thinking (only if conventional solutions inadequate)
 5. **Solution Synthesis** — Architecture design, trade-offs, implementation roadmap, success metrics
 
+## Problem Definition Checklist
+
+A problem statement holds every box below, and where the available context cannot fill one, the statement records which it leaves unfilled rather than papering over the gap.
+
+| Box | Holds |
+|---|---|
+| Problem statement | Clear, specific, quantified — "the /users endpoint P95 latency exceeds 500ms above 100 RPS", not "the API is slow" |
+| System understanding | The components, their relationships, and the context they sit in |
+| Impact assessment | Severity, frequency, and business impact |
+| Success criteria | Measurable outcomes that define solved |
+| Constraints | Time, resources, technical limitations |
+| Root cause | The underlying cause as distinct from its symptoms, where one applies |
+
+The statement reads without prior context.
+
+## Problem Classification
+
+### Type
+
+Walk the tree: is something currently broken or failing? Where it is, the problem is **specific** — root cause known gives cause-known and a direct fix, root cause unknown gives cause-unknown and an investigation first. Where nothing is broken, the work is an **inventive goal** — improving an existing capability gives improvement, preventing future problems gives prevention.
+
+A specific problem is fix-or-restore work; an inventive goal is enhance-or-optimize work.
+
+### Complexity
+
+| Complexity | Holds |
+|---|---|
+| `simple` | A clear problem with a known solution or an existing pattern — a minor fix completable inside half an hour |
+| `moderate` | Some uncertainty in the approach |
+| `complex` | Architectural decisions, several viable approaches, trade-offs or contradictions between requirements, an unfamiliar problem or domain, or performance, reliability and scalability requirements |
+
 ## Conventional Solutions
 
 **Always start here.** Most problems have known solutions.

@@ -70,6 +70,8 @@ Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records.
 
 ## Rules
 
+- **A record holds the decision, not the design.** It carries what was decided and why, the requirements and constraints that forced it, the trade-offs between the options, and the consequences expected. It carries no file path or module name, no code snippet or API signature, no implementation step and no testing strategy — the design work that settles *how* comes after the record.
+- **A ticket reference describes the requirement.** "TICKET-1234 requires that X sit behind a configurable provider", not "TICKET-1234 introduces a `FooProvider` trait in `src/foo.ts`".
 - **At least one alternative, with the reason it lost.** A record with no rejected option documents a conclusion rather than a decision.
 - **Status opens at Proposed.** Acceptance is recorded later by the finalization step, not asserted here.
 - **The optional sections are omitted when empty.** A heading over "none" is a section the reader opens for nothing.

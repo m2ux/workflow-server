@@ -13,6 +13,10 @@ Research-reconcilable candidates closed until only irreconcilable residue remain
 
 The running [inventory](../../resources/research-reconciliation.md#inventory-shape) of open and resolved candidates to reconcile. On the first pass this is the triaged set; on later passes it also carries any candidates a `request-more` reopened.
 
+### research_document
+
+The research [artifact](../../resources/knowledge-base-research.md#planning-artifact) as it stands at the start of the pass; this pass appends to it and writes it back.
+
 ## Outputs
 
 ### research_candidates
@@ -36,15 +40,15 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 
 ### 2. Targeted Research
 
-- For each reconcilable candidate, perform focused research scoped to that candidate: match it to a `concept-rag://activities` entry and follow that technique's tool sequence for institutional knowledge, and use `WebSearch` for current external knowledge where the gap needs it — the same mechanisms as the [research](./research.md) operation, narrowed to the single candidate
-- Validate every web finding on the [research](./research.md#source-validation) axes before it informs a resolution
+- For each reconcilable candidate, research that candidate alone: apply [knowledge-base-search](../../../meta/techniques/knowledge-base-search/TECHNIQUE.md)::[load-domain-index](../../../meta/techniques/knowledge-base-search/load-domain-index.md) and match the candidate to an entry of the index it returns for institutional knowledge, and search the web for current external knowledge where the gap needs it
+- Validate every web finding on the group's [source-validation](./research.md#source-validation) axes before it informs a resolution
 - Determine the outcome: Resolved (research answers the candidate, with citations), Partially Resolved (research narrows it but leaves residual uncertainty), or — when targeted research surfaces that the answer is not published knowledge after all — reclassify the candidate as irreconcilable with its handoff target
 
 ### 3. Update the Inventory
 
 - Write each resolution and its citations into the candidate's row in `{research_candidates}` per the [integration shape](../../resources/research-reconciliation.md#inventory-shape); remove resolved candidates from the open set
 - Append the gathered findings to `{research_document}`
-- Add any research gap newly surfaced during this pass as a new candidate, classified per [triage](./triage.md#rules)
+- Add any research gap newly surfaced during this pass as a new candidate, classified per the [Reconcilability statuses](../../resources/research-reconciliation.md#reconcilability-statuses)
 
 ### 4. Check Convergence
 

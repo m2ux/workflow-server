@@ -26,4 +26,4 @@ Status after update (e.g., ready for review)
 ### 1. Mark Ready
 
 - Ensure the description is finalized before marking ready
-- Apply [mark-ready](../../../meta/techniques/github-cli-protocol/mark-ready.md) with `repo_path` `{target_path}` and `{pr_number}`; land its `{pr_url}` and `{pr_status}` onto `{updated_pr}`
+- Apply [mark-ready](../../../meta/techniques/github-cli-protocol/mark-ready.md) (*repo_path*=`{target_path}`, *pr_number*=`{pr_number}`); land its `{pr_url}` and `{pr_status}` onto `{updated_pr}`

@@ -7,16 +7,6 @@ metadata:
 
 Conduct structured manual diff review using external side-by-side diff tool with indexed block references
 
-## Inputs
-
-### base_pr_diff
-
-*(optional)* The base↔PR diff to review, when a review-mode baseline already derived it — read in place of re-deriving the three-dot diff.
-
-### base_sha
-
-*(optional)* Commit SHA of the base branch the diff is taken against, so block citations resolve at the reviewed baseline.
-
 ## Outputs
 
 ### change_block_index
@@ -45,7 +35,7 @@ The change blocks carrying an issue, one entry per block, in index order. A bare
 
 ### manual_diff_review_report
 
-Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-section-template) from user-flagged blocks, written as the `## Manual Diff Review` section of the code-review [report](../resources/rust-substrate-code-review.md#report-template) (the review findings' canonical home) — created here when this review runs first, updated in place when the full code-review report is written.
+Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-section-template) from user-flagged blocks, as the `## Manual Diff Review` section of the code-review [report](../resources/rust-substrate-code-review.md#report-template), which is the review findings' canonical home.
 
 #### block_findings
 
@@ -54,6 +44,10 @@ Per-block issues with interview responses
 #### has_critical_blocker
 
 True if any block marked as critical blocker
+
+### follow_up_rows
+
+The reviewer's own edits to paths under review, as in-task follow-ups carrying the pattern each one shows. Empty where the reviewer applied none.
 
 ## Protocol
 
@@ -91,11 +85,12 @@ True if any block marked as critical blocker
 
 - For each entry of `{flagged_block_indices}`, assemble the full diff content for that file, scoped to the line the entry names where it carries one
 - Record each block's issue into `{manual_diff_review_report.block_findings}` verbatim, with its severity where one is stated
-- Detect manual review edits: compare the working tree to the last agent-written tip for paths under review; when the reviewer applied edits outside the agent, record each confirmed pattern as a retrospective candidate (in-task follow-up)
+- Detect manual review edits: compare the working tree to the last agent-written tip for paths under review, and emit each confirmed pattern the reviewer's own edits show as a `{follow_up_rows}` entry
 
 ### 7. Create Report
 
-- Write the `{manual_diff_review_report}` as the `## Manual Diff Review` section of `code-review.md`, following the [section template](../resources/manual-diff-review.md#manual-diff-review-section-template) (creating the artifact if this review runs first)
+- Write the `{manual_diff_review_report}` as the `## Manual Diff Review` section of the code-review report, following the [section template](../resources/manual-diff-review.md#manual-diff-review-section-template)
+  > Where the full code-review report does not exist yet, this write creates it and the code review updates the section in place; where it does, this write updates the section.
 - Include each flagged row with its `{manual_diff_review_report.block_findings}` entry verbatim and its severity; where `{flagged_block_indices}` is empty, the section is its one-line header only
 
 ## Rules

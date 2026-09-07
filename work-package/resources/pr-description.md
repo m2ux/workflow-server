@@ -177,6 +177,18 @@ Every section the selected template variant mandates appears in the rendered bod
 
 The Summary section is one or two sentences, leads with the outcome, and carries measurable impact where a figure is known.
 
+### Motivation states the user's problem
+
+The Motivation section explains the problem from the user's perspective and the consequence of leaving it unaddressed, in one or two paragraphs.
+
+### Content is linked, not inlined
+
+Tickets, ADRs, test plans and planning artifacts are linked rather than reproduced, per `manage-artifacts.single-source-and-link`, and the body carries no process attribution and no vague language, per that group's `no-process-attribution` and `plain-technical-language`.
+
+### TODO tracks pre-merge work
+
+The TODO-before-merging section tracks the pre-merge items still outstanding beyond "Ready for review" — addressing reviewer feedback, squashing where the repo wants it — and each is checked off as it completes.
+
 ### Engineering link present
 
 The Engineering link is present and resolves to a committed file on the remote. Its ref and repository come from the checkout holding the planning folder, never from the host repo's when that folder is a checkout of its own.
@@ -191,7 +203,7 @@ The Changes section groups bullets by component, the component name in bold — 
 
 ### Changes carry no file list
 
-The Changes section does not enumerate file paths. File-level detail is already in the PR's Files-changed tab.
+The Changes section does not enumerate file paths. File-level detail is already in the PR's Files-changed tab, and neither a commit list nor a line-by-line explanation belongs in the body — the Commits tab owns the first and inline PR comments own the second.
 
 ### Changes carry no code
 

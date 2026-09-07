@@ -39,7 +39,7 @@ One of: `code-generation` | `refactoring` | `test-writing` | `docs` | `mixed`
 
 ### context_scope
 
-One of: `repo-only` (only repository-local sources used) | `web-retrieval` (external web sources informed the work) | `mixed` (both)
+The provenance scope of the sources that informed the work, on the value set the [Rules](../../resources/provenance-log.md#rules) admit for that column.
 
 #### default
 

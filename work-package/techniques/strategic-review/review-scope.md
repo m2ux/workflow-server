@@ -13,6 +13,14 @@ Scope-discipline and artifact-hygiene findings across the feature-branch diff fo
 
 *(optional)* PR identifier for the PR under review. Absent when no PR exists (stealth mode).
 
+### body_conforms
+
+*(optional)* Whether the live pull-request body satisfies every conformance criterion in the pr-description guide. Absent where no pull request exists.
+
+### body_findings
+
+*(optional)* Each way the live body departs from that guide, one entry per failed criterion. Empty where the body conforms, absent where no pull request exists.
+
 ## Outputs
 
 ### strategic_review_doc
@@ -71,13 +79,11 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 - Scan the branch range for signature status: `git log --format='%h %G? %s' {$base_branch}..HEAD`.
 - Set `{unsigned_commits_in_pr}` `true` and build `{unsigned_commit_list_summary}` from the commits reporting `N` or `B`; otherwise set it `false` with an empty summary.
 
-### 8. Verify Pr Body Conformance
+### 8. Record Pr Body Conformance
 
-- Skip this phase when `{pr_number}` is unset (no PR exists — stealth mode).
-- Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); take the live body from `{pr_body}`.
-- Run [update-pr](../update-pr/TECHNIQUE.md)::[verify-body](../update-pr/verify-body.md) against the live body.
-- A review run checked the body at intake, so record here only what has changed since: a finding the intake check already stated is cited by its designator, and a body edited during the run is re-judged whole. On a create run this is the first check and every finding is its own.
-- If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.
+- Where `{body_conforms}` is false, record each `{body_findings}` entry in the `{strategic_review_doc}` under 'PR body conformance'.
+  > - A finding an earlier conformance check already stated is cited by its designator rather than restated; a body edited since that check is re-judged whole.
+  > - Where `{body_conforms}` is absent, no pull request exists and the section is omitted.
 
 ## Rules
 
@@ -85,6 +91,3 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 
 For each changed file, verify: the change directly supports the solution (not a speculative attempt); it is minimal (no unnecessary additions); it doesn't include debugging artifacts; and it wasn't superseded by a simpler approach.
 
-### findings-constraint
-
-Every finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` form the PR's findings; findings on other files form a separate "pre-existing" grouping.

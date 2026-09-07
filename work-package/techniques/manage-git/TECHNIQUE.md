@@ -5,20 +5,28 @@ metadata:
 
 ## Capability
 
-Git operations supporting work-package delivery — worktrees, path restore from a base ref, edit-side commits, branch sync, repo-root submodule maintenance, and pre-push destination/signature checks.
+Shared contract for the work package's git work: which checkout each class of operation runs in, what a code commit carries, and which shell reaches a remote.
 
 ## Inputs
 
 ### host_repo_path
 
-Path to the product repo root (monorepo or standalone). Submodule refresh runs here; planning artifact commits may run in `{host_repo_path}/.engineering` when that path is a git checkout.
+Path to the product repo root, whether a monorepo or a standalone checkout.
 
 
 ## Rules
 
 ### directory-scope
 
-Edit-side git operations (branch, PR, sync, push) run inside `{target_path}`. Submodule refresh runs inside `{host_repo_path}`. Planning artifact commits run in `{host_repo_path}/.engineering` when that path is a git checkout, otherwise `{host_repo_path}`. Branches and PRs are created against the target's upstream.
+Which checkout each class of operation runs in, and the one place the engineering checkout is resolved:
+
+| Operation class | Runs in |
+|---|---|
+| Edit-side work — branch, pull request, sync, push | `{target_path}` |
+| Submodule refresh | `{host_repo_path}` |
+| Planning artifact commits | The **engineering checkout**: `{host_repo_path}/.engineering` where that path is a git checkout of its own, and `{host_repo_path}` otherwise |
+
+Branches and pull requests are created against the target's upstream. Every operation and every rendering step that needs the engineering checkout resolves it by this table rather than restating the condition.
 
 ### code-commit-coauthor-trailer
 

@@ -31,22 +31,9 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
 
 ### 1. Verify Symbol Provenance
 
-- Every symbol (type, function, constant, field, etc.) introduced or referenced in code or documentation MUST have provenance — it either exists in the codebase (found via grep/search), exists in a declared dependency (verified in `Cargo.toml`, `package.json`, etc.), or is newly created and correctly defined by `{current_task}`.
-- Never fabricate symbols: do not invent type/trait/struct names, reference unimplemented functions or methods, use documentation field names that do not match code, assume symbol names from patterns without verification, or rename symbols in documentation without the corresponding code change.
-- Verify each class of symbol:
-
-  | Check | How to verify |
-  |-------|---------------|
-  | New types/structs | Definition exists in committed code |
-  | New functions/methods | Implementation exists in committed code |
-  | New constants/fields | Declaration exists in committed code |
-  | Referenced existing symbols | `grep` confirms the symbol exists in the codebase |
-  | Symbols from dependencies | Dependency declared in the manifest AND the symbol exists in that crate/package |
-  | Symbols in documentation | Every symbol mentioned in docs/ADRs/change files exists in code |
-
-- Verify symbols in change files, ADRs, and test plans too — change files reference symbols from the actual code changes in the PR; ADRs reference symbols from the implemented architecture; test plans reference symbols from the actual test implementations. Do not describe a trait that was planned but never implemented, mention storage items that never existed, reference extrinsics that do not appear in the pallet, or rename concepts without verifying the new name exists.
-- Populate `{uncertain_symbols}` with any symbol that cannot be confirmed against the codebase, declared dependencies, or the new symbols `{current_task}` introduced — one per line, with the file/line where it was seen. Set `{has_uncertain_symbols}` to `true` when that list is non-empty, otherwise `false` with an empty `{uncertain_symbols}`.
-- When a symbol cannot be verified: stop, search more thoroughly (alternative patterns, git history), determine whether it is something the task needs to create, and surface the uncertainty rather than proceeding on the assumption.
+- Enumerate every symbol `{task_implementation}` introduces or references, in code and in the documents it wrote — change files, architecture decision records, test plans included
+- Establish each one's provenance per [Verification](../resources/symbol-provenance.md#verification), against the codebase, the declared dependencies, and the symbols `{current_task}` creates
+- Populate `{uncertain_symbols}` with every symbol that does not resolve — one per line, with the file and line where it was seen. Set `{has_uncertain_symbols}` to `true` when that list is non-empty, otherwise `false` with an empty `{uncertain_symbols}`.
 
 ### 2. Run Quality Checks
 
@@ -58,7 +45,7 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
 
 ### documentation-reflects-code
 
-Every symbol a document names exists in the code it describes. A name that cannot be verified leaves `{has_uncertain_symbols}` true rather than standing on an assumption.
+Every symbol a document names exists in the code it describes, per [Provenance](../resources/symbol-provenance.md#provenance). A name that cannot be verified leaves `{has_uncertain_symbols}` true rather than standing on an assumption.
 
 ### assumptions-to-the-log
 

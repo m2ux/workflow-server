@@ -198,13 +198,11 @@ Run on every push/PR: `cargo test --all-features`, `cargo clippy -- -D warnings`
 
 ---
 
-## Conclusion and Best Practices
+## Tooling
 
-1. Use the built-in cargo test framework; traits (not function pointers) for abstraction; `mockall` for mocks; `proptest` for properties; `tests/` for integration; feature flags / `#[cfg]` for platform switches.
-2. Leverage Rust's type system: ownership, `Option`/`Result`, and no-UB-in-safe-code eliminate whole test categories — TDD + types is stronger than either alone. Benchmarking is built into the toolchain (`cargo bench`) when performance validation is needed.
-3. Test both `Ok` and `Err`; test boundaries; follow 0-1-N.
-4. For legacy code, apply the crash-to-pass, seam, and characterization strategies above.
-5. The mindset: write test → watch it fail → make it pass → refactor → repeat. **Red → Green → Refactor**.
+The crates and toolchain features this lexicon assumes: the built-in `cargo test` framework, `mockall` for mocks, `proptest` for properties, `tests/` for integration crates, feature flags and `#[cfg]` for platform switches, and `cargo bench` where performance needs validating.
+
+Rust's type system carries part of the work a test suite otherwise would: ownership, `Option` and `Result`, and the absence of undefined behaviour in safe code remove whole categories of test, so types and TDD together reach further than either alone.
 
 ### C-to-Rust Test Translation
 

@@ -33,6 +33,9 @@ Method [record](../../resources/strategic-review.md#method-record-template) of h
 
 `human`
 
+### deferred_item_rows
+
+The findings deferred beyond this work package as out-of-scope deferrals, each carrying what was set aside, where, and why. Empty where none was deferred.
 
 ## Protocol
 
@@ -41,7 +44,7 @@ Method [record](../../resources/strategic-review.md#method-record-template) of h
 - State each finding in the `{strategic_review_doc}` in the shape [Finding Layout](../../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../../resources/strategic-review.md#field-list) and no others, with its severity derived through the map per [Severity](../../resources/findings-report.md#severity) and its reachability settled from the code the finding cites per [Reachability](../../resources/findings-report.md#reachability)
 - Categorize each finding per the group's [finding-categories](./TECHNIQUE.md#finding-categories), assigning each a stable designator that downstream surfaces reference, per [Designators](../../resources/findings-report.md#designators)
 - Report exceptions only: a clean review result is one line ("all changes justified — no findings"), never a per-section template fill; findings from other reviews are referenced by ID
-- Record any deferred finding as a deferred-items register row (shape per the [deferred-items template](../../resources/deferred-items.md#template)) linked from the finding
+- Emit any deferred finding as a `{deferred_item_rows}` entry, and link the register row from the finding
 
 ### 2. Record the Method
 

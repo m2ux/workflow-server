@@ -35,7 +35,7 @@ Atomic tasks with explicit dependencies and ordering — each implementable, tes
 ### 2. Load Guidance
 
 - Use attached [wp-plan](../../resources/wp-plan.md) for plan template and guidance
-- Review `{design_philosophy_doc}`, `{requirements}`, `{analysis_findings}`, `{research_findings}`
+- Review `{design_philosophy_doc}`, `{requirements}`, `{analysis_document}`, `{research_document}`
 
 ### 3. Apply Design Framework
 

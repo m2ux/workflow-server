@@ -37,6 +37,10 @@ variables:
     - name: current_assumption
       type: object
       description: The assumption under individual review.
+    - name: deferred_items_register
+      type: string
+      description: The out-of-scope deferrals register as it stands after this activity's rows.
+      defaultValue: ""
     - name: has_deferred_assumptions
       type: boolean
       description: Whether any assumption was deferred to stakeholders.
@@ -135,6 +139,9 @@ steps:
   - kind: technique
     id: update-assumptions-log
     technique: review-assumptions::record
+  - kind: technique
+    id: register-deferred-assumptions
+    technique: manage-registers::append-deferred-item
   - kind: checkpoint
     id: post-summary-review
     condition:

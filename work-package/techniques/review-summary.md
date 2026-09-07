@@ -77,14 +77,14 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 
 ### 3. Resolve the Two Refs
 
-- Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{host_repo_path}`.
+- Resolve `{$eng_git_dir}` as the engineering checkout [directory-scope](./manage-git/TECHNIQUE.md#directory-scope) names.
 - Resolve `{$eng_publish_ref}`: `{artifact_publish_ref}` when it is non-empty; otherwise `git -C {eng_git_dir} branch --show-current` — never hardcode `main`. This is a branch, so the linked tree carries every artifact the run writes after this render.
 - Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{reviewed_code_base_url}` from the op.
 - Supply `{eng_publish_ref}` as the ref in every engineering-artifact hyperlink and `{reviewed_code_base}` as the prefix of every reviewed-code citation, per the ref split in [Header Fields](../resources/review-mode.md#header-fields) — that section owns the URL shapes and their slots; this step supplies only the two refs.
 
 ### 4. Render the Summary
 
-- Enforce the findings-constraint: every rendered finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` render as the PR's findings; findings on other files render under a separate "pre-existing" grouping.
+- Apply `findings-constraint` across the rendered sections, scoping each finding against the authored surface `{changed_files}`.
 - Populate the template from `{classified_findings}`: executive summary, per-category findings (code, test, structural analysis, lean-coding audit, documentation, validation, branch hygiene, strategic review), what the change gets right, action items, and severity definitions.
 - **Every row of every section comes from `{classified_findings}` and nothing else.** One finding is one row, under the designator its own report defines, in ascending designator order per [Designators](../resources/findings-report.md#designators). A section drawing its order from a second enumeration — a priority list, a remediation order — renders siblings inconsistently, and a row standing for a group of findings hides each of them from the totals and from the Action Items.
 - Reference, don't restate: each finding renders as its item designator, `@` locus link, one-line title, and severity only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `@` cell is a hyperlinked `>` onto the pertinent locus — reviewed code under `{reviewed_code_base}` with a line anchor, or the test, document, CI run, or commit the category declares. Descriptions, evidence, and suggestions stay in the linked report artifacts.

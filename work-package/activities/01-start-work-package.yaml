@@ -4,9 +4,9 @@ name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
   reads:
+    - base_branch
     - branch_name
     - component_git_dir
-    - default_branch
     - issue_request
     - issue_title
     - issue_type
@@ -20,6 +20,10 @@ variables:
     - target_repo
     - user_request
   writes:
+    - name: base_branch
+      type: string
+      description: The branch the pull request targets, as the platform reports it.
+      defaultValue: ""
     - name: body_conforms
       type: boolean
       description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
@@ -45,6 +49,9 @@ variables:
       type: string
       description: Path of the component being worked on, relative to the host repository.
       defaultValue: .
+    - name: default_branch
+      type: string
+      description: The component's default branch, read off the remote HEAD. Feature branches are created off it, and sync back from it.
     - name: existing_pr_number
       type: string
       description: PR number of the draft pull request already open for this branch.
@@ -57,6 +64,10 @@ variables:
       type: boolean
       description: Whether the component under work has a usable GitNexus index.
       defaultValue: false
+    - name: head_sha
+      type: string
+      description: Commit sha at the head of the pull request's branch.
+      defaultValue: ""
     - name: headless_mode
       type: boolean
       description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
@@ -120,6 +131,10 @@ variables:
       type: boolean
       description: Whether a new issue needs to be created.
       defaultValue: false
+    - name: pr_body
+      type: string
+      description: The pull request's description body as the platform returned it.
+      defaultValue: ""
     - name: pr_exists
       type: boolean
       description: Whether a PR already exists for the current branch.
@@ -164,6 +179,10 @@ variables:
     - name: review_pr_url
       type: string
       description: URL of the PR being reviewed (review mode only).
+    - name: reviewed_code_base_url
+      type: string
+      description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+      defaultValue: ""
     - name: squash_merge_supported
       type: boolean
       description: True when the target repo allows squash merges (allow_squash_merge=true from GitHub API).
@@ -177,9 +196,6 @@ variables:
     - name: target_repo
       type: string
       description: GitHub repository as owner/repo.
-    - name: target_workflow_outcomes
-      type: string
-      description: The outcomes a review run is measured against, one per line.
     - name: use_existing_pr
       type: boolean
       description: Whether to use an existing PR instead of creating a new one.
@@ -323,24 +339,26 @@ steps:
     id: ingest-prior-feedback
     technique: review-existing-feedback
     when: is_review_mode == true
-  - kind: action
-    id: seed-review-mode-outcomes
-    when: is_review_mode == true
-    actions:
-      - action: set
-        target: target_workflow_outcomes
-        value: |-
-          The review close-out — findings, disposition, retrospective — is recorded under the planning folder.
-          Lessons learned are captured to improve future work packages.
-          The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces.
-          Reference monorepo left untouched.
-          Ready for next work package.
   - kind: technique
     id: derive-host-repo
     technique: version-control::resolve-host-repo
   - kind: technique
     id: resolve-repo-root
     technique: repo-root-resolution
+  - kind: technique
+    id: read-reviewed-pr-body
+    technique:
+      name: github-cli-protocol::view-pr
+      inputs:
+        repo_path: component_git_dir
+    when: is_review_mode == true
+  - kind: technique
+    id: verify-reviewed-pr-body
+    technique:
+      name: update-pr::verify-body
+      inputs:
+        rendered_pr_body: pr_body
+    when: is_review_mode == true
   - kind: technique
     id: update-repo-submodules
     technique: manage-git::update-repo-submodules
@@ -523,9 +541,7 @@ steps:
   - kind: technique
     id: create-github-issue-for-jira
     technique:
-      name: create-issue
-      inputs:
-        issue_platform: github
+      name: create-issue::create-github
     when: needs_github_issue_creation == true
   - kind: checkpoint
     id: jira-project-selection
@@ -635,9 +651,13 @@ steps:
           setVariable:
             issue_cancelled: true
   - kind: technique
-    id: create-issue
-    technique: create-issue
-    when: needs_issue_creation == true
+    id: create-github-issue
+    technique: create-issue::create-github
+    when: needs_issue_creation == true && issue_platform == 'github'
+  - kind: technique
+    id: create-jira-issue
+    technique: create-issue::create-jira
+    when: needs_issue_creation == true && issue_platform == 'jira'
   - kind: technique
     id: lookup-current-user
     technique: atlassian-operations::user-info

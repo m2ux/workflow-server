@@ -32,5 +32,5 @@ The full issue URL whose verbatim (or equivalent GitHub-reference) presence in t
 
 ### 2. Verify Issue Reference
 
-- Read the located fragment body and check whether it contains `{issue_url}` verbatim, or an equivalent GitHub issue reference matching `github\.com/.+/issues/[0-9]+` or `(Fixes|Closes|Resolves):?\s+#[0-9]+`.
+- Read the located fragment body and check whether it contains `{issue_url}` verbatim, or an equivalent reference in either of the [Changes Fragment Issue Reference](../../resources/strategic-review.md#changes-fragment-issue-reference) forms.
 - Set `{fragment_references_issue}` = true when the reference is present, false when it is absent.
