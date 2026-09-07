@@ -11,7 +11,6 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_statement
-    - question_domains
     - requirements
     - target_path
     - target_repo
@@ -57,6 +56,10 @@ variables:
     - name: open_assumptions
       type: array
       description: The residual open assumptions awaiting a stakeholder judgement.
+    - name: question_domains
+      type: array
+      description: The domains this run poses elicitation questions from.
+      defaultValue: []
     - name: requirements
       type: array
       description: The captured requirements list elicited across the domains.
@@ -95,6 +98,9 @@ steps:
   - kind: technique
     id: stakeholder-discussion
     technique: discuss
+  - kind: technique
+    id: select-domains
+    technique: select-domains
   - kind: loop
     id: domain-iteration
     name: Question Domain Iteration

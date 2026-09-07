@@ -35,6 +35,6 @@ The scope and artifact review's findings, carrying a re-sign failure among them 
 - Determine the merge base `{$merge_base}` of `{branch_name}` against the base branch.
 - Inside `{target_path}`, rebase onto `{merge_base}` and re-sign each commit, e.g. `` `git rebase --exec 'git commit --amend --no-edit -S' {merge_base}` `` (or an equivalent interactive rebase), so every commit in the `{merge_base}..HEAD` range ends with a good GPG signature.
 - Confirm no unsigned commit remains with `` `git log --format='%h %G?' {merge_base}..HEAD` `` — none may report `N` or `B`.
-- When a push is required, use `` `git push --force-with-lease` `` to `{push_remote}`.  
+- Where a push is required, apply [push-branch](../../../meta/techniques/version-control/push-branch.md)(*repo_path*=`{target_path}`, *branch*=`{branch_name}`, *remote_name*=`{push_remote}`, *force_with_lease*=true) to move the remote onto the rewritten range.  
   > If any commit fails to re-sign, leave `{unsigned_commits_in_pr}` `true` and record the failure in `{strategic_review_findings}`.
 - On success, set `{unsigned_commits_in_pr}` and `{resign_unsigned_commits_requested}` to `false`.
