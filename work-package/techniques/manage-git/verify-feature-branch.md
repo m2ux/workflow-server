@@ -17,7 +17,7 @@ Boolean — true when the worktree is on a feature branch, false when on `main`/
 
 1. Inside `{target_path}`, run `git branch --show-current`.
 2. Compare the result against `main` and `master`.
-3. Set `on_feature_branch` to true when the current branch is neither `main` nor `master`, false otherwise.
+3. Set `{on_feature_branch}` to true when the current branch is neither `main` nor `master`, false otherwise.
 
 ## Rules
 

@@ -43,9 +43,11 @@ Also write an ADR when choosing between multiple valid approaches with different
 
 Avoid three progressive anti-patterns (Ford & Richards): **Covering Your Assets** (vague, hedged non-decisions — state the decision clearly with rationale); **Groundhog Day** (undocumented decisions get re-debated — write it down once, reference it forever); **Email-Driven Architecture** (decisions scattered across email/Slack/meetings — centralize in ADRs; email is for communication, not documentation).
 
-## Section Rules
+## Record Shape
 
-### Status
+The record's skeleton, its per-section fill guidance and its fill rules are the [ADR creation guide](adr.md#template)'s, with the guide's [Rules](adr.md#rules) governing what a conforming record carries. This guide adds the status lifecycle below, and the significance and discipline criteria above, which decide whether a record is written at all.
+
+## Status Lifecycle
 
 Vocabulary: **Proposed** (recorded, acceptance not yet asserted) · **RFC** (seeking broader input) · **Accepted** (final, implementation complete) · **Deprecated** (no longer recommended, may still exist in codebase) · **Superseded by ADR-XXXX**.
 
@@ -55,54 +57,6 @@ Superseding requires **bidirectional linking** — the old ADR must point forwar
 
 New ADR: `Accepted` + `Supersedes: ADR: Old Decision` · Old ADR: `Superseded by ADR: New Decision`
 
-### Context
-
-Describe circumstances that directly influence the decision, split into `### Technical Forces` (constraints, existing systems, dependencies), `### Business Forces` (user needs, stakeholders, timelines), `### Operational Forces` (deployment, maintenance, scaling). Facts, not opinions; include measurable baseline metrics when available; describe current state objectively.
-
-When architectural characteristics drive the decision, add a Quality Attribute Requirements table to make them concrete and testable:
-
-| Attribute | Scenario | Measure |
-|-----------|----------|---------|
-| Performance | When 1000 concurrent users submit forms | Response < 200ms (95th percentile) |
-
-### Decision Drivers
-
-Numbered list, `**[Driver]** - [why it matters]`. Common drivers: performance requirements, development velocity, maintainability, cost, team expertise, time constraints, risk tolerance, identified risks and their severity, risk-mitigation requirements.
-
-### Alternatives Considered
-
-- Include at least 2-3 options; clearly mark the selected one; list pros and cons per option.
-- Be fair to rejected options; for each, explicitly state the blocking factor or unacceptable trade-off that eliminated it.
-- For complex multi-criteria decisions, optionally add a decision matrix: weighted criteria, scores 1-5, weighted scores in parentheses, totals per option.
-
-### Decision
-
-Lead with the decision, not the explanation: "Implement **Option N** because [primary rationale]." Keep rationale brief (detail lives in Context/Options). List constraints that bound the solution space, not implementation details.
-
-### Consequences
-
-Document expected outcomes under **Positive** / **Negative** / **Neutral**. This makes trade-offs explicit and traceable, records what was knowingly accepted, and supports later validation.
-
-### Related Decisions (optional)
-
-Links to related non-superseding ADRs with a brief note on the relationship — decisions that build on, adjoin, or share constraints with this one.
-
-### Confirmation (optional, recommended)
-
-How the decision will be validated (code review verification, benchmarks, proof of concept, integration tests, monitoring), plus **measurable** success criteria.
-
-### Compliance (optional)
-
-Include for standards affecting multiple teams, security-related decisions, or decisions requiring ongoing adherence. Cover: governance level (project / team / organization-ARB), enforcement mechanisms (lint rule, structural test, fitness function, review checklist item, CI/CD gate), how violations are detected, and the exception process.
-
-### Notes (optional)
-
-Historical context, links to discussions/RFCs, caveats, future considerations not yet decided.
-
-## Record Shape
-
-The record's skeleton and its fill rules are the [ADR creation guide](adr.md#template)'s. The section rules above say what each of its sections holds.
-
 ## Storage and Scope
 
 - ADRs are committed to the repository. Changes to accepted ADRs are new superseding ADRs. Link ADRs in PR descriptions when relevant.
@@ -111,4 +65,4 @@ The record's skeleton and its fill rules are the [ADR creation guide](adr.md#tem
 
 ## Writing Style
 
-Keep to 1–2 pages; be specific about trade-offs and measurable criteria; describe paths not taken. Tone and attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Artifact prose discipline: [manage-artifacts](../techniques/manage-artifacts/TECHNIQUE.md) (`plain-technical-language`, `single-source-and-link`).
+Be specific about trade-offs and measurable criteria; describe paths not taken. The record's length budget is the [ADR creation guide](adr.md#rules)'s. Tone and attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Artifact prose discipline: [manage-artifacts](../techniques/manage-artifacts/TECHNIQUE.md) (`plain-technical-language`, `single-source-and-link`).

@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, decisions, transitions, and artifacts — lives in the corresponding `NN-<id>.yaml` file and is served by `get_activity`; it is not duplicated here.
+This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, decisions, transitions, and artifacts — lives in the corresponding `NN-<id>.yaml` file; it is not duplicated here.
 
 For the activity-to-activity flow diagram, the feedback loops, and review-mode behaviour, see the [workflow README](../README.md). Each activity section below also includes a mermaid diagram showing its internal flow.
 
@@ -65,11 +65,11 @@ Definition: [`02-design-philosophy.yaml`](./02-design-philosophy.yaml)
 graph TD
     entryNode(["Entry"]) --> defineProblem["Define problem statement"]
     defineProblem --> classifyProblem["Classify problem type and complexity"]
-    classifyProblem --> determinePath["Determine workflow path"]
-    determinePath --> cpClassification{"classification-confirmed checkpoint"}
+    classifyProblem --> cpClassification{"classification-confirmed checkpoint"}
     cpClassification -->|"revise-classification exit"| entryNode
     cpClassification -->|"classification accurate"| cpPath{"workflow-path-selected checkpoint"}
-    cpPath --> docPhilosophy["Document the design philosophy"]
+    cpPath --> pathRationale["Record the path rationale"]
+    pathRationale --> docPhilosophy["Document the design philosophy"]
     docPhilosophy --> converge["Assumption convergence loop — reconcile, challenge, combine"]
     converge --> reviewMode{"Review mode?"}
     reviewMode -->|"yes"| ticketCompleteness{"ticket-completeness checkpoint"}
@@ -111,7 +111,8 @@ Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.y
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> discuss["Stakeholder discussion — transcript or skip"]
+    entryNode(["Entry"]) --> cpDiscussion{"stakeholder-discussion-held checkpoint"}
+    cpDiscussion --> discuss["Record the stakeholder baseline"]
     discuss --> elicit["Elicit requirements"]
     elicit --> domainLoop["Question domain loop — one question per domain"]
     domainLoop --> collect["Collect assumptions"]
@@ -313,7 +314,7 @@ graph TD
 
 ### 11. Validate
 
-Validates the implementation against tests, build, format, and lint checks when `{run_local_validation}` says the local environment can run them, as post-impl-review determined. When it cannot, Progress for this activity is marked cancelled/N/A and the suite is skipped (no user-reported pass/fail hand-off). In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
+Validates the implementation against tests, build, format, and lint checks when `{run_local_validation}` says the local environment can run them, as post-impl-review determined. When it cannot, Progress for this activity is marked cancelled/N/A and the suite is skipped. In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
 
 Definition: [`11-validate.yaml`](./11-validate.yaml)
 
@@ -382,9 +383,8 @@ graph TD
     reviewMode -->|"no"| cpDco{"dco-sign-off-confirmation checkpoint"}
     cpDco --> stealthMode{"Stealth mode?"}
     stealthMode -->|"yes"| verifyRemote["Verify private remote + signature check"]
-    verifyRemote --> cpPrivateRemote{"private-remote-confirmation checkpoint"}
-    cpPrivateRemote --> cpPush{"push-confirmation checkpoint"}
-    cpPush --> pushCommits
+    verifyRemote --> cpPrivatePush{"private-push-confirmation checkpoint"}
+    cpPrivatePush --> pushCommits
     stealthMode -->|"no"| pushCommits["Push all commits (push_remote)"]
     pushCommits --> stealthExit{"Stealth mode?"}
     stealthExit -->|"yes"| exitComplete
@@ -394,11 +394,9 @@ graph TD
     rerenderLoop -->|"still non-conformant"| cpBody{"body-non-conformant checkpoint"}
     cpBody -->|"proceed with override"| mergeGuidance
     cpBody -->|"provide missing input"| exitSubmitAgain(["submit-for-review"])
-    cpBody -->|"abort"| abortNode(["failed"])
+    cpBody -->|"abort"| exitComplete
     mergeGuidance --> buildArt{"build-artifact-check checkpoint"}
-    buildArt -->|"regen needed"| userHandoff{"build-artifact-handoff checkpoint"}
-    buildArt -->|"none needed"| markReady
-    userHandoff --> markReady["Mark PR ready for review"]
+    buildArt --> markReady["Mark PR ready for review"]
     markReady --> awaitReview["Await manual review"]
 
     awaitReview --> cpReceived{"review-received checkpoint"}

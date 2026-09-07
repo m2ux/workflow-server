@@ -686,15 +686,11 @@ steps:
 
           {stakeholder_overview}
   - kind: technique
-    id: derive-branch-name
+    id: derive-branch-and-target-path
     technique:
       name: naming-conventions
       inputs:
         issue_title: "{issue_title}"
-    when: is_review_mode != true
-  - kind: technique
-    id: compute-canonical-target-path
-    technique: naming-conventions
   - kind: technique
     id: create-component-worktree
     technique: manage-git::create-worktree

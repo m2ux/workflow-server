@@ -35,7 +35,7 @@ Activities express review-mode behavior through standard conditions on steps and
 
 Which constructs each activity gates is declared in that activity's own `activities/NN-<id>.yaml`. The format of the review a run posts is in [review-mode](./resources/review-mode.md).
 
-Requirements Elicitation and Implement stand down on the review path by routing rather than by step gating. Design-philosophy sets `needs_elicitation` false, so codebase-comprehension routes past elicitation; assumptions-review takes its `review-mode` exit straight to lean-coding-audit. Requirements come from the ticket, and the code under review already exists.
+Routing carries Requirements Elicitation and Implement off the review path: design-philosophy sets `needs_elicitation` false, so codebase-comprehension routes past elicitation, and assumptions-review takes its `review-mode` exit straight to lean-coding-audit. Requirements come from the ticket, and the code under review already exists.
 
 ### Headless After Activation
 

@@ -18,11 +18,13 @@ Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records.
 
 ## Context
 
-{What forces the decision — the constraint, the requirement, or the problem that makes a choice necessary. Written so a reader who never saw the work package understands why this came up.}
+{What forces the decision — the constraint, the requirement, or the problem that makes a choice necessary. Written so a reader who never saw the work package understands why this came up. Facts, not opinions, with measurable baselines where they exist. Split into Technical Forces (constraints, existing systems, dependencies), Business Forces (user needs, stakeholders, timelines) and Operational Forces (deployment, maintenance, scaling) where the decision turns on more than one.}
+
+{Where architectural characteristics drive the decision, a Quality Attribute Requirements table makes them testable: Attribute | Scenario | Measure — e.g. Performance | 1000 concurrent users submit forms | Response < 200ms (95th percentile).}
 
 ## Decision Drivers
 
-{The factors the choice turned on, one per line, each with why it mattered.}
+{The factors the choice turned on, one per line as **[Driver]** - [why it mattered]. Common drivers: performance requirements, development velocity, maintainability, cost, team expertise, time constraints, risk tolerance, identified risks and their severity.}
 
 ## Decision
 
@@ -43,7 +45,9 @@ Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records.
 
 ### {Alternative}
 
-{What it was, and why it was not chosen.}
+{What it was, and the blocking factor or unacceptable trade-off that eliminated it. Rejected options are described fairly — a reader judges the decision by what it turned down.}
+
+{For a multi-criteria choice, a decision matrix carries it: weighted criteria, scores 1-5, weighted scores in parentheses, a total per option.}
 
 [Sections below are optional — omit any that does not apply]
 
@@ -57,7 +61,7 @@ Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records.
 
 ## Compliance
 
-{How adherence is enforced, and how a violation is detected.}
+{How adherence is enforced, and how a violation is detected: the governance level (project, team, or organization), the enforcement mechanism (lint rule, structural test, fitness function, review checklist item, CI/CD gate), and the exception process. Carried for standards affecting several teams, security-related decisions, and decisions requiring ongoing adherence.}
 
 ## Notes
 
@@ -72,5 +76,5 @@ Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records.
 - **The number is the next unused one.** Sequential across the ADR directory; the title slug follows it.
 - **Context explains the force, not the history.** Why a decision was needed, not the order in which the run discovered it.
 - **Consequences include the costs.** A record listing only benefits is not a trade-off, and the cost is what a later reader most needs.
-- **Present tense for the decision.** The record states what the system does, not what the team decided to do.
+- **Present tense for the decision.** The record states what the system does, not what the team decided to do, and leads with the decision rather than the argument for it.
 - **Line budget:** ~60 lines. Rationale that needs more belongs in the planning artifacts this record links.

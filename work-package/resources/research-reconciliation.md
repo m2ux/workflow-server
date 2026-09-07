@@ -41,7 +41,7 @@ Every irreconcilable candidate records where the gap goes next so none is lost:
 
 ### Markdown formatting rule
 
-Bold-label entries follow the [markdown-line-breaks](../techniques/manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule: every bold-label line except the last in its group ends with two trailing spaces, or consecutive lines collapse into one rendered paragraph. No bullet prefixes as a substitute.
+Bold-label entries follow the [markdown-line-breaks](../techniques/manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule.
 
 ## Scorecard
 

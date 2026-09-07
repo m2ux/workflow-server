@@ -85,7 +85,7 @@ True if any block marked as critical blocker
 
 ### 5. Collect Flagged
 
-- Emit `{flagged_block_indices}` as the blocks carrying an issue, in index order
+- Emit `{flagged_block_indices}` from the block numbers the reviewer supplied against the index, in index order; empty when the reviewer supplied none
 
 ### 6. Assemble Block Context
 

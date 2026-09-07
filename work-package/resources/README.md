@@ -18,7 +18,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `design-framework` | Design Framework | TRIZICS solution-design methodology applied at plan time, plus the design-philosophy artifact template |
 | `wp-plan` | Work Package Plan | Plan document template with task breakdown format |
 | `test-plan` | Test Plan | Test plan templates and test-design principles |
-| `pr-description` | PR Description | PR description templates and link-row rendering forms (rules live on update-pr) |
+| `pr-description` | PR Description | PR description templates, link-row rendering forms, and the conformance criteria a rendered body satisfies |
 | `assumptions-review` | Assumptions Review | Assumption collection, classification, and document formats |
 | `architecture-review` | Architecture Review | Architecture review criteria and checklist |
 | `findings-report` | Findings Report | Shared finding layout, designator, severity and reachability contracts, and the report/method split every findings report follows |

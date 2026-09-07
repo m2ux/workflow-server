@@ -53,17 +53,13 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 
 ## Rules
 
-### lifecycle-phases
-
-Test plans have two phases: (1) Initial placeholder at PR creation — objectives only, no source links; (2) Finalized after implementation — hyperlinks to actual test source locations added by finalize-documentation technique.
-
 ### skip-conditions
 
 Skip formal test plan for: simple bug fixes with obvious test cases, documentation-only changes, single-test changes, refactoring with existing coverage.
 
 ### structure-and-header
 
-Required sections, in order: header link line (ADR, Ticket, PR — relative path for the same-repo ADR link), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests. The Overview lists only symbols central to the change (not every modified function), one line each, hyperlinked per [manage-artifacts](./manage-artifacts/TECHNIQUE.md#hyperlink-conventions).
+The section set and its order are [Test Plan Structure](../resources/test-plan.md#test-plan-structure)'s. The Overview lists only symbols central to the change (not every modified function), one line each, hyperlinked per [manage-artifacts](./manage-artifacts/TECHNIQUE.md#hyperlink-conventions).
 
 ### unified-test-case-table
 

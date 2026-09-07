@@ -37,7 +37,7 @@ Derived feature branch name `{type}/{issue_number}-{slugified-title}`. In review
 
 ### target_path
 
-Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`, distinct from `{planning_folder_path}` and from `{host_repo_path}`.
+Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
 
 ## Protocol
 
@@ -62,4 +62,4 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`, distinct from `
 
 ### worktree-distinct-from-planning-folder
 
-`{target_path}` is the worktree for edits; `{planning_folder_path}` is the server-owned artifact folder. Never conflate them or anchor the planning folder under `{target_path}`.
+The planning folder is never anchored under `{target_path}`: the worktree carries the edits and the server owns the artifact folder.

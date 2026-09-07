@@ -60,7 +60,7 @@ Reference this guide in the header's Author link so readers understand the metho
 ```markdown
 # Test Suite Review Report
 
-> [Work Package] · #[issue] - [Title] · YYYY-MM-DD · [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/test-suite-review.md) Agent · what was walked: [method record](NN-test-suite-review-method.md)
+> [Work Package] · #[issue] - [Title] · YYYY-MM-DD · [Test Suite Review](https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/resources/test-suite-review.md) Agent · what was walked: [method record](NN-test-suite-review-method.md)
 
 ## Summary Assessment
 

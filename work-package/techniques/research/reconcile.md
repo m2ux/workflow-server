@@ -55,17 +55,13 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 
 ## Rules
 
-### no-user-interaction
-
-Successive passes continue while reconcilable candidates remain.
-
 ### convergence-definition
 
 Convergence is reached when no open candidate in the inventory — including candidates surfaced during a pass — is classified research-reconcilable. Convergence does NOT mean every candidate is resolved: the remaining open set is irreducible through research and requires stakeholder input, operational verification, code analysis, or is out of scope. Each remaining open candidate carries an explicit non-reconcilability rationale and a handoff target.
 
 ### classification-transparency
 
-When the converged result is presented, include the classification rationale for every remaining irreconcilable candidate — explain why research cannot resolve it and which handoff target owns it.
+Every remaining irreconcilable candidate carries its classification rationale — why research cannot resolve it, and which handoff target owns it.
 
 ### bounded-passes
 

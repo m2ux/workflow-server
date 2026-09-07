@@ -73,31 +73,7 @@ Ask: "What would the ideal solution look like if there were no constraints?" The
 
 ## Solution Synthesis & Design
 
-Document the design:
-
-```markdown
-## Design Summary
-
-**Problem:** [Clear problem statement]
-
-**Approach:** [Chosen solution summary]
-
-**Key Design Decisions:**
-1. [Decision 1] - [Rationale]
-2. [Decision 2] - [Rationale]
-
-**Alternatives Considered:**
-- [Option A] - [Why not chosen]
-- [Option B] - [Why not chosen]
-
-**Trade-offs:**
-- Pro: [Benefit]
-- Con: [Limitation]
-
-**Success Criteria:**
-- [ ] [Measurable criterion 1]
-- [ ] [Measurable criterion 2]
-```
+The synthesis lands in the homes the [canonical-home map](./canonical-home-map.md#map) names: the approach, its alternatives and the trade-offs between them in the [work package plan](./wp-plan.md#template); the success criteria in [requirements elicitation](./requirements-elicitation.md#document-template). This guide supplies the method that reaches them.
 
 Design validation questions:
 

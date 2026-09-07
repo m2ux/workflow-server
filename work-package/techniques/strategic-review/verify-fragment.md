@@ -17,10 +17,6 @@ Whether the work-package change fragment under the target path references the is
 
 The full issue URL whose verbatim (or equivalent GitHub-reference) presence in the fragment body is verified.
 
-### issue_number
-
-The work-package issue number, surfaced in the remediation guidance (`Closes: #{issue_number}`) when the reference is absent.
-
 ## Outputs
 
 ### fragment_references_issue
@@ -38,4 +34,3 @@ The work-package issue number, surfaced in the remediation guidance (`Closes: #{
 
 - Read the located fragment body and check whether it contains `{issue_url}` verbatim, or an equivalent GitHub issue reference matching `github\.com/.+/issues/[0-9]+` or `(Fixes|Closes|Resolves):?\s+#[0-9]+`.
 - Set `{fragment_references_issue}` = true when the reference is present, false when it is absent.
-- When false, surface the remediation guidance: add a `Closes: #{issue_number}` line or the full `{issue_url}`, commit, and re-run.

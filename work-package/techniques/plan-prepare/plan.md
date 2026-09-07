@@ -7,13 +7,11 @@ metadata:
 
 Work-package plan artifact — task breakdown, dependencies, ordering, and recorded design decisions.
 
-## Inputs
-
 ## Outputs
 
 ### plan_document
 
-Work package plan artifact with task breakdown and dependencies. Written to `{planning_folder_path}` as `work-package-plan.md`, documenting design decisions and assumptions.
+Work package plan carrying the task breakdown, the dependencies between tasks, and the design decisions the approach rests on.
 
 #### artifact
 

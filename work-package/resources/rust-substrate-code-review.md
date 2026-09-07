@@ -22,11 +22,7 @@ Produces a **Code Review Report** capturing findings, recommendations, and compl
 
 For implementation reviews: review all files modified during implementation, focus on new/changed code, use git diff to identify changed lines. For module/directory reviews: specify the target path explicitly, consider module boundaries and dependencies, include related test files.
 
-## Output Files
-
-Report file: optional for implementation and PR reviews; required for module audits. Naming: `{scope-description}-review.md`.
-
-### Field List
+## Field List
 
 Designators use the prefix declared for this report's category at [Code Review](./review-mode.md#code-review). Every finding carries the fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
 
@@ -37,14 +33,14 @@ Designators use the prefix declared for this report's category at [Code Review](
 
 `Code Example` is optional and comes last; the declared fields appear on every finding.
 
-### Report Template
+## Report Template
 
 The report header links back to this guide so readers know the methodology used, and to the method record for what the review walked.
 
 ```markdown
 # Code Review Report
 
-> code-review · [Module/PR/Directory path] · YYYY-MM-DD · [N] files reviewed · methodology: [Rust/Substrate Code Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/rust-substrate-code-review.md) · what was walked: [method record](NN-code-review-method.md)
+> code-review · [Module/PR/Directory path] · YYYY-MM-DD · [N] files reviewed · methodology: [Rust/Substrate Code Review](https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/resources/rust-substrate-code-review.md) · what was walked: [method record](NN-code-review-method.md)
 
 ## Summary
 
@@ -77,7 +73,7 @@ The report header links back to this guide so readers know the methodology used,
 **Summary:** [1-2 sentences]
 ```
 
-### Method Record Template
+## Method Record Template
 
 ```markdown
 # Code Review Method

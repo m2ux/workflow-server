@@ -57,7 +57,7 @@ variables:
       defaultValue: false
     - name: classified_findings
       type: array
-      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier it is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade)."
+      description: "The input findings, each carrying its assigned severity, its `action_tier`, and its `impact_axis` where one applies."
     - name: code_findings_actionable
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.
@@ -311,7 +311,7 @@ steps:
           operator: ==
           value: false
     message: |-
-      The PR body still fails update-pr.pr-body-conformance.
+      The PR body still fails `update-pr.pr-body-conformance`.
 
       Findings:
       {body_findings}
@@ -331,7 +331,7 @@ steps:
           exit: provide-input
       - id: abort
         label: Abort submission
-        description: Terminate the activity with a failure status.
+        description: The body stands as it is and the submission is abandoned.
         effect:
           exit: abort
   - kind: technique
@@ -394,10 +394,10 @@ steps:
   - kind: technique
     id: mark-ready
     technique: update-pr::mark-ready
+    when: is_review_mode != true && stealth_mode != true
     actions:
       - action: message
         message: "Pull request marked ready for review — {updated_pr.pr_status}: {updated_pr.pr_url}"
-    when: is_review_mode != true && stealth_mode != true
   - kind: loop
     id: await-review-loop
     name: Await Review Loop

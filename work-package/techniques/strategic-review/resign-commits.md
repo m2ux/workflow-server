@@ -13,21 +13,19 @@ Feature-branch commits re-signed so every commit carries a valid GPG signature.
 
 The git remote a force-with-lease push targets when one is required after the history rewrite.
 
-`default: origin`
-
 ## Outputs
 
 ### unsigned_commits_in_pr
 
-Boolean — set to `false` once every commit in the branch range carries a valid GPG signature.
+Whether any commit in the branch range still lacks a valid GPG signature.
 
 ### resign_unsigned_commits_requested
 
-Boolean — set to `false` once the re-sign pass has completed.
+Whether a re-sign pass is still owed on the branch range.
 
 ### review_findings
 
-Findings produced by the scope and artifact review; a re-sign failure is appended as an additional finding.
+The scope and artifact review's findings, carrying a re-sign failure among them where the pass left one.
 
 
 ## Protocol

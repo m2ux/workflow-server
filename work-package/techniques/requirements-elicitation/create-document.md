@@ -25,7 +25,7 @@ The record of questions asked and responses given, recorded into the artifact as
 
 ### requirements_document
 
-The requirements [artifact](../../resources/requirements-elicitation.md#document-template) (`requirements-elicitation.md`) created in `{planning_folder_path}`, capturing the elicited requirements, success criteria, scope boundaries, and assumptions. This file is the record of truth for the elicited requirements and the canonical home for the problem statement, scope, and success criteria — downstream artifacts link here.
+The requirements [artifact](../../resources/requirements-elicitation.md#document-template) carrying the elicited requirements, the success criteria, the scope boundaries, and the assumptions. It is the record of truth for the elicited requirements, and the canonical home for the problem statement, scope and success criteria.
 
 #### artifact
 

@@ -32,7 +32,7 @@ The log holds one table row per assumption (see the [assumptions log template](a
 
 ### Markdown formatting rule
 
-Bold-label entries follow the [markdown-line-breaks](../techniques/manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule: every bold-label line except the last in its group ends with two trailing spaces (`**Status:** Validated⎵⎵`), or consecutive lines collapse into one rendered paragraph. No bullet prefixes as a substitute.
+Bold-label entries follow the [markdown-line-breaks](../techniques/manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule.
 
 ## Scorecard
 

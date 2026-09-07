@@ -48,16 +48,7 @@ The input findings, each carrying its assigned severity, its `action_tier` (the 
 - When the findings are validation diagnostics (test/build/lint failures), map them onto the same scale — test failures are Critical, build failures are Major — and do NOT attempt to fix them here; classification only.
 - Findings arrive here from several passes, which is where one defect stated twice becomes visible. Two entries naming the same defect are one finding: keep the designator of the pass that owns it and drop the restatement, per [Report and Methodology](../resources/findings-report.md#report-and-methodology). A review whose passes have little to separate them — a documentation-only change, where post-implementation review and validation reach the same blockers — produces these in bulk.
 
-#### Impact-based severity axes
-
-Code-correctness is one axis of severity; system impact is another, orthogonal to it. A change can be locally correct — the new lines do exactly what they read as doing — and still be harmful through its effect on the system as a whole. Judge each finding against these impact axes in addition to correctness, and record the axis that applies on the classified finding (`impact_axis`):
-
-- **unbounded-state-growth** — a code path creates persistent state (a storage record, a queue entry, an allocation) on a recurring or attacker-driven action without a matching reclaim on every path that ends that state's lifecycle, so the footprint grows without bound.
-- **economic-spam** — a path lets an actor impose cost (storage, compute, fees borne by others, griefing) disproportionate to the cost or authority required to trigger it.
-- **liveness-halt** — a path can stall, deadlock, or halt progress for the system or a class of participants (a panic on a reachable input, an unbounded loop, a lock never released).
-- **migration-upgrade** — a change to persisted shape, encoding, or governance binding leaves existing on-chain or on-disk state unreadable, mis-governed, or un-upgradeable without an accompanying migration.
-
-A finding that is correct on the code-correctness axis but lands on any impact axis is **correct-but-harmful**. Classify a correct-but-harmful finding at **Major** at minimum, and at **Critical** when the impact is unrecoverable without intervention (state already corrupted, funds already lost, chain already halted). Because correct-but-harmful classifies Major or above, it is ≥ Minor and therefore sets `{code_findings_actionable}` through the existing routing rule — the impact axes add severity without changing the routing threshold.
+- Judge each finding against the [Impact Axes](../resources/findings-report.md#impact-axes) in addition to correctness, and record the axis that applies as that finding's `impact_axis`. A correct-but-harmful finding classifies Major or above, so it is ≥ Minor and sets `{code_findings_actionable}` through the routing rule below — the impact axes add severity without changing the routing threshold.
 
 #### Facts only an operator can settle
 

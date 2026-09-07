@@ -53,9 +53,8 @@ Whether the changes are significant enough to require substantial rework
 
 - For each review item with follow-up actions, emit the item and its candidate actions as structured bindable output.
 - Implement the actions recorded against each comment in phase 2
-- Commit fix changes per concern
+- Apply [manage-git](./manage-git/TECHNIQUE.md)::[commit-paths](./manage-git/commit-paths.md) once per concern with `{target_path}`, `{branch_name}`, the paths that concern changed, and a Conventional Commits message naming it — related fixes group into one concern's commit rather than one commit for the round
 - Document which comments require substantial rework vs inline fixes
-- Group related fixes into logical commits, not one giant commit
 
 ### 4. Post Responses
 
@@ -66,7 +65,7 @@ Whether the changes are significant enough to require substantial rework
 
 ### 5. Update Pr
 
-- Push all fix commits to the PR branch
+- Apply [manage-git](./manage-git/TECHNIQUE.md)::[push-commits](./manage-git/push-commits.md) to advance the PR branch with the fix commits
 - Post response summary to PR, finishing with a summary of all changes made
 
 ### 6. Assess Outcome

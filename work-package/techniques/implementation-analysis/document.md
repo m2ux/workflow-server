@@ -29,7 +29,7 @@ Gaps linked to success criteria; recorded in the artifact.
 
 ### analysis_document
 
-Current implementation analysis artifact with baselines and improvement opportunities. Written to `{planning_folder_path}` as `implementation-analysis.md`, capturing the located implementation, evaluated effectiveness, established baselines, and identified gaps.
+Current implementation analysis carrying the located implementation, its evaluated effectiveness, the established baselines, the identified gaps, and the improvement opportunities they open.
 
 #### artifact
 

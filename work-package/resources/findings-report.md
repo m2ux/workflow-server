@@ -81,7 +81,7 @@ Four properties make it checkable:
   ```
 
 - **The labels appear in declared order**, every finding the same.
-- **The site is carried by the link in the prose**, not by a separate location field — the first mention of the named thing is an inline link to it, per manage-artifacts.code-reference-is-an-inline-link. A `Location:` field beside that link states the site twice in one artifact.
+- **The site is carried by the link in the prose**, not by a separate location field — the first mention of the named thing is an inline link to it, per `manage-artifacts.code-reference-is-an-inline-link`. A `Location:` field beside that link states the site twice in one artifact.
 
 ## Designators
 
@@ -101,6 +101,19 @@ Two constraints, both checkable from what the run already records:
 - **The value equals the map applied to that finding's own classification.** The classified severity is recorded on the finding, so this is a lookup rather than a judgement.
 
 A qualifier is not part of a severity value: `Medium (harness defect)` is a severity and a note sharing one cell, and the note belongs in the finding's description.
+
+## Impact Axes
+
+Code correctness is one axis of severity; system impact is another, orthogonal to it. A change can be locally correct — the new lines do exactly what they read as doing — and still be harmful through its effect on the system as a whole. Where a finding lands on one of these, it carries that axis:
+
+| Value | Meaning |
+|---|---|
+| `unbounded-state-growth` | a code path creates persistent state (a storage record, a queue entry, an allocation) on a recurring or attacker-driven action without a matching reclaim on every path that ends that state's lifecycle, so the footprint grows without bound |
+| `economic-spam` | a path lets an actor impose cost (storage, compute, fees borne by others, griefing) disproportionate to the cost or authority required to trigger it |
+| `liveness-halt` | a path can stall, deadlock, or halt progress for the system or a class of participants (a panic on a reachable input, an unbounded loop, a lock never released) |
+| `migration-upgrade` | a change to persisted shape, encoding, or governance binding leaves existing on-chain or on-disk state unreadable, mis-governed, or un-upgradeable without an accompanying migration |
+
+A finding that is correct on the code-correctness axis and lands on an impact axis is **correct-but-harmful**. It carries `Major` at minimum, and `Critical` where the impact is unrecoverable without intervention — state already corrupted, funds already lost, chain already halted.
 
 ## Reachability
 

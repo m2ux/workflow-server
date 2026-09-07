@@ -25,7 +25,7 @@ The workflow path rationale recorded into the artifact.
 
 ### design_philosophy_doc
 
-The design philosophy [artifact](../../resources/design-framework.md#design-philosophy-artifact-template) (`design-philosophy.md`) created in `{planning_folder_path}`, recording the problem statement, classification, complexity, and workflow path rationale. This file is the record of truth for the classification.
+The design philosophy [artifact](../../resources/design-framework.md#design-philosophy-artifact-template) carrying the problem statement, the classification, the complexity, and the workflow-path rationale. It is the record of truth for the classification.
 
 #### artifact
 

@@ -51,10 +51,6 @@ Boolean gate driving the reconciliation loop — true when at least one candidat
 
 ## Rules
 
-### no-user-interaction
-
-Triage emits its candidates and their classifications as bindable output.
-
 ### research-reconcilable
 
 A candidate is reconcilable-by-research if further knowledge-base or web research could plausibly close it — the answer exists in documentation, precedent, or published practice and has simply not been gathered yet. Examples:

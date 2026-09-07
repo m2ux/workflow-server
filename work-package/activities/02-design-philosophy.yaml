@@ -89,9 +89,6 @@ steps:
   - kind: technique
     id: classify-problem
     technique: classify
-  - kind: technique
-    id: determine-path
-    technique: determine-path
   - kind: checkpoint
     id: classification-confirmed
     condition:
@@ -154,6 +151,9 @@ steps:
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
+  - kind: technique
+    id: determine-path
+    technique: determine-path
   - kind: technique
     id: document-philosophy
     technique: document

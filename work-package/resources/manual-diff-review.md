@@ -22,11 +22,11 @@ Open with a lean-header summary line, then one rationale section per changed blo
 
 ## Block Rationale
 
-### [Block 1 — handlers.rs:42]({CODE_BASE_URL}/src/api/handlers.rs#L42)
+### [Block 1 — handlers.rs:42]({REVIEWED_CODE_BASE_URL}/src/api/handlers.rs#L42)
 
 [Descriptive paragraph explaining what the change does and why.]
 
-### [Block 2 — routes.rs:18]({CODE_BASE_URL}/src/api/routes.rs#L18)
+### [Block 2 — routes.rs:18]({REVIEWED_CODE_BASE_URL}/src/api/routes.rs#L18)
 
 [Descriptive paragraph explaining what the change does and why.]
 ```
@@ -35,12 +35,12 @@ Reviewers use their side-by-side diff tool with this index for context.
 
 ### Block Rationale Form
 
-`{CODE_BASE_URL}` is the permanent blob-URL prefix at the commit under review, supplied by the rendering step; a citation appends the repo-relative path and a line anchor.
+`{REVIEWED_CODE_BASE_URL}` is the permanent blob-URL prefix at the commit under review, supplied by the rendering step; a citation appends the repo-relative path and a line anchor.
 
 ```markdown
 ## Block Rationale
 
-### [Block N — file:line]({CODE_BASE_URL}/repo-relative/path.ext#L{line})
+### [Block N — file:line]({REVIEWED_CODE_BASE_URL}/repo-relative/path.ext#L{line})
 
 [Descriptive paragraph explaining what the change does and why.]
 ```
@@ -60,7 +60,7 @@ An `##`-level section, so it nests inside a host document rather than standing a
 
 ### MD-1: [Brief Title]
 
-**File:** [`path/to/file.ext`]({CODE_BASE_URL}/path/to/file.ext#L{line}) · **Block:** [N] · **Severity:** Critical / High / Medium / Low  
+**File:** [`path/to/file.ext`]({REVIEWED_CODE_BASE_URL}/path/to/file.ext#L{line}) · **Block:** [N] · **Severity:** Critical / High / Medium / Low  
 **Issue:** [User's description of the issue]  
 **Recommendation:** [Suggested fix or action, if provided]
 ```
