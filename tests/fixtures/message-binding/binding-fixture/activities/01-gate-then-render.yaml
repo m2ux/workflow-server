@@ -1,0 +1,37 @@
+id: gate-then-render
+version: 1.0.0
+name: Gate Then Render
+description: A checkpoint effect binds a value, and a later message in the same activity cites it.
+variables:
+  writes:
+    - name: chosen_mode
+      type: string
+      description: Mode a checkpoint effect binds
+required: true
+steps:
+  - kind: checkpoint
+    id: choose-mode
+    message: Which mode should the pass run under?
+    options:
+      - id: thorough
+        label: Thorough
+        description: Run the full pass.
+        effect:
+          setVariable:
+            chosen_mode: thorough
+      - id: quick
+        label: Quick
+        description: Run the short pass.
+        effect:
+          setVariable:
+            chosen_mode: quick
+  - kind: action
+    id: announce-mode
+    actions:
+      - action: message
+        message: "The pass runs under {chosen_mode}, which the gate above bound."
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - A message cites a value a checkpoint before it bound
