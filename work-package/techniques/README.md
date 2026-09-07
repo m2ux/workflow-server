@@ -4,7 +4,7 @@
 
 The technique library for the work-package workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-technique `.md` file (or group `TECHNIQUE.md` + operation files). This file orients readers to the library layout and points to those authoritative sources.
 
-[`TECHNIQUE.md`](./TECHNIQUE.md) holds shared Inputs, Outputs, Rules, and Errors for every technique here.
+[`TECHNIQUE.md`](./TECHNIQUE.md) holds the shared Inputs and Rules every technique here inherits.
 
 The cross-cutting meta strategy techniques [`variable-binding`](../../meta/techniques/variable-binding.md) and [`scatter-gather`](../../meta/techniques/scatter-gather.md) are declared at `workflow.techniques.activity` / activity level, not bound per step.
 

@@ -103,7 +103,3 @@ Every finding must cite specific code with file path and line numbers
 ### severity-consistency
 
 Apply severity levels consistently — critical for security/data loss, high for correctness, medium for maintainability, low for style
-
-### findings-constraint
-
-Every finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` form the PR's findings; findings on other files form a separate "pre-existing" grouping.

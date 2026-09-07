@@ -40,3 +40,9 @@ Absolute path of the component's git working tree — the checkout whose `origin
 ### target_repo
 
 GitHub repository as `owner/repo` for the repository the session is bound to.
+
+## Rules
+
+### findings-constraint
+
+Every finding a review pass states names a file within the authored surface that pass was scoped to. Findings inside that surface form the pull request's findings; findings outside it form a separate "pre-existing" grouping, so a reader can tell what the change introduced from what it merely sits beside.

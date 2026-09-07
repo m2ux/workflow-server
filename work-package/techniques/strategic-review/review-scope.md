@@ -91,6 +91,3 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 
 For each changed file, verify: the change directly supports the solution (not a speculative attempt); it is minimal (no unnecessary additions); it doesn't include debugging artifacts; and it wasn't superseded by a simpler approach.
 
-### findings-constraint
-
-Every finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` form the PR's findings; findings on other files form a separate "pre-existing" grouping.
