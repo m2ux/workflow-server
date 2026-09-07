@@ -1,6 +1,6 @@
 # Plain Language Workflow
 
-> v1.0.0 — Author, rewrite, or audit a document so its readers can find what they need, understand what they find, and use it. Applies the four principles and guidelines of [ISO 24495-1](./resources/plain-language-standard.md), with an optional [ASD-STE100](./resources/asd-ste100.md) controlled-language overlay for technical documentation. `{headless_mode}` defaults to true, and a checkpoint declaring neither a default option nor an auto-advance interval always waits for a person.
+> Author, rewrite, or audit a document so its readers can find what they need, understand what they find, and use it. Applies the four principles and guidelines of [ISO 24495-1](./resources/plain-language-standard.md), with an optional [ASD-STE100](./resources/asd-ste100.md) controlled-language overlay for technical documentation. `{headless_mode}` defaults to true, and a checkpoint declaring neither a default option nor an auto-advance interval always waits for a person.
 
 ---
 

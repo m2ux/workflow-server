@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v2.1.0 — Structured analytical prompts that find what asking a model directly misses. Lens modes, isolated multi-pass pipelines, and a stable output contract (REPORT.md, DEFINITIVE-FINDINGS.md, RUN-MANIFEST.json) that consumer workflows build on.
+> Structured analytical prompts that find what asking a model directly misses. Lens modes, isolated multi-pass pipelines, and a stable output contract (REPORT.md, DEFINITIVE-FINDINGS.md, RUN-MANIFEST.json) that consumer workflows build on.
 
 ---
 

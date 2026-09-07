@@ -1,6 +1,6 @@
 # Codebase Wiki Workflow
 
-> v1.0.0 — Build and maintain a durable, citation-backed, navigable LLM knowledge base over a codebase, in the Karpathy LLM-wiki format adapted for code. Its operations are reusable techniques other workflows bind to create, augment, query, and update the wiki.
+> Build and maintain a durable, citation-backed, navigable LLM knowledge base over a codebase, in the Karpathy LLM-wiki format adapted for code. Its operations are reusable techniques other workflows bind to create, augment, query, and update the wiki.
 
 ---
 

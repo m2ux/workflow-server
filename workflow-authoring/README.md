@@ -1,6 +1,6 @@
 # Workflow Authoring Workflow
 
-> v1.0.0 — Guides agents through creating, updating, or reviewing workflow definitions. Intent is derived from the request first, so a gate is presented only where a real gap remains; `{headless_mode}` defaults to true, and a checkpoint declaring neither a default option nor an auto-advance interval always waits for a person. Create and update runs edit inside a dedicated `{target_path}` worktree.
+> Guides agents through creating, updating, or reviewing workflow definitions. Intent is derived from the request first, so a gate is presented only where a real gap remains; `{headless_mode}` defaults to true, and a checkpoint declaring neither a default option nor an auto-advance interval always waits for a person. Create and update runs edit inside a dedicated `{target_path}` worktree.
 
 ---
 

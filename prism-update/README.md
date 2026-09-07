@@ -1,6 +1,6 @@
 # Prism Update Workflow
 
-> v1.1.0 — Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
+> Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
 
 ---
 

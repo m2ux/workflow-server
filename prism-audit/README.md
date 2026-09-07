@@ -1,6 +1,6 @@
 # Prism Audit Workflow
 
-> v1.1.0 — Security audits that generate a codebase-tailored audit prompt, drive it through the [prism](../prism/README.md) analysis engine, and finalize prism's contract artifacts into an actionable, severity-calibrated report set.
+> Security audits that generate a codebase-tailored audit prompt, drive it through the [prism](../prism/README.md) analysis engine, and finalize prism's contract artifacts into an actionable, severity-calibrated report set.
 
 ---
 

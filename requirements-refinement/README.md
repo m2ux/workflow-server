@@ -1,6 +1,6 @@
 # Requirements Refinement Workflow
 
-> v1.2.0 — Refine a canonical requirements specification from a source document (a meeting transcript or an unstructured document): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
+> Refine a canonical requirements specification from a source document (a meeting transcript or an unstructured document): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
 
 ---
 
@@ -28,18 +28,11 @@ never edits the canonical document in place.
 - Review proposed specification changes — analysis, working drafts, validation verdict, and a change
   summary — as artifacts before anything is promoted.
 
-## Inputs
-
-| Variable | Description |
-|----------|-------------|
-| `source_path` | Filesystem path to the source document to process (a meeting transcript or an unstructured document) |
-| `target_doc_path` | Filesystem path to the canonical specification to augment or create |
-
 ## Activities
 
 | # | Activity | Purpose |
 |---|----------|---------|
-| 01 | [Intake and Analyze](activities/01-intake-and-analyze.yaml) | Establish trusted, classified sources and a user-confirmed analysis of the requirement changes they imply |
+| 01 | [Intake and Analyze](activities/01-intake-and-analyze.yaml) | Establish readable, classified sources and a user-confirmed analysis of the requirement changes they imply |
 | 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
 | 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage), categorize issues, and route |
 | 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary for promotion |
@@ -49,15 +42,14 @@ never edits the canonical document in place.
 
 ```
 intake-and-analyze → update-specification → validate-specification
-                              ▲                        │
-                              │                        ├─ validation passed → finalize-specification
-                              │                        ├─ critical / cap reached → report-failure
-                              └────────────────────────┘  (correctable & under the cap)
+        │                     ▲                        │
+        │                     │                        ├─ validation passed → finalize-specification
+        │                     │                        ├─ critical / cap reached → report-failure
+        │                     └────────────────────────┘  (correctable & under the cap)
+        └─ source unreadable → end
 ```
 
-The correction loop is bounded at three correction passes. When validation passes the
-workflow finalizes; when critical issues appear or the budget is exhausted it reports failure. No
-specification is promoted automatically.
+No specification is promoted automatically.
 
 ## Structure
 
