@@ -189,7 +189,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 __WORKSPACE__/scripts/claude/hooks/block-gh-api-writes.py",
+            "command": "python3 __WORKSPACE__/scripts/claude/hooks/gate-gh-api-hazards.py",
             "timeout": 5
           }
         ]
