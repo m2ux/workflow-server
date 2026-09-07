@@ -20,6 +20,7 @@ The running order that carries the design into a system in production use is the
 | [issue-disposition.md](./issue-disposition.md) | All twenty-one open issues: dissolves, survives, or becomes a work item |
 | [migration-disposition.md](./migration-disposition.md) | All ~55 work items: safety, keep, reshape, defer, abandon — what to work while the server stays up |
 | [rejected-alternatives.md](./rejected-alternatives.md) | Designs weighed and dropped, with the reason |
+| [polymorphism-survey.md](./polymorphism-survey.md) | Which polymorphism mechanisms the language takes, which it refuses, and which two want designing against real sites now |
 | [absorbed/](./absorbed/) | The thirteen absorbed issue bodies, verbatim, with the redistribution map |
 
 **The tracker was reorganised to match this record on 2026-08-31**, into two initiatives whose thirteen
