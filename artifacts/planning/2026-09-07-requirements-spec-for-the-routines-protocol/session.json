@@ -6,10 +6,10 @@
   "agentId": "orchestrator",
   "sessionIndex": "6CQIBT",
   "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::resume-worker",
+  "currentTechnique": "workflow-engine::commit-and-persist",
   "exit": "done",
-  "seq": 19,
-  "ts": 1788790247,
+  "seq": 20,
+  "ts": 1788791206,
   "startedAt": "2026-09-07T13:47:53.103Z",
   "completedActivities": [
     "discover-session",
@@ -821,6 +821,27 @@
       },
       "timestamp": "2026-09-07T14:10:47.519Z",
       "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-b1",
+        "chars": 16014,
+        "delivery": "full",
+        "stepId": "commit-activity-artifacts",
+        "techniqueId": "workflow-engine::commit-and-persist"
+      },
+      "timestamp": "2026-09-07T14:26:46.696Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-b1",
+        "stepId": "commit-activity-artifacts"
+      },
+      "timestamp": "2026-09-07T14:26:46.696Z",
+      "type": "step_started"
     }
   ],
   "triggeredWorkflows": [
@@ -843,9 +864,23 @@
             "respondedAt": "2026-09-07T14:10:15.000Z"
           }
         },
-        "completedActivities": [],
-        "currentActivity": "intake-and-analyze",
+        "completedActivities": [
+          "intake-and-analyze"
+        ],
+        "currentActivity": "update-specification",
         "currentTechnique": "analyze-source",
+        "declaredArtifacts": [
+          {
+            "id": "intake_record",
+            "name": "intake.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol/01-intake.md"
+          },
+          {
+            "id": "requirements_analysis",
+            "name": "requirements-analysis.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol/01-requirements-analysis.md"
+          }
+        ],
         "deliveredContent": {
           "worker-intake-and-analyze-a1": {
             "activity_rules:c5b212486f8c0c16": "c5b212486f8c0c16",
@@ -874,11 +909,13 @@
             "technique:inherited_inputs:dc1d2b227e7f94d7": "dc1d2b227e7f94d7",
             "technique:intake-sources": "f7e0c9904fa102a9",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:1e5c055438681db1": "1e5c055438681db1",
             "technique:rules:50e5c89790640391": "50e5c89790640391",
-            "technique:rules:fe7ac9bb9d4ac42a": "fe7ac9bb9d4ac42a"
+            "technique:rules:fe7ac9bb9d4ac42a": "fe7ac9bb9d4ac42a",
+            "technique:update-specification": "268e786e7f5f6956"
           }
         },
-        "exit": "",
+        "exit": "analysis-confirmed",
         "history": [
           {
             "timestamp": "2026-09-07T13:51:45.347Z",
@@ -1387,16 +1424,233 @@
             },
             "timestamp": "2026-09-07T14:23:50.187Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "exit": "analysis-confirmed",
+              "outcome": "complete"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "activity_outcome"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "source_readable",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "target_doc_exists",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "spec_basename",
+              "source": "variables_changed",
+              "value": "03-routines-protocol-requirements.md"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "intake_record_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol/01-intake.md"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "requirements_analysis_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol/01-requirements-analysis.md"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "analysis_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "stepId": "intake-sources"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "stepId": "source-unreadable-diagnostic"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "stepId": "sources-confirmed"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "stepId": "analyze-source"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "stepId": "analysis-confirmed"
+            },
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "update-specification",
+            "timestamp": "2026-09-07T14:24:29.351Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "chars": 8679,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-07T14:24:46.633Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "chars": 4961,
+              "delivery": "full",
+              "stepId": "update-specification",
+              "techniqueId": "update-specification"
+            },
+            "timestamp": "2026-09-07T14:24:46.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "stepId": "update-specification"
+            },
+            "timestamp": "2026-09-07T14:24:46.633Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 355,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#status-conventions"
+            },
+            "timestamp": "2026-09-07T14:24:46.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 1042,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#section-structure"
+            },
+            "timestamp": "2026-09-07T14:24:46.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 518,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#requirement-entry-format"
+            },
+            "timestamp": "2026-09-07T14:24:46.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "bundled": true,
+              "chars": 679,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#identifier-schemes"
+            },
+            "timestamp": "2026-09-07T14:24:46.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "worker-intake-and-analyze-a1",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 1264317,
+                "subagent_tokens": 210181,
+                "tool_uses": 38
+              }
+            },
+            "timestamp": "2026-09-07T14:29:11.161Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 18,
+        "seq": 21,
         "sessionIndex": "6CKOVM",
         "startedAt": "2026-09-07T13:51:45.347Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788791030,
+        "ts": 1788791351,
         "variables": {
           "analysis_confirmed": true,
           "change_summary_path": "",
@@ -1498,8 +1752,10 @@
       "technique:inherited_inputs:ae2b09344c726b6f": "ae2b09344c726b6f",
       "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
       "technique:rules:1bd96fa610645c6a": "1bd96fa610645c6a",
+      "technique:rules:28d820ac97025ae4": "28d820ac97025ae4",
       "technique:rules:a518a105b9faaa58": "a518a105b9faaa58",
       "technique:rules:be94a1e5beea0046": "be94a1e5beea0046",
+      "technique:workflow-engine::commit-and-persist": "c7eadbba35998398",
       "technique:workflow-engine::dispatch-activity": "c50358805718ebe5",
       "technique:workflow-engine::present-checkpoint-to-user": "bc0db013482efdb8",
       "technique:workflow-engine::resume-worker": "32d4059bf337dd44"
