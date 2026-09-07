@@ -554,9 +554,7 @@ steps:
   - kind: technique
     id: create-github-issue-for-jira
     technique:
-      name: create-issue
-      inputs:
-        issue_platform: github
+      name: create-issue::create-github
     when: needs_github_issue_creation == true
   - kind: checkpoint
     id: jira-project-selection
@@ -666,9 +664,13 @@ steps:
           setVariable:
             issue_cancelled: true
   - kind: technique
-    id: create-issue
-    technique: create-issue
-    when: needs_issue_creation == true
+    id: create-github-issue
+    technique: create-issue::create-github
+    when: needs_issue_creation == true && issue_platform == 'github'
+  - kind: technique
+    id: create-jira-issue
+    technique: create-issue::create-jira
+    when: needs_issue_creation == true && issue_platform == 'jira'
   - kind: technique
     id: lookup-current-user
     technique: atlassian-operations::user-info

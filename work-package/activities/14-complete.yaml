@@ -11,8 +11,6 @@ variables:
     - host_repo_path
     - is_review_mode
     - issue_number
-    - issue_platform
-    - issue_record
     - planning_folder_path
     - pr_number
     - problem_complexity
@@ -45,10 +43,6 @@ variables:
       type: string
       description: Address of the issue raised for the row under consideration.
       defaultValue: ""
-    - name: deferred_item_issue_created
-      type: boolean
-      description: Whether the raise created a new issue for the row rather than resolving an existing one.
-      defaultValue: false
     - name: has_unraised_deferred_items
       type: boolean
       description: Whether the register holds at least one row naming no issue yet.
@@ -113,19 +107,18 @@ steps:
       - kind: technique
         id: raise-deferred-item-issue
         technique:
-          name: create-issue
+          name: create-issue::create-github
           inputs:
             issue_type: task
             issue_subject: current_deferred_item
           outputs:
             issue_number: deferred_item_issue_number
             issue_url: deferred_item_issue_url
-            needs_issue_creation: deferred_item_issue_created
         when: raise_current_deferred_item == true
       - kind: technique
         id: record-deferred-item-issue
         technique: raise-deferred-items::record
-        when: deferred_item_issue_created == true
+        when: raise_current_deferred_item == true
   - kind: technique
     id: create-complete-doc
     technique: finalize-documentation::create-complete-doc
