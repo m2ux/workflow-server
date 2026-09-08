@@ -187,7 +187,7 @@ export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): Revi
   for (const workflow of readdirSync(root).sort()) {
     const workflowYamlPath = join(root, workflow, 'workflow.yaml');
     if (!existsSync(workflowYamlPath)) continue;
-    const wf = parse(readFileSync(workflowYamlPath, 'utf-8')) as { variables?: Array<{ name?: string }>; initialActivity?: string; graph?: Graph };
+    const wf = parse(readFileSync(workflowYamlPath, 'utf-8')) as { variables?: Array<{ name?: string }>; initialActivity: string; graph?: Graph };
     const declaresReview = (wf.variables ?? []).some(v => v?.name === 'is_review_mode');
     if (!declaresReview) continue; // guard applies only to workflows with a review mode
 
@@ -200,9 +200,7 @@ export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): Revi
       if (def?.id) activities.set(def.id, def);
       scanned++;
     }
-    const initial = wf.initialActivity ?? [...activities.keys()][0];
-    if (!initial) continue;
-    const reachable = reachableInReview(initial, activities, wf.graph ?? {});
+    const reachable = reachableInReview(wf.initialActivity, activities, wf.graph ?? {});
 
     for (const actId of reachable) {
       const act = activities.get(actId);

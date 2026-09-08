@@ -248,6 +248,7 @@ describe('schema-validation', () => {
       id: 'test-workflow',
       version: '1.0.0',
       title: 'Test Workflow',
+      initialActivity: 'activity-1',
       variables: [{ name, type: 'string' }],
       activities: [{ id: 'activity-1', version: '1.0.0', name: 'Activity One', techniques: ['some-technique'] }],
     });
@@ -270,6 +271,7 @@ describe('schema-validation', () => {
       id: 'test-workflow',
       version: '1.0.0',
       title: 'Test Workflow',
+      initialActivity: 'activity-1',
       variables: [{ name: 'operation_type', type: 'string', ...extra }],
       activities: [{ id: 'activity-1', version: '1.0.0', name: 'Activity One', techniques: ['some-technique'] }],
     });

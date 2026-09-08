@@ -573,7 +573,7 @@ export interface UnreachableRead {
  */
 export function unreachableReads(args: {
   graph: ActivityGraph;
-  initialActivity: string | undefined;
+  initialActivity: string;
   /** Names available before the first activity runs: seeded defaults and session-supplied facts. */
   availableAtEntry: ReadonlySet<string>;
   /** Activity id → the names it reads. */
@@ -590,7 +590,9 @@ export function unreachableReads(args: {
 }): UnreachableRead[] {
   const { graph, initialActivity, availableAtEntry, reads, routingReads, writes, policy } = args;
   const nodes = [...graph.keys()];
-  if (!initialActivity || !graph.has(initialActivity)) return [];
+  // A root outside the graph leaves the walk nothing to report against: the workflow names an
+  // activity it does not include, which is a defect of its own.
+  if (!graph.has(initialActivity)) return [];
 
   const predecessors = new Map<string, string[]>(nodes.map((id) => [id, []]));
   for (const [from, targets] of graph) {

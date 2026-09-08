@@ -82,6 +82,7 @@ describe('resolveCheckpointFragment addressing', () => {
       id: 'ref-in-rules',
       version: '1.0.0',
       title: 'Rules ref',
+      initialActivity: 'a',
       rules: { workflow: [{ ref: 'some-name' }] },
       activities: [{ id: 'a', version: '1.0.0', name: 'A', techniques: ['t'] }],
     };

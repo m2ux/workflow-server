@@ -248,8 +248,7 @@ async function main() {
     /** Values a transition carried, for the end-of-run check that the bag received each one. */
     const relayedVariables: Record<string, unknown> = {};
     const visited = new Set<string>();
-    let current: string | null = (wfSummary.initialActivity as string)
-      ?? (wfSummary.activities as Array<{ id: string }> | undefined)?.[0]?.id ?? null;
+    let current: string | null = wfSummary.initialActivity as string;
     let count = 0;
 
     while (current && count < MAX_ACTIVITIES) {

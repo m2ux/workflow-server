@@ -32,7 +32,7 @@ function emptyValidation(): ValidationResult {
 
 export function validateActivityTransition(view: SessionView, workflow: Workflow, activityId: string): string | null {
   if (!view.act) {
-    if (workflow.initialActivity && activityId !== workflow.initialActivity) {
+    if (activityId !== workflow.initialActivity) {
       return `First activity must be '${workflow.initialActivity}' but '${activityId}' was requested. Start with the workflow's initialActivity.`;
     }
     return null;

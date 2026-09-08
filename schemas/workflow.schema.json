@@ -379,7 +379,7 @@
         },
         "initialActivity": {
           "type": "string",
-          "description": "ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points."
+          "description": "ID of the first activity to execute: the id the first `next_activity` call names, and the root the reachability half of the activity-variables guard walks from — the analysis that decides, for each activity, which variables the run has written by the time it arrives there."
         },
         "graph": {
           "type": "object",
@@ -830,7 +830,8 @@
       "required": [
         "id",
         "version",
-        "title"
+        "title",
+        "initialActivity"
       ],
       "additionalProperties": false
     }

@@ -27,6 +27,7 @@ function makeWorkflow(overrides: Partial<Workflow> = {}): Workflow {
     id: 'test-wf',
     version: '1.0.0',
     title: 'Test Workflow',
+    initialActivity: 'planning',
     graph: {
       planning: { done: 'implementation' },
       implementation: { done: 'review' },
@@ -97,6 +98,7 @@ describe('validation', () => {
 
     it('lists the bound destinations in the warning message', () => {
       const workflow = makeWorkflow({
+        initialActivity: 'hub',
         graph: { hub: { 'a-chosen': 'branch-a', 'b-chosen': 'branch-b' } },
         activities: [
           {
@@ -119,13 +121,6 @@ describe('validation', () => {
   });
 
   describe('BF-09: initialActivity enforcement', () => {
-    it('returns null on first call when no initialActivity is set', () => {
-      const token = makeToken({ act: '' });
-      const workflow = makeWorkflow();
-      const result = validateActivityTransition(token, workflow, 'review');
-      expect(result).toBeNull();
-    });
-
     it('returns null when first call targets the initialActivity', () => {
       const token = makeToken({ act: '' });
       const workflow = makeWorkflow({ initialActivity: 'planning' });
