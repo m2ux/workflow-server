@@ -43,7 +43,7 @@ The schemas work together to define workflows (design-time) and track their exec
 
 ### Workflow Structure
 
-A workflow consists of activities and the `graph` binding their exits to one another. Each activity contains a single ordered `steps[]` where every step carries a `kind`: a technique step (binds an operation), an action step (control-only), a checkpoint step (an inline user decision point at its concrete position), or a loop step (a compound step whose body is a nested `steps[]`). An activity declares `exits` — its named outcomes — and the workflow's `graph` says where each leads, so an activity borrowed by two workflows sits in each one's shape without either editing the other's files. An activity can optionally trigger other workflows. The `initialActivity` property determines where sequential workflows begin; workflows whose activities are all independent entry points don't require `initialActivity`.
+A workflow consists of activities and the `graph` binding their exits to one another. Each activity contains a single ordered `steps[]` where every step carries a `kind`: a technique step (binds an operation), an action step (control-only), a checkpoint step (an inline user decision point at its concrete position), or a loop step (a compound step whose body is a nested `steps[]`). An activity declares `exits` — its named outcomes — and the workflow's `graph` says where each leads, so an activity borrowed by two workflows sits in each one's shape without either editing the other's files. An activity can optionally trigger other workflows. Every workflow declares an `initialActivity`: the activity the run opens on, and the root the reachability half of the activity-variables guard walks from.
 
 ```mermaid
 stateDiagram-v2
