@@ -3,11 +3,18 @@ import {
   open,
   readFile,
   readdir,
-  rename,
   rm,
   stat,
-  unlink,
 } from 'node:fs/promises';
+import {
+  closeSync,
+  fsyncSync,
+  openSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { tmpdir } from 'node:os';
@@ -16,16 +23,16 @@ import type { SessionJsonPath } from './derivation.js';
 import { assertPathInsideRoot } from '../../worktree-validator.js';
 
 /**
- * Tiny FS adapter object used internally by `writeAtomic`. Existing only so
+ * Tiny FS adapter object used internally by `swapIntoPlace`. Existing only so
  * tests can swap in a `rename` that throws EXDEV without using `vi.mock` on
- * `node:fs/promises` (which is brittle across ESM/CJS interop). Production
- * code never touches this object.
+ * `node:fs` (which is brittle across ESM/CJS interop). Production code never
+ * touches this object.
  */
-const fsAdapter: { rename: typeof rename } = { rename };
+const fsAdapter: { renameSync: typeof renameSync } = { renameSync };
 
-/** @internal — test hook. Overrides the rename function used by writeAtomic. */
-export function _setRenameForTests(fn: typeof rename | undefined): void {
-  fsAdapter.rename = fn ?? rename;
+/** @internal — test hook. Overrides the rename used when a staged file is swapped into place. */
+export function _setRenameForTests(fn: typeof renameSync | undefined): void {
+  fsAdapter.renameSync = fn ?? renameSync;
 }
 
 /**
@@ -86,6 +93,7 @@ export class SessionStoreError extends Error {
       | 'COLLISION'
       | 'SEAL_MISMATCH'
       | 'INVALID_INDEX'
+      | 'STALE_WRITE'
       | 'WORKSPACE_INVALID',
     readonly details?: Record<string, unknown>,
   ) {
@@ -197,23 +205,34 @@ async function computeSeal(canonicalJson: string): Promise<string> {
   return createHmac('sha256', key).update(canonicalJson, 'utf8').digest('hex');
 }
 
-/**
- * Atomic write helper: stage to `<path>.tmp.<pid>.<ts>.<rand>`, fsync the
- * file descriptor, fsync the parent directory, then `rename` over the
- * destination. Falls back to copy+fsync+unlink on EXDEV (cross-device) — the
- * tmp file and destination normally live in the same planning folder, but the
- * fallback protects against `/tmp` overlays in CI / container setups.
- */
-async function writeAtomic(
-  path: string,
-  contents: string | Buffer,
-  mode: number,
-): Promise<void> {
-  const parent = dirname(path);
-  await mkdir(parent, { recursive: true, mode: PLANNING_DIR_MODE });
-  const tmp = `${path}.tmp.${process.pid}.${Date.now()}.${Math.random().toString(36).slice(2, 8)}`;
-  const data = typeof contents === 'string' ? Buffer.from(contents, 'utf8') : contents;
+/** A file written to its own directory as `<path>.tmp.…`, awaiting its swap. */
+interface StagedFile {
+  /** Absolute path of the temp file holding the new contents. */
+  tmp: string;
+  /** Final destination the temp file is swapped onto. */
+  dest: string;
+  /** The bytes staged, reused by the cross-device fallback. */
+  data: Buffer;
+  /** Mode the destination is created with on the cross-device path. */
+  mode: number;
+}
 
+/**
+ * Stage `contents` for `path`: create the parent directory, write the bytes to
+ * `<path>.tmp.<pid>.<ts>.<rand>`, and fsync them. Staging touches nothing a
+ * reader can see; `swapIntoPlace` publishes the result.
+ *
+ * The temp file lands in the destination's own directory, so the swap is a
+ * rename within one directory.
+ */
+async function stageFile(
+  path: string,
+  contents: string,
+  mode: number,
+): Promise<StagedFile> {
+  await mkdir(dirname(path), { recursive: true, mode: PLANNING_DIR_MODE });
+  const tmp = `${path}.tmp.${process.pid}.${Date.now()}.${Math.random().toString(36).slice(2, 8)}`;
+  const data = Buffer.from(contents, 'utf8');
   const fh = await open(tmp, 'w', mode);
   try {
     await fh.writeFile(data);
@@ -221,47 +240,66 @@ async function writeAtomic(
   } finally {
     await fh.close();
   }
+  return { tmp, dest: path, data, mode };
+}
 
+/** Remove a staged temp file that will not be published. */
+function discardStaged(staged: StagedFile): void {
   try {
-    await fsAdapter.rename(tmp, path);
+    unlinkSync(staged.tmp);
+  } catch {
+    /* tmp cleanup is best-effort */
+  }
+}
+
+/**
+ * Publish a staged file by renaming it over its destination.
+ *
+ * Synchronous throughout, which is what lets `persistSessionFile` read the
+ * destination and swap in one indivisible step: this process runs no other
+ * request between the two, so a compare-and-swap cannot be split by a
+ * concurrent write.
+ *
+ * Falls back to copy+fsync+unlink on EXDEV (cross-device). A staged file sits
+ * in its destination's directory, so the fallback covers only exotic layouts
+ * where that directory spans devices.
+ */
+function swapIntoPlace(staged: StagedFile): void {
+  try {
+    fsAdapter.renameSync(staged.tmp, staged.dest);
+    return;
   } catch (err: unknown) {
-    if (err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'EXDEV') {
-      // Cross-filesystem rename — copy contents, fsync, then unlink the tmp.
-      const fhDest = await open(path, 'w', mode);
-      try {
-        await fhDest.writeFile(data);
-        await fhDest.sync();
-      } finally {
-        await fhDest.close();
-      }
-      try {
-        await unlink(tmp);
-      } catch {
-        /* tmp cleanup is best-effort */
-      }
-    } else {
-      // Clean up tmp on any other failure.
-      try {
-        await unlink(tmp);
-      } catch {
-        /* ignore */
-      }
+    if (!(err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'EXDEV')) {
+      discardStaged(staged);
       throw err;
     }
   }
-
-  // Best-effort directory fsync so the rename hits the disk before we return.
-  // Some filesystems (notably tmpfs on macOS) reject O_RDONLY on a directory;
-  // ignore failures so test runs on those platforms still work.
+  const fd = openSync(staged.dest, 'w', staged.mode);
   try {
-    const dirFh = await open(parent, 'r');
+    writeFileSync(fd, staged.data);
+    fsyncSync(fd);
+  } finally {
+    closeSync(fd);
+  }
+  discardStaged(staged);
+}
+
+/**
+ * Best-effort directory fsync so a completed swap hits the disk before the
+ * caller returns. Some filesystems (notably tmpfs on macOS) reject O_RDONLY
+ * on a directory; failures are ignored, so this is defence in depth rather
+ * than load-bearing.
+ */
+async function syncDirectory(path: string): Promise<void> {
+  try {
+    const dirFh = await open(path, 'r');
     try {
       await dirFh.sync();
     } finally {
       await dirFh.close();
     }
   } catch {
-    /* ignore — directory fsync is a defence-in-depth measure, not load-bearing */
+    /* ignore */
   }
 }
 
@@ -316,39 +354,111 @@ export async function readSessionFile(
 }
 
 /**
- * Write `state` to `session.json` atomically, then write the seal atomically.
- * Order is fixed (state first, seal second) so that a reader observing the
- * inter-rename window sees a seal that no longer matches the state and fails
- * fast — the documented torn-write failure mode.
+ * Write `state` to `session.json` and its seal to `.session-token`.
  *
- * Returns the canonical JSON bytes that were written and the seal hex; the
- * caller can use these to populate a response envelope without re-reading
- * the file.
+ * Both files are staged first and then swapped into place synchronously, state
+ * before seal, so a reader never observes half a file and never observes a
+ * seal from one state beside another. When `expectedBytes` is supplied, the
+ * bytes on disk are compared against it in that same synchronous step and the
+ * swap is abandoned on any difference — the compare-and-swap that
+ * `replaceSessionFile` exposes.
+ *
+ * Returns the canonical JSON bytes written and the seal hex, so a caller can
+ * populate a response envelope, or expect these bytes on its next write,
+ * without re-reading the file.
+ */
+async function persistSessionFile(
+  folderAbsPath: string,
+  state: unknown,
+  expectedBytes?: string,
+): Promise<{ bytes: string; seal: string }> {
+  await mkdir(folderAbsPath, { recursive: true, mode: PLANNING_DIR_MODE });
+  const bytes = canonicaliseJson(state);
+  const seal = await computeSeal(bytes);
+  const statePath = sessionFilePath(folderAbsPath);
+  const stagedState = await stageFile(statePath, bytes, PLANNING_FILE_MODE);
+  const stagedSeal = await stageFile(sealFilePath(folderAbsPath), seal, PLANNING_FILE_MODE);
+
+  if (expectedBytes !== undefined) {
+    let onDisk: string | undefined;
+    try {
+      onDisk = readFileSync(statePath, 'utf8');
+    } catch {
+      onDisk = undefined;
+    }
+    if (onDisk !== expectedBytes) {
+      discardStaged(stagedState);
+      discardStaged(stagedSeal);
+      throw new SessionStoreError(
+        `stale write refused for ${folderAbsPath}: session.json changed since it was read` +
+          `${onDisk === undefined ? ' (the file is now absent)' : ''}`,
+        'STALE_WRITE',
+        { folder: folderAbsPath },
+      );
+    }
+  }
+  try {
+    swapIntoPlace(stagedState);
+  } catch (err) {
+    // The seal was staged for a state that never landed; drop it so the
+    // folder is left holding the pair it already had.
+    discardStaged(stagedSeal);
+    throw err;
+  }
+  swapIntoPlace(stagedSeal);
+
+  await syncDirectory(folderAbsPath);
+  return { bytes, seal };
+}
+
+/**
+ * Write `state` to a planning folder unconditionally, replacing whatever the
+ * folder holds. For a session file no read stands behind: a fresh session, a
+ * migrated legacy folder, a promoted transient parent.
+ *
+ * A write that carries forward state read from disk goes through
+ * `replaceSessionFile` instead, so a concurrent write is refused rather than
+ * overwritten.
  */
 export async function writeSessionFile(
   folderAbsPath: string,
   state: unknown,
 ): Promise<{ bytes: string; seal: string }> {
-  await mkdir(folderAbsPath, { recursive: true, mode: PLANNING_DIR_MODE });
-  const bytes = canonicaliseJson(state);
-  const seal = await computeSeal(bytes);
-  await writeAtomic(sessionFilePath(folderAbsPath), bytes, PLANNING_FILE_MODE);
-  await writeAtomic(sealFilePath(folderAbsPath), seal, PLANNING_FILE_MODE);
-  return { bytes, seal };
+  return persistSessionFile(folderAbsPath, state);
+}
+
+/**
+ * Write `state` to a planning folder only while `session.json` still holds
+ * `expectedBytes` — the bytes the caller's state was read from, as returned by
+ * `readSessionFile`, `verifySeal` or a prior write.
+ *
+ * Throws `SessionStoreError(STALE_WRITE)` when the file has changed or gone,
+ * leaving both files as they are. The caller reloads and composes its change
+ * against what is now on disk; nothing recorded in between is lost.
+ */
+export async function replaceSessionFile(
+  folderAbsPath: string,
+  state: unknown,
+  expectedBytes: string,
+): Promise<{ bytes: string; seal: string }> {
+  return persistSessionFile(folderAbsPath, state, expectedBytes);
 }
 
 /**
  * Write a seal over an already-known JSON byte sequence (e.g. when the
  * caller has the canonical bytes from a prior write and only needs to
  * refresh the seal). Exposed mainly for tests; production code uses
- * `writeSessionFile` which writes both files in the correct order.
+ * `writeSessionFile` / `replaceSessionFile`, which write both files in the
+ * correct order.
  */
 export async function writeSeal(
   folderAbsPath: string,
   jsonBytes: string,
 ): Promise<string> {
   const seal = await computeSeal(jsonBytes);
-  await writeAtomic(sealFilePath(folderAbsPath), seal, PLANNING_FILE_MODE);
+  const sealPath = sealFilePath(folderAbsPath);
+  swapIntoPlace(await stageFile(sealPath, seal, PLANNING_FILE_MODE));
+  await syncDirectory(dirname(sealPath));
   return seal;
 }
 
@@ -769,9 +879,6 @@ export async function sessionFileExists(folderAbsPath: string): Promise<boolean>
     return false;
   }
 }
-
-// Re-exports for test convenience; production callers should import directly.
-export { writeAtomic as _writeAtomicForTests };
 
 /** Throwable type alias kept stable for test imports. */
 export type { SessionStoreError as SessionStoreErrorType };

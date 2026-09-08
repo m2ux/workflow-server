@@ -20,6 +20,7 @@ import {
   findPlanningFolderBySlug,
   sessionFileExists,
   writeSessionFile,
+  replaceSessionFile,
   verifySeal,
   computeSessionIndex,
   migratePlanningFolder,
@@ -119,7 +120,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         })
         .strict(),
     },
-    withAuditLog('start_session', async ({ workflow_id, planning_folder, repo, agent_id, context_mode, user_request }) => {
+    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, repo, agent_id, context_mode, user_request }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
       // start_session is top-level only — it either opens an existing
@@ -251,7 +252,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // drift on resume. Skipped for transient (tmp) sessions.
       const canonicalFolder = isTransientSession ? undefined : resolve(folder);
       if (await sessionFileExists(folder)) {
-        const { state: rawState } = await verifySeal(folder);
+        const { state: rawState, bytes: loadedBytes } = await verifySeal(folder);
         const parsed = safeValidateSessionFile(rawState);
         if (!parsed.success) {
           const issues = parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
@@ -325,7 +326,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
         if (nextState !== state) {
           state = nextState;
-          await writeSessionFile(folder, state);
+          await replaceSessionFile(folder, state, loadedBytes);
         }
       } else {
         // Fresh top-level session — no parent. Children are dispatched via
@@ -441,7 +442,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         _meta: { session_index: sessionIndex, validation: buildValidation(depthWarning) },
       };
     })
-  );
+  ));
 
   server.registerTool(
     'dispatch_child',
@@ -486,7 +487,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       // Bind-if-missing on the parent session. session.json#repo is the single
       // source of truth for path resolution / promotion; dispatch_child.repo
-      // never overrides a prior bind.
+      // never overrides a prior bind. The bind travels on the state the child
+      // is embedded into, so this call writes the file once — a second write
+      // from the same read is the stale-write shape the store refuses.
       let parentState = loaded.state;
       if (repo?.trim()) {
         try {
@@ -495,10 +498,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           throw new Error(
             `dispatch_child: ${err instanceof Error ? err.message : String(err)}`,
           );
-        }
-        if (parentState !== loaded.state && !parentIsTransient) {
-          // Durable parent: persist bind before embedding the child.
-          await writeSessionFile(parentFolder, parentState);
         }
       }
 
@@ -590,6 +589,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // array index doesn't shift (triggeredWorkflows is append-only).
       // Use parentState (may include a just-bound repo) rather than the
       // pre-bind loaded.state snapshot.
+      //
+      // The slot comes off the length of the list as it was read, and the save
+      // below is a compare-and-swap against those same bytes: a dispatch whose
+      // parent gained a child in between is refused, so two dispatches cannot
+      // both mint the identity of one slot.
       const newArrayIndex = parentState.triggeredWorkflows.length;
       const childJsonPath = [...loaded.jsonPath, 'triggeredWorkflows', newArrayIndex, 'state'];
       const childSessionIndex = await computeEmbeddedSessionIndex(parentFolder, childJsonPath);

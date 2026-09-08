@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
 import { createInitialSessionFile, type SessionFile } from '../src/schema/session.schema.js';
 import {
   batchActivities,
@@ -42,35 +41,6 @@ const POLICY = {
 function deliver(state: SessionFile, scope: string, activityId: string, chars: number): void {
   recordDispatch(state, { scope, kind: 'fresh', activityId, chars });
 }
-
-/**
- * Where the refusal sits in `get_activity` is an invariant no behavioural test can see: both
- * placements deliver the same verdict, and the one that is wrong only loses a concurrent write under a
- * race. So it is asserted against the source. The success path a few lines below deliberately RE-LOADS
- * the session before saving, because composition awaits dozens of reads in between; the refusal path
- * is correct precisely by having nothing to re-load, and a later edit that slips an await in front of
- * it would reintroduce the lost update silently.
- */
-describe('refusal placement in get_activity (#407)', () => {
-  it('has no await between the session load and the refusal save', () => {
-    const source = readFileSync(new URL('../src/tools/workflow-tools.ts', import.meta.url), 'utf8');
-    // Anchored inside the get_activity handler — the same load line appears in every session tool.
-    const handler = source.indexOf("server.tool('get_activity'");
-    expect(handler).toBeGreaterThan(-1);
-
-    const LOAD = 'const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);';
-    const load = source.indexOf(LOAD, handler);
-    const save = source.indexOf('await saveSessionForTool(loaded, refused);', handler);
-    expect(load).toBeGreaterThan(handler);
-    expect(save).toBeGreaterThan(load);
-
-    // Comments in that span discuss the invariant by name, so read the code alone.
-    const code = source.slice(load + LOAD.length, save)
-      .replace(/\/\*[\s\S]*?\*\//g, '')
-      .replace(/\/\/[^\n]*/g, '');
-    expect(code).not.toContain('await');
-  });
-});
 
 describe('batch bound arithmetic (#407)', () => {
   it('counts the distinct activities one scope has taken, in first-delivery order', () => {

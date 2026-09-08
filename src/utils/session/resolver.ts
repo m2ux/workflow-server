@@ -1,7 +1,7 @@
 import {
+  replaceSessionFile,
   resolveSessionLocation,
   verifySeal,
-  writeSessionFile,
   SessionStoreError,
 } from './store.js';
 import type { SessionJsonPath } from './derivation.js';
@@ -115,7 +115,11 @@ export interface LoadedSession {
   state: SessionFile;
   /** Absolute path to the top-level planning folder. */
   folderAbsPath: string;
-  /** Raw bytes of the on-disk top file (pre-mutation). */
+  /**
+   * Raw bytes of the on-disk top file this session was read from. The save
+   * path compares them against the file to refuse a write built on a read
+   * another call has since superseded.
+   */
   bytes: string;
   /** Path inside `topState` to reach `state`. Empty for the root session. */
   jsonPath: SessionJsonPath;
@@ -186,7 +190,12 @@ export function advanceSession(
  * When the loaded session is the root (empty jsonPath), `newState` becomes
  * the new top file. When it's an embedded sub-state, `replacePath` produces
  * a new top SessionFile with the mutation slotted in at `loaded.jsonPath`,
- * and that whole top file is re-canonicalised, sealed, and atomic-written.
+ * and that whole top file is re-canonicalised, sealed, and written.
+ *
+ * The write is a compare-and-swap against the bytes `loaded` was read from:
+ * a parent and its children share one file, so a call that composed its
+ * change from a superseded read is refused with `STALE_WRITE` rather than
+ * replacing what landed in between. The caller reloads and composes again.
  *
  * Returns the canonical bytes written and the seal hex.
  */
@@ -197,7 +206,7 @@ export async function saveSessionForTool(
   const newTopState = loaded.jsonPath.length === 0
     ? newState
     : replacePath(loaded.topState, loaded.jsonPath, newState);
-  return writeSessionFile(loaded.folderAbsPath, newTopState);
+  return replaceSessionFile(loaded.folderAbsPath, newTopState, loaded.bytes);
 }
 
 /**
@@ -218,6 +227,8 @@ export function describeSessionStoreError(err: unknown): string {
       return `${err.message}. Two planning folders hashed to the same session_index — recreate the colliding session(s) or remove a stale folder under the active planning root (legacy: .engineering/artifacts/planning/; repo mode: artifacts/planning/ under the engineering checkout).`;
     case 'SEAL_MISMATCH':
       return `${err.message}. The session.json (or its parsed contents) does not match the seal recorded in .session-token — restore the folder from the most recent commit before retrying.`;
+    case 'STALE_WRITE':
+      return `${err.message}. CALL THIS TOOL AGAIN with the same arguments. Nothing was written, so the repeat is not a double-record: it reads the state as it now stands and applies your change to that. Another call recorded against this session while this one was in flight, and admitting this write would have discarded what that call recorded. Two calls in flight against one session produce this — a parent and its children share a single file, so a parent and one of its children count as two. Keep one call in flight per session and it does not arise.`;
     case 'WORKSPACE_INVALID':
       return `${err.message}. Restart the server with a valid --workspace=PATH (or WORKFLOW_WORKSPACE / WORKTREE_ROOT), or pass repo on start_session when using an install multi-root.`;
     default:

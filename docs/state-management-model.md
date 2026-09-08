@@ -120,6 +120,10 @@ Each session folder holds two files.
 
 Writes are atomic and ordered — the state file first, then the seal — and a read verifies the seal before returning anything.
 
+A write also carries the bytes its call read. The state file is replaced only while it still holds them, and a call whose file has moved on since is refused with `STALE_WRITE` and nothing written. So two calls in flight against one session end with one refused rather than with one of them silently discarded. A parent and its launched children live in a single file — a child's state sits inside its parent's — which is what makes that pairing ordinary rather than exotic: a parent recording a figure while one of its children advances is two writes against the same bytes.
+
+**A refusal is the caller's to retry, and the refusal says so.** The server does not retry on the caller's behalf: the change a call composed is the caller's, and re-deriving it is a call, not a write. The error text instructs the agent to make the call again with the same arguments, and states that nothing was written — so an agent can tell that repeating records once rather than twice, which is the fact that decides whether it retries or stalls. The repeat reads the state as it then stands. An orchestrator that keeps one call in flight per session never meets this.
+
 The `session_index` is derived deterministically from the planning slug. For the exact field-by-field shape, read [the JSON Schema](../schemas/session-file.schema.json) rather than a list that would drift from it.
 
 This is what lets a session pause, stop or resume without losing its place in the state machine. Resume is a single call, `start_session({ agent_id, planning_folder })`: the server loads the file, verifies the seal, and returns the same index. Because the state lives in the file rather than in an agent's context, a server restart is transparent, and there is no adoption or recovery step for an agent to perform.
