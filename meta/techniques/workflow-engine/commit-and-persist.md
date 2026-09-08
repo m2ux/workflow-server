@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.13.0
+  version: 1.14.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ Activity that just completed.
    > - Otherwise apply [commit-regular-files](../version-control/commit-regular-files.md) — the artifacts are ordinary files of the host checkout.
    > - Where the host branch accepts changes only through pull requests, the parent's submodule-pointer bump lands in a PR; a direct push to that branch is refused, and the engineering push above already satisfies this step without it.
 6. Confirm the engineering push landed (remote tracking branch includes the new commit). If push failed, retry once; if still failing, surface the error and do not advance to the next activity.
-7. Emit the run status in the shape [run-status-shape](./dispatch-activity.md#run-status-shape) declares. This is the last phase, after the push is confirmed, so every link the emission publishes points at an artifact the remote already holds.
+7. Emit the run status, filling the [Template](../../../meta/resources/run-status.md#template) and honouring the [Rules](../../../meta/resources/run-status.md#rules) beneath it. This is the last phase, after the push is confirmed, so every link the emission publishes points at an artifact the remote already holds.
 
 ## Rules
 
