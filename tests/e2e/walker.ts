@@ -640,8 +640,7 @@ export async function walk(
   const activityPrefixes = new Map(wfActivities.map(a => [a.id, a.artifactPrefix] as const));
 
   const variables: Record<string, unknown> = { ...defaultVariables(wf), ...(policy.initialVariables ?? {}) };
-  const initialActivity = (wf.initialActivity
-    ?? (wf.activities as Array<{ id: string }> | undefined)?.[0]?.id) as string;
+  const initialActivity = wf.initialActivity as string;
 
   const mode = opts.mode ?? 'robot';
   const planningFolder = opts.planningFolder
