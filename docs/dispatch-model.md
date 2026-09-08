@@ -22,18 +22,25 @@ The dispatch process safely hands off execution from one layer to the next. Each
 
 ### Spawning the orchestrator
 
-When the user-facing agent decides to start a workflow (e.g., `work-package`), it calls `start_session` with the parent's `planning_slug`:
+When the user-facing agent decides to start a workflow (e.g., `work-package`), it calls `dispatch_child` against its own session. `start_session` is top-level only and rejects a `session_index`, so it opens the bootstrap session and never a child:
 
 ```javascript
-start_session({
+dispatch_child({
+  session_index: "<meta_index>",
   workflow_id: "work-package",
+  agent_id: "orchestrator",
   planning_slug: "<child_slug>",
-  parent_planning_slug: "<meta_slug>",
-  agent_id: "workflow-orchestrator"
+  repo: "<owner>/<repo>"
 })
 ```
 
-This creates a **child session** under the child planning folder; the server snapshots the parent's `session.json` (after seal-verifying it) under the child's `parentSession` field for trace correlation and recursive parent traversal. A trace event in the parent's trace store links the two sessions. The response includes a `session_index` for the child session.
+This creates a **child session embedded in the parent's own `session.json`**, at `triggeredWorkflows[N].state` — the session-file schema is recursive, so a child is a sub-object of its parent's file rather than a file of its own. The parent gains a `triggeredWorkflows` entry naming the child's workflow, index, and the activity it was triggered from, plus a `workflow_triggered` history event.
+
+The response carries three values: the child's `session_index`, the canonical `planning_folder_path`, and `workflow.initialActivity` when the child workflow declares one. The last of these exists because a session that has not yet entered an activity reports no current activity, so the parent has no other route to the child's first activity id.
+
+Two consequences follow from the embedding, and both matter when reading the rest of this document. A child inherits the parent's planning folder — the persistent-parent path creates no folder and seeds no README for the child. And a child's `parentSession` field is left unset, so the recursive parent traversal that field supports does not reach an embedded child.
+
+Where the parent is a transient meta bootstrap, the server first promotes it to a workspace planning folder, and re-dispatching into a folder that already holds a child of the same workflow replaces that child rather than continuing it. A persistent parent appends a second child instead.
 
 The user-facing agent then uses the host's spawn mechanism to start the orchestrator in the background:
 ```javascript
@@ -76,7 +83,9 @@ The activity cap covers what a character count cannot see: the context the harne
 
 **Which limit binds depends on the workflow, and both cases are wanted.** The two rest on different evidence. `npm run bench:batch` measures activity payloads only and never fetches a technique or resource lazily, so its figure is a floor: the least a batch can cost, counting only what arrives eagerly. What a batch really accumulates includes everything the worker goes back for, and that half is usually the larger one.
 
-At a 200,000-token window, giving a 280,000-character budget, **the cap binds first on measured content**. The benchmark's three activities cost 159,093 characters batched — 78,128, then 58,588, then 22,377 — which is 57% of budget, because a batch's second and later activities collapse the invariant blocks and the ancestor contract their techniques share (see [Reference delivery](resource-resolution-model.md#reference-delivery)). Standalone, the same three cost 232,954. Reaching the budget takes roughly seven activities of that weight, and a worker declaring a smaller window is bounded proportionally: the budget takes over below roughly 114,000 declared tokens on this workload.
+At a 200,000-token window, giving a 280,000-character budget, **the cap binds first on measured content**. The benchmark's three activities cost 222,505 characters batched — 85,775, then 106,893, then 30,182 — which is 79% of budget, because a batch's second and later activities collapse the invariant blocks and the ancestor contract their techniques share (see [Reference delivery](resource-resolution-model.md#reference-delivery)). Standalone, the same three cost 261,971, so batching saves 15%. Reaching the budget takes roughly four activities of that weight, and a worker declaring a smaller window is bounded proportionally: the budget takes over below roughly 159,000 declared tokens on this workload.
+
+These figures come from `npm run bench:batch` against the corpus at submodule `5f92dc06`. They move whenever an activity's payload does, so re-run it rather than trusting the numbers here; the shape of the claim — cap before budget, at this window — is what the paragraph is for.
 
 Admission is checked *before* a delivery rather than after, so the admitted activity can carry a batch past the budget by up to one heavy activity. Refusing after composing would pay the composition and still not un-deliver it.
 
