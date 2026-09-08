@@ -9,10 +9,6 @@ Gauge how reversible a change to a symbol is, to set the reversibility flag on j
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### name
 
 the symbol the assumption touches

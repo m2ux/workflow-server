@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Derive the canonical planning slug (date plus kebab-case initiative name) for a work package. Folder materialisation and the authoritative planning-folder path belong to session create/start — this op only composes the slug.
+The canonical planning slug for a work package — today's date plus its kebab-case initiative name — composed and returned without touching the filesystem.
 
 ## Inputs
 

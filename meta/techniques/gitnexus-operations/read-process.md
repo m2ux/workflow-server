@@ -9,10 +9,6 @@ Read a process resource for a step-by-step execution trace.
 
 ## Inputs
 
-### repo_name
-
-Repository name.
-
 ### process_name
 
 Process identifier

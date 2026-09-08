@@ -9,10 +9,6 @@ Verify the diff stays within the work-package's intended scope; flag scope creep
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### requirements_scope
 
 the processes / functional areas the work package is meant to touch

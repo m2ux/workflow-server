@@ -9,10 +9,6 @@ Drive test-coverage review from the actual changed-symbol set rather than projec
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### diff
 
 The working-tree / branch diff under review — source for enumerating the changed-symbol set.

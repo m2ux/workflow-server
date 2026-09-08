@@ -108,4 +108,4 @@ exits:
 outcome:
   - The orchestrator knows whether it is operating on a single repo or a submodule monorepo, and which submodule the user intends as the target — resolved without prompting except when a monorepo has multiple target components
   - Downstream git operations have a confirmed working git tree to act on, whether the repo root or a chosen submodule
-  - A session bound to a directory that is not the derived host repository fails here, before any planning artifact exists
+  - A session bound to a directory that is not the derived host repository fails at this boundary, before the client workflow is dispatched and any of its work lands

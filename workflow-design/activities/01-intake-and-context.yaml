@@ -28,7 +28,7 @@ variables:
       defaultValue: false
     - name: headless_mode
       type: boolean
-      description: When true, soft mid-flow gates auto-resolve (no AskQuestion).
+      description: When true, soft mid-flow gates auto-resolve without reaching a person.
       defaultValue: true
     - name: intent_needs_confirmation
       type: boolean
@@ -170,7 +170,7 @@ steps:
     when: headless_mode == false
     actions:
       - action: message
-        message: "Interactive mode — soft mid-flow gates may present AskQuestion. Gate 2 (`approve-to-commit`) and safety gaps stay interactive."
+        message: "Interactive mode — soft mid-flow gates may reach you. Gate 2 (`approve-to-commit`) and safety gaps stay interactive."
   - kind: technique
     id: initialize-planning-folder
     technique:

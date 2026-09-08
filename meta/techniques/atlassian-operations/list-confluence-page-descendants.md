@@ -21,6 +21,12 @@ Optional traversal depth
 
 Optional result limit
 
+## Outputs
+
+### child_pages
+
+The page's descendants, one entry per child page.
+
 ## Protocol
 
-1. Call `getConfluencePageDescendants { cloudId, pageId, depth?, limit? }`.
+1. Call `getConfluencePageDescendants { cloudId, pageId, depth?, limit? }`; return the listing as `{child_pages}`.

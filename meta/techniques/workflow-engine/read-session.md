@@ -25,7 +25,7 @@ Completed activities, checkpoint decisions, artifacts produced, and the event hi
 
 ### session-file-is-not-a-source
 
-The session file on disk is the server's own store, not a read surface: it may be sealed, and it lags a call still in flight. Every consumer of the two products above takes them from this operation, so one contract governs what a session read returns.
+This session's file on disk is the server's own store rather than a read surface for it: it may be sealed, and it lags a call still in flight. Take `{session_state}` and `{execution_trace}` from this operation.
 
 ### trace-is-not-the-only-witness
 

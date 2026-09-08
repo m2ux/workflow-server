@@ -39,28 +39,15 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
 2. **Re-bind ops** inside a local activity with `{ name, inputs }` deviations when you need different bag names or a non-default dispatch concurrency.
 
-3. **Seed the bag** before the pattern runs (consumer responsibility):
-
-| Variable / input | Used by |
-|------------------|---------|
-| `work_goal` | all patterns |
-| `planning_context` | decompose, plan-steps, plan-research-questions |
-| `dispatch_concurrency` | dispatch / isolated-fan-out / lead-researcher (default `1` on ops) |
-| `isolation_mode` | isolated-fan-out (`context` \| `worktree`) |
-| `effort_cap` | decompose / research planning |
-| `lane_roster` | supervisor |
-| `synthesis_criteria` | synthesise-results |
-| `output_contract` | compose briefs |
-| `planning_folder_path` | optional artifact persistence; plan-and-execute checkpoint link |
-| `session_index` | optional, when workers must call workflow-server |
+3. **Seed the bag** before the pattern runs (consumer responsibility). Each activity's `variables.reads` names what it expects to find there, and its `variables.writes` what it puts back — read them off the `.yaml`.
 
 ---
 
 ## Anti-pattern traps
 
-- **AP-82** — do not informally merge worker outputs outside gather → synthesise steps.
-- **AP-114** — do not fold this pipeline into one technique Protocol Apply chain; keep step binds (or borrow these activities).
-- **AP-110** — do not re-teach `Task` / spawn-concurrent recipes locally; bind these ops or harness-compat.
+- `work-through-activities` — do not informally merge worker outputs outside gather → synthesise steps.
+- `pass-orchestration-in-technique` — do not fold this pipeline into one technique Protocol Apply chain; keep step binds (or borrow these activities).
+- `duplicate-shared-capability` — do not re-teach `Task` / spawn-concurrent recipes locally; bind these ops or harness-compat.
 
 ---
 
@@ -76,7 +63,7 @@ Fixed `{lane_roster}` classification (not dynamic decomposition). Escalation whe
 
 ### 03 Plan and Execute
 
-Soft `plan-confirmed` gate (30s default). `forEach` execute; `while` replan when `plan_needs_replan`. Nested re-execute after replan.
+Hard `plan-confirmed` gate — the answer admits the plan into execution, so it waits for a person. `forEach` execute; `while` replan when `plan_needs_replan`. Nested re-execute after replan.
 
 ### 04 Isolated Fan Out
 

@@ -13,7 +13,9 @@ Planning-folder `README.md` from the universal planning Template under the bound
 
 *(optional)* `{ entity_title, entity_url, entity_type, current_date, status }` for header/Links population. When unbound, seed profile defaults alone fill those slots.
 
-`default: {}`
+#### default
+
+`{}`
 
 ### seed_profile
 

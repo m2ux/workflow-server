@@ -1,5 +1,5 @@
 id: validate
-version: 3.10.0
+version: 3.11.0
 name: Verify & Validate Design
 description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
 variables:
@@ -38,7 +38,7 @@ variables:
       defaultValue: false
     - name: validation_results
       type: object
-      description: Aggregate validation envelope — { check_status, clippy_status, test_status, fmt_status, validation_passed }.
+      description: Aggregate validation envelope from the cargo suite, carrying each check's status and the run's overall verdict.
 required: true
 steps:
   - kind: action

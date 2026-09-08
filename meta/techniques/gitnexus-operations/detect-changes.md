@@ -9,10 +9,6 @@ Map the current git diff to the changed-symbol set and the execution flows it af
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### diff_scope
 
 `'staged'`, `'unstaged'`, or `'all'` (default `'all'`)

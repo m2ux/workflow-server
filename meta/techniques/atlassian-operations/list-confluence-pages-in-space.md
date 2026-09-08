@@ -17,6 +17,12 @@ Space ID.
 
 Optional title filter
 
+## Outputs
+
+### space_pages
+
+Pages in the space, one entry per page.
+
 ## Protocol
 
-1. Call `getPagesInConfluenceSpace { cloudId, spaceId, title? }`.
+1. Call `getPagesInConfluenceSpace { cloudId, spaceId, title? }`; return the listing as `{space_pages}`.

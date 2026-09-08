@@ -28,7 +28,6 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `strategic-review` | Strategic Review | Strategic review field list and report templates |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
 | `workflow-retrospective` | Workflow Retrospective | Retrospective methodology and section template |
-| `session-trace` | Session Trace | Lean mechanical session-trace artifact template (written at close-out) |
 | `complete-wp-guide` | Complete Work Package | Close-out document template and fill rules |
 | `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (`file:line` titles) — the report renders as a code-review.md section |
 | `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact links to |
@@ -40,7 +39,6 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates |
 | `prior-feedback-triage` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.json` — the disposition register the rating cap is computed from |
-| `token-usage` | Token Usage | Creation guide: `token-usage.md` — the run's sole cost home, reconciled or labelled a floor |
 | `provenance-log` | Provenance Log | Creation guide: `provenance-log.md` — one appended row per task |
 | `adr` | Architecture Decision Record | Creation guide: `NNNN-{decision_title}.md` — standard ADR form with at least one rejected alternative |
 
@@ -59,9 +57,9 @@ Which guide owns each persisted filename's shape.
 | `code-review-method.md` | [rust-substrate-code-review](rust-substrate-code-review.md#method-record-template) |
 | `test-suite-review.md` | [test-suite-review](test-suite-review.md) |
 | `test-suite-review-method.md` | [test-suite-review](test-suite-review.md#method-record-template) |
-| `session-trace.md` | [session-trace](session-trace.md) |
+| `session-trace.md` | [session-trace](../../meta/resources/session-trace.md) |
 | `change-block-index.md` | [manual-diff-review](manual-diff-review.md#file-index-generation) |
-| `token-usage.md` | [token-usage](token-usage.md) |
+| `token-usage.md` | [token-usage](../../meta/resources/token-usage.md) |
 | `provenance-log.md` | [provenance-log](provenance-log.md) |
 | `NNNN-{decision_title}.md` | [adr](adr.md) |
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |

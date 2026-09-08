@@ -13,6 +13,12 @@ Read a Confluence page as Markdown.
 
 Page ID.
 
+## Outputs
+
+### page_body
+
+The page's content as Markdown.
+
 ## Protocol
 
-1. Call `getConfluencePage { cloudId, pageId, contentFormat: 'markdown' }`.
+1. Call `getConfluencePage { cloudId, pageId, contentFormat: 'markdown' }`; return the page content as `{page_body}`.

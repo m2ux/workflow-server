@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.22.0
+  version: 1.24.0
 ---
 
 ## Capability
@@ -83,7 +83,11 @@ Client finalize/retrospective paths that consume execution history MUST resolve 
 
 Leave the user no silent minute. Before spawning, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that it runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. Where a wait falls between one activity and the next, say that they are waiting and roughly how long, without an account of the machinery imposing it.
 
-A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching. What a completed activity delivered is a separate emission, in the shape [run-status-shape](./TECHNIQUE.md#run-status-shape) declares, made once its artifacts are on the remote.
+A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching. What a completed activity delivered is a separate emission, per the [Run Status Guide](../../../meta/resources/run-status.md), made once its artifacts are on the remote.
+
+### dispatch-topology
+
+Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see [batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [delivery-keys-on-agent-context](#delivery-keys-on-agent-context).
 
 ### no-get-activity-from-orchestrator
 
@@ -91,7 +95,7 @@ Workflow orchestrators NEVER call `get_activity`.
 
 ### no-pre-load-techniques
 
-NEVER call `get_technique` to pre-load techniques for the worker. Step techniques load on the worker via [progressive-step-technique-load](./TECHNIQUE.md#progressive-step-technique-load).
+NEVER call `get_technique` to pre-load techniques for the worker. Step techniques load on the worker via [progressive-step-technique-load](./activity-worker.md#progressive-step-technique-load).
 
 ### delivery-keys-on-agent-context
 

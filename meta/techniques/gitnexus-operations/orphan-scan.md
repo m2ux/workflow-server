@@ -9,10 +9,6 @@ Find functions with zero in-degree CALLS edges (orphan/unused symbols) and inter
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### changed_files
 
 the set of files changed by the work package

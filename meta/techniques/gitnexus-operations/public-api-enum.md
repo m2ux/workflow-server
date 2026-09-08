@@ -9,10 +9,6 @@ Enumerate exactly the public/exported APIs in the diff that need doc comments â€
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### diff
 
 The working-tree / branch diff under review â€” source for obtaining the changed-symbol set.

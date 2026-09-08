@@ -32,7 +32,7 @@ steps:
   - kind: technique
     id: derive-planning-slug
     technique:
-      name: version-control::initialize-folder
+      name: version-control::derive-planning-slug
       outputs:
         planning_slug: client_planning_slug
     when: is_resuming == false

@@ -9,10 +9,6 @@ Symbol blast radius — what depends on a symbol, at depth 1/2/3, with confidenc
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### target
 
 the symbol name to analyse

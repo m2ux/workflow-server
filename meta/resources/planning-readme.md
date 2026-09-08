@@ -26,11 +26,11 @@ This resource owns the **universal Template** and the policy around it, in three
 
 ## Problem Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+*Placeholder — a later step replaces it.*
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+*Placeholder — a later step replaces it.*
 
 ## 📊 Progress
 
@@ -64,7 +64,7 @@ Progress body rows are **not** authored in this Template — the bound readme-se
 
 ### Problem Overview / Solution Overview
 
-Plain-language sections for non-technical stakeholders, each exactly two paragraphs, written by the `stakeholder-overview` technique (heading passed as `readme_section_heading`); the placeholder is replaced when the producing step executes.
+Plain-language sections for non-technical stakeholders, each exactly two paragraphs. Each is seeded as a placeholder and replaced in full when its content is written.
 
 - **Problem Overview** — what the system currently does and why it's problematic, then the consequences.
 - **Solution Overview** — what the change does and how it works at a high level; links the plan for the task breakdown.
@@ -175,6 +175,8 @@ The moments a Progress status write comes from, and the `{target_status}` each o
 | Path skip / cancel / mark N/A | cancelled / N/A (`⊘`) |
 
 An activity that cannot produce a meaningful Progress complete sets `{mark_progress_na}` — that is what routes it to the cancelled/N/A row in [Status vocabulary](#status-vocabulary), rather than inventing a user-reported hand-off to claim completion with.
+
+Every moment in the table is an orchestrator's, and this table is the whole set of them: a status write comes from one of these moments or from nowhere. Seed-time mode exclusion is not a status write — the readme-seed profile carries it, and the seed applies it once when the table is created.
 
 ## Matching
 

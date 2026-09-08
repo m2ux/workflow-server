@@ -17,6 +17,12 @@ List pull requests via REST.
 
 *(optional)* Additional query string for the pulls list (e.g. `state=open&sort=updated`). Default `state=open` when `{branch_name}` is unset.
 
+## Outputs
+
+### pull_requests
+
+Pull requests the listing returned, one JSON object per pull.
+
 ## Protocol
 
 ### 1. List Pulls
@@ -24,3 +30,4 @@ List pull requests via REST.
 1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
 2. When `{branch_name}` is set: `gh api "repos/{owner}/{repo}/pulls?state=open&head={owner}:{branch_name}" --paginate`.
 3. When `{branch_name}` is unset: `gh api "repos/{owner}/{repo}/pulls?{list_query}" --paginate` with `{list_query}` defaulting to `state=open`.
+4. Set `{pull_requests}` to the parsed array either branch returned.

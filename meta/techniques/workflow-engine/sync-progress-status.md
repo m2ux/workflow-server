@@ -37,12 +37,6 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 
 *(optional)* When true, permit writing `{target_status}` onto cells that [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy) treats as overwrite-N/A eligible. Defaults follow that section.
 
-## Outputs
-
-### rows_updated
-
-Count of Progress status fields changed this apply.
-
 ## Protocol
 
 1. Open `{planning_folder_path}/README.md` and locate the Progress surface per [Progress table](../../../meta/resources/planning-readme.md#progress-table).
@@ -54,14 +48,9 @@ Count of Progress status fields changed this apply.
 7. Bring each written row's item field into line with what its status now asserts, per the same policy section: a cancelled/N/A write strips the item link to plain text; a complete write with `{delivered_artifact}` bound repoints the item link at that artifact. Leave the item label either way.
 8. Ensure Progress chrome required by the resource is present per [Icon key](../../../meta/resources/planning-readme.md#icon-key).
 9. Do not mutate the README lifecycle Status line — ownership per [Progress table](../../../meta/resources/planning-readme.md#progress-table).
-10. Return `{rows_updated}`.
 
 ## Rules
 
 ### preserve-unrelated-rows
 
 Rows not in the candidate set are untouched per [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy).
-
-### orchestrator-owned
-
-Client workflow activities and workers do not Apply this technique as a substitute for the orchestrator hooks listed under [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites). Seed-time mode exclusion remains [create-readme](./create-readme.md) / readme-seed profile duty.

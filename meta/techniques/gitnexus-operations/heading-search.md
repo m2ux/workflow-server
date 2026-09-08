@@ -9,10 +9,6 @@ Find sections of a documentation or definition tree by heading text — the grap
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### heading_pattern
 
 A regular expression matched against whole heading text. Match a fragment by surrounding it — `'.*worktree.*'` finds every heading containing the word.

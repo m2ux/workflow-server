@@ -13,6 +13,12 @@ Resolve a name or email to a Jira account ID.
 
 Name or email to resolve.
 
+## Outputs
+
+### accountId
+
+Account ID the name or email resolved to.
+
 ## Protocol
 
-1. Call `lookupJiraAccountId { cloudId, searchString }`.
+1. Call `lookupJiraAccountId { cloudId, searchString }`; return the resolved `{accountId}`.

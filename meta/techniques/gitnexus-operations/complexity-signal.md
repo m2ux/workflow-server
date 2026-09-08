@@ -9,10 +9,6 @@ Objective complexity estimate for an issue, from the fan-out of a preliminary ta
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### target
 
 a preliminary symbol inferred from the issue (when one can be inferred)

@@ -2,6 +2,36 @@ id: supervisor
 version: 1.0.0
 name: Supervisor
 description: Classify a request onto a fixed specialist lane, dispatch that lane, and synthesise or escalate — borrowable mid-phase supervisor pattern.
+variables:
+  reads:
+    - lane_roster
+    - output_contract
+    - planning_folder_path
+    - session_index
+    - synthesis_criteria
+    - work_goal
+  writes:
+    - name: lane_id
+      type: string
+      description: The roster lane the request classified onto, or escalate where none fits.
+    - name: classification_rationale
+      type: string
+      description: Why the request landed on that lane, carried into synthesis or escalation.
+    - name: work_units
+      type: array
+      description: The selected lane as a one-element ordered array of { id, brief, tools_hint? }.
+    - name: worker_briefs
+      type: array
+      description: The selected lane's brief as a one-element ordered array.
+    - name: dispatched_results
+      type: array
+      description: Per-worker returns in brief order, each { id, result }.
+    - name: gathered_results
+      type: object
+      description: Ordered keyed collection of worker returns with its dispatch manifest and completeness verdict.
+    - name: combined_synthesis
+      type: string
+      description: The single result the gathered returns were combined into under the caller's criteria.
 required: false
 techniques:
   - scatter-gather
@@ -11,7 +41,7 @@ steps:
     technique: orchestration-patterns::classify-request
   - kind: technique
     id: compose-brief
-    technique: orchestration-patterns::compose-worker-brief
+    technique: orchestration-patterns::compose-worker-briefs
   - kind: technique
     id: dispatch
     technique:

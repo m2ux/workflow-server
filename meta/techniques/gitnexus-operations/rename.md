@@ -9,10 +9,6 @@ Multi-file rename driven by the call graph (preview or apply).
 
 ## Inputs
 
-### repo_name
-
-Repository name.
-
 ### old_name
 
 Current symbol name.
