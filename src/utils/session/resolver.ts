@@ -228,7 +228,7 @@ export function describeSessionStoreError(err: unknown): string {
     case 'SEAL_MISMATCH':
       return `${err.message}. The session.json (or its parsed contents) does not match the seal recorded in .session-token — restore the folder from the most recent commit before retrying.`;
     case 'STALE_WRITE':
-      return `${err.message}. Another call recorded against this session while this one was in flight, and applying this write would have discarded it. Nothing was written; repeat the call to work from the current state. Two calls in flight against one session — a parent and its children share a single file — is what produces this.`;
+      return `${err.message}. CALL THIS TOOL AGAIN with the same arguments. Nothing was written, so the repeat is not a double-record: it reads the state as it now stands and applies your change to that. Another call recorded against this session while this one was in flight, and admitting this write would have discarded what that call recorded. Two calls in flight against one session produce this — a parent and its children share a single file, so a parent and one of its children count as two. Keep one call in flight per session and it does not arise.`;
     case 'WORKSPACE_INVALID':
       return `${err.message}. Restart the server with a valid --workspace=PATH (or WORKFLOW_WORKSPACE / WORKTREE_ROOT), or pass repo on start_session when using an install multi-root.`;
     default:

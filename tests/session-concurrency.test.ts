@@ -24,6 +24,7 @@ import {
   SessionStoreError,
   advanceSession,
   computeSessionIndex,
+  describeSessionStoreError,
   ensurePlanningFolder,
   loadSessionForTool,
   saveSessionForTool,
@@ -110,6 +111,19 @@ describe('compare-and-swap on the session file (#655)', () => {
     expect(entries.filter((e) => e.includes('.tmp.'))).toHaveLength(0);
   });
 
+  it('tells the caller what to do about a refusal', () => {
+    // The refusal reaches an agent as this text and nothing else. It has to
+    // name the action, and say that repeating the call records once rather
+    // than twice — an agent that cannot tell will either stall or double up.
+    const described = describeSessionStoreError(
+      new SessionStoreError('stale write refused for /planning/x', 'STALE_WRITE'),
+    );
+    expect(described).toContain('stale write refused for /planning/x');
+    expect(described).toContain('CALL THIS TOOL AGAIN');
+    expect(described).toContain('Nothing was written');
+    expect(described).toContain('not a double-record');
+  });
+
   it('refuses a write whose file has gone', async () => {
     const loaded = await loadSessionForTool(workspace, sessionIndex, loadOpts);
     await rm(join(folder, 'session.json'));
@@ -149,10 +163,17 @@ describe('two calls in flight against one session file (#655)', () => {
     return JSON.parse((result.content as { text: string }[])[0]!.text) as Record<string, unknown>;
   }
 
-  /** Text of a failed call, asserted to be the refusal rather than some other fault. */
+  /**
+   * Text of a failed call, asserted to be the refusal rather than some other
+   * fault — and to carry the instruction that gets the caller moving again.
+   * An agent reads this text and nothing else: a refusal it cannot act on is
+   * a stall, so the nudge to repeat the call is part of the contract.
+   */
   function refusalText(result: ToolResult): string {
     const text = (result.content as { text: string }[])[0]?.text ?? '';
     expect(text).toContain('stale write refused');
+    expect(text).toContain('CALL THIS TOOL AGAIN');
+    expect(text).toContain('Nothing was written');
     return text;
   }
 
@@ -213,6 +234,25 @@ describe('two calls in flight against one session file (#655)', () => {
       const status = await call('get_workflow_status', { session_index: childIndex });
       expect((body(status)['workflow'] as Record<string, unknown>)['id']).toBe('child-fixture');
     }
+  });
+
+  it('tells a refused resume to repeat itself', async () => {
+    const slug = '2026-09-08-overlap-resume';
+    await start(slug);
+
+    // Two resumes in flight, each recording a different agent onto the
+    // session: the drift each one persists is composed from the same read.
+    const results = await Promise.all(['worker-a', 'worker-b'].map((agentId) =>
+      callTool('start_session', { agent_id: agentId, planning_folder: planningFolder(slug) })));
+
+    const succeeded = results.filter((r) => !r.isError);
+    expect(succeeded.length).toBeGreaterThanOrEqual(1);
+    // A refusal here comes from a tool that maps store errors itself, so this
+    // is where a bare, un-actionable message would show up.
+    for (const failed of results.filter((r) => r.isError)) refusalText(failed);
+
+    const stored = readSession(slug);
+    expect(['orchestrator', 'worker-a', 'worker-b']).toContain(stored.agentId);
   });
 
   it('keeps a parent and its child from overwriting each other in their shared file', async () => {

@@ -120,7 +120,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         })
         .strict(),
     },
-    withAuditLog('start_session', async ({ workflow_id, planning_folder, repo, agent_id, context_mode, user_request }) => {
+    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, repo, agent_id, context_mode, user_request }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
       // start_session is top-level only — it either opens an existing
@@ -442,7 +442,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         _meta: { session_index: sessionIndex, validation: buildValidation(depthWarning) },
       };
     })
-  );
+  ));
 
   server.registerTool(
     'dispatch_child',
