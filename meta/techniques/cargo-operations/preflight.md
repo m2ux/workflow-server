@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -23,4 +23,4 @@ Array of `{name, install_hint}` for any unmet prerequisite. Empty array when all
 
 ### probe-reports-only
 
-This operation reports what is absent. An `install_hint` is text on the finding, and the finding is the whole product.
+The finding is this operation's whole product. An `install_hint` names what would resolve a gap; running it is outside this operation.
