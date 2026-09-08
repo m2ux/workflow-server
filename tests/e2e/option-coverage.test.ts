@@ -113,31 +113,36 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     const covered: string[] = [];
     const walkErrors: string[] = [];
     const entered = new Set<string>();
-    // One walk per workflow, a few at a time. Each drives its own sessions and reads the corpus
-    // without writing it, so the walks share nothing but the server and the wall clock is the sum
-    // of the batches rather than of the walks. Results are folded in `scoped` order whatever order
-    // they finish in, so the coverage figure and the error list stay identical to a serial run.
-    // WALKED is ordered slowest-first, which puts the expensive walks in the same batch and lets
-    // the long ones overlap instead of queueing behind each other.
-    const LANES = 4;
-    for (let i = 0; i < scoped.length; i += LANES) {
-      const batch = scoped.slice(i, i + LANES);
-      const results = await Promise.all(batch.map(async (id) => ({
-        id,
-        ps: await enumeratePaths(h, id, {
-          maxVisits: 3, maxWalks: 120,
-          // The same convergence signals the hand-tuned policy walks use. Without them the
-          // enumerator stalls at the first activity that needs one, and every checkpoint past that
-          // point reads as uncovered for a reason about the enumerator rather than the definitions.
-          simulate: baseSimulation,
-          maxDryWalks: DRY_WALKS,
-        }),
-      })));
-      for (const { id, ps } of results) {
-        covered.push(...ps.coveredBranches);
-        for (const e of ps.errors) walkErrors.push(`${id}: ${e.message}`);
-        for (const p of ps.paths) for (const a of p.path) entered.add(a);
-      }
+    // One walk per workflow, the whole roster at once. Each drives its own sessions and reads the
+    // corpus without writing it, so the walks share nothing but the server, and the wall clock is
+    // the slowest single walk rather than the sum. Results are folded in `scoped` order whatever
+    // order they finish in, so the coverage figure and the error list stay identical to a serial
+    // run: measured at both widths, every walk covers the same options either way.
+    //
+    // The server is in-process over an in-memory transport, so all the walks share one event loop
+    // and the wall clock is bound by main-thread CPU rather than by how many run at once. Measured
+    // with fourteen in flight, the process holds 136% of a core: about a third of the work overlaps
+    // as I/O wait and the rest queues behind the parse-and-evaluate on the main thread. So the lane
+    // width buys little: four at a time measures 1,394 seconds here and the whole roster at once
+    // 1,269, a ninth, and there the concurrency ends. What is left is the slowest walk —
+    // `work-package` accounts for 1,269 of those 1,269 seconds, the other thirteen finishing inside
+    // its window. Anything that wants this job faster makes that walk cheaper rather than running
+    // more walks together.
+    const results = await Promise.all(scoped.map(async (id) => ({
+      id,
+      ps: await enumeratePaths(h, id, {
+        maxVisits: 3, maxWalks: 120,
+        // The same convergence signals the hand-tuned policy walks use. Without them the
+        // enumerator stalls at the first activity that needs one, and every checkpoint past that
+        // point reads as uncovered for a reason about the enumerator rather than the definitions.
+        simulate: baseSimulation,
+        maxDryWalks: DRY_WALKS,
+      }),
+    })));
+    for (const { id, ps } of results) {
+      covered.push(...ps.coveredBranches);
+      for (const e of ps.errors) walkErrors.push(`${id}: ${e.message}`);
+      for (const p of ps.paths) for (const a of p.path) entered.add(a);
     }
 
     const c = optionCoverage(declared, covered);
@@ -197,11 +202,18 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     ).toEqual([]);
     // A partial walk reports a gap it simply had not got to yet, so this ceiling sits clear of the
     // real cost rather than near it. The cost measured here, fourteen walks over the whole corpus:
-    // 794 seconds when this test was written, 1,572 serial at corpus 3695f3ab, and 1,244 across the
-    // four lanes above. A shared runner has measured about 1.5x the serial figure, which is what
-    // put the serial walk over a 2,700-second ceiling and prompted the lanes. Where a future corpus
-    // brings the batched cost back to this ceiling, widen the lanes before widening the ceiling —
-    // the walks are independent and the batch cost is its slowest member, so there is headroom in
-    // the first before the second is the only move left.
-  }, 2_700_000);
+    // 794 seconds when this test was written, 1,572 serial at corpus 3695f3ab, 1,394 across four
+    // lanes, and 1,269 with the roster in flight at once. A shared runner measures about 1.8x the
+    // local figure, which puts the corpus at 95660422 near 2,300 seconds there.
+    //
+    // The margin is the point. At a 2,700-second ceiling the same corpus walked green in 2,514
+    // seconds on one runner and timed out on the next, and a timeout is reported as the options the
+    // walk had not reached — a coverage failure naming the definitions when the cause is the clock.
+    // So this clears the measured cost by half again rather than by a tenth, and the job timeout in
+    // .github/workflows/coverage.yml clears this.
+    //
+    // Concurrency cannot buy the next rise back: the walks share one event loop and the wall clock
+    // is already the slowest of them. A corpus that brings the cost back here wants that walk made
+    // cheaper — the repeated corpus load behind each tool call is where the time goes.
+  }, 3_600_000);
 });

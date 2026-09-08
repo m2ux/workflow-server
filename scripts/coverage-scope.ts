@@ -1,7 +1,7 @@
 /**
  * Which workflows a coverage walk has to cover for a given corpus change.
  *
- * The walk drives fourteen workflows and costs about thirteen minutes, and most corpus changes
+ * The walk drives fourteen workflows and costs about 21 minutes, and most corpus changes
  * touch one workflow. Walking the other thirteen measures nothing the previous run did not, so this
  * names the smallest set that can still judge what changed.
  *
