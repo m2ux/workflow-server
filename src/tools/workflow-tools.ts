@@ -1031,10 +1031,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // The batch bound (#407), applied where content is handed over rather than in rule text.
       //
-      // Placed on the freshly loaded state, ahead of every composition await, for two reasons: a
-      // refusal costs nothing because no payload is assembled, and the refusal event is written with
-      // no await between the load and the save, so it cannot revert a concurrent write the way a save
-      // against a pre-composition snapshot would.
+      // Placed on the freshly loaded state, ahead of every composition await, because a refusal
+      // costs nothing when no payload has been assembled yet.
       const scope = deliveryScope(state, agent_id);
       const bound = batchBound(context_tokens, {
         headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
@@ -1510,10 +1508,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // cost — `chars` on an activity's fresh and resume events is the before/after measurement.
       const responseText = `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${activityBodyWithArtifacts}`;
 
-      // Persist against a FRESH load, not the snapshot captured before composition: the session
-      // store is last-writer-wins over the whole file, and composition awaits dozens of FS reads —
-      // saving the pre-composition snapshot would silently revert any concurrent write (sibling
-      // worker save, orchestrator checkpoint resolution) that landed in that window.
+      // Persist against a FRESH load, not the snapshot captured before composition. The store
+      // refuses a write built on a superseded read, and composition awaits dozens of FS reads:
+      // saving the pre-composition snapshot would fail whenever a sibling worker save or an
+      // orchestrator checkpoint resolution landed in that window. Reloading here narrows the
+      // window to the composition-free span below, so the delivery this call assembled is
+      // recorded rather than refused.
       const reloadOpts = await sessionLoadOpts();
       const reloaded = await loadSessionForTool(planningRootDir, session_index, reloadOpts);
       // Dispatch accounting (#353 §1.3): get_activity is the call a dispatched worker makes to

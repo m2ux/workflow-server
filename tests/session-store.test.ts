@@ -127,10 +127,10 @@ describe('session-store primitives', () => {
 
     it('falls back to copy+fsync+unlink when rename throws EXDEV', async () => {
       const { _setRenameForTests } = await import('../src/utils/session/store.js');
-      const { rename: realRename } = await import('node:fs/promises');
+      const { renameSync: realRename } = await import('node:fs');
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc15');
       let exdevThrown = 0;
-      _setRenameForTests(async (from, to) => {
+      _setRenameForTests((from, to) => {
         if (exdevThrown === 0 && String(to).endsWith(SESSION_FILE_NAME)) {
           exdevThrown += 1;
           const err: NodeJS.ErrnoException = Object.assign(
