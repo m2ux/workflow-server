@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ One validation verdict for a rust-substrate project — compilation, lints, test
 
 ### validation_results
 
-The aggregate validation envelope. It carries the four per-check statuses under the ids their producing operations declare — `check_status` from [check](./check.md), `clippy_status` from [clippy](./clippy.md), `test_status` from [test](./test.md), `fmt_status` from [fmt-check](./fmt-check.md) — each in the shape that operation publishes, and adds three fields of its own:
+The aggregate validation envelope. It carries the four per-check statuses — `check_status`, `clippy_status`, `test_status`, `fmt_status`, each in the shape its own contract declares — and adds three fields of its own:
 
 #### failed_checks
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -21,6 +21,6 @@ Array of `{name, install_hint}` for any unmet prerequisite. Empty array when all
 
 ## Rules
 
-### probe-never-installs
+### probe-reports-only
 
-This operation reports what is absent and installs nothing. An `install_hint` is text on the finding, never a command this operation runs.
+This operation reports what is absent. An `install_hint` is text on the finding, and the finding is the whole product.
