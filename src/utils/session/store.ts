@@ -397,7 +397,14 @@ async function persistSessionFile(
       );
     }
   }
-  swapIntoPlace(stagedState);
+  try {
+    swapIntoPlace(stagedState);
+  } catch (err) {
+    // The seal was staged for a state that never landed; drop it so the
+    // folder is left holding the pair it already had.
+    discardStaged(stagedSeal);
+    throw err;
+  }
   swapIntoPlace(stagedSeal);
 
   await syncDirectory(folderAbsPath);
