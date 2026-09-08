@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.12.0
+  version: 6.13.0
 ---
 
 ## Capability
@@ -39,7 +39,9 @@ Variables mutate from two sources only: checkpoint option effects (`setVariable`
 
 ### agent-id-scopes-delivery
 
-The delivery ledger is keyed on agent context, not on the session. `agent_id` on `get_activity`, `get_technique` and `get_resource` names that context — the worker agent identity bound into the stub that dispatches or continues the agent — and each context reads and writes its own ledger. A first dispatch under a new `agent_id` holds no prior deliveries, so it takes full delivery; the same `agent_id` calling again is that context resumed, and what it already received arrives as unchanged markers — on `get_activity` when the call carries `bundle: "reference"`, and on a repeat `get_technique` or `get_resource` whether or not it does ([fetch-costs-what-it-delivers](#fetch-costs-what-it-delivers)). The session's own identity is the exception, whether a call passes it or omits `agent_id` and falls back to it: several contexts can hold it at once, so under it a name is no evidence of one context and a repeat collapses only where the call declares reference delivery — which is what a solo walk, the one context that legitimately owns that identity, does.
+`agent_id` names an agent context, and what has already been delivered is scoped to that name rather than to the session. Pass it on every delivery call. A context calling for the first time receives bodies; the same context calling again receives unchanged markers for what it already holds, which is the expected answer rather than an error ([fetch-costs-what-it-delivers](#fetch-costs-what-it-delivers)).
+
+Omitting `agent_id` falls back to the session's own identity, which several contexts can hold at once. A name is then no evidence of one context, so a repeat collapses only where the call declares reference delivery — the case of a solo walk, the one context that legitimately owns that identity.
 
 ### force-full-after-summarization
 

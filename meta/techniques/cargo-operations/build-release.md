@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,10 +16,5 @@ The optimized release binary for `{build_scope}` AND the runtime wasm artifact, 
 ## Protocol
 
 1. `{build_budget} cargo build --release {build_scope} {features}`
-   > If the build runs out of memory (release link/LTO plus the nested wasm build together exceed available RAM), halve `CARGO_BUILD_JOBS`; on tight hosts, run `-p <crate>` for the binary first, then a separate workspace pass for the runtime.
-
-## Rules
-
-### keeps-generated-product
-
-This operation is where a project's second build product is produced, so it carries no suppression for one. Suppressing it here to save time removes the artifact a release exists to deliver.
+   > - When the build runs out of memory — release link/LTO and the nested second-product build peak together — halve `CARGO_BUILD_JOBS` and retry.
+   > - Below the host floor [resource-budget](./TECHNIQUE.md#resource-budget) names, run `-p <crate>` for the binary first, then a separate workspace pass for the second product.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -15,7 +15,11 @@ Resource-constrained operations for cargo subcommands.
 
 ### features
 
-Optional `--features` flags (empty string when none)
+*(optional)* `--features` flags carried into the cargo invocation.
+
+#### default
+
+`''`
 
 ### build_budget
 
@@ -23,13 +27,17 @@ The command prefix a compiling cargo invocation carries, composed per resource-b
 
 ### generated_product_skip
 
-The environment assignment that suppresses a project's second build product, composed per generated-product-built-once. Empty where the project has no such product.
+*(optional)* The environment assignment that suppresses a project's second build product, composed per generated-product-built-once.
+
+#### default
+
+`''`
 
 ## Rules
 
 ### resource-budget
 
-Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. Every compiling invocation carries `{build_budget}`, which is what prevents host hang on ≤32 GiB hosts; raise the caps through the environment on larger hosts.
+Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. Every compiling invocation carries `{build_budget}`, whose caps hold a compile inside a 32 GiB host. That figure is the floor these operations are tuned against: raise the caps through the environment on a host above it, and narrow `{build_scope}` to one crate on a host below it.
 
 `{build_budget}` is the environment caps followed by the nice level — `CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19` — and two operations extend it for what they compile:
 
@@ -44,11 +52,11 @@ Some projects compile a second product beside the binary, and building it on eve
 
 ### foreground-only
 
-Cargo operations MUST run as foreground shell invocations owned by the caller. Never dispatch them with `run_in_background` inside a worker — when the worker exits, the OS process group is killed and the build is lost. Several foreground shells running concurrently in one caller stay within this rule; backgrounded worker dispatches do not. If the wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
+Run every cargo operation as a foreground shell invocation, and wait for it. A backgrounded invocation dies with the context that spawned it, taking the build with it, so its result is unreadable to whoever asked for it. Running several foreground shells at once is within this rule; backgrounding any of them is not. A run that cannot finish in the foreground is a blocker to surface, carrying the scope that was attempted.
 
 ### scope-narrow-then-wide
 
-During inner loops (TDD red/green in implement-task) prefer build_scope=`-p <crate>`. Run `--workspace` once during final validation to match CI.
+Prefer `build_scope` = `-p <crate>` while iterating on one crate, and `--workspace` for the validation pass that must match CI.
 
 ### fmt-uses-only-nice
 

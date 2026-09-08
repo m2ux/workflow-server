@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Canonical formatting check; matches CI exactly. Does not compile, so does not need build-jobs caps.
+Canonical formatting verdict for the sources in scope, matching what CI enforces.
 
 ## Outputs
 

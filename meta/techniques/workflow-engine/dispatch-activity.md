@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.22.0
+  version: 1.23.0
 ---
 
 ## Capability
@@ -100,7 +100,7 @@ A status emission during a run carries exactly three things, in this order:
 The checklist is a markdown task list. Each item's text is the row number and name from the planning README's Progress table — not an artifact filename, whose numeric prefixes repeat across rows and which several rows do not have — and that text **is** the hyperlink, targeting the artifact's remote URL on the session branch:
 
 ```markdown
-- [x] [13 Assumptions review](https://github.com/owner/repo/blob/{branch}/{planning_path}/07-assumptions-log.md)
+- [x] [13 Assumptions review](https://github.com/owner/repo/blob/session-branch/planning-folder/07-assumptions-log.md)
 - [ ] [14 Implementation](…)
 ```
 
