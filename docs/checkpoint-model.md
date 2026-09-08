@@ -21,7 +21,9 @@ The server records the pause in the session's `activeCheckpoint` field, stamps i
 
 The replay path is what makes a lost worker cheap. Responses are keyed by activity and checkpoint with no agent component, so a replacement worker re-crossing a gate its predecessor already answered crosses it silently.
 
-Only one checkpoint may be active at a time. Yielding a second while one is outstanding is refused by name, which stops a run nesting pauses it cannot unwind.
+Only one checkpoint may be active **per session**. Yielding a second while one is outstanding is refused by name, which stops a run nesting pauses it cannot unwind.
+
+The bound is per session rather than per run, and the distinction matters wherever a workflow dispatches another. The refusal reads the `activeCheckpoint` of the session the call addresses, and the session-file schema is recursive, so every node in the tree — the parent and each of its embedded children — carries its own slot. A parent and a child can therefore hold gates at the same time, and two children can as well. What no single session can do is stack two.
 
 A worker that meets a decision its activity never declared may yield one anyway, supplying its own `message` and `options`. A declared gate owns its own wording, so those two fields are refused there.
 

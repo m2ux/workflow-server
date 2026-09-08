@@ -56,7 +56,9 @@ The file layout itself — what the state file carries, where the planning folde
 
 ### Layer 2: checkpoint gate
 
-When a worker yields a checkpoint, the server records it in the session's `activeCheckpoint` field. Three operations then refuse until it is cleared:
+When a worker yields a checkpoint, the server records it in the session's `activeCheckpoint` field. Eight operations then refuse until it is cleared, in two groups.
+
+Three guard the run's own progress, each with its own inline check:
 
 | Operation | Why it refuses |
 |-----------|----------------|
@@ -64,7 +66,17 @@ When a worker yields a checkpoint, the server records it in the session's `activ
 | `yield_checkpoint` | A second pause on top of an outstanding one cannot be unwound |
 | `resume_checkpoint` | A worker must not continue before the answer exists |
 
-Everything else stays open, deliberately. `inspect_session` in particular is usable while a checkpoint is active, which is how an orchestrator diagnoses a run that has stopped.
+Five more are content delivery, and refuse through the shared `assertNoActiveCheckpoint` helper, which states one blanket reason for all of them — every tool is gated until the checkpoint is resolved, and the orchestrator clears it with `respond_checkpoint`:
+
+| Operation |
+|-----------|
+| `get_workflow` |
+| `get_activity` |
+| `get_technique` |
+| `get_resource` |
+| `get_trace` |
+
+Six authenticated operations do **not** gate. Two are the resolution mechanism itself and must stay open: `present_checkpoint` loads the checkpoint definition while it is active, and `respond_checkpoint` clears it. Two are diagnostics, open so an orchestrator can examine a run that has stopped: `inspect_session` and `get_workflow_status`. The remaining two are `record_usage`, which accounts for work already done, and `dispatch_child`, which starts a child workflow — so a run holding an unanswered question can still open one.
 
 **Resolution via `respond_checkpoint`** takes exactly one of three modes:
 

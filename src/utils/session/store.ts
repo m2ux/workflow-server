@@ -787,8 +787,11 @@ export async function ensurePlanningFolder(
 /**
  * Transient (bootstrap) session support. Orchestrator-only sessions (notably
  * the meta workflow) never need a workspace folder — their state lives only
- * long enough to dispatch a child workflow, which then snapshots them into
- * `session.json#parentSession` and discards the parent.
+ * long enough to dispatch a child workflow. On that dispatch the parent is
+ * promoted to a durable workspace planning folder and the transient index is
+ * repointed at it (see `dispatch_child`'s transient branch); the child is then
+ * embedded under `triggeredWorkflows[0].state` in that file. The child's
+ * `parentSession` field is left unset.
  *
  * To keep the workspace planning root free of one-shot bootstrap folders,
  * transient sessions live under `os.tmpdir()/workflow-server-transient-<uuid>/`

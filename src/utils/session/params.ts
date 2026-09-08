@@ -54,10 +54,16 @@ export const agentIdParam = {
 
 
 /**
- * Throws if the SessionFile has an active checkpoint. Call this in every
- * authenticated tool handler EXCEPT `respond_checkpoint` (the resolution
- * mechanism) and `present_checkpoint` (which loads the checkpoint definition
- * while a checkpoint is active).
+ * Throws if the SessionFile has an active checkpoint. Gates the content-delivery
+ * handlers: `get_workflow`, `get_activity`, `get_technique`, `get_resource` and
+ * `get_trace`. The handlers guarding run progress — `next_activity`,
+ * `yield_checkpoint` and `resume_checkpoint` — carry their own inline checks so
+ * each can name what it refused.
+ *
+ * Six authenticated handlers do not gate: `present_checkpoint` and
+ * `respond_checkpoint` are the resolution mechanism, `inspect_session` and
+ * `get_workflow_status` are diagnostics that stay usable while a run is stopped,
+ * and `record_usage` and `dispatch_child` are unguarded.
  */
 export function assertNoActiveCheckpoint(state: { activeCheckpoint?: { checkpointId: string; activityId: string } | undefined; currentActivity?: string }): void {
   if (state.activeCheckpoint) {
