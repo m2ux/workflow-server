@@ -36,7 +36,7 @@ dispatch_child({
 
 This creates a **child session embedded in the parent's own `session.json`**, at `triggeredWorkflows[N].state` — the session-file schema is recursive, so a child is a sub-object of its parent's file rather than a file of its own. The parent gains a `triggeredWorkflows` entry naming the child's workflow, index, and the activity it was triggered from, plus a `workflow_triggered` history event.
 
-The response carries three values: the child's `session_index`, the canonical `planning_folder_path`, and `workflow.initialActivity` when the child workflow declares one. The last of these exists because a session that has not yet entered an activity reports no current activity, so the parent has no other route to the child's first activity id.
+The response carries three values: the child's `session_index`, the canonical `planning_folder_path`, and `workflow.initialActivity` — the activity the child's first `next_activity` should name. The last of these exists because a session that has not yet entered an activity reports no current activity, so the parent has no other route to the child's first activity id.
 
 Two consequences follow from the embedding, and both matter when reading the rest of this document. A child inherits the parent's planning folder — the persistent-parent path creates no folder and seeds no README for the child. And a child's `parentSession` field is left unset, so the recursive parent traversal that field supports does not reach an embedded child.
 
