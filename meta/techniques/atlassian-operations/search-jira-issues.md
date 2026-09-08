@@ -17,6 +17,12 @@ JQL query string
 
 Optional array of fields to return
 
+## Outputs
+
+### matching_issues
+
+Issues matching the query, one entry per issue, carrying the requested fields.
+
 ## Protocol
 
-1. Call `searchJiraIssuesUsingJql { cloudId, jql, fields, maxResults }`.
+1. Call `searchJiraIssuesUsingJql { cloudId, jql, fields, maxResults }`; return the matches as `{matching_issues}`.

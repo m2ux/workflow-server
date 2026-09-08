@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Contract and rules for executing a workflow's structured flow — sessions, activities, agents, Progress, and checkpoints.
+Contract and rules for executing a workflow's structured flow — sessions, activities, agents, Progress, and checkpoints. Every rule here is one both an orchestrator and a worker can act on; the boundaries a single role carries belong to that role's own operation.
 
 ## Rules
 
@@ -16,10 +16,6 @@ EVERY authenticated tool call (anything other than `discover`, `list_workflows`,
 ### validation-warnings
 
 Check `_meta.validation` in each response. Warnings are advisory but should be addressed.
-
-### dispatch-topology
-
-Client walks dispatch workers via [dispatch-activity](./dispatch-activity.md), each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see [batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context).
 
 ### resource-loading-via-tool
 
@@ -47,36 +43,4 @@ The delivery ledger is keyed on agent context, not on the session. `agent_id` on
 
 ### force-full-after-summarization
 
-When this agent context no longer holds previously delivered content (e.g. after summarization), force full re-delivery with `get_activity { bundle: "full" }`, `get_technique { full: true }`, or `get_resource { full: true }`. Unchanged-references are valid only for content this same agent already received.
-
-### verify-dispatched-activity
-
-Before executing any step, confirm the activity `id` returned by the `get_activity` call your current stub instructed — not an earlier response this context still holds — equals the `{activity_id}` that dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned), which is the whole of the remedy available from here. Do not proceed on the wrong activity.
-
-### run-status-shape
-
-A status emission during a run carries exactly three things, in this order:
-
-1. A link to the artifact the completed activity produced.
-2. One line summarising it.
-3. The activity checklist, complete.
-
-The checklist is a markdown task list. Each item's text is the row number and name from the planning README's Progress table — not an artifact filename, whose numeric prefixes repeat across rows and which several rows do not have — and that text **is** the hyperlink, targeting the artifact's remote URL on the session branch:
-
-```markdown
-- [x] [13 Assumptions review](https://github.com/owner/repo/blob/{branch}/{planning_path}/07-assumptions-log.md)
-- [ ] [14 Implementation](…)
-```
-
-The list is complete on every emission: every activity, run and unrun alike. Never roll the unrun tail into one summarising item. Any other enumeration in the emission is a bullet list rather than a semicolon run-on.
-
-Two boundaries decide what else may appear:
-
-- **Workflow mechanics stay out.** Which activity is dispatched to whom, worker resumes and identities, how much room a batch has left, usage recording, commit bookkeeping. None of it is actionable, and the checklist already carries where the run stands.
-- **What the user needs in order to decide stays in, at whatever length it takes.** A gate's substance, an option's trade-off, what a finding turns on. The distinction is the decision, not the length.
-
-A multi-paragraph restatement of what an artifact already records is the failure this shape prevents: a paraphrase drifts from the artifact it paraphrases, and a reader has no way to tell which is authoritative.
-
-### progressive-step-technique-load
-
-A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle; re-fetching it pays the round trip for content the response already delivered ([fetch-costs-what-it-delivers](#fetch-costs-what-it-delivers)).
+When this agent context no longer holds previously delivered content (e.g. after summarization), force full re-delivery with `get_activity { bundle: "full" }`, `get_technique { full: true }`, or `get_resource { full: true }`. Unchanged-references are valid only for content this same agent already received. Each escape is for a call its reader makes.

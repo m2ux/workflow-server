@@ -9,10 +9,6 @@ metadata:
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### name
 
 the symbol to inspect

@@ -9,10 +9,6 @@ Raw graph query for traces and filters not covered by the higher-level operation
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### cypher_query
 
 a Cypher query string

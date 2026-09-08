@@ -33,7 +33,7 @@ Worker agent identity for this dispatch.
 
 ### 1. Verify dispatch
 
-- Confirm the activity `id` on the `get_activity` response whose operations bundle delivered this technique equals `{activity_id}` per [verify-dispatched-activity](./TECHNIQUE.md#verify-dispatched-activity)
+- Confirm the activity `id` on the `get_activity` response whose operations bundle delivered this technique equals `{activity_id}` per [verify-dispatched-activity](#verify-dispatched-activity)
 - Follow the operations bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
 - Read `may_continue` from the `batch:` block leading that response — this context's standing against its bound ([batch-ends-where-the-server-says](#batch-ends-where-the-server-says))
 
@@ -47,9 +47,9 @@ Worker agent identity for this dispatch.
 - When `{effects}` is bound, this context is continuing past a gate it yielded rather than opening the activity: apply [resume-from-checkpoint](./resume-from-checkpoint.md), then carry on from the paused step rather than the first. The remaining steps and the envelope below are owed either way — a gate pauses the walk, it does not end it
 - Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
 - Execute each activity step in document order
-- For `kind: technique` steps, load the bound operation on reach per [progressive-step-technique-load](./TECHNIQUE.md#progressive-step-technique-load)
+- For `kind: technique` steps, load the bound operation on reach per [progressive-step-technique-load](#progressive-step-technique-load)
 - Apply each bound operation via [variable-binding](../variable-binding.md)
-- Honor `when:` gates against the variable bag — operators `==`/`!=`/`>`/`<`/`>=`/`<=`, bare truthiness, unary `!`, `&&`, `||`, parentheses; C-style precedence (`()` > `!` > comparisons > `&&` > `||`); mixed `&&`/`||` at one depth requires parentheses; match the reference evaluator in `src/schema/when-expression.ts` (invalid expressions do not run the step)
+- Honor `when:` gates against the variable bag, evaluating each expression as the activity schema's `when` field defines it; an expression that does not parse does not run its step
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
 - When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` read in step 1 as `batch_may_continue`
 
@@ -78,6 +78,14 @@ While a step of this activity holds work still running outside this context — 
 ### final-message-is-an-envelope
 
 The last thing this context emits is the envelope this activity owes — the `checkpoint_pending` yield, or the `activity_complete` result. Anything emitted in its place ends the context with the envelope still owed, and is not an accepted result ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)).
+
+### verify-dispatched-activity
+
+Before executing any step, confirm the activity `id` returned by the `get_activity` call your current stub instructed — not an earlier response this context still holds — equals the `{activity_id}` that dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned), which is the whole of the remedy available from here. Do not proceed on the wrong activity.
+
+### progressive-step-technique-load
+
+A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle; re-fetching it pays the round trip for content the response already delivered ([fetch-costs-what-it-delivers](./TECHNIQUE.md#fetch-costs-what-it-delivers)).
 
 ### batch-ends-where-the-server-says
 

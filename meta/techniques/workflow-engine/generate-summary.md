@@ -25,7 +25,7 @@ Completed activities, checkpoint decisions, and artifacts produced.
 
 ## Protocol
 
-1. Draw from `{execution_trace}` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `{completion_summary}`.
+1. Fill the [Session Summary Template](../../../meta/resources/session-summary-template.md#session-summary-template) from `{workflow_definition}` and `{execution_trace}`, honouring the fill rules stated beneath it. Return the assembled markdown as `{completion_summary}`.
 
 ## Rules
 

@@ -9,10 +9,6 @@ Source architecture-diagram structure from graph resources rather than hand-roll
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### diagram_type
 
 `'package'` or `'sequence'`

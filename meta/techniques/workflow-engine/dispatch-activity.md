@@ -83,7 +83,35 @@ Client finalize/retrospective paths that consume execution history MUST resolve 
 
 Leave the user no silent minute. Before spawning, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that it runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. Where a wait falls between one activity and the next, say that they are waiting and roughly how long, without an account of the machinery imposing it.
 
-A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching. What a completed activity delivered is a separate emission, in the shape [run-status-shape](./TECHNIQUE.md#run-status-shape) declares, made once its artifacts are on the remote.
+A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching. What a completed activity delivered is a separate emission, in the shape [run-status-shape](#run-status-shape) declares, made once its artifacts are on the remote.
+
+### dispatch-topology
+
+Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see [batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [delivery-keys-on-agent-context](#delivery-keys-on-agent-context).
+
+### run-status-shape
+
+A status emission during a run carries exactly three things, in this order:
+
+1. A link to the artifact the completed activity produced.
+2. One line summarising it.
+3. The activity checklist, complete.
+
+The checklist is a markdown task list. Each item's text is the row number and name from the planning README's Progress table — not an artifact filename, whose numeric prefixes repeat across rows and which several rows do not have — and that text **is** the hyperlink, targeting the artifact's remote URL on the session branch:
+
+```markdown
+- [x] [13 Assumptions review](https://github.com/owner/repo/blob/{branch}/{planning_path}/07-assumptions-log.md)
+- [ ] [14 Implementation](…)
+```
+
+The list is complete on every emission: every activity, run and unrun alike. Never roll the unrun tail into one summarising item. Any other enumeration in the emission is a bullet list rather than a semicolon run-on.
+
+Two boundaries decide what else may appear:
+
+- **Workflow mechanics stay out.** Which activity is dispatched to whom, worker resumes and identities, how much room a batch has left, usage recording, commit bookkeeping. None of it is actionable, and the checklist already carries where the run stands.
+- **What the user needs in order to decide stays in, at whatever length it takes.** A gate's substance, an option's trade-off, what a finding turns on. The distinction is the decision, not the length.
+
+A multi-paragraph restatement of what an artifact already records is the failure this shape prevents: a paraphrase drifts from the artifact it paraphrases, and a reader has no way to tell which is authoritative.
 
 ### no-get-activity-from-orchestrator
 
@@ -91,7 +119,7 @@ Workflow orchestrators NEVER call `get_activity`.
 
 ### no-pre-load-techniques
 
-NEVER call `get_technique` to pre-load techniques for the worker. Step techniques load on the worker via [progressive-step-technique-load](./TECHNIQUE.md#progressive-step-technique-load).
+NEVER call `get_technique` to pre-load techniques for the worker. Step techniques load on the worker via [progressive-step-technique-load](./activity-worker.md#progressive-step-technique-load).
 
 ### delivery-keys-on-agent-context
 

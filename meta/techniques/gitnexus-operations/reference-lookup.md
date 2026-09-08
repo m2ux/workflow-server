@@ -9,10 +9,6 @@ Enumerate the files whose links resolve to a given documentation or definition f
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### target_file_path
 
 Path of the file whose referencers are wanted, spelled as the index records it — relative to the tree the index was built from, so a component folded into a containing tree carries that tree's prefix.

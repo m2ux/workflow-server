@@ -9,10 +9,6 @@ Find execution flows related to a concept, symptom, or error string — the stru
 
 ## Inputs
 
-### repo_name
-
-Optional. Name of the indexed graph to address. Omit only where exactly one graph is indexed.
-
 ### search_query
 
 a concept, symptom, or error text (e.g. `'payment validation error'`)

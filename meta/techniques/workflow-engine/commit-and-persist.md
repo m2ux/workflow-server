@@ -19,7 +19,7 @@ Activity that just completed.
 
 ## Protocol
 
-1. **README Progress:** Resolve the Progress moment from [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites): if `{mark_progress_na}` is true, use path-skip / cancel / mark N/A; otherwise use `activity_complete`. Apply [sync-progress-status](./sync-progress-status.md)(*activity_id*={activity_id}, *planning_folder_path*={planning_folder_path}, *target_status*=that moment's status, with its overwrite defaults per [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy)); record `{rows_updated}` from that Apply. Do not restate [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary). When `{mark_progress_na}` was true, set it false after the Apply.  
+1. **README Progress:** Resolve the Progress moment from [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites): if `{mark_progress_na}` is true, use path-skip / cancel / mark N/A; otherwise use `activity_complete`. Apply [sync-progress-status](./sync-progress-status.md)(*activity_id*={activity_id}, *planning_folder_path*={planning_folder_path}, *target_status*=that moment's status, with its overwrite defaults per [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy)). Do not restate [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary). When `{mark_progress_na}` was true, set it false after the Apply.  
    > Apply [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile) when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
 2. Set the header-line `**Status:**` to the current lifecycle milestone for that workflow (text — distinct from Progress Status; see [Progress table](../../../meta/resources/planning-readme.md#progress-table)).
 3. If the README already matches after steps 1–2, leave content equivalent — still include the file in the engineering commit below so a prior local-only edit is pushed.
@@ -29,7 +29,7 @@ Activity that just completed.
    > - Otherwise apply [commit-regular-files](../version-control/commit-regular-files.md) — the artifacts are ordinary files of the host checkout.
    > - Where the host branch accepts changes only through pull requests, the parent's submodule-pointer bump lands in a PR; a direct push to that branch is refused, and the engineering push above already satisfies this step without it.
 6. Confirm the engineering push landed (remote tracking branch includes the new commit). If push failed, retry once; if still failing, surface the error and do not advance to the next activity.
-7. Emit the run status in the shape [run-status-shape](./TECHNIQUE.md#run-status-shape) declares. This is the last phase, after the push is confirmed, so every link the emission publishes points at an artifact the remote already holds.
+7. Emit the run status in the shape [run-status-shape](./dispatch-activity.md#run-status-shape) declares. This is the last phase, after the push is confirmed, so every link the emission publishes points at an artifact the remote already holds.
 
 ## Rules
 

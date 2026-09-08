@@ -17,6 +17,12 @@ List issues via REST search or listing.
 
 *(optional)* Query string for the issues list when `{search_text}` is unset (e.g. `state=open&labels=bug`). Default `state=open`. Pull requests appear in the issues list endpoint unless filtered out in post-processing.
 
+## Outputs
+
+### issue_records
+
+Issues the search or listing returned, one JSON object per issue.
+
 ## Protocol
 
 ### 1. List Or Search Issues
@@ -24,3 +30,4 @@ List issues via REST search or listing.
 1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
 2. When `{search_text}` is set: `gh api "search/issues?q={search_text}+repo:{owner}/{repo}+type:issue" --paginate`.
 3. When `{search_text}` is unset: `gh api "repos/{owner}/{repo}/issues?{list_query}" --paginate` with `{list_query}` defaulting to `state=open`.
+4. Set `{issue_records}` to the parsed array either branch returned.

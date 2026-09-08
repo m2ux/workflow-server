@@ -2,6 +2,36 @@ id: lead-researcher
 version: 1.0.0
 name: Lead Researcher
 description: Plan parallel research questions, fan out, synthesise, and follow up while gaps remain — borrowable lead-researcher pattern.
+variables:
+  reads:
+    - dispatch_concurrency
+    - effort_cap
+    - output_contract
+    - planning_context
+    - planning_folder_path
+    - session_index
+    - synthesis_criteria
+    - work_goal
+  writes:
+    - name: work_units
+      type: array
+      description: Ordered research questions as work units, each { id, brief, tools_hint? }.
+    - name: worker_briefs
+      type: array
+      description: Ordered dispatch-ready briefs, each { id, description, prompt }.
+    - name: dispatched_results
+      type: array
+      description: Per-worker returns in brief order, each { id, result }.
+    - name: gathered_results
+      type: object
+      description: Ordered keyed collection of worker returns with its dispatch manifest and completeness verdict.
+    - name: combined_synthesis
+      type: string
+      description: The single result the gathered returns were combined into under the caller's criteria.
+    - name: has_research_gaps
+      type: boolean
+      description: Whether material gaps remain against the goal after the current synthesis.
+      defaultValue: false
 required: false
 techniques:
   - scatter-gather

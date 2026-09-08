@@ -13,6 +13,12 @@ Resolve a document name to its full source path.
 
 Name from the index.
 
+## Outputs
+
+### source_path
+
+Full source path the document name resolved to.
+
 ## Protocol
 
-1. Call `catalog_search { name: document_name }`.
+1. Call `catalog_search { name: document_name }`; return the resolved path as `{source_path}`.

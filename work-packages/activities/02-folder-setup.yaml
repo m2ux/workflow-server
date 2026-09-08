@@ -19,7 +19,7 @@ variables:
 steps:
   - kind: technique
     id: create-folder
-    technique: version-control::initialize-folder
+    technique: version-control::derive-planning-slug
   - kind: technique
     id: setup-planning-folder
     technique: setup-planning-folder

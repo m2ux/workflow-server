@@ -41,7 +41,7 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "meta/resources/session-summary-template.md",
+      "site": "meta/resources/token-usage.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
@@ -372,11 +372,6 @@
     },
     {
       "site": "work-package/resources/test-suite-review.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/token-usage.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },

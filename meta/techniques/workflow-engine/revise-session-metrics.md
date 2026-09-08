@@ -37,17 +37,13 @@ Updated lean mechanical trace under the planning folder (`*session-trace.md`).
 
 ### 2. Re-render token usage
 
-- Find-or-update the existing `token-usage.md` (same prefix the client close-out minted) with:
-  - Per-activity table: activity id, dispatch/ledger counts, tool uses, **Duration (min)** (`min = duration_ms / 60000`, one decimal), subagent tokens (or input/output when those fields exist), model, `priceTableVersion`, cost (`unknown` when unpriced).
-  - Per-workflow totals: token sum, wall-duration sum in minutes, cost.
-  - `usage_coverage`: ledger entry count, actual fresh-dispatch count, unaccounted remainder. When remainder > 0, label totals a **floor**.
-  - Estimate-not-bill caveat.
+- Find-or-update the existing `token-usage.md` (same prefix the client close-out minted) from the ledger, to the shape [token-usage](../../../meta/resources/token-usage.md#template) lays out and the [Rules](../../../meta/resources/token-usage.md#rules) that populate it.
 - Do not mint a second prefix.
 
 ### 3. Re-render session trace
 
-- Find-or-update the existing `session-trace.md` from the same ledger — mechanical only (dispatches, tool calls, durations in minutes, errors, `vw` clusters). Cost by one link to token-usage; no token figures restated.
-- When a successful terminal dispatch left no ledger row, record that gap in mechanical notes and in `usage_coverage`. Wall-clock from durable `activity_dispatched`/`activity_entered` to `activity_exited` may appear as an **unpriced duration note** only when both timestamps exist — never as invented tokens.
+- Find-or-update the existing `session-trace.md` from the same ledger, to the shape [session-trace](../../../meta/resources/session-trace.md#template) lays out and the [Rules](../../../meta/resources/session-trace.md#rules) that populate it.
+- When a successful terminal dispatch left no ledger row, record that gap in mechanical notes and in the coverage reconciliation. Wall-clock from durable `activity_dispatched`/`activity_entered` to `activity_exited` may appear as an **unpriced duration note** only when both timestamps exist — never as invented tokens.
 
 ### 4. Refresh the README cost line
 

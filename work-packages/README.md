@@ -71,7 +71,7 @@ Creates the planning folder and its initial documentation skeletons (START-HERE.
 ```mermaid
 graph TD
     subgraph folder-setup[Planning Folder Setup]
-        f1([create-folder → version-control::initialize-folder])
+        f1([create-folder → version-control::derive-planning-slug])
         f2([setup-planning-folder → setup-planning-folder])
         cpType{Analysis type?}
         cp1{Folder setup complete?}
@@ -202,7 +202,7 @@ Workflow-specific techniques live under `techniques/`. Three are **operation gro
 | `orchestrate-package-execution` | Group | Trigger and manage work-package workflow instances | Implementation |
 | `orchestrate-package-execution::initialize-iteration` | Group op | Build the remaining-packages list and progress indicator | Implementation |
 | `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow, update status | Implementation (loop) |
-| `version-control::initialize-folder` | Meta | Derive the canonical planning-folder slug | Folder Setup |
+| `version-control::derive-planning-slug` | Meta | Derive the canonical planning-folder slug | Folder Setup |
 | `variable-binding` | Meta | Bind step operations to the workflow variable bag | Inherited by every activity (declared at `workflow.techniques.activity`) |
 | `scatter-gather` | Meta | Fan out and aggregate forEach iterations | Package Planning, Implementation (supporting) |
 
