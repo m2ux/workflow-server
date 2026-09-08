@@ -1,6 +1,6 @@
 {
   "note": "One-time triage of the binding-fidelity findings the retired baseline had suppressed (issue #327 R3). Every finding carries a verdict and a named rationale, so \"harmless\" and \"live bug\" are no longer the same silence. harmless = correct by design, suppressed. fix-later = real debt, suppressed but counted. live-bug = REPORTED, so the guard stays red until it is fixed. A finding absent from this file is untriaged and reported; an entry that matches nothing is stale and reported. There is no regenerate flag — an entry is a human judgement, which is exactly what the baseline never required. The triage also found and FIXED three live defects, so they appear here as history rather than as entries: work-package auto-created GitHub/Jira issues in a headless review run (two review-reachable checkpoints with a create default); substrate-node-security-audit required user_request without declaring it; and the stealth push path computed push_remote_verified and commits_signed without gating on either. The file carries one entry per emitted violation, so a designator read twice on one line has two entries with the same normalised key; the matcher keys on check, site without its trailing line number, and detail, and resolves both to the same verdict. What the key does not compare is the rationale name and the line number, so every rationale here is cited by at least one entry, and a line number is corrected when the site it names moves. Four reason classes have closed since the triage and are recorded here rather than kept as unused keys: a brace belonging to an external tool's own syntax rather than the designator namespace; a value no operation declares, which the executing agent improvised at the point of use; a declared output with no destination, whose design-time home is output-without-destination in workflow-design/resources/anti-patterns.md; and a finding a test pinned as its fixture for the UNRESOLVED provenance annotation. A fifth closed with #561: a component verdict declared as a product of its own while the artifact was what carried it, which the operation now records in its report instead of declaring.",
-  "corpusSha": "956604224296aba843a05f2ecd71b0ceab961021",
+  "corpusSha": "332351101c2d6f09547023747835c450d4cd9641",
   "rationales": {
     "shared-op-return-contract": "A shared library operation declares what it returns — one under meta/, or one a workflow publishes for reuse in its own README and workflow description. Library ops are bound ad hoc by any workflow, so having no consumer inside the corpus is the expected state of a library, not a broken seam; the caller that binds the op consumes the value in its own context. This is the first do-not-flag carve-out of `output-without-destination`.",
     "shared-op-caller-argument": "A shared meta operation input that the binding step supplies as a deviation when it needs a non-default value. No workflow-level producer is expected: callers that need it bind it, and callers that do not take the op default path.",
@@ -11,6 +11,90 @@
     "sub-agent-brief-seed": "Every bind site of the op sits in a Sub-Agent activity, dispatched by an orchestrator that composes its brief. The input arrives in that brief, so no workflow variable or sibling step produces it."
   },
   "entries": [
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/get-confluence-page.md",
+      "detail": "output 'page_body' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/list-confluence-page-descendants.md",
+      "detail": "output 'child_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/list-confluence-pages-in-space.md",
+      "detail": "output 'space_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/list-confluence-spaces.md",
+      "detail": "output 'accessible_spaces' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/list-jira-issue-fields.md",
+      "detail": "output 'issue_type_fields' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/list-jira-issue-types.md",
+      "detail": "output 'project_issue_types' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/list-jira-projects.md",
+      "detail": "output 'visible_projects' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/list-jira-transitions.md",
+      "detail": "output 'available_transitions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/search-confluence.md",
+      "detail": "output 'confluence_results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/search-jira-issues.md",
+      "detail": "output 'matching_issues' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/github-cli-protocol/list-issues.md",
+      "detail": "output 'issue_records' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/github-cli-protocol/list-prs.md",
+      "detail": "output 'pull_requests' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
     {
       "check": "read-resolution",
       "site": "substrate-node-security-audit/workflow.yaml:51",
@@ -174,13 +258,6 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/orchestration-patterns/compose-worker-brief.md",
-      "detail": "output 'worker_brief' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "meta/techniques/orchestration-patterns/execute-plan-step.md",
       "detail": "output 'step_result' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
@@ -248,13 +325,6 @@
       "detail": "own input 'synthesis_criteria' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "prism :: meta::gitnexus-operations::verify-index",
-      "detail": "own input 'repo_name' has no producer in workflow 'prism' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
@@ -344,13 +414,6 @@
       "check": "orphan-input",
       "site": "work-package :: meta::atlassian-operations::transition-jira-issue",
       "detail": "own input 'status_transition' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: meta::cargo-operations::test",
-      "detail": "own input 'test_filter' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
