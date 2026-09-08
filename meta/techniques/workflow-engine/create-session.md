@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -37,7 +37,7 @@ The canonical absolute path of the planning folder, as resolved by the server un
 
 ### initial_activity
 
-*(optional)* The activity the child's first `next_activity` should name — absent when the child workflow declares no `initialActivity`, which makes every activity an entry point. A session that has not entered an activity reports none, and the parent has no other way to learn the child's first one, so this carries it across the session boundary.
+The activity the child's first `next_activity` should name — every workflow declares one. A session that has not entered an activity reports none, and the parent has no other way to learn the child's first one, so this carries it across the session boundary.
 
 ## Protocol
 
