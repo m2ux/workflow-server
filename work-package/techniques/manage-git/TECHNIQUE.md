@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.2
+  version: 2.2.0
 ---
 
 ## Capability
@@ -30,7 +30,9 @@ Branches and pull requests are created against the target's upstream. Every oper
 
 ### code-commit-coauthor-trailer
 
-Every code commit (NOT artifact commits) MUST carry a `Co-authored-by: {display_name} <{email}>` trailer so GitHub renders both the human and the assistant in the commit byline. Whether to add it manually depends on the harness: Claude Code adds it automatically — do NOT add it again or it will appear twice. Other assistants that do not auto-inject the trailer must add it explicitly via `git commit -m "subject\n\nCo-authored-by: {display_name} <{email}>"`. Known assistant identity for the Claude Code harness: `Co-authored-by: Claude <noreply@anthropic.com>` (auto-injected). For other assistants, use the identity provided by their harness or documentation.
+Every code commit carries exactly one `Co-authored-by: {display_name} <{email}>` trailer, so the byline names both the human and the assistant. Artifact commits carry none.
+
+Whether the harness injects that trailer is a property of its configuration rather than of its identity, so the trailer is confirmed on the commit rather than predicted from the host: read the committed message, and add the trailer only where it is absent. A commit carrying it twice and a commit carrying none are both what predicting produces, and the assistant identity to use where one must be added is the one that harness reports for itself.
 
 ### host-shell-for-remote-git
 
