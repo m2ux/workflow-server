@@ -10,14 +10,14 @@
 |----------|-------:|--------:|------:|
 | Critical | 0 | 0 | 0 |
 | High     | 2 | 2 | 0 |
-| Medium   | 7 | 7 | 6 |
-| Low      | 5 | 4 | 0 |
+| Medium   | 9 | 8 | 6 |
+| Low      | 6 | 6 | 0 |
 
-**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 76 of 173
+**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 108 of 173
 
 Findings 1 and 3 landed on `workflow/prism-launch-results` (PR #663); finding 2 in the same branch after the design decisions under [Decisions](#decisions); finding 4 on `workflow/register-prefix-precedence` (PR #666) — all merged, with the corpus pointer and coverage stamp adopted in PR #665.
 
-Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. Findings 12 through 14 are the third, nine more resources and nine techniques. All applied on `workflow/wp-audit-batch2` (PR #668) except finding 14, which needs a content decision rather than a repair.
+Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. Findings 12 through 14 are the third, nine more resources and nine techniques. Findings 15 through 17 are the fourth, thirty-two techniques. All applied on `workflow/wp-audit-batch2` (PR #668) except finding 17, whose fix lands in `meta` and is recorded as the residual for a pass over that target.
 
 ## Change surface
 
@@ -56,6 +56,10 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 | 13 | Low | `no-duplicated-guidance` | `techniques/codebase-comprehension/TECHNIQUE.md`, `deep_dives`; `techniques/plan-prepare/TECHNIQUE.md`, `tasks` | Each container declares a nested output component that the operation producing it also declares, and both pairs have drifted. The comprehension container calls `deep_dives` "targeted exploration sections added during user-driven loop" where the operation calls them "findings for the selected area: traced data flows, implementation detail, and edge cases" — sections against findings, a user-driven loop against a selected area. The plan container's `tasks` is a shortened prefix of the operation's. Checked across all twelve work-package containers declaring outputs; the only two overlaps. | `pre-existing` | | Keep the operation's statement — it produces the value, carries the fuller description, and sits beside the artifact and audience declarations for the same output. **Applied.** |
 | 14 | Low | `no-contradictory-rules` | `resources/rust-substrate-code-review.md` | The declared `Category` vocabulary offers six values including `Security`, the Review Criteria section has five numbered categories with security criteria sitting as a subsection under Substrate Framework, and the Method Record's Compliance instruction names the same five and omits Security. A finding categorised `Security` therefore has no criteria section of its own and no compliance row to be scored in. | `pre-existing` | | Open — whether Security becomes a sixth peer with its own criteria, or leaves the vocabulary, is a judgement about what belongs in a Rust review rather than a defect with one repair. **Not applied.** |
 
+| 15 | Medium | `no-duplicated-guidance` | `techniques/create-issue/TECHNIQUE.md` | Four of five container rules restate guidance the issue-creation guide carries, and both operations cite that guide's template, anti-patterns and section rules from their own first protocol step, so a worker met the same guidance twice from two places that could drift. `issues-define-problems` is the guide's opening paragraph; `no-implementation-details` its forbidden-content table and implementation-details anti-pattern; `acceptance-criteria` its missing-criteria anti-pattern and its section rule on observable criteria; `issue-clarity` its assumed-context anti-pattern. | `pre-existing` | | Delete the four. `requirement-traceability` stays — a workflow invariant the guide says nothing about. **Applied.** |
+| 16 | Low | `no-duplicated-guidance` | `techniques/design-philosophy/TECHNIQUE.md` | The container nests `problem_statement`, `problem_type` and `problem_complexity` under its artifact output while `define.md` and `classify.md` each declare one as a top-level output. Three values, two homes each, all three drifted: the container calls `problem_type` "specific problem or inventive goal" where `classify.md` names its four values outright. The container's `problem_statement` line is byte-identical to the workflow container's input of the same name, a third statement. The second shape of finding 13 — a container nesting ids siblings declare at top level, which the same-output-id check does not see. | `pre-existing` | | The producing operation keeps each; nothing reads them through dotted access on the artifact, checked rather than assumed since the pattern is live in twenty other places. **Applied.** |
+| 17 | Medium | `no-tool-usage-prescription` | `techniques/manage-git/TECHNIQUE.md`, `code-commit-coauthor-trailer` | The rule carries harness-specific behaviour: that Claude Code injects the trailer automatically and must not be given it twice, that other assistants must add it explicitly, and the literal identity string for one harness. The corpus has a home for exactly this variance — `meta/techniques/harness-compat/` carries a file per harness plus a resolver — and none of them owns the trailer, so the one statement of it sits in a workflow technique. | `pre-existing` | | Open, and deliberately out of this target's scope: the fix authors a harness-compat operation in `meta` and reduces this rule to the invariant plus a cite. Recorded as the residual for a `meta` pass. **Not applied.** |
+
 ### Withdrawn on adversarial re-derivation
 
 | Candidate | Why it fell |
@@ -74,7 +78,8 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 | `resources/pr-description.md` cites `manage-artifacts.single-source-and-link` by dotted address rather than a resolvable link | A dotted address names a rule for a reader; the anchored-link convention governs resource and section citations. Both forms appear across the corpus for their own purposes. |
 | Group containers declaring `## Outputs` at all is a convention divergence | The corpus discriminates the form, not the file: 29 of 79 containers declare outputs, 12 of them in this workflow. Only the nested-component overlap survives, as finding 13. |
 | `resources/web-research.md` carries no `## Rules` and no line budget | Its section appends to the research document, whose budget the knowledge-base guide states. A second budget over the same artifact would be the defect. |
-| `techniques/codebase-comprehension/deep-dive.md` braces `{codebase_area}` in its artifact name while Protocol binds `{$codebase_area}` | The corpus uses the unprefixed token consistently for this artifact — the resources index guide-map row spells it the same way — and `check:set-action-values` reads the pair without complaint. A claim about how the token resolves belongs to the schema and the loader, neither of which this pass read. |
+| `techniques/codebase-comprehension/deep-dive.md` braces `{codebase_area}` in its artifact name while Protocol binds `{$codebase_area}` | The corpus uses the unprefixed token consistently for this artifact — the resources index guide-map row spells it the same way — and `check:set-action-values` reads the pair without complaint. A claim about how the token resolves belongs to the schema and the loader, neither of which this pass read. **Batch 4 found the second instance,** `create-adr.md` declaring `NNNN-{decision_title}.md` and writing `NNNN-{$decision_title}.md`, which raises the pattern to two without changing what settles it. Named here so a pass that does read the schema starts with both. |
+| `work-package` cites two peer workflows' resources rather than only `meta` | `review-code.md` reaches `prism` and `implement-task.md` reaches `ponytail`, each to consult a criterion rather than restate it, which is the direction One Authoritative Home asks for. The activity graph already dispatches `prism` outright. Whether a review taxonomy's best home is `ponytail` or `meta` is a corpus-architecture question, not a defect in this target. Both anchors resolve under `check:resource-anchors`. |
 
 ## Coverage
 
@@ -88,7 +93,7 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 
 ## File coverage
 
-read 76 · unread 97 — summing to 173, the target's size at the audited commit.
+read 108 · unread 65 — summing to 173, the target's size at the audited commit.
 
 **First batch** — `workflow.yaml`; all 15 activity YAMLs; `activities/README.md`; `techniques/README.md`; `techniques/{strategic-findings-analysis,review-summary,findings-classification}.md`; `techniques/conduct-retrospective/retrospective.md`; `techniques/finalize-documentation/render-token-usage.md`; `techniques/{manage-registers,manage-artifacts}/TECHNIQUE.md`; `README.md`; `REVIEW-MODE.md`; `resources/{README,readme-seed,canonical-home-map,adr,architecture-review,architecture-summary,assumption-reconciliation,assumptions-review,codebase-comprehension,complete-wp-guide,deferred-items,design-framework,findings-report,follow-ups}.md`.
 
@@ -96,9 +101,13 @@ read 76 · unread 97 — summing to 173, the target's size at the audited commit
 
 **Third batch** — `resources/{rust-substrate-code-review,strategic-review,symbol-provenance,tdd-concepts-rust,test-plan,test-suite-review,web-research,workflow-retrospective,wp-plan}.md`; `techniques/analyse-challenge/{TECHNIQUE,challenge,combine}.md`; `techniques/{apply-review-fixes,assess-ticket-completeness}.md`; `techniques/codebase-comprehension/{TECHNIQUE,deep-dive,revise-questions}.md`; and `techniques/plan-prepare/TECHNIQUE.md`, opened as the second instance of finding 13.
 
-The 97 `unread` paths are the rest of `resources/` and `techniques/`. They are the residual this pass hands on, and the next pass starts its reading there. Every existence claim above is bounded by the 76 read plus the resolutions named in each Evidence cell.
+**Fourth batch** — `techniques/codebase-comprehension/survey.md`; `techniques/conduct-retrospective/{TECHNIQUE,select-next}.md`; `techniques/create-adr.md`; `techniques/create-issue/{TECHNIQUE,create-github,create-jira}.md`; `techniques/create-test-plan.md`; `techniques/dco-provenance/{TECHNIQUE,append-task-row,record-attestation}.md`; `techniques/design-philosophy/{TECHNIQUE,classify,define,determine-path,document}.md`; `techniques/finalize-documentation/{TECHNIQUE,create-complete-doc,ensure-docs,finalize-test-plan,update-adr}.md`; `techniques/implement-task.md`; `techniques/implementation-analysis/{TECHNIQUE,analyze,document}.md`; `techniques/{issue-reference-detection,issue-type-detection}.md`; `techniques/manage-artifacts/verify-artifact-links.md`; `techniques/manage-git/{TECHNIQUE,artifact-commits,commit-paths,create-worktree}.md`.
 
-Finding 5 removes one path, so a pass enumerating the target after PR #668 finds 172 and a residual of 96.
+The 65 `unread` paths are the rest of `techniques/`. They are the residual this pass hands on, and the next pass starts its reading there. Every existence claim above is bounded by the 108 read plus the resolutions named in each Evidence cell.
+
+Finding 5 removes one path, so a pass enumerating the target after PR #668 finds 172 and a residual of 64.
+
+Batch 4 also confirmed finding 13's fix direction from a consumer rather than from the contract: `create-test-plan.md` reads `{plan_document.tasks}`, which is the declaration the fix kept.
 
 ## Known
 
