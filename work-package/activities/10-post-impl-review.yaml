@@ -71,6 +71,16 @@ variables:
       type: boolean
       description: True when the user permits running the project validation suite locally.
       defaultValue: false
+    - name: structural_findings
+      type: array
+      description: The structural-analysis findings for this change, from whichever pipeline produced them.
+    - name: run_status
+      type: string
+      description: The launched prism run's verdict on its own completeness. Absent where no run was launched.
+      values:
+        - complete
+        - partial
+        - error
     - name: test_findings_actionable
       type: boolean
       description: Whether any test-suite finding is at or above the severity that warrants action.
@@ -171,8 +181,11 @@ steps:
     technique: review-code
   - kind: technique
     id: structural-analysis-inline
-    technique: prism/structural-analysis
     when: problem_complexity != 'complex'
+    technique:
+      name: prism/structural-analysis
+      outputs:
+        structural_analysis: structural_findings
   - kind: technique
     id: dispatch-prism
     when: problem_complexity == 'complex'
@@ -180,6 +193,24 @@ steps:
       name: workflow-engine::handle-sub-workflow
       inputs:
         workflow_id: prism
+  - kind: technique
+    id: read-prism-manifest
+    when: problem_complexity == 'complex'
+    technique:
+      name: prism/read-run-manifest
+      inputs:
+        output_path: child_planning_folder_path
+    actions:
+      - action: validate
+        target: run_status != 'error'
+        message: "The prism run reported `{run_status}` — its report or definitive findings is missing or empty. Re-run the prism launch for this change."
+  - kind: technique
+    id: read-prism-findings
+    when: problem_complexity == 'complex'
+    technique:
+      name: prism/read-definitive-findings
+      outputs:
+        definitive_findings: structural_findings
   - kind: technique
     id: test-suite-review
     technique: review-test-suite
@@ -189,6 +220,9 @@ steps:
       name: findings-classification
       inputs:
         findings_to_classify: manual_diff_review_report
+        code_review_findings: code_review_report
+        test_review_findings: test_suite_review_report
+        structural_findings: structural_findings
   - kind: loop
     id: review-fix-cycle
     name: Review-Fix Cycle
@@ -234,6 +268,9 @@ steps:
           name: findings-classification
           inputs:
             findings_to_classify: manual_diff_review_report
+            code_review_findings: code_review_report
+            test_review_findings: test_suite_review_report
+            structural_findings: structural_findings
   - kind: checkpoint
     id: local-validation-permission
     message: The project's validation suite has not been exercised against the checked-out head.

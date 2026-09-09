@@ -152,7 +152,7 @@ workflows/prism-audit/
 │   ├── execute-analysis/                      # Prism-trigger operation-group
 │   │   ├── TECHNIQUE.md                        # Group contract
 │   │   ├── compose-trigger-context.md          # Unpack a scope into prism trigger variables
-│   │   └── read-run-manifest.md                # Record a prism run from its RUN-MANIFEST.json
+│   │   └── accumulate-analysis-run.md          # Record one completed prism run into the audit accumulators
 │   ├── audit-finalize/                        # Finalization operation-group
 │   │   ├── TECHNIQUE.md                        # Group contract
 │   │   ├── split-report.md                     # Split REPORT.md → AUDIT-REPORT.md

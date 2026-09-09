@@ -49,7 +49,7 @@ Lifecycle **Status** values: `Planning`, `Ready`, `In Progress`, `Complete`.
 | 20 | [Code review method](10-code-review-method.md) | What the code review walked and swept | 5-10m | ⬚ |
 | 21 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
 | 22 | [Test suite review method](10-test-suite-review-method.md) | Suite baseline, coverage map, sweeps | 5-10m | ⬚ |
-| 23 | [Structural analysis](10-structural-analysis.md) | Prism L12 when written standalone | 15-30m | ⬚ |
+| 23 | [Structural analysis](10-structural-analysis.md) | Prism L12 structural findings | 15-30m | ⬚ |
 | 24 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
 | 25 | Validation | Build, test, lint verification | 15-30m | ⬚ |
 | 26 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |

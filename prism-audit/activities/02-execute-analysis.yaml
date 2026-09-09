@@ -80,7 +80,10 @@ steps:
             workflow_id: prism
       - kind: technique
         id: read-run-manifest
-        technique: read-run-manifest
+        technique: prism/read-run-manifest
+      - kind: technique
+        id: accumulate-analysis-run
+        technique: accumulate-analysis-run
 outcome:
   - Every audit scope has a completed prism analysis whose contract artifacts finalization can consolidate into deliverables
 exits:

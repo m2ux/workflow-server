@@ -203,6 +203,8 @@ The cross-cutting `variable-binding` technique is declared once at the workflow 
 | `adaptive-analysis::*` | Cost-minimizing depth escalation (SDL → L12 → full-prism) |
 | `generate-report` | Produce the clean REPORT.md and the detailed DEFINITIVE-FINDINGS.md from analysis artifacts |
 | `emit-run-manifest` | Write RUN-MANIFEST.json recording produced artifacts + completion status; verify the run completed |
+| `read-run-manifest` | A triggered run's completion verdict and the location of everything it produced, read from its manifest — bound by triggering workflows |
+| `read-definitive-findings` | A completed run's per-finding entries, loaded from the findings artifact into a triggering session — bound by triggering workflows |
 | `link-report-references` | The final report with its finding IDs and artifact references resolved to links |
 
 The `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per operation. The rest are standalone `techniques/<slug>.md` files.
@@ -302,7 +304,7 @@ A prism run always produces three artifacts in `output_path`, regardless of pipe
 | `DEFINITIVE-FINDINGS.md` | The detailed findings contract: every finding with its full field set (Description, Impact, Location, Recommendation, Classification, Blast radius, Adversarial confirmation) plus the surviving conservation laws / design trade-offs. |
 | `RUN-MANIFEST.json` | Records the produced artifacts, per-unit status, and overall completion status. |
 
-**Triggering workflows read these three artifacts and never re-open the raw pass artifacts** (`structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md`, `portfolio-*.md`). To get domain-prefixed finding IDs (e.g. `CON-xx`, `VER-xx`), pass the dimension or domain names via `analysis_focus` — prism assigns the IDs in both reports, so consumers do not re-number findings. `prism-audit` and `prism-evaluate` are built on exactly this contract.
+**Triggering workflows read these three artifacts and never re-open the raw pass artifacts** (`structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md`, `portfolio-*.md`). They reach the manifest through [read-run-manifest](techniques/read-run-manifest.md), which this workflow publishes for them. To get domain-prefixed finding IDs (e.g. `CON-xx`, `VER-xx`), pass the dimension or domain names via `analysis_focus` — prism assigns the IDs in both reports, so consumers do not re-number findings. `prism-audit` and `prism-evaluate` are built on exactly this contract.
 
 ---
 
@@ -337,6 +339,8 @@ workflows/prism/
 │   ├── reflect-analysis.md                  # Reflect pipeline
 │   ├── generate-report.md                   # REPORT.md + DEFINITIVE-FINDINGS.md generation from analysis artifacts
 │   ├── emit-run-manifest.md                 # Write RUN-MANIFEST.json + verify run completion
+│   ├── read-run-manifest.md                 # Read a run's status and recorded paths back from its manifest
+│   ├── read-definitive-findings.md          # Load a run's per-finding entries for a triggering session
 │   ├── link-report-references.md            # Resolve the final report's finding IDs and artifact references
 │   ├── full-prism/                          # Full Prism operation-group
 │   │   ├── TECHNIQUE.md                      # Group contract

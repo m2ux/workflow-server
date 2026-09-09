@@ -21,6 +21,10 @@ The findings or diagnostics to classify. Each entry carries enough context to ju
 
 *(optional)* The test-suite-review findings subset, when present, that drives `test_findings_actionable`.
 
+### structural_findings
+
+*(optional)* The structural-analysis findings subset, when present, whatever pipeline produced it.
+
 ### ticket_disposition
 
 *(optional)* What the reviewer decided about the ticket's completeness gaps. Where it is present, the consolidated findings carry that judgement to the author alongside the code findings; where it is absent, the ticket was not assessed.
@@ -43,7 +47,7 @@ The input findings, each carrying its assigned severity, its `action_tier` (the 
 
 ### 1. Classify Findings
 
-- Assign every finding in `{findings_to_classify}` a severity on the single scale: Critical, Major, Minor, Nit, or Informational.
+- Assign every finding in `{findings_to_classify}` and in each declared subset a severity on the single scale: Critical, Major, Minor, Nit, or Informational.
 - Judge severity by impact, not surface: Critical for security or data-loss risks and failing tests; Major for correctness defects and build failures; Minor for maintainability and lint issues; Nit for style; Informational for observations carrying no required action.
 - When the findings are validation diagnostics (test/build/lint failures), map them onto the same scale — test failures are Critical, build failures are Major — and do NOT attempt to fix them here; classification only.
 - Findings arrive here from several passes, which is where one defect stated twice becomes visible. Two entries naming the same defect are one finding: keep the designator of the pass that owns it and drop the restatement, per [Report and Methodology](../resources/findings-report.md#report-and-methodology).
@@ -58,7 +62,7 @@ Record such a finding as a recommended operator confirmation, naming the fact an
 
 ### 2. Tier for Delivery
 
-- Assign every finding in `{findings_to_classify}` the Action Items tier that [Action Items](../resources/review-mode.md#action-items) admits for its severity and its stated reachability, and record it as that entry's `action_tier`.
+- Assign every classified finding the Action Items tier that [Action Items](../resources/review-mode.md#action-items) admits for its severity and its stated reachability, and record it as that entry's `action_tier`.
 - A finding whose reachability keeps it out of the blocking tier holds that ceiling at every severity the impact axes raise it to.
 - An entry with no reachability value — a validation diagnostic, a reviewer-reported issue — takes the tier its severity assigns.
 
