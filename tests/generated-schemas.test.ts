@@ -9,9 +9,9 @@ const SCHEMAS_DIR = resolve(import.meta.dirname, '../schemas');
  *
  * zod-to-json-schema with `$refStrategy: 'none'` cannot represent recursive schemas: each cycle
  * (the and/or/not condition combinators, the loop-kind step's nested steps[], the session file's
- * parentSession) silently degrades to the empty schema `{}` — accept-anything — so authoring-time
- * validation passes garbage that Zod then rejects at load. These tests fail if a regeneration
- * reintroduces an empty-schema recursion point.
+ * embedded launched-workflow state) silently degrades to the empty schema `{}` — accept-anything —
+ * so authoring-time validation passes garbage that Zod then rejects at load. These tests fail if a
+ * regeneration reintroduces an empty-schema recursion point.
  */
 
 /** Collect JSON paths of every empty-object schema found at a recursion-prone keyword. */

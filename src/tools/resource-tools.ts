@@ -41,8 +41,6 @@ import {
   createInitialSessionFile,
   bindSessionRepo,
   safeValidateSessionFile,
-  parentChainDepth,
-  PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
 } from '../schema/session.schema.js';
 import { techniqueName, flattenActivitySteps, type Step } from '../schema/activity.schema.js';
@@ -382,25 +380,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Depth of the recursive parent chain rooted at the new/resumed
-      // session. Past PARENT_CHAIN_DEPTH_WARN_THRESHOLD we surface a soft
-      // validation warning and stamp the depth onto the trace event. There
-      // is no hard ceiling — pathological depth is loud, not fatal.
-      const depth = parentChainDepth(state);
-      const depthWarning =
-        depth > PARENT_CHAIN_DEPTH_WARN_THRESHOLD
-          ? `Parent chain depth ${depth} exceeds soft threshold of ${PARENT_CHAIN_DEPTH_WARN_THRESHOLD}. Typical dispatch is 2-3 levels deep; verify the nested-workflow topology is intentional.`
-          : null;
-
       if (config.traceStore) {
         config.traceStore.initSession(state.sessionIndex);
-        const traceOpts: { psid?: string; pdepth?: number } = {};
-        if (state.parentSession) traceOpts.psid = state.parentSession.sessionIndex;
-        if (depth > 0) traceOpts.pdepth = depth;
         const event = createTraceEvent(
           state.sessionIndex, 'start_session', 0, 'ok',
           effectiveWorkflowId, state.currentActivity, agent_id,
-          Object.keys(traceOpts).length > 0 ? traceOpts : undefined,
         );
         config.traceStore.append(state.sessionIndex, event);
       }
@@ -439,7 +423,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
-        _meta: { session_index: sessionIndex, validation: buildValidation(depthWarning) },
+        _meta: { session_index: sessionIndex, validation: buildValidation() },
       };
     })
   ));

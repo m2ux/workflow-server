@@ -180,7 +180,6 @@ The server automatically captures a mechanical trace of every tool call in a ses
 | `wf`, `act`, `aid` | Workflow, activity, and agent id the call was made under |
 | `err` | Error message (on failure) |
 | `vw` | Validation warnings from `_meta.validation` |
-| `psid` | Parent session ID (for dispatched workflows) |
 
 **How trace tokens work:**
 
@@ -193,7 +192,7 @@ The server automatically captures a mechanical trace of every tool call in a ses
 - **Post-execution audit** — the complete tool call sequence with timing, errors, and validation warnings
 - **Failure diagnosis** — the last call before silence identifies where an agent got stuck
 - **Multi-agent attribution** — the `aid` field distinguishes orchestrator from worker calls
-- **Parent-child correlation** — the `psid` field links dispatched child workflows to their parent
+- **Parent-child correlation** — a launched workflow's events carry its own `sid`, and the session file records which session launched it
 - **Validation warning history** — every warning issued during the session is recorded, not just the most recent
 
 **Two-layer trace architecture:** The server captures the mechanical trace (tool calls, timing, validation) automatically. Agents write a complementary semantic trace (step outputs, checkpoint responses, decision branches, variable changes) to the planning folder per workflow technique instructions. Together they provide complete execution visibility.

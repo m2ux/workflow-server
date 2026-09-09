@@ -130,7 +130,6 @@ const TOP_LEVEL_KEY_PRIORITY = [
   'checkpointResponses',
   'history',
   'triggeredWorkflows',
-  'parentSession',
 ];
 
 /**
@@ -790,8 +789,7 @@ export async function ensurePlanningFolder(
  * long enough to dispatch a child workflow. On that dispatch the parent is
  * promoted to a durable workspace planning folder and the transient index is
  * repointed at it (see `dispatch_child`'s transient branch); the child is then
- * embedded under `triggeredWorkflows[0].state` in that file. The child's
- * `parentSession` field is left unset.
+ * embedded under `triggeredWorkflows[0].state` in that file.
  *
  * To keep the workspace planning root free of one-shot bootstrap folders,
  * transient sessions live under `os.tmpdir()/workflow-server-transient-<uuid>/`

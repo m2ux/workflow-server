@@ -369,9 +369,6 @@
             ],
             "additionalProperties": false
           }
-        },
-        "parentSession": {
-          "$ref": "#/definitions/session-file"
         }
       },
       "required": [

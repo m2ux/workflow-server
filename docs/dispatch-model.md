@@ -38,7 +38,7 @@ This creates a **child session embedded in the parent's own `session.json`**, at
 
 The response carries three values: the child's `session_index`, the canonical `planning_folder_path`, and `workflow.initialActivity` — the activity the child's first `next_activity` should name. The last of these exists because a session that has not yet entered an activity reports no current activity, so the parent has no other route to the child's first activity id.
 
-Two consequences follow from the embedding, and both matter when reading the rest of this document. A child inherits the parent's planning folder — the persistent-parent path creates no folder and seeds no README for the child. And a child's `parentSession` field is left unset, so the recursive parent traversal that field supports does not reach an embedded child.
+Two consequences follow from the embedding, and both matter when reading the rest of this document. A child inherits the parent's planning folder — the persistent-parent path creates no folder and seeds no README for the child. And a child's place in the tree is its position in the file: the session above it is the one whose `triggeredWorkflows` entry holds it, and nothing is stored on the child that names it.
 
 Where the parent is a transient meta bootstrap, the server first promotes it to a workspace planning folder, and re-dispatching into a folder that already holds a child of the same workflow replaces that child rather than continuing it. A persistent parent appends a second child instead.
 
@@ -122,7 +122,6 @@ This returns:
 - `current_activity`: The activity the sub-agent is executing
 - `completed_activities`: Activities finished so far (derived from `session.json` + trace)
 - `last_checkpoint`: The most recent resolved checkpoint
-- `parent`: If the session was dispatched, the parent's session info derived from `parentSession` in `session.json`
 
 The status is determined from the session state: `blocked` when `activeCheckpoint` is set in `session.json`, `completed` when the workflow has no more activities, and `active` otherwise.
 

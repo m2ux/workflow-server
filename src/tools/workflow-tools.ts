@@ -2222,15 +2222,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         } : { id: clientWf },
       };
 
-      if (state.parentSession) {
-        response['parent'] = {
-          session_index: state.parentSession.sessionIndex,
-          workflow_id: state.parentSession.workflowId,
-          activity: state.parentSession.currentActivity,
-          version: state.parentSession.workflowVersion,
-        };
-      }
-
       if (lastCheckpoint) {
         response['last_checkpoint'] = {
           activity_id: lastCheckpoint.act,
