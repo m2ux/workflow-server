@@ -11,13 +11,13 @@
 | Critical | 0 | 0 | 0 |
 | High     | 2 | 2 | 0 |
 | Medium   | 9 | 8 | 6 |
-| Low      | 6 | 6 | 0 |
+| Low      | 9 | 8 | 0 |
 
-**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 108 of 173
+**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 143 of 173
 
 Findings 1 and 3 landed on `workflow/prism-launch-results` (PR #663); finding 2 in the same branch after the design decisions under [Decisions](#decisions); finding 4 on `workflow/register-prefix-precedence` (PR #666) — all merged, with the corpus pointer and coverage stamp adopted in PR #665.
 
-Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. Findings 12 through 14 are the third, nine more resources and nine techniques. Findings 15 through 17 are the fourth, thirty-two techniques. All applied on `workflow/wp-audit-batch2` (PR #668) except finding 17, whose fix lands in `meta` and is recorded as the residual for a pass over that target.
+Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. Findings 12 through 14 are the third, nine more resources and nine techniques. Findings 15 through 17 are the fourth, thirty-two techniques. Findings 18 through 20 are the fifth, thirty-five more. All applied on `workflow/wp-audit-batch2` (PR #668) except finding 17, whose fix lands in `meta`, and finding 20, a voice sweep two of whose four sites need their resource re-read. Both are recorded as residual rather than half-done.
 
 ## Change surface
 
@@ -60,6 +60,10 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 | 16 | Low | `no-duplicated-guidance` | `techniques/design-philosophy/TECHNIQUE.md` | The container nests `problem_statement`, `problem_type` and `problem_complexity` under its artifact output while `define.md` and `classify.md` each declare one as a top-level output. Three values, two homes each, all three drifted: the container calls `problem_type` "specific problem or inventive goal" where `classify.md` names its four values outright. The container's `problem_statement` line is byte-identical to the workflow container's input of the same name, a third statement. The second shape of finding 13 — a container nesting ids siblings declare at top level, which the same-output-id check does not see. | `pre-existing` | | The producing operation keeps each; nothing reads them through dotted access on the artifact, checked rather than assumed since the pattern is live in twenty other places. **Applied.** |
 | 17 | Medium | `no-tool-usage-prescription` | `techniques/manage-git/TECHNIQUE.md`, `code-commit-coauthor-trailer` | The rule carries harness-specific behaviour: that Claude Code injects the trailer automatically and must not be given it twice, that other assistants must add it explicitly, and the literal identity string for one harness. The corpus has a home for exactly this variance — `meta/techniques/harness-compat/` carries a file per harness plus a resolver — and none of them owns the trailer, so the one statement of it sits in a workflow technique. | `pre-existing` | | Open, and deliberately out of this target's scope: the fix authors a harness-compat operation in `meta` and reduces this rule to the invariant plus a cite. Recorded as the residual for a `meta` pass. **Not applied.** |
 
+| 18 | Low | `no-duplicated-guidance` | `techniques/requirements-elicitation/TECHNIQUE.md` | The container nests `requirements`, `success_criteria` and `scope_boundaries` under its artifact output while `elicit.md` declares each as a top-level output. The container's `success_criteria` line is byte-identical to the operation's and the other two are shortened copies; `requirements` is additionally an input on the workflow container, a third statement. Third instance of finding 16's shape. | `pre-existing` | | The producing operation keeps each; no dotted-access consumer, checked. **Applied.** |
+| 19 | Low | `no-duplicated-guidance` | `techniques/conduct-retrospective/TECHNIQUE.md`, `retrospective-honest` | States that the retrospective is honest about what worked and carries no generic positives, which the workflow-retrospective guide's own rule states more fully — adding specificity and ruthless prioritisation, and bounding the recommendation list — beside the item budget and exception-only rules governing the same section. The container's output already cites that guide's section template. Second instance of finding 15's shape. | `pre-existing` | | The guide keeps it. `skip-if-trivial` and `history-private` stay, carrying what nothing else states. **Applied.** |
+| 20 | Low | `avoidance-voice-in-definitions` | `techniques/research/TECHNIQUE.md`; `techniques/review-assumptions/TECHNIQUE.md`; `techniques/requirements-elicitation/TECHNIQUE.md` | Four group-container rules are written as stance in the "should" voice rather than as invariants in the declarative present — `multiple-sources` ("Multiple sources should be consulted"), `validate-patterns` ("Patterns should be validated across documents"), `elevate-implicit` ("assumptions should be elevated for validation"), and `conversation-not-interrogation` (opening "Core principle:"). The last restates the elicitation guide's own opening, a dialogue rather than a checklist. `multiple-sources` is correct layering and stays either way — `research.md`'s `official-docs-per-dependency` cites it by name as the group rule it applies. | `pre-existing` | | Open. Rewriting four rules in the declarative present is a voice sweep, and two of them need their resource re-read to settle whether the content is duplicated or merely stance-voiced. Recorded for the next pass, which starts with those resources in hand. **Not applied.** |
+
 ### Withdrawn on adversarial re-derivation
 
 | Candidate | Why it fell |
@@ -93,7 +97,7 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 
 ## File coverage
 
-read 108 · unread 65 — summing to 173, the target's size at the audited commit.
+read 143 · unread 30 — summing to 173, the target's size at the audited commit.
 
 **First batch** — `workflow.yaml`; all 15 activity YAMLs; `activities/README.md`; `techniques/README.md`; `techniques/{strategic-findings-analysis,review-summary,findings-classification}.md`; `techniques/conduct-retrospective/retrospective.md`; `techniques/finalize-documentation/render-token-usage.md`; `techniques/{manage-registers,manage-artifacts}/TECHNIQUE.md`; `README.md`; `REVIEW-MODE.md`; `resources/{README,readme-seed,canonical-home-map,adr,architecture-review,architecture-summary,assumption-reconciliation,assumptions-review,codebase-comprehension,complete-wp-guide,deferred-items,design-framework,findings-report,follow-ups}.md`.
 
@@ -103,9 +107,11 @@ read 108 · unread 65 — summing to 173, the target's size at the audited commi
 
 **Fourth batch** — `techniques/codebase-comprehension/survey.md`; `techniques/conduct-retrospective/{TECHNIQUE,select-next}.md`; `techniques/create-adr.md`; `techniques/create-issue/{TECHNIQUE,create-github,create-jira}.md`; `techniques/create-test-plan.md`; `techniques/dco-provenance/{TECHNIQUE,append-task-row,record-attestation}.md`; `techniques/design-philosophy/{TECHNIQUE,classify,define,determine-path,document}.md`; `techniques/finalize-documentation/{TECHNIQUE,create-complete-doc,ensure-docs,finalize-test-plan,update-adr}.md`; `techniques/implement-task.md`; `techniques/implementation-analysis/{TECHNIQUE,analyze,document}.md`; `techniques/{issue-reference-detection,issue-type-detection}.md`; `techniques/manage-artifacts/verify-artifact-links.md`; `techniques/manage-git/{TECHNIQUE,artifact-commits,commit-paths,create-worktree}.md`.
 
-The 65 `unread` paths are the rest of `techniques/`. They are the residual this pass hands on, and the next pass starts its reading there. Every existence claim above is bounded by the 108 read plus the resolutions named in each Evidence cell.
+**Fifth batch** — the rest of `techniques/manage-git/` (`detect-merge-strategy`, `instruct-merge-strategy`, `remove-worktree`, `restore-paths-from-ref`, `sync-branch`, `update-repo-submodules`, `verify-commit-signatures`, `verify-feature-branch`, `verify-remote-private`); `techniques/manage-registers/{append-deferred-item,append-follow-up}.md`; `techniques/naming-conventions.md`; `techniques/plan-prepare/{create-todos,plan}.md`; `techniques/project-type-detection.md`; `techniques/raise-deferred-items/{TECHNIQUE,collect,record}.md`; `techniques/repo-root-resolution.md`; all seven of `techniques/requirements-elicitation/`; all six of `techniques/research/`; `techniques/resolve-artifact-publish.md`; and `techniques/review-assumptions/{TECHNIQUE,assemble-one}.md`.
 
-Finding 5 removes one path, so a pass enumerating the target after PR #668 finds 172 and a residual of 64.
+The 30 `unread` paths are the rest of `techniques/`. They are the residual this pass hands on, and the next pass starts its reading there. Every existence claim above is bounded by the 143 read plus the resolutions named in each Evidence cell.
+
+Finding 5 removes one path, so a pass enumerating the target after PR #668 finds 172 and a residual of 29.
 
 Batch 4 also confirmed finding 13's fix direction from a consumer rather than from the contract: `create-test-plan.md` reads `{plan_document.tasks}`, which is the declaration the fix kept.
 
