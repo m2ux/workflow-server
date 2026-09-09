@@ -2,7 +2,7 @@
 name: rust-substrate-code-review
 description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and report generation.
 metadata:
-  version: 1.5.0
+  version: 1.6.0
   order: 16
   legacy_id: 16
 ---
@@ -28,7 +28,7 @@ Designators use the prefix declared for this report's category at [Code Review](
 
 | Declaration | Value |
 |---|---|
-| `Category` vocabulary | Rust Idioms / Substrate Framework / Architecture / Documentation / Testing / Security |
+| `Category` vocabulary | Rust Idioms / Substrate Framework / Architecture / Documentation / Testing |
 | Extension field | `Code Example` — current versus suggested, where the fix reads more clearly shown than described |
 
 `Code Example` is optional and comes last; the declared fields appear on every finding.
