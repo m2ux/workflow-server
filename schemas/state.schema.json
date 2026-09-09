@@ -314,10 +314,6 @@
               "completedAt": {
                 "type": "string",
                 "format": "date-time"
-              },
-              "returnedContext": {
-                "type": "object",
-                "additionalProperties": {}
               }
             },
             "required": [

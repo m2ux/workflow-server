@@ -26,8 +26,6 @@ export interface EmbeddedSessionRef {
   status: 'running' | 'completed' | 'aborted' | 'error';
   /** ISO-8601 timestamp when the child reached its terminal activity. */
   completedAt?: string;
-  /** Context returned from the child on completion. */
-  returnedContext?: Record<string, unknown>;
   /**
    * Full child SessionFile, embedded recursively. The single `session.json`
    * at the top of the planning folder carries every descendant's state.
@@ -243,7 +241,6 @@ export const EmbeddedSessionRefSchema: z.ZodType<EmbeddedSessionRef> = z.object(
   }),
   status: z.enum(['running', 'completed', 'aborted', 'error']),
   completedAt: z.string().datetime().optional(),
-  returnedContext: z.record(z.unknown()).optional(),
   state: z.lazy(() => SessionFileSchema).optional(),
 }) as z.ZodType<EmbeddedSessionRef>;
 

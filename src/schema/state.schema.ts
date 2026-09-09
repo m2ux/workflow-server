@@ -147,7 +147,6 @@ export const TriggeredWorkflowRefSchema = z.object({
   status: z.enum(['running', 'completed', 'aborted', 'error']),
   /** Set when the child reaches its terminal activity. */
   completedAt: z.string().datetime().optional(),
-  returnedContext: z.record(z.unknown()).optional(),
 });
 export type TriggeredWorkflowRef = z.infer<typeof TriggeredWorkflowRefSchema>;
 
