@@ -15,7 +15,7 @@ Each register is the one home for its class of item: out-of-scope deferrals in t
 
 ### created-lazily-and-unprefixed
 
-A register is created when its first row arrives and not before, so a run that defers nothing has none. Any activity may be the one that creates it, so neither register carries an activity's numeric prefix. This overrides `manage-artifacts.artifact-prefix` for these two files, which is why every artifact linking a register links it bare.
+A register is created when its first row arrives and not before, so a run that defers nothing has none, and any activity may be the one that creates it.
 
 ### one-row-per-item-updated-in-place
 

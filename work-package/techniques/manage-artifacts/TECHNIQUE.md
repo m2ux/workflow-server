@@ -83,7 +83,7 @@ Human-audience artifacts are written to the [Artifact Writing Register](../../..
 
 ### artifact-prefix
 
-Artifact filenames are prefixed with the server-provided `artifactPrefix`. Techniques declare bare names (e.g., `code-review.md`); the prefix is applied at write time (e.g., `09-code-review.md`). This groups related artifacts and sorts them in workflow order.
+Techniques declare bare names (e.g., `code-review.md`), and the prefix is applied at write time (e.g., `09-code-review.md`), grouping related artifacts and sorting them in workflow order. The prefix is the writing activity's own, which the server supplies as `artifactPrefix`, so an artifact belongs to one activity to carry one. A file any of several activities may be the first to create has no such number and is written bare.
 
 ### push-before-linking
 
