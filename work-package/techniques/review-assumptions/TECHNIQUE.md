@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.1.0
+  version: 3.2.0
 ---
 
 ## Capability
@@ -33,7 +33,7 @@ Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template
 
 ### elevate-implicit
 
-Make implicit decisions explicit — assumptions should be elevated for validation
+An implicit decision is recorded as an assumption and validated before the work rests on it.
 
 ### assembled-entries-carry-their-evidence
 

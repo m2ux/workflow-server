@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -13,8 +13,3 @@ Discover and clarify requirements through structured sequential conversation.
 
 Elicited [requirements](../../resources/requirements-elicitation.md#document-template) with success criteria and scope
 
-## Rules
-
-### conversation-not-interrogation
-
-Core principle: Conversation, not interrogation — discover what user actually needs

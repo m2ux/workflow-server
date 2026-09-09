@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -19,11 +19,7 @@ Knowledge base and web research [synthesis](../../resources/knowledge-base-resea
 
 ### multiple-sources
 
-Multiple sources should be consulted for robust findings
-
-### validate-patterns
-
-Patterns should be validated across documents
+A finding rests on more than one source, and a pattern holds only where more than one document supports it. A single source is insufficient.
 
 ### synthesize-directly
 
