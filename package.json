@@ -27,6 +27,7 @@
     "check:inherited-inputs": "tsx scripts/check-inherited-inputs.ts",
     "check:citations": "tsx scripts/check-citation-grain.ts",
     "check:framing": "tsx scripts/check-section-framing.ts",
+    "check:launched-workflows": "tsx scripts/check-launched-workflows.ts",
     "check:self-input": "tsx scripts/check-self-provisioned-input.ts",
     "check:self-composed-set": "tsx scripts/check-self-composed-set.ts",
     "check:branch-as-step": "tsx scripts/check-branch-as-step.ts",
