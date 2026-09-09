@@ -295,11 +295,8 @@ graph TD
     cpInterview --> interviewLoop
     interviewLoop -->|"all done"| codeReview["Code review"]
 
-    codeReview --> structural{"problem_complexity == complex?"}
-    structural -->|"no"| structuralInline["Structural analysis (single pass)"]
-    structural -->|"yes"| dispatchPrism["Dispatch full prism pipeline"]
+    codeReview --> structuralInline["Structural analysis (single pass)"]
     structuralInline --> testReview["Review the test suite, then classify and route findings"]
-    dispatchPrism --> testReview
 
     testReview --> fixCycle{"create mode and actionable code or test findings?"}
     fixCycle -->|"yes"| applyFixes["Apply fixes, regenerate index, re-review"]

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -61,7 +61,9 @@ Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TE
 
 ### worker-control-plane-ban
 
-Never call the workflow-server control-plane tools `next_activity` or `get_workflow`. A further activity arrives here the way the first one did: as a stub naming it. Until a stub names one there is no next activity to act on, so never issue its `get_activity` on your own initiative.
+Never call the workflow-server control-plane tools `next_activity` or `get_workflow` against `{session_index}` — the session this worker was dispatched for, whose pointer the orchestrator owns. A further activity arrives here the way the first one did: as a stub naming it. Until a stub names one there is no next activity to act on, so never issue its `get_activity` on your own initiative.
+
+A workflow this worker launches is a session of its own, with no other owner: driving that one is [workflow-engine](./TECHNIQUE.md)::[handle-sub-workflow](./handle-sub-workflow.md)::[solo-walk-the-child](./handle-sub-workflow.md#solo-walk-the-child).
 
 ### one-activity-at-a-time-in-a-batch
 
