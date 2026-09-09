@@ -491,7 +491,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "manual-diff-review",
         "register-review-follow-ups",
         "code-review",
-        "structural-analysis-inline",
+        "dispatch-prism",
         "test-suite-review",
         "classify-and-route-findings",
       ],
@@ -1786,7 +1786,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "manual-diff-review",
         "register-review-follow-ups",
         "code-review",
-        "structural-analysis-inline",
+        "dispatch-prism",
         "test-suite-review",
         "classify-and-route-findings",
       ],
@@ -2887,7 +2887,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 2,
-        "unbound": 0,
+        "unbound": 2,
         "unparsed": 0,
       },
       "manifestStatus": "warning",
@@ -3591,8 +3591,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredTotal": 295,
-  "executedTotal": 161,
+  "declaredTotal": 296,
+  "executedTotal": 162,
   "perActivity": [
     {
       "activity": "assumptions-review",
@@ -3636,8 +3636,8 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "post-impl-review",
-      "declared": 22,
-      "executed": 7,
+      "declared": 23,
+      "executed": 8,
     },
     {
       "activity": "requirements-elicitation",
