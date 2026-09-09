@@ -25,7 +25,7 @@ The cost is time and visibility. A run that could finish when the last of severa
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
 | 1 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ✅ |
-| 2 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | ⬚ |
+| 2 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | 🟡 |
 | 3 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ⬚ |
 | 4 | Codebase comprehension | Persistent knowledge under comprehension/ | 20-45m | ⬚ |
 | 5 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ⬚ |
