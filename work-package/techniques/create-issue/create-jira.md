@@ -17,7 +17,7 @@ A Jira issue raised for the work package in its project, typed for the kind of c
 
 ### 1. Draft the Issue
 
-- Use the [issue structure](../../resources/jira-issue-creation.md#issue-structure) and [issue types](../../resources/jira-issue-creation.md#issue-types), checking the draft against the [anti-patterns](../../resources/jira-issue-creation.md#anti-patterns)
+- Use the [issue template](../../resources/issue-creation.md#issue-template) for the body and the [section rules](../../resources/issue-creation.md#section-rules) governing it, arranged into Jira's fields per [issue structure](../../resources/jira-issue-creation.md#issue-structure) and typed per [issue types](../../resources/jira-issue-creation.md#issue-types); check the draft against the [shared anti-patterns](../../resources/issue-creation.md#anti-patterns) and the [Jira one](../../resources/jira-issue-creation.md#anti-patterns)
 - Gather summary, description and acceptance criteria from `{issue_subject}` where it is supplied and from the run's own context otherwise, scoping the issue to the `{component_name}` the work package targets
 - Map `{issue_type}` to a Jira issue type through the mapping below
 

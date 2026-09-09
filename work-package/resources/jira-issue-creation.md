@@ -1,15 +1,15 @@
 ---
 name: jira-issue-creation
-description: Reference material for creating Jira issues — terminology, issue types, structure templates, priority and label vocabulary, and anti-patterns.
+description: What Jira adds to issue creation — terminology mapping, issue types, field arrangement, native markup, and the priority and label vocabularies.
 metadata:
-  version: 2.1.0
+  version: 3.0.0
   order: 4
   legacy_id: 4
 ---
 
 # Jira Issue Creation Guide
 
-Reference material for Jira issue creation. Issues define problems, not solutions: describe *what* needs to be solved and *why*, leaving *how* for subsequent design work.
+What Jira adds to issue creation. The issue's content is the [Issue Template](issue-creation.md#issue-template), and the [Anti-Patterns](issue-creation.md#anti-patterns) and [Section Rules](issue-creation.md#section-rules) there govern it; this guide states the Jira terminology, the type selection, where the content sits in Jira's fields, and the vocabularies Jira asks for.
 
 ## Jira vs GitHub Terminology
 
@@ -46,67 +46,14 @@ Selection order: defect in existing functionality → **Bug**; user-facing with 
 - Describe the problem or capability, not the solution ("Users cannot search by diagram content", not "Implement new visuals table with CLIP embeddings" or "Fix the search thing")
 - Use active voice when possible
 
-### Description Template
+### Field Arrangement
 
-```markdown
-# [Issue Title]
+The Description field carries the [Issue Template](issue-creation.md#issue-template) body, arranged for Jira's fields:
 
-## Summary
-
-[Concise problem-focused title for Jira]
-
-## Description
-
-### Problem Statement
-
-[Describe the gap between current and desired state. Be specific about impact. Must be clear to a reader without context — no assumed knowledge of prior discussions or internal shorthand.]
-
-**Current state:**
-- [What happens now]
-- [Observable problems or limitations]
-
-**Desired state:**
-- [What should happen instead]
-- [Observable improvements]
-
-### Goal
-
-[One sentence capturing the core objective. Should not mention implementation.]
-
-### Scope
-
-**In Scope:**
-- [Specific aspects this issue addresses]
-
-**Out of Scope:**
-- [Related but excluded aspects, and why]
-
-## Acceptance Criteria
-
-- [ ] [Observable, testable criterion 1]
-- [ ] [Observable, testable criterion 2]
-
-## User Stories
-
-### US-1: [Story Title]
-> As a [persona], I want [capability] so that [benefit].
-
-## Success Metrics
-
-[Omit this section if not measurable]
-
-| Metric | Target |
-|--------|--------|
-| [Metric 1] | [Target value] |
-
-## Constraints
-
-[Omit this section if none: performance, compatibility, security requirements]
-
-## References
-
-[Omit this section if none: relevant external documentation, related issues or discussions]
-```
+- A `## Summary` section opens the Description, holding the problem-focused title Jira's Summary field also carries.
+- Problem Statement, Goal and Scope sit beneath a `## Description` heading, at `###` level.
+- Acceptance Criteria is its own `##` section rather than a per-story block, because Jira tracks completion against the issue rather than against a story within it. The User Stories section then carries the story statements alone.
+- Success Metrics, Constraints and References follow at `##` level, omitted when they do not apply.
 
 ### Jira Markdown Notes
 
@@ -142,10 +89,6 @@ Issue bodies are authored in markdown; the creating operation converts them. Nat
 
 ## Anti-Patterns
 
-Each is checkable against a draft:
+The [shared anti-patterns](issue-creation.md#anti-patterns) apply to the body. One is Jira's own:
 
-- **Solution as summary** — "Add caching layer" states the problem instead: "Search response time exceeds 5 seconds".
-- **Vague description** — "Fix the bug" carries reproduction steps and expected versus actual.
 - **Wrong issue type** — user-facing value is a Story and technical work is a Task, per [Issue Types](#issue-types).
-- **Missing acceptance criteria** — every issue carries observable, testable criteria that verify completion.
-- **Implementation details** — "Modify SearchService.ts line 42" describes the problem rather than the fix.

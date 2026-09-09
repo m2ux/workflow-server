@@ -8,8 +8,8 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 |-------------|-------|---------|
 | `readme-seed` | README Seed | Progress inventory, classifier, mode-exclusion map for create-readme |
 | `canonical-home-map` | Canonical Home Map | Which artifact homes each shared fact category, and the link-only slot every other template carries |
-| `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
-| `jira-issue-creation` | Jira Issue Creation | Guide for creating Jira issues with proper field mapping |
+| `issue-creation` | Issue Creation | Body template, anti-patterns and section rules for a tracker issue on any platform |
+| `jira-issue-creation` | Jira Issue Creation | What Jira adds — terminology, issue types, field arrangement, native markup, priority and labels |
 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
 | `implementation-analysis` | Implementation Analysis | Analysis framework and document template |
 | `knowledge-base-research` | Knowledge Base Research | Research findings artifact template and citation rules |
