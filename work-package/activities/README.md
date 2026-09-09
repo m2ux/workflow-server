@@ -297,7 +297,7 @@ graph TD
 
     codeReview --> structural{"problem_complexity == complex?"}
     structural -->|"no"| structuralInline["Structural analysis (single pass)"]
-    structural -->|"yes"| dispatchPrism["Dispatch full prism pipeline"]
+    structural -->|"yes"| dispatchPrism["Launch the full prism pipeline and walk it"]
     structuralInline --> testReview["Review the test suite, then classify and route findings"]
     dispatchPrism --> testReview
 

@@ -114,7 +114,7 @@ Agent entry Protocol: [`workflow-engine::activity-worker`](./techniques/workflow
 Meta itself produces no domain artefacts. Its outputs are session-state side-effects:
 
 - A meta session that lives for the duration of the user's request.
-- A child client session for the matched workflow, tracked alongside the meta session via the recursive `parentSession` snapshot the server captures inside the child's `session.json`.
+- A child client session for the matched workflow, embedded in the meta session's own `session.json` under the launch record the server keeps of the dispatch.
 - A planning folder under `.engineering/artifacts/planning/` containing the client workflow's server-managed `session.json` + `.session-token` (seal) pair and downstream artifacts.
 - A session summary presented to the user at the completion checkpoint.
 
