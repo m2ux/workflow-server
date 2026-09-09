@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -46,10 +46,6 @@ Session-local [comprehension log](../../resources/codebase-comprehension.md#comp
 #### open_questions
 
 Questions the pass opened, each resolved or carried forward
-
-#### deep_dives
-
-Targeted exploration sections added during user-driven loop
 
 
 ## Rules

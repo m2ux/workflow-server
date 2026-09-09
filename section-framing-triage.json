@@ -306,7 +306,7 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/github-issue-creation.md",
+      "site": "work-package/resources/issue-creation.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
@@ -337,11 +337,6 @@
     },
     {
       "site": "work-package/resources/provenance-log.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/readme.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },

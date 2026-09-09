@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -12,6 +12,10 @@ Post-task self-review for symbol provenance and code/test/documentation quality 
 ### current_task
 
 The task just implemented (description, affected files) whose changes are under review
+
+### project_type
+
+*(optional)* The project type the target tree is detected as, scoping which of the review criteria apply.
 
 ### task_implementation
 
@@ -37,7 +41,7 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
 
 ### 2. Run Quality Checks
 
-- Assess the task's changes against the [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria), scoped to what this task wrote
+- Assess the task's changes against the [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria), scoped to what this task wrote. The architecture, documentation and testing criteria hold on any project; the Rust-idioms and Substrate-framework criteria hold where `{project_type}` is `rust-substrate`
 - Record what the task leaves behind that the criteria name: debug output still in the tree, a TODO carrying no issue reference, a documented symbol with no implementation
 
 

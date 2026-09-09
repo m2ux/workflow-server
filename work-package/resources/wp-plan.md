@@ -2,7 +2,7 @@
 name: wp-plan
 description: Guidelines for creating the work package plan artifact.
 metadata:
-  version: 1.2.0
+  version: 1.3.0
   order: 10
   legacy_id: 10
 ---
@@ -72,8 +72,6 @@ The work package plan is the detailed implementation specification: enough detai
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|
 | [Risk 1] | HIGH/MEDIUM/LOW | HIGH/MEDIUM/LOW | [Strategy] |
-
-**Status:** Ready for implementation
 ```
 
 ## Rules

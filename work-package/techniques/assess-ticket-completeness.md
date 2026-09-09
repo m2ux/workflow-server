@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -18,6 +18,10 @@ Summary, description, and context of the tracker ticket being assessed (the link
 *(optional)* The existing assumptions [log](../resources/assumptions-review.md#assumptions-log-template), where documented gaps are recorded.
 
 ## Outputs
+
+### assumptions_log
+
+The assumptions log with each weak or missing ticket dimension recorded as a tracked finding.
 
 ### ticket_gaps_documented
 

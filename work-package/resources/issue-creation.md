@@ -1,15 +1,15 @@
 ---
-name: github-issue-creation
-description: Reference material for creating GitHub issues. Provides a template, anti-patterns, and section rules.
+name: issue-creation
+description: Reference material for creating a tracker issue on any platform. Provides the body template, anti-patterns, and section rules.
 metadata:
-  version: 2.2.0
+  version: 3.0.0
   order: 3
   legacy_id: 3
 ---
 
-# GitHub Issue Creation Guide
+# Issue Creation Guide
 
-Reference material for creating GitHub issues.
+Reference material for creating a tracker issue. The body template below is the issue's content on any platform; a platform guide states only where that content sits in its own fields — [jira-issue-creation](jira-issue-creation.md) for Jira.
 
 **Issues define problems, not solutions.** Describe *what* is broken, missing, or suboptimal and *why* it matters; leave *how* for design work. Solutions in issues constrain design options before research is done, conflate problem definition with implementation, skip the planning activity where alternatives are evaluated, and may miss better approaches. If you can't explain the problem without mentioning a specific solution, you may not fully understand the problem yet.
 

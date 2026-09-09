@@ -2,7 +2,7 @@
 name: pr-description
 description: PR description templates and link-row rendering forms.
 metadata:
-  version: 1.8.0
+  version: 1.9.0
   order: 12
   legacy_id: 12
 ---
@@ -199,16 +199,8 @@ The Issue line is present. When `issue_skipped` is true it renders the [Issue-sk
 
 ### Changes grouped by component
 
-The Changes section groups bullets by component, the component name in bold — not by Conventional Commits header and not by commit message.
-
-### Changes carry no file list
-
-The Changes section does not enumerate file paths. File-level detail is already in the PR's Files-changed tab, and neither a commit list nor a line-by-line explanation belongs in the body — the Commits tab owns the first and inline PR comments own the second.
-
-### Changes carry no code
-
-The Changes section is plain-language bullets saying what changed and why: no fenced blocks, no snippets, no pasted signatures, and no inline code beyond an unavoidable bare identifier. The diff is the source of truth for code.
+The Changes section groups bullets by component, with the component name in bold.
 
 ### Changes state the substance, not the surface
 
-Each bullet says what the change makes true and why that matters, in the words a reader who has not opened the diff would use. The file list, the diff and the commits already state the surface, and a bullet that restates one of them tells a reader something three other views already show — which is why the rules above rule out paths, code and commit headers one at a time. A bullet naming the behaviour that changed, the constraint now enforced, or the failure now impossible passes all three without being written against them.
+Each bullet says what the change makes true and why that matters, in the words a reader who has not opened the diff would use — the behaviour that changed, the constraint now enforced, the failure now impossible. A bullet restating the surface instead is a finding under this criterion whichever surface it reaches for: a file path or file list, which the Files-changed tab holds; a fenced block, snippet, pasted signature, or inline code beyond an unavoidable bare identifier, which the diff holds; a Conventional Commits header or commit message, which the Commits tab holds; or a line-by-line explanation, which inline PR comments hold. Each of those views already shows the reader that detail, so the body's one job is the substance none of them states.

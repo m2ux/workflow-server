@@ -2,7 +2,7 @@
 name: knowledge-base-research
 description: Guidelines for researching the knowledge base during work package planning to discover relevant concepts, design patterns, and best practices.
 metadata:
-  version: 1.1.1
+  version: 1.2.0
   order: 7
   legacy_id: 7
 ---
@@ -76,8 +76,6 @@ Based on research findings:
 | Document | Relevance | Key Sections |
 |----------|-----------|--------------|
 | [Document 1] | [Why relevant] | [Specific sections] |
-
-**Status:** [Draft / Complete]
 ```
 
 ## Rules

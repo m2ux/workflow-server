@@ -11,7 +11,7 @@ A GitHub issue raised for the work package, labelled for the kind of change it r
 
 ### 1. Draft the Issue
 
-- Use the [issue template](../../resources/github-issue-creation.md#issue-template) and [section rules](../../resources/github-issue-creation.md#section-rules), checking the draft against the [anti-patterns](../../resources/github-issue-creation.md#anti-patterns)
+- Use the [issue template](../../resources/issue-creation.md#issue-template) and [section rules](../../resources/issue-creation.md#section-rules), checking the draft against the [anti-patterns](../../resources/issue-creation.md#anti-patterns)
 - Gather title, description and acceptance criteria from `{issue_subject}` where it is supplied and from the run's own context otherwise, scoping the issue to the `{component_name}` the work package targets
 - Map `{issue_type}` to a GitHub label through the mapping below
 
