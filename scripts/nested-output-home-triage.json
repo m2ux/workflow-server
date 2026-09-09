@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "site": "cicd-pipeline-security-audit/techniques/dispatch-scanners/collect-results.md",
+      "component": "scanners_dispatched",
+      "verdict": "fix-later",
+      "rationale": "The two statements disagree about what the component counts, not merely about how to word it. The container calls it the count of dispatched scanner agents; the operation defines it as the count of scanners with a non-empty return, which is a returned count. Dropping the container's component would adopt the operation's meaning corpus-wide and leave nothing carrying the dispatched count. Which is correct is a question about that workflow's dispatch flow, which the 2026-09-09 work-package audit did not walk."
+    },
+    {
+      "site": "cicd-pipeline-security-audit/techniques/dispatch-scanners/collect-results.md",
+      "component": "scanners_returned",
+      "verdict": "fix-later",
+      "rationale": "Same pair. The container calls it the count of returned scanner agents; the operation defines it as 'same as scanners_dispatched', so under the operation's definitions both components hold one value and the two the container distinguishes collapse. Settling it means walking that workflow's dispatch flow rather than resolving the duplication."
+    }
+  ]
+}

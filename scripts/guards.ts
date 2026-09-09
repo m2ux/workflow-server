@@ -43,12 +43,28 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every activity declares the variables it reads and writes, and every read has a writer on every path',
   },
   {
+    id: 'artifact-status-once',
+    script: 'scripts/check-artifact-status-once.ts',
+    npmScript: 'check:status-once',
+    scope: 'corpus',
+    json: true,
+    proves: "no artifact template states the document's status in both its lean header and a closing field",
+  },
+  {
     id: 'canonical-home-map',
     script: 'scripts/check-canonical-home-map.ts',
     npmScript: 'check:home-map',
     scope: 'corpus',
     json: true,
     proves: 'every canonical-home row names an artifact some technique declares, so the conformance gate bound with the map resolves',
+  },
+  {
+    id: 'nested-output-home',
+    script: 'scripts/check-nested-output-home.ts',
+    npmScript: 'check:nested-output-home',
+    scope: 'corpus',
+    json: true,
+    proves: 'every nested output component is declared in one place, so a container and its operation cannot drift into two descriptions of one value',
   },
   {
     id: 'inherited-inputs',
