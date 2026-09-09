@@ -2,7 +2,7 @@
 name: implementation-analysis
 description: Guidelines for analyzing the existing implementation during work package planning to establish baselines, evaluate effectiveness, and identify improvement opportunities.
 metadata:
-  version: 1.3.0
+  version: 1.4.0
   order: 6
   legacy_id: 6
 ---
@@ -120,8 +120,6 @@ Consult when filling the template (not a session procedure):
 | Source | Type | What It Showed |
 |--------|------|----------------|
 | [Log file/dashboard] | Metrics | [Findings] |
-
-**Status:** Ready for planning
 ```
 
 ## Rules
