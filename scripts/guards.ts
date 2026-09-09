@@ -43,6 +43,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every activity declares the variables it reads and writes, and every read has a writer on every path',
   },
   {
+    id: 'canonical-home-map',
+    script: 'scripts/check-canonical-home-map.ts',
+    npmScript: 'check:home-map',
+    scope: 'corpus',
+    json: true,
+    proves: 'every canonical-home row names an artifact some technique declares, so the conformance gate bound with the map resolves',
+  },
+  {
     id: 'inherited-inputs',
     script: 'scripts/check-inherited-inputs.ts',
     npmScript: 'check:inherited-inputs',
