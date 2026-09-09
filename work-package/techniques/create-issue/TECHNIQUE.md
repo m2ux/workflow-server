@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -33,22 +33,6 @@ URL of the newly created issue.
 
 ## Rules
 
-### issues-define-problems
-
-Issues define problems, not solutions. Describe what needs to be solved and why.
-
-### acceptance-criteria
-
-Acceptance criteria must be observable and testable.
-
-### no-implementation-details
-
-No implementation details in issues — those belong in planning docs and PRs.
-
 ### requirement-traceability
 
 Every work package is linked to a GitHub or Jira issue for traceability.
-
-### issue-clarity
-
-Issues are clear to someone without prior context.
