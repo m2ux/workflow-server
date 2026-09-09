@@ -90,6 +90,42 @@ export function replacePath(root: SessionFile, jsonPath: SessionJsonPath, newSub
 }
 
 /**
+ * Close the launched-workflow record that embeds the session at `jsonPath`:
+ * the record's status becomes `completed`, its completion is stamped, and the
+ * session whose list holds the record gains a `workflow_returned` event.
+ *
+ * A `jsonPath` that no record embeds addresses a root session, which no parent
+ * launched; a record not `running` has already been closed. Both leave `top`
+ * untouched, so this is safe to apply on every terminal transition.
+ *
+ * Mutates `top` in place — the record and the session it embeds live in one
+ * file, so this composes onto the write that records the child's own
+ * completion (`saveSessionForTool`'s `mutateTop`) rather than taking a write
+ * of its own.
+ */
+export function closeLaunchedRecord(top: SessionFile, jsonPath: SessionJsonPath, completedAt: string): void {
+  const embedsARecord = jsonPath.length >= 3
+    && jsonPath[jsonPath.length - 1] === 'state'
+    && typeof jsonPath[jsonPath.length - 2] === 'number'
+    && jsonPath[jsonPath.length - 3] === 'triggeredWorkflows';
+  if (!embedsARecord) return;
+
+  const recordIndex = jsonPath[jsonPath.length - 2] as number;
+  const holderPath = jsonPath.slice(0, -3);
+  const holder = holderPath.length === 0 ? top : navigatePath(top, holderPath);
+  const record = holder.triggeredWorkflows[recordIndex];
+  if (!record || record.status !== 'running') return;
+
+  record.status = 'completed';
+  record.completedAt = completedAt;
+  holder.history.push({
+    timestamp: completedAt,
+    type: 'workflow_returned',
+    data: { sessionIndex: record.sessionIndex, workflowId: record.workflowId },
+  });
+}
+
+/**
  * Project a `SessionFile` onto the abstract `SessionView` consumed by the
  * validation helpers, so the validation surface stays storage-agnostic.
  */
@@ -192,6 +228,10 @@ export function advanceSession(
  * a new top SessionFile with the mutation slotted in at `loaded.jsonPath`,
  * and that whole top file is re-canonicalised, sealed, and written.
  *
+ * `mutateTop` composes further changes onto the top file about to be written,
+ * so a change spanning an embedded session and the parent holding it lands in
+ * one write — see `closeLaunchedRecord`.
+ *
  * The write is a compare-and-swap against the bytes `loaded` was read from:
  * a parent and its children share one file, so a call that composed its
  * change from a superseded read is refused with `STALE_WRITE` rather than
@@ -202,10 +242,12 @@ export function advanceSession(
 export async function saveSessionForTool(
   loaded: LoadedSession,
   newState: SessionFile,
+  mutateTop?: (top: SessionFile) => void,
 ): Promise<{ bytes: string; seal: string }> {
   const newTopState = loaded.jsonPath.length === 0
     ? newState
     : replacePath(loaded.topState, loaded.jsonPath, newState);
+  if (mutateTop) mutateTop(newTopState);
   return replaceSessionFile(loaded.folderAbsPath, newTopState, loaded.bytes);
 }
 

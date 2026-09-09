@@ -38,6 +38,7 @@ import {
   loadSessionForTool,
   advanceSession,
   saveSessionForTool,
+  closeLaunchedRecord,
   sessionView,
   navigatePath,
   describeSessionStoreError,
@@ -762,8 +763,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const declarations = new Map((result.value.variables ?? []).map(v => [v.name, v]));
       const variableWarnings: string[] = [];
 
+      const now = new Date().toISOString();
       const next = advanceSession(state, (draft) => {
-        const now = new Date().toISOString();
         // Exit-prior: any non-empty previous activity is recorded as
         // completed once we transition off it.
         const exitingActivity = draft.currentActivity;
@@ -862,7 +863,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           draft.status = 'completed';
         }
       });
-      await saveSessionForTool(loaded, next);
+      // A session reaching its terminal activity closes the launched-workflow
+      // record its parent keeps of the dispatch. The record and this session's
+      // own state sit in one file, so both land in this write; a root session
+      // no record embeds is left alone by `closeLaunchedRecord`.
+      await saveSessionForTool(
+        loaded,
+        next,
+        (activity_id === 'complete' || isTerminal)
+          ? (top) => closeLaunchedRecord(top, loaded.jsonPath, now)
+          : undefined,
+      );
 
       if (variableWarnings.length > 0) {
         logWarn('next_activity: variables_changed type mismatch', { session_index, warnings: variableWarnings });
@@ -922,35 +933,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...variableWarnings,
         ...artifactWarnings,
       );
-
-      // If this child just reached its terminal activity, notify the parent
-      // (if any) so the parent's `triggeredWorkflows[i].status` flips from
-      // `running` to `completed`. Persistent-parent only — transient parents
-      // were already discarded when the child captured them. Best-effort.
-      if ((activity_id === 'complete' || isTerminal) && state.parentSession?.sessionIndex) {
-        const parentIdx = state.parentSession.sessionIndex;
-        try {
-          const loadOpts = await sessionLoadOpts();
-          const parentLoaded = await loadSessionForTool(planningRootDir, parentIdx, loadOpts);
-          const completedAt = new Date().toISOString();
-          const parentNext = advanceSession(parentLoaded.state, (draft) => {
-            const ref = draft.triggeredWorkflows.find((t) => t.sessionIndex === state.sessionIndex);
-            if (ref && ref.status === 'running') {
-              ref.status = 'completed';
-              ref.completedAt = completedAt;
-              draft.history.push({
-                timestamp: completedAt,
-                type: 'workflow_returned',
-                data: { sessionIndex: state.sessionIndex, workflowId: state.workflowId },
-              });
-            }
-          });
-          await saveSessionForTool(parentLoaded, parentNext);
-        } catch {
-          // Parent may have been a transient and discarded long ago, or its
-          // folder may have moved. Don't fail the child's completion.
-        }
-      }
 
       const meta: Record<string, unknown> = { session_index, validation };
 
