@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 ## Capability
@@ -32,10 +32,6 @@ Workflow [retrospective](../../resources/workflow-retrospective.md#output-sectio
 Lean mechanical session-trace summary — per-activity tool counts, durations, errors and validation-warning (`vw`) clusters. Empty where the run accumulated no trace events.
 
 ## Rules
-
-### retrospective-honest
-
-Retrospective should be honest about what worked and what didn't — avoid generic positive statements
 
 ### skip-if-trivial
 
