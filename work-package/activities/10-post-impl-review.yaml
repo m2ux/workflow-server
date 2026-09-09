@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.28.0
+version: 1.29.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -11,10 +11,13 @@ variables:
     - changed_files
     - commit_sha
     - component_git_dir
+    - component_name
     - gitnexus_indexed
     - is_review_mode
+    - issue_title
     - planning_folder_path
     - pr_number
+    - problem_complexity
     - problem_statement
     - push_remote
     - requirements
@@ -73,6 +76,13 @@ variables:
       description: Whether any test-suite finding is at or above the severity that warrants action.
       defaultValue: false
 required: true
+triggers:
+  - workflow: prism
+    description: The full analytical pipeline over the change surface.
+    passContext:
+      - target_path
+      - component_name
+      - issue_title
 steps:
   - kind: action
     id: announce-start
@@ -162,6 +172,14 @@ steps:
   - kind: technique
     id: structural-analysis-inline
     technique: prism/structural-analysis
+    when: problem_complexity != 'complex'
+  - kind: technique
+    id: dispatch-prism
+    when: problem_complexity == 'complex'
+    technique:
+      name: workflow-engine::handle-sub-workflow
+      inputs:
+        workflow_id: prism
   - kind: technique
     id: test-suite-review
     technique: review-test-suite
