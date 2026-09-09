@@ -76,9 +76,9 @@ export class MigrationError extends Error {
  * Decode the b64.signature legacy token payload WITHOUT verifying the HMAC
  * signature. The old server may have signed the token with a key that no
  * longer matches (key rotation, server reinstall); we only need the payload
- * fields (`wf`, `v`, `sid`, `aid`, `act`, plus optional `psid`, `pwf`, `pact`,
- * `pv`) to reconstruct a `SessionFile`. Returns `null` for any structural
- * failure (no `.`-separator, base64 decode failure, JSON parse failure).
+ * fields (`wf`, `v`, `sid`, `aid`, `act`) to reconstruct a `SessionFile`.
+ * Returns `null` for any structural failure (no `.`-separator, base64 decode
+ * failure, JSON parse failure).
  */
 function decodeLegacyPayload(token: string): Record<string, unknown> | null {
   const dotIndex = token.lastIndexOf('.');

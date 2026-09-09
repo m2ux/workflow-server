@@ -26,8 +26,6 @@ export interface EmbeddedSessionRef {
   status: 'running' | 'completed' | 'aborted' | 'error';
   /** ISO-8601 timestamp when the child reached its terminal activity. */
   completedAt?: string;
-  /** Context returned from the child on completion. */
-  returnedContext?: Record<string, unknown>;
   /**
    * Full child SessionFile, embedded recursively. The single `session.json`
    * at the top of the planning folder carries every descendant's state.
@@ -64,10 +62,9 @@ export const ActiveCheckpointSchema = z.object({
 export type ActiveCheckpoint = z.infer<typeof ActiveCheckpointSchema>;
 
 /**
- * Base (non-recursive) shape of `SessionFile`. Used as the building block for
- * the recursive `SessionFileSchema` below; the only structural extension is
- * the addition of `parentSession`, declared via `z.lazy()` so the type can
- * refer back to itself for nested-workflow chains.
+ * Base shape of `SessionFile`. Recursion runs downward only: a launched
+ * workflow's state is embedded under `triggeredWorkflows[i].state`, declared
+ * via `z.lazy()` so the type can refer back to itself.
  */
 const SessionFileBaseSchema = z.object({
   /** Schema-format version. Bump on breaking layout changes. */
@@ -215,7 +212,6 @@ export interface SessionFile {
   history: HistoryEntry[];
   status: 'running' | 'completed' | 'aborted';
   triggeredWorkflows: EmbeddedSessionRef[];
-  parentSession?: SessionFile;
   planningFolderPath?: string;
   repo?: string;
   contextMode?: 'persistent' | 'fresh';
@@ -224,13 +220,12 @@ export interface SessionFile {
 }
 
 /**
- * Recursive `SessionFile` schema. Both `parentSession` (upward link) and
- * `triggeredWorkflows[i].state` (downward children) reference this schema via
- * `z.lazy()`, so a single file captures the entire work-package tree.
+ * Recursive `SessionFile` schema. `triggeredWorkflows[i].state` references this
+ * schema via `z.lazy()`, so a single file captures the entire work-package
+ * tree. A session's place in that tree is its position in the file; nothing is
+ * stored about the session above it.
  */
-export const SessionFileSchema: z.ZodType<SessionFile> = SessionFileBaseSchema.extend({
-  parentSession: z.lazy(() => SessionFileSchema).optional(),
-}) as z.ZodType<SessionFile>;
+export const SessionFileSchema: z.ZodType<SessionFile> = SessionFileBaseSchema as z.ZodType<SessionFile>;
 
 /**
  * Schema for a child entry inside the parent's `triggeredWorkflows[]` array.
@@ -246,7 +241,6 @@ export const EmbeddedSessionRefSchema: z.ZodType<EmbeddedSessionRef> = z.object(
   }),
   status: z.enum(['running', 'completed', 'aborted', 'error']),
   completedAt: z.string().datetime().optional(),
-  returnedContext: z.record(z.unknown()).optional(),
   state: z.lazy(() => SessionFileSchema).optional(),
 }) as z.ZodType<EmbeddedSessionRef>;
 
@@ -261,34 +255,6 @@ export function safeValidateSessionFile(data: unknown): z.SafeParseReturnType<un
 }
 
 /**
- * Soft warning threshold (in ancestors) for nested-workflow parent chains.
- * Past this depth, callers emit a `_meta.validation` warning; there is no hard
- * ceiling. Typical dispatch is 2-3 levels deep.
- */
-export const PARENT_CHAIN_DEPTH_WARN_THRESHOLD = 5;
-
-/**
- * Count the number of ancestor sessions reachable via `parentSession`. Returns
- * 0 when the session has no parent, 1 for a single parent, and so on. Walks
- * the chain iteratively with a generous safety cap to defend against cycles
- * introduced by hand-edited or malformed `session.json` files.
- */
-export function parentChainDepth(state: SessionFile | undefined): number {
-  if (!state) return 0;
-  let depth = 0;
-  let cursor: SessionFile | undefined = state.parentSession;
-  // Safety cap defends against accidental cycles in hand-edited state. 1024
-  // is two orders of magnitude past the soft-warn threshold; legitimate
-  // chains will never approach it.
-  const SAFETY_CAP = 1024;
-  while (cursor && depth < SAFETY_CAP) {
-    depth += 1;
-    cursor = cursor.parentSession;
-  }
-  return depth;
-}
-
-/**
  * Create a minimal valid `SessionFile` for a freshly-created session. Callers
  * (e.g. `start_session`) layer in defaults and persist via the session store.
  */
@@ -297,7 +263,6 @@ export function createInitialSessionFile(args: {
   workflowId: string;
   workflowVersion: string;
   agentId: string;
-  parentSession?: SessionFile;
   planningFolderPath?: string;
   /** Target owner/repo bound on this session (session.json SSOT). */
   repo?: string;
@@ -333,7 +298,6 @@ export function createInitialSessionFile(args: {
     status: 'running',
     triggeredWorkflows: [],
   };
-  if (args.parentSession) file.parentSession = args.parentSession;
   if (args.planningFolderPath) file.planningFolderPath = args.planningFolderPath;
   if (args.repo) file.repo = args.repo;
   if (args.contextMode) file.contextMode = args.contextMode;

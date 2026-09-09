@@ -4,8 +4,6 @@ import {
   validateSessionFile,
   createInitialSessionFile,
   bindSessionRepo,
-  parentChainDepth,
-  PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
 } from '../src/schema/session.schema.js';
 
@@ -143,64 +141,64 @@ describe('SessionFile schema', () => {
     });
   });
 
-  describe('recursive parentSession', () => {
-    it('accepts recursive parentSession and round-trips through serialise/parse', () => {
-      const parent = minimalSession({
-        sessionIndex: 'PARENT',
-        workflowId: 'meta',
-        agentId: 'orchestrator',
-      });
-      const child = minimalSession({ parentSession: parent });
+  describe('recursive embedded state', () => {
+    /** A launched-workflow record holding `state`, the shape dispatch writes. */
+    function record(state: SessionFile): SessionFile['triggeredWorkflows'][number] {
+      return {
+        workflowId: state.workflowId,
+        sessionIndex: state.sessionIndex,
+        triggeredAt: '2026-05-13T12:00:00.000Z',
+        triggeredFrom: { activityId: 'execute-analysis' },
+        status: 'running',
+        state,
+      };
+    }
 
-      const json = JSON.stringify(child);
-      const decoded = JSON.parse(json);
+    it('accepts an embedded launched session and round-trips through serialise/parse', () => {
+      const child = minimalSession({ sessionIndex: 'CHILDX', workflowId: 'prism' });
+      const launcher = minimalSession({ triggeredWorkflows: [record(child)] });
+
+      const decoded = JSON.parse(JSON.stringify(launcher));
       const result = safeValidateSessionFile(decoded);
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.parentSession?.sessionIndex).toBe('PARENT');
-        expect(result.data.parentSession?.workflowId).toBe('meta');
+        expect(result.data.triggeredWorkflows[0]?.state?.sessionIndex).toBe('CHILDX');
+        expect(result.data.triggeredWorkflows[0]?.state?.workflowId).toBe('prism');
       }
     });
 
-    it('round-trips a 3-level nested parentSession.parentSession.parentSession', () => {
-      const gp = minimalSession({ sessionIndex: 'GGGGGG', workflowId: 'meta' });
-      const grandparent = minimalSession({
-        sessionIndex: 'GRANDP',
-        workflowId: 'roadmap',
-        parentSession: gp,
-      });
-      const parent = minimalSession({
-        sessionIndex: 'PRNTPR',
-        workflowId: 'work-packages',
-        parentSession: grandparent,
-      });
+    it('round-trips three levels of embedding', () => {
+      const grandchild = minimalSession({ sessionIndex: 'GGGGGG', workflowId: 'prism' });
       const child = minimalSession({
         sessionIndex: 'CHILDX',
-        workflowId: 'work-package',
-        parentSession: parent,
+        workflowId: 'prism-evaluate',
+        triggeredWorkflows: [record(grandchild)],
+      });
+      const launcher = minimalSession({
+        sessionIndex: 'PRNTPR',
+        workflowId: 'meta',
+        triggeredWorkflows: [record(child)],
       });
 
-      const json = JSON.stringify(child);
-      const decoded = JSON.parse(json);
-      const parsed = validateSessionFile(decoded);
+      const parsed = validateSessionFile(JSON.parse(JSON.stringify(launcher)));
 
-      expect(parsed.parentSession?.sessionIndex).toBe('PRNTPR');
-      expect(parsed.parentSession?.parentSession?.sessionIndex).toBe('GRANDP');
-      expect(parsed.parentSession?.parentSession?.parentSession?.sessionIndex).toBe('GGGGGG');
-      // ensure deepest parent has no further ancestor
-      expect(parsed.parentSession?.parentSession?.parentSession?.parentSession).toBeUndefined();
+      const embedded = parsed.triggeredWorkflows[0]?.state;
+      expect(embedded?.sessionIndex).toBe('CHILDX');
+      expect(embedded?.triggeredWorkflows[0]?.state?.sessionIndex).toBe('GGGGGG');
+      // The deepest session launched nothing of its own.
+      expect(embedded?.triggeredWorkflows[0]?.state?.triggeredWorkflows).toEqual([]);
     });
 
-    it('rejects when a nested parentSession itself fails validation', () => {
-      const parent = minimalSession();
+    it('rejects when an embedded session itself fails validation', () => {
+      const child = minimalSession({ sessionIndex: 'CHILDX' });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (parent as any).workflowId;
-      const child = minimalSession({ parentSession: parent });
-      const result = safeValidateSessionFile(child);
+      delete (child as any).workflowId;
+      const launcher = minimalSession({ triggeredWorkflows: [record(child)] });
+      const result = safeValidateSessionFile(launcher);
       expect(result.success).toBe(false);
       if (!result.success) {
         const paths = result.error.issues.map((i) => i.path.join('.'));
-        expect(paths.some((p) => p.startsWith('parentSession'))).toBe(true);
+        expect(paths.some((p) => p.startsWith('triggeredWorkflows.0.state'))).toBe(true);
       }
     });
   });
@@ -243,34 +241,14 @@ describe('SessionFile schema', () => {
       expect(file.status).toBe('running');
     });
 
-    it('attaches an optional parentSession when provided', () => {
-      const parent = createInitialSessionFile({
-        sessionIndex: 'PARENT',
-        workflowId: 'meta',
-        workflowVersion: '5.0.0',
-        agentId: 'orchestrator',
-      });
-      const child = createInitialSessionFile({
-        sessionIndex: VALID_INDEX,
-        workflowId: 'work-package',
-        workflowVersion: '3.11.0',
-        agentId: 'worker',
-        parentSession: parent,
-      });
-      expect(child.parentSession?.sessionIndex).toBe('PARENT');
-      // schema round-trip
-      const parsed = validateSessionFile(JSON.parse(JSON.stringify(child)));
-      expect(parsed.parentSession?.workflowId).toBe('meta');
-    });
-
-    it('omits parentSession field when not provided', () => {
+    it('launches nothing of its own', () => {
       const file = createInitialSessionFile({
         sessionIndex: VALID_INDEX,
         workflowId: 'work-package',
         workflowVersion: '3.11.0',
         agentId: 'worker',
       });
-      expect(file.parentSession).toBeUndefined();
+      expect(file.triggeredWorkflows).toEqual([]);
     });
 
     it('includes optional repo when provided', () => {
@@ -327,48 +305,4 @@ describe('SessionFile schema', () => {
     });
   });
 
-  describe('schema exports', () => {
-    // Nothing else pins this value, which resource-tools quotes in its soft-warning message.
-    it('warns above a parent-chain depth of five', () => {
-      expect(PARENT_CHAIN_DEPTH_WARN_THRESHOLD).toBe(5);
-    });
-  });
-
-  describe('parentChainDepth helper', () => {
-    it('returns 0 for a session with no parent', () => {
-      const state = minimalSession();
-      expect(parentChainDepth(state)).toBe(0);
-    });
-
-    it('returns 0 when called with undefined', () => {
-      expect(parentChainDepth(undefined)).toBe(0);
-    });
-
-    it('returns 1 for a single-parent chain', () => {
-      const parent = minimalSession({ sessionIndex: 'PARENT' });
-      const child = minimalSession({ parentSession: parent });
-      expect(parentChainDepth(child)).toBe(1);
-    });
-
-    it('returns N for an N-ancestor chain', () => {
-      let cursor: SessionFile = minimalSession({ sessionIndex: 'ROOTAA' });
-      // Build a chain of 7 ancestors above the leaf.
-      for (let i = 0; i < 7; i++) {
-        cursor = minimalSession({ sessionIndex: 'AAAAAA', parentSession: cursor });
-      }
-      expect(parentChainDepth(cursor)).toBe(7);
-    });
-
-    it('caps traversal at the safety limit when parentSession forms a cycle', () => {
-      // Forge a cycle by self-reference (cannot happen via schema round-trip
-      // because Zod recurses through `z.lazy`, but possible in process-only
-      // hand-built objects).
-      const node = minimalSession();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).parentSession = node;
-      const d = parentChainDepth(node);
-      // Cap is 1024; helper must return without infinite-looping.
-      expect(d).toBe(1024);
-    });
-  });
 });

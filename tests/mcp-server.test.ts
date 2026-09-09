@@ -2145,12 +2145,10 @@ describe('mcp-server integration', () => {
       expect(existsSync(path.join(promotedFolder, '.session-token'))).toBe(true);
 
       // Contract: meta is at the top of the promoted file; work-package is
-      // embedded under triggeredWorkflows[0].state. parentSession is absent
-      // on the top (meta has no parent) — the persistent-parent embedding
-      // shape applies here too.
+      // embedded under triggeredWorkflows[0].state — the persistent-parent
+      // embedding shape applies here too.
       const topState = JSON.parse(readFileSync(path.join(promotedFolder, 'session.json'), 'utf8'));
       expect(topState.workflowId).toBe('meta');
-      expect(topState.parentSession).toBeUndefined();
       expect(topState.triggeredWorkflows).toHaveLength(1);
       const entry = topState.triggeredWorkflows[0];
       expect(entry.workflowId).toBe('work-package');
@@ -2274,9 +2272,8 @@ describe('mcp-server integration', () => {
       const topStatePath = join(workspaceDir, '.engineering/artifacts/planning', slugA, 'session.json');
       const topState = JSON.parse(readFileSync(topStatePath, 'utf8'));
 
-      // Top is the meta (A). It has no parent.
+      // Top is the meta (A) — the session no record embeds.
       expect(topState.workflowId).toBe('meta');
-      expect(topState.parentSession).toBeUndefined();
       // B (work-package) embedded under A.
       expect(topState.triggeredWorkflows?.[0]?.state?.workflowId).toBe('work-package');
       // C (remediate-vuln) embedded under B.
@@ -2285,29 +2282,6 @@ describe('mcp-server integration', () => {
       expect(
         topState.triggeredWorkflows?.[0]?.state?.triggeredWorkflows?.[0]?.state?.triggeredWorkflows?.[0]?.state?.workflowId,
       ).toBe('prism-update');
-    });
-
-    it('dispatch depth > 5 emits a soft warning in _meta.validation', async () => {
-      // Build a 7-level chain so the leaf records depth = 6 (six ancestors),
-      // tripping the > 5 soft-warn threshold.
-      const slugs = [
-        'depth-l0',
-        'depth-l1',
-        'depth-l2',
-        'depth-l3',
-        'depth-l4',
-        'depth-l5',
-        'depth-l6',
-      ];
-
-      // TODO: rewrite for the embedded-state design. The original test
-      // chained 7 meta sessions via parent_planning_slug, relying on
-      // parentSession to carry chain depth. With dispatch_child, embedded
-      // children do not populate parentSession (the parent is already in
-      // the same file); the depth concept now applies to the
-      // triggeredWorkflows array nesting instead. Skipping until the
-      // depth-warning surface is reworked for the new model.
-      expect(slugs).toHaveLength(7);
     });
 
     it('creates a fresh planning folder under .engineering/artifacts/planning/<slug>/ for non-meta workflows', async () => {

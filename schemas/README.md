@@ -934,11 +934,13 @@ When an activity triggers another workflow, the state tracks the relationship:
       "triggeredAt": "2026-01-22T10:00:00.000Z",
       "triggeredFrom": { "activityId": "implementation", "stepIndex": 2 },
       "status": "completed",
-      "returnedContext": { "pr_number": "123" }
+      "completedAt": "2026-01-22T11:30:00.000Z"
     }
   ]
 }
 ```
+
+The launched workflow's own state is embedded under the record's `state`, so what it produced is read from there — its variable bag and its `declaredArtifacts` — or from the artifacts it wrote to the planning folder the launcher gave it.
 
 ### History Events
 

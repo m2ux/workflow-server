@@ -153,6 +153,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every harness kind resolves to an adapter exposing exactly the operation kinds callers ask for',
   },
   {
+    id: 'launched-workflows',
+    script: 'scripts/check-launched-workflows.ts',
+    npmScript: 'check:launched-workflows',
+    scope: 'corpus',
+    json: false,
+    proves: 'every declared launch is performed by a step, every launch is declared, and both name a workflow the corpus holds',
+  },
+  {
     id: 'self-provisioned-input',
     script: 'scripts/check-self-provisioned-input.ts',
     npmScript: 'check:self-input',
