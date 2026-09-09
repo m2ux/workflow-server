@@ -69,6 +69,6 @@ One object per prior comment or review thread, plus the cap the register derives
 
 - **Entry fields follow the shared table.** `finding`, `author`, `reasoning` and `disposition` carry the same content as [Prior Feedback Triage](./review-mode.md#prior-feedback-triage); this register adds `author_class` and `blocker`, which the cap is derived from.
 - **Every thread is an entry.** Confirmed, Refuted, or Superseded, one per prior comment or review thread, human and bot alike. A thread with no entry is a thread nobody dispositioned.
-- **The header states the cap.** `rating_cap` is a fact of this register, stated once here and never recomputed elsewhere.
+- **The header states the cap this register derives.** `rating_cap` is computed from the entries beneath it and stated once here. Whether the rendered Overall Rating holds at the cap is decided against the review's own findings, per [rating-cap-carve-in](../techniques/review-summary.md#rating-cap-carve-in).
 - **A reported runtime error is tagged once.** Exactly one entry carries `reported_failure` true, and that entry is the single ingest point, which is what makes it traceable without re-reading the thread.
 - **Line budget:** one object per thread, `reasoning` held to its one line. A thread whose reasoning needs a paragraph carries a link to the report section that holds it.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -53,7 +53,6 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 ### 3. Derive the Rating Cap
 
 - Set `{rating_cap}` to the request-changes tier when any blocker-class concern is dispositioned Confirmed (valid and unaddressed); leave it unset when every blocker-class concern is Refuted or Superseded.
-- An unaddressed external blocker therefore prevents an "approve" or "comment only" verdict regardless of the review's own findings.
 
 ### 4. Create the Triage
 
@@ -65,9 +64,9 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 
 Every prior comment and review thread receives an explicit Confirmed / Refuted / Superseded disposition with reasoning — none is silently dropped.
 
-### unaddressed-blocker-caps-rating
+### confirmed-blocker-sets-the-cap
 
-The Overall Rating never exceeds `{rating_cap}`. A blocker is not rated away by the review's own findings being light.
+A blocker-class concern dispositioned Confirmed sets `{rating_cap}` to the request-changes tier, and a triage that surfaced few concerns does not soften it. How the rendered Overall Rating then relates to the cap is [rating-cap-carve-in](./review-summary.md#rating-cap-carve-in), which this pass has not seen the findings to decide.
 
 ### single-ingest-of-reported-failures
 
