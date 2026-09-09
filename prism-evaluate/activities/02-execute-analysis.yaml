@@ -95,7 +95,10 @@ steps:
             workflow_id: prism
       - kind: technique
         id: read-run-manifest
-        technique: read-run-manifest
+        technique: prism/read-run-manifest
+      - kind: technique
+        id: accumulate-analysis-run
+        technique: accumulate-analysis-run
 outcome:
   - Every planned dimension has been analysed through the prism pipeline; any run that failed is flagged so coverage gaps are visible rather than silent
 exits:

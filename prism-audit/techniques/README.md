@@ -50,7 +50,7 @@ Four operation-groups (one per authoring activity) plus one standalone technique
 | Operation | Capability |
 |-----------|------------|
 | [`compose-trigger-context`](execute-analysis/compose-trigger-context.md) | Unpack a scope into the prism trigger variables (target, description, output, pipeline mode, focus) |
-| [`read-run-manifest`](execute-analysis/read-run-manifest.md) | Record a prism run from its `RUN-MANIFEST.json` (report + definitive-findings paths + status) into the audit accumulators |
+| [`accumulate-analysis-run`](execute-analysis/accumulate-analysis-run.md) | Record one completed prism run (report + definitive-findings paths + status) into the audit accumulators |
 
 ### audit-finalize (Audit Report Finalization)
 

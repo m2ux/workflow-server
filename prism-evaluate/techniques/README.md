@@ -38,7 +38,7 @@ The operation library for the evaluation workflow. Each operation is one capabil
 | Operation | Capability |
 |-----------|------------|
 | [`compose-trigger-context`](execute-analysis/compose-trigger-context.md) | Compose one group's trigger context |
-| [`read-run-manifest`](execute-analysis/read-run-manifest.md) | Record a completed run from its manifest |
+| [`accumulate-analysis-run`](execute-analysis/accumulate-analysis-run.md) | Record a completed run into the evaluation's accumulators |
 
 ### compose-evaluation-report
 
