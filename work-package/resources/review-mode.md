@@ -2,7 +2,7 @@
 name: review-mode
 description: Reference content for a structured pull-request review — the review comment template, and one section per review category carrying that category's findings fragment and population rules. Organized for per-section delivery.
 metadata:
-  version: 1.18.0
+  version: 1.19.0
   order: 24
   legacy_id: 24
 ---
@@ -32,8 +32,6 @@ The sub-sections decompose the rules so a consumer fetches only the one it needs
 ### Header Fields
 
 The summary header carries `PR`, `Plan`, `Activities`, `Reports`, and `Date` fields, in that order. Every `Plan`, `Reports` and `Activities` entry is a hyperlink; a bare name in any of the three is a defect.
-
-**Findings constraint:** every finding names a file within the authored surface (the PR's changed-files list). Findings on files in that set form the PR's findings; findings on other files form a separate "pre-existing" grouping.
 
 **Reports list:** The header includes a `Reports` field naming each report the summary links to, as hyperlinks. It is the summary's single home for those links: a findings section carries no `Details:` line of its own, because the reader has already met the list in the header and reads a repeat as a different link worth following. Each entry links the report by name to its artifact, under the engineering-artifacts base URL:
 
