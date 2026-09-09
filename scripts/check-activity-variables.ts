@@ -31,7 +31,7 @@ import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { fanGroups, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN } from '../src/utils/binding-provenance.js';
 import {
   activityGraph,
@@ -231,6 +231,9 @@ export async function collectFindings(root: string): Promise<Finding[]> {
     }
     const unreachable = unreachableReads({
       graph: activityGraph(workflow),
+      // From the loader's single derivation, so the grouping keeps one home and the graph type
+      // stays a flat reachability map.
+      fans: fanGroups(workflow),
       initialActivity: workflow.initialActivity,
       availableAtEntry,
       reads: new Map(records.map((record) => [record.id, record.declaredReads])),

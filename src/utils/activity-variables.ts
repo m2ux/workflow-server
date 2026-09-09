@@ -565,9 +565,21 @@ export interface UnreachableRead {
  * Reads no path can satisfy.
  *
  * The entry case is a definite-assignment walk: a variable is available on entry to an activity
- * when every predecessor path makes it available, starting from what the session holds before the
- * first activity runs — the seeded and session-supplied names. A read of a name absent from that
- * set is reached, on at least one path, before anything writes it.
+ * when every ARRIVAL makes it available, starting from what the session holds before the first
+ * activity runs — the seeded and session-supplied names. A read of a name absent from that set is
+ * reached, on at least one path, before anything writes it.
+ *
+ * An arrival is one way control can reach a node. An ordinary predecessor is its own arrival, and
+ * a completed fan is one arrival contributing the union of its live branches' outgoing sets —
+ * every branch ran, so the meeting point's entry state is what they collectively leave. Arrivals
+ * intersect, because control still comes by exactly one of them. Two fans converging on one node
+ * are two arrivals, so such a node may declare only the reads both unions satisfy.
+ *
+ * Termination is unaffected: the analysis descends from the universe to a fixed point over the
+ * powerset lattice ordered by superset, each outgoing set is non-increasing across iterations, and
+ * both a union and an intersection of non-increasing sets are non-increasing. The meet changes,
+ * the lattice does not — and it need not, because a branch's writes are namespaced, so a branch
+ * contributes exactly one flat name whatever object landed under it.
  *
  * The re-entry case is the same question asked about a return visit, and only of the reads that
  * choose an exit. An activity the graph can come back to picks its onward transition again; where
@@ -593,8 +605,15 @@ export function unreachableReads(args: {
    * visit by definition, so an exit reading it is deciding on a current value, not a stale one.
    */
   policy: ReadonlySet<string>;
+  /**
+   * The fans the graph declares, from the loader's single derivation, so the grouping keeps one
+   * home and the graph type stays a flat reachability map. A completed fan is ONE arrival at its
+   * meeting point, contributing the union of its live branches' outgoing sets.
+   */
+  fans?: ReadonlyArray<{ branches: readonly string[]; join: string | undefined }>;
 }): UnreachableRead[] {
   const { graph, initialActivity, availableAtEntry, reads, routingReads, writes, policy } = args;
+  const fans = args.fans ?? [];
   const nodes = [...graph.keys()];
   // A root outside the graph leaves the walk nothing to report against: the workflow names an
   // activity it does not include, which is a defect of its own.
@@ -603,6 +622,24 @@ export function unreachableReads(args: {
   const predecessors = new Map<string, string[]>(nodes.map((id) => [id, []]));
   for (const [from, targets] of graph) {
     for (const to of targets) predecessors.get(to)?.push(from);
+  }
+
+  /**
+   * The fans that converge on each meeting point, and the branches to remove from that meeting
+   * point's plain predecessors. A branch appears either as a contributor to its fan's one union
+   * arrival or as an ordinary intersecting predecessor, never both: left in both, the intersection
+   * wipes the union straight back out and the change does nothing.
+   */
+  const arrivingFans = new Map<string, string[][]>();
+  for (const fan of fans) {
+    if (fan.join === undefined || !graph.has(fan.join)) continue;
+    const live = fan.branches.filter((branch) => graph.has(branch));
+    if (live.length === 0) continue;
+    const converging = arrivingFans.get(fan.join) ?? [];
+    converging.push([...live]);
+    arrivingFans.set(fan.join, converging);
+    const branchSet = new Set(live);
+    predecessors.set(fan.join, (predecessors.get(fan.join) ?? []).filter((from) => !branchSet.has(from)));
   }
 
   // Only activities the initial activity can reach are walked: an unreachable activity is a graph
@@ -632,16 +669,41 @@ export function unreachableReads(args: {
     return out;
   };
 
+  /**
+   * The ways control can reach a node, each as the set of names it makes available. An ordinary
+   * predecessor is its own arrival. A completed fan is ONE arrival contributing the UNION of its
+   * live branches' outgoing sets, because every branch ran — an intersection there drops a name
+   * only one branch writes and turns a correct declared read at the meeting point into a finding.
+   * Arrivals then intersect, because control still comes by exactly one of them.
+   */
+  const arrivals = (id: string): Set<string>[] => {
+    const out = (predecessors.get(id) ?? [])
+      .filter((from) => reachable.has(from))
+      .map((from) => outgoing(from));
+    for (const branches of arrivingFans.get(id) ?? []) {
+      // Built over distinct branch ids: the union is idempotent over an instance fan's siblings,
+      // so N instances of one activity contribute one arrival carrying that activity's set once.
+      const live = [...new Set(branches)].filter((branch) => reachable.has(branch));
+      if (live.length === 0) continue;
+      const union = new Set<string>();
+      for (const branch of live) for (const name of outgoing(branch)) union.add(name);
+      out.push(union);
+    }
+    return out;
+  };
+
   let changed = true;
   while (changed) {
     changed = false;
     for (const id of reachable) {
       if (id === initialActivity) continue;
-      const sources = (predecessors.get(id) ?? []).filter((from) => reachable.has(from));
+      const sources = arrivals(id);
       if (sources.length === 0) continue;
+      // The candidate seed is the FIRST ARRIVAL's set, not the first predecessor's: seeded from a
+      // predecessor, a union arrival's extra names are never candidates and the union does nothing.
       const next = new Set<string>();
-      for (const name of outgoing(sources[0]!)) {
-        if (sources.every((from) => outgoing(from).has(name))) next.add(name);
+      for (const name of sources[0]!) {
+        if (sources.every((from) => from.has(name))) next.add(name);
       }
       const current = incoming.get(id)!;
       if (next.size !== current.size || [...next].some((name) => !current.has(name))) {
