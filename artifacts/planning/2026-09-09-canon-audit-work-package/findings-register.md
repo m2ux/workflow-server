@@ -10,14 +10,14 @@
 |----------|-------:|--------:|------:|
 | Critical | 0 | 0 | 0 |
 | High     | 2 | 2 | 0 |
-| Medium   | 10 | 9 | 6 |
-| Low      | 9 | 8 | 0 |
+| Medium   | 10 | 10 | 6 |
+| Low      | 9 | 9 | 0 |
 
-**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 173 of 173
+**Coverage:** walked 50 · not-applicable 6 · blocked 0 · paths read 173 of 173
 
 Findings 1 and 3 landed on `workflow/prism-launch-results` (PR #663); finding 2 in the same branch after the design decisions under [Decisions](#decisions); finding 4 on `workflow/register-prefix-precedence` (PR #666) — all merged, with the corpus pointer and coverage stamp adopted in PR #665.
 
-Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. Findings 12 through 14 are the third, nine more resources and nine techniques. Findings 15 through 17 are the fourth, thirty-two techniques. Findings 18 through 20 are the fifth, thirty-five more. Finding 21 is the sixth and last, the thirty remaining techniques. All applied on `workflow/wp-audit-batch2` (PR #668) except finding 17, whose fix lands in `meta`, and finding 20, a voice sweep two of whose four sites need their resource re-read. Both are recorded as residual rather than half-done.
+Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. Findings 12 through 14 are the third, nine more resources and nine techniques. Findings 15 through 17 are the fourth, thirty-two techniques. Findings 18 through 20 are the fifth, thirty-five more. Finding 21 is the sixth and last, the thirty remaining techniques. All 21 are applied, on `workflow/wp-audit-batch2` (PR #668). Findings 17 and 20 were held open at the end of the sixth batch and closed afterwards on the dispositions recorded under [Decisions](#decisions).
 
 **The file residual is closed.** Every one of the target's 173 definition files has been read whole across the six batches. The pass that opened with a residual of 134 inherited from four prior passes hands on none.
 
@@ -96,10 +96,10 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 | Home | Unit | Status |
 |------|------|--------|
 | Anti-Patterns | Creation Rules | `not-applicable` — scoped by its own text to authoring the catalogue |
-| Anti-Patterns | Tool-Technique-Doc Consistency | `blocked` — its entries compare authored claims against the live harness tool surface, which this pass did not read |
+| Anti-Patterns | Tool-Technique-Doc Consistency | `walked` where it reaches this surface, `not-applicable` where it does not. Every server tool the definitions name — `get_technique`, `get_resource`, `get_activity`, at one site — exists on the live surface, in one name form, with no camelCase or hyphenated variant anywhere; the harness tools named (`Read`, `WebSearch`) likewise. `complete-bootstrap-path`, `describe-tool-value` and `no-redundant-tools` take the server's own tool layer as their subject rather than authored workflow content, so none reaches a definitions surface |
 | Design Principles | Internalize Before Producing; Define Complete Scope; Clarify Before Assuming; Confirm Before Irreversible Changes; Close the Loop | `not-applicable` — session-conduct stances with no authored construct on this surface |
 
-**Unit residual: 1 `blocked`.**
+**Unit residual: none.** Every criteria unit is walked or evidenced not-applicable.
 
 ## File coverage
 
@@ -119,7 +119,7 @@ read 173 · unread 0 — the whole target's size at the audited commit.
 
 **No path is `unread`.** Every existence claim in this register is bounded by the whole target rather than by a subset of it, which is what lets a claim that a construct is declared nowhere, or reached by nothing, be stated rather than merely unrefuted. Finding 5 removes one path, so a pass enumerating the target after PR #668 finds 172 and reads them all.
 
-The one residual this pass hands on is not files but criteria: the `blocked` unit under [Coverage](#coverage), whose entries compare authored claims against the live harness tool surface.
+This pass hands on no residual — no unread path, no blocked unit.
 
 Batch 4 also confirmed finding 13's fix direction from a consumer rather than from the contract: `create-test-plan.md` reads `{plan_document.tasks}`, which is the declaration the fix kept.
 
@@ -146,6 +146,10 @@ Six items the 2026-09-07 pass accepted as design decisions, excluded from the de
 | Which hand-walked units become guards | The canonical-home-map check only; a check keyed on prose naming the terminal activity would freeze the phrasings its author saw |
 | How finding 4's two rules stop colliding | Narrow `artifact-prefix` to its own scope, splitting the triggers. Precedence by dotted address was applied first and reverted on challenge: it made `manage-registers` track a rule name it does not own, so renaming the prefix rule would falsify the claim with nothing failing. The entry's Fix ranks consolidation first and splitting equally valid where the split reflects a real distinction, and one owning activity against none is that distinction. Both commits are in PR #666's history |
 | Where the rating cap's two answers separate | Producer sets, consumer decides — the triage derives the cap and defers, the carve-in stays the sole home for lifting. Folding the carve-in into the producer was rejected because the triage runs before any independent analysis by its own first step, so it cannot see the findings the carve-in turns on. Ordering the two by dotted address was rejected as the shape already withdrawn on finding 4 |
+| Which hand-walked units become checks (revisited) | Two: `artifact-status-once` and `nested-output-home`, on PR #670. Both were proven against the pre-fix corpus before landing — the first names all three status templates, the second ten sites. The third repeated defect, a container rule restating the guide its own output cites, stays a hand-walked unit: deciding whether a rule's content already lives in a resource is judgement, and a check keyed on something weaker would flag the legitimate case where a container states an invariant its guide illustrates |
+| What the nested-output check found outside the target | Two sites in `cicd-pipeline-security-audit`, triaged rather than fixed. There the container and the operation disagree about what `scanners_dispatched` and `scanners_returned` count rather than about wording — the operation defines the first as a returned count and the second as identical to it, collapsing two values the container distinguishes. The guard's own remedy would adopt that meaning corpus-wide and leave nothing carrying the dispatched count, and settling it means walking that workflow |
+| How finding 17's harness claim is closed | Not by the meta operation the finding proposed. Two things ruled it out. Commits from the harness the rule names carry exactly one trailer, the one added explicitly, so no injection occurred and the claim is false as configured — false in the direction that causes the harm it warned about. And `harness-compat`'s Capability scopes it to abstract sub-agent dispatch, its `harness-independence` rule enumerating the three dispatch operations, so a commit-trailer operation has no home there. The rule now states the invariant and reads the committed message rather than predicting from the host |
+| How finding 20's four rules resolve | Differently per rule, which re-reading the two resources is what established. `conversation-not-interrogation` is duplicated by the elicitation guide's opening and goes. `elevate-implicit` is not duplicated — the assumptions guide carries probe vocabulary that operationalises it and never states the invariant — so it is restated as one. `validate-patterns` folds into `multiple-sources`, which stays the group's authoritative home and which the research operation cites by name |
 | How the duplicated issue-body template is homed | A platform-neutral home, reached by renaming rather than adding a file: reading the GitHub guide for platform-specific content found none, so a third file would have sat beside one that shrank to nothing. Folding Jira into it entirely was rejected — a GitHub run would then load the Jira terminology map, markup table and priority scale it never uses, which is the delivery cost section-grain resources exist to avoid |
 
 ## Sources
