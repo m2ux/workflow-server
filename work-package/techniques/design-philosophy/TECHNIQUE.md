@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -22,17 +22,3 @@ Summary, description, and context from the linked issue
 ### design_philosophy_doc
 
 Records problem classification, design [rationale](../../resources/design-framework.md#design-philosophy-artifact-template), and workflow path decisions
-
-
-#### problem_statement
-
-Clear problem definition with system understanding
-
-#### problem_type
-
-Specific problem or inventive goal
-
-#### problem_complexity
-
-simple, moderate, or complex
-
