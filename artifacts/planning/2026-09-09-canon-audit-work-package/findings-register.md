@@ -10,14 +10,16 @@
 |----------|-------:|--------:|------:|
 | Critical | 0 | 0 | 0 |
 | High     | 2 | 2 | 0 |
-| Medium   | 9 | 8 | 6 |
+| Medium   | 10 | 9 | 6 |
 | Low      | 9 | 8 | 0 |
 
-**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 143 of 173
+**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 173 of 173
 
 Findings 1 and 3 landed on `workflow/prism-launch-results` (PR #663); finding 2 in the same branch after the design decisions under [Decisions](#decisions); finding 4 on `workflow/register-prefix-precedence` (PR #666) — all merged, with the corpus pointer and coverage stamp adopted in PR #665.
 
-Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. Findings 12 through 14 are the third, nine more resources and nine techniques. Findings 15 through 17 are the fourth, thirty-two techniques. Findings 18 through 20 are the fifth, thirty-five more. All applied on `workflow/wp-audit-batch2` (PR #668) except finding 17, whose fix lands in `meta`, and finding 20, a voice sweep two of whose four sites need their resource re-read. Both are recorded as residual rather than half-done.
+Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. Findings 12 through 14 are the third, nine more resources and nine techniques. Findings 15 through 17 are the fourth, thirty-two techniques. Findings 18 through 20 are the fifth, thirty-five more. Finding 21 is the sixth and last, the thirty remaining techniques. All applied on `workflow/wp-audit-batch2` (PR #668) except finding 17, whose fix lands in `meta`, and finding 20, a voice sweep two of whose four sites need their resource re-read. Both are recorded as residual rather than half-done.
+
+**The file residual is closed.** Every one of the target's 173 definition files has been read whole across the six batches. The pass that opened with a residual of 134 inherited from four prior passes hands on none.
 
 ## Change surface
 
@@ -64,6 +66,8 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 | 19 | Low | `no-duplicated-guidance` | `techniques/conduct-retrospective/TECHNIQUE.md`, `retrospective-honest` | States that the retrospective is honest about what worked and carries no generic positives, which the workflow-retrospective guide's own rule states more fully — adding specificity and ruthless prioritisation, and bounding the recommendation list — beside the item budget and exception-only rules governing the same section. The container's output already cites that guide's section template. Second instance of finding 15's shape. | `pre-existing` | | The guide keeps it. `skip-if-trivial` and `history-private` stay, carrying what nothing else states. **Applied.** |
 | 20 | Low | `avoidance-voice-in-definitions` | `techniques/research/TECHNIQUE.md`; `techniques/review-assumptions/TECHNIQUE.md`; `techniques/requirements-elicitation/TECHNIQUE.md` | Four group-container rules are written as stance in the "should" voice rather than as invariants in the declarative present — `multiple-sources` ("Multiple sources should be consulted"), `validate-patterns` ("Patterns should be validated across documents"), `elevate-implicit` ("assumptions should be elevated for validation"), and `conversation-not-interrogation` (opening "Core principle:"). The last restates the elicitation guide's own opening, a dialogue rather than a checklist. `multiple-sources` is correct layering and stays either way — `research.md`'s `official-docs-per-dependency` cites it by name as the group rule it applies. | `pre-existing` | | Open. Rewriting four rules in the declarative present is a voice sweep, and two of them need their resource re-read to settle whether the content is duplicated or merely stance-voiced. Recorded for the next pass, which starts with those resources in hand. **Not applied.** |
 
+| 21 | Medium | `branch-on-undeclared-threshold` | `techniques/task-completion-review.md` | The post-task self-review is project-agnostic in what it does — symbol provenance, then quality checks whose own examples are debug output left in the tree, a TODO with no issue reference, a documented symbol with no implementation — and it cited the Rust and Substrate criteria set whole, with nothing saying which of its five sections a non-Rust project answers to. Two of the five are Rust-idioms and Substrate-framework criteria. Its sibling `review-code.md` declares `project_type` and gates the Substrate checks on it, and the activity binding both already reads that variable and gates its own test step on the same value. | `pre-existing` | | State which criteria hold where, and declare `project_type` as the optional input the step branches on. **Applied.** |
+
 ### Withdrawn on adversarial re-derivation
 
 | Candidate | Why it fell |
@@ -83,6 +87,8 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 | Group containers declaring `## Outputs` at all is a convention divergence | The corpus discriminates the form, not the file: 29 of 79 containers declare outputs, 12 of them in this workflow. Only the nested-component overlap survives, as finding 13. |
 | `resources/web-research.md` carries no `## Rules` and no line budget | Its section appends to the research document, whose budget the knowledge-base guide states. A second budget over the same artifact would be the defect. |
 | `techniques/codebase-comprehension/deep-dive.md` braces `{codebase_area}` in its artifact name while Protocol binds `{$codebase_area}` | The corpus uses the unprefixed token consistently for this artifact — the resources index guide-map row spells it the same way — and `check:set-action-values` reads the pair without complaint. A claim about how the token resolves belongs to the schema and the loader, neither of which this pass read. **Batch 4 found the second instance,** `create-adr.md` declaring `NNNN-{decision_title}.md` and writing `NNNN-{$decision_title}.md`, which raises the pattern to two without changing what settles it. Named here so a pass that does read the schema starts with both. |
+| `strategic-review/resign-commits.md` emits `strategic_review_findings`, which nothing consumes | It is consumed: `strategic-findings-analysis.md` declares it as an input and reads it beside `strategic_review_doc`, and `activities/12-strategic-review.yaml` declares it as a variable. The claim was about the whole enumeration and only the enumeration could settle it. |
+| Four operations in the strategic-review group each declare `strategic_review_doc` as an output | One declarer carries `#### artifact` and the rest mutate in place, which is the shape finding 12 established and `dco-provenance` already used — several writers of one artifact, one filename home. |
 | `work-package` cites two peer workflows' resources rather than only `meta` | `review-code.md` reaches `prism` and `implement-task.md` reaches `ponytail`, each to consult a criterion rather than restate it, which is the direction One Authoritative Home asks for. The activity graph already dispatches `prism` outright. Whether a review taxonomy's best home is `ponytail` or `meta` is a corpus-architecture question, not a defect in this target. Both anchors resolve under `check:resource-anchors`. |
 
 ## Coverage
@@ -97,7 +103,7 @@ Findings 5 through 11 are the second reading batch, thirteen resource guides rea
 
 ## File coverage
 
-read 143 · unread 30 — summing to 173, the target's size at the audited commit.
+read 173 · unread 0 — the whole target's size at the audited commit.
 
 **First batch** — `workflow.yaml`; all 15 activity YAMLs; `activities/README.md`; `techniques/README.md`; `techniques/{strategic-findings-analysis,review-summary,findings-classification}.md`; `techniques/conduct-retrospective/retrospective.md`; `techniques/finalize-documentation/render-token-usage.md`; `techniques/{manage-registers,manage-artifacts}/TECHNIQUE.md`; `README.md`; `REVIEW-MODE.md`; `resources/{README,readme-seed,canonical-home-map,adr,architecture-review,architecture-summary,assumption-reconciliation,assumptions-review,codebase-comprehension,complete-wp-guide,deferred-items,design-framework,findings-report,follow-ups}.md`.
 
@@ -109,9 +115,11 @@ read 143 · unread 30 — summing to 173, the target's size at the audited commi
 
 **Fifth batch** — the rest of `techniques/manage-git/` (`detect-merge-strategy`, `instruct-merge-strategy`, `remove-worktree`, `restore-paths-from-ref`, `sync-branch`, `update-repo-submodules`, `verify-commit-signatures`, `verify-feature-branch`, `verify-remote-private`); `techniques/manage-registers/{append-deferred-item,append-follow-up}.md`; `techniques/naming-conventions.md`; `techniques/plan-prepare/{create-todos,plan}.md`; `techniques/project-type-detection.md`; `techniques/raise-deferred-items/{TECHNIQUE,collect,record}.md`; `techniques/repo-root-resolution.md`; all seven of `techniques/requirements-elicitation/`; all six of `techniques/research/`; `techniques/resolve-artifact-publish.md`; and `techniques/review-assumptions/{TECHNIQUE,assemble-one}.md`.
 
-The 30 `unread` paths are the rest of `techniques/`. They are the residual this pass hands on, and the next pass starts its reading there. Every existence claim above is bounded by the 143 read plus the resolutions named in each Evidence cell.
+**Sixth batch** — `techniques/review-assumptions/{assemble-open-set,collect,reconcile,record}.md`; `techniques/{review-baseline-state,review-code,review-diff,review-mode-detection,review-outcome-analysis,review-test-suite,stakeholder-overview}.md`; all eight of `techniques/strategic-review/`; `techniques/{summarize-architecture,task-completion-review}.md`; all six of `techniques/update-pr/`; and all three of `techniques/validate-build/`.
 
-Finding 5 removes one path, so a pass enumerating the target after PR #668 finds 172 and a residual of 29.
+**No path is `unread`.** Every existence claim in this register is bounded by the whole target rather than by a subset of it, which is what lets a claim that a construct is declared nowhere, or reached by nothing, be stated rather than merely unrefuted. Finding 5 removes one path, so a pass enumerating the target after PR #668 finds 172 and reads them all.
+
+The one residual this pass hands on is not files but criteria: the `blocked` unit under [Coverage](#coverage), whose entries compare authored claims against the live harness tool surface.
 
 Batch 4 also confirmed finding 13's fix direction from a consumer rather than from the contract: `create-test-plan.md` reads `{plan_document.tasks}`, which is the declaration the fix kept.
 
