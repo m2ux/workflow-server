@@ -6,7 +6,6 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
-| `readme` | README pointer | Points at meta planning-readme Template + work-package readme-seed |
 | `readme-seed` | README Seed | Progress inventory, classifier, mode-exclusion map for create-readme |
 | `canonical-home-map` | Canonical Home Map | Which artifact homes each shared fact category, and the link-only slot every other template carries |
 | `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
@@ -48,7 +47,7 @@ Which guide owns each persisted filename's shape.
 
 | Bare filename | Guide |
 |---------------|-------|
-| `README.md` | [readme](readme.md) pointer to the meta [planning-readme](../../meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
+| `README.md` | [planning-readme](../../meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
 | `requirements-elicitation.md` | [requirements-elicitation](requirements-elicitation.md) |
 | `implementation-analysis.md` | [implementation-analysis](implementation-analysis.md) |
 | `assumptions-log.md` | [assumptions-review](assumptions-review.md) |

@@ -341,11 +341,6 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/readme.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "work-package/resources/requirements-elicitation.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
