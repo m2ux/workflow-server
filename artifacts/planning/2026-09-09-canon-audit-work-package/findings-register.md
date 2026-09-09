@@ -6,16 +6,18 @@
 
 ## Summary
 
-| Severity | Open | Known |
-|----------|-----:|------:|
-| Critical | 0 | 0 |
-| High     | 0 | 0 |
-| Medium   | 2 | 6 |
-| Low      | 0 | 0 |
+| Severity | Raised | Applied | Known |
+|----------|-------:|--------:|------:|
+| Critical | 0 | 0 | 0 |
+| High     | 2 | 2 | 0 |
+| Medium   | 6 | 6 | 6 |
+| Low      | 3 | 3 | 0 |
 
-**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 39 of 173
+**Coverage:** walked 49 · not-applicable 6 · blocked 1 · paths read 57 of 173
 
-Findings 1 and 3 were applied on `workflow/prism-launch-results` (PR #663, merged). Finding 2 was applied in the same branch after the design decisions recorded under [Decisions](#decisions). Finding 4 is applied and unmerged.
+Findings 1 and 3 landed on `workflow/prism-launch-results` (PR #663); finding 2 in the same branch after the design decisions under [Decisions](#decisions); finding 4 on `workflow/register-prefix-precedence` (PR #666) — all merged, with the corpus pointer and coverage stamp adopted in PR #665.
+
+Findings 5 through 11 are the second reading batch, thirteen resource guides read whole plus the four resolvers they forced open. All applied on `workflow/wp-audit-batch2` (PR #668).
 
 ## Change surface
 
@@ -41,7 +43,14 @@ Findings 1 and 3 were applied on `workflow/prism-launch-results` (PR #663, merge
 | 1 | High | `cited-home-owns-claim` | `resources/canonical-home-map.md`, Map row for research findings | Named `knowledge-base-research.md` as the home. That is the guide resource; the persisted artifact is `kb-research.md`, declared on `techniques/research/document.md` and mapped in the resources index. `verify-artifact-conforms` is bound with this map, so the gate asked every template to link a home no run writes. | `pre-existing` | | Point the row at the artifact filename the producing technique declares. **Applied.** |
 | 2 | Medium | *(no covering entry)* | `activities/10-post-impl-review.yaml`, `dispatch-prism` | Bound `workflow-engine::handle-sub-workflow` with no output remap; the activity declared no prism-derived name and no later step consumed one. On the complex path the pipeline ran and its product reached nothing, while the activity's outcome claimed structural risks were identified for triage. | `diff` — contract-drift at a referencer | | Read the manifest, carry findings on one slot from both paths. **Applied.** |
 | 3 | Medium | `instruction-narrates-an-actor` | `techniques/conduct-retrospective/retrospective.md`; `techniques/finalize-documentation/render-token-usage.md` | Each closed a write with an account of a later revision folding in the terminal activity's own dispatch. That revision belongs to `meta` `workflow-engine::revise-session-metrics`; a close-out worker can neither observe nor act on it, and each instruction is complete without it. | `pre-existing` | | Delete the narration. **Applied.** |
-| 4 | Medium | `overlapping-rule-scopes` | `techniques/manage-registers/TECHNIQUE.md`, `created-lazily-and-unprefixed` | `manage-artifacts.artifact-prefix` states that artifact filenames carry the server prefix; this entry excepts the two registers. Both triggers hold for those two files, the handling differs, and neither entry named the other. | `pre-existing` | | State the precedence in the narrower entry by dotted address. **Applied, unmerged.** |
+| 4 | Medium | `overlapping-rule-scopes` | `techniques/manage-registers/TECHNIQUE.md`, `created-lazily-and-unprefixed` | `manage-artifacts.artifact-prefix` states that artifact filenames carry the server prefix; this entry excepts the two registers. Both triggers hold for those two files, the handling differs, and neither entry named the other. | `pre-existing` | | Narrow `artifact-prefix` to the scope it always had, so the triggers stop intersecting. Precedence by dotted address was applied first and reverted — see [Decisions](#decisions). **Applied.** |
+| 5 | High | `no-invented-naming`; conformance File naming | `resources/readme.md` | Tracked alongside `resources/README.md`. Lowercasing every tracked path in the corpus and looking for duplicates returns exactly one line, this file: on a case-insensitive filesystem the two tree entries map to one path, so the second checkout write clobbers the first and the working tree cannot be made clean. No sibling workflow mints such a file — `plain-language`, `workflow-authoring` and `workflow-design` each name `meta/resources/planning-readme.md` from their own index. Nothing referenced it but the two rows listing it, and its whole content was those same two pointers. | `pre-existing` | | Remove the file; the index rows read as the siblings' do. **Applied.** |
+| 6 | Medium | `overlapping-rule-scopes` | `techniques/review-existing-feedback.md`, `unaddressed-blocker-caps-rating` + `techniques/review-summary.md`, `rating-cap-carve-in` | The first says the Overall Rating never exceeds the cap; the second says lift the cap where this review's findings refute the concern. Both hold when a Confirmed blocker-class concern is refuted by the consolidated analysis, the handling differs, and neither entry named the other. Each also carries the "findings being light" clause in its own words. `resources/prior-feedback-triage.md` adds a third home asserting the cap is "never recomputed elsewhere", which the carve-in falsifies. Settled by the technique that derives the value, not by any file stating the rule. | `pre-existing` | | Derive in the triage, decide at consolidation — the triage runs before any independent analysis by its own first step, so only the consumer has the findings the carve-in turns on. **Applied.** |
+| 7 | Medium | `no-template-creation-guide` | `resources/pr-review-response.md`, Review Document Template | `respond-to-pr-review` declares artifact `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md` for a human audience and cites this anchor twice as its shape. The anchor held a numbered list of seven section names, the only guide in the folder without a skeleton. Two of the seven are sections the group contract bound in the same activity rules out: `lean-header` names "a metadata block" as what a single context line replaces, and `state-once-per-artifact` names "a closing recap that restates the sections". | `pre-existing` | | A real template; the two forbidden sections replaced by what they were reaching for. **Applied.** |
+| 8 | Medium | Principle 6, One Authoritative Home | `resources/github-issue-creation.md` + `resources/jira-issue-creation.md` | Both authored the same body — Problem Statement with Current and Desired state, Goal, Scope, User Stories, Success Metrics, Constraints, References — with near-identical placeholder prose, and three of five anti-patterns restated each other. Only the platform routing decided which copy a run saw, so an edit to one never reached the other. Reading the GitHub guide for platform-specific content found none. | `pre-existing` | | The neutral guide is that file renamed `issue-creation`; the Jira guide keeps its real delta and a Field Arrangement section. **Applied.** |
+| 9 | Low | `state-once-per-artifact` | `resources/implementation-analysis.md`; `resources/knowledge-base-research.md` | Each template opens with a lean header carrying the document's status and closes with a `**Status:**` field carrying it again, so a conforming artifact states it twice and a later pass can update either. The only two templates in the corpus carrying both. | `pre-existing` | | Drop the closing field; the header is the home. **Applied.** |
+| 10 | Low | `single-rule-authority` | `resources/pr-description.md`, Rules | "Changes carry no file list" and "Changes carry no code" are strict subsets of "Changes state the substance, not the surface", which reconciled itself to them in prose — "which is why the rules above rule out paths, code and commit headers one at a time". A cross-reference written to reconcile entries rather than cite one is the tell the entry names. Since the section states each rule yields one finding per failure, a single bullet pasting a path yielded three. | `pre-existing` | | Fold the specifics into the substance criterion as conditions; keep grouping separate. No file cited either deleted heading. **Applied.** |
+| 11 | Low | `no-duplicated-guidance` | `resources/review-mode.md`, Header Fields | Restated the findings constraint in near-identical words to `techniques/TECHNIQUE.md`, `findings-constraint`, which owns it and which `review-summary` applies by name at consolidation. Neither the enforcement point nor what that section covers — its own decomposition list scopes Header Fields to the header and its link conventions. | `pre-existing` | | Delete the restatement; the rule keeps its one home. **Applied.** |
 
 ### Withdrawn on adversarial re-derivation
 
@@ -55,6 +64,10 @@ Findings 1 and 3 were applied on `workflow/prism-launch-results` (PR #663, merge
 | Borrowed activities' exits unread against their second entry | `remediate-vuln` binds both exits identically to work-package. |
 | `{pr_reference}` in `REVIEW-MODE.md` names no declared value | Declared as an input on `review-mode-detection`. |
 | The two registers' declared artifacts conflict with five documents calling them unprefixed | `manage-registers.created-lazily-and-unprefixed` owns the behaviour, `write-artifact`'s prefix input is optional, and neither operation passes it. Reported High before the container contract was opened; the residue is finding 4. |
+| The four templated artifact names are a case `artifact-prefix` leaves undetermined | Raised as a check on the rule narrowed in finding 4. `write-artifact`'s Protocol settles it the other way: a token-templated name is a bare filename that happens to contain tokens, it takes the writing activity's prefix like any other, and each interpolation is its own logical artifact. The narrowed rule is complete. |
+| `review-mode.md` states the Prior-Feedback table's shape carve-out twice | The category section's statement links the shared Table Format section it excepts, which is the cite-don't-restate shape rather than a second home. |
+| `requirements-elicitation.md` links `assumptions-log.md`, which no resource is | Correct by design: the link is inside a template, so it resolves in the produced artifact against the register `review-assumptions/record.md` declares. |
+| `resources/pr-description.md` cites `manage-artifacts.single-source-and-link` by dotted address rather than a resolvable link | A dotted address names a rule for a reader; the anchored-link convention governs resource and section citations. Both forms appear across the corpus for their own purposes. |
 
 ## Coverage
 
@@ -68,11 +81,15 @@ Findings 1 and 3 were applied on `workflow/prism-launch-results` (PR #663, merge
 
 ## File coverage
 
-read 39 · unread 134 — summing to 173.
+read 57 · unread 116 — summing to 173, the target's size at the audited commit.
 
-Read whole: `workflow.yaml`; all 15 activity YAMLs; `activities/README.md`; `techniques/README.md`; `techniques/{strategic-findings-analysis,review-summary,findings-classification}.md`; `techniques/conduct-retrospective/retrospective.md`; `techniques/finalize-documentation/render-token-usage.md`; `techniques/manage-registers/TECHNIQUE.md`; `README.md`; `REVIEW-MODE.md`; `resources/{README,readme-seed,canonical-home-map,adr,architecture-review,architecture-summary,assumption-reconciliation,assumptions-review,codebase-comprehension,complete-wp-guide,deferred-items,design-framework,findings-report,follow-ups}.md`.
+**First batch** — `workflow.yaml`; all 15 activity YAMLs; `activities/README.md`; `techniques/README.md`; `techniques/{strategic-findings-analysis,review-summary,findings-classification}.md`; `techniques/conduct-retrospective/retrospective.md`; `techniques/finalize-documentation/render-token-usage.md`; `techniques/{manage-registers,manage-artifacts}/TECHNIQUE.md`; `README.md`; `REVIEW-MODE.md`; `resources/{README,readme-seed,canonical-home-map,adr,architecture-review,architecture-summary,assumption-reconciliation,assumptions-review,codebase-comprehension,complete-wp-guide,deferred-items,design-framework,findings-report,follow-ups}.md`.
 
-The 134 `unread` paths are the rest of `resources/` and `techniques/`. They are the residual this pass hands on, and the next pass starts its reading there. Every existence claim above is bounded by the 39 read plus the resolutions named in each Evidence cell.
+**Second batch** — `resources/{github-issue-creation,implementation-analysis,jira-issue-creation,knowledge-base-research,manual-diff-review,pr-description,pr-review-response,prior-feedback-triage,provenance-log,readme,requirements-elicitation,research-reconciliation,review-mode}.md`, plus the four resolvers those readings forced open and which were read whole rather than sampled: `techniques/TECHNIQUE.md`, `techniques/review-existing-feedback.md`, `techniques/respond-to-pr-review.md`, `techniques/manage-artifacts/write-artifact.md`.
+
+The 116 `unread` paths are the rest of `resources/` and `techniques/`. They are the residual this pass hands on, and the next pass starts its reading there. Every existence claim above is bounded by the 57 read plus the resolutions named in each Evidence cell.
+
+Finding 5 removes one path, so a pass enumerating the target after PR #668 finds 172 and a residual of 115.
 
 ## Known
 
@@ -95,16 +112,20 @@ Six items the 2026-09-07 pass accepted as design decisions, excluded from the de
 | Whether the launched run's artifacts are link-reachable | Settled from the server: for a persistent parent, `dispatch_child` embeds the child and returns the parent's own planning folder, so the artifacts sit alongside every other planning artifact |
 | How much stale prose the change sweeps | Both occurrences, in this change |
 | Which hand-walked units become guards | The canonical-home-map check only; a check keyed on prose naming the terminal activity would freeze the phrasings its author saw |
+| How finding 4's two rules stop colliding | Narrow `artifact-prefix` to its own scope, splitting the triggers. Precedence by dotted address was applied first and reverted on challenge: it made `manage-registers` track a rule name it does not own, so renaming the prefix rule would falsify the claim with nothing failing. The entry's Fix ranks consolidation first and splitting equally valid where the split reflects a real distinction, and one owning activity against none is that distinction. Both commits are in PR #666's history |
+| Where the rating cap's two answers separate | Producer sets, consumer decides — the triage derives the cap and defers, the carve-in stays the sole home for lifting. Folding the carve-in into the producer was rejected because the triage runs before any independent analysis by its own first step, so it cannot see the findings the carve-in turns on. Ordering the two by dotted address was rejected as the shape already withdrawn on finding 4 |
+| How the duplicated issue-body template is homed | A platform-neutral home, reached by renaming rather than adding a file: reading the GitHub guide for platform-specific content found none, so a third file would have sat beside one that shrank to nothing. Folding Jira into it entirely was rejected — a GitHub run would then load the Jira terminology map, markup table and priority scale it never uses, which is the delivery cost section-grain resources exist to avoid |
 
 ## Sources
 
 | Label | Path |
 |---|---|
-| Guard suite | `npm run check:all` — 38 pass, 0 fail, 0 unmeasured with PR #665 applied |
+| Guard suite | `npm run check:all` — 38 pass, 0 fail, 0 unmeasured, run against each remediation branch in its own worktree via `WORKFLOWS_DIR`. On the batch-2 branch its first run failed, naming the section-framing ledger's entry for the path finding 5 removes as stale |
 | Option-coverage walk | `npm run test:coverage-walk` — reachability passes over 1250s; the freshness half failed on stamp drift predating this work, closed by PR #665 |
 | Binding-fidelity triage | `scripts/binding-fidelity-triage.json` — stamp one merge behind the audited corpus; the drift touched no work-package entry, and the one entry whose cited file changed was re-affirmed |
 | Canonical-home-map triage | `scripts/canonical-home-map-triage.json` — 4 `workflow-design` rows as `fix-later` |
 | Criteria homes | `workflows/workflow-design/resources/{design-principles,anti-patterns,schema-construct-inventory,convention-conformance}.md` |
 | Guard registry | `scripts/guards.ts` |
 | Prior pass | [2026-09-07 sweep](../2026-09-07-canon-audit-work-package-sweep/findings-register.md) |
-| Changes | PR #663 (corpus), #664 (the check), #665 (pointer and stamp adoption) |
+| Changes | PR #663 (corpus), #664 (the check), #665 (pointer and stamp adoption), #666 (finding 4), #668 (findings 5–11) |
+| Guard candidates from batch 2 | Finding 9 is filable — a template carrying a lean-header status token and a `**Status:**` line is a two-pattern check, and it fired on both of the corpus's instances. Finding 6 is `overlapping-rule-scopes`' second appearance in this audit, which meets the entry threshold, but its Detect asks whether an input exists satisfying two triggers, which no pattern decides |
