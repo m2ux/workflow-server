@@ -112,6 +112,13 @@ export interface ServerConfig {
    * `BATCH_MAX_ACTIVITIES`, clamped to [1, 100].
    */
   batchMaxActivities?: number;
+  /**
+   * Branches one graph destination may open once every member is flattened. A destination wider
+   * than this refuses the fan-enter; an instance fan declaring `maxInstances` narrows it for that
+   * destination alone. Default 4 (see DEFAULT_FAN_MAX_BRANCHES). Env override: `FAN_MAX_BRANCHES`,
+   * clamped to [2, 100] — a ceiling of one is a plain edge spelled a second way.
+   */
+  fanMaxBranches?: number;
   /** In-process trace store for execution tracing. Created by createServer(). */
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
@@ -163,6 +170,16 @@ export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
  */
 export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.35;
 export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;
+
+/**
+ * Fan width policy. A destination opens at most this many branches once every member is flattened
+ * — the bare members plus each instance-fan member's collection length — unless it declares a
+ * tighter `maxInstances` of its own; a wider destination refuses the fan-enter. Each branch is a
+ * whole further delivery of an activity and a further harness establishment, which is what the
+ * bound is against. The figure is a floor: no measured payload exists for a fanned activity, so it
+ * is a substitution from the standalone activity benchmark and is revisited against a measured one.
+ */
+export const DEFAULT_FAN_MAX_BRANCHES = 4;
 
 function envOrDefault(key: string, fallback: string): string {
   const value = process.env[key]?.trim();
@@ -605,6 +622,7 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
     batchHeadroomFraction: envNumberInRange('BATCH_HEADROOM_FRACTION', DEFAULT_BATCH_HEADROOM_FRACTION, 0, 1),
     batchMaxActivities: envNumberInRange('BATCH_MAX_ACTIVITIES', DEFAULT_BATCH_MAX_ACTIVITIES, 1, 100),
+    fanMaxBranches: envNumberInRange('FAN_MAX_BRANCHES', DEFAULT_FAN_MAX_BRANCHES, 2, 100),
     transport: resolveTransport(argv),
     port: resolvePort(argv),
     host: resolveHost(argv),

@@ -1,8 +1,21 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
-import { type Workflow, type WorkflowFragments, WorkflowFragmentsSchema, safeValidateWorkflow } from '../schema/workflow.schema.js';
-import { type Activity, safeValidateActivity, populateStepIds, activityCheckpoints } from '../schema/activity.schema.js';
+import {
+  type Destination,
+  type InstanceFan,
+  type Workflow,
+  type WorkflowFragments,
+  WorkflowFragmentsSchema,
+  branchKey,
+  destinationTargets,
+  instanceFans,
+  isFan,
+  safeValidateWorkflow,
+} from '../schema/workflow.schema.js';
+import { type Activity, type Step, safeValidateActivity, populateStepIds, activityCheckpoints, flattenActivitySteps } from '../schema/activity.schema.js';
+import { VariableNameSchema } from '../schema/variable.schema.js';
+import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
 import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError, ActivityNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
@@ -433,25 +446,37 @@ export async function listWorkflowsWithDiagnostics(workflowDir: string): Promise
   }
 }
 
-/** Get an activity from a workflow by ID */
-export function getActivity(workflow: Workflow, activityId: string): Activity | undefined { 
-  return workflow.activities?.find(a => a.id === activityId);
+/**
+ * Get an activity from a workflow by ID. An exact id match wins; otherwise an instance-qualified
+ * id (`<baseId>#<instance>`) resolves to its base definition, so N instances of one fanned activity
+ * share one definition while being recorded, validated and accounted for distinctly.
+ */
+export function getActivity(workflow: Workflow, activityId: string): Activity | undefined {
+  return workflow.activities?.find(a => a.id === activityId)
+    ?? workflow.activities?.find(a => a.id === baseId(activityId));
 }
 
 /**
- * The separator between a loop-body checkpoint's base id and its per-iteration instance
- * discriminator. A checkpoint inside a forEach/while loop is defined once but reached N times;
- * yielding it as `<baseId>#<instance>` (e.g. `assumption-decision#RE-1`) gives each iteration a
- * distinct checkpoint id — so the response key (`<activity>-<checkpoint>`) no longer collides and
- * iterations 2..N are recorded/prompted distinctly instead of replaying iteration 1's response
- * (issue #160 follow-up #2). The base is what matches the single checkpoint definition.
+ * The separator between a base id and its per-instance discriminator. One definition reached
+ * several times — a checkpoint inside a loop body, an activity the graph fans over a collection —
+ * is named `<baseId>#<instance>` so that each reach is a distinct id: a distinct checkpoint
+ * response key, a distinct frontier entry, a distinct history event, a distinct usage row. The
+ * base is what matches the single definition.
  */
-export const CHECKPOINT_INSTANCE_SEPARATOR = '#';
+export const INSTANCE_SEPARATOR = '#';
 
-/** The base checkpoint id — the portion before the per-iteration instance discriminator, if any. */
-export function checkpointBaseId(checkpointId: string): string {
-  const i = checkpointId.indexOf(CHECKPOINT_INSTANCE_SEPARATOR);
-  return i === -1 ? checkpointId : checkpointId.slice(0, i);
+/** The base id — the portion before the per-instance discriminator, if any. */
+export function baseId(qualifiedId: string): string {
+  const i = qualifiedId.indexOf(INSTANCE_SEPARATOR);
+  return i === -1 ? qualifiedId : qualifiedId.slice(0, i);
+}
+
+/** A fan instance's index, where the discriminator is one. */
+export function instanceIndex(qualifiedId: string): number | undefined {
+  const i = qualifiedId.indexOf(INSTANCE_SEPARATOR);
+  if (i === -1) return undefined;
+  const raw = qualifiedId.slice(i + 1);
+  return /^\d+$/.test(raw) ? Number(raw) : undefined;
 }
 
 /**
@@ -470,15 +495,19 @@ export function getCheckpoint(workflow: Workflow, activityId: string, checkpoint
   // No exact match: compare on base ids, so an instance-qualified query resolves to its base
   // definition (and a plain base query resolves to a templated definition). A base that matches no
   // definition still returns undefined — base equality is on the full pre-`#` segment, not a prefix.
-  const base = checkpointBaseId(checkpointId);
-  return defs.find(c => checkpointBaseId(c.id) === base);
+  const base = baseId(checkpointId);
+  return defs.find(c => baseId(c.id) === base);
 }
 
 export interface ExitBinding {
   /** The exit's name in the activity's own vocabulary. */
   exit: string;
-  /** Where the workflow binds it — an activity id, or TERMINAL_SENTINEL. */
-  to: string;
+  /**
+   * Where the workflow binds it — an activity id, TERMINAL_SENTINEL, a list of members the run
+   * opens together, or one activity with the collection to run it over. `destinationTargets`
+   * flattens any of them to the activities the run can land on.
+   */
+  to: Destination;
   /** The inline expression selecting this exit, when it has one. */
   when?: string | undefined;
   /** The outcome when nothing else selected an exit. */
@@ -496,15 +525,78 @@ export interface ExitBinding {
 export function getExitBindings(workflow: Workflow, fromActivityId: string): ExitBinding[] {
   const activity = getActivity(workflow, fromActivityId);
   if (!activity) return [];
-  const bound = workflow.graph?.[fromActivityId] ?? {};
+  // The graph is keyed by the activity's own id, so an instance-qualified caller reads its base's
+  // bindings: N instances of one fanned activity share that activity's exits and its one join.
+  const bound = workflow.graph?.[baseId(fromActivityId)] ?? {};
   return (activity.exits ?? [])
     .filter(e => bound[e.id] !== undefined)
     .map(e => ({ exit: e.id, to: bound[e.id]!, when: e.when, isDefault: e.isDefault, immediate: e.immediate }));
 }
 
-/** The activities an activity can reach, deduped. */
+/** The activities an activity can reach, flattened across every fan member and deduped. */
 export function exitDestinations(workflow: Workflow, fromActivityId: string): string[] {
-  return [...new Set(getExitBindings(workflow, fromActivityId).map(b => b.to))];
+  return [...new Set(getExitBindings(workflow, fromActivityId).flatMap(b => destinationTargets(b.to)))];
+}
+
+/**
+ * Every activity the graph names as a destination, flattened across every fan member — so a branch
+ * head of a fan is in the set exactly as a plain destination is.
+ */
+export function reachableActivities(workflow: Workflow): Set<string> {
+  const reached = new Set<string>();
+  for (const bindings of Object.values(workflow.graph ?? {})) {
+    for (const destination of Object.values(bindings)) {
+      for (const target of destinationTargets(destination)) reached.add(target);
+    }
+  }
+  return reached;
+}
+
+/**
+ * One fan the graph declares: where it is bound, the branches it opens, and the activity its
+ * branches converge on. Derived from the graph object and nothing else — no activity lookup and no
+ * file access — so the join has exactly one derivation and the loader keeps sole ownership of
+ * agreement between the graph and the activities. `join` is undefined where the branches disagree,
+ * name more than one destination each, or name none; an undefined join fails the load, which is
+ * why every reader downstream takes the join as a string on the load's authority.
+ */
+export interface FanGroup {
+  /** The activity whose exit opens the fan. */
+  source: string;
+  /** The exit that fans. */
+  exit: string;
+  /** The destination exactly as the graph names it. */
+  destination: Destination;
+  /** The branch activities in graph order, each named once. */
+  branches: string[];
+  /** The activity every branch's own exits name, or undefined where they do not agree on one. */
+  join: string | undefined;
+}
+
+/** Every fan the graph declares, in graph order. */
+export function fanGroups(workflow: Workflow): FanGroup[] {
+  const graph = workflow.graph ?? {};
+  const groups: FanGroup[] = [];
+  for (const [source, bindings] of Object.entries(graph)) {
+    for (const [exit, destination] of Object.entries(bindings)) {
+      if (!isFan(destination)) continue;
+      const branches = [...new Set(destinationTargets(destination))];
+      const named = new Set<string>();
+      for (const branch of branches) {
+        for (const to of Object.values(graph[branch] ?? {})) {
+          for (const target of destinationTargets(to)) named.add(target);
+        }
+      }
+      groups.push({
+        source,
+        exit,
+        destination,
+        branches,
+        join: named.size === 1 ? [...named][0]! : undefined,
+      });
+    }
+  }
+  return groups;
 }
 
 /**
@@ -562,10 +654,292 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
       if (activity && !declared.has(exitId)) {
         errors.push(`Workflow graph binds '${activityId}.${exitId}', which that activity does not declare as an exit.`);
       }
-      if (destination !== TERMINAL_SENTINEL && !knownActivityIds.has(destination)) {
-        errors.push(`Workflow graph sends '${activityId}.${exitId}' to '${destination}', which this workflow does not contain.`);
+      // L1, one message per target: a fan's branches are destinations exactly as a plain id is.
+      for (const target of destinationTargets(destination)) {
+        if (target !== TERMINAL_SENTINEL && !knownActivityIds.has(target)) {
+          errors.push(`Workflow graph sends '${activityId}.${exitId}' to '${target}', which this workflow does not contain.`);
+        }
       }
     }
+  }
+
+  for (const fan of fanGroups(workflow)) {
+    if (!fansAreExecutable()) errors.push(unexecutableFanError(fan));
+    errors.push(...fanErrors(workflow, fan));
+  }
+
+  return errors;
+}
+
+/**
+ * The ceiling for the window in which the schema accepts a fan and no definition can execute one.
+ * A destination the graph fans fails the load, naming the stage that lands the operation, so the
+ * corpus is provably free of fans until it does. The fixtures that prove the stages before it set
+ * `ALLOW_UNEXECUTABLE_FANS`, being the only callers with a reason to load a destination nothing
+ * dispatches. Deleted with the operation.
+ */
+function fansAreExecutable(): boolean {
+  return process.env['ALLOW_UNEXECUTABLE_FANS'] === '1';
+}
+
+function unexecutableFanError(fan: FanGroup): string {
+  return `Workflow graph fans '${fan.source}.${fan.exit}', and no definition dispatches a fan yet. The concurrent-dispatch operation lands in stage 6 of the parallel-activities delivery; until it does, bind this exit to one activity.`;
+}
+
+/**
+ * Operations a fan's branch cannot execute, so a fanned activity binding one fails the load rather
+ * than failing inside a worker. The version-control group stages and commits: a fan's branches
+ * share one working tree and one git index, and a commit derives its paths from that tree's status.
+ * The persist operation commits for the same reason. The child-workflow dispatch records one
+ * activity id where a fan holds several in flight.
+ */
+const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map([
+  [
+    'workflow-engine::commit-and-persist',
+    "A fan's instances share one working tree and one git index, and a commit derives its paths from that tree's status, so no instance can stage or attribute its own change. Move the commit to the activity before the fan or to the activity it converges on.",
+  ],
+  [
+    'workflow-engine::handle-sub-workflow',
+    'Creating a child session records one activity id and a fan holds several in flight, so the call is refused at run time — settled here rather than left for a worker to discover.',
+  ],
+]);
+
+/** The version-control group stages and commits, so none of its operations is executable in a branch. */
+const CHECKOUT_GROUP_PREFIX = 'version-control::';
+
+/** The operation a technique step binds, whether the step names it plainly or deviates from it. */
+function boundOperation(step: Step): string | undefined {
+  if (step.kind !== 'technique') return undefined;
+  return typeof step.technique === 'string' ? step.technique : step.technique.name;
+}
+
+/** Every string an activity's steps carry, so a token authored anywhere in one is visible here. */
+function stepStrings(activity: Activity): string[] {
+  const out: string[] = [];
+  const walk = (value: unknown): void => {
+    if (typeof value === 'string') { out.push(value); return; }
+    if (Array.isArray(value)) { for (const item of value) walk(item); return; }
+    if (value && typeof value === 'object') { for (const item of Object.values(value)) walk(item); }
+  };
+  walk(activity.steps);
+  walk(activity.exits);
+  return out;
+}
+
+/**
+ * The rules a fan answers to, all decidable from the graph object plus the activities the workflow
+ * already holds. Every message names the fan as `<source>.<exit>` and names the offending activity,
+ * so the author's fix site is in the message. Putting them here and only here is what lets every
+ * reader downstream assume a well-formed fan: a malformed one cannot be walked at all, so a guard
+ * would let a session start on a graph the guard rejects.
+ */
+function fanErrors(workflow: Workflow, fan: FanGroup): string[] {
+  const errors: string[] = [];
+  const site = `'${fan.source}.${fan.exit}'`;
+  const graph = workflow.graph ?? {};
+  const members = Array.isArray(fan.destination) ? fan.destination : [fan.destination];
+
+  // L2 — a list names no activity twice, counting the activity each instance-fan member runs. Two
+  // members over one activity would derive one branch key and write one container.
+  const counts = new Map<string, number>();
+  for (const member of members) {
+    for (const target of destinationTargets(member)) counts.set(target, (counts.get(target) ?? 0) + 1);
+  }
+  for (const [target, count] of counts) {
+    if (count < 2) continue;
+    errors.push(
+      `Workflow graph fans ${site} to '${target}' ${count === 2 ? 'twice' : `${count} times`}. Each activity in a list appears once, whether as an id of its own or as the activity an instance-fan member runs; to run one activity once per work unit, name it with the collection it runs over in a single member.`,
+    );
+  }
+
+  for (const branch of fan.branches) {
+    // L3 — a branch that ends the run never returns, so the fan has no last branch.
+    if (branch === TERMINAL_SENTINEL) {
+      errors.push(
+        `Workflow graph fans ${site} to '${TERMINAL_SENTINEL}'. Every branch of a fan returns to one destination, and an activity that ends the run never returns, so the fan would have no last branch to release its destination.`,
+      );
+      continue;
+    }
+
+    const bindings = graph[branch] ?? {};
+    const bound = Object.entries(bindings);
+
+    // L4 — the join is read off these bindings and nothing else declares it.
+    if (bound.length === 0) {
+      errors.push(
+        `Activity '${branch}' is a branch of the fan at ${site} and binds no exit, so the fan has no destination to converge on. Give it an exit bound to the activity its siblings name.`,
+      );
+      continue;
+    }
+
+    for (const [exit, destination] of bound) {
+      // L5 — a branch runs in one worker and returns to the join. Also rejects a branch that is
+      // the fan's own source, that activity's exit being the fan itself.
+      if (isFan(destination)) {
+        errors.push(
+          `Activity '${branch}' is a branch of the fan at ${site}, and its exit '${exit}' fans to '${destinationTargets(destination).join(', ')}'. A branch runs in one worker and returns to the join, so each of its exits names one destination.`,
+        );
+        continue;
+      }
+      // L6 — a retry belongs inside the branch as a loop step. Also rejects a join that is one of
+      // its own branches, that branch's exits having to name itself.
+      if (destination === branch) {
+        errors.push(
+          `Activity '${branch}' is a branch of the fan at ${site} and its exit '${exit}' returns to '${branch}'. A branch runs once and returns to the join, so a retry belongs inside the branch as a loop step.`,
+        );
+      }
+    }
+
+    // L9 — a session holds one outstanding decision at a time and every tool call is gated while
+    // it is held, so a gate inside a fan stops its siblings.
+    const branchActivity = getActivity(workflow, branch);
+    if (branchActivity) {
+      for (const step of flattenActivitySteps(branchActivity)) {
+        if (step.kind !== 'checkpoint') continue;
+        const remedy = instanceFans(fan.destination).some((m) => m.activity === branch)
+          ? 'Move the gate to the activity before the fan or to the activity it converges on. Every instance of a fanned activity runs the same definition, so there is no instance to take out of the fan.'
+          : 'Move the gate to the activity before the fan or to the activity it converges on, or take this activity out of the fan.';
+        errors.push(
+          `Activity '${branch}' is a branch of the fan at ${site} and declares checkpoint '${step.id}'. A session holds one outstanding decision at a time, and every tool call is gated while it is held, so a gate inside a fan stops its sibling branches. ${remedy}`,
+        );
+      }
+
+      // L14 — decidable from the flattened steps and each step's bound operation name, with no
+      // composed signatures.
+      for (const step of flattenActivitySteps(branchActivity)) {
+        const operation = boundOperation(step);
+        if (operation === undefined) continue;
+        const reason = OPERATIONS_A_BRANCH_CANNOT_EXECUTE.get(operation)
+          ?? (operation.startsWith(CHECKOUT_GROUP_PREFIX)
+            ? "A fan's instances share one working tree and one git index, and a commit derives its paths from that tree's status, so no instance can stage or attribute its own change. Move the commit to the activity before the fan or to the activity it converges on."
+            : undefined);
+        if (reason === undefined) continue;
+        errors.push(`Activity '${branch}' is fanned by ${site} and binds '${operation}'. ${reason}`);
+      }
+    }
+
+    // L10 — a branch lands its outputs under a key derived from its activity id.
+    const key = branchKey(branch);
+    if (!VariableNameSchema.safeParse(key).success) {
+      errors.push(
+        `Activity '${branch}' is a branch of the fan at ${site}, and its branch key '${key}' is not a legal variable name. A branch lands its outputs under a key derived from its activity id, so an activity that runs in a fan carries an id beginning with a lowercase letter.`,
+      );
+    }
+  }
+
+  // L7 — every exit of every branch names one and the same activity: the join.
+  if (fan.join === undefined) {
+    const named = fan.branches
+      .filter((branch) => branch !== TERMINAL_SENTINEL && Object.keys(graph[branch] ?? {}).length > 0)
+      .map((branch) => {
+        const targets = [...new Set(Object.values(graph[branch] ?? {}).flatMap(destinationTargets))];
+        return `'${branch}' sends its exits to ${targets.map((t) => `'${t}'`).join(' and ')}`;
+      });
+    if (named.length > 0) {
+      errors.push(
+        `The fan at ${site} converges nowhere: ${named.join(', and ')}. Bind every exit of every branch to the one activity the fan converges on, which is what the run enters when the last branch returns.`,
+      );
+    }
+  } else {
+    // L8 — the destination is entered once after the last branch returns, and there is nothing to
+    // enter at the end of a run.
+    if (fan.join === TERMINAL_SENTINEL) {
+      errors.push(
+        `The fan at ${site} converges on '${TERMINAL_SENTINEL}'. A fan converges on an activity, because the destination is entered once after the last branch returns and there is nothing to enter at the end of the run.`,
+      );
+    }
+    // L15 — a fan reached from its own meeting point opens again on every convergence. Satisfies
+    // the nesting, self-routing, convergence and join-is-an-activity rules together, so it carries
+    // a rule of its own.
+    if (fan.join === fan.source) {
+      errors.push(
+        `The fan at ${site} converges on '${fan.source}', the activity whose exit opens it. A fan reached from its own meeting point opens again on every convergence, so the graph gives it no way to finish. Converge on an activity the fan does not come from.`,
+      );
+    }
+  }
+
+  const declaredNames = new Set((workflow.variables ?? []).map((v) => v.name));
+
+  for (const member of instanceFans(fan.destination)) {
+    errors.push(...instanceFanErrors(workflow, fan, member, declaredNames));
+  }
+
+  // L13 — an index above the operative ceiling addresses a slot the fan can never fill, which the
+  // load can see. One-sided, because the collection's run-time length is not visible to it.
+  for (const branch of fan.branches) {
+    const key = branchKey(branch);
+    const ceiling = effectiveCeiling(fan.destination, branch);
+    const indexed = new RegExp(`\\b${key}\\.(\\d+)`, 'g');
+    for (const activity of workflow.activities ?? []) {
+      const reported = new Set<string>();
+      for (const text of stepStrings(activity)) {
+        for (const match of text.matchAll(indexed)) {
+          const slot = Number(match[1]);
+          if (slot < ceiling || reported.has(match[0])) continue;
+          reported.add(match[0]);
+          const reference = text.match(new RegExp(`${key}\\.${slot}[A-Za-z0-9_.]*`))?.[0] ?? match[0];
+          errors.push(
+            `Activity '${activity.id}' reads '${reference}'. The fan at ${site} admits ${ceiling} instances, so slot ${slot} is never filled. Hand the container whole to a gather rather than addressing a slot the fan cannot reach.`,
+          );
+        }
+      }
+    }
+  }
+
+  return errors;
+}
+
+/** The widest fan the destination admits for one branch: its own declared bound, or the default. */
+function effectiveCeiling(destination: Destination, branch: string): number {
+  for (const member of instanceFans(destination)) {
+    if (member.activity === branch) return member.maxInstances ?? DEFAULT_FAN_MAX_BRANCHES;
+  }
+  return DEFAULT_FAN_MAX_BRANCHES;
+}
+
+/** The rules an instance-fan member answers to, applied per member so a list checks each of its own. */
+function instanceFanErrors(
+  workflow: Workflow,
+  fan: FanGroup,
+  member: InstanceFan,
+  declaredNames: ReadonlySet<string>,
+): string[] {
+  const errors: string[] = [];
+  const site = `'${fan.source}.${fan.exit}'`;
+  const lead = `Workflow graph fans ${site} to '${member.activity}' over '${member.over}'`;
+  const activity = getActivity(workflow, member.activity);
+
+  // L11 — the parameter's name lives in the destination that supplies it and the activity that
+  // reads it, and this rule keeps them in agreement. Two fans of one activity disagreeing about
+  // the name each fail here, so no cross-fan comparison exists.
+  if (activity && !(activity.variables?.reads ?? []).includes(member.variable)) {
+    errors.push(
+      `${lead}, handing each instance its element at '${member.variable}', which '${member.activity}' does not declare among the names it needs its workflow to supply.`,
+    );
+  }
+
+  // L12 — a fan reads its collection out of the variable bag, so the collection is a variable some
+  // activity in this graph writes. Checked at the head, so a dotted expression is checked correctly.
+  const collectionHead = member.over.split('.')[0]!;
+  if (!declaredNames.has(collectionHead)) {
+    errors.push(
+      `${lead}, which this workflow declares nowhere. A fan reads its collection out of the variable bag, so the collection is a variable some activity in this graph writes.`,
+    );
+  }
+
+  // L16 — the parameter carries a name of its own. Against the collection, the projection would
+  // stand where the collection stands; against a declared write, the parameter is a read-only
+  // projection.
+  if (member.variable === collectionHead) {
+    errors.push(
+      `${lead}, handing each instance its element at that same name. The projection would stand where the collection stands, so an instance asking for the collection would be handed its own element.`,
+    );
+  }
+  const writesTheParameter = (activity?.variables?.writes ?? []).some((w) => w.name === member.variable);
+  if (writesTheParameter) {
+    errors.push(
+      `${lead}, handing each instance its element at '${member.variable}', which '${member.activity}' also declares among its writes. The parameter is a read-only projection, so it is not a name the fanned activity writes.`,
+    );
   }
 
   return errors;

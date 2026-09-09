@@ -26,7 +26,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Activity, Step, TechniqueBinding } from '../schema/activity.schema.js';
 import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
-import type { Workflow } from '../schema/workflow.schema.js';
+import { type Workflow, destinationTargets } from '../schema/workflow.schema.js';
 import type { ActivityVariables, VariableDefinition } from '../schema/variable.schema.js';
 import type { Condition } from '../schema/condition.schema.js';
 import { composeActivityTechnique } from '../loaders/technique-loader.js';
@@ -536,11 +536,17 @@ export type ActivityGraph = Map<string, string[]>;
  * activity's exits, keyed by the activity they leave. One source — the workflow's own `graph` — so
  * the walk sees the whole shape without assembling it from the activities. Destinations that are
  * not activities (the terminal sentinel) are kept: the walk needs to know a path leaves.
+ *
+ * A destination the graph fans contributes every branch it opens, and the de-duplication happens
+ * AFTER the flatten: an instance fan's target list is one activity, so de-duplicating first is what
+ * keeps the forward search, the predecessor index and the cycle pass seeing the graph one visit
+ * would produce.
  */
 export function activityGraph(workflow: Workflow): ActivityGraph {
   const graph: ActivityGraph = new Map();
   for (const activity of workflow.activities ?? []) {
-    graph.set(activity.id, [...new Set(Object.values(workflow.graph?.[activity.id] ?? {}))]);
+    const bound = Object.values(workflow.graph?.[activity.id] ?? {});
+    graph.set(activity.id, [...new Set(bound.flatMap(destinationTargets))]);
   }
   return graph;
 }

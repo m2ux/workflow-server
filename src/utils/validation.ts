@@ -3,7 +3,7 @@ import type { Workflow } from '../schema/workflow.schema.js';
 import type { HistoryEntry } from '../schema/state.schema.js';
 import { flattenActivitySteps, techniqueName, topLevelStepIndex } from '../schema/activity.schema.js';
 import type { CheckpointResponse } from '../schema/state.schema.js';
-import { checkpointBaseId, exitDestinations, getActivity, getExitBindings, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { baseId, exitDestinations, getActivity, getExitBindings, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 
 /**
  * Minimal view of session state required by the validation helpers. The
@@ -86,7 +86,7 @@ export function immediateExitCut(
   for (const [key, response] of Object.entries(checkpointResponses)) {
     if (!key.startsWith(prefix)) continue;
     if (!response.effects?.exit || !immediate.has(response.effects.exit)) continue;
-    const index = topLevelStepIndex(activity, checkpointBaseId(key.slice(prefix.length)));
+    const index = topLevelStepIndex(activity, baseId(key.slice(prefix.length)));
     if (index >= 0 && (cut === -1 || index < cut)) cut = index;
   }
   return cut;

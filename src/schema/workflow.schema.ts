@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ActivitySchema, CheckpointFragmentBodySchema } from './activity.schema.js';
 import { SemanticVersionSchema } from './common.js';
-import { VariableDefinitionSchema } from './variable.schema.js';
+import { VariableDefinitionSchema, VariableNameSchema } from './variable.schema.js';
 
 export { VariableNameSchema, VariableDefinitionSchema, type VariableDefinition } from './variable.schema.js';
 
@@ -43,13 +43,105 @@ export const WorkflowFragmentsSchema = z.object({
 export type WorkflowFragments = z.infer<typeof WorkflowFragmentsSchema>;
 
 /**
- * Exit bindings: activity id → exit id → destination activity id. A destination of
- * `__terminal__` (TERMINAL_SENTINEL) ends the run without landing on an activity. Every exit every
- * activity in the workflow declares is bound here; an unbound exit, an unknown exit and an unknown
- * destination each fail the load, so the graph and the activities cannot drift apart.
+ * A destination that runs one activity once per element of a collection: an instance fan.
+ * `activity` is the activity every instance runs; `over` names the collection in the variable bag,
+ * whose length when the fan is entered is the fan's width; `variable` is the name each instance
+ * reads its own element at; `maxInstances` narrows the server's own ceiling where this destination
+ * wants a tighter bound, so an over-long collection refuses the fan-enter rather than spending its
+ * dispatches. The graph carries the collection's NAME and not its members, so nothing about a work
+ * unit enters the routing file. The key the instances' outputs land under is derived from the
+ * activity id, so a reader of the graph, the server and the guards spell it the same way and a
+ * worker is never told it.
  */
-export const GraphSchema = z.record(z.record(z.string()));
+export const InstanceFanSchema = z.object({
+  activity: z.string().describe(
+    'The activity every instance of this fan runs. One activity: its instances differ by the element each is handed and by nothing else.',
+  ),
+  over: z.string().describe(
+    'The collection in the variable bag this destination runs the activity once per element of, by name or by a dotted path into a named value (`work_units`, `execution_plan.steps`). Read when the fan is entered, so its length is the fan\'s width.',
+  ),
+  variable: VariableNameSchema.describe(
+    'The name each instance reads its own element at. The activity this fan runs declares it among the names it needs its workflow to supply; name it as the consuming operation\'s own input id so no step needs a rename.',
+  ),
+  maxInstances: z.number().int().min(
+    2,
+    'a fan admits at least two instances; an exit that leads to one run of one activity names that activity',
+  ).optional().describe(
+    'Optional. The widest fan this destination admits, declared only where the work wants a tighter bound than the server\'s configured ceiling and with the reason stated. Either bound refuses the fan-enter for a wider destination, naming the bound that applied and the width it saw. Each instance beyond the first costs a whole further delivery of this activity.',
+  ),
+}).strict();
+export type InstanceFan = z.infer<typeof InstanceFanSchema>;
+
+/**
+ * One member of a list destination: an activity to run once, or an instance fan to run one
+ * activity once per element of a collection. Both expand to branches of the one flat set that
+ * converges on the destination's join. A member is never itself a list, so a nested barrier is
+ * unrepresentable rather than refused.
+ */
+export const FanMemberSchema = z.union([z.string(), InstanceFanSchema]);
+export type FanMember = z.infer<typeof FanMemberSchema>;
+
+/**
+ * Exit bindings: activity id → exit id → destination. A destination names one activity, lists
+ * several, or names one activity together with the collection to run it over. Either fan runs its
+ * members together, one worker to each, and the run enters the single activity all of their own
+ * exits name once the last of them returns — so the barrier is read off the bindings the graph
+ * already carries and nothing declares it separately. A destination of TERMINAL_SENTINEL ends the
+ * run without landing on an activity. Every exit every activity in the workflow declares is bound
+ * here; an unbound exit, an unknown exit and an unknown destination each fail the load, so the
+ * graph and the activities cannot drift apart.
+ */
+export const DestinationSchema = z.union(
+  [
+    z.string(),
+    z.array(FanMemberSchema).min(
+      2,
+      'a fan names at least two members; an exit that leads to one activity names that activity, and an exit that runs one activity over a collection names the activity with that collection',
+    ),
+    InstanceFanSchema,
+  ],
+  {
+    errorMap: () => ({
+      message:
+        'a destination is an activity id, `__terminal__`, a list of at least two members — each an activity id or an instance fan — or a single instance fan: an object naming `activity`, the `over` collection it runs once per element of, and the `variable` each instance reads its element at, optionally with `maxInstances`',
+    }),
+  },
+);
+export type Destination = z.infer<typeof DestinationSchema>;
+
+export const GraphSchema = z.record(z.record(DestinationSchema));
 export type Graph = z.infer<typeof GraphSchema>;
+
+/** The activity one list member runs. */
+export const memberTargets = (member: FanMember): string[] =>
+  typeof member === 'string' ? [member] : [member.activity];
+
+/** The activities one binding can send the run to, flattened across every member of a list. */
+export const destinationTargets = (destination: Destination): string[] =>
+  Array.isArray(destination) ? destination.flatMap(memberTargets)
+  : typeof destination === 'string' ? [destination]
+  : [destination.activity];
+
+/** Whether a destination runs several workers together, in any of the fan forms. */
+export const isFan = (destination: Destination): destination is FanMember[] | InstanceFan =>
+  typeof destination !== 'string';
+
+/** Every instance fan a destination carries — none, itself, or those among a list's members. */
+export const instanceFans = (destination: Destination): InstanceFan[] =>
+  Array.isArray(destination) ? destination.filter((m): m is InstanceFan => typeof m !== 'string')
+  : typeof destination === 'string' ? []
+  : [destination];
+
+/** The instance fan a destination is, or undefined for a plain destination or a list. */
+export const instanceFan = (destination: Destination): InstanceFan | undefined =>
+  typeof destination === 'object' && !Array.isArray(destination) ? destination : undefined;
+
+/**
+ * The bag key an activity's outputs land under when the graph runs it as a branch of a fan: its id
+ * in snake case with `_outputs` appended. Derived from the id alone, so the server, the guards and
+ * a reader of the graph spell it the same way and a worker is never told it.
+ */
+export const branchKey = (activityId: string): string => `${activityId.split('-').join('_')}_outputs`;
 
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
@@ -64,7 +156,7 @@ export const WorkflowSchema = z.object({
   variables: z.array(VariableDefinitionSchema).optional().describe('The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow\'s graph — get_workflow renders the whole set, and two declarations of one name that each name a different type, starting value or value set fail the load — one silent about a starting value takes the value another site names. The session variable bag is seeded from each declaration\'s defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity\'s variables_changed.'),
   techniques: WorkflowTechniquesSchema.optional().describe('Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity).'),
   initialActivity: z.string().describe('ID of the first activity to execute: the id the first `next_activity` call names, and the root the reachability half of the activity-variables guard walks from — the analysis that decides, for each activity, which variables the run has written by the time it arrives there.'),
-  graph: GraphSchema.optional().describe('The workflow\'s shape: for each activity, where each of its exits leads. This is the single home for the routing — an activity names outcomes, the workflow names destinations, so a borrowed activity sits in this graph without its lending workflow having a say. Omitted only by a workflow whose activities declare no exits.'),
+  graph: GraphSchema.optional().describe('The workflow\'s shape: for each activity, where each of its exits leads. This is the single home for the routing — an activity names outcomes, the workflow names destinations, so a borrowed activity sits in this graph without its lending workflow having a say. A destination naming one activity sends the run there, and `__terminal__` ends the run. A destination naming several activities runs them together, one worker to each. A destination naming one activity together with the collection to run it over runs one worker per element of that collection, each handed its own element at the name the destination gives; the graph names the collection, so the width is that collection\'s length when the fan is entered. Any destination is bounded by the server\'s ceiling, or by a tighter `maxInstances` an instance fan declares, measured against the branches it opens once every member is flattened. Either fan lands each branch\'s outputs in its own slot under the branch\'s own derived key, and the run enters the single activity all of the branches\' own exits name, once, after the last of them returns. Omitted only by a workflow whose activities declare no exits.'),
   // JSON Schema validates individual definition files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.
   // The shorthand string references are resolved into fully typed Activity objects during load,
