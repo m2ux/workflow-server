@@ -1,0 +1,7 @@
+id: knowledge-survey
+version: 1.0.0
+name: Knowledge Survey
+description: The list's bare member, run once beside the instance-fan member's own branches.
+exits:
+  - id: surveyed
+    isDefault: true

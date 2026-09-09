@@ -35,6 +35,7 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { evaluateCondition, type Condition } from '../src/schema/condition.schema.js';
+import { type Graph, destinationTargets } from '../src/schema/workflow.schema.js';
 import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
@@ -81,10 +82,8 @@ interface StepDef {
   // loop body
   steps?: StepDef[];
 }
-interface ExitDef { id: string; when?: string; isDefault?: boolean }
-interface ActivityDef { id: string; steps?: StepDef[]; exits?: ExitDef[]; }
-/** activity id -> exit id -> destination, as the workflow binds them. */
-type Graph = Record<string, Record<string, string>>;
+export interface ExitDef { id: string; when?: string; isDefault?: boolean }
+export interface ActivityDef { id: string; steps?: StepDef[]; exits?: ExitDef[]; }
 
 /** A condition provably FALSE under is_review_mode == true, whatever the other variables are. */
 function reviewExcluded(cond?: Condition): boolean {
@@ -131,7 +130,12 @@ function mentionsReview(step: StepDef): boolean {
   return step.condition ? JSON.stringify(step.condition).includes('is_review_mode') : false;
 }
 
-/** Successor activities reachable in review mode, honouring first-provably-true-exit-wins order. */
+/**
+ * Successor activities reachable in review mode, honouring first-provably-true-exit-wins order.
+ * A destination the graph fans contributes every branch it opens: unflattened, the lookup on a
+ * list or an object is undefined and the whole subtree beyond a fan drops out of the reachability
+ * set — the guard would pass because it stopped looking.
+ */
 function reviewSuccessors(act: ActivityDef, graph: Graph): string[] {
   const bound = graph[act.id] ?? {};
   const out: string[] = [];
@@ -139,14 +143,14 @@ function reviewSuccessors(act: ActivityDef, graph: Graph): string[] {
     const to = bound[exit.id];
     if (to === undefined) continue; // unbound exits fail the load; here they simply lead nowhere
     if (whenExcludesReview(exit.when)) continue; // cannot be taken in review
-    out.push(to);
+    out.push(...destinationTargets(to));
     // The default exit fires whenever nothing before it did, so edges behind it are unreachable.
     if (whenIncludesReview(exit.when) || (exit.when === undefined && exit.isDefault)) break;
   }
   return out;
 }
 
-function reachableInReview(initial: string, activities: Map<string, ActivityDef>, graph: Graph): Set<string> {
+export function reachableInReview(initial: string, activities: Map<string, ActivityDef>, graph: Graph): Set<string> {
   const seen = new Set<string>();
   const queue = [initial];
   while (queue.length) {

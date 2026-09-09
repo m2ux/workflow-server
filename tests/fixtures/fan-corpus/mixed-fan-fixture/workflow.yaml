@@ -1,0 +1,18 @@
+id: mixed-fan-fixture
+version: 1.0.0
+title: Mixed Fan Fixture
+description: A list whose members are part different activities and part repeats of one.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      - knowledge-survey
+      - activity: probe-unit
+        over: probe_targets
+        variable: probe_target
+  knowledge-survey:
+    surveyed: combine-probes
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

@@ -1,0 +1,5 @@
+id: meta
+version: 1.0.0
+title: Meta Fixture
+description: Minimal meta so the transient-bootstrap path works against this fixture corpus.
+initialActivity: bootstrap-activity

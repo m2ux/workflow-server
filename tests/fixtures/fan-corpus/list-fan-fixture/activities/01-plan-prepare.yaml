@@ -1,0 +1,7 @@
+id: plan-prepare
+version: 1.0.0
+name: Plan Prepare
+description: Opens the fan — the two branches read none of each other output.
+exits:
+  - id: done
+    isDefault: true

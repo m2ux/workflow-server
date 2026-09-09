@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Workflow } from '../schema/workflow.schema.js';
+import { type Destination, type Workflow, destinationTargets } from '../schema/workflow.schema.js';
 import type { HistoryEntry } from '../schema/state.schema.js';
 import { flattenActivitySteps, techniqueName, topLevelStepIndex } from '../schema/activity.schema.js';
 import type { CheckpointResponse } from '../schema/state.schema.js';
@@ -30,23 +30,29 @@ function emptyValidation(): ValidationResult {
   return { status: 'valid', warnings: [] };
 }
 
-export function validateActivityTransition(view: SessionView, workflow: Workflow, activityId: string): string | null {
+/**
+ * The requested destination, flattened: a fan is checked by the branches it opens, so a list, an
+ * instance fan and a mixture of the two answer to the same membership test a plain id does.
+ */
+export function validateActivityTransition(view: SessionView, workflow: Workflow, activityId: Destination): string | null {
+  const requested = destinationTargets(activityId);
   if (!view.act) {
-    if (activityId !== workflow.initialActivity) {
-      return `First activity must be '${workflow.initialActivity}' but '${activityId}' was requested. Start with the workflow's initialActivity.`;
+    if (requested.length !== 1 || requested[0] !== workflow.initialActivity) {
+      return `First activity must be '${workflow.initialActivity}' but '${requested.join(', ')}' was requested. Start with the workflow's initialActivity.`;
     }
     return null;
   }
-  if (view.act === activityId) return null;
+  if (requested.length === 1 && view.act === requested[0]) return null;
   // The terminal sentinel is a valid terminal target from any activity (it may
   // be reached via an abort/checkpoint effect rather than a declared transition).
-  if (activityId === TERMINAL_SENTINEL) return null;
+  if (requested.length === 1 && requested[0] === TERMINAL_SENTINEL) return null;
 
   const valid = exitDestinations(workflow, view.act);
   if (valid.length === 0) return null;
 
-  if (!valid.includes(activityId)) {
-    return `Activity '${activityId}' is not bound to any exit of '${view.act}'. The workflow graph sends its exits to: [${valid.join(', ')}]`;
+  const unbound = requested.filter((target) => !valid.includes(target));
+  if (unbound.length > 0) {
+    return `Activity '${unbound.join(', ')}' is not bound to any exit of '${view.act}'. The workflow graph sends its exits to: [${valid.join(', ')}]`;
   }
   return null;
 }
@@ -236,9 +242,10 @@ export function validateTechniqueFetches(
  * outcome is checkable in a way naming a condition never was — the binding is a fact in the
  * workflow file rather than a string to be matched against rendered prose.
  */
-export function validateReportedExit(view: SessionView, workflow: Workflow, activityId: string, reportedExit: string | undefined): string | null {
+export function validateReportedExit(view: SessionView, workflow: Workflow, activityId: Destination, reportedExit: string | undefined): string | null {
   if (!view.act || reportedExit === undefined || reportedExit === '') return null;
-  if (view.act === activityId) return null;
+  const requested = destinationTargets(activityId);
+  if (requested.length === 1 && view.act === requested[0]) return null;
 
   const bindings = getExitBindings(workflow, view.act);
   if (bindings.length === 0) return null;
@@ -247,8 +254,13 @@ export function validateReportedExit(view: SessionView, workflow: Workflow, acti
   if (!binding) {
     return `Activity '${view.act}' has no exit '${reportedExit}'. Its exits are: [${bindings.map(b => b.exit).join(', ')}]`;
   }
-  if (binding.to !== activityId) {
-    return `Exit '${reportedExit}' of '${view.act}' is bound to '${binding.to}' but '${activityId}' was requested.`;
+  // The requested destination satisfies the binding when the activities it opens are the ones the
+  // binding opens. Off a plain destination that is one id against one id; on a fan enter it is
+  // set-wise, because the call names the destination exactly as the graph names it.
+  const bound = destinationTargets(binding.to);
+  const agrees = bound.length === requested.length && requested.every((target) => bound.includes(target));
+  if (!agrees) {
+    return `Exit '${reportedExit}' of '${view.act}' is bound to '${bound.join(', ')}' but '${requested.join(', ')}' was requested.`;
   }
   return null;
 }
@@ -267,7 +279,9 @@ export function validateActivityManifest(
   const warnings: string[] = [];
 
   for (const entry of manifest) {
-    if (!activityIds.includes(entry.activity_id)) {
+    // An instance of a fanned activity names one definition, so the membership test compares on
+    // the base: unnormalised it warns about an unknown activity on every instance return.
+    if (!activityIds.includes(baseId(entry.activity_id))) {
       warnings.push(`Activity manifest references unknown activity '${entry.activity_id}'`);
     }
     if (!entry.outcome || (typeof entry.outcome === 'string' && entry.outcome.trim().length === 0)) {

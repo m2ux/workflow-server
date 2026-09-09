@@ -1,0 +1,15 @@
+id: instance-fan-fixture
+version: 1.0.0
+title: Instance Fan Fixture
+description: A destination naming one activity and the collection to run it over, one worker per element.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

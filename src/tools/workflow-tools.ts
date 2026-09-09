@@ -9,6 +9,7 @@ import {
   presentPathToAgent,
 } from '../config.js';
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { destinationField, destinationPhrase } from '../schema/workflow.schema.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
@@ -1428,7 +1429,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // body alone, and this block is what closes that. Destination only, keyed by exit id: the
       // selection predicates are already in the body, and a second copy of them would drift.
       const exitDestinationsByExit = result.success
-        ? Object.fromEntries(getExitBindings(result.value, activity_id).map((b) => [b.exit, b.to]))
+        ? Object.fromEntries(getExitBindings(result.value, activity_id).map((b) => [b.exit, destinationField(b.to)]))
         : {};
       const headerLines = [`session_index: ${session_index}`];
       if (artifactPrefix) headerLines.push(`artifact_prefix: ${artifactPrefix}`);
@@ -1907,7 +1908,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         return {
           ...option,
           consequence: binding
-            ? { exit: exitId, next_activity: binding.to, ...(binding.immediate ? { ends_activity: true } : {}) }
+            ? { exit: exitId, next_activity: destinationField(binding.to), ...(binding.immediate ? { ends_activity: true } : {}) }
             : { exit: exitId },
         };
       });
@@ -2085,11 +2086,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const binding = getExitBindings(result.value, active.activityId).find(b => b.exit === chosenExit);
         responseData['exit'] = {
           id: chosenExit,
-          ...(binding ? { next_activity: binding.to } : {}),
+          ...(binding ? { next_activity: destinationField(binding.to) } : {}),
           ...(binding?.immediate ? { ends_activity: true } : {}),
         };
         if (binding?.immediate) {
-          responseData['message'] = `Exit '${chosenExit}' ends this activity here: do not run the remaining steps. Report the steps you did run in next_activity's step_manifest and hand back to the orchestrator, whose next target is '${binding.to}'.`;
+          responseData['message'] = `Exit '${chosenExit}' ends this activity here: do not run the remaining steps. Report the steps you did run in next_activity's step_manifest and hand back to the orchestrator, whose next target is ${destinationPhrase(binding.to)}.`;
         }
       }
 

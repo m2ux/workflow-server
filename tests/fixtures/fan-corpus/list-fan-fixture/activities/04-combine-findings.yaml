@@ -1,0 +1,7 @@
+id: combine-findings
+version: 1.0.0
+name: Combine Findings
+description: The meeting point, entered once after the last branch returns.
+exits:
+  - id: settled
+    isDefault: true

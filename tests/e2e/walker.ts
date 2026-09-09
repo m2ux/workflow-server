@@ -20,6 +20,7 @@ import { evaluateCondition, type Condition } from '../../src/schema/condition.sc
 import { evaluateWhenExpression, parseWhen } from '../../src/schema/when-expression.js';
 import { unboundPositiveReads, type GateUnansweredCounts } from '../../src/utils/gate-liveness.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
+import { type Destination, type Graph } from '../../src/schema/workflow.schema.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
 
 export interface CheckpointOption {
@@ -49,13 +50,10 @@ export interface ExitDef {
   immediate?: boolean;
 }
 
-/** Exit bindings as the workflow declares them: activity id → exit id → destination. */
-export type Graph = Record<string, Record<string, string>>;
-
 /** An exit the activity took, with the destination the workflow binds it to. */
 export interface ExitChoice {
   exit: string;
-  to: string;
+  to: Destination;
 }
 
 export interface StepAction {
@@ -267,9 +265,32 @@ export function pickExit(act: ActivityDef, graph: Graph, variables: Record<strin
   return at(exits.find((e) => e.isDefault)?.id);
 }
 
-/** Where the activity goes, or null when it is terminal. */
+/**
+ * The activities a destination puts the walk through, in the order it enters them: one for a plain
+ * destination, one per branch for a list fan, and one per element of its collection for an instance
+ * fan — the width being that collection's length as the bag holds it, and one visit where the bag
+ * holds nothing to seed from. A fan's meeting point is not in the list: it is what each branch's
+ * own exit leads to, so the walk reaches it by entering the last branch.
+ */
+export function destinationVisits(destination: Destination, variables: Record<string, unknown>): string[] {
+  const members = Array.isArray(destination) ? destination : [destination];
+  return members.flatMap((member) => {
+    if (typeof member === 'string') return [member];
+    const collection = variables[member.over.split('.')[0]!];
+    const width = Array.isArray(collection) ? Math.max(1, collection.length) : 1;
+    return Array.from({ length: width }, () => member.activity);
+  });
+}
+
+/** The activities the activity's chosen exit leads to, in entry order. Empty when it is terminal. */
+export function pickTargets(act: ActivityDef, graph: Graph, variables: Record<string, unknown>, selected?: string): string[] {
+  const to = pickExit(act, graph, variables, selected)?.to;
+  return to === undefined ? [] : destinationVisits(to, variables);
+}
+
+/** Where the activity goes first, or null when it is terminal. */
 export function pickNext(act: ActivityDef, graph: Graph, variables: Record<string, unknown>, selected?: string): string | null {
-  return pickExit(act, graph, variables, selected)?.to ?? null;
+  return pickTargets(act, graph, variables, selected)[0] ?? null;
 }
 
 /**
@@ -293,7 +314,8 @@ function predicateExits(act: ActivityDef): ExitDef[] {
 function advanceToUnvisited(act: ActivityDef, graph: Graph, variables: Record<string, unknown>, visits: Map<string, number>): string | null {
   const bound = graph[act.id] ?? {};
   for (const e of predicateExits(act)) {
-    const to = bound[e.id];
+    const destination = bound[e.id];
+    const to = destination === undefined ? undefined : destinationVisits(destination, variables)[0];
     if (to === undefined || (visits.get(to) ?? 0) > 0) continue;
     if (e.when === undefined) return to;
     const snapshot = { ...variables };
@@ -654,6 +676,13 @@ export async function walk(
 
   let current: string | null = initialActivity;
   let pendingManifest: Array<{ step_id: string; output: string }> | undefined;
+  /**
+   * Branches of a fan the walk has yet to enter. A fan-bound exit yields the whole branch set; the
+   * walk enters them one at a time and each branch's own exit leads to the meeting point, so the
+   * meeting point is entered by the last branch and once. Visit bookkeeping stays keyed on activity
+   * ids, so N instances of one activity are N visits of it.
+   */
+  const pendingBranches: string[] = [];
   while (current) {
     const v = (visits.get(current) ?? 0) + 1;
     visits.set(current, v);
@@ -723,22 +752,41 @@ export async function walk(
     const simulated = policy.simulate?.({ activityId: current, variables });
     if (simulated) Object.assign(variables, simulated);
 
+    const bound = graph[act.id] ?? {};
+    /** The activity an exit puts the walk on first — a fan's first branch, or its plain target. */
+    const firstVisit = (exitId: string): string | undefined => {
+      const destination = bound[exitId];
+      return destination === undefined ? undefined : destinationVisits(destination, variables)[0];
+    };
     let next = pickNext(act, graph, variables, selectedExit);
     if (selectedExit === undefined) {
-      const bound = graph[act.id] ?? {};
-      const targets = [...new Set(predicateExits(act).map((e) => bound[e.id]).filter((t): t is string => t !== undefined))];
+      const targets = [...new Set(
+        predicateExits(act).map((e) => firstVisit(e.id)).filter((t): t is string => t !== undefined),
+      )];
       if (targets.length && opts.decide) {
         // The natural (happy) target — pickExit's choice, or the forward-advance target, or the
         // first bound exit — is the base-path suggestion; the enumerator forks the rest.
         let suggested = next;
         if (suggested === null || (visits.get(suggested) ?? 0) > 0) suggested = advanceToUnvisited(act, graph, { ...variables }, visits) ?? next;
         const chosen = opts.decide({ kind: 'transition', activityId: current, id: 'next', options: targets, suggested: suggested ?? targets[0]! }) ?? suggested ?? targets[0]!;
-        const exit = predicateExits(act).find((e) => bound[e.id] === chosen);
+        const exit = predicateExits(act).find((e) => firstVisit(e.id) === chosen);
         if (exit?.when) satisfyWhen(exit.when, variables);
         next = chosen;
       } else if (opts.autoAdvance && (next === null || (visits.get(next) ?? 0) > 0)) {
         const fwd = advanceToUnvisited(act, graph, variables, visits);
         if (fwd) next = fwd;
+      }
+    }
+    // The exit finally taken decides the branch set, so the queue is derived after `next` settles
+    // rather than from the exit `pickExit` would have chosen. A fan's first branch is `next`; the
+    // rest queue, and each branch's own exit leads to the meeting point.
+    let openedFan = false;
+    if (next !== null) {
+      const takenExit = Object.keys(bound).find((exitId) => firstVisit(exitId) === next);
+      const takenTargets = takenExit === undefined ? [] : destinationVisits(bound[takenExit]!, variables);
+      if (takenTargets.length > 1) {
+        pendingBranches.push(...takenTargets.slice(1));
+        openedFan = true;
       }
     }
     steps.push({
@@ -755,6 +803,14 @@ export async function walk(
       lazyGates,
       nextActivity: next,
     });
+
+    // A branch of a running fan does not release its meeting point: the walk enters the next
+    // outstanding branch instead, so the meeting point is reached by the last branch and once. The
+    // activity that opened the fan is exempt — `next` is already that fan's first branch.
+    if (!openedFan && pendingBranches.length > 0) {
+      current = pendingBranches.shift()!;
+      continue;
+    }
 
     if (!next) break;
     // A transition to the terminal sentinel ends the workflow: next_activity

@@ -1,0 +1,7 @@
+id: dependency-review
+version: 1.0.0
+name: Dependency Review
+description: The other branch of the fan.
+exits:
+  - id: reviewed
+    isDefault: true

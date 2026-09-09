@@ -143,6 +143,22 @@ export const instanceFan = (destination: Destination): InstanceFan | undefined =
  */
 export const branchKey = (activityId: string): string => `${activityId.split('-').join('_')}_outputs`;
 
+/**
+ * A destination as a payload field: the id itself, or the branch list a fan opens. A fan projects
+ * as a list rather than as the destination verbatim, so a reader sees the activities the run opens
+ * and learns nothing about the collection a width comes from. Every field and every message that
+ * would otherwise interpolate a destination goes through this, because an array stringifies happily
+ * into prose and the compiler catches none of it.
+ */
+export const destinationField = (destination: Destination): string | string[] =>
+  isFan(destination) ? destinationTargets(destination) : destination;
+
+/** A destination in prose: one quoted id, or the branch list a fan opens, named as branches. */
+export const destinationPhrase = (destination: Destination): string =>
+  isFan(destination)
+    ? `the branches it fans to (${destinationTargets(destination).join(', ')})`
+    : `'${destination}'`;
+
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
   id: z.string().describe('Unique workflow identifier'),

@@ -1,0 +1,7 @@
+id: survey-pass
+version: 1.0.0
+name: Survey Pass
+description: One branch of the fan.
+exits:
+  - id: surveyed
+    isDefault: true
