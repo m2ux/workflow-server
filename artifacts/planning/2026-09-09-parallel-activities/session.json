@@ -758,6 +758,19 @@
             "optionId": "research-only",
             "respondedAt": "2026-09-09T14:57:07.000Z"
           },
+          "research-research-assumption-interview": {
+            "effects": {
+              "variablesSet": {
+                "assumption_outcome": "confirmed"
+              }
+            },
+            "optionId": "accept-agent-positions",
+            "respondedAt": "2026-09-09T15:51:57.000Z"
+          },
+          "research-research-convergence": {
+            "optionId": "accept-research",
+            "respondedAt": "2026-09-09T15:40:12.000Z"
+          },
           "start-work-package-issue-review": {
             "optionId": "create",
             "respondedAt": "2026-09-09T14:33:38.000Z"
@@ -802,10 +815,11 @@
         },
         "completedActivities": [
           "start-work-package",
-          "design-philosophy"
+          "design-philosophy",
+          "codebase-comprehension"
         ],
-        "currentActivity": "codebase-comprehension",
-        "currentTechnique": "github-cli-protocol::view-issue",
+        "currentActivity": "research",
+        "currentTechnique": "review-assumptions::record",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -821,6 +835,16 @@
             "id": "assumptions_log",
             "name": "assumptions-log.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-assumptions-log.md"
+          },
+          {
+            "id": "comprehension_artifact",
+            "name": "workflow-graph.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/workflow-graph.md"
+          },
+          {
+            "id": "comprehension_log",
+            "name": "codebase-comprehension.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/15-codebase-comprehension.md"
           }
         ],
         "deliveredContent": {
@@ -907,6 +931,68 @@
             "technique:rules:aa8fdd300900aded": "aa8fdd300900aded",
             "technique:rules:bd770d8359597898": "bd770d8359597898"
           },
+          "w-F36WFG-research-1": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:43a7f0c76656922f": "43a7f0c76656922f",
+            "bundle:scatter-gather": "432914c463bca514",
+            "bundle:variable-binding": "ba92cef59e3d49ac",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "6c3409693275c7e0",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "resource:assumption-reconciliation#integration-with-assumptions-log": "3b7f0fed34c20f26",
+            "resource:assumption-reconciliation#resolvability-classification": "36046ef9958e3897",
+            "resource:assumption-reconciliation#scorecard": "f93d3200ec28020b",
+            "resource:assumptions-review#assumptions-log-template": "d9b7b4ae1e7e185a",
+            "resource:assumptions-review#classification-vocabulary": "167c748cebdbb0a2",
+            "resource:assumptions-review#probe-vocabulary": "9f8807bc40980c23",
+            "resource:assumptions-review#trade-off-dimensions": "27c54a0dceefe6b2",
+            "resource:canonical-home-map#map": "7225c378bf6a1aa4",
+            "resource:codebase-comprehension#corpus-artifact-template": "5854239853ad62c3",
+            "resource:knowledge-base-research": "0e29a7644bd25614",
+            "resource:meta/writing-register": "73fa9651ec46c5dd",
+            "resource:research-reconciliation": "d1e563a28baf2db9",
+            "resource:research-reconciliation#handoff-targets": "c7e1fee73d241ede",
+            "resource:research-reconciliation#inventory-shape": "5ab7c57dd0fa050d",
+            "resource:research-reconciliation#reconcilability-statuses": "c71e0c3fa199cf2a",
+            "resource:web-research": "6ce5f6d4cba8b9c6",
+            "resource:web-research#section-template": "3b57c13be27912f0",
+            "technique:analyse-challenge::challenge": "91a07d02b78f6165",
+            "technique:analyse-challenge::combine": "c39274d8fd3433c9",
+            "technique:inherited_inputs.items:1c6314a7c6a86aef": "1c6314a7c6a86aef",
+            "technique:inherited_inputs.items:2aad4e4a37ba344a": "2aad4e4a37ba344a",
+            "technique:inherited_inputs.items:55c1b647edf7c56e": "55c1b647edf7c56e",
+            "technique:inherited_inputs.items:7d1f9565c6f80952": "7d1f9565c6f80952",
+            "technique:inherited_inputs.items:dbd33e8989ed9609": "dbd33e8989ed9609",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:2c3d741f65c89115": "2c3d741f65c89115",
+            "technique:inherited_inputs:41f926df301dac51": "41f926df301dac51",
+            "technique:inherited_inputs:8ef5ff518c9eec99": "8ef5ff518c9eec99",
+            "technique:inherited_inputs:91a4d8e55e46e2d4": "91a4d8e55e46e2d4",
+            "technique:inherited_inputs:da613641d41ce917": "da613641d41ce917",
+            "technique:inherited_outputs.items:0398c75b430f2248": "0398c75b430f2248",
+            "technique:inherited_outputs.items:d553d236ce0c8650": "d553d236ce0c8650",
+            "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_outputs:43a7c0415c779e45": "43a7c0415c779e45",
+            "technique:inherited_outputs:f9171c889165ee68": "f9171c889165ee68",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:research::document": "9599ed07c21fdaf2",
+            "technique:research::research": "6d6c9188292c6a8e",
+            "technique:research::synthesize": "973d9f964ac490c0",
+            "technique:research::triage": "fe99ffc6d73f63d0",
+            "technique:review-assumptions::assemble-open-set": "f873ae5fd682dfad",
+            "technique:review-assumptions::collect": "af2fc6ddc2a9f82d",
+            "technique:review-assumptions::reconcile": "f72744d991dbd245",
+            "technique:review-assumptions::record": "b2ad810eafce8bdd",
+            "technique:rules:101e0c806327c17d": "101e0c806327c17d",
+            "technique:rules:2a5287e8435bca85": "2a5287e8435bca85",
+            "technique:rules:5b42f43af44846d4": "5b42f43af44846d4",
+            "technique:rules:6444c9767205e926": "6444c9767205e926",
+            "technique:rules:a6aa444c81b65dc9": "a6aa444c81b65dc9",
+            "technique:rules:aa8fdd300900aded": "aa8fdd300900aded",
+            "technique:rules:bd770d8359597898": "bd770d8359597898"
+          },
           "w-F36WFG-start-1": {
             "bundle:agent-conduct": "9cf9756649880f04",
             "bundle:rules:3c888a6c77c60503": "3c888a6c77c60503",
@@ -981,7 +1067,7 @@
             "technique:workflow-engine::create-readme": "0c669b49c2a4499e"
           }
         },
-        "exit": "done",
+        "exit": "research-needed",
         "history": [
           {
             "timestamp": "2026-09-09T14:09:51.508Z",
@@ -5036,19 +5122,1441 @@
             },
             "timestamp": "2026-09-09T15:07:36.437Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_dir",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_artifact",
+              "source": "variables_changed",
+              "value": "Workflow graph: a destination is one activity-id string; the session holds one currentActivity; getExitBindings is the meeting point (GitNexus CRITICAL)."
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_artifact_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/workflow-graph.md"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_log",
+              "source": "variables_changed",
+              "value": "Questions resolved from code; caller enumeration and challenge lenses in 15-codebase-comprehension.md."
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "has_open_questions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "challenge_findings",
+              "source": "variables_changed",
+              "value": {
+                "pedagogy": {
+                  "Q1": "confirmed",
+                  "Q2": "confirmed",
+                  "Q3": "confirmed",
+                  "Q4": "confirmed",
+                  "Q5": "confirmed",
+                  "template-gaps": "resolved-by-challenge"
+                },
+                "rejected-paths": {
+                  "gitnexus-process-as-fan": "confirmed",
+                  "hierarchical-as-fan": "confirmed",
+                  "scatter-gather-as-fan": "confirmed"
+                }
+              }
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "written_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/15-codebase-comprehension.md"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "bind-comprehension-dir"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "build-comprehension"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "create-comprehension-artifact"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "deep-dive-iteration"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "deep-dive"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "revise-questions"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "challenge-open-questions"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "combine-question-challenges"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "update-artifact"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "record-log"
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-09-09T15:12:06.291Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 96397,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 6121,
+              "delivery": "full",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "research-knowledge-base"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4826,
+              "delivery": "full",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "synthesize"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5855,
+              "delivery": "full",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "triage-research-candidates"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5561,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4086,
+              "delivery": "full",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "document"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5050,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 10042,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "reconcile-assumptions"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4336,
+              "delivery": "full",
+              "stepId": "challenge-assumptions",
+              "techniqueId": "analyse-challenge::challenge"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "challenge-assumptions"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4885,
+              "delivery": "full",
+              "stepId": "combine-assumption-challenges",
+              "techniqueId": "analyse-challenge::combine"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "combine-assumption-challenges"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5089,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::assemble-open-set"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "present-resolved-assumptions"
+            },
+            "timestamp": "2026-09-09T15:12:29.904Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 2853,
+              "delivery": "full",
+              "resourceId": "knowledge-base-research"
+            },
+            "timestamp": "2026-09-09T15:12:53.151Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 1288,
+              "delivery": "full",
+              "resourceId": "web-research"
+            },
+            "timestamp": "2026-09-09T15:12:53.387Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 1986,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-09-09T15:13:47.243Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 2259,
+              "delivery": "full",
+              "resourceId": "research-reconciliation"
+            },
+            "timestamp": "2026-09-09T15:16:33.576Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "kb_findings",
+              "source": "yield_checkpoint",
+              "value": "Institutional canon (design-principles §18/§26, schema-construct-inventory, scatter-gather isolation-then-combine) plus concept-rag architecture/CI-CD books: graph owns activity-level fan-out; mid-phase fan-out stays orchestration-patterns; per-branch outputs isolate until a gather. Library has no van der Aalst Workflow Patterns volume."
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "web_findings",
+              "source": "yield_checkpoint",
+              "value": "WCP-2/WCP-3/WCP-14, AWS Step Functions Parallel+Map, Temporal Promise.all/child workflows, Airflow expand(), GitHub Actions matrix+needs, EIP Scatter-Gather. Confirms list-fan + instance-fan, wait-for-all join, output isolation, one width bound plus optional tighter cap. Extensions: BPMN implicit incoming is XOR; Step Functions branches are enclosed; fail-fast is the common default and is not the specification."
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "findings_synthesis",
+              "source": "yield_checkpoint",
+              "value": "Requirements (destination names several branches or one activity per collection element; each branch has its own worker; walk continues from one join after the last return) map onto WCP-2+WCP-3 implicit AND-join and WCP-14. The specification already states those forms. Prior art confirms them and does not require a redesign."
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "applicable_patterns",
+              "source": "yield_checkpoint",
+              "value": [
+                {
+                  "need": "list-fan destination",
+                  "pattern": "WCP-2 Parallel Split"
+                },
+                {
+                  "need": "derived join / frontier-empty barrier",
+                  "pattern": "WCP-3 implicit AND-join"
+                },
+                {
+                  "need": "instance-fan over a collection",
+                  "pattern": "WCP-14 multiple instances"
+                },
+                {
+                  "need": "output isolation then gather",
+                  "pattern": "EIP Scatter-Gather wait-for-all"
+                },
+                {
+                  "need": "fan width",
+                  "pattern": "server width bound + optional tighter cap"
+                }
+              ]
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "synthesis_assumptions",
+              "source": "yield_checkpoint",
+              "value": [
+                "The documents indexed from index.md remain the design to implement (DP-3).",
+                "Elicitation stays skipped unless a later activity surfaces a requirements gap (DP-4)."
+              ]
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope",
+              "source": "yield_checkpoint",
+              "value": "mixed"
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope_uncertain",
+              "source": "yield_checkpoint",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "research_candidates",
+              "source": "yield_checkpoint",
+              "value": []
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_reconcilable_research",
+              "source": "yield_checkpoint",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "research_document",
+              "source": "yield_checkpoint",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/04-kb-research.md"
+            },
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-convergence",
+            "timestamp": "2026-09-09T15:18:22.726Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-convergence",
+            "data": {
+              "optionId": "accept-research"
+            },
+            "timestamp": "2026-09-09T15:40:12.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 39437,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 6121,
+              "delivery": "unchanged",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4826,
+              "delivery": "unchanged",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5855,
+              "delivery": "unchanged",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5561,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4086,
+              "delivery": "unchanged",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5050,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 10042,
+              "delivery": "unchanged",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4336,
+              "delivery": "unchanged",
+              "stepId": "challenge-assumptions",
+              "techniqueId": "analyse-challenge::challenge"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4885,
+              "delivery": "unchanged",
+              "stepId": "combine-assumption-challenges",
+              "techniqueId": "analyse-challenge::combine"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5089,
+              "delivery": "unchanged",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::assemble-open-set"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 2750,
+              "delivery": "unchanged",
+              "resourceId": "knowledge-base-research"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1141,
+              "delivery": "full",
+              "resourceId": "web-research#section-template"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 465,
+              "delivery": "full",
+              "resourceId": "research-reconciliation#reconcilability-statuses"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 365,
+              "delivery": "full",
+              "resourceId": "research-reconciliation#handoff-targets"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1741,
+              "delivery": "full",
+              "resourceId": "research-reconciliation#inventory-shape"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "full",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "full",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 855,
+              "delivery": "full",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1435,
+              "delivery": "full",
+              "resourceId": "canonical-home-map#map"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 4443,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#corpus-artifact-template"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 2735,
+              "delivery": "full",
+              "resourceId": "assumption-reconciliation#resolvability-classification"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 202,
+              "delivery": "full",
+              "resourceId": "assumption-reconciliation#scorecard"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1337,
+              "delivery": "full",
+              "resourceId": "assumption-reconciliation#integration-with-assumptions-log"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 628,
+              "delivery": "full",
+              "resourceId": "assumptions-review#trade-off-dimensions"
+            },
+            "timestamp": "2026-09-09T15:41:02.682Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "assumption_outcome",
+              "source": "yield_checkpoint",
+              "value": ""
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "declaredType": "object",
+              "name": "assumption_review_presentation",
+              "source": "yield_checkpoint",
+              "typeMismatch": true,
+              "value": "**DP-3 — Specification is the design** (M, easily-reversible)\n\nThe documents indexed from [index.md](index.md) are the design this work package implements.\n\n- Decision space: treat the specification as canonical and implement it / reopen design where it is silent or contradictory / run elicitation to restate requirements.\n- Trade-off: canonical is faster and matches the request; reopening delays delivery and can drift from settled decisions.\n- Why not code-resolvable: completeness of a design document is a judgement. The codebase shows what exists today (DP-1, DP-2); it cannot show whether the specification covers every requirement the change will be held to.\n- Technical context: GraphSchema is a string destination; getExitBindings returns one `to` per exit. Research mapped list-fan / instance-fan / derived join onto WCP-2, WCP-14, and WCP-3 implicit AND-join. No surveyed conventional solution requires a redesign.\n- Agent's position: treat the specification as canonical. The request named that index. Research did not surface a contradiction.\n\n**DP-4 — Skip elicitation** (M, easily-reversible)\n\nElicitation can stay skipped because those documents already state the requirements.\n\n- Decision space: honour research-only / restore elicitation if a later activity surfaces a requirements gap / take the full path now.\n- Trade-off: skipping trusts the specification; restoring costs a later activity if a gap appears.\n- Why not code-resolvable: whether a specification is complete enough to skip elicitation is a stakeholder judgement. The path gate selected research-only; that is the path, not a proof that no gap exists.\n- Technical context: design philosophy records moderate + research-only. Research confirmed conventional solutions and did not surface a gap elicitation would have to restate. Challenge: absence of a surfaced gap is not proof that none exists.\n- Agent's position: honour the gate. Keep elicitation off unless a later activity surfaces a requirements gap.\n\n[Assumptions log](/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-assumptions-log.md)",
+              "valueType": "string"
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "declaredType": "object",
+              "name": "assumptions_log",
+              "source": "yield_checkpoint",
+              "typeMismatch": true,
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-assumptions-log.md",
+              "valueType": "string"
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "challenge_findings",
+              "source": "yield_checkpoint",
+              "value": {
+                "evidence-strength": {
+                  "DP-3": "confirmed",
+                  "DP-4": "confirmed"
+                },
+                "rejected-paths": {
+                  "DP-3": "confirmed",
+                  "DP-4": "confirmed"
+                },
+                "stakeholder-gap": {
+                  "DP-3": "confirmed",
+                  "DP-4": "confirmed"
+                }
+              }
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope",
+              "source": "yield_checkpoint",
+              "value": "mixed"
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope_uncertain",
+              "source": "yield_checkpoint",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "yield_checkpoint",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "yield_checkpoint",
+              "value": true
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "yield_checkpoint",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "needs_individual_interview",
+              "source": "yield_checkpoint",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "needs_research",
+              "source": "yield_checkpoint",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "open_assumptions",
+              "source": "yield_checkpoint",
+              "value": [
+                "DP-3",
+                "DP-4"
+              ]
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "research_document",
+              "source": "yield_checkpoint",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/04-kb-research.md"
+            },
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-interview",
+            "timestamp": "2026-09-09T15:43:50.324Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-interview",
+            "data": {
+              "optionId": "accept-agent-positions"
+            },
+            "timestamp": "2026-09-09T15:51:57.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "assumption_outcome",
+              "source": "setVariable",
+              "value": "confirmed"
+            },
+            "timestamp": "2026-09-09T15:51:57.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 18614,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 6121,
+              "delivery": "unchanged",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4826,
+              "delivery": "unchanged",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5855,
+              "delivery": "unchanged",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5561,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4086,
+              "delivery": "unchanged",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5050,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 10042,
+              "delivery": "unchanged",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4336,
+              "delivery": "unchanged",
+              "stepId": "challenge-assumptions",
+              "techniqueId": "analyse-challenge::challenge"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4885,
+              "delivery": "unchanged",
+              "stepId": "combine-assumption-challenges",
+              "techniqueId": "analyse-challenge::combine"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 5089,
+              "delivery": "unchanged",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::assemble-open-set"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 2750,
+              "delivery": "unchanged",
+              "resourceId": "knowledge-base-research"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1141,
+              "delivery": "unchanged",
+              "resourceId": "web-research#section-template"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 465,
+              "delivery": "unchanged",
+              "resourceId": "research-reconciliation#reconcilability-statuses"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 365,
+              "delivery": "unchanged",
+              "resourceId": "research-reconciliation#handoff-targets"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1741,
+              "delivery": "unchanged",
+              "resourceId": "research-reconciliation#inventory-shape"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 855,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1435,
+              "delivery": "unchanged",
+              "resourceId": "canonical-home-map#map"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 4443,
+              "delivery": "unchanged",
+              "resourceId": "codebase-comprehension#corpus-artifact-template"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 2735,
+              "delivery": "unchanged",
+              "resourceId": "assumption-reconciliation#resolvability-classification"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 202,
+              "delivery": "unchanged",
+              "resourceId": "assumption-reconciliation#scorecard"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 1337,
+              "delivery": "unchanged",
+              "resourceId": "assumption-reconciliation#integration-with-assumptions-log"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "bundled": true,
+              "chars": 628,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#trade-off-dimensions"
+            },
+            "timestamp": "2026-09-09T15:52:52.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "chars": 4947,
+              "delivery": "full",
+              "stepId": "record-batch-response",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-09-09T15:53:36.654Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-F36WFG-research-1",
+              "stepId": "record-batch-response"
+            },
+            "timestamp": "2026-09-09T15:53:36.654Z",
+            "type": "step_started"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 58,
+        "seq": 73,
         "sessionIndex": "F36WFG",
         "startedAt": "2026-09-09T14:09:51.508Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788966456,
+        "ts": 1788969216,
         "variables": {
+          "applicable_patterns": [
+            {
+              "need": "list-fan destination",
+              "pattern": "WCP-2 Parallel Split"
+            },
+            {
+              "need": "derived join / frontier-empty barrier",
+              "pattern": "WCP-3 implicit AND-join"
+            },
+            {
+              "need": "instance-fan over a collection",
+              "pattern": "WCP-14 multiple instances"
+            },
+            {
+              "need": "output isolation then gather",
+              "pattern": "EIP Scatter-Gather wait-for-all"
+            },
+            {
+              "need": "fan width",
+              "pattern": "server width bound + optional tighter cap"
+            }
+          ],
           "artifact_publish_ref": "",
-          "assumption_outcome": "",
+          "assumption_outcome": "confirmed",
+          "assumption_review_presentation": "**DP-3 — Specification is the design** (M, easily-reversible)\n\nThe documents indexed from [index.md](index.md) are the design this work package implements.\n\n- Decision space: treat the specification as canonical and implement it / reopen design where it is silent or contradictory / run elicitation to restate requirements.\n- Trade-off: canonical is faster and matches the request; reopening delays delivery and can drift from settled decisions.\n- Why not code-resolvable: completeness of a design document is a judgement. The codebase shows what exists today (DP-1, DP-2); it cannot show whether the specification covers every requirement the change will be held to.\n- Technical context: GraphSchema is a string destination; getExitBindings returns one `to` per exit. Research mapped list-fan / instance-fan / derived join onto WCP-2, WCP-14, and WCP-3 implicit AND-join. No surveyed conventional solution requires a redesign.\n- Agent's position: treat the specification as canonical. The request named that index. Research did not surface a contradiction.\n\n**DP-4 — Skip elicitation** (M, easily-reversible)\n\nElicitation can stay skipped because those documents already state the requirements.\n\n- Decision space: honour research-only / restore elicitation if a later activity surfaces a requirements gap / take the full path now.\n- Trade-off: skipping trusts the specification; restoring costs a later activity if a gap appears.\n- Why not code-resolvable: whether a specification is complete enough to skip elicitation is a stakeholder judgement. The path gate selected research-only; that is the path, not a proof that no gap exists.\n- Technical context: design philosophy records moderate + research-only. Research confirmed conventional solutions and did not surface a gap elicitation would have to restate. Challenge: absence of a surfaced gap is not proof that none exists.\n- Agent's position: honour the gate. Keep elicitation off unless a later activity surfaces a requirements gap.\n\n[Assumptions log](/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-assumptions-log.md)",
           "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-assumptions-log.md",
           "attestation_option": "certify",
           "awaiting_review": false,
@@ -5062,17 +6570,16 @@
           "build_dependent_artifacts_pending": false,
           "challenge_findings": {
             "evidence-strength": {
-              "DP-1": "confirmed",
-              "DP-2": "confirmed",
-              "DP-3": "irreducible",
-              "DP-4": "irreducible"
+              "DP-3": "confirmed",
+              "DP-4": "confirmed"
             },
             "rejected-paths": {
-              "full-workflow": "confirmed — divergence recorded in 02-design-philosophy.md"
+              "DP-3": "confirmed",
+              "DP-4": "confirmed"
             },
             "stakeholder-gap": {
-              "DP-3": "irreducible",
-              "DP-4": "irreducible"
+              "DP-3": "confirmed",
+              "DP-4": "confirmed"
             }
           },
           "change_block_index": "",
@@ -5084,10 +6591,12 @@
           "component_git_dir": "/home/mike1/projects/dev/workflow-server",
           "component_name": "workflow-server",
           "component_path": ".",
-          "comprehension_artifact": "",
-          "comprehension_artifact_path": "",
+          "comprehension_artifact": "Workflow graph: a destination is one activity-id string; the session holds one currentActivity; getExitBindings is the meeting point (GitNexus CRITICAL).",
+          "comprehension_artifact_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/workflow-graph.md",
+          "comprehension_dir": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension",
+          "comprehension_log": "Questions resolved from code; caller enumeration and challenge lenses in 15-codebase-comprehension.md.",
           "comprehension_scope": "same-area",
-          "context_scope": "repo-only",
+          "context_scope": "mixed",
           "context_scope_uncertain": false,
           "current_block_index": 0,
           "current_question": "",
@@ -5102,6 +6611,7 @@
           "elicitation_log": [],
           "existing_pr_number": "",
           "failures": [],
+          "findings_synthesis": "Requirements (destination names several branches or one activity per collection element; each branch has its own worker; walk continues from one join after the last return) map onto WCP-2+WCP-3 implicit AND-join and WCP-14. The specification already states those forms. Prior art confirms them and does not require a redesign.",
           "flagged_block_indices": [],
           "floor_breached": false,
           "follow_up_rows": [],
@@ -5142,15 +6652,16 @@
           "issue_type_ambiguous": false,
           "issue_url": "https://github.com/m2ux/workflow-server/issues/671",
           "jira_issue_key": "",
+          "kb_findings": "Institutional canon (design-principles §18/§26, schema-construct-inventory, scatter-gather isolation-then-combine) plus concept-rag architecture/CI-CD books: graph owns activity-level fan-out; mid-phase fan-out stays orchestration-patterns; per-branch outputs isolate until a gather. Library has no van der Aalst Workflow Patterns volume.",
           "mark_progress_na": false,
-          "needs_comprehension": true,
+          "needs_comprehension": false,
           "needs_elicitation": false,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,
           "needs_individual_interview": false,
           "needs_issue_creation": true,
           "needs_plan_revision": false,
-          "needs_research": true,
+          "needs_research": false,
           "needs_simplification": false,
           "open_assumptions": [
             "DP-3",
@@ -5178,6 +6689,8 @@
           "rating_cap": "",
           "rationale_attested": false,
           "requirements": [],
+          "research_candidates": [],
+          "research_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/04-kb-research.md",
           "resign_unsigned_commits_requested": false,
           "review_comments_summary": "",
           "review_mode_ambiguous": false,
@@ -5198,6 +6711,10 @@
           "strategic_findings_summary": "",
           "summary_budget_overruns": [],
           "summary_refine_requested": false,
+          "synthesis_assumptions": [
+            "The documents indexed from index.md remain the design to implement (DP-3).",
+            "Elicitation stays skipped unless a later activity surfaces a requirements gap (DP-4)."
+          ],
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-09-09-parallel-activities",
           "target_repo": "m2ux/workflow-server",
           "test_findings_actionable": false,
@@ -5208,7 +6725,9 @@
           "unsigned_commits_in_pr": false,
           "use_existing_pr": false,
           "user_request": "Start a work package workflow to implement the parallelisation feature for the workflow described in the documents indexed at /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/index.md",
-          "worktree_created": true
+          "web_findings": "WCP-2/WCP-3/WCP-14, AWS Step Functions Parallel+Map, Temporal Promise.all/child workflows, Airflow expand(), GitHub Actions matrix+needs, EIP Scatter-Gather. Confirms list-fan + instance-fan, wait-for-all join, output isolation, one width bound plus optional tighter cap. Extensions: BPMN implicit incoming is XOR; Step Functions branches are enclosed; fail-fast is the common default and is not the specification.",
+          "worktree_created": true,
+          "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/15-codebase-comprehension.md"
         },
         "workflowId": "work-package",
         "workflowVersion": "4.1.0"
