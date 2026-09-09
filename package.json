@@ -24,6 +24,7 @@
     "typecheck": "tsc --noEmit",
     "check:binding": "tsx scripts/check-binding-fidelity.ts",
     "check:identifiers": "tsx scripts/check-identifier-qualification.ts",
+    "check:home-map": "tsx scripts/check-canonical-home-map.ts",
     "check:inherited-inputs": "tsx scripts/check-inherited-inputs.ts",
     "check:citations": "tsx scripts/check-citation-grain.ts",
     "check:framing": "tsx scripts/check-section-framing.ts",
