@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -26,11 +26,6 @@ Design philosophy [artifact](../../resources/design-framework.md#design-philosop
 ### plan_document
 
 Work package [plan](../../resources/wp-plan.md#template) with task breakdown and dependencies
-
-
-#### tasks
-
-Atomic tasks with explicit dependencies and ordering
 
 
 ## Rules
