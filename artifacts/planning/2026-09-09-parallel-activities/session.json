@@ -801,15 +801,26 @@
           }
         },
         "completedActivities": [
-          "start-work-package"
+          "start-work-package",
+          "design-philosophy"
         ],
-        "currentActivity": "design-philosophy",
+        "currentActivity": "codebase-comprehension",
         "currentTechnique": "github-cli-protocol::view-issue",
         "declaredArtifacts": [
           {
             "id": "created_readme",
             "name": "README.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/README.md"
+          },
+          {
+            "id": "design_philosophy_doc",
+            "name": "design-philosophy.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-design-philosophy.md"
+          },
+          {
+            "id": "assumptions_log",
+            "name": "assumptions-log.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-assumptions-log.md"
           }
         ],
         "deliveredContent": {
@@ -829,44 +840,70 @@
             "resource:assumptions-review#assumptions-log-template": "d9b7b4ae1e7e185a",
             "resource:assumptions-review#classification-vocabulary": "167c748cebdbb0a2",
             "resource:assumptions-review#probe-vocabulary": "9f8807bc40980c23",
+            "resource:canonical-home-map#link-only-slots": "90bc86256c7a1661",
+            "resource:canonical-home-map#map": "7225c378bf6a1aa4",
+            "resource:codebase-comprehension#comprehension-log-template": "fe644042f02e3161",
+            "resource:codebase-comprehension#comprehension-techniques": "f40f61c8c34fd49e",
             "resource:codebase-comprehension#corpus-artifact-template": "5854239853ad62c3",
+            "resource:codebase-comprehension#promotion": "98022b661388604a",
+            "resource:codebase-comprehension#rules": "7209390703d814c3",
             "resource:design-framework": "d6895c48b4f81272",
             "resource:design-framework#design-framework-trizics-approach": "e8f24b73ffb3bd3f",
             "resource:design-framework#design-philosophy-artifact-template": "50df58765495e7aa",
             "resource:design-framework#problem-classification": "c13244af9c45f690",
             "resource:design-framework#problem-definition-checklist": "77792068d0c473be",
+            "resource:findings-report#report-and-methodology": "fdd6f4c568f15358",
+            "resource:manual-diff-review#permanent-blob-citations": "d7872cb96f6a7ae8",
             "resource:meta/writing-register": "73fa9651ec46c5dd",
-            "technique:analyse-challenge::challenge": "196d2ed75ca05e27",
-            "technique:analyse-challenge::combine": "3a6e98406b4e0d69",
+            "technique:analyse-challenge::challenge": "46c16a1818cb7b3b",
+            "technique:analyse-challenge::combine": "4d8f002449187257",
+            "technique:codebase-comprehension::deep-dive": "8b5ee6874d115a58",
+            "technique:codebase-comprehension::revise-questions": "4bc80e31655d3ec9",
+            "technique:codebase-comprehension::survey": "a3ca9dada61afef5",
             "technique:design-philosophy::classify": "2921c71880654d19",
             "technique:design-philosophy::define": "bd346ae36d6389a9",
             "technique:design-philosophy::determine-path": "fe9eb27630a67012",
             "technique:design-philosophy::document": "141ddcfeb1a714d6",
+            "technique:inherited_inputs.items:1c6314a7c6a86aef": "1c6314a7c6a86aef",
             "technique:inherited_inputs.items:2165cc7cd2657219": "2165cc7cd2657219",
             "technique:inherited_inputs.items:21ff9693e9f821ab": "21ff9693e9f821ab",
             "technique:inherited_inputs.items:249397e10c3642b1": "249397e10c3642b1",
+            "technique:inherited_inputs.items:41564dc856819ba4": "41564dc856819ba4",
             "technique:inherited_inputs.items:583f29eda603ff88": "583f29eda603ff88",
             "technique:inherited_inputs.items:71e2211ceca20143": "71e2211ceca20143",
             "technique:inherited_inputs.items:819bac0821412d55": "819bac0821412d55",
+            "technique:inherited_inputs.items:8e3ac0ff455bafa3": "8e3ac0ff455bafa3",
+            "technique:inherited_inputs.items:941c362eb3aebd44": "941c362eb3aebd44",
             "technique:inherited_inputs.items:b9a0962ade7b3b89": "b9a0962ade7b3b89",
             "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:0c42b3ca699dba27": "0c42b3ca699dba27",
+            "technique:inherited_inputs:28fcd155bb3c8dea": "28fcd155bb3c8dea",
             "technique:inherited_inputs:295891a2fd0ff6ad": "295891a2fd0ff6ad",
             "technique:inherited_inputs:320a9135994ce98e": "320a9135994ce98e",
             "technique:inherited_inputs:47b6c305c9e6c2ef": "47b6c305c9e6c2ef",
+            "technique:inherited_inputs:8ef5ff518c9eec99": "8ef5ff518c9eec99",
             "technique:inherited_inputs:928f35115c4e2c07": "928f35115c4e2c07",
             "technique:inherited_inputs:ba10a10686a075b2": "ba10a10686a075b2",
             "technique:inherited_inputs:c32b35c10d45541e": "c32b35c10d45541e",
             "technique:inherited_inputs:c6d941034a857ac9": "c6d941034a857ac9",
+            "technique:inherited_inputs:e4b8904f06acf6b5": "e4b8904f06acf6b5",
             "technique:inherited_outputs.items:573eb2998e2008c4": "573eb2998e2008c4",
+            "technique:inherited_outputs.items:77be9cb0136e6975": "77be9cb0136e6975",
+            "technique:inherited_outputs.items:f349a951715dc895": "f349a951715dc895",
             "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
             "technique:inherited_outputs:1af23332e747edab": "1af23332e747edab",
+            "technique:inherited_outputs:581fd9c10a6e0aec": "581fd9c10a6e0aec",
+            "technique:inherited_outputs:7b35e7e6c09e4b1f": "7b35e7e6c09e4b1f",
+            "technique:manage-artifacts::write-artifact": "7be249fd26172c74",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
             "technique:review-assumptions::collect": "9a87e315cc7ea744",
             "technique:review-assumptions::reconcile": "3cb184d9783472c9",
             "technique:review-assumptions::record": "eadf1be59af015c2",
             "technique:rules:2a5287e8435bca85": "2a5287e8435bca85",
+            "technique:rules:3864e91e03d3f157": "3864e91e03d3f157",
             "technique:rules:44bb33073e97c585": "44bb33073e97c585",
             "technique:rules:5b42f43af44846d4": "5b42f43af44846d4",
+            "technique:rules:889ffda8c9a550d2": "889ffda8c9a550d2",
             "technique:rules:aa8fdd300900aded": "aa8fdd300900aded",
             "technique:rules:bd770d8359597898": "bd770d8359597898"
           },
@@ -4225,19 +4262,794 @@
             },
             "timestamp": "2026-09-09T14:57:43.243Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_statement",
+              "source": "variables_changed",
+              "value": "A workflow graph binds each activity outcome to exactly one next activity, or to the end of the run. Independent analyses that share no inputs therefore occupy the walk one after another, and repeating one activity over a collection happens inside a single worker. A run that could finish when the last of several independent pieces returns instead waits in a line; a watcher sees one next step rather than a set of open branches.\n\nSystem: the MCP server walks Goal → Workflow → Activities → Techniques → Tools. An activity names outcomes; the graph names where each leads; a worker is dispatched per activity; the session record holds the walk position. Server code lives on main; workflow definitions on the workflows branch. Guards, dispatch, the session record, and observability all read the destination as a single activity id.\n\nImpact: High for wall-clock time and operator visibility on any workflow with independent analyses or per-item repeats. Frequency is every such walk. Unaddressed, independent work stays serial and a fan in flight looks like a stall.\n\nSuccess criteria (ticket-derived, unquantified): a destination can name several branches — distinct activities, or one activity once per collection element; each branch runs in its own worker; the walk continues from one join once the last branch returns. Measurable criteria are unfilled here; they land in requirements elicitation. The specification, seven-stage delivery plan, smoke-test plan, and supersession documents already exist in the planning folder.\n\nConstraints: implement against those documents; no backward-compatibility layers; work in the worktree at /home/mike1/projects/dev/workflow-server/.worktrees/2026-09-09-parallel-activities on branch feat/671-parallel-activities-a-graph-destination; PR #672 exists. Calendar deadline and resource limits are unfilled in the issue record. The bound issue_record carries title, number, labels, and URL, not the issue body.\n\nRoot cause: the destination type is a single activity id (or the terminal sentinel). There is no graph form for a list of members or an instance-over-collection, so independence and repetition cannot be routing facts."
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_type",
+              "source": "variables_changed",
+              "value": "inventive-improvement"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_complexity",
+              "source": "variables_changed",
+              "value": "moderate"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "classification_rationale",
+              "source": "variables_changed",
+              "value": "Inventive-improvement: nothing currently fails; the graph already routes, and the work adds a destination form that names several branches. Complexity is complex: the specification names architectural decisions (destination form, derived join, frontier, branch keys, output isolation), several viable approaches in the list-fan and instance-fan design records, and coupled changes across schema, session record, dispatch, guards, and observability. GitNexus impact on inferred symbols (next_activity, handleNextActivity, evaluateTransition, dispatch_child) returned not-found, so complexity is from the issue text and the existing specification rather than measured fan-out."
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_research",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "skip_optional_activities",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "path_rationale",
+              "source": "variables_changed",
+              "value": "Research-only. Moderate problems warrant the full path; this selection diverges because the specification, delivery plan, smoke-test plan, and supersession documents already state the requirements. Research remains so conventional solutions and prior art get a pass before planning. At moderate, the design framework warrants problem definition, classification, conventional solutions, and synthesis. Comprehension precedes planning on every path."
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "design_philosophy_doc",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-design-philosophy.md"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "declaredType": "object",
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-assumptions-log.md",
+              "valueType": "string"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": [
+                "DP-3",
+                "DP-4"
+              ]
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "challenge_findings",
+              "source": "variables_changed",
+              "value": {
+                "evidence-strength": {
+                  "DP-1": "confirmed",
+                  "DP-2": "confirmed",
+                  "DP-3": "irreducible",
+                  "DP-4": "irreducible"
+                },
+                "rejected-paths": {
+                  "full-workflow": "confirmed — divergence recorded in 02-design-philosophy.md"
+                },
+                "stakeholder-gap": {
+                  "DP-3": "irreducible",
+                  "DP-4": "irreducible"
+                }
+              }
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "define-problem"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "classify-problem"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "determine-path"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "document-philosophy"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "create-assumptions-log"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "reconcile-assumptions"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "challenge-assumptions"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "combine-assumption-challenges"
+            },
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-09-09T15:01:59.976Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 71553,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 10008,
+              "delivery": "full",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "build-comprehension"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 11163,
+              "delivery": "full",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "create-comprehension-artifact"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 7765,
+              "delivery": "full",
+              "stepId": "deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "deep-dive"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 5286,
+              "delivery": "full",
+              "stepId": "revise-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "revise-questions"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 4308,
+              "delivery": "full",
+              "stepId": "challenge-open-questions",
+              "techniqueId": "analyse-challenge::challenge"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "challenge-open-questions"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 4819,
+              "delivery": "full",
+              "stepId": "combine-question-challenges",
+              "techniqueId": "analyse-challenge::combine"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "combine-question-challenges"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 11167,
+              "delivery": "full",
+              "stepId": "update-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "update-artifact"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 10984,
+              "delivery": "full",
+              "stepId": "record-log",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "stepId": "record-log"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 1907,
+              "delivery": "unchanged",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 4443,
+              "delivery": "unchanged",
+              "resourceId": "codebase-comprehension#corpus-artifact-template"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 1243,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#comprehension-log-template"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 1435,
+              "delivery": "full",
+              "resourceId": "canonical-home-map#map"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 270,
+              "delivery": "full",
+              "resourceId": "canonical-home-map#link-only-slots"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 511,
+              "delivery": "full",
+              "resourceId": "manual-diff-review#permanent-blob-citations"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 8543,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#comprehension-techniques"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 2381,
+              "delivery": "full",
+              "resourceId": "findings-report#report-and-methodology"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 937,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#promotion"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "bundled": true,
+              "chars": 1822,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#rules"
+            },
+            "timestamp": "2026-09-09T15:02:11.333Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 91202,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 10008,
+              "delivery": "full",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 11163,
+              "delivery": "full",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 7765,
+              "delivery": "full",
+              "stepId": "deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 5286,
+              "delivery": "full",
+              "stepId": "revise-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 4308,
+              "delivery": "full",
+              "stepId": "challenge-open-questions",
+              "techniqueId": "analyse-challenge::challenge"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 4819,
+              "delivery": "full",
+              "stepId": "combine-question-challenges",
+              "techniqueId": "analyse-challenge::combine"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 11167,
+              "delivery": "full",
+              "stepId": "update-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 10984,
+              "delivery": "full",
+              "stepId": "record-log",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-09-09T15:06:15.069Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 4569,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#corpus-artifact-template"
+            },
+            "timestamp": "2026-09-09T15:06:41.288Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 1371,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#comprehension-log-template"
+            },
+            "timestamp": "2026-09-09T15:06:41.623Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 1048,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#promotion"
+            },
+            "timestamp": "2026-09-09T15:06:42.127Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 1929,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#rules"
+            },
+            "timestamp": "2026-09-09T15:06:42.410Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 8669,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#comprehension-techniques"
+            },
+            "timestamp": "2026-09-09T15:06:45.568Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 1986,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-09-09T15:06:45.981Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 629,
+              "delivery": "full",
+              "resourceId": "manual-diff-review#permanent-blob-citations"
+            },
+            "timestamp": "2026-09-09T15:06:46.343Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 2491,
+              "delivery": "full",
+              "resourceId": "findings-report#report-and-methodology"
+            },
+            "timestamp": "2026-09-09T15:07:11.465Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-F36WFG-design-1",
+              "chars": 379,
+              "delivery": "full",
+              "resourceId": "canonical-home-map#link-only-slots"
+            },
+            "timestamp": "2026-09-09T15:07:36.437Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 46,
+        "seq": 58,
         "sessionIndex": "F36WFG",
         "startedAt": "2026-09-09T14:09:51.508Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788965863,
+        "ts": 1788966456,
         "variables": {
           "artifact_publish_ref": "",
           "assumption_outcome": "",
+          "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-assumptions-log.md",
           "attestation_option": "certify",
           "awaiting_review": false,
           "base_branch": "main",
@@ -4248,6 +5060,21 @@
           "branch_name": "feat/671-parallel-activities-a-graph-destination",
           "broken_artifact_links": [],
           "build_dependent_artifacts_pending": false,
+          "challenge_findings": {
+            "evidence-strength": {
+              "DP-1": "confirmed",
+              "DP-2": "confirmed",
+              "DP-3": "irreducible",
+              "DP-4": "irreducible"
+            },
+            "rejected-paths": {
+              "full-workflow": "confirmed — divergence recorded in 02-design-philosophy.md"
+            },
+            "stakeholder-gap": {
+              "DP-3": "irreducible",
+              "DP-4": "irreducible"
+            }
+          },
           "change_block_index": "",
           "changed_files": [],
           "classification_rationale": "Inventive-improvement: nothing currently fails; the graph already routes, and the work adds a destination form that names several branches. Complexity is complex: the specification names architectural decisions (destination form, derived join, frontier, branch keys, output isolation), several viable approaches in the list-fan and instance-fan design records, and coupled changes across schema, session record, dispatch, guards, and observability. GitNexus impact on inferred symbols (next_activity, handleNextActivity, evaluateTransition, dispatch_child) returned not-found, so complexity is from the issue text and the existing specification rather than measured fan-out.",
@@ -4269,6 +5096,7 @@
           "deferred_item_issue_url": "",
           "deferred_item_rows": [],
           "deferred_items_register": "",
+          "design_philosophy_doc": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-09-parallel-activities/02-design-philosophy.md",
           "domain_answered": false,
           "elicitation_complete": false,
           "elicitation_log": [],
@@ -4284,7 +5112,7 @@
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
-          "has_open_assumptions": false,
+          "has_open_assumptions": true,
           "has_open_questions": false,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
@@ -4324,7 +5152,12 @@
           "needs_plan_revision": false,
           "needs_research": true,
           "needs_simplification": false,
+          "open_assumptions": [
+            "DP-3",
+            "DP-4"
+          ],
           "open_deferred_items": [],
+          "path_rationale": "Research-only. Moderate problems warrant the full path; this selection diverges because the specification, delivery plan, smoke-test plan, and supersession documents already state the requirements. Research remains so conventional solutions and prior art get a pass before planning. At moderate, the design framework warrants problem definition, classification, conventional solutions, and synthesis. Comprehension precedes planning on every path.",
           "post_summary_approved": false,
           "pr_body": "",
           "pr_exists": true,
