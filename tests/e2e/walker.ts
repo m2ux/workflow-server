@@ -20,7 +20,7 @@ import { evaluateCondition, type Condition } from '../../src/schema/condition.sc
 import { evaluateWhenExpression, parseWhen } from '../../src/schema/when-expression.js';
 import { unboundPositiveReads, type GateUnansweredCounts } from '../../src/utils/gate-liveness.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
-import { type Destination, type Graph, isFan } from '../../src/schema/workflow.schema.js';
+import { type Destination, type Graph, isFan, instanceFans } from '../../src/schema/workflow.schema.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
 
 export interface CheckpointOption {
@@ -396,11 +396,14 @@ async function transition(
   fromActivity?: string,
   /** The exit it took — required off an activity whose exit the graph fans. */
   takenExit?: string,
+  /** Writes the retiring activity reports, as a worker's `variables_changed` map. */
+  variablesChanged?: Record<string, unknown>,
 ): Promise<{ manifestStatus?: string; branches?: string[] }> {
   const args: Record<string, unknown> = { session_index: sessionIndex, activity_id: activityId };
   if (fromActivity !== undefined) args.from_activity = fromActivity;
   if (takenExit !== undefined) args.exit = takenExit;
   if (stepManifest && stepManifest.length) args.step_manifest = stepManifest;
+  if (variablesChanged && Object.keys(variablesChanged).length) args.variables_changed = variablesChanged;
   const res = await client.callTool({ name: 'next_activity', arguments: args });
   if (isError(res)) {
     const text = (res.content?.[0] as { text?: string })?.text ?? JSON.stringify(res.content);
@@ -414,6 +417,31 @@ async function transition(
   // would otherwise read for that purpose alone.
   const branches = (meta?.fan ?? []).flatMap((member) => member.branches);
   return { manifestStatus: meta?.validation?.status, ...(branches.length > 0 ? { branches } : {}) };
+}
+
+/**
+ * The collection an instance fan runs over, where the walk has no value for it. A dry walk executes
+ * no technique, so the operation that assigns the work units never runs and the enter would be
+ * refused for want of a collection. Two units is the smallest width a fan opens, and it sits under
+ * every ceiling. The seed travels as the retiring activity's own reported write, which is the
+ * activity the graph holds responsible for the collection; a fan whose collection is already in the
+ * bag — a declared default, an earlier write — keeps the value it has.
+ */
+function seedFanCollections(
+  destination: Destination,
+  variables: Record<string, unknown>,
+): Record<string, unknown> {
+  const seeded: Record<string, unknown> = {};
+  for (const member of instanceFans(destination)) {
+    const path = member.over.split('.');
+    const head = path[0]!;
+    if (variables[head] !== undefined) continue;
+    const units = ['unit-1', 'unit-2'];
+    const value = path.slice(1).reduceRight<unknown>((inner, segment) => ({ [segment]: inner }), units);
+    variables[head] = value;
+    seeded[head] = value;
+  }
+  return seeded;
 }
 
 /** Evaluate a step's inline `when` expression via the shared reference dialect.
@@ -699,6 +727,8 @@ export async function walk(
    * the meeting point when a branch retires with siblings still live.
    */
   let sendInstead: Destination | undefined;
+  /** Writes the retiring activity reports on the next call — the collection a fan is about to open. */
+  let pendingWrites: Record<string, unknown> | undefined;
   /** The exit that activity took, which a transition off a fanning exit has to name. */
   let exitingExit: string | undefined;
   /** The activity the next transition is exiting — undefined on a session first call. */
@@ -722,9 +752,10 @@ export async function walk(
     // never inferred from what happens to be in flight. On a fanning exit the call sends the
     // destination exactly as the graph names it, so ONE call opens every branch.
     const { manifestStatus, branches } = await transition(
-      client, sessionIndex, sendInstead ?? current, pendingManifest, exiting, exitingExit,
+      client, sessionIndex, sendInstead ?? current, pendingManifest, exiting, exitingExit, pendingWrites,
     );
     sendInstead = undefined;
+    pendingWrites = undefined;
     // The enter hands back the branch list; the walk takes the first and queues the rest, and each
     // branch's own return names the meeting point, which the server enters when the last empties
     // the frontier.
@@ -835,6 +866,7 @@ export async function walk(
         // the branch list back, so nothing here computes a width.
         sendInstead = destination;
         openedFan = true;
+        pendingWrites = seedFanCollections(destination, variables);
       }
     }
     steps.push({

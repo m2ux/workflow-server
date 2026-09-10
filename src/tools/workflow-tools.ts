@@ -1015,8 +1015,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // and the container it materialises are derived here, before anything is written.
       const remaining = state.frontier.filter((entry) => entry !== retiring);
       const entering = remaining.length === 0;
+      // The activity a fan hangs off is the activity that assigns its work units, and it reports
+      // that write on the same call that opens the fan — so the enter reads the bag with this
+      // call's writes already in it. Every exit of a branch names the activity the fan converges
+      // on, so a call that opens a fan is never a call whose writes land in a container; the
+      // overlay is the plain map the caller sent.
+      const bagAtEnter = variables_changed === undefined
+        ? state.variables
+        : { ...state.variables, ...variables_changed };
       const fanEnter = entering && isFan(destination)
-        ? openFanBranches(destination, state.variables, config, `${retiring ?? '(start)'}.${exit ?? '(default)'}`)
+        ? openFanBranches(destination, bagAtEnter, config, `${retiring ?? '(start)'}.${exit ?? '(default)'}`)
         : undefined;
 
       const activityManifestWarnings: string[] = [];
