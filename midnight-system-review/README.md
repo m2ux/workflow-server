@@ -37,7 +37,11 @@ The toolchain gates (`gitnexus_available`, `cargo_available`, `node_binary_avail
 flowchart LR
     SI[scope-intake] --> AD[area-derivation]
     AD --> EP[evidence-probes]
-    EP --> FA[finding-adjudication]
+    EP -- "one branch per investigation area" --> PA1[probe-area#0]
+    EP --> PA2[probe-area#n]
+    PA1 --> CE[consolidate-evidence]
+    PA2 --> CE
+    CE --> FA[finding-adjudication]
     FA --> VR[verdict-and-report]
     VR -- "revise-investigation" --> AD
     VR -- "has_pr_surface && publish_requested" --> PR[publish-review]
@@ -51,10 +55,12 @@ flowchart LR
 |---|----------|------|
 | 01 | [`scope-intake`](activities/01-scope-intake.yaml) | Resolve the authoritative change surface (GitHub file list / three-dot merge-base diff), set the toolchain gates, confirm scope |
 | 02 | [`area-derivation`](activities/02-area-derivation.yaml) | Map the change surface onto the subsystem map, derive bounded investigation areas, and secure plan approval through the amendment loop |
-| 03 | [`evidence-probes`](activities/03-evidence-probes.yaml) | Execute the plan area by area — at most `probe_budget_per_area` catalog probes each, degrading per toolchain gates — and consolidate the evidence log |
-| 04 | [`finding-adjudication`](activities/04-finding-adjudication.yaml) | Grade every candidate with the full tuple, disposition against the accepted-issue threshold, write the findings register |
-| 05 | [`verdict-and-report`](activities/05-verdict-and-report.yaml) | Compute the 1-5 verdict from accepted findings, render the report with reconciled accounting, secure sign-off, decide publication |
-| 06 | [`publish-review`](activities/06-publish-review.yaml) *(conditional)* | Post the signed-off review to the PR and record the publication |
+| 03 | [`evidence-probes`](activities/03-evidence-probes.yaml) | Confirm the plan is approved and open one probe per investigation area |
+| 04 | [`probe-area`](activities/04-probe-area.yaml) | One branch per area — at most `probe_budget_per_area` catalog probes, degrading per toolchain gates, in a context that saw only that area |
+| 05 | [`consolidate-evidence`](activities/05-consolidate-evidence.yaml) | Where the probes converge: read their records whole, in plan order, into one evidence log |
+| 06 | [`finding-adjudication`](activities/06-finding-adjudication.yaml) | Grade every candidate with the full tuple, disposition against the accepted-issue threshold, write the findings register |
+| 07 | [`verdict-and-report`](activities/07-verdict-and-report.yaml) | Compute the 1-5 verdict from accepted findings, render the report with reconciled accounting, secure sign-off, decide publication |
+| 08 | [`publish-review`](activities/08-publish-review.yaml) *(conditional)* | Post the signed-off review to the PR and record the publication |
 
 ## Techniques
 
@@ -67,7 +73,7 @@ flowchart LR
 | [`verdict-and-report`](techniques/verdict-and-report/TECHNIQUE.md) | group | Verdict computation and report rendering |
 | [`publish-review`](techniques/publish-review/TECHNIQUE.md) | group | Publication recording |
 | `meta::variable-binding` | strategy | Step input/output binding against the session variable bag (workflow-level) |
-| `meta::scatter-gather` | strategy | Sequential per-area scatter with ordered gather and delegated combine (declared on `evidence-probes`) |
+| `meta::scatter-gather` | strategy | Graph fan over the investigation areas, with the ordered gather and delegated combine at the convergence (declared on `consolidate-evidence`) |
 | `meta::gitnexus-operations` | reuse | Code-graph probes when `gitnexus_available` is true |
 | `work-package::update-pr::post-review-comment` | reuse | Posts `review_summary` to the PR verbatim as a REST pull-request review with the verdict-derived `review_type` |
 

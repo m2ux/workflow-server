@@ -2,7 +2,7 @@
 
 > Part of the [Security Audit Workflow](../README.md)
 
-The activities that carry an audit from a confirmed target through reconnaissance, concurrent multi-agent review, adversarial verification, severity-calibrated reporting, and the optional ensemble and gap-analysis passes. The main flow (`01`–`07`) is linear with two configuration branches after report generation (ensemble pass, then gap analysis). The sub-agent activities (`10`–`16`) are dispatched by the orchestrator during reconnaissance and primary audit; they do not appear in the main transition graph.
+The activities that carry an audit from a confirmed target through reconnaissance, concurrent multi-agent review, adversarial verification, severity-calibrated reporting, and the optional ensemble and gap-analysis passes. The main flow runs `01`–`07` with two configuration branches after report generation (ensemble pass, then gap analysis), and one point where it opens several branches at once: reconnaissance fans to the three primary groups — a crate deep review per roster entry, plus the static-analysis and toolkit reviews — which converge on primary audit. Those three (`10`, `11`, `12`) are graph activities. The remaining sub-agent activities (`13`–`16`) are dispatched by the orchestrator during reconnaissance and primary audit and do not appear in the transition graph.
 
 This file is an orientation map. The authoritative definition of each activity — its steps, actions, conditions, decisions, and transitions — lives in the per-activity YAML linked below and is served by `get_activity`. Cross-cutting invariants live in the workflow-root [`workflow.yaml`](../workflow.yaml) `rules`.
 
