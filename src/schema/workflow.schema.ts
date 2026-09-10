@@ -69,6 +69,9 @@ export const InstanceFanSchema = z.object({
   ).optional().describe(
     'Optional. The widest fan this destination admits, declared only where the work wants a tighter bound than the server\'s configured ceiling and with the reason stated. Either bound refuses the fan-enter for a wider destination, naming the bound that applied and the width it saw. Each instance beyond the first costs a whole further delivery of this activity.',
   ),
+  isolation: z.literal('worktree').optional().describe(
+    'Optional. Declared where each instance works in a git worktree of its own and commits into it, so this fan\'s instances may bind the version-control operations a fan otherwise refuses. Absent, the instances share the calling worker\'s tree and index, and a commit from one of them would derive its paths from a tree its siblings are also writing. The declaration is a claim the author makes and the load takes on trust: a commit\'s target tree is a run-time fact no rule can read. What it commits the author to is the whole shape — the activity BEFORE the fan materialises one worktree per element and puts its path and branch on that element, because `git worktree add` writes the repository\'s own administrative files and cannot be run by several instances at once; and the activity the fan CONVERGES on brings the branches back together, because nothing else in the run is holding all of them. Session-level persistence stays refused either way: the session record and its planning folder are shared however the checkouts are split.',
+  ),
 }).strict();
 export type InstanceFan = z.infer<typeof InstanceFanSchema>;
 
