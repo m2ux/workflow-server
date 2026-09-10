@@ -2,18 +2,31 @@
 
 > Part of the [workflow corpus](../README.md)
 
-Runs every form of graph fan against a real checkout and reports what happened: one worker per branch, each with an identity and a container slot of its own, entering the activity they converge on once. It exists because the routing is the only thing under test — the surveys the branches run are cheap on purpose, so the run's cost is the routing's cost and the evidence is about the routing.
+Runs every form of graph fan against a real checkout and reports what happened: one worker per branch, each with an identity and a container slot of its own, entering the activity they converge on once. The surveys the branches run are cheap on purpose, so the run's cost is the routing's cost and the evidence is about the routing.
+
+It serves two readers. One wants to know whether this server's fanning works, and takes that from the report a run leaves behind. The other is writing a fan of their own and wants a worked example of each shape one can take — so every part of the grammar below appears here at least once, with the reason it is written that way rather than as a demonstration.
+
+## What it needs to run
+
+| Variable | Supplied by | Meaning |
+|----------|-------------|---------|
+| `planning_folder_path` | The session | Absolute path the run writes its report into |
+| `component_path` | The session, default `.` | The component surveyed, relative to the host repository — `.` for a regular repository, the submodule path in a monorepo |
+
+Everything else the run uses, it produces.
 
 ## The grammar a destination is written in
 
-An exit's destination is one of four things, and this workflow runs each of them:
+An exit's destination takes three written forms, and one reserved value ends the run. This workflow uses all of them:
 
 | Destination | What it opens | Where |
 |-------------|---------------|-------|
 | An activity id | One branch, no fan | `survey-files.surveyed`, and most exits here |
-| `__terminal__` | The end of the run | `report-conformance.reported` |
 | A list of members, each an id **or** an instance fan | Every member's branches, flattened into one set | `plan-conformance.planned` |
 | One activity with a collection to run it over | One branch per element | `choose-probes.chosen`, `open-notes.opened` |
+| `__terminal__` | Nothing — the run ends | `report-conformance.reported` |
+
+`__terminal__` is a reserved activity id rather than a form of its own, which is why a destination is a string, a list, or an instance fan and nothing else.
 
 A list member is never itself a list, so a barrier inside a barrier cannot be written down rather than being refused when it is.
 
@@ -36,11 +49,11 @@ planned:
     maxInstances: 2
 ```
 
-One destination, three members, four branches. Two members name an activity directly; the third names an activity and a collection, and contributes one branch per element. All four converge on `choose-probes` when the last of them returns — the flattening is what makes them one fan rather than two.
+One destination, three members. Two name an activity directly and open one branch each; the third names an activity and a collection, and opens one branch per element — two, where the component has the two roots the plan normally names. They converge on `choose-probes` when the last of them returns, and the flattening is what makes them one fan rather than two.
 
 Four things are worth reading off that block:
 
-- **The members answer to one bound.** The server's ceiling counts branches after flattening, so the two plain members and the fanned member spend the same budget. `maxInstances: 2` is declared for that reason: it sits tighter than the server's ceiling so the whole destination fits inside it. A member's own bound can only ever narrow the server's, never widen it.
+- **The members answer to one bound.** The server's ceiling counts branches after flattening, so the two plain members and the fanned member spend the same budget: four branches against a default ceiling of four. `maxInstances: 2` is declared for that reason — it holds the fanned member at the width that leaves room for its siblings, whatever the plan puts in the collection. A member's own bound can only ever narrow the server's, never widen it.
 - **The collection is reached at a path.** `over` takes a name or a dotted path into a named value, and `survey_plan.roots` is the second. The variable that must exist is the head of the path, `survey_plan`.
 - **The elements are plain strings.** An element is a slug string or an object carrying a string `id`; the other two fans here use objects, and this one uses strings. Either way the element's id names its container slot, its row in the gather manifest, and its artifact filename.
 - **The fan is seeded by the call that opens it.** `plan-conformance` writes `survey_plan` and its own exit fans over it. The collection is read from the bag as the fan is entered, including what that same call just wrote, so a source can supply the collection it fans over.
@@ -62,10 +75,11 @@ The meeting point of the first fan is the source of the second. That is legal an
 ## Stage three — instances that commit in checkouts of their own
 
 ```
-open-notes ─┬─ note-probe#0 ─┐
-            ├─ note-probe#1 ─┼─ merge-notes ─┐
-            └─ note-probe#n ─┘               ├─ report-conformance
-            └─ (nothing-to-note) ────────────┘
+             opened          ┌─ note-probe#0 ─┐
+open-notes ──────────────────┼─ note-probe#1 ─┼─ merge-notes ──┐
+     │                       └─ note-probe#n ─┘                │
+     └───────────────────────────────────────────────────── report-conformance
+             nothing-to-note
 ```
 
 Branches of a fan share one working tree, so an activity that commits is refused unless it takes a checkout of its own. `note-probe` binds `version-control::create-worktree` as its first step, and that binding is what admits the commit operations after it — the claim and the thing claimed are one artifact, so there is nothing to declare and nothing to take on trust.
@@ -106,4 +120,14 @@ A container's name is its activity's id with dashes as underscores and `_outputs
 
 ## Running it
 
-The first destination opens four branches and the second opens `probe_budget`, three by default. The server refuses a destination wider than its own ceiling at the moment the fan opens, so a run wanting more raises `FAN_MAX_BRANCHES` as well as the budget it is changing.
+Every fan here is sized to fit inside the server's default ceiling of four branches, and each is sized by something different:
+
+| Fan | Width | Bounded by |
+|-----|-------|------------|
+| `plan-conformance.planned` | Two named members plus one instance per survey root | The member's own `maxInstances: 2`, which leaves room for its two siblings |
+| `choose-probes.chosen` | `probe_budget`, three by default | A value the run settles before it surveys anything |
+| `open-notes.opened` | One writer per note chosen | The probe count, since a note comes from a probe's finding |
+
+The server refuses a destination wider than its ceiling at the moment the fan opens, and names the bound that refused it. Raising a width therefore means raising `FAN_MAX_BRANCHES` too, and each extra branch costs a whole further delivery of its activity.
+
+The run performs no writes outside its planning folder until the note writers, and each of those works in a checkout of its own on a branch of its own.
