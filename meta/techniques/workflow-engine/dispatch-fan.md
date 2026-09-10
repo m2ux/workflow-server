@@ -89,18 +89,6 @@ Each retirement reports what is still outstanding and, on the last, the activity
 
 A branch whose result is not an accepted envelope ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)) is replaced on its own: mint a fresh identity, compose a prompt with no prior deliveries, and spawn ONE agent — not the concurrent spawn. The replacement names the same entry, which the frontier still holds, so it needs no re-binding call. The siblings that returned are untouched: their work is committed and their outputs landed on their own returns. A second failure advances nothing — the blocked moment is synced onto that branch's rows and the entry stays on the frontier, because entering the convergence activity on fewer branches than the fan opened would hand its gather a value no branch produced.
 
-### an-isolated-branch-owns-its-checkout
-
-Under a destination declaring `isolation: worktree`, an instance materialises its own checkout rather than being handed one.
-
-It already holds a discriminator no sibling can collide with: the delivery carries the instance index beside the element, and the branch runs under an identity distinct from every sibling's. Either names its worktree, so nothing has to be arranged in advance and nothing about the arrangement belongs on the element — a work unit describes work, and putting a checkout path on it would make whatever produced the collection responsible for something it knows nothing about. Materialising is idempotent, so a branch replaced under [replace-one-branch-alone](#replace-one-branch-alone) reaches a clean checkout rather than the half-finished state of the branch it replaced.
-
-Each instance reports the branch it made among its outputs, and that is what the activity the fan converges on reconciles — the branches the container names, which are the ones that exist, rather than the ones a plan predicted. After a fan nothing else in the run holds all of them, and a branch left unmerged is work the run paid for and discarded. What "together" means is the convergence activity's own business; the graph opens the branches and says nothing about how their histories reconcile.
-
-Nothing about this reaches the orchestrator, which dispatches an isolated fan exactly as it dispatches any other.
-
-> `git worktree add` writes the repository's administrative files. Distinct worktree names and distinct branches touch distinct paths under per-ref locks, so instances materialising together is expected to hold. Where a repository is large enough that several checkouts at once is the cost that hurts, or where the race is seen to bite, the activity before the fan materialises them in one pass instead — a remedy for an observed problem rather than the shape to start from.
-
 ### a-branch-reaches-no-gate
 
 A branch never yields a checkpoint. A session holds one outstanding decision at a time and every other tool call is gated while it is held, so one branch's gate would stop its siblings mid-activity — and the orchestrator could not answer it anyway, the turn not resuming until every branch has returned. The load refuses a branch that declares one; the yield tool refuses a gate no definition mentions. A branch that cannot proceed reports a completion on a blocked or abort exit its activity declares.
