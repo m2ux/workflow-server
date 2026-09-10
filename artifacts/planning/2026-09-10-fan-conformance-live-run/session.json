@@ -1,0 +1,937 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "fan-conformance",
+  "workflowVersion": "1.0.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "KKJS27",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-09-10-fan-conformance-live-run",
+  "frontier": [
+    "report-conformance"
+  ],
+  "currentTechnique": "",
+  "exit": "probed",
+  "seq": 14,
+  "ts": 1789041792,
+  "startedAt": "2026-09-10T11:57:14.709Z",
+  "completedActivities": [
+    "plan-conformance",
+    "survey-files",
+    "survey-history",
+    "choose-probes",
+    "probe-directory#0",
+    "probe-directory#1",
+    "probe-directory#2"
+  ],
+  "variables": {
+    "component_path": ".",
+    "probe_budget": 3,
+    "probe_directory_outputs": [
+      {
+        "id": "P1",
+        "result": {
+          "probe_finding": {
+            "directory": "tests",
+            "file_count": {
+              "direct": 85,
+              "total": 214
+            },
+            "finished_at": "2026-09-10T12:02:32.346Z",
+            "largest_file": {
+              "bytes": 133898,
+              "path": "tests/mcp-server.test.ts"
+            },
+            "probe_id": "P1",
+            "started_at": "2026-09-10T12:02:17.522Z",
+            "subdirectories": [
+              "e2e",
+              "fixtures"
+            ]
+          }
+        }
+      },
+      {
+        "id": "P2",
+        "result": {
+          "probe_finding": {
+            "directory": "scripts",
+            "file_count": {
+              "direct": 75,
+              "total": 99
+            },
+            "finished_at": "2026-09-10T12:02:34.010Z",
+            "largest_file": {
+              "bytes": 52429,
+              "path": "scripts/check-binding-fidelity.ts"
+            },
+            "probe_id": "P2",
+            "started_at": "2026-09-10T12:02:22.361Z",
+            "subdirectories": [
+              "claude",
+              "fixtures",
+              "smoke"
+            ]
+          }
+        }
+      },
+      {
+        "id": "P3",
+        "result": {
+          "probe_finding": {
+            "directory": "tests/e2e",
+            "file_count": {
+              "direct": 18,
+              "total": 20
+            },
+            "finished_at": "2026-09-10T12:02:41.275Z",
+            "largest_file": {
+              "bytes": 96050,
+              "path": "tests/e2e/__snapshots__/snapshot.test.ts.snap"
+            },
+            "probe_id": "P3",
+            "started_at": "2026-09-10T12:02:27.373Z",
+            "subdirectories": [
+              "__snapshots__"
+            ]
+          }
+        }
+      }
+    ],
+    "probe_targets": [
+      {
+        "directory": "tests",
+        "id": "P1",
+        "reason": "largest by file count (85) and second-most-touched in the commit window (16)"
+      },
+      {
+        "directory": "scripts",
+        "id": "P2",
+        "reason": "second largest (75) and third-most-touched (14)"
+      },
+      {
+        "directory": "tests/e2e",
+        "id": "P3",
+        "reason": "named by both surveys — 18 files and 9 commits"
+      }
+    ],
+    "run_started_at": "2026-09-10T11:57:35Z",
+    "survey_files_outputs": [
+      {
+        "id": "survey-files",
+        "result": {
+          "file_survey": {
+            "extension_counts": [
+              {
+                "count": 221,
+                "ext": ".ts"
+              },
+              {
+                "count": 82,
+                "ext": ".yaml"
+              },
+              {
+                "count": 56,
+                "ext": ".md"
+              }
+            ],
+            "finished_at": "2026-09-10T11:58:33.322Z",
+            "largest_directories": [
+              {
+                "count": 85,
+                "path": "tests"
+              },
+              {
+                "count": 75,
+                "path": "scripts"
+              },
+              {
+                "count": 18,
+                "path": "tests/e2e"
+              }
+            ],
+            "started_at": "2026-09-10T11:58:05.061Z",
+            "total_files": 456
+          }
+        }
+      }
+    ],
+    "survey_history_outputs": [
+      {
+        "id": "survey-history",
+        "result": {
+          "history_survey": {
+            "active_directories": [
+              {
+                "count": 22,
+                "path": "."
+              },
+              {
+                "count": 16,
+                "path": "tests"
+              },
+              {
+                "count": 14,
+                "path": "scripts"
+              }
+            ],
+            "authors": [
+              {
+                "count": 50,
+                "name": "Mike Clay"
+              }
+            ],
+            "commit_count": 50,
+            "finished_at": "2026-09-10T11:58:37.428Z",
+            "started_at": "2026-09-10T11:58:08.139Z"
+          }
+        }
+      }
+    ],
+    "user_request": "Run the fan conformance workflow to measure whether two branches of one fan actually run concurrently."
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-10T11:57:14.709Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "component_path": ".",
+          "probe_budget": 3,
+          "user_request": "Run the fan conformance workflow to measure whether two branches of one fan actually run concurrently."
+        }
+      },
+      "timestamp": "2026-09-10T11:57:14.709Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "plan-conformance",
+      "timestamp": "2026-09-10T11:57:30.043Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "plan-conformance",
+      "timestamp": "2026-09-10T11:57:41.479Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "plan-conformance",
+      "data": {
+        "name": "run_started_at",
+        "source": "variables_changed",
+        "value": "2026-09-10T11:57:35Z"
+      },
+      "timestamp": "2026-09-10T11:57:41.479Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "plan-conformance",
+      "data": {
+        "name": "probe_budget",
+        "source": "variables_changed",
+        "value": 3
+      },
+      "timestamp": "2026-09-10T11:57:41.479Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "plan-conformance",
+      "data": {
+        "stepId": "open-the-run"
+      },
+      "timestamp": "2026-09-10T11:57:41.479Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "plan-conformance",
+      "data": {
+        "name": "survey_files_outputs",
+        "source": "fan_enter",
+        "value": [
+          {
+            "id": "survey-files",
+            "result": null
+          }
+        ]
+      },
+      "timestamp": "2026-09-10T11:57:41.479Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "plan-conformance",
+      "data": {
+        "name": "survey_history_outputs",
+        "source": "fan_enter",
+        "value": [
+          {
+            "id": "survey-history",
+            "result": null
+          }
+        ]
+      },
+      "timestamp": "2026-09-10T11:57:41.479Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "survey-files",
+      "timestamp": "2026-09-10T11:57:41.479Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "survey-history",
+      "timestamp": "2026-09-10T11:57:41.479Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "survey-files",
+      "data": {
+        "agentId": "worker-survey-files-1",
+        "chars": 40818,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-10T11:58:07.863Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "survey-files",
+      "data": {
+        "agentId": "worker-survey-files-1",
+        "chars": 3463,
+        "delivery": "full",
+        "stepId": "survey-the-files",
+        "techniqueId": "survey-files"
+      },
+      "timestamp": "2026-09-10T11:58:07.863Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "survey-files",
+      "data": {
+        "agentId": "worker-survey-files-1",
+        "stepId": "survey-the-files"
+      },
+      "timestamp": "2026-09-10T11:58:07.863Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "survey-history",
+      "data": {
+        "agentId": "worker-survey-history-1",
+        "chars": 41053,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-10T11:58:11.581Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "survey-history",
+      "data": {
+        "agentId": "worker-survey-history-1",
+        "chars": 3591,
+        "delivery": "full",
+        "stepId": "survey-the-history",
+        "techniqueId": "survey-history"
+      },
+      "timestamp": "2026-09-10T11:58:11.581Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "survey-history",
+      "data": {
+        "agentId": "worker-survey-history-1",
+        "stepId": "survey-the-history"
+      },
+      "timestamp": "2026-09-10T11:58:11.581Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "survey-files",
+      "timestamp": "2026-09-10T11:58:54.242Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "survey-files",
+      "data": {
+        "instance": 0,
+        "key": "survey_files_outputs",
+        "member": "file_survey",
+        "name": "file_survey",
+        "source": "variables_changed",
+        "unit": "survey-files",
+        "value": {
+          "extension_counts": [
+            {
+              "count": 221,
+              "ext": ".ts"
+            },
+            {
+              "count": 82,
+              "ext": ".yaml"
+            },
+            {
+              "count": 56,
+              "ext": ".md"
+            }
+          ],
+          "finished_at": "2026-09-10T11:58:33.322Z",
+          "largest_directories": [
+            {
+              "count": 85,
+              "path": "tests"
+            },
+            {
+              "count": 75,
+              "path": "scripts"
+            },
+            {
+              "count": 18,
+              "path": "tests/e2e"
+            }
+          ],
+          "started_at": "2026-09-10T11:58:05.061Z",
+          "total_files": 456
+        }
+      },
+      "timestamp": "2026-09-10T11:58:54.242Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "survey-files",
+      "data": {
+        "agentId": "worker-survey-files-1",
+        "stepId": "survey-the-files"
+      },
+      "timestamp": "2026-09-10T11:58:54.242Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "survey-history",
+      "timestamp": "2026-09-10T11:59:05.973Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "survey-history",
+      "data": {
+        "instance": 0,
+        "key": "survey_history_outputs",
+        "member": "history_survey",
+        "name": "history_survey",
+        "source": "variables_changed",
+        "unit": "survey-history",
+        "value": {
+          "active_directories": [
+            {
+              "count": 22,
+              "path": "."
+            },
+            {
+              "count": 16,
+              "path": "tests"
+            },
+            {
+              "count": 14,
+              "path": "scripts"
+            }
+          ],
+          "authors": [
+            {
+              "count": 50,
+              "name": "Mike Clay"
+            }
+          ],
+          "commit_count": 50,
+          "finished_at": "2026-09-10T11:58:37.428Z",
+          "started_at": "2026-09-10T11:58:08.139Z"
+        }
+      },
+      "timestamp": "2026-09-10T11:59:05.973Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "survey-history",
+      "data": {
+        "agentId": "worker-survey-history-1",
+        "stepId": "survey-the-history"
+      },
+      "timestamp": "2026-09-10T11:59:05.973Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "choose-probes",
+      "timestamp": "2026-09-10T11:59:05.973Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 44717,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-10T12:01:43.859Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 3663,
+        "delivery": "full",
+        "stepId": "gather-the-surveys",
+        "techniqueId": "orchestration-patterns::gather-results"
+      },
+      "timestamp": "2026-09-10T12:01:43.859Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "gather-the-surveys"
+      },
+      "timestamp": "2026-09-10T12:01:43.859Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 4343,
+        "delivery": "full",
+        "stepId": "choose-the-probes",
+        "techniqueId": "choose-probes"
+      },
+      "timestamp": "2026-09-10T12:01:43.859Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "choose-the-probes"
+      },
+      "timestamp": "2026-09-10T12:01:43.859Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "choose-probes",
+      "timestamp": "2026-09-10T12:01:57.807Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "name": "probe_targets",
+        "source": "variables_changed",
+        "value": [
+          {
+            "directory": "tests",
+            "id": "P1",
+            "reason": "largest by file count (85) and second-most-touched in the commit window (16)"
+          },
+          {
+            "directory": "scripts",
+            "id": "P2",
+            "reason": "second largest (75) and third-most-touched (14)"
+          },
+          {
+            "directory": "tests/e2e",
+            "id": "P3",
+            "reason": "named by both surveys — 18 files and 9 commits"
+          }
+        ]
+      },
+      "timestamp": "2026-09-10T12:01:57.807Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "gather-the-surveys"
+      },
+      "timestamp": "2026-09-10T12:01:57.807Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "choose-the-probes"
+      },
+      "timestamp": "2026-09-10T12:01:57.807Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "choose-probes",
+      "data": {
+        "name": "probe_directory_outputs",
+        "source": "fan_enter",
+        "value": [
+          {
+            "id": "P1",
+            "result": null
+          },
+          {
+            "id": "P2",
+            "result": null
+          },
+          {
+            "id": "P3",
+            "result": null
+          }
+        ]
+      },
+      "timestamp": "2026-09-10T12:01:57.807Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "probe-directory#0",
+      "timestamp": "2026-09-10T12:01:57.807Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "probe-directory#1",
+      "timestamp": "2026-09-10T12:01:57.807Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "probe-directory#2",
+      "timestamp": "2026-09-10T12:01:57.807Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "probe-directory#0",
+      "data": {
+        "agentId": "worker-probe-0",
+        "chars": 40840,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-10T12:02:21.511Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "probe-directory#0",
+      "data": {
+        "agentId": "worker-probe-0",
+        "chars": 3207,
+        "delivery": "full",
+        "stepId": "probe-the-directory",
+        "techniqueId": "probe-directory"
+      },
+      "timestamp": "2026-09-10T12:02:21.511Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "probe-directory#0",
+      "data": {
+        "agentId": "worker-probe-0",
+        "stepId": "probe-the-directory"
+      },
+      "timestamp": "2026-09-10T12:02:21.511Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "probe-directory#1",
+      "data": {
+        "agentId": "worker-probe-1",
+        "chars": 40813,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-10T12:02:25.511Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "probe-directory#1",
+      "data": {
+        "agentId": "worker-probe-1",
+        "chars": 3207,
+        "delivery": "full",
+        "stepId": "probe-the-directory",
+        "techniqueId": "probe-directory"
+      },
+      "timestamp": "2026-09-10T12:02:25.511Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "probe-directory#1",
+      "data": {
+        "agentId": "worker-probe-1",
+        "stepId": "probe-the-directory"
+      },
+      "timestamp": "2026-09-10T12:02:25.511Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "probe-directory#2",
+      "data": {
+        "agentId": "worker-probe-2",
+        "chars": 40814,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-10T12:02:30.549Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "probe-directory#2",
+      "data": {
+        "agentId": "worker-probe-2",
+        "chars": 3207,
+        "delivery": "full",
+        "stepId": "probe-the-directory",
+        "techniqueId": "probe-directory"
+      },
+      "timestamp": "2026-09-10T12:02:30.549Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "probe-directory#2",
+      "data": {
+        "agentId": "worker-probe-2",
+        "stepId": "probe-the-directory"
+      },
+      "timestamp": "2026-09-10T12:02:30.549Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "probe-directory#0",
+      "timestamp": "2026-09-10T12:02:56.988Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "probe-directory#0",
+      "data": {
+        "instance": 0,
+        "key": "probe_directory_outputs",
+        "member": "probe_finding",
+        "name": "probe_finding",
+        "source": "variables_changed",
+        "unit": "probe-directory",
+        "value": {
+          "directory": "tests",
+          "file_count": {
+            "direct": 85,
+            "total": 214
+          },
+          "finished_at": "2026-09-10T12:02:32.346Z",
+          "largest_file": {
+            "bytes": 133898,
+            "path": "tests/mcp-server.test.ts"
+          },
+          "probe_id": "P1",
+          "started_at": "2026-09-10T12:02:17.522Z",
+          "subdirectories": [
+            "e2e",
+            "fixtures"
+          ]
+        }
+      },
+      "timestamp": "2026-09-10T12:02:56.988Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "probe-directory#0",
+      "data": {
+        "agentId": "worker-probe-0",
+        "stepId": "probe-the-directory"
+      },
+      "timestamp": "2026-09-10T12:02:56.988Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "probe-directory#1",
+      "timestamp": "2026-09-10T12:03:04.925Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "probe-directory#1",
+      "data": {
+        "instance": 1,
+        "key": "probe_directory_outputs",
+        "member": "probe_finding",
+        "name": "probe_finding",
+        "source": "variables_changed",
+        "unit": "probe-directory",
+        "value": {
+          "directory": "scripts",
+          "file_count": {
+            "direct": 75,
+            "total": 99
+          },
+          "finished_at": "2026-09-10T12:02:34.010Z",
+          "largest_file": {
+            "bytes": 52429,
+            "path": "scripts/check-binding-fidelity.ts"
+          },
+          "probe_id": "P2",
+          "started_at": "2026-09-10T12:02:22.361Z",
+          "subdirectories": [
+            "claude",
+            "fixtures",
+            "smoke"
+          ]
+        }
+      },
+      "timestamp": "2026-09-10T12:03:04.925Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "probe-directory#1",
+      "data": {
+        "agentId": "worker-probe-1",
+        "stepId": "probe-the-directory"
+      },
+      "timestamp": "2026-09-10T12:03:04.925Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "probe-directory#2",
+      "timestamp": "2026-09-10T12:03:12.047Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "probe-directory#2",
+      "data": {
+        "instance": 2,
+        "key": "probe_directory_outputs",
+        "member": "probe_finding",
+        "name": "probe_finding",
+        "source": "variables_changed",
+        "unit": "probe-directory",
+        "value": {
+          "directory": "tests/e2e",
+          "file_count": {
+            "direct": 18,
+            "total": 20
+          },
+          "finished_at": "2026-09-10T12:02:41.275Z",
+          "largest_file": {
+            "bytes": 96050,
+            "path": "tests/e2e/__snapshots__/snapshot.test.ts.snap"
+          },
+          "probe_id": "P3",
+          "started_at": "2026-09-10T12:02:27.373Z",
+          "subdirectories": [
+            "__snapshots__"
+          ]
+        }
+      },
+      "timestamp": "2026-09-10T12:03:12.047Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "probe-directory#2",
+      "data": {
+        "agentId": "worker-probe-2",
+        "stepId": "probe-the-directory"
+      },
+      "timestamp": "2026-09-10T12:03:12.047Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "report-conformance",
+      "timestamp": "2026-09-10T12:03:12.047Z",
+      "type": "activity_entered"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "deliveredContent": {
+    "orchestrator": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+      "bundle:variable-binding": "4ed713672bdbfad7",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "d036d93198bf3364",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:choose-probes": "a44029f3d4b89a14",
+      "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+      "technique:orchestration-patterns::gather-results": "8e96bc004d4544dd",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+    },
+    "worker-probe-0": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+      "bundle:variable-binding": "4ed713672bdbfad7",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "d036d93198bf3364",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+      "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+      "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+      "technique:probe-directory": "0fc3d7f6eed68747",
+      "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+    },
+    "worker-probe-1": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+      "bundle:variable-binding": "4ed713672bdbfad7",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "d036d93198bf3364",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+      "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+      "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+      "technique:probe-directory": "0fc3d7f6eed68747",
+      "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+    },
+    "worker-probe-2": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+      "bundle:variable-binding": "4ed713672bdbfad7",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "d036d93198bf3364",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+      "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+      "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+      "technique:probe-directory": "0fc3d7f6eed68747",
+      "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+    },
+    "worker-survey-files-1": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+      "bundle:variable-binding": "4ed713672bdbfad7",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "d036d93198bf3364",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:f6578b16da66c840": "f6578b16da66c840",
+      "technique:survey-files": "9ca41a2a03acd226"
+    },
+    "worker-survey-history-1": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+      "bundle:variable-binding": "4ed713672bdbfad7",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "d036d93198bf3364",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:f6578b16da66c840": "f6578b16da66c840",
+      "technique:survey-history": "4ef9aabf6d24991e"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}

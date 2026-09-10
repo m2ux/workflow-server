@@ -1,610 +1,774 @@
-# Twenty-four sentences describe a loop field that fails the load, and fifty-eight describe a mechanism a migration deletes
+# Sixteen statements outside the change name a loop field that fails the load, and sixty-three describe a shared-gate mechanism stage 5 retires — a quarter of those already false too
 
-A sweep of the routines proposal at [2026-09-03-routines/README.md](../../2026-09-03-routines/README.md).
-Companions: [ground-truth/stage-0-state.md](../ground-truth/stage-0-state.md),
+A sweep of the routines proposal at
+[2026-09-03-routines/README.md](../../2026-09-03-routines/README.md). Companions:
+[ground-truth/stage-0-state.md](../ground-truth/stage-0-state.md),
 [ground-truth/fragment-mechanism.md](../ground-truth/fragment-mechanism.md),
 [ground-truth/guard-obligations.md](../ground-truth/guard-obligations.md).
 
-Server tooling at `9ca71c19` on `main`; corpus at `2b8b7215` on the `workflows` branch; planning
-artifacts on the `engineering` branch. Every count below was taken from the repository. Where a
-figure disagrees with a ground-truth document or with the proposal, this document gives its own and
-says so.
+Server tooling at `ee95e4cd` on `main`; corpus at `a4a5d88b` on the `workflows` branch; planning
+artifacts at `d4a2cfd4` on the `engineering` branch. The three ground-truth documents were measured
+at server `9ca71c19` / corpus `2b8b7215`, both of which are ancestors of these; the tree moved
+during this sweep, so every count below was re-taken back to back at the two commits named, and the
+commits were re-read after the run to confirm they had not moved again. Where a figure here
+disagrees with a ground-truth document or with the proposal, this document gives its own and says
+so.
 
-## What this sweep does, and why it is not driven by a file list
+## What this sweep does, and why it is keyed on phrasing rather than on a file list
 
-A change that alters a behaviour usually updates the statements it happens to touch. The statements
-it does not touch keep asserting the old behaviour, and a reader has no way to tell a stale sentence
-from a current one — a stale claim reads as current fact. The corpus names this defect itself:
-`AP-129 stale-restatement-after-change`
-(`workflows/workflow-design/resources/anti-patterns.md:1703-1713`), whose Detect says to "take the
-pre-change phrasing as the search key and sweep the whole definition tree", and states the test
-plainly: "occurrence count against the tree, not against the change's file list: a manifest naming
-one file for a claim that appears in three is the same defect". Its Fix asks for the count to be
-recorded in the change's file manifest so the sweep is auditable
-(`anti-patterns.md:1713`).
+A change that alters a behaviour tends to update the statements it happens to open. The statements
+it does not open keep asserting the arrangement that no longer holds, and a reader has no way to
+tell one from the other: a stale sentence reads as current fact. The corpus names this defect
+itself. `AP-129 stale-restatement-after-change`
+(`workflows/workflow-design/resources/anti-patterns.md:1703-1713`) tells an auditor to "take the
+pre-change phrasing as the search key and sweep the whole definition tree", and states the test in
+one clause — "occurrence count against the tree, not against the change's file list: a manifest
+naming one file for a claim that appears in three is the same defect". Its Fix asks for the count to
+be carried in the change's own manifest, so the sweep is auditable afterwards.
 
-So this sweep starts from phrasings, searches the whole tree for each one, counts every occurrence,
-and only then asks which occurrences sit outside the files the change itself would touch. That last
-figure is the one that matters, because each occurrence outside the list is a statement that
-survives the change and goes on reading as current fact.
+So this sweep starts from phrasings, searches the whole tree for each, counts every occurrence, and
+only then asks which occurrences sit outside the files the change would open. That last figure is
+the one that matters, because each occurrence outside the list is a statement that survives the
+change and goes on reading as current fact.
 
 Two keys, measured separately.
 
-- **Key one is stale now.** Stage 0 of the nine-stage delivery plan has landed: a loop's
-  continuation test lives in `continueWhile`, `condition` is not a field of a loop step, and the
-  early exit `breakCondition` belongs to item iteration alone. Twenty-one phrasings describe the
-  arrangement that no longer holds.
-- **Key two is falsified when stage 5 lands.** Nineteen phrasings describe how a shared gate body is
-  expressed today and route an author to the mechanism stage 5 retires. None is a defect now. Their
-  value is that the count exists before the work starts.
+- **Key one is false now.** Stage 0 of the nine-stage delivery plan has landed: a loop's
+  continuation test lives in `continueWhile`, a loop step carries no `condition`, and the early exit
+  `breakCondition` belongs to item iteration alone. Twenty-three phrasings describe the arrangement
+  that no longer holds; eighteen of their occurrences are false statements, and sixteen of those
+  eighteen sit outside the change's file list.
+- **Key two is falsified when stage 5 lands.** Forty-four phrasings describe how a shared gate body
+  is expressed and route an author to the mechanism stage 5 retires, for 253 occurrences over 26
+  files. Most are accurate today. Their value is that the count exists before the work starts rather
+  than after. Six of the forty-four turn out to describe the mechanism's **rule** half, which the
+  schema already refuses, so those eighteen occurrences are false now rather than later.
 
-Nothing in the routines design is built. `src/schema/activity.schema.ts:167-171` declares
-`StepSchema` over four members — `TechniqueStepSchema`, `ActionStepSchema`, `CheckpointStepSchema`,
-`LoopStepSchema` — there is no `routines/` directory in any workflow, and no materialisation pass.
-Stage 0 alone stands behind anything.
+Key one's literals are the twenty the ground truth lists, plus three added here. Key two has no
+literal list to inherit — neither ground-truth document carries one — so all forty-four were derived
+here from the mechanism's own vocabulary in the schema, the resolver and the guard.
+
+Nothing in the routines design is built, so every construct counted here is one that stands today.
+`src/schema/activity.schema.ts:167-172` declares `StepSchema` over four members —
+`TechniqueStepSchema`, `ActionStepSchema`, `CheckpointStepSchema`, `LoopStepSchema`. There is no
+`routines/` directory in any workflow and no materialisation pass. Stage 0 alone has anything behind
+it.
 
 ## Where each count came from
 
-Searches ran over the whole repository with `.git`, `node_modules`, `dist`, `.worktrees`, `.idea`
-and `.gitnexus` excluded, and `package-lock.json` skipped. `.gitnexus` is a generated code-
-intelligence index, not a source of prose.
+Searches ran over the whole repository with `.git`, `node_modules`, `dist`, `.worktrees`, `.idea`,
+`.venv` and `.gitnexus` excluded, and `package-lock.json` skipped — 3,513 readable text files.
+`.gitnexus` is a generated code-intelligence index rather than a source of prose.
 
 Most of these phrasings are code tokens that appear inside backticks in markdown, and a grep pattern
 containing a backtick cannot be issued under this repository's shell rules. **Every count was taken
 by a Python script that composes the backtick as `chr(96)` and counts literal substring occurrences
-per line.** Two counting rules were used and each key says which:
+per line.** Two counting rules were used, and each key below says which:
 
-- **Case-sensitive literal substring**, for eighteen of the twenty-one key-one literals and eighteen
-  of the nineteen key-two literals.
-- **Case-insensitive literal substring**, for the single phrasing `checkpoint fragment`, which
-  appears as a heading (`Shared checkpoint fragments`), as a table cell (`**Checkpoint fragment**`)
-  and in running prose. Marked in the table.
+- **Case-sensitive literal substring** — 60 of the 67 literals reported (23 for key one, 44 for key
+  two).
+- **Case-insensitive literal substring** — 7 literals whose subject appears in more than one casing:
+  `checkpoint fragment` (a heading reads "Shared checkpoint fragments", a table cell reads
+  "**Checkpoint fragment**"), `fragment ref`, `rule fragment`, `rules slots`, `shared rule texts`,
+  `declared once under` and `declared once as a`.
 
-A count taken with the wrong pattern is worse than no count, so three pattern artefacts are recorded
-rather than hidden:
+Occurrences are reported in four buckets, because two of them are out of scope for different
+reasons:
 
-- `unresolved-ref` matches inside the word "unresolved-reference" at
-  `examples/cursor-workspace/.claude/skills/workflow-canon/SKILL.md:97`, which has nothing to do
-  with the fragment mechanism. **That occurrence is excluded from every figure below**, taking the
-  key from 17 occurrences to 16.
-- `fragments:` matches a TypeScript variable declaration at `scripts/fragments-index.ts:17`
-  (`let fragments: WorkflowFragments | undefined;`) and the guard's own stdout prefix at
-  `scripts/check-fragments.ts:280,283`. Both are inside the change's file list, so they do not
-  distort the out-of-list figure, but the key's raw count is not a count of YAML declarations.
-- `fragment-resolver` matches seven GitHub blob permalinks pinned to a commit SHA in the
-  comprehension artifacts. A permalink names a file at a revision where it existed, which is honest
-  provenance rather than a stale claim, and those seven are called out where they land.
-
-Three surfaces a sweeper would expect to hit are genuinely out of scope, and it is cheaper to say so
-than to leave a later reader re-checking. `grammar/activity.ebnf:74-80` and
-`constraints/activity.als:78-84` describe a `loops:` array with `type: forEach` and a `flow:`
-reference — a different activity language, not a restatement of the current schema. The document
-that owns them says so in its second paragraph: "The server implements a different shape, so nothing
-on this page describes a file the loader accepts" (`docs/orchestra-specification.md:3`). And
-`grammar/activity.ebnf`'s six occurrences of the word "fragment" are the grammar nonterminal
-`FlowFragment` (`grammar/activity.ebnf:64-69,100`), unrelated to the shared-body mechanism.
-
-### Two scope decisions the ground truth left to this sweep
-
-`AP-129`'s Do-not-flag clause exempts "planning-folder artifacts that record the before state
-deliberately" (`anti-patterns.md:1711`). **`.engineering/artifacts/planning/**` is therefore out of
-scope**, and every count below separates the planning total from the live one. That exemption is
-load-bearing for the arithmetic: of key one's 64 occurrences, 36 are in planning records and 30 of
-those 36 are in this sweep's own ground-truth documents, which exist to enumerate the keys.
-
-`.engineering/artifacts/comprehension/**` is a different case, and the ground truth listed it with
-the caveat attached for this sweep to rule on. **The ruling is that it is in scope, and its remedy
-is a restamp rather than an in-place edit.** Three findings decide it:
-
-1. The corpus writes there. `workflows/work-package/activities/15-codebase-comprehension.yaml:60`
-   binds `comprehension_dir` to `{host_repo_path}/.engineering/artifacts/comprehension`, and the
-   activity's own message at `:78` says the artifact is "recorded for the next work package on this
-   area". It is a designed read surface, not a private note.
-2. Every affected file carries a date and every date precedes stage 0. Four say
-   "Last updated: 2026-06-18" (`json-schemas.md:6`, `orchestration.md:3`,
-   `work-package-workflow-content.md:3`, `zod-schemas.md:3`) and one is stamped 2026-08-01
-   (`when-step-gates.md:3`). Stage 0's re-key landed 2026-09-04.
-3. The sentences are nonetheless present-tense assertions about the schema. A reader who checks the
-   date learns the tree has moved; a reader who reads the field list learns a field name that fails
-   the load.
-
-So the correct remedy is to re-derive the snapshot and re-date it, which is why these occurrences
-are counted and named but not folded in with the edit-in-place sites.
-
-## The file lists to subtract
-
-### Stage 0's list, measured from the commits that landed it
-
-Stage 0 is described at [README.md:768](../../2026-09-03-routines/README.md) as adding
-`continueWhile`, removing `condition` from the loop step, scoping `breakCondition` to the `forEach`
-early exit, re-keying 19 loops and adding a loop-shape guard. Three commits carry it, and their file
-lists are the change's file list.
-
-`git show --numstat 3a36b0db` ("Give a loop's continuation test its own field, and let silence
-agree", 2026-09-04) touches **16 files**: `docs/state-management-model.md`, `package.json`,
-`schemas/activity.schema.json`, `schemas/workflow.schema.json`, `scripts/check-loop-shape.ts`,
-`scripts/guards.ts`, `site/api/schemas.html`, `src/schema/activity.schema.ts`,
-`src/schema/variable.schema.ts`, `src/schema/workflow.schema.ts`, `src/tools/workflow-tools.ts`,
-`src/utils/activity-variables.ts`, `src/utils/validation.ts`, `tests/batch-loop-walk.test.ts`,
-`tests/e2e/walker.ts`, `tests/loop-shape-guard.test.ts`.
-
-`git show --numstat 4c288fe9` ("Keep an early exit to the loop kind that has somewhere to put it")
-touches three of the same files and adds none.
-
-`git -C workflows show --numstat 95f13fd1` ("Keep a repeat-until loop's continuation test under its
-own key") touches **18 corpus activity files**, one `condition:` becoming `continueWhile:` in each
-except `work-package/activities/13-submit-for-review.yaml`, which carries two.
-
-**Stage 0's file list is 34 files.** Every occurrence below is judged inside or outside it.
-
-### Stage 5's list, read from the acceptance criteria and the mechanism's own surface
-
-The proposal's stage-5 criteria (README:880-892) name exactly four artefacts: the four converged
-copies reference one routine; "the `fragments` block is gone from `work-package/workflow.yaml`";
-seven fragment rules are deleted; and `duplicate-checkpoint` keeps its rule with its remedy naming a
-routine. **No documentation file appears in the criteria**, which is the whole reason for this half
-of the sweep.
-
-Read generously, so the out-of-list figure is conservative, the list is the criteria plus every file
-the mechanism's code, schema, generated-schema, test and baseline surface occupies:
-
-| Surface | Files |
+| Bucket | Treatment |
 |---|---|
-| Corpus | `work-package/workflow.yaml`; `work-package/activities/04-research.yaml`, `05-implementation-analysis.yaml`, `07-assumptions-review.yaml`, `08-implement.yaml`; the new `work-package/routines/*.yaml` |
-| Schema | `src/schema/workflow.schema.ts`, `src/schema/activity.schema.ts` |
-| Loader and delivery | `src/loaders/fragment-resolver.ts`, `src/loaders/workflow-loader.ts`, `src/tools/workflow-tools.ts` |
-| Guards | `scripts/check-fragments.ts`, `scripts/fragments-index.ts`, `scripts/check-binding-fidelity.ts`, `scripts/guards.ts`, `package.json` |
-| Generated schemas | `schemas/workflow.schema.json`, `schemas/activity.schema.json` |
-| Tests and baselines | `tests/fragment-resolver.test.ts`, `tests/fragments-guard.test.ts`, `tests/fixtures/fragments/**`, `tests/e2e/option-coverage.json`, `tests/e2e/__snapshots__/snapshot.test.ts.snap`, `tests/e2e/__snapshots__/corpus-sha.json`, `scripts/fixtures/token-benchmark-baseline.json` |
+| Live tree — `src`, `scripts`, `tests`, `schemas`, `docs`, `site`, `grammar`, `constraints`, `examples`, every README, and the corpus at `workflows/` | In scope. Every figure in this document's headline is from this bucket |
+| `.engineering/artifacts/comprehension/**` | Reported separately and ruled on below |
+| `.engineering/artifacts/planning/**` | Out of scope by `AP-129`'s own **Do not flag** clause, which exempts "planning-folder artifacts that record the before state deliberately" (`anti-patterns.md:1711`). Counted and set aside; this folder alone holds 52 occurrences of `fragments.checkpoints` |
+| `.engineering/` outside those two folders | Zero occurrences of any reported literal. The one hit anywhere in this bucket came from a key retired below, and it was a proposal for a different definition language rather than a statement about this one |
 
-## Key one: the loop step as five surfaces still describe it
+**One count was taken with the wrong pattern and is recorded here as a warning rather than used.**
+The literal `declared once`, case-insensitive, returns 19 live occurrences over 17 files, 12 of them
+outside the change's file list. Only 5 of the 12 are about the shared-gate mechanism; the other 7
+are technique-inheritance prose that happens to share the phrase —
+`workflows/prism/README.md:188`, `workflows/ponytail/README.md:65`,
+`workflows/ponytail/techniques/README.md:36`, `workflows/prism-audit/README.md:84`,
+`workflows/prism-audit/techniques/README.md:82`,
+`workflows/substrate-node-security-audit/techniques/README.md:64` and
+`docs/resource-resolution-model.md:114`. The key is retired and replaced by two narrower ones,
+`declared once under` and `declared once as a`, which between them reach the same five mechanism
+sites and nothing else.
 
-What holds, from the schema. `src/schema/activity.schema.ts:152-164` declares `LoopStepSchema` as a
-closed object — the `.strict()` at `:164` makes a field outside the set a load error rather than a
-warning — and the comment immediately above says the rule directly: "A loop carries no `condition`,
-so its entry gate is `when` — uniformly with every other step kind"
-(`src/schema/activity.schema.ts:151`). The continuation test is `continueWhile`, described at `:157`
-as "the continuation test of a while/doWhile loop: the body runs again while this holds". The early
-exit is `breakCondition`, described at `:160` as "early exit from item iteration … A repeat-until
-loop states its stopping condition in `continueWhile` instead", and refused on a `while` or
-`doWhile` by the guard rule `repeat-loop-with-break` (`scripts/check-loop-shape.ts:96-104`).
+**A second key is retired for the same reason.** `imported by`, case-insensitive, returns 11 live
+occurrences over 9 files with 6 outside the change's file list, but three of those describe schema
+imports in TypeScript rather than a fragment import. Its precise forms `` imported by `ref` `` and
+`imported by <code>ref</code>` reach only the mechanism, and those are the two counted below. Both
+retirements are reported rather than quietly dropped, because a count taken with the wrong pattern
+is worse than no count.
 
-Twenty-one literals, each a phrasing that describes the arrangement the schema no longer admits.
+Two further keys collide with unrelated text and the collisions are excluded from every total.
+`unresolved-ref` matches the phrase "unresolved-reference" at
+`examples/cursor-workspace/.claude/skills/workflow-canon/SKILL.md:97`, which is a finding class and
+not the guard rule. `unused-fragment` matches the fixture identifier `unused-fragment-gate` at
+`tests/fixtures/fragments/alpha-fixture/workflow.yaml:9`, which is the guard's own test fixture; the
+fixture tree travels with the guard, so it counts as inside the change rather than outside it.
 
-| Key | Literal | Occ | Files | Live | Outside stage 0's list |
-|---|---|---|---|---|---|
-| A1 | `Continue condition (while/doWhile)` | 2 | 2 | 1 | **1** |
-| A2 | `` `.condition`, `.breakCondition` `` | 3 | 2 | 1 | **1** |
-| A3 | `loop continuations` | 3 | 2 | 1 | **1** |
-| A4 | `condition/breakCondition?` | 3 | 2 | 1 | **1** |
-| B1 | `Early exit condition (agent-evaluated each iteration)` | 2 | 2 | 1 | **1** |
-| B2 | `the loop-kind step.breakCondition` | 2 | 2 | 1 | **1** |
-| B3 | `loop_break` | 12 | 7 | 6 | **4** |
-| C1 | `gained its only site` | 3 | 2 | 1 | 0 |
-| C2 | `The field's one live site` | 3 | 2 | 1 | 0 |
-| D1 | `A nested step list with an exit condition` | 2 | 2 | 1 | **1** |
-| D2 | `until the condition is satisfied or the loop declares completion` | 2 | 2 | 1 | **1** |
-| D3 | `repeats nested steps until a condition clears` | 2 | 2 | 1 | **1** |
-| D4 | `until a condition is satisfied or the loop declares completion` | 2 | 2 | 1 | **1** |
-| D5 | `iterates over collections or while conditions hold` | 2 | 2 | 1 | **1** |
-| E1 | `` `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` `` | 1 | 1 | 1 | **1** |
-| E2 | `loop: loopType/variable/over/breakCondition/maxIterations/steps` | 2 | 2 | 1 | **1** |
-| E3 | `` `variable` / `over` / `breakCondition` / `maxIterations` `` | 4 | 4 | 2 | **2** |
-| E4 | `` `loopType`, `over`, nested `steps[]` `` | 3 | 3 | 1 | **1** |
-| E5 | `` gated by `when` or `condition` `` | 7 | 6 | 2 | **2** |
-| E6 | `` a `when` or `condition` naming it `` | 3 | 2 | 1 | **1** |
-| **E7** | `` rule strings or `{ ref }` fragment imports `` | 1 | 1 | 1 | **1** |
+## The file list a delivery stage would open
 
-**E7 is a key this sweep added**, and it is stated as an addition because the ground-truth key list
-does not carry it. It came out of key two's vocabulary work rather than key one's: the rule half of
-the shared-body mechanism has already retired, and one restatement of it survives in the same
-document that carries five of key one's other occurrences. Its evidence is below under
-[the half that already retired](#the-half-that-already-retired-and-what-it-predicts).
+Established from the delivery-stage table (`README.md:762-807`) and the acceptance criteria
+(`README.md:809-943`), plus the four sections that name files by hand — the guard suite
+(`README.md:1002-1084`), discovery and generation (`README.md:1122-1128`), the raw-text
+representation (`README.md:1164-1189`) and the walker (`README.md:1196-1200`). The rule applied is:
+a file is in the list when a stage's own text or acceptance criteria say it gets **edited**. A guard
+the proposal classifies as needing no change is therefore out of the list even though the proposal
+names it. The list comes to **45 paths, 14 in the corpus and 31 in the server repository.**
 
-**Key one union: 64 occurrences over 23 files.** Thirty-six are in the planning folder and exempt,
-30 of those in this sweep's own ground truth and 6 in six earlier planning records. Twenty-eight
-occurrences are live, over 17 files. **Four sit inside stage 0's 34-file list. Twenty-four sit
-outside it, on 22 distinct lines in 14 files.**
+**Corpus definition files — 14.** `workflows/work-package/workflow.yaml` (stage 5 removes its
+`fragments` block, `README.md:882-883`); the four assumption-run hosts `04-research.yaml`,
+`05-implementation-analysis.yaml`, `07-assumptions-review.yaml` and `08-implement.yaml` under
+`workflows/work-package/activities/` (stages 5 and 6); the three further convergence sites
+`02-design-philosophy.yaml`, `06-plan-prepare.yaml` and `15-codebase-comprehension.yaml` (stage 6);
+the three `prism` per-unit passes (stage 7, `README.md:925-927`); and the three `meta` fan-out
+pattern activities named at `README.md:936-938` (stage 8).
 
-Every key-one figure the ground truth states reproduces exactly, once its own restatements are
-subtracted. That is worth recording because the ground truth was written by a different agent from a
-different starting point: A1 through E6 each land at the file and line it names, and its
-`loop_break` figure of 7 is my 12 minus the 5 occurrences inside the document itself.
+**Server files — 31.** `src/schema/activity.schema.ts` and `src/schema/workflow.schema.ts`;
+`src/loaders/fragment-resolver.ts` and `src/loaders/workflow-loader.ts`;
+`src/utils/activity-variables.ts`; `src/tools/workflow-tools.ts`, which owns the raw-YAML delivery
+path and `injectResolvedStepIds`; `scripts/generate-schemas.ts` and the two generated schemas it
+rewrites; `scripts/guards.ts` and `package.json`; `scripts/check-fragments.ts`,
+`scripts/fragments-index.ts` and their two test files; the nine guards the proposal assigns to walk
+`routines/` and the four it moves onto the loader; `tests/e2e/walker.ts`; and the three committed
+baselines stage 5 re-records.
 
-### The four occurrences inside stage 0's own files
+**What the list does not contain, and this is the sweep's whole subject.** No record in the
+2026-09-03-routines folder — the README or any of its twelve companions — names `schemas/README.md`,
+`docs/checkpoint-model.md`, `docs/workflow-fidelity.md`, any page under `site/`,
+`workflows/workflow-design/resources/schema-construct-inventory.md`,
+`workflows/workflow-design/resources/anti-patterns.md`, or any file under
+`.engineering/artifacts/comprehension/`. A grep for each of those paths across all thirteen records
+returns nothing. Every occurrence in those files is outside the change.
 
-These are not part of the out-of-list manifest, but they are still false, so they are named.
+---
 
-`scripts/check-loop-shape.ts:17` — the guard's header says `breakCondition` "gained its only site
-two days earlier on a branch that had not merged". `tests/loop-shape-guard.test.ts:86` — "The
-field's one live site: the task cycle stops once a symbol's provenance is unaccounted for." Both
-assert a site count of one. The corpus count is zero: no `.yaml` under `workflows/` carries the
-field, and the site both sentences name was removed by corpus commit `efcc3a97` and replaced by a
-nested `doWhile` at `workflows/work-package/activities/08-implement.yaml:119-127`. The guard's
-*argument* survives the correction — a field with one job is worth keeping whether or not it is
-exercised — but the sentence carrying the argument is false.
+# Key one — the loop's continuation test has one field, and sixteen statements outside the change name a different one
 
-`site/api/schemas.html:142` and `:201` carry `loop_break` in the history-event enumeration. Both sit
-inside the block opened at `site/api/schemas.html:74` (`<!-- BEGIN GENERATED — edit
-scripts/generate-site-data.ts, then run npm run build:site -->`) and closed at `:302`, so they are
-generated from the Zod source and `tests/site.test.ts` fails when the committed page drifts from a
-fresh regeneration (`scripts/generate-site-data.ts:8`). Their remedy is the Zod description, not the
-page.
+## What holds
 
-### The twenty-four occurrences outside stage 0's file list
+`src/schema/activity.schema.ts:152-164` declares `LoopStepSchema` as a closed object of twelve
+fields, closed by the `.strict()` at `:164`. Ten are declared on the member and two arrive from the
+`stepCommonFields` spread at `:163`. The continuation test is `continueWhile` (`:157`): "the body
+runs again while this holds. Declared by every repeat-until loop and by no forEach". The early exit
+is `breakCondition` (`:160`), scoped to item iteration: "evaluated by the executing agent before
+each item … A repeat-until loop states its stopping condition in `continueWhile` instead."
 
-Grouped by the surface that owns them.
+`condition` is not a field of a loop step. It is the structured entry gate, spread from
+`stepEntryCondition` at `src/schema/activity.schema.ts:84-86` into three step kinds and no more —
+`technique` at `:101`, `action` at `:110`, `checkpoint` at `:140`. `LoopStepSchema` spreads
+`stepCommonFields` alone at `:163`, and the comment above the declaration states the rule directly:
+"A loop carries no `condition`, so its entry gate is `when` — uniformly with every other step kind"
+(`:150-151`). Because the object is closed, a `condition` on a loop is a load error rather than a
+warning.
 
-**`schemas/README.md` — six occurrences, and it is the authoritative schema guide.** No generator
-writes this file; `scripts/generate-schemas.ts` writes the six JSON schemas beside it, and nothing
-writes the README.
+A walk of the corpus agrees. At `a4a5d88b`, parsing every `workflow.yaml` and every activity file
+under `workflows/*/activities/**` and counting every node with a string `kind` gives **1,004 steps
+and 53 loop steps** — 26 `forEach`, 14 `doWhile`, 13 `while`. **Twenty-seven carry `continueWhile`,
+zero carry `condition`, and zero carry `breakCondition`.** `stage-0-state.md` measured 1,003 steps
+and 54 loops at `2b8b7215`; the corpus has since lost one `forEach` and gained one step. The
+`continueWhile` figure of 27 is unchanged, and the partition is still exact in both directions.
 
-- `:383` — the loop-step field table's row reads `` | `condition` | Condition | Continue condition
-  (while/doWhile) | ``. The field named is the one the closed object refuses; the field carrying the
-  test is absent from the table entirely (`:375-386`).
-- `:385` — `` | `breakCondition` | Condition | Early exit condition (agent-evaluated each iteration)
-  | ``. The parenthesis is accurate about *when* the agent evaluates it and wrong about *what* it
-  belongs to: the field is scoped to item iteration and refused on a repeat-until loop.
-- `:34` — the construct table's Loop-step row gives the agent-interpreted set as "`loopType`
-  semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and
-  bounded entirely by the agent". This is the reader's map of which loop fields the engine enforces
-  and which the agent interprets, and the field the agent actually interprets to decide whether the
-  body runs again is missing from it.
-- `:499` — "Entries are rule strings or `{ ref }` fragment imports". The rules schema declares three
-  buckets of plain strings (`src/schema/workflow.schema.ts:29-32`); no rule entry can be a
-  reference. Key E7.
-- `:979` — the history-event list carries `loop_break`. No code path emits it; see the note on the
-  runtime vocabulary below.
-- `:373` — "A `kind: loop` step is a compound step that iterates over collections or while
-  conditions hold". **This one is accurate and I disagree with the ground truth's grouping of it.**
-  The ground truth files it under "a loop described as deciding each pass anywhere other than
-  `continueWhile`" (`stage-0-state.md:456`), where the four site strings do invert the polarity;
-  "while conditions hold" is the correct polarity and the sentence names no field, so it asserts
-  nothing false. Its defect is a different one and out of this sweep's remit: it narrates a change
-  in a sentence meant to persist — "(replacing the old separate `loops[]` array)".
+## The eighteen false statements, one at a time
 
-**Hand-authored site prose — four occurrences on three pages.** Only navigation, breadcrumbs and
-pagination are generated on these pages; each occurrence sits outside every `BEGIN GENERATED`
-marker, verified by marker position. `check-site-links` polices links and element ids, not prose, so
-nothing catches these.
+Sixteen distinct lines carry them; two lines carry two keys each. Sixteen occurrences at fourteen
+lines over six files sit outside the change's file list.
 
-- `site/specs/workflows.html:339` — the step-kind table's loop row: "A nested step list with an exit
-  condition" and "Repeat the nested steps until the condition is satisfied or the loop declares
-  completion". Two keys on one line. The polarity is inverted, and "the loop declares completion"
-  has no referent anywhere in the schema — no field, no action and no event lets a loop declare its
-  own completion. The same page's diagram gets it right at `:324-325`: "repeat nested steps / while
-  a condition holds".
-- `site/guide/definitions.html:86` — "A step that repeats nested steps until a condition clears".
-- `site/guide/definitions.html:138` — "repeats a nested list of steps until a condition is satisfied
-  or the loop declares completion".
+### The schema guide names the field the loader refuses, and omits the one that carries the test
 
-**Corpus canon — four occurrences on two files, both on the `workflows` branch.**
+`schemas/README.md` enumerates the loop step's fields in three separate places — an
+entity-relationship diagram, a construct-enforcement table and a field table — and every one of the
+three omits the field that carries the continuation test. Six false occurrences in one file, and the
+file is in no delivery stage's list.
 
-- `workflows/workflow-design/resources/schema-construct-inventory.md:47` gives the loop step's field
-  list as "`.id`, `.loopType` (forEach/while/doWhile), `.variable`, `.over`, `.condition`,
-  `.breakCondition`, `.maxIterations`, optional `.name`". This is the table an author consults to
-  choose a construct, and it names one field that fails the load and omits the one that carries the
-  test. Of the twenty-four, this is the occurrence most likely to produce a broken definition.
-- `workflows/workflow-design/resources/anti-patterns.md:1697` carries two keys on one line.
-  `AP-128 unproduced-value-read`'s Detect scans "each step gated by `when` or `condition`" and
-  traces readers that are "an input binding, a `when` or `condition` naming it, a `{token}`
-  interpolation". Before stage 0 a loop's continuation test *was* `condition`, so the detect reached
-  it; it no longer does. A variable produced solely behind a gate and read by a loop's continuation
-  test falls outside the detect as written, in both the producer and the reader half.
-- `workflows/workflow-design/resources/anti-patterns.md:204` — `AP-10 loop-not-prose`'s Detect names
-  "`kind: loop` (`loopType`, `over`, nested `steps[]`)". **I judge this one not stale, and say so
-  against the ground truth's key list.** Those are three real fields, and they were the item-loop
-  field set before stage 0 as well, so nothing stage 0 did falsified the sentence. The detect has a
-  coverage gap — prose saying "do until done", the phrase its own sibling table uses for a
-  repeat-until loop (`schema-construct-inventory.md:47`), is not reachable by the field names it
-  lists — but that gap predates the change and belongs to a different sweep.
+1. **`schemas/README.md:383`** — the loop-step field table's seventh row reads
+   `| condition | Condition | Continue condition (while/doWhile) |`. The field named is the one the
+   closed object refuses, and the caption describes exactly the job `continueWhile` does. The same
+   ten-row table omits `continueWhile` entirely, so a reader consulting the authoritative field list
+   for a `while` loop is handed a field that fails the load and denied the field that works.
+2. **`schemas/README.md:385`** — the row below it reads
+   `| breakCondition | Condition | Early exit condition (agent-evaluated each iteration) |`. "Each
+   iteration" is broader than the field: the schema scopes it to item iteration and the loop-shape
+   guard raises `repeat-loop-with-break` when a `while` or `doWhile` declares one
+   (`scripts/check-loop-shape.ts:96-104`).
+3. **`schemas/README.md:373`** — the paragraph introducing the table says a loop step "iterates over
+   collections or while conditions hold", which names no field at all and leaves the reader to guess
+   which one carries the test.
+4. **`schemas/README.md:34`** — the construct-enforcement table's Loop-step row puts
+   "`loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is
+   executed and bounded entirely by the agent" in the agent-interpreted column. That row is the
+   reader's map of which loop fields the engine enforces and which the agent interprets, and the
+   field the agent actually interprets to decide whether the body runs again is missing from it.
+5. **`schemas/README.md:32`** — the row above it, headed "Step (common)", lists
+   "`when` / `condition` gates" among the fields every step kind carries. `condition` is on three of
+   the four kinds. Calling it common is precisely the claim stage 0 falsified when it took the field
+   off the loop.
+6. **`schemas/README.md:224`** — inside the entity-relationship diagram at `:150-242`, the
+   `LoopStep` entity at `:220-227` declares six fields: `id`, `kind`, `name`, `loopType`,
+   `variable`, `maxIterations`. It omits `continueWhile`, `over`, `breakCondition` and `steps`. This
+   is the file's third loop-field enumeration and its second omission of the continuation test.
+   **Neither ground-truth document carries this occurrence; it is added here.**
 
-**`docs/` — one occurrence.** `docs/workflow-fidelity.md:143` states which manifest omissions are
-accepted: "a step gated by `when` or `condition` may be omitted from the manifest — the agent
-evaluated the gate and skipped the step". The validator it documents disagrees, and says so in its
-own comment: "A loop's continuation test decides the same thing for its body, so a loop carrying one
-is gated too" (`src/utils/validation.ts:119-120`), implemented at `:121-123` as
-`s.kind === 'loop' ? s.continueWhile === undefined : s.condition === undefined`. A `while` or
-`doWhile` loop carrying `continueWhile` and no `when` may be omitted from a manifest; the document
-does not say so.
+### Corpus canon routes an author to a field that fails the load
 
-**The runtime vocabulary for a break — four occurrences.** `src/schema/state.schema.ts:13` declares
-`loop_break` among four loop history-event types; `schemas/state.schema.json:163` and
-`schemas/session-file.schema.json:196` are its generated reflections; `schemas/README.md:979` lists
-it as an event the session history records. No code path emits any of the four, and none appends to
-`activeLoops` (`src/schema/state.schema.ts:167`) beyond initialising it to `[]`. **I judge the three
-schema declarations not stale** — a declared event type with no writer is a construct with no
-subject, not a false claim, and iteration being the agent's job makes it consistent with the design.
-The README line at `:979` is the one that reads as a claim about what the server records, and it is
-the occurrence a manifest should carry.
+7. **`workflows/workflow-design/resources/schema-construct-inventory.md:47`** — the construct-choice
+   table's loop row gives the field list as "`.id`, `.loopType` (forEach/while/doWhile),
+   `.variable`, `.over`, `.condition`, `.breakCondition`, `.maxIterations`, optional `.name`". This
+   is the table an author consults to pick a construct for "do until done", and it names one field
+   that fails the load while omitting the one that carries the test. Of the eighteen, this is the
+   occurrence with the most direct route into a new definition.
+8. **`workflows/workflow-design/resources/schema-construct-inventory.md:52`** — four rows down, the
+   Step-gate row reads "`steps[].when` / `steps[].condition` (references condition.schema.json) — a
+   shared base field on every step kind". A loop step is a step kind and carries no `condition`.
+   **Added here; neither ground-truth document carries it.**
+9. **`workflows/workflow-design/resources/anti-patterns.md:204`** — `AP-10 loop-not-prose` detects
+   prose that should be a loop, and its Detect names the fields to look for as "`loopType`, `over`,
+   nested `steps[]`". Those are the fields of a collection walk. Prose saying "do until done" — the
+   phrase the construct inventory's own sibling column uses for a repeat-until loop — is not
+   detectable by that field set, so the detect is blind to exactly the loops `continueWhile` exists
+   for.
+10. **`workflows/workflow-design/resources/anti-patterns.md:1697`** — `AP-128 unproduced-value-read`
+    tells an auditor to start "For each step gated by `when` or `condition`" and to trace readers
+    that are "an input binding, a `when` or `condition` naming it, a `{token}`". Two occurrences on
+    one line. A variable read only by a loop's continuation test is read by neither field named, so
+    a sole-produced value consumed by a `while` loop falls outside the detect as written.
 
-**Comprehension snapshots — six occurrences on five files, on the `engineering` branch.**
+### The published prose inverts the polarity of the test and names no field
 
-- `.engineering/artifacts/comprehension/when-step-gates.md:32` — structured `condition` is "retained
-  for OR/nested OR, exists-shaped ops, checkpoint `condition_not_met`, and loop continuations". The
-  last of the four is gone.
-- `.engineering/artifacts/comprehension/work-package-workflow-content.md:166` — the loop step's
-  shape as "`loopType: forEach|while|doWhile, condition/breakCondition?, maxIterations?`".
-- `.engineering/artifacts/comprehension/json-schemas.md:54` — "the loop-kind step.breakCondition",
-  in an enumeration of where a `Condition` appears; correct that it appears, silent that a
-  repeat-until loop is refused it.
-- `.engineering/artifacts/comprehension/orchestration.md:132` — the `Step` row lists per-kind fields
-  as "loop: loopType/variable/over/breakCondition/maxIterations/steps".
-- `.engineering/artifacts/comprehension/orchestration.md:156` and `zod-schemas.md:71` — the same
-  omission in the shorter form, "`variable` / `over` / `breakCondition` / `maxIterations`".
+11. **`site/specs/workflows.html:339`** — the step-kinds table's loop row reads
+    `A nested step list with an exit condition` and `Repeat the nested steps until the condition is
+    satisfied or the loop declares completion`. Two occurrences on one line. `continueWhile` is a
+    *continuation* test, not an exit test, and "the loop declares completion" has no referent in the
+    schema at all: no field, no action and no history event lets a loop declare its own completion.
+    The page's own diagram gets it right fourteen lines earlier — "repeat nested steps / while a
+    condition holds" (`site/specs/workflows.html:324-325`) — so the table contradicts the figure
+    above it.
+12. **`site/guide/definitions.html:86`** — the glossary index row: "A step that repeats nested steps
+    until a condition clears".
+13. **`site/guide/definitions.html:138`** — the glossary entry itself: "a step kind that repeats a
+    nested list of steps until a condition is satisfied or the loop declares completion". Same
+    inversion, same absent referent, in the document a newcomer reads first.
 
-### What the twenty-four cost to fix, by branch
+### The manifest-fidelity contract omits the field the validator reads
 
-The out-of-list occurrences do not live in one repository, and this decides how many pull requests
-the correction takes.
+14. **`docs/workflow-fidelity.md:143`** — "a step gated by `when` or `condition` may be omitted from
+    the manifest — the agent evaluated the gate and skipped the step". The validator this sentence
+    describes reads a loop's `continueWhile` as that gate:
+    `src/utils/validation.ts:121-125` filters on
+    `s.kind === 'loop' ? s.continueWhile === undefined : s.condition === undefined`. So the
+    accepted-omission rule is stated over a two-field set where the code uses three.
 
-| Branch | Occurrences | Files | Distinct lines | Which |
+### Two comments assert a corpus site that is at zero
+
+These two are the only key-one occurrences inside the change's file list, and they are in it by
+adjacency rather than by intent: stage 4 changes `check-loop-shape` to walk `routines/`
+(`README.md:1027`), and a guard change customarily opens its test.
+
+15. **`scripts/check-loop-shape.ts:17`** — the guard's header reasons that `breakCondition` "was
+    measured unused while this work was designed, and gained its only site two days earlier on a
+    branch that had not merged: `08-implement`'s task cycle stops iterating tasks once a symbol's
+    provenance is unaccounted for. So the field carries live meaning on an item loop." The site is
+    gone. `grep -rn breakCondition --include=*.yaml workflows/` returns zero lines, and the walk
+    above finds zero of 53 loops carrying the field. What stands in that position is a nested
+    `doWhile`, `provenance-settle-cycle`, which settles the uncertainty in place rather than
+    stopping the walk.
+16. **`tests/loop-shape-guard.test.ts:86`** — "The field's one live site: the task cycle stops once
+    a symbol's provenance is unaccounted for." Stated as a fact about the corpus, and false against
+    it.
+
+The guard's *argument* survives both corrections — a field with one job is worth keeping whether or
+not it is exercised, and the rule the argument justifies is green — but the sentences carrying the
+argument assert a site count of one where the count is zero.
+
+## The runtime break vocabulary, which is stranded rather than false
+
+`loop_break` returns **6 live occurrences over 5 files**, all outside the change's file list:
+`src/schema/state.schema.ts:13`, `schemas/state.schema.json:163`,
+`schemas/session-file.schema.json:196`, `schemas/README.md:979`, and twice on the generated API page
+at `site/api/schemas.html:142` and `:201`. `stage-0-state.md` gives 7 over 6; the seventh is a
+planning artifact, which this sweep sets aside, so the two figures agree.
+
+**None of the six is a false statement, and the sweep records them as such.** Four are schema
+surface, one is the generated rendering of that surface twice over, and `schemas/README.md:979`
+enumerates the declared event types accurately. What is true of all six is that the vocabulary has
+no subject: `src/schema/state.schema.ts:13` declares `loop_started`, `loop_iteration`,
+`loop_completed` and `loop_break`, `:167` declares `activeLoops` with a default of `[]`, and a grep
+for all five names across `src` and `scripts` finds no writer — the only non-declaration site is
+`scripts/generate-session-token.ts:177`, which initialises the array to empty. Iteration is the
+agent's job, so this is consistent with the design. It is recorded because `loop_break` is the
+runtime half of a field at zero sites, and a reader who follows the vocabulary will arrive at it.
+
+## The comprehension snapshots: dated, and therefore out of scope
+
+Five key-one literals land only in `.engineering/artifacts/comprehension/`, for **6 occurrences over
+5 files**:
+
+| Occurrence | What it says |
+|---|---|
+| `when-step-gates.md:32` | structured `condition` is retained for, among other things, "loop continuations" |
+| `work-package-workflow-content.md:166` | the loop step's shape is "`loopType: forEach\|while\|doWhile`, `condition/breakCondition?`, `maxIterations?`" |
+| `json-schemas.md:54` | names "the loop-kind `step.breakCondition`" among the condition-carrying fields |
+| `orchestration.md:132` | gives the step shape as "loop: loopType/variable/over/breakCondition/maxIterations/steps" |
+| `orchestration.md:156` | "plus `variable` / `over` / `breakCondition` / `maxIterations`" |
+| `zod-schemas.md:71` | the same four-field list, cited to `activity.schema.ts:82-87` |
+
+**The ruling is that these are out of scope, and the reason is measurable rather than a matter of
+taste.** Every one of the five files carries a date in its opening block, and every date is before
+the re-key: `when-step-gates.md:3` reads "> 2026-08-01", and `work-package-workflow-content.md:3`,
+`orchestration.md:3`, `zod-schemas.md:3` and `json-schemas.md:6` each read "Last updated:
+2026-06-18". A document that states the revision it describes is not asserting current fact, which
+is the same reasoning `AP-129` applies to the planning folder. `orchestration.md:156` and
+`zod-schemas.md:71` even cite a line range, `activity.schema.ts:82-87`, that no longer holds the
+loop step — the citation dates itself.
+
+The judgement is worth stating plainly rather than assumed, because these are the documents an agent
+reads to learn the schema, and a date stamp is a weaker guard than a correction. The recommendation
+is that a comprehension snapshot touched by a schema change is **restamped** — its date advanced and
+its content re-taken — rather than swept sentence by sentence. Six occurrences is what a restamp
+would cost.
+
+## Key one, totalled
+
+Method for every row: case-sensitive literal substring over the live tree.
+
+| # | Key literal | Occ | Files | Outside the list |
 |---|---|---|---|---|
-| `main` | 14 | 7 | 13 | `schemas/README.md` ×6, `site/guide/definitions.html` ×2, `site/specs/workflows.html` ×2 on one line, `docs/workflow-fidelity.md`, `src/schema/state.schema.ts`, `schemas/state.schema.json`, `schemas/session-file.schema.json` |
-| `workflows` | 4 | 2 | 3 | `schema-construct-inventory.md:47`, `anti-patterns.md:204`, `anti-patterns.md:1697` ×2 |
-| `engineering` | 6 | 5 | 6 | the five comprehension snapshots |
-| **Total** | **24** | **14** | **22** | |
+| 1 | `Continue condition (while/doWhile)` | 1 | 1 | **1** |
+| 2 | `` `.condition`, `.breakCondition` `` | 1 | 1 | **1** |
+| 3 | `Early exit condition (agent-evaluated each iteration)` | 1 | 1 | **1** |
+| 4 | `iterates over collections or while conditions hold` | 1 | 1 | **1** |
+| 5 | the backticked field list `` `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` `` | 1 | 1 | **1** |
+| 6 | `` `when` / `condition` gates `` — *added* | 1 | 1 | **1** |
+| 7 | `enum loopType` — *added* | 1 | 1 | **1** |
+| 8 | `a shared base field on every step kind` — *added* | 1 | 1 | **1** |
+| 9 | `` `loopType`, `over`, nested `steps[]` `` | 1 | 1 | **1** |
+| 10 | `` gated by `when` or `condition` `` | 2 | 2 | **2** |
+| 11 | `` a `when` or `condition` naming it `` | 1 | 1 | **1** |
+| 12 | `A nested step list with an exit condition` | 1 | 1 | **1** |
+| 13 | `until the condition is satisfied or the loop declares completion` | 1 | 1 | **1** |
+| 14 | `repeats nested steps until a condition clears` | 1 | 1 | **1** |
+| 15 | `until a condition is satisfied or the loop declares completion` | 1 | 1 | **1** |
+| 16 | `gained its only site` | 1 | 1 | 0 |
+| 17 | `The field's one live site` | 1 | 1 | 0 |
+| | **False statements** | **18** | **8** | **16** |
+| 18 | `loop_break` — stranded vocabulary, not a false statement | 6 | 5 | **6** |
+| | **Everything the key set reaches in the live tree** | **24** | **12** | **22** |
 
-## Key two: the manifest stage 5 has to carry
+Comprehension-only keys, reported separately and ruled out of scope: `loop continuations` (1),
+`condition/breakCondition?` (1), `the loop-kind step.breakCondition` (1),
+`loop: loopType/variable/over/breakCondition/maxIterations/steps` (1),
+`` `variable` / `over` / `breakCondition` / `maxIterations` `` (2) — **6 occurrences over 5 files**.
 
-What holds today. A gate body used at several sites is declared once under `fragments.checkpoints`
-in a workflow's `workflow.yaml` and imported by `ref` on a `kind: checkpoint` step. `ref` is a field
-on `CheckpointStepSchema` and on nothing else (`src/schema/activity.schema.ts:134`), mutually
-exclusive with the body fields. `WorkflowFragmentsSchema` is a `.strict()` object with one key,
-`checkpoints` (`src/schema/workflow.schema.ts:40-42`). The corpus holds one declaration, at
-`workflows/work-package/workflow.yaml:15-71`, holding two bodies, referenced from eight sites in
-four `work-package` activity files. Nine guard rules police the mechanism
-(`scripts/check-fragments.ts:56-65`), of which stage 5 deletes seven.
+**The figure that matters: of the 18 false statements, 16 sit at 14 distinct lines in 6 files that
+no delivery stage opens.**
 
-The nineteen literals below are the mechanism's own vocabulary, derived from
-[fragment-mechanism.md](../ground-truth/fragment-mechanism.md), from the schema descriptions, and
-from the guard's rule names. They fall into three groups: the declaration and reference vocabulary
-that describes how a shared gate body is expressed; the rule names, which are the guard's own
-identifiers; and the routing phrasings that send an author to the mechanism.
+| File outside the change | Occurrences | Lines |
+|---|---|---|
+| `schemas/README.md` | 6 | 6 |
+| `workflows/workflow-design/resources/anti-patterns.md` | 3 | 2 |
+| `workflows/workflow-design/resources/schema-construct-inventory.md` | 2 | 2 |
+| `site/guide/definitions.html` | 2 | 2 |
+| `site/specs/workflows.html` | 2 | 1 |
+| `docs/workflow-fidelity.md` | 1 | 1 |
+| **Total** | **16** | **14** |
 
-| Key | Literal | Occ | Files | Live | Outside stage 5's list |
-|---|---|---|---|---|---|
-| F1 | `fragments.checkpoints` | 45 | 34 | 16 | **6** |
-| F2 | `Shared checkpoint bodies` | 7 | 5 | 6 | **3** |
-| F3 | `checkpoint fragment` *(case-insensitive)* | 60 | 48 | 21 | **12** |
-| F4 | `extract a fragment` | 4 | 3 | 2 | 0 |
-| F5 | `check:fragments` | 23 | 21 | 9 | **4** |
-| F6 | `inline-duplicate-of-fragment` | 10 | 7 | 3 | 0 |
-| F7 | `unused-fragment` | 18 | 11 | 7 | 0 |
-| F8 | `ref-body-conflict` | 10 | 6 | 5 | 0 |
-| F9 | `ref-opens-step` | 11 | 7 | 4 | 0 |
-| F10 | `malformed-ref` | 9 | 6 | 3 | 0 |
-| F11 | `unresolved-ref` | 16 | 12 | 5 | 0 |
-| F12 | `undeclared-effect-variable` | 16 | 11 | 4 | 0 |
-| F13 | `duplicate-checkpoint` | 29 | 23 | 4 | 0 |
-| F14 | `[workflow::]name` | 29 | 24 | 15 | **9** |
-| F15 | `fragments.rules` | 19 | 17 | 6 | **6** |
-| F16 | `` imported by `ref` `` | 7 | 7 | 6 | **2** |
-| F17 | `fragments:` | 27 | 21 | 7 | **1** |
-| F18 | `check-fragments.ts` | 43 | 29 | 7 | **4** |
-| F19 | `fragment-resolver` | 69 | 40 | 17 | **11** |
+The two inside the list are `scripts/check-loop-shape.ts:17` and
+`tests/loop-shape-guard.test.ts:86`. Adding the `loop_break` group, 22 of the 24 occurrences the key
+set reaches in the live tree are outside the list, at 20 lines over 10 files.
 
-**Key two union: 452 occurrences over 133 files.** Three hundred and five are in the planning
-folder and exempt — 40 of those in this sweep's own ground-truth documents. One hundred and
-forty-seven occurrences are live, over 32 files. **Eighty-nine sit inside stage 5's file list. Fifty-
-eight sit outside it, on 40 distinct lines in 16 files.**
+## Three surfaces that describe the loop step and are correctly out of key
 
-**The eight rule-name keys, F6 through F13, have zero out-of-list occurrences.** Every live mention
-of `malformed-ref`, `unresolved-ref`, `ref-body-conflict`, `ref-opens-step`, `unused-fragment`,
-`inline-duplicate-of-fragment`, `undeclared-effect-variable` and `duplicate-checkpoint` is in
-`scripts/check-fragments.ts`, `tests/fragments-guard.test.ts` or a fixture under
-`tests/fixtures/fragments/`. That is the good half of the news, and it is structural rather than
-lucky: a guard rule name lives with the guard, so deleting the rule deletes the name. The keys with
-out-of-list weight are the ones describing the *construct* — the declaration path, the reference
-syntax, the mechanism's own name — because those are what documentation restates.
+Each looked like a key-one occurrence on first reading and is not. They are recorded because ruling
+them out is part of the measurement.
 
-### The fifty-eight occurrences outside stage 5's file list
+- **`docs/orchestra-specification.md`** describes a loop as iterating a named flow over a
+  collection, says "Only `forEach` is supported", and puts while-like behaviour in decision
+  self-reference (`docs/orchestra-specification.md:235`). Every one of those claims is false of the
+  shipping schema, and none is a defect, because the page frames itself in its third line: "The
+  server implements a different shape, so nothing on this page describes a file the loader accepts"
+  (`:3`). It is a proposal for a different language, and it says so before it says anything else.
+- **`grammar/activity.ebnf` and `constraints/activity.als`** specify the same different language —
+  `loops:` as a top-level array with `variable`, `over`, `maxIterations` and `flow`, and a `Break`
+  flow item (`constraints/activity.als:78-84`, `grammar/activity.ebnf:75-84`). Neither names
+  `condition` on a loop, so neither is a stage-0 restatement. Their READMEs are less careful than
+  the specification's — `grammar/README.md:3` calls them "Formal EBNF grammars defining the syntax
+  of workflow definition files" and `grammar/README.md:15` marks the activity grammar "Defined",
+  with no equivalent of the disclaimer — but the drift there is a whole language rather than a
+  field, and it belongs to a different sweep.
+- **`workflows/workflow-design/techniques/impact-analysis.md:49`** asks an auditor to "Verify all
+  `condition.variable` references in transitions, decisions, step gates (`when`/`condition`), and
+  `kind: loop` steps resolve to defined workflow variables", and its sibling at
+  `workflows/workflow-authoring/techniques/workflow-definition/impact-analysis.md:62` says the same
+  more briefly. `condition.variable` here is the shape of a `Condition` object, which
+  `src/schema/condition.schema.ts:15-22` declares with a `variable` field, and a loop's
+  `continueWhile` and `breakCondition` are both `ConditionSchema` — so a loop step does carry
+  condition objects with a `variable` to check. The parenthetical `(when/condition)` qualifies "step
+  gates", and `kind: loop` steps are listed separately from it, so the sentence distinguishes the
+  two rather than conflating them. Accurate as written.
 
-**Corpus canon, on the `workflows` branch — four occurrences on two lines.**
+---
 
-- `workflows/workflow-design/resources/schema-construct-inventory.md:68` carries F1, F3 and F14 on
-  one line. It is the routing site: the informal pattern "Several activities ask the user the same
-  question" maps to **Checkpoint fragment**, and the row explains that
-  "`fragments.checkpoints.<name>` holds the gate body … and a `kind: checkpoint` step reaches it by
-  `ref: [workflow::]name`". When the mechanism retires, this row sends an author to a construct the
-  schema refuses. The same table has no row for several activities running the same *sequence* of
-  steps, which is the row a routine claims.
-- `workflows/workflow-authoring/techniques/workflow-definition/audit-schema-validation.md:29` — an
-  audit technique's Protocol enumerates the guards it runs, including "`check-fragments.ts` — every
-  fragment reference resolves, every fragment is used, and no inline body duplicates a fragment or
-  another site". An auditor following this line after stage 5 runs a script with seven fewer rules,
-  or none.
+# Key two — the manifest for the migration that retires the shared gate body
 
-**`docs/checkpoint-model.md:116` — two occurrences on one line.** The how-to paragraph: "A
-checkpoint used at several sites is declared once as a fragment under `fragments.checkpoints` in the
-owning workflow's `workflow.yaml`, and each site imports it with `ref`. … The `check:fragments`
-guard rejects an inline body that duplicates a fragment." Four sentences of instruction for a
-mechanism that would no longer exist.
+Stage 5 converges four copies of one run onto a routine and deletes the mechanism that holds their
+shared gate bodies today: "the two shared gate bodies and the fragment mechanism retire, taking
+seven guard rules with them" (`README.md:773`). These phrasings describe that mechanism and route an
+author to it. Most are accurate now, which is the point: they are the manifest the migration commit
+has to carry, and the count exists before the work starts rather than after.
 
-**`schemas/README.md` — ten occurrences on four lines.** `:279` and `:500` both describe the
-`fragments` field as "Shared checkpoint bodies … imported by `ref` (`[workflow::]name`)" — the same
-claim in two tables in one file, which is itself the shape `AP-129` measures. `:335` is the
-authoring instruction for the by-reference form. `:341` is the `ref` field's row.
+The phrasings were derived from the mechanism's own vocabulary rather than taken from a document —
+from the schema (`src/schema/workflow.schema.ts:36-43` and `:171`,
+`src/schema/activity.schema.ts:114-141`), from the resolver
+(`src/loaders/fragment-resolver.ts:1-64`), and from the guard's nine rule names
+(`scripts/check-fragments.ts:11-28`, union at `:56-65`).
 
-**Hand-authored site prose — sixteen occurrences on eleven lines across five pages.** All outside
-every `BEGIN GENERATED` marker except the one noted.
+## The mechanism as it stands
 
-- `site/specs/checkpoints.html:195` is the section heading "Shared checkpoint fragments"; `:196` is
-  the section body, carrying F1, F3, F5 and F14 on one line. This is a whole documented section of
-  the published specification whose subject stage 5 deletes.
-- `site/specs/resource-resolution.html:209` describes `fragments.checkpoints` as a resolution scope;
-  `:211` describes the resolution order and the guard; `:203` states that a borrowed activity's
-  checkpoint-fragment refs resolve against the source workflow; `:208` describes `fragments.rules`,
-  which is already gone.
-- `site/specs/workflows.html:229` — "Rule texts and checkpoint bodies reused at several sites are
-  declared once under `fragments` in `workflow.yaml` and imported by `{ ref: "[workflow::]name" }`.
-  Rules slots and `kind:checkpoint` steps carry the ref". Half of that sentence is already false.
-  `:226` states that fragment scoping follows the authoring workflow for a borrowed activity.
-- `site/design/request-lifecycle.html:124` — "Rule and checkpoint fragment refs are materialized at
-  load"; `:127` — `get_activity` "materializes checkpoint fragment refs in the activity YAML". Both
-  describe a load-time stage in the request lifecycle.
-- `site/api/schemas.html:264` carries F2 and F14, and is **inside** the generated block
-  (`:74-302`). Its remedy is the Zod `describe()` at `src/schema/workflow.schema.ts:171`, and
-  `tests/site.test.ts` will force the regeneration. It is listed for completeness rather than as
-  work.
+Reproduced independently of `fragment-mechanism.md`, at corpus `a4a5d88b`:
 
-**Two guards outside the change's list carry the mechanism in their own reasoning — five
-occurrences.**
+- **One declaration.** `grep -rn fragments --include=*.yaml --include=*.yml workflows/` returns two
+  lines: `workflows/work-package/workflow.yaml:15`, and one unrelated piece of prose about a
+  changelog fragment. The block spans lines 15 to 71, the next top-level key `techniques:` being at
+  `:72` — **57 lines**, holding two named checkpoint bodies under `fragments.checkpoints`.
+- **Eight reference sites at four activity files.**
+  `grep -rn "ref:" --include=*.yaml workflows/*/activities/` returns exactly eight lines, at
+  `04-research.yaml:224` and `:243`, `05-implementation-analysis.yaml:126` and `:145`,
+  `07-assumptions-review.yaml:112` and `:130`, `08-implement.yaml:202` and `:221`. Same sites, same
+  line numbers as the ground truth.
+- **The rule half is gone.** `WorkflowFragmentsSchema` (`src/schema/workflow.schema.ts:40-42`)
+  declares exactly one key, `checkpoints`, and closes with `.strict()` at `:42`. The generated
+  `schemas/workflow.schema.json` agrees: the `fragments` object has one property and
+  `additionalProperties: false`. Every rules array in the system is a string array —
+  `src/schema/workflow.schema.ts:30-32` for the three workflow partitions,
+  `src/schema/activity.schema.ts:309` for an activity's own.
+- **The guard is green.** `npx tsx scripts/check-fragments.ts` prints "fragments: OK — every ref
+  resolves, every fragment is used, no inline duplicates".
 
-- `scripts/check-set-action-values.ts:173` — the comment justifying why the guard opens
-  `workflow.yaml` at all: "a workflow root carries checkpoint fragments, and a `setVariable` there
-  …". Delete the fragments block and the guard's stated reason for reading that file goes with it.
-  [guard-obligations.md](../ground-truth/guard-obligations.md) places this guard in class (a), the
-  second-definition-directory class, and does not place it in the fragments retirement; on this
-  measurement it belongs to both.
-- `scripts/check-checkpoint-presentation.ts:23`, `:150` and `:157` describe and implement a scan of
-  `fragments.rules`. That construct is already gone; see below.
+**There is no phrasing to sweep for a shared *run*, and the absence is itself the finding.** The
+construct inventory carries a row for the shared gate body
+(`workflows/workflow-design/resources/schema-construct-inventory.md:68`) and a row for reusing a
+whole activity (`:37`, "Compose / reuse activities" → **Activity→activity composition**), and no row
+between them for a shared step sequence, because no construct holds one. The nearest remedies the
+catalogue offers are `AP-38 no-duplicate-technique-steps`
+(`workflows/workflow-design/resources/anti-patterns.md:542`), which is about one technique bound
+twice inside one activity, and `AP-74 no-duplicated-guidance` (`anti-patterns.md:985`), which is
+about prose. So key two's run half is empty: the migration's manifest for the run is the four host
+files themselves, and the only phrasing an author is routed to for shared orchestration is "borrow
+an activity", which a routine narrows rather than replaces.
 
-**Tests outside the list — three occurrences.** `tests/branch-as-step-guard.test.ts:68` builds a
-fixture whose text is the audit technique's guard enumeration, including the
-`check-fragments.ts` line, so the corpus canon's stale line has a copy in a `main`-branch test
-fixture. `tests/checkpoint-presentation-guard.test.ts:58` authors a fixture declaring
-`fragments:\n  rules:` and `:61` asserts a finding site of `wf/workflow.yaml fragments.rules.shared`
-— a test exercising a shape the schema refuses.
+## Group 1 — the gate-body vocabulary in prose
 
-**Comprehension snapshots, on the `engineering` branch — nineteen occurrences on fifteen lines
-across three files.** Seven of the nineteen are GitHub blob permalinks pinned to a commit SHA
-(`technique-reference-resolution.md:57` twice, `:137`, `:155`; `activity-technique-binding.md:45`,
-`:46` twice) and are honest provenance rather than stale claims. The remaining twelve are
-assertions: `activity-technique-binding.md:66` — "A fragment is named content declared once at
-workflow scope and spliced in by reference … There are exactly two kinds, rule text and checkpoint
-bodies"; `when-merge-condition-not-met.md:225` — "activity files **do** support `ref:` on
-`kind: checkpoint` with full materialize"; and ten more naming `materializeRuleEntries`,
-`resolveRuleFragment` and the guard's scope.
+Seventeen literals, **112 occurrences at 67 distinct lines over 24 files. 47 occurrences at 22 lines
+over 10 files sit outside the change's file list.**
 
-### What the fifty-eight cost, by branch
-
-| Branch | Occurrences | Files | Distinct lines |
+| Key literal | Occ | Files | Outside |
 |---|---|---|---|
-| `main` | 35 | 11 | 23 |
-| `workflows` | 4 | 2 | 2 |
-| `engineering` | 19 | 3 | 15 |
-| **Total** | **58** | **16** | **40** |
+| `fragments.checkpoints` | 16 | 11 | **6** |
+| `checkpoint fragment` *(case-insensitive)* | 17 | 12 | **7** |
+| `fragment ref` *(case-insensitive)* | 24 | 15 | **6** |
+| `[workflow::]name` | 15 | 11 | **9** |
+| `check:fragments` | 9 | 8 | **4** |
+| `Shared checkpoint bodies` | 6 | 4 | **3** |
+| `` imported by `ref` `` | 6 | 6 | **2** |
+| `declared once under` *(case-insensitive)* | 3 | 3 | **1** |
+| `imports one via` | 3 | 3 | **1** |
+| `Named checkpoint bodies` | 2 | 2 | 0 |
+| `declared once as a` *(case-insensitive)* | 2 | 2 | **2** |
+| `Shared fragments` | 2 | 2 | **1** |
+| `single home for the checkpoint` | 2 | 2 | **1** |
+| `stays the single home` | 2 | 2 | **1** |
+| `imported by <code>ref</code>` | 1 | 1 | **1** |
+| `Workflow fragments` | 1 | 1 | **1** |
+| `reusable content once under` | 1 | 1 | **1** |
 
-The branch split is the operational finding. [guard-obligations.md](../ground-truth/guard-obligations.md)
-establishes that a corpus pull request into `workflows` runs `npm run check:all` against `main`'s
-tooling and nothing else, and that a server pull request into `main` is graded against the gitlink's
-un-migrated corpus. So stage 5's own three-pull-request ordering — server first, corpus second,
-submodule bump third — has to carry 35 restatement edits in the first, 4 in the second, and 19 in a
-fourth pull request against a third branch that no continuous-integration job grades at all.
+The twenty-two out-of-list lines, each a statement that would survive the change:
 
-## The half that already retired, and what it predicts
+- **`site/specs/resource-resolution.html:203, 205, 206, 208, 209, 211`** — a whole
+  `<h2 id="fragments">Workflow fragments</h2>` section. Line 206 says a workflow "can declare
+  reusable content once under `fragments` in `workflow.yaml` and import it by reference", and 209
+  gives `fragments.checkpoints` as "shared checkpoint bodies (message, options, effects); a
+  `kind:checkpoint` step imports one via `ref`, contributing its own site-local `id`". Six lines.
+- **`site/specs/workflows.html:226, 228, 229`** — an `<h3 id="fragments">Shared fragments</h3>`
+  section, plus a borrowed-activity paragraph that explains scoping by reference to "checkpoint
+  fragment refs".
+- **`site/specs/checkpoints.html:195, 196`** — an `<h2 id="fragments">Shared checkpoint
+  fragments</h2>` heading and the paragraph under it, which is the single most complete description
+  of the mechanism anywhere in the published prose: declaration site, reference form, the
+  site-condition rule, the materialisation point, and the guard that polices it.
+- **`site/api/schemas.html:264`** — the generated workflow field table's `fragments` row.
+- **`site/design/request-lifecycle.html:124, 127`** — the load path and the `get_activity` path,
+  both of which name checkpoint-fragment materialisation as a stage they perform.
+- **`schemas/README.md:279, 335, 341, 500`** — the workflow field table's `fragments` row twice
+  (`:279` in the full table, `:500` in the summary), and the checkpoint step's two-forms explanation
+  at `:335` with the `ref` field row at `:341`. `:335` is the load-bearing one: it is where an
+  author reads that a checkpoint is "authored in exactly one of two forms", and after the migration
+  there is one form.
+- **`docs/checkpoint-model.md:116`** — the checkpoint model's own paragraph on the mechanism,
+  covering declaration, reference and materialisation in four sentences. This is the document
+  `check-decision-order` names as the home of what its rule keys on
+  (`scripts/check-decision-order.ts:8`), so it is read by anyone tracing a checkpoint guard.
+- **`workflows/workflow-design/resources/schema-construct-inventory.md:68`** — the construct-choice
+  row "Several activities ask the user the same question → **Checkpoint fragment**". This is the one
+  occurrence in the set that actively directs an author to author the construct, and it is corpus
+  canon.
+- **`workflows/workflow-authoring/techniques/workflow-definition/audit-schema-validation.md:29`** —
+  an audit technique's list of guards, describing `check-fragments.ts` as checking "every fragment
+  reference resolves, every fragment is used, and no inline body duplicates a fragment". Seven of
+  those nine rules go.
+- **`scripts/check-checkpoint-presentation.ts:150`** — see group 5.
 
-The shared-body mechanism had two halves. `fragments.rules` held shared rule text, and
-`fragments.checkpoints` holds shared gate bodies. **The rule half is gone.** The schema declares the
-three rules buckets as arrays of plain strings (`src/schema/workflow.schema.ts:29-32`);
-`WorkflowFragmentsSchema` is `.strict()` over the single key `checkpoints` (`:40-42`), so a
-`fragments.rules` key is a load error; `resolveRuleFragment`, `materializeRuleEntries` and
-`RuleEntrySchema` appear nowhere in `src/` or `scripts/`; and no `workflow.yaml` in the corpus
-carries a `ref:` at all — `grep -rIn "ref:" workflows/*/workflow.yaml | wc -l` returns 0. The
-decision is recorded at
-`.engineering/artifacts/planning/2026-08-27-rule-homes-and-shared-bodies/README.md:81`: "So
-`fragments.rules` is removed from the schema rather than left unused."
+## Group 2 — the guard rules, by name
 
-**Nine statements outside the comprehension folder still describe it as live**, on the branches
-shown:
+Seven rules die with the mechanism and two survive, which is the partition
+[decisions.md:447-450](../../2026-09-03-routines/decisions.md) names and `fragment-mechanism.md`
+reproduces. Measured here for the third time and identically. Method: case-sensitive literal
+substring; the two substring collisions described earlier are excluded.
 
-| Occurrence | What it says | Branch |
+| Key literal | Occ | Files | Outside | Disposition |
+|---|---|---|---|---|
+| `malformed-ref` | 3 | 1 | 0 | dies |
+| `unresolved-ref` | 5 | 2 | 0 | dies |
+| `ref-body-conflict` | 5 | 2 | 0 | dies |
+| `ref-opens-step` | 4 | 2 | 0 | dies |
+| `unused-fragment` | 6 | 2 | 0 | dies |
+| `inline-duplicate-of-fragment` | 3 | 1 | 0 | dies |
+| `undeclared-effect-variable` | 4 | 2 | 0 | dies |
+| | **30** | **2** | **0** | |
+| `duplicate-checkpoint` | 4 | 2 | 0 | survives, remedy changes |
+| `duplicate-rule` | 6 | 2 | 0 | survives unchanged |
+
+**Every one of the 40 occurrences is inside the change's file list**, all of them in
+`scripts/check-fragments.ts` and `tests/fragments-guard.test.ts`. This is the cleanest result in the
+sweep and it is worth naming: a guard rule's name lives only where the rule lives, so deleting the
+rule deletes every statement of it. Nothing about a rule name leaks into prose the change does not
+open.
+
+## Group 3 — the remedies that route an author to the mechanism
+
+| Key literal | Occ | Files | Outside |
+|---|---|---|---|
+| `extract a fragment` | 2 | 1 | 0 |
+| `must become a reference` | 1 | 1 | 0 |
+| `reference it instead` | 1 | 1 | 0 |
+
+Four occurrences, all in `scripts/check-fragments.ts`, all inside the list. Two of them are
+`duplicate-checkpoint`'s remedy, which survives the migration with its advice changed: the header at
+`:24-25` reads "identical (normalized) checkpoint body authored inline at two or more sites: extract
+a fragment", and the finding detail at `:269` ends "— extract a fragment". Those are the two strings
+the proposal's stage-5 criterion has in mind when it asks that `duplicate-checkpoint` keep "its rule
+with its remedy naming a routine" (`README.md:883-884`). Naming them here is what makes that
+criterion checkable.
+
+## Group 4 — the mechanism's code identifiers
+
+Nine literals, **79 occurrences at 66 distinct lines over 9 files, and every one is inside the
+change's file list.**
+
+| Key literal | Occ | Files | Outside |
+|---|---|---|---|
+| `FragmentsLookup` | 20 | 6 | 0 |
+| `resolveCheckpointFragment` | 15 | 5 | 0 |
+| `parseFragmentRef` | 12 | 4 | 0 |
+| `injectCheckpointFragmentBodies` | 8 | 4 | 0 |
+| `WorkflowFragmentsSchema` | 7 | 3 | 0 |
+| `fragment-resolver` | 6 | 6 | 0 |
+| `fragmentsLookupSync` | 5 | 3 | 0 |
+| `CheckpointFragmentBodySchema` | 4 | 2 | 0 |
+| `fragments-index` | 2 | 2 | 0 |
+
+The nine files are `src/loaders/fragment-resolver.ts`, `src/loaders/workflow-loader.ts`,
+`src/schema/workflow.schema.ts`, `src/schema/activity.schema.ts`, `src/tools/workflow-tools.ts`,
+`scripts/fragments-index.ts`, `scripts/check-fragments.ts`, `scripts/check-binding-fidelity.ts` and
+`tests/fragment-resolver.test.ts`.
+
+**The shape of the whole key is in the contrast between this group and group 1.** The mechanism's
+code is 79 occurrences and 0% of it is outside the change. Its prose is 112 occurrences and 42% of
+it is outside the change. A migration graded by a compiler and a green guard suite would finish with
+the code half complete and the prose half untouched, and nothing in the plan would notice.
+
+## Group 5 — the rule half, which is false already
+
+Six literals, **18 occurrences at 12 distinct lines over 6 files. 16 occurrences at 11 lines over 5
+files sit outside the change's file list.**
+
+`fragments.rules` and a `{ ref }` entry in a rules slot both fail the load today. The schema half is
+shown above: `WorkflowFragmentsSchema` is strict over one key, and every rules array is a string
+array in both the Zod source and the generated JSON schema. The loader half is equally plain —
+`materializeRuleEntries`, `resolveRuleFragment` and `RuleEntrySchema` do not exist anywhere in
+`src/`, `scripts/` or `tests/`. The resolver's own header states the rule as it now stands: "Rules
+are not shared this way: a rule two workflows both need is neither one's to own, so its home is the
+conduct technique whose audience it binds and the bundle delivers it"
+(`src/loaders/fragment-resolver.ts:9-10`).
+
+| Key literal | Occ | Files | Outside |
+|---|---|---|---|
+| `{ ref }` | 5 | 4 | **4** |
+| `fragments.rules` | 4 | 3 | **4** |
+| `rule fragment` *(case-insensitive)* | 3 | 2 | **3** |
+| `rules slots` *(case-insensitive)* | 3 | 2 | **3** |
+| `shared rule texts` *(case-insensitive)* | 2 | 2 | **2** |
+| `` rule `{ ref }` entries splice `` | 1 | 1 | 0 |
+
+The eleven out-of-list lines:
+
+- **`site/specs/resource-resolution.html:208`** — "**`fragments.rules`** — shared rule texts; rules
+  slots accept either a rule string or `{ ref: "[workflow::]name" }`". A bullet describing a
+  schema key that fails validation, beside a bullet describing one that does not, with nothing to
+  tell them apart.
+- **`site/specs/workflows.html:128`** — the workflow-file field list: "**Fragments** — shared rule
+  texts and checkpoint bodies, imported by `{ ref }` from rules slots and checkpoint steps".
+- **`site/specs/workflows.html:229`** — "Rule texts and checkpoint bodies reused at several sites
+  are declared once under `fragments` … Rules slots and `kind:checkpoint` steps carry the ref".
+- **`schemas/README.md:499`** — the workflow field table's `rules` row gives the type as
+  `{ workflow?, activity?, universal?: (string | { ref })[] }` and adds "Entries are rule strings or
+  `{ ref }` fragment imports". Two occurrences on one line, in the authoritative schema guide,
+  contradicting `src/schema/workflow.schema.ts:30-32` directly.
+- **`scripts/check-checkpoint-presentation.ts:23, 89, 150, 157, 158`** — a live guard. Its scope
+  comment at `:23` names "`fragments.rules` in every `workflow.yaml`"; `:89` says a rules bucket is
+  "a list whose entries are strings or `{ ref }` imports, which carry no text of their own"; `:150`
+  says "A rule fragment is imported by `ref` into a bucket"; `:157` builds a finding site string
+  `fragments.rules.${name}`; and `:158` labels the finding "rule fragment". The guard reads
+  `def['fragments']['rules']` at `:148-151`. Because the fragments object is strict over
+  `checkpoints`, a `workflow.yaml` carrying that key would fail the load before the guard saw it, so
+  the branch is unreachable and the five statements describe a path that cannot be taken.
+- **`tests/checkpoint-presentation-guard.test.ts:55, 61`** — the test that keeps the unreachable
+  branch alive, asserting on a synthetic workflow object that never passes the schema: "flags a rule
+  fragment, which binds the same agents once imported by ref".
+
+Two in-list occurrences sit on one line and show the same drift inside the change's own files.
+**`src/loaders/workflow-loader.ts:318`** opens the materialisation block with "Materialize fragment
+references (#166 B10): rule `{ ref }` entries splice to their texts and checkpoint ref steps take
+their fragment's body". The code beneath it collects checkpoint refs only
+(`collectCheckpointRefs` at `:334`) and reads `workflow.fragments?.checkpoints` alone (`:331`).
+Stage 5 opens this file, so this line would be caught. The five statements in the guard, the two in
+its test and the four in the published prose would not.
+
+**Neither ground-truth document carries this group.** It is added here, and it is the sweep's own
+finding: a key-driven search of the mechanism's vocabulary surfaced a half of that mechanism that
+was removed from the schema and the loader without the sweep that should have followed. It is the
+defect `AP-129` describes, already realised once, on the same construct the migration is about to
+retire again.
+
+## Key two, totalled
+
+| Group | Occ | Lines | Files | Outside the list |
+|---|---|---|---|---|
+| 1 — the gate-body vocabulary in prose | 112 | 67 | 24 | **47 occ / 22 lines / 10 files** |
+| 2 — the seven dying rule names | 30 | 28 | 2 | 0 |
+| 2b — the two surviving rule names | 10 | 10 | 2 | 0 |
+| 3 — the author-routing remedies | 4 | 4 | 1 | 0 |
+| 4 — the code identifiers | 79 | 66 | 9 | 0 |
+| 5 — the rule half, false today | 18 | 12 | 6 | **16 occ / 11 lines / 5 files** |
+| **Total** | **253** | **177** | **26** | **63 occ / 30 lines / 11 files** |
+
+**The figure that matters: 63 occurrences at 30 distinct lines in 11 files sit outside any file a
+delivery stage opens.** Sixteen of those 63 are false now; the other 47 become false the day stage 5
+merges.
+
+| File outside the change | Occurrences | Lines |
 |---|---|---|
-| `schemas/README.md:499` | rules entries "are rule strings or `{ ref }` fragment imports" | `main` |
-| `site/specs/resource-resolution.html:208` | "`fragments.rules` — shared rule texts; rules slots accept either a rule string or `{ ref: "[workflow::]name" }`" | `main` |
-| `site/specs/workflows.html:229` | "Rules slots and `kind:checkpoint` steps carry the ref" | `main` |
-| `site/design/request-lifecycle.html:124` | "Rule and checkpoint fragment refs are materialized at load" | `main` |
-| `scripts/check-checkpoint-presentation.ts:23` | the guard's declared scope includes "`fragments.rules` in every workflow.yaml" | `main` |
-| `scripts/check-checkpoint-presentation.ts:150` | "A rule fragment is imported by `ref` into a bucket, so its text binds the same agents" | `main` |
-| `scripts/check-checkpoint-presentation.ts:157` | a finding site label `fragments.rules.<name>` | `main` |
-| `tests/checkpoint-presentation-guard.test.ts:58` | a fixture declaring `fragments:` → `rules:` | `main` |
-| `tests/checkpoint-presentation-guard.test.ts:61` | asserts that site label | `main` |
+| `schemas/README.md` | 15 | 5 |
+| `site/specs/resource-resolution.html` | 11 | 6 |
+| `site/specs/workflows.html` | 9 | 4 |
+| `site/specs/checkpoints.html` | 6 | 2 |
+| `scripts/check-checkpoint-presentation.ts` | 6 | 5 |
+| `site/design/request-lifecycle.html` | 4 | 2 |
+| `workflows/workflow-design/resources/schema-construct-inventory.md` | 3 | 1 |
+| `docs/checkpoint-model.md` | 3 | 1 |
+| `site/api/schemas.html` | 3 | 1 |
+| `tests/checkpoint-presentation-guard.test.ts` | 2 | 2 |
+| `workflows/workflow-authoring/techniques/workflow-definition/audit-schema-validation.md` | 1 | 1 |
+| **Total** | **63** | **30** |
 
-Six more sit in the comprehension snapshots (`when-merge-condition-not-met.md:13`, `:14`, `:18`,
-`:58`, `:90`, `:150`, `:225`, `:232`; `technique-reference-resolution.md:57`;
-`activity-technique-binding.md:46`, `:66`).
+Set aside by scope: `.engineering/artifacts/comprehension/` holds 4 occurrences of
+`checkpoint fragment`, 2 of `fragments.rules`, 9 of `rule fragment`, 10 of `{ ref }`, 11 of
+`fragment-resolver` and 5 of `fragment ref`, concentrated in
+`when-merge-condition-not-met.md`, which carries "> 2026-08-02" at line 3 and whose own tables
+already record the rule half as "the missing twin" for activity files (`:225`). The planning folder
+holds 52 occurrences of `fragments.checkpoints` alone, exempt by `AP-129`'s own clause.
 
-Three of the nine are not prose but a live code path.
-`scripts/check-checkpoint-presentation.ts:148-163` reads `def?.['fragments']?.['rules']` and walks
-its entries, sixteen lines of guard that can never fire: the schema refuses the key, so no corpus
-file can carry it, and the guard parses raw YAML so it neither fails nor reports. The guard suite is
-green — [guard-obligations.md](../ground-truth/guard-obligations.md) measures `check:all` at 40
-guards passing — and that green includes this dead branch.
+## Both keys, side by side
 
-**This is the empirical prior for key two.** One half of the mechanism retired, and 15 statements
-survived it, 9 of them outside the comprehension folder and 3 of those inside the code. Stage 5
-retires the other half, with 58 occurrences standing over 40 lines. If the retirement of the rule
-half is the base rate, the acceptance criteria at README:880-892 — which name a workflow file, a
-guard rule count and a remedy string, and no documentation file — will leave a comparable residue.
-Recording the 58 before the work starts is what makes that avoidable.
-
-## Figures stated elsewhere that this sweep re-takes
-
-| Figure | Where stated | Measured here |
+| | Key one, false now | Key two, false at stage 5 |
 |---|---|---|
-| `loop_break` at 7 occurrences | `stage-0-state.md:429` | 12 across the tree; 7 once the ground truth's own 5 are subtracted — the same measurement, differently scoped |
-| `schemas/README.md:373` is a polarity-inverted description of a loop's continuation | `stage-0-state.md:456` | The sentence "iterates over collections or while conditions hold" is accurate. Its defect is a change-narrating parenthesis, not a stale claim |
-| `AP-10 loop-not-prose`'s detect is falsified by stage 0 | implied by `stage-0-state.md:472,487-490` | The three field names it lists were the item-loop set before stage 0 too. A real coverage gap, not a stale restatement |
-| The three schema declarations of `loop_break` are sweep material | `stage-0-state.md:429-434` | A declared event type with no writer is a construct with no subject. Only `schemas/README.md:979`, which presents it as an event the server records, reads as a false claim |
-| `.engineering/artifacts/comprehension/**` scope undecided | `stage-0-state.md:404-408`, `:502` | In scope, remedy is a restamp. The corpus writes to that directory by name (`15-codebase-comprehension.yaml:60`) and calls it the record "for the next work package on this area" |
-| Stage 0 re-keyed 19 loops | `README.md:768` | Exact for commit `95f13fd1` — 19 lines across 18 files — and stale for the corpus, which now holds 27 repeat-until loops. Reproduces `stage-0-state.md`'s correction |
-| A 35-script, 6,749-line guard suite | `README.md:611` | Not re-taken here; `guard-obligations.md` measures 40 registered scripts at 7,699 lines and 44 `check|validate` scripts at 8,896 |
-| `check-set-action-values` is in class (a) only | `guard-obligations.md:109` | Also carries a key-two occurrence in its own justifying comment (`:173`), so stage 5 reaches it |
+| Literals reported | 23 — the ground truth's 20 plus 3 added here | 44, all derived here |
+| Occurrences in the live tree | 24 | 253 |
+| Of those, false statements | 18 | 18 (group 5 only) |
+| Distinct lines | 22 | 177 |
+| Files | 12 | 26 |
+| **Outside the change's file list** | **22 occ / 20 lines / 10 files** | **63 occ / 30 lines / 11 files** |
 
-Two figures could not be taken at all, and both are absences rather than disagreements. Nothing in
-the repository states how many restatements the `fragments.rules` retirement left behind — the 15
-above are this sweep's own count, taken because the base rate is the most useful thing key two can
-offer. And no committed artifact records an occurrence count for any past change, so `AP-129`'s Fix
-("record the count in the change's file manifest so the sweep is auditable") has no precedent in
-this repository to compare against.
+Three files carry out-of-list occurrences of both keys, and they are the three most authoritative
+surfaces in the set: `schemas/README.md`, the schema guide; the corpus's construct-choice table at
+`workflows/workflow-design/resources/schema-construct-inventory.md`; and the published workflow
+specification at `site/specs/workflows.html`. **A single editing pass over those three files would
+clear 10 of key one's 16 false statements and 27 of key two's 63 pending ones — 37 of the 79
+out-of-list occurrences in three files.** That is the practical shape of the remedy, and it is
+knowable now rather than after stage 5.
+
+## Figures a record states that could not be reproduced
+
+- **`stage-0-state.md` gives `loop_break` at 7 occurrences over 6 files.** I measure **6 over 5** in
+  the live tree; the seventh is the planning artifact the ground truth itself flags, which this
+  sweep sets aside by scope. The two agree once the bucket is stated.
+- **`stage-0-state.md` gives the corpus at 1,003 steps and 54 loops.** At `a4a5d88b` I measure
+  **1,004 steps and 53 loops** — 26 `forEach`, 14 `doWhile`, 13 `while`. One `forEach` has gone and
+  one step has been added since `2b8b7215`. The `continueWhile` count of 27 and the zero counts for
+  `condition` and `breakCondition` are unchanged, so nothing keyed on the partition moves.
+- **`stage-0-state.md` states its counts as being over the whole repository** — excluding only
+  `.git`, `node_modules`, `dist`, `.worktrees` and `.gitnexus` — **but its figures are live-tree
+  figures.** Every one reproduces exactly against the live tree and every one is lower than the
+  whole-repository count, because the planning folder holds the sweep's own siblings:
+  `Continue condition (while/doWhile)` returns 1 in the live tree and 7 over 6 files
+  repository-wide. The disagreement is which bucket is being reported rather than the count, so this
+  document states the bucket on every row and treats the planning folder as exempt by name.
+- **The proposal's stage-0 row states "19 loops re-keyed" and "Six `doWhile` bodies run"**
+  (`README.md:768`). Neither is a phrasing this sweep searches for, and both are already settled by
+  `stage-0-state.md`: 19 is exact for corpus commit `95f13fd1` and there are 27 repeat-until loops
+  now, and the six named sites were three `doWhile` and three `while` when named.
+- **The proposal states that `check-binding-fidelity`, `check-decision-order`,
+  `check-review-mode-gating` and `check-checkpoint-entry` read "the materialised activity"**
+  (`README.md:1008-1013`). None does, which `guard-obligations.md` measures and the proposal itself
+  concedes at `README.md:1069`. This sweep counts all four as inside the change's file list anyway,
+  since stage 4's criterion says they move; the effect is to make the out-of-list figures
+  conservative rather than generous.
+- **Nothing in the proposal states a figure for either key.** There is no count to reproduce or
+  contradict, which is the gap this sweep fills: `AP-129`'s Fix asks for the occurrence count in the
+  change's own manifest, and until now the manifest had none.
 
 ## Re-taking every figure
 
-Both counting scripts walk the repository with `.git`, `node_modules`, `dist`, `.worktrees`,
-`.idea`, `.gitnexus` and `package-lock.json` excluded, count literal substring occurrences per line,
-compose the backtick as `chr(96)`, and classify each occurrence against a hard-coded file list. The
-key literals are in the two tables above; the file lists are in
-[The file lists to subtract](#the-file-lists-to-subtract). Everything else is a direct command.
+```bash
+# what holds: the closed loop object, and the three step kinds that take an entry gate
+sed -n '80,86p;144,172p' src/schema/activity.schema.ts
 
-```
-# stage 0's file list
-git show --numstat --format="%H %s" 3a36b0db 4c288fe9
-git -C workflows show --numstat --format="%H %s" 95f13fd1
-
-# what holds: the closed loop object, and the comment stating the rule
-sed -n '148,165p' src/schema/activity.schema.ts
-
-# the loop-step field table five surfaces still restate
-sed -n '371,386p' schemas/README.md
-sed -n '28,34p' schemas/README.md
-
-# the validator that reads continueWhile as a gate
-sed -n '118,125p' src/utils/validation.ts
-
-# the corpus site the guard and its test still assert
+# the corpus loop population, and breakCondition at zero sites
 grep -rn "breakCondition" --include=*.yaml workflows/ | wc -l
-sed -n '16,18p' scripts/check-loop-shape.ts
-sed -n '86p' tests/loop-shape-guard.test.ts
+npx tsx scripts/check-loop-shape.ts --json
 
-# the fragment mechanism's live footprint
-grep -rn "fragments" --include=*.yaml workflows/
-grep -rIn "ref:" workflows/*/workflow.yaml | wc -l
+# the mechanism as it stands
+grep -rn "fragments" --include=*.yaml --include=*.yml workflows/
+grep -rn "ref:" --include=*.yaml workflows/*/activities/
+sed -n '15,20p;70,73p' workflows/work-package/workflow.yaml
 npx tsx scripts/check-fragments.ts
 
-# the rule half, retired
-sed -n '29,42p' src/schema/workflow.schema.ts
-grep -rn "resolveRuleFragment\|materializeRuleEntries\|RuleEntrySchema" src/ scripts/
-sed -n '143,164p' scripts/check-checkpoint-presentation.ts
+# the rule half: strict over one key, string arrays, and no resolver
+sed -n '28,43p' src/schema/workflow.schema.ts
+grep -rn "materializeRuleEntries\|resolveRuleFragment\|RuleEntrySchema" src/ scripts/ tests/
+sed -n '318,334p' src/loaders/workflow-loader.ts
 
-# which site occurrences are generated and which are hand-authored
-grep -n "GENERATED" site/api/schemas.html site/specs/checkpoints.html site/specs/workflows.html site/guide/definitions.html site/specs/resource-resolution.html site/design/request-lifecycle.html
-
-# the comprehension folder is a corpus-written read surface
-sed -n '55,79p' workflows/work-package/activities/15-codebase-comprehension.yaml
-grep -n "Last updated\|^> " .engineering/artifacts/comprehension/json-schemas.md .engineering/artifacts/comprehension/orchestration.md .engineering/artifacts/comprehension/zod-schemas.md .engineering/artifacts/comprehension/when-step-gates.md .engineering/artifacts/comprehension/work-package-workflow-content.md
-
-# the surfaces a sweeper would wrongly hit
-sed -n '1,12p' grammar/activity.ebnf
-sed -n '3p' docs/orchestra-specification.md
+# which files the proposal's stages name
+grep -rn "schemas/README\|checkpoint-model\|schema-construct-inventory\|anti-patterns" \
+  .engineering/artifacts/planning/2026-09-03-routines/*.md
 ```
+
+The loop census, the per-key occurrence counts and the in-list/out-of-list split were taken by three
+throwaway scripts whose rules are stated in full above, which is what makes each figure
+re-derivable. The census walks every node carrying a string `kind` under `workflows/*/workflow.yaml`
+and `workflows/*/activities/**/*.yaml` and records each loop's key set. The key counter composes the
+backtick as `chr(96)`, counts literal substring occurrences per line over the 3,513 readable text
+files, and buckets each hit by path prefix. The split tests each hit's file against the 45-path list
+derived above, with the two named substring collisions excluded and the guard's fixture tree counted
+with the guard it feeds.
