@@ -1975,3 +1975,15 @@ A variable's admitted values are enumerated in a description while the declarati
 **Do not flag:** A declaration that carries `values`, whose description names what the variable holds without repeating the members. A shape hint that is not a value set (`{ id, statement }`). A set stated where the schema cannot hold it — a non-string variable, or values a run computes rather than an author enumerates; there the prose is the only home and the finding is absent. Prose whose subject IS the set, such as the gate options themselves.
 
 **Fix:** Declare the set as `values` on the variable and cut it from the prose, leaving a description that says what the value holds and what its absence means. Where two declarations of the name disagree on the set, the load refuses them, which is the drift this closes. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home); also `variable-description-one-line`.
+
+### AP-152. one-invariant-per-rule
+
+"Each instance materialises its own checkout … **It is declared per member and it is uniform within one.** … Reach for it only where per-unit attribution is the point."
+
+One `## Rules` entry states several constraints, so no part of it can be cited or edited without carrying the rest.
+
+**Detect:** A `## Rules` entry whose body divides into parts that each state a constraint citable on its own and editable without touching the others. Three signals point at one: a bolded sentence-lede opening a paragraph inside the body, which is a second rule given emphasis where a heading belongs; a length far outside the other entries in the same file; consecutive paragraphs whose subjects differ rather than elaborating one subject. Test: state the invariant the entry asserts in one sentence — where that takes several sentences and none of them entails the others, the entry is several rules under one name. One entry is one finding, however many constraints it holds.
+
+**Do not flag:** A single constraint stated with the failure mode that makes it matter, which is the corpus convention. Paragraphs or bullets elaborating one constraint across the cases it covers, each case subordinate to the named invariant rather than a further invariant — so length settles nothing on its own. A rule scoped to one protocol step is the converse defect (`no-one-step-rules`), one invariant with two homes is `single-rule-authority`, and two entries whose triggers intersect is `overlapping-rule-scopes`.
+
+**Fix:** Give each constraint its own entry, named for the invariant it states. Demote cost guidance and hazards to a `>` caveat on the rule they qualify (`constraint-as-blockquote`). Delete, rather than re-head, any part whose claim another surface already owns — a schema field's own description, a load-time refusal message, another operation's rule (`schema-semantics-restated`, `rule-binds-beyond-its-operation`). See [SOLID at the Definition Layer](./design-principles.md#34-solid-at-the-definition-layer).
