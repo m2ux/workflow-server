@@ -53,7 +53,7 @@ The largest file under the probed directory, with its path and size in bytes.
 ### 2. Probe The Directory
 
 - List `{probe_target.directory}` and record the direct and total file counts as `{probe_finding.file_count}`, the immediate subdirectory names as `{probe_finding.subdirectories}`, and the largest file with its size as `{probe_finding.largest_file}`.
-- Stay inside `{probe_target.directory}`. Nothing outside it belongs in this instance's finding, and a sibling instance is already covering its own.
+- List `{probe_target.directory}` alone, per [an-instance-sees-only-its-own-unit](./TECHNIQUE.md#an-instance-sees-only-its-own-unit).
 
 ### 3. Record The Finish
 

@@ -48,12 +48,12 @@ What the run did, shaped by [Template](../resources/conformance-report.md#templa
 ### 2. Report Each Fan's Shape
 
 - For the heterogeneous fan, record which of the two activities filled its slot and which did not. Two containers, one slot each, is what that destination opens.
-- For the homogeneous fan, record one row per entry of `{probe_targets}`: the entry's id, the `probe_id` the slot reports back, and whether the two agree. A slot whose reported designator differs from the one its unit was handed is the finding this run exists to catch, and it is reported as a mismatch rather than reconciled.
+- For the homogeneous fan, record one row per entry of `{probe_targets}`: the entry's id, the `probe_id` the slot reports back, and whether the two agree. A slot reporting a designator other than the one its unit was handed is the finding this run exists to catch, and [a-mismatch-is-not-reconciled](../resources/conformance-report.md#a-mismatch-is-not-reconciled) governs how the row is written.
 
 ### 3. Report The Overlap
 
 - Put every branch's `started_at` and `finished_at` on one axis against `{run_started_at}` and state, per fan, whether the branches' intervals overlap.
-- Overlapping intervals are a batch. Intervals that abut end-to-start are a queue, and a queue is a correct result the report states plainly — it means the branches ran one after another, which the routing permits and the batch spawn is meant to avoid.
+- Overlapping intervals are a batch; intervals that abut end-to-start are a queue, meaning the branches ran one after another. Both are outcomes the routing permits, and [state-the-reading-not-the-design](../resources/conformance-report.md#state-the-reading-not-the-design) governs how each is written.
 - Record the wall clock each fan took as the span from its earliest branch start to its latest branch finish, and the total of the branches' own durations beside it. The difference between the two is what the batch bought.
 
 ### 4. Write The Report

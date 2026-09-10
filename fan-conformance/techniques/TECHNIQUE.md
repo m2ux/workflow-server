@@ -23,10 +23,6 @@ Every operation that runs in a branch records the instant it began and the insta
 
 Each survey answers its question from directory listings and commit metadata, and reads no file contents. The run exists to exercise the routing, so a survey that costs more than the routing it demonstrates has changed what is being measured.
 
-### one-directory-per-probe
+### an-instance-sees-only-its-own-unit
 
-A probe describes the one directory it was handed and no other. Reaching outside it would make the instance's context indistinguishable from a whole-component pass, which is the thing an instance of its own exists to avoid.
-
-### report-what-ran-not-what-should
-
-The report states what the record holds — which slots were filled, by which designator, over which interval. Where the record shows something the design does not expect, the report says so plainly rather than describing the design.
+An operation running in a branch works on the unit it was handed and reaches no further. Its siblings are covering their own, and an instance that ranges wider has a context indistinguishable from a whole-component pass — which is what having an instance of its own was for.
