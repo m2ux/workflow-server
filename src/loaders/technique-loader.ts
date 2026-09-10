@@ -62,6 +62,15 @@ export function projectTechniqueToYaml(technique: Technique): string {
 /* -------------------------------------------------------------------------- */
 
 /**
+ * Whether a leading reference segment names a workflow that carries techniques — what makes it a
+ * cross-workflow prefix rather than a group inside the current workflow.
+ */
+function hasTechniques(workflowDir: string, workflowId: string): boolean {
+  const dir = getWorkflowTechniquesDir(workflowDir, workflowId);
+  return dir !== null && existsSync(dir);
+}
+
+/**
  * Try to load a technique from a workflow's techniques directory.
  * Accepts `workflowDir + workflowId` so this call site owns the `techniques/` path layout —
  * callers in readTechnique don't need to know it.
@@ -88,8 +97,8 @@ const META_WORKFLOW_ID = 'meta';
  *
  * Resolution order:
  *   0. Explicit prefix (`{workflow}/{techniqueId}`): load only from that workflow's techniques folder.
- *   1. Workflow-local (workflowId provided): `{workflowDir}/{workflowId}/techniques/{techniqueId}.md` (flat) or `.../{techniqueId}/TECHNIQUE.md` (grouped).
- *   2. Meta fallback: `{workflowDir}/meta/techniques/{techniqueId}.md` or `.../{techniqueId}/TECHNIQUE.md`.
+ *   1. Workflow-local (workflowId provided): the workflow's own `techniques/{techniqueId}.md` (flat) or `.../{techniqueId}/TECHNIQUE.md` (grouped).
+ *   2. Meta fallback: the `meta` workflow's `techniques/{techniqueId}.md` or `.../{techniqueId}/TECHNIQUE.md`.
  *
  * Meta is the shared layer: an unprefixed reference resolves current-workflow-first, then meta.
  */
@@ -133,7 +142,7 @@ export async function readTechniqueWithSource(
     // workflow exactly, with no meta fallback — mirroring the legacy `/` explicit-prefix form and
     // parseTechniquePath, so the canonical `::` form resolves identically on the bundle
     // (resolveTechniques) and standalone (composeTechnique / get_technique) paths.
-    if (segs.length >= 2 && existsSync(getWorkflowTechniquesDir(workflowDir, segs[0]!))) {
+    if (segs.length >= 2 && hasTechniques(workflowDir, segs[0]!)) {
       const targetWorkflow = segs[0]!;
       const rest = segs.slice(1);
       try {
@@ -243,7 +252,7 @@ function parseTechniquePath(ref: string, workflowDir: string): { workflow?: stri
   // Canonical leading-workflow segment (only when explicitly a known workflow);
   // otherwise the parent workflow stays implicit (resolved current-first).
   let workflow: string | undefined;
-  if (segs.length >= 2 && existsSync(getWorkflowTechniquesDir(workflowDir, segs[0] as string))) {
+  if (segs.length >= 2 && hasTechniques(workflowDir, segs[0] as string)) {
     workflow = segs.shift();
   }
   const technique = segs[0];
@@ -457,7 +466,7 @@ function blocksTitled(protocol: ProtocolBlock[] | undefined, title: string): Pro
  * technique itself (never an ancestor). e.g. ['cargo-operations','check'] or ['classify-problem'].
  */
 async function wrapProtocolWithAncestors(
-  techniquesDir: string,
+  techniquesDir: string | null,
   pathSegments: string[],
   ownProtocol: ProtocolBlock[] | undefined,
 ): Promise<ProtocolBlock[] | undefined> {
@@ -513,7 +522,7 @@ async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promis
 async function composeLoaded(
   technique: Technique,
   pathSegments: string[],
-  techniquesDir: string,
+  techniquesDir: string | null,
 ): Promise<Technique> {
   if (pathSegments.length === 1 && pathSegments[0] === ROOT_INDEX_ID) return technique;
 

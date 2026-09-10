@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { parse as parseYaml } from 'yaml';
 import { safeValidateTechnique } from '../src/schema/technique.schema.js';
 import { corpusRoot } from './corpus-root.js';
+import { writeWorkflowFixture } from './corpus-fixture.js';
 
 const WORKFLOW_DIR = corpusRoot();
 const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/markdown-techniques');
@@ -207,6 +208,7 @@ describe('technique-loader', () => {
 
     beforeEach(async () => {
       tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-test-')));
+      writeWorkflowFixture(tempDir, 'meta');
     });
 
     afterEach(async () => {
@@ -311,6 +313,8 @@ describe('technique-loader', () => {
 
     beforeEach(async () => {
       tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-flat-')));
+      writeWorkflowFixture(tempDir, 'meta');
+      writeWorkflowFixture(tempDir, 'wp');
     });
     afterEach(async () => {
       await rm(tempDir, { recursive: true, force: true });
@@ -716,6 +720,7 @@ describe('technique-loader', () => {
 
     beforeEach(async () => {
       tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-audience-')));
+      writeWorkflowFixture(tempDir, 'meta');
     });
     afterEach(async () => {
       await rm(tempDir, { recursive: true, force: true });

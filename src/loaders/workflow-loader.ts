@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readFile, readdir, stat } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import {
   type Destination,
@@ -29,6 +29,7 @@ import {
   collectCheckpointRefs,
   materializeActivityFragments,
 } from './fragment-resolver.js';
+import { indexCorpus, workflowLocation } from './corpus-index.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
 
@@ -106,29 +107,11 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activiti
   return { activities, errors };
 }
 
-/** Definition file extensions, in resolution priority. */
-const DEFINITION_EXTENSIONS = ['yaml', 'yml'] as const;
-
 /**
- * Resolve the path to a workflow file.
- * Supports two directory structures:
- * 1. Subdirectory (preferred): {workflowDir}/{workflowId}/workflow.{yaml|yml}
- * 2. Root-level (legacy): {workflowDir}/{workflowId}.{yaml|yml}
+ * Resolve the path to a workflow's definition file, wherever in the corpus the workflow sits.
  */
 function resolveWorkflowPath(workflowDir: string, workflowId: string): string | null {
-  // Try subdirectory first (preferred pattern)
-  for (const ext of DEFINITION_EXTENSIONS) {
-    const subPath = join(workflowDir, workflowId, `workflow.${ext}`);
-    if (existsSync(subPath)) return subPath;
-  }
-
-  // Fall back to root-level (legacy)
-  for (const ext of DEFINITION_EXTENSIONS) {
-    const rootPath = join(workflowDir, `${workflowId}.${ext}`);
-    if (existsSync(rootPath)) return rootPath;
-  }
-
-  return null;
+  return workflowLocation(workflowDir, workflowId)?.manifest ?? null;
 }
 
 /**
@@ -151,13 +134,14 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
     filename = parts.slice(1).join('/');
   }
   
-  // Assumes the standard structure: workflows/{workflowId}/activities/{filename}
-  // The shorthand usually omits 'activities/', so we add it if missing
-  const isActivitiesDirIncluded = filename.startsWith('activities/');
-  const activityPath = isActivitiesDirIncluded
-    ? join(workflowDir, targetWorkflowId, filename)
-    : join(workflowDir, targetWorkflowId, 'activities', filename);
-    
+  // Activities sit under the target workflow's own `activities/`. The shorthand usually omits that
+  // segment, so it is added when the reference leaves it out.
+  const targetDir = workflowLocation(workflowDir, targetWorkflowId)?.dir;
+  if (!targetDir) return null;
+  const activityPath = filename.startsWith('activities/')
+    ? join(targetDir, filename)
+    : join(targetDir, 'activities', filename);
+
   if (!existsSync(activityPath)) return null;
   
   try {
@@ -397,57 +381,41 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
 
 /**
  * List workflow manifests and report the definition files that failed to yield one — unreadable
- * or unparsable `workflow.yaml`, or a manifest missing the required id/title/version fields —
- * instead of silently skipping them.
+ * or unparsable `workflow.yaml`, a manifest missing the required id/title/version fields, or an id
+ * two directories claim — instead of silently skipping them.
+ *
+ * This is where the corpus is re-walked, so a workflow added while the server runs is listable, and
+ * resolvable by every other call, from here on.
  */
 export async function listWorkflowsWithDiagnostics(workflowDir: string): Promise<{ workflows: WorkflowManifestEntry[]; errors: DefinitionLoadError[] }> {
   if (!existsSync(workflowDir)) return { workflows: [], errors: [] };
   const errors: DefinitionLoadError[] = [];
-  try {
-    const entries = await readdir(workflowDir);
-    const manifests: WorkflowManifestEntry[] = [];
+  const manifests: WorkflowManifestEntry[] = [];
+  const index = indexCorpus(workflowDir);
 
-    for (const entry of entries) {
-      if (entry === META_WORKFLOW_ID) continue;
-      const entryPath = join(workflowDir, entry);
-      const stats = await stat(entryPath);
-      
-      let defPath: string | null = null;
-      if (stats.isFile() && /\.ya?ml$/.test(entry)) {
-        defPath = entryPath;
-      } else if (stats.isDirectory()) {
-        for (const ext of DEFINITION_EXTENSIONS) {
-          const subWorkflowPath = join(entryPath, `workflow.${ext}`);
-          if (existsSync(subWorkflowPath)) {
-            defPath = subWorkflowPath;
-            break;
-          }
-        }
-      }
-
-      if (defPath) {
-        try {
-          const content = await readFile(defPath, 'utf-8');
-          const raw = parseDefinition(content) as RawWorkflow;
-          if (raw.id && raw.title && raw.version) {
-            manifests.push({ id: raw.id, title: raw.title, version: raw.version, tags: Array.isArray(raw['tags']) ? raw['tags'] as string[] : undefined });
-          } else {
-            logWarn('Workflow manifest missing required fields', { path: defPath });
-            errors.push({ file: defPath, error: 'manifest missing required fields (id, title, version)' });
-          }
-        } catch (error) {
-          logWarn('Failed to read workflow manifest', { path: defPath, error: error instanceof Error ? error.message : String(error) });
-          errors.push({ file: defPath, error: error instanceof Error ? error.message : String(error) });
-        }
-      }
-    }
-
-    return { workflows: manifests, errors };
-  } catch (error) {
-    logWarn('Failed to list workflows', { workflowDir, error: error instanceof Error ? error.message : String(error), code: error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined });
-    errors.push({ file: workflowDir, error: error instanceof Error ? error.message : String(error) });
-    return { workflows: [], errors };
+  for (const { id, dirs } of index.ambiguous) {
+    logWarn('Workflow id claimed by several directories; it resolves to none of them', { id, dirs });
+    errors.push({ file: dirs.join(', '), error: `workflow id '${id}' is claimed by ${dirs.length} directories; rename all but one` });
   }
+
+  for (const location of index.workflows.values()) {
+    if (location.id === META_WORKFLOW_ID) continue;
+    try {
+      const content = await readFile(location.manifest, 'utf-8');
+      const raw = parseDefinition(content) as RawWorkflow;
+      if (raw.id && raw.title && raw.version) {
+        manifests.push({ id: raw.id, title: raw.title, version: raw.version, tags: Array.isArray(raw['tags']) ? raw['tags'] as string[] : undefined });
+      } else {
+        logWarn('Workflow manifest missing required fields', { path: location.manifest });
+        errors.push({ file: location.manifest, error: 'manifest missing required fields (id, title, version)' });
+      }
+    } catch (error) {
+      logWarn('Failed to read workflow manifest', { path: location.manifest, error: error instanceof Error ? error.message : String(error) });
+      errors.push({ file: location.manifest, error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  return { workflows: manifests, errors };
 }
 
 /**
@@ -1013,9 +981,11 @@ export async function readActivityRaw(
       const filename = ref.split('/').slice(1).join('/');
       const parsed = parseActivityFilename(filename.split('/').pop() ?? '');
       if (!parsed || parsed.id !== activityId) continue;
+      const targetDir = workflowLocation(workflowDir, targetWorkflowId)?.dir;
+      if (!targetDir) continue;
       const borrowedPath = filename.startsWith('activities/')
-        ? join(workflowDir, targetWorkflowId, filename)
-        : join(workflowDir, targetWorkflowId, 'activities', filename);
+        ? join(targetDir, filename)
+        : join(targetDir, 'activities', filename);
       if (!existsSync(borrowedPath)) continue;
       const content = await readFile(borrowedPath, 'utf-8');
       const validation = safeValidateActivity(parseDefinition(content));

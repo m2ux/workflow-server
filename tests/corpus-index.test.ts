@@ -1,0 +1,84 @@
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { indexCorpus, workflowLocation, workflowSubdir } from '../src/loaders/corpus-index.js';
+
+/**
+ * Corpus discovery: a workflow is a directory holding a `workflow.yaml`, at any depth beneath the
+ * root, and its directory name is its id. The grouping folders above it organise the corpus and
+ * name nothing.
+ */
+describe('corpus discovery', () => {
+  let root: string;
+
+  const workflow = (...segments: string[]): string => {
+    const dir = join(root, ...segments);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'workflow.yaml'), `id: ${segments[segments.length - 1]}\nversion: 1.0.0\ntitle: t\n`);
+    return dir;
+  };
+
+  beforeAll(() => {
+    root = mkdtempSync(join(tmpdir(), 'corpus-index-'));
+    workflow('flat');
+    workflow('security', 'audits', 'deep');
+    workflow('yml-defined');
+    rmSync(join(root, 'yml-defined', 'workflow.yaml'));
+    writeFileSync(join(root, 'yml-defined', 'workflow.yml'), 'id: yml-defined\nversion: 1.0.0\ntitle: t\n');
+
+    // A workflow's own parts, and a group folder that shares their reserved names.
+    mkdirSync(join(root, 'flat', 'activities'), { recursive: true });
+    mkdirSync(join(root, 'flat', 'techniques', 'group'), { recursive: true });
+    mkdirSync(join(root, 'flat', 'resources'), { recursive: true });
+    writeFileSync(join(root, 'flat', 'techniques', 'group', 'workflow.yaml'), 'id: group\nversion: 1.0.0\ntitle: t\n');
+
+    // A folder of techniques no workflow declares.
+    mkdirSync(join(root, 'lib', 'techniques'), { recursive: true });
+
+    // A dotfolder — repository plumbing, never a workflow.
+    mkdirSync(join(root, '.github', 'ci'), { recursive: true });
+    writeFileSync(join(root, '.github', 'ci', 'workflow.yaml'), 'id: ci\nversion: 1.0.0\ntitle: t\n');
+  });
+
+  afterAll(() => {
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  it('finds workflows at any depth, keyed by their directory name', () => {
+    const index = indexCorpus(root);
+    expect([...index.workflows.keys()]).toEqual(['deep', 'flat', 'yml-defined']);
+    expect(index.workflows.get('deep')?.dir).toBe(join(root, 'security', 'audits', 'deep'));
+    expect(index.workflows.get('yml-defined')?.manifest).toBe(join(root, 'yml-defined', 'workflow.yml'));
+  });
+
+  it('never descends into a reserved folder, so a workflow owns everything beneath it', () => {
+    expect(indexCorpus(root).workflows.has('group')).toBe(false);
+  });
+
+  it('leaves a folder of techniques no workflow declares undiscovered', () => {
+    expect(workflowLocation(root, 'lib')).toBeNull();
+  });
+
+  it('skips dotfolders', () => {
+    expect(workflowLocation(root, 'ci')).toBeNull();
+  });
+
+  it('resolves a workflow subdirectory from wherever the workflow sits', () => {
+    expect(workflowSubdir(root, 'deep', 'techniques')).toBe(join(root, 'security', 'audits', 'deep', 'techniques'));
+    expect(workflowSubdir(root, 'no-such-workflow', 'techniques')).toBeNull();
+  });
+
+  it('resolves an id claimed by two directories to neither, and reports the claimants', () => {
+    const contested = mkdtempSync(join(tmpdir(), 'corpus-contested-'));
+    for (const group of ['left', 'right']) {
+      const dir = join(contested, group, 'twin');
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(join(dir, 'workflow.yaml'), 'id: twin\nversion: 1.0.0\ntitle: t\n');
+    }
+    const index = indexCorpus(contested);
+    expect(index.workflows.has('twin')).toBe(false);
+    expect(index.ambiguous).toEqual([{ id: 'twin', dirs: [join(contested, 'left', 'twin'), join(contested, 'right', 'twin')] }]);
+    rmSync(contested, { recursive: true, force: true });
+  });
+});

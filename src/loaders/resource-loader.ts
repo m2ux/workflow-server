@@ -5,6 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
 import { logInfo, logError } from '../logging.js';
 import type { Resource } from '../schema/resource.schema.js';
+import { workflowSubdir } from './corpus-index.js';
 
 export { ResourceNotFoundError } from '../errors.js';
 export type { Resource };
@@ -29,8 +30,8 @@ function extractFrontmatterScalar(content: string, key: string): string | undefi
  * Resolve the resource directory for a workflow.
  */
 function getResourceDir(workflowDir: string, workflowId: string): string | null {
-  const resourceDir = join(workflowDir, workflowId, 'resources');
-  if (existsSync(resourceDir)) return resourceDir;
+  const resourceDir = workflowSubdir(workflowDir, workflowId, 'resources');
+  if (resourceDir && existsSync(resourceDir)) return resourceDir;
   return null;
 }
 
@@ -70,7 +71,7 @@ async function findResourceSkillMd(workflowDir: string, workflowId: string, id: 
 /**
  * Read a resource by id and return raw markdown content with format metadata.
  *
- * Resources live exclusively under `<workflowDir>/<workflowId>/resources/<id>/SKILL.md`.
+ * Resources live exclusively under the workflow's own `resources/<id>/SKILL.md`.
  * The legacy flat `NN-name.md` shape is no longer supported.
  */
 export async function readResourceRaw(
