@@ -5,6 +5,7 @@ import { parse as parseYaml } from 'yaml';
 import { evaluateWhenExpression } from '../src/schema/when-expression.js';
 import { evaluateCondition, validateCondition } from '../src/schema/condition.schema.js';
 import { corpusRoot } from './corpus-root.js';
+import { workflowSubdir } from '../src/loaders/corpus-index.js';
 
 /**
  * The client activity loop, walked (#407).
@@ -115,7 +116,7 @@ interface LoopDef extends OuterStep { steps: LoopStep[] }
 
 function activityDef(): { steps: OuterStep[] } {
   return parseYaml(
-    readFileSync(join(corpusRoot(), 'meta/activities/03-dispatch-client-workflow.yaml'), 'utf8'),
+    readFileSync(workflowSubdir(corpusRoot(), 'meta', 'activities/03-dispatch-client-workflow.yaml')!, 'utf8'),
   ) as { steps: OuterStep[] };
 }
 

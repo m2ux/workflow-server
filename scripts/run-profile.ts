@@ -310,7 +310,7 @@ function transitions(main: TranscriptRecord[]): Transition[] {
 }
 
 /**
- * The meta workflow's activity roster, from `workflows/meta/activities/`. The bootstrap protocol
+ * The meta workflow's activity roster, from its own `activities/`. The bootstrap protocol
  * fixes this one workflow, so its ids identify a meta session; every other session a run transitions
  * belongs to the client workflow the meta walk dispatched.
  */

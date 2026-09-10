@@ -15,6 +15,7 @@ import { expectStampFresh } from '../stamp-freshness.js';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { corpusRoot } from '../corpus-root.js';
+import { workflowSubdir } from '../../src/loaders/corpus-index.js';
 
 /**
  * Expected numeric prefix of each activity, read from the activity FILENAMES
@@ -23,7 +24,7 @@ import { corpusRoot } from '../corpus-root.js';
  * chain: filename → server artifactPrefix → get_workflow exposure → robot application.
  */
 function expectedActivityPrefixes(): Map<string, string> {
-  const dir = join(corpusRoot(), 'work-package/activities');
+  const dir = workflowSubdir(corpusRoot(), 'work-package', 'activities')!;
   const map = new Map<string, string>();
   for (const f of readdirSync(dir)) {
     const m = f.match(/^(\d+)-(.+)\.yaml$/);
