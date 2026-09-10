@@ -48,7 +48,7 @@ The directories, and what each one owns:
 | `schemas/` | JSON Schemas generated from the Zod sources, for editor tooling |
 | `scripts/` | Install and container helpers, schema generation, the corpus guards, and the benchmarks |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` |
-| `workflows/` | A worktree of the `workflows` branch: one directory per workflow, each with `workflow.yaml`, `activities/`, `techniques/` and `resources/` |
+| `workflows/` | A worktree of the `workflows` branch: one directory per workflow at any depth, each with `workflow.yaml`, `activities/`, `techniques/` and `resources/` |
 | `docs/` | This documentation |
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
@@ -380,7 +380,9 @@ A definition change lands as two commits: one on the `workflows` branch, and one
 
 ## Adding a workflow
 
-Create a directory under `workflows/{workflow-id}/` with a `workflow.yaml` in it, then check it before committing:
+Create a directory named for the workflow's id with a `workflow.yaml` in it, anywhere under `workflows/`. Grouping folders carry no definition and exist to organise the corpus, so `workflows/security/audits/prism/workflow.yaml` is the workflow `prism` and is referenced by that name alone. Three folder names are reserved for a workflow's own parts wherever they appear — `activities`, `resources` and `techniques` — and never name a workflow. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
+
+Check it before committing:
 
 ```bash
 npx tsx scripts/validate-workflow-yaml.ts <path>
