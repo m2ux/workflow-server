@@ -96,13 +96,15 @@ stateDiagram-v2
 
 The first fork is one destination naming three members — two activities directly, and a third with a collection to run it over. The other two name one activity and a collection. Suffixes read `#0` through `#n` because a fan's width is settled when it opens, not when it is authored.
 
-No call announces that a barrier has been met. The frontier holds the branches still outstanding, each returning branch removes itself, and the branch that empties it is the one that enters the convergence — which is derived from where the branches' exits lead rather than declared anywhere in the graph.
+Each branch finishes the way any activity does, naming the activity they converge on. The session record keeps a list of the branches still outstanding; a branch finishing takes itself off that list, and for all but one of them that is the whole effect of the call. The call that empties the list is the one that enters the convergence.
+
+So nothing detects that a fan is complete and announces it — completeness is simply what the record shows once the last branch has reported. Nor does any activity declare itself the meeting point: the meeting point is wherever the branches' exits lead. This convergence is what the canon calls the fan's barrier.
 
 ---
 
 ## Orchestration Model
 
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md). Fanning adds [dispatch-fan](../meta/techniques/workflow-engine/dispatch-fan.md), which is delivered only to a workflow whose graph holds a fan: it is what tells an orchestrator to open every branch in one turn, give each its own identity, and read the barrier rather than decide it.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md). Fanning adds [dispatch-fan](../meta/techniques/workflow-engine/dispatch-fan.md), which is delivered only to a workflow whose graph holds a fan: it is what tells an orchestrator to open every branch in one turn, give each its own identity, and take the convergence from what the record shows rather than judging for itself when the fan is done.
 
 ---
 
@@ -117,7 +119,7 @@ An exit's destination takes three written forms, and one reserved id ends the ru
 | One activity with a collection to run it over | One branch per element | Stages two and three |
 | `__terminal__` | Nothing — the run ends | The report's exit |
 
-`__terminal__` is a reserved activity id rather than a form of its own, which is why a destination is a string, a list, or an instance fan and nothing else. A list member is never itself a list, so a barrier inside a barrier cannot be written down rather than being refused when it is.
+`__terminal__` is a reserved activity id rather than a form of its own, which is why a destination is a string, a list, or an instance fan and nothing else. A list member is only ever an activity id or an instance fan, never another list, so one destination cannot be nested inside another: the schema has no way to write it down, rather than the load refusing it after the fact. A branch activity may still have a fanning exit of its own — that is the next destination, reached after this one converges, not a destination inside this one.
 
 Four properties are reached only in the first destination, and each is there for a reason that destination would have anyway:
 
