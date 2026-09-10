@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHarness, type Harness } from './harness.js';
 import { enumeratePaths } from './walker.js';
 import { baseSimulation } from './policies.js';
 import { declaredCheckpoints, declaredOptions, optionCoverage, checkpointGaps } from './coverage.js';
 import { corpusRoot } from '../corpus-root.js';
+import { indexCorpus } from '../../src/loaders/corpus-index.js';
 import { expectStampFresh } from '../stamp-freshness.js';
 import { WALKED } from './walked-workflows.js';
 
@@ -81,8 +82,7 @@ function listed(expected: Expected): string[] {
 
 /** Every workflow the corpus holds, so the two lists above can be checked against it rather than trusted. */
 function corpusWorkflows(): string[] {
-  const root = corpusRoot();
-  return readdirSync(root).filter((d) => existsSync(join(root, d, 'workflow.yaml'))).sort();
+  return [...indexCorpus(corpusRoot()).workflows.keys()].sort();
 }
 
 /**

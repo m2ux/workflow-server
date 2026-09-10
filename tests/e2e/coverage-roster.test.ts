@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { readdirSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+
+
 import { corpusRoot } from '../corpus-root.js';
+import { indexCorpus } from '../../src/loaders/corpus-index.js';
 import { WALKED, NOT_WALKED } from './walked-workflows.js';
 
 /**
@@ -15,8 +16,7 @@ import { WALKED, NOT_WALKED } from './walked-workflows.js';
 describe('coverage roster', () => {
   /** Every workflow the corpus holds, so the two lists are checked against it rather than trusted. */
   function corpusWorkflows(): string[] {
-    const root = corpusRoot();
-    return readdirSync(root).filter((d) => existsSync(join(root, d, 'workflow.yaml'))).sort();
+    return [...indexCorpus(corpusRoot()).workflows.keys()].sort();
   }
 
   it('accounts for every workflow the corpus holds', () => {
