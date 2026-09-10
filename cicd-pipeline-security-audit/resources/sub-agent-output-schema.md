@@ -14,10 +14,10 @@ Each per-submodule scanner agent (S1-Sn) writes a JSON file to the planning fold
 ## File Naming Convention
 
 ```
-s{scanner_number}-{submodule_path}.json
+{scanner_assignment.id}-{scanner_assignment.submodule}.json
 ```
 
-Where `{scanner_number}` is the scanner agent ordinal (1-based) and `{submodule_path}` is the submodule directory name (e.g., `s1-midnight-node.json`).
+Both parts come off the scanner's own roster entry — its designator and its assigned submodule — so every scanner in a run resolves a filename of its own (e.g., `S1-midnight-node.json`). The verification and merge agents, which are dispatched singly rather than fanned, name their file from their own designator instead.
 
 ## Schema
 

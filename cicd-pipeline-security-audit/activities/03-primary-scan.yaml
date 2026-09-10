@@ -1,12 +1,13 @@
 id: primary-scan
-version: 1.5.0
+version: 2.0.0
 name: Primary Scan
-description: Run per-submodule scanner agents and merge their findings.
+description: Gather the per-submodule scanner branches and merge their findings.
 variables:
   reads:
     - merge_complete
     - planning_folder_path
-    - scanners_assigned
+    - scanner_assignments
+    - sub_workflow_scan_outputs
     - verification_complete
 techniques:
   - scatter-gather
@@ -17,22 +18,14 @@ steps:
     id: announce-start
     actions:
       - action: log
-        message: Starting primary scan — dispatching per-submodule scanner agents
-  - kind: technique
-    id: compose-all-scanners
-    technique: dispatch-scanners::compose-scanner-briefs
-  - kind: technique
-    id: dispatch-all-scanners
-    technique:
-      name: orchestration-patterns::dispatch-workers
-      inputs:
-        dispatch_concurrency: scanners_assigned
+        message: Starting primary scan — gathering the per-submodule scanner branches
   - kind: technique
     id: gather-all-scanners
     technique:
       name: orchestration-patterns::gather-results
       inputs:
-        expected_ids: worker_briefs
+        dispatched_results: sub_workflow_scan_outputs
+        expected_ids: scanner_assignments
   - kind: technique
     id: verify-dispatch-completeness
     technique: dispatch-scanners::verify-dispatch-completeness

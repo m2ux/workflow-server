@@ -24,11 +24,14 @@ All attacks follow the same pattern: untrusted data flows from an attacker-contr
 
 ```
 Phases:
-  1. Scope Setup ──> 2. Reconnaissance ──> 3. Primary Scan ──> 4. Report Generation
+                        ┌─ S1 Per-Submodule Scan ─┐
+  1. Scope Setup ──> 2. Reconnaissance ─ … ─┼──> 3. Primary Scan ──> 4. Report Generation
+                        └─ Sn Per-Submodule Scan ─┘
 
-Sub-Agent Model (Phase 3):
-  Orchestrator dispatches:
-    S1-Sn  : Per-submodule scanner agents (concurrent)
+Sub-Agent Model:
+  Reconnaissance's exit is a graph fan over the scanner roster:
+    S1-Sn  : One branch of Per-Submodule Workflow Scan per roster entry
+  Primary Scan dispatches:
     V      : Verification agent (coverage check)
     M      : Merge agent (dedup + reconciliation)
 ```
@@ -36,7 +39,8 @@ Sub-Agent Model (Phase 3):
 ### Orchestration Model
 
 - **Fully automated** — no user checkpoints; each activity gates the next phase on completion
-- **Per-submodule dispatch** — each scanner applies all 7 patterns to one submodule
+- **Per-submodule branches** — reconnaissance builds the scanner roster and the graph opens one branch of the scan activity per entry, each handed its own roster entry, all converging on Primary Scan once the last returns
+- **Roster-length width** — how many scanners run is the roster's length, bounded by the server's fan ceiling; no variable carries the count
 - **Coverage gate** — every `.github/workflows/*.yml` file must be scanned
 - **Reconciliation gate** — every scanner finding must map to a merged finding
 
@@ -60,10 +64,10 @@ cicd-pipeline-security-audit/
 ├── README.md                              # This file
 ├── activities/
 │   ├── 01-scope-setup.yaml                # Target + workflow file discovery
-│   ├── 02-reconnaissance.yaml             # Classify, map, assign agents
-│   ├── 03-primary-scan.yaml               # Dispatch scanners, verify, merge
+│   ├── 02-reconnaissance.yaml             # Classify, map, build the scanner roster
+│   ├── 03-primary-scan.yaml               # Gather the scanner branches, verify, merge
 │   ├── 04-report-generation.yaml          # Severity score + report
-│   ├── 05-sub-workflow-scan.yaml          # Per-submodule scan (sub-agent)
+│   ├── 05-sub-workflow-scan.yaml          # Per-submodule scan (one branch per roster entry)
 │   ├── 06-sub-verification.yaml           # Coverage verification (sub-agent)
 │   └── 07-sub-merge.yaml                  # Finding merge (sub-agent)
 ├── techniques/
@@ -72,7 +76,7 @@ cicd-pipeline-security-audit/
 │   ├── execute-sub-agent.md               # Sub-agent bootstrap + structured output (standalone)
 │   ├── inventory-workflows/               # File discovery + classification (group: 10 ops)
 │   ├── scan-injection-patterns/           # 7-pattern detection engine (group: load + P1-P7 + assemble)
-│   ├── dispatch-scanners/                 # Domain brief compose + gather project (group); dispatch/gather bind meta orchestration-patterns
+│   ├── dispatch-scanners/                 # Domain brief compose + gather project (group); dispatch/gather bind meta orchestration-patterns; scanner width comes from the graph fan
 │   ├── score-cicd-severity/               # Impact x Exploitability scoring (group: apply + calibrate)
 │   ├── verify-scan-output/                # Coverage verification (group: 4 ops)
 │   ├── merge-scan-findings/               # Dedup + reconciliation (group: 5 ops)
@@ -89,22 +93,22 @@ cicd-pipeline-security-audit/
 
 ## Activities
 
-The sequential phases of the audit — each activity is a distinct stage that must complete before the next begins. Each links to its authoritative YAML definition.
+The phases of the audit, each links to its authoritative YAML definition. All but the scanner branches run one at a time.
 
 | # | Activity | Role in the flow |
 |---|----------|------------------|
 | [01](activities/01-scope-setup.yaml) | Scope Setup | Discovers the target submodules and their workflow files, and stands up the planning folder the rest of the audit writes into |
-| [02](activities/02-reconnaissance.yaml) | Reconnaissance | Classifies triggers, maps permissions, and assigns one scanner agent per submodule so the scan can fan out |
-| [03](activities/03-primary-scan.yaml) | Primary Scan | Runs the scanner agents, independently verifies their coverage, and merges their findings into one reconciled set |
+| [02](activities/02-reconnaissance.yaml) | Reconnaissance | Classifies triggers, maps permissions, and builds the scanner roster the graph fans its exit over |
+| [05](activities/05-sub-workflow-scan.yaml) | Per-Submodule Workflow Scan | One branch per roster entry, each applying all seven detection patterns to its own submodule's workflow files |
+| [03](activities/03-primary-scan.yaml) | Primary Scan | The activity the scanner branches converge on: gathers their container, independently verifies their coverage, and merges their findings into one reconciled set |
 | [04](activities/04-report-generation.yaml) | Report Generation | Scores merged findings by severity and writes the final audit report |
 
 ### Sub-Agent Activities
 
-Delegated work units that run inside Phase 3 — each is executed by a dedicated sub-agent spawned by the orchestrator.
+Delegated work units Primary Scan dispatches singly, each executed by a dedicated sub-agent.
 
 | # | Activity | Agent | Role in the flow |
 |---|----------|-------|------------------|
-| [05](activities/05-sub-workflow-scan.yaml) | Per-Submodule Workflow Scan | S1-Sn | Applies all seven detection patterns to every workflow file in its assigned submodule |
 | [06](activities/06-sub-verification.yaml) | Scan Verification | V | Independently confirms that no file or pattern was skipped across all scanners |
 | [07](activities/07-sub-merge.yaml) | Finding Merge | M | Deduplicates, correlates, and reconciles scanner findings into a single trustworthy set |
 
@@ -119,12 +123,12 @@ Most capabilities are operation-groups: a `<group>/` directory holding a `TECHNI
 | 00 | [execute-cicd-audit](./techniques/execute-cicd-audit.md) | standalone | Orchestrate audit phases + gates | Supporting, all main activities (01-04) |
 | 01 | [score-cicd-severity](./techniques/score-cicd-severity/) | group | Impact x Exploitability severity scoring | Report Generation (step-level) |
 | 02 | [inventory-workflows](./techniques/inventory-workflows/) | group | Workflow file discovery + classification | Scope Setup, Reconnaissance (step-level) |
-| 03 | [scan-injection-patterns](./techniques/scan-injection-patterns/) | group | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
-| 04 | [dispatch-scanners](./techniques/dispatch-scanners/) | group | Domain brief compose + gather project; concurrent dispatch/gather bind meta `orchestration-patterns` | Primary Scan (step-level) |
+| 03 | [scan-injection-patterns](./techniques/scan-injection-patterns/) | group | 7-pattern detection (P1-P7) | Scanner branches S1-Sn (step-level) |
+| 04 | [dispatch-scanners](./techniques/dispatch-scanners/) | group | Domain brief compose + gather project; dispatch/gather bind meta `orchestration-patterns` | Primary Scan (step-level) |
 | 05 | [verify-scan-output](./techniques/verify-scan-output/) | group | Coverage verification | Sub-agent V (step-level), Report Generation (step-level) |
 | 06 | [merge-scan-findings](./techniques/merge-scan-findings/) | group | Dedup + reconciliation | Sub-agent M (step-level) |
 | 07 | [write-cicd-report](./techniques/write-cicd-report/) | group | Report generation | Report Generation (step-level) |
-| 08 | [execute-sub-agent](./techniques/execute-sub-agent.md) | standalone | Sub-agent bootstrap + structured output | Supporting, sub-agents S1-Sn, V, M |
+| 08 | [execute-sub-agent](./techniques/execute-sub-agent.md) | standalone | Sub-agent bootstrap + structured output | Supporting, sub-agents V and M. A scanner branch is a worker on this session, so the engine hands it its activity and it needs no bootstrap of its own |
 
 ### Why the knowledge graph is absent
 
@@ -153,7 +157,7 @@ Reference material loaded by the agent at runtime — pattern catalogs, scoring 
 | START-HERE.md | Scope Setup | Audit scope, methodology, artifact index |
 | reconnaissance-summary.json | Reconnaissance | Workflow classification data |
 | scanner-assignments.json | Reconnaissance | Agent-to-submodule mapping |
-| s{scanner_number}-{submodule_path}.json | Scanner S{scanner_number} | Per-submodule scan findings |
+| {scanner_assignment.id}-{scanner_assignment.submodule}.json | One scanner branch | Per-submodule scan findings |
 | verification-report.json | V agent | Coverage verification |
 | merged-findings.json | M agent | Unified finding set |
 | reconciliation-table.json | M agent | Scanner-to-merged finding map |

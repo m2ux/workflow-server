@@ -1,13 +1,15 @@
 id: sub-workflow-scan
-version: 1.3.0
+version: 2.0.0
 name: Per-Submodule Workflow Scan
 description: Scan the assigned submodule's workflow files for the seven detection patterns.
 variables:
   reads:
     - planning_folder_path
-techniques:
-  - execute-sub-agent
-required: false
+    - scanner_assignment
+  writes:
+    - name: scan_results
+      type: object
+      description: This submodule's structured findings, observations and per-file coverage confirmation.
 steps:
   - kind: action
     id: announce-start
@@ -46,6 +48,9 @@ steps:
     actions:
       - action: log
         message: Per-submodule scan complete — findings written to output file
+exits:
+  - id: scanned
+    isDefault: true
 outcome:
   - This submodule's workflows have full seven-class coverage, so the parent audit can account for it as scanned
   - Each finding carries source-to-sink evidence a reviewer can independently confirm, and is structured so the parent can collect and merge it without re-parsing

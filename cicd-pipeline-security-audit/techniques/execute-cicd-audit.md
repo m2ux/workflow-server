@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Orchestrator contract for a CI/CD pipeline security audit: dispatch scanner, verification, and merge sub-agents, and enforce the phase, dispatch-completeness, coverage, and reconciliation gates that govern the audit.
+Orchestrator contract for a CI/CD pipeline security audit: drive the scanner branches the graph opens, dispatch the verification and merge sub-agents, and enforce the phase, dispatch-completeness, coverage, and reconciliation gates that govern the audit.
 
 ## Rules
 
 ### orchestration-only
 
-Coordinate sub-agent dispatch and gate enforcement only; never analyze workflow files or produce findings directly. All detection is delegated to scanner sub-agents.
+Coordinate dispatch and gate enforcement only; never analyze workflow files or produce findings directly. All detection is delegated to the scanner branches.
 
 ### verification-not-self-certified
 

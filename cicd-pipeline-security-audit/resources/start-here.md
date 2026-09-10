@@ -23,9 +23,10 @@ Detect source-to-sink injection vulnerabilities in GitHub Actions workflows acro
 | Phase | Activity | Output |
 |-------|----------|--------|
 | 1. Scope Setup | Discover targets, inventory workflow files | START-HERE.md |
-| 2. Reconnaissance | Classify triggers, map permissions, assign agents | reconnaissance-summary.json |
-| 3. Primary Scan | Dispatch scanners (S1-Sn), verify (V), merge (M) | merged-findings.json |
-| 4. Report | Score severity, write report | 01-cicd-audit-report.md |
+| 2. Reconnaissance | Classify triggers, map permissions, build the scanner roster | reconnaissance-summary.json |
+| 3. Per-Submodule Scan | One branch per roster entry (S1-Sn), each scanning its own submodule | One scanner output file per branch |
+| 4. Primary Scan | Gather the branches, verify (V), merge (M) | merged-findings.json |
+| 5. Report | Score severity, write report | 01-cicd-audit-report.md |
 
 ## Detection Patterns
 
@@ -46,7 +47,7 @@ Detect source-to-sink injection vulnerabilities in GitHub Actions workflows acro
 | `START-HERE.md` | This file — scope and methodology |
 | `reconnaissance-summary.json` | Workflow classification data |
 | `scanner-assignments.json` | Agent-to-submodule mapping |
-| `s{scanner_number}-{submodule_path}.json` | Per-submodule scanner output |
+| `{scanner_assignment.id}-{scanner_assignment.submodule}.json` | Per-submodule scanner output |
 | `verification-report.json` | Coverage verification |
 | `merged-findings.json` | Unified finding set |
 | `reconciliation-table.json` | Scanner-to-merged finding mapping |
