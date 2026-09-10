@@ -1,16 +1,20 @@
 id: report-conformance
-version: 1.0.0
+version: 1.1.0
 name: Report Conformance
-description: The homogeneous fan's meeting point — read both containers whole and report what the run did.
+description: Where the probes converge — read every container whole and report what the run did.
 variables:
   reads:
     - component_path
+    - merge_report
+    - note_targets
     - planning_folder_path
     - probe_directory_outputs
     - probe_targets
     - run_started_at
     - survey_files_outputs
     - survey_history_outputs
+    - survey_plan
+    - survey_tree_outputs
 required: true
 steps:
   - kind: technique
@@ -28,4 +32,5 @@ exits:
     isDefault: true
 outcome:
   - A reader can tell from one document whether each branch ran in a context of its own and whether the batch overlapped, without reading a log
-  - Both fan forms are reported the same way, so the two are comparable and neither is described in terms the other cannot be
+  - Every fan form is reported the same way, so they are comparable and none is described in terms the others cannot be
+  - The forms the run exercised are named against the grammar they come from, so a reader learning the grammar can see which part each stage stands for

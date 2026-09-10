@@ -713,12 +713,12 @@ steps:
         issue_title: "{issue_title}"
   - kind: technique
     id: create-component-worktree
-    technique: manage-git::create-worktree
+    technique: version-control::create-worktree
     when: is_review_mode != true
   - kind: technique
     id: create-review-worktree
     technique:
-      name: manage-git::create-worktree
+      name: version-control::create-worktree
       inputs:
         create_branch: false
     when: is_review_mode == true

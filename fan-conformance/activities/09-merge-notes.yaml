@@ -1,0 +1,35 @@
+id: merge-notes
+version: 1.0.0
+name: Merge Notes
+description: Where the note writers converge — bring the branches they committed onto one.
+variables:
+  reads:
+    - component_path
+    - note_probe_outputs
+    - note_targets
+  writes:
+    - name: merge_report
+      type: object
+      description: What happened to each note branch — merged with its commit, conflicted with its paths, or empty because that instance committed nothing. Seeded empty, because the run routes past the writers where no probe found anything worth a note and the report reads this on both paths.
+      defaultValue: {}
+required: true
+steps:
+  - kind: technique
+    id: gather-the-writers
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        dispatched_results: note_probe_outputs
+        expected_ids: note_targets
+  - kind: technique
+    id: merge-the-branches
+    technique:
+      name: version-control::merge-branches
+      inputs:
+        branches_to_merge: note_probe_outputs
+exits:
+  - id: merged
+    isDefault: true
+outcome:
+  - Every branch a writer made is accounted for exactly once — merged, conflicted, or empty — so no instance's commit is left in a checkout nothing reads
+  - A conflict between two notes is reported with its paths rather than resolved by preferring one, because two units conflicting says the work was less independent than the fan assumed

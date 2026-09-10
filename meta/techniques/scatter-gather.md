@@ -11,7 +11,7 @@ Scatter work units, gather an ordered keyed collection, then combine — one gat
 
 1. Scatter, by mode:
    - **In a worker.** Iterate the work units in a `forEach` loop; invoke the per-unit operation once per unit; it emits one scalar output per iteration. The whole scatter runs in the calling context, and one delivery of the loop body's technique serves every pass.
-   - **In the graph.** Bind the exit that reaches the per-unit activity to a destination naming that activity together with the collection to run it over. The run opens one worker per element, each handed its own element at the name the destination gives, and the branches converge on the activity their own exits name. The branches share the calling worker's checkout, so none of them commits; where each unit's work is its own commit, the destination declares `isolation: worktree` and the shape around it changes — see [an-isolated-fan-commits-per-branch](#an-isolated-fan-commits-per-branch).
+   - **In the graph.** Bind the exit that reaches the per-unit activity to a destination naming that activity together with the collection to run it over. The run opens one worker per element, each handed its own element at the name the destination gives, and the branches converge on the activity their own exits name. The branches share the calling worker's checkout, so none of them commits; where each unit's work is its own commit, the fanned activity takes a checkout of its own — see [a-branch-that-commits-takes-a-checkout-of-its-own](#a-branch-that-commits-takes-a-checkout-of-its-own).
 2. Gather, ordered and keyed. Accumulate each unit's output into the gathered collection in input/iteration order, attaching the iteration key to each entry when supplied. Accumulation APPENDS — a per-unit scalar never overwrites the prior unit's value.
    - **In a worker:** append each iteration's scalar; the gather is what prevents a per-iteration scalar from clobbering the prior one.
    - **In the graph:** the container the fan lands is already the gathered collection — one dense slot per branch in collection order, each carrying its unit's id and that branch's values. Hand it whole to [orchestration-patterns](./orchestration-patterns/TECHNIQUE.md)::[gather-results](./orchestration-patterns/gather-results.md) with the fan's own collection as the expected ids.
@@ -35,9 +35,9 @@ Per-unit outputs are gathered into an isolated ordered collection and merged ONL
 
 The gathered collection is in work-unit order — under a graph fan the slot is the collection's own position — so the combine step and any downstream report are deterministic.
 
-### an-isolated-fan-commits-per-branch
+### a-branch-that-commits-takes-a-checkout-of-its-own
 
-A graph fan's branches share one working tree, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the destination declares `isolation: worktree` and each instance materialises a checkout of its own, commits there, and reports the branch it made. The activity the fan converges on reconciles the branches the container names — the ones that exist, rather than the ones a plan predicted — because after a fan nothing else holds all of them.
+A graph fan's branches share one working tree, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the fanned activity binds [create-worktree](./version-control/create-worktree.md) as its own step, and the load admits the version-control operations for it on that evidence — the wiring is the claim, so there is nothing to declare and nothing to take on trust. The activity the fan converges on reconciles the branches the container names, because after a fan nothing else holds all of them.
 
 > Reach for it only where per-unit attribution is the point: it costs a checkout per branch and makes the convergence responsible for a reconciliation that can conflict.
 
@@ -47,9 +47,9 @@ An instance names its worktree from the instance index its delivery already carr
 
 > `git worktree add` writes the repository's administrative files, and distinct worktree names touch distinct paths under per-ref locks, so instances materialising together is expected to hold. Where a repository is large enough that several checkouts at once is the cost that hurts, the activity before the fan materialises them in one pass — a remedy for an observed problem rather than the shape to start from.
 
-### isolation-is-per-member-and-uniform-within-one
+### a-checkout-belongs-to-an-activity-not-a-destination
 
-A list destination may carry an isolated member beside a plain one, and only the isolated member's activity may commit. Within a member it is all of the instances or none: they run the same steps, so a checkout for some and the shared tree for others is one activity behaving two ways, and an instance committing the shared tree while its siblings write it is what the refusal prevents. Where only some units commit, give them all a worktree, or run the committing units as a fan of their own.
+Whether instances commit into checkouts of their own is a property of the activity they run, so it is settled where that activity is written and holds for every destination that fans it. An activity binding the worktree step commits into its own tree wherever it is reached; one that does not, does not. Nothing on the routing says otherwise, which is why a list destination can carry that activity beside one that only reports values without the two arrangements having to be reconciled.
 
 ### a-join-gathers-the-container-not-an-index
 

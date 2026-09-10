@@ -1,0 +1,23 @@
+id: survey-tree
+version: 1.0.0
+name: Survey Tree
+description: Walk one root of the component and report its shape, one instance per root.
+variables:
+  reads:
+    - component_path
+    - survey_root
+  writes:
+    - name: tree_survey
+      type: object
+      description: The one root this instance walked — its depth, its directory and file counts, and this instance's own start and finish instants.
+required: true
+steps:
+  - kind: technique
+    id: walk-the-root
+    technique: survey-tree
+exits:
+  - id: surveyed
+    isDefault: true
+outcome:
+  - Each root is walked by an instance that was handed only that root, so a slot reporting another root's name is a mismatch the report prints rather than reconciles
+  - This instance's own interval is recorded, so whether it ran beside the two activities named alongside it in the same destination is a fact in the record

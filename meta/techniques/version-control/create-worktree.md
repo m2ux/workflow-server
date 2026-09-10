@@ -9,9 +9,25 @@ Working directory materialised as a git worktree of the component, on either a f
 
 ## Inputs
 
+### branch_name
+
+The branch the worktree stands on — created fresh, or checked out where it already exists.
+
+### target_path
+
+Where the worktree is materialised. A path of its own per worktree: git registers one checkout per path, so two callers naming one path are asking for a checkout that cannot exist twice.
+
+### component_git_dir
+
+The repository the worktree belongs to. Its administrative files are what `git worktree add` writes, and its `origin/HEAD` is what a fresh branch is based on.
+
 ### create_branch
 
-Optional. Boolean, default `true`. When true, create `{branch_name}` fresh off the component's default branch (`git worktree add -b`). When false, check out an existing `{branch_name}` (no `-b`) — the branch already exists upstream (e.g. a PR's branch under review).
+*(optional)* Boolean. When true, create `{branch_name}` fresh off the component's default branch (`git worktree add -b`). When false, check out an existing `{branch_name}` (no `-b`) — the branch already exists upstream (e.g. a PR's branch under review).
+
+#### default
+
+`true`. A caller naming a branch that does not exist yet is the common case; checking one out is the exception a caller states.
 
 ## Outputs
 

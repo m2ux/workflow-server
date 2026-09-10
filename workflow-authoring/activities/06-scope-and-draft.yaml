@@ -68,7 +68,7 @@ steps:
   - kind: technique
     id: ensure-worktree
     technique:
-      name: work-package::manage-git::create-worktree
+      name: version-control::create-worktree
       inputs:
         branch_name: workflow_branch
         create_branch: true

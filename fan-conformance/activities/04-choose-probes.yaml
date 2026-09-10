@@ -1,13 +1,15 @@
 id: choose-probes
-version: 1.0.0
+version: 1.1.0
 name: Choose Probes
-description: The heterogeneous fan's meeting point — gather both surveys and pick the directories to probe.
+description: The first fan's meeting point — gather every survey it opened and pick the directories to probe.
 variables:
   reads:
     - component_path
     - probe_budget
     - survey_files_outputs
     - survey_history_outputs
+    - survey_plan
+    - survey_tree_outputs
   writes:
     - name: probe_targets
       type: array
@@ -28,5 +30,6 @@ exits:
   - id: chosen
     isDefault: true
 outcome:
-  - Both surveys are in one place, each in the slot its own branch landed it in, so neither could have overwritten the other
-  - The directories worth probing are chosen from what both surveys saw together, which is the reason the two ran before this one rather than beside it
+  - Every survey is in one place, each in the slot its own branch landed it in, so none could have overwritten another
+  - The two activities named in that destination and the instances fanned alongside them are read the same way, so the mixture is one fan rather than two arrivals to reconcile
+  - The directories worth probing are chosen from what every survey saw together, which is the reason they ran before this one rather than beside it

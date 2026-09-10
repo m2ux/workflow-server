@@ -79,7 +79,7 @@ One commit publishes every branch's in-progress mark, made before the first bran
 
 One persist at convergence, naming every branch. What every fan's instances share is the session record and the planning folder, so a per-branch persist would commit a folder its siblings are still writing — and where one activity runs over a collection there is no way to attribute the change either, the instances sharing one activity id.
 
-Where the branches also share the working tree, which is every fan whose destination does not declare `isolation: worktree`, the same holds of their code changes: the writes land in one tree inside the concurrent turn, so they are not serialised even though the retirements are, and a commit deriving its paths from that tree's status cannot tell two branches' changes apart. A destination that declares worktree isolation splits the checkouts and nothing else — each instance commits its own tree during its own run, and this persist still happens once, at convergence, for the record and the folder.
+Where the branches also share the working tree, which is every fan whose activity does not take a checkout of its own, the same holds of their code changes: the writes land in one tree inside the concurrent turn, so they are not serialised even though the retirements are, and a commit deriving its paths from that tree's status cannot tell two branches' changes apart. An activity that materialises its own checkout splits those trees and nothing else — each instance commits into its own during its own run, and this persist still happens once, at convergence, for the record and the folder.
 
 ### the-barrier-is-a-reading
 

@@ -1,9 +1,9 @@
 $schema: ../../schemas/workflow.schema.json
 id: fan-conformance
-version: 1.0.0
+version: 3.0.0
 title: Fan Conformance Workflow
 description: >-
-  Run both forms of graph fan against a real checkout and report what the run did: one worker per branch, each with its own identity and its own container slot, entering the activity they converge on once. A destination naming several different activities runs them side by side; a destination naming one activity and a collection runs it once per element. The work each branch does is a cheap survey of the component, so the run costs little and the evidence is about the routing rather than about the survey.
+  Run every form of graph fan against a real checkout and report what the run did: one worker per branch, each with its own identity and its own container slot, entering the activity they converge on once. A destination names activities to run side by side, one activity with a collection to run it once per element of, or both together in one list. The work each branch does is a cheap survey of the component, so the run costs little and the evidence is about the routing rather than about the survey.
 author: m2ux
 tags:
   - fan
@@ -27,9 +27,15 @@ graph:
     planned:
       - survey-files
       - survey-history
+      - activity: survey-tree
+        over: survey_plan.roots
+        variable: survey_root
+        maxInstances: 2
   survey-files:
     surveyed: choose-probes
   survey-history:
+    surveyed: choose-probes
+  survey-tree:
     surveyed: choose-probes
   choose-probes:
     chosen:
@@ -37,6 +43,16 @@ graph:
       over: probe_targets
       variable: probe_target
   probe-directory:
-    probed: report-conformance
+    probed: open-notes
+  open-notes:
+    opened:
+      activity: note-probe
+      over: note_targets
+      variable: note_target
+    nothing-to-note: report-conformance
+  note-probe:
+    noted: merge-notes
+  merge-notes:
+    merged: report-conformance
   report-conformance:
     reported: __terminal__

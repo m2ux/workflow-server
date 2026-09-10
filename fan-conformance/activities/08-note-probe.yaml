@@ -1,0 +1,45 @@
+id: note-probe
+version: 1.0.0
+name: Note Probe
+description: Write this note in a checkout of its own and commit it there.
+variables:
+  reads:
+    - component_path
+    - note_target
+  writes:
+    - name: note_commit
+      type: object
+      description: The commit this instance landed, and its own start and finish instants.
+    - name: note_message
+      type: string
+      description: The commit message for this note, naming the directory it covers.
+    - name: note_path
+      type: string
+      description: The note file this instance wrote inside its own checkout, and the one path its commit stages.
+required: true
+steps:
+  - kind: technique
+    id: take-a-checkout-of-this-instance-s-own
+    technique:
+      name: version-control::create-worktree
+      inputs:
+        branch_name: note_target
+        component_git_dir: component_path
+        target_path: note_target
+  - kind: technique
+    id: write-the-note
+    technique: note-probe
+  - kind: technique
+    id: commit-the-note
+    technique:
+      name: version-control::commit-regular-files
+      inputs:
+        branch: note_target
+        commit_message: note_message
+        paths: note_path
+exits:
+  - id: noted
+    isDefault: true
+outcome:
+  - This note is a commit of its own, attributable to the one unit that produced it rather than pooled with its siblings' work
+  - The branch it landed on is reported back, so the activity the fan converges on merges what exists rather than what was planned
