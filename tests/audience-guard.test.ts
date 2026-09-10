@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectAudienceViolations } from '../scripts/check-audience.js';
 
 /**
@@ -45,7 +46,7 @@ describe('audience guard (fixture corpus)', () => {
       '#### artifact', '', '`assumptions-log.md`', '',
       '#### audience', '', '`agent`',
     ]);
-    const violations = await collectAudienceViolations(tempDir);
+    const violations = await collectAudienceViolations(declareFixtureWorkflows(tempDir));
     expect(violations.map((v) => v.key)).toEqual(['fixture-wf::bad::state_log']);
     expect(violations[0]!.check).toBe('audience-json-format');
     expect(violations[0]!.detail).toContain('assumptions-log.md');
@@ -59,7 +60,7 @@ describe('audience guard (fixture corpus)', () => {
       '### report', '', 'A report with no declared reader.', '',
       '#### artifact', '', '`design-review.md`',
     ]);
-    const violations = await collectAudienceViolations(tempDir);
+    const violations = await collectAudienceViolations(declareFixtureWorkflows(tempDir));
     expect(violations).toHaveLength(1);
     expect(violations[0]!.check).toBe('audience-declared');
     expect(violations[0]!.detail).toContain('design-review.md');
@@ -82,7 +83,7 @@ describe('audience guard (fixture corpus)', () => {
       '### transient_state', '', 'Bag-only state.', '',
       '#### audience', '', '`agent`',
     ]);
-    const violations = await collectAudienceViolations(tempDir);
+    const violations = await collectAudienceViolations(declareFixtureWorkflows(tempDir));
     expect(violations).toEqual([]);
   });
 
@@ -93,7 +94,7 @@ describe('audience guard (fixture corpus)', () => {
       '#### artifact', '', '`{package_name}-state.json`', '',
       '#### audience', '', '`agent`',
     ]);
-    const violations = await collectAudienceViolations(tempDir);
+    const violations = await collectAudienceViolations(declareFixtureWorkflows(tempDir));
     expect(violations).toEqual([]);
   });
 });

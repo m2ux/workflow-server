@@ -2,6 +2,7 @@ import { describe, it, expect, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectFindings } from '../scripts/check-loop-shape.js';
 
 /**
@@ -30,7 +31,7 @@ function rootWithLoop(loop: string): string {
       '    steps:', '      - kind: action', '        id: do-something',
       'transitions: []', ''].join('\n'),
   );
-  return root;
+  return declareFixtureWorkflows(root);
 }
 
 const checks = (loop: string): string[] => collectFindings(rootWithLoop(loop)).map((f) => f.check);
@@ -106,7 +107,7 @@ describe('loop shape', () => {
       '        steps:', '          - kind: action', '            id: do-something',
       'transitions: []', '',
     ].join('\n'));
-    expect(collectFindings(root).map((f) => f.site))
+    expect(collectFindings(declareFixtureWorkflows(root)).map((f) => f.site))
       .toEqual(['demo/activities/01-demo.yaml[inner-cycle]']);
   });
 });

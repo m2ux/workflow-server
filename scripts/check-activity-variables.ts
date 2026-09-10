@@ -27,7 +27,7 @@
  *   npx tsx scripts/check-activity-variables.ts [--root <workflows-dir>] [--json]
  *   npx tsx scripts/check-activity-variables.ts --emit-contracts   # derived contracts, as JSON
  */
-import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
@@ -45,7 +45,7 @@ import {
 } from '../src/utils/activity-variables.js';
 import { branchKey, instanceFans } from '../src/schema/workflow.schema.js';
 import type { VariableDefinition } from '../src/schema/variable.schema.js';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -99,9 +99,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
   const findings: Finding[] = [];
   // What the orchestrator consumes out of the same bag, whichever workflow is running.
   const engineInputs = await orchestratorInputs(root);
-  const workflows = readdirSync(root)
-    .filter((entry) => statSync(join(root, entry)).isDirectory() && existsSync(join(root, entry, 'workflow.yaml')))
-    .sort();
+  const workflows = corpusWorkflows(root).map(({ id }) => id);
   assertScanned(workflows.length, 'workflows with a workflow.yaml', root);
 
   for (const workflowId of workflows) {
@@ -114,7 +112,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       continue;
     }
     const { workflow, activitySourceWorkflow } = loaded.value;
-    const rawWorkflowYaml = readFileSync(join(root, workflowId, 'workflow.yaml'), 'utf-8');
+    const rawWorkflowYaml = readFileSync(workflowSubdir(root, workflowId, 'workflow.yaml')!, 'utf-8');
     const owned = new Set(ownDeclarations(rawWorkflowYaml).map((declaration) => declaration.name));
     const proseReads = workflowProseReads(rawWorkflowYaml);
 
@@ -473,7 +471,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
 /** The derived contracts, as JSON: `<workflow>::<activity>` → reads, writes, iteration variables. */
 async function emitContracts(root: string): Promise<void> {
   const out: Record<string, { reads: string[]; writes: string[]; internalReads: string[]; sourceWorkflowId: string }> = {};
-  for (const workflowId of readdirSync(root).filter((e) => existsSync(join(root, e, 'workflow.yaml'))).sort()) {
+  for (const { id: workflowId } of corpusWorkflows(root)) {
     const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
     if (!loaded.success) continue;
     const namespace = new Set((loaded.value.workflow.variables ?? []).map((declaration) => declaration.name));

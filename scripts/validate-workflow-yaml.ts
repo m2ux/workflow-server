@@ -12,12 +12,13 @@
  * when somebody remembered (issue #327 S1).
  */
 
-import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
+import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { parseActivityFilename } from '../src/loaders/filename-utils.js';
 import { validateActivityFile } from './validate-activities.js';
 import { requireRootOrExit } from './guard-protocol.js';
+import { corpusWorkflows } from './workflows-root.js';
 
 /**
  * Check NN- filename prefix and report duplicate skill/activity IDs.
@@ -98,8 +99,14 @@ function checkTechniqueProtocolRefs(file: string): string[] {
 
 const positional = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : undefined;
 
-/** Every workflow directory to validate: the positional one, or all of them under the corpus root. */
-function targets(): string[] {
+/**
+ * The corpus root and every workflow directory to validate within it: the positional one, or all
+ * of them. The root is carried alongside, because a workflow borrowing another's activities is
+ * resolved against the whole corpus — which is the root, never the folder a workflow happens to
+ * sit in.
+ */
+function targets(): { root: string; dirs: string[] } {
+  const root = requireRootOrExit('workflow-yaml', resolve(import.meta.dirname, '../workflows'));
   if (positional) {
     const dir = resolve(positional);
     if (!existsSync(dir)) {
@@ -112,22 +119,17 @@ function targets(): string[] {
       console.error('The specified directory does not appear to be a workflow directory.');
       process.exit(2);
     }
-    return [dir];
+    return { root, dirs: [dir] };
   }
-  const root = requireRootOrExit('workflow-yaml', resolve(import.meta.dirname, '../workflows'));
-  return readdirSync(root)
-    .map((entry) => join(root, entry))
-    .filter((dir) => statSync(dir).isDirectory() && existsSync(join(dir, 'workflow.yaml')))
-    .sort();
+  return { root, dirs: corpusWorkflows(root).map(({ dir }) => dir) };
 }
 
-async function validateWorkflowDir(workflowDirPath: string): Promise<number> {
+async function validateWorkflowDir(root: string, workflowDirPath: string): Promise<number> {
   const workflowId = workflowDirPath.split(/[/\\]/).pop() ?? '';
-  const parentDir = resolve(workflowDirPath, '..');
   let failed = 0;
 
   console.log(`\n═══ ${workflowId} ═══`);
-  const loadResult = await loadWorkflow(parentDir, workflowId);
+  const loadResult = await loadWorkflow(root, workflowId);
   if (loadResult.success) {
     console.log('[PASS] workflow.yaml valid');
     console.log(`   ID: ${loadResult.value.id}, Version: ${loadResult.value.version}, Activities: ${loadResult.value.activities.length}`);
@@ -182,9 +184,9 @@ async function validateWorkflowDir(workflowDirPath: string): Promise<number> {
 }
 
 async function main() {
-  const dirs = targets();
+  const { root, dirs } = targets();
   let failed = 0;
-  for (const dir of dirs) failed += await validateWorkflowDir(dir);
+  for (const dir of dirs) failed += await validateWorkflowDir(root, dir);
 
   console.log('\n' + '─'.repeat(50));
   console.log(failed === 0

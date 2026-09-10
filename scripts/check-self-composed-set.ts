@@ -23,11 +23,11 @@
  * Run:
  *   npx tsx scripts/check-self-composed-set.ts
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree.
@@ -94,12 +94,9 @@ function walk(node: unknown, file: string, out: SelfComposedSetViolation[]): voi
 
 export function collectSelfComposedSetViolations(root: string = ROOT): SelfComposedSetViolation[] {
   const out: SelfComposedSetViolation[] = [];
-  const wfs = readdirSync(root).filter((d) => {
-    const p = join(root, d);
-    return statSync(p).isDirectory() && existsSync(join(p, 'activities'));
-  });
-  for (const wf of wfs.sort()) {
-    const adir = join(root, wf, 'activities');
+  const wfs = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  for (const { dir } of wfs) {
+    const adir = join(dir, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
       const rel = relative(root, join(adir, f));
       try { walk(parseDefinition(readFileSync(join(adir, f), 'utf-8')), rel, out); }

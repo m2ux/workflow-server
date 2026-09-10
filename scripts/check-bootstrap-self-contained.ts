@@ -48,7 +48,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, stripDestinations, toLines } from './markdown-refs.js';
 
@@ -100,8 +100,8 @@ function declaredRules(root: string): Declared {
       if (heading) { pairs.add(`${owner}.${heading[1]}`); names.add(heading[1]!); }
     }
   };
-  for (const workflow of readdirSync(root).sort()) {
-    const techniquesDir = join(root, workflow, 'techniques');
+  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+    const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const entry of readdirSync(techniquesDir, { withFileTypes: true })) {
       const entryPath = join(techniquesDir, entry.name);

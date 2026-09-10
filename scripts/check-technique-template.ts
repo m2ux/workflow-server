@@ -31,7 +31,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
 import { ARTIFACT_NAME_PATTERN } from '../src/schema/technique.schema.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -196,8 +196,8 @@ function* walkFiles(dir: string): Generator<string> {
 
 export function collectTemplateViolations(root: string = ROOT): TemplateViolation[] {
   const violations: TemplateViolation[] = [];
-  for (const workflow of readdirSync(root).sort()) {
-    const techniquesDir = join(root, workflow, 'techniques');
+  for (const { dir } of corpusWorkflows(root)) {
+    const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const path of walkFiles(techniquesDir)) {
       violations.push(...lintTechniqueFile(readFileSync(path, 'utf-8'), relative(root, path)));

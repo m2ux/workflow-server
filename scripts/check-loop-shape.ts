@@ -30,11 +30,11 @@
  *
  * Run: npx tsx scripts/check-loop-shape.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -119,10 +119,7 @@ function walk(node: unknown, file: string, findings: Finding[]): void {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  const workflows = readdirSync(root).filter((entry) => {
-    const path = join(root, entry);
-    return statSync(path).isDirectory() && existsSync(join(path, 'activities'));
-  });
+  const workflows = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
   // Recursive, because activity definitions also sit a level down — `meta/activities/patterns/`
   // holds five, and a flat read leaves them unscanned while `assertScanned` still passes.
   const definitions = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
@@ -133,10 +130,10 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       return entry.name.endsWith('.yaml') ? [path] : [];
     });
 
-  for (const workflow of workflows.sort()) {
+  for (const { dir } of workflows) {
     // `workflow.yaml` too: a workflow file may carry activities inline, loops and all.
-    const roots = [join(root, workflow, 'workflow.yaml')].filter((path) => existsSync(path));
-    for (const path of [...roots, ...definitions(join(root, workflow, 'activities'))]) {
+    const roots = [join(dir, 'workflow.yaml')].filter((path) => existsSync(path));
+    for (const path of [...roots, ...definitions(join(dir, 'activities'))]) {
       scanned++;
       try {
         walk(parseDefinition(readFileSync(path, 'utf-8')), relative(root, path), findings);

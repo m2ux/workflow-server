@@ -15,8 +15,12 @@
  * as coverage the run never had (issue #327 S2). Guards that count what they inspect close the
  * loop with `assertScanned`.
  */
-import { existsSync, readdirSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { existsSync, statSync } from 'node:fs';
+import { relative, resolve } from 'node:path';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
+
+/** A directory a workflow owns, wherever the workflow sits — `null` for an id the corpus lacks. */
+export { workflowSubdir } from '../src/loaders/corpus-index.js';
 
 /** Where a resolved root came from, so a failure names the knob that selected it. */
 export type RootOrigin = '--root' | 'WORKFLOWS_DIR' | 'default';
@@ -37,11 +41,27 @@ export function resolveWorkflowsRootWithOrigin(
   return { root: defaultDir, origin: 'default' };
 }
 
-/** A workflow declares itself with a `workflow.yaml`, an `activities/`, or a `techniques/` folder. */
-function isWorkflowDir(path: string): boolean {
-  return existsSync(join(path, 'workflow.yaml'))
-    || existsSync(join(path, 'activities'))
-    || existsSync(join(path, 'techniques'));
+/**
+ * A workflow in the corpus, as a guard needs it: `id` names it in a finding, `dir` is where its
+ * files are read from, and `rel` is its path from the corpus root — what a finding cites, since a
+ * workflow sits at whatever depth the corpus organises it to.
+ */
+export interface CorpusWorkflow {
+  id: string;
+  dir: string;
+  rel: string;
+  /** The definition file itself. */
+  manifest: string;
+}
+
+/**
+ * Every workflow in a corpus, ordered by id. Guards enumerate through this rather than reading the
+ * root directly: discovery is the server's rule (a directory holding a `workflow.yaml`, at any
+ * depth, outside the reserved `activities`/`resources`/`techniques` names), so a workflow the
+ * server runs is a workflow the guards measure.
+ */
+export function corpusWorkflows(root: string): CorpusWorkflow[] {
+  return [...indexCorpus(root).workflows.values()].map(({ id, dir, manifest }) => ({ id, dir, manifest, rel: relative(root, dir) }));
 }
 
 export class UnreachableCorpusError extends Error {}
@@ -63,15 +83,11 @@ export function requireWorkflowsRoot(defaultDir: string, argv: string[] = proces
   if (!statSync(root).isDirectory()) {
     throw new UnreachableCorpusError(`workflows corpus root '${root}' (from ${from}) is not a directory.`);
   }
-  const workflows = readdirSync(root).filter((d) => {
-    const p = join(root, d);
-    return statSync(p).isDirectory() && isWorkflowDir(p);
-  });
-  if (workflows.length === 0) {
+  if (corpusWorkflows(root).length === 0) {
     throw new UnreachableCorpusError(
-      `workflows corpus root '${root}' (from ${from}) contains no workflow (no subdirectory with a `
-      + `workflow.yaml, activities/, or techniques/). An empty submodule checkout makes every corpus `
-      + `guard pass vacuously — run 'npm run worktree:provision' to populate it.`,
+      `workflows corpus root '${root}' (from ${from}) contains no workflow (no directory with a `
+      + `workflow.yaml at any depth). An empty submodule checkout makes every corpus guard pass `
+      + `vacuously — run 'npm run worktree:provision' to populate it.`,
     );
   }
   return root;

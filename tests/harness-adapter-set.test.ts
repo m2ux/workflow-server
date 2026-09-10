@@ -2,6 +2,7 @@ import { describe, it, expect, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectFindings } from '../scripts/check-harness-adapter-set.js';
 
 /**
@@ -67,7 +68,7 @@ function rootWith(
   }
   // An adapter file no row resolves to.
   if (opts?.orphan) writeFileSync(join(dir, `${opts.orphan}.md`), ADAPTER(slices));
-  return root;
+  return declareFixtureWorkflows(root);
 }
 
 const checks = (...args: Parameters<typeof rootWith>): string[] =>

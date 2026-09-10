@@ -34,7 +34,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, toLines } from './markdown-refs.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES } from '../src/loaders/core-ops.js';
@@ -249,7 +249,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     });
   }
 
-  for (const file of readdirSync(join(root, GROUP)).sort()) {
+  for (const file of readdirSync(workflowSubdir(root, 'meta', join('techniques', 'harness-compat'))!).sort()) {
     if (!file.endsWith('.md') || file === 'TECHNIQUE.md') continue;
     if (seenFiles.has(file) || GENERIC_OPS.has(file.replace(/\.md$/, ''))) continue;
     findings.push({

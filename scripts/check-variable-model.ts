@@ -35,7 +35,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { isOutsideValueSet } from '../src/schema/variable.schema.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
 import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -158,14 +158,14 @@ export function lintDeclarations(
 
 export function collectVariableModelViolations(root: string = ROOT): VariableModelViolation[] {
   const violations: VariableModelViolation[] = [];
-  for (const workflow of readdirSync(root).sort()) {
-    const workflowYamlPath = join(root, workflow, 'workflow.yaml');
+  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+    const workflowYamlPath = join(dir, 'workflow.yaml');
     if (!existsSync(workflowYamlPath)) continue;
     const workflowDoc: unknown = parse(readFileSync(workflowYamlPath, 'utf-8'));
     const decls = readDeclarations(root, workflow);
     violations.push(...lintDeclarations(decls, relative(root, workflowYamlPath)));
     violations.push(...lintDocument(workflowDoc, decls, relative(root, workflowYamlPath)));
-    const activitiesDir = join(root, workflow, 'activities');
+    const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
     for (const entry of readdirSync(activitiesDir).sort()) {
       if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;

@@ -60,7 +60,7 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { assertScanned } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, workflowSubdir } from './workflows-root.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
 
@@ -147,8 +147,8 @@ const allDeclaredInputSites = new Map<string, Set<string>>();
 const declaredOutputSites: Array<{ rel: string; id: string; hasArtifact: boolean }> = [];
 
 function buildRegistry(wf: string): void {
-  const tdir = join(ROOT, wf, 'techniques');
-  if (!existsSync(tdir)) return;
+  const tdir = workflowSubdir(ROOT, wf, 'techniques');
+  if (!tdir || !existsSync(tdir)) return;
   const reg: Reg = { ops: new Map(), groups: new Map() };
   const declared = new Set<string>();
   const note = (d: DetailedSig, rel: string) => {
@@ -192,7 +192,7 @@ function buildRegistry(wf: string): void {
   declaredByWf.set(wf, declared);
 }
 
-const workflows = readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDirectory() && existsSync(join(ROOT, d, 'techniques')));
+const workflows = corpusWorkflows(ROOT).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
 assertScanned(workflows.length, 'workflows with a techniques/ folder', ROOT);
 for (const wf of workflows) buildRegistry(wf);
 
@@ -271,8 +271,8 @@ const fanParameterByActivity = new Map<string, Map<string, string>>();
 const fanContainerMembers = new Map<string, Set<string>>();
 
 function collectWorkflowVars(wf: string): void {
-  const wt = join(ROOT, wf, 'workflow.yaml');
-  if (!existsSync(wt)) return;
+  const wt = workflowSubdir(ROOT, wf, 'workflow.yaml');
+  if (!wt || !existsSync(wt)) return;
   try {
     const p = parseDefinition(readFileSync(wt, 'utf-8')) as {
       variables?: Array<{ name?: string }>;
@@ -528,11 +528,12 @@ for (const wf of workflows) {
       }
     }
   };
-  walk(join(ROOT, wf, 'techniques'));
+  const techniques = workflowSubdir(ROOT, wf, 'techniques');
+  if (techniques) walk(techniques);
 }
 // activities + workflow vars
 const fragmentsLookup = fragmentsLookupSync(ROOT);
-const allWf = new Set([...workflows, ...readdirSync(ROOT).filter((d) => { const p = join(ROOT, d); return statSync(p).isDirectory() && existsSync(join(p, 'activities')); })]);
+const allWf = new Set([...workflows, ...corpusWorkflows(ROOT).filter(({ dir }) => existsSync(join(dir, 'activities'))).map(({ id }) => id)]);
 /**
  * Every activity file under a workflow's `activities/`, INCLUDING nested library subdirectories.
  * The server's own `loadActivitiesFromDir` is deliberately non-recursive (a subdirectory is a
@@ -556,10 +557,10 @@ for (const wf of allWf) {
   // (`When {headless_mode} is true, a checkpoint declaring both resolves to its defaultOption`), and
   // that is the value's one authoritative consumer. Scanning only activities left those reads
   // invisible, so the id they name read as dead.
-  const wfYaml = join(ROOT, wf, 'workflow.yaml');
-  if (existsSync(wfYaml)) collectReads(relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
-  const adir = join(ROOT, wf, 'activities');
-  if (!existsSync(adir)) continue;
+  const wfYaml = workflowSubdir(ROOT, wf, 'workflow.yaml');
+  if (wfYaml && existsSync(wfYaml)) collectReads(relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
+  const adir = workflowSubdir(ROOT, wf, 'activities');
+  if (!adir || !existsSync(adir)) continue;
   for (const path of activityFiles(adir)) {
     const rel = relative(ROOT, path); let raw = readFileSync(path, 'utf-8');
     // Materialize checkpoint fragment refs (#166 B10) before analysis, so fragment-declared

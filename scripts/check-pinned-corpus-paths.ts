@@ -21,8 +21,9 @@
  * matches nothing, and a second check over the same sites would be a second home for that verdict.
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 import { report, requireRootOrExit, type Finding } from './guard-protocol.js';
+import { corpusWorkflows } from './workflows-root.js';
 
 const REPO = resolve(import.meta.dirname, '..');
 const DEFAULT_ROOT = join(REPO, 'workflows');
@@ -77,9 +78,9 @@ export interface PinnedPathTally {
 }
 
 export function collect(root: string): PinnedPathTally {
-  const workflows = new Set(
-    readdirSync(root).filter((e) => statSync(join(root, e)).isDirectory()),
-  );
+  // The leading segment of every workflow's path from the root — the grouping folder where the
+  // corpus nests one, the workflow's own name where it sits at the top.
+  const workflows = new Set(corpusWorkflows(root).map(({ rel }) => rel.split(sep)[0]!));
   const findings: Finding[] = [];
   let authored = 0;
   let foreign = 0;

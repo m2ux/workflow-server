@@ -22,6 +22,7 @@ import { pathToFileURL } from 'url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { safeValidateActivity, populateStepIds } from '../src/schema/activity.schema.js';
 import { requireRootOrExit } from './guard-protocol.js';
+import { corpusWorkflows } from './workflows-root.js';
 
 export interface ValidationResult {
   workflow: string;
@@ -58,28 +59,18 @@ export function validateActivityFile(filePath: string): { passed: boolean; error
   }
 }
 
+/**
+ * The workflow directories to validate: the one named directly, or every workflow the corpus holds
+ * — at whatever depth it organises them.
+ */
 function findWorkflowDirs(basePath: string): string[] {
   const activitiesPath = join(basePath, 'activities');
-  
   if (existsSync(activitiesPath) && statSync(activitiesPath).isDirectory()) {
     return [basePath];
   }
-  
-  const workflows: string[] = [];
-  try {
-    const entries = readdirSync(basePath, { withFileTypes: true });
-    for (const entry of entries) {
-      if (entry.isDirectory()) {
-        const subActivitiesPath = join(basePath, entry.name, 'activities');
-        if (existsSync(subActivitiesPath) && statSync(subActivitiesPath).isDirectory()) {
-          workflows.push(join(basePath, entry.name));
-        }
-      }
-    }
-  } catch {
-    // Directory not readable
-  }
-  return workflows;
+  return corpusWorkflows(basePath)
+    .map(({ dir }) => dir)
+    .filter((dir) => existsSync(join(dir, 'activities')));
 }
 
 const isDirectInvocation =

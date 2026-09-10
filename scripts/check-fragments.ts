@@ -31,7 +31,7 @@
  *
  * Run: npx tsx scripts/check-fragments.ts [--root <workflows-dir>]
  */
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
@@ -42,7 +42,7 @@ import {
   META_WORKFLOW_ID,
 } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
 import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -115,9 +115,7 @@ export function collectFragmentViolations(root: string = ROOT): FragmentViolatio
   const violations: FragmentViolation[] = [];
   const lookup: FragmentsLookup = fragmentsLookupSync(root);
 
-  const workflowIds = readdirSync(root)
-    .filter((d) => statSync(join(root, d)).isDirectory() && existsSync(join(root, d, 'workflow.yaml')))
-    .sort();
+  const workflows = corpusWorkflows(root);
 
   // Fragment registry + usage tracking for the unused-fragment check.
   const usedCheckpointFragments = new Set<string>();
@@ -138,8 +136,8 @@ export function collectFragmentViolations(root: string = ROOT): FragmentViolatio
   const inlineRuleSites = new Map<string, Array<{ file: string; wf: string; text: string }>>();
   const inlineCheckpointSites = new Map<string, Array<{ file: string; stepId: string }>>();
 
-  for (const wf of workflowIds) {
-    const wfYamlPath = join(root, wf, 'workflow.yaml');
+  for (const { id: wf, dir } of workflows) {
+    const wfYamlPath = join(dir, 'workflow.yaml');
     const wfRel = relative(root, wfYamlPath);
     let doc: Record<string, unknown> | null = null;
     try { doc = parseDefinition(readFileSync(wfYamlPath, 'utf-8')) as Record<string, unknown> | null; } catch { continue; }
@@ -166,7 +164,7 @@ export function collectFragmentViolations(root: string = ROOT): FragmentViolatio
     }
 
     // Activity files: checkpoint refs and inline checkpoint bodies; activity-file inline rules.
-    const adir = join(root, wf, 'activities');
+    const adir = join(dir, 'activities');
     const activityFiles = existsSync(adir) ? readdirSync(adir).filter((f) => f.endsWith('.yaml') || f.endsWith('.yml')).sort() : [];
     for (const f of activityFiles) {
       const path = join(adir, f);
@@ -232,10 +230,10 @@ export function collectFragmentViolations(root: string = ROOT): FragmentViolatio
   }
 
   // Fragment registry sweep: exact/near matches against inline content, and unused declarations.
-  for (const wf of workflowIds) {
+  for (const { id: wf, rel } of workflows) {
     const fragments = lookup(wf);
     if (!fragments) continue;
-    const wfRel = join(wf, 'workflow.yaml');
+    const wfRel = join(rel, 'workflow.yaml');
     for (const [name, body] of Object.entries(fragments.checkpoints ?? {})) {
       const canonical = `${wf}::${name}`;
       if (!usedCheckpointFragments.has(canonical)) {

@@ -15,7 +15,7 @@ import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { parseWhen, type WhenAst } from '../src/schema/when-expression.js';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { declaredVariables } from './workflow-declarations.js';
 
@@ -169,8 +169,7 @@ function defaultedVariables(root: string, workflowId: string): Set<string> {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const workflow of readdirSync(root).sort()) {
-    const workflowDir = join(root, workflow);
+  for (const { id: workflow, dir: workflowDir } of corpusWorkflows(root)) {
     const activitiesDir = join(workflowDir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
     const defaulted = defaultedVariables(root, workflow);

@@ -26,7 +26,7 @@
 import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -69,8 +69,8 @@ interface MapRef {
   anchor?: string;
 }
 
-function walk(dir: string, out: string[] = []): string[] {
-  if (!existsSync(dir)) return out;
+function walk(dir: string | null, out: string[] = []): string[] {
+  if (!dir || !existsSync(dir)) return out;
   for (const entry of readdirSync(dir).sort()) {
     const p = join(dir, entry);
     if (statSync(p).isDirectory()) walk(p, out);
@@ -82,8 +82,8 @@ function walk(dir: string, out: string[] = []): string[] {
 /** Every map the corpus binds as a `canonical_home_map` input, deduplicated by ref. */
 function boundMaps(root: string): MapRef[] {
   const byRef = new Map<string, MapRef>();
-  for (const wf of readdirSync(root).sort()) {
-    const activities = join(root, wf, 'activities');
+  for (const { dir } of corpusWorkflows(root)) {
+    const activities = join(dir, 'activities');
     if (!existsSync(activities) || !statSync(activities).isDirectory()) continue;
     for (const entry of readdirSync(activities).sort()) {
       if (!entry.endsWith('.yaml')) continue;
@@ -92,9 +92,11 @@ function boundMaps(root: string): MapRef[] {
         const [workflow, ...rest] = m[1].split('/');
         const tail = rest.join('/');
         const anchor = m[2];
+        // A ref naming no workflow the corpus holds keeps an unresolvable path, which the caller
+        // reports as a missing home rather than silently skipping.
         const path = anchor
-          ? join(root, workflow, tail, 'TECHNIQUE.md')
-          : join(root, workflow, 'resources', `${tail}.md`);
+          ? workflowSubdir(root, workflow, join(tail, 'TECHNIQUE.md')) ?? join(root, workflow, tail, 'TECHNIQUE.md')
+          : workflowSubdir(root, workflow, join('resources', `${tail}.md`)) ?? join(root, workflow, 'resources', `${tail}.md`);
         const ref = anchor ? `${m[1]}#${anchor}` : m[1];
         byRef.set(ref, { ref, workflow, path, ...(anchor ? { anchor } : {}) });
       }
@@ -137,7 +139,7 @@ function homeFilenames(body: string): { row: string; artifact: string }[] {
 /** Every filename a technique declares under `#### artifact`, for one workflow. */
 function declaredArtifacts(root: string, workflow: string): Set<string> {
   const out = new Set<string>();
-  for (const file of walk(join(root, workflow, 'techniques'))) {
+  for (const file of walk(workflowSubdir(root, workflow, 'techniques'))) {
     const lines = readFileSync(file, 'utf-8').split('\n');
     for (let i = 0; i < lines.length; i++) {
       if (!/^#### +artifact\s*$/i.test(lines[i])) continue;

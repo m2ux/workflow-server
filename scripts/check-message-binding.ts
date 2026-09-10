@@ -17,7 +17,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { declaredVariables } from './workflow-declarations.js';
 
@@ -94,8 +94,8 @@ function setByEarlierGate(steps: Step[], before: number): Set<string> {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const workflow of readdirSync(root).sort()) {
-    const activitiesDir = join(root, workflow, 'activities');
+  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+    const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
 
     const files = readdirSync(activitiesDir).sort().filter((e) => /\.ya?ml$/.test(e));

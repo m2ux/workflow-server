@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectFindings } from '../scripts/check-branch-as-step.js';
 import { corpusRoot } from './corpus-root.js';
 
@@ -25,7 +26,7 @@ describe('branch-as-step guard', () => {
     try {
       mkdirSync(join(root, 'wf', 'techniques'), { recursive: true });
       writeFileSync(join(root, 'wf', 'techniques', 'op.md'), technique);
-      return collectFindings(root);
+      return collectFindings(declareFixtureWorkflows(root));
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

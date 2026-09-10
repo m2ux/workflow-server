@@ -2,6 +2,7 @@ import { describe, it, expect, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectFindings } from '../scripts/check-set-action-values.js';
 
 /**
@@ -32,7 +33,7 @@ function rootWith(actions: string): string {
     ['id: demo', 'name: Demo', 'steps:', '  - kind: action', '    id: write-something',
       '    actions:', actions, 'transitions: []', ''].join('\n'),
   );
-  return root;
+  return declareFixtureWorkflows(root);
 }
 
 const checks = (actions: string): string[] => collectFindings(rootWith(actions)).map((f) => f.check);
@@ -44,7 +45,7 @@ function rootWithSteps(steps: string, subdir = ''): string {
   const dir = join(root, 'demo', 'activities', ...(subdir ? [subdir] : []));
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, '01-demo.yaml'), ['id: demo', 'name: Demo', 'steps:', steps, 'transitions: []', ''].join('\n'));
-  return root;
+  return declareFixtureWorkflows(root);
 }
 
 const stepChecks = (steps: string, subdir = ''): string[] =>
@@ -155,7 +156,7 @@ describe('set action values', () => {
       '            target: current_activity', '            value: nested_bare_name',
       'transitions: []', '',
     ].join('\n'));
-    expect(collectFindings(root).map((f) => f.check)).toEqual(['unbraced-reference']);
+    expect(collectFindings(declareFixtureWorkflows(root)).map((f) => f.check)).toEqual(['unbraced-reference']);
   });
 
   it('flags a value the target variable does not admit', () => {

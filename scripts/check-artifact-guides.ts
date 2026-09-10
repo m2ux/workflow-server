@@ -36,7 +36,7 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tryLoadMarkdownTechnique, tryLoadNestedTechnique } from '../src/loaders/markdown-technique-loader.js';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -88,8 +88,8 @@ function loadBaseline(path: string = BASELINE): BaselineFile {
  */
 function readResources(root: string, workflow: string): Map<string, string> {
   const out = new Map<string, string>();
-  const dir = join(root, workflow, 'resources');
-  if (!existsSync(dir) || !statSync(dir).isDirectory()) return out;
+  const dir = workflowSubdir(root, workflow, 'resources');
+  if (!dir || !existsSync(dir) || !statSync(dir).isDirectory()) return out;
   for (const entry of readdirSync(dir).sort()) {
     if (!entry.endsWith('.md')) continue;
     out.set(entry, readFileSync(join(dir, entry), 'utf-8'));
@@ -232,8 +232,8 @@ export async function collectUnmappedArtifacts(
   const sharedResources = readResources(root, SHARED_WORKFLOW);
   let scanned = 0;
 
-  for (const workflow of readdirSync(root).sort()) {
-    const techniquesDir = join(root, workflow, 'techniques');
+  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+    const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     const resources = readResources(root, workflow);
     const map = guideMapSection(resources.get('README.md'));
@@ -246,7 +246,7 @@ export async function collectUnmappedArtifacts(
         const key = `${workflow}::${technique.id}::${o.id}`;
         const row = mapRowFor(map, artifact);
         if (row) {
-          if (mapRowTargetsResolve(row, join(root, workflow, 'resources'))) continue;
+          if (mapRowTargetsResolve(row, join(dir, 'resources'))) continue;
           out.push({
             key,
             artifact,
