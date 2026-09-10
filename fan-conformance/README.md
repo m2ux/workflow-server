@@ -35,8 +35,6 @@ The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) t
 
 ## Workflow Flow
 
-Every fan is drawn with the fork and join elements, because that is what a fan is: one call opens every branch, and the branch that empties the frontier enters the convergence.
-
 ```mermaid
 stateDiagram-v2
     direction TB
@@ -94,9 +92,9 @@ stateDiagram-v2
     report --> [*] : reported
 ```
 
-Three destinations here open more than one branch. The first is a list that names two activities directly and names a third with a collection to run it over — which is why its fork reaches two activities plus one instance per root. The other two name one activity and a collection, so every branch under their forks runs the same activity on a different element. Instance suffixes are written `#0` through `#n` because a fan's width is settled when it opens, not when it is authored.
+The first fork is one destination naming three members — two activities directly, and a third with a collection to run it over. The other two name one activity and a collection. Suffixes read `#0` through `#n` because a fan's width is settled when it opens, not when it is authored.
 
-The joins are the part worth reading carefully. No call announces that a barrier has been met: the frontier holds the branches still outstanding, each returning branch removes itself, and the branch that empties it is the one that enters the convergence. The convergence itself is derived from where the branches' exits lead, so it is never declared anywhere in the graph.
+No call announces that a barrier has been met. The frontier holds the branches still outstanding, each returning branch removes itself, and the branch that empties it is the one that enters the convergence — which is derived from where the branches' exits lead rather than declared anywhere in the graph.
 
 ---
 
