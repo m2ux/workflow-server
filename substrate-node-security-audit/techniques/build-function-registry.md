@@ -11,7 +11,7 @@ For a given set of Rust source files, enumerate all functions by type — pallet
 
 ### source_files
 
-List of `.rs` files to enumerate (a crate, a set of crates, or a full scope)
+List of `.rs` files to enumerate (a crate, a set of crates, or a full scope). The binding activity decides the scope; where it is one agent of a set covering a codebase between them, staying inside what it was given is what keeps two agents from enumerating the same crate under different designators.
 
 ### include_subdirectories
 

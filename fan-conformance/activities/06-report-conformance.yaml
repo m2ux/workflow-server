@@ -1,0 +1,31 @@
+id: report-conformance
+version: 1.0.0
+name: Report Conformance
+description: The homogeneous fan's meeting point — read both containers whole and report what the run did.
+variables:
+  reads:
+    - component_path
+    - planning_folder_path
+    - probe_directory_outputs
+    - probe_targets
+    - run_started_at
+    - survey_files_outputs
+    - survey_history_outputs
+required: true
+steps:
+  - kind: technique
+    id: gather-the-probes
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        dispatched_results: probe_directory_outputs
+        expected_ids: probe_targets
+  - kind: technique
+    id: write-the-report
+    technique: report-conformance
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - A reader can tell from one document whether each branch ran in a context of its own and whether the batch overlapped, without reading a log
+  - Both fan forms are reported the same way, so the two are comparable and neither is described in terms the other cannot be

@@ -1,9 +1,10 @@
 id: sub-crate-review
-version: 1.12.0
+version: 2.0.0
 name: "Sub-Agent: Crate Deep Review"
 description: Structured crate review for Group A sub-agents.
 variables:
   reads:
+    - crate_assignment
     - gitnexus_available
     - planning_folder_path
   writes:
@@ -16,20 +17,21 @@ variables:
     - name: verification_report
       type: string
       description: Scan completeness verification with gaps and re-scan recommendations
-required: false
+
 steps:
   - kind: technique
-    id: build-function-registry
-    technique: build-function-registry
-  - kind: technique
     id: extract-invariants
-    technique: extract-invariants
+    technique:
+      name: extract-invariants
+      inputs:
+        source_files: crate_assignment
   - kind: technique
     id: apply-checklist
     technique:
       name: apply-checklist
       inputs:
         checklist_source: audit-template-reference#3-systematic-manual-review-strategies
+        scope_files: crate_assignment
   - kind: technique
     id: cross-function-comparison
     technique:
@@ -45,6 +47,9 @@ steps:
       name: execute-sub-agent
       inputs:
         step_products: "{verdict_matrix}, {invariant_table}, {storage_lifecycle}, {verification_report}"
+exits:
+  - id: reviewed
+    isDefault: true
 outcome:
   - The whole crate has been read, so no source file is silently left unreviewed
   - Every §3 checklist item has an evidence-backed verdict the orchestrator can trust without re-deriving it

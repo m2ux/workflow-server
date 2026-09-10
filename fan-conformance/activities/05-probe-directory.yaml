@@ -1,0 +1,23 @@
+id: probe-directory
+version: 1.0.0
+name: Probe Directory
+description: Probe the one directory this instance was handed.
+variables:
+  reads:
+    - component_path
+    - probe_target
+  writes:
+    - name: probe_finding
+      type: object
+      description: What this probe found in its own directory — its file count, its subdirectories, its largest file — and this instance's own start and finish instants.
+required: true
+steps:
+  - kind: technique
+    id: probe-the-directory
+    technique: probe-directory
+exits:
+  - id: probed
+    isDefault: true
+outcome:
+  - This directory is described from a context that saw only this directory, which is what an instance of its own is for
+  - This instance's own interval and its designator are recorded, so the report can tell how many instances were open at once

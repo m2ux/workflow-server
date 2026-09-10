@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: midnight-system-review
-version: 1.5.0
+version: 2.0.0
 title: Midnight System Review Workflow
 description: Evidence-driven system-level review of a midnight-node change-set. Derives investigation areas from the changed surface and a subsystem map, runs bounded per-area evidence probes, adjudicates rubric-graded findings, and renders a 1-5 merge-readiness verdict with per-area accounting, optionally publishing the review to the pull request.
 author: m2ux
@@ -57,6 +57,13 @@ graph:
   area-derivation:
     done: evidence-probes
   evidence-probes:
+    done:
+      activity: probe-area
+      over: investigation_areas
+      variable: current_area
+  probe-area:
+    probed: consolidate-evidence
+  consolidate-evidence:
     done: finding-adjudication
   finding-adjudication:
     done: verdict-and-report

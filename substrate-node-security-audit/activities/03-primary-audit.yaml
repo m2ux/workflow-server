@@ -1,11 +1,15 @@
 id: primary-audit
-version: 4.22.0
+version: 5.0.0
 name: Primary Audit
-description: Multi-agent primary audit via concurrent dispatch with verification and merge.
+description: Gather the agent branches the graph opened, verify their coverage, and merge their findings.
 variables:
   reads:
     - agent_roster
+    - crate_review_roster
     - planning_folder_path
+    - sub_crate_review_outputs
+    - sub_static_analysis_outputs
+    - sub_toolkit_review_outputs
   writes:
     - name: dispatch_complete
       type: boolean
@@ -16,7 +20,7 @@ variables:
       description: Collected results from all dispatched sub-agents.
     - name: dispatched_results
       type: array
-      description: Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness agent output text (or structured payload when the worker returned one). Completeness counts live on gather-results.
+      description: Returns from the agents this activity dispatches singly — verification, gap re-dispatch and merge. The crate-review, static-analysis and toolkit groups are branches the graph opened and land in containers of their own.
     - name: merge_complete
       type: boolean
       description: Phase 1b merge gate — set from the merge sub-agent's reconciliation; gates report-generation entry
@@ -39,19 +43,14 @@ steps:
     id: announce-start
     actions:
       - action: log
-        message: Starting primary audit — concurrent multi-agent dispatch
-  - kind: technique
-    id: compose-all-agents
-    technique: dispatch-sub-agents::compose-roster-briefs
-  - kind: technique
-    id: dispatch-all-agents
-    technique: orchestration-patterns::dispatch-workers
+        message: Starting primary audit — gathering the agent branches
   - kind: technique
     id: gather-all-agents
     technique:
       name: orchestration-patterns::gather-results
       inputs:
-        expected_ids: worker_briefs
+        dispatched_results: sub_crate_review_outputs
+        expected_ids: crate_review_roster
   - kind: technique
     id: verify-checklist-prompt-coverage
     technique: verify-sub-agent-output
@@ -85,6 +84,13 @@ steps:
   - kind: technique
     id: dispatch-merge-agent
     technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: gather-singly-dispatched-agents
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        dispatched_results: dispatched_results
+        expected_ids: worker_briefs
   - kind: technique
     id: preserve-verification-report
     technique: dispatch-sub-agents::verify-output-files

@@ -1,17 +1,25 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 ## Capability
 
-Gathered worker output and the agent roster projected into the audit dispatch shape — per-agent structured output, summary counts, and a crate-aware manifest.
+The agent branches' containers and the agent roster projected into the audit dispatch shape — per-agent structured output, summary counts, and a crate-aware manifest.
 
 ## Inputs
 
 ### gathered_results
 
-Ordered keyed collection of worker returns, carrying its per-id dispatch manifest and completeness verdict.
+The crate-review branches as the ordered gather left them, carrying the per-id dispatch manifest and completeness verdict against the crate-review roster.
+
+### sub_static_analysis_outputs
+
+The static-analysis branch's container: one slot, carrying what that branch reported.
+
+### sub_toolkit_review_outputs
+
+The toolkit-review branch's container: one slot, carrying what that branch reported.
 
 ## Outputs
 
@@ -40,6 +48,7 @@ Count of agents actually dispatched and returned.
 ### 1. Project Gather Into Audit Shape
 
 - Walk `{gathered_results.items}` in order; parse each non-null `result` into structured per-agent output when it conforms to the [output schema](../../resources/sub-agent-output-schema.md#schema).
-- Build `{dispatch_results.dispatch_manifest}` by joining `{gathered_results.dispatch_manifest}` rows to `{agent_roster}` for assigned crate.
+- Add the static-analysis and toolkit groups from `{sub_static_analysis_outputs}` and `{sub_toolkit_review_outputs}`, each a container of one slot. They ran as branches of their own beside the crate reviews rather than as entries of the crate-review roster, so the ordered gather does not carry them and they are read here — a group missing from this projection is a group the verification agent will report as an unscanned coverage gap.
+- Build `{dispatch_results.dispatch_manifest}` by joining `{gathered_results.dispatch_manifest}` rows to `{agent_roster}` for assigned crate, with a row for each of the two groups above.
 - Set `{dispatch_results.dispatch_summary}`, `{dispatch_results.agents_dispatched}`, and `{dispatch_results.per_agent_output}` from the projected rows.
 - If `{gathered_results.completeness}` is not `complete`, mark the manifest `INCOMPLETE` so verification / re-dispatch can act.

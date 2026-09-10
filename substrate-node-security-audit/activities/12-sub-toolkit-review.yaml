@@ -1,5 +1,5 @@
 id: sub-toolkit-review
-version: 1.6.0
+version: 2.0.0
 name: "Sub-Agent: Toolkit Per-Function Review"
 description: Per-function toolkit review for Group D sub-agents.
 variables:
@@ -10,7 +10,7 @@ variables:
     - name: verdict_matrix
       type: object
       description: Complete verdict matrix and coverage attestation.
-required: false
+
 steps:
   - kind: technique
     id: apply-toolkit-checklist
@@ -24,6 +24,9 @@ steps:
       name: execute-sub-agent
       inputs:
         step_products: "{verdict_matrix}"
+exits:
+  - id: reviewed
+    isDefault: true
 outcome:
   - Every toolkit function is reviewed against all 8 checklist items, so a benign-looking helper is read as closely as an obviously risky one
   - State, arithmetic, and I/O bugs are surfaced per function rather than only on representative samples

@@ -16,10 +16,9 @@ Atomic ops live under [`orchestration-patterns/`](../../techniques/orchestration
 
 | Catalog pattern | Activity | Borrow ref |
 |-----------------|----------|------------|
-| orchestrator-workers | [orchestrator-workers](./01-orchestrator-workers.yaml) | `meta/patterns/01-orchestrator-workers.yaml` |
+| orchestrator-workers | *(graph)* a destination naming one activity and the collection to run it over | see [dispatch-fan](../../techniques/workflow-engine/dispatch-fan.md) |
 | supervisor | [supervisor](./02-supervisor.yaml) | `meta/patterns/02-supervisor.yaml` |
 | plan-and-execute | [plan-and-execute](./03-plan-and-execute.yaml) | `meta/patterns/03-plan-and-execute.yaml` |
-| subagent-isolation | [isolated-fan-out](./04-isolated-fan-out.yaml) | `meta/patterns/04-isolated-fan-out.yaml` |
 | lead-researcher | [lead-researcher](./05-lead-researcher.yaml) | `meta/patterns/05-lead-researcher.yaml` |
 | agent-as-tool-embedding | *(technique only)* `orchestration-patterns::invoke-as-tool` | bind in a local activity step |
 | hierarchical-agents | *(composition)* `dispatch_child` + borrow a pattern activity in the child | depth-1; no nested Task orchestrators |
@@ -34,7 +33,7 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
    ```yaml
    activities:
-     - meta/patterns/01-orchestrator-workers.yaml
+     - meta/patterns/02-supervisor.yaml
    ```
 
    Wire your own `transitions` in a thin local wrapper activity when the borrowed file has none, or copy the step pipeline into a local activity and bind the same ops with input overrides.
@@ -55,10 +54,6 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
 ## Pattern notes
 
-### 01 Orchestrator Workers
-
-Runtime decomposition → briefs → dispatch → gather → synthesise. Seed `work_goal` and `synthesis_criteria`; the units are worked one at a time, and `effort_cap` bounds how many there may be.
-
 ### 02 Supervisor
 
 Fixed `{lane_roster}` classification (not dynamic decomposition). Escalation when no lane fits (`lane_id: escalate`).
@@ -67,10 +62,6 @@ Fixed `{lane_roster}` classification (not dynamic decomposition). Escalation whe
 
 Hard `plan-confirmed` gate — the answer admits the plan into execution, so it waits for a person. `forEach` execute; `while` replan when `plan_needs_replan`. Nested re-execute after replan.
 
-### 04 Isolated Fan Out
-
-Same shape as 01 with `isolation_mode` and a validate gate on `gathered_results.completeness` before synthesise.
-
 ### 05 Lead Researcher
 
-Research-question planning, dispatch, synthesise, then `while has_research_gaps` follow-up (max 3 rounds).
+Research-question planning, dispatch, synthesise, then `while has_research_gaps` follow-up (max 3 rounds). The follow-up loop is what this pattern is for — a fan opens once and cannot re-dispatch after a synthesis. Where a question deserves a context of its own and no follow-up round is needed, fan the questions from the graph instead and keep this for the loop.

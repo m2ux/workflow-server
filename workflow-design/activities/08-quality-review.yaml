@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.14.0
+version: 2.0.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 variables:
@@ -119,7 +119,7 @@ steps:
         technique:
           name: work-package::manage-artifacts::write-artifact
           inputs:
-            bare_filename: principle-findings.md
+            bare_filename: "{target_workflow_id}-principle-findings.md"
             artifact_content: principle_findings
             target_dir: planning_folder_path
       - kind: technique
@@ -130,7 +130,7 @@ steps:
         technique:
           name: work-package::manage-artifacts::write-artifact
           inputs:
-            bare_filename: anti-pattern-findings.md
+            bare_filename: "{target_workflow_id}-anti-pattern-findings.md"
             artifact_content: anti_pattern_findings
             target_dir: planning_folder_path
       - kind: technique
@@ -144,7 +144,7 @@ steps:
         technique:
           name: work-package::manage-artifacts::write-artifact
           inputs:
-            bare_filename: verified-findings.md
+            bare_filename: "{target_workflow_id}-verified-findings.md"
             artifact_content: verified_findings
             target_dir: planning_folder_path
       - kind: technique

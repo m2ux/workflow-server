@@ -1,0 +1,32 @@
+id: choose-probes
+version: 1.0.0
+name: Choose Probes
+description: The heterogeneous fan's meeting point — gather both surveys and pick the directories to probe.
+variables:
+  reads:
+    - component_path
+    - probe_budget
+    - survey_files_outputs
+    - survey_history_outputs
+  writes:
+    - name: probe_targets
+      type: array
+      description: One entry per probe, each carrying its designator and the directory that probe covers. The graph fans this activity's exit over it, so its length is how many probes run at once.
+required: true
+steps:
+  - kind: technique
+    id: gather-the-surveys
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        dispatched_results: survey_files_outputs
+        expected_ids: survey_files_outputs
+  - kind: technique
+    id: choose-the-probes
+    technique: choose-probes
+exits:
+  - id: chosen
+    isDefault: true
+outcome:
+  - Both surveys are in one place, each in the slot its own branch landed it in, so neither could have overwritten the other
+  - The directories worth probing are chosen from what both surveys saw together, which is the reason the two ran before this one rather than beside it

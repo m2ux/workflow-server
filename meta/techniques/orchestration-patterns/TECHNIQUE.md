@@ -13,10 +13,6 @@ Shared Inputs, Outputs, and domain invariants for mid-phase multi-agent orchestr
 
 The caller-facing goal or request text the pattern operates on.
 
-### isolation_mode
-
-*(optional)* Default `context`. `context` — each worker gets an isolated context window. `worktree` — each worker also receives its own git worktree (or equivalent sandbox) under `{planning_folder_path}`.
-
 ### effort_cap
 
 *(optional)* Positive integer bounding how many workers or follow-up rounds a pattern may spawn for one invocation.
@@ -49,9 +45,9 @@ Single combined result produced from `{gathered_results}` under caller-supplied 
 
 Honor [scatter-gather](../scatter-gather.md)::isolation-then-combine: per-unit outputs are gathered into an isolated ordered collection and merged only through the combine step.
 
-### isolation-mode-write-boundary
+### one-workspace-one-writer
 
-Under `context` isolation, workers must not write sibling workspaces. Under `worktree` isolation, workers must create/use their worktree before mutating files.
+Workers share the calling worker's workspace, so a worker writes only what its own brief names and never a sibling's output. Nothing here hands a worker a checkout of its own: giving each unit an isolated workspace is what a child session is for, through [handle-sub-workflow](../workflow-engine/handle-sub-workflow.md).
 
 ### workers-see-briefs-only
 

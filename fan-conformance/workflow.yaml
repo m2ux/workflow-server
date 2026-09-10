@@ -1,0 +1,42 @@
+$schema: ../../schemas/workflow.schema.json
+id: fan-conformance
+version: 1.0.0
+title: Fan Conformance Workflow
+description: >-
+  Run both forms of graph fan against a real checkout and report what the run did: one worker per branch, each with its own identity and its own container slot, entering the activity they converge on once. A destination naming several different activities runs them side by side; a destination naming one activity and a collection runs it once per element. The work each branch does is a cheap survey of the component, so the run costs little and the evidence is about the routing rather than about the survey.
+author: m2ux
+tags:
+  - fan
+  - conformance
+  - concurrency
+  - graph
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Absolute path to the planning folder this run writes its report into.
+  - name: component_path
+    type: string
+    description: Path of the component being surveyed, relative to the host repository — '.' for a regular repository, the submodule path for a monorepo.
+    defaultValue: "."
+initialActivity: plan-conformance
+graph:
+  plan-conformance:
+    planned:
+      - survey-files
+      - survey-history
+  survey-files:
+    surveyed: choose-probes
+  survey-history:
+    surveyed: choose-probes
+  choose-probes:
+    chosen:
+      activity: probe-directory
+      over: probe_targets
+      variable: probe_target
+  probe-directory:
+    probed: report-conformance
+  report-conformance:
+    reported: __terminal__

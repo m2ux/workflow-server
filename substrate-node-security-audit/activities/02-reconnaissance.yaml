@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 3.6.0
+version: 4.0.0
 name: Reconnaissance
 description: Run codebase reconnaissance and security decomposition.
 variables:
@@ -11,6 +11,9 @@ variables:
       type: array
       description: Roster of agents to dispatch, with per-agent group assignment and supplementary files.
       defaultValue: []
+    - name: crate_review_roster
+      type: array
+      description: The roster entries whose group performs a crate deep review, in agent order — the graph fans this activity's exit over it, so its length is how many crate reviews run at once. The static-analysis and toolkit groups run beside it as branches of their own.
     - name: dispatched_results
       type: array
       description: Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness agent output text (or structured payload when the worker returned one). Completeness counts live on gather-results.

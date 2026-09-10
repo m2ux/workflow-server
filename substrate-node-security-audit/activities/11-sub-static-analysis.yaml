@@ -1,5 +1,5 @@
 id: sub-static-analysis
-version: 1.9.0
+version: 2.0.0
 name: "Sub-Agent: Static Analysis and Mechanical Checks"
 description: Structured static analysis with zero-hit audit and finding aggregation.
 variables:
@@ -10,7 +10,7 @@ variables:
     - name: storage_lifecycle
       type: object
       description: Storage lifecycle pairing table with optional invariant comparison.
-required: false
+
 steps:
   - kind: technique
     id: run-grep-patterns
@@ -40,6 +40,9 @@ steps:
       name: execute-sub-agent
       inputs:
         step_products: "{pattern_results}, {storage_lifecycle}"
+exits:
+  - id: scanned
+    isDefault: true
 outcome:
   - The full pattern catalog has been run against the whole scope, so no static-analysis category is left unexamined
   - Each mechanical check has a decisive PASS/FAIL the orchestrator can act on without re-running it
