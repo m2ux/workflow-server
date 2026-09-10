@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -56,10 +56,6 @@ Honor [scatter-gather](../scatter-gather.md)::isolation-then-combine for paralle
 ### isolation-mode-write-boundary
 
 Under `context` isolation, workers must not write sibling workspaces. Under `worktree` isolation, workers must create/use their worktree before mutating files.
-
-### parallelism-is-optimisation
-
-Honor [scatter-gather](../scatter-gather.md)::parallelism-is-optimisation (a `{dispatch_concurrency}` of 1 remains correct).
 
 ### workers-see-briefs-only
 
