@@ -681,11 +681,11 @@ describe('mcp-server integration', () => {
     it('should load resource content by bare id', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'github-issue-creation' },
+        arguments: { session_index: sessionToken, resource_id: 'issue-creation' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource_id).toBe('github-issue-creation');
+      expect(response.resource_id).toBe('issue-creation');
       expect(response._body).toBeDefined();
       expect(response._body.length).toBeGreaterThan(0);
       expect(response.session_index).toBeDefined();
@@ -706,7 +706,7 @@ describe('mcp-server integration', () => {
     it('should strip frontmatter from resource content', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'github-issue-creation' },
+        arguments: { session_index: sessionToken, resource_id: 'issue-creation' },
       });
       const response = parseToolResponse(result);
       expect(response._body).not.toMatch(/^---/);
@@ -1393,7 +1393,7 @@ describe('mcp-server integration', () => {
     it('accumulated trace tokens resolve via get_trace (IT-8)', async () => {
       await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'github-issue-creation' },
+        arguments: { session_index: sessionToken, resource_id: 'issue-creation' },
       });
 
       const { actMeta: meta1, nextToken: nextToken1, actResponse: act1Response } = await transitionToActivity(client, sessionToken, 'start-work-package');

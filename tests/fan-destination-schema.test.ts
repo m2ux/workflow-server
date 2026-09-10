@@ -39,10 +39,9 @@ describe('destination schema — the parse', () => {
   it('accepts a single instance fan, with and without a ceiling', () => {
     expect(DestinationSchema.safeParse(FAN).success).toBe(true);
     expect(DestinationSchema.safeParse({ ...FAN, maxInstances: 3 }).success).toBe(true);
-    // Worktree isolation is the one value the field takes: absent means the branches share the
-    // calling worker's tree, which is the only other arrangement there is.
-    expect(DestinationSchema.safeParse({ ...FAN, isolation: 'worktree' }).success).toBe(true);
-    expect(DestinationSchema.safeParse({ ...FAN, isolation: 'context' }).success).toBe(false);
+    // Whether instances commit into checkouts of their own is a property of the activity they run,
+    // settled by what that activity binds, so no destination field carries it.
+    expect(DestinationSchema.safeParse({ ...FAN, isolation: 'worktree' }).success).toBe(false);
   });
 
   // S2 — a one-element list is a plain destination spelled a second way.
