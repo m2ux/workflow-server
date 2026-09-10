@@ -8,7 +8,13 @@
 
 This workflow exists to make the fanning behaviour observable. A session supplies it two things: a planning folder to write its report into, and a path to the repository or submodule it looks at; everything else the run produces.
 
-The work its branches do is deliberately trivial — counting files by extension, ranking directories by size, reading how many commits landed recently and where, measuring how deep a directory nests. All of that only reads, so the run costs about what the routing costs. The one stage that writes commits a short note per finding, and each writer does it in a checkout of its own. That is the point: the evidence the run leaves behind is about which branch ran when and got handed what, not about the repository it counted.
+The work its branches do is deliberately trivial — 
+* counting files by extension
+* ranking directories by size
+* reading how many commits landed recently and where
+* measuring how deep a directory nests
+
+All of that only reads, so the run costs about what the routing costs. The one stage that writes commits a short note per finding, and each writer does it in a checkout of its own. That is the point: the evidence the run leaves behind is about which branch ran when and got handed what, not about the repository it counted.
 
 It serves two readers. One wants to know whether this server's fanning works, and takes that from the report a run leaves behind. The other is writing a fan of their own and wants a worked example of each shape one can take — so every part of the destination grammar is reached somewhere in the graph, for a reason that stage would have anyway rather than as a demonstration.
 
@@ -24,14 +30,6 @@ It serves two readers. One wants to know whether this server's fanning works, an
 | 08 | [**Note Probe**](./activities/README.md#08-note-probe) | Write and commit one note in a checkout of its own |
 | 09 | [**Merge Notes**](./activities/README.md#09-merge-notes) | Account for every branch the writers committed on |
 | 10 | [**Report Conformance**](./activities/README.md#10-report-conformance) | Read every container whole and write the report |
-
-**Detailed documentation:**
-
-- **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose, the position it holds in a fan, and an internal flow diagram) and a link to each activity's authoritative YAML definition.
-- **Techniques:** See [techniques/README.md](./techniques/README.md) for the technique inventory orientation; per-technique protocols live in the technique files.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index.
-
-The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique applies to every activity.
 
 ---
 
