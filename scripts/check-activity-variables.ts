@@ -51,6 +51,17 @@ import { runGuard, type Finding } from './guard-protocol.js';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = join(DIR, '..', 'workflows');
 
+/**
+ * Names that already differ between the branches of one fan, so an artifact filename keyed on one
+ * is a filename per instance without also carrying the unit.
+ *
+ * A branch runs under an identity distinct from its siblings' — the delivery ledger and the batch
+ * bound are keyed on it, so the engine cannot let two branches share one. A name interpolating it
+ * is therefore already discriminated, and demanding the unit as well would demand a second
+ * discriminator for a name that has one.
+ */
+const FAN_UNIT_IDENTITIES: ReadonlySet<string> = new Set(['agent_id']);
+
 /** The declared contract of one activity, keyed for reporting. */
 interface ActivityRecord {
   id: string;
@@ -392,13 +403,21 @@ export async function collectFindings(root: string): Promise<Finding[]> {
         });
       }
 
-      // Instance arm: every artifact name on the fanned activity's composed signatures interpolates
-      // a token whose head is that fan's parameter, or every instance resolves one filename.
+      // Instance arm: every artifact name on the fanned activity's composed signatures resolves to
+      // a filename of its own for each instance, or every instance resolves one filename.
+      //
+      // Two tokens make it its own. The fan's parameter is the obvious one — the unit itself. The
+      // branch's identity is the other: each branch runs under an identity distinct from its
+      // siblings' (dispatch-fan::one-identity-per-branch), so a name keyed on it is already one per
+      // instance, and requiring the unit as well would be requiring a second discriminator for a
+      // name that has one.
+      const perBranch = new Set([...FAN_UNIT_IDENTITIES]);
       for (const member of instanceFans(fan.destination)) {
+        perBranch.add(member.variable);
         const record = byId.get(member.activity);
         for (const name of record?.derived.artifactNames ?? []) {
           const carriesUnit = [...name.matchAll(/\{([A-Za-z0-9_.]+)\}/g)]
-            .some((match) => bagName(match[1]!) === member.variable);
+            .some((match) => perBranch.has(bagName(match[1]!)));
           if (carriesUnit) continue;
           findings.push({
             check: 'fan-artifact-collision', site: site(record!),
