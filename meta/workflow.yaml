@@ -15,7 +15,6 @@ techniques:
     - workflow-engine::start-session
     - workflow-engine::handle-sub-workflow
     - workflow-engine::dispatch-activity
-    - workflow-engine::dispatch-fan
     - workflow-engine::resume-worker
     - workflow-engine::continue-batch
     - workflow-engine::workflow-orchestrator
