@@ -553,6 +553,46 @@ describe('fan load rules', () => {
     expect(rendered(errors)).not.toContain("binds 'version-control::commit-regular-files'");
   });
 
+  it('L14 relaxes for the isolated member alone, not for its siblings in the same list', async () => {
+    // Isolation is declared per member, so a list can carry one member whose instances have
+    // checkouts of their own beside a member whose branch shares the calling worker's. The rule
+    // reads the member that names each branch, so the relaxation reaches exactly that branch.
+    const errors = await loadErrors({
+      ...instanceFanFixture,
+      graph: {
+        'scope-research': {
+          scoped: [
+            {
+              activity: 'research-pass', over: 'research_topics', variable: 'research_topic',
+              isolation: 'worktree',
+            },
+            'summarise-pass',
+          ],
+        },
+        'research-pass': { researched: 'combine-research' },
+        'summarise-pass': { summarised: 'combine-research' },
+        'combine-research': { settled: '__terminal__' },
+      },
+      activities: [
+        instanceFanFixture.activities[0]!,
+        activity('research-pass', {
+          exits: exits('researched'),
+          variables: { reads: ['research_topic'] },
+          steps: [{ kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' }],
+        }),
+        activity('summarise-pass', {
+          exits: exits('summarised'),
+          steps: [{ kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' }],
+        }),
+        instanceFanFixture.activities[2]!,
+      ],
+    });
+    expect(rendered(errors)).not.toContain("Activity 'research-pass' is fanned by");
+    expect(rendered(errors)).toContain(
+      "Activity 'summarise-pass' is fanned by 'scope-research.scoped' and binds 'version-control::commit-regular-files'.",
+    );
+  });
+
   it('L14 refuses the session-level persist however the checkouts are split', async () => {
     // What worktree isolation splits is the checkout. The session record and the planning folder
     // are shared either way, so the operation that commits them stays refused — and says so
