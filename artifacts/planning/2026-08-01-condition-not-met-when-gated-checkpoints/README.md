@@ -24,8 +24,8 @@ Together those gaps mean reviews and migrations stay harder than they need to be
 |---|------|-------------|----------|--------|
 | 1 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ✅ |
 | 2 | [Prior feedback triage](01-prior-feedback-triage.md) | Review-mode prior feedback ingest | 15-30m | ✅ |
-| 3 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | ⬚ |
-| 4 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ⬚ |
+| 3 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | 🟡 |
+| 4 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | 🟡 |
 | 5 | Requirements elicitation | Scope, success criteria, boundaries | 30-60m | ⊘ |
 | 6 | KB research | Knowledge-base and web synthesis | 20-45m | ⊘ |
 | 7 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |

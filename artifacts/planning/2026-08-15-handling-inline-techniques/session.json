@@ -8,8 +8,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::continue-batch",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 65,
-  "ts": 1787473561,
+  "seq": 66,
+  "ts": 1787474916,
   "startedAt": "2026-08-15T09:54:31.892Z",
   "completedActivities": [
     "discover-session",
@@ -1497,6 +1497,21 @@
         }
       },
       "timestamp": "2026-08-23T08:26:01.570Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "cumulative",
+        "usage": {
+          "duration_ms": 85413,
+          "segment": "commit-inventory-and-dispatch-wrapper-investigation",
+          "subagent_tokens": 390975,
+          "tool_uses": 3
+        }
+      },
+      "timestamp": "2026-08-23T08:48:36.238Z",
       "type": "activity_usage"
     }
   ],

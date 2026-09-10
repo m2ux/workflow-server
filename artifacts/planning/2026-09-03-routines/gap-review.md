@@ -432,8 +432,16 @@ rather than argued from one divergent site.
 shared body is the challenge pass, not the analysis pass, because `revise-questions` sits between
 the analysis and the challenge at the seventh site; the analysis is therefore outside the routine;
 and the six sites that do share it share the same operation. So nothing binds a technique by
-parameter, the outer routine has **no inputs at all**, and three guarantees stop carrying an
-exception. The proposal's claim that "the corpus needs this" was true of the deleted technique.
+parameter, the outer routine has **no inputs at all**, and three guarantees carry no exception
+through the two migrations. The proposal's claim that "the corpus needs this" was true of the deleted
+technique.
+
+**A later pass found the parameter's sites in another family** — three `prism` per-unit passes,
+measured on 2026-09-08 and taken as stage 7, where the qualifier returns for those routines only.
+The re-derivation's finding is unaffected: it is about the convergence family, and the two signatures
+it derives take no parameter. [higher-order-routines.md](higher-order-routines.md) carries that
+measurement, along with the fan-out run that needs no parameter at all and the two things a
+set-valued parameter waits on.
 
 **The review-mode conjunct is settled by dataflow, and it was a live defect.** Tracing the flag
 those gates test — one writer, review-mode-guarded, seeded false — makes row 6's conjunct redundant

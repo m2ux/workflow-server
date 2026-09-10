@@ -851,6 +851,11 @@
     {
       "sessionIndex": "KOQWUL",
       "state": {
+        "activeCheckpoint": {
+          "activityId": "plan-prepare",
+          "checkpointId": "approach-confirmed",
+          "yieldedAt": "2026-08-02T07:58:43.123Z"
+        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "design-philosophy-classification-and-path-confirmed": {
@@ -877,11 +882,12 @@
         },
         "completedActivities": [
           "start-work-package",
-          "design-philosophy"
+          "design-philosophy",
+          "codebase-comprehension"
         ],
-        "condition": "isDefault:codebase-comprehension",
-        "currentActivity": "codebase-comprehension",
-        "currentTechnique": "manage-artifacts::write-artifact",
+        "condition": "condition: skip_optional_activities == true → plan-prepare",
+        "currentActivity": "plan-prepare",
+        "currentTechnique": "update-pr::render",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -897,6 +903,11 @@
             "id": "assumptions_log",
             "name": "assumptions-log.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/02-assumptions-log.md"
+          },
+          {
+            "id": "comprehension_artifact",
+            "name": "when-merge-condition-not-met.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-merge-condition-not-met.md"
           }
         ],
         "deliveredContent": {
@@ -936,6 +947,29 @@
             "technique:design-philosophy::document": "673e7c04efd18af7",
             "technique:review-assumptions::collect": "7726d2ba1c9c1e5f",
             "technique:review-assumptions::record": "e661f438ccf93ef4"
+          },
+          "wp-plan-prepare-worker-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "5936e102c068c56c",
+            "bundle:variable-binding": "e5b276dec214b8d1",
+            "bundle:workflow-engine::finalize-activity": "4953563937662ff5",
+            "bundle:workflow-engine::resume-from-checkpoint": "be1aa82160949fb5",
+            "bundle:workflow-engine::yield-checkpoint": "df32af09a25e7d7f",
+            "resource:assumptions-review": "574deecbed762d0f",
+            "resource:deferred-items": "6bee5374edcaac0a",
+            "resource:design-framework": "9677f1e2db0b3827",
+            "resource:test-plan": "86c0270a2747cad3",
+            "resource:wp-plan": "6f4a603ed0478b94",
+            "technique:analyse-challenge::run-loop": "8e0259f684af3d36",
+            "technique:create-test-plan": "8b83b86d87421ade",
+            "technique:manage-git::sync-branch": "3ac3a7eceffa9199",
+            "technique:plan-prepare::create-todos": "3337592592383396",
+            "technique:plan-prepare::plan": "ee08a4dfe9a49c72",
+            "technique:review-assumptions::collect": "568c770fa06bb0ae",
+            "technique:review-assumptions::record": "4a5a5c190a50452d",
+            "technique:stakeholder-overview": "48edd931a2ee43a0",
+            "technique:update-pr::render": "aa68cb1f410df8bc"
           },
           "wp-start-work-package-worker-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -3168,17 +3202,410 @@
             },
             "timestamp": "2026-08-02T07:51:51.911Z",
             "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_survey",
+              "source": "variables_changed",
+              "value": "Architecture/abstractions/rationale/glossary for condition_not_met, activity-rule fragments, AP-134 guard patterns (see artifact)."
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-merge-condition-not-met.md"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "written_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-merge-condition-not-met.md"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "open_questions",
+              "source": "variables_changed",
+              "value": "All resolved (8/8); no open rows."
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "has_open_questions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "build-comprehension"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "create-comprehension-artifact"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "initial-deep-dive"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "update-artifact-initial"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "revise-initial-questions"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "analyse-challenge-pass"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "update-artifact"
+            },
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "timestamp": "2026-08-02T07:53:05.150Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 78583,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 5872,
+              "delivery": "full",
+              "stepId": "create-plan",
+              "techniqueId": "plan-prepare::plan"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "create-plan"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 6831,
+              "delivery": "full",
+              "stepId": "create-test-plan",
+              "techniqueId": "create-test-plan"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "create-test-plan"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 3673,
+              "delivery": "full",
+              "stepId": "present-solution-overview",
+              "techniqueId": "stakeholder-overview"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "present-solution-overview"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 5291,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 4300,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 7758,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 4348,
+              "delivery": "full",
+              "stepId": "create-todos",
+              "techniqueId": "plan-prepare::create-todos"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "create-todos"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 4426,
+              "delivery": "full",
+              "stepId": "sync-branch",
+              "techniqueId": "manage-git::sync-branch"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "sync-branch"
+            },
+            "timestamp": "2026-08-02T07:53:31.819Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 3927,
+              "delivery": "full",
+              "resourceId": "wp-plan"
+            },
+            "timestamp": "2026-08-02T07:53:58.175Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 6002,
+              "delivery": "full",
+              "resourceId": "design-framework"
+            },
+            "timestamp": "2026-08-02T07:53:58.869Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 3988,
+              "delivery": "full",
+              "resourceId": "test-plan"
+            },
+            "timestamp": "2026-08-02T07:53:59.067Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 1878,
+              "delivery": "full",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-08-02T07:54:57.649Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 5764,
+              "delivery": "full",
+              "resourceId": "assumptions-review"
+            },
+            "timestamp": "2026-08-02T07:54:57.878Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "chars": 7878,
+              "delivery": "full",
+              "stepId": "update-pr",
+              "techniqueId": "update-pr::render"
+            },
+            "timestamp": "2026-08-02T07:58:35.932Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "wp-plan-prepare-worker-1",
+              "stepId": "update-pr"
+            },
+            "timestamp": "2026-08-02T07:58:35.932Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "checkpoint": "approach-confirmed",
+            "timestamp": "2026-08-02T07:58:43.123Z",
+            "type": "checkpoint_reached"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 44,
+        "seq": 53,
         "sessionIndex": "KOQWUL",
         "skippedActivities": [],
         "startedAt": "2026-08-02T05:13:48.854Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785657111,
+        "ts": 1785657523,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -3205,8 +3632,9 @@
           "completion_document_path": "",
           "component_name": "workflow-server",
           "component_path": ".",
-          "comprehension_artifact": "",
+          "comprehension_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-merge-condition-not-met.md",
           "comprehension_dir": "",
+          "comprehension_survey": "Architecture/abstractions/rationale/glossary for condition_not_met, activity-rule fragments, AP-134 guard patterns (see artifact).",
           "context_scope": "repo-only",
           "context_scope_uncertain": false,
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/README.md",
@@ -3243,7 +3671,7 @@
           "merge_strategy": "squash",
           "needs_cleanup": false,
           "needs_code_fixes": false,
-          "needs_comprehension": true,
+          "needs_comprehension": false,
           "needs_elicitation": false,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,
@@ -3256,6 +3684,7 @@
           "needs_test_improvements": false,
           "on_feature_branch": true,
           "open_assumptions": [],
+          "open_questions": "All resolved (8/8); no open rows.",
           "path_rationale": "skip-optional — well-defined PR #373 scope; elicitation/research off; comprehension mandatory; direct to planning.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints",
           "post_jira_comment": false,
@@ -3305,7 +3734,8 @@
           "use_existing_pr": true,
           "user_request": "resume the work package workflow for https://github.com/m2ux/workflow-server/pull/373",
           "validation_passed": false,
-          "worktree_created": true
+          "worktree_created": true,
+          "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-merge-condition-not-met.md"
         },
         "workflowId": "work-package",
         "workflowVersion": "3.42.0"

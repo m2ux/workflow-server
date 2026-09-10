@@ -6,26 +6,29 @@
   "agentId": "orchestrator",
   "sessionIndex": "QQKD2D",
   "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "workflow-engine::dispatch-activity",
-  "condition": "isDefault:dispatch-client-workflow",
-  "seq": 18,
-  "ts": 1785605365,
+  "condition": "",
+  "seq": 22,
+  "ts": 1785606430,
   "startedAt": "2026-08-01T09:32:07.029Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow",
+    "end-workflow"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
     "client_planning_slug": "2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
     "client_session_index": "PBEHLM",
-    "client_workflow_completed": false,
+    "client_workflow_completed": true,
     "component_hint": null,
     "component_path": ".",
     "component_selection_needed": false,
+    "current_activity": null,
     "has_saved_state": false,
     "host_binding_mismatch": false,
     "host_repo_path": "/home/mike1/projects/dev/workflow-server",
@@ -38,7 +41,17 @@
     "user_request": "continue #383 with review = pass",
     "workflow_match_ambiguous": false
   },
-  "checkpointResponses": {},
+  "checkpointResponses": {
+    "end-workflow-completion-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "abort_completion": false
+        }
+      },
+      "optionId": "confirm",
+      "respondedAt": "2026-08-01T17:47:03.000Z"
+    }
+  },
   "history": [
     {
       "timestamp": "2026-08-01T09:32:07.029Z",
@@ -720,6 +733,187 @@
       },
       "timestamp": "2026-08-01T10:51:10.997Z",
       "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "current_activity",
+        "source": "variables_changed",
+        "value": null
+      },
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "verify-preconditions"
+      },
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "prime-initial-activity"
+      },
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "client-activity-loop"
+      },
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "commit-activity-artifacts"
+      },
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "advance-activity"
+      },
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-08-01T17:46:48.597Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-08-01T17:46:53.519Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-08-01T17:47:03.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "abort_completion",
+        "source": "setVariable",
+        "value": false
+      },
+      "timestamp": "2026-08-01T17:47:03.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "abort_completion",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "stepId": "read-session"
+      },
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "stepId": "revise-session-metrics"
+      },
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "stepId": "verify-outcomes"
+      },
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "stepId": "generate-summary"
+      },
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "stepId": "completion-confirmed"
+      },
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "stepId": "announce-completion"
+      },
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-08-01T17:47:10.055Z",
+      "type": "activity_entered"
     }
   ],
   "triggeredWorkflows": [
@@ -858,9 +1052,10 @@
           "post-impl-review",
           "validate",
           "strategic-review",
-          "submit-for-review"
+          "submit-for-review",
+          "complete"
         ],
-        "condition": "isDefault:complete",
+        "condition": "",
         "currentActivity": "complete",
         "currentTechnique": "update-pr::mark-ready",
         "declaredArtifacts": [
@@ -8775,17 +8970,175 @@
             },
             "timestamp": "2026-08-01T17:33:40.244Z",
             "type": "step_started"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "name": "completion_document_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/14-COMPLETE.md"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "name": "broken_artifact_links",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "name": "next_work_package_context",
+              "source": "variables_changed",
+              "value": "Deferred: checkpoint when + condition_not_met (D-3); loop OR predicates (D-4). #374 already accounts for OR keep-site migration."
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "create-adr"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "update-adr-status"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "finalize-test-plan"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "create-complete-doc"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "render-token-usage"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "ensure-docs"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "read-session"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "conduct-retrospective"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "announce-retrospective"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "verify-artifact-links"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "remove-worktree"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "select-next"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "stepId": "announce-completion"
+            },
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-08-01T17:36:52.492Z",
+            "type": "workflow_completed"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 152,
+        "seq": 153,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1785605620,
+        "ts": 1785605812,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "architecture_summary": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md",
@@ -8817,7 +9170,7 @@
           "change_block_index": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-change-block-index.md",
           "changes_fragment": null,
           "classification_rationale": "Inventive improvement of when dialect + evaluator fidelity; complex due to grammar/precedence, fail-closed policy, four nested fixtures, packaging, and open section-0 execution-model decision.",
-          "completion_document_path": "",
+          "completion_document_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/14-COMPLETE.md",
           "component_name": "workflow-server",
           "component_path": ".",
           "comprehension_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-step-gates.md",
@@ -8873,6 +9226,7 @@
           "needs_simplification": false,
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
+          "next_work_package_context": "Deferred: checkpoint when + condition_not_met (D-3); loop OR predicates (D-4). #374 already accounts for OR keep-site migration.",
           "on_feature_branch": true,
           "open_assumptions": [],
           "open_questions": [],
@@ -8966,7 +9320,7 @@
             },
             "validation_passed": true
           },
-          "worktree_created": true
+          "worktree_created": false
         },
         "workflowId": "work-package",
         "workflowVersion": "3.40.0"

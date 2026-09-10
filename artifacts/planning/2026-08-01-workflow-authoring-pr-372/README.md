@@ -2,6 +2,8 @@
 
 > Update · Created 2026-08-01 · **Status:** Complete
 
+> **Token use (client floor):** ~400k subagent tokens across 3 of 7 dispatches · ~31.7 min ledger duration · cost unknown — see [09-token-usage.md](09-token-usage.md)
+
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
