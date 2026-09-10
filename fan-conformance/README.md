@@ -2,29 +2,20 @@
 
 > Part of the [workflow corpus](../README.md)
 
-Runs every form of graph fan against a real checkout and reports what happened: one worker per branch, each with an identity and a container slot of its own, entering the activity they converge on once. The surveys the branches run are cheap on purpose, so the run's cost is the routing's cost and the evidence is about the routing.
+Runs every form of graph fan against a real checkout and reports what happened: one worker per branch, each with an identity and a container slot of its own, entering the activity they converge on once. A session supplies it a planning folder to report into and the component to survey; everything else the run produces. The surveys the branches perform are cheap on purpose, so the run's cost is the routing's cost and the evidence is about the routing.
 
-It serves two readers. One wants to know whether this server's fanning works, and takes that from the report a run leaves behind. The other is writing a fan of their own and wants a worked example of each shape one can take — so every part of the grammar below appears here at least once, with the reason it is written that way rather than as a demonstration.
-
-## What it needs to run
-
-| Variable | Supplied by | Meaning |
-|----------|-------------|---------|
-| `planning_folder_path` | The session | Absolute path the run writes its report into |
-| `component_path` | The session, default `.` | The component surveyed, relative to the host repository — `.` for a regular repository, the submodule path in a monorepo |
-
-Everything else the run uses, it produces.
+It serves two readers. One wants to know whether this server's fanning works, and takes that from the report a run leaves behind. The other is writing a fan of their own and wants a worked example of each shape one can take — so every part of the grammar below is reached somewhere in [the graph](workflow.yaml), for a reason that stage would have anyway rather than as a demonstration.
 
 ## The grammar a destination is written in
 
-An exit's destination takes three written forms, and one reserved value ends the run. This workflow uses all of them:
+An exit's destination takes three written forms, and one reserved id ends the run:
 
-| Destination | What it opens | Where |
-|-------------|---------------|-------|
-| An activity id | One branch, no fan | `survey-files.surveyed`, and most exits here |
-| A list of members, each an id **or** an instance fan | Every member's branches, flattened into one set | `plan-conformance.planned` |
-| One activity with a collection to run it over | One branch per element | `choose-probes.chosen`, `open-notes.opened` |
-| `__terminal__` | Nothing — the run ends | `report-conformance.reported` |
+| Destination | What it opens | Reached in |
+|-------------|---------------|------------|
+| An activity id | One branch, no fan | Most exits here |
+| A list of members, each an id **or** an instance fan | Every member's branches, flattened into one set | Stage one |
+| One activity with a collection to run it over | One branch per element | Stages two and three |
+| `__terminal__` | Nothing — the run ends | The report's exit |
 
 `__terminal__` is a reserved activity id rather than a form of its own, which is why a destination is a string, a list, or an instance fan and nothing else.
 
@@ -39,26 +30,16 @@ plan-conformance ─┬─ survey-files ────┐
                   └─ survey-tree#1 ───┘
 ```
 
-```yaml
-planned:
-  - survey-files
-  - survey-history
-  - activity: survey-tree
-    over: survey_plan.roots
-    variable: survey_root
-    maxInstances: 2
-```
+One destination, mixed: it names two activities directly and names a third with a collection to run it over. Each named member opens one branch, the fanned member opens one per element, and they all converge on `choose-probes` when the last of them returns. The flattening is what makes them one fan rather than two.
 
-One destination, three members. Two name an activity directly and open one branch each; the third names an activity and a collection, and opens one branch per element — two, where the component has the two roots the plan normally names. They converge on `choose-probes` when the last of them returns, and the flattening is what makes them one fan rather than two.
+Four things this stage is the corpus's only example of:
 
-Four things are worth reading off that block:
+- **The members answer to one bound.** The server's ceiling counts branches after every member is flattened, so the named members and the fanned member spend the same budget. That is why the fanned member declares an instance cap: it holds itself to a width that leaves room for its siblings, whatever the plan puts in the collection. A member's own cap can only ever narrow the server's ceiling, never widen it.
+- **The collection is reached at a path.** A fan's `over` takes a variable's name or a dotted path into a named value, and this one takes the path. The variable that has to exist is the head of that path, which is what the load checks and what an activity has to write.
+- **The elements are plain strings.** An element is a slug string or an object carrying a string `id`; the other two fans here use objects and this one uses strings. Either way the element's id names its container slot, its row in the gather manifest, and its artifact filename.
+- **The fan is seeded by the call that opens it.** The activity whose exit opens this destination is also the one that writes the collection it fans over. The collection is read from the variable bag as the fan is entered, including what that same call just wrote, so a source can supply the collection it fans over.
 
-- **The members answer to one bound.** The server's ceiling counts branches after flattening, so the two plain members and the fanned member spend the same budget: four branches against a default ceiling of four. `maxInstances: 2` is declared for that reason — it holds the fanned member at the width that leaves room for its siblings, whatever the plan puts in the collection. A member's own bound can only ever narrow the server's, never widen it.
-- **The collection is reached at a path.** `over` takes a name or a dotted path into a named value, and `survey_plan.roots` is the second. The variable that must exist is the head of the path, `survey_plan`.
-- **The elements are plain strings.** An element is a slug string or an object carrying a string `id`; the other two fans here use objects, and this one uses strings. Either way the element's id names its container slot, its row in the gather manifest, and its artifact filename.
-- **The fan is seeded by the call that opens it.** `plan-conformance` writes `survey_plan` and its own exit fans over it. The collection is read from the bag as the fan is entered, including what that same call just wrote, so a source can supply the collection it fans over.
-
-Each member gets a container of its own, and they differ in shape: `survey_files_outputs` and `survey_history_outputs` hold a single slot each, `survey_tree_outputs` holds one per root. `choose-probes` reads all three the same way, which is the point — a convergence does not need to know which member produced what it is reading.
+Each member gets a container of its own, and they differ in shape: a named member's holds a single slot, the fanned member's holds one per element. The convergence reads them all the same way, which is the point — it does not need to know which member produced what it is reading.
 
 ## Stage two — one activity over a collection
 
@@ -68,9 +49,9 @@ choose-probes ─┬─ probe-directory#0 ─┐
                └─ probe-directory#2 ─┘
 ```
 
-The destination names one activity and the collection `choose-probes` produced. The run opens one instance per entry, each handed its own entry at `probe_target`, and they converge when the last returns. The width is the collection's length — `probe_budget`, settled before any survey runs.
+The destination names one activity and the collection the previous stage produced. The run opens one instance per entry, each handed its own entry, and they converge when the last returns. The width is that collection's length, and the run settles it before anything is surveyed so the width is a decision rather than a consequence of the component it was pointed at.
 
-The meeting point of the first fan is the source of the second. That is legal and deliberate: a fan may not converge on the activity whose exit opens it, but nothing stops a convergence from opening a fan of its own.
+The meeting point of the first fan is the source of the second. That is legal and deliberate: a fan may not converge on the activity whose exit opens it — it would open again on every convergence and the graph would give it no way to finish — but nothing stops a convergence from opening a fan of its own.
 
 ## Stage three — instances that commit in checkouts of their own
 
@@ -82,18 +63,19 @@ open-notes ──────────────────┼─ note-pro
              nothing-to-note
 ```
 
-Branches of a fan share one working tree, so an activity that commits is refused unless it takes a checkout of its own. `note-probe` binds `version-control::create-worktree` as its first step, and that binding is what admits the commit operations after it — the claim and the thing claimed are one artifact, so there is nothing to declare and nothing to take on trust.
+Branches of a fan share one working tree and one git index, and a commit derives its paths from that tree's status — so no instance could stage or attribute its own change, and the load refuses a fanned activity that commits. The exception is evidence rather than assertion: an activity that materialises its own checkout binds `version-control::create-worktree`, the load looks for that binding, and finding it admits the commit operations. The claim and the thing claimed are one artifact, so there is nothing to declare and nothing to take on trust.
 
-Each writer materialises a checkout named for its own designator, writes its note there, commits on a branch of its own and reports that branch. `merge-notes` brings in the branches the container names.
+Each writer materialises a checkout keyed to its own designator, writes its note there, commits on a branch of its own and reports that branch. The activity they converge on merges the branches the container names, and accounts for a branch that held nothing as an outcome rather than a gap.
 
-`open-notes` has two exits because a fan of no instances is refused when it opens: the activity the branches converge on would otherwise be entered with an activity the graph says runs having never run. Where no probe finds anything worth committing, `has_notes` is false and `nothing-to-note` routes the run straight to the report. **A graph that fans over a collection that may be empty says what happens when it is.**
+A fan of no instances is refused when it opens: the activity the branches converge on would be entered with an activity the graph says runs having never run. So where no probe finds anything worth committing, a predicate on the source's exit routes the run past the writers entirely. **A graph that fans over a collection that may be empty says what happens when it is.**
 
 ## What a run leaves behind
 
-One document, `fan-conformance-report.md`, shaped by [conformance-report](resources/conformance-report.md#template). It answers one question in several sections:
+One document, shaped by [conformance-report](resources/conformance-report.md#template). It answers one question in several sections:
 
 - **Identity** — did each slot report back the designator its unit was handed? A disagreement means a branch was served a sibling's element, and it is printed as a disagreement rather than reconciled.
 - **Overlap** — did the branches of each fan run at the same time? Every instant comes from a branch's own record, because the activity writing the report was not running while they were. Overlapping intervals are a batch; abutting ones are a queue, which is a correct result the report states plainly.
+- **Forms reached** — which parts of the grammar this run actually opened, including the parts it did not, since a route past a stage leaves the forms that stage carries unreached.
 - **Isolation** — did each writer commit on a branch of its own, and did those branches merge?
 - **What the record did not expect** — empty slots, missing intervals, a branch that started before the run did.
 
@@ -104,7 +86,7 @@ One document, `fan-conformance-report.md`, shaped by [conformance-report](resour
 | [01](activities/01-plan-conformance.yaml) | Plan Conformance | Fixes the instant every branch's interval is read against, names the survey roots, settles the probe width |
 | [02](activities/02-survey-files.yaml) | Survey Files | A member the first destination names directly — counts files by extension, ranks directories by size |
 | [03](activities/03-survey-history.yaml) | Survey History | The other named member — summarises recent commits and the directories they touched |
-| [04](activities/04-choose-probes.yaml) | Choose Probes | Where the first fan converges and the second opens: reads all three containers, picks the directories to probe |
+| [04](activities/04-choose-probes.yaml) | Choose Probes | Where the first fan converges and the second opens: reads every container, picks the directories to probe |
 | [05](activities/05-probe-directory.yaml) | Probe Directory | One instance per picked directory, each describing only its own |
 | [06](activities/06-survey-tree.yaml) | Survey Tree | The fanned member of the first destination — one instance per root, each walking only the root it was handed |
 | [07](activities/07-open-notes.yaml) | Open Notes | Chooses which findings are worth committing, and routes past the writers when none are |
@@ -114,20 +96,12 @@ One document, `fan-conformance-report.md`, shaped by [conformance-report](resour
 
 ## Where a branch's outputs land
 
-No meeting point names a slot. Each reads the container whole — `survey_files_outputs`, `survey_history_outputs`, `survey_tree_outputs`, `probe_directory_outputs`, `note_probe_outputs` — and the container's own order carries the correspondence. The width is a run-time value no authored index could be checked against, which is why an index is never written down.
+No meeting point names a slot. Each reads its containers whole, and a container's own order carries the correspondence — the width is a run-time value no authored index could be checked against, which is why an index is never written down.
 
-A container's name is its activity's id with dashes as underscores and `_outputs` appended, so `survey-tree` lands in `survey_tree_outputs`. That holds whether the activity was named directly or fanned, and whether it opened one branch or several.
+A container's name is its activity's id with dashes as underscores and `_outputs` appended. That holds whether the activity was named directly or fanned, and whether it opened one branch or several, so a convergence reads one form regardless of the shape of the fan that filled it.
 
 ## Running it
 
-Every fan here is sized to fit inside the server's default ceiling of four branches, and each is sized by something different:
+Every fan here is sized to fit inside the server's default ceiling, and each is sized by something different: one by a cap declared on the member, one by a width the run settles before it surveys anything, and one by how many findings turned out to be worth committing. The server refuses a destination wider than its ceiling at the moment the fan opens and names the bound that refused it, so widening a fan means raising the server's ceiling too — and each extra branch costs a whole further delivery of its activity.
 
-| Fan | Width | Bounded by |
-|-----|-------|------------|
-| `plan-conformance.planned` | Two named members plus one instance per survey root | The member's own `maxInstances: 2`, which leaves room for its two siblings |
-| `choose-probes.chosen` | `probe_budget`, three by default | A value the run settles before it surveys anything |
-| `open-notes.opened` | One writer per note chosen | The probe count, since a note comes from a probe's finding |
-
-The server refuses a destination wider than its ceiling at the moment the fan opens, and names the bound that refused it. Raising a width therefore means raising `FAN_MAX_BRANCHES` too, and each extra branch costs a whole further delivery of its activity.
-
-The run performs no writes outside its planning folder until the note writers, and each of those works in a checkout of its own on a branch of its own.
+The run writes nothing outside its planning folder until the note writers, and each of those works in a checkout of its own on a branch of its own.
