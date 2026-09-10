@@ -17,6 +17,7 @@ recursively, so a step nested in a loop counts once at its own depth. Scripts ar
 | `dup.py` | Variable declaration duplication; step-id proximity buckets |
 | `ids.py` | Droppable vs load-bearing step ids |
 | `refs.py` | Technique reference forms (string/structured × bare/qualified) |
+| `shape.py` | Strips `kind` from every step and re-resolves it by shape |
 
 ## Corpus shape
 
@@ -63,6 +64,50 @@ recursively, so a step nested in a loop counts once at its own depth. Scripts ar
 
 `kind` is exactly one line per step, so its 19,428 bytes are the whole cost of the
 discriminator.
+
+## Shape resolution is total
+
+`shape.py` strips `kind` from all 966 steps and re-resolves each by its remaining
+fields, in this order: a `technique` field makes it a technique step; `loopType`, a
+loop; any of `ref` / `message` / `options`, a checkpoint; otherwise an action.
+
+**966 of 966 recover their declared kind. Zero mismatches.**
+
+No identifying field appears under two kinds:
+
+| Field | technique | action | checkpoint | loop |
+|---|---:|---:|---:|---:|
+| `technique` | 642 | 0 | 0 | 0 |
+| `loopType` | 0 | 0 | 0 | 50 |
+| `ref` | 0 | 0 | 8 | 0 |
+| `message` | 0 | 0 | 106 | 0 |
+| `options` | 0 | 0 | 106 | 0 |
+| `steps` | 0 | 0 | 0 | 50 |
+| `name` | 0 | 0 | 0 | 50 |
+| `actions` | **45** | 160 | 0 | 0 |
+
+### Two constraints the table imposes
+
+**`actions` is a shared field, not a discriminator.** 45 technique steps also carry
+control actions — for example `ponytail/activities/05-harvest-debt-and-report.yaml`
+binds `report-gain` and emits a message from the same step. Resolution must test
+`technique` before it considers `actions`, or those 45 misresolve as action steps.
+
+**The residual default is safe only because each kind is a closed object.** A step
+whose `technique` key is misspelled carries no `technique`, so it resolves as an
+action — and then fails validation, because the misspelled key is not in the action
+step's field set. The same holds for a loop that omits `loopType` (`name`, `variable`,
+`over` and `steps` all reject against the action shape) and a checkpoint that omits
+its body (`defaultOption` rejects). Bound-step purity — each kind admitting only its
+own fields — is what keeps a malformed step loud once the discriminator is gone.
+
+What stays uncatchable is a semantic slip: a step meant as a checkpoint but written
+with only an id and a gate is a valid marker action. That is equally true today of a
+step mistakenly labelled `kind: action`, so it is not a regression.
+
+The residual bottoms out at two steps carrying an empty action list —
+`prism/activities/00-select-mode.yaml` (`summarize`) and
+`work-package/activities/13-submit-for-review.yaml` (`await-review`).
 
 ## Step ids
 
