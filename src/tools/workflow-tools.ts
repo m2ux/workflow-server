@@ -23,7 +23,7 @@ import {
 import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
-import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES, FAN_DISPATCH_TECHNIQUE } from '../loaders/core-ops.js';
+import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES, FAN_DISPATCH_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
@@ -626,11 +626,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
       // technique resolves it once.
       const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
-      // The concurrent-dispatch operation rides the response for a workflow whose graph actually
-      // fans, and no other. An orchestrator reads this response for the session it is driving, so
-      // the procedure arrives with the graph that needs it; a workflow with no fanning exit pays
-      // nothing for a procedure it can never reach.
-      const fanTechniques = fanGroups(wf).length > 0 ? [FAN_DISPATCH_TECHNIQUE] : [];
+      // The fan's operations ride the response for a workflow whose graph actually fans, and no
+      // other. An orchestrator reads this response for the session it is driving, so the procedure
+      // arrives with the graph that needs it; a workflow with no fanning exit pays nothing for a
+      // procedure it can never reach.
+      const fanTechniques = fanGroups(wf).length > 0 ? FAN_DISPATCH_TECHNIQUES : [];
       const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES, ...fanTechniques]));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
       const opsText = stringifyForResponse(formatTechniqueBundle(resolvedOrchestrator));
