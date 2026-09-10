@@ -45,11 +45,15 @@ export const WALKED = [
  * — five checkpoints in its `start` activity — go on the uncovered list. Both the cost and the walk
  * errors are worth fixing; neither is worth blocking this measurement on.
  *
- * The two audit workflows declare no checkpoint at all, so walking them covers nothing. They are
- * named here so the set above reads as chosen rather than as an oversight.
+ * The two audit workflows and the fan conformance run declare no checkpoint at all, so walking them
+ * covers nothing. They are named here so the set above reads as chosen rather than as an oversight.
+ * The all-workflows drift walk still enters every one of them, which is where a route that stopped
+ * resolving would show; this list decides only whose checkpoint options the coverage figure is
+ * measured over.
  */
 export const NOT_WALKED = [
   'remediate-vuln',
   'cicd-pipeline-security-audit',
   'substrate-node-security-audit',
+  'fan-conformance',
 ] as const;

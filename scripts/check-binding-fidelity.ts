@@ -308,14 +308,55 @@ function fanParameterFor(wf: string, activityId: string): string | undefined {
 }
 
 /**
- * Whether a read addresses a member of a branch container in this workflow. A slot carries its
- * unit's id beside the result, so a member read is `<key>.<instance>.result.<member>`; a reference
- * whose head is a container but which omits the index addresses nothing and is not producible.
+ * Which activities bind each technique file, so an output declared there can be read against the
+ * routing of the activity that produces it. Keyed on both spellings a resolved op can have on disk
+ * — a standalone file, and a group's own contract.
+ */
+const bindersOf = new Map<string, Set<string>>();
+
+function techniqueRels(homeWf: string, key: string): string[] {
+  const path = key.replace('::', '/');
+  return [`${homeWf}/techniques/${path}.md`, `${homeWf}/techniques/${path}/TECHNIQUE.md`];
+}
+
+/**
+ * Whether an output declared in this file lands in a branch container something reads.
+ *
+ * A branch's reported values do not enter the bag under their own names: the fan lands the whole
+ * map in a slot of its own, under a key derived from the branch's activity id. So no consumer
+ * anywhere names the output — the activity the fan converges on reads the container. Without this
+ * every value a fanned activity produces reads as dead, and the remedy the guard would be pushing
+ * for is an artifact on each branch, which is the collision the fan rules exist to prevent.
+ */
+function landsInAReadContainer(rel: string, consumed: Map<string, Set<string>>): boolean {
+  for (const binder of bindersOf.get(rel) ?? []) {
+    const [wf, activityId] = binder.split('::') as [string, string];
+    const key = branchKey(activityId);
+    if (!fanContainerMembers.get(wf)?.has(key)) continue;
+    if ((consumed.get(key)?.size ?? 0) > 0) return true;
+  }
+  return false;
+}
+
+/**
+ * Whether a read of a branch container in this workflow addresses something the container holds.
+ *
+ * Two forms do. The container ALONE is the gather the activity a fan converges on performs: it
+ * hands the container whole to the ordered gather with the fan's own collection as the expected
+ * ids, so the correspondence comes from the container's order rather than from an authored index
+ * (`scatter-gather::a-join-gathers-the-container-not-an-index`). And a member read carries the slot
+ * it means: a slot holds its unit's id beside the result, so a member is
+ * `<key>.<instance>.result.<member>`.
+ *
+ * What is left is a head plus a tail with no index — `<key>.<member>`. That addresses nothing under
+ * a uniform index, and it is the form a member read decays into when its author forgets the slot,
+ * so it stays reported.
  */
 function readsContainerMember(wf: string, reference: string): boolean {
   const segments = reference.split('.');
   const key = segments[0]!;
   if (!fanContainerMembers.get(wf)?.has(key)) return false;
+  if (segments.length === 1) return true;
   return /^\d+$/.test(segments[1] ?? '') && segments.length > 2;
 }
 
@@ -715,6 +756,11 @@ export function collectViolations(): Violation[] {
       v.push({ check: 'binding-resolution', site: `${s.rel}[${s.stepId}]`, detail: `step technique '${s.technique}' does not resolve` });
       continue;
     }
+    for (const cand of techniqueRels(r.homeWf, r.key)) {
+      let binders = bindersOf.get(cand);
+      if (!binders) { binders = new Set(); bindersOf.set(cand, binders); }
+      binders.add(`${s.wf}::${s.activityId}`);
+    }
     const sig = r.entry.composed;
     // The structured binding separates input deviations from output remaps: every `inputs` key must
     // be a declared INPUT of the op, every `outputs` key a declared OUTPUT. A key that doesn't match
@@ -736,6 +782,10 @@ export function collectViolations(): Violation[] {
       // The fan supplies its parameter on the branch's own delivery, to the activity it runs and
       // to no other. Without this the fanned activity's declared input for it reads as an orphan.
       if (fanParameterFor(s.wf, s.activityId) === inputId) continue;
+      // A branch container is produced by the fan, server-side, at the moment the fan opens — so no
+      // step, variable or default in the YAML this guard reads declares it. The activity a fan
+      // converges on takes it as an input by name, which is the sanctioned gather.
+      if (fanContainerMembers.get(s.wf)?.has(inputId)) continue;
       orphans.set(seam, {
         check: 'orphan-input', site: `${s.wf} :: ${opId}`,
         detail: `own input '${inputId}' has no producer in workflow '${s.wf}' (no step-binding entry, workflow variable, step output, or default)`,
@@ -779,6 +829,7 @@ export function collectViolations(): Violation[] {
   for (const site of declaredOutputSites) {
     if (site.hasArtifact) continue;
     if (artifactTemplateTokens.get(site.rel)?.has(site.id)) continue;
+    if (landsInAReadContainer(site.rel, consumed)) continue;
     const satisfier = [...(consumed.get(site.id) ?? [])].find((rel) => rel !== site.rel && consumerReaches(rel, site.rel));
     if (satisfier) { deadOutputSatisfier.set(`${site.rel}\u0000${site.id}`, satisfier); continue; }
     v.push({

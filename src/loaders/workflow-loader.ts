@@ -673,16 +673,22 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
 }
 
 /**
- * Operations a fan's branch cannot execute, so a fanned activity binding one fails the load rather
- * than failing inside a worker. The version-control group stages and commits: a fan's branches
- * share one working tree and one git index, and a commit derives its paths from that tree's status.
- * The persist operation commits for the same reason. The child-workflow dispatch records one
- * activity id where a fan holds several in flight.
+ * Operations a fan's branch cannot execute whatever its destination declares, so a fanned activity
+ * binding one fails the load rather than failing inside a worker. Both are refused for what the
+ * instances share beyond their checkouts: the persist operation writes the session record and the
+ * planning folder, and the child-workflow dispatch records one activity id where a fan holds
+ * several in flight.
+ *
+ * The version-control group is the conditional case and is handled at the rule rather than here.
+ * It is refused where a fan's branches share one working tree and one git index — a commit derives
+ * its paths from that tree's status, so no instance could stage or attribute its own change — and
+ * permitted where the destination declares `isolation: worktree`, which is the author's claim that
+ * each instance has a checkout of its own.
  */
 const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map([
   [
     'workflow-engine::commit-and-persist',
-    "A fan's instances share one working tree and one git index, and a commit derives its paths from that tree's status, so no instance can stage or attribute its own change. Move the commit to the activity before the fan or to the activity it converges on.",
+    'This operation persists the session record and the planning folder, which every instance of a fan shares however their checkouts are split — so the instances would each commit a folder their siblings are still writing. Persist once, at the activity the fan converges on. Declaring `isolation: worktree` does not admit it: what that declaration splits is the checkout, not the record.',
   ],
   [
     'workflow-engine::handle-sub-workflow',
@@ -791,13 +797,18 @@ function fanErrors(workflow: Workflow, fan: FanGroup): string[] {
       }
 
       // L14 — decidable from the flattened steps and each step's bound operation name, with no
-      // composed signatures.
+      // composed signatures. A destination declaring worktree isolation gives this branch a
+      // checkout of its own, so the shared-tree reason does not hold for it and the checkout group
+      // is legal there; the session-level operations stay refused, because the record and its
+      // planning folder are shared however the checkouts are split.
+      const isolated = instanceFans(fan.destination)
+        .some((member) => member.activity === branch && member.isolation === 'worktree');
       for (const step of flattenActivitySteps(branchActivity)) {
         const operation = boundOperation(step);
         if (operation === undefined) continue;
         const reason = OPERATIONS_A_BRANCH_CANNOT_EXECUTE.get(operation)
-          ?? (operation.startsWith(CHECKOUT_GROUP_PREFIX)
-            ? "A fan's instances share one working tree and one git index, and a commit derives its paths from that tree's status, so no instance can stage or attribute its own change. Move the commit to the activity before the fan or to the activity it converges on."
+          ?? (!isolated && operation.startsWith(CHECKOUT_GROUP_PREFIX)
+            ? "A fan's instances share one working tree and one git index, and a commit derives its paths from that tree's status, so no instance can stage or attribute its own change. Move the commit to the activity before the fan or to the activity it converges on, or declare `isolation: worktree` on the destination and give each instance a checkout of its own."
             : undefined);
         if (reason === undefined) continue;
         errors.push(`Activity '${branch}' is fanned by ${site} and binds '${operation}'. ${reason}`);

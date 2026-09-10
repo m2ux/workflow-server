@@ -1,0 +1,16 @@
+id: wide-fan-fixture
+version: 1.0.0
+title: Wide Fan Fixture
+description: An instance fan declaring a ceiling above the server's own, to prove which of the two bounds decides.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+      maxInstances: 8
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

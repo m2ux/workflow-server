@@ -501,7 +501,9 @@ describe('fan load rules', () => {
     expect(rendered(errors)).toContain(
       "Activity 'research-pass' is fanned by 'scope-research.scoped' and binds 'workflow-engine::commit-and-persist'.",
     );
-    expect(rendered(errors)).toContain('share one working tree and one git index');
+    // The reason is what the instances share beyond their checkouts, so it reads the same whether
+    // or not the destination splits the trees.
+    expect(rendered(errors)).toContain('persists the session record and the planning folder');
   });
 
   it('L14 refuses a fanned activity binding a version-control operation', async () => {
@@ -518,6 +520,107 @@ describe('fan load rules', () => {
       ],
     });
     expect(rendered(errors)).toContain("binds 'version-control::commit-regular-files'");
+    // The refusal names the declaration that would admit it, so the author is not left to infer
+    // that the shared tree is the whole of the reason.
+    expect(rendered(errors)).toContain('isolation: worktree');
+  });
+
+  // L14 is conditional on the destination: a fan declaring worktree isolation gives each instance a
+  // checkout of its own, so the shared-tree reason does not hold and the checkout group is legal.
+  it('L14 admits a version-control operation where the destination declares worktree isolation', async () => {
+    const errors = await loadErrors({
+      ...instanceFanFixture,
+      graph: {
+        'scope-research': {
+          scoped: {
+            activity: 'research-pass', over: 'research_topics', variable: 'research_topic',
+            isolation: 'worktree',
+          },
+        },
+        'research-pass': { researched: 'combine-research' },
+        'combine-research': { settled: '__terminal__' },
+      },
+      activities: [
+        instanceFanFixture.activities[0]!,
+        activity('research-pass', {
+          exits: exits('researched'),
+          variables: { reads: ['research_topic'] },
+          steps: [{ kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' }],
+        }),
+        instanceFanFixture.activities[2]!,
+      ],
+    });
+    expect(rendered(errors)).not.toContain("binds 'version-control::commit-regular-files'");
+  });
+
+  it('L14 relaxes for the isolated member alone, not for its siblings in the same list', async () => {
+    // Isolation is declared per member, so a list can carry one member whose instances have
+    // checkouts of their own beside a member whose branch shares the calling worker's. The rule
+    // reads the member that names each branch, so the relaxation reaches exactly that branch.
+    const errors = await loadErrors({
+      ...instanceFanFixture,
+      graph: {
+        'scope-research': {
+          scoped: [
+            {
+              activity: 'research-pass', over: 'research_topics', variable: 'research_topic',
+              isolation: 'worktree',
+            },
+            'summarise-pass',
+          ],
+        },
+        'research-pass': { researched: 'combine-research' },
+        'summarise-pass': { summarised: 'combine-research' },
+        'combine-research': { settled: '__terminal__' },
+      },
+      activities: [
+        instanceFanFixture.activities[0]!,
+        activity('research-pass', {
+          exits: exits('researched'),
+          variables: { reads: ['research_topic'] },
+          steps: [{ kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' }],
+        }),
+        activity('summarise-pass', {
+          exits: exits('summarised'),
+          steps: [{ kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' }],
+        }),
+        instanceFanFixture.activities[2]!,
+      ],
+    });
+    expect(rendered(errors)).not.toContain("Activity 'research-pass' is fanned by");
+    expect(rendered(errors)).toContain(
+      "Activity 'summarise-pass' is fanned by 'scope-research.scoped' and binds 'version-control::commit-regular-files'.",
+    );
+  });
+
+  it('L14 refuses the session-level persist however the checkouts are split', async () => {
+    // What worktree isolation splits is the checkout. The session record and the planning folder
+    // are shared either way, so the operation that commits them stays refused — and says so
+    // rather than repeating the shared-tree reason that no longer applies.
+    const errors = await loadErrors({
+      ...instanceFanFixture,
+      graph: {
+        'scope-research': {
+          scoped: {
+            activity: 'research-pass', over: 'research_topics', variable: 'research_topic',
+            isolation: 'worktree',
+          },
+        },
+        'research-pass': { researched: 'combine-research' },
+        'combine-research': { settled: '__terminal__' },
+      },
+      activities: [
+        instanceFanFixture.activities[0]!,
+        activity('research-pass', {
+          exits: exits('researched'),
+          variables: { reads: ['research_topic'] },
+          steps: [{ kind: 'technique', id: 'persist', technique: 'workflow-engine::commit-and-persist' }],
+        }),
+        instanceFanFixture.activities[2]!,
+      ],
+    });
+    expect(rendered(errors)).toContain("binds 'workflow-engine::commit-and-persist'");
+    expect(rendered(errors)).toContain('what that declaration splits is the checkout, not the record');
   });
 
   it('L14 refuses a fanned activity binding the child-workflow dispatch, for its own reason', async () => {
