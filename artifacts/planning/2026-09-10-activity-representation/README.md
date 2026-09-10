@@ -107,6 +107,45 @@ The discriminator was never the separator — it is the **field name**. `techniq
 present is what identifies the step, and that holds for all 642 regardless of how the
 reference is spelled. The conclusion (retire `kind`) survives; the reasoning does not.
 
+### A sigil on the id that encodes the kind
+
+The proposal was to mark the kind with a leading symbol on the step id — `*` for a
+technique, `!` for an action, `>` for a checkpoint — and to take the symbol plus the
+name as the step id itself. Set aside on three grounds, in ascending order of weight.
+
+*The chosen symbols are YAML syntax.* `*` opens an alias reference, `!` a tag, `>` a
+folded block scalar; all three fail to parse unquoted. Of the plausible alternatives,
+`#` and `&` are worse still — they parse silently to null rather than failing. Only
+`+`, `=` and `~` survive unquoted, none of them suggests the kind it would stand for,
+and `~` reads as null in other positions. Every step id would therefore be quoted,
+spending two characters to save the eleven of a field name.
+
+*The compression does not materialise.* Only 129 technique steps could collapse to a
+bare scalar; the rest carry a gate, input deviations, control actions or an explicit
+id, so they need a mapping whatever marks their kind. Best case is 1,032 bytes, 0.2%
+of the corpus, against 19,428 for deleting the discriminator outright.
+
+*As an identity, it disambiguates nothing.* Step ids already occupy one namespace per
+scope, so a kind marker adds separation only where two steps of different kinds would
+otherwise share a name. Measured across the corpus, derived-name collisions split 34
+same-kind against **1** cross-kind — and the single case, `review-mode-detection`
+naming both a checkpoint and a technique step in `work-package/01-start-work-package`,
+is a naming choice rather than a constraint. The collisions that actually force an
+explicit id are activities binding one technique two or three times, which no kind
+marker can separate.
+
+It would also cost the property that makes shape resolution safe. Each kind is a
+closed object that rejects fields outside its own set, which is what turns a
+misspelled binding into a loud failure. A step keyed by a sigil either keeps its
+fields as siblings, saving nothing, or nests them under the sigil key, trading
+per-kind strict validation for pattern-matched keys and adding a level of
+indentation. Carried into the id, the sigil also reaches the persisted checkpoint
+replay keys and the delivery ledger, and the worker is expected to transcribe leading
+punctuation exactly.
+
+The field name already does this work: `technique` identifies all 642 technique steps
+however the reference is spelled, validates under the schema, and greps.
+
 ### Positional disambiguation for colliding ids
 
 Suffixing a collision by its ordinal (`write-artifact`, `write-artifact@2`) would make
