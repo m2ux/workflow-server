@@ -856,8 +856,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // A tighter ceiling is declared per member, so members of one list may carry different ones.
       const ceiling = member.maxInstances ?? ceilingDefault;
       if (collection.length > ceiling) {
+        // Each message names the bound that actually refused and the one thing that moves it. A
+        // destination's own ceiling only ever narrows the server's, so a reader over the server's
+        // bound is sent to the server's bound; sending them to `maxInstances` would be sending them
+        // to a field that cannot admit them however wide they declare it.
+        const cost = `Each branch costs a whole further delivery of '${member.activity}'.`;
         throw new Error(
-          `${lead}: this destination opens ${collection.length} branches and admits ${ceiling}, ${member.maxInstances !== undefined ? 'the maxInstances it declares' : "the server's configured ceiling"}. Cap the collection where it is produced — \`decompose-work-units\` takes \`effort_cap\` — or ${member.maxInstances !== undefined ? 'raise' : 'declare'} this destination's maxInstances, knowing each instance costs a whole extra delivery of '${member.activity}'.`,
+          member.maxInstances !== undefined
+            ? `${lead}: this destination opens ${collection.length} branches and admits ${ceiling}, the maxInstances it declares. Cap the collection where it is produced — \`decompose-work-units\` takes \`effort_cap\` — or widen this destination's maxInstances, which narrows the server's ceiling of ${ceilingDefault} and cannot exceed it. ${cost}`
+            : `${lead}: this destination opens ${collection.length} branches and admits ${ceiling}, the server's configured ceiling. Cap the collection where it is produced — \`decompose-work-units\` takes \`effort_cap\` — or raise the server's ceiling with the FAN_MAX_BRANCHES environment variable, which is what bounds every fan on this server. Declaring maxInstances on this destination would not admit them: it only narrows the server's ceiling. ${cost}`,
         );
       }
       const entries = ids.map((_, index) => `${member.activity}${INSTANCE_SEPARATOR}${index}`);
@@ -874,7 +881,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     // answer to one bound. The enter already computes that count to build the frontier.
     if (opened.branches.length > ceilingDefault) {
       throw new Error(
-        `Cannot fan '${site}': this destination opens ${opened.branches.length} branches once every member is flattened and admits ${ceilingDefault}, the server's configured ceiling. Narrow the destination, or cap the collections it runs over where they are produced.`,
+        `Cannot fan '${site}': this destination opens ${opened.branches.length} branches once every member is flattened and admits ${ceilingDefault}, the server's configured ceiling. Narrow the destination, cap the collections it runs over where they are produced, or raise the server's ceiling with the FAN_MAX_BRANCHES environment variable. A member's own maxInstances would not admit them: it only narrows this bound.`,
       );
     }
     return opened;
