@@ -682,13 +682,13 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
  * The version-control group is the conditional case and is handled at the rule rather than here.
  * It is refused where a fan's branches share one working tree and one git index — a commit derives
  * its paths from that tree's status, so no instance could stage or attribute its own change — and
- * permitted where the destination declares `isolation: worktree`, which is the author's claim that
- * each instance has a checkout of its own.
+ * permitted where the fanned activity binds the operation that gives each instance a checkout of
+ * its own.
  */
 const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map([
   [
     'workflow-engine::commit-and-persist',
-    'This operation persists the session record and the planning folder, which every instance of a fan shares however their checkouts are split — so the instances would each commit a folder their siblings are still writing. Persist once, at the activity the fan converges on. Declaring `isolation: worktree` does not admit it: what that declaration splits is the checkout, not the record.',
+    'This operation persists the session record and the planning folder, which every instance of a fan shares however their checkouts are split — so the instances would each commit a folder their siblings are still writing. Persist once, at the activity the fan converges on. Taking a checkout of its own does not admit it either: what that splits is the working tree, not the record.',
   ],
   [
     'workflow-engine::handle-sub-workflow',
@@ -698,6 +698,14 @@ const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map(
 
 /** The version-control group stages and commits, so none of its operations is executable in a branch. */
 const CHECKOUT_GROUP_PREFIX = 'version-control::';
+
+/**
+ * The operation that gives a branch a checkout of its own, and so the evidence that lifts the
+ * checkout-group refusal for it. An activity binding this materialises a worktree per instance —
+ * named from the instance index the delivery carries — and commits into that rather than into the
+ * tree its siblings are writing.
+ */
+const WORKTREE_OPERATION = 'version-control::create-worktree';
 
 /** The operation a technique step binds, whether the step names it plainly or deviates from it. */
 function boundOperation(step: Step): string | undefined {
@@ -797,18 +805,20 @@ function fanErrors(workflow: Workflow, fan: FanGroup): string[] {
       }
 
       // L14 — decidable from the flattened steps and each step's bound operation name, with no
-      // composed signatures. A destination declaring worktree isolation gives this branch a
-      // checkout of its own, so the shared-tree reason does not hold for it and the checkout group
-      // is legal there; the session-level operations stay refused, because the record and its
-      // planning folder are shared however the checkouts are split.
-      const isolated = instanceFans(fan.destination)
-        .some((member) => member.activity === branch && member.isolation === 'worktree');
-      for (const step of flattenActivitySteps(branchActivity)) {
+      // composed signatures. A branch that materialises a checkout of its own commits into that
+      // one, so the shared-tree reason does not hold for it and the checkout group is legal there.
+      // The evidence is the branch's own binding rather than a claim on the destination: an author
+      // who wired the worktree has done the thing the exemption rests on, where an author who
+      // declared an intention may not have. The session-level operations stay refused either way,
+      // because the record and its planning folder are shared however the checkouts are split.
+      const steps = flattenActivitySteps(branchActivity);
+      const ownsItsCheckout = steps.some((step) => boundOperation(step) === WORKTREE_OPERATION);
+      for (const step of steps) {
         const operation = boundOperation(step);
-        if (operation === undefined) continue;
+        if (operation === undefined || operation === WORKTREE_OPERATION) continue;
         const reason = OPERATIONS_A_BRANCH_CANNOT_EXECUTE.get(operation)
-          ?? (!isolated && operation.startsWith(CHECKOUT_GROUP_PREFIX)
-            ? "A fan's instances share one working tree and one git index, and a commit derives its paths from that tree's status, so no instance can stage or attribute its own change. Move the commit to the activity before the fan or to the activity it converges on, or declare `isolation: worktree` on the destination and give each instance a checkout of its own."
+          ?? (!ownsItsCheckout && operation.startsWith(CHECKOUT_GROUP_PREFIX)
+            ? `A fan's instances share one working tree and one git index, and a commit derives its paths from that tree's status, so no instance can stage or attribute its own change. Move the commit to the activity before the fan or to the activity it converges on, or bind '${WORKTREE_OPERATION}' in this activity so each instance commits a checkout of its own.`
             : undefined);
         if (reason === undefined) continue;
         errors.push(`Activity '${branch}' is fanned by ${site} and binds '${operation}'. ${reason}`);
