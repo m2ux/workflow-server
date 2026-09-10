@@ -1,21 +1,17 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Shared Inputs, Outputs, and domain invariants for mid-phase multi-agent orchestration patterns. Session-level dispatch and fan-out primitives remain in workflow-engine, scatter-gather, and harness-compat.
+Shared Inputs, Outputs, and domain invariants for mid-phase multi-agent orchestration patterns. These patterns run their work units one at a time inside the calling worker; running them together is the graph's business, through a destination that fans. Session-level dispatch and fan-out primitives remain in workflow-engine, scatter-gather, and harness-compat.
 
 ## Inputs
 
 ### work_goal
 
 The caller-facing goal or request text the pattern operates on.
-
-### dispatch_concurrency
-
-*(optional)* Positive integer. Default `1`. `1` = sequential dispatch; greater than `1` = parallel fan-out.
 
 ### isolation_mode
 
@@ -51,7 +47,7 @@ Single combined result produced from `{gathered_results}` under caller-supplied 
 
 ### isolation-then-combine
 
-Honor [scatter-gather](../scatter-gather.md)::isolation-then-combine for parallel fan-out.
+Honor [scatter-gather](../scatter-gather.md)::isolation-then-combine: per-unit outputs are gathered into an isolated ordered collection and merged only through the combine step.
 
 ### isolation-mode-write-boundary
 

@@ -1,10 +1,9 @@
 id: orchestrator-workers
-version: 1.0.0
+version: 2.0.0
 name: Orchestrator Workers
-description: Runtime-decompose a goal into work units, dispatch workers, gather ordered results, and synthesise — borrowable mid-phase orchestrator-workers pattern.
+description: Runtime-decompose a goal into work units, dispatch workers one at a time, gather ordered results, and synthesise — borrowable mid-phase orchestrator-workers pattern.
 variables:
   reads:
-    - dispatch_concurrency
     - effort_cap
     - output_contract
     - planning_context

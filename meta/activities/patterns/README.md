@@ -4,7 +4,9 @@
 
 Borrowable mid-phase multi-agent pipelines. They are **not** part of meta's lifecycle graph (`loadActivitiesFromDir` is non-recursive — this subdirectory is library-only).
 
-Session-level orchestrator/worker dispatch remains [`dispatch-activity`](../../techniques/workflow-engine/dispatch-activity.md). These activities cover **in-activity fan-out / consolidate** only.
+Session-level orchestrator/worker dispatch remains [`dispatch-activity`](../../techniques/workflow-engine/dispatch-activity.md). These activities cover **in-activity decompose / dispatch / consolidate** only, and they work through their units one at a time inside the calling worker.
+
+Running units together is the graph's layer: bind the exit that reaches the per-unit activity to a destination naming that activity and the collection to run it over, and the run opens one worker per element, each with its own frontier entry, its own container slot and its own identity — see [`dispatch-fan`](../../techniques/workflow-engine/dispatch-fan.md) and [`scatter-gather`](../../techniques/scatter-gather.md). Reach for a pattern activity when the units are cheap enough to sit in one worker's context, and for the graph fan when each unit is worth a whole delivery of its own.
 
 Atomic ops live under [`orchestration-patterns/`](../../techniques/orchestration-patterns/TECHNIQUE.md). Fan-out primitives remain [`scatter-gather`](../../techniques/scatter-gather.md) and [`harness-compat`](../../techniques/harness-compat/TECHNIQUE.md).
 
@@ -37,7 +39,7 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
    Wire your own `transitions` in a thin local wrapper activity when the borrowed file has none, or copy the step pipeline into a local activity and bind the same ops with input overrides.
 
-2. **Re-bind ops** inside a local activity with `{ name, inputs }` deviations when you need different bag names or a non-default dispatch concurrency.
+2. **Re-bind ops** inside a local activity with `{ name, inputs }` deviations when you need different bag names.
 
 3. **Seed the bag** before the pattern runs (consumer responsibility). Each activity's `variables.reads` names what it expects to find there, and its `variables.writes` what it puts back — read them off the `.yaml`.
 
@@ -55,7 +57,7 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
 ### 01 Orchestrator Workers
 
-Runtime decomposition → briefs → dispatch → gather → synthesise. Seed `work_goal`, `synthesis_criteria`; set `dispatch_concurrency` > 1 for parallel fan-out.
+Runtime decomposition → briefs → dispatch → gather → synthesise. Seed `work_goal` and `synthesis_criteria`; the units are worked one at a time, and `effort_cap` bounds how many there may be.
 
 ### 02 Supervisor
 
@@ -71,4 +73,4 @@ Same shape as 01 with `isolation_mode` and a validate gate on `gathered_results.
 
 ### 05 Lead Researcher
 
-Research-question planning, parallel dispatch, synthesise, then `while has_research_gaps` follow-up (max 3 rounds).
+Research-question planning, dispatch, synthesise, then `while has_research_gaps` follow-up (max 3 rounds).

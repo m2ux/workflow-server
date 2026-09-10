@@ -1,5 +1,5 @@
 id: supervisor
-version: 1.0.0
+version: 2.0.0
 name: Supervisor
 description: Classify a request onto a fixed specialist lane, dispatch that lane, and synthesise or escalate — borrowable mid-phase supervisor pattern.
 variables:
@@ -44,10 +44,7 @@ steps:
     technique: orchestration-patterns::compose-worker-briefs
   - kind: technique
     id: dispatch
-    technique:
-      name: orchestration-patterns::dispatch-workers
-      inputs:
-        dispatch_concurrency: 1
+    technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: gather
     technique:
