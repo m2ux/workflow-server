@@ -99,9 +99,17 @@ async function appendTraceEvent(
     const callAgentId = typeof params['agent_id'] === 'string' && params['agent_id'].length > 0
       ? params['agent_id']
       : state.agentId;
+    // The activity the segment is about: the one the call names. On a branch return that is the
+    // retiring branch, instance-qualified — read off the record after the call it would be
+    // whatever the frontier then held, so every branch segment would carry the join's id. A
+    // destination the graph fans is not a string, so it never lands here.
+    const named = params['from_activity'] ?? params['activity_id'];
+    const callActivity = typeof named === 'string' && named.length > 0
+      ? named
+      : state.frontier.join(', ');
     const event = createTraceEvent(
       state.sessionIndex, toolName, durationMs, status,
-      state.workflowId, state.currentActivity, callAgentId,
+      state.workflowId, callActivity, callAgentId,
       opts,
     );
     traceStore.append(state.sessionIndex, event);

@@ -92,8 +92,18 @@ const SessionFileBaseSchema = z.object({
   /** ISO-8601 timestamp captured at session creation. */
   startedAt: z.string().datetime(),
 
-  /** Current execution position. */
-  currentActivity: z.string().default(''),
+  /**
+   * The activities in flight. One entry on an ordinary walk; one per branch while a graph fan runs.
+   * A destination the graph fans is entered once, after the last of its branches returns, so this
+   * holds either a single activity or the branches of exactly one fan — every exit of a branch binds
+   * to its fan's join, so a branch cannot open a fan of its own. Empty between the last branch
+   * retiring and the join being entered, and after the run completes.
+   *
+   * An entry for one instance of a fanned activity is `<activityId>#<instance>`, the spelling a
+   * loop-body checkpoint already uses: the entries are distinct strings, so a call naming the bare
+   * activity of a three-instance fan matches nothing and a call naming an instance matches one.
+   */
+  frontier: z.array(z.string()).default([]),
   currentTechnique: z.string().default(''),
   /** Exit the last completed activity took, as its orchestrator reported it. */
   exit: z.string().default(''),
@@ -202,7 +212,7 @@ export interface SessionFile {
   seq: number;
   ts: number;
   startedAt: string;
-  currentActivity: string;
+  frontier: string[];
   currentTechnique: string;
   exit: string;
   activeCheckpoint?: ActiveCheckpoint;
@@ -280,7 +290,7 @@ export function createInitialSessionFile(args: {
     seq: 0,
     ts: Math.floor(now.getTime() / 1000),
     startedAt: now.toISOString(),
-    currentActivity: '',
+    frontier: [],
     currentTechnique: '',
     exit: '',
     variables: seeded,

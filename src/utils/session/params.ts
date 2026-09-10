@@ -65,7 +65,7 @@ export const agentIdParam = {
  * `get_workflow_status` are diagnostics that stay usable while a run is stopped,
  * and `record_usage` and `dispatch_child` are unguarded.
  */
-export function assertNoActiveCheckpoint(state: { activeCheckpoint?: { checkpointId: string; activityId: string } | undefined; currentActivity?: string }): void {
+export function assertNoActiveCheckpoint(state: { activeCheckpoint?: { checkpointId: string; activityId: string } | undefined }): void {
   if (state.activeCheckpoint) {
     throw new Error(
       `Blocked: Active checkpoint '${state.activeCheckpoint.checkpointId}' on activity '${state.activeCheckpoint.activityId}'. ` +

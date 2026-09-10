@@ -8,8 +8,19 @@ import {
   DEFAULT_BATCH_MAX_ACTIVITIES,
   presentPathToAgent,
 } from '../config.js';
-import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
-import { destinationField, destinationPhrase } from '../schema/workflow.schema.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import {
+  type Destination,
+  type Workflow,
+  DestinationSchema,
+  branchKey,
+  destinationField,
+  destinationPhrase,
+  destinationTargets,
+  instanceFans,
+  isFan,
+} from '../schema/workflow.schema.js';
+import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
@@ -41,6 +52,10 @@ import {
   saveSessionForTool,
   closeLaunchedRecord,
   sessionView,
+  heldActivity,
+  servedActivity,
+  frontierRefusal,
+  ambiguousFrontier,
   navigatePath,
   describeSessionStoreError,
   SessionStoreError,
@@ -206,7 +221,7 @@ export function projectIdentity(
     sessionIndex: s.sessionIndex,
     agentId: s.agentId,
     status: s.status,
-    currentActivity: s.currentActivity,
+    frontier: s.frontier,
     currentTechnique: s.currentTechnique,
     startedAt: s.startedAt,
     seq: s.seq,
@@ -259,7 +274,7 @@ export function projectActivities(s: SessionFile): Record<string, unknown> {
   const progress_mark_unreported = [...new Set(entered.map(e => e.activity!))].filter(a => !reported.has(a));
   return {
     completed: s.completedActivities ?? [],
-    current: s.currentActivity,
+    current: s.frontier,
     outcomes,
     progress_mark_unpublished,
     progress_mark_unreported,
@@ -333,7 +348,7 @@ export function projectChildren(s: SessionFile): Array<Record<string, unknown>> 
       sessionIndex: c.sessionIndex,
       workflowId: c.workflowId,
       status: st?.status,
-      currentActivity: st?.currentActivity,
+      frontier: st?.frontier,
       completed: st?.completedActivities ?? [],
       ...sessionCost(st),
     };
@@ -694,11 +709,218 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: an id from the current activity\'s transitions. Optional manifests enable advisory validation.',
+  /**
+   * Step 1 of the resolution rule. Named and in the frontier: that one. Named and absent: refuse.
+   * Unnamed with an empty frontier: the first call of a session, and nothing is retired. Unnamed
+   * with anything at all in the frontier: refuse. The comparison is an exact string match over a
+   * list of distinct strings, so a fan instance is found without disambiguating.
+   */
+  function resolveRetiringActivity(state: SessionFile, named: string | undefined): string | undefined {
+    if (named !== undefined && named !== '') {
+      const held = heldActivity(state, named);
+      if (held !== undefined) return held;
+      const base = baseId(named);
+      const instances = state.frontier.filter((entry) => baseId(entry) === base);
+      if (instances.length > 0) {
+        throw new Error(
+          `Cannot exit '${named}': the session is not on it. In flight: ${state.frontier.join(', ')}. `
+          + 'An instance index comes from the branch list the fan-enter returned; report the mismatch '
+          + 'rather than retrying with another index.',
+        );
+      }
+      throw new Error(
+        `Cannot exit '${named}': the session is not on it. In flight: ${state.frontier.join(', ') || '(nothing)'}.`,
+      );
+    }
+    if (state.frontier.length === 0) return undefined;
+    if (state.frontier.length === 1) {
+      const only = state.frontier[0]!;
+      const base = baseId(only);
+      if (only !== base) {
+        throw new Error(
+          `Cannot exit '${base}': the session is on one instance of it, ${only}. `
+          + 'Pass from_activity naming the instance this call is returning, activity and instance together.',
+        );
+      }
+      throw new Error(
+        `Cannot advance: '${only}' is in flight. Pass from_activity naming the activity this call is returning.`,
+      );
+    }
+    const bases = new Set(state.frontier.map(baseId));
+    if (bases.size === 1) {
+      throw new Error(
+        `Cannot exit '${[...bases][0]}': the session is on ${state.frontier.length} instances of it. `
+        + `In flight: ${state.frontier.join(', ')}. Pass from_activity naming the instance this call is `
+        + 'returning, activity and instance together.',
+      );
+    }
+    throw new Error(
+      `Cannot advance: ${state.frontier.length} activities are in flight (${state.frontier.join(', ')}). `
+      + 'Pass from_activity naming the branch this call is returning; the destination is entered once, '
+      + 'when the last one does.',
+    );
+  }
+
+  /** The value a dotted collection expression addresses in the bag. */
+  function readCollection(variables: Record<string, unknown>, expression: string): unknown {
+    return expression.split('.').reduce<unknown>(
+      (value, segment) => (value !== null && typeof value === 'object' ? (value as Record<string, unknown>)[segment] : undefined),
+      variables,
+    );
+  }
+
+  /** One branch a destination opens: its frontier entry, and the unit it is handed. */
+  interface OpenedBranch {
+    /** The frontier entry — instance-qualified where a fan runs one activity over a collection. */
+    entry: string;
+    activity: string;
+    /** The name this branch reads its element at, and the element itself. Absent for a bare member. */
+    projection?: { variable: string; instance: number; value: unknown };
+  }
+
+  interface OpenedFan {
+    branches: OpenedBranch[];
+    /** Branch key → the dense container, one slot per branch in collection order. */
+    containers: Array<[string, Array<{ id: string; result: unknown }>]>;
+    /** What the response reports back, so nothing downstream reads a collection to count it. */
+    report: Array<{ activity: string; variable?: string; over?: string; branches: string[] }>;
+  }
+
+  /**
+   * Everything a fan needs, derived at the one point where the graph and the bag are both in hand,
+   * and refused before a single dispatch is spent. Five refusals close failures that would
+   * otherwise be silent: a width over the effective ceiling, an empty collection, a collection that
+   * is not an array, an element from which no id can be derived, and two elements sharing one id.
+   */
+  function openFanBranches(
+    destination: Destination,
+    variables: Record<string, unknown>,
+    cfg: ServerConfig,
+    site: string,
+  ): OpenedFan {
+    const members = Array.isArray(destination) ? destination : [destination];
+    const opened: OpenedFan = { branches: [], containers: [], report: [] };
+    const ceilingDefault = cfg.fanMaxBranches ?? DEFAULT_FAN_MAX_BRANCHES;
+
+    for (const member of members) {
+      if (typeof member === 'string') {
+        // A bare member runs once. Its container still carries the uniform index, so a read form
+        // does not depend on the fan's shape.
+        opened.branches.push({ entry: member, activity: member });
+        opened.containers.push([branchKey(member), [{ id: member, result: null }]]);
+        opened.report.push({ activity: member, branches: [member] });
+        continue;
+      }
+      const collection = readCollection(variables, member.over);
+      const lead = `Cannot fan '${site}' to '${member.activity}'`;
+      if (!Array.isArray(collection)) {
+        if (collection === undefined) {
+          throw new Error(
+            `${lead}: '${member.over}' is not in the variable bag. A fan reads its collection out of the bag, so the activity before the fan writes it.`,
+          );
+        }
+        throw new Error(
+          `${lead}: '${member.over}' holds a ${typeof collection}, not an array. A fan runs one worker per element, so its collection is an array of work units.`,
+        );
+      }
+      if (collection.length === 0) {
+        throw new Error(
+          `${lead}: '${member.over}' is empty. A fan of no instances would empty the frontier at the moment of entering it, so the activity it converges on would be entered with an activity the graph says runs never having run. Route past the fan with a \`when\` predicate on the exit where there may be nothing to fan.`,
+        );
+      }
+      const ids = collection.map((element, index) => {
+        const id = typeof element === 'string'
+          ? element
+          : (element !== null && typeof element === 'object' && typeof (element as Record<string, unknown>)['id'] === 'string'
+            ? (element as Record<string, unknown>)['id'] as string
+            : undefined);
+        if (id === undefined) {
+          throw new Error(
+            `${lead}: element ${index} of '${member.over}' is ${typeof element === 'object' && element !== null ? 'an object with no \'id\'' : `a ${typeof element}`}. An element's id names its slot in '${branchKey(member.activity)}', its row in the gather's dispatch manifest, and its artifact filename, so each element is a slug string or an object carrying a string 'id'.`,
+          );
+        }
+        return id;
+      });
+      const firstDuplicate = ids.findIndex((id, index) => ids.indexOf(id) !== index);
+      if (firstDuplicate !== -1) {
+        const id = ids[firstDuplicate]!;
+        throw new Error(
+          `${lead}: elements ${ids.indexOf(id)} and ${firstDuplicate} of '${member.over}' both have id '${id}'. One id per unit: it names one container slot, one manifest row and one artifact filename, so two units sharing one id would overwrite each other in all three.`,
+        );
+      }
+      // A tighter ceiling is declared per member, so members of one list may carry different ones.
+      const ceiling = member.maxInstances ?? ceilingDefault;
+      if (collection.length > ceiling) {
+        throw new Error(
+          `${lead}: this destination opens ${collection.length} branches and admits ${ceiling}, ${member.maxInstances !== undefined ? 'the maxInstances it declares' : "the server's configured ceiling"}. Cap the collection where it is produced — \`decompose-work-units\` takes \`effort_cap\` — or ${member.maxInstances !== undefined ? 'raise' : 'declare'} this destination's maxInstances, knowing each instance costs a whole extra delivery of '${member.activity}'.`,
+        );
+      }
+      const entries = ids.map((_, index) => `${member.activity}${INSTANCE_SEPARATOR}${index}`);
+      opened.branches.push(...entries.map((entry, index) => ({
+        entry,
+        activity: member.activity,
+        projection: { variable: member.variable, instance: index, value: collection[index] },
+      })));
+      opened.containers.push([branchKey(member.activity), ids.map((id) => ({ id, result: null }))]);
+      opened.report.push({ activity: member.activity, variable: member.variable, over: member.over, branches: entries });
+    }
+
+    // The width is the FLATTENED branch count, so a list, an instance fan and a mixture of the two
+    // answer to one bound. The enter already computes that count to build the frontier.
+    if (opened.branches.length > ceilingDefault) {
+      throw new Error(
+        `Cannot fan '${site}': this destination opens ${opened.branches.length} branches once every member is flattened and admits ${ceilingDefault}, the server's configured ceiling. Narrow the destination, or cap the collections it runs over where they are produced.`,
+      );
+    }
+    return opened;
+  }
+
+  /**
+   * The one value an instance of a fanned activity is working on, bound at the name the destination
+   * gives. It is a server-computed projection on the load response, beside the artifact prefix and
+   * the routing block that already travel there for the same reason — derived server-side,
+   * unreachable from the activity body, needed by one context only. The value is the element
+   * WHOLE, so a structured element arrives as one value and the body projects fields off it by
+   * ordinary dotted read, exactly as a loop body does with its current item. No count is reported:
+   * a worker reasoning about the fan's width is reasoning about something that is not its business.
+   */
+  function fanProjection(
+    workflow: Workflow,
+    variables: Record<string, unknown>,
+    entry: string,
+  ): { variable: string; instance: number; value: unknown } | undefined {
+    const instance = instanceIndex(entry);
+    if (instance === undefined) return undefined;
+    const base = baseId(entry);
+    for (const fan of fanGroups(workflow)) {
+      for (const member of instanceFans(fan.destination)) {
+        if (member.activity !== base) continue;
+        const collection = readCollection(variables, member.over);
+        if (!Array.isArray(collection)) return undefined;
+        return { variable: member.variable, instance, value: collection[instance] };
+      }
+    }
+    return undefined;
+  }
+
+  /** Where a retiring activity's reported map lands, when the graph runs it as a branch of a fan. */
+  function branchLanding(workflow: Workflow, entry: string): { key: string; slot: number; unit: string } | undefined {
+    const base = baseId(entry);
+    const fan = fanGroups(workflow).find((f) => f.branches.includes(base));
+    if (fan === undefined) return undefined;
+    return { key: branchKey(base), slot: instanceIndex(entry) ?? 0, unit: base };
+  }
+
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Optional manifests enable advisory validation.',
     {
       ...sessionIndexParam,
-      activity_id: z.string().describe('Target activity id. First call: initialActivity from get_workflow; later: the activity the workflow graph binds to the exit the previous activity took.'),
-      exit: z.string().optional().describe('Optional. Name of the exit the previous activity took. Checked against the workflow graph: an exit bound to an activity other than `activity_id` warns.'),
+      activity_id: DestinationSchema.describe(
+        'Where the run goes next: an activity id, `__terminal__`, or — where the graph fans the exit taken — the destination exactly as the graph names it, which for one activity run over a collection is that object. Returning a branch of a running fan, this is the activity the fan converges on: the server enters it once, when the last branch returns.',
+      ),
+      from_activity: z.string().optional().describe(
+        'The activity this call is exiting — the one `exit`, `step_manifest`, `variables_changed` and `artifacts_produced` belong to, instance-qualified (`challenge-pass#1`) where the graph runs that activity once per element of a collection. Required whenever anything is in flight, which is every call but a session\'s first, so a call always names the activity it is returning rather than leaving the server to infer it. Omitted only on that first call, when the frontier is empty.',
+      ),
+      exit: z.string().optional().describe('Optional. Name of the exit the previous activity took. Checked against the workflow graph: an exit bound to a destination other than `activity_id` warns. Required off an activity whose exit the graph fans, to say which destination it takes.'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
       variables_changed: variablesChangedSchema,
@@ -713,7 +935,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         'Whether the in-progress Progress mark for this activity is committed and pushed before the worker spawns. Recorded as a `progress_published` event, so an activity opened without one is answerable from the session rather than only from whoever was watching the working tree at the time. Omit only where the session has no planning folder to mark.',
       ),
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, exit, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens, progress_published }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, from_activity, exit, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens, progress_published }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -722,32 +944,75 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
+      const destination = activity_id as Destination;
+      const targets = destinationTargets(destination);
+
       if (state.activeCheckpoint) {
         throw new Error(
-          `Cannot transition to '${activity_id}': Active checkpoint '${state.activeCheckpoint.checkpointId}' ` +
+          `Cannot transition to '${targets.join(', ')}': Active checkpoint '${state.activeCheckpoint.checkpointId}' ` +
           `on activity '${state.activeCheckpoint.activityId}'. The orchestrator must resolve it by calling respond_checkpoint.`
         );
       }
-      const isTerminal = activity_id === TERMINAL_SENTINEL;
-      const activity = getActivity(result.value, activity_id);
-      if (!activity && !isTerminal) throw new Error(`Activity not found: ${activity_id}`);
+      const isTerminal = destination === TERMINAL_SENTINEL;
+      for (const target of targets) {
+        if (target === TERMINAL_SENTINEL) continue;
+        if (!getActivity(result.value, target)) throw new Error(`Activity not found: ${target}`);
+      }
 
-      const view = sessionView(state);
+      // Step 1 of the resolution rule: the retiring activity is the one the call NAMES, when the
+      // frontier holds it. There is no sole-entry fallback, and that absence is load-bearing — a
+      // second advance off an already-retired activity would otherwise resolve against whatever the
+      // frontier then held and record it complete before its first step.
+      const retiring = resolveRetiringActivity(state, from_activity);
+
+      // T2: an exit that fans has to be named, or the server cannot tell which destination is taken.
+      if (retiring !== undefined && exit === undefined) {
+        const fanning = getExitBindings(result.value, retiring).filter((b) => isFan(b.to));
+        if (fanning.length > 0) {
+          throw new Error(
+            `Activity '${retiring}' binds exit '${fanning[0]!.exit}' to a fan, so 'exit' is required on this transition to say which destination it takes.`,
+          );
+        }
+      }
+
+      // T9: a branch return names the meeting point the graph derives, checked on EVERY return
+      // rather than only the one that empties the frontier — an unchecked name mid-fan is
+      // discarded in silence, which is a worse reading than a refusal.
+      const openFan = fanGroups(result.value).find((f) => f.branches.includes(baseId(retiring ?? '')));
+      if (retiring !== undefined && openFan !== undefined && openFan.join !== undefined) {
+        if (targets.length !== 1 || targets[0] !== openFan.join) {
+          throw new Error(
+            `Cannot exit '${retiring}' to '${targets.join(', ')}': the fan at '${openFan.source}.${openFan.exit}' `
+            + `converges on '${openFan.join}', which is what the run enters when its last branch returns. `
+            + 'A branch return names the activity the fan converges on.',
+          );
+        }
+      }
+
+      const view = sessionView(state, retiring ?? '');
       const manifestWarnings: (string | null)[] = [];
-      if (step_manifest && state.currentActivity) {
-        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, state.currentActivity, state.checkpointResponses);
+      if (step_manifest && retiring) {
+        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, retiring, state.checkpointResponses);
         manifestWarnings.push(...mw);
         // Fidelity observability (#166 B8): advisory cross-check of the
         // manifest against the technique_fetched events get_technique
         // recorded into the session history during this activity.
-        manifestWarnings.push(...validateTechniqueFetches(step_manifest as StepManifestEntry[], result.value, state.currentActivity, state.history, agent_id));
-      } else if (!step_manifest && state.currentActivity) {
-        manifestWarnings.push(`No step_manifest provided for previous activity '${state.currentActivity}'. Include a manifest to enable step completion validation.`);
+        manifestWarnings.push(...validateTechniqueFetches(step_manifest as StepManifestEntry[], result.value, retiring, state.history, agent_id));
+      } else if (!step_manifest && retiring) {
+        manifestWarnings.push(`No step_manifest provided for previous activity '${retiring}'. Include a manifest to enable step completion validation.`);
       }
 
-      const exitWarning = (exit !== undefined && state.currentActivity)
-        ? validateReportedExit(view, result.value, activity_id, exit)
+      const exitWarning = (exit !== undefined && retiring)
+        ? validateReportedExit(view, result.value, destination, exit)
         : null;
+
+      // Step 5 fires only when the retirement empties the frontier, so the branches a fan opens
+      // and the container it materialises are derived here, before anything is written.
+      const remaining = state.frontier.filter((entry) => entry !== retiring);
+      const entering = remaining.length === 0;
+      const fanEnter = entering && isFan(destination)
+        ? openFanBranches(destination, state.variables, config, `${retiring ?? '(start)'}.${exit ?? '(default)'}`)
+        : undefined;
 
       const activityManifestWarnings: string[] = [];
       if (activity_manifest) {
@@ -766,9 +1031,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const now = new Date().toISOString();
       const next = advanceSession(state, (draft) => {
-        // Exit-prior: any non-empty previous activity is recorded as
-        // completed once we transition off it.
-        const exitingActivity = draft.currentActivity;
+        // Steps 3 and 4: retire the activity the call named, then remove it from the frontier.
+        // Everything below is attributed to the retiring activity, exactly as the exiting activity
+        // is today — instance-qualified where the graph runs it once per element of a collection.
+        const exitingActivity = retiring;
         if (exitingActivity) {
           draft.history.push({ timestamp: now, type: 'activity_exited', activity: exitingActivity });
           if (!draft.completedActivities.includes(exitingActivity)) {
@@ -804,10 +1070,24 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // plus checkpoint writes, so a fresh orchestrator resuming from
         // get_workflow_status would read state that never advanced.
         if (variables_changed) {
-          variableWarnings.push(...applyVariableWrites(draft, variables_changed, declarations, {
+          // A branch's outputs land whole under a key of its own, so two branches cannot collide by
+          // construction. The key is derived from the graph this handler already loaded — never
+          // supplied by a caller — which is what makes the namespace the only route a branch's
+          // values have into the bag. Corpus rule: meta/techniques/variable-binding.md.
+          const landing = exitingActivity !== undefined
+            ? branchLanding(result.value, exitingActivity)
+            : undefined;
+          // Validated against the RETIRING activity's own declared writes, read at the moment of
+          // the wrap: against the workflow's merged map every member would go unchecked, for
+          // precisely the activities a fan runs.
+          const branchDeclarations = landing === undefined
+            ? declarations
+            : new Map((getActivity(result.value, exitingActivity!)?.variables?.writes ?? []).map((v) => [v.name, v]));
+          variableWarnings.push(...applyVariableWrites(draft, variables_changed, branchDeclarations, {
             timestamp: now,
             ...(exitingActivity !== undefined ? { activity: exitingActivity } : {}),
             source: 'variables_changed',
+            ...(landing !== undefined ? { landing } : {}),
           }));
         }
         // Hybrid step_completed (RE-8): one event per step_manifest entry with non-empty output.
@@ -840,26 +1120,64 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           }
           draft.declaredArtifacts = [...byId.values()];
         }
-        draft.currentActivity = activity_id;
+        // Step 4: remove the retiring activity from the frontier.
+        draft.frontier = draft.frontier.filter((entry) => entry !== exitingActivity);
         draft.exit = exit ?? '';
         delete draft.activeCheckpoint;
-        draft.history.push({ timestamp: now, type: 'activity_entered', activity: activity_id });
-        // Whether the dispatch published this activity's in-progress mark. The mark lives
-        // in a README cell the completion status overwrites when the activity ends, so
-        // this event is the only lasting evidence either way (#473).
-        if (progress_published !== undefined && !isTerminal) {
-          draft.history.push({
-            timestamp: now,
-            type: 'progress_published',
-            activity: activity_id,
-            data: { published: progress_published },
-          });
+
+        // Step 5: enter the destination if and only if the frontier is now empty — so the only
+        // call that can enter the join is the one that empties it, and entering early has no
+        // channel. On an ordinary walk the frontier holds one entry, so this always fires and the
+        // behaviour is identical to a single current activity.
+        if (draft.frontier.length > 0) return;
+
+        if (fanEnter) {
+          // The container is materialised BEFORE any branch is dispatched, dense and in collection
+          // order, so an out-of-order retirement is a positional write into an existing slot rather
+          // than a hole. It is assigned WHOLE, so a second entry of the same fan resets it rather
+          // than appending into the previous entry's slots.
+          for (const [key, slots] of fanEnter.containers) {
+            applyVariableWrites(draft, { [key]: slots }, declarations, {
+              timestamp: now, source: 'fan_enter',
+              ...(exitingActivity !== undefined ? { activity: exitingActivity } : {}),
+            });
+          }
+          for (const branch of fanEnter.branches) {
+            draft.frontier.push(branch.entry);
+            draft.history.push({ timestamp: now, type: 'activity_entered', activity: branch.entry });
+            if (progress_published !== undefined) {
+              draft.history.push({
+                timestamp: now, type: 'progress_published', activity: branch.entry,
+                data: { published: progress_published },
+              });
+            }
+          }
+          return;
+        }
+
+        const target = targets[0]!;
+        if (!isTerminal) {
+          draft.frontier.push(target);
+          draft.history.push({ timestamp: now, type: 'activity_entered', activity: target });
+          // Whether the dispatch published this activity's in-progress mark. The mark lives
+          // in a README cell the completion status overwrites when the activity ends, so
+          // this event is the only lasting evidence either way (#473).
+          if (progress_published !== undefined) {
+            draft.history.push({
+              timestamp: now,
+              type: 'progress_published',
+              activity: target,
+              data: { published: progress_published },
+            });
+          }
+        } else {
+          draft.history.push({ timestamp: now, type: 'activity_entered', activity: target });
         }
         // Terminal-state transition emits a workflow_completed event and flips
         // status. The activity id 'complete' is the canonical terminal marker
         // across the work-package, prism, and meta workflows; the TERMINAL_SENTINEL
         // is the contentless terminal reached via an explicit terminal transition.
-        if (activity_id === 'complete' || isTerminal) {
+        if (target === 'complete' || isTerminal) {
           draft.history.push({ timestamp: now, type: 'workflow_completed' });
           draft.status = 'completed';
         }
@@ -951,9 +1269,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           max_activities: bound.maxActivities,
           delivered_chars: stand.chars,
           budget_chars: bound.budgetChars,
-          may_continue: batchRefusal(state, agent_id, activity_id, bound) === undefined,
+          may_continue: batchRefusal(state, agent_id, targets[0]!, bound) === undefined,
         };
       }
+
+      // The barrier rides every fan-related response in one shape: a reading rather than a verdict,
+      // because there is no barrier-met call to make. `met` is true with an empty pending list on
+      // the call that enters the destination.
+      if (openFan !== undefined || fanEnter !== undefined || next.frontier.length > 1) {
+        meta['barrier'] = {
+          destination: openFan?.join ?? (entering && !fanEnter ? targets[0] : undefined),
+          pending: next.frontier,
+          met: entering,
+        };
+      }
+      // What the enter derived, so nothing downstream reads a collection to count it.
+      if (fanEnter !== undefined) meta['fan'] = fanEnter.report;
 
       if (config.traceStore) {
         const segment = config.traceStore.getSegmentAndAdvanceCursor(state.sessionIndex);
@@ -962,7 +1293,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           const lastEvent = segment.events[segment.events.length - 1];
           const payload: TraceTokenPayload = {
             sid: state.sessionIndex,
-            act: activity_id,
+            // The retiring branch, not the target: stamped with the destination, every branch
+            // segment of a fan would carry the join's id.
+            act: retiring ?? targets[0]!,
             from: segment.fromIndex,
             to: segment.toIndex,
             n: segment.events.length,
@@ -975,9 +1308,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
+      const entered = next.frontier;
       const responseData: Record<string, unknown> = {
-        activity_id,
-        name: activity ? activity.name : 'Workflow Complete',
+        activity_id: destinationField(destination),
+        name: entered.length === 1
+          ? (getActivity(result.value, entered[0]!)?.name ?? 'Workflow Complete')
+          : entered.map((id) => getActivity(result.value, id)?.name ?? id),
         session_index,
       };
 
@@ -987,7 +1323,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Worker tool: load the current activity definition (from session state — no activity_id). `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). ' +
+  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). ' +
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
@@ -999,18 +1335,27 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
       ...contextTokensParam,
       ...agentIdParam,
+      activity_id: z.string().optional().describe(
+        'The activity this context was dispatched for, instance-qualified (`challenge-pass#1`) where the graph runs that activity once per element of a collection. Required whenever several activities are in flight; omit it on an ordinary walk. A name the session is not on is refused rather than served, so a branch is never quietly handed a sibling\'s body.',
+      ),
       bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses content already delivered to THIS agent_id scope. "full" forces full delivery. Defaults from context_mode.'),
     },
-    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, context_tokens, agent_id, bundle }) => {
+    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, context_tokens, agent_id, activity_id: requested, bundle }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
 
-      const activity_id = state.currentActivity;
+      // A worker is served the activity it was dispatched for, never guessed at.
+      const deliveryRefusal = frontierRefusal(state, 'get_activity', requested);
+      if (deliveryRefusal) throw new Error(deliveryRefusal);
+      const activity_id = servedActivity(state, requested);
       if (!activity_id) {
-        throw new Error('No current activity in session state. Call next_activity first.');
+        throw new Error('No activity in flight. Call next_activity first.');
       }
+      // The one value this instance is working on, projected onto the response: the shared bag is
+      // one flat record, so N instances cannot read different values at one bare name, and no
+      // grammar in the tree admits the indirection that would let an instance spell its own read.
 
       // The batch bound (#407), applied where content is handed over rather than in rule text.
       //
@@ -1034,7 +1379,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const workflow_id = state.workflowId;
-      const rawResult = await readActivityRaw(config.workflowDir, workflow_id, activity_id);
+      // N instances of one fanned activity share one definition file, so the read takes the base.
+      const rawResult = await readActivityRaw(config.workflowDir, workflow_id, baseId(activity_id));
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
       const { content: rawActivity, sourceWorkflowId } = rawResult.value;
       let activityBody = injectResolvedStepIds(rawActivity);
@@ -1050,7 +1396,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           resolveCheckpointFragment(fragmentsLookup, sourceWorkflowId, ref));
       }
 
-      const view = sessionView(state);
+      const view = sessionView(state, activity_id);
       const diagResult = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
       const result = diagResult.success
         ? { success: true as const, value: diagResult.value.workflow }
@@ -1058,6 +1404,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const activitySourceWorkflow = diagResult.success
         ? diagResult.value.activitySourceWorkflow
         : new Map<string, string>();
+
+      // The one value this instance is working on. The shared bag is one flat record, so N
+      // instances cannot read different values at one bare name, and no grammar in the tree admits
+      // the indirection that would let an instance spell its own read — so it arrives here.
+      const fanInstance = diagResult.success
+        ? fanProjection(diagResult.value.workflow, state.variables, activity_id)
+        : undefined;
+      // Overlaid onto the bag the eager-bundling decision reads, which reads state as it stands at
+      // the moment of delivery. Unoverlaid, a step gated on the parameter has no answer and stays
+      // lazily fetched — a slower fan, not a wrong one.
+      const deliveryVariables = fanInstance === undefined
+        ? state.variables
+        : { ...state.variables, [fanInstance.variable]: fanInstance.value };
 
       // Reference-not-repeat delivery: active via per-call opt-in or the session's declared
       // context mode. Full delivery stays the default — a freshly spawned worker lands in an
@@ -1433,6 +1792,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         : {};
       const headerLines = [`session_index: ${session_index}`];
       if (artifactPrefix) headerLines.push(`artifact_prefix: ${artifactPrefix}`);
+      if (fanInstance) {
+        headerLines.push(stringifyForResponse({ fan_instance: fanInstance }).trimEnd());
+      }
       if (Object.keys(exitDestinationsByExit).length) {
         headerLines.push(stringifyForResponse({ exit_destinations: exitDestinationsByExit }).trimEnd());
       }
@@ -1632,7 +1994,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const workflow_id = state.workflowId;
-      const activity_id = state.currentActivity;
+      // A session holds one outstanding decision at a time and every other tool call is gated
+      // while it is held, so a gate reached from inside a fan stops its sibling branches — and the
+      // orchestrator could not answer it anyway, the turn not resuming until every branch has
+      // returned. Not redundant with the load rule: the tool admits a decision no definition
+      // mentions, which no load can see.
+      const ambiguous = ambiguousFrontier(state, `yield checkpoint '${checkpoint_id}'`);
+      if (ambiguous) {
+        throw new Error(
+          `${ambiguous} A session holds one outstanding decision at a time — every tool call is `
+          + 'gated while it is held, so a gate here stops your sibling branches. Finish this activity '
+          + 'without the gate, or report the outcome one of its own exits provides.',
+        );
+      }
+      const activity_id = state.frontier[0] ?? '';
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
@@ -2177,7 +2552,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       const clientWf = state.workflowId;
-      const clientAct = state.currentActivity;
+      const clientAct = state.frontier[0] ?? '';
       const clientActive = state.activeCheckpoint;
 
       const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
@@ -2211,6 +2586,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const response: Record<string, unknown> = {
         status,
+        // What is in flight: one activity on an ordinary walk, one per branch while a fan runs.
+        // The bag below is the un-projected one, so an instance re-reading it finds the collection
+        // rather than its own element — which is the truth about where that value lives, and why
+        // the projection names itself on the response it arrives with.
+        in_flight: state.frontier,
         current_activity: clientAct || 'none',
         completed_activities: completedActivities,
         // Rolled-up variable bag from session state, so workers/orchestrators can

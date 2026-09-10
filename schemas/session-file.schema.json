@@ -39,9 +39,12 @@
           "type": "string",
           "format": "date-time"
         },
-        "currentActivity": {
-          "type": "string",
-          "default": ""
+        "frontier": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
         },
         "currentTechnique": {
           "type": "string",

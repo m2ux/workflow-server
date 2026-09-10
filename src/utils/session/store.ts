@@ -118,7 +118,7 @@ const TOP_LEVEL_KEY_PRIORITY = [
   'agentId',
   'sessionIndex',
   'planningFolderPath',
-  'currentActivity',
+  'frontier',
   'currentTechnique',
   'exit',
   'activeCheckpoint',

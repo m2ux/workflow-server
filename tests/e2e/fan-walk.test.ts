@@ -47,10 +47,11 @@ describe('the walk enters each branch and then the meeting point once', () => {
   it('an instance fan walks one visit per element of its collection', async () => {
     const result = await walk(harness, 'instance-fan-fixture', defaultPolicy, { mode: 'graph', localCheckpoints: true });
     expect(result.loadErrors).toEqual([]);
-    // Three elements seeded into the collection, so three visits of one activity, then the meeting
-    // point once. Visit bookkeeping is keyed on activity ids, so the three count as three visits.
+    // Three elements seeded into the collection, so three branches of one activity — each a
+    // distinct frontier entry, the activity id and its instance segment — then the meeting point
+    // once, entered by the branch whose return empties the frontier.
     expect(result.path).toEqual([
-      'scope-sweep', 'probe-unit', 'probe-unit', 'probe-unit', 'combine-probes',
+      'scope-sweep', 'probe-unit#0', 'probe-unit#1', 'probe-unit#2', 'combine-probes',
     ]);
     expect(result.finalStatus).toBe('completed');
   });
@@ -59,7 +60,7 @@ describe('the walk enters each branch and then the meeting point once', () => {
     const result = await walk(harness, 'mixed-fan-fixture', defaultPolicy, { mode: 'graph', localCheckpoints: true });
     expect(result.loadErrors).toEqual([]);
     expect(result.path).toEqual([
-      'scope-sweep', 'knowledge-survey', 'probe-unit', 'probe-unit', 'probe-unit', 'combine-probes',
+      'scope-sweep', 'knowledge-survey', 'probe-unit#0', 'probe-unit#1', 'probe-unit#2', 'combine-probes',
     ]);
     expect(result.path.filter((id) => id === 'combine-probes')).toHaveLength(1);
     expect(result.finalStatus).toBe('completed');

@@ -179,7 +179,7 @@ function buildSessionFromLegacy(args: {
   const workflowVersion =
     asString(payload['v']) ?? asString(state['workflowVersion']) ?? '0.0.0';
   const agentId = asString(payload['aid']) ?? 'orchestrator';
-  const currentActivity = asString(payload['act']) ?? asString(state['currentActivity']) ?? '';
+  const heldActivityId = asString(payload['act']) ?? asString(state['currentActivity']) ?? '';
   // Read new keys first, then the legacy `skill` / `currentSkill` keys so old persisted sessions migrate.
   const currentTechnique =
     asString(payload['technique']) ?? asString(payload['skill']) ??
@@ -240,7 +240,7 @@ function buildSessionFromLegacy(args: {
   const result: SessionFile = {
     ...base,
     startedAt,
-    currentActivity,
+    frontier: heldActivityId === '' ? [] : [heldActivityId],
     currentTechnique,
     exit,
     variables,

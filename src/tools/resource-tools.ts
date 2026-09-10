@@ -14,6 +14,9 @@ import {
   advanceSession,
   saveSessionForTool,
   sessionView,
+  servedActivity,
+  frontierRefusal,
+  ambiguousFrontier,
   describeSessionStoreError,
   SessionStoreError,
   ensurePlanningFolder,
@@ -384,7 +387,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         config.traceStore.initSession(state.sessionIndex);
         const event = createTraceEvent(
           state.sessionIndex, 'start_session', 0, 'ok',
-          effectiveWorkflowId, state.currentActivity, agent_id,
+          effectiveWorkflowId, state.frontier.join(", "), agent_id,
         );
         config.traceStore.append(state.sessionIndex, event);
       }
@@ -546,14 +549,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             workflowId: workflow_id,
             sessionIndex: childSessionIndex,
             triggeredAt,
-            triggeredFrom: { activityId: draft.currentActivity || '' },
+            triggeredFrom: { activityId: draft.frontier[0] ?? '' },
             status: 'running',
             state: childInitial,
           });
           draft.history.push({
             timestamp: triggeredAt,
             type: 'workflow_triggered',
-            activity: draft.currentActivity || undefined,
+            activity: draft.frontier[0],
             data: { workflowId: workflow_id, sessionIndex: childSessionIndex },
           });
         });
@@ -595,14 +598,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflowId: workflow_id,
           sessionIndex: childSessionIndex,
           triggeredAt,
-          triggeredFrom: { activityId: draft.currentActivity || '' },
+          triggeredFrom: { activityId: draft.frontier[0] ?? '' },
           status: 'running',
           state: childInitial,
         });
         draft.history.push({
           timestamp: triggeredAt,
           type: 'workflow_triggered',
-          activity: draft.currentActivity || undefined,
+          activity: draft.frontier[0],
           data: { workflowId: workflow_id, sessionIndex: childSessionIndex },
         });
       });
@@ -638,28 +641,25 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       assertNoActiveCheckpoint(state);
 
-      // A step id resolves against the session pointer, which any context in the session can move.
-      if (activity_id !== undefined && state.currentActivity !== activity_id) {
-        throw new Error(
-          `get_technique: this session's current activity is '${state.currentActivity ?? '(none)'}', `
-          + `not the '${activity_id}' you were dispatched for. A step id resolves against the current `
-          + 'activity, so fetching now would return another activity\'s technique. Report the mismatch '
-          + 'to your orchestrator rather than retrying without activity_id.',
-        );
-      }
+      // A step id resolves against the activity this call is served for, so a worker names the one
+      // it was dispatched for. The same membership test serves get_activity: on a fan the frontier
+      // holds several distinct entries, and inferring one would serve a branch a sibling's steps.
+      const refusal = frontierRefusal(state, 'get_technique', activity_id);
+      if (refusal) throw new Error(refusal);
+      const servedFor = servedActivity(state, activity_id) ?? '';
 
       const wfDiag = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
       if (!wfDiag.success) throw wfDiag.error;
       const wfResult = { success: true as const, value: wfDiag.value.workflow };
       // A borrowed activity's technique refs resolve against the workflow the activity file was
       // authored in (mirroring #166 B10 fragment scoping), not the borrowing session's workflow.
-      const techniqueScopeWorkflowId = (state.currentActivity
-        && wfDiag.value.activitySourceWorkflow.get(state.currentActivity)) || workflow_id;
+      const techniqueScopeWorkflowId = (servedFor
+        && wfDiag.value.activitySourceWorkflow.get(servedFor)) || workflow_id;
 
       let techniqueId: string | undefined;
       let boundStep: Step | undefined;
 
-      if (!state.currentActivity) {
+      if (!servedFor) {
         if (step_id) {
           throw new Error('Cannot provide step_id when no activity is active. Call next_activity first.');
         }
@@ -668,15 +668,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           throw new Error(`Workflow '${workflow_id}' does not declare any workflow-level techniques.`);
         }
       } else {
-        const activity = getActivity(wfResult.value, state.currentActivity);
+        const activity = getActivity(wfResult.value, servedFor);
         if (!activity) {
-          throw new Error(`Activity '${state.currentActivity}' not found in workflow '${workflow_id}'.`);
+          throw new Error(`Activity '${servedFor}' not found in workflow '${workflow_id}'.`);
         }
 
         if (!step_id) {
           techniqueId = activity.techniques?.[0];
           if (!techniqueId) {
-            throw new Error(`Activity '${state.currentActivity}' does not declare any activity-level techniques.`);
+            throw new Error(`Activity '${servedFor}' does not declare any activity-level techniques.`);
           }
         } else {
           const allSteps = flattenActivitySteps(activity);
@@ -688,11 +688,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
           if (!step && !techniqueId) {
             const allStepIds = allSteps.map(s => s.id).filter((id): id is string => id !== undefined);
-            throw new Error(`Step '${step_id}' not found in activity '${state.currentActivity}'. Available steps: [${allStepIds.join(', ')}]`);
+            throw new Error(`Step '${step_id}' not found in activity '${servedFor}'. Available steps: [${allStepIds.join(', ')}]`);
           }
 
           if (!techniqueId) {
-            throw new Error(`Step '${step_id}' in activity '${state.currentActivity}' has no associated technique.`);
+            throw new Error(`Step '${step_id}' in activity '${servedFor}' has no associated technique.`);
           }
         }
       }
@@ -701,7 +701,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // against the group named after the current activity, falling back to as-authored — both
       // within the activity's source-workflow scope.
       const composed = await composeActivityTechnique(
-        techniqueId, config.workflowDir, techniqueScopeWorkflowId, state.currentActivity || undefined,
+        techniqueId, config.workflowDir, techniqueScopeWorkflowId, servedFor || undefined,
       );
       if (!composed.success) throw composed.error;
       techniqueId = composed.value.techniqueId;
@@ -715,14 +715,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       let technique = composed.value.technique;
       const provenanceWarnings: string[] = [];
       let resolvedTechniques = 0;
-      if (boundStep?.id && state.currentActivity) {
+      if (boundStep?.id && servedFor) {
         const producerIndex = await buildProducerIndex({
           workflow: wfResult.value,
           workflowDir: config.workflowDir,
           activitySourceWorkflow: wfDiag.value.activitySourceWorkflow,
         });
         resolvedTechniques = producerIndex.resolvedTechniques;
-        const ctx = provenanceContextFor(producerIndex, state.currentActivity, boundStep.id);
+        const ctx = provenanceContextFor(producerIndex, servedFor, boundStep.id);
         if (ctx) {
           const binding = boundStep.kind === 'technique' && typeof boundStep.technique === 'object'
             ? boundStep.technique
@@ -757,7 +757,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         draft.history.push({
           timestamp: ts,
           type: 'technique_fetched',
-          ...(state.currentActivity ? { activity: state.currentActivity } : {}),
+          ...(servedFor ? { activity: servedFor } : {}),
           data: {
             techniqueId: techniqueId as string,
             ...(boundStep?.id ? { stepId: boundStep.id } : {}),
@@ -766,9 +766,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             delivery,
           },
         });
-        if (boundStep?.id && state.currentActivity) {
+        if (boundStep?.id && servedFor) {
           appendStepStartedIfAbsent(draft, {
-            activity: state.currentActivity, stepId: boundStep.id, agentId: scope, timestamp: ts,
+            activity: servedFor, stepId: boundStep.id, agentId: scope, timestamp: ts,
           });
         }
       };
@@ -778,7 +778,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // scope records the dispatch (#353 §1.3).
       const recordFirstArrival = (draft: SessionFile): void => {
         if (hasDispatch(state, scope)) return;
-        recordDispatch(draft, { scope, kind: 'fresh', activityId: state.currentActivity || undefined });
+        recordDispatch(draft, { scope, kind: 'fresh', activityId: servedFor || undefined });
       };
 
       // Reference-not-repeat delivery: a refetch whose composed content is byte-identical to what
@@ -898,7 +898,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         draft.history.push({
           timestamp: new Date().toISOString(),
           type: 'resource_fetched',
-          ...(state.currentActivity ? { activity: state.currentActivity } : {}),
+          ...(state.frontier[0] ? { activity: state.frontier[0] } : {}),
           data: { resourceId: resource_id, agentId: scope, chars, delivery },
         });
       };
@@ -907,7 +907,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // itself on the first server call bearing its own, unseen scope (#353 §1.3).
       const recordFirstArrival = (draft: SessionFile): void => {
         if (hasDispatch(state, scope)) return;
-        recordDispatch(draft, { scope, kind: 'fresh', activityId: state.currentActivity || undefined });
+        recordDispatch(draft, { scope, kind: 'fresh', activityId: state.frontier[0] || undefined });
       };
 
       const { content: resourceContent, ...meta } = result.value;
