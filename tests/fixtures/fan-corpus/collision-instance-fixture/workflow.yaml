@@ -1,0 +1,15 @@
+id: collision-instance-fixture
+version: 1.0.0
+title: Collision Instance Fixture
+description: An instance-fanned activity whose artifact name does not interpolate the fan parameter.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

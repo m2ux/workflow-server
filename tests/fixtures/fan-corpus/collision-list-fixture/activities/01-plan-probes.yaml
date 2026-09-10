@@ -1,0 +1,7 @@
+id: plan-probes
+version: 1.0.0
+name: Plan Probes
+description: Opens the fan.
+exits:
+  - id: done
+    isDefault: true

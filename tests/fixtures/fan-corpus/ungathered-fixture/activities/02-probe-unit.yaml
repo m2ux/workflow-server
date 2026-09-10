@@ -1,0 +1,21 @@
+id: probe-unit
+version: 1.0.0
+name: Probe Unit
+description: The fanned activity, landing its outputs in a slot of its own.
+variables:
+  reads:
+    - probe_target
+  writes:
+    - name: probe_findings
+      type: object
+      description: What this probe found for its unit.
+steps:
+  - kind: action
+    id: probe-the-unit
+    actions:
+      - action: set
+        target: probe_findings
+        value: what the probe of {probe_target} found
+exits:
+  - id: probed
+    isDefault: true

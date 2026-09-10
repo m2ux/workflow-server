@@ -1,0 +1,17 @@
+id: combine-findings
+version: 1.0.0
+name: Combine Findings
+description: The meeting point, gathering both containers whole.
+variables:
+  reads:
+    - survey_pass_outputs
+    - dependency_review_outputs
+steps:
+  - kind: action
+    id: gather
+    actions:
+      - action: log
+        message: gathered {survey_pass_outputs} and {dependency_review_outputs}
+exits:
+  - id: settled
+    isDefault: true

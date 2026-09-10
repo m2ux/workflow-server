@@ -1,0 +1,16 @@
+id: collision-list-fixture
+version: 1.0.0
+title: Collision List Fixture
+description: Two branches of one fan whose composed signatures resolve one literal artifact filename.
+initialActivity: plan-probes
+graph:
+  plan-probes:
+    done:
+      - survey-pass
+      - dependency-review
+  survey-pass:
+    surveyed: combine-findings
+  dependency-review:
+    reviewed: combine-findings
+  combine-findings:
+    settled: __terminal__

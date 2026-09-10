@@ -1,0 +1,16 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: Gathers a member the branch does not produce, misspelled at member grain.
+variables:
+  reads:
+    - probe_unit_outputs
+steps:
+  - kind: action
+    id: gather-a-missing-member
+    actions:
+      - action: log
+        message: gathered {probe_unit_outputs.0.result.probe_findigns}
+exits:
+  - id: settled
+    isDefault: true

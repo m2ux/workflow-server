@@ -11,6 +11,13 @@ variables:
         - alpha-probe
         - beta-probe
         - gamma-probe
+steps:
+  - kind: action
+    id: name-the-units
+    actions:
+      - action: set
+        target: probe_targets
+        value: the units this sweep probes
 exits:
   - id: scoped
     isDefault: true

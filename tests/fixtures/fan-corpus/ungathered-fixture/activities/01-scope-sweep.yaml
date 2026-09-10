@@ -6,11 +6,7 @@ variables:
   writes:
     - name: probe_targets
       type: array
-      description: The units this sweep probes, one per instance — each a slug string naming its target.
-      defaultValue:
-        - alpha-probe
-        - beta-probe
-        - gamma-probe
+      description: The units this sweep probes, one per instance.
 steps:
   - kind: action
     id: name-the-units

@@ -1,0 +1,15 @@
+id: templated-artifact-fixture
+version: 1.0.0
+title: Templated Artifact Fixture
+description: An instance-fanned activity whose artifact name carries the fan parameter as a token.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

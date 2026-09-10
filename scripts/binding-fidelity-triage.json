@@ -461,7 +461,7 @@
     },
     {
       "check": "read-resolution",
-      "site": "meta/techniques/variable-binding.md:31",
+      "site": "meta/techniques/variable-binding.md:32",
       "detail": "{current_task.crate} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "documentation-notation"

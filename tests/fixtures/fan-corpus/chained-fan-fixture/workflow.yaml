@@ -1,0 +1,22 @@
+id: chained-fan-fixture
+version: 1.0.0
+title: Chained Fan Fixture
+description: A fan whose collection is an earlier fan's container — the one read exempt from the bare-container rule.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    swept:
+      activity: unit-review
+      over: probe_unit_outputs
+      variable: review_unit
+  unit-review:
+    reviewed: reconcile-review
+  reconcile-review:
+    settled: __terminal__

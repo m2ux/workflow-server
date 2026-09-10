@@ -1,0 +1,16 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: Reads a fanned activity's output by its bare name, which nothing writes once the write side re-keys.
+variables:
+  reads:
+    - probe_findings
+steps:
+  - kind: action
+    id: read-the-bare-name
+    actions:
+      - action: log
+        message: read {probe_findings} by its bare name
+exits:
+  - id: settled
+    isDefault: true

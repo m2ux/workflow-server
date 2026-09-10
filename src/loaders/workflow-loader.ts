@@ -360,7 +360,11 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     // the get_workflow payload — reads one merged set, and a name two activities declare is one
     // variable. A pair that disagrees on type or default is a contradiction, and a session seeded
     // from either reading would be wrong, so the workflow does not load.
-    const merged = mergeActivityVariables(workflow.variables, workflow.activities);
+    // Contribution stays per workflow: the same activity keeps contributing its writes flat in a
+    // workflow whose graph does not fan it, so an activity is borrowable into a fanning graph and
+    // a non-fanning one without carrying either shape in its own file.
+    const fanned = new Set(fanGroups(workflow).flatMap((fan) => fan.branches));
+    const merged = mergeActivityVariables(workflow.variables, workflow.activities, fanned);
     if (merged.contradictions.length > 0) {
       return err(new WorkflowValidationError(
         workflowId,

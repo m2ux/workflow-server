@@ -1,0 +1,16 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: Reaches the collection but never gathers the container, so the branch's member has no reader.
+variables:
+  reads:
+    - probe_targets
+steps:
+  - kind: action
+    id: read-the-collection-only
+    actions:
+      - action: log
+        message: the sweep planned {probe_targets}
+exits:
+  - id: settled
+    isDefault: true
