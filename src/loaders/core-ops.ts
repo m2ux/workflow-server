@@ -20,10 +20,18 @@
  * Technique refs every orchestrator needs at the workflow level. Returned by
  * get_workflow alongside the workflow's declared technique refs.
  */
+/**
+ * The concurrent-dispatch operation, delivered to an orchestrator whose workflow graph actually
+ * fans an exit rather than to every orchestrator. It is not core: a workflow with no fanning exit
+ * can never reach it, and it costs about 6,000 characters of what an orchestrator receives before
+ * its first decision. `get_workflow` adds it where the graph in the same response shows a fan, so
+ * the procedure and the routing that needs it arrive together.
+ */
+export const FAN_DISPATCH_TECHNIQUE = 'workflow-engine::dispatch-fan';
+
 export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // Engine traversal
   'workflow-engine::dispatch-activity',
-  'workflow-engine::dispatch-fan',
   'workflow-engine::evaluate-transition',
   'workflow-engine::commit-and-persist',
   'workflow-engine::handle-sub-workflow',

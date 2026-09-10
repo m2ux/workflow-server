@@ -63,6 +63,30 @@ describe('the walk enters each branch and then the meeting point once', () => {
   });
 });
 
+describe('the concurrent-dispatch operation reaches the orchestrator that can use it', () => {
+  const workflowBundle = async (workflowId: string): Promise<string> => {
+    const start = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: workflowId,
+        agent_id: 'orchestrator',
+        planning_folder: `${harness.workspaceDir}/.engineering/artifacts/planning/fan-bundle-${workflowId}`,
+      },
+    });
+    const sessionIndex = (JSON.parse((start.content as Array<{ text: string }>)[0]!.text) as { session_index: string }).session_index;
+    const workflow = await harness.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } });
+    return (workflow.content as Array<{ text: string }>)[0]!.text;
+  };
+
+  it('rides the response for a workflow whose graph fans', async () => {
+    expect(await workflowBundle('instance-fan-fixture')).toContain('dispatch-fan');
+  });
+
+  it('is absent from one whose graph fans nowhere, which can never reach it', async () => {
+    expect(await workflowBundle('meta')).not.toContain('dispatch-fan');
+  });
+});
+
 describe('the graph builder flattens, and de-duplicates after', () => {
   it('a list fan contributes both branch heads as successors of its source', async () => {
     const graph = activityGraph(await load('list-fan-fixture'));
