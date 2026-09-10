@@ -89,6 +89,8 @@ A dispatch produces nothing the user can read while it runs, and a gate arrives 
 
 Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see [batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [delivery-keys-on-agent-context](#delivery-keys-on-agent-context).
 
+Where the exit taken is bound to several branches rather than one activity, [dispatch-fan](./dispatch-fan.md) carries them instead: one call opens every branch, they run in one turn under their own identities, and the run continues from the activity they converge on. That operation's width is the destination's, and it is not a batch — a branch takes one activity and is not continued.
+
 ### no-get-activity-from-orchestrator
 
 Workflow orchestrators NEVER call `get_activity`.

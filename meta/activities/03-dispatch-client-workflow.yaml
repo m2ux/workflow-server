@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 5.9.0
+version: 5.10.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
@@ -52,7 +52,7 @@ steps:
             state: variables
       - kind: technique
         id: dispatch-activity
-        when: "!worker_agent_id"
+        when: "!worker_agent_id && !worker_result.next_activity_fans"
         technique:
           name: workflow-engine::dispatch-activity
           inputs:
@@ -60,6 +60,27 @@ steps:
             session_index: client_session_index
             agent_technique: workflow-engine::activity-worker
             state: variables
+      - kind: technique
+        id: dispatch-fan
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        technique:
+          name: workflow-engine::dispatch-fan
+          inputs:
+            fan_destination: current_activity
+            exiting_activity: exiting_activity
+            exit_id: "{worker_result.activity_exit}"
+            session_index: client_session_index
+            agent_technique: workflow-engine::activity-worker
+            state: variables
+          outputs:
+            convergence_activity: fan_convergence_activity
+      - kind: action
+        id: advance-past-fan
+        when: fan_convergence_activity
+        actions:
+          - action: set
+            target: current_activity
+            value: "{fan_convergence_activity}"
       - kind: technique
         id: present-yielded-checkpoint
         when: worker_result.result_type == "checkpoint_pending"
@@ -88,11 +109,20 @@ steps:
             state: variables
       - kind: technique
         id: commit-activity-artifacts
-        when: worker_result.result_type == "activity_complete"
+        when: worker_result.result_type == "activity_complete" && !worker_result.next_activity_fans
         technique:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: current_activity
+      - kind: action
+        id: note-exiting-activity
+        when: worker_result.result_type == "activity_complete"
+        actions:
+          # Kept before the pointer moves, because a fan's enter call names the activity it is
+          # exiting and the next step makes current_activity the destination.
+          - action: set
+            target: exiting_activity
+            value: "{current_activity}"
       - kind: action
         id: advance-activity
         when: worker_result.result_type == "activity_complete"
