@@ -1,0 +1,26 @@
+id: plan-conformance
+version: 1.0.0
+name: Plan Conformance
+description: Record when the run began and how many probes its instance fan will open.
+variables:
+  reads:
+    - component_path
+  writes:
+    - name: run_started_at
+      type: string
+      description: When the run began, as an ISO 8601 instant. The baseline every branch's own interval is measured against.
+    - name: probe_budget
+      type: number
+      description: How many directories the instance fan probes. The width the run opens, chosen before anything is surveyed so the survey cannot inflate it.
+      defaultValue: 3
+required: true
+steps:
+  - kind: technique
+    id: open-the-run
+    technique: plan-conformance
+exits:
+  - id: planned
+    isDefault: true
+outcome:
+  - The run has a start instant every branch's own interval can be read against, so a reader can tell a batch from a queue
+  - The instance fan's width is settled before any survey runs, so the width is a decision rather than a consequence

@@ -1,0 +1,22 @@
+id: survey-files
+version: 1.0.0
+name: Survey Files
+description: Count the component's files by extension and name its largest directories.
+variables:
+  reads:
+    - component_path
+  writes:
+    - name: file_survey
+      type: object
+      description: The component's file counts by extension, its largest directories, and this branch's own start and finish instants.
+required: true
+steps:
+  - kind: technique
+    id: survey-the-files
+    technique: survey-files
+exits:
+  - id: surveyed
+    isDefault: true
+outcome:
+  - The component's shape is known well enough to choose directories worth probing
+  - This branch's own interval is recorded, so whether it ran beside its sibling is a fact in the record rather than an inference
