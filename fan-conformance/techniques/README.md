@@ -14,7 +14,7 @@ The cross-cutting meta strategy technique [`variable-binding`](../../meta/techni
 
 The techniques split by the position the activity binding them occupies in the graph, the same division the [activities README](../activities/README.md) describes.
 
-**Branch techniques** survey something cheap and report their own interval: files by extension, recent history, one directory, one root of the tree. They are deliberately inexpensive, so the run's cost is the routing's cost rather than the survey's. Each reads only what it was handed — a branch technique that reached wider would duplicate a sibling's work and make the two disagree.
+**Branch techniques** count something and report the interval they took doing it: files grouped by extension, directories ranked by size, how many commits landed recently and which directories they touched, how deep one directory nests, what the largest file under it is. Every one of them only reads, so the run's cost is the routing's cost rather than the counting's. Each reads only what it was handed — a branch technique that reached wider would duplicate a sibling's work and make the two disagree.
 
 **Meeting-point techniques** read containers whole and produce either the collection the next fan runs over or the one document the run leaves behind. None of them names a slot.
 
