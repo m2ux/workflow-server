@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: fan-conformance
-version: 1.0.0
+version: 2.0.0
 title: Fan Conformance Workflow
 description: >-
   Run both forms of graph fan against a real checkout and report what the run did: one worker per branch, each with its own identity and its own container slot, entering the activity they converge on once. A destination naming several different activities runs them side by side; a destination naming one activity and a collection runs it once per element. The work each branch does is a cheap survey of the component, so the run costs little and the evidence is about the routing rather than about the survey.
@@ -37,6 +37,16 @@ graph:
       over: probe_targets
       variable: probe_target
   probe-directory:
-    probed: report-conformance
+    probed: open-notes
+  open-notes:
+    opened:
+      activity: note-probe
+      over: note_targets
+      variable: note_target
+    nothing-to-note: report-conformance
+  note-probe:
+    noted: merge-notes
+  merge-notes:
+    merged: report-conformance
   report-conformance:
     reported: __terminal__

@@ -5,6 +5,7 @@ description: The homogeneous fan's meeting point — read both containers whole 
 variables:
   reads:
     - component_path
+    - merge_report
     - planning_folder_path
     - probe_directory_outputs
     - probe_targets

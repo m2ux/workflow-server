@@ -1,0 +1,30 @@
+id: open-notes
+version: 1.0.0
+name: Open Notes
+description: Choose which probed directories are worth a committed note, and open one writer per choice.
+variables:
+  reads:
+    - component_path
+    - probe_directory_outputs
+  writes:
+    - name: has_notes
+      type: boolean
+      description: Whether any probe found something worth committing. False routes the run past the writers, since a fan of no instances is refused when it opens.
+      defaultValue: false
+    - name: note_targets
+      type: array
+      description: One entry per note to be written — its designator, the directory it covers, and what its probe found worth recording. The graph fans this activity's exit over it, each instance in a checkout of its own.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: choose-the-notes
+    technique: open-notes
+exits:
+  - id: opened
+    when: has_notes == true
+  - id: nothing-to-note
+    isDefault: true
+outcome:
+  - Only directories whose probe found something worth recording get a note, so the run's commits are evidence rather than one per unit by reflex
+  - Each note has a writer of its own, and the branch it lands on is named before any writer starts
