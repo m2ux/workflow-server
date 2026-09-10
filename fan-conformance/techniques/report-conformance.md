@@ -21,6 +21,18 @@ The file survey's branch container.
 
 The history survey's branch container.
 
+### survey_tree_outputs
+
+The tree survey's branch container: one slot per entry of `{survey_plan.roots}`, in that order. It came from the same destination as the two above, which named their activities directly and fanned this one over a collection.
+
+### survey_plan
+
+The plan the run opened with. Its `roots` are the ids the tree container's slots are expected to carry.
+
+### note_targets
+
+The notes the run chose to commit, each with the branch its writer landed it on. Empty where no probe found anything worth a note, which is the run that routed past the writers.
+
 ### run_started_at
 
 The instant the run began, which every branch's own start is read against.
