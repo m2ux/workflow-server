@@ -37,17 +37,19 @@ The gathered collection is in work-unit order — under a graph fan the slot is 
 
 ### an-isolated-fan-commits-per-branch
 
-A graph fan's branches share one working tree and one git index, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the destination declares `isolation: worktree`.
+A graph fan's branches share one working tree, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the destination declares `isolation: worktree` and each instance materialises a checkout of its own, commits there, and reports the branch it made. The activity the fan converges on reconciles the branches the container names — the ones that exist, rather than the ones a plan predicted — because after a fan nothing else holds all of them.
 
-Each instance materialises its own checkout, names it from the instance index its delivery already carries, works there and commits there, and reports the branch it made among its outputs. Materialising is idempotent, so an instance replaced after a failure reaches a clean checkout rather than the half-finished state of the one it replaced. The activity the fan converges on reconciles the branches the container names — the ones that exist, rather than the ones a plan predicted — because after a fan nothing else holds all of them. Nothing about the arrangement goes on the collection: a work unit describes work, and an instance able to name its own checkout needs no field telling it where to stand.
+> Reach for it only where per-unit attribution is the point: it costs a checkout per branch and makes the convergence responsible for a reconciliation that can conflict.
 
-The declaration buys exactly one thing from the load — the version-control operations stop being refused for that fan's activity — and the load takes it on trust, a commit's target tree being a run-time fact no rule reads. Everything else it implies is the author's to build. Session-level persistence is unaffected: the record and the planning folder are shared however the checkouts are split, so the run still persists once, at convergence.
+### an-instance-names-its-own-checkout
 
-**It is declared per member and it is uniform within one.** A list destination may carry an isolated member beside a plain one, and only the isolated member's activity may commit. Within a member it is all of the instances or none: they run the same steps, so giving some a checkout of their own and leaving others on the shared tree is one activity behaving two ways, and an instance that commits the shared tree while its siblings write it is the thing the refusal exists to prevent. Where only some units commit, give them all a worktree — the ones with nothing to commit simply do not, and a checkout is cheap beside a whole further delivery — or run the committing units as a fan of their own.
+An instance names its worktree from the instance index its delivery already carries, so nothing is arranged before the fan opens and nothing about the arrangement goes on the collection — a work unit describes work. Materialising is idempotent, so an instance replaced after a failure reaches a clean checkout rather than the half-finished state of the one it replaced.
 
-Reach for it only where per-unit attribution is the point. Isolation costs a full checkout per branch and makes the convergence responsible for a reconciliation that can conflict.
+> `git worktree add` writes the repository's administrative files, and distinct worktree names touch distinct paths under per-ref locks, so instances materialising together is expected to hold. Where a repository is large enough that several checkouts at once is the cost that hurts, the activity before the fan materialises them in one pass — a remedy for an observed problem rather than the shape to start from.
 
-> `git worktree add` writes the repository's administrative files. Distinct worktree names and distinct branches touch distinct paths under per-ref locks, so instances materialising together is expected to hold. Where a repository is large enough that several checkouts at once is the cost that hurts, or where the race is seen to bite, the activity before the fan materialises them in one pass instead — a remedy for an observed problem rather than the shape to start from.
+### isolation-is-per-member-and-uniform-within-one
+
+A list destination may carry an isolated member beside a plain one, and only the isolated member's activity may commit. Within a member it is all of the instances or none: they run the same steps, so a checkout for some and the shared tree for others is one activity behaving two ways, and an instance committing the shared tree while its siblings write it is what the refusal prevents. Where only some units commit, give them all a worktree, or run the committing units as a fan of their own.
 
 ### a-join-gathers-the-container-not-an-index
 
