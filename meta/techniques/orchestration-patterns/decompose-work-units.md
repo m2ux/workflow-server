@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Analyse the goal (and optional context) into an ordered work-units list — the runtime decomposition half of orchestrator-workers.
+Analyse the goal (and optional context) into an ordered work-units list. Each record carries an id and a brief, which is a fan's collection by construction: bind this at the activity whose exit the graph fans to run one worker per unit, or read the same list in a `forEach` loop where the units are cheap enough to share one context.
 
 ## Inputs
 

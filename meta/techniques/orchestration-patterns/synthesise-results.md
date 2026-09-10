@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Combine gathered results into a single synthesis under caller-supplied criteria — the consolidate half of orchestrator-workers / lead-researcher / supervisor aggregate.
+Combine gathered results into a single synthesis under caller-supplied criteria — the consolidate step every scatter ends in, whether the units ran in one worker or in branches of their own.
 
 ## Inputs
 
