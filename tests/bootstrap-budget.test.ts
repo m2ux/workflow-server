@@ -36,8 +36,13 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
  * 1,200 characters. Against that, a technique declaring no interface and no procedure stopped
  * receiving the inherited bind contract it has nothing to bind, which took about 5,100 characters
  * out of this bundle — the conduct techniques and the harness adapters were each carrying it.
+ *
+ * The concurrent-dispatch operation costs about 6,000 characters here. It is bundled at bootstrap
+ * because an orchestrator meets a fanning exit with no warning: the destination is a routing fact
+ * it reads off the graph mid-walk, and the operation is how it carries one. Deferring it would mean
+ * fetching a procedure at the moment the fan is already open.
  */
-const BUDGET = 112_000;
+const BUDGET = 119_000;
 
 describe('bootstrap-time fixed content', () => {
   it('stays inside the budget this suite sets', async () => {

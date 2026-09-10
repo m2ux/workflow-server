@@ -15,12 +15,10 @@ const FAN_CORPUS = resolve(import.meta.dirname, 'fixtures/fan-corpus');
 let findings: Finding[];
 
 beforeAll(async () => {
-  process.env['ALLOW_UNEXECUTABLE_FANS'] = '1';
   findings = await collectFindings(FAN_CORPUS);
 });
 
 afterAll(() => {
-  delete process.env['ALLOW_UNEXECUTABLE_FANS'];
 });
 
 const forWorkflow = (id: string): Finding[] => findings.filter((f) => f.site.startsWith(`${id} ::`));

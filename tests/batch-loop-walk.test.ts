@@ -340,9 +340,9 @@ describe('client activity loop walked (#407)', () => {
 
     expect(result.stopped).toBe('condition');
     expect(result.iterations).toEqual([
-      ['dispatch-activity', 'commit-activity-artifacts', 'advance-activity'],
-      ['continue-batched-worker', 'commit-activity-artifacts', 'advance-activity'],
-      ['continue-batched-worker', 'commit-activity-artifacts', 'advance-activity', 'release-spent-worker'],
+      ['dispatch-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
+      ['continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
+      ['continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
     ]);
     // Every activity commits before the next advance, and the identity is released once, at the end.
     expect(result.log).toEqual(['advance', 'commit', 'advance', 'commit', 'advance', 'commit']);
@@ -361,6 +361,7 @@ describe('client activity loop walked (#407)', () => {
       'respond-yielded-checkpoint',
       'resume-yielded-worker',
       'commit-activity-artifacts',
+      'note-exiting-activity',
       'advance-activity',
     ]);
     // The identity survived the gate, so the next activity is a continuation rather than a dispatch.

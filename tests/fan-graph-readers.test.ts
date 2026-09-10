@@ -22,7 +22,6 @@ let listFan: Workflow;
 let instanceFan: Workflow;
 
 beforeAll(async () => {
-  process.env['ALLOW_UNEXECUTABLE_FANS'] = '1';
   const load = async (id: string): Promise<Workflow> => {
     const result = await loadWorkflow(FAN_CORPUS, id);
     if (!result.success) throw new Error(`${id} failed to load: ${result.error.message}`);
@@ -33,7 +32,6 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
-  delete process.env['ALLOW_UNEXECUTABLE_FANS'];
 });
 
 const on = (activity: string): SessionView => ({ wf: 'fixture', act: activity, v: '1.0.0' });

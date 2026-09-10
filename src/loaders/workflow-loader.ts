@@ -667,27 +667,9 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
     }
   }
 
-  for (const fan of fanGroups(workflow)) {
-    if (!fansAreExecutable()) errors.push(unexecutableFanError(fan));
-    errors.push(...fanErrors(workflow, fan));
-  }
+  for (const fan of fanGroups(workflow)) errors.push(...fanErrors(workflow, fan));
 
   return errors;
-}
-
-/**
- * The ceiling for the window in which the schema accepts a fan and no definition can execute one.
- * A destination the graph fans fails the load, naming the stage that lands the operation, so the
- * corpus is provably free of fans until it does. The fixtures that prove the stages before it set
- * `ALLOW_UNEXECUTABLE_FANS`, being the only callers with a reason to load a destination nothing
- * dispatches. Deleted with the operation.
- */
-function fansAreExecutable(): boolean {
-  return process.env['ALLOW_UNEXECUTABLE_FANS'] === '1';
-}
-
-function unexecutableFanError(fan: FanGroup): string {
-  return `Workflow graph fans '${fan.source}.${fan.exit}', and no definition dispatches a fan yet. The concurrent-dispatch operation lands in stage 6 of the parallel-activities delivery; until it does, bind this exit to one activity.`;
 }
 
 /**

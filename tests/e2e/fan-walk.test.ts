@@ -18,15 +18,11 @@ const FAN_CORPUS = resolve(import.meta.dirname, '../fixtures/fan-corpus');
 let harness: Harness;
 
 beforeAll(async () => {
-  // Nothing dispatches a fan until the concurrent-dispatch operation lands, so the fixtures that
-  // prove the stages before it are the callers that ask for one anyway.
-  process.env['ALLOW_UNEXECUTABLE_FANS'] = '1';
   harness = await createHarness({ workflowDir: FAN_CORPUS });
 });
 
 afterAll(async () => {
   await harness.close();
-  delete process.env['ALLOW_UNEXECUTABLE_FANS'];
 });
 
 async function load(id: string): Promise<Workflow> {

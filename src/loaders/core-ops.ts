@@ -23,6 +23,7 @@
 export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // Engine traversal
   'workflow-engine::dispatch-activity',
+  'workflow-engine::dispatch-fan',
   'workflow-engine::evaluate-transition',
   'workflow-engine::commit-and-persist',
   'workflow-engine::handle-sub-workflow',

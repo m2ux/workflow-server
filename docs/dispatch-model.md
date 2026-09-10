@@ -109,6 +109,22 @@ Three carve-outs keep the bound aimed at what it is for:
 
 **Cost keeps its per-activity resolution.** `record_usage` records one `activity_usage` row per activity a dispatch covered, sharing an `agent_id`, rather than one figure per dispatch attributed to whichever activity the orchestrator names. Without that, a batch size cannot be calibrated from real runs.
 
+### Fanning an exit across several branches
+
+A graph destination may name several branches rather than one activity — several different activities, or one activity run once per element of a collection. They run together, one worker to each, all spawned in a single response turn.
+
+**The frontier is the cursor.** The session record holds the activities in flight as a list: one entry on an ordinary walk, one per branch while a fan runs. An entry for one instance of a fanned activity carries its slot — `challenge-pass#1` — so the entries are distinct strings and a call naming an instance matches exactly one.
+
+**There are two barrier points and neither is a call.** One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen. Then each branch's return retires that branch and enters the destination if and only if the frontier is then empty — so the only call that can enter the meeting point is the one that empties it. Entering early is unrepresentable rather than refused, and a crashed and resumed orchestrator re-derives the barrier from the session file with no extra state.
+
+**The per-scope batch bound does not limit a fan's width.** The bound exempts a scope with no activity yet and refuses only an activity a scope already holds, so a fresh branch scope asking for its first activity is admitted whatever the width; on the retire call the batch reading reports one activity. What bounds a fan is its own ceiling — the server's configured `DEFAULT_FAN_MAX_BRANCHES`, or a tighter `maxInstances` the destination declares — measured against the branches it opens once every member is flattened, so a list, an instance fan and a mixture of the two answer to one number.
+
+**Every branch takes full delivery, and the figures below are a floor.** Delivery scoping keys on the calling context's identity, which each branch carries, so nothing collapses to a reference marker: a fan pays each branch's payload in full and establishes one harness context per branch where a batch establishes one in total. The meeting point then takes a further fresh context and re-pays whatever the branches collectively held.
+
+No measured figure exists for a *fanned* activity's payload. Every number here is therefore a **substitution and a lower bound** — taken from the standalone activity benchmark, counting eager payloads only and never a lazy fetch — and is re-derived against a fresh benchmark run rather than carried forward. Against the run it replaces: a fan of several different activities is measured against one worker walking them as a batch, which collapses what the second and later activities share; a fan over a collection is measured against one worker looping N times, which pays a single delivery because a loop body's technique is bundled once and reused. Per unit of work the instance form is the more expensive of the two by a wide margin.
+
+**So a fan is a wall-clock purchase, not an efficiency one.** Several long reasoning passes run inside one response turn instead of several sequential dispatch round trips, and the wait is free because a turn does not resume until every tool result returns — nothing polls, times out or is scheduled. It buys one thing a character count cannot see: the batch budget counts characters delivered, never characters generated, so nothing bounds how much reasoning accumulates inside one worker. A fan converts unbounded growth in one context into N bounded ones.
+
 ## Workflow status polling
 
 The user-facing agent can poll the status of a dispatched workflow using `get_workflow_status`:

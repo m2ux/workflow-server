@@ -20,14 +20,10 @@ let root: string;
 
 beforeAll(() => {
   root = mkdtempSync(join(tmpdir(), 'fan-load-rules-'));
-  // The stages before the concurrent-dispatch operation refuse a fan outright, so the fixtures
-  // that prove them are the callers that ask for one anyway.
-  process.env['ALLOW_UNEXECUTABLE_FANS'] = '1';
 });
 
 afterAll(() => {
   rmSync(root, { recursive: true, force: true });
-  delete process.env['ALLOW_UNEXECUTABLE_FANS'];
 });
 
 let counter = 0;
@@ -627,14 +623,4 @@ describe('fan load rules', () => {
     expect(errors).toEqual([]);
   });
 
-  // The gate that holds the corpus at zero fans until the operation that dispatches one lands.
-  it('a fan fails the load while no definition dispatches one, naming the stage that does', async () => {
-    delete process.env['ALLOW_UNEXECUTABLE_FANS'];
-    try {
-      const errors = await loadErrors(listFan);
-      expect(rendered(errors)).toContain("Workflow graph fans 'plan-prepare.done', and no definition dispatches a fan yet.");
-    } finally {
-      process.env['ALLOW_UNEXECUTABLE_FANS'] = '1';
-    }
-  });
 });
