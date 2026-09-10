@@ -19,7 +19,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -80,7 +80,7 @@ function* walkFiles(dir: string): Generator<string> {
 }
 
 /** Owned by `check-bootstrap-self-contained`, which refuses every corpus link on it. */
-const PRE_SESSION_RESOURCE = join('meta', 'resources', 'bootstrap-protocol.md');
+const PRE_SESSION_RESOURCE = workflowSubdir(ROOT, 'meta', join('resources', 'bootstrap-protocol.md'));
 
 /** An anchored markdown destination, once the shared reader has produced it in any spelling. */
 const ANCHORED_RE = /^([^\s#]+\.md)#([A-Za-z0-9][\w-]*)$/;
@@ -93,7 +93,7 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
     // EVERY corpus link on it — nothing can be followed before a session exists. So anything this guard
     // could report there is already a finding of that one's, and reporting it twice would make one bad
     // line yield two findings that one edit clears.
-    if (relative(ROOT, file) === PRE_SESSION_RESOURCE) continue;
+    if (file === PRE_SESSION_RESOURCE) continue;
     // Scan only rendered prose: drop fenced code blocks (template bodies carry placeholder
     // links like NN-work-package-plan.md) and inline code spans (anti-pattern docs quote
     // illustrative link forms in backticks).

@@ -46,9 +46,9 @@
  * Run: npx tsx scripts/check-bootstrap-self-contained.ts [--root <workflows-dir>] [--json]
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, stripDestinations, toLines } from './markdown-refs.js';
 
@@ -56,7 +56,13 @@ const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 
 /** The one resource `discover` delivers before a session exists. */
-const PRE_SESSION_RESOURCE = join('meta', 'resources', 'bootstrap-protocol.md');
+/** The pre-session resource, within the meta workflow. */
+const PRE_SESSION_RESOURCE = join('resources', 'bootstrap-protocol.md');
+
+/** Its path from the corpus root, wherever the corpus keeps the meta workflow. */
+export function preSessionResource(root: string): string | null {
+  return workflowSubdir(root, 'meta', PRE_SESSION_RESOURCE);
+}
 /** Prose the procedure cannot be shorter than and still be one. It runs to 56 lines today. */
 export const MIN_PROSE_LINES = 20;
 
@@ -129,18 +135,19 @@ function resolvableHere(target: string): boolean {
 
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
-  const file = join(root, PRE_SESSION_RESOURCE);
+  const file = preSessionResource(root);
+  const resourceSite = file ? relative(root, file) : join('meta', PRE_SESSION_RESOURCE);
   // A CR left on the end of every line would stop each one looking like a fence, taking the fence
   // matcher out of service on a CRLF checkout — so line endings are normalised before anything reads a
   // line's shape.
-  const lines = existsSync(file) ? toLines(readFileSync(file, 'utf-8')) : [];
+  const lines = file && existsSync(file) ? toLines(readFileSync(file, 'utf-8')) : [];
   const prose = lines.filter((line) => line.trim() !== '').length;
   // A floor rather than mere presence. An emptied file and a clean one look identical to a hard-zero
   // guard, and so does a file gutted to its heading — which is the shape a bad merge leaves. The
   // procedure runs to 56 lines of prose; the floor sits well under that and far above a stub.
   assertScanned(
     prose >= MIN_PROSE_LINES ? prose : 0,
-    `lines of pre-session prose (${PRE_SESSION_RESOURCE}, at least ${MIN_PROSE_LINES} expected)`,
+    `lines of pre-session prose (${resourceSite}, at least ${MIN_PROSE_LINES} expected)`,
     root,
   );
 
@@ -149,14 +156,14 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   if (unclosed !== null) {
     findings.push({
       check: 'unbalanced-fence',
-      site: `${PRE_SESSION_RESOURCE}:${unclosed}`,
+      site: `${resourceSite}:${unclosed}`,
       detail: 'this code fence never closes, so nothing below it can be told from illustration — close '
         + 'it, because fence state is what separates a shown link from an instruction here',
     });
   }
 
   lines.forEach((line, index) => {
-    const site = `${PRE_SESSION_RESOURCE}:${index + 1}`;
+    const site = `${resourceSite}:${index + 1}`;
 
     // Links are read from rendered prose only: a fenced block or a code span quoting a link form is
     // illustration, not an instruction.
