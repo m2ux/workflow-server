@@ -37,9 +37,9 @@ The gathered collection is in work-unit order — under a graph fan the slot is 
 
 ### an-isolated-fan-commits-per-branch
 
-A graph fan's branches share one working tree and one git index, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the destination declares `isolation: worktree` and three things move together.
+A graph fan's branches share one working tree and one git index, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the destination declares `isolation: worktree`.
 
-The activity before the fan materialises one worktree per element and records its path and branch on that element, because `git worktree add` writes the repository's administrative files and several instances cannot do it at once. Each instance works in the checkout its element names and commits there. The activity the fan converges on reconciles the branches, because after a fan nothing else holds all of them.
+Each instance materialises its own checkout, names it from the instance index its delivery already carries, works there and commits there, and reports the branch it made among its outputs. The activity the fan converges on reconciles the branches the container names — the ones that exist, rather than the ones a plan predicted — because after a fan nothing else holds all of them. Nothing about the arrangement goes on the collection: a work unit describes work, and an instance able to name its own checkout needs no field telling it where to stand.
 
 The declaration buys exactly one thing from the load — the version-control operations stop being refused for that fan's activity — and the load takes it on trust, a commit's target tree being a run-time fact no rule reads. Everything else it implies is the author's to build. Session-level persistence is unaffected: the record and the planning folder are shared however the checkouts are split, so the run still persists once, at convergence.
 
