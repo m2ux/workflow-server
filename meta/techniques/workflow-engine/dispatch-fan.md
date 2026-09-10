@@ -77,7 +77,9 @@ One commit publishes every branch's in-progress mark, made before the first bran
 
 ### persist-the-fan-before-any-branch-returns
 
-One persist at convergence, naming every branch. The branches write one working tree during their own run, inside the concurrent turn, so the writes are not serialised even though the retirements are. The commit derives its paths from that tree's status, which cannot attribute a change to a branch — and where one activity runs over a collection there is no fallback at all, the instances sharing one activity id.
+One persist at convergence, naming every branch. What every fan's instances share is the session record and the planning folder, so a per-branch persist would commit a folder its siblings are still writing — and where one activity runs over a collection there is no way to attribute the change either, the instances sharing one activity id.
+
+Where the branches also share the working tree, which is every fan whose destination does not declare `isolation: worktree`, the same holds of their code changes: the writes land in one tree inside the concurrent turn, so they are not serialised even though the retirements are, and a commit deriving its paths from that tree's status cannot tell two branches' changes apart. A destination that declares worktree isolation splits the checkouts and nothing else — each instance commits its own tree during its own run, and this persist still happens once, at convergence, for the record and the folder.
 
 ### the-barrier-is-a-reading
 
@@ -86,6 +88,14 @@ Each retirement reports what is still outstanding and, on the last, the activity
 ### replace-one-branch-alone
 
 A branch whose result is not an accepted envelope ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)) is replaced on its own: mint a fresh identity, compose a prompt with no prior deliveries, and spawn ONE agent — not the concurrent spawn. The replacement names the same entry, which the frontier still holds, so it needs no re-binding call. The siblings that returned are untouched: their work is committed and their outputs landed on their own returns. A second failure advances nothing — the blocked moment is synced onto that branch's rows and the entry stays on the frontier, because entering the convergence activity on fewer branches than the fan opened would hand its gather a value no branch produced.
+
+### an-isolated-fan-is-built-around-the-fan
+
+A destination declaring `isolation: worktree` is a claim about a shape the graph cannot enforce, so the two activities either side of the fan carry it.
+
+The activity BEFORE the fan materialises one worktree per element and puts its path and branch name on that element. It runs there because `git worktree add` writes the repository's own administrative files, which several instances cannot do at once, and because the element is the only thing an instance is handed. The activity the fan CONVERGES on brings the branches back together: after a fan, nothing else in the run holds all of them, and a branch left unmerged is work the run paid for and discarded. What "together" means is the convergence activity's own business — the graph opens the branches and says nothing about how their histories reconcile.
+
+Nothing about this reaches the orchestrator. It dispatches an isolated fan exactly as it dispatches any other: the worktrees exist before the exit that opens the fan is taken, and each instance reads its own path off the element the server projects onto its delivery.
 
 ### a-branch-reaches-no-gate
 
