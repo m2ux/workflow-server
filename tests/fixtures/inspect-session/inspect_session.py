@@ -58,7 +58,7 @@ def identity(s):
         k: s.get(k)
         for k in (
             "workflowId", "workflowVersion", "sessionIndex", "agentId",
-            "status", "currentActivity", "currentTechnique", "startedAt", "seq",
+            "status", "frontier", "currentTechnique", "startedAt", "seq",
         )
     }
 
@@ -106,7 +106,7 @@ def activities(s):
 
     return {
         "completed": s.get("completedActivities") or [],
-        "current": s.get("currentActivity"),
+        "current": s.get("frontier"),
         "outcomes": outcomes,
         "progress_mark_unpublished": [a for a in entered if reported.get(a) is False],
         "progress_mark_unreported": [a for a in entered if a not in reported],
@@ -163,7 +163,7 @@ def children(s):
             "sessionIndex": c.get("sessionIndex"),
             "workflowId": c.get("workflowId"),
             "status": st.get("status"),
-            "currentActivity": st.get("currentActivity"),
+            "frontier": st.get("frontier"),
             "completed": st.get("completedActivities") or [],
             **session_cost(st),
         })

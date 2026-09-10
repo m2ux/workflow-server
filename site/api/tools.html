@@ -245,7 +245,8 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string | (string | object)[] | 1</code></td><td>yes</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
+          <tr><td><code>from_activity</code></td><td><code>string</code></td><td>no</td><td>The activity this call is exiting — the one <code>exit</code>, <code>step_manifest</code>, <code>variables_changed</code> and <code>artifacts_produced</code> belong to, instance-qualified (<code>challenge-pass#1</code>) where the graph runs that activity once per element of a collection. Required whenever anything is in flight, which is every call but a session's first, so a call always names the activity it is returning rather than leaving the server to infer it. Omitted only on that first call, when the frontier is empty.</td></tr>
           <tr><td><code>exit</code></td><td><code>string</code></td><td>no</td><td>Name of the exit the previous activity took.</td></tr>
           <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: &quot;is_review_mode=false&quot; }]</code>. Omit if no steps ran.</td></tr>
           <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with their outcomes and the exit each took.</td></tr>
@@ -295,6 +296,7 @@
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>yes</td><td>Your worker context window in tokens. Required so the server can size inline technique bundling.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           </tbody>
         </table>

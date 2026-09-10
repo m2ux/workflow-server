@@ -36,9 +36,21 @@ async function resolveCheckpoints(client: Client, sessionIndex: string, activity
   return sessionIndex;
 }
 
+/**
+ * What each session was last entered into, so a transition can name the activity it is returning.
+ * `from_activity` is required whenever anything is in flight: the retiring activity is resolved
+ * from what the call says rather than inferred from what happens to be on the frontier.
+ */
+const lastEnteredIn = new Map<string, string>();
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function transitionToActivity(client: Client, sessionIndex: string, activityId: string, extra?: Record<string, any>): Promise<{ actMeta: Record<string, unknown>; nextToken: string; actResponse: any }> {
   const args: Record<string, unknown> = { session_index: sessionIndex, activity_id: activityId };
+  // Every call but a session's first names the activity it is returning. This helper knows it
+  // because it entered it, which is what an orchestrator knows because it dispatched it.
+  const exiting = extra?.from_activity ?? lastEnteredIn.get(sessionIndex);
+  if (exiting !== undefined) args.from_activity = exiting;
+  if (extra?.exit) args.exit = extra.exit;
   if (extra?.transition_condition) args.transition_condition = extra.transition_condition;
   if (extra?.step_manifest) args.step_manifest = extra.step_manifest;
   if (extra?.activity_manifest) args.activity_manifest = extra.activity_manifest;
@@ -52,6 +64,7 @@ async function transitionToActivity(client: Client, sessionIndex: string, activi
   // get_activity prepends a technique bundle separated by '\n\n---\n\n' from the activity body.
   const actResponse = parseWorkflowResponse(getResult);
 
+  lastEnteredIn.set(sessionIndex, activityId);
   // The session_index is stable; keep the alias `nextToken` only to minimise diff churn in callers.
   return { actMeta, nextToken: sessionIndex, actResponse };
 }
@@ -294,7 +307,7 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('No current activity');
+      expect(errorText).toContain('No activity in flight');
     });
 
     it('should error when context_tokens is omitted (required param)', async () => {
@@ -469,6 +482,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: nextToken,
+          from_activity: 'submit-for-review',
           activity_id: 'complete',
           exit: 'abort',
           step_manifest: RAN_BEFORE_ABORT,
@@ -486,6 +500,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: nextToken,
+          from_activity: 'submit-for-review',
           activity_id: 'complete',
           exit: 'review-approved',
           step_manifest: RAN_BEFORE_ABORT,
@@ -771,7 +786,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: tokenAfterStart, activity_id: 'complete' },
+        arguments: { session_index: tokenAfterStart, activity_id: 'complete', from_activity: 'start-work-package' },
       });
       expect(result.isError).toBeFalsy();
       const meta = result._meta as Record<string, unknown>;
@@ -800,7 +815,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: tokenAfterStart, activity_id: 'design-philosophy', step_manifest: manifest },
+        arguments: { session_index: tokenAfterStart, activity_id: 'design-philosophy', from_activity: 'start-work-package', step_manifest: manifest },
       });
       expect(result.isError).toBeFalsy();
       const meta = result._meta as Record<string, unknown>;
@@ -821,6 +836,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: tokenAtComprehension,
+          from_activity: 'codebase-comprehension',
           activity_id: 'requirements-elicitation',
           exit: 'needs-elicitation',
         },
@@ -839,6 +855,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: tokenAtComprehension,
+          from_activity: 'codebase-comprehension',
           activity_id: 'requirements-elicitation',
           exit: 'skip-optional-activities',
         },
@@ -858,6 +875,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: tokenAtComprehension,
+          from_activity: 'codebase-comprehension',
           activity_id: 'requirements-elicitation',
           exit: 'no-such-exit',
         },
@@ -876,6 +894,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: tokenAtStart,
+          from_activity: 'start-work-package',
           activity_id: 'design-philosophy',
         },
       });
@@ -893,6 +912,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: tokenAtComprehension,
+          from_activity: 'codebase-comprehension',
           activity_id: 'requirements-elicitation',
           exit: 'skip-optional-activities',
         },
@@ -912,7 +932,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: tokenAfterAct, activity_id: 'design-philosophy' },
+        arguments: { session_index: tokenAfterAct, activity_id: 'design-philosophy', from_activity: 'start-work-package' },
       });
       const meta = result._meta as Record<string, unknown>;
       const validation = meta['validation'] as { status: string; warnings: string[] };
@@ -928,6 +948,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: tokenAfterAct,
+          from_activity: 'start-work-package',
           activity_id: 'design-philosophy',
           step_manifest: [{ step_id: 'resolve-target', output: 'done' }],
         },
@@ -948,6 +969,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: tokenAfterAct,
+          from_activity: 'start-work-package',
           activity_id: 'design-philosophy',
           step_manifest: reversedManifest,
         },
@@ -966,6 +988,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: {
           session_index: tokenAfterAct,
+          from_activity: 'start-work-package',
           activity_id: 'design-philosophy',
           step_manifest: [{ step_id: 'fake-step', output: 'done' }],
         },
@@ -1465,11 +1488,11 @@ describe('mcp-server integration', () => {
       });
       await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'design-philosophy', progress_published: false },
+        arguments: { session_index: sessionToken, activity_id: 'design-philosophy', from_activity: 'start-work-package', progress_published: false },
       });
       await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'plan-prepare' },
+        arguments: { session_index: sessionToken, activity_id: 'plan-prepare', from_activity: 'design-philosophy' },
       });
 
       const activities = parseToolResponse(await client.callTool({
@@ -1822,7 +1845,7 @@ describe('mcp-server integration', () => {
 
       const act2 = await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: token, activity_id: 'design-philosophy' },
+        arguments: { session_index: token, activity_id: 'design-philosophy', from_activity: 'start-work-package' },
       });
       expect(act2.isError).toBeFalsy();
       expect(parseToolResponse(act2).activity_id).toBe('design-philosophy');
@@ -2326,14 +2349,14 @@ describe('mcp-server integration', () => {
         arguments: { session_index: startIdx, activity_id: 'start-work-package' },
       });
       state = JSON.parse(await readFile(sessionFilePath, 'utf8'));
-      expect(state.currentActivity).toBe('start-work-package');
+      expect(state.frontier).toEqual(['start-work-package']);
       const enteredEvents = state.history.filter((e: { type: string }) => e.type === 'activity_entered');
       expect(enteredEvents.some((e: { activity?: string }) => e.activity === 'start-work-package')).toBe(true);
 
       // 3. Transition again — prior activity should land in completedActivities.
       await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: startIdx, activity_id: 'design-philosophy' },
+        arguments: { session_index: startIdx, activity_id: 'design-philosophy', from_activity: 'start-work-package' },
       });
       state = JSON.parse(await readFile(sessionFilePath, 'utf8'));
       expect(state.completedActivities).toContain('start-work-package');
@@ -2341,7 +2364,7 @@ describe('mcp-server integration', () => {
       // 4. Final transition to the terminal activity flips status to completed.
       await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: startIdx, activity_id: 'complete' },
+        arguments: { session_index: startIdx, activity_id: 'complete', from_activity: 'design-philosophy' },
       });
       state = JSON.parse(await readFile(sessionFilePath, 'utf8'));
       expect(state.status).toBe('completed');
@@ -2408,7 +2431,7 @@ describe('mcp-server integration', () => {
       // Priority block ordering — most-read fields up top.
       expect(idx('schemaVersion')).toBeLessThan(idx('workflowId'));
       expect(idx('status')).toBeLessThan(idx('completedActivities'));
-      expect(idx('currentActivity')).toBeLessThan(idx('completedActivities'));
+      expect(idx('frontier')).toBeLessThan(idx('completedActivities'));
       expect(idx('completedActivities')).toBeLessThan(idx('history'));
       expect(idx('variables')).toBeLessThan(idx('history'));
     });
@@ -2488,12 +2511,12 @@ describe('mcp-server integration', () => {
       });
       expect(nextResult.isError).toBeFalsy();
 
-      // Re-read the top file and verify the child's currentActivity is set
+      // Re-read the top file and verify the child's frontier holds its opening activity
       // INSIDE triggeredWorkflows[0].state — no other file was touched.
       const topAfter = JSON.parse(await readFile(join(topFolder, 'session.json'), 'utf8'));
-      expect(topAfter.triggeredWorkflows[0].state.currentActivity).toBe('start-work-package');
-      // The parent's own currentActivity is untouched.
-      expect(topAfter.currentActivity).toBe('');
+      expect(topAfter.triggeredWorkflows[0].state.frontier).toEqual(['start-work-package']);
+      // The parent's own frontier is untouched.
+      expect(topAfter.frontier).toEqual([]);
     });
   });
 
@@ -2587,7 +2610,7 @@ describe('mcp-server integration', () => {
       seq: 7,
       ts: 1_700_000_000,
       startedAt: '2026-07-11T10:00:00.000Z',
-      currentActivity: 'implement',
+      frontier: ['implement'],
       currentTechnique: 'implement-task',
       condition: '',
       activeCheckpoint: {
@@ -2640,7 +2663,7 @@ describe('mcp-server integration', () => {
             seq: 2,
             ts: 1_700_000_100,
             startedAt: '2026-07-11T10:40:00.000Z',
-            currentActivity: 'triage',
+            frontier: ['triage'],
             currentTechnique: '',
             condition: '',
             variables: { severity: 'high' },
@@ -2668,7 +2691,7 @@ describe('mcp-server integration', () => {
                   seq: 1,
                   ts: 1_700_000_200,
                   startedAt: '2026-07-11T10:45:00.000Z',
-                  currentActivity: 'plan',
+                  frontier: ['plan'],
                   currentTechnique: '',
                   condition: '',
                   variables: {},
@@ -2719,7 +2742,7 @@ describe('mcp-server integration', () => {
         sessionIndex: ROOT_INDEX,
         agentId: 'orchestrator',
         status: 'running',
-        currentActivity: 'implement',
+        frontier: ['implement'],
         currentTechnique: 'implement-task',
         startedAt: '2026-07-11T10:00:00.000Z',
         seq: 7,
@@ -2728,7 +2751,7 @@ describe('mcp-server integration', () => {
       const activities = parseToolResponse(await callInspect({ view: 'activities' }));
       expect(activities).toEqual({
         completed: ['start-work-package', 'research', 'wp-plan'],
-        current: 'implement',
+        current: ['implement'],
         // This fixture reports neither outcomes nor progress marks, so every activity it
         // entered is unreported and none is known to have skipped the write.
         outcomes: [],
@@ -2758,7 +2781,7 @@ describe('mcp-server integration', () => {
         sessionIndex: CHILD_INDEX,
         workflowId: 'remediate-vuln',
         status: 'running',
-        currentActivity: 'triage',
+        frontier: ['triage'],
         completed: ['intake'],
         // Still running with no usage reported: the figure is unavailable, which the
         // digest says rather than showing a zero.
@@ -2787,7 +2810,7 @@ describe('mcp-server integration', () => {
       // The child's identity, not the root's.
       expect(identity.sessionIndex).toBe(CHILD_INDEX);
       expect(identity.workflowId).toBe('remediate-vuln');
-      expect(identity.currentActivity).toBe('triage');
+      expect(identity.frontier).toEqual(['triage']);
     });
 
     it('PR215-TC-05: out-of-range child_index returns the actionable NOT_FOUND message', async () => {
@@ -2869,7 +2892,7 @@ describe('mcp-server integration', () => {
         sessionIndex: 'GRANDX',
         workflowId: 'meta',
         status: 'running',
-        currentActivity: 'plan',
+        frontier: ['plan'],
         completed: [],
         // The grandchild is running and has reported no usage, so its cost is
         // unavailable rather than nil.

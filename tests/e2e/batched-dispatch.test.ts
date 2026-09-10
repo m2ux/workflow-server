@@ -53,7 +53,7 @@ describe('batched dispatch (#407)', () => {
     for (const [index, activityId] of activities.entries()) {
       const entered = await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: sessionIndex, activity_id: activityId },
+        arguments: { session_index: sessionIndex, activity_id: activityId, ...(index === 0 ? {} : { from_activity: activities[index - 1] }) },
       });
       if (isError(entered)) throw new Error(`next_activity ${activityId} failed: ${rawText(entered)}`);
 
@@ -168,7 +168,7 @@ describe('batched dispatch (#407)', () => {
 
     // Fill the batch to its cap.
     for (const [index, activityId] of RUN.slice(0, 3).entries()) {
-      await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: activityId } });
+      await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: activityId, ...(index === 0 ? {} : { from_activity: RUN[index - 1] }) } });
       const taken = await client.callTool({
         name: 'get_activity',
         arguments: {
@@ -258,7 +258,7 @@ describe('batched dispatch (#407)', () => {
     expect(((afterGate._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities']).toBe(1);
 
     // The orchestrator commits, advances, and continues the SAME worker onto the next activity.
-    await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: RUN[1] } });
+    await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: RUN[1], from_activity: RUN[0] } });
     const second = await client.callTool({
       name: 'get_activity',
       arguments: { session_index: sessionIndex, context_tokens: 2_000_000, agent_id: scope, bundle: 'reference' },
@@ -359,7 +359,7 @@ describe('batched dispatch (#407)', () => {
 
     // One dispatch covering three activities, its cost reported at each boundary.
     for (const [index, activityId] of RUN.slice(0, 3).entries()) {
-      await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: activityId } });
+      await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: activityId, ...(index === 0 ? {} : { from_activity: RUN[index - 1] }) } });
       await client.callTool({
         name: 'get_activity',
         arguments: {
