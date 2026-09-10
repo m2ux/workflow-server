@@ -43,6 +43,8 @@ The activity before the fan materialises one worktree per element and records it
 
 The declaration buys exactly one thing from the load — the version-control operations stop being refused for that fan's activity — and the load takes it on trust, a commit's target tree being a run-time fact no rule reads. Everything else it implies is the author's to build. Session-level persistence is unaffected: the record and the planning folder are shared however the checkouts are split, so the run still persists once, at convergence.
 
+**It is declared per member and it is uniform within one.** A list destination may carry an isolated member beside a plain one, and only the isolated member's activity may commit. Within a member it is all of the instances or none: they run the same steps, so giving some a checkout of their own and leaving others on the shared tree is one activity behaving two ways, and an instance that commits the shared tree while its siblings write it is the thing the refusal exists to prevent. Where only some units commit, give them all a worktree — the ones with nothing to commit simply do not, and a checkout is cheap beside a whole further delivery — or run the committing units as a fan of their own.
+
 Reach for it only where per-unit attribution is the point. Isolation costs a full checkout per branch, materialised one at a time before any work starts, and it makes the convergence responsible for a reconciliation that can conflict.
 
 ### a-join-gathers-the-container-not-an-index
