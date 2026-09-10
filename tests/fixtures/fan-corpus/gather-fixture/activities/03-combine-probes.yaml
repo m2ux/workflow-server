@@ -1,0 +1,17 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: The meeting point, gathering the container whole against the fan's own collection.
+variables:
+  reads:
+    - probe_unit_outputs
+    - probe_targets
+steps:
+  - kind: action
+    id: gather-the-container
+    actions:
+      - action: log
+        message: gathered {probe_unit_outputs} against the expected ids in {probe_targets}
+exits:
+  - id: settled
+    isDefault: true

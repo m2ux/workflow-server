@@ -1,0 +1,16 @@
+id: reconcile-review
+version: 1.0.0
+name: Reconcile Review
+description: The second meeting point, gathering the second container whole.
+variables:
+  reads:
+    - unit_review_outputs
+steps:
+  - kind: action
+    id: gather
+    actions:
+      - action: log
+        message: gathered {unit_review_outputs}
+exits:
+  - id: settled
+    isDefault: true

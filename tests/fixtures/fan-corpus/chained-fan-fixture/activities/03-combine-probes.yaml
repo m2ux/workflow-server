@@ -1,0 +1,7 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: The first meeting point, whose own exit fans over the container the first fan filled.
+exits:
+  - id: swept
+    isDefault: true

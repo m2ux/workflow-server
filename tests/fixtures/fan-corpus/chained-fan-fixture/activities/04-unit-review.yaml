@@ -1,0 +1,21 @@
+id: unit-review
+version: 1.0.0
+name: Unit Review
+description: The second fan branch, handed one slot of the first fan container.
+variables:
+  reads:
+    - review_unit
+  writes:
+    - name: review_verdict
+      type: string
+      description: The verdict this review reached for its unit.
+steps:
+  - kind: action
+    id: review-the-unit
+    actions:
+      - action: set
+        target: review_verdict
+        value: the verdict for {review_unit}
+exits:
+  - id: reviewed
+    isDefault: true

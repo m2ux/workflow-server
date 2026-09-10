@@ -1,0 +1,16 @@
+id: dependency-review
+version: 1.0.0
+name: Dependency Review
+description: The other branch, resolving the same literal filename.
+variables:
+  writes:
+    - name: review_findings
+      type: object
+      description: What the review found.
+steps:
+  - kind: technique
+    id: review
+    technique: probe::review
+exits:
+  - id: reviewed
+    isDefault: true

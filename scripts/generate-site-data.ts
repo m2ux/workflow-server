@@ -344,7 +344,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'Child workflows are started with `dispatch_child`, not `start_session`.',
   ],
   get_workflow_status: [
-    'Returns whether the session is active, blocked at a checkpoint, or completed, plus the current activity and completed steps.',
+    'Returns whether the session is active, blocked at a checkpoint, or completed, plus the activities in flight and completed steps.',
     'If the session is nested under a parent, parent context is included too.',
   ],
   inspect_session: [
@@ -371,11 +371,11 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   next_activity: [
     'Moves the session to a new activity. This is the orchestrator\'s advance call — it updates state and records the trace but does not return the activity body.',
     'After `next_activity`, the worker should call `get_activity` to load steps, checkpoints, exits, and technique references.',
-    'For the first transition, use `initialActivity` from `get_workflow`. After that, take the exit the activity reports and read its destination from the `graph` in `get_workflow`.',
+    'For the first transition, use `initialActivity` from `get_workflow`. After that, take the exit the activity reports and read its destination from the `graph` in `get_workflow` — one activity, or the branches a fanning exit opens, passed on as the graph gives them. Every call but the first names the activity it is returning.',
     'Optional `step_manifest` and `exit` help the server validate what you completed. Manifest checks are advisory — mismatches produce warnings, not hard errors.',
   ],
   get_activity: [
-    'Loads the full definition for whatever activity the session is currently on. No `activity_id` parameter — the server reads it from session state.',
+    'Loads the full definition for the activity this context was dispatched for. Name it with `activity_id` where several are in flight; omit it on an ordinary walk, where the server reads the one activity from session state.',
     'You must pass `context_tokens`: your worker\'s context window size in tokens. The server uses this to decide how many step techniques to bundle inline.',
     'Ungated techniques that fit the budget are included in the response under `step_techniques` — the same content you would get from `get_technique` for that step. Gated steps and overflow techniques still need a separate `get_technique` call.',
     'If the session uses persistent context mode (or you pass `bundle: "reference"`), content you already received may come back as short unchanged markers instead of full text. Pass `bundle: "full"` to force full delivery.',

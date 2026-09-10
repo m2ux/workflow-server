@@ -1,0 +1,16 @@
+id: survey-pass
+version: 1.0.0
+name: Survey Pass
+description: One branch, declaring a literal artifact filename.
+variables:
+  writes:
+    - name: survey_findings
+      type: object
+      description: What the survey found.
+steps:
+  - kind: technique
+    id: survey
+    technique: probe::survey
+exits:
+  - id: surveyed
+    isDefault: true

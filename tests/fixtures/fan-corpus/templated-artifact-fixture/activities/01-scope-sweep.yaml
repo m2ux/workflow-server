@@ -1,0 +1,19 @@
+id: scope-sweep
+version: 1.0.0
+name: Scope Sweep
+description: Writes the collection the fan runs its activity once per element of.
+variables:
+  writes:
+    - name: probe_targets
+      type: array
+      description: The units this sweep probes, one per instance.
+steps:
+  - kind: action
+    id: name-the-units
+    actions:
+      - action: set
+        target: probe_targets
+        value: the units this sweep probes
+exits:
+  - id: scoped
+    isDefault: true

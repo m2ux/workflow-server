@@ -36,6 +36,10 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
  * 1,200 characters. Against that, a technique declaring no interface and no procedure stopped
  * receiving the inherited bind contract it has nothing to bind, which took about 5,100 characters
  * out of this bundle — the conduct techniques and the harness adapters were each carrying it.
+ *
+ * The concurrent-dispatch operation is absent from this figure and belongs outside it: it rides the
+ * response for a workflow whose graph actually fans, so an orchestrator driving one that does not
+ * pays nothing for a procedure it can never reach. Meta's own graph fans nowhere.
  */
 const BUDGET = 112_000;
 

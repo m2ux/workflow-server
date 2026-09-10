@@ -97,6 +97,7 @@ describe('fetch observability (#166 B8)', () => {
       arguments: {
         session_index: idx,
         activity_id: 'design-philosophy',
+        from_activity: 'start-work-package',
         step_manifest: [
           { step_id: 'detect-review-mode', output: 'new implementation confirmed' },
           { step_id: 'resolve-repo-root', output: 'repo root resolved' },
@@ -364,6 +365,7 @@ describe('fetch observability (#166 B8)', () => {
         arguments: {
           session_index: idx,
           activity_id: 'design-philosophy',
+          from_activity: 'start-work-package',
           agent_id: 'w-1',
           step_manifest: [
             { step_id: 'detect-review-mode', output: 'new implementation confirmed' },
@@ -412,6 +414,7 @@ describe('fetch observability (#166 B8)', () => {
         arguments: {
           session_index: idx,
           activity_id: 'design-philosophy',
+          from_activity: 'start-work-package',
           artifacts_produced: [
             { id: 'declared-ok', name: 'declared-ok.md' },
             { id: 'outside-art', name: 'outside-plan.md', path: outside },
@@ -444,6 +447,7 @@ describe('fetch observability (#166 B8)', () => {
         arguments: {
           session_index: idx,
           activity_id: 'design-philosophy',
+          from_activity: 'start-work-package',
           artifacts_produced: [{ id: 'kept-artifact', name: 'kept-artifact.md' }],
         },
       });
@@ -453,6 +457,7 @@ describe('fetch observability (#166 B8)', () => {
         arguments: {
           session_index: idx,
           activity_id: 'requirements-elicitation',
+          from_activity: 'design-philosophy',
         },
       });
       expect(second.isError).toBeFalsy();

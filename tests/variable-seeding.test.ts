@@ -231,6 +231,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     await call('next_activity', {
       session_index: sessionIndex,
       activity_id: 'followup-activity',
+      from_activity: 'checkpoint-activity',
       variables_changed: { review_needed: true, retry_count: 2, unset_marker: 'produced' },
     });
 
@@ -255,6 +256,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const result = await call('next_activity', {
       session_index: sessionIndex,
       activity_id: 'followup-activity',
+      from_activity: 'checkpoint-activity',
       variables_changed: { review_needed: 'yes' },
     });
 
@@ -289,7 +291,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
     const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
     await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-    await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity' });
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity', from_activity: 'checkpoint-activity' });
     const stored = readSession(slug);
     expect(stored.variables).toEqual(SEEDED_FIXTURE_BAG);
     expect(stored.history.filter((h: { type: string }) => h.type === 'variable_set')).toHaveLength(0);
@@ -492,7 +494,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-      await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity' });
+      await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity', from_activity: 'checkpoint-activity' });
       expect(readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage')).toHaveLength(0);
     });
   });

@@ -280,7 +280,7 @@ A workflow is the top-level container representing a complete process definition
 | `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
 | `variables`       | Variable[] | State variables                                            |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
-| `graph`           | object     | Exit bindings: activity id → exit id → destination activity id (or `__terminal__`). Every exit of every activity is bound here; an unbound exit, an unknown exit and an unknown destination each fail the load |
+| `graph`           | object     | Exit bindings: activity id → exit id → destination. A destination names one activity, `__terminal__`, a list of at least two members the run opens together, or one activity with the collection to run it once per element of. Every exit of every activity is bound here; an unbound exit, an unknown exit and an unknown destination each fail the load |
 | `activitiesDir`   | string     | Directory containing external activity files (server-resolved) |
 | `activities`      | Activity[] | Inline activity definitions (or loaded from activitiesDir) |
 

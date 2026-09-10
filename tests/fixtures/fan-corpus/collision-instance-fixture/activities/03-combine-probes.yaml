@@ -1,0 +1,16 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: The meeting point, gathering the container whole.
+variables:
+  reads:
+    - probe_unit_outputs
+steps:
+  - kind: action
+    id: gather
+    actions:
+      - action: log
+        message: gathered {probe_unit_outputs}
+exits:
+  - id: settled
+    isDefault: true

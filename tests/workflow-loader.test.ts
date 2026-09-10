@@ -10,7 +10,10 @@ import {
   exitDestinations,
   validateExitBindings,
   TERMINAL_SENTINEL,
-  checkpointBaseId,
+  baseId,
+  instanceIndex,
+  fanGroups,
+  reachableActivities,
 } from '../src/loaders/workflow-loader.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -240,10 +243,24 @@ describe('workflow-loader', () => {
       }],
     } as unknown as Workflow;
 
-    it('checkpointBaseId strips the per-iteration instance discriminator', () => {
-      expect(checkpointBaseId('assumption-decision#RE-1')).toBe('assumption-decision');
-      expect(checkpointBaseId('assumption-decision#{current_assumption.id}')).toBe('assumption-decision');
-      expect(checkpointBaseId('enforcement-confirmed')).toBe('enforcement-confirmed');
+    // The separator serves both populations one definition reached several times produces: a
+    // loop-body checkpoint, whose discriminator is the item's own id, and an instance of a fanned
+    // activity, whose discriminator is the slot index.
+    it('baseId strips the discriminator for a loop-body checkpoint and for a fan instance', () => {
+      expect(baseId('assumption-decision#RE-1')).toBe('assumption-decision');
+      expect(baseId('assumption-decision#{current_assumption.id}')).toBe('assumption-decision');
+      expect(baseId('enforcement-confirmed')).toBe('enforcement-confirmed');
+      expect(baseId('challenge-pass#0')).toBe('challenge-pass');
+      expect(baseId('challenge-pass#11')).toBe('challenge-pass');
+    });
+
+    it('instanceIndex answers only for a numeric discriminator', () => {
+      expect(instanceIndex('challenge-pass#0')).toBe(0);
+      expect(instanceIndex('challenge-pass#11')).toBe(11);
+      expect(instanceIndex('challenge-pass')).toBeUndefined();
+      // A loop-body checkpoint's discriminator is the item's id, so it names no slot.
+      expect(instanceIndex('assumption-decision#RE-1')).toBeUndefined();
+      expect(instanceIndex('assumption-decision#{current_assumption.id}')).toBeUndefined();
     });
 
     it('resolves an instance-qualified id to the single base definition', () => {

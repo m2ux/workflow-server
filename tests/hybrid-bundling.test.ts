@@ -418,6 +418,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       arguments: {
         session_index: idx,
         activity_id: 'wrap',
+        from_activity: 'work',
         step_manifest: [
           { step_id: 'classify', output: 'classified' },
           { step_id: 'gather', output: 'gathered' },

@@ -42,7 +42,22 @@ export function isTemplateReference(value: unknown): boolean {
  * on each `variable_set` history event so the stream distinguishes a user
  * decision from a worker's domain output.
  */
-export type VariableWriteSource = 'setVariable' | 'variables_changed' | 'yield_checkpoint';
+/**
+ * `fan_enter` names the server's own materialisation of a branch container, so the history
+ * distinguishes it from a worker's report: it assigns the container whole, which is not a merge and
+ * is not a branch's write.
+ */
+export type VariableWriteSource = 'setVariable' | 'variables_changed' | 'yield_checkpoint' | 'fan_enter';
+
+/**
+ * Where a branch's reported map lands: the container's key, the slot the branch's frontier entry
+ * designates, and the unit's own id, which names the slot rather than designating it.
+ */
+export interface BranchLanding {
+  key: string;
+  slot: number;
+  unit: string;
+}
 
 /** The mutable slice of session state a variable write touches. */
 interface VariableWriteTarget {
@@ -69,7 +84,7 @@ export function applyVariableWrites(
   draft: VariableWriteTarget,
   values: Record<string, unknown>,
   declarations: Map<string, DeclaredConstraints>,
-  ctx: { timestamp: string; activity?: string; source: VariableWriteSource },
+  ctx: { timestamp: string; activity?: string; source: VariableWriteSource; landing?: BranchLanding },
 ): string[] {
   const warnings: string[] = [];
   for (const [name, value] of Object.entries(values)) {
@@ -90,7 +105,11 @@ export function applyVariableWrites(
         `[${declaration.values!.join(', ')}]; stored as written.`,
       );
     }
-    draft.variables[name] = value;
+    // A branch's values do not land at their bare names: the whole reported map goes into the
+    // slot below, once. Only the commit changes — the per-name loop above runs unchanged against
+    // the retiring activity's own declared writes, so a member outside its declared value set
+    // keeps its warning.
+    if (ctx.landing === undefined) draft.variables[name] = value;
     draft.history.push({
       timestamp: ctx.timestamp,
       type: 'variable_set',
@@ -99,10 +118,23 @@ export function applyVariableWrites(
         name,
         value,
         source: ctx.source,
+        ...(ctx.landing !== undefined
+          ? { key: ctx.landing.key, instance: ctx.landing.slot, member: name, unit: ctx.landing.unit }
+          : {}),
         ...(mismatch ? { declaredType, valueType, typeMismatch: true } : {}),
         ...(offSet ? { declaredValues: declaration.values, valueOutsideSet: true } : {}),
       },
     });
+  }
+  if (ctx.landing !== undefined) {
+    // One assignment of the whole reported map into the slot the branch's frontier entry
+    // designates. The slot exists already — the container is materialised at the fan enter — so an
+    // out-of-order retirement is a positional write rather than a hole.
+    const container = draft.variables[ctx.landing.key];
+    const slots = Array.isArray(container) ? container as Array<{ id: string; result: unknown }> : [];
+    const slot = slots[ctx.landing.slot];
+    if (slot !== undefined) slot.result = values;
+    draft.variables[ctx.landing.key] = slots;
   }
   return warnings;
 }

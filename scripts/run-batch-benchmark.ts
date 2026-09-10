@@ -134,7 +134,12 @@ async function walk(
     for (const [index, activityId] of opts.activities.entries()) {
       const entered = await h.client.callTool({
         name: 'next_activity',
-        arguments: { session_index: sessionIndex, activity_id: activityId },
+        arguments: {
+          session_index: sessionIndex,
+          activity_id: activityId,
+          // Every call but the first names the activity it is returning.
+          ...(index === 0 ? {} : { from_activity: opts.activities[index - 1] }),
+        },
       });
       if (isError(entered)) throw new Error(`next_activity ${activityId} failed: ${rawText(entered)}`);
 

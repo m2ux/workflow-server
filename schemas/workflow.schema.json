@@ -386,10 +386,63 @@
           "additionalProperties": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "activity": {
+                            "type": "string",
+                            "description": "The activity every instance of this fan runs. One activity: its instances differ by the element each is handed and by nothing else."
+                          },
+                          "over": {
+                            "type": "string",
+                            "description": "The collection in the variable bag this destination runs the activity once per element of, by name or by a dotted path into a named value (`work_units`, `execution_plan.steps`). Read when the fan is entered, so its length is the fan's width."
+                          },
+                          "variable": {
+                            "anyOf": [
+                              {
+                                "$ref": "#/definitions/workflow/properties/variables/items/properties/name/anyOf/0"
+                              },
+                              {
+                                "$ref": "#/definitions/workflow/properties/variables/items/properties/name/anyOf/1"
+                              }
+                            ],
+                            "description": "The name each instance reads its own element at. The activity this fan runs declares it among the names it needs its workflow to supply; name it as the consuming operation's own input id so no step needs a rename."
+                          },
+                          "maxInstances": {
+                            "type": "integer",
+                            "minimum": 2,
+                            "description": "Optional. The widest fan this destination admits, declared only where the work wants a tighter bound than the server's configured ceiling and with the reason stated. Either bound refuses the fan-enter for a wider destination, naming the bound that applied and the width it saw. Each instance beyond the first costs a whole further delivery of this activity."
+                          }
+                        },
+                        "required": [
+                          "activity",
+                          "over",
+                          "variable"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "minItems": 2
+                },
+                {
+                  "$ref": "#/definitions/workflow/properties/graph/additionalProperties/additionalProperties/anyOf/1/items/anyOf/1"
+                }
+              ]
             }
           },
-          "description": "The workflow's shape: for each activity, where each of its exits leads. This is the single home for the routing — an activity names outcomes, the workflow names destinations, so a borrowed activity sits in this graph without its lending workflow having a say. Omitted only by a workflow whose activities declare no exits."
+          "description": "The workflow's shape: for each activity, where each of its exits leads. This is the single home for the routing — an activity names outcomes, the workflow names destinations, so a borrowed activity sits in this graph without its lending workflow having a say. A destination naming one activity sends the run there, and `__terminal__` ends the run. A destination naming several activities runs them together, one worker to each. A destination naming one activity together with the collection to run it over runs one worker per element of that collection, each handed its own element at the name the destination gives; the graph names the collection, so the width is that collection's length when the fan is entered. Any destination is bounded by the server's ceiling, or by a tighter `maxInstances` an instance fan declares, measured against the branches it opens once every member is flattened. Either fan lands each branch's outputs in its own slot under the branch's own derived key, and the run enters the single activity all of the branches' own exits name, once, after the last of them returns. Omitted only by a workflow whose activities declare no exits."
         },
         "activities": {
           "type": "array",

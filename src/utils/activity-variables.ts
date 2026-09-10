@@ -26,7 +26,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Activity, Step, TechniqueBinding } from '../schema/activity.schema.js';
 import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
-import type { Workflow } from '../schema/workflow.schema.js';
+import { type Workflow, branchKey, destinationTargets } from '../schema/workflow.schema.js';
 import type { ActivityVariables, VariableDefinition } from '../schema/variable.schema.js';
 import type { Condition } from '../schema/condition.schema.js';
 import { composeActivityTechnique } from '../loaders/technique-loader.js';
@@ -112,6 +112,13 @@ export interface MergedVariables {
 export function mergeActivityVariables(
   own: VariableDefinition[] | undefined,
   activities: readonly VariableContributor[] | undefined,
+  /**
+   * The activities this workflow's graph fans. Each contributes its branch container BESIDE its own
+   * write declarations, never in place of them: substituting would drop the members' declared types
+   * and value sets — the only check on the one agent-supplied record the server does not type, for
+   * precisely the activities a fan runs — and their starting values with them.
+   */
+  fannedActivityIds: ReadonlySet<string> = new Set(),
 ): MergedVariables {
   const merged = new Map<string, DeclarationSite>();
   const sources = new Map<string, string[]>();
@@ -139,6 +146,16 @@ export function mergeActivityVariables(
   for (const declaration of own ?? []) contribute(declaration, WORKFLOW_SOURCE);
   for (const activity of activities ?? []) {
     for (const declaration of activity.variables?.writes ?? []) contribute(declaration, activity.id);
+    if (!fannedActivityIds.has(activity.id)) continue;
+    // An array in both fan forms — the shape is a dense array either way, one slot per branch in
+    // collection order, and the uniform index keeps a read form independent of the fan's shape. No
+    // starting value: seeding one would make every existence gate on the container constant.
+    contribute({
+      name: branchKey(activity.id),
+      type: 'array',
+      description: `Each branch of the fan that runs '${activity.id}' lands its whole reported map in a slot of its own, in collection order — one slot per branch, each carrying its unit's id and that branch's values. A slot no branch filled carries no result. Read it whole and hand it to a gather; a bare member addresses nothing.`,
+      required: false,
+    }, `graph fan over ${activity.id}`);
   }
 
   return {
@@ -193,6 +210,24 @@ export interface DerivedContract {
    * choose where the run goes next. A stale value here costs an exit rather than a step.
    */
   routingReads: Set<string>;
+  /**
+   * Every read as the step spells it, dotted tail included — `research_outputs.0.result.findings`
+   * beside the `research_outputs` its head contributes to `reads`. This is what makes a read into a
+   * branch container checkable at member grain; the head alone discards the member.
+   */
+  pathReads: Set<string>;
+  /**
+   * What a branch's productions land as when the graph fans this activity: the container plus one
+   * entry per member, index-free because the width is a run-time value. Empty for every activity no
+   * graph fans, so the bare write set is what a sequential workflow is measured against.
+   */
+  memberWrites: Set<string>;
+  /**
+   * The filename every artifact its steps declare, template included — the string the writer
+   * resolves at write time. Two contexts resolving one literal filename resolve one file, which is
+   * data loss rather than hygiene, so this is what the collision family is decided from.
+   */
+  artifactNames: Set<string>;
 }
 
 /**
@@ -213,7 +248,7 @@ const ENV_PROBES = new Set(['gh', 'gpg', 'git', 'signing', 'workflows']);
 const TOKEN_RE = new RegExp(`\\{(${IDENTIFIER_PATTERN}(?:\\.[a-zA-Z0-9_]+)*)\\}`, 'g');
 
 /** The bag name a reference addresses: its head, since `current_unit.mode` reads `current_unit`. */
-function bagName(reference: string): string {
+export function bagName(reference: string): string {
   return reference.split('.')[0]!;
 }
 
@@ -222,31 +257,31 @@ function isBagRead(name: string): boolean {
   return !PLACEHOLDER.has(name) && !ENV_PROBES.has(name);
 }
 
-/** Bag names interpolated by a `{token}` anywhere in a string. */
+/**
+ * The collectors return the WHOLE dotted reference and the read function splits it: the head serves
+ * the namespace test, and the full reference is what makes member grain visible at all. Pre-split
+ * here, the tail is discarded before any check runs.
+ */
 function tokenReads(text: string): string[] {
   const out: string[] = [];
   for (const match of text.matchAll(TOKEN_RE)) {
-    const name = bagName(match[1]!);
-    if (isBagRead(name)) out.push(name);
+    if (isBagRead(bagName(match[1]!))) out.push(match[1]!);
   }
   return out;
 }
 
-/** Bag names a `when:` expression consults. */
+/** References a `when:` expression consults. */
 function whenReads(expression: string): string[] {
-  return expressionPaths(expression).map(bagName).filter(isBagRead);
+  return expressionPaths(expression).filter((path) => isBagRead(bagName(path)));
 }
 
-/** Bag names a structured condition consults, at any nesting depth. */
+/** References a structured condition consults, at any nesting depth. */
 function conditionReads(condition: Condition | undefined): string[] {
   if (!condition) return [];
   const out: string[] = [];
   const walk = (node: Condition): void => {
     if (node.type === 'simple') {
-      if (node.variable) {
-        const name = bagName(node.variable);
-        if (isBagRead(name)) out.push(name);
-      }
+      if (node.variable && isBagRead(bagName(node.variable))) out.push(node.variable);
       return;
     }
     if (node.type === 'not') { if (node.condition) walk(node.condition as Condition); return; }
@@ -254,6 +289,29 @@ function conditionReads(condition: Condition | undefined): string[] {
   };
   walk(condition);
   return out;
+}
+
+/**
+ * The member a dotted read into a branch container addresses, or undefined where the reference is
+ * not one. A slot carries its unit's id beside the result, so a member read drops a leading
+ * all-digits segment and then the literal `result` segment: `research_outputs.0.result.findings`
+ * addresses `findings`. A reference that omits the index addresses nothing — with a uniform index
+ * the flat walker would never find it — and comes back as the empty string, which is reported.
+ */
+export function containerMember(reference: string, key: string): string | undefined {
+  const segments = reference.split('.');
+  if (segments[0] !== key) return undefined;
+  const rest = segments.slice(1);
+  if (rest.length === 0) return '';
+  if (!/^\d+$/.test(rest[0]!)) return rest.join('.');
+  const afterIndex = rest.slice(1);
+  return afterIndex[0] === 'result' ? afterIndex.slice(1).join('.') : afterIndex.join('.');
+}
+
+/** Whether a member read carries the index the container's uniform shape requires. */
+export function readCarriesIndex(reference: string, key: string): boolean {
+  const segments = reference.split('.');
+  return segments[0] === key && /^\d+$/.test(segments[1] ?? '');
 }
 
 /** The step-binding object of a technique step, when it carries deviations. */
@@ -272,11 +330,13 @@ interface OpSignature {
    * the activity's artifact contract, so a value with no other reader still has one.
    */
   artifactOutputs: string[];
+  /** The filename each artifact output declares, template included. */
+  artifactNames: string[];
   /** Names its delivered protocol and rules interpolate — read at the step, out of the bag. */
   proseReads: string[];
 }
 
-const EMPTY_SIGNATURE: OpSignature = { inputs: [], outputs: [], artifactOutputs: [], proseReads: [] };
+const EMPTY_SIGNATURE: OpSignature = { inputs: [], outputs: [], artifactOutputs: [], artifactNames: [], proseReads: [] };
 
 /**
  * Read a bound operation's signature as the step receives it: composed with its container
@@ -318,10 +378,15 @@ async function readSignature(
       })),
       outputs: [...outputIds],
       artifactOutputs: outputs.filter((output) => output.artifact !== undefined).map((output) => output.id),
+      artifactNames: outputs
+        .map((output) => output.artifact?.name)
+        .filter((name): name is string => typeof name === 'string'),
       // A token naming an entry of the operation's own signature is that entry — whether it is
       // read at all is settled by the signature, where a default or an "(optional)" marking says
-      // the agent may supply it. What is left names the session directly.
-      proseReads: prose.filter((name) => !declared.has(name)),
+      // the agent may supply it. What is left names the session directly. Prose is a technique's
+      // own surface rather than a step's binding, so it contributes the head: member grain is a
+      // property of what a STEP spells, which is where a gather names a container's member.
+      proseReads: prose.map(bagName).filter((name) => !declared.has(name)),
     };
   } catch (error) {
     logWarn('Activity contract derivation skipped an unreadable bound op', {
@@ -356,8 +421,15 @@ export async function deriveActivityContract(args: {
   scopeWorkflowId: string;
   /** The workflow's declared variable names: the namespace a contract entry can name. */
   namespace: ReadonlySet<string>;
+  /**
+   * The key this activity's outputs land under when the graph fans it. Present only for a fanned
+   * activity, so the same file contributes its writes flat in a workflow whose graph does not fan
+   * it — an activity is borrowable into a fanning graph and a non-fanning one without carrying
+   * either shape in its own file.
+   */
+  branchKey?: string | undefined;
 }): Promise<DerivedContract> {
-  const { activity, workflowDir, scopeWorkflowId, namespace } = args;
+  const { activity, workflowDir, scopeWorkflowId, namespace, branchKey: key } = args;
   const reads = new Set<string>();
   const writes = new Set<string>();
   const internalReads = new Set<string>();
@@ -369,11 +441,16 @@ export async function deriveActivityContract(args: {
   const persistedProductions = new Set<string>();
   /** Produced so far in document order — what resolves a later read inside this activity. */
   const producedSoFar = new Set<string>();
+  const pathReads = new Set<string>();
+  const memberWrites = new Set<string>();
+  const artifactNames = new Set<string>();
 
   const consumes = new Set<string>();
-  const read = (name: string): void => {
+  const read = (reference: string): void => {
+    const name = bagName(reference);
     mentions.add(name);
     if (!namespace.has(name)) return;
+    pathReads.add(reference);
     consumes.add(name);
     if (producedSoFar.has(name)) internalReads.add(name);
     else reads.add(name);
@@ -382,8 +459,23 @@ export async function deriveActivityContract(args: {
   const consume = (name: string): void => {
     if (namespace.has(name)) consumes.add(name);
   };
+  /**
+   * An unbraced input value: a rename when the WHOLE string names a variable, a literal otherwise
+   * — the same reading `resolveInputSource` gives it. The namespace settles which it is, so the
+   * match is on the whole string and not on a head, or every literal carrying a dot would read.
+   */
+  const readWholeName = (value: string): void => {
+    if (namespace.has(value)) read(value);
+    else mentions.add(value);
+  };
+  // A branch's productions land whole under its own key, so the write side re-keys to the
+  // container plus one entry per member. Inside the branch names stay bare: a later step reads an
+  // earlier output as an internal read, never through the key.
   const write = (name: string): void => {
-    if (namespace.has(name)) writes.add(name);
+    if (namespace.has(name)) {
+      if (key === undefined) writes.add(name);
+      else { writes.add(key); memberWrites.add(`${key}.${name}`); }
+    }
     produces.add(name);
     producedSoFar.add(name);
   };
@@ -412,14 +504,13 @@ export async function deriveActivityContract(args: {
       const ref = techniqueName(step.technique);
       if (ref) {
         const signature = await readSignature(ref, activity.id, workflowDir, scopeWorkflowId);
+        for (const name of signature.artifactNames) artifactNames.add(name);
         for (const input of signature.inputs) {
           const bound = binding?.inputs?.[input.id];
           if (bound !== undefined) {
             if (typeof bound === 'string') {
               tokenReads(bound).forEach(read);
-              // A bare value is a rename when it names a variable, and a literal otherwise — the
-              // same reading `resolveInputSource` gives it. The namespace settles which it is.
-              if (!bound.includes('{')) read(bound);
+              if (!bound.includes('{')) readWholeName(bound);
             }
             continue;
           }
@@ -429,11 +520,15 @@ export async function deriveActivityContract(args: {
         signature.proseReads.forEach(read);
         const remapped = new Set(Object.keys(binding?.outputs ?? {}));
         const persisted = new Set(signature.artifactOutputs);
-        const landed = (outputId: string, bagName: string): void => {
-          write(bagName);
+        // The artifact write and the persisted production take the branch key too, or the
+        // artifact-write exemption stops applying and every artifact-valued branch output becomes
+        // an unread write.
+        const landed = (outputId: string, target: string): void => {
+          write(target);
           if (persisted.has(outputId)) {
-            persistedProductions.add(bagName);
-            if (namespace.has(bagName)) artifactWrites.add(bagName);
+            const landing = key === undefined ? target : `${key}.${target}`;
+            persistedProductions.add(landing);
+            if (namespace.has(target)) artifactWrites.add(landing);
           }
         };
         for (const [outputId, target] of Object.entries(binding?.outputs ?? {})) landed(outputId, target);
@@ -480,7 +575,10 @@ export async function deriveActivityContract(args: {
   // A trigger's passContext names the values the dispatching agent relays into the child session.
   for (const trigger of activity.triggers ?? []) (trigger.passContext ?? []).forEach(read);
 
-  return { reads, writes, internalReads, artifactWrites, produces, mentions, persistedProductions, routingReads, consumes };
+  return {
+    reads, writes, internalReads, artifactWrites, produces, mentions, persistedProductions,
+    routingReads, consumes, pathReads, memberWrites, artifactNames,
+  };
 }
 
 /**
@@ -536,11 +634,17 @@ export type ActivityGraph = Map<string, string[]>;
  * activity's exits, keyed by the activity they leave. One source — the workflow's own `graph` — so
  * the walk sees the whole shape without assembling it from the activities. Destinations that are
  * not activities (the terminal sentinel) are kept: the walk needs to know a path leaves.
+ *
+ * A destination the graph fans contributes every branch it opens, and the de-duplication happens
+ * AFTER the flatten: an instance fan's target list is one activity, so de-duplicating first is what
+ * keeps the forward search, the predecessor index and the cycle pass seeing the graph one visit
+ * would produce.
  */
 export function activityGraph(workflow: Workflow): ActivityGraph {
   const graph: ActivityGraph = new Map();
   for (const activity of workflow.activities ?? []) {
-    graph.set(activity.id, [...new Set(Object.values(workflow.graph?.[activity.id] ?? {}))]);
+    const bound = Object.values(workflow.graph?.[activity.id] ?? {});
+    graph.set(activity.id, [...new Set(bound.flatMap(destinationTargets))]);
   }
   return graph;
 }
@@ -559,9 +663,21 @@ export interface UnreachableRead {
  * Reads no path can satisfy.
  *
  * The entry case is a definite-assignment walk: a variable is available on entry to an activity
- * when every predecessor path makes it available, starting from what the session holds before the
- * first activity runs — the seeded and session-supplied names. A read of a name absent from that
- * set is reached, on at least one path, before anything writes it.
+ * when every ARRIVAL makes it available, starting from what the session holds before the first
+ * activity runs — the seeded and session-supplied names. A read of a name absent from that set is
+ * reached, on at least one path, before anything writes it.
+ *
+ * An arrival is one way control can reach a node. An ordinary predecessor is its own arrival, and
+ * a completed fan is one arrival contributing the union of its live branches' outgoing sets —
+ * every branch ran, so the meeting point's entry state is what they collectively leave. Arrivals
+ * intersect, because control still comes by exactly one of them. Two fans converging on one node
+ * are two arrivals, so such a node may declare only the reads both unions satisfy.
+ *
+ * Termination is unaffected: the analysis descends from the universe to a fixed point over the
+ * powerset lattice ordered by superset, each outgoing set is non-increasing across iterations, and
+ * both a union and an intersection of non-increasing sets are non-increasing. The meet changes,
+ * the lattice does not — and it need not, because a branch's writes are namespaced, so a branch
+ * contributes exactly one flat name whatever object landed under it.
  *
  * The re-entry case is the same question asked about a return visit, and only of the reads that
  * choose an exit. An activity the graph can come back to picks its onward transition again; where
@@ -587,8 +703,22 @@ export function unreachableReads(args: {
    * visit by definition, so an exit reading it is deciding on a current value, not a stale one.
    */
   policy: ReadonlySet<string>;
+  /**
+   * The fans the graph declares, from the loader's single derivation, so the grouping keeps one
+   * home and the graph type stays a flat reachability map. A completed fan is ONE arrival at its
+   * meeting point, contributing the union of its live branches' outgoing sets.
+   */
+  fans?: ReadonlyArray<{ branches: readonly string[]; join: string | undefined }>;
+  /**
+   * Activity id → a name ambient to that activity alone: a fan's per-instance parameter, which the
+   * graph supplies on the branch's own delivery. Per activity rather than in the global ambient
+   * set, because a flat seed would satisfy a read of the parameter anywhere in the workflow.
+   */
+  ambientPerActivity?: ReadonlyMap<string, string>;
 }): UnreachableRead[] {
   const { graph, initialActivity, availableAtEntry, reads, routingReads, writes, policy } = args;
+  const fans = args.fans ?? [];
+  const ambientPerActivity = args.ambientPerActivity ?? new Map<string, string>();
   const nodes = [...graph.keys()];
   // A root outside the graph leaves the walk nothing to report against: the workflow names an
   // activity it does not include, which is a defect of its own.
@@ -597,6 +727,24 @@ export function unreachableReads(args: {
   const predecessors = new Map<string, string[]>(nodes.map((id) => [id, []]));
   for (const [from, targets] of graph) {
     for (const to of targets) predecessors.get(to)?.push(from);
+  }
+
+  /**
+   * The fans that converge on each meeting point, and the branches to remove from that meeting
+   * point's plain predecessors. A branch appears either as a contributor to its fan's one union
+   * arrival or as an ordinary intersecting predecessor, never both: left in both, the intersection
+   * wipes the union straight back out and the change does nothing.
+   */
+  const arrivingFans = new Map<string, string[][]>();
+  for (const fan of fans) {
+    if (fan.join === undefined || !graph.has(fan.join)) continue;
+    const live = fan.branches.filter((branch) => graph.has(branch));
+    if (live.length === 0) continue;
+    const converging = arrivingFans.get(fan.join) ?? [];
+    converging.push([...live]);
+    arrivingFans.set(fan.join, converging);
+    const branchSet = new Set(live);
+    predecessors.set(fan.join, (predecessors.get(fan.join) ?? []).filter((from) => !branchSet.has(from)));
   }
 
   // Only activities the initial activity can reach are walked: an unreachable activity is a graph
@@ -626,16 +774,41 @@ export function unreachableReads(args: {
     return out;
   };
 
+  /**
+   * The ways control can reach a node, each as the set of names it makes available. An ordinary
+   * predecessor is its own arrival. A completed fan is ONE arrival contributing the UNION of its
+   * live branches' outgoing sets, because every branch ran — an intersection there drops a name
+   * only one branch writes and turns a correct declared read at the meeting point into a finding.
+   * Arrivals then intersect, because control still comes by exactly one of them.
+   */
+  const arrivals = (id: string): Set<string>[] => {
+    const out = (predecessors.get(id) ?? [])
+      .filter((from) => reachable.has(from))
+      .map((from) => outgoing(from));
+    for (const branches of arrivingFans.get(id) ?? []) {
+      // Built over distinct branch ids: the union is idempotent over an instance fan's siblings,
+      // so N instances of one activity contribute one arrival carrying that activity's set once.
+      const live = [...new Set(branches)].filter((branch) => reachable.has(branch));
+      if (live.length === 0) continue;
+      const union = new Set<string>();
+      for (const branch of live) for (const name of outgoing(branch)) union.add(name);
+      out.push(union);
+    }
+    return out;
+  };
+
   let changed = true;
   while (changed) {
     changed = false;
     for (const id of reachable) {
       if (id === initialActivity) continue;
-      const sources = (predecessors.get(id) ?? []).filter((from) => reachable.has(from));
+      const sources = arrivals(id);
       if (sources.length === 0) continue;
+      // The candidate seed is the FIRST ARRIVAL's set, not the first predecessor's: seeded from a
+      // predecessor, a union arrival's extra names are never candidates and the union does nothing.
       const next = new Set<string>();
-      for (const name of outgoing(sources[0]!)) {
-        if (sources.every((from) => outgoing(from).has(name))) next.add(name);
+      for (const name of sources[0]!) {
+        if (sources.every((from) => from.has(name))) next.add(name);
       }
       const current = incoming.get(id)!;
       if (next.size !== current.size || [...next].some((name) => !current.has(name))) {
@@ -648,7 +821,9 @@ export function unreachableReads(args: {
   const findings: UnreachableRead[] = [];
   for (const id of reachable) {
     const available = incoming.get(id)!;
+    const ambient = ambientPerActivity.get(id);
     for (const name of reads.get(id) ?? []) {
+      if (name === ambient) continue;
       if (!available.has(name)) findings.push({ activityId: id, name, kind: 'entry' });
     }
   }

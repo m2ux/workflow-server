@@ -1,0 +1,16 @@
+id: list-fan-fixture
+version: 1.0.0
+title: List Fan Fixture
+description: A destination naming two activities, converging on the meeting point their own exits name.
+initialActivity: plan-prepare
+graph:
+  plan-prepare:
+    done:
+      - survey-pass
+      - dependency-review
+  survey-pass:
+    surveyed: combine-findings
+  dependency-review:
+    reviewed: combine-findings
+  combine-findings:
+    settled: __terminal__

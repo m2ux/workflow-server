@@ -1,0 +1,15 @@
+id: missing-member-fixture
+version: 1.0.0
+title: Missing Member Fixture
+description: A correct fan of each form with a gather-bound meeting point, plus the collision arms.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

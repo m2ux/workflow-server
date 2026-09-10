@@ -53,6 +53,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
+import { branchKey } from '../src/schema/workflow.schema.js';
 // Convention building blocks shared with the server's provenance annotation (binding-provenance
 // is their single source of truth), so guard and server cannot drift apart on what counts as an
 // identifier, an optional input, or an ambient id.
@@ -253,14 +254,69 @@ function produced(wf: string): Set<string> {
   return s;
 }
 
+/**
+ * The two things a fan produces that no other producer in this model accounts for. Keyed per
+ * workflow, and for the parameter per ACTIVITY as well, because the parameter belongs to the
+ * activity the fan runs and to no other — this is the one place the guard reads routing, and what
+ * it reads it for.
+ *
+ * The fan's per-instance parameter is deliberately not a workflow variable: declaring it there
+ * would make it workflow-owned, which `activity-variables` skips and seeds, so a read of it
+ * anywhere would resolve silently. So it arrives here instead.
+ *
+ * The branch container is producible at MEMBER grain, never at a head: producible at head grain it
+ * would satisfy a member read that names nothing, which is why the two land together.
+ */
+const fanParameterByActivity = new Map<string, Map<string, string>>();
+const fanContainerMembers = new Map<string, Set<string>>();
+
 function collectWorkflowVars(wf: string): void {
   const wt = join(ROOT, wf, 'workflow.yaml');
   if (!existsSync(wt)) return;
   try {
-    const p = parseDefinition(readFileSync(wt, 'utf-8')) as { variables?: Array<{ name?: string }>; context?: Array<{ name?: string }> };
+    const p = parseDefinition(readFileSync(wt, 'utf-8')) as {
+      variables?: Array<{ name?: string }>;
+      context?: Array<{ name?: string }>;
+      graph?: Record<string, Record<string, unknown>>;
+    };
     for (const v of p?.variables ?? []) if (v?.name) produced(wf).add(v.name);
     for (const v of p?.context ?? []) if (v?.name) produced(wf).add(v.name);
+
+    const parameters = new Map<string, string>();
+    const containers = new Set<string>();
+    for (const bindings of Object.values(p?.graph ?? {})) {
+      for (const destination of Object.values(bindings ?? {})) {
+        const members = Array.isArray(destination) ? destination : [destination];
+        if (typeof destination === 'string') continue;
+        for (const member of members) {
+          if (typeof member === 'string') { containers.add(branchKey(member)); continue; }
+          const fan = member as { activity?: string; variable?: string };
+          if (!fan.activity) continue;
+          containers.add(branchKey(fan.activity));
+          if (fan.variable) parameters.set(fan.activity, fan.variable);
+        }
+      }
+    }
+    if (parameters.size > 0) fanParameterByActivity.set(wf, parameters);
+    if (containers.size > 0) fanContainerMembers.set(wf, containers);
   } catch { /* structural errors are validate-workflow-yaml's job */ }
+}
+
+/** The fan parameter one activity of one workflow is handed, where the graph fans it. */
+function fanParameterFor(wf: string, activityId: string): string | undefined {
+  return fanParameterByActivity.get(wf)?.get(activityId);
+}
+
+/**
+ * Whether a read addresses a member of a branch container in this workflow. A slot carries its
+ * unit's id beside the result, so a member read is `<key>.<instance>.result.<member>`; a reference
+ * whose head is a container but which omits the index addresses nothing and is not producible.
+ */
+function readsContainerMember(wf: string, reference: string): boolean {
+  const segments = reference.split('.');
+  const key = segments[0]!;
+  if (!fanContainerMembers.get(wf)?.has(key)) return false;
+  return /^\d+$/.test(segments[1] ?? '') && segments.length > 2;
 }
 
 type Step = {
@@ -677,6 +733,9 @@ export function collectViolations(): Violation[] {
       const seam = `${s.wf}\u0000${opId}\u0000${inputId}`;
       if (inputId in s.inputsMap) { callerSupplied.add(seam); continue; }
       if (producersOf(s.wf).has(inputId)) continue;
+      // The fan supplies its parameter on the branch's own delivery, to the activity it runs and
+      // to no other. Without this the fanned activity's declared input for it reads as an orphan.
+      if (fanParameterFor(s.wf, s.activityId) === inputId) continue;
       orphans.set(seam, {
         check: 'orphan-input', site: `${s.wf} :: ${opId}`,
         detail: `own input '${inputId}' has no producer in workflow '${s.wf}' (no step-binding entry, workflow variable, step output, or default)`,
@@ -692,6 +751,14 @@ export function collectViolations(): Violation[] {
     if (locals.has(r.head)) continue;
     const wf = r.rel.split('/')[0]!;
     if (scopeOf(wf).has(r.head)) continue;
+    // A branch container is producible at member grain: a read that omits the slot index addresses
+    // nothing, so it is not satisfied here and stays reported.
+    if (readsContainerMember(wf, r.full)) continue;
+    // The fan's parameter reaches the file through the branch's own delivery. `collectReads` scans
+    // a whole technique file with only fenced blocks blanked, so an artifact name templated on the
+    // parameter inside an `#### artifact` body is collected as a read needing a producer.
+    if (fanParameterByActivity.get(wf) !== undefined
+      && [...fanParameterByActivity.get(wf)!.values()].includes(r.head)) continue;
     v.push({ check: 'read-resolution', site: `${r.rel}:${r.line}`, detail: `{${r.full}} has no producer (declared id / $-local / workflow var / set-target)` });
   }
   // (2b) read-resolution over gate expressions — the same scope a `{token}` resolves against.

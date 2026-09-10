@@ -31,15 +31,19 @@ import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { fanGroups, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN } from '../src/utils/binding-provenance.js';
 import {
   activityGraph,
+  bagName,
+  containerMember,
+  readCarriesIndex,
   deriveActivityContract,
   orchestratorInputs,
   unreachableReads,
   type DerivedContract,
 } from '../src/utils/activity-variables.js';
+import { branchKey, instanceFans } from '../src/schema/workflow.schema.js';
 import type { VariableDefinition } from '../src/schema/variable.schema.js';
 import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
@@ -54,6 +58,15 @@ interface ActivityRecord {
   sourceWorkflowId: string;
   declaredReads: Set<string>;
   declaredWrites: Map<string, VariableDefinition>;
+  /**
+   * What the guard measures the productions against: the declared names for an activity no graph
+   * fans, and the container plus one entry per member for one a graph does.
+   */
+  writeSet: Set<string>;
+  /** The key its outputs land under, present only where the graph fans it. */
+  branchKey?: string;
+  /** The collection the graph reads to open its fan — a synthetic read attributed to this branch. */
+  fanCollection?: string;
   derived: DerivedContract;
 }
 
@@ -111,16 +124,68 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       for (const declaration of activity.variables?.writes ?? []) declaredAnywhere.add(declaration.name);
     }
 
+    // What the graph fans, and what each fan supplies its branch. A fan's per-instance parameter is
+    // ambient to the activity the fan runs and unwritten everywhere else, so a stray reader is
+    // reported natively; declaring it on the workflow file would make it workflow-owned, which is
+    // both skipped by the unwritten-read check and seeded into the availability lattice.
+    const fans = fanGroups(workflow);
+    const fannedActivityIds = new Set(fans.flatMap((fan) => fan.branches));
+    const fanParameterOf = new Map<string, string>();
+    /** Branch id → the head of the collection expression the GRAPH reads to open its fan. */
+    const fanCollectionOf = new Map<string, string>();
+    for (const fan of fans) {
+      for (const member of instanceFans(fan.destination)) {
+        fanParameterOf.set(member.activity, member.variable);
+        fanCollectionOf.set(member.activity, member.over.split('.')[0]!);
+      }
+    }
+
     const records: ActivityRecord[] = [];
     for (const activity of workflow.activities ?? []) {
       const sourceWorkflowId = activitySourceWorkflow.get(activity.id) ?? workflowId;
+      const key = fannedActivityIds.has(activity.id) ? branchKey(activity.id) : undefined;
+      const derived = await deriveActivityContract({
+        activity, workflowDir: root, scopeWorkflowId: sourceWorkflowId, namespace,
+        ...(key !== undefined ? { branchKey: key } : {}),
+      });
+      const declaredReads = new Set(activity.variables?.reads ?? []);
+      const declaredWrites = new Map((activity.variables?.writes ?? []).map((w) => [w.name, w]));
+      // The fan's collection acquires a reader that is not an activity — the graph — so its head
+      // enters both the declared-read and the derived-read sets of the BRANCH, never the source.
+      // The lattice computes an activity's outgoing set as its incoming set plus its own writes and
+      // the finding tests against the INCOMING set, so attributing it to a source that writes the
+      // collection itself reports falsely on the flagship shape. Attributed to the branch, the
+      // claim is the wanted one: the collection is available on entry to the branch.
+      const collection = fanCollectionOf.get(activity.id);
+      if (collection !== undefined) {
+        declaredReads.add(collection);
+        derived.reads.add(collection);
+        derived.consumes.add(collection);
+        // Deliberately NOT a path read. A fan consumes its collection whole, which is the access a
+        // container exists for, so a destination whose `over` names an earlier fan's container is
+        // legal and reports nothing — while an authored bare read of a container, which does reach
+        // `pathReads` from its own step, is still reported. The exemption is keyed on this one read.
+      }
       records.push({
         id: activity.id,
         sourceWorkflowId,
-        declaredReads: new Set(activity.variables?.reads ?? []),
-        declaredWrites: new Map((activity.variables?.writes ?? []).map((w) => [w.name, w])),
-        derived: await deriveActivityContract({ activity, workflowDir: root, scopeWorkflowId: sourceWorkflowId, namespace }),
+        declaredReads,
+        declaredWrites,
+        // The declared-write set the guard measures against: the container plus one entry per
+        // member, index-free because the width is a run-time value a static check cannot enumerate.
+        writeSet: key === undefined
+          ? new Set(declaredWrites.keys())
+          : new Set([key, ...[...declaredWrites.keys()].map((name) => `${key}.${name}`)]),
+        ...(key !== undefined ? { branchKey: key } : {}),
+        ...(collection !== undefined ? { fanCollection: collection } : {}),
+        derived,
       });
+    }
+
+    /** Branch key → the activity it belongs to, for resolving a member read to its producer. */
+    const branchKeyOwner = new Map<string, ActivityRecord>();
+    for (const record of records) {
+      if (record.branchKey !== undefined) branchKeyOwner.set(record.branchKey, record);
     }
 
     // A borrowed activity's file lives in the workflow that authored it; naming that file in the
@@ -139,8 +204,11 @@ export async function collectFindings(root: string): Promise<Finding[]> {
           });
         }
       }
-      for (const name of record.derived.writes) {
-        if (!record.declaredWrites.has(name)) {
+      // A fanned activity's productions land re-keyed, so they are measured at member grain: the
+      // container itself is contributed by the graph and needs no declaration of its own.
+      const produced = record.branchKey === undefined ? record.derived.writes : record.derived.memberWrites;
+      for (const name of produced) {
+        if (!record.writeSet.has(name)) {
           findings.push({
             check: 'undeclared-use', site: site(record),
             detail: `writes '${name}' without declaring it under variables.writes`,
@@ -176,7 +244,10 @@ export async function collectFindings(root: string): Promise<Finding[]> {
         }
       }
       for (const name of record.declaredWrites.keys()) {
-        if (!record.derived.writes.has(name)) {
+        const landed = record.branchKey === undefined
+          ? record.derived.writes.has(name)
+          : record.derived.memberWrites.has(`${record.branchKey}.${name}`);
+        if (!landed) {
           findings.push({
             check: 'unused-declaration', site: site(record),
             detail: `declares a write of '${name}' that no step produces`,
@@ -187,7 +258,9 @@ export async function collectFindings(root: string): Promise<Finding[]> {
 
     const writersOf = new Map<string, string[]>();
     for (const record of records) {
-      for (const name of record.declaredWrites.keys()) {
+      // Re-keyed for a fanned activity, so the bare member is written by nothing and any surviving
+      // bare read of it is reported natively as an unwritten read.
+      for (const name of record.writeSet) {
         const writers = writersOf.get(name) ?? [];
         writers.push(record.id);
         writersOf.set(name, writers);
@@ -205,21 +278,133 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       }
     }
 
+    // Member grain on the read side: which members of which container anything in this workflow
+    // actually gathers, and which references address a member at all.
+    const gatheredMembers = new Set<string>();
+    /**
+     * Containers something reads whole. A meeting point does not author indices — it hands the
+     * container to the ordered gather with the fan's own collection as the expected ids — so a
+     * whole-container read gathers every member the branch produces.
+     */
+    const gatheredWhole = new Set<string>();
     for (const record of records) {
+      for (const name of [...record.declaredReads, ...record.derived.consumes]) {
+        if (branchKeyOwner.has(name)) gatheredWhole.add(name);
+      }
+      for (const reference of record.derived.pathReads) {
+        const key = bagName(reference);
+        if (!branchKeyOwner.has(key)) continue;
+        const member = containerMember(reference, key);
+        if (member !== undefined && member !== '') gatheredMembers.add(`${key}.${bagName(member)}`);
+      }
+    }
+
+    for (const record of records) {
+      const ownParameter = fanParameterOf.get(record.id);
       for (const name of record.declaredReads) {
+        // The parameter is ambient to the activity the fan runs and unwritten everywhere else.
+        if (name === ownParameter) continue;
         if (owned.has(name) || writersOf.has(name) || AMBIENT_CONTEXT_IDS.has(name)) continue;
+        const suppliedTo = [...fanParameterOf].find(([, parameter]) => parameter === name)?.[0];
         findings.push({
           check: 'unwritten-read', site: site(record),
-          detail: `reads '${name}', which no activity in this workflow writes and the workflow file does not own`,
+          detail: suppliedTo !== undefined
+            ? `reads '${name}', which the graph supplies only to '${suppliedTo}' as the fan's per-instance parameter — it is a read-only projection on that activity's own delivery, available nowhere else`
+            : `reads '${name}', which no activity in this workflow writes and the workflow file does not own`,
         });
       }
+
+      // A read into a branch container, at member grain. With a uniform index a container-and-member
+      // read with no index addresses nothing and the flat walker would never find it, so it is
+      // reported by the instance form it should have carried.
+      for (const reference of record.derived.pathReads) {
+        const key = bagName(reference);
+        const owner = branchKeyOwner.get(key);
+        if (owner === undefined || reference === key) continue;
+        if (!readCarriesIndex(reference, key)) {
+          findings.push({
+            check: 'unwritten-read', site: site(record),
+            detail: `reads '${reference}', which omits the slot index — a branch's outputs land at '${key}.<instance>.result.<member>', so a container-and-member read with no index addresses nothing`,
+          });
+          continue;
+        }
+        const member = containerMember(reference, key)!;
+        if (member === '' || owner.declaredWrites.has(bagName(member))) continue;
+        findings.push({
+          check: 'unwritten-read', site: site(record),
+          detail: `reads '${reference}', which '${owner.id}' does not produce; it lands ${[...owner.declaredWrites.keys()].sort().join(', ')}`,
+        });
+      }
+
       for (const name of record.declaredWrites.keys()) {
+        if (record.branchKey !== undefined) {
+          // A member is gathered somewhere, or written to a file, or consumed by this activity's
+          // own later steps. Without the self-consumed exemption the family fires dozens of times
+          // on one correct fan, most of a branch's declared writes being working values.
+          const entry = `${record.branchKey}.${name}`;
+          if (gatheredWhole.has(record.branchKey) || gatheredMembers.has(entry)) continue;
+          if (record.derived.internalReads.has(name)) continue;
+          if (record.derived.artifactWrites.has(entry)) continue;
+          if (proseReads.has(name) || engineInputs.has(name)) continue;
+          findings.push({
+            check: 'unread-write', site: site(record),
+            detail: `writes '${entry}', which nothing in this workflow gathers`,
+          });
+          continue;
+        }
         if (readersOf.has(name) || proseReads.has(name) || record.derived.artifactWrites.has(name)) continue;
         if (engineInputs.has(name)) continue;
         findings.push({
           check: 'unread-write', site: site(record),
           detail: `writes '${name}', which nothing in this workflow reads`,
         });
+      }
+    }
+
+    // The collision family: the one new check on the safety floor, and the one that guards against
+    // data loss rather than definition hygiene. The artifact writer is keyed on a bare filename
+    // with a find-or-update and a re-scan mint guard, so two concurrent writers both re-scan, both
+    // create, and the run thereafter resolves the lowest-numbered instance for the rest of the
+    // walk. Literal names only: a template fails closed on the distinct arm, and the instance arm
+    // decides the template case rather than failing open on it.
+    const byId = new Map(records.map((record) => [record.id, record]));
+    const literalNames = (record: ActivityRecord | undefined): string[] =>
+      [...(record?.derived.artifactNames ?? [])].filter((name) => !name.includes('{'));
+
+    for (const fan of fans) {
+      const at = `'${fan.source}.${fan.exit}'`;
+
+      // Distinct arm: two members of one fan whose composed signatures resolve one filename. Two
+      // activities running together resolve one filename to one file.
+      const writersByName = new Map<string, string[]>();
+      for (const branch of fan.branches) {
+        for (const name of literalNames(byId.get(branch))) {
+          const writers = writersByName.get(name) ?? [];
+          writers.push(branch);
+          writersByName.set(name, writers);
+        }
+      }
+      for (const [name, writers] of writersByName) {
+        if (writers.length < 2) continue;
+        findings.push({
+          check: 'fan-artifact-collision', site: `${workflowId} :: ${fan.source}.${fan.exit}`,
+          detail: `The fan at ${at} has ${writers.map((w) => `'${w}'`).join(' and ')} both writing artifact '${name}'. Two activities running together resolve one filename to one file, so one branch's writes land in the other's document.`,
+        });
+      }
+
+      // Instance arm: every artifact name on the fanned activity's composed signatures interpolates
+      // a token whose head is that fan's parameter, or every instance resolves one filename.
+      for (const member of instanceFans(fan.destination)) {
+        const record = byId.get(member.activity);
+        for (const name of record?.derived.artifactNames ?? []) {
+          const carriesUnit = [...name.matchAll(/\{([A-Za-z0-9_.]+)\}/g)]
+            .some((match) => bagName(match[1]!) === member.variable);
+          if (carriesUnit) continue;
+          findings.push({
+            check: 'fan-artifact-collision', site: site(record!),
+            detail: `Activity '${member.activity}' is fanned by ${at} over '${member.over}' and writes artifact '${name}'. Every instance resolves that one filename to one file, so either the name carries the unit — '{${member.variable}}-${name}' — or the branch declares no artifact and the activity the fan converges on writes the document.`,
+          });
+        }
       }
     }
 
@@ -231,6 +416,13 @@ export async function collectFindings(root: string): Promise<Finding[]> {
     }
     const unreachable = unreachableReads({
       graph: activityGraph(workflow),
+      // From the loader's single derivation, so the grouping keeps one home and the graph type
+      // stays a flat reachability map.
+      fans,
+      // The parameter is available to the activity the fan runs and to no other, so it is seeded
+      // per activity rather than into the global ambient set — a flat seed would satisfy a read of
+      // it anywhere in the workflow.
+      ambientPerActivity: fanParameterOf,
       initialActivity: workflow.initialActivity,
       availableAtEntry,
       reads: new Map(records.map((record) => [record.id, record.declaredReads])),
@@ -240,7 +432,10 @@ export async function collectFindings(root: string): Promise<Finding[]> {
         record.id,
         new Set([...record.derived.routingReads].filter((name) => record.declaredReads.has(name))),
       ])),
-      writes: new Map(records.map((record) => [record.id, new Set(record.declaredWrites.keys())])),
+      // The re-keyed set, so a branch makes its CONTAINER available at the meeting point: keyed on
+      // the bare members the container would be written by nothing and every meeting point's read
+      // of it would be unreachable.
+      writes: new Map(records.map((record) => [record.id, record.writeSet])),
       policy: owned,
     });
     for (const found of unreachable) {

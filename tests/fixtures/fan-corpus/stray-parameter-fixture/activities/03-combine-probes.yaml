@@ -1,0 +1,17 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: Reads the fan's per-instance parameter, which the graph supplies only to the activity it runs.
+variables:
+  reads:
+    - probe_unit_outputs
+    - probe_target
+steps:
+  - kind: action
+    id: read-a-parameter-that-is-not-mine
+    actions:
+      - action: log
+        message: gathered {probe_unit_outputs} while reading {probe_target}
+exits:
+  - id: settled
+    isDefault: true

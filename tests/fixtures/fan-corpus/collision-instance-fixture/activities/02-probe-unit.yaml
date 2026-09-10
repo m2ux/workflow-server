@@ -1,0 +1,18 @@
+id: probe-unit
+version: 1.0.0
+name: Probe Unit
+description: The fanned activity, declaring a literal artifact name every instance would resolve alike.
+variables:
+  reads:
+    - probe_target
+  writes:
+    - name: probe_findings
+      type: object
+      description: What the probe found for its unit.
+steps:
+  - kind: technique
+    id: survey
+    technique: probe::survey
+exits:
+  - id: probed
+    isDefault: true

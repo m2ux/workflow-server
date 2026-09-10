@@ -126,13 +126,70 @@ export function closeLaunchedRecord(top: SessionFile, jsonPath: SessionJsonPath,
 }
 
 /**
- * Project a `SessionFile` onto the abstract `SessionView` consumed by the
- * validation helpers, so the validation surface stays storage-agnostic.
+ * The activity a call belongs to: the one it names, when the frontier holds it. Undefined
+ * otherwise — including when a call names none and the frontier is not empty, which is not a
+ * single-entry convenience but the case that must refuse. Inferring the sole entry would let a
+ * second advance off an already-retired activity resolve against whatever the frontier then held
+ * and record it complete before its first step. So the caller refuses rather than guessing, and a
+ * guess would also serve one branch another branch's activity.
+ *
+ * The comparison is an exact string match over a list of distinct strings: the id a call names is
+ * unique in the frontier by construction, so a fan instance is found without disambiguating.
  */
-export function sessionView(state: SessionFile): SessionView {
+export function heldActivity(state: SessionFile, named: string | undefined): string | undefined {
+  if (named === undefined || named === '') return undefined;
+  return state.frontier.includes(named) ? named : undefined;
+}
+
+/**
+ * The activity a DELIVERY call is served against: the one it names, or the sole entry where a
+ * single activity is in flight. The parameterless convention is what every ordinary walk uses; it
+ * is the exclusivity that retires, not the calling shape. Undefined where the caller must be
+ * refused — see `frontierRefusal` for the message each case owes.
+ */
+export function servedActivity(state: SessionFile, named: string | undefined): string | undefined {
+  if (named !== undefined && named !== '') return state.frontier.includes(named) ? named : undefined;
+  return state.frontier.length === 1 ? state.frontier[0]! : undefined;
+}
+
+/**
+ * Why a delivery call cannot be served, or undefined when it can. Three refusals, the middle one
+ * naming every entry in flight: a worker is served the activity it was dispatched for, never
+ * guessed at.
+ */
+export function frontierRefusal(state: SessionFile, tool: string, named: string | undefined): string | undefined {
+  if (named !== undefined && named !== '') {
+    if (state.frontier.includes(named)) return undefined;
+    if (state.frontier.length === 0) return `${tool}: no activity in flight. Call next_activity first.`;
+    return `${tool}: this session is on '${state.frontier.join(', ')}', not the '${named}' you were `
+      + 'dispatched for. Report the mismatch to your orchestrator rather than retrying without activity_id.';
+  }
+  if (state.frontier.length > 1) {
+    return `${tool}: ${state.frontier.length} activities are in flight (${state.frontier.join(', ')}). `
+      + 'Pass activity_id naming the one you were dispatched for, activity and instance together.';
+  }
+  return undefined;
+}
+
+/**
+ * The refusal a tool that writes ONE activity id into the record owes while several are in flight.
+ * Its subject is the ambiguity rather than the tool, so both callers report the same reading.
+ */
+export function ambiguousFrontier(state: SessionFile, action: string): string | undefined {
+  if (state.frontier.length <= 1) return undefined;
+  return `Cannot ${action}: ${state.frontier.length} activities are in flight (${state.frontier.join(', ')}).`;
+}
+
+/**
+ * Project a `SessionFile` onto the abstract `SessionView` consumed by the validation helpers, so
+ * the validation surface stays storage-agnostic. `act` is the activity the CALL is about, which
+ * under a fan is a per-call resolution rather than a field of the record — so the caller passes
+ * what it resolved, and an ordinary walk passes nothing and gets its sole entry.
+ */
+export function sessionView(state: SessionFile, act?: string): SessionView {
   return {
     wf: state.workflowId,
-    act: state.currentActivity,
+    act: act ?? (state.frontier.length === 1 ? state.frontier[0]! : ''),
     v: state.workflowVersion,
   };
 }
@@ -192,8 +249,32 @@ export async function loadSessionForTool(
     );
   }
   const topState = parsed.data;
+  assertNotPreFrontier(rawTopState, folder);
   const state = jsonPath.length === 0 ? topState : navigatePath(topState, jsonPath);
   return { state, folderAbsPath: folder, bytes, jsonPath, topState };
+}
+
+/**
+ * A session recorded before the frontier does not resume, and is refused rather than resumed
+ * silently. Such a record carries the run's position in a scalar the schema no longer knows, so the
+ * non-strict object strips it and the frontier's default supplies an empty list — a shape
+ * indistinguishable from a session's first call, whose next transition would retire nothing and
+ * enter as though the run were starting. The legacy converter never reaches one: it converts a
+ * folder holding no session file, and a pre-frontier record is a session file.
+ */
+function assertNotPreFrontier(raw: unknown, folder: string): void {
+  if (typeof raw !== 'object' || raw === null) return;
+  const record = raw as Record<string, unknown>;
+  const scalar = record['currentActivity'];
+  if (typeof scalar !== 'string' || 'frontier' in record) return;
+  throw new SessionStoreError(
+    `session.json in ${folder} predates the frontier: it records one current activity ('${scalar}') `
+    + 'where the run\'s position is now the list of activities in flight. Such a record has no '
+    + 'position to resume from — reading it would look like a session that has not started, and the '
+    + 'next transition would retire nothing. Start a fresh session.',
+    'SEAL_MISMATCH',
+    { folder },
+  );
 }
 
 /**
