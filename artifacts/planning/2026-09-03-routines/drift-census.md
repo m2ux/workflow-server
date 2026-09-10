@@ -44,6 +44,7 @@ Fourteen maximal shared windows. Grouped by what they are:
 | — its two-step core | 2 | 4 | + research |
 | **Fan-out** — compose briefs, dispatch, gather, synthesise | 4 | 2 | meta: orchestrator-workers, lead-researcher |
 | — its dispatch-and-gather pair | 2 | 3 | + isolated-fan-out |
+| — a fourth occurrence, inside `lead-researcher`'s own loop | 4 | — | the method cannot see it; see below |
 | **Roster fan-out** — compose roster briefs, dispatch | 2 | 2 | substrate-node-security-audit: reconnaissance, primary-audit |
 | **Commit and publish** — commit, verify, push, open PR | 4 | 2 | workflow-design: validate-and-commit, post-update-review |
 | **Audit and persist** — audit expressiveness, write artifact | 2 | 2 | workflow-design: quality-review, post-update-review |
@@ -54,6 +55,20 @@ writes, persist it in their own protocol, and report its path as an output — f
 [findings-register.md](findings-register.md), five for five across the family. If the write step is
 the redundant half, these two windows are a defect rather than a shared run, and the count of
 maximal windows drops to twelve. Settle B6 before treating either as a conversion candidate.
+
+**The fan-out run sits at four occurrences, and the method sees two of them.** *(2026-09-08)*
+`meta/activities/patterns/05-lead-researcher.yaml` carries the run twice — once at the top level, and
+once inside its `gap-followup` while-loop as `compose-followup-briefs`, `dispatch-followup`,
+`gather-followup`, `synthesise-followup`. Neither half of the search reaches the second: it reads
+top-level step lists only, and it keeps a window appearing in two or more activity *files*, so an
+intra-file repetition is outside its two criteria at once. `04-isolated-fan-out.yaml` is the third
+occurrence, counted here under the dispatch-and-gather pair because a completeness `validate` sits
+between its gather and its synthesise. All four bind the same four operations, and nothing varies but
+one input, that inserted gate, and the identifiers.
+
+That raises the run's constituency from two sites to four and makes it the second-widest sharing in
+the corpus after the convergence pass. It is stage 8 of the plan, and it needs no parameter of any
+kind — [higher-order-routines.md](higher-order-routines.md) carries why.
 
 The assumption run is the widest and the longest, which is why it is the migration case. The others
 establish that a routine has a constituency beyond it, in three further workflows, and that the

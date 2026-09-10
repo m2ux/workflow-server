@@ -787,10 +787,11 @@
           }
         },
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "scope-and-draft"
         ],
         "condition": "",
-        "currentActivity": "scope-and-draft",
+        "currentActivity": "quality-review",
         "currentTechnique": "workflow-definition::verify-artifact-conforms",
         "declaredArtifacts": [
           {
@@ -807,6 +808,16 @@
             "id": "impact_analysis",
             "name": "impact-analysis.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-375/01-impact-analysis.md"
+          },
+          {
+            "id": "scope_manifest",
+            "name": "scope-manifest.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-375/06-scope-manifest.md"
+          },
+          {
+            "id": "workflow_readme",
+            "name": "README.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-workflow-authoring-pr-375/workflow-authoring/README.md"
           }
         ],
         "deliveredContent": {
@@ -833,6 +844,24 @@
             "technique:workflow-definition::intake-classification": "785d48688bb7ae2a",
             "technique:workflow-definition::synthesize-change-brief": "aa2d514a9967c52f",
             "technique:workflow-engine::create-readme": "c52c58d5248145b7"
+          },
+          "worker-quality-review-1": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:workflow-design/anti-patterns": "449a2340f86c0d0b",
+            "resource:workflow-design/convention-conformance": "f277a1d4ccf89f5f",
+            "resource:workflow-design/design-principles": "15bcd906dcbf0ba0",
+            "resource:workflow-design/schema-construct-inventory": "142e763565d4adf4",
+            "technique:workflow-definition::audit-canon": "1410d942156f64d9",
+            "technique:workflow-definition::audit-schema-validation": "d8414f3bfd12b972",
+            "technique:workflow-definition::load-known-findings": "bc12b59eea4f2f00",
+            "technique:workflow-definition::reload-workflow": "7b1ad19b43c57b6c",
+            "technique:workflow-definition::resolve-consumer-surface": "45113484e215e5d8",
+            "technique:workflow-engine::list-workflows": "822ff399538ae84f"
           },
           "worker-scope-and-draft-1": {
             "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
@@ -1816,17 +1845,426 @@
             },
             "timestamp": "2026-08-01T06:57:37.548Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_branch",
+              "source": "variables_changed",
+              "value": "workflow/workflow-authoring-gitnexus-bindings"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "action": "modify",
+                  "change": "version 1.2.0; declare the eight graph-op variables",
+                  "kind": "root",
+                  "path": "workflow.yaml"
+                },
+                {
+                  "action": "modify",
+                  "change": "add verify-graph-index and survey-prior-art steps; v1.1.0",
+                  "kind": "activity",
+                  "path": "activities/01-intake-and-context.yaml"
+                },
+                {
+                  "action": "modify",
+                  "change": "add check-scope-discipline step; v1.1.0",
+                  "kind": "activity",
+                  "path": "activities/06-scope-and-draft.yaml"
+                },
+                {
+                  "action": "modify",
+                  "change": "add scan-orphans and map-consumer-impact in target-sweep-loop; v1.1.0",
+                  "kind": "activity",
+                  "path": "activities/08-quality-review.yaml"
+                },
+                {
+                  "action": "modify",
+                  "change": "add detect-graph-changes before verify-scope-manifest; v1.1.0",
+                  "kind": "activity",
+                  "path": "activities/09-validate-and-commit.yaml"
+                },
+                {
+                  "action": "modify",
+                  "change": "optional input gitnexus_indexed + graph-first-baseline rule; v1.1.0",
+                  "kind": "technique",
+                  "path": "techniques/workflow-definition/intake-classification.md"
+                },
+                {
+                  "action": "modify",
+                  "change": "optional inputs impact_report, orphan_candidates + graph-evidence-for-references rule; v1.1.0",
+                  "kind": "technique",
+                  "path": "techniques/workflow-definition/audit-canon.md"
+                },
+                {
+                  "action": "modify",
+                  "change": "optional input change_report + changed-set-evidence rule; v1.1.0",
+                  "kind": "technique",
+                  "path": "techniques/workflow-definition/scope-verification.md"
+                },
+                {
+                  "action": "modify",
+                  "change": "optional input change_report + protocol cross-check prose; v1.1.0",
+                  "kind": "technique",
+                  "path": "techniques/workflow-definition/commit-verification.md"
+                },
+                {
+                  "action": "modify",
+                  "change": "shared-operations table row for gitnexus-operations",
+                  "kind": "readme",
+                  "path": "techniques/README.md"
+                },
+                {
+                  "action": "modify",
+                  "change": "v1.2.0 blockquote + Graph Tooling section",
+                  "kind": "readme",
+                  "path": "README.md"
+                }
+              ]
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "file_count",
+              "source": "variables_changed",
+              "value": 11
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-375/06-scope-manifest.md"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "has_unflagged_removals",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_readme",
+              "source": "variables_changed",
+              "value": "canonical body at /home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-workflow-authoring-pr-375/workflow-authoring/README.md"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "ensure-worktree"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "persist-scope-manifest"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "scope-confirmed#0"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "file-drafting-loop"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "author-workflow-readme"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "verify-planning-artifacts"
+            },
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-08-01T06:58:12.076Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 62957,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 4594,
+              "delivery": "full",
+              "stepId": "load-known-findings",
+              "techniqueId": "workflow-definition::load-known-findings"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "load-known-findings"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 3178,
+              "delivery": "full",
+              "stepId": "survey-reference-workflows",
+              "techniqueId": "workflow-engine::list-workflows"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "survey-reference-workflows"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 4728,
+              "delivery": "full",
+              "stepId": "rebind-target-baseline",
+              "techniqueId": "workflow-definition::reload-workflow"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "rebind-target-baseline"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 4633,
+              "delivery": "full",
+              "stepId": "resolve-consumer-surface",
+              "techniqueId": "workflow-definition::resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 9621,
+              "delivery": "full",
+              "stepId": "sweep-canon",
+              "techniqueId": "workflow-definition::audit-canon"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "sweep-canon"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 6384,
+              "delivery": "full",
+              "stepId": "validate-schema",
+              "techniqueId": "workflow-definition::audit-schema-validation"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "validate-schema"
+            },
+            "timestamp": "2026-08-01T06:58:36.079Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 147464,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns"
+            },
+            "timestamp": "2026-08-01T07:02:27.999Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 15513,
+              "delivery": "full",
+              "resourceId": "workflow-design/design-principles"
+            },
+            "timestamp": "2026-08-01T07:02:59.196Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 12153,
+              "delivery": "full",
+              "resourceId": "workflow-design/schema-construct-inventory"
+            },
+            "timestamp": "2026-08-01T07:03:04.925Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 1485,
+              "delivery": "full",
+              "resourceId": "workflow-design/convention-conformance"
+            },
+            "timestamp": "2026-08-01T07:03:12.208Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 42,
+        "seq": 48,
         "sessionIndex": "2AL5GD",
         "skippedActivities": [],
         "startedAt": "2026-08-01T06:12:43.199Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785567457,
+        "ts": 1785567792,
         "variables": {
           "addressed_count": 0,
           "change_brief": "canonical body at 01-change-brief.md — see change_brief_path",
@@ -1853,6 +2291,7 @@
           "commit_approved": false,
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-375/README.md",
           "fail_count": 0,
+          "file_count": 11,
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
@@ -1877,8 +2316,76 @@
           "report_path": "",
           "review_closed": false,
           "review_scope_confirmed": false,
+          "scope_manifest": [
+            {
+              "action": "modify",
+              "change": "version 1.2.0; declare the eight graph-op variables",
+              "kind": "root",
+              "path": "workflow.yaml"
+            },
+            {
+              "action": "modify",
+              "change": "add verify-graph-index and survey-prior-art steps; v1.1.0",
+              "kind": "activity",
+              "path": "activities/01-intake-and-context.yaml"
+            },
+            {
+              "action": "modify",
+              "change": "add check-scope-discipline step; v1.1.0",
+              "kind": "activity",
+              "path": "activities/06-scope-and-draft.yaml"
+            },
+            {
+              "action": "modify",
+              "change": "add scan-orphans and map-consumer-impact in target-sweep-loop; v1.1.0",
+              "kind": "activity",
+              "path": "activities/08-quality-review.yaml"
+            },
+            {
+              "action": "modify",
+              "change": "add detect-graph-changes before verify-scope-manifest; v1.1.0",
+              "kind": "activity",
+              "path": "activities/09-validate-and-commit.yaml"
+            },
+            {
+              "action": "modify",
+              "change": "optional input gitnexus_indexed + graph-first-baseline rule; v1.1.0",
+              "kind": "technique",
+              "path": "techniques/workflow-definition/intake-classification.md"
+            },
+            {
+              "action": "modify",
+              "change": "optional inputs impact_report, orphan_candidates + graph-evidence-for-references rule; v1.1.0",
+              "kind": "technique",
+              "path": "techniques/workflow-definition/audit-canon.md"
+            },
+            {
+              "action": "modify",
+              "change": "optional input change_report + changed-set-evidence rule; v1.1.0",
+              "kind": "technique",
+              "path": "techniques/workflow-definition/scope-verification.md"
+            },
+            {
+              "action": "modify",
+              "change": "optional input change_report + protocol cross-check prose; v1.1.0",
+              "kind": "technique",
+              "path": "techniques/workflow-definition/commit-verification.md"
+            },
+            {
+              "action": "modify",
+              "change": "shared-operations table row for gitnexus-operations",
+              "kind": "readme",
+              "path": "techniques/README.md"
+            },
+            {
+              "action": "modify",
+              "change": "v1.2.0 blockquote + Graph Tooling section",
+              "kind": "readme",
+              "path": "README.md"
+            }
+          ],
           "scope_manifest_confirmed": true,
-          "scope_manifest_path": "",
+          "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-375/06-scope-manifest.md",
           "scope_round": 0,
           "structural_inventory": "workflow-authoring @ workflow/310-workflow-authoring-gitnexus (703817ef): 42 files — workflow.yaml v1.1.0 (40 variables), 4 activity yamls (01-intake-and-context, 06-scope-and-draft, 08-quality-review, 09-validate-and-commit), 26 technique files, 10 resources, 2 READMEs; zero gitnexus references at HEAD; change touches all four activity surfaces plus workflow version and README",
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-workflow-authoring-pr-375/",
@@ -1890,9 +2397,10 @@
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "start a workflow authoring workflow for: https://github.com/m2ux/workflow-server/pull/375",
-          "workflow_branch": "",
+          "workflow_branch": "workflow/workflow-authoring-gitnexus-bindings",
           "workflow_id": "workflow-authoring",
-          "worktree_created": false
+          "workflow_readme": "canonical body at /home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-workflow-authoring-pr-375/workflow-authoring/README.md",
+          "worktree_created": true
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"

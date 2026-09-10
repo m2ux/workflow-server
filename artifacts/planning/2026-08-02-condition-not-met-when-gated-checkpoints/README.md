@@ -16,7 +16,9 @@ Those three gaps slow reviews and migrations. Authors cannot rely on one gate st
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+This work finishes three server capabilities on the open draft pull request so authors and agents can rely on one consistent story. Checkpoints that are gated by a simple when-expression become dismissible the same way checkpoints with a structured condition already are, without the server guessing whether the expression is true — the agent still makes that call, and the server only accepts the dismiss when a gate is present. Activity files gain the same shared-rule references workflow files already use, so repeated rule wording can live in one fragment home and expand at load time. A new automated check stops a known documentation mistake from returning: citing a whole guide and also citing pieces of it in the same technique file.
+
+Together those changes unlock the companion corpus migration and everyday authoring without leaving hanging checkpoints, pasted rule text, or silent citation regressions. Reviewers can judge the pull request by three clear surfaces — dismiss tests, fragment load and guard behaviour, and a hard-zero citation check in the suite — before any workflow YAML migration lands.
 
 ## 📊 Progress
 
@@ -28,11 +30,11 @@ Those three gaps slow reviews and migrations. Authors cannot rely on one gate st
 | 4 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
 | 5 | Requirements elicitation | Scope, success criteria, boundaries | 30-60m | ⊘ |
 | 6 | KB research | Knowledge-base and web synthesis | 20-45m | ⊘ |
-| 7 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
-| 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
-| 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
-| 10 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ⬚ |
-| 11 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
+| 7 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | 🟡 |
+| 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | 🟡 |
+| 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | 🟡 |
+| 10 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | 🟡 |
+| 11 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | 🟡 |
 | 12 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |
 | 13 | Implementation | Code changes per plan | 1-4h | ⬚ |
 | 14 | [Provenance log](08-provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ⬚ |

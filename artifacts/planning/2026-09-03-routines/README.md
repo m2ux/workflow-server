@@ -4,13 +4,9 @@
 > [#520](https://github.com/m2ux/workflow-server/issues/520) · 2026-09-03 · server at `4740f4d6`,
 > `workflows` branch at `131e2942`
 >
-> **The design stands; parts of the evidence under it do not.** Between 2026-09-06 and 2026-09-07 the
-> corpus and the server moved: the loop continuation field landed, the convergence loop moved out of
-> its technique and onto activity steps at seven sites, six of this work's eleven findings were
-> fixed, and two content decisions were settled in the corpus. Measurements re-based in place are
-> marked **Re-based 2026-09-07**. [gap-review.md](gap-review.md) is the pass that checked every
-> load-bearing claim in this folder against the running system at `f315b772` / `b5e54574`, and it
-> carries the twelve gaps that remain. **Read it before planning any stage.**
+> Measurements in this folder are pinned to those revisions. [gap-review.md](gap-review.md) holds
+> every load-bearing claim here checked against the running system at `f315b772` / `b5e54574`,
+> together with the twelve gaps that remain. **Read it before planning any stage.**
 
 ## Executive summary
 
@@ -30,7 +26,7 @@ with nothing the schema already uses; every other candidate does. "Sequence" is 
 already describes an activity's own steps, "group" and "operation" belong to techniques, and
 "fragment" names the mechanism this replaces.
 
-It aims at three things, in ascending order of importance.
+It aims at three things.
 
 **One home for a shared run.** One run — announce, gate, record, then walk the items one at a time —
 is reproduced in four activities. The four copies have drifted in ten independent ways, and nothing
@@ -42,19 +38,11 @@ activity, for 28 declarations. At two of the four hosts that is seven of eight d
 activity whose contract mostly describes a run it shares with three siblings is not describing
 itself. A routine declares that signature once, and each host declares only what it supplies.
 
-**A home for control flow that has just arrived as structure.** *(Re-based 2026-09-07.)* Mechanical
-structure with nowhere to go used to sit inside a technique's protocol, where nothing could reach it:
-a technique whose Capability said it ran iterations until concerns converge, bound at seven step
-sites, its protocol a loop and its parameters an iteration mode and a safety ceiling — every one of
-them a construct the step schema already has.
-
-On 2026-09-06 the corpus moved that loop where it belongs, deleting the technique and writing the
-loop onto activity steps at all seven sites under `pass-orchestration-in-technique`. So the prose is
-gone and the third motivation is now the first one again, measured harder: **six of the seven
-activities carry a byte-identical 32-line loop block** — one SHA across all six, domain names and
-adversarial perspectives included — and the seventh a 75-line variant of it. 192 lines of duplicated
-structure, drift-free on the day it landed, with nothing in the guard suite comparing step sequences
-to keep it that way.
+**One home for the convergence loop.** Seven activity step sites run iterations until concerns
+converge, and the loop is written out at each of them. **Six of the seven carry a byte-identical
+32-line loop block** — one SHA across all six, domain names and adversarial perspectives included —
+and the seventh a 75-line variant of it. 192 lines of duplicated structure, with nothing in the
+guard suite comparing step sequences to keep the copies together.
 
 Companion documents carry the working: [investigation.md](investigation.md) for what the code and
 the corpus do today, [drift-census.md](drift-census.md) for the four copies compared side by side,
@@ -62,14 +50,16 @@ the corpus do today, [drift-census.md](drift-census.md) for the four copies comp
 conversion and its execution, [continuation-condition.md](continuation-condition.md) for where a loop
 keeps its continuation test, [placement.md](placement.md) for where a routine lives,
 [agent-interpretation.md](agent-interpretation.md) for what the agent walking a materialised routine
-has to compose for itself while there is no runner, and [gap-review.md](gap-review.md) for what this
-folder owes before planning starts.
+has to compose for itself while there is no runner,
+[higher-order-routines.md](higher-order-routines.md) for which fan-out families a routine can carry
+and what a technique-valued parameter costs, and [gap-review.md](gap-review.md) for what this folder
+owes before planning starts.
 
-**The design is executable and has been executed.** Two activities are converted and materialised
-through a prototype implementing this specification, validated against the activity schema, and put
-through the real contract derivation: both leave behind ordinary activities and derive exactly the
-contract they declare, one of them checked against a live activity file authored for nothing in
-particular. [conversion-rerun.md](conversion-rerun.md) records the run and what it does not cover.
+**The design is executable.** Two activities are converted and materialised through a prototype
+implementing this specification, validated against the activity schema, and put through the real
+contract derivation: both leave behind ordinary activities and derive exactly the contract they
+declare, one of them checked against a live activity file authored for nothing in particular.
+[conversion-rerun.md](conversion-rerun.md) records the run and what it does not cover.
 
 ## The participants
 
@@ -407,21 +397,33 @@ An input may be declared `kind: technique`, meaning its value is a technique ref
 into a body step's `technique:` field. Substitution happens before the derivation, so each reference
 site yields a concrete path and every signature resolves. The price is stated rather than hidden:
 **a routine whose body binds a technique by parameter has no signature of its own.** Its contract is
-derivable per reference site and not in isolation, so the guard holding a routine's declaration
-against its body runs once per reference site for such a routine, and the isolated-checking
-guarantee below carries that qualifier.
+derivable per reference site and not in isolation.
 
-**The corpus has no site for it, so it is out of the first version's scope.** This section read "the
-corpus needs this: the convergence run takes the analysis it performs as a parameter, binding one
-technique at six sites and another at the seventh", which was true of a technique deleted on
-2026-09-06. Re-derived from the landed structure, the shared body is the challenge pass and the
-analysis sits outside it — and the six sites that share the analysis share the same operation.
-Nothing binds a technique by parameter. [re-derivation.md](re-derivation.md) carries the working.
+**It is out of the first version's scope, and it has sites in the second.** The convergence run does
+not need it: its shared body is the challenge pass, the analysis sits outside it, and the six sites
+that share the analysis share the same operation, so nothing there binds a technique by parameter.
+[re-derivation.md](re-derivation.md) carries that working. A different family does need it — three
+`prism` activities whose entire step list is one `forEach` loop over `analysis_units` binding one
+operation, two of them identical but for the operation reference and the step id. Stage 7 takes them.
+[higher-order-routines.md](higher-order-routines.md) carries the measurement.
 
-The design reasoning stands and is recorded, and what changes is the qualifier: with no routine
-binding a technique by parameter, **three guarantees stop carrying an exception** — every routine's
-contract is derivable in isolation, every routine is walkable from its declared inputs, and the
-artifact check runs once per routine rather than once per site.
+While no routine binds a technique by parameter, **three guarantees carry no exception**: every
+routine's contract is derivable in isolation, every routine is walkable from its declared inputs,
+and the artifact check runs once per routine rather than once per site. Each becomes conditional at
+the routines stage 7 introduces, and only for those routines — which is the price the feature is
+already priced at.
+
+**A parameter takes one technique reference and not a set of them.** A set-valued parameter makes the
+number of materialised steps depend on an argument, which needs the members' signatures to agree and
+needs somewhere for their outputs to land. The audit sweep is the one live site, and its six
+operations declare three different output shapes between them. The reasoning and what would unblock
+it are in [higher-order-routines.md](higher-order-routines.md); the decision is recorded under
+[decisions.md](decisions.md).
+
+**A parameter also takes a technique reference, not a run of steps.** Where the members of a fan-out
+are to run in separate contexts, a technique reference travels as data inside a worker brief and the
+routine needs no higher-order parameter at all — which is what the fan-out routine of stage 8 rests
+on.
 
 ### How far the new step kind reaches
 
@@ -620,7 +622,7 @@ These do not exist at any strength today.
 | New guarantee | Level | How |
 |---|---|---|
 | A shared run's declared signature matches what its steps do | **Refused at load** | Derive the contract from the routine's own body and compare against its declaration. An output nothing writes, and an input nothing reads, are each findings. |
-| A shared run is checkable with no host workflow | **Refused at load** | A routine's body is derivable on its own, seeded from its declared inputs. Today a shared gate is only ever checked through whichever workflows happen to import it. **Qualified**: a routine binding a technique by parameter is checkable per reference site instead. |
+| A shared run is checkable with no host workflow | **Refused at load** | A routine's body is derivable on its own, seeded from its declared inputs. Today a shared gate is only ever checked through whichever workflows happen to import it. |
 | A shared run's writes are visible to the producer index | **Refused at load** | An output binding is a write the derivation can see. Today a run writing caller-named variables is invisible to it — measured at 20 parameter bindings, 7 with no declared write anywhere. |
 | Every option of every gate in a shared run is exercised | **Detected** | The walker gains a routine-level entry, so coverage stops depending on which host activities a walk happens to reach. |
 | An argument names a parameter that exists | **Refused at load** | A `with` binding naming an undeclared input, and an unbound input with no default, each fail the load. |
@@ -770,54 +772,58 @@ Each is useful alone and assumes nothing after it.
 | 4. The boundary | The contract derivation treats a reference as a boundary; a routine's signature is checked against its own body; placement is computed and enforced | The contract and placement guarantees, and isolated checking | 3 |
 | 5. Migrate the run | The four copies converge onto one routine; the two shared gate bodies and the fragment mechanism retire, taking seven guard rules with them | The drift is gone and the mechanism it replaces is deleted rather than left standing | 2, 4 |
 | 6. Converge the convergence loop | The seven hand-written copies converge onto two routines — the loop and the pass it iterates — nested so the six assumptions sites take the loop and the comprehension site takes the pass alone inside its own loop | 192 lines of byte-identical structure become one body with a signature; the copies stop being able to drift | 5 |
+| 7. The technique parameter | `kind: technique` on an input; substitution into a body step's `technique:` field before the derivation; the three per-site checks; one routine carrying the three `prism` per-unit passes | A run that differs only in the operation it binds has one home. Two of the three sites are identical but for the operation reference | 4 |
+| 8. The fan-out routine | The four-step dispatch run — compose briefs, dispatch, gather, synthesise — becomes one routine, referred to at the three `meta` pattern activities and inside `lead-researcher`'s follow-up loop | Four occurrences of one run, one of them a second copy in the same file that no guard can see, become one body with a signature | 4 |
 
 Stages 1 and 2 need no schema and no code path, and they are where the behavioural risk lives — the
 migration changes what happens at live sites whichever way the content decisions go, and two of them
-moved a measurable amount of delivered content.
-Stage 3 is the load-bearing one.
+move a measurable amount of delivered content. Stage 3 is the load-bearing one.
 
-**The dependency column names only stages.** The prerequisites the simulations proved — the
-absent-default merge change among them — appear nowhere in it. Those have since landed, so the
-column is complete as it stands rather than short; what is left of the omission is that a reader
-cannot tell from the table which prerequisites were paid.
+**The dependency column names only stages**, not the prerequisites the simulations proved — the
+absent-default merge change among them. Those are in place, so the column is complete as it stands.
 
-**Stage 0 stood alone and paid for itself, and it has landed.** *(Re-based 2026-09-07.)* A routine
-that owns a `while` loop has to say "repeat while this holds", and the only field that used to be
-available was `condition`, which the schema documented as an entry gate and which both mechanical
-readers treated as one. The consequence reached well past routines: six of the eight top-level
-`doWhile` loops in the corpus did not run their body, because the continuation test was taken at
-entry and both evaluators read an unbound variable as false, and 17 further body steps were excluded
-from eager delivery for the same reason. `continueWhile` now carries the continuation test and
-nothing else does — [continuation-condition.md](continuation-condition.md) carries the options that
-were weighed and the acceptance criteria. Nothing remaining depends on it.
+**Stage 0 stands alone and is landed.** A routine that owns a `while` loop has to say "repeat while
+this holds", and `continueWhile` is the field that carries that continuation test and the only field
+that carries it. [continuation-condition.md](continuation-condition.md) carries the options weighed
+and the acceptance criteria. Nothing remaining depends on it.
 
-It landed with one deliberate difference from what this folder proposed: **`breakCondition` was kept
-rather than deleted**, re-described as the early exit belonging to item iteration and forbidden by
-the loop-shape guard on a `while` or `doWhile`, which already decide each pass in `continueWhile`.
-The field is still at zero sites, so the measurement behind the finding holds and only its
-disposition changed. For a routine it is one more field: a body's `forEach` may carry an early exit,
-so `breakCondition` is one of the fields materialisation substitutes over.
+`breakCondition` is the early exit belonging to item iteration, forbidden by the loop-shape guard on
+a `while` or `doWhile`, which decide each pass in `continueWhile`. It sits at zero sites. For a
+routine it is one more field: a body's `forEach` may carry an early exit, so `breakCondition` is one
+of the fields materialisation substitutes over.
+
+**Stages 7 and 8 are independent of each other and of the two migrations.** Each takes a family the
+assumption and convergence work does not touch, so either may follow stage 4 in either order, and
+neither is a prerequisite for the other. Stage 8 is the cheaper: it needs no schema field, because
+the fan-out run is generic over the briefs it dispatches rather than over any technique reference it
+binds, so it is an ordinary routine under stage 3's construct. Stage 7 adds one input field and
+makes three guarantees conditional for the routines that use it.
+
+**A set-valued technique parameter is not a stage.** Its one live site is the audit sweep, whose six
+operations declare three different output shapes, so the argument at that site is a set of records
+carrying caller-named writes rather than a set of technique references. The prerequisites are B6 and
+neutral output naming on the audit family, both of which stand on their own; the remaining blocker
+after them is where N members' outputs land, which is a variable-scoping question rather than a
+routine one. [higher-order-routines.md](higher-order-routines.md) carries the working.
 
 ### Acceptance criteria
 
-Stage 0's are in [continuation-condition.md](continuation-condition.md), met. The rest are below.
-Two of stage 3's come from [agent-interpretation.md](agent-interpretation.md), which carries their
-reasoning.
+Stage 0's are in [continuation-condition.md](continuation-condition.md) and are met. The rest are
+below. Two of stage 3's come from [agent-interpretation.md](agent-interpretation.md), which carries
+their reasoning.
 
 **One criterion applies to every stage that changes a definition, and it is stated once here:
 a migration that changes behaviour at a live site is walked before merge, and each changed site's
-observed outcome is compared against what its recorded disposition said would happen.** This is
-stage 0's precedent — six `doWhile` bodies that had never run in a recorded walk were required to be
-reviewed rather than accepted on a green suite — and stages 2, 5 and 6 each change live behaviour.
+observed outcome is compared against what its recorded disposition said would happen.** A green
+guard suite is not sufficient on its own. Stages 2, 5, 6, 7 and 8 each change live behaviour.
 
 **Stage 1 — See the drift**
 
 - [ ] A guard reports any run of two or more consecutive steps that appears in two or more activity
       files with any difference between the copies, matching on step kind and binding and ignoring
       identifiers and site gates.
-- [ ] It recurses into loop bodies. The census's own search saw top-level sequences only; the
-      corrected search in [measure/](measure/) finds 26 maximal windows against the census's
-      fourteen, five of them nested, and the guard reproduces that count.
+- [ ] It recurses into loop bodies. The search in [measure/](measure/) finds 26 maximal windows,
+      five of them nested, and the guard reproduces that count.
 - [ ] A window contained in a longer shared window over the same file set is not reported separately.
 - [ ] It runs from a baseline of the windows present when it lands, and the baseline can only fall.
       A hard zero is wrong here: the drift is what stages 5 and 6 remove, and the guard has to be
@@ -833,7 +839,7 @@ reviewed rather than accepted on a green suite — and stages 2, 5 and 6 each ch
 - [ ] The rows that change behaviour at a live site name the site and the change — row 1 at two
       sites, rows 5 and 6 at two.
 - [ ] No definition changes. The deliverable is the disposition record and the one-line seed the
-      announcement decision needs, which has landed.
+      announcement decision needs, which is in place.
 
 **Stage 3 — The construct**
 
@@ -863,15 +869,12 @@ reviewed rather than accepted on a green suite — and stages 2, 5 and 6 each ch
 - [ ] A routine's declared signature is held against its own body. An output nothing writes, an
       input nothing reads, and an internal that is read but not written or written but not read each
       fail the load.
-- [ ] A routine binding a technique by parameter is checked once per reference site, and every
-      statement of the isolated-checking guarantee carries that qualifier.
 - [ ] Placement is computed and enforced, with a referrer being an activity file or another routine,
       closed transitively — and the artifact-declaration check uses the same closure.
 - [ ] Every guard that reads an activity file sits in a recorded column. The authored-form guards
       walk `routines/`; `check-variable-model` resolves a routine's effects against the routine's
       declared outputs and internals; the guards that have to move onto the loader have moved.
-- [ ] The walker gains a routine-level entry, seeded from the declared inputs, and a routine binding
-      a technique by parameter is walked per reference site instead.
+- [ ] The walker gains a routine-level entry, seeded from the declared inputs.
 - [ ] A routine with no reference site anywhere fails the load.
 
 **Stage 5 — Migrate the run**
@@ -891,8 +894,7 @@ reviewed rather than accepted on a green suite — and stages 2, 5 and 6 each ch
 **Stage 6 — Converge the convergence loop**
 
 - [ ] The two routines' signatures are the ones in [re-derivation.md](re-derivation.md), taken from
-      the landed loop block rather than from the conversion artifacts, and every output id conforms
-      to the id-shape rules.
+      the loop block as it stands, and every output id conforms to the id-shape rules.
 - [ ] Six sites reference the outer routine with no arguments; the comprehension site references the
       challenge pass from inside its own loop, binding three of its four outputs.
 - [ ] The four output remaps each site carries today survive as reference-site bindings, so no
@@ -905,6 +907,40 @@ reviewed rather than accepted on a green suite — and stages 2, 5 and 6 each ch
       removes, and does not fall by any others.
 - [ ] The full guard suite and the walker pass, the delivery baseline is re-recorded and reviewed,
       and the migration is walked before merge.
+
+**Stage 7 — The technique parameter**
+
+- [ ] An input declares `kind: technique`, its argument is a technique reference, and substitution
+      into a body step's `technique:` field happens before the contract derivation, so no reference
+      site leaves a placeholder for the resolver to meet.
+- [ ] A body step whose `technique:` is a parameter declares its own `id`, because the derived id
+      would otherwise be the placeholder.
+- [ ] The three checks that turn on the argument — the contract, whether the body declares an
+      artifact, and whether every gate option is exercised — run once per reference site, and a
+      routine binding no technique by parameter keeps the once-per-routine path.
+- [ ] The three guarantees are restated as holding except for the routines that bind a technique by
+      parameter, and every place claiming them universally is updated with the change.
+- [ ] The walker's routine-level entry, seeded from the declared inputs at stage 4, walks such a
+      routine per reference site instead.
+- [ ] The `prism` per-unit passes reference one routine. Its inputs are the operation, the
+      prior-paths collection and the pipeline mode, and the accumulating `set` action stays inside
+      the routine.
+- [ ] The routine reads none of its parameter's outputs, so no bound is declared and none is needed.
+      A routine that does read them fails the load with a message saying why.
+- [ ] Walked before merge, per the criterion above.
+
+**Stage 8 — The fan-out routine**
+
+- [ ] The routine declares ordinary inputs and no `kind: technique` parameter, and its contract
+      derives in isolation.
+- [ ] Four reference sites: `01-orchestrator-workers`, `04-isolated-fan-out`, `05-lead-researcher`
+      and the follow-up loop inside it. The completeness `validate` at `04-isolated-fan-out` stays
+      with the referring activity or becomes a declared input, and the record says which.
+- [ ] The routine declares no concurrency and no dispatch mode. `dispatch_concurrency` reaches
+      `dispatch-workers` as an ordinary binding, and `parallelism-is-optimisation` holds.
+- [ ] The stage-1 guard's baseline falls by the fan-out windows and by nothing else, and the
+      intra-file occurrence at `05-lead-researcher` is gone even though no guard could see it.
+- [ ] Walked before merge, per the criterion above.
 
 ## Designed for the typed language
 
@@ -938,8 +974,9 @@ This work unlocks or cheapens several things it does not deliver.
 
 | Feature | What it turns on | Discussed under |
 |---|---|---|
-| **Migrating mechanical content out of technique prose** | A destination for a run of steps, plus a corpus pass classifying which inline invocations are runs | [Executive summary](#executive-summary), and the census in [investigation.md](investigation.md) |
-| **The fan-out, commit-and-publish and audit-and-persist routines** | The construct itself; three further workflows have shared runs waiting | [drift-census.md](drift-census.md) |
+| **Migrating mechanical content out of technique prose** | A destination for a run of steps, plus a corpus pass classifying which inline invocations are runs | The census in [investigation.md](investigation.md) |
+| **The commit-and-publish and audit-and-persist routines** | The construct itself; `workflow-design` has two shared runs waiting, and both audit-and-persist windows turn on B6 | [drift-census.md](drift-census.md) |
+| **A set of techniques as one parameter** | B6 settled, neutral output names on the audit family, and somewhere for N members' outputs to land | [higher-order-routines.md](higher-order-routines.md) |
 | **Pairing a producing step with the write that persists it** | One technique is bound at 42 step sites — the most-bound in the corpus by a factor of nearly three — almost always after the step that produced what it writes | Below |
 | **A shared run with an outcome** | An activity that could receive one; none exists today | [What a routine is not allowed to do](#what-a-routine-is-not-allowed-to-do) |
 
@@ -950,14 +987,13 @@ than proposed, because the right shape for it may be a technique declaring where
 rather than a routine pairing two steps — a decision the runner work already takes from the other
 direction.
 
-**And the 42 needs re-counting before it is read as a constituency.** Finding B6 in
+**The 42 needs re-counting before it is read as a constituency.** Finding B6 in
 [findings-register.md](findings-register.md) records five audit operations that declare an artifact,
 persist it in their own protocol, report its path as an output — and have a caller writing the same
 filename through `write-artifact` a second time. Where a pairing turns out to be a technique that
 already persists plus a caller that persists again, the run has no reason to be named at all, and
 the sites it accounted for come off the total. Settling B6 is therefore the first step of exploring
-this, not a separate errand — and B6 currently has no issue to be settled under, having been
-measured after both of this work's issues closed.
+this, not a separate errand — and B6 has no issue to be settled under.
 
 ## How a routine meets the rest of the system
 
@@ -982,8 +1018,8 @@ sentence classifies every guard the suite has and every guard it gains.
 `check-harness-adapter-set` reads variable values rather than steps and is unaffected by either.
 
 **The table above covers eleven guards plus the harness-adapter one. Nineteen open activity files,
-out of a suite that is now thirty-seven scripts.** The eight the table does not reach, each with the
-column it belongs in:
+out of a suite of thirty-seven scripts.** The eight the table does not reach, each with the column
+it belongs in:
 
 | Guard | Column | Walks `routines/`? |
 |---|---|---|
@@ -996,9 +1032,9 @@ column it belongs in:
 | `check-audience` | Materialised. Named in the prose above and absent from the table | n/a |
 | `check-pinned-corpus-paths` | Neither. It audits this repository's TypeScript for corpus path literals, not definitions | No |
 
-Two guards named as unclassified in the first pass of this review do not belong here at all:
-`check-inherited-inputs` and `check-identifier-qualification` read technique markdown, not activity
-files. The second is still relevant to a routine — a routine's input, output and internal ids are
+Two guards fall outside the classification entirely: `check-inherited-inputs` and
+`check-identifier-qualification` read technique markdown, not activity files. The second is still
+relevant to a routine — a routine's input, output and internal ids are
 symbol ids, and `VariableNameSchema` enforces the same qualified-noun rule on the YAML side — but it
 is not a classification question.
 
@@ -1020,19 +1056,19 @@ carried.
   routine violates it as authored, by construction. The classification's own principle settles which
   way to fix that: `setVariable` is a field an author writes, and routing the guard through the
   loader would have it audit generated names — the failure the `check-set-action-values` case was
-  used to rule out. So the guard stays in the first column and gains a name scope: inside a
+  rules out. So the guard stays in the first column and gains a name scope: inside a
   `routines/` file, a declared output or internal satisfies `setvariable-undeclared`, and a workflow
   variable does not, because a routine has no free variables. Its other four rules follow the same
   scope — `setvariable-type-mismatch` and `setvariable-outside-value-set` check a target that is an
   output and stay silent on an internal, which declares no type; `default-type-mismatch` checks a
   routine input's default against its declared type, outputs having none; and `exists-on-defaulted`
   extends to an `exists` gate on a defaulted input, which is constant for the same reason.
-- **Six guards consume the loader today**, not four: `check-audience`, `check-stealth-isolation`,
+- **Six guards consume the loader today**: `check-audience`, `check-stealth-isolation`,
   `check-activity-variables`, `check-session-contract`, `check-all-refs` and
   `check-artifact-guides`. None of the four in the right-hand column above is among them, so that
   column states where four guards *should* sit, and moving each one there is unscoped work. The two
-  loader consumers named nowhere have no assigned side, though `check-all-refs` is one of the four
-  the converted-corpus sweep reported failing.
+  loader consumers this section names nowhere else have no assigned side, and `check-all-refs` is
+  one of the four the converted-corpus sweep reports failing.
 
 `check-checkpoint-entry` is the case that forces the second column: it forbids a checkpoint as an
 activity's first step, and the assumption routine's first step is a checkpoint, so a reference in
@@ -1081,7 +1117,7 @@ signature, and the derived side comes from walking the expanded steps and readin
 they bind. A disagreement means the expansion produced something the signature did not promise.
 Running it over the converted comprehension activity reports three names — `has_open_assumptions`,
 `has_resolvable_assumptions` and `open_assumptions` — which is the fold technique's over-declaration
-described under the migration, caught by a check that was supposed to be checking itself.
+described under the migration, caught by the very check under suspicion of circularity.
 
 ### Discovery and generation
 
@@ -1107,12 +1143,8 @@ routine has no prefix of its own, so two references to one artifact-declaring ro
 would write one filename twice. **A routine whose body declares an artifact may be referenced at most
 once per activity**; a second reference fails the load. A routine declares an artifact when its own
 body binds a technique declaring one **or when any routine it references does** — read at one level
-the limit is evaded by wrapping the declaring routine in one that declares nothing.
-
-Whether a routine declares an artifact is a property of the **reference site**, not of the routine: a
-body binding its analysis by parameter declares two artifacts where that parameter resolves to the
-comprehension deep-dive and none where it resolves to the assumptions reconcile. So this check runs
-per reference site, alongside the contract check, for the same reason.
+the limit is evaded by wrapping the declaring routine in one that declares nothing. The check runs
+once per routine, alongside the contract check.
 
 ### Delivery budget
 
@@ -1167,11 +1199,6 @@ The walker gains a routine-level entry: it walks a routine's steps against a var
 its declared inputs, so every option of every gate inside it is exercised once rather than only
 through whichever host activities a walk happens to reach.
 
-**A routine binding a technique by parameter cannot be walked this way**, for the same reason its
-contract is not derivable in isolation: the body's `technique:` field holds a parameter until a
-reference site supplies it. Such a routine is walked per reference site, from that site's arguments,
-and the isolated entry covers the rest.
-
 ## Decisions
 
 Settled: what kind of thing a routine is and what it is not — neither an activity nor an extension of
@@ -1179,19 +1206,19 @@ the technique — what it is called, what an activity's contract is held against
 runs and what it does, how a binding value is substituted, what happens to an unbound output, how
 identifiers are generated, what a routine output is, what an internal declares, whether a routine may
 reference another, whether its body may read undeclared names, whether a technique may be a parameter
-and whether that parameter carries a declared bound, how arguments are written, where a loop keeps
+and whether that parameter carries a declared bound, whether it takes one technique or a set of them,
+whether a routine enforces the parallelism it describes, how arguments are written, where a loop keeps
 its continuation test, where a routine lives and what counts as a referrer, whether it returns an
 outcome, what happens to its artifacts, which guards read which form, and what becomes of the
 mechanism it replaces.
 
 Open: how long a generated identifier may be, and whether a name inside a routine belongs to a scope
 or to a mangled global. They are one question at two depths, neither blocks the construct, and both
-want the identifier measurements re-taken against the re-derived signature before they are answered.
+want the identifier measurements re-taken against the signature in
+[re-derivation.md](re-derivation.md) before they are answered.
 
-Each is recorded with its reasoning in [decisions.md](decisions.md). Five of the settled entries
-carry a 2026-09-06/07 marker where the corpus or the server has moved since, one of them a content
-question the corpus answered the other way; [gap-review.md](gap-review.md) is the pass that found
-them, with the four specification questions it settled and the five pieces of work it leaves.
+Each is recorded with its reasoning in [decisions.md](decisions.md). [gap-review.md](gap-review.md)
+carries the four specification questions it settles and the five pieces of work it leaves.
 
 ## Companion records
 
@@ -1206,30 +1233,34 @@ them, with the four specification questions it settled and the five pieces of wo
   schema and the real contract derivation, with the surface it covers and the surface it does not.
   **Read before writing the substituter.**
 - [continuation-condition.md](continuation-condition.md) — where a loop keeps its continuation test,
-  the six do-while loops the current arrangement stops from running, and the field that fixes it.
+  the field that carries it, and the acceptance criteria stage 0 was held to.
 - [placement.md](placement.md) — where a routine lives, and the reference-counting rule that does not
   survive the corpus.
 - [agent-interpretation.md](agent-interpretation.md) — what the agent walking a materialised routine
   composes for itself while there is no runner: the checkpoint instance id it assembles by hand, the
   third textual injector, and the two acceptance criteria that follow. **Read before writing the
   textual splicer.**
-- [findings-register.md](findings-register.md) — eleven defects this work found in the corpus and the
-  server, none of which needs a routine to fix, with where each one now stands. Raised as
+- [findings-register.md](findings-register.md) — eleven defects in the corpus and the server, none of
+  which needs a routine to fix, with where each one stands. Raised as
   [#593](https://github.com/m2ux/workflow-server/issues/593) for the definitions and
   [#594](https://github.com/m2ux/workflow-server/issues/594) for the engine, both closed; two
   findings survive them.
 - [gap-review.md](gap-review.md) — every load-bearing claim in this folder checked against the
-  running system, and the twelve gaps that remain: six where the corpus moved under the evidence,
-  three of guard-suite scope, three of specification the design settled in prose and never wrote
+  running system, and the twelve gaps that remain: six where the evidence and the corpus disagree,
+  three of guard-suite scope, three of specification the design settles in prose and never writes
   down. **Read before planning any stage.**
-- [re-derivation.md](re-derivation.md) — the convergence run's signature taken again from the landed
-  loop block: two routines, no capability parameter, and an outer routine with no inputs at all.
+- [re-derivation.md](re-derivation.md) — the convergence run's signature taken from the loop block as
+  it stands: two routines, no capability parameter, and an outer routine with no inputs at all.
   **Read instead of the conversion artifacts' signature.**
+- [higher-order-routines.md](higher-order-routines.md) — whether a routine takes techniques as
+  parameters, and whether scatter-gather is one routine: the sites the singular parameter has, the
+  fan-out run that needs no parameter at all, and the two things a set-valued parameter waits on.
+  **Read before planning stage 7 or 8.**
 - [measure/](measure/) — the measurements kept runnable, so a figure can be re-taken rather than
   rebuilt from prose. The repeated-run search lives here, and stage 1 promotes it to a guard.
 - [conversion/](conversion/) — the simulated conversion artifacts: two routines, the converted host
-  activity, and one excerpt showing the other reference form. The signature they carry predates the
-  deletion of the technique they convert — see [gap-review.md](gap-review.md) gap 3.
+  activity, and one excerpt showing the other reference form. Their signature is superseded by
+  [re-derivation.md](re-derivation.md) — see [gap-review.md](gap-review.md) gap 3.
 
 ## Provenance
 
@@ -1248,4 +1279,4 @@ This proposal is the design at the grain of the substrate that exists today: a s
 loader change and one change to the contract derivation, deliverable before the definition structure
 is named and independent of anything that walks it. Where it disagrees with #520 — the size argument
 for a separate construct, the placement rule, and the state of the mechanism it replaces, whose rule
-half has already retired — the disagreement is recorded in place with the measurement behind it.
+half is retired — the disagreement is recorded in place with the measurement behind it.

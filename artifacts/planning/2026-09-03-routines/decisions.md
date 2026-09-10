@@ -228,19 +228,88 @@ worker at run time from the technique's own outputs, so a token in one names a v
 exist until the step runs, and applying the rule to it would make the rule unimplementable.
 
 **An input may be declared `kind: technique`, and such a routine is checkable per reference site
-rather than in isolation — and the corpus has no site for it.** *(trial; scope corrected 2026-09-07)*
-Re-deriving the convergence run from the landed loop block puts the analysis outside the shared body
-and gives the six sites that share it one operation between them, so nothing binds a technique by
-parameter. The feature is out of the first version's scope and three guarantees stop carrying an
-exception: contracts derive in isolation, routines walk from their declared inputs, and the artifact
-check runs once per routine. The reasoning below stands for whenever a site arrives, and
-[re-derivation.md](re-derivation.md) carries the measurement. As originally measured, the
+rather than in isolation. The convergence family has no site for it; the `prism` per-unit passes
+do.** *(trial; scope corrected 2026-09-07; sites found 2026-09-08)* Re-deriving the convergence run
+from the landed loop block puts the analysis outside the shared body and gives the six sites that
+share it one operation between them, so nothing there binds a technique by parameter. A different
+family does: `prism`'s `02-adversarial-pass`, `03-synthesis-pass` and `05-behavioral-synthesis-pass`
+are each one `forEach` loop over `analysis_units` binding one operation, and two of the three agree
+on every field but the operation reference and the step id. The feature is therefore out of the
+**first** version's scope with a stage of its own — stage 7 — rather than out of scope entirely, and
+the three guarantees hold universally until that stage and conditionally after it: contracts derive
+in isolation, routines walk from their declared inputs, and the artifact check runs once per routine,
+each with an exception for the routines that bind a technique by parameter.
+
+**The prism family is the benign case, for the reason the convergence family was.** The routine never
+reads its parameter's outputs — the pass writes its artifacts and appends to `all_artifact_paths`
+through an action the routine owns — so the bound question stays out of stage 7 entirely. The prism
+measurement is in [higher-order-routines.md](higher-order-routines.md) and the convergence one in
+[re-derivation.md](re-derivation.md).
+
+The reasoning that admits the feature at all stands as first written. As originally measured, the
 convergence run took the analysis it performs as a parameter. Refusing higher-order parameters
-forces one routine per domain, which is the fork the
-technique's own rule forbids. Substituting the literal before the derivation runs makes every
-signature resolve, at the stated price: the guard holding a routine's declaration against its body
-runs once per reference site for such a routine, and the isolated-checking guarantee carries that
-qualifier rather than being claimed universally.
+forces one routine per domain, which is the fork the technique's own rule forbids. Substituting the
+literal before the derivation runs makes every signature resolve, at the stated price: the guard
+holding a routine's declaration against its body runs once per reference site for such a routine,
+and the isolated-checking guarantee carries that qualifier rather than being claimed universally.
+
+**A technique parameter takes one reference and not a set of them, and the two obstacles are one
+obstacle seen twice.** *(measured 2026-09-08)* A set-valued parameter would make the number of
+materialised steps depend on an argument, which is the shape that turns a fan-out over a fixed set of
+operations into one generic routine. Three things follow, and the first is only a restriction.
+
+Arity has to be known when the definitions load, because materialisation sits between identifier
+resolution and contract derivation. So the argument is a literal list at the reference site, which
+excludes `substrate`'s runtime `agent_roster`, `prism`'s `analysis_units`, and every other
+runtime-arity fan-out. Nothing is lost there: those are the sites already served by dispatching
+briefs, and the feature's constituency is the fixed sets.
+
+The two that bite are at the audit sweep, the corpus's one site running a fixed set of distinct
+operations as in-context steps. Its six operations — the union of what
+`workflow-design/activities/08-quality-review.yaml` and `10-post-update-review.yaml` bind — declare
+three different output shapes: two carry a findings collection, a count and a path; three carry a
+collection and a path with no count; `audit-schema-validation` declares `pass_count` and `fail_count`.
+Every one prefixes its own domain. So no bound spans them, and each member needs a filename, a
+content variable and sometimes a count gate supplied per site — which is the caller-named-write defect
+A2 and A3 record, arriving by construction rather than by accident.
+
+Neutral output naming collapses each member's argument to a bare reference and immediately creates the
+second obstacle: N members then write the same flat name, and nothing in the schema accumulates step
+outputs into a collection. `accumulate-never-overwrite` is prose the executing agent honours, and the
+corpus's mechanical accumulation is a `set` action on a collection inside a loop body plus, on the
+dispatch path, a `gather-results` operation returning a keyed collection. Neither serves an unrolled
+sibling set. Remapping per member is per-member naming arriving from the other side.
+
+**So the feature waits on a scope, not on a routine.** The prerequisites are B6 and neutral output
+names on the audit family, both of which stand alone; what remains after them is where the members'
+outputs land, which is the scoped-names item below reached from a fifth direction.
+[higher-order-routines.md](higher-order-routines.md) carries the working.
+
+**A routine describes a fan-out and does not enforce one.** *(measured 2026-09-08)* There is no
+runner: `get_activity` delivers the activity file's YAML with textual injections applied, and the
+worker executes the steps in document order, evaluating iteration, continuation tests and `when`
+gates itself. Concurrency is the worker's, and the contract that makes a fan-out correct already lives
+where it can be honoured — `scatter-gather`'s four rules, declared at activity level in 26 activity
+files, with `harness-compat::spawn-concurrent` as the dispatch primitive and `spawn-agent` as the
+sequential fallback. A routine contributes a name, a signature and one home for the steps. No stage
+may claim parallelism as something the construct adds.
+
+One consequence binds the design: `parallelism-is-optimisation` holds sequential mode always valid
+and the `concurrency = 1` case of parallel mode, so a routine emitting the same steps for both modes
+is conformant, and a routine needing to know the mode structurally is two runs by this proposal's own
+test.
+
+**The fan-out run is generic without any parameter, because its unit of work is a brief.**
+*(measured 2026-09-08)* `decompose-work-units` emits `{ id, brief, tools_hint? }` where the brief is a
+self-contained worker instruction, `compose-worker-briefs` turns each into a prompt,
+`dispatch-workers` sends them, `gather-results` returns an ordered keyed collection with a
+completeness verdict, and `synthesise-results` combines. A technique reference travels inside a brief
+as data — which is how `substrate` dispatches ten agents from a roster and how
+`cicd-pipeline-security-audit` dispatches per-submodule scanners, both binding the shared primitives
+with their own adapters either side. So a routine over that run declares ordinary inputs, derives its
+contract in isolation, and admits whatever arity the session computes. **A higher-order parameter buys
+nothing where the members run in separate contexts**; it earns its cost only where they run as steps
+in the caller's own.
 
 **A capability parameter carries no declared bound, and neutral output naming is what makes one
 unnecessary.** *(measured 2026-09-07)* The question is whether `kind: technique` should also state

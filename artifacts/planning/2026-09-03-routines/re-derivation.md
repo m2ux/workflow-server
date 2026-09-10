@@ -7,10 +7,11 @@ signature taken again from the loop block as it stands.
 
 Measured on 2026-09-07 against `workflows` at `b5e54574`.
 
-**It comes out smaller than the designed one, and it removes the construct's only use of a capability
-parameter.** The design's `analyse-challenge-pass` takes seven inputs including the analysis
-operation; what the corpus now shares needs two inputs at one level and none at the other, and no
-higher-order parameter anywhere.
+**It comes out smaller than the designed one, and it takes no capability parameter.** The design's
+`analyse-challenge-pass` takes seven inputs including the analysis operation; what the corpus now
+shares needs two inputs at one level and none at the other, and no higher-order parameter in either.
+The parameter's sites are in another family — see
+[higher-order-routines.md](higher-order-routines.md) and §2 below.
 
 ## What the seven sites carry
 
@@ -69,7 +70,7 @@ So the inner routine is `challenge` and `combine`, and the analysis is not in it
 window the corrected search finds at seven activities, and the 3-step window it finds at six is the
 analysis plus that routine — which is the outer routine, not a variant of the inner one.
 
-### 2. The capability parameter has no site left in the corpus
+### 2. The capability parameter has no site in this family
 
 The proposal states the corpus needs a `kind: technique` input: "the convergence run takes the
 analysis it performs as a parameter, binding one technique at six sites and another at the seventh".
@@ -78,14 +79,21 @@ That was true of the deleted technique, whose single body served both domains.
 It is not true of what landed. The analysis is outside the shared body, so no routine binds it by
 parameter; and the six sites that do share the analysis share **the same operation**,
 `review-assumptions::reconcile`, byte-identical along with everything else. Substituting a technique
-reference has no reference site in the corpus.
+reference has no reference site in the assumption or convergence migrations.
 
 That does not retire the feature as a design decision — the reasoning for monomorphisation, and for
 a capability parameter carrying no declared bound, both stand and both are recorded. It retires it
-from **the first version's scope**, and it removes the qualifier that rode on it: with no routine
-binding a technique by parameter, every routine's contract is derivable in isolation, every routine
-is walkable from its declared inputs, and the artifact check runs once per routine. Three
-guarantees stop carrying an exception.
+from **the first version's scope**, and it removes the qualifier that rode on it for as long as the
+plan stops at stage 6: with no routine binding a technique by parameter, every routine's contract is
+derivable in isolation, every routine is walkable from its declared inputs, and the artifact check
+runs once per routine. Three guarantees carry no exception through the two migrations.
+
+**The feature has sites elsewhere in the corpus**, found on 2026-09-08: three `prism` per-unit
+passes, each one `forEach` loop over `analysis_units` binding one operation, two of them agreeing on
+every field but the operation reference and the step id. They are stage 7 of the plan and the
+qualifier returns with them, for those routines only.
+[higher-order-routines.md](higher-order-routines.md) carries the measurement. Nothing in this
+document's two signatures depends on it.
 
 ### 3. The outer routine has no inputs at all
 
