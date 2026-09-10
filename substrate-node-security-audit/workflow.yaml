@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 5.1.0
+version: 6.0.0
 title: Security Audit Workflow
 description: Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases.
 author: m2ux
@@ -66,7 +66,18 @@ graph:
   scope-setup:
     done: reconnaissance
   reconnaissance:
-    done: primary-audit
+    done:
+      - activity: sub-crate-review
+        over: crate_review_roster
+        variable: crate_assignment
+      - sub-static-analysis
+      - sub-toolkit-review
+  sub-crate-review:
+    reviewed: primary-audit
+  sub-static-analysis:
+    scanned: primary-audit
+  sub-toolkit-review:
+    reviewed: primary-audit
   primary-audit:
     done: adversarial-verification
   adversarial-verification:
