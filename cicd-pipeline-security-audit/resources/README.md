@@ -31,7 +31,7 @@ Reference content loaded on demand by the workflow's techniques. The authoritati
 | `verification-report.json` | [intermediate-artifact-schemas](intermediate-artifact-schemas.md) |
 | `merged-findings.json` | [intermediate-artifact-schemas](intermediate-artifact-schemas.md) |
 | `reconciliation-table.json` | [intermediate-artifact-schemas](intermediate-artifact-schemas.md) |
-| `{scanner_id}.json`, `s{scanner_number}-{submodule_path}.json` | [sub-agent-output-schema](sub-agent-output-schema.md) |
+| `{scanner_id}.json`, `{scanner_assignment.id}-{scanner_assignment.submodule}.json` | [sub-agent-output-schema](sub-agent-output-schema.md) |
 
 ---
 

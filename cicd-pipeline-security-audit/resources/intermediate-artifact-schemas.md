@@ -85,46 +85,38 @@ Complete inventory of workflow files with classification data, comprising four o
 
 ## scanner-assignments
 
-The agent-to-submodule mapping for the scanner roster. One scanner agent is assigned per submodule that contains workflows; each entry carries the context variables composed into the scanner sub-agent prompt.
+The agent-to-submodule roster. One scanner agent is assigned per submodule that contains workflows, and the graph fans the reconnaissance exit over the roster, so it is an array whose length is how many scanners run. Each entry is one scanner's whole working context, handed to that scanner as its own value.
 
 ```json
-{
-  "scanners_assigned": 2,
-  "roster": [
-    {
-      "scanner_id": "S1",
-      "submodule": "midnight-node",
-      "assigned_activity_id": "sub-workflow-scan",
-      "workflow_files": [
-        ".github/workflows/ci.yml",
-        ".github/workflows/release.yml"
-      ],
-      "output_file": "s1-midnight-node.json"
-    },
-    {
-      "scanner_id": "S2",
-      "submodule": "midnight-indexer",
-      "assigned_activity_id": "sub-workflow-scan",
-      "workflow_files": [
-        ".github/workflows/build.yml"
-      ],
-      "output_file": "s2-midnight-indexer.json"
-    }
-  ]
-}
+[
+  {
+    "id": "S1",
+    "submodule": "midnight-node",
+    "workflow_files": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/release.yml"
+    ],
+    "ai_config_files": []
+  },
+  {
+    "id": "S2",
+    "submodule": "midnight-indexer",
+    "workflow_files": [
+      ".github/workflows/build.yml"
+    ],
+    "ai_config_files": [".github/copilot-instructions.md"]
+  }
+]
 ```
 
 ### Field Descriptions
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `scanners_assigned` | number | Count of scanner agents in the roster (compared against `scanners_dispatched` for completeness) |
-| `roster` | object[] | One entry per scanner agent |
-| `roster[].scanner_id` | string | Scanner designator (S1-Sn) |
-| `roster[].submodule` | string | Assigned submodule path |
-| `roster[].assigned_activity_id` | string | Activity the scanner sub-agent enters via `next_activity` |
-| `roster[].workflow_files` | string[] | Workflow file list passed to the scanner as context |
-| `roster[].output_file` | string | Target output filename, `s{scanner_number}-{submodule_path}.json` (see [sub-agent-output-schema](sub-agent-output-schema.md#file-naming-convention)) |
+| `[].id` | string | Scanner designator (S1-Sn). Names this scanner's slot in the branch container, its row in the gather manifest, and its output filename |
+| `[].submodule` | string | Assigned submodule path |
+| `[].workflow_files` | string[] | Workflow file list this scanner covers |
+| `[].ai_config_files` | string[] | AI configuration files found in the submodule, empty where there are none |
 
 ## verification-report
 

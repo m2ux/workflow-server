@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -57,7 +57,11 @@ optional — the exit id a checkpoint option named, set when a checkpoint effect
 
 #### next_activity_id
 
-Activity ID the worker resolved for the next dispatch (or null when the workflow is complete). Required on every successful `activity_complete`: this context holds the activity definition and the exit destinations the routing was resolved from, and the envelope is the only report of the result.
+Where the worker resolved the run goes next (or null when the workflow is complete). Required on every successful `activity_complete`: this context holds the activity definition and the exit destinations the routing was resolved from, and the envelope is the only report of the result. Ordinarily one activity id; where the exit taken is bound to several branches, the destination as the `exit_destinations` block gave it — passed on unread, because the server expands it.
+
+#### next_activity_fans
+
+Whether that destination opens several branches rather than one activity — true where the `exit_destinations` block gave the exit taken a list rather than a single id. The orchestrator dispatches a fan on it, so the reading belongs in the envelope beside the destination it describes.
 
 #### activity_exit
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ Per-scanner table with scanner id, assigned submodule, dispatched, returned, and
 
 ### 1. Project Gather Into Dispatch Status
 
-- Walk `{gathered_results.items}` in order; parse each non-null `result` into structured per-scanner output when it conforms to the [output schema](../../resources/sub-agent-output-schema.md#schema).
+- Walk `{gathered_results.items}` in order; read each non-null `result` as that scanner's reported values, whose `scan_results` conforms to the [output schema](../../resources/sub-agent-output-schema.md#schema).
 - Build `{dispatch_status.dispatch_manifest}` by joining `{gathered_results.dispatch_manifest}` rows to `{scanner_assignments}` for assigned submodule.
 - Set `{dispatch_status.scanners_dispatched}` and `{dispatch_status.scanners_returned}` from rows with status `ok`.
 - If `{gathered_results.completeness}` is not `complete`, mark the manifest `INCOMPLETE` so verification / re-dispatch can act.

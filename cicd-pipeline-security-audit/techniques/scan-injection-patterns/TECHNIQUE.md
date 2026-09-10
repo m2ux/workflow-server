@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -9,25 +9,13 @@ Apply all seven CI/CD injection detection patterns (P1-P7) — derived from the 
 
 ## Inputs
 
-### submodule_path
+### scanner_assignment
 
-Directory name of the submodule being scanned.
-
-### scanner_number
-
-The 1-based scanner agent ordinal (the numeric part of the `S1`-`Sn` designator).
-
-### workflow_files
-
-List of workflow file paths to scan
+This scanner's [roster entry](../../resources/intermediate-artifact-schemas.md#scanner-assignments): its designator at `id`, the submodule directory at `submodule`, the workflow file paths it scans at `workflow_files`, and the submodule's AI configuration files at `ai_config_files`.
 
 ### workflow_inventory
 
 Complete [inventory of workflow files](../../resources/intermediate-artifact-schemas.md#workflow-inventory) with pre-classified trigger, permission, and checkout data.
-
-### ai_config_inventory
-
-*(optional)* AI configuration files found in the submodule
 
 ## Outputs
 
@@ -37,7 +25,7 @@ Structured findings for this submodule, conforming to the [scanner output schema
 
 #### artifact
 
-`s{scanner_number}-{submodule_path}.json`
+`{scanner_assignment.id}-{scanner_assignment.submodule}.json`
 
 #### audience
 

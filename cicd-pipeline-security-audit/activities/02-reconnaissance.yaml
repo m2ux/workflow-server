@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 1.4.0
+version: 2.0.0
 name: Reconnaissance
 description: Classify discovered workflows and assign scanner agents.
 variables:
@@ -7,10 +7,9 @@ variables:
     - planning_folder_path
     - target_submodules
   writes:
-    - name: scanners_assigned
-      type: number
-      description: Count of per-submodule scanner agents assigned during reconnaissance
-      defaultValue: 0
+    - name: scanner_assignments
+      type: array
+      description: One entry per submodule holding workflow files — its scanner designator, the submodule, and the files that scanner covers. The graph fans this activity's exit over it, so its length is how many scanners the audit runs.
 techniques:
   - execute-cicd-audit
 required: true
@@ -47,4 +46,4 @@ outcome:
   - Scanners can prioritize the riskiest workflows first, knowing each one's trigger type, permission scope, and checkout pattern
   - The workflows most exposed to untrusted input are already flagged before scanning begins
   - Every in-scope submodule has an owning scanner agent, so no submodule can be silently skipped
-  - Scan work is partitioned for parallel dispatch with no overlap or gap between agents
+  - Scan work is partitioned with no overlap or gap between agents, and the roster is what the graph opens one scanner per entry of

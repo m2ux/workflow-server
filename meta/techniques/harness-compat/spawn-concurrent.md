@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.3.0
 ---
 
 ## Capability
@@ -35,6 +35,6 @@ Array of agent results, one per dispatched agent
 
 ## Rules
 
-### parallelism-is-optimisation
+### the-batch-is-the-purchase
 
-Honor [scatter-gather](../scatter-gather.md)::parallelism-is-optimisation — sequential fallback via [spawn-agent](./spawn-agent.md) remains valid.
+A concurrent batch buys wall clock and bounded contexts, and it pays a whole further delivery for every member past the first. Emit the batch in one turn, so the wait is a fact of the turn rather than something scheduled; a chain of plain dispatches through [spawn-agent](./spawn-agent.md) is the sequential shape, and it forfeits what the batch is for.

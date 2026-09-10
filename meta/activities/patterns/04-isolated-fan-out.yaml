@@ -1,10 +1,9 @@
 id: isolated-fan-out
-version: 1.0.0
+version: 2.0.0
 name: Isolated Fan Out
 description: Orchestrator-workers fan-out with isolation_mode (context or worktree) and completeness verification — borrowable subagent-isolation pattern.
 variables:
   reads:
-    - dispatch_concurrency
     - effort_cap
     - isolation_mode
     - output_contract

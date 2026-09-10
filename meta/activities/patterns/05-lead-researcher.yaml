@@ -1,10 +1,9 @@
 id: lead-researcher
-version: 1.0.0
+version: 2.0.0
 name: Lead Researcher
-description: Plan parallel research questions, fan out, synthesise, and follow up while gaps remain — borrowable lead-researcher pattern.
+description: Plan research questions, work through them, synthesise, and follow up while gaps remain — borrowable lead-researcher pattern.
 variables:
   reads:
-    - dispatch_concurrency
     - effort_cap
     - output_contract
     - planning_context

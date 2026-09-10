@@ -21,7 +21,7 @@ Turn a research goal into parallel research questions as work units — the plan
 
 ### work_units
 
-Ordered research units `{ id, brief, tools_hint? }` suitable for parallel fan-out. Each brief is one research question with return-format instructions for structured findings.
+Ordered research units `{ id, brief, tools_hint? }`, each independent of the others so they may be worked in any order. Each brief is one research question with return-format instructions for structured findings.
 
 ## Protocol
 

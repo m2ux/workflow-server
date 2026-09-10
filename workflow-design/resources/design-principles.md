@@ -84,7 +84,7 @@ Definition prose (`description`, `outcome`, option text, README orientation for 
 
 ## 18. Prefer Shared Capability
 
-When a meta or shared-workflow technique already owns a capability, reuse it by binding that op from an activity (or borrowing an activity that already binds it). Invent a parallel local recipe only after the shared surface cannot absorb the caller's diversity. For mid-phase multi-agent fan-out and consolidate, prefer the meta [`orchestration-patterns`](../../meta/techniques/orchestration-patterns/TECHNIQUE.md) ops and borrowable [`activities/patterns/`](../../meta/activities/patterns/README.md) before local spawn-concurrent / merge recipes.
+When a meta or shared-workflow technique already owns a capability, reuse it by binding that op from an activity (or borrowing an activity that already binds it). Invent a parallel local recipe only after the shared surface cannot absorb the caller's diversity. Fan-out and consolidate is owned by the layer that runs the work. Several workers on separate activities, or one activity over a collection, is a routing fact: bind it as a graph destination that names them, and gather at the activity they converge on. Work units inside ONE worker are the other layer: a `forEach` loop step, with the meta [`orchestration-patterns`](../../meta/techniques/orchestration-patterns/TECHNIQUE.md) ops for decomposition and the gather, before local merge recipes.
 
 ## 19. Name Symbols Affirmatively
 

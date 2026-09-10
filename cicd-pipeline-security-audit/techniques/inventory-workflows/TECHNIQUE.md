@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -46,18 +46,6 @@ Per-workflow checkout configurations.
 ### ai_config_inventory
 
 AI configuration files and CODEOWNERS coverage found per target, for P6 detection.
-
-### scanner_assignments
-
-[Agent-to-submodule mapping](../../resources/intermediate-artifact-schemas.md#scanner-assignments) — one scanner agent per submodule with workflow files.
-
-#### artifact
-
-`scanner-assignments.json`
-
-#### audience
-
-`agent`
 
 ### start_here
 

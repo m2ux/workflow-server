@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: cicd-pipeline-security-audit
-version: 2.1.0
+version: 3.0.0
 title: CI/CD Pipeline Security Audit Workflow
 description: Fully automated multi-phase AI security audit for GitHub Actions CI/CD pipelines. Detects source-to-sink injection vulnerabilities exploited by autonomous attack agents (hackerbot-claw campaign, Feb 2026).
 author: m2ux
@@ -27,6 +27,11 @@ graph:
   scope-setup:
     done: reconnaissance
   reconnaissance:
-    done: primary-scan
+    done:
+      activity: sub-workflow-scan
+      over: scanner_assignments
+      variable: scanner_assignment
+  sub-workflow-scan:
+    scanned: primary-scan
   primary-scan:
     scan-verified: report-generation
