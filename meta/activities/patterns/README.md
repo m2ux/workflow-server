@@ -19,7 +19,6 @@ Atomic ops live under [`orchestration-patterns/`](../../techniques/orchestration
 | orchestrator-workers | *(graph)* a destination naming one activity and the collection to run it over | see [dispatch-fan](../../techniques/workflow-engine/dispatch-fan.md) |
 | supervisor | [supervisor](./02-supervisor.yaml) | `meta/patterns/02-supervisor.yaml` |
 | plan-and-execute | [plan-and-execute](./03-plan-and-execute.yaml) | `meta/patterns/03-plan-and-execute.yaml` |
-| subagent-isolation | [isolated-fan-out](./04-isolated-fan-out.yaml) | `meta/patterns/04-isolated-fan-out.yaml` |
 | lead-researcher | [lead-researcher](./05-lead-researcher.yaml) | `meta/patterns/05-lead-researcher.yaml` |
 | agent-as-tool-embedding | *(technique only)* `orchestration-patterns::invoke-as-tool` | bind in a local activity step |
 | hierarchical-agents | *(composition)* `dispatch_child` + borrow a pattern activity in the child | depth-1; no nested Task orchestrators |
@@ -62,12 +61,6 @@ Fixed `{lane_roster}` classification (not dynamic decomposition). Escalation whe
 ### 03 Plan and Execute
 
 Hard `plan-confirmed` gate — the answer admits the plan into execution, so it waits for a person. `forEach` execute; `while` replan when `plan_needs_replan`. Nested re-execute after replan.
-
-### 04 Isolated Fan Out
-
-Decomposition → briefs → dispatch → gather → synthesise, with `isolation_mode` and a validate gate on `gathered_results.completeness` before synthesise.
-
-**This is the only route to worker-owned checkouts, and it is serial.** Under `isolation_mode: worktree` each worker gets its own git worktree, which a graph fan cannot offer: a fan's branches share one working tree and one git index, so the load refuses a fanned activity that binds any version-control operation. The workers here run one at a time. Where the work does not mutate a checkout, the graph fan is the concurrent route and this pattern buys nothing over it.
 
 ### 05 Lead Researcher
 
