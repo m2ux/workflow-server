@@ -184,11 +184,17 @@ One criterion applies to every stage and is stated once: **a stage that changes 
 
 **Stage 7 — First adoption**
 
-- [ ] The workflow loads with the fan and every load rule satisfied.
-- [ ] `check:all` green on both sides with the submodule pointer bumped.
+- [x] The workflow loads with the fan and every load rule satisfied.
+- [x] `check:all` green on both sides with the submodule pointer bumped.
 - [ ] The coverage walk green with no stale, newly-uncovered or newly-covered entries and the stamp fresh, the dry-walk budget re-measured in the same commit.
 - [ ] **One live run** in which the instances spawn in one turn, each lands its outputs in its own slot, the meeting point gathers the container whole with the gather reporting complete, the progress marks publish in one commit before the spawn and resolve in one persist at convergence, and the barrier refusal appears in no log.
-- [ ] The width comes from the collection's length and the site's shadow scanner-count variable is deleted rather than left standing.
+- [x] The width comes from the collection's length and the site's shadow scanner-count variable is deleted rather than left standing.
+
+**Two defects the adoption surfaced, both fixed in it.** Each is a case of the capability being correct against fixtures an author wrote alongside it, and wrong against the first definition written against the construct rather than around it.
+
+The first is the collection a fan reads. The activity a fan hangs off is the activity that assigns its work units, and it reports that write on the same call that opens the fan — so the enter has to read the bag with that call's writes already in it. It read the bag as it stood before them, which every fixture hid by declaring its collection as a default value. Under that reading no fan could ever be seeded by its own source, which is the only place a collection naturally comes from.
+
+The second is the batch spawn's delivery. The fan-dispatch operation applies the concurrent spawn mid-Protocol, and a technique named inside another technique's Protocol has no other delivery path. It was absent from every bundle, so an orchestrator would have reached the spawn step holding the instruction to emit the batch in one turn and nothing saying what a batch is. It now rides the same conditional delivery as the fan operation itself.
 
 ### The stale-restatement sweep
 
