@@ -52,7 +52,7 @@ describe('corpus discovery', () => {
     expect(index.workflows.get('yml-defined')?.manifest).toBe(join(root, 'yml-defined', 'workflow.yml'));
   });
 
-  it('never descends into a reserved folder, so a workflow owns everything beneath it', () => {
+  it('never descends into a reserved folder, at the root or beneath a workflow', () => {
     expect(indexCorpus(root).workflows.has('group')).toBe(false);
   });
 

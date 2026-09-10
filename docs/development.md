@@ -380,7 +380,7 @@ A definition change lands as two commits: one on the `workflows` branch, and one
 
 ## Adding a workflow
 
-Create a directory named for the workflow's id with a `workflow.yaml` in it, anywhere under `workflows/`. Grouping folders carry no definition and exist to organise the corpus, so `workflows/security/audits/prism/workflow.yaml` is the workflow `prism` and is referenced by that name alone. Three folder names are reserved for a workflow's own parts wherever they appear — `activities`, `resources` and `techniques` — and never name a workflow. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
+Create a directory named for the workflow's id with a `workflow.yaml` in it, anywhere under `workflows/`. Grouping folders carry no definition and exist to organise the corpus, so `workflows/security/audits/prism/workflow.yaml` is the workflow `prism` and is referenced by that name alone. Three folder names are reserved at every depth — `activities`, `resources` and `techniques` — and the search never enters them: they hold a workflow's own files rather than another workflow, so skipping them keeps discovery proportional to the shape of the corpus rather than to everything in it. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
 
 Check it before committing:
 

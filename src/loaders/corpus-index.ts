@@ -10,10 +10,11 @@ import { logWarn } from '../logging.js';
  * however the tree around it is arranged. Grouping folders carry no definition of their own and
  * exist purely to organise: `security/audits/prism/workflow.yaml` is the workflow `prism`.
  *
- * The walk descends every directory except three reserved names — `activities`, `resources` and
- * `techniques` — which name a workflow's own parts wherever they appear, the corpus root included.
- * It stops at a directory that has a definition, so a workflow owns everything beneath it and no
- * workflow contains another.
+ * The walk never descends into three reserved directory names — `activities`, `resources` and
+ * `techniques` — at any depth. Those hold a workflow's own files, in volume and several levels
+ * deep, and never hold a workflow, so skipping them keeps the walk proportional to the shape of the
+ * corpus rather than to everything in it. It also stops at a directory that has a definition, so a
+ * workflow owns everything beneath it and no workflow contains another.
  *
  * Each resolution walks the corpus. Stopping at every workflow keeps the walk to roughly the
  * directory reads a single definition load already performs, and it makes the answer the corpus on
@@ -22,7 +23,7 @@ import { logWarn } from '../logging.js';
  * once — a guard sweeping the corpus — walks once with `indexCorpus` and reads the result.
  */
 
-/** Directory names a workflow reserves for its own parts, and so never names a workflow. */
+/** Directory names holding a workflow's own files, which the walk never enters and never searches. */
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
 
 /** Definition file extensions, in resolution priority. */
