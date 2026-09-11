@@ -33,7 +33,7 @@ import { corpusRoot } from './corpus-root.js';
  */
 
 /** The step ids that call `next_activity`, and so move the session pointer. */
-const ADVANCING_STEPS = ['continue-batched-worker', 'dispatch-activity'];
+const ADVANCING_STEPS = ['continue-batched-worker', 'dispatch-activity', 'dispatch-fan'];
 
 interface Envelope {
   /**
@@ -42,7 +42,8 @@ interface Envelope {
    * case every worker-producing operation carries a recovery branch for.
    */
   result_type: 'activity_complete' | 'checkpoint_pending' | 'none';
-  next_activity_id?: string | null;
+  next_activity_id?: string | Record<string, unknown> | null;
+  next_activity_fans?: boolean;
   batch_may_continue?: boolean;
   steps_completed?: unknown[];
 }
@@ -73,6 +74,19 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     log.push('advance');
     bag['worker_agent_id'] = 'worker-minted';
     bag['worker_result'] = next();
+  },
+  'dispatch-fan': (bag, _next, log) => {
+    log.push('advance');
+    // The enter opens every branch in one call. Branch envelopes are internal to the operation;
+    // this walk only sees the convergence the barrier reported.
+    bag['fan_convergence_activity'] = 'gather';
+  },
+  'advance-past-fan': (bag) => {
+    bag['current_activity'] = (bag['fan_convergence_activity'] as string | undefined) ?? null;
+  },
+  'retire-fan-envelope': (bag) => {
+    bag['worker_result'] = null;
+    bag['fan_convergence_activity'] = null;
   },
   // Both declare Outputs, and both are consumed — `user_selection` by `respond-checkpoint`'s
   // `checkpoint_resolution`, `effects` by `resume-worker`'s `effects` — but no `when:` in the loop reads
@@ -199,8 +213,8 @@ function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'
   return { iterations, log, bag, stopped: 'walk-cap' };
 }
 
-const complete = (next: string | null, room = true): Envelope =>
-  ({ result_type: 'activity_complete', next_activity_id: next, batch_may_continue: room, steps_completed: [] });
+const complete = (next: string | Record<string, unknown> | null, room = true, fans = false): Envelope =>
+  ({ result_type: 'activity_complete', next_activity_id: next, next_activity_fans: fans, batch_may_continue: room, steps_completed: [] });
 const gate = (): Envelope => ({ result_type: 'checkpoint_pending' });
 /** A continuation that returned no accepted envelope — the context ended, or answered with neither type. */
 const gone = (): Envelope => ({ result_type: 'none' });
@@ -381,6 +395,24 @@ describe('client activity loop walked (#407)', () => {
     // One activity, one commit — a second gate does not buy a second commit, or a second advance.
     expect(result.log.filter((e) => e === 'commit')).toHaveLength(1);
     expect(result.log.filter((e) => e === 'advance')).toHaveLength(1);
+  });
+
+  it('opens a fan by ending the batch, then dispatches the join', () => {
+    // A source that fans is a completed activity: it commits and releases even when the batch has
+    // room. The next iteration opens the fan; retire clears the envelope so the join is an ordinary
+    // dispatch. continue-batch never fires — a fan is not the next activity of this worker.
+    const fanDest = { activity: 'probe-unit', over: 'targets', variable: 'probe_target' };
+    const result = walk([complete(fanDest, true, true), complete(null)]);
+
+    expect(result.stopped).toBe('condition');
+    expect(result.iterations).toEqual([
+      ['dispatch-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+      ['dispatch-fan', 'advance-past-fan', 'retire-fan-envelope'],
+      ['dispatch-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+    ]);
+    expect(result.iterations.flat().filter((id) => id === 'continue-batched-worker')).toEqual([]);
+    expect(result.bag['current_activity']).toBeNull();
+    expect(result.bag['worker_agent_id']).toBeNull();
   });
 
   it('releases a spent batch, so the next activity is dispatched afresh', () => {

@@ -36,6 +36,7 @@ describe('client activity loop gates (#407)', () => {
     return {
       continueBatch: evaluateWhenExpression(gateOf('continue-batched-worker'), vars),
       dispatch: evaluateWhenExpression(gateOf('dispatch-activity'), vars),
+      dispatchFan: evaluateWhenExpression(gateOf('dispatch-fan'), vars),
       gatePath: evaluateWhenExpression(gateOf('present-yielded-checkpoint'), vars),
       commit: evaluateWhenExpression(gateOf('commit-activity-artifacts'), vars),
       release: evaluateWhenExpression(gateOf('release-spent-worker'), vars),
@@ -46,6 +47,10 @@ describe('client activity loop gates (#407)', () => {
     worker_agent_id: 'worker-1',
     worker_result: { result_type: 'activity_complete', batch_may_continue: true, next_activity_id: 'plan-prepare', ...over },
   });
+
+  const fanDestination = { activity: 'probe-unit', over: 'targets', variable: 'probe_target' };
+  const fanComplete = (over: Record<string, unknown> = {}): Record<string, unknown> =>
+    complete({ next_activity_id: fanDestination, next_activity_fans: true, ...over });
 
   it('continues the held worker before it could dispatch a second one', () => {
     // Order matters as much as the gates: the continuation must be reached before dispatch, so a
@@ -109,6 +114,8 @@ describe('client activity loop gates (#407)', () => {
       complete({}),
       complete({ batch_may_continue: false }),
       complete({ next_activity_id: null }),
+      fanComplete(),
+      { worker_result: (fanComplete() as { worker_result: unknown }).worker_result },
       { worker_agent_id: 'worker-1', worker_result: { result_type: 'checkpoint_pending' } },
       { worker_agent_id: 'worker-1' },
       { worker_result: (complete({}) as { worker_result: unknown }).worker_result },
@@ -116,7 +123,38 @@ describe('client activity loop gates (#407)', () => {
     for (const vars of bags) {
       const fired = firing(vars);
       expect(fired.continueBatch && fired.dispatch).toBe(false);
+      expect(fired.continueBatch && fired.dispatchFan).toBe(false);
+      expect(fired.dispatch && fired.dispatchFan).toBe(false);
     }
+  });
+
+  it('ends the batch when the next destination fans, even with room left', () => {
+    // A fan is not another activity for this worker. continue-batch would call next_activity with
+    // one identity; dispatch-fan mints one per branch. The identity is released this iteration so
+    // the next iteration can open the fan.
+    const held = fanComplete();
+    const fired = firing(held);
+    expect(fired.continueBatch).toBe(false);
+    expect(fired.dispatch).toBe(false);
+    expect(fired.dispatchFan).toBe(false);
+    expect(fired.commit).toBe(true);
+    expect(fired.release).toBe(true);
+  });
+
+  it('opens the fan on the following iteration, once the identity is gone', () => {
+    const opened = firing({
+      worker_result: {
+        result_type: 'activity_complete',
+        batch_may_continue: true,
+        next_activity_id: fanDestination,
+        next_activity_fans: true,
+      },
+    });
+    expect(opened.dispatchFan).toBe(true);
+    expect(opened.continueBatch).toBe(false);
+    expect(opened.dispatch).toBe(false);
+    expect(opened.release).toBe(true);
+    expect(opened.commit).toBe(true);
   });
 
   it('shuts the continuation on an envelope that is not a completed activity', () => {
