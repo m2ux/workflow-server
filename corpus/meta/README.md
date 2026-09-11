@@ -123,7 +123,7 @@ Meta itself produces no domain artefacts. Its outputs are session-state side-eff
 ## File Structure
 
 ```
-workflows/meta/
+corpus/meta/
 ├── workflow.yaml                            # Meta workflow definition
 ├── README.md                                # This file
 ├── activities/

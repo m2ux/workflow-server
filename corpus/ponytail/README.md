@@ -99,7 +99,7 @@ The reference files carry the discipline the operations apply; each artifact a p
 ## File Structure
 
 ```
-workflows/ponytail/
+corpus/ponytail/
 ├── workflow.yaml                              # Workflow definition — rules, variables, activity graph
 ├── README.md                                  # This file
 ├── activities/

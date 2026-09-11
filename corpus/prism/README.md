@@ -6,7 +6,7 @@
 
 ## Overview
 
-[Prisms](https://github.com/m2ux/workflow-server/blob/workflows/prism/resources/README.md) are succinct structured prompts (70–330 words) that force an LLM through a specific sequence of analytical operations — each one targeting a class of problem that free-form analysis reliably misses. The results are qualitatively different: conservation laws instead of style suggestions, quantified bug tables instead of vague warnings.
+[Prisms](https://github.com/m2ux/workflow-server/blob/workflows/corpus/prism/resources/README.md) are succinct structured prompts (70–330 words) that force an LLM through a specific sequence of analytical operations — each one targeting a class of problem that free-form analysis reliably misses. The results are qualitatively different: conservation laws instead of style suggestions, quantified bug tables instead of vague warnings.
 
 **Why use this workflow instead of prompting directly?**
 
@@ -311,7 +311,7 @@ A prism run always produces three artifacts in `output_path`, regardless of pipe
 ## File Structure
 
 ```
-workflows/prism/
+corpus/prism/
 ├── workflow.yaml                            # Workflow definition
 ├── README.md                                # This file
 ├── concept-lexicon.md                       # Analytical concept definitions (49 concepts)

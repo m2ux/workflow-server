@@ -57,7 +57,7 @@ The workflow seeds a **planning folder** under `.engineering/artifacts/planning/
 ## File Structure
 
 ```
-workflows/plain-language/
+corpus/plain-language/
 ├── workflow.yaml                           # Workflow definition (variables, rules, inherited techniques)
 ├── README.md                               # This file
 ├── activities/

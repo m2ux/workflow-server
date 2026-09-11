@@ -181,7 +181,7 @@ Every mode ends with the [Retrospective](./activities/README.md#11-retrospective
 ## File Structure
 
 ```
-workflows/workflow-design/
+corpus/workflow-design/
 ├── workflow.yaml                          # Workflow definition (variables, rules, inherited techniques)
 ├── README.md                             # This file
 ├── activities/

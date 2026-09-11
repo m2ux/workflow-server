@@ -121,7 +121,7 @@ The prism analysis is reached through the **trigger mechanism**, not called inli
 ## File Structure
 
 ```
-workflows/prism-audit/
+corpus/prism-audit/
 ├── workflow.yaml                              # Workflow metadata, rules, and variable declarations
 ├── README.md                                  # This file
 ├── activities/

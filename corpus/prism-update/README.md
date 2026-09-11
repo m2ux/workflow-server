@@ -101,7 +101,7 @@ User receives:
 ## File Structure
 
 ```
-workflows/prism-update/
+corpus/prism-update/
 ├── workflow.yaml
 ├── README.md
 ├── activities/

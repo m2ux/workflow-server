@@ -62,7 +62,7 @@ In create and update modes the workflow seeds a **planning folder** under `.engi
 ## File Structure
 
 ```
-workflows/workflow-authoring/
+corpus/workflow-authoring/
 ├── workflow.yaml                           # Workflow definition (variables, rules, inherited techniques)
 ├── README.md                               # This file
 ├── activities/

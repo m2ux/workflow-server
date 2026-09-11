@@ -161,7 +161,7 @@ Consolidation reads each run's contract artifacts, located from its manifest. Th
 ## File Structure
 
 ```
-workflows/prism-evaluate/
+corpus/prism-evaluate/
 ├── workflow.yaml                     # Workflow metadata, rules, and variable declarations
 ├── README.md                         # This file
 ├── activities/                       # One YAML per activity, plus the orientation map
