@@ -61,6 +61,7 @@ import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../s
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
 import { assertScanned, corpusWorkflows, workflowSubdir } from './workflows-root.js';
+import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
 
@@ -709,8 +710,9 @@ const dispatchedWorkflows = ((): Map<string, Set<string>> => {
  * which reads like progress, and forced real debt out of the ledger.
  */
 function consumerReaches(consumerRel: string, declaringRel: string): boolean {
-  const consumerWf = consumerRel.split('/')[0]!;
-  const declaringWf = declaringRel.split('/')[0]!;
+  const consumerWf = workflowIdFromCorpusPath(consumerRel);
+  const declaringWf = workflowIdFromCorpusPath(declaringRel);
+  if (!consumerWf || !declaringWf) return false;
   if (consumerWf === declaringWf) return true;
   if (declaringWf === META) return true;
   if (crossWorkflowConsumers.get(declaringWf)?.has(consumerWf)) return true;

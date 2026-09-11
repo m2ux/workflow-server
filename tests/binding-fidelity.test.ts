@@ -83,4 +83,15 @@ describe('dead-output scoping', () => {
     expect(consumerReaches('prism/techniques/plan-analysis.md', 'codebase-wiki/techniques/query.md')).toBe(false);
     expect(consumerReaches('codebase-wiki/techniques/query.md', 'prism/techniques/plan-analysis.md')).toBe(false);
   });
+
+  it('scopes a nested citation to the workflow, not the grouping folder', () => {
+    expect(consumerReaches(
+      'security/audits/prism/techniques/plan-analysis.md',
+      'security/audits/prism/techniques/present-result.md',
+    )).toBe(true);
+    expect(consumerReaches(
+      'security/audits/prism/techniques/plan-analysis.md',
+      'security/wiki/codebase-wiki/techniques/query.md',
+    )).toBe(false);
+  });
 });

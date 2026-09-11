@@ -34,6 +34,22 @@ const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
 /** Definition file extensions, in resolution priority. */
 const DEFINITION_EXTENSIONS = ['yaml', 'yml'] as const;
 
+const DEFINITION_FILENAMES = new Set(DEFINITION_EXTENSIONS.map((ext) => `workflow.${ext}`));
+
+/**
+ * The workflow a corpus-relative path belongs to.
+ *
+ * The directory that holds the construct — `activities`, `resources`, `techniques`, or the
+ * definition file — is the workflow. Grouping folders above that directory organise the corpus
+ * and name nothing, so `security/audits/prism/techniques/plan.md` is `prism`.
+ */
+export function workflowIdFromCorpusPath(rel: string): string | null {
+  const parts = rel.split(/[/\\]/).filter((part) => part.length > 0 && part !== '.');
+  const at = parts.findIndex((part) => RESERVED_DIR_NAMES.has(part) || DEFINITION_FILENAMES.has(part));
+  if (at <= 0) return null;
+  return parts[at - 1]!;
+}
+
 /** A workflow's home: the directory that holds it, and its definition file. */
 export interface WorkflowLocation {
   id: string;

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { indexCorpus, workflowLocation, workflowSubdir } from '../src/loaders/corpus-index.js';
+import { indexCorpus, workflowIdFromCorpusPath, workflowLocation, workflowSubdir } from '../src/loaders/corpus-index.js';
 
 /**
  * Corpus discovery: a workflow is a directory holding a `workflow.yaml`, at any depth beneath the
@@ -94,6 +94,14 @@ describe('corpus discovery', () => {
     expect(workflowLocation(clash, 'prism')).toBeNull();
     expect(workflowLocation(clash, 'audits')).toBeNull();
     rmSync(clash, { recursive: true, force: true });
+  });
+
+  it('names the workflow a corpus path belongs to by the construct directory, not the first segment', () => {
+    expect(workflowIdFromCorpusPath('prism/techniques/plan-analysis.md')).toBe('prism');
+    expect(workflowIdFromCorpusPath('security/audits/prism/techniques/plan-analysis.md')).toBe('prism');
+    expect(workflowIdFromCorpusPath('security/audits/prism/workflow.yaml')).toBe('prism');
+    expect(workflowIdFromCorpusPath('security/audits/prism/activities/patterns/01-pass.yaml')).toBe('prism');
+    expect(workflowIdFromCorpusPath('LICENSE')).toBeNull();
   });
 
   it('resolves an id claimed by two directories to neither, and reports the claimants', () => {
