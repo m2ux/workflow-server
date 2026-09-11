@@ -18,8 +18,10 @@ import { parseDefinition } from '../utils/serialization.js';
  * workflow owns everything beneath it and no workflow contains another.
  *
  * The directory name and the `id` the definition declares are one identity. A directory whose file
- * names something else is not a workflow: it is absent from `workflows`, and neither name resolves.
- * `list_workflows` reports it. Two directories of the same name are the same class of failure.
+ * names something else does not resolve, under either name, and `list_workflows` reports the pair.
+ * Two directories of the same name are the same class of failure. Identity is applied when an id
+ * is resolved, so the walk itself is the directory reads of discovery and does not parse a
+ * definition to answer "where does this id live".
  *
  * Each resolution walks the corpus unless the caller already holds an index. Stopping at every
  * workflow keeps the walk to roughly the directory reads a single definition load already performs,
@@ -70,13 +72,11 @@ export interface IdentityMismatch {
 }
 
 export interface CorpusIndex {
-  /** Workflow id → location, ordered by id. An id two directories claim, or a directory whose
-   *  definition declares another name, is absent; see `ambiguous` and `mismatched`. */
+  /** Workflow id → location, ordered by id. An id two directories claim is absent; see `ambiguous`.
+   *  A directory whose definition declares another name is present here and refused at resolve. */
   workflows: ReadonlyMap<string, WorkflowLocation>;
   /** Ids claimed by more than one directory, with every directory claiming them. */
   ambiguous: ReadonlyArray<{ id: string; dirs: string[] }>;
-  /** Directories whose definition declares an id other than the directory name. */
-  mismatched: ReadonlyArray<IdentityMismatch>;
 }
 
 /** A corpus walk, or the root to walk. Lookups accept either so a request walks once. */
@@ -89,7 +89,6 @@ function isCorpusIndex(value: unknown): value is CorpusIndex {
     && value !== null
     && (value as CorpusIndex).workflows instanceof Map
     && Array.isArray((value as CorpusIndex).ambiguous)
-    && Array.isArray((value as CorpusIndex).mismatched)
   );
 }
 
@@ -132,7 +131,8 @@ function declaredId(manifest: string): string | undefined {
  *
  * A directory whose definition declares a different id is the same class of failure: references
  * reach it by the directory and `list_workflows` publishes the declaration, so the two names have
- * to be one. It resolves as neither, and the listing reports the pair.
+ * to be one. The walk still records the directory; `workflowLocation` refuses both names, and
+ * `identityMismatches` is what the listing and the identity guard read.
  */
 export function indexCorpus(root: string): CorpusIndex {
   const claims = new Map<string, WorkflowLocation[]>();
@@ -163,27 +163,55 @@ export function indexCorpus(root: string): CorpusIndex {
 
   const workflows = new Map<string, WorkflowLocation>();
   const ambiguous: Array<{ id: string; dirs: string[] }> = [];
-  const mismatched: IdentityMismatch[] = [];
   for (const id of [...claims.keys()].sort()) {
     const locations = claims.get(id)!;
     if (locations.length !== 1) {
       ambiguous.push({ id, dirs: locations.map((l) => l.dir).sort() });
       continue;
     }
-    const location = locations[0]!;
-    const declared = declaredId(location.manifest);
-    if (declared !== undefined && declared !== location.id) {
-      mismatched.push({ directory: location.id, declared, dir: location.dir, manifest: location.manifest });
-      continue;
-    }
-    workflows.set(id, location);
+    workflows.set(id, locations[0]!);
   }
-  return { workflows, ambiguous, mismatched };
+  return { workflows, ambiguous };
+}
+
+/** Identity of one location, cached on the object so a shared index parses each file once. */
+type LocationIdentity = { ok: true } | { ok: false; declared: string };
+const identityByLocation = new WeakMap<WorkflowLocation, LocationIdentity>();
+
+function identityOf(location: WorkflowLocation): LocationIdentity {
+  const cached = identityByLocation.get(location);
+  if (cached) return cached;
+  const declared = declaredId(location.manifest);
+  const identity: LocationIdentity = (declared === undefined || declared === location.id)
+    ? { ok: true }
+    : { ok: false, declared };
+  identityByLocation.set(location, identity);
+  return identity;
+}
+
+function locationIfMatching(location: WorkflowLocation): WorkflowLocation | null {
+  return identityOf(location).ok ? location : null;
+}
+
+/**
+ * Directories whose definition declares an id other than the directory name. Parsed on demand,
+ * once per location on a shared index — listing and the identity guard are the callers, not
+ * every id lookup.
+ */
+export function identityMismatches(source: CorpusSource): IdentityMismatch[] {
+  const out: IdentityMismatch[] = [];
+  for (const location of asIndex(source).workflows.values()) {
+    const identity = identityOf(location);
+    if (identity.ok) continue;
+    out.push({ directory: location.id, declared: identity.declared, dir: location.dir, manifest: location.manifest });
+  }
+  return out;
 }
 
 /** A workflow's home within a corpus, or null where the corpus holds no such workflow. */
 export function workflowLocation(source: CorpusSource, workflowId: string): WorkflowLocation | null {
-  return asIndex(source).workflows.get(workflowId) ?? null;
+  const location = asIndex(source).workflows.get(workflowId) ?? null;
+  return location ? locationIfMatching(location) : null;
 }
 
 /** A directory a workflow owns, or null where the corpus holds no such workflow. */
@@ -198,7 +226,7 @@ export function workflowSubdir(source: CorpusSource, workflowId: string, name: s
  */
 export function workflowOwning(source: CorpusSource, path: string): WorkflowLocation | null {
   for (const location of asIndex(source).workflows.values()) {
-    if (path === location.dir || path.startsWith(location.dir + sep)) return location;
+    if (path === location.dir || path.startsWith(location.dir + sep)) return locationIfMatching(location);
   }
   return null;
 }

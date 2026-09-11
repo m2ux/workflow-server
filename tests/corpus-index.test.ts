@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { indexCorpus, workflowIdFromCorpusPath, workflowLocation, workflowSubdir } from '../src/loaders/corpus-index.js';
+import { identityMismatches, indexCorpus, workflowIdFromCorpusPath, workflowLocation, workflowSubdir } from '../src/loaders/corpus-index.js';
 
 /**
  * Corpus discovery: a workflow is a directory holding a `workflow.yaml`, at any depth beneath the
@@ -83,9 +83,9 @@ describe('corpus discovery', () => {
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, 'workflow.yaml'), 'id: audits\nversion: 1.0.0\ntitle: t\n');
     const index = indexCorpus(clash);
-    expect(index.workflows.has('prism')).toBe(false);
+    expect(index.workflows.has('prism')).toBe(true);
     expect(index.workflows.has('audits')).toBe(false);
-    expect(index.mismatched).toEqual([{
+    expect(identityMismatches(index)).toEqual([{
       directory: 'prism',
       declared: 'audits',
       dir,

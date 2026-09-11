@@ -5,14 +5,14 @@
  * every reference reaches it by: a cross-workflow activity ref (`work-package/02-design.yaml`), a
  * technique prefix (`prism::structural-analysis`), a fragment ref (`meta::confirm`), a launch
  * target. The `id` inside the file is what `list_workflows` publishes and what a session records.
- * The two are one identity. Discovery refuses a directory whose definition names something else:
- * it is absent from the index, and neither name resolves. This guard reports those refusals.
+ * The two are one identity. A directory whose definition names something else does not resolve,
+ * under either name. This guard reports those refusals.
  *
  * Run: npx tsx scripts/check-workflow-identity.ts [--root <workflows-dir>] [--json]
  */
 import { relative, resolve, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { indexCorpus } from '../src/loaders/corpus-index.js';
+import { identityMismatches, indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
@@ -21,12 +21,13 @@ const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const index = indexCorpus(root);
+  const mismatched = identityMismatches(index);
   assertScanned(
-    index.workflows.size + index.mismatched.length,
+    index.workflows.size,
     'workflow definitions',
     root,
   );
-  return index.mismatched.map((clash) => ({
+  return mismatched.map((clash) => ({
     check: 'workflow-id-mismatch',
     site: relative(root, clash.manifest),
     detail: `declares id '${clash.declared}' but sits in a directory named '${clash.directory}' — `

@@ -17,7 +17,7 @@
  */
 import { existsSync, statSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
-import { type CorpusIndex, indexCorpus } from '../src/loaders/corpus-index.js';
+import { type CorpusIndex, indexCorpus, workflowLocation } from '../src/loaders/corpus-index.js';
 
 /** A directory a workflow owns, wherever the workflow sits — `null` for an id the corpus lacks. */
 export { workflowSubdir } from '../src/loaders/corpus-index.js';
@@ -61,7 +61,9 @@ export interface CorpusWorkflow {
  * server runs is a workflow the guards measure.
  */
 export function corpusWorkflows(root: string, index: CorpusIndex = indexCorpus(root)): CorpusWorkflow[] {
-  return [...index.workflows.values()].map(({ id, dir, manifest }) => ({ id, dir, manifest, rel: relative(root, dir) }));
+  return [...index.workflows.values()]
+    .filter((location) => workflowLocation(index, location.id))
+    .map(({ id, dir, manifest }) => ({ id, dir, manifest, rel: relative(root, dir) }));
 }
 
 export class UnreachableCorpusError extends Error {}
@@ -84,7 +86,7 @@ export function requireWorkflowsRoot(defaultDir: string, argv: string[] = proces
     throw new UnreachableCorpusError(`workflows corpus root '${root}' (from ${from}) is not a directory.`);
   }
   const index = indexCorpus(root);
-  if (index.workflows.size === 0 && index.mismatched.length === 0 && index.ambiguous.length === 0) {
+  if (index.workflows.size === 0 && index.ambiguous.length === 0) {
     throw new UnreachableCorpusError(
       `workflows corpus root '${root}' (from ${from}) contains no workflow (no directory with a `
       + `workflow.yaml at any depth). An empty submodule checkout makes every corpus guard pass `

@@ -29,7 +29,7 @@ import {
   collectCheckpointRefs,
   materializeActivityFragments,
 } from './fragment-resolver.js';
-import { type CorpusIndex, indexCorpus, workflowLocation } from './corpus-index.js';
+import { type CorpusIndex, indexCorpus, identityMismatches, workflowLocation } from './corpus-index.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
 
@@ -116,7 +116,7 @@ function resolveWorkflowPath(index: CorpusIndex, workflowId: string): string | n
 
 /** Why a directory is not a workflow, when discovery found it and refused it. */
 function identityFailure(index: CorpusIndex, workflowId: string): string | null {
-  const clash = index.mismatched.find((m) => m.directory === workflowId || m.declared === workflowId);
+  const clash = identityMismatches(index).find((m) => m.directory === workflowId || m.declared === workflowId);
   if (!clash) return null;
   return `declares id '${clash.declared}' but sits in a directory named '${clash.directory}' — `
     + 'references reach it by its directory and list_workflows publishes its declaration, so the two names have to match';
@@ -416,7 +416,8 @@ export async function listWorkflowsWithDiagnostics(workflowDir: string): Promise
     errors.push({ file: dirs.join(', '), error: `workflow id '${id}' is claimed by ${dirs.length} directories; rename all but one` });
   }
 
-  for (const clash of index.mismatched) {
+  const clashes = identityMismatches(index);
+  for (const clash of clashes) {
     logWarn('Workflow directory and declared id disagree; it resolves as neither', {
       directory: clash.directory,
       declared: clash.declared,
@@ -428,8 +429,10 @@ export async function listWorkflowsWithDiagnostics(workflowDir: string): Promise
         + 'rename the directory to the declared id, or declare the id the directory names',
     });
   }
+  const refused = new Set(clashes.map((clash) => clash.dir));
 
   for (const location of index.workflows.values()) {
+    if (refused.has(location.dir)) continue;
     if (location.id === META_WORKFLOW_ID) continue;
     try {
       const content = await readFile(location.manifest, 'utf-8');
