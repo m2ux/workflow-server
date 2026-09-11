@@ -29,7 +29,7 @@ import {
   collectCheckpointRefs,
   materializeActivityFragments,
 } from './fragment-resolver.js';
-import { indexCorpus, workflowLocation } from './corpus-index.js';
+import { type CorpusIndex, indexCorpus, workflowLocation } from './corpus-index.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
 
@@ -110,15 +110,23 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activiti
 /**
  * Resolve the path to a workflow's definition file, wherever in the corpus the workflow sits.
  */
-function resolveWorkflowPath(workflowDir: string, workflowId: string): string | null {
-  return workflowLocation(workflowDir, workflowId)?.manifest ?? null;
+function resolveWorkflowPath(index: CorpusIndex, workflowId: string): string | null {
+  return workflowLocation(index, workflowId)?.manifest ?? null;
+}
+
+/** Why a directory is not a workflow, when discovery found it and refused it. */
+function identityFailure(index: CorpusIndex, workflowId: string): string | null {
+  const clash = index.mismatched.find((m) => m.directory === workflowId || m.declared === workflowId);
+  if (!clash) return null;
+  return `declares id '${clash.declared}' but sits in a directory named '${clash.directory}' — `
+    + 'references reach it by its directory and list_workflows publishes its declaration, so the two names have to match';
 }
 
 /**
  * Resolve a shorthand activity reference like "work-package/02-design-philosophy.yaml"
  * or local references like "01-start-work-package.yaml".
  */
-async function resolveActivityReference(workflowDir: string, workflowId: string, ref: string): Promise<{ activity: Activity; sourceWorkflowId: string } | null> {
+async function resolveActivityReference(index: CorpusIndex, workflowId: string, ref: string): Promise<{ activity: Activity; sourceWorkflowId: string } | null> {
   const parts = ref.split('/');
 
   let targetWorkflowId: string;
@@ -136,7 +144,7 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
   
   // Activities sit under the target workflow's own `activities/`. The shorthand usually omits that
   // segment, so it is added when the reference leaves it out.
-  const targetDir = workflowLocation(workflowDir, targetWorkflowId)?.dir;
+  const targetDir = workflowLocation(index, targetWorkflowId)?.dir;
   if (!targetDir) return null;
   const activityPath = filename.startsWith('activities/')
     ? join(targetDir, filename)
@@ -180,8 +188,12 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
  * or its fragments block is absent; an unparsable file or invalid block also resolves to
  * undefined (the referencing workflow then reports the unresolved ref, naming the source).
  */
-export async function readWorkflowFragments(workflowDir: string, workflowId: string): Promise<WorkflowFragments | undefined> {
-  const filePath = resolveWorkflowPath(workflowDir, workflowId);
+export async function readWorkflowFragments(
+  workflowDir: string,
+  workflowId: string,
+  index: CorpusIndex = indexCorpus(workflowDir),
+): Promise<WorkflowFragments | undefined> {
+  const filePath = resolveWorkflowPath(index, workflowId);
   if (!filePath) return undefined;
   try {
     const raw = parseDefinition(await readFile(filePath, 'utf-8')) as Record<string, unknown> | null;
@@ -216,9 +228,10 @@ export async function buildFragmentsLookup(
       // Malformed ref: surfaces as a resolution error at materialization, not here.
     }
   }
+  const index = indexCorpus(workflowDir);
   const fragments = new Map<string, WorkflowFragments | undefined>();
   await Promise.all(
-    [...wanted].map(async (id) => fragments.set(id, await readWorkflowFragments(workflowDir, id))),
+    [...wanted].map(async (id) => fragments.set(id, await readWorkflowFragments(workflowDir, id, index))),
   );
   return (workflowId) => fragments.get(workflowId);
 }
@@ -234,8 +247,12 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
  * instead of only logged.
  */
 export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowId: string): Promise<Result<WorkflowWithDiagnostics, WorkflowNotFoundError | WorkflowValidationError>> {
-  const filePath = resolveWorkflowPath(workflowDir, workflowId);
-  if (!filePath) return err(new WorkflowNotFoundError(workflowId));
+  const index = indexCorpus(workflowDir);
+  const filePath = resolveWorkflowPath(index, workflowId);
+  if (!filePath) {
+    const reason = identityFailure(index, workflowId);
+    return err(reason ? new WorkflowValidationError(workflowId, [reason]) : new WorkflowNotFoundError(workflowId));
+  }
   
   try {
     const content = await readFile(filePath, 'utf-8');
@@ -265,7 +282,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
       const explicitlyReferencedActivities = await Promise.all(
         existingActivities.map(async (activityOrRef) => {
           if (typeof activityOrRef === 'string') {
-            const resolved = await resolveActivityReference(workflowDir, workflowId, activityOrRef);
+            const resolved = await resolveActivityReference(index, workflowId, activityOrRef);
             if (!resolved) {
               throw new Error(`Failed to resolve activity reference: ${activityOrRef}`);
             }
@@ -320,7 +337,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
       for (const ref of collectCheckpointRefs(activity)) noteRef(ref, scope);
     }
     const fragmentCache = new Map<string, WorkflowFragments | undefined>([[workflowId, workflow.fragments]]);
-    await Promise.all([...wanted].map(async (id) => fragmentCache.set(id, await readWorkflowFragments(workflowDir, id))));
+    await Promise.all([...wanted].map(async (id) => fragmentCache.set(id, await readWorkflowFragments(workflowDir, id, index))));
     const lookup: FragmentsLookup = (id) => fragmentCache.get(id);
     const materialized: Activity[] = [];
     for (const activity of workflow.activities ?? []) {
@@ -381,8 +398,9 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
 
 /**
  * List workflow manifests and report the definition files that failed to yield one — unreadable
- * or unparsable `workflow.yaml`, a manifest missing the required id/title/version fields, or an id
- * two directories claim — instead of silently skipping them.
+ * or unparsable `workflow.yaml`, a manifest missing the required id/title/version fields, an id
+ * two directories claim, or a directory whose definition declares a different id — instead of
+ * silently skipping them.
  *
  * This is where the corpus is re-walked, so a workflow added while the server runs is listable, and
  * resolvable by every other call, from here on.
@@ -396,6 +414,19 @@ export async function listWorkflowsWithDiagnostics(workflowDir: string): Promise
   for (const { id, dirs } of index.ambiguous) {
     logWarn('Workflow id claimed by several directories; it resolves to none of them', { id, dirs });
     errors.push({ file: dirs.join(', '), error: `workflow id '${id}' is claimed by ${dirs.length} directories; rename all but one` });
+  }
+
+  for (const clash of index.mismatched) {
+    logWarn('Workflow directory and declared id disagree; it resolves as neither', {
+      directory: clash.directory,
+      declared: clash.declared,
+      dir: clash.dir,
+    });
+    errors.push({
+      file: clash.manifest,
+      error: `declares id '${clash.declared}' but sits in a directory named '${clash.directory}'; `
+        + 'rename the directory to the declared id, or declare the id the directory names',
+    });
   }
 
   for (const location of index.workflows.values()) {
@@ -942,7 +973,8 @@ export async function readActivityRaw(
   workflowId: string,
   activityId: string,
 ): Promise<Result<{ content: string; sourceWorkflowId: string }, ActivityNotFoundError>> {
-  const filePath = resolveWorkflowPath(workflowDir, workflowId);
+  const index = indexCorpus(workflowDir);
+  const filePath = resolveWorkflowPath(index, workflowId);
   if (!filePath) return err(new ActivityNotFoundError(activityId, workflowId));
 
   const activitiesDir = join(dirname(filePath), 'activities');
@@ -981,7 +1013,7 @@ export async function readActivityRaw(
       const filename = ref.split('/').slice(1).join('/');
       const parsed = parseActivityFilename(filename.split('/').pop() ?? '');
       if (!parsed || parsed.id !== activityId) continue;
-      const targetDir = workflowLocation(workflowDir, targetWorkflowId)?.dir;
+      const targetDir = workflowLocation(index, targetWorkflowId)?.dir;
       if (!targetDir) continue;
       const borrowedPath = filename.startsWith('activities/')
         ? join(targetDir, filename)

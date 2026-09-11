@@ -69,6 +69,33 @@ describe('corpus discovery', () => {
     expect(workflowSubdir(root, 'no-such-workflow', 'techniques')).toBeNull();
   });
 
+  it('holds a construct file under a nested workflow by id, not by a path from the root', () => {
+    const present = join(root, 'security', 'audits', 'deep', 'techniques', 'present.md');
+    mkdirSync(join(root, 'security', 'audits', 'deep', 'techniques'), { recursive: true });
+    writeFileSync(present, '# present\n');
+    expect(workflowSubdir(root, 'deep', join('techniques', 'present.md'))).toBe(present);
+    expect(indexCorpus(root).workflows.has('security')).toBe(false);
+  });
+
+  it('refuses a directory whose definition declares a different id', () => {
+    const clash = mkdtempSync(join(tmpdir(), 'corpus-mismatch-'));
+    const dir = join(clash, 'group', 'prism');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'workflow.yaml'), 'id: audits\nversion: 1.0.0\ntitle: t\n');
+    const index = indexCorpus(clash);
+    expect(index.workflows.has('prism')).toBe(false);
+    expect(index.workflows.has('audits')).toBe(false);
+    expect(index.mismatched).toEqual([{
+      directory: 'prism',
+      declared: 'audits',
+      dir,
+      manifest: join(dir, 'workflow.yaml'),
+    }]);
+    expect(workflowLocation(clash, 'prism')).toBeNull();
+    expect(workflowLocation(clash, 'audits')).toBeNull();
+    rmSync(clash, { recursive: true, force: true });
+  });
+
   it('resolves an id claimed by two directories to neither, and reports the claimants', () => {
     const contested = mkdtempSync(join(tmpdir(), 'corpus-contested-'));
     for (const group of ['left', 'right']) {

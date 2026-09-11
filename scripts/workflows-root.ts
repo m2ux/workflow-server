@@ -83,7 +83,8 @@ export function requireWorkflowsRoot(defaultDir: string, argv: string[] = proces
   if (!statSync(root).isDirectory()) {
     throw new UnreachableCorpusError(`workflows corpus root '${root}' (from ${from}) is not a directory.`);
   }
-  if (corpusWorkflows(root).length === 0) {
+  const index = indexCorpus(root);
+  if (index.workflows.size === 0 && index.mismatched.length === 0 && index.ambiguous.length === 0) {
     throw new UnreachableCorpusError(
       `workflows corpus root '${root}' (from ${from}) contains no workflow (no directory with a `
       + `workflow.yaml at any depth). An empty submodule checkout makes every corpus guard pass `
