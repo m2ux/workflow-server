@@ -1,8 +1,6 @@
 # Authoring on this branch
 
-This folder holds documentation that belongs to this tree's layout: how the named roots are arranged, and how to add a workflow, resource or technique. What each named root is *for*, and what it holds, is in that folder's own README; the [branch README](../README.md#named-roots) maps them. Engine behaviour, schemas and contributing to the server live on `main`.
-
-The schema the server loads is [`schemas/README.md`](https://github.com/m2ux/workflow-server/blob/main/schemas/README.md) on `main`. The technique file contract — anatomy, addressing, composition, delivery — is the [technique protocol specification](https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md) on `main`. Check programs live under `guards/` there; they take `--root` at this branch's root.
+This folder holds documentation that belongs to this tree's layout: how the named roots are arranged, and how to add a workflow, resource or technique. What each named root is *for*, and what it holds, is in that folder's own README; the [branch README](../README.md#named-roots) maps them.
 
 ## Contents
 
@@ -26,7 +24,7 @@ A link within a workflow is an ordinary relative path — the workflow moves as 
 
 A link **out of** a workflow names the workflow it wants, anchored on the id and written from a leading slash: `[conduct](/shared/techniques/conduct.md)`. The leading segment resolves to wherever discovery found that workflow, so the link survives either end moving. Counting directories out of a workflow (`../../shared/techniques/…`) records the distance between two workflows, which is a fact about today's layout rather than about either of them — and that includes a link that climbs to the corpus root only to come back into its own workflow, whose `..` count is the workflow's own depth. `npx tsx guards/check-corpus-links.ts` reports both forms; it runs by path rather than in the sweep until the corpus is rewritten to the anchored form.
 
-Check it before committing, from a `main` checkout pointed at this tree:
+Check it before committing:
 
 ```bash
 npx tsx guards/validate-workflow-yaml.ts <path>
@@ -42,7 +40,7 @@ A resource is a slug-named markdown file under a workflow's `resources/` directo
 
 A technique is a markdown file under a `techniques/` directory. Put it in the `meta` workflow when every workflow should have it, or in one workflow's own directory when only that workflow does — a workflow-local technique shadows a `meta` one of the same name. A technique may hold nested techniques in a folder of its own, and a nested technique is addressed by appending its slug to the parent's path. Like resources, techniques are discovered by reading the directory.
 
-The file contract — anatomy, addressing, composition, delivery — is the [technique protocol specification](https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md) on `main`.
+The file contract — anatomy, addressing, composition, delivery — is the technique protocol the server loads. The sections below are the shape that contract requires:
 
 - YAML frontmatter carrying the version.
 - **`## Capability`** — what the technique does.

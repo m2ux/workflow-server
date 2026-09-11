@@ -4,11 +4,6 @@ This orphan branch holds the workflow definitions the MCP Workflow Server loads,
 
 Authoring procedure — adding a workflow, resource or technique, and how definition files link — lives in [`docs/`](docs/README.md). What each folder at this root is *for*, and what it holds, is in that folder's own README.
 
-## Branch Structure
-
-- **`main`** - Server code (TypeScript implementation)
-- **`workflows`** - Workflow data (YAML definitions) ← You are here
-
 ## Named roots
 
 Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names. `specimens` is skipped by name even as a child of `corpus/`, so a product list never includes a specimen. A workflow's id is the directory that holds its `workflow.yaml`.
@@ -43,15 +38,15 @@ A specimen is a worked example of a form. An author copies from it when creating
 
 ### ledgers
 
-A check that walks every definition will surface sites that are not all the same kind of problem — a defect to fix now, real debt to keep visible, something correct by design. A **debt ledger** is the file that keeps those judgements separate, so classified debt stays counted and quiet, a live bug stays red, and an unclassified finding is reported. Those files live here, next to the definitions they judge. Check programs live on `main` under `guards/`; they take `--root` at this branch's root and read this folder. Contents: [`ledgers/README.md`](ledgers/README.md).
+A check that walks every definition will surface sites that are not all the same kind of problem — a defect to fix now, real debt to keep visible, something correct by design. A **debt ledger** is the file that keeps those judgements separate, so classified debt stays counted and quiet, a live bug stays red, and an unclassified finding is reported. Those files live here, next to the definitions they judge. A check pointed at this branch's root reads this folder. Contents: [`ledgers/README.md`](ledgers/README.md).
 
 ### walks
 
-A coverage walk records what it saw: snapshots of delivery, a stamp of which corpus commit was measured, and a ratchet of which checkpoint options were exercised. Those files live here so the engine's test suite can compare a later walk against this tree. The coverage job and the snapshot walks run on pull requests to this branch. Contents: [`walks/README.md`](walks/README.md).
+A coverage walk records what it saw: snapshots of delivery, a stamp of which corpus commit was measured, and a ratchet of which checkpoint options were exercised. Those files live here so a later walk compares against this tree. The coverage job and the snapshot walks run on pull requests to this branch. Contents: [`walks/README.md`](walks/README.md).
 
 ### docs
 
-Documentation of this tree's layout — how the named roots are arranged, how to add a workflow, resource or technique — lives here. The technique file contract (anatomy, addressing, composition, delivery) lives on `main` as [`docs/technique-protocol-specification.md`](https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md), because it is an invariant of every corpus the engine loads, not of this one. Contents: [`docs/README.md`](docs/README.md).
+Documentation of this tree's layout — how the named roots are arranged, how to add a workflow, resource or technique — lives here. Contents: [`docs/README.md`](docs/README.md).
 
 ## Precedence: workflow-local → `meta`
 
@@ -62,8 +57,6 @@ shared layer for every other workflow. Open that workflow's directories for
 what they currently hold.
 
 ## Worktree Setup
-
-This branch is checked out as a worktree inside the main repo:
 
 ```bash
 git worktree add ./workflows workflows

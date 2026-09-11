@@ -14,6 +14,4 @@ A finding with no entry is *untriaged* and reported. An entry that matches nothi
 
 Not every check has a ledger. A check whose every finding named a definition defect had the corpus fixed rather than classified.
 
-These ledgers live here, next to the definitions they judge, so a change to a definition and the verdict it settles can land together. Each file is named for the check that reads it. Open the directory for what it currently holds.
-
-Check programs live on `main` under `guards/`. They take `--root` at this branch's root and read this folder. How a guard consumes a ledger, and how to classify a new finding, is in [`docs/development.md`](https://github.com/m2ux/workflow-server/blob/main/docs/development.md#corpus-debt) on `main`.
+These ledgers live here, next to the definitions they judge, so a change to a definition and the verdict it settles can land together. Each file is named for the check that reads it. Open the directory for what it currently holds. A check pointed at this branch's root reads this folder.
