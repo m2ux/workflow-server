@@ -10,7 +10,7 @@ import { collectUnmappedArtifacts } from '../guards/check-artifact-guides.js';
  * catalog entry both require that every artifact a workflow persists resolves to a guide carrying a
  * template and the rules that populate it. The guard resolves a guide two ways — the workflow's
  * authored artifact-to-guide map, or a resource that names the filename and carries a template
- * heading — and accepts a gap only when `scripts/artifact-guide-baseline.json` classifies it.
+ * heading — and accepts a gap only when `ledgers/artifact-guide-baseline.json` of the pointed tree classifies it.
  */
 
 const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];

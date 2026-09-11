@@ -17,11 +17,11 @@
  *      This is the mapping a guide makes by naming the artifact it is the guide for, which the
  *      catalog entry's own do-not-flag carve-out endorses.
  *
- * An artifact that resolves neither way is a finding, unless `artifact-guide-baseline.json` records
- * it as an accepted gap with a classification. The baseline is not a snapshot to regenerate: an
- * entry is a judgement about one artifact, in the same spirit as
- * `ledgers/binding-fidelity-triage.json` of the pointed tree. Adding a new artifact with no guide fails the guard;
- * closing a baselined gap means deleting its entry.
+ * An artifact that resolves neither way is a finding, unless
+ * `ledgers/artifact-guide-baseline.json` of the pointed tree records it as an accepted gap with a
+ * classification. The baseline is not a snapshot to regenerate: an entry is a judgement about one
+ * artifact, in the same spirit as `ledgers/binding-fidelity-triage.json`. Adding a new artifact with
+ * no guide fails the guard; closing a baselined gap means deleting its entry.
  *
  * Every corpus artifact resolves today, so no baseline file exists — the triage is the escape hatch
  * for a deliberate gap, not a standing allowance.
@@ -37,13 +37,12 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tryLoadMarkdownTechnique, tryLoadNestedTechnique } from '../src/loaders/markdown-technique-loader.js';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, ledgerPath, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { resolveLink } from './corpus-links.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
-const BASELINE = resolve(join(DIR, 'artifact-guide-baseline.json'));
 
 const GROUPED_INDEX = 'TECHNIQUE.md';
 const SHARED_WORKFLOW = 'meta';
@@ -79,7 +78,7 @@ interface BaselineFile {
   entries: BaselineEntry[];
 }
 
-function loadBaseline(path: string = BASELINE): BaselineFile {
+function loadBaseline(path: string): BaselineFile {
   if (!existsSync(path)) return { entries: [] };
   return JSON.parse(readFileSync(path, 'utf-8')) as BaselineFile;
 }
@@ -232,7 +231,7 @@ export async function collectUnmappedArtifacts(
   opts: { reportStale?: boolean; baselinePath?: string } = {},
 ): Promise<UnmappedArtifact[]> {
   const reportStale = opts.reportStale ?? root === DEFAULT_ROOT;
-  const baseline = loadBaseline(opts.baselinePath);
+  const baseline = loadBaseline(opts.baselinePath ?? ledgerPath(root, 'artifact-guide-baseline.json'));
   const accepted = new Set(baseline.entries.map((e) => `${e.site} ${e.artifact}`));
   const matched = new Set<string>();
   const out: UnmappedArtifact[] = [];
@@ -269,7 +268,7 @@ export async function collectUnmappedArtifacts(
         out.push({
           key,
           artifact,
-          detail: `output '${o.id}' in technique '${id}' persists '${artifact}' with no creation guide — add a row to ${workflow}/resources/README.md under 'Planning artifact to guide map', or author a guide resource with a Template and Rules; an accepted gap is classified in scripts/artifact-guide-baseline.json`,
+          detail: `output '${o.id}' in technique '${id}' persists '${artifact}' with no creation guide — add a row to ${workflow}/resources/README.md under 'Planning artifact to guide map', or author a guide resource with a Template and Rules; an accepted gap is classified in ledgers/artifact-guide-baseline.json`,
         });
       }
     }
@@ -286,7 +285,7 @@ export async function collectUnmappedArtifacts(
       key: entry.site,
       artifact: entry.artifact,
       stale: true,
-      detail: `baseline entry for '${entry.artifact}' at '${entry.site}' matches no artifact declaration — it gained a guide, was renamed, or is no longer declared; delete the entry from scripts/artifact-guide-baseline.json`,
+      detail: `baseline entry for '${entry.artifact}' at '${entry.site}' matches no artifact declaration — it gained a guide, was renamed, or is no longer declared; delete the entry from ledgers/artifact-guide-baseline.json`,
     });
   }
   return out.sort((a, b) => a.key.localeCompare(b.key));
@@ -305,11 +304,11 @@ if (isMain) {
   // Name the accepted-debt count in the clean message, so a passing guard never reads as "every
   // artifact has a guide" while some of them are owed one. The corpus currently owes none, so the
   // baseline file is absent and the message says so plainly.
-  const owed = loadBaseline().entries.length;
+  const owed = loadBaseline(ledgerPath(DEFAULT_ROOT, 'artifact-guide-baseline.json')).entries.length;
   await runGuard('artifact-guides', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
     okMessage: owed === 0
       ? 'every persisted artifact filename maps to a creation guide, none triaged as owing one'
       : `every persisted artifact filename maps to a creation guide (${owed} triaged as owing one)`,
-    remedy: 'map the filename in the workflow resources index, author the guide, classify the gap in scripts/artifact-guide-baseline.json — or delete the stale entry that no longer matches anything',
+    remedy: 'map the filename in the workflow resources index, author the guide, classify the gap in ledgers/artifact-guide-baseline.json — or delete the stale entry that no longer matches anything',
   });
 }
