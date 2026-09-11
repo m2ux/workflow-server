@@ -82,9 +82,22 @@ export interface CorpusIndex {
 /** A corpus walk, or the root to walk. Lookups accept either so a request walks once. */
 export type CorpusSource = CorpusIndex | string;
 
+/** Whether a value is an index this module produced, rather than a root still to walk. */
+function isCorpusIndex(value: unknown): value is CorpusIndex {
+  return (
+    typeof value === 'object'
+    && value !== null
+    && (value as CorpusIndex).workflows instanceof Map
+    && Array.isArray((value as CorpusIndex).ambiguous)
+    && Array.isArray((value as CorpusIndex).mismatched)
+  );
+}
+
 /** The index for a source: identity when the caller already walked, a walk when they passed a root. */
 export function asIndex(source: CorpusSource): CorpusIndex {
-  return typeof source === 'string' ? indexCorpus(source) : source;
+  if (typeof source === 'string') return indexCorpus(source);
+  if (isCorpusIndex(source)) return source;
+  throw new TypeError('asIndex expects a corpus root or a CorpusIndex');
 }
 
 /** The definition file directly inside a directory, or null where the directory holds none. */

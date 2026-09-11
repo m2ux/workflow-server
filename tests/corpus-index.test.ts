@@ -96,6 +96,10 @@ describe('corpus discovery', () => {
     rmSync(clash, { recursive: true, force: true });
   });
 
+  it('refuses a value that is neither a root nor an index', () => {
+    expect(() => workflowSubdir(0 as never, 'deep', 'techniques')).toThrow(/corpus root or a CorpusIndex/);
+  });
+
   it('names the workflow a corpus path belongs to by the construct directory, not the first segment', () => {
     expect(workflowIdFromCorpusPath('prism/techniques/plan-analysis.md')).toBe('prism');
     expect(workflowIdFromCorpusPath('security/audits/prism/techniques/plan-analysis.md')).toBe('prism');
