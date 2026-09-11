@@ -34,7 +34,8 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -47,14 +48,17 @@ const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
  * the contract; anywhere else restates it. These are the engine and conduct surfaces
  * `no-engine-mechanics-as-rules` carves out as the homes a leaf must defer to.
  */
-const CONTRACT_HOMES = [
-  join('meta', 'techniques', 'workflow-engine'),
-  join('meta', 'techniques', 'agent-conduct.md'),
-  join('meta', 'techniques', 'orchestrator-conduct.md'),
-];
+const CONTRACT_HOMES = ['workflow-engine', 'agent-conduct.md', 'orchestrator-conduct.md'];
 
-function isContractHome(rel: string): boolean {
-  return CONTRACT_HOMES.some((home) => rel === home || rel.startsWith(home + '/'));
+/** The contract homes as paths from the corpus root, wherever the corpus keeps the meta workflow. */
+function contractHomes(root: string, source: CorpusSource = root): string[] {
+  const techniques = workflowSubdir(source, 'meta', 'techniques');
+  if (!techniques) return [];
+  return CONTRACT_HOMES.map((home) => relative(root, join(techniques, home)));
+}
+
+function isContractHome(rel: string, homes: string[]): boolean {
+  return homes.some((home) => rel === home || rel.startsWith(home + '/'));
 }
 
 /**
@@ -135,11 +139,10 @@ function walkFiles(dir: string, out: string[] = []): string[] {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
+  const index = indexCorpus(root);
+  const homes = contractHomes(root, index);
 
-  for (const workflow of readdirSync(root).sort()) {
-    const wfDir = join(root, workflow);
-    if (!existsSync(wfDir) || !statSync(wfDir).isDirectory()) continue;
-
+  for (const { dir: wfDir } of corpusWorkflows(root, index)) {
     const wfFile = join(wfDir, 'workflow.yaml');
     if (existsSync(wfFile)) {
       const def = parse(readFileSync(wfFile, 'utf-8')) as Record<string, unknown> | null;
@@ -188,7 +191,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
         if (!f.endsWith('.md')) continue;
         const rel = relative(root, f);
         scanned++;
-        if (isContractHome(rel)) continue;
+        if (isContractHome(rel, homes)) continue;
         const says = claimsIn(rulesSection(readFileSync(f, 'utf-8')));
         if (says.length === 0) continue;
         findings.push({

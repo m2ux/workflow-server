@@ -29,6 +29,18 @@ describe('coverage scope', () => {
       expect([...c.activityFiles]).toEqual(['prism/activities/01-structural-pass.yaml']);
     });
 
+    it('takes a nested workflow file as the workflow id, not the grouping folder', () => {
+      const c = classifyChange(['security/audits/prism/workflow.yaml']);
+      expect([...c.workflows]).toEqual(['prism']);
+      expect([...c.activityFiles]).toEqual([]);
+    });
+
+    it('takes a nested activity file for resolution against the graphs', () => {
+      const c = classifyChange(['security/audits/prism/activities/01-structural-pass.yaml']);
+      expect([...c.workflows]).toEqual([]);
+      expect([...c.activityFiles]).toEqual(['security/audits/prism/activities/01-structural-pass.yaml']);
+    });
+
     it('ignores what cannot move option coverage', () => {
       const c = classifyChange([
         'prism/techniques/structural-analysis.md',
@@ -105,6 +117,25 @@ describe('coverage scope', () => {
         // gamma changed but is not walked, so no walk measures it and none is asked for.
         expect(await coverageScope(root, classifyChange(['gamma/activities/01-gamma-only.yaml']), ['alpha', 'beta']))
           .toEqual([]);
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+      }
+    });
+
+    it('scopes a nested workflow file and activity to the workflow id', async () => {
+      const root = mkdtempSync(join(tmpdir(), 'wf-scope-nested-'));
+      try {
+        const dir = join(root, 'security', 'audits', 'prism', 'activities');
+        mkdirSync(dir, { recursive: true });
+        writeFileSync(join(root, 'security', 'audits', 'prism', 'workflow.yaml'),
+          'id: prism\nversion: 1.0.0\ntitle: prism\ninitialActivity: structural-pass\n');
+        writeFileSync(join(dir, '01-structural-pass.yaml'),
+          'id: structural-pass\nversion: 1.0.0\nname: structural-pass\n');
+        const walked = ['prism'];
+        expect(await coverageScope(root, classifyChange(['security/audits/prism/workflow.yaml']), walked))
+          .toEqual(['prism']);
+        expect(await coverageScope(root, classifyChange(['security/audits/prism/activities/01-structural-pass.yaml']), walked))
+          .toEqual(['prism']);
       } finally {
         rmSync(root, { recursive: true, force: true });
       }

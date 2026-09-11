@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectUnmappedArtifacts } from '../scripts/check-artifact-guides.js';
 
 /**
@@ -43,7 +44,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       '### report', '', 'A report.', '',
       '#### artifact', '', '`unguided-report.md`',
     ]);
-    const unmapped = await collectUnmappedArtifacts(tempDir);
+    const unmapped = await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir));
     expect(unmapped.map((v) => v.artifact)).toEqual(['unguided-report.md']);
     expect(unmapped[0]!.key).toBe('fixture-wf::writer::report');
   });
@@ -58,7 +59,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       'Creation guide for bare filename `guided-report.md`.', '',
       '## Template', '', '```markdown', '# Guided Report', '```',
     ]);
-    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+    expect(await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir))).toEqual([]);
   });
 
   it('accepts an artifact the resources index maps, even when no resource names the filename', async () => {
@@ -75,7 +76,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       '| Bare filename | Guide |', '|---|---|',
       '| `REPORT.md` | [report-skeleton](report-skeleton.md) |',
     ]);
-    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+    expect(await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir))).toEqual([]);
   });
 
   // The defect this guards against: a body-wide filename match certifies coverage it has not got.
@@ -96,7 +97,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       '## Rules', '',
       '- **Traces to** the review report and `evidence-log.md`.',
     ]);
-    const unmapped = await collectUnmappedArtifacts(tempDir);
+    const unmapped = await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir));
     expect(unmapped.map((v) => v.artifact)).toEqual(['evidence-log.md']);
   });
 
@@ -111,7 +112,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       '# Publication Record Guide', '',
       '## Template', '', 'Fields.',
     ]);
-    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+    expect(await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir))).toEqual([]);
   });
 
   // The map wins over the filename search, so whatever a row points at is what the guard trusts.
@@ -127,7 +128,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       '| Bare filename | Guide |', '|---|---|',
       '| `REPORT.md` | [gone](./gone.md) |',
     ]);
-    const unmapped = await collectUnmappedArtifacts(tempDir);
+    const unmapped = await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir));
     expect(unmapped.map((v) => v.artifact)).toEqual(['REPORT.md']);
     expect(unmapped[0]!.detail).toContain('points at a guide that does not exist');
   });
@@ -149,7 +150,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       '| `index.md` | [index-and-log](./index-and-log.md) |',
     ]);
     // Only `index.md` is mapped. `log.md` must not borrow that row via the guide filename.
-    const unmapped = await collectUnmappedArtifacts(tempDir);
+    const unmapped = await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir));
     expect(unmapped.map((v) => v.artifact)).toEqual(['log.md']);
     expect(unmapped[0]!.detail).toContain('with no creation guide');
   });
@@ -168,7 +169,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       '| Bare filename | Guide |', '|---|---|',
       '| `index.md`, `log.md` | [index-and-log](./index-and-log.md) |',
     ]);
-    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+    expect(await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir))).toEqual([]);
   });
 
   it('accepts a row that states a rule instead of linking a file', async () => {
@@ -182,7 +183,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
       '| Bare filename | Guide |', '|---|---|',
       '| `{lens_name}-analysis.md` | The lens resource the unit\'s lens slug names |',
     ]);
-    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+    expect(await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir))).toEqual([]);
   });
 
   it('does not accept a resource that names the filename without carrying a template', async () => {
@@ -193,7 +194,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
     await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'notes.md', [
       '# Notes', '', 'The run writes `mentioned-only.md` somewhere.',
     ]);
-    const unmapped = await collectUnmappedArtifacts(tempDir);
+    const unmapped = await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir));
     expect(unmapped.map((v) => v.artifact)).toEqual(['mentioned-only.md']);
   });
 
@@ -211,7 +212,7 @@ describe('artifact-guides guard (fixture corpus)', () => {
     await writeTechnique(join(tempDir, 'meta', 'techniques'), 'noop', [
       '### value', '', 'No artifact.',
     ]);
-    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+    expect(await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir))).toEqual([]);
   });
 
   // A triage that outlives its debt is a triage nobody prunes, so an entry matching nothing reports.
@@ -227,10 +228,10 @@ describe('artifact-guides guard (fixture corpus)', () => {
       entries: [{ site: 'ghost-wf::ghost::x', artifact: 'ghost.md', verdict: 'fix-later', rationale: 'r' }],
     }), 'utf-8');
 
-    const withStale = await collectUnmappedArtifacts(tempDir, { reportStale: true, baselinePath });
+    const withStale = await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir), { reportStale: true, baselinePath });
     expect(withStale.filter((v) => v.stale).map((v) => v.artifact)).toEqual(['ghost.md']);
 
-    const withoutStale = await collectUnmappedArtifacts(tempDir, { reportStale: false, baselinePath });
+    const withoutStale = await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir), { reportStale: false, baselinePath });
     expect(withoutStale.some((v) => v.stale)).toBe(false);
     expect(withoutStale.map((v) => v.artifact)).toEqual(['unguided-report.md']);
   });
@@ -245,13 +246,13 @@ describe('artifact-guides guard (fixture corpus)', () => {
     await writeFile(baselinePath, JSON.stringify({
       entries: [{ site: 'fixture-wf::writer::report', artifact: 'unguided-report.md', verdict: 'fix-later', rationale: 'r' }],
     }), 'utf-8');
-    expect(await collectUnmappedArtifacts(tempDir, { reportStale: true, baselinePath })).toEqual([]);
+    expect(await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir), { reportStale: true, baselinePath })).toEqual([]);
   });
 
   it('ignores an output that persists nothing', async () => {
     await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'computer', [
       '### verdict', '', 'A bag-only verdict with no artifact.',
     ]);
-    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+    expect(await collectUnmappedArtifacts(declareFixtureWorkflows(tempDir))).toEqual([]);
   });
 });

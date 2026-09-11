@@ -2,6 +2,7 @@ import { describe, it, expect, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectFindings, MIN_PROSE_LINES } from '../scripts/check-bootstrap-self-contained.js';
 
 /**
@@ -61,7 +62,7 @@ function rootWith(body: string, pad = true): string {
   write('meta/techniques/harness.md', '## Rules\n\n### spawn\n\nSpawn in the foreground.\n');
   // The workflow's own TECHNIQUE.md, keyed on the workflow — not on the literal string `TECHNIQUE`.
   write('meta/techniques/TECHNIQUE.md', '## Rules\n\n### await-every-worker\n\nWait.\n');
-  return root;
+  return declareFixtureWorkflows(root);
 }
 
 const checks = (body: string): string[] => collectFindings(rootWith(body)).map((f) => f.check);

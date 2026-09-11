@@ -3,6 +3,7 @@ import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { composeActivityArtifacts } from '../src/tools/workflow-tools.js';
+import { writeWorkflowFixture } from './corpus-fixture.js';
 
 /**
  * get_activity artifacts-contract carry-through (#224 V4, Task 3): composeActivityArtifacts
@@ -27,7 +28,7 @@ describe('composeActivityArtifacts audience carry-through', () => {
   });
 
   async function writeOp(id: string, outputsBody: string[]): Promise<void> {
-    const dir = join(tempDir, WF, 'techniques');
+    const dir = join(writeWorkflowFixture(tempDir, WF), 'techniques');
     await mkdir(dir, { recursive: true });
     await writeFile(
       join(dir, `${id}.md`),

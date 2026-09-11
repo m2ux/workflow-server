@@ -48,7 +48,7 @@ The directories, and what each one owns:
 | `schemas/` | JSON Schemas generated from the Zod sources, for editor tooling |
 | `scripts/` | Install and container helpers, schema generation, the corpus guards, and the benchmarks |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` |
-| `workflows/` | A worktree of the `workflows` branch: one directory per workflow, each with `workflow.yaml`, `activities/`, `techniques/` and `resources/` |
+| `workflows/` | A worktree of the `workflows` branch: one directory per workflow at any depth, each with `workflow.yaml`, `activities/`, `techniques/` and `resources/` |
 | `docs/` | This documentation |
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
@@ -134,7 +134,7 @@ Stdout is one JSON object with per-activity fresh/resume characters and the aggr
 
 ### Token delivery benchmark
 
-[`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (`work-package` / e2e `skip-optional`), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
+[`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (the e2e `skip-optional` policy), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
 
 By default each run compares against the committed baseline in
 [`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json).
@@ -352,7 +352,7 @@ does *not* cover is a run part-way through an activity whose steps changed under
 Count them before landing:
 
 ```bash
-npm run sessions:census -- --workflow work-package --status running --list
+npm run sessions:census -- --workflow <id> --status running --list
 ```
 
 Zero means the edit reaches nothing in flight. A non-zero count is the set of runs that will pick it
@@ -380,7 +380,15 @@ A definition change lands as two commits: one on the `workflows` branch, and one
 
 ## Adding a workflow
 
-Create a directory under `workflows/{workflow-id}/` with a `workflow.yaml` in it, then check it before committing:
+Create a directory named for the workflow's id with a `workflow.yaml` in it, anywhere under `workflows/`. Grouping folders carry no definition and exist to organise the corpus, so `workflows/group/kind/example/workflow.yaml` is the workflow `example` and is referenced by that name alone. Three folder names are reserved at every depth — `activities`, `resources` and `techniques` — and the search never enters them: they hold a workflow's own files rather than another workflow, so skipping them keeps discovery proportional to the shape of the corpus rather than to everything in it. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
+
+### Linking between definition files
+
+A link within a workflow is an ordinary relative path — the workflow moves as a unit, so the distance between two of its own files never changes.
+
+A link **out of** a workflow names the workflow it wants, anchored on the id and written from a leading slash: `[conduct](/shared/techniques/conduct.md)`. The leading segment resolves to wherever discovery found that workflow, so the link survives either end moving. Counting directories out of a workflow (`../../shared/techniques/…`) records the distance between two workflows, which is a fact about today's layout rather than about either of them — and that includes a link that climbs to the corpus root only to come back into its own workflow, whose `..` count is the workflow's own depth. `npx tsx scripts/check-corpus-links.ts` reports both forms; it runs by path rather than in the sweep until the corpus is rewritten to the anchored form.
+
+Check it before committing:
 
 ```bash
 npx tsx scripts/validate-workflow-yaml.ts <path>

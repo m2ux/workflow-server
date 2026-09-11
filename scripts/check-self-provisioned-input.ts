@@ -19,11 +19,11 @@
  * Run:
  *   npx tsx scripts/check-self-provisioned-input.ts
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
@@ -72,12 +72,9 @@ function walk(node: unknown, file: string, out: SelfProvisionedInputViolation[])
 
 export function collectSelfProvisionedInputViolations(): SelfProvisionedInputViolation[] {
   const out: SelfProvisionedInputViolation[] = [];
-  const wfs = readdirSync(ROOT).filter((d) => {
-    const p = join(ROOT, d);
-    return statSync(p).isDirectory() && existsSync(join(p, 'activities'));
-  });
-  for (const wf of wfs.sort()) {
-    const adir = join(ROOT, wf, 'activities');
+  const wfs = corpusWorkflows(ROOT).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  for (const { dir } of wfs) {
+    const adir = join(dir, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
       const rel = relative(ROOT, join(adir, f));
       try { walk(parseDefinition(readFileSync(join(adir, f), 'utf-8')), rel, out); }

@@ -99,10 +99,24 @@ describe('requireWorkflowsRoot', () => {
     expect(requireWorkflowsRoot(root, [])).toBe(root);
   });
 
-  it('accepts a workflow declared by an activities/ or techniques/ folder alone', () => {
+  it('accepts a workflow nested under grouping folders', () => {
+    const root = mkdtempSync(join(tmpdir(), 'corpus-nested-'));
+    mkdirSync(join(root, 'security', 'audits', 'some-workflow'), { recursive: true });
+    writeFileSync(join(root, 'security', 'audits', 'some-workflow', 'workflow.yaml'), 'id: some-workflow\n');
+    expect(requireWorkflowsRoot(root, [])).toBe(root);
+  });
+
+  it('accepts a directory whose only definition declares a different id', () => {
+    const root = mkdtempSync(join(tmpdir(), 'corpus-mismatch-'));
+    mkdirSync(join(root, 'folder-name'));
+    writeFileSync(join(root, 'folder-name', 'workflow.yaml'), 'id: declared-name\nversion: 1.0.0\ntitle: t\n');
+    expect(requireWorkflowsRoot(root, [])).toBe(root);
+  });
+
+  it('rejects a root whose only content is a folder of techniques — no workflow declares them', () => {
     const root = mkdtempSync(join(tmpdir(), 'corpus-techniques-'));
     mkdirSync(join(root, 'lib', 'techniques'), { recursive: true });
-    expect(requireWorkflowsRoot(root, [])).toBe(root);
+    expect(() => requireWorkflowsRoot(root, [])).toThrow(/contains no workflow/);
   });
 });
 

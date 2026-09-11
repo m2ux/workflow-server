@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { parse as parseYaml } from 'yaml';
 import { safeValidateTechnique } from '../src/schema/technique.schema.js';
 import { corpusRoot } from './corpus-root.js';
+import { writeWorkflowFixture } from './corpus-fixture.js';
 
 const WORKFLOW_DIR = corpusRoot();
 const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/markdown-techniques');
@@ -207,6 +208,7 @@ describe('technique-loader', () => {
 
     beforeEach(async () => {
       tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-test-')));
+      writeWorkflowFixture(tempDir, 'meta');
     });
 
     afterEach(async () => {
@@ -311,6 +313,8 @@ describe('technique-loader', () => {
 
     beforeEach(async () => {
       tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-flat-')));
+      writeWorkflowFixture(tempDir, 'meta');
+      writeWorkflowFixture(tempDir, 'wp');
     });
     afterEach(async () => {
       await rm(tempDir, { recursive: true, force: true });
@@ -365,6 +369,8 @@ describe('technique-loader', () => {
           'The running [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log) of items',
           '', '### lens', '',
           'A [lens](../../prism/resources/portfolio.md#scoring) cross-workflow ref',
+          '', '### anchored', '',
+          'An [anchored](/prism/resources/portfolio.md#scoring) workflow-anchored ref',
           '', '## Protocol', '',
           '1. Use [grp](./grp/TECHNIQUE.md)::[op](./grp/op.md), then read [guide](../resources/guide.md)',
           '',
@@ -378,8 +384,10 @@ describe('technique-loader', () => {
         // resource links: path + .md stripped, anchor kept; cross-workflow keeps the wf prefix
         expect(projected).toContain('[log](assumption-reconciliation#integration-with-assumptions-log)');
         expect(projected).toContain('[lens](prism/portfolio#scoring)');
+        expect(projected).toContain('[anchored](prism/portfolio#scoring)');
         expect(projected).toContain('[guide](guide)');
         expect(projected).not.toContain('../resources/');
+        expect(projected).not.toContain('/prism/resources/');
         // technique links are NOT rewritten
         expect(projected).toContain('[grp](./grp/TECHNIQUE.md)');
       }
@@ -716,6 +724,7 @@ describe('technique-loader', () => {
 
     beforeEach(async () => {
       tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-audience-')));
+      writeWorkflowFixture(tempDir, 'meta');
     });
     afterEach(async () => {
       await rm(tempDir, { recursive: true, force: true });

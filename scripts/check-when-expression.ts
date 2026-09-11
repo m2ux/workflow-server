@@ -7,12 +7,12 @@
  * Run:
  *   npx tsx scripts/check-when-expression.ts
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { assertWhenAuthoring } from '../src/schema/when-expression.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
@@ -54,12 +54,9 @@ function walk(node: unknown, file: string, out: WhenExpressionViolation[]): void
 
 export function collectWhenExpressionViolations(): WhenExpressionViolation[] {
   const out: WhenExpressionViolation[] = [];
-  const wfs = readdirSync(ROOT).filter((d) => {
-    const p = join(ROOT, d);
-    return statSync(p).isDirectory() && existsSync(join(p, 'activities'));
-  });
-  for (const wf of wfs.sort()) {
-    const adir = join(ROOT, wf, 'activities');
+  const wfs = corpusWorkflows(ROOT).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  for (const { dir } of wfs) {
+    const adir = join(dir, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
       const rel = relative(ROOT, join(adir, f));
       try {

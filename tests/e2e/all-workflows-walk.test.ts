@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { readdirSync, existsSync } from 'node:fs';
+
 import { join } from 'node:path';
 import { createHarness, type Harness } from './harness.js';
 import { walk } from './walker.js';
 import { defaultPolicy } from './policies.js';
 import { corpusRoot } from '../corpus-root.js';
+import { indexCorpus } from '../../src/loaders/corpus-index.js';
 
 /**
  * Layer 1 (workflow-agnostic) — every workflow loads and resolves through the real server.
@@ -32,10 +33,7 @@ import { corpusRoot } from '../corpus-root.js';
  * reached a merge with nothing measuring it.
  */
 function corpusWorkflows(): string[] {
-  const root = corpusRoot();
-  return readdirSync(root)
-    .filter((d) => existsSync(join(root, d, 'workflow.yaml')))
-    .sort();
+  return [...indexCorpus(corpusRoot()).workflows.keys()].sort();
 }
 
 const WORKFLOWS = corpusWorkflows();

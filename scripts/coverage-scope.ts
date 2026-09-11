@@ -26,11 +26,11 @@
  * Prints one workflow id per line, or nothing when the change cannot move coverage.
  */
 import { spawnSync } from 'node:child_process';
-import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
-import { requireWorkflowsRoot } from './workflows-root.js';
+import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
+import { corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = join(DIR, '..', 'workflows');
@@ -57,9 +57,13 @@ export function classifyChange(paths: readonly string[]): CorpusChange {
   const activityFiles = new Set<string>();
   for (const path of paths) {
     const parts = path.split('/');
-    if (parts.length < 2) continue;
-    if (parts[1] === 'workflow.yaml' || parts[1] === 'workflow.yml') { workflows.add(parts[0]!); continue; }
-    if (parts[1] === 'activities' && /\.ya?ml$/.test(parts[parts.length - 1]!)) activityFiles.add(path);
+    const id = workflowIdFromCorpusPath(path);
+    if (!id) continue;
+    if (parts.some((part) => part === 'workflow.yaml' || part === 'workflow.yml')) {
+      workflows.add(id);
+      continue;
+    }
+    if (parts.includes('activities') && /\.ya?ml$/.test(parts[parts.length - 1]!)) activityFiles.add(path);
   }
   return { workflows, activityFiles };
 }
@@ -85,11 +89,11 @@ export async function coverageScope(
     // than paths is what makes a borrow visible.
     const changedIds = new Set<string>();
     for (const path of changed.activityFiles) {
-      const parts = path.split('/');
-      const authoring = parts[0]!;
+      const authoring = workflowIdFromCorpusPath(path);
+      if (!authoring) continue;
       const loaded = await loadWorkflow(root, authoring);
       if (!loaded.success) continue;
-      const filename = parts[parts.length - 1]!;
+      const filename = path.split('/').pop()!;
       for (const activity of loaded.value.activities ?? []) {
         // The loader records an artifactPrefix taken from the filename, which is the only link back
         // from a file to the activity it declares without re-reading it.
@@ -110,7 +114,7 @@ export async function coverageScope(
 
 /** The walked set, read from the test that owns it rather than restated here. */
 export function walkedWorkflows(root: string): string[] {
-  return readdirSync(root).filter((d) => existsSync(join(root, d, 'workflow.yaml'))).sort();
+  return corpusWorkflows(root).map(({ id }) => id).sort();
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

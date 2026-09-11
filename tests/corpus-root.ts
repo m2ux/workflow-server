@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
-import { existsSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, statSync } from 'node:fs';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
 
 /**
  * The workflows corpus the test suite runs against.
@@ -24,11 +24,7 @@ export function corpusRoot(): string {
       + `'npm run worktree:provision' to check out the workflows submodule.`,
     );
   }
-  const workflows = readdirSync(root).filter((d) => {
-    const p = join(root, d);
-    return statSync(p).isDirectory() && existsSync(join(p, 'workflow.yaml'));
-  });
-  if (workflows.length === 0) {
+  if (indexCorpus(root).workflows.size === 0) {
     throw new Error(
       `workflows corpus root '${root}' contains no workflow — an empty submodule checkout. `
       + `Run 'npm run worktree:provision'.`,

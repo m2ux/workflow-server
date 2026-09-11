@@ -16,6 +16,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { corpusRoot } from './corpus-root.js';
+import { workflowSubdir } from '../src/loaders/corpus-index.js';
 import { createHarness, rawText, isError, parseToolResponse } from './e2e/harness.js';
 
 /**
@@ -86,7 +87,7 @@ describe('bootstrap-time fixed content', () => {
   });
 
   it('sends the orchestrator to read no definition schema before it decides', () => {
-    const path = join(corpusRoot(), 'meta', 'resources', 'bootstrap-protocol.md');
+    const path = workflowSubdir(corpusRoot(), 'meta', join('resources', 'bootstrap-protocol.md'))!;
     const text = readFileSync(path, 'utf8');
     // A definition schema is orders of magnitude larger than the part of it an orchestrator acts on,
     // so the read belongs to whichever context authors a definition.

@@ -36,7 +36,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { evaluateCondition, type Condition } from '../src/schema/condition.schema.js';
 import { type Graph, destinationTargets } from '../src/schema/workflow.schema.js';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -188,14 +188,14 @@ function hasConsequentialDefault(cp: StepDef): boolean {
 export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): ReviewGatingViolation[] {
   const out: ReviewGatingViolation[] = [];
   let scanned = 0;
-  for (const workflow of readdirSync(root).sort()) {
-    const workflowYamlPath = join(root, workflow, 'workflow.yaml');
+  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+    const workflowYamlPath = join(dir, 'workflow.yaml');
     if (!existsSync(workflowYamlPath)) continue;
     const wf = parse(readFileSync(workflowYamlPath, 'utf-8')) as { variables?: Array<{ name?: string }>; initialActivity: string; graph?: Graph };
     const declaresReview = (wf.variables ?? []).some(v => v?.name === 'is_review_mode');
     if (!declaresReview) continue; // guard applies only to workflows with a review mode
 
-    const activitiesDir = join(root, workflow, 'activities');
+    const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
     const activities = new Map<string, ActivityDef>();
     for (const entry of readdirSync(activitiesDir).sort()) {

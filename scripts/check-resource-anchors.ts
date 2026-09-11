@@ -19,12 +19,15 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
+import { resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { resolveLink } from './corpus-links.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
+const INDEX = indexCorpus(ROOT);
 
 export interface BrokenAnchor {
   /** File containing the link, relative to the workflows root. */
@@ -80,7 +83,7 @@ function* walkFiles(dir: string): Generator<string> {
 }
 
 /** Owned by `check-bootstrap-self-contained`, which refuses every corpus link on it. */
-const PRE_SESSION_RESOURCE = join('meta', 'resources', 'bootstrap-protocol.md');
+const PRE_SESSION_RESOURCE = workflowSubdir(INDEX, 'meta', join('resources', 'bootstrap-protocol.md'));
 
 /** An anchored markdown destination, once the shared reader has produced it in any spelling. */
 const ANCHORED_RE = /^([^\s#]+\.md)#([A-Za-z0-9][\w-]*)$/;
@@ -93,7 +96,7 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
     // EVERY corpus link on it — nothing can be followed before a session exists. So anything this guard
     // could report there is already a finding of that one's, and reporting it twice would make one bad
     // line yield two findings that one edit clears.
-    if (relative(ROOT, file) === PRE_SESSION_RESOURCE) continue;
+    if (file === PRE_SESSION_RESOURCE) continue;
     // Scan only rendered prose: drop fenced code blocks (template bodies carry placeholder
     // links like NN-work-package-plan.md) and inline code spans (anti-pattern docs quote
     // illustrative link forms in backticks).
@@ -122,7 +125,11 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
       if (/^[a-z][a-z0-9+.-]*:\/\//i.test(target!)) continue;
       // A template body names its file with a placeholder, which resolves to nothing on purpose.
       if (/[{]/.test(target!)) continue;
-      const targetPath = resolve(dirname(file), target);
+      // A `/<workflow>/…` link resolves through discovery; a relative one against this file.
+      const resolved = resolveLink(ROOT, file, target!, INDEX);
+      if (resolved.form === 'external') continue;
+      const targetPath = resolved.path;
+      if (targetPath === null) continue; // names no workflow the corpus holds: check:corpus-links' finding
       if (relative(ROOT, targetPath).startsWith('..' + sep)) continue; // outside the corpus
       const source = relative(ROOT, file);
       const link = `${target}#${anchor}`;

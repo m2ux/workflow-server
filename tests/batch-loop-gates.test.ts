@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { evaluateWhenExpression } from '../src/schema/when-expression.js';
 import { corpusRoot } from './corpus-root.js';
+import { workflowSubdir } from '../src/loaders/corpus-index.js';
 
 /**
  * The client activity loop's control flow (#407).
@@ -19,7 +19,7 @@ import { corpusRoot } from './corpus-root.js';
  */
 describe('client activity loop gates (#407)', () => {
   const activity = parseYaml(
-    readFileSync(join(corpusRoot(), 'meta/activities/03-dispatch-client-workflow.yaml'), 'utf8'),
+    readFileSync(workflowSubdir(corpusRoot(), 'meta', 'activities/03-dispatch-client-workflow.yaml')!, 'utf8'),
   ) as { steps: Array<{ id: string; kind: string; steps?: Array<{ id: string; when?: string }> }> };
 
   const loop = activity.steps.find((s) => s.kind === 'loop');

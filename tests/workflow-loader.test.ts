@@ -124,6 +124,14 @@ describe('workflow-loader', () => {
       // Workflow whose manifest lacks the required title/version fields.
       mkdirSync(join(fixtureDir, 'missing-fields-wf'));
       writeFileSync(join(fixtureDir, 'missing-fields-wf', 'workflow.yaml'), 'id: missing-fields-wf\n');
+
+      // Directory name and declared id disagree — discovery refuses both names.
+      mkdirSync(join(fixtureDir, 'folder-name'));
+      writeFileSync(join(fixtureDir, 'folder-name', 'workflow.yaml'), [
+        'id: declared-name',
+        'version: 1.0.0',
+        'title: Mismatched Identity',
+      ].join('\n'));
     });
 
     afterAll(() => {
@@ -170,13 +178,32 @@ describe('workflow-loader', () => {
       const { workflows, errors } = await listWorkflowsWithDiagnostics(fixtureDir);
 
       expect(workflows.map(w => w.id)).toEqual(['broken-activities-wf']);
-      expect(errors).toHaveLength(2);
+      expect(errors).toHaveLength(3);
 
       const unparsable = errors.find(e => e.file.includes('unparsable-wf'));
       expect(unparsable?.error).toBeTruthy();
 
       const missingFields = errors.find(e => e.file.includes('missing-fields-wf'));
       expect(missingFields?.error).toContain('missing required fields');
+
+      const mismatched = errors.find(e => e.file.includes('folder-name'));
+      expect(mismatched?.error).toContain("declares id 'declared-name'");
+      expect(mismatched?.error).toContain("directory named 'folder-name'");
+    });
+
+    it('loadWorkflow refuses both names when directory and declaration disagree', async () => {
+      const byDirectory = await loadWorkflow(fixtureDir, 'folder-name');
+      expect(byDirectory.success).toBe(false);
+      if (!byDirectory.success) {
+        expect(byDirectory.error.name).toBe('WorkflowValidationError');
+        expect(byDirectory.error.message).toContain("directory named 'folder-name'");
+      }
+      const byDeclared = await loadWorkflow(fixtureDir, 'declared-name');
+      expect(byDeclared.success).toBe(false);
+      if (!byDeclared.success) {
+        expect(byDeclared.error.name).toBe('WorkflowValidationError');
+        expect(byDeclared.error.message).toContain("declares id 'declared-name'");
+      }
     });
 
     it('listWorkflows still returns a plain manifest array', async () => {

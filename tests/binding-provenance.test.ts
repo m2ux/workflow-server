@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { writeWorkflowFixture } from './corpus-fixture.js';
 import {
   AMBIENT_CONTEXT_IDS,
   PROVENANCE_NOTE,
@@ -230,7 +231,7 @@ describe('buildProvenanceContext', () => {
 
   beforeAll(() => {
     workflowDir = mkdtempSync(join(tmpdir(), 'wf-provenance-test-'));
-    const tdir = join(workflowDir, 'testwf', 'techniques');
+    const tdir = join(writeWorkflowFixture(workflowDir, 'testwf'), 'techniques');
     mkdirSync(join(tdir, 'intake'), { recursive: true });
     const op = (capability: string, body: string): string =>
       `---\nmetadata:\n  version: 1.0.0\n---\n\n## Capability\n\n${capability}\n\n${body}`;

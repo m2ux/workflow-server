@@ -17,7 +17,8 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { declaredVariables } from './workflow-declarations.js';
 
@@ -94,8 +95,9 @@ function setByEarlierGate(steps: Step[], before: number): Set<string> {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const workflow of readdirSync(root).sort()) {
-    const activitiesDir = join(root, workflow, 'activities');
+  const index = indexCorpus(root);
+  for (const { id: workflow, dir } of corpusWorkflows(root, index)) {
+    const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
 
     const files = readdirSync(activitiesDir).sort().filter((e) => /\.ya?ml$/.test(e));
@@ -117,7 +119,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     // A produced name carrying a default renders that default in place of the value: not the
     // placeholder text, and not what the message meant to say either.
     const defaulted = new Set<string>();
-    for (const [name, declaration] of declaredVariables(root, workflow)) {
+    for (const [name, declaration] of declaredVariables(root, workflow, index)) {
       if (!producers.has(name)) sessionFacts.add(name);
       else if (declaration.defaultValue !== undefined) defaulted.add(name);
     }

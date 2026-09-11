@@ -42,6 +42,7 @@ import { pathToFileURL } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { createHarness, rawText } from '../tests/e2e/harness.js';
 import { corpusRoot } from '../tests/corpus-root.js';
+import { workflowSubdir } from '../src/loaders/corpus-index.js';
 import type { HistoryEntry } from '../src/schema/state.schema.js';
 
 /** One activity measured in one pass. */
@@ -215,8 +216,8 @@ async function main(): Promise<number> {
 
 /** Activity ids of a workflow, in definition-file order — the order a walk meets them. */
 function activityRoster(workflowId: string): string[] {
-  const dir = join(corpusRoot(), workflowId, 'activities');
-  if (!existsSync(dir)) throw new Error(`no activities directory for workflow '${workflowId}' under ${corpusRoot()}`);
+  const dir = workflowSubdir(corpusRoot(), workflowId, 'activities');
+  if (!dir || !existsSync(dir)) throw new Error(`no activities directory for workflow '${workflowId}' under ${corpusRoot()}`);
   const ids: string[] = [];
   for (const entry of readdirSync(dir).sort()) {
     if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;

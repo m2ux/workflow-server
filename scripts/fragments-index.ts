@@ -4,19 +4,20 @@
  * and server resolve fragment references with identical semantics (#166 B10).
  */
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { parseDefinition } from '../src/utils/serialization.js';
+import { type CorpusSource, asIndex, workflowSubdir } from '../src/loaders/corpus-index.js';
 import { WorkflowFragmentsSchema, type WorkflowFragments } from '../src/schema/workflow.schema.js';
 import type { FragmentsLookup } from '../src/loaders/fragment-resolver.js';
 
 /** Lazy, cached lookup: workflow id → its validated `fragments` block (undefined when absent/invalid). */
-export function fragmentsLookupSync(root: string): FragmentsLookup {
+export function fragmentsLookupSync(root: string, source: CorpusSource = root): FragmentsLookup {
+  const index = asIndex(source);
   const cache = new Map<string, WorkflowFragments | undefined>();
   return (workflowId) => {
     if (cache.has(workflowId)) return cache.get(workflowId);
     let fragments: WorkflowFragments | undefined;
-    const path = join(root, workflowId, 'workflow.yaml');
-    if (existsSync(path)) {
+    const path = workflowSubdir(index, workflowId, 'workflow.yaml');
+    if (path && existsSync(path)) {
       try {
         const raw = parseDefinition(readFileSync(path, 'utf-8')) as Record<string, unknown> | null;
         if (raw && raw['fragments'] !== undefined) {

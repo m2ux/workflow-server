@@ -137,6 +137,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no activity opens with a checkpoint, so no dispatch exists only to ask a question',
   },
   {
+    id: 'workflow-identity',
+    script: 'scripts/check-workflow-identity.ts',
+    npmScript: 'check:workflow-identity',
+    scope: 'corpus',
+    json: true,
+    proves: 'every workflow declares the id its directory names, so the name it is referenced by and the name it publishes are one',
+  },
+  {
     id: 'checkpoint-presentation',
     script: 'scripts/check-checkpoint-presentation.ts',
     npmScript: 'check:checkpoint-presentation',

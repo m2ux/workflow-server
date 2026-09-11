@@ -22,11 +22,12 @@
  * Run:
  *   npx tsx scripts/check-launched-workflows.ts
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { type CorpusSource, asIndex, indexCorpus } from '../src/loaders/corpus-index.js';
+import { corpusWorkflows, resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree.
@@ -94,13 +95,15 @@ function collectTechniqueRefs(node: unknown, out: string[]): void {
  * `[workflow::]group::operation`, the legacy `workflow/technique`, and a bare `technique` — each
  * resolving under some workflow's `techniques/` tree.
  */
-function techniqueBody(root: string, currentWorkflow: string, ref: string): string | null {
+function techniqueBody(source: CorpusSource, currentWorkflow: string, ref: string): string | null {
   const segs = ref.replace(/\//g, '::').split('::').filter((s) => s.length > 0);
   if (!segs.length) return null;
   const candidates: string[] = [];
   const under = (wf: string, rest: string[]): void => {
-    candidates.push(join(root, wf, 'techniques', `${rest.join('/')}.md`));
-    candidates.push(join(root, wf, 'techniques', ...rest, 'TECHNIQUE.md'));
+    const techniques = workflowSubdir(source, wf, 'techniques');
+    if (!techniques) return;
+    candidates.push(join(techniques, `${rest.join('/')}.md`));
+    candidates.push(join(techniques, ...rest, 'TECHNIQUE.md'));
   };
   under(currentWorkflow, segs);
   if (segs.length >= 2) under(segs[0]!, segs.slice(1));
@@ -111,30 +114,24 @@ function techniqueBody(root: string, currentWorkflow: string, ref: string): stri
 }
 
 /** Workflow ids the corpus holds — a launch target has to be one of them. */
-function corpusWorkflowIds(root: string): Set<string> {
+function corpusWorkflowIds(root: string, source: CorpusSource = root): Set<string> {
   const ids = new Set<string>();
-  for (const d of readdirSync(root)) {
-    const p = join(root, d);
-    if (!statSync(p).isDirectory()) continue;
-    const wfFile = join(p, 'workflow.yaml');
-    if (!existsSync(wfFile)) continue;
+  for (const { id, manifest } of corpusWorkflows(root, asIndex(source))) {
     try {
-      const wf = parseDefinition(readFileSync(wfFile, 'utf-8')) as Record<string, unknown>;
-      ids.add(typeof wf.id === 'string' ? wf.id : d);
-    } catch { ids.add(d); }
+      const wf = parseDefinition(readFileSync(manifest, 'utf-8')) as Record<string, unknown>;
+      ids.add(typeof wf.id === 'string' ? wf.id : id);
+    } catch { ids.add(id); }
   }
   return ids;
 }
 
 export function collectLaunchedWorkflowViolations(root: string = ROOT): LaunchedWorkflowViolation[] {
   const out: LaunchedWorkflowViolation[] = [];
-  const known = corpusWorkflowIds(root);
-  const wfs = readdirSync(root).filter((d) => {
-    const p = join(root, d);
-    return statSync(p).isDirectory() && existsSync(join(p, 'activities'));
-  });
-  for (const wf of wfs.sort()) {
-    const adir = join(root, wf, 'activities');
+  const index = indexCorpus(root);
+  const known = corpusWorkflowIds(root, index);
+  const wfs = corpusWorkflows(root, index).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  for (const { id: wf, dir } of wfs) {
+    const adir = join(dir, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
       const rel = relative(root, join(adir, f));
       let activity: Record<string, unknown>;
@@ -155,7 +152,7 @@ export function collectLaunchedWorkflowViolations(root: string = ROOT): Launched
       collectTechniqueRefs(activity.steps, refs);
       const composedLaunch = refs.some((r) => {
         if (r === LAUNCH_OPERATION) return false;
-        return (techniqueBody(root, wf, r) ?? '').includes('handle-sub-workflow');
+        return (techniqueBody(index, wf, r) ?? '').includes('handle-sub-workflow');
       });
 
       for (const id of declared) {

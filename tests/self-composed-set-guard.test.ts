@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectSelfComposedSetViolations } from '../scripts/check-self-composed-set.js';
 import { corpusRoot } from './corpus-root.js';
 
@@ -25,7 +26,7 @@ describe('self-composed set guard', () => {
     try {
       mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
       writeFileSync(join(root, 'wf', 'activities', '01-thing.yaml'), activityYaml);
-      return collectSelfComposedSetViolations(root);
+      return collectSelfComposedSetViolations(declareFixtureWorkflows(root));
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

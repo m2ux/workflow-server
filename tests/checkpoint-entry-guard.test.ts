@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectFindings } from '../scripts/check-checkpoint-entry.js';
 import { UnreachableCorpusError } from '../scripts/workflows-root.js';
 
@@ -21,7 +22,7 @@ describe('checkpoint-entry guard', () => {
     try {
       mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
       writeFileSync(join(root, 'wf', 'activities', '01-thing.yaml'), activityYaml);
-      return collectFindings(root);
+      return collectFindings(declareFixtureWorkflows(root));
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

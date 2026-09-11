@@ -79,6 +79,11 @@ describe('guard registry', () => {
       'scripts/check-delta.ts': 'the runner that diffs a walk against the merge-base',
       'scripts/check-session-contract.ts':
         'asks whether a run stayed inside its contracts, so it needs a session and has no corpus-wide form',
+      'scripts/check-corpus-links.ts':
+        'reads the corpus and holds at 522 findings, every one a link written before a workflow could '
+        + 'be organised into a folder and an absolute form existed to name one; enrolling it enforces '
+        + 'on definitions written against the old layout, so it runs by path until the corpus is '
+        + 'rewritten to the anchored form',
       'scripts/check-message-binding.ts':
         'reads the corpus and holds at 107 findings the engine could not have avoided until '
         + 'yield_checkpoint could publish a gate activity\'s own outputs; enrolling it enforces on '

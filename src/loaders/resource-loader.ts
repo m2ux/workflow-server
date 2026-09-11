@@ -5,6 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
 import { logInfo, logError } from '../logging.js';
 import type { Resource } from '../schema/resource.schema.js';
+import { type CorpusSource, indexCorpus, workflowSubdir } from './corpus-index.js';
 
 export { ResourceNotFoundError } from '../errors.js';
 export type { Resource };
@@ -28,9 +29,9 @@ function extractFrontmatterScalar(content: string, key: string): string | undefi
 /**
  * Resolve the resource directory for a workflow.
  */
-function getResourceDir(workflowDir: string, workflowId: string): string | null {
-  const resourceDir = join(workflowDir, workflowId, 'resources');
-  if (existsSync(resourceDir)) return resourceDir;
+function getResourceDir(source: CorpusSource, workflowId: string): string | null {
+  const resourceDir = workflowSubdir(source, workflowId, 'resources');
+  if (resourceDir && existsSync(resourceDir)) return resourceDir;
   return null;
 }
 
@@ -42,8 +43,8 @@ function getResourceDir(workflowDir: string, workflowId: string): string | null 
  *      caller passed a name that does not equal the file slug.
  * Returns the absolute path to the resource file, or null.
  */
-async function findResourceSkillMd(workflowDir: string, workflowId: string, id: string): Promise<string | null> {
-  const resourceDir = getResourceDir(workflowDir, workflowId);
+async function findResourceSkillMd(source: CorpusSource, workflowId: string, id: string): Promise<string | null> {
+  const resourceDir = getResourceDir(source, workflowId);
   if (!resourceDir) return null;
 
   // 1. Flat file match by slug: `<resourceDir>/<id>.md`.
@@ -70,7 +71,7 @@ async function findResourceSkillMd(workflowDir: string, workflowId: string, id: 
 /**
  * Read a resource by id and return raw markdown content with format metadata.
  *
- * Resources live exclusively under `<workflowDir>/<workflowId>/resources/<id>/SKILL.md`.
+ * Resources live exclusively under the workflow's own `resources/<id>/SKILL.md`.
  * The legacy flat `NN-name.md` shape is no longer supported.
  */
 export async function readResourceRaw(
@@ -78,10 +79,11 @@ export async function readResourceRaw(
   workflowId: string,
   resourceId: string,
 ): Promise<Result<{ content: string; format: 'markdown' }, ResourceNotFoundError>> {
-  const resourceDir = getResourceDir(workflowDir, workflowId);
+  const index = indexCorpus(workflowDir);
+  const resourceDir = getResourceDir(index, workflowId);
   if (!resourceDir) return err(new ResourceNotFoundError(resourceId, workflowId));
 
-  const folderPath = await findResourceSkillMd(workflowDir, workflowId, resourceId);
+  const folderPath = await findResourceSkillMd(index, workflowId, resourceId);
   if (folderPath) {
     try {
       const content = await readFile(folderPath, 'utf-8');
