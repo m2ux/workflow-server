@@ -11,6 +11,7 @@ export type { PathPresentationMap } from './utils/path-presentation.js';
 export {
   buildPathPresentationMap,
   presentPathToAgent,
+  receivePathFromAgent,
   isPathUnderRoot,
   collapseOwnerRepoUnderRoot,
 } from './utils/path-presentation.js';
