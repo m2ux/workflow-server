@@ -74,7 +74,7 @@ import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
 import { flattenActivitySteps, techniqueName } from '../src/schema/activity.schema.js';
 import type { Technique } from '../src/schema/technique.schema.js';
-import { requireWorkflowsRoot } from './workflows-root.js';
+import { requireWorkflowsRoot } from '../guards/workflows-root.js';
 
 /** The analysis run through the middle of the main workflow — the best measured batch candidate. */
 export const DEFAULT_RUN = ['implementation-analysis', 'plan-prepare', 'assumptions-review'];

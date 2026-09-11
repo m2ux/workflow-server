@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectFindings } from '../scripts/check-branch-as-step.js';
+import { collectFindings } from '../guards/check-branch-as-step.js';
 import { corpusRoot } from './corpus-root.js';
 
 /**

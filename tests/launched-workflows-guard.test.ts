@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collectLaunchedWorkflowViolations } from '../scripts/check-launched-workflows.js';
+import { collectLaunchedWorkflowViolations } from '../guards/check-launched-workflows.js';
 import { corpusRoot } from './corpus-root.js';
 
 /**

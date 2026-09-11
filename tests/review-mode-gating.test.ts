@@ -3,7 +3,7 @@ import {
   ACCEPTED_HEADLESS_AUTO_ADVANCE,
   reachableInReview,
   type ActivityDef,
-} from '../scripts/check-review-mode-gating.js';
+} from '../guards/check-review-mode-gating.js';
 import type { Graph } from '../src/schema/workflow.schema.js';
 
 /**

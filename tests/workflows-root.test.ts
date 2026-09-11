@@ -8,7 +8,7 @@ import {
   resolveWorkflowsRoot,
   resolveWorkflowsRootWithOrigin,
   UnreachableCorpusError,
-} from '../scripts/workflows-root.js';
+} from '../guards/workflows-root.js';
 
 /**
  * The guard scripts default to the repo's own ../workflows but must be redirectable to a

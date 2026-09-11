@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { TRIAGE_PATH } from '../scripts/check-section-framing.js';
+import { TRIAGE_PATH } from '../guards/check-section-framing.js';
 
 /**
  * The `section-framing` guard reports untriaged sites; the judgement for each lives in

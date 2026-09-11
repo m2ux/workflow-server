@@ -1,0 +1,140 @@
+#!/usr/bin/env npx tsx
+/**
+ * Validate all activity files in a workflow folder against the activity schema
+ * 
+ * Usage: npx tsx guards/validate-activities.ts [workflow-folder]
+ *
+ * Examples:
+ *   npx tsx guards/validate-activities.ts workflows/work-package
+ *   npx tsx guards/validate-activities.ts workflows/meta
+ *   npx tsx guards/validate-activities.ts workflows  # validates all workflows
+ *   npx tsx guards/validate-activities.ts            # the resolved corpus root
+ *   npx tsx guards/validate-activities.ts --root /wt/workflows
+ *
+ * With no positional folder the target comes from the shared resolver (`--root` > WORKFLOWS_DIR >
+ * default), so this validator can be aimed at a worktree like every other guard. Until #327 it read
+ * a positional path only, which is why nothing in package.json invoked it and it was run by hand.
+ */
+
+import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
+import { join, resolve, basename } from 'path';
+import { pathToFileURL } from 'url';
+import { parseDefinition } from '../src/utils/serialization.js';
+import { safeValidateActivity, populateStepIds } from '../src/schema/activity.schema.js';
+import { requireRootOrExit } from './guard-protocol.js';
+import { corpusWorkflows } from './workflows-root.js';
+
+export interface ValidationResult {
+  workflow: string;
+  file: string;
+  passed: boolean;
+  errors?: string[];
+}
+
+export function validateActivityFile(filePath: string): { passed: boolean; errors?: string[] } {
+  const content = readFileSync(filePath, 'utf-8');
+  try {
+    const decoded = parseDefinition(content);
+    if (decoded == null || typeof decoded !== 'object') {
+      return { passed: false, errors: ['YAML decode returned non-object value'] };
+    }
+    const result = safeValidateActivity(decoded);
+    if (result.success) {
+      // Surface resolved step-id collisions and unresolvable (no id, no technique) steps.
+      try {
+        populateStepIds(result.data);
+      } catch (e: unknown) {
+        return { passed: false, errors: [(e as Error).message] };
+      }
+      return { passed: true };
+    } else {
+      return {
+        passed: false,
+        errors: result.error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`),
+      };
+    }
+  } catch (e: unknown) {
+    const error = e as Error;
+    return { passed: false, errors: [`Parse error: ${error.message}`] };
+  }
+}
+
+/**
+ * The workflow directories to validate: the one named directly, or every workflow the corpus holds
+ * — at whatever depth it organises them.
+ */
+function findWorkflowDirs(basePath: string): string[] {
+  const activitiesPath = join(basePath, 'activities');
+  if (existsSync(activitiesPath) && statSync(activitiesPath).isDirectory()) {
+    return [basePath];
+  }
+  return corpusWorkflows(basePath)
+    .map(({ dir }) => dir)
+    .filter((dir) => existsSync(join(dir, 'activities')));
+}
+
+const isDirectInvocation =
+  process.argv[1] !== undefined &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectInvocation) {
+  const positional = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : undefined;
+  const inputPath = positional
+    ? resolve(positional)
+    : requireRootOrExit('activities', resolve(import.meta.dirname, '../workflows'));
+
+  const workflowDirs = findWorkflowDirs(inputPath);
+
+  if (workflowDirs.length === 0) {
+    console.error(`No workflow directories found in ${inputPath}`);
+    console.error('A workflow directory must contain an "activities" subfolder.');
+    process.exit(2);
+  }
+
+  const results: ValidationResult[] = [];
+  let totalPassed = 0;
+  let totalFailed = 0;
+
+  for (const workflowDir of workflowDirs) {
+    const workflowName = basename(workflowDir);
+    const activitiesDir = join(workflowDir, 'activities');
+    const files = readdirSync(activitiesDir).filter(f => f.endsWith('.yaml'));
+
+    console.log(`\n[INFO] ${workflowName} (${files.length} activities)`);
+
+    for (const file of files) {
+      const filePath = join(activitiesDir, file);
+      const result = validateActivityFile(filePath);
+
+      results.push({
+        workflow: workflowName,
+        file,
+        passed: result.passed,
+        errors: result.errors,
+      });
+
+      if (result.passed) {
+        console.log(`   [PASS] ${file}`);
+        totalPassed++;
+      } else {
+        console.log(`   [FAIL] ${file}`);
+        for (const error of result.errors || []) {
+          console.log(`      - ${error}`);
+        }
+        totalFailed++;
+      }
+    }
+  }
+
+  console.log(`\n${'─'.repeat(50)}`);
+  console.log(`Total: ${totalPassed} passed, ${totalFailed} failed`);
+
+  if (totalFailed > 0) {
+    console.log('\nFailed activities:');
+    for (const r of results.filter(r => !r.passed)) {
+      console.log(`  - ${r.workflow}/${r.file}`);
+    }
+  }
+
+  process.exit(totalFailed > 0 ? 1 : 0);
+}

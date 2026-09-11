@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { cpSync, mkdirSync, mkdtempSync, renameSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collect } from '../scripts/check-pinned-corpus-paths.js';
+import { collect } from '../guards/check-pinned-corpus-paths.js';
 import { corpusRoot } from './corpus-root.js';
 
 /**

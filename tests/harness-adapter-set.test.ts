@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectFindings } from '../scripts/check-harness-adapter-set.js';
+import { collectFindings } from '../guards/check-harness-adapter-set.js';
 
 /**
  * The harness adapters are reached through the VALUE of a variable — a harness kind becomes a file and an

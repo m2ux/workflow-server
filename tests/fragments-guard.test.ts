@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { resolve } from 'node:path';
-import { collectFragmentViolations } from '../scripts/check-fragments.js';
+import { collectFragmentViolations } from '../guards/check-fragments.js';
 
 /**
  * Shared-fragment guard (B10, issue #166): every checkpoint `ref` resolves, every declared fragment

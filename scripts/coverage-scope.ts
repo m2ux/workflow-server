@@ -30,7 +30,7 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, requireWorkflowsRoot } from '../guards/workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = join(DIR, '..', 'workflows');

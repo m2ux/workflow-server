@@ -7,7 +7,7 @@ name: Verify
 # or agent remembered to invoke them, so coverage was a function of who remembered. That is how the
 # two most expensive defects of the #324 run reached a live session (issue #327 R2).
 #
-# `npm run check:all` walks the guard registry in scripts/guards.ts, so a guard added there is
+# `npm run check:all` walks the guard registry in guards/guards.ts, so a guard added there is
 # enforced here without touching this file.
 
 on:

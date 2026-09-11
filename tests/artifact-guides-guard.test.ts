@@ -3,7 +3,7 @@ import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectUnmappedArtifacts } from '../scripts/check-artifact-guides.js';
+import { collectUnmappedArtifacts } from '../guards/check-artifact-guides.js';
 
 /**
  * Creation-guide mapping guard (#403 W5). Design principle 28 and the `no-template-creation-guide`

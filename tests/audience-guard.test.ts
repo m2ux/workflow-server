@@ -3,7 +3,7 @@ import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectAudienceViolations } from '../scripts/check-audience.js';
+import { collectAudienceViolations } from '../guards/check-audience.js';
 
 /**
  * Audience convention guard (#224 V4): an output declared `audience: agent` that also carries an

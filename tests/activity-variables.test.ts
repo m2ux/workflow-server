@@ -9,7 +9,7 @@ import {
   type ActivityGraph,
 } from '../src/utils/activity-variables.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
-import { collectFindings } from '../scripts/check-activity-variables.js';
+import { collectFindings } from '../guards/check-activity-variables.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
 
 /**

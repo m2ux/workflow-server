@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { loadResourceDelivery } from '../src/utils/resource-delivery.js';
-import { resolveWorkflowsRoot } from '../scripts/workflows-root.js';
+import { resolveWorkflowsRoot } from '../guards/workflows-root.js';
 import { join, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import { parse } from 'yaml';

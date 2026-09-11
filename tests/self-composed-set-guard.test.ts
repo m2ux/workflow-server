@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectSelfComposedSetViolations } from '../scripts/check-self-composed-set.js';
+import { collectSelfComposedSetViolations } from '../guards/check-self-composed-set.js';
 import { corpusRoot } from './corpus-root.js';
 
 /**

@@ -2,8 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { resolveLink } from '../scripts/corpus-links.js';
-import { collectFindings } from '../scripts/check-corpus-links.js';
+import { resolveLink } from '../guards/corpus-links.js';
+import { collectFindings } from '../guards/check-corpus-links.js';
 
 /**
  * A reference out of a workflow names the workflow; a reference within one is an ordinary relative

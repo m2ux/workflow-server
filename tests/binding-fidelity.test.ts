@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../scripts/check-binding-fidelity.js';
+import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../guards/check-binding-fidelity.js';
 
 /**
  * Binding-fidelity gate. The corpus carries triaged debt, recorded per finding with a verdict and a

@@ -232,10 +232,10 @@ npm run check:all -- --only binding-fidelity,refs
 npm run check:all -- --root /path/to/worktree/workflows
 ```
 
-The set of guards is [`scripts/guards.ts`](../scripts/guards.ts). Adding an entry there enforces the
+The set of guards is [`guards/guards.ts`](../guards/guards.ts). Adding an entry there enforces the
 guard in `check:all`, in `check:delta`, and in CI — nothing else needs editing. Each guard is still
 runnable on its own (`npm run check:binding`, `npm run check:refs`, …) and reports through one
-protocol ([`scripts/guard-protocol.ts`](../scripts/guard-protocol.ts)):
+protocol ([`guards/guard-protocol.ts`](../guards/guard-protocol.ts)):
 
 | Exit | Meaning |
 |------|---------|

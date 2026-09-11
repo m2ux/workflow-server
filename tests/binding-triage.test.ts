@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { loadTriage } from '../scripts/check-binding-fidelity.js';
+import { loadTriage } from '../guards/check-binding-fidelity.js';
 
 /**
  * The guard holds the ledger against the corpus: a finding with no entry is untriaged, an entry

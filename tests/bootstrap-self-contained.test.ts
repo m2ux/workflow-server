@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectFindings, MIN_PROSE_LINES } from '../scripts/check-bootstrap-self-contained.js';
+import { collectFindings, MIN_PROSE_LINES } from '../guards/check-bootstrap-self-contained.js';
 
 /**
  * Bootstrap self-containment guard: the text `discover` returns before a session exists must send the
