@@ -94,9 +94,9 @@ function boundMaps(root: string): MapRef[] {
         const anchor = m[2];
         // A ref naming no workflow the corpus holds keeps an unresolvable path, which the caller
         // reports as a missing home rather than silently skipping.
-        const path = anchor
-          ? workflowSubdir(root, workflow, join(tail, 'TECHNIQUE.md')) ?? join(root, workflow, tail, 'TECHNIQUE.md')
-          : workflowSubdir(root, workflow, join('resources', `${tail}.md`)) ?? join(root, workflow, 'resources', `${tail}.md`);
+        const path = (anchor
+          ? workflowSubdir(root, workflow!, join(tail, 'TECHNIQUE.md'))
+          : workflowSubdir(root, workflow!, join('resources', `${tail}.md`))) ?? '';
         const ref = anchor ? `${m[1]}#${anchor}` : m[1];
         byRef.set(ref, { ref, workflow, path, ...(anchor ? { anchor } : {}) });
       }

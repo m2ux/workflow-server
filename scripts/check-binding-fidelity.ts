@@ -371,7 +371,7 @@ const steps: Step[] = [];
  * visible to the read scan, so an output whose only consumer was a `when` gate or a validate gate
  * read as dead — the opposite of dead (#327 R3).
  */
-const expressionConsumes: Array<{ rel: string; stepId: string; name: string }> = [];
+const expressionConsumes: Array<{ rel: string; wf: string; stepId: string; name: string }> = [];
 
 /**
  * Namespaces naming the ENVIRONMENT rather than the variable bag: `gh.auth.status == 0` asks the
@@ -427,10 +427,10 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
   // (`fragment_references_issue != false`, `has_debt_markers == true`) — the one place the value is
   // enforced or the gate that consumes it.
   if (o.action === 'validate' && typeof o.target === 'string') {
-    for (const name of expressionReads(o.target)) expressionConsumes.push({ rel, stepId: here, name });
+    for (const name of expressionReads(o.target)) expressionConsumes.push({ rel, wf, stepId: here, name });
   }
   if (typeof o.when === 'string') {
-    for (const name of expressionReads(o.when)) expressionConsumes.push({ rel, stepId: here, name });
+    for (const name of expressionReads(o.when)) expressionConsumes.push({ rel, wf, stepId: here, name });
   }
   if (o.setVariable && typeof o.setVariable === 'object') Object.keys(o.setVariable).forEach((k) => produced(wf).add(k));
   const eff = o.effect as { setVariable?: object } | undefined;
@@ -441,12 +441,12 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
   // through no other name is live. `over` reaches a field of a produced object as often as the
   // object itself (`implementation_plan.tasks`), so it resolves against its head like any read.
   if (typeof o.over === 'string') {
-    expressionConsumes.push({ rel, stepId: here, name: o.over.split('.')[0]! });
+    expressionConsumes.push({ rel, wf, stepId: here, name: o.over.split('.')[0]! });
   }
   for (const v of Object.values(o)) walkSteps(wf, rel, v, activityId, here);
 }
 
-type Read = { rel: string; line: number; full: string; head: string; kind: 'technique' | 'activity' };
+type Read = { rel: string; wf: string; line: number; full: string; head: string; kind: 'technique' | 'activity' };
 const reads: Read[] = [];
 
 /**
@@ -470,7 +470,7 @@ function blankFences(content: string): string {
     .join('\n');
 }
 
-function collectReads(rel: string, raw: string, kind: 'technique' | 'activity'): void {
+function collectReads(wf: string, rel: string, raw: string, kind: 'technique' | 'activity'): void {
   const content = blankFences(raw);
   const locals = new Set<string>();
   const reIntro = new RegExp(`\\{\\$(${IDENTIFIER_PATTERN})\\}`, 'g'); let mi: RegExpExecArray | null;
@@ -480,10 +480,10 @@ function collectReads(rel: string, raw: string, kind: 'technique' | 'activity'):
   const reCondVar = new RegExp(`^\\s*variable:\\s*"?(${IDENTIFIER_PATTERN}(?:\\.[a-zA-Z0-9_]+)*)"?`);
   content.split('\n').forEach((line, i) => {
     const re = new RegExp(reToken.source, 'g'); let m: RegExpExecArray | null;
-    while ((m = re.exec(line))) { if (m[1] === '$') continue; reads.push({ rel, line: i + 1, full: m[2], head: m[2].split('.')[0], kind }); }
+    while ((m = re.exec(line))) { if (m[1] === '$') continue; reads.push({ rel, wf, line: i + 1, full: m[2]!, head: m[2]!.split('.')[0]!, kind }); }
     if (kind === 'activity') {
       const cv = reCondVar.exec(line);
-      if (cv) reads.push({ rel, line: i + 1, full: cv[1], head: cv[1].split('.')[0], kind });
+      if (cv) reads.push({ rel, wf, line: i + 1, full: cv[1]!, head: cv[1]!.split('.')[0]!, kind });
     }
   });
 }
@@ -523,7 +523,7 @@ for (const wf of workflows) {
       if (st.isDirectory()) { if (e !== 'resources') walk(p); }
       else if (e.endsWith('.md')) {
         const raw = readFileSync(p, 'utf-8');
-        collectReads(relative(ROOT, p), raw, 'technique');
+        collectReads(wf, relative(ROOT, p), raw, 'technique');
         collectArtifactTemplateTokens(relative(ROOT, p), raw);
       }
     }
@@ -558,7 +558,7 @@ for (const wf of allWf) {
   // that is the value's one authoritative consumer. Scanning only activities left those reads
   // invisible, so the id they name read as dead.
   const wfYaml = workflowSubdir(ROOT, wf, 'workflow.yaml');
-  if (wfYaml && existsSync(wfYaml)) collectReads(relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
+  if (wfYaml && existsSync(wfYaml)) collectReads(wf, relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
   const adir = workflowSubdir(ROOT, wf, 'activities');
   if (!adir || !existsSync(adir)) continue;
   for (const path of activityFiles(adir)) {
@@ -570,7 +570,7 @@ for (const wf of allWf) {
     try {
       raw = injectCheckpointFragmentBodies(raw, (ref) => resolveCheckpointFragment(fragmentsLookup, wf, ref));
     } catch { /* check:fragments reports unresolved refs */ }
-    collectReads(rel, raw, 'activity');
+    collectReads(wf, rel, raw, 'activity');
     try {
       const dec = parseDefinition(raw);
       const activityId = dec && typeof dec === 'object' && typeof (dec as { id?: unknown }).id === 'string' ? (dec as { id: string }).id : '';
@@ -800,7 +800,7 @@ export function collectViolations(): Violation[] {
     if (PLACEHOLDER.has(r.head)) continue;
     const locals = fileLocals.get(r.rel) ?? new Set<string>();
     if (locals.has(r.head)) continue;
-    const wf = r.rel.split('/')[0]!;
+    const wf = r.wf;
     if (scopeOf(wf).has(r.head)) continue;
     // A branch container is producible at member grain: a read that omits the slot index addresses
     // nothing, so it is not satisfied here and stays reported.
@@ -818,7 +818,7 @@ export function collectViolations(): Violation[] {
   // nothing produces was accepted and could never fire (#341 R1, the #324 A2 class).
   for (const e of expressionConsumes) {
     if (PLACEHOLDER.has(e.name)) continue;
-    const wf = e.rel.split('/')[0]!;
+    const wf = e.wf;
     if (scopeOf(wf).has(e.name)) continue;
     v.push({
       check: 'read-resolution', site: `${e.rel}[${e.stepId}]`,

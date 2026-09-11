@@ -34,7 +34,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { assertScanned, requireWorkflowsRoot, UnreachableCorpusError, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, toLines } from './markdown-refs.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES } from '../src/loaders/core-ops.js';
@@ -48,7 +48,13 @@ const MAP_NAME = 'resolve-harness-operation.md';
 
 /** The group directory, wherever the corpus keeps the meta workflow. */
 function groupDir(root: string): string {
-  return workflowSubdir(root, 'meta', GROUP) ?? join(root, 'meta', GROUP);
+  const dir = workflowSubdir(root, 'meta', GROUP);
+  if (!dir) {
+    throw new UnreachableCorpusError(
+      `the corpus holds no meta workflow, so the harness-compat group cannot be measured.`,
+    );
+  }
+  return dir;
 }
 
 /** A file inside the group, as a path from the corpus root — what a finding cites. */

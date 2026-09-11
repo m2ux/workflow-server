@@ -27,6 +27,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { requireRootOrExit } from './guard-protocol.js';
+import { UnreachableCorpusError } from './workflows-root.js';
 import { workflowLocation } from '../src/loaders/corpus-index.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -34,7 +35,10 @@ const DIR = fileURLToPath(new URL('.', import.meta.url));
 // review, not the repo's own submodule (issue #327 S2); an unreachable root exits 2 rather than
 // yielding an empty, reassuring result.
 const CORPUS = requireRootOrExit('prism-lens-reachability', join(DIR, '..', 'workflows'));
-const PRISM = workflowLocation(CORPUS, 'prism')?.dir ?? join(CORPUS, 'prism');
+const PRISM = workflowLocation(CORPUS, 'prism')?.dir;
+if (!PRISM) {
+  throw new UnreachableCorpusError(`the corpus holds no prism workflow, so lens reachability cannot be measured.`);
+}
 const RESOURCES = join(PRISM, 'resources');
 const PLAN = join(PRISM, 'techniques', 'plan-analysis.md');
 const PORTFOLIO = join(PRISM, 'techniques', 'portfolio-analysis.md');
