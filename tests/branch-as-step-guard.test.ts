@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectFindings } from '../guards/check-branch-as-step.js';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * branch-as-step guard: a conditional caveat in a technique Protocol is a `>` note, not an indented
@@ -129,7 +129,7 @@ describe('branch-as-step guard', () => {
    * that. A ceiling would let the count sit wherever it landed, which is the state this guard exists
    * to end.
    */
-  it('holds the corpus clean of caveats written as sub-bullets', () => {
-    expect(collectFindings(corpusRoot())).toEqual([]);
+  it.skipIf(!liveCorpusRoot())('holds the corpus clean of caveats written as sub-bullets', () => {
+    expect(collectFindings(liveCorpusRoot()!)).toEqual([]);
   });
 });

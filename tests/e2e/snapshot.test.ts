@@ -14,7 +14,7 @@ import { declaredSteps, stepCoverage } from './coverage.js';
 import { expectStampFresh } from '../stamp-freshness.js';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { corpusRoot } from '../corpus-root.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 import { workflowSubdir } from '../../src/loaders/corpus-index.js';
 
 /**
@@ -24,7 +24,7 @@ import { workflowSubdir } from '../../src/loaders/corpus-index.js';
  * chain: filename → server artifactPrefix → get_workflow exposure → robot application.
  */
 function expectedActivityPrefixes(): Map<string, string> {
-  const dir = workflowSubdir(corpusRoot(), 'work-package', 'activities')!;
+  const dir = workflowSubdir(liveCorpusRoot()!, 'work-package', 'activities')!;
   const map = new Map<string, string>();
   for (const f of readdirSync(dir)) {
     const m = f.match(/^(\d+)-(.+)\.yaml$/);
@@ -40,7 +40,7 @@ function expectedActivityPrefixes(): Map<string, string> {
  * snapshot diff). Run retroactively against a legacy (main) build, the same
  * snapshots reveal exactly what the skills→techniques migration changed.
  */
-describe('walk baseline corpus stamp', () => {
+describe.skipIf(!liveCorpusRoot())('walk baseline corpus stamp', () => {
   // These snapshots describe a walk through the corpus, so they are only meaningful against the corpus
   // they were generated from. Checking the stamp first turns "six unrelated tests are red" into one
   // named cause (#327 S3).
@@ -64,7 +64,7 @@ const policies = [
   researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
 ];
 
-describe('work-package walk snapshots (baseline)', () => {
+describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () => {
   let h: Harness;
   /**
    * Every walk, run once before any test reads one.

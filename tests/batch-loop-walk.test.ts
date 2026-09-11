@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { evaluateWhenExpression } from '../src/schema/when-expression.js';
 import { evaluateCondition, validateCondition } from '../src/schema/condition.schema.js';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
 
 /**
@@ -130,7 +130,7 @@ interface LoopDef extends OuterStep { steps: LoopStep[] }
 
 function activityDef(): { steps: OuterStep[] } {
   return parseYaml(
-    readFileSync(workflowSubdir(corpusRoot(), 'meta', 'activities/03-dispatch-client-workflow.yaml')!, 'utf8'),
+    readFileSync(workflowSubdir(liveCorpusRoot()!, 'meta', 'activities/03-dispatch-client-workflow.yaml')!, 'utf8'),
   ) as { steps: OuterStep[] };
 }
 
@@ -229,7 +229,7 @@ const WALK_CAP = 20;
  */
 function longestWorkflowActivityCount(): number {
   let most = 0;
-  for (const { dir: workflowDir } of indexCorpus(corpusRoot()).workflows.values()) {
+  for (const { dir: workflowDir } of indexCorpus(liveCorpusRoot()!).workflows.values()) {
     const dir = join(workflowDir, 'activities');
     if (!existsSync(dir)) continue;
     most = Math.max(most, readdirSync(dir).filter((f) => f.endsWith('.yaml')).length);
@@ -238,7 +238,7 @@ function longestWorkflowActivityCount(): number {
   return most;
 }
 
-describe('client activity loop walked (#407)', () => {
+describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
   it('carries the frame a batch of any length needs, outside the body', () => {
     const def = activityDef();
 

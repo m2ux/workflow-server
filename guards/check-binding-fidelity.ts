@@ -60,8 +60,8 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { assertScanned, corpusWorkflows, ledgerPath, workflowSubdir } from './workflows-root.js';
-import { indexCorpus, workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
+import { assertScanned, corpusWorkflows, ledgerPath, resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { indexCorpus, workflowIdFromCorpusPath, type CorpusIndex } from '../src/loaders/corpus-index.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
 
@@ -70,11 +70,15 @@ import { spawnSync } from 'node:child_process';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Corpus root defaults to the repo's own ../workflows; pass `--root <path>` or set WORKFLOWS_DIR
 // to check a dedicated worktree's workflows instead (issue #160 follow-up #1). An unreachable or
-// empty root throws rather than yielding an empty, reassuring result (#327 S2).
-const ROOT = requireRootOrExit('binding-fidelity', join(DIR, '..', 'workflows'));
-const INDEX = indexCorpus(ROOT);
+// empty root throws rather than yielding an empty, reassuring result (#327 S2). Path arithmetic is
+// eager so `loadTriage` can see whether the ledger file is present; the walk itself waits until
+// `ensureIndexed`, so importing this module does not require a live corpus.
+const DEFAULT_ROOT = join(DIR, '..', 'workflows');
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
+let INDEX: CorpusIndex = { workflows: new Map(), ambiguous: [] };
 const TRIAGE = ledgerPath(ROOT, 'binding-fidelity-triage.json');
 const META = 'meta';
+let indexed = false;
 
 /* ----------------------------- signature parsing ----------------------------- */
 type InputMeta = { hasDefault: boolean; optional: boolean };
@@ -192,9 +196,7 @@ function buildRegistry(wf: string): void {
   declaredByWf.set(wf, declared);
 }
 
-const workflows = corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
-assertScanned(workflows.length, 'workflows with a techniques/ folder', ROOT);
-for (const wf of workflows) buildRegistry(wf);
+let workflows: string[] = [];
 
 function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry; homeWf: string; key: string } | null {
   // Cross-workflow canonical prefix (mirrors the server's readTechnique `::` cross-workflow branch in
@@ -515,25 +517,6 @@ function collectArtifactTemplateTokens(rel: string, raw: string): void {
   if (names.size) artifactTemplateTokens.set(rel, names);
 }
 
-// techniques
-for (const wf of workflows) {
-  const walk = (dir: string): void => {
-    for (const e of readdirSync(dir)) {
-      const p = join(dir, e); const st = statSync(p);
-      if (st.isDirectory()) { if (e !== 'resources') walk(p); }
-      else if (e.endsWith('.md')) {
-        const raw = readFileSync(p, 'utf-8');
-        collectReads(wf, relative(ROOT, p), raw, 'technique');
-        collectArtifactTemplateTokens(relative(ROOT, p), raw);
-      }
-    }
-  };
-  const techniques = workflowSubdir(INDEX, wf, 'techniques');
-  if (techniques) walk(techniques);
-}
-// activities + workflow vars
-const fragmentsLookup = fragmentsLookupSync(ROOT, INDEX);
-const allWf = new Set([...workflows, ...corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'activities'))).map(({ id }) => id)]);
 /**
  * Every activity file under a workflow's `activities/`, INCLUDING nested library subdirectories.
  * The server's own `loadActivitiesFromDir` is deliberately non-recursive (a subdirectory is a
@@ -551,32 +534,83 @@ function activityFiles(dir: string): string[] {
   return out;
 }
 
-for (const wf of allWf) {
-  collectWorkflowVars(wf);
-  // workflow.yaml is a reader too: its `rules` and `description` prose interpolates declared ids
-  // (`When {headless_mode} is true, a checkpoint declaring both resolves to its defaultOption`), and
-  // that is the value's one authoritative consumer. Scanning only activities left those reads
-  // invisible, so the id they name read as dead.
-  const wfYaml = workflowSubdir(INDEX, wf, 'workflow.yaml');
-  if (wfYaml && existsSync(wfYaml)) collectReads(wf, relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
-  const adir = workflowSubdir(INDEX, wf, 'activities');
-  if (!adir || !existsSync(adir)) continue;
-  for (const path of activityFiles(adir)) {
-    const rel = relative(ROOT, path); let raw = readFileSync(path, 'utf-8');
-    // Materialize checkpoint fragment refs (#166 B10) before analysis, so fragment-declared
-    // setVariable producers and message/condition reads attribute to the referencing activity —
-    // the same view the server delivers. An unresolved ref is check:fragments' finding; the
-    // file is then analyzed as authored.
-    try {
-      raw = injectCheckpointFragmentBodies(raw, (ref) => resolveCheckpointFragment(fragmentsLookup, wf, ref));
-    } catch { /* check:fragments reports unresolved refs */ }
-    collectReads(wf, rel, raw, 'activity');
-    try {
-      const dec = parseDefinition(raw);
-      const activityId = dec && typeof dec === 'object' && typeof (dec as { id?: unknown }).id === 'string' ? (dec as { id: string }).id : '';
-      walkSteps(wf, rel, dec, activityId);
-    } catch { /* validate-workflow-yaml's job */ }
+let allWf = new Set<string>();
+let crossWorkflowConsumers = new Map<string, Set<string>>();
+let dispatchedWorkflows = new Map<string, Set<string>>();
+
+function ensureIndexed(): void {
+  if (indexed) return;
+  indexed = true;
+  INDEX = indexCorpus(ROOT);
+  workflows = corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
+  assertScanned(workflows.length, 'workflows with a techniques/ folder', ROOT);
+  for (const wf of workflows) buildRegistry(wf);
+
+  for (const wf of workflows) {
+    const walk = (dir: string): void => {
+      for (const e of readdirSync(dir)) {
+        const p = join(dir, e); const st = statSync(p);
+        if (st.isDirectory()) { if (e !== 'resources') walk(p); }
+        else if (e.endsWith('.md')) {
+          const raw = readFileSync(p, 'utf-8');
+          collectReads(wf, relative(ROOT, p), raw, 'technique');
+          collectArtifactTemplateTokens(relative(ROOT, p), raw);
+        }
+      }
+    };
+    const techniques = workflowSubdir(INDEX, wf, 'techniques');
+    if (techniques) walk(techniques);
   }
+
+  const fragmentsLookup = fragmentsLookupSync(ROOT, INDEX);
+  allWf = new Set([...workflows, ...corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'activities'))).map(({ id }) => id)]);
+  for (const wf of allWf) {
+    collectWorkflowVars(wf);
+    // workflow.yaml is a reader too: its `rules` and `description` prose interpolates declared ids
+    // (`When {headless_mode} is true, a checkpoint declaring both resolves to its defaultOption`), and
+    // that is the value's one authoritative consumer. Scanning only activities left those reads
+    // invisible, so the id they name read as dead.
+    const wfYaml = workflowSubdir(INDEX, wf, 'workflow.yaml');
+    if (wfYaml && existsSync(wfYaml)) collectReads(wf, relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
+    const adir = workflowSubdir(INDEX, wf, 'activities');
+    if (!adir || !existsSync(adir)) continue;
+    for (const path of activityFiles(adir)) {
+      const rel = relative(ROOT, path); let raw = readFileSync(path, 'utf-8');
+      // Materialize checkpoint fragment refs (#166 B10) before analysis, so fragment-declared
+      // setVariable producers and message/condition reads attribute to the referencing activity —
+      // the same view the server delivers. An unresolved ref is check:fragments' finding; the
+      // file is then analyzed as authored.
+      try {
+        raw = injectCheckpointFragmentBodies(raw, (ref) => resolveCheckpointFragment(fragmentsLookup, wf, ref));
+      } catch { /* check:fragments reports unresolved refs */ }
+      collectReads(wf, rel, raw, 'activity');
+      try {
+        const dec = parseDefinition(raw);
+        const activityId = dec && typeof dec === 'object' && typeof (dec as { id?: unknown }).id === 'string' ? (dec as { id: string }).id : '';
+        walkSteps(wf, rel, dec, activityId);
+      } catch { /* validate-workflow-yaml's job */ }
+    }
+  }
+
+  const reach = new Map<string, Set<string>>();
+  for (const s of steps) {
+    const r = resolve(s.technique, s.wf, s.activityId);
+    if (!r || r.homeWf === s.wf) continue;
+    let into = reach.get(r.homeWf);
+    if (!into) { into = new Set(); reach.set(r.homeWf, into); }
+    into.add(s.wf);
+  }
+  crossWorkflowConsumers = reach;
+
+  const dispatched = new Map<string, Set<string>>();
+  for (const s of steps) {
+    const child = s.inputsMap.workflow_id;
+    if (typeof child !== 'string' || !allWf.has(child) || child === s.wf) continue;
+    let into = dispatched.get(s.wf);
+    if (!into) { into = new Set(); dispatched.set(s.wf, into); }
+    into.add(child);
+  }
+  dispatchedWorkflows = dispatched;
 }
 
 /* ----------------------------- scope assembly ----------------------------- */
@@ -665,42 +699,6 @@ function collectConsumedSites(): Map<string, Set<string>> {
 }
 
 /**
- * Which workflows genuinely reach into a home workflow's operations, from the bind sites themselves:
- * `remediate-vuln` borrowing a `work-package` op can consume that op's outputs, and `meta` is the
- * universal library every workflow binds ad hoc.
- */
-const crossWorkflowConsumers = ((): Map<string, Set<string>> => {
-  const reach = new Map<string, Set<string>>();
-  for (const s of steps) {
-    const r = resolve(s.technique, s.wf, s.activityId);
-    if (!r || r.homeWf === s.wf) continue;
-    let into = reach.get(r.homeWf);
-    if (!into) { into = new Set(); reach.set(r.homeWf, into); }
-    into.add(s.wf);
-  }
-  return reach;
-})();
-
-/**
- * Which workflows a workflow DISPATCHES as a child: a step whose binding supplies a literal
- * `workflow_id` naming another workflow in the corpus. The child inherits the parent's variable bag,
- * so the parent's declared outputs are consumed inside the child — `prism-audit` composes
- * `analysis_focus` and `target_description`, and `prism` declares both as variables and reads them in
- * its analysis ops. That edge is a dispatch, not an op borrow, so bind-site resolution cannot see it.
- */
-const dispatchedWorkflows = ((): Map<string, Set<string>> => {
-  const out = new Map<string, Set<string>>();
-  for (const s of steps) {
-    const child = s.inputsMap.workflow_id;
-    if (typeof child !== 'string' || !allWf.has(child) || child === s.wf) continue;
-    let into = out.get(s.wf);
-    if (!into) { into = new Set(); out.set(s.wf, into); }
-    into.add(child);
-  }
-  return out;
-})();
-
-/**
  * Whether a consumer file can close a dead-output finding on a declaring file.
  *
  * Resolution used to be by bare name across the whole corpus, so an output in workflow A read as
@@ -737,6 +735,7 @@ export interface Violation {
 }
 
 export function collectViolations(): Violation[] {
+  ensureIndexed();
   const v: Violation[] = [];
   // Orphan-input findings are one-per-root-cause: the same unsupplied op input bound at N steps is
   // ONE defect (on the op ↔ workflow seam), so entries key on (binding workflow, resolved op,
@@ -972,6 +971,7 @@ export function applyTriage(violations: Violation[] = collectViolations()): Tria
 import { pathToFileURL } from 'node:url';
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
+  requireRootOrExit('binding-fidelity', DEFAULT_ROOT);
   // `--emit-untriaged` feeds the triage pass: it prints the violations that carry no verdict yet.
   // `--emit-all` prints every violation, which is what prunes entries whose finding no longer occurs.
   // Both only read — classification stays a human act.

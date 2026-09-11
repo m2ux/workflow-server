@@ -5,9 +5,10 @@ import { qualifyResourceId } from '../src/utils/resource-ref.js';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
-const WORKFLOW_DIR = corpusRoot();
+const LIVE_CORPUS = liveCorpusRoot();
+const WORKFLOW_DIR = LIVE_CORPUS ?? '';
 
 /**
  * Borrowed cross-workflow activities resolve their technique refs against the workflow the
@@ -138,7 +139,7 @@ describe('borrowed-activity technique resolution', () => {
       .toBe('meta/shared-template');
   });
 
-  it('maps the real corpus: remediate-vuln borrows work-package activities', async () => {
+  it.skipIf(!LIVE_CORPUS)('maps the real corpus: remediate-vuln borrows work-package activities', async () => {
     const result = await loadWorkflowWithDiagnostics(WORKFLOW_DIR, 'remediate-vuln');
     expect(result.success).toBe(true);
     if (!result.success) return;

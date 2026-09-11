@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { createHarness, type Harness } from './harness.js';
 import { walk } from './walker.js';
 import { defaultPolicy } from './policies.js';
-import { corpusRoot } from '../corpus-root.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 import { indexCorpus } from '../../src/loaders/corpus-index.js';
 
 /**
@@ -32,13 +32,14 @@ import { indexCorpus } from '../../src/loaders/corpus-index.js';
  * here is not walked, and nothing reports that it was skipped — which is how the workflow above
  * reached a merge with nothing measuring it.
  */
+const LIVE_CORPUS = liveCorpusRoot();
 function corpusWorkflows(): string[] {
-  return [...indexCorpus(corpusRoot()).workflows.keys()].sort();
+  return LIVE_CORPUS ? [...indexCorpus(LIVE_CORPUS).workflows.keys()].sort() : [];
 }
 
 const WORKFLOWS = corpusWorkflows();
 
-describe('all-workflows E2E walk (workflow-agnostic drift guard)', () => {
+describe.skipIf(!LIVE_CORPUS)('all-workflows E2E walk (workflow-agnostic drift guard)', () => {
   let h: Harness;
   beforeAll(async () => { h = await createHarness(); });
   afterAll(async () => { await h.close(); });

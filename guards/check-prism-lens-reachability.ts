@@ -31,17 +31,21 @@ import { UnreachableCorpusError } from './workflows-root.js';
 import { workflowLocation } from '../src/loaders/corpus-index.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-// The corpus root routes through the shared resolver so this guard measures the worktree under
-// review, not the repo's own submodule (issue #327 S2); an unreachable root exits 2 rather than
-// yielding an empty, reassuring result.
-const CORPUS = requireRootOrExit('prism-lens-reachability', join(DIR, '..', 'workflows'));
-const PRISM = workflowLocation(CORPUS, 'prism')?.dir;
-if (!PRISM) {
-  throw new UnreachableCorpusError(`the corpus holds no prism workflow, so lens reachability cannot be measured.`);
+const DEFAULT_ROOT = join(DIR, '..', 'workflows');
+
+function prismPaths(): { prism: string; resources: string; plan: string; portfolio: string } {
+  const corpus = requireRootOrExit('prism-lens-reachability', DEFAULT_ROOT);
+  const prism = workflowLocation(corpus, 'prism')?.dir;
+  if (!prism) {
+    throw new UnreachableCorpusError(`the corpus holds no prism workflow, so lens reachability cannot be measured.`);
+  }
+  return {
+    prism,
+    resources: join(prism, 'resources'),
+    plan: join(prism, 'techniques', 'plan-analysis.md'),
+    portfolio: join(prism, 'techniques', 'portfolio-analysis.md'),
+  };
 }
-const RESOURCES = join(PRISM, 'resources');
-const PLAN = join(PRISM, 'techniques', 'plan-analysis.md');
-const PORTFOLIO = join(PRISM, 'techniques', 'portfolio-analysis.md');
 
 /**
  * Lenses that are correctly unreachable from a goal because they run only as an inner pass of a
@@ -70,8 +74,8 @@ const PIPELINE_INTERNAL = new Set([
 const NON_LENS_KINDS = new Set(['template', 'reference']);
 
 /** True when a resource declares a non-lens kind in its own frontmatter. */
-function isNonLensResource(slug: string): boolean {
-  const path = join(RESOURCES, `${slug}.md`);
+function isNonLensResource(resources: string, slug: string): boolean {
+  const path = join(resources, `${slug}.md`);
   if (!existsSync(path)) return false;
   const head = readFileSync(path, 'utf-8').split('\n', 40).join('\n');
   const declared = /^\s*type:\s*([a-z-]+)\s*$/m.exec(head);
@@ -103,22 +107,23 @@ function slugIndexPairs(text: string): Array<{ slug: string; index: string }> {
 }
 
 export function collectLensReachabilityViolations(): LensReachabilityViolation[] {
+  const { resources, plan, portfolio } = prismPaths();
   const out: LensReachabilityViolation[] = [];
 
-  const lensSlugs = readdirSync(RESOURCES)
+  const lensSlugs = readdirSync(resources)
     .filter((f) => f.endsWith('.md') && f.toLowerCase() !== 'readme.md')
     .map((f) => f.slice(0, -3).toLowerCase())
     .sort();
 
-  const planText = readFileSync(PLAN, 'utf-8');
-  const portfolioText = readFileSync(PORTFOLIO, 'utf-8');
+  const planText = readFileSync(plan, 'utf-8');
+  const portfolioText = readFileSync(portfolio, 'utf-8');
   const routingText = (planText + '\n' + portfolioText).toLowerCase();
-  const catalog = indexToSlug(readFileSync(join(RESOURCES, 'README.md'), 'utf-8'));
+  const catalog = indexToSlug(readFileSync(join(resources, 'README.md'), 'utf-8'));
 
   // coverage — every lens file is routable or explicitly pipeline-internal.
   for (const slug of lensSlugs) {
     if (PIPELINE_INTERNAL.has(slug)) continue;
-    if (isNonLensResource(slug)) continue;
+    if (isNonLensResource(resources, slug)) continue;
     // A routable lens is named as a goal target: the literal token `slug (` (e.g. `reachability (`).
     if (routingText.includes(`${slug} (`)) continue;
     out.push({

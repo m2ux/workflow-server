@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 
-import { corpusRoot } from '../corpus-root.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 import { indexCorpus } from '../../src/loaders/corpus-index.js';
 import { WALKED, NOT_WALKED } from './walked-workflows.js';
 
@@ -16,10 +16,10 @@ import { WALKED, NOT_WALKED } from './walked-workflows.js';
 describe('coverage roster', () => {
   /** Every workflow the corpus holds, so the two lists are checked against it rather than trusted. */
   function corpusWorkflows(): string[] {
-    return [...indexCorpus(corpusRoot()).workflows.keys()].sort();
+    return [...indexCorpus(liveCorpusRoot()!).workflows.keys()].sort();
   }
 
-  it('accounts for every workflow the corpus holds', () => {
+  it.skipIf(!liveCorpusRoot())('accounts for every workflow the corpus holds', () => {
     const accounted = new Set<string>([...WALKED, ...NOT_WALKED]);
     const corpus = corpusWorkflows();
     expect(corpus.length).toBeGreaterThan(0);

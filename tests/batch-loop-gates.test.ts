@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { parse as parseYaml } from 'yaml';
 import { evaluateWhenExpression } from '../src/schema/when-expression.js';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 import { workflowSubdir } from '../src/loaders/corpus-index.js';
 
 /**
@@ -17,9 +17,11 @@ import { workflowSubdir } from '../src/loaders/corpus-index.js';
  * actually reaches. Reading rather than restating them is the point — a copy here would drift from the
  * YAML and pass while the definition broke.
  */
-describe('client activity loop gates (#407)', () => {
+describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
+  const root = liveCorpusRoot();
+  if (!root) return;
   const activity = parseYaml(
-    readFileSync(workflowSubdir(corpusRoot(), 'meta', 'activities/03-dispatch-client-workflow.yaml')!, 'utf8'),
+    readFileSync(workflowSubdir(root, 'meta', 'activities/03-dispatch-client-workflow.yaml')!, 'utf8'),
   ) as { steps: Array<{ id: string; kind: string; steps?: Array<{ id: string; when?: string }> }> };
 
   const loop = activity.steps.find((s) => s.kind === 'loop');

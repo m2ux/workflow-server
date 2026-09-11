@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { createHarness, type Harness } from './e2e/harness.js';
 import { sessionOps, type SessionOps } from './session-ops.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * Fidelity observability (#166 B8): `get_technique` / `get_resource` record
@@ -11,7 +12,7 @@ import { sessionOps, type SessionOps } from './session-ops.js';
  * validation warns (advisory) on manifested technique steps with no recorded
  * fetch. Exercised against the real workflows corpus through the MCP wire.
  */
-describe('fetch observability (#166 B8)', () => {
+describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
   let harness: Harness;
   let client: Client;
   let session: SessionOps;

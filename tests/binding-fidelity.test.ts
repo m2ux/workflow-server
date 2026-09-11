@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../guards/check-binding-fidelity.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * Binding-fidelity gate. The corpus carries triaged debt, recorded per finding with a verdict and a
@@ -68,7 +69,7 @@ describe('gate-expression reads', () => {
  * fix tests the corpus, not the guard.
  */
 describe('dead-output scoping', () => {
-  it('closes a dead output only from a workflow that can reach the declaring file', () => {
+  it.skipIf(!liveCorpusRoot())('closes a dead output only from a workflow that can reach the declaring file', () => {
     collectViolations();
     const unreachable: string[] = [];
     for (const [key, satisfier] of deadOutputSatisfier) {

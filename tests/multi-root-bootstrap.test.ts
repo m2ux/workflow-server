@@ -4,8 +4,9 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:f
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHarness, parseToolResponse, type Harness } from './e2e/harness.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
-describe('session.repo bootstrap binding', () => {
+describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
   let harness: Harness;
   let client: Client;
   let installDir: string;

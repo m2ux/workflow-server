@@ -53,8 +53,8 @@ jobs:
           # The scope comes from a diff, so the base commit has to be in the checkout.
           fetch-depth: 0
 
-      # The corpus this tree adopts. Its pull-request check is inert on a push, both triggers naming
-      # a real commit rather than a merge, and the action is shared with verify.yml where it runs.
+      # The corpus this tree adopts. Coverage is a corpus job: it checks the gitlink out and reads
+      # `walks/` of that tree for the ratchet.
       - uses: ./.github/actions/workflows-corpus
 
       - uses: actions/setup-node@v4
