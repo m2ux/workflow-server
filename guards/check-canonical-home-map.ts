@@ -27,12 +27,11 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { type CorpusIndex, type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, ledgerPath, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
-const TRIAGE = resolve(join(DIR, '..', 'scripts', 'canonical-home-map-triage.json'));
 
 interface TriageEntry {
   site: string;
@@ -47,7 +46,8 @@ interface TriageFile {
   entries: TriageEntry[];
 }
 
-function loadTriage(path: string = TRIAGE): TriageFile {
+function loadTriage(root: string): TriageFile {
+  const path = ledgerPath(root, 'canonical-home-map-triage.json');
   if (!existsSync(path)) return { entries: [] };
   return JSON.parse(readFileSync(path, 'utf-8')) as TriageFile;
 }
@@ -177,7 +177,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
   const index = indexCorpus(root);
   const maps = boundMaps(root, index);
   assertScanned(maps.length, 'canonical-home map binding(s)', root);
-  const triage = loadTriage();
+  const triage = loadTriage(root);
   const accepted = new Map(triage.entries.map((e) => [`${e.site} ${e.artifact}`, e]));
   const matched = new Set<string>();
   const shared = declaredArtifacts(index, SHARED_WORKFLOW);
@@ -211,13 +211,13 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
   }
   // A triage entry matching nothing is stale — the row was repointed or the artifact gained a
   // declaration. Reporting it keeps the ledger from outliving the debt it records, the convention
-  // scripts/binding-fidelity-triage.json states for its own entries.
+  // declaration. Reporting it keeps the ledger from outliving the debt it records.
   for (const [key, entry] of accepted) {
     if (matched.has(key)) continue;
     out.push({
       check: 'canonical-home-map-triage-stale',
       site: entry.site,
-      detail: `triage entry for '${entry.artifact}' matches no finding — the row was repointed or the artifact gained a declaration; delete the entry from scripts/canonical-home-map-triage.json`,
+      detail: `triage entry for '${entry.artifact}' matches no finding — the row was repointed or the artifact gained a declaration; delete the entry from ledgers/canonical-home-map-triage.json`,
     });
   }
   return out.sort((a, b) => a.site.localeCompare(b.site));
@@ -225,10 +225,9 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  // Name the accepted-debt count in the clean message, so a passing guard never reads as "every
-  // row resolves" while some of them are owed a declaration.
-  const owed = loadTriage().entries.length;
-  await runGuard('canonical-home-map', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
+  const resolveRoot = () => requireWorkflowsRoot(DEFAULT_ROOT);
+  const owed = loadTriage(resolveRoot()).entries.length;
+  await runGuard('canonical-home-map', resolveRoot, collectFindings, {
     okMessage: owed === 0
       ? 'every canonical-home row names an artifact a technique declares'
       : `every canonical-home row names an artifact a technique declares (${owed} triaged as owing one)`,

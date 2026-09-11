@@ -16,7 +16,7 @@
  * loop with `assertScanned`.
  */
 import { existsSync, statSync } from 'node:fs';
-import { relative, resolve } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import { type CorpusIndex, indexCorpus, workflowLocation } from '../src/loaders/corpus-index.js';
 
 /** A directory a workflow owns, wherever the workflow sits — `null` for an id the corpus lacks. */
@@ -106,4 +106,14 @@ export function assertScanned(count: number, what: string, root: string): void {
   throw new UnreachableCorpusError(
     `no ${what} found under '${root}' — the guard inspected nothing, so a clean result is not a pass.`,
   );
+}
+
+/** A triage ledger on the pointed-at corpus tree. */
+export function ledgerPath(root: string, file: string): string {
+  return join(root, 'ledgers', file);
+}
+
+/** A recorded walk artifact on the pointed-at corpus tree. */
+export function walkArtifactPath(root: string, file: string): string {
+  return join(root, 'walks', file);
 }

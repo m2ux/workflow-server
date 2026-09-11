@@ -29,12 +29,11 @@
 import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, ledgerPath, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
-const TRIAGE = resolve(join(DIR, '..', 'scripts', 'nested-output-home-triage.json'));
 
 interface TriageEntry {
   site: string;
@@ -51,9 +50,10 @@ interface TriageEntry {
  * and which is correct is a question about the workflow that produces the values rather than about
  * the duplication. Those entries are triaged until that workflow is walked.
  */
-function loadTriage(): { entries: TriageEntry[] } {
-  if (!existsSync(TRIAGE)) return { entries: [] };
-  return JSON.parse(readFileSync(TRIAGE, 'utf-8')) as { entries: TriageEntry[] };
+function loadTriage(root: string): { entries: TriageEntry[] } {
+  const path = ledgerPath(root, 'nested-output-home-triage.json');
+  if (!existsSync(path)) return { entries: [] };
+  return JSON.parse(readFileSync(path, 'utf-8')) as { entries: TriageEntry[] };
 }
 
 /** `#### artifact` and `#### audience` declare where a file lands, not a content component. */
@@ -107,7 +107,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
   const out: Finding[] = [];
   const files = containers(root);
   assertScanned(files.length, 'technique group container(s)', root);
-  const accepted = new Map(loadTriage().entries.map((e) => [`${e.site} ${e.component}`, e]));
+  const accepted = new Map(loadTriage(root).entries.map((e) => [`${e.site} ${e.component}`, e]));
   const matched = new Set<string>();
   for (const container of files) {
     const dir = join(container, '..');
@@ -164,7 +164,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
     out.push({
       check: 'nested-output-home-triage-stale',
       site: entry.site,
-      detail: `triage entry for '${entry.component}' matches no finding — the duplication was resolved; delete the entry from scripts/nested-output-home-triage.json`,
+      detail: `triage entry for '${entry.component}' matches no finding — the duplication was resolved; delete the entry from ledgers/nested-output-home-triage.json`,
     });
   }
   return out.sort((a, b) => (a.site + a.detail).localeCompare(b.site + b.detail));
@@ -172,10 +172,9 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  // Name the accepted-debt count in the clean message, so a passing guard never reads as "every
-  // component has one home" while some of them still have two.
-  const owed = loadTriage().entries.length;
-  await runGuard('nested-output-home', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
+  const resolveRoot = () => requireWorkflowsRoot(DEFAULT_ROOT);
+  const owed = loadTriage(resolveRoot()).entries.length;
+  await runGuard('nested-output-home', resolveRoot, collectFindings, {
     okMessage: owed === 0
       ? 'every nested output component is declared in one place'
       : `every nested output component is declared in one place (${owed} triaged as still doubled)`,

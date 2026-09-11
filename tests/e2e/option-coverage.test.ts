@@ -72,9 +72,13 @@ const SCOPE = (process.env.WF_COVERAGE_SCOPE ?? '')
   .split(',').map((s) => s.trim()).filter(Boolean);
 const scoped: readonly string[] = SCOPE.length ? WALKED.filter((w) => SCOPE.includes(w)) : WALKED;
 
-const EXPECTED_PATH = join(import.meta.dirname, 'option-coverage.json');
+const EXPECTED_PATH = join(
+  process.env.WORKFLOWS_DIR ?? join(import.meta.dirname, '../../workflows'),
+  'walks',
+  'option-coverage.json',
+);
 /** What to call the file in a failure message, since the absolute path is the runner's, not a reader's. */
-const EXPECTED_LABEL = 'tests/e2e/option-coverage.json';
+const EXPECTED_LABEL = 'walks/option-coverage.json';
 
 function listed(expected: Expected): string[] {
   return expected.groups.flatMap((g) => g.options);

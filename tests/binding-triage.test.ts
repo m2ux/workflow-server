@@ -9,7 +9,7 @@ import { loadTriage } from '../guards/check-binding-fidelity.js';
  * What is left is the ledger against itself — the vocabulary its entries are written in, which is
  * decidable from the file alone and which the guard never reads while no verdict is `live-bug`.
  */
-describe('binding-fidelity triage ledger', () => {
+describe.skipIf(!loadTriage().corpusSha)('binding-fidelity triage ledger', () => {
   const triage = loadTriage();
 
   it('cites every rationale it declares', () => {

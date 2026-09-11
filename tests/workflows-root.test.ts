@@ -4,10 +4,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import {
   assertScanned,
+  ledgerPath,
   requireWorkflowsRoot,
   resolveWorkflowsRoot,
   resolveWorkflowsRootWithOrigin,
   UnreachableCorpusError,
+  walkArtifactPath,
 } from '../guards/workflows-root.js';
 
 /**
@@ -128,5 +130,28 @@ describe('assertScanned', () => {
 
   it('passes once the guard has inspected something', () => {
     expect(() => assertScanned(1, 'technique files', '/x')).not.toThrow();
+  });
+});
+
+describe('kind roots on a pointed corpus tree', () => {
+  it('places triage files under ledgers/ of the root the guard was pointed at', () => {
+    expect(ledgerPath('/tmp/wf', 'binding-fidelity-triage.json'))
+      .toBe(join('/tmp/wf', 'ledgers', 'binding-fidelity-triage.json'));
+  });
+
+  it('places walk artifacts under walks/ of the same root', () => {
+    expect(walkArtifactPath('/tmp/wf', 'option-coverage.json'))
+      .toBe(join('/tmp/wf', 'walks', 'option-coverage.json'));
+    expect(walkArtifactPath('/tmp/wf', 'corpus-sha.json'))
+      .toBe(join('/tmp/wf', 'walks', 'corpus-sha.json'));
+    expect(walkArtifactPath('/tmp/wf', 'snapshot.test.ts.snap'))
+      .toBe(join('/tmp/wf', 'walks', 'snapshot.test.ts.snap'));
+  });
+
+  it('reads a ledger written under ledgers/ of a temp tree, not beside the check program', () => {
+    const root = mkdtempSync(join(tmpdir(), 'kind-roots-'));
+    mkdirSync(join(root, 'ledgers'));
+    writeFileSync(join(root, 'ledgers', 'section-framing-triage.json'), '{"entries":[]}\n');
+    expect(ledgerPath(root, 'section-framing-triage.json')).toBe(join(root, 'ledgers', 'section-framing-triage.json'));
   });
 });

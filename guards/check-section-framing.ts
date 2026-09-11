@@ -18,30 +18,28 @@
  *
  * The judgement this cannot make is whether the framing is operative or orientation. A guide that
  * opens "Creation guide for X. The reader is deciding whether to spend the run." strands nothing;
- * one that opens with a precedence rule strands it. So a site is either classified in the corpus's
- * `section-framing-triage.json` with a verdict and a named rationale, or it is reported. An entry
- * matching nothing is stale and reported too, so the triage cannot outlive the prose it describes.
+ * one that opens with a precedence rule strands it. So a site is either classified in
+ * `ledgers/section-framing-triage.json` with a verdict and a named rationale, or it is reported. An
+ * entry matching nothing is stale and reported too, so the triage cannot outlive the prose it describes.
  *
  * Run: npx tsx guards/check-section-framing.ts [--root <workflows-dir>]
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { ledgerPath, resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
 /**
- * The triage lives with the corpus. Its entries are judgements about corpus prose, so a change that
- * moves a rule into a section and the entry describing that prose belong in one commit. Held beside
- * this script instead, the two could not agree: fixing the prose stranded the entry, and the pull
- * request fixing it could not reach a file in `scripts/` — the corpus and the tooling are separate
- * histories, so a corpus change was red whichever side moved first.
+ * The triage lives with the corpus under `ledgers/`. Its entries are judgements about corpus prose,
+ * so a change that moves a rule into a section and the entry describing that prose belong in one
+ * commit.
  *
  * Exported so a test asserts against the same file the guard read rather than resolving the path a
  * second time.
  */
-export const TRIAGE_PATH = resolve(join(ROOT, 'section-framing-triage.json'));
+export const TRIAGE_PATH = ledgerPath(ROOT, 'section-framing-triage.json');
 
 /** What to call the triage in a finding, so the message names the file the reader has to open. */
 const TRIAGE_LABEL = relative(process.cwd(), TRIAGE_PATH);

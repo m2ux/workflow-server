@@ -60,7 +60,7 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { assertScanned, corpusWorkflows, workflowSubdir } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, ledgerPath, workflowSubdir } from './workflows-root.js';
 import { indexCorpus, workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
@@ -73,9 +73,7 @@ const DIR = fileURLToPath(new URL('.', import.meta.url));
 // empty root throws rather than yielding an empty, reassuring result (#327 S2).
 const ROOT = requireRootOrExit('binding-fidelity', join(DIR, '..', 'workflows'));
 const INDEX = indexCorpus(ROOT);
-// The triage file records a verdict per known violation; it lives beside the guard, not beside the
-// corpus, because it classifies findings rather than corpus content.
-const TRIAGE = join(DIR, '..', 'scripts', 'binding-fidelity-triage.json');
+const TRIAGE = ledgerPath(ROOT, 'binding-fidelity-triage.json');
 const META = 'meta';
 
 /* ----------------------------- signature parsing ----------------------------- */
@@ -847,7 +845,7 @@ export function collectViolations(): Violation[] {
 /* --------------------------------- triage --------------------------------- */
 /**
  * The corpus debt this guard reports was triaged once, per finding, in
- * scripts/binding-fidelity-triage.json (issue #327 R3). Every entry carries a verdict and a named
+ * ledgers/binding-fidelity-triage.json (issue #327 R3). Every entry carries a verdict and a named
  * rationale, so "harmless" and "live bug" are no longer the same silence:
  *
  *   harmless   — the finding is correct about the structure and correct BY DESIGN; suppressed.
@@ -924,7 +922,7 @@ export function applyTriage(violations: Violation[] = collectViolations()): Tria
     const entry = byKey.get(key);
     if (!entry) {
       counts.untriaged++;
-      findings.push({ check: v.check, site: v.site, detail: `${v.detail} [untriaged — classify it in scripts/binding-fidelity-triage.json]` });
+      findings.push({ check: v.check, site: v.site, detail: `${v.detail} [untriaged — classify it in ledgers/binding-fidelity-triage.json]` });
       continue;
     }
     seen.add(key);
@@ -948,7 +946,7 @@ export function applyTriage(violations: Violation[] = collectViolations()): Tria
       site: entry.site,
       detail: satisfier
         ? `triaged '${entry.check}' finding no longer occurs — now satisfied by ${satisfier}; delete the entry only if that is a real closure`
-        : `triaged '${entry.check}' finding no longer occurs — delete the entry from scripts/binding-fidelity-triage.json`,
+        : `triaged '${entry.check}' finding no longer occurs — delete the entry from ledgers/binding-fidelity-triage.json`,
     });
   }
   // The key drops a trailing line so a finding survives the file above it growing, which leaves the
@@ -964,7 +962,7 @@ export function applyTriage(violations: Violation[] = collectViolations()): Tria
     findings.push({
       check: 'misplaced-triage',
       site: entry.site,
-      detail: `triaged '${entry.check}' finding sits at line ${actual}, not ${cited} — correct the site in scripts/binding-fidelity-triage.json`,
+      detail: `triaged '${entry.check}' finding sits at line ${actual}, not ${cited} — correct the site in ledgers/binding-fidelity-triage.json`,
     });
   }
   return { findings, counts, total: violations.length };
@@ -999,6 +997,6 @@ if (isMain) {
   report('binding-fidelity', findings, {
     okMessage: `no live or untriaged binding defects (${counts.harmless + counts['fix-later']} triaged as accepted debt)`,
     root: ROOT,
-    remedy: 'fix each live bug, and classify each untriaged finding in scripts/binding-fidelity-triage.json',
+    remedy: 'fix each live bug, and classify each untriaged finding in ledgers/binding-fidelity-triage.json',
   });
 }
