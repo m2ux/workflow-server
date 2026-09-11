@@ -79,7 +79,7 @@ What the run did, shaped by [Template](../resources/conformance-report.md#templa
 
 ### 5. Report What The Isolated Writers Committed
 
-- Record one row per entry of `{merge_report}`, against `{note_targets}` for the unit each belongs to: the note, the branch it committed on, and whether that branch merged, conflicted or held nothing. A conflict is printed with its paths and left as a conflict, per [a-conflict-is-reported-not-absorbed](../../meta/techniques/version-control/merge-branches.md#a-conflict-is-reported-not-absorbed).
+- Record one row per entry of `{merge_report}`, against `{note_targets}` for the unit each belongs to: the note, the branch it committed on, and whether that branch merged, conflicted or held nothing. A conflict is printed with its paths and left as a conflict, per [a-conflict-is-reported-not-absorbed](../../../corpus/meta/techniques/version-control/merge-branches.md#a-conflict-is-reported-not-absorbed).
 - Where the run routed past the writers, say so in one line and give no table. No probe finding anything worth a note is an outcome of the run rather than a stage that failed, and an empty table reads as writers that produced nothing.
 
 ### 6. Write The Report

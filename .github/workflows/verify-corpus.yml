@@ -1,22 +1,16 @@
 name: Verify corpus
 
-# The guards run against a pull request on THIS branch.
+# The guards and the walks whose subject is this tree run against a pull request on THIS branch.
 #
-# They live on `main`, and this branch holds definitions only — no package.json, no scripts, and
-# until now no CI. A pull request here therefore reported no checks at all: every guard ran only
-# once a later commit on main bumped the submodule pointer, which happens after the merge rather
-# than before it. A workflow whose every technique reference failed to resolve reached a merge that
-# way, and the guard that catches it had been passing on main the whole time — against the older
-# corpus the pointer still named.
+# They live on `main`, and this branch holds definitions only — no package.json. A pull request here
+# therefore borrows main's tooling and points it at the corpus under review.
 #
 # GitHub reads a pull-request workflow file from the head ref, so this file has to sit on the branch
-# it guards. It carries no logic of its own: it borrows main's tooling and points it at the corpus
-# under review.
+# it guards.
 #
-# Guards only, not the test suite. The walk snapshots are stamped against one corpus commit, so
-# running them here would compare a pull request's corpus to a baseline generated from a different
-# one and fail on the difference rather than on a defect. `npm run check:all` walks the registry in
-# scripts/guards.ts, so a guard added there is enforced here without touching this file.
+# `npm run check:all` walks the registry in guards/guards.ts (after named roots land on main), so a
+# guard added there is enforced here without touching this file. Discovery enters corpus/ and reads
+# ledgers/ of this tree. Snapshot and all-workflows walks read walks/ of this tree.
 
 on:
   pull_request:
@@ -34,7 +28,7 @@ jobs:
     name: Guard sweep against the corpus under review
     runs-on: ubuntu-latest
     steps:
-      # The tooling: main's scripts, guard registry and package manifest.
+      # The tooling: main's guards, registry and package manifest.
       - name: Check out the server tooling from main
         uses: actions/checkout@v4
         with:
@@ -50,6 +44,8 @@ jobs:
       # carries. That happened: a commit moving a triage record into the corpus was graded against
       # the tree without it, and the failure named a file the push had already fixed. The tip is
       # whatever was pushed, every time.
+      #
+      # path: workflows is the branch root (corpus/, ledgers/, walks/, specimens/, docs/), not corpus/.
       - name: Check out the corpus under review
         uses: actions/checkout@v4
         with:
@@ -68,3 +64,9 @@ jobs:
       # never folded into a pass.
       - name: Run every guard against the corpus
         run: npm run check:all
+
+      - name: Walk snapshots against this tree
+        run: npx vitest run tests/e2e/snapshot.test.ts
+
+      - name: All-workflows drift against this tree
+        run: npx vitest run tests/e2e/all-workflows-walk.test.ts
