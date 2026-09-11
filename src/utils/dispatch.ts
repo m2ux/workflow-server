@@ -40,6 +40,39 @@ export function hasDispatch(state: SessionFile, scope: string, activityId?: stri
 }
 
 /**
+ * Why a delivery call cannot be served while a fan is in flight, or undefined when it can.
+ *
+ * Each branch runs under its own identity, distinct from its siblings' and from the session's own
+ * agent. The delivery ledger and the batch bound are both keyed on that identity, and a scope equal
+ * to the session agent is exempt from the bound — so a shared or session-equal identity puts the
+ * whole fan outside it and delivers a reference marker to a context that never received the bytes.
+ *
+ * A resume of the same entry under the identity that already holds it, and a replacement under a
+ * fresh identity for that same entry, are admitted. An ordinary walk (one activity in flight) is
+ * not this check.
+ */
+export function fanIdentityRefusal(
+  state: SessionFile,
+  agentId: string | undefined,
+  activityId: string,
+): string | undefined {
+  if (state.frontier.length <= 1) return undefined;
+  const inflight = state.frontier.join(', ');
+  if (!agentId || agentId === state.agentId) {
+    return `get_activity: ${state.frontier.length} activities are in flight (${inflight}). `
+      + 'Pass agent_id naming the identity this branch was minted, distinct from the session agent and from every sibling.';
+  }
+  for (const entry of state.frontier) {
+    if (entry === activityId) continue;
+    if (hasDispatch(state, agentId, entry)) {
+      return `get_activity: identity '${agentId}' already holds '${entry}'. `
+        + 'While several activities are in flight, each branch takes its own identity.';
+    }
+  }
+  return undefined;
+}
+
+/**
  * Append one `activity_dispatched` event to a session draft (call inside an `advanceSession`
  * mutator). `chars` is the size of the payload this dispatch was delivered.
  */
