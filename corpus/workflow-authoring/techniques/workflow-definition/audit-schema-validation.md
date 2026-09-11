@@ -19,22 +19,22 @@ Number of definition files a guard rejected, counted after every resolvable fail
 
 - Each guard resolves its corpus root from `--root`, then `WORKFLOWS_DIR`, then a default relative path. Pass `--root {target_path}` so every guard reads the tree this run edits; an empty value is treated as absent and silently falls back to that default, which is a checkout the run never touched.
 - The two validators take a **positional** path and implement no `--root`:
-  - `npx tsx scripts/validate-workflow-yaml.ts {target_path}/{target_workflow_id}` — every definition file against its schema
-  - `npx tsx scripts/validate-activities.ts {target_path}` — every activity file, including resolved step-id collisions
+  - `npx tsx guards/validate-workflow-yaml.ts {target_path}/{target_workflow_id}` — every definition file against its schema
+  - `npx tsx guards/validate-activities.ts {target_path}` — every activity file, including resolved step-id collisions
 - The remaining guards each take `--root {target_path}`:
-  - `check-all-refs.ts` — every activity and workflow technique reference resolves through the loader
-  - `check-binding-fidelity.ts` — no new binding drift: every bound input key is declared, every read resolves to a producer, no declared output is dead, no bound op's own input is unsuppliable
-  - `check-resource-anchors.ts` — every relative resource link with an anchor resolves to a rendered heading
-  - `check-variable-model.ts` — declared defaults, existence gates and checkpoint effects are coherent with the seeded variable model
-  - `check-fragments.ts` — every fragment reference resolves, every fragment is used, and no inline body duplicates a fragment or another site
-  - `check-technique-template.ts` — every technique file follows the normative template
-  - `check-activity-technique-overlap.ts` — no activity-level technique reference duplicates a step binding
-  - `check-audience.ts` — every output declaring an agent audience carries a machine-readable artifact name
-  - `check-description-hygiene.ts` — mechanical net on activity YAML: procedure essays in `description` / `action: set` description, and `description`/`name` on bound technique steps
-  - `check-self-provisioned-input.ts` — no step interpolates its own set target into its own technique inputs
-  - `check-identifier-qualification.ts` — no new bare-word data identifier
-  - `check-review-mode-gating.ts` — review-reachable gates are resolvable without a person
-  - `check-stealth-isolation.ts` — no leakage path out of an isolated workflow
+  - `npx tsx guards/check-all-refs.ts` — every activity and workflow technique reference resolves through the loader
+  - `npx tsx guards/check-binding-fidelity.ts` — no new binding drift: every bound input key is declared, every read resolves to a producer, no declared output is dead, no bound op's own input is unsuppliable
+  - `npx tsx guards/check-resource-anchors.ts` — every relative resource link with an anchor resolves to a rendered heading
+  - `npx tsx guards/check-variable-model.ts` — declared defaults, existence gates and checkpoint effects are coherent with the seeded variable model
+  - `npx tsx guards/check-fragments.ts` — every fragment reference resolves, every fragment is used, and no inline body duplicates a fragment or another site
+  - `npx tsx guards/check-technique-template.ts` — every technique file follows the normative template
+  - `npx tsx guards/check-activity-technique-overlap.ts` — no activity-level technique reference duplicates a step binding
+  - `npx tsx guards/check-audience.ts` — every output declaring an agent audience carries a machine-readable artifact name
+  - `npx tsx guards/check-description-hygiene.ts` — mechanical net on activity YAML: procedure essays in `description` / `action: set` description, and `description`/`name` on bound technique steps
+  - `npx tsx guards/check-self-provisioned-input.ts` — no step interpolates its own set target into its own technique inputs
+  - `npx tsx guards/check-identifier-qualification.ts` — no new bare-word data identifier
+  - `npx tsx guards/check-review-mode-gating.ts` — review-reachable gates are resolvable without a person
+  - `npx tsx guards/check-stealth-isolation.ts` — no leakage path out of an isolated workflow
 
 ### 2. Resolve the Failures
 

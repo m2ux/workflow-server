@@ -17,7 +17,7 @@ One key per already-accepted finding, each pairing the criteria entry by its keb
 
 ### 1. Read the Known-Finding Sources
 
-- Read the guard baselines the repository commits under `scripts/` — binding fidelity, review-mode gating, identifier qualification and audience — taking only the entries whose location falls inside the target
+- Read the binding-fidelity ledger under `ledgers/` of the pointed corpus, and the reasoned exemption lists the check programs hold for review-mode gating, identifier qualification and audience — taking only the entries whose location falls inside the target
 - Read the findings register a prior run of this workflow left in `{planning_folder_path}`, taking the rows it records as accepted
 
 ### 2. Reduce to Comparable Keys

@@ -49,7 +49,7 @@ The set of files drafted for this workflow so far, extended with the one just wr
 
 ### 6. Run Workflow Validator
 
-- Run `npx tsx scripts/validate-workflow-yaml.ts` for full workflow directory validation
+- Run `npx tsx guards/validate-workflow-yaml.ts` for full workflow directory validation
 
 ### 7. Resolve Validation Failures
 
