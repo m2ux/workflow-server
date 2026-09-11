@@ -2,38 +2,49 @@
 
 Measured against the `workflows` worktree at the repo's `workflows/` checkout and the server tree that worktree sits in. Re-run the commands rather than trusting the counts if the trees have moved.
 
-Named roots exist on both branches. This file lists what lands in each.
+Named roots exist on both branches. A name is the kind of content that belongs together on that branch. The names need not match across trees.
 
-## Pairing
+## Kinds and homes
 
-| Root | On `main` | On `workflows` |
+### `workflows` — kinds this tree owns
+
+| Kind | Root | Content |
 |---|---|---|
-| `corpus/` | (none — product is not the engine) | Eighteen product workflows, minus `fan-conformance`; artifacts that belong to those definitions |
-| `guards/` | Check scripts, registry, root-resolution, `check-all` / `check-delta` | This-corpus triage ledgers |
-| `tests/` | Engine suite, walker, synthetic fixture corpora | Walk snapshots, stamp, option-coverage ratchet, `fan-conformance` |
-| `scripts/` | Generate, provision, benches, lockfile denylist | (none in this work) |
+| Product definitions | `corpus/` | Seventeen product workflows (eighteen minus `fan-conformance`); artifacts that belong to those definitions |
+| Judgements | `ledgers/` | Triage JSON |
+| Recorded walks | `walks/` | Snapshots, stamp, option-coverage ratchet |
+| Specimen workflows | `specimens/` | `fan-conformance` |
+
+### `main` — kinds this tree owns
+
+| Kind | Root | Content |
+|---|---|---|
+| Engine | `src/` | Server source (unchanged) |
+| Engine tests | `tests/` | Suite, walker, synthetic fixture corpora |
+| Check programs | `guards/` | 36 corpus checks, 4 repo checks, registry, protocol, `check-all` / `check-delta` |
+| Generate and provision | `scripts/` | Site/schema generators, benches, worktree provision, lockfile denylist |
 
 ## Eighteen workflows (all immediate children today)
 
 ```
-cicd-pipeline-security-audit     # product → workflows corpus/
-codebase-wiki                    # product → workflows corpus/
-fan-conformance                  # adjacent → workflows tests/fan-conformance/
-meta                             # product → workflows corpus/
-midnight-system-review           # product → workflows corpus/
-plain-language                   # product → workflows corpus/
-ponytail                         # product → workflows corpus/
-prism                            # product → workflows corpus/
-prism-audit                      # product → workflows corpus/
-prism-evaluate                   # product → workflows corpus/
-prism-update                     # product → workflows corpus/
-remediate-vuln                   # product → workflows corpus/; not in the coverage walk
-requirements-refinement          # product → workflows corpus/
-substrate-node-security-audit    # product → workflows corpus/; not in the coverage walk
-work-package                     # product → workflows corpus/
-work-packages                    # product → workflows corpus/
-workflow-authoring               # product → workflows corpus/
-workflow-design                  # product → workflows corpus/
+cicd-pipeline-security-audit     # product → corpus/
+codebase-wiki                    # product → corpus/
+fan-conformance                  # specimen → specimens/fan-conformance/
+meta                             # product → corpus/
+midnight-system-review           # product → corpus/
+plain-language                   # product → corpus/
+ponytail                         # product → corpus/
+prism                            # product → corpus/
+prism-audit                      # product → corpus/
+prism-evaluate                   # product → corpus/
+prism-update                     # product → corpus/
+remediate-vuln                   # product → corpus/; not in the coverage walk
+requirements-refinement          # product → corpus/
+substrate-node-security-audit    # product → corpus/; not in the coverage walk
+work-package                     # product → corpus/
+work-packages                    # product → corpus/
+workflow-authoring               # product → corpus/
+workflow-design                  # product → corpus/
 ```
 
 Coverage roster walks 14; names 4 as not walked (`remediate-vuln`, the two audits, `fan-conformance`).
@@ -45,7 +56,7 @@ find workflows -maxdepth 2 -name 'workflow.yaml' | wc -l
 ls -1d workflows/*/ | wc -l
 ```
 
-## `workflows` `guards/` — triage ledgers
+## `ledgers/` on `workflows`
 
 | Current home | Role | Size |
 |---|---|---|
@@ -54,14 +65,14 @@ ls -1d workflows/*/ | wc -l
 | `scripts/nested-output-home-triage.json` | Verdicts on nested-output duplicates | 2 entries |
 | `workflows/section-framing-triage.json` | Already on the corpus branch | 102 entries |
 
-## `workflows` `tests/` — walks, coverage, corpus-only test workflows
+## `walks/` and `specimens/` on `workflows`
 
-| Current home | Role | Size |
-|---|---|---|
-| `tests/e2e/__snapshots__/snapshot.test.ts.snap` | Walk of the eighteen | 3678 lines |
-| `tests/e2e/__snapshots__/corpus-sha.json` | SHA those snapshots were generated against | 1 object |
-| `tests/e2e/option-coverage.json` | Checkpoint options no walk reaches | 113 options, 3 groups |
-| `workflows/fan-conformance/` | Test workflow making fanning observable | 1 workflow |
+| Current home | Role | Size | Target |
+|---|---|---|---|
+| `tests/e2e/__snapshots__/snapshot.test.ts.snap` | Walk of the eighteen | 3678 lines | `walks/` |
+| `tests/e2e/__snapshots__/corpus-sha.json` | SHA those snapshots were generated against | 1 object | `walks/` |
+| `tests/e2e/option-coverage.json` | Checkpoint options no walk reaches | 113 options, 3 groups | `walks/` |
+| `workflows/fan-conformance/` | Specimen making fanning observable | 1 workflow | `specimens/fan-conformance/` |
 
 Recount:
 
@@ -74,7 +85,7 @@ python3 -c "import json; d=json.load(open('tests/e2e/option-coverage.json')); pr
 wc -l tests/e2e/__snapshots__/snapshot.test.ts.snap
 ```
 
-## `main` `guards/` — tools (tidy-up, stay on `main`)
+## `guards/` on `main` — check programs (stay on `main`)
 
 The 36 corpus checks, 4 repo checks, `guards.ts`, `guard-protocol.ts`, `workflows-root.ts`, `check-all.ts`, `check-delta.ts`. Today they live under `scripts/` next to generate, benches, and the triage JSON they will stop sitting beside.
 
@@ -89,15 +100,15 @@ rg -l "corpusRoot\(" tests --glob '*.ts' | wc -l
 rg -l "join\(DIR, '\.\.', 'workflows'\)|join\(REPO, 'workflows'\)" scripts --glob '*.ts' | wc -l
 ```
 
-## Stay on `main` `tests/` and `scripts/` (engine, not adjacent content)
+## Stay on `main` `tests/` and `scripts/` (engine kinds)
 
-| Current home | Target on `main` | Why |
+| Current home | Target on `main` | Kind |
 |---|---|---|
-| `tests/fixtures/**` | `tests/fixtures/` | Synthetic corpora the engine suite owns |
-| `tests/e2e/walker.ts` and the harness | `tests/` | Engine test tools |
-| `scripts/known-bad-versions.json` | `scripts/` | Lockfile denylist; engine install |
-| `scripts/fixtures/token-benchmark-baseline.json` | `tests/fixtures/` or `scripts/fixtures/` | Re-record against a fixture corpus; server payload gate |
-| `scripts/generate-*.ts`, provision, benches | `scripts/` | Not guards, not ledgers |
+| `tests/fixtures/**` | `tests/fixtures/` | Engine tests |
+| `tests/e2e/walker.ts` and the harness | `tests/` | Engine tests |
+| `scripts/known-bad-versions.json` | `scripts/` | Generate and provision |
+| `scripts/fixtures/token-benchmark-baseline.json` | `tests/fixtures/` or `scripts/fixtures/` | Engine tests (re-record against a fixture) |
+| `scripts/generate-*.ts`, provision, benches | `scripts/` | Generate and provision |
 
 ## Discovery
 
@@ -108,15 +119,15 @@ rg -l "join\(DIR, '\.\.', 'workflows'\)|join\(REPO, 'workflows'\)" scripts --glo
 - Most of the 36 corpus guards' own `readdirSync(root)` loops
 - `check-pinned-corpus-paths` (every direct subdirectory is a workflow name)
 
-After the nest, those four classes must already be calling `indexCorpus` against the **`workflows` branch root**, skipping named roots `tests` and `guards`, so `corpus/work-package` resolves as `work-package` and `tests/fan-conformance` is not in the product list.
+After the nest, those four classes must already be calling `indexCorpus` against the **`workflows` branch root**, skipping named roots that are not `corpus`, so `corpus/work-package` resolves as `work-package` and `specimens/fan-conformance` is not in the product list.
 
 ## CI subjects
 
 | Job | Lives on | What it grades today | What it grades after |
 |---|---|---|---|
 | `verify.yml` | `main` | typecheck, `test:ci`, `check:all`, token gate — all against the gitlink | Engine only; no gitlink required |
-| `coverage.yml` | `main` | 14-workflow option coverage against the gitlink | Corpus job; points `main` `guards/` at a checked-out tree; reads `workflows` `tests/` for the ratchet |
-| `verify-corpus.yml` | `workflows` | `check:all` with corpus tip at `path: workflows` | Same job, plus the walks whose subject is this tree; discovery finds `corpus/`, ledgers in `guards/` |
+| `coverage.yml` | `main` | 14-workflow option coverage against the gitlink | Corpus job; points `main` `guards/` at a checked-out tree; reads `walks/` for the ratchet |
+| `verify-corpus.yml` | `workflows` | `check:all` with corpus tip at `path: workflows` | Same job, plus the walks whose subject is this tree; discovery finds `corpus/`, judgements in `ledgers/` |
 
 ## Target trees (after nest)
 
@@ -125,15 +136,16 @@ After the nest, those four classes must already be calling `indexCorpus` against
 ```
 corpus/
   <17 product workflow directories>
-guards/
+ledgers/
   binding-fidelity-triage.json
   canonical-home-map-triage.json
   nested-output-home-triage.json
   section-framing-triage.json
-tests/
+walks/
   snapshot.test.ts.snap
   corpus-sha.json
   option-coverage.json
+specimens/
   fan-conformance/
 LICENSE
 README.md
@@ -143,7 +155,7 @@ README.md
 `main` (named roots only; `src/` unchanged):
 
 ```
-guards/          # check-*.ts, registry, protocol
+guards/          # check programs
 tests/           # engine suite, fixtures, walker — no live-corpus ledgers
 scripts/         # generate, provision, benches, lockfile denylist
 workflows/       # optional gitlink to the tree above
