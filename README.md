@@ -1,8 +1,8 @@
 # Workflows
 
-This orphan branch contains workflow definitions, activities, techniques, and resources for the MCP Workflow Server.
+This orphan branch holds the workflow definitions the MCP Workflow Server loads, and the artifacts that belong to those definitions: judgements about them, recorded walks of them, and the documentation of how this tree is arranged.
 
-Authoring — named roots, adding a workflow, and the technique file contract — lives in [`docs/`](docs/README.md).
+Authoring procedure — adding a workflow, resource or technique, and how definition files link — lives in [`docs/`](docs/README.md). What each folder at this root is *for*, and what it holds, is in that folder's own README.
 
 ## Branch Structure
 
@@ -11,26 +11,49 @@ Authoring — named roots, adding a workflow, and the technique file contract �
 
 ## Named roots
 
+Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names. `specimens` is skipped by name even as a child of `corpus/`, so a product list never includes a test workflow. A workflow's id is the directory that holds its `workflow.yaml`.
+
 ```
 <branch root>
-├── corpus/                         # product workflows; id is the directory name
-│   └── {workflow-id}/
-│       ├── README.md
-│       ├── workflow.yaml
-│       ├── activities/
-│       ├── techniques/
-│       └── resources/
-├── ledgers/                        # triage verdicts on this corpus
-├── walks/                          # snapshots, stamp, option-coverage ratchet
-├── specimens/                      # corpus-only test workflows
-│   └── fan-conformance/
-├── docs/                           # authoring contracts for this branch
+├── corpus/                         # product workflows — corpus/README.md
+│   ├── README.md
+│   ├── {workflow-id}/
+│   │   ├── README.md
+│   │   ├── workflow.yaml
+│   │   ├── activities/
+│   │   ├── techniques/
+│   │   └── resources/
+│   └── specimens/                  # corpus-only test workflows — specimens/README.md
+│       └── fan-conformance/
+├── ledgers/                        # triage verdicts — ledgers/README.md
+├── walks/                          # snapshots, stamp, ratchet — walks/README.md
+├── docs/                           # how to add to this tree — docs/README.md
 ├── LICENSE
 ├── README.md
-└── .github/                        # verify-corpus.yml
+└── .github/                        # verify-corpus.yml, coverage.yml
 ```
 
-### Precedence: workflow-local → `meta`
+### corpus
+
+The workflows an operator starts live here: each is a directory that holds a `workflow.yaml`, and that directory's name is the id every reference uses. Grouping folders under this root organise the tree and name nothing of their own, so `corpus/work-package/workflow.yaml` is still the workflow `work-package`. Discovery enters this folder when it is pointed at the branch root. Contents: [`corpus/README.md`](corpus/README.md).
+
+### specimens
+
+Some workflows exist only so a test can drive a known shape. They are still workflows — they have a definition, activities and techniques — but they are not part of the product list. They sit at `corpus/specimens/` so they travel with the other definitions. Discovery skips any directory named `specimens`, so a walk of `corpus/` does not list them. Pointing `--root` or `--workflow-dir` at `corpus/specimens/` is how a job reaches them. Contents: [`corpus/specimens/README.md`](corpus/specimens/README.md).
+
+### ledgers
+
+When a check program finds something in this corpus, someone has to say whether that finding is harmless, to be fixed later, or a live bug. Those verdicts live here as JSON, next to the definitions they judge, so a change to a definition and the verdict it settles can land together. Check programs live on `main` under `guards/`; they take `--root` at this branch's root and read this folder. Contents: [`ledgers/README.md`](ledgers/README.md).
+
+### walks
+
+A coverage walk records what it saw: snapshots of delivery, a stamp of which corpus commit was measured, and a ratchet of which checkpoint options were exercised. Those files live here so the engine's test suite can compare a later walk against this tree. The fourteen-workflow coverage job and the snapshot walks run on pull requests to this branch. Contents: [`walks/README.md`](walks/README.md).
+
+### docs
+
+Documentation of this tree's layout — how the named roots are arranged, how to add a workflow, resource or technique — lives here. The technique file contract (anatomy, addressing, composition, delivery) lives on `main` as [`docs/technique-protocol-specification.md`](https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md), because it is an invariant of every corpus the engine loads, not of this one. Contents: [`docs/README.md`](docs/README.md).
+
+## Precedence: workflow-local → `meta`
 
 Technique resolution is workflow-local first, then `meta`. The
 `meta` workflow's `techniques/` and `resources/` carry double duty — they are

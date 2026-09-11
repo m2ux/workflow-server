@@ -1,28 +1,20 @@
 # Authoring on this branch
 
-This folder holds documentation that belongs to the workflow definitions: the named-root layout, how to add a workflow, resource or technique, and the [technique protocol specification](technique-protocol-specification.md). Engine behaviour, schemas and contributing to the server live on `main`.
+This folder holds documentation that belongs to this tree's layout: how the named roots are arranged, and how to add a workflow, resource or technique. What each named root is *for*, and what it holds, is in that folder's own README; the [branch README](../README.md#named-roots) maps them. Engine behaviour, schemas and contributing to the server live on `main`.
 
-The schema the server loads is [`schemas/README.md`](https://github.com/m2ux/workflow-server/blob/main/schemas/README.md) on `main`. Check programs live under `guards/` there; they take `--root` at this branch's root.
+The schema the server loads is [`schemas/README.md`](https://github.com/m2ux/workflow-server/blob/main/schemas/README.md) on `main`. The technique file contract — anatomy, addressing, composition, delivery — is the [technique protocol specification](https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md) on `main`. Check programs live under `guards/` there; they take `--root` at this branch's root.
 
-## Named roots
+## Contents
 
-```
-<branch root>
-  corpus/          product workflows; a workflow's id is its directory name
-  ledgers/         triage verdicts on this corpus
-  walks/           snapshots, stamp, option-coverage ratchet
-  specimens/       corpus-only test workflows (fan-conformance)
-  docs/            this folder
-  LICENSE
-  README.md
-  .github/         verify-corpus.yml
-```
+- this file — adding a workflow, resource or technique, and how definition files link
 
-Discovery enters `corpus/` and skips `ledgers/`, `walks/`, `specimens/` and `docs/`. A specimen workflow is reached by pointing `--root` or `--workflow-dir` at `specimens/`. Product ids are unchanged: `corpus/work-package/workflow.yaml` is still `work-package`.
+## Discovery
+
+Discovery enters `corpus/` and skips `ledgers/`, `walks/` and `docs/` at the branch root, and any directory named `specimens` at any depth. A specimen workflow is reached by pointing `--root` or `--workflow-dir` at `corpus/specimens/`. Product ids are unchanged: `corpus/work-package/workflow.yaml` is still `work-package`.
 
 ## Adding a workflow
 
-Create a directory named for the workflow's id with a `workflow.yaml` in it, under `corpus/` (or at the root of a still-flat tree). Grouping folders carry no definition and exist to organise the corpus, so `corpus/group/kind/example/workflow.yaml` is the workflow `example` and is referenced by that name alone. Discovery skips the four kind roots at the branch root and three folder names at every depth — `activities`, `resources` and `techniques`. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
+Create a directory named for the workflow's id with a `workflow.yaml` in it, under `corpus/` (or at the root of a still-flat tree). Grouping folders carry no definition and exist to organise the corpus, so `corpus/group/kind/example/workflow.yaml` is the workflow `example` and is referenced by that name alone. Discovery skips `ledgers/`, `walks/` and `docs/` at the branch root, any directory named `specimens` at any depth, and three folder names at every depth — `activities`, `resources` and `techniques`. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
 
 1. Create `corpus/{workflow-id}/` with `workflow.yaml`, `README.md`, and `activities/`, `resources/`, `techniques/` as needed.
 2. Prefix activity files `{NN}-{id}.yaml`. Connect them with `transitions`; set the workflow's `initialActivity`.
@@ -50,7 +42,7 @@ A resource is a slug-named markdown file under a workflow's `resources/` directo
 
 A technique is a markdown file under a `techniques/` directory. Put it in the `meta` workflow when every workflow should have it, or in one workflow's own directory when only that workflow does — a workflow-local technique shadows a `meta` one of the same name. A technique may hold nested techniques in a folder of its own, and a nested technique is addressed by appending its slug to the parent's path. Like resources, techniques are discovered by reading the directory.
 
-The file contract — anatomy, addressing, composition, delivery — is the [technique protocol specification](technique-protocol-specification.md).
+The file contract — anatomy, addressing, composition, delivery — is the [technique protocol specification](https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md) on `main`.
 
 - YAML frontmatter carrying the version.
 - **`## Capability`** — what the technique does.
