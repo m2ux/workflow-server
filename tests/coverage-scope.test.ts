@@ -35,6 +35,18 @@ describe('coverage scope', () => {
       expect([...c.activityFiles]).toEqual([]);
     });
 
+    it('takes a product workflow under corpus/ as the workflow id', () => {
+      const c = classifyChange(['corpus/work-package/workflow.yaml']);
+      expect([...c.workflows]).toEqual(['work-package']);
+      expect([...c.activityFiles]).toEqual([]);
+    });
+
+    it('takes a product activity under corpus/ for resolution against the graphs', () => {
+      const c = classifyChange(['corpus/work-package/activities/01-create-work-package.yaml']);
+      expect([...c.workflows]).toEqual([]);
+      expect([...c.activityFiles]).toEqual(['corpus/work-package/activities/01-create-work-package.yaml']);
+    });
+
     it('takes a nested activity file for resolution against the graphs', () => {
       const c = classifyChange(['security/audits/prism/activities/01-structural-pass.yaml']);
       expect([...c.workflows]).toEqual([]);

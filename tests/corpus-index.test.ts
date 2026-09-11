@@ -119,10 +119,10 @@ describe('corpus discovery', () => {
     rmSync(flat, { recursive: true, force: true });
   });
 
-  it('enters corpus/ and skips ledgers, walks, specimens, and docs at the branch root', () => {
+  it('enters corpus/ and skips ledgers, walks, and docs at the branch root, and specimens under corpus/', () => {
     const nested = mkdtempSync(join(tmpdir(), 'corpus-nested-'));
     const product = join(nested, 'corpus', 'work-package');
-    const specimen = join(nested, 'specimens', 'fan-conformance');
+    const specimen = join(nested, 'corpus', 'specimens', 'fan-conformance');
     const docsExample = join(nested, 'docs', 'example');
     mkdirSync(product, { recursive: true });
     mkdirSync(specimen, { recursive: true });
@@ -141,12 +141,12 @@ describe('corpus discovery', () => {
     rmSync(nested, { recursive: true, force: true });
   });
 
-  it('finds a specimen workflow when the walk is pointed at specimens/', () => {
+  it('finds a specimen workflow when the walk is pointed at corpus/specimens/', () => {
     const nested = mkdtempSync(join(tmpdir(), 'corpus-specimens-'));
-    const specimen = join(nested, 'specimens', 'fan-conformance');
+    const specimen = join(nested, 'corpus', 'specimens', 'fan-conformance');
     mkdirSync(specimen, { recursive: true });
     writeFileSync(join(specimen, 'workflow.yaml'), 'id: fan-conformance\nversion: 1.0.0\ntitle: t\n');
-    const index = indexCorpus(join(nested, 'specimens'));
+    const index = indexCorpus(join(nested, 'corpus', 'specimens'));
     expect([...index.workflows.keys()]).toEqual(['fan-conformance']);
     expect(index.workflows.get('fan-conformance')?.dir).toBe(specimen);
     rmSync(nested, { recursive: true, force: true });

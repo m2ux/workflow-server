@@ -49,7 +49,7 @@ The directories, and what each one owns:
 | `scripts/` | Install and container helpers, schema generation, and the benchmarks |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
-| `workflows/` | A worktree of the `workflows` branch. Product definitions live under `corpus/`; `ledgers/`, `walks/`, `specimens/` and `docs/` are named roots discovery skips. A workflow's id is its directory name. Authoring docs live at `workflows/docs/`. |
+| `workflows/` | A worktree of the `workflows` branch. Product definitions live under `corpus/`; specimen workflows live under `corpus/specimens/`. `ledgers/`, `walks/` and `docs/` are named roots discovery skips at the branch root; `specimens` is skipped by name at any depth. A workflow's id is its directory name. Layout authoring lives at `workflows/docs/`. |
 | `docs/` | This documentation |
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
@@ -308,10 +308,17 @@ It checks out the submodules the worktree records and makes `node_modules` resol
 [`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`,
 `npm run test:ci`, and the fixture delivery gate on every pull request. Those steps need no gitlink:
 live-corpus tests skip when `workflows/` is absent.
-The guard sweep and the coverage walk are corpus jobs: they check the gitlink out, point `guards/`
-at that tree, and read `ledgers/` and `walks/`.
+The guard sweep and the snapshot walks run on the `workflows` branch
+([`verify-corpus.yml`](https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/verify-corpus.yml)):
+they borrow this tree's `guards/` and point them at the corpus under review, reading `ledgers/` and
+`walks/` of that tree. The fourteen-workflow coverage walk is a job of its own on that branch
+([`coverage.yml`](https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/coverage.yml)),
+scoped from the corpus diff. A change to how walking works — the walker, the policies, the server —
+still runs the full roster from this tree
+([`.github/workflows/coverage.yml`](../.github/workflows/coverage.yml)), against the corpus this
+tree adopts.
 [`.github/actions/workflows-corpus`](../.github/actions/workflows-corpus/action.yml) checks the two
-gitlinks agree before a corpus job measures anything, so a branch whose baselines were recorded
+gitlinks agree before that job measures anything, so a branch whose baselines were recorded
 against a different pointer fails saying to merge and re-baseline rather than reporting corpus drift
 as a code regression.
 Guards that also run as Vitest tests (`tests/binding-fidelity.test.ts`,
@@ -384,7 +391,8 @@ A definition change lands as two commits: one on the `workflows` branch, and one
 
 ## Authoring definitions
 
-How to add a workflow, resource or technique, how definition files link, and the technique file
-contract live on the `workflows` branch under [`docs/`](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
-In a checkout that vendors the corpus they are at `workflows/docs/`. The schema the server loads
-stays in this tree: [`schemas/README.md`](../schemas/README.md).
+How to add a workflow, resource or technique, and how definition files link, live on the
+`workflows` branch under [`docs/`](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
+In a checkout that vendors the corpus they are at `workflows/docs/`. The technique file contract
+and the schema the server loads stay in this tree: [`technique-protocol-specification.md`](technique-protocol-specification.md),
+[`schemas/README.md`](../schemas/README.md).

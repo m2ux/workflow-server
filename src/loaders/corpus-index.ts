@@ -18,8 +18,9 @@ import { parseDefinition } from '../utils/serialization.js';
  * workflow owns everything beneath it and no workflow contains another.
  *
  * Named roots that are not the product grouping — `ledgers`, `walks`, `specimens`, `docs` — are
- * skipped the same way. Product definitions live under `corpus/` or as a still-flat tree of
- * workflow directories; a specimen workflow is reached by pointing the walk at `specimens/`.
+ * skipped the same way, at any depth. Product definitions live under `corpus/` or as a still-flat
+ * tree of workflow directories. `specimens` is a grouping under `corpus/`; a specimen workflow is
+ * reached by pointing the walk at `corpus/specimens/`.
  *
  * The directory name and the `id` the definition declares are one identity. A directory whose file
  * names something else does not resolve, under either name, and `list_workflows` reports the pair.
@@ -38,9 +39,10 @@ import { parseDefinition } from '../utils/serialization.js';
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
 
 /**
- * Kind roots that sit beside product definitions on a corpus branch. The walk never enters them:
- * `corpus/` is the product grouping and is descended into; a still-flat tree has none of these
- * names, so every workflow directory at the root is still a member of the product list.
+ * Kind names the walk never enters. `ledgers`, `walks` and `docs` sit beside `corpus/` at the
+ * branch root; `specimens` is a grouping under `corpus/`. The skip is by name at every depth, so
+ * a walk of the branch root or of `corpus/` does not list a specimen. A still-flat tree has none
+ * of these names, so every workflow directory at the root is still a member of the product list.
  */
 const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'specimens', 'docs']);
 

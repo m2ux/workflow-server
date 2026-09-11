@@ -91,8 +91,11 @@ function corpusWorkflows(): string[] {
 
 /**
  * Fourteen full coverage walks do not belong in the suite every unit-test run waits for, so this is
- * `npm run test:coverage-walk` and a job of its own (.github/workflows/coverage.yml) rather than
+ * `npm run test:coverage-walk` and a job of its own on the `workflows` branch
+ * (`.github/workflows/coverage.yml` there) rather than
  * opt-in-if-you-remember: the flag keeps `test:ci` fast, and the job means nobody has to set it.
+ * A change to how walking works still runs the full roster from this tree
+ * (`.github/workflows/coverage.yml` on `main`).
  */
 describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option coverage', () => {
   let h: Harness;

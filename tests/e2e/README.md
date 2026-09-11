@@ -100,7 +100,7 @@ npm run test:coverage-walk        # ~14 minutes, 14 workflows
 
 Runs `enumeratePaths` in coverage mode over most of the corpus and asserts that
 every checkpoint option the definitions declare is taken by some walk, or is
-listed in [`option-coverage.json`](option-coverage.json) with the reason no walk
+listed in `walks/option-coverage.json` of the pointed corpus tree with the reason no walk
 reaches it. A newly unreached option is not on the list and fails; an option that
 becomes reachable is on the list with nothing to explain it and also fails, so
 the list can only shrink.
@@ -116,15 +116,15 @@ is a numerator only. A ratio drawn from the walks on both sides is silent about 
 checkpoint no walk reaches: such a ratio reads 100% for nine workflows while three
 of them are at 20%, 24% and 33% of what they declare (issue #472).
 
-Own CI job ([`coverage.yml`](../../.github/workflows/coverage.yml)) rather than
+Own CI job on the `workflows` branch (`.github/workflows/coverage.yml` there) rather than
 part of `test:ci`: fourteen full walks do not belong in the suite every unit-test
 run waits for, and a coverage regression should not read as a unit-test failure.
 `WF_OPTION_COVERAGE=1` is what the job sets, so nobody has to remember to.
 
-It runs on main and on request, not on every pull request — twenty-five minutes
-is too long to sit in front of a diff, and what it measures is a property of the
-corpus as merged. A change that expects to move coverage can ask for a run on its
-own branch; anything else that moves it turns main red and is fixed forward.
+A pull request that changes a definition walks only the workflows its diff can
+move. A change to how walking works — the walker, the policies, the server — runs
+the full roster from this tree ([`coverage.yml`](../../.github/workflows/coverage.yml))
+against the corpus this tree adopts.
 
 ---
 
