@@ -22,6 +22,7 @@
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { report, requireRootOrExit, type Finding } from './guard-protocol.js';
 import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
 
@@ -78,8 +79,8 @@ export interface PinnedPathTally {
 }
 
 export function collect(root: string): PinnedPathTally {
-  const index = indexCorpus(root);
-  const workflows = new Set(index.workflows.keys());
+  const corpus = indexCorpus(root);
+  const workflows = new Set(corpus.workflows.keys());
   const findings: Finding[] = [];
   let authored = 0;
   let foreign = 0;
@@ -89,7 +90,7 @@ export function collect(root: string): PinnedPathTally {
   for (const file of sources(REPO).filter((f) => SOURCE_DIRS.some((d) => f.startsWith(join(REPO, d))))) {
     const text = readFileSync(file, 'utf-8');
     const lines = text.split('\n');
-    for (const [index, line] of lines.entries()) {
+    for (const [lineNo, line] of lines.entries()) {
       for (const match of line.matchAll(PINNED)) {
         const [, workflow, construct, tail] = match;
         const rel = `${workflow}/${construct}/${tail}`;
@@ -106,11 +107,11 @@ export function collect(root: string): PinnedPathTally {
           continue;
         }
         checked += 1;
-        const held = workflowSubdir(index, workflow!, join(construct!, tail!));
+        const held = workflowSubdir(corpus, workflow!, join(construct!, tail!));
         if (held && existsSync(held)) continue;
         findings.push({
           check: 'dangling-pin',
-          site: `${relative(REPO, file)}:${index + 1}`,
+          site: `${relative(REPO, file)}:${lineNo + 1}`,
           detail:
             `names \`${rel}\`, which the pinned corpus does not hold — the corpus renamed or removed `
             + 'it and nothing failed, so whatever this line asserts now rests on a path that is gone. '
@@ -122,13 +123,16 @@ export function collect(root: string): PinnedPathTally {
   return { findings, authored, foreign, illustrative, checked };
 }
 
-const root = requireRootOrExit('pinned-corpus-paths', DEFAULT_ROOT);
-const tally = collect(root);
-report('pinned-corpus-paths', tally.findings, {
-  root,
-  okMessage:
-    `${tally.checked} corpus path(s) pinned in TypeScript all resolve `
-    + `(${tally.authored} authored into a fixture tree, ${tally.illustrative} illustrating a shape in a comment, `
-    + `and ${tally.foreign} naming a non-corpus id were not checked)`,
-  remedy: 'point the literal at the successor, or stop naming a corpus file there',
-});
+const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  const root = requireRootOrExit('pinned-corpus-paths', DEFAULT_ROOT);
+  const tally = collect(root);
+  report('pinned-corpus-paths', tally.findings, {
+    root,
+    okMessage:
+      `${tally.checked} corpus path(s) pinned in TypeScript all resolve `
+      + `(${tally.authored} authored into a fixture tree, ${tally.illustrative} illustrating a shape in a comment, `
+      + `and ${tally.foreign} naming a non-corpus id were not checked)`,
+    remedy: 'point the literal at the successor, or stop naming a corpus file there',
+  });
+}
