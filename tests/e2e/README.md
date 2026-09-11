@@ -95,7 +95,8 @@ smoke.
 ## 2. Coverage walk — every declared checkpoint option
 
 ```bash
-npm run test:coverage-walk        # ~14 minutes, 14 workflows
+WF_WALKED=$(jq -r '.walked | join(",")' "${WORKFLOWS_DIR:-.worktrees/workflows}/walks/roster.json") \
+  npm run test:coverage-walk        # ~14 minutes, 14 workflows
 ```
 
 Runs `enumeratePaths` in coverage mode over most of the corpus and asserts that
@@ -117,7 +118,9 @@ checkpoint no walk reaches: such a ratio reads 100% for nine workflows while thr
 of them are at 20%, 24% and 33% of what they declare (issue #472).
 
 `npm run test:coverage-walk` (`WF_OPTION_COVERAGE=1`) rather than part of `test:ci`:
-fourteen full walks do not belong in the suite every unit-test run waits for.
+fourteen full walks do not belong in the suite every unit-test run waits for. The walk
+drives the ids in `WF_WALKED` (the corpus roster's `walked` list). An empty `WF_COVERAGE_SCOPE`
+walks that whole set; a comma-separated list narrows it.
 
 ---
 

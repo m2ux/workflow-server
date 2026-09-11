@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { classifyChange, coverageScope, pathsFromNameStatus, rosterFileChanged } from '../scripts/coverage-scope.js';
+import { classifyChange, coverageScope, parseWorkflowIds, pathsFromNameStatus } from '../scripts/coverage-scope.js';
 
 /**
  * Which workflows a coverage walk has to cover for a given corpus change.
@@ -70,11 +70,6 @@ describe('coverage scope', () => {
         .toEqual(['corpus/work-package/workflow.yaml']);
     });
 
-    it('treats a roster edit as a coverage change', () => {
-      expect(rosterFileChanged(['walks/roster.json'])).toBe(true);
-      expect(rosterFileChanged(['docs/README.md'])).toBe(false);
-    });
-
     it('ignores what cannot move option coverage', () => {
       const c = classifyChange([
         'prism/techniques/structural-analysis.md',
@@ -84,6 +79,11 @@ describe('coverage scope', () => {
       ]);
       expect([...c.workflows]).toEqual([]);
       expect([...c.activityFiles]).toEqual([]);
+    });
+
+    it('parses a comma-separated walked set', () => {
+      expect(parseWorkflowIds('work-package, meta,')).toEqual(['work-package', 'meta']);
+      expect(parseWorkflowIds(undefined)).toEqual([]);
     });
   });
 

@@ -17,11 +17,11 @@
  * Anything else in the corpus — a technique, a resource — cannot move option coverage on its own and
  * scopes to nothing.
  *
- * What this cannot see, and the caller must decide: a change to the walker, the policies, or the
- * walked roster changes how EVERY workflow walks, so it needs the full set. This reads a corpus
- * diff and nothing else. A 100% rename is not a coverage change.
+ * What this cannot see, and the caller must decide: a change to the walker or the policies
+ * changes how EVERY workflow walks, so it needs the full set. This reads a corpus diff and the
+ * walked ids the caller passes in `WF_WALKED`. A 100% rename is not a coverage change.
  *
- *   npx tsx scripts/coverage-scope.ts <base-corpus-ref> [head-corpus-ref] [--root <workflows-dir>]
+ *   WF_WALKED=id,id npx tsx scripts/coverage-scope.ts <base-corpus-ref> [head-corpus-ref] [--root <dir>]
  *
  * Prints one workflow id per line, or nothing when the change cannot move coverage.
  */
@@ -30,7 +30,7 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from '../guards/workflows-root.js';
+import { requireWorkflowsRoot, defaultCorpusDest } from '../guards/workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
@@ -72,11 +72,6 @@ interface CorpusChange {
   workflows: Set<string>;
   /** `<authoring workflow>/<activity file>` paths that changed. */
   activityFiles: Set<string>;
-}
-
-/** True when the coverage roster itself changed — every walked product must be re-judged. */
-export function rosterFileChanged(paths: readonly string[]): boolean {
-  return paths.some((path) => path === 'walks/roster.json' || path.endsWith('/walks/roster.json'));
 }
 
 export function classifyChange(paths: readonly string[]): CorpusChange {
@@ -139,9 +134,9 @@ export async function coverageScope(
   return [...scope].sort();
 }
 
-/** The walked set, read from the test that owns it rather than restated here. */
-export function walkedWorkflows(root: string): string[] {
-  return corpusWorkflows(root).map(({ id }) => id).sort();
+/** Comma-separated workflow ids, as the coverage walk and this CLI take them. */
+export function parseWorkflowIds(raw: string | undefined): string[] {
+  return (raw ?? '').split(',').map((s) => s.trim()).filter(Boolean);
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
@@ -149,15 +144,16 @@ if (isMain) {
   const positional = process.argv.slice(2).filter((a) => !a.startsWith('--'));
   const [base, head] = positional;
   if (!base) {
-    process.stderr.write('usage: coverage-scope <base-corpus-ref> [head-corpus-ref] [--root <dir>]\n');
+    process.stderr.write('usage: WF_WALKED=id,id coverage-scope <base-corpus-ref> [head-corpus-ref] [--root <dir>]\n');
+    process.exit(2);
+  }
+  const walked = parseWorkflowIds(process.env.WF_WALKED);
+  if (walked.length === 0) {
+    process.stderr.write('WF_WALKED is empty — pass the walked ids the corpus roster names\n');
     process.exit(2);
   }
   const root = requireWorkflowsRoot(DEFAULT_ROOT);
-  const { loadRoster } = await import('./roster.js');
   const paths = changedCorpusPaths(root, base, head);
-  const walked = loadRoster(root).walked;
-  const scope = rosterFileChanged(paths)
-    ? [...walked]
-    : await coverageScope(root, classifyChange(paths), walked);
+  const scope = await coverageScope(root, classifyChange(paths), walked);
   process.stdout.write(scope.join('\n') + (scope.length ? '\n' : ''));
 }
