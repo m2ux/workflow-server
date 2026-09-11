@@ -1,5 +1,5 @@
 import { type Dirent, existsSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 import { logWarn } from '../logging.js';
 
 /**
@@ -110,4 +110,15 @@ export function workflowLocation(root: string, workflowId: string): WorkflowLoca
 export function workflowSubdir(root: string, workflowId: string, name: string): string | null {
   const location = workflowLocation(root, workflowId);
   return location ? join(location.dir, name) : null;
+}
+
+/**
+ * The workflow whose directory holds a path, or null for a path under no workflow. Unambiguous
+ * because the walk stops at a definition: no workflow contains another.
+ */
+export function workflowOwning(root: string, path: string): WorkflowLocation | null {
+  for (const location of indexCorpus(root).workflows.values()) {
+    if (path === location.dir || path.startsWith(location.dir + sep)) return location;
+  }
+  return null;
 }

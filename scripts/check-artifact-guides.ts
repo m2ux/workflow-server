@@ -37,6 +37,7 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tryLoadMarkdownTechnique, tryLoadNestedTechnique } from '../src/loaders/markdown-technique-loader.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { resolveLink } from './corpus-links.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -145,12 +146,17 @@ function mapRowFor(section: string | null, artifact: string): string | null {
  * A row with no link at all is a stated rule rather than a file reference (prism maps a per-lens
  * artifact to "the lens resource the unit's lens slug names"), so it is accepted as authored.
  */
-function mapRowTargetsResolve(row: string, resourcesDir: string): boolean {
+function mapRowTargetsResolve(root: string, row: string, resourcesDir: string): boolean {
   const targets = [...row.matchAll(/\]\(([^)]+)\)/g)]
     .map((m) => m[1].split('#')[0].trim())
     .filter((t) => t.endsWith('.md'));
   if (targets.length === 0) return true;
-  return targets.some((t) => existsSync(resolve(resourcesDir, t)));
+  // The row sits in the resources README, so a relative target resolves beside it and a
+  // `/<workflow>/…` one through discovery.
+  return targets.some((t) => {
+    const resolved = resolveLink(root, join(resourcesDir, 'README.md'), t);
+    return resolved.path !== null && existsSync(resolved.path);
+  });
 }
 
 /**
@@ -246,7 +252,7 @@ export async function collectUnmappedArtifacts(
         const key = `${workflow}::${technique.id}::${o.id}`;
         const row = mapRowFor(map, artifact);
         if (row) {
-          if (mapRowTargetsResolve(row, join(dir, 'resources'))) continue;
+          if (mapRowTargetsResolve(root, row, join(dir, 'resources'))) continue;
           out.push({
             key,
             artifact,

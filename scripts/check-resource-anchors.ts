@@ -20,6 +20,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { resolveLink } from './corpus-links.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -122,7 +123,11 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
       if (/^[a-z][a-z0-9+.-]*:\/\//i.test(target!)) continue;
       // A template body names its file with a placeholder, which resolves to nothing on purpose.
       if (/[{]/.test(target!)) continue;
-      const targetPath = resolve(dirname(file), target);
+      // A `/<workflow>/…` link resolves through discovery; a relative one against this file.
+      const resolved = resolveLink(ROOT, file, target!);
+      if (resolved.form === 'external') continue;
+      const targetPath = resolved.path;
+      if (targetPath === null) continue; // names no workflow the corpus holds: check:corpus-links' finding
       if (relative(ROOT, targetPath).startsWith('..' + sep)) continue; // outside the corpus
       const source = relative(ROOT, file);
       const link = `${target}#${anchor}`;

@@ -382,6 +382,12 @@ A definition change lands as two commits: one on the `workflows` branch, and one
 
 Create a directory named for the workflow's id with a `workflow.yaml` in it, anywhere under `workflows/`. Grouping folders carry no definition and exist to organise the corpus, so `workflows/security/audits/prism/workflow.yaml` is the workflow `prism` and is referenced by that name alone. Three folder names are reserved at every depth — `activities`, `resources` and `techniques` — and the search never enters them: they hold a workflow's own files rather than another workflow, so skipping them keeps discovery proportional to the shape of the corpus rather than to everything in it. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
 
+### Linking between definition files
+
+A link within a workflow is an ordinary relative path — the workflow moves as a unit, so the distance between two of its own files never changes.
+
+A link **out of** a workflow names the workflow it wants, anchored on the id and written from a leading slash: `[conduct](/meta/techniques/orchestrator-conduct.md)`. The leading segment resolves to wherever discovery found that workflow, so the link survives either end moving. Counting directories out of a workflow (`../../meta/techniques/…`) records the distance between two workflows, which is a fact about today's layout rather than about either of them — and that includes a link that climbs to the corpus root only to come back into its own workflow, whose `..` count is the workflow's own depth. `npx tsx scripts/check-corpus-links.ts` reports both forms; it runs by path rather than in the sweep until the corpus is rewritten to the anchored form.
+
 Check it before committing:
 
 ```bash
