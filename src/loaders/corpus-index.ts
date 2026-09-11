@@ -19,8 +19,8 @@ import { parseDefinition } from '../utils/serialization.js';
  *
  * When the pointed tree holds a `corpus/` grouping — a directory of that name that is not itself a
  * workflow — the walk starts there and does not search sibling folders. A still-flat tree has no
- * such grouping, so the pointed directory is the walk root. `specimens` under `corpus/` is skipped
- * by name at any depth; a specimen workflow is reached by pointing the walk at `corpus/specimens/`.
+ * such grouping, so the pointed directory is the walk root. A `workflow.yaml` at any depth under
+ * that walk is a workflow; grouping folders organise the tree and name nothing.
  *
  * The directory name and the `id` the definition declares are one identity. A directory whose file
  * names something else does not resolve, under either name, and `list_workflows` reports the pair.
@@ -39,11 +39,12 @@ import { parseDefinition } from '../utils/serialization.js';
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
 
 /**
- * Kind names the walk never enters as children. `specimens` is a grouping under `corpus/`.
- * `ledgers`, `walks` and `docs` are skipped if they appear under a still-flat tree; a nested
- * tree never searches them because the walk starts inside `corpus/`.
+ * Kind names the walk never enters as children. `ledgers`, `walks` and `docs` are skipped if
+ * they appear under a still-flat tree; a nested tree never searches them because the walk
+ * starts inside `corpus/`. Grouping folders under `corpus/` — including `specimens/` — are
+ * ordinary nests: a `workflow.yaml` beneath them is a workflow.
  */
-const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'specimens', 'docs']);
+const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'docs']);
 
 /** The product grouping under a nested corpus tree. Not itself a workflow. */
 const PRODUCT_GROUPING = 'corpus';
