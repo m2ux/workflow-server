@@ -43,7 +43,7 @@ A specimen is a worked example of a form. An author copies from it when creating
 
 ### ledgers
 
-When a check program finds something in this corpus, someone has to say whether that finding is harmless, to be fixed later, or a live bug. Those verdicts live here as JSON, next to the definitions they judge, so a change to a definition and the verdict it settles can land together. Check programs live on `main` under `guards/`; they take `--root` at this branch's root and read this folder. Contents: [`ledgers/README.md`](ledgers/README.md).
+A check that walks every definition will surface sites that are not all the same kind of problem — a defect to fix now, real debt to keep visible, something correct by design. A **debt ledger** is the file that keeps those judgements separate, so classified debt stays counted and quiet, a live bug stays red, and an unclassified finding is reported. Those files live here, next to the definitions they judge. Check programs live on `main` under `guards/`; they take `--root` at this branch's root and read this folder. Contents: [`ledgers/README.md`](ledgers/README.md).
 
 ### walks
 
