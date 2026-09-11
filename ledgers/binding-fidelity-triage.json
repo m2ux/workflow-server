@@ -279,6 +279,13 @@
     },
     {
       "check": "dead-output",
+      "site": "meta/techniques/version-control/merge-branches.md",
+      "detail": "output 'merge_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
       "site": "meta/techniques/workflow-engine/finalize-activity.md",
       "detail": "output 'activity_result' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
