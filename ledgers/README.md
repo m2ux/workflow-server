@@ -14,13 +14,6 @@ A finding with no entry is *untriaged* and reported. An entry that matches nothi
 
 Not every check has a ledger. A check whose every finding named a definition defect had the corpus fixed rather than classified.
 
-These ledgers live here, next to the definitions they judge, so a change to a definition and the verdict it settles can land together. Check programs live on `main` under `guards/`. They take `--root` at this branch's root and read this folder.
+These ledgers live here, next to the definitions they judge, so a change to a definition and the verdict it settles can land together. Each file is named for the check that reads it. Open the directory for what it currently holds.
 
-## Contents
-
-- [`binding-fidelity-triage.json`](binding-fidelity-triage.json) — a step's bindings, reads without producers, outputs without consumers.
-- [`canonical-home-map-triage.json`](canonical-home-map-triage.json) — canonical-home rows that name an artifact no technique declares.
-- [`nested-output-home-triage.json`](nested-output-home-triage.json) — a nested technique and its container that both claim the same output.
-- [`section-framing-triage.json`](section-framing-triage.json) — prose above a resource's first section, which a section-cited consumer never receives.
-
-How the guards consume a ledger, and how to classify a new finding, is in [`docs/development.md`](https://github.com/m2ux/workflow-server/blob/main/docs/development.md#corpus-debt) on `main`.
+Check programs live on `main` under `guards/`. They take `--root` at this branch's root and read this folder. How a guard consumes a ledger, and how to classify a new finding, is in [`docs/development.md`](https://github.com/m2ux/workflow-server/blob/main/docs/development.md#corpus-debt) on `main`.

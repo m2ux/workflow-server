@@ -10,7 +10,7 @@ The schema the server loads is [`schemas/README.md`](https://github.com/m2ux/wor
 
 ## Discovery
 
-Discovery enters `corpus/` and skips `ledgers/`, `walks/` and `docs/` at the branch root, and any directory named `specimens` at any depth. A specimen workflow is reached by pointing `--root` or `--workflow-dir` at `corpus/specimens/`. Product ids are unchanged: `corpus/work-package/workflow.yaml` is still `work-package`.
+Discovery enters `corpus/` and skips `ledgers/`, `walks/` and `docs/` at the branch root, and any directory named `specimens` at any depth. A specimen workflow is reached by pointing `--root` or `--workflow-dir` at `corpus/specimens/`. The directory name is the id: `corpus/{id}/workflow.yaml` is the workflow `{id}`.
 
 ## Adding a workflow
 
