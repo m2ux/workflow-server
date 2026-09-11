@@ -27,7 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 70
     env:
+      # The corpus checkout lands at path: workflows. WORKFLOWS_DIR names it for the borrowed engine.
       WF_CORPUS_SUBJECT: checkout
+      WORKFLOWS_DIR: workflows
     steps:
       - name: Check out the server tooling
         uses: actions/checkout@v4

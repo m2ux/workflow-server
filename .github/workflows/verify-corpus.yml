@@ -30,7 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # This checkout is the subject, not a gitlink pin. walks/ sits beside the definitions.
+      # The second step lands that tree at path: workflows; WORKFLOWS_DIR names it for the
+      # borrowed engine, whose default dest is .worktrees/workflows of a primary checkout.
       WF_CORPUS_SUBJECT: checkout
+      WORKFLOWS_DIR: workflows
     steps:
       # This corpus change is stacked on feat/693-named-roots: those guards read ledgers/ and
       # walks/ of the pointed tree and cite findings by workflow id.
@@ -40,8 +43,8 @@ jobs:
           ref: feat/693-named-roots
           submodules: false
 
-      # The corpus under review, where check:all looks for it by default. For a pull request this is
-      # the branch tip; for a manual run it is the ref the run was dispatched on.
+      # The corpus under review. For a pull request this is the branch tip; for a manual run it is
+      # the ref the run was dispatched on.
       #
       # The tip, not the merge result. GitHub computes a pull request's merge commit asynchronously,
       # so the sha in the event payload can name a merge of the previous push — the run then grades a
