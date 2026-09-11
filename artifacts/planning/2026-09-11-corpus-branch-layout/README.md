@@ -1,6 +1,6 @@
 # Corpus branch layout: definitions and their artifacts under `corpus/`; tests and guards as named roots
 
-> Specification · 2026-09-11 · companion to the issue this folder is linked from.
+> Specification · 2026-09-11 · companion to [#693](https://github.com/m2ux/workflow-server/issues/693).
 
 The `workflows` branch is a flat mix of eighteen workflow directories and a handful of non-definition files. The server repository is a flat mix of the engine, thirty-six corpus guards, repo guards, site generators, and the ledgers that describe *this* corpus. The work is to give each kind a named root, then move the definitions and the artifacts that belong to them under `corpus/` on the `workflows` branch.
 
