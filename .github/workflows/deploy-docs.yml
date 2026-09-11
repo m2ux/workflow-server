@@ -8,8 +8,8 @@ on:
       - 'src/**'
       - 'schemas/*.schema.json'
       - 'scripts/generate-site-data.ts'
-      - 'scripts/check-site-links.ts'
-      - 'scripts/check-svg-layout.ts'
+      - 'guards/check-site-links.ts'
+      - 'guards/check-svg-layout.ts'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/deploy-docs.yml'
@@ -19,8 +19,8 @@ on:
       - 'src/**'
       - 'schemas/*.schema.json'
       - 'scripts/generate-site-data.ts'
-      - 'scripts/check-site-links.ts'
-      - 'scripts/check-svg-layout.ts'
+      - 'guards/check-site-links.ts'
+      - 'guards/check-svg-layout.ts'
       - '.github/workflows/deploy-docs.yml'
   workflow_dispatch:
 

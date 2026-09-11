@@ -69,10 +69,10 @@
 <main id="main">
   <h1>Quality system</h1>
   <p class="lede prose">Executable guards encode conventions that matter: reference integrity, naming rules, schema truthfulness, and site link integrity. Recurring authoring mistakes become named anti-patterns, mechanical guards, and baselines that ratchet toward zero.</p>
-  <p class="prose contributor-note">For contributors. Guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> as <code>npm run check:*</code>; tests run under Vitest in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a>.</p>
+  <p class="prose contributor-note">For contributors. Guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/guards"><code>guards/</code></a> as <code>npm run check:*</code>; tests run under Vitest in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a>.</p>
 
   <h2 id="guards">The guard suite</h2>
-  <p class="prose">Guards are TypeScript scripts under <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> that walk the <code>workflows</code> worktree or this site's HTML and report violations. Each convention named in a <a href="../specifications.html">specification</a> or architecture page has a matching check — the spec defines the rule; the guard enforces it mechanically. Run them with <code>npm run check:&lt;name&gt;</code>; a clean tree always yields the same result.</p>
+  <p class="prose">Guards are TypeScript programs under <a href="https://github.com/m2ux/workflow-server/tree/main/guards"><code>guards/</code></a> that walk the <code>workflows</code> worktree or this site's HTML and report violations. Each convention named in a <a href="../specifications.html">specification</a> or architecture page has a matching check — the spec defines the rule; the guard enforces it mechanically. Run them with <code>npm run check:&lt;name&gt;</code>; a clean tree always yields the same result.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 320" role="img" aria-labelledby="gs-land-title gs-land-desc">
