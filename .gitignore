@@ -16,6 +16,9 @@ dist/
 *.swp
 *.swo
 
+# Agent skills, rules and settings — owned at workspace level, one home per machine
+.claude/
+
 # Environment
 .env
 .env.local
