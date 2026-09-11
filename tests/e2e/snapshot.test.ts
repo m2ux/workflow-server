@@ -47,9 +47,8 @@ describe.skipIf(!liveCorpusRoot())('walk baseline corpus stamp', () => {
   //
   // The stamp answers that question for the tree in front of it. It is a file recording the provenance
   // of sibling files, so a merge can take it from one parent and the baselines it speaks for from the
-  // other — matching, and silent, while the two describe different corpora (#479). Two gitlinks cannot
-  // be separated that way, so the pull-request check in .github/actions/workflows-corpus compares
-  // those instead, and covers the case this cannot see.
+  // other — matching, and silent, while the two describe different corpora (#479). Keep the stamp and
+  // the snapshots in the same commit on the workflows branch.
   it('was generated against the corpus commit now checked out', () => {
     expectStampFresh((stampSha, currentSha) =>
       `walk snapshots were generated against corpus ${stampSha} but the checkout is at ${currentSha}. `
@@ -227,9 +226,8 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
    * That the executed side is corpus-coupled is the whole of its subtlety, and it is not visible in
    * the number. A corpus bump that stops binding one variable can retire a step nothing else
    * mentions — `gitnexus_indexed` losing its bound value took `gitnexus-detect-changes-preflight`
-   * out of all six walks and one step off this total (#479). Re-baseline in the commit that bumps the
-   * submodule; CI checks that the branch walked the corpus its merge adopts, because a baseline
-   * measured against a corpus the tree does not adopt reports drift as a code regression.
+   * out of all six walks and one step off this total (#479). Re-baseline in the commit that changes
+   * the walk; the snapshots live on the workflows branch under `walks/`.
    *
    * Also asserted, and independent of both totals: every step some walk ran is a step its activity
    * declares. That is what an id rename or a manifest drifting from the definition would break.

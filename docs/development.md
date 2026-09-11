@@ -8,12 +8,12 @@ Node.js 18 or later, npm, and Git.
 
 ## Getting a working checkout
 
-The workflow definitions are a submodule of this repository. Cloning the server on its own leaves `workflows/` empty: `typecheck` and `test:ci` still pass (live-corpus tests skip), and every corpus guard has nothing to measure. Take both:
+The workflow definitions live on the `workflows` branch. Cloning the server on its own leaves `workflows/` absent: `typecheck` and `test:ci` still pass (live-corpus tests skip), and every corpus guard has nothing to measure. Take both:
 
 ```bash
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
-git submodule update --init --recursive
+git worktree add ./workflows workflows
 npm install
 ```
 
@@ -119,7 +119,7 @@ Coverage needs `@vitest/coverage-v8`, which is not a dependency of this reposito
 
 The suite is large enough that naming its files here would go stale faster than it helps. `tests/` holds the unit and integration suites, `tests/e2e/` holds the end-to-end walks through the workflow corpus, and `npm test -- --run` prints the live inventory with the pass and fail counts.
 
-Two things about the suite are worth knowing before changing anything in it. Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too when a live corpus is present. Live-corpus tests skip when `workflows/` is missing. The end-to-end walks are snapshotted against a specific corpus commit under `walks/` of that tree, which is why a submodule bump and a re-baseline belong in the same change — see [Corpus-coupled baselines](#corpus-coupled-baselines) below.
+Two things about the suite are worth knowing before changing anything in it. Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too when a live corpus is present. Live-corpus tests skip when `workflows/` is missing. The end-to-end walks are snapshotted against a specific corpus commit under `walks/` of that tree, which is why a re-baseline and a stamp belong in the same change on the `workflows` branch — see [Corpus-coupled baselines](#corpus-coupled-baselines) below.
 
 ### Test infrastructure
 
@@ -257,11 +257,10 @@ npm run check:delta -- --base upstream/main
 npm run check:delta -- --only binding-fidelity --verbose
 ```
 
-`check:delta` resolves the merge-base, materialises it in a throwaway worktree with the `workflows`
-submodule pinned to the commit *that* tree recorded, runs the registry against both trees, and
-reports only the difference — including what your change fixed. Nothing is stored, so nothing drifts.
-Base results are cached under `.guard-cache/` keyed by (base commit, base corpus commit), so the
-doubled runtime is paid once per rebase.
+`check:delta` resolves the merge-base, materialises that engine tree in a throwaway worktree, and
+runs the registry against both engine trees pointed at the same `./workflows` checkout. Nothing is
+stored, so nothing drifts. Base results are cached under `.guard-cache/` keyed by (base commit,
+corpus HEAD), so the doubled runtime is paid once per rebase.
 
 Guards that speak `--json` give a precise per-finding delta; the rest are compared by exit code and
 by new output lines. That is the reason to move a guard onto the finding protocol when its output
@@ -293,7 +292,7 @@ one reason per accepted checkpoint.
 
 ### Running guards in a worktree
 
-A fresh worktree has an empty `workflows/` and no `node_modules`, so the guards and the suite cannot
+A fresh worktree has no `workflows/` checkout and no `node_modules`, so the guards and the suite cannot
 measure the edits that live there:
 
 ```bash
@@ -301,13 +300,13 @@ npm run worktree:provision            # this worktree
 npm run worktree:provision -- <path>  # another one
 ```
 
-It checks out the submodules the worktree records and makes `node_modules` resolvable. Idempotent.
+It adds a `workflows` worktree and makes `node_modules` resolvable. Idempotent.
 
 ### Enforcement
 
 [`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`,
-`npm run test:ci`, and the fixture delivery gate on every pull request. Those steps need no gitlink:
-live-corpus tests skip when `workflows/` is absent.
+`npm run test:ci`, and the fixture delivery gate on every pull request. Those steps need no corpus
+checkout: live-corpus tests skip when `workflows/` is absent.
 The guard sweep and the snapshot walks run on the `workflows` branch
 ([`verify-corpus.yml`](https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/verify-corpus.yml)):
 they borrow this tree's `guards/` and point them at the corpus under review, reading `ledgers/` and
@@ -315,12 +314,8 @@ they borrow this tree's `guards/` and point them at the corpus under review, rea
 ([`coverage.yml`](https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/coverage.yml)),
 scoped from the corpus diff. A change to how walking works — the walker, the policies, the server —
 still runs the full roster from this tree
-([`.github/workflows/coverage.yml`](../.github/workflows/coverage.yml)), against the corpus this
-tree adopts.
-[`.github/actions/workflows-corpus`](../.github/actions/workflows-corpus/action.yml) checks the two
-gitlinks agree before that job measures anything, so a branch whose baselines were recorded
-against a different pointer fails saying to merge and re-baseline rather than reporting corpus drift
-as a code regression.
+([`.github/workflows/coverage.yml`](../.github/workflows/coverage.yml)), against a checkout of the
+`workflows` branch tip.
 Guards that also run as Vitest tests (`tests/binding-fidelity.test.ts`,
 `tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`, `tests/audience-guard.test.ts`,
 `tests/review-mode-gating.test.ts`, `tests/identifier-qualification.test.ts`) fail `npm test` too
@@ -328,10 +323,11 @@ when a live corpus is present.
 
 ### Corpus-coupled baselines
 
-The walk snapshots under `walks/` of the pointed corpus tree describe a path through the definitions,
+The walk snapshots under `walks/` of a corpus checkout describe a path through the definitions,
 so they are only meaningful against the corpus that produced them. `walks/corpus-sha.json` records
 that commit, and a mismatch fails with both SHAs named — so corpus drift reads as corpus drift rather
-than as six unrelated regressions. Bump it in the same commit that bumps the submodule:
+than as six unrelated regressions. Update the stamp in the same commit that re-baselines the walk,
+on the `workflows` branch:
 
 ```bash
 npm run test:ci -- -u      # re-baseline the walk
@@ -340,10 +336,10 @@ npm run baseline:stamp     # record the corpus commit it was baselined against
 
 The stamp is a file describing the provenance of sibling files, and a merge takes each file from
 whichever side last touched it. A branch that leaves both alone therefore inherits its base's stamp
-while keeping its own baselines, and the two agree with the base's corpus while describing another —
-which is what the gitlink check in CI is for.
+while keeping its own baselines, and the two agree with the base's corpus while describing another.
+Keep the stamp and the snapshots in the same commit.
 
-How little a corpus bump has to change to move a walk is worth knowing. Replacing `value: true` with
+How little a corpus edit has to change to move a walk is worth knowing. Replacing `value: true` with
 a description on the action that binds `gitnexus_indexed` left every gate expression in the corpus
 untouched and still retired `gitnexus-detect-changes-preflight` from all six walks, because the
 walker binds a `set` action only when it carries an explicit value (#479).
@@ -371,14 +367,14 @@ up, and the `--list` output names each one's folder, recorded version and curren
 
 ## The two branches
 
-Server code lives on `main`. The workflow definitions — the YAML, the techniques and the resources — live on `workflows`, an orphan branch with a history of its own, which the main tree carries as a submodule at `workflows/`.
+Server code lives on `main`. The workflow definitions — the YAML, the techniques and the resources — live on `workflows`, an orphan branch with a history of its own. Check that branch out with `git worktree add ./workflows workflows`.
 
 ### Working on the definitions
 
-The submodule is a checkout of that branch, so edit the definitions in place and commit them there:
+Edit the definitions in the worktree and commit them on that branch:
 
 ```bash
-git submodule update --init --recursive   # first time, and after a pull moves the pointer
+git worktree add ./workflows workflows   # first time
 cd workflows
 git pull origin workflows
 # edit definitions
@@ -387,12 +383,12 @@ git commit -m "Describe the definition change"
 git push origin workflows
 ```
 
-A definition change lands as two commits: one on the `workflows` branch, and one on `main` moving the submodule pointer to it. The guards and the end-to-end walks both read that pointer, so the two belong in the same pull request — [corpus-coupled baselines](#corpus-coupled-baselines) covers what happens when they separate.
+A definition change lands on the `workflows` branch. The guards and the end-to-end walks read that checkout — [corpus-coupled baselines](#corpus-coupled-baselines) covers what happens when the snapshots and the definitions separate.
 
 ## Authoring definitions
 
 How to add a workflow, resource or technique, and how definition files link, live on the
 `workflows` branch under [`docs/`](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
-In a checkout that vendors the corpus they are at `workflows/docs/`. The technique file contract
+In a checkout that holds a `workflows` worktree they are at `workflows/docs/`. The technique file contract
 and the schema the server loads stay in this tree: [`technique-protocol-specification.md`](technique-protocol-specification.md),
 [`schemas/README.md`](../schemas/README.md).

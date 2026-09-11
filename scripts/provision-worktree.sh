@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # workflow-server — make a git worktree a place the work can be MEASURED.
 #
-# A fresh feature worktree comes up with an empty `workflows/` and no `node_modules`, so the guards
-# and the test suite cannot run where the edits are. Every measurement then becomes a cross-checkout
-# operation against the main copy — which measures the wrong corpus (issue #327 R4, promoted from
-# #324 C5). The merge-base delta runner needs the same provisioning for its base tree.
+# A fresh feature worktree comes up with no `workflows/` checkout and no `node_modules`, so the
+# guards and the test suite cannot run where the edits are. Every measurement then becomes a
+# cross-checkout operation against the main copy — which measures the wrong corpus (issue #327 R4,
+# promoted from #324 C5). The merge-base delta runner needs the same provisioning for its base tree.
 #
 # This script is idempotent and does two things:
-#   1. checks out the git submodules the worktree records (workflows, and .engineering when present)
+#   1. adds a `workflows` worktree of the `workflows` branch, and inits `.engineering` when present
 #   2. makes `node_modules` resolvable, by symlinking the main checkout's install
 #
 #   scripts/provision-worktree.sh              # provision the worktree this script lives in
@@ -34,27 +34,40 @@ fi
 
 echo "provisioning $TARGET"
 
-# --- 1. submodules -----------------------------------------------------------------------------
-# `workflows` is the corpus every guard reads; without it the guards inspect nothing. `.engineering`
-# holds planning artifacts and is optional — a missing remote for it must not fail provisioning.
-if [[ -f "$TARGET/.gitmodules" ]]; then
-  if git -C "$TARGET" submodule update --init workflows; then
-    corpus_sha="$(git -C "$TARGET/workflows" rev-parse --short HEAD 2>/dev/null || echo unknown)"
-    corpus_files="$(find "$TARGET/workflows" -maxdepth 1 -mindepth 1 -type d ! -name '.git' | wc -l | tr -d ' ')"
-    echo "  workflows      @ ${corpus_sha} (${corpus_files} workflow dirs)"
-  else
-    echo "  workflows      FAILED — the guards cannot measure this worktree" >&2
-    exit 1
+# --- 1. workflows worktree ---------------------------------------------------------------------
+# The corpus is a checkout of the `workflows` branch, not an object this tree stores. Guards and
+# live-corpus tests read `./workflows` (or `WORKFLOWS_DIR`). `.engineering` holds planning artifacts
+# and is optional — a missing remote for it must not fail provisioning.
+add_workflows_worktree() {
+  git -C "$TARGET" fetch origin workflows --quiet 2>/dev/null || true
+  if git -C "$TARGET" worktree add "$TARGET/workflows" workflows; then
+    return 0
   fi
-  if git -C "$TARGET" config --file .gitmodules --get submodule..engineering.path >/dev/null 2>&1; then
-    if git -C "$TARGET" submodule update --init .engineering >/dev/null 2>&1; then
-      echo "  .engineering   @ $(git -C "$TARGET/.engineering" rev-parse --short HEAD 2>/dev/null || echo unknown)"
-    else
-      echo "  .engineering   skipped (not reachable — planning artifacts only)"
-    fi
-  fi
+  echo "  workflows      FAILED — run 'git worktree add ./workflows workflows'" >&2
+  return 1
+}
+
+if [[ -d "$TARGET/workflows/.git" || -f "$TARGET/workflows/.git" ]]; then
+  corpus_sha="$(git -C "$TARGET/workflows" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+  echo "  workflows      worktree @ ${corpus_sha}"
+elif [[ -d "$TARGET/workflows" ]] && [[ -z "$(ls -A "$TARGET/workflows" 2>/dev/null)" ]]; then
+  rmdir "$TARGET/workflows"
+  add_workflows_worktree || exit 1
+  echo "  workflows      worktree @ $(git -C "$TARGET/workflows" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+elif [[ ! -e "$TARGET/workflows" ]]; then
+  add_workflows_worktree || exit 1
+  echo "  workflows      worktree @ $(git -C "$TARGET/workflows" rev-parse --short HEAD 2>/dev/null || echo unknown)"
 else
-  echo "  no .gitmodules — nothing to check out"
+  echo "  workflows      present but not a git checkout — the guards cannot measure this worktree" >&2
+  exit 1
+fi
+
+if [[ -f "$TARGET/.gitmodules" ]] && git -C "$TARGET" config --file .gitmodules --get submodule..engineering.path >/dev/null 2>&1; then
+  if git -C "$TARGET" submodule update --init .engineering >/dev/null 2>&1; then
+    echo "  .engineering   @ $(git -C "$TARGET/.engineering" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+  else
+    echo "  .engineering   skipped (not reachable — planning artifacts only)"
+  fi
 fi
 
 # --- 2. node_modules ---------------------------------------------------------------------------

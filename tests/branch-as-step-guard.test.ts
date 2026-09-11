@@ -124,10 +124,9 @@ describe('branch-as-step guard', () => {
 
   /**
    * The corpus carries no caveat as a sub-bullet. Definitions and code sit on different branches, so
-   * this reads whichever submodule pointer is checked out and turns over on the corpus merge that
-   * converts the last of them; `WORKFLOWS_DIR` points it at a corpus worktree to verify ahead of
-   * that. A ceiling would let the count sit wherever it landed, which is the state this guard exists
-   * to end.
+   * this reads whichever workflows checkout is present and turns over when the last of them converts;
+   * `WORKFLOWS_DIR` points it at a corpus worktree to verify ahead of that. A ceiling would let the
+   * count sit wherever it landed, which is the state this guard exists to end.
    */
   it.skipIf(!liveCorpusRoot())('holds the corpus clean of caveats written as sub-bullets', () => {
     expect(collectFindings(liveCorpusRoot()!)).toEqual([]);

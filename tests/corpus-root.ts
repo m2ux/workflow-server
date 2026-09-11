@@ -16,7 +16,7 @@ import { indexCorpus } from '../src/loaders/corpus-index.js';
  *
  * Jobs that opted into a live corpus (`WORKFLOWS_DIR`, the coverage walk) call `corpusRoot` and
  * throw when it is missing. The engine suite calls `liveCorpusRoot` and `skipIf`s when it is null,
- * so `test:ci` and `typecheck` do not need a gitlink.
+ * so `test:ci` and `typecheck` do not need a corpus checkout.
  */
 export function corpusRoot(): string {
   const root = liveCorpusRoot();
@@ -27,12 +27,12 @@ export function corpusRoot(): string {
   if (!existsSync(attempted) || !statSync(attempted).isDirectory()) {
     throw new Error(
       `workflows corpus root '${attempted}' does not exist. In a fresh worktree run `
-      + `'npm run worktree:provision' to check out the workflows submodule.`,
+      + `'npm run worktree:provision' to add a workflows worktree.`,
     );
   }
   throw new Error(
-    `workflows corpus root '${attempted}' contains no workflow — an empty submodule checkout. `
-    + `Run 'npm run worktree:provision'.`,
+    `workflows corpus root '${attempted}' contains no workflow — an empty workflows checkout. `
+    + `Run 'git worktree add ./workflows workflows'.`,
   );
 }
 

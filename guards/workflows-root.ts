@@ -98,7 +98,7 @@ export function requireWorkflowsRoot(defaultDir: string, argv: string[] = proces
   if (!existsSync(root)) {
     throw new UnreachableCorpusError(
       `workflows corpus root '${root}' (from ${from}) does not exist. `
-      + `In a fresh worktree run 'npm run worktree:provision' to check out the workflows submodule.`,
+      + `In a fresh worktree run 'npm run worktree:provision' to add a workflows worktree.`,
     );
   }
   if (!statSync(root).isDirectory()) {
@@ -108,8 +108,8 @@ export function requireWorkflowsRoot(defaultDir: string, argv: string[] = proces
   if (index.workflows.size === 0 && index.ambiguous.length === 0) {
     throw new UnreachableCorpusError(
       `workflows corpus root '${root}' (from ${from}) contains no workflow (no directory with a `
-      + `workflow.yaml at any depth). An empty submodule checkout makes every corpus guard pass `
-      + `vacuously — run 'npm run worktree:provision' to populate it.`,
+      + `workflow.yaml at any depth). An empty workflows checkout makes every corpus guard pass `
+      + `vacuously — run 'git worktree add ./workflows workflows' to populate it.`,
     );
   }
   return root;

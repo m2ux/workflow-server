@@ -10,7 +10,7 @@ import { corpusRoot } from './corpus-root.js';
  * Walk snapshots are corpus-coupled: they record the path a workflow takes through the definitions
  * in the pointed-at corpus tree. When the checkout moves and the baseline does not, the snapshots
  * go red for a reason unrelated to any code change — during the #324 session six e2e tests failed
- * because the baseline had been generated against submodule `b3dc2506` while the checkout was at
+ * because the baseline had been generated against corpus `b3dc2506` while the checkout was at
  * `d9b30234`, and diagnosing that produced nothing (issue #327 S3).
  *
  * The stamp turns that into a one-line answer: the mismatch names both commits and says what to do.

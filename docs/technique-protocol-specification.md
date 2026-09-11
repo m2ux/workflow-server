@@ -470,7 +470,7 @@ naming the bag variable it lands under (§7.1 delivers `destination:` only on re
 ## 8. Authoring rules
 
 A technique's interface stays workflow-agnostic; the full set lives in
-[`workflow-design/resources/anti-patterns.md`](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) (in the `workflows` branch/submodule).
+[`workflow-design/resources/anti-patterns.md`](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) (on the `workflows` branch).
 The protocol-relevant rules:
 
 - An input or output describes what a value is — its meaning, shape, allowed values. A technique names

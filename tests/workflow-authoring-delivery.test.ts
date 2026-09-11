@@ -32,11 +32,9 @@ import { sessionOps, type SessionOps } from './session-ops.js';
  *   3. Every delivered reference resolves. This is the assertion that fails the moment
  *      `workflow-design`'s resources move, which is what makes it safe to retire that tree.
  *
- * The suite is conditional on `workflow-authoring` being present in the resolved workflows root,
- * because the tree lands on the `workflows` branch before the submodule pointer moves. Point it
- * at the branch with `WORKFLOWS_DIR` in that window; once the submodule carries the tree the
- * suite runs unconditionally. The condition is on presence of the tree, never on the assertions:
- * a present tree with a broken bundle fails.
+ * The suite is conditional on `workflow-authoring` being present in the resolved workflows root.
+ * Point it at a checkout of the `workflows` branch with `WORKFLOWS_DIR`. The condition is on
+ * presence of the tree, never on the assertions: a present tree with a broken bundle fails.
  */
 
 const WORKFLOWS_ROOT = resolveWorkflowsRoot(resolve(join(import.meta.dirname, '..', 'workflows')));

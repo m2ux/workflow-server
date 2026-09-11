@@ -90,7 +90,7 @@ describe('requireWorkflowsRoot', () => {
     expect(() => requireWorkflowsRoot('/d', [])).toThrow(/WORKFLOWS_DIR/);
   });
 
-  it('rejects an empty directory — the unprovisioned-submodule state', () => {
+  it('rejects an empty directory — the unprovisioned-worktree state', () => {
     const empty = mkdtempSync(join(tmpdir(), 'corpus-empty-'));
     expect(() => requireWorkflowsRoot(empty, [])).toThrow(/contains no workflow/);
   });

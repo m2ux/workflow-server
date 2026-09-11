@@ -13,7 +13,7 @@
  * releases and this guard catches a denylisted version arriving by any other route.
  *
  * Scope is this repo's own lockfile. Worktree lockfiles resolve from the same file, and the corpus
- * submodule carries no dependencies.
+ * branch carries no dependencies.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
