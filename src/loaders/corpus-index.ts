@@ -17,6 +17,10 @@ import { parseDefinition } from '../utils/serialization.js';
  * corpus rather than to everything in it. It also stops at a directory that has a definition, so a
  * workflow owns everything beneath it and no workflow contains another.
  *
+ * Named roots that are not the product grouping — `ledgers`, `walks`, `specimens` — are skipped
+ * the same way. Product definitions live under `corpus/` or as a still-flat tree of workflow
+ * directories; a specimen workflow is reached by pointing the walk at `specimens/`.
+ *
  * The directory name and the `id` the definition declares are one identity. A directory whose file
  * names something else does not resolve, under either name, and `list_workflows` reports the pair.
  * Two directories of the same name are the same class of failure. Identity is applied when an id
@@ -32,6 +36,13 @@ import { parseDefinition } from '../utils/serialization.js';
 
 /** Directory names holding a workflow's own files, which the walk never enters and never searches. */
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
+
+/**
+ * Kind roots that sit beside product definitions on a corpus branch. The walk never enters them:
+ * `corpus/` is the product grouping and is descended into; a still-flat tree has none of these
+ * names, so every workflow directory at the root is still a member of the product list.
+ */
+const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'specimens']);
 
 /** Definition file extensions, in resolution priority. */
 const DEFINITION_EXTENSIONS = ['yaml', 'yml'] as const;
@@ -147,7 +158,12 @@ export function indexCorpus(root: string): CorpusIndex {
     }
     for (const entry of entries) {
       // `isDirectory()` is false for a symlink, so the walk cannot cycle through one.
-      if (!entry.isDirectory() || entry.name.startsWith('.') || RESERVED_DIR_NAMES.has(entry.name)) continue;
+      if (
+        !entry.isDirectory()
+        || entry.name.startsWith('.')
+        || RESERVED_DIR_NAMES.has(entry.name)
+        || NON_PRODUCT_ROOTS.has(entry.name)
+      ) continue;
       const path = join(dir, entry.name);
       const manifest = definitionIn(path);
       if (manifest) {
