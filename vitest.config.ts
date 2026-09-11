@@ -5,6 +5,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    setupFiles: ['tests/vitest-key-dir.ts'],
     // The e2e walks replay full multi-activity workflow sessions against the live corpus; their
     // duration scales with corpus size, so the 5s vitest default is too tight. A GitHub runner is
     // roughly 4x slower than a local machine, and a single walk sits near 30s there; a hook that
