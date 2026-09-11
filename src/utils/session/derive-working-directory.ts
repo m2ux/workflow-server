@@ -126,7 +126,11 @@ async function parseGitmodules(hostToplevel: string): Promise<SubmoduleSection[]
   let current: { name: string; path?: string; url?: string } | undefined;
   const flush = (): void => {
     if (current?.path) {
-      modules.push({ name: current.name, path: current.path, url: current.url });
+      modules.push({
+        name: current.name,
+        path: current.path,
+        ...(current.url ? { url: current.url } : {}),
+      });
     }
   };
   for (const line of content.split(/\r?\n/)) {
@@ -317,7 +321,7 @@ export async function deriveWorkingDirectory(
 }
 
 /** Shape an open decision as the successful tool JSON (no session_index). */
-export function openDecisionPayload(d: DerivationDecision): Record<string, unknown> {
+export function openDecisionPayload(d: DerivationDecision | (Omit<DerivationDecision, 'kind'> & { kind: 'decision' })): Record<string, unknown> {
   const { kind: _kind, ...rest } = d;
   return rest;
 }

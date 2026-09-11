@@ -351,7 +351,7 @@ export function describeSessionStoreError(err: unknown): string {
     case 'SEAL_MISMATCH':
       return `${err.message}. The session.json (or its parsed contents) does not match the seal recorded in .session-token — a rotated signing key is the likely cause. Restore the folder from the most recent commit before retrying. Nothing was written.`;
     case 'FOLDER_OCCUPIED': {
-      const occupiedIndex = err.details?.session_index;
+      const occupiedIndex = err.details?.['session_index'];
       const continueHint =
         typeof occupiedIndex === 'string'
           ? `Pass session_index ${occupiedIndex} to continue that run, or pass a distinct planning_folder to open another.`

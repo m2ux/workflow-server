@@ -23,6 +23,7 @@ import {
   findPlanningFolderBySlug,
   sessionFileExists,
   writeSessionFile,
+  createSessionFile,
   replaceSessionFile,
   verifySeal,
   computeSessionIndex,
@@ -39,6 +40,9 @@ import {
   buildSessionScope,
   resolveSessionRoot,
   listSessionSearchRoots,
+  deriveWorkingDirectory,
+  openDecisionPayload,
+  type DerivationOk,
 } from '../utils/session/index.js';
 import {
   createInitialSessionFile,
@@ -81,6 +85,13 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
   };
 }
 
+function openDecisionResponse(payload: Record<string, unknown>) {
+  return {
+    content: [{ type: 'text' as const, text: JSON.stringify(payload, null, 2) }],
+    _meta: { validation: buildValidation() },
+  };
+}
+
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
   // Process-level engineering root (may be install multi-root). Per-session
@@ -106,29 +117,30 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     {
       description:
         'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. ' +
-        'Pass `planning_folder` as an absolute path (basename = slug). ' +
-        'Always pass `repo` as owner/repo, derived from git via `version-control::resolve-host-repo` (origin remote of the outermost claiming superproject); the user or workspace AGENTS.md is a fallback only when the workspace is not a git repo or has no origin remote. Stored on session.json#repo. ' +
-        'Omit planning_folder for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
+        'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin remote. ' +
+        'Pass `planning_folder` as an absolute path (basename = slug) to resume or pin a named folder. ' +
+        '`repo` is optional; when present it must equal the derived owner/repo. ' +
+        'Omit both `working_directory` and `planning_folder` for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks.',
       inputSchema: z
         .object({
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
           planning_folder: z.string().optional().describe('Optional. Absolute path; basename is the planning slug. Bare/relative paths rejected. Omit for transient meta bootstrap.'),
-          repo: z.string().optional().describe('Target owner/repo (or github URL). Always pass when known; written to session.json#repo. Also accepted from planning_folder under …/<owner>/<repo>/….'),
+          working_directory: z.string().optional().describe('Optional. Absolute path of the checkout under work. The bound repository is that checkout\'s origin. Bare/relative paths rejected.'),
+          repo: z.string().optional().describe('Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.'),
           user_request: z.string().optional().describe('The user\'s free-form request that opened this session. Seeded into the variable bag as `user_request`, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.'),
           agent_id: z.string().default('orchestrator').describe('Agent identity stored on the session (default "orchestrator"). Use one canonical id for solo persistent walks.'),
           context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. "persistent" = reference delivery; ONLY for solo (same agent retains payloads). Omit/"fresh" for disposable workers. Resume overwrites recorded mode.'),
         })
         .strict(),
     },
-    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, repo, agent_id, context_mode, user_request }) => {
+    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, working_directory, repo, agent_id, context_mode, user_request }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
       // start_session is top-level only — it either opens an existing
       // workspace top-level folder (and resumes the session inside it) or
-      // creates a fresh meta-bootstrap session under os.tmpdir() registered
-      // to the slug. Child workflows are dispatched by calling dispatch_child
-      // against the returned session_index.
+      // creates a fresh session. Child workflows are dispatched by calling
+      // dispatch_child against the returned session_index.
       //
       // `planning_folder` is treated as a HINT supplied by the agent. The
       // server consumes its basename as the slug. When the path sits under the
@@ -136,6 +148,64 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // legacy …/<owner>/<repo>/.engineering/…, that identity is also taken as
       // a repo hint (unless `repo` is passed explicitly). Off-workspace paths
       // still work as slug-only hints.
+      //
+      // `working_directory` is the checkout under work. The server inverts
+      // path presentation, derives owner/repo from that checkout's origin, and
+      // creates a durable planning folder. A derived slug that already holds a
+      // session is occupancy, not resume.
+      if (working_directory !== undefined && !isAbsolute(working_directory)) {
+        throw new Error(
+          `start_session: when supplied, working_directory must be an absolute path, got '${working_directory}'. ` +
+          `Bare slugs and relative paths are rejected.`,
+        );
+      }
+
+      const searchRoots = await listSessionSearchRoots(sessionScope);
+      let derived: DerivationOk | undefined;
+      if (working_directory !== undefined) {
+        const derivation = await deriveWorkingDirectory({
+          workingDirectory: working_directory,
+          searchRoots,
+          ...(config.pathPresentation ? { pathPresentation: config.pathPresentation } : {}),
+          ...(repo?.trim() ? { namedRepo: repo.trim() } : {}),
+          ...(user_request ? { userRequest: user_request } : {}),
+        });
+        if (derivation.kind === 'refuse') {
+          throw new Error(`start_session: ${derivation.message}`);
+        }
+        if (derivation.kind === 'decision') {
+          return openDecisionResponse(openDecisionPayload(derivation));
+        }
+        derived = derivation;
+        if (repo?.trim()) {
+          let callerRepo: string;
+          try {
+            callerRepo = normalizeRepoPath(repo);
+          } catch (err) {
+            throw new Error(
+              `start_session: ${err instanceof Error ? err.message : String(err)}`,
+            );
+          }
+          if (callerRepo !== derived.repo) {
+            return openDecisionResponse(openDecisionPayload({
+              kind: 'decision',
+              decision: 'binding-mismatch',
+              candidates: [
+                { source: 'caller', repo: callerRepo },
+                { source: 'checkout', repo: derived.repo, toplevel: derived.toplevel },
+              ],
+              recommendation:
+                `Pass repo '${derived.repo}' to match the checkout, or pass a working_directory whose origin is '${callerRepo}'.`,
+              toplevel: derived.toplevel,
+              host_repo_path: derived.host_repo_path,
+              derived_repo: derived.repo,
+              ...(derived.host_repo ? { host_repo: derived.host_repo } : {}),
+              ...(derived.component_path ? { component_path: derived.component_path } : {}),
+            }));
+          }
+        }
+      }
+
       let planning_slug: string | undefined;
       if (planning_folder !== undefined) {
         if (!isAbsolute(planning_folder)) {
@@ -147,13 +217,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         planning_slug = basename(resolve(planning_folder));
       }
 
+      const namedPlanningFolder = planning_folder !== undefined;
+      const effectiveWfId = workflow_id ?? DEFAULT_WORKFLOW_ID;
+      const derivedDurable = derived !== undefined && !namedPlanningFolder;
+      if (derivedDurable) {
+        planning_slug = `${new Date().toISOString().slice(0, 10)}-${effectiveWfId}`;
+      }
       const slugIsSynthetic = planning_slug === undefined;
       const slug = planning_slug ?? `transition-${randomUUID()}`;
-      const effectiveWfId = workflow_id ?? DEFAULT_WORKFLOW_ID;
-      const wouldBeTransient = effectiveWfId === DEFAULT_WORKFLOW_ID;
+      const wouldBeTransient = effectiveWfId === DEFAULT_WORKFLOW_ID && working_directory === undefined;
 
-      // Search all known repo checkouts (multi-root) or the single eng root.
-      const searchRoots = await listSessionSearchRoots(sessionScope);
       const slugCandidate = await findPlanningFolderBySlug(planningRootDir, slug, {
         planningRelativeDir: sessionScope.planningRelativeDir,
         searchRoots,
@@ -162,6 +235,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       let folder: string;
       let isTransientSession: boolean;
       let sessionRoot: { engineeringDir: string; planningRelativeDir: string; repo?: string };
+      const repoForRoot = derived?.repo ?? repo;
 
       isTransientSession = !slugCandidate && wouldBeTransient;
       if (slugCandidate) {
@@ -169,12 +243,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // Resume: derive engineering dir from the found folder when multi-root.
         if (sessionScope.mode === 'multi' && sessionScope.engineeringMultiRoot) {
           sessionRoot = resolveSessionRoot(sessionScope, {
-            repo,
+            repo: repoForRoot,
             planningFolder: slugCandidate,
           });
         } else {
           sessionRoot = resolveSessionRoot(sessionScope, {
-            repo,
+            repo: repoForRoot,
             planningFolder: planning_folder,
           });
         }
@@ -182,7 +256,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // Transient meta bootstrap needs no durable repo root.
         try {
           sessionRoot = resolveSessionRoot(sessionScope, {
-            repo,
+            repo: repoForRoot,
             planningFolder: planning_folder,
           });
         } catch {
@@ -197,7 +271,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       } else {
         // Fresh durable session — require a resolved engineering checkout.
         sessionRoot = resolveSessionRoot(sessionScope, {
-          repo,
+          repo: repoForRoot,
           planningFolder: planning_folder,
         });
         folder = await ensurePlanningFolder(sessionRoot.engineeringDir, slug, {
@@ -260,6 +334,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           throw new Error(
             `start_session: existing session.json at ${folder} does not match the SessionFile schema (${issues}). ` +
             `Remove the folder or restore it from the most recent commit before retrying.`,
+          );
+        }
+        if (derivedDurable) {
+          throw new SessionStoreError(
+            `planning folder ${folder} already holds a session`,
+            'FOLDER_OCCUPIED',
+            { folder, session_index: parsed.data.sessionIndex },
           );
         }
         state = parsed.data;
@@ -334,6 +415,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // dispatch_child after start_session returns the index.
         sessionIndex = await computeSessionIndex(folder);
         const boundRepo = (() => {
+          if (derived) return derived.repo;
           const raw = repo?.trim() || sessionRoot.repo;
           if (!raw) return undefined;
           return normalizeRepoPath(raw);
@@ -362,10 +444,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             : {}),
         });
         state = newState;
-        await writeSessionFile(folder, state);
+        await createSessionFile(folder, state);
 
         // If this is a transient session, register so its session_index
-        // resolves back to the os.tmpdir() folder. Done AFTER writeSessionFile
+        // resolves back to the os.tmpdir() folder. Done AFTER createSessionFile
         // so the registry only points at fully-sealed folders. The slug is
         // registered only when the caller actually supplied one — synthetic
         // `transition-<uuid>` slugs are minted per-call from a fresh UUID, so
@@ -422,6 +504,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (state.contextMode) response['context_mode'] = state.contextMode;
       if (migrationResult.migrated) {
         response['migrated'] = true;
+      }
+      if (derived?.host_repo) response['host_repo'] = derived.host_repo;
+      if (derived?.component_path) response['component_path'] = derived.component_path;
+      if (derived?.host_repo_path && derived.host_repo_path !== derived.toplevel) {
+        const presentedHost = presentPathToAgent(derived.host_repo_path, config.pathPresentation);
+        if (presentedHost) response['host_repo_path'] = presentedHost;
       }
 
       return {
