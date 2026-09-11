@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           # `.engineering` nests a private repo this runner cannot clone. Engine CI does not
-          # check the gitlink out: typecheck and `test:ci` skip live-corpus tests when
+          # check a corpus out: typecheck and `test:ci` skip live-corpus tests when
           # `workflows/` is absent.
           submodules: false
 

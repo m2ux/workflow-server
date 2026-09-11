@@ -1,7 +1,7 @@
 name: Coverage walk
 
 # When how walking works changes, every workflow has to be walked: a scoped run would grade such a
-# change against a fraction of its effect. The corpus this tree adopts is the subject.
+# change against a fraction of its effect. This job checks out the `workflows` branch tip and walks it.
 #
 # Definition changes are walked on the `workflows` branch, where they land — that job borrows this
 # tree's walker and points it at the corpus under review. This job runs the full roster when the
@@ -33,8 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # As in verify.yml: `.engineering` nests a private repo this runner cannot clone, so the
-          # corpus is checked out on its own below rather than with `submodules: recursive`.
+          # As in verify.yml: `.engineering` nests a private repo this runner cannot clone.
+          # The corpus is a second checkout of the `workflows` branch, below.
           submodules: false
           # The walker-change probe is a diff against the pull-request base, so that commit has to
           # be in the checkout.
@@ -60,13 +60,17 @@ jobs:
           echo "definition coverage runs on the workflows branch — nothing to walk here"
           echo "scope=none" >> "$GITHUB_OUTPUT"
 
-      - uses: ./.github/actions/workflows-corpus
+      - uses: actions/checkout@v4
         if: github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none'
+        with:
+          repository: ${{ github.repository }}
+          ref: workflows
+          path: workflows
 
-      # Walk artifacts live under walks/ of the adopted corpus. A gitlink that has not yet taken
-      # that layout has nothing for this job to measure; definition coverage and the ratchet sit
+      # Walk artifacts live under walks/ of that checkout. A tip that has not yet taken that
+      # layout has nothing for this job to measure; definition coverage and the ratchet sit
       # on the workflows-branch job.
-      - name: Whether the adopted corpus records option coverage
+      - name: Whether the workflows branch records option coverage
         if: github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none'
         id: ratchet
         run: |
@@ -74,7 +78,7 @@ jobs:
             echo "present=yes" >> "$GITHUB_OUTPUT"
           else
             echo "present=no" >> "$GITHUB_OUTPUT"
-            echo "Adopted corpus has no walks/option-coverage.json — nothing to walk here."
+            echo "workflows branch has no walks/option-coverage.json — nothing to walk here."
           fi
 
       - uses: actions/setup-node@v4

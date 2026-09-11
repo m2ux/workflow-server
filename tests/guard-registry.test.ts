@@ -56,13 +56,14 @@ describe('guard registry', () => {
     const verify = readFileSync(join(REPO, '.github/workflows/verify.yml'), 'utf-8');
     expect(verify, 'the suite left the verify job').toContain('npm run test:ci');
     expect(verify, 'the guard sweep belongs on the corpus job, not the engine job').not.toContain('npm run check:all');
-    expect(verify, 'engine CI must not check the gitlink out').not.toContain('workflows-corpus');
+    expect(verify, 'engine CI must not check a corpus out').not.toContain('workflows-corpus');
   });
 
   it('scopes definition coverage on the corpus job, not the engine coverage job', () => {
     const coverage = readFileSync(join(REPO, '.github/workflows/coverage.yml'), 'utf-8');
     expect(coverage, 'corpus diffs are scoped on the workflows branch').not.toContain('coverage-scope.ts');
-    expect(coverage, 'walker changes still check the adopted gitlink out').toContain('workflows-corpus');
+    expect(coverage, 'coverage must not resolve a gitlink').not.toContain('workflows-corpus');
+    expect(coverage, 'walker changes check out the workflows branch').toContain('ref: workflows');
   });
 
   it('covers every check:* script in package.json', () => {
