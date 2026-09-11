@@ -58,6 +58,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           path: workflows
 
+      - name: Coverage roster accounts for every product
+        run: bash workflows/walks/check-roster.sh
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -75,6 +78,3 @@ jobs:
 
       - name: All-workflows drift against this tree
         run: npx vitest run tests/e2e/all-workflows-walk.test.ts
-
-      - name: Coverage roster accounts for every product
-        run: npx vitest run tests/e2e/coverage-roster.test.ts
