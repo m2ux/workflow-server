@@ -108,7 +108,7 @@
   <h3 id="http-install">Docker / HTTP (quick)</h3>
   <pre><code>curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
 ~/.local/share/workflow-server/start.sh -d</code></pre>
-  <p class="prose">Creates the install layout, places a corpus at <code>$INSTALL/workflows</code>, writes <code>$INSTALL/env</code>, and starts the GHCR image. Verify and MCP client steps: <a href="https://github.com/m2ux/workflow-server/blob/main/http.md">http.md</a>.</p>
+  <p class="prose">Creates the install layout, places a corpus at <code>$INSTALL/workflows</code> (or <code>--workflows-dir</code>), writes <code>$INSTALL/env</code>, and starts the GHCR image. <code>--corpus-branch</code> and <code>--repo-url</code> select which tree to clone; those values are what <code>start.sh</code> refreshes. Verify and MCP client steps: <a href="https://github.com/m2ux/workflow-server/blob/main/http.md">http.md</a>.</p>
 
   <h3 id="stdio-install">stdio (quick)</h3>
   <pre><code>git clone https://github.com/m2ux/workflow-server.git

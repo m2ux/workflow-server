@@ -26,7 +26,7 @@ RESTART_HINT=1
 
 usage() {
   cat <<EOF
-Update the local workflows definitions checkout (\$INSTALL/workflows).
+Update the local corpus checkout (\$INSTALL/workflows, or --workflows-dir).
 
 Product checkouts under \$HOST_PROJECTS_ROOT are not touched — manage those
 yourself.
@@ -37,8 +37,8 @@ USAGE
 OPTIONS
   --install-dir=PATH    Install root (default: ${DEFAULT_INSTALL_DIR})
                         workflows dir = \$INSTALL/workflows unless overridden
-  --workflows-dir=PATH  Explicit workflows git checkout
-  --branch=NAME         Workflows branch to track (default: ${DEFAULT_BRANCH})
+  --workflows-dir=PATH  Explicit corpus git checkout
+  --branch=NAME         Corpus branch to track (default: ${DEFAULT_BRANCH})
   --remote=NAME         Remote name (default: ${DEFAULT_REMOTE})
   --force               Discard local changes (git reset --hard + clean -fd)
   --no-restart-hint     Omit the trailing "restart the server" note
