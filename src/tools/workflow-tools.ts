@@ -900,19 +900,33 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     workflow: Workflow,
     variables: Record<string, unknown>,
     entry: string,
+    completedActivities: readonly string[],
   ): { variable: string; instance: number; value: unknown } | undefined {
     const instance = instanceIndex(entry);
     if (instance === undefined) return undefined;
     const base = baseId(entry);
-    for (const fan of fanGroups(workflow)) {
-      for (const member of instanceFans(fan.destination)) {
-        if (member.activity !== base) continue;
-        const collection = readCollection(variables, member.over);
-        if (!Array.isArray(collection)) return undefined;
-        return { variable: member.variable, instance, value: collection[instance] };
+    const fansFor = fanGroups(workflow).filter((fan) =>
+      instanceFans(fan.destination).some((member) => member.activity === base),
+    );
+    if (fansFor.length === 0) return undefined;
+    // Two fans of one activity share a branch id, so graph order is not which fan is open.
+    // The open fan is the one whose source was completed most recently — the enter retires
+    // that source before any branch is served.
+    const completedBases = completedActivities.map((id) => baseId(id));
+    let chosen = fansFor[0]!;
+    let chosenAt = -1;
+    for (const fan of fansFor) {
+      const at = completedBases.lastIndexOf(fan.source);
+      if (at >= chosenAt) {
+        chosen = fan;
+        chosenAt = at;
       }
     }
-    return undefined;
+    const member = instanceFans(chosen.destination).find((item) => item.activity === base);
+    if (member === undefined) return undefined;
+    const collection = readCollection(variables, member.over);
+    if (!Array.isArray(collection)) return undefined;
+    return { variable: member.variable, instance, value: collection[instance] };
   }
 
   /** Where a retiring activity's reported map lands, when the graph runs it as a branch of a fan. */
@@ -1349,7 +1363,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
     'A dispatch carrying a run of activities walks them under ONE `agent_id`: a `batch` block at the end of the response — and the same reading on `_meta.batch` — reports how many that context has taken, what it has been delivered, and `may_continue`, where false means report the next activity as needing its own dispatch and stop. ' +
     'Asking past the bound is refused with the payload undelivered. ' +
-    'An `exit_destinations` block in the header — and the same map on `_meta.exit_destinations` — gives the activity id each of this activity\'s exits leads to, `__terminal__` where the exit ends the run. ' +
+    'An `exit_destinations` block in the header — and the same map on `_meta.exit_destinations` — gives the destination each of this activity\'s exits leads to, exactly as the graph names it: an activity id, `__terminal__`, a list of members, or one activity together with the collection it runs over. ' +
     'The exits themselves ride the activity body; this is the graph half, which is otherwise reachable only through the orchestrator-only `get_workflow`.',
     {
       ...sessionIndexParam,
@@ -1429,7 +1443,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // instances cannot read different values at one bare name, and no grammar in the tree admits
       // the indirection that would let an instance spell its own read — so it arrives here.
       const fanInstance = diagResult.success
-        ? fanProjection(diagResult.value.workflow, state.variables, activity_id)
+        ? fanProjection(diagResult.value.workflow, state.variables, activity_id, state.completedActivities)
         : undefined;
       // Overlaid onto the bag the eager-bundling decision reads, which reads state as it stands at
       // the moment of delivery. Unoverlaid, a step gated on the parameter has no answer and stays
@@ -1808,7 +1822,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // body alone, and this block is what closes that. Destination only, keyed by exit id: the
       // selection predicates are already in the body, and a second copy of them would drift.
       const exitDestinationsByExit = result.success
-        ? Object.fromEntries(getExitBindings(result.value, activity_id).map((b) => [b.exit, destinationField(b.to)]))
+        ? Object.fromEntries(getExitBindings(result.value, activity_id).map((b) => [b.exit, b.to]))
         : {};
       const headerLines = [`session_index: ${session_index}`];
       if (artifactPrefix) headerLines.push(`artifact_prefix: ${artifactPrefix}`);
@@ -1979,6 +1993,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
           dispatch, batch,
           ...(Object.keys(exitDestinationsByExit).length > 0 ? { exit_destinations: exitDestinationsByExit } : {}),
+          ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
           // Why each gated technique step stayed lazy. On the response and not only the log because a
           // caller cannot assert what it has to scrape stderr to read, and `unbound` is the reading
           // worth asserting on: nothing the run has done so far binds that gate (#472).

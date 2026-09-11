@@ -1,0 +1,15 @@
+id: dotted-fan-fixture
+version: 1.0.0
+title: Dotted Fan Fixture
+description: An instance fan whose collection is reached at a path into a named object.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: sweep_plan.roots
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

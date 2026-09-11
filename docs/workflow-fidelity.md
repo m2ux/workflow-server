@@ -228,9 +228,10 @@ variables to name the outcome:
 
 Where each one leads is the workflow's, held as `graph`. Each audience receives the half of the
 routing it acts on: `get_workflow` returns the whole graph to the orchestrator, and `get_activity`
-returns the current activity's row of it to the worker as `exit_destinations` — the activity id each
-declared exit leads to, `__terminal__` where the exit ends the run. A worker selects its exit from
-the predicates above and reads that exit's destination there, so the routing it reports is resolved
+returns the current activity's row of it to the worker as `exit_destinations` — the destination each
+declared exit leads to, exactly as the graph names it: an activity id, `__terminal__`, a list of
+members, or one activity together with the collection it runs over. A worker selects its exit from
+the predicates above and reports that destination unread, so the routing it reports is resolved
 from what it was delivered rather than from a tool its role does not hold. A checkpoint option may
 name an exit too, and `present_checkpoint` resolves it through the same graph so the orchestrator can
 state each option's consequence before the user chooses.

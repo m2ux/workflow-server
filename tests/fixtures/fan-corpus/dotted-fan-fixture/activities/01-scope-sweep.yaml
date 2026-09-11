@@ -1,0 +1,23 @@
+id: scope-sweep
+version: 1.0.0
+name: Scope Sweep
+description: Writes the plan whose roots the fan runs once per element of.
+variables:
+  writes:
+    - name: sweep_plan
+      type: object
+      description: The plan this sweep fans over — its roots are the collection.
+      defaultValue:
+        roots:
+          - alpha-root
+          - beta-root
+steps:
+  - kind: action
+    id: name-the-roots
+    actions:
+      - action: set
+        target: sweep_plan
+        value: the plan this sweep fans over
+exits:
+  - id: scoped
+    isDefault: true

@@ -1,0 +1,7 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: The meeting point, gathering the container the instances filled.
+exits:
+  - id: settled
+    isDefault: true
