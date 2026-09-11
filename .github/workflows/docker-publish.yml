@@ -26,11 +26,19 @@ jobs:
 
     steps:
       - name: Checkout repository
-        # No submodules: .engineering nests a private ai-metadata repo that CI
-        # cannot clone, and the Docker image only needs src/schemas/package files.
+        # `.engineering` nests a private repo this runner cannot clone. The image
+        # copies src, schemas, and package files; compose and the HTTP smoke read
+        # ./workflows from the next step.
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           submodules: false
+
+      - name: Check out the workflows tip
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: ${{ github.repository }}
+          ref: workflows
+          path: workflows
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
