@@ -52,11 +52,11 @@ That is deliberately all of it. `discover` returns the live bootstrap steps — 
 
 ## Binding the repository
 
-Every `start_session` call carries `repo: "owner/repo"`, and an agent derives that from git rather than from configuration: it is the origin remote of the outermost superproject that claims the workspace checkout. The user, and the workspace `AGENTS.md` or `CLAUDE.md`, are fallbacks only for the cases where the derivation yields nothing — a workspace that is not a git repository, or a host with no origin remote. Agents do not special-case the server's own topology.
+Every `start_session` call for a fresh session carries `working_directory` as the absolute path of the checkout under work. The server derives `owner/repo` from that checkout's origin remote. `repo` is optional and must equal the derived origin when present. The user, and the workspace `AGENTS.md` or `CLAUDE.md`, are fallbacks only for the cases where the derivation yields nothing — a workspace that is not a git repository, or a checkout with no origin remote. Agents do not special-case the server's own topology.
 
 ## Checking that it worked
 
-Open the example workspace, restarting the MCP client if its configuration changed underneath it. Ask the agent to start a work package, or any workflow: it must call `discover` first and then follow the bootstrap it gets back. Confirm that the `start_session` call it makes carries `repo: "owner/repo"`.
+Open the example workspace, restarting the MCP client if its configuration changed underneath it. Ask the agent to start a work package, or any workflow: it must call `discover` first and then follow the bootstrap it gets back. Confirm that the `start_session` call it makes carries `working_directory` as the checkout under work.
 
 Two further checks are worth making. Asking the agent to list workflows exercises `list_workflows`, which reads the catalogue — useful, though not a substitute for the bootstrap itself. And for Claude in Cursor, confirm that the kickoff directory holds `.claude/settings.json` and `scripts/claude/hooks/` after the deploy.
 

@@ -576,13 +576,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     };
   }
 
-  server.tool('discover', 'Entry point — call before other tools. Returns server info and the bootstrap procedure. No session_index required. Always pass repo on start_session.', {},
+  server.tool('discover', 'Entry point — call before other tools. Returns server info and the bootstrap procedure. No session_index required. Pass working_directory on start_session so the server derives the bound repository.', {},
     withAuditLog('discover', async () => {
       const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', 'bootstrap-protocol');
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
-        'repo_binding: required — pass repo: "owner/repo" on start_session, derived from git via version-control::resolve-host-repo (the origin remote of the outermost superproject that claims the workspace checkout). The user or workspace AGENTS.md is a fallback only where that derivation yields nothing: a workspace that is not a git repo, or a host with no origin remote.',
+        'repo_binding: required — pass working_directory as the absolute path of the checkout under work; the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. When both working_directory and planning_folder are omitted, pass repo: "owner/repo". The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
       ];
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);

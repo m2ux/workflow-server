@@ -123,9 +123,10 @@
           <summary>Full description</summary>
           <p>Opens a new workflow session or resumes an existing one.</p>
           <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, and <code>planning_folder_path</code> — the absolute path agents should use for session artifacts (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set; server-local path under stdio).</p>
+          <p>Pass <code>working_directory</code> as the absolute path of the checkout under work; the server derives <code>owner/repo</code> from that checkout's origin. <code>repo</code> is optional and must equal the derived origin when present.</p>
           <p>Pass <code>planning_folder</code> as any absolute path whose basename is your planning slug (for example, <code>.../planning/2026-05-28-my-slug</code>). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.</p>
-          <p>If that slug already has <code>session.json</code>, the session resumes and <code>workflow_id</code> is ignored. Otherwise the server creates a fresh session and seeds variables from the workflow defaults.</p>
-          <p>Omit <code>planning_folder</code> to start a meta bootstrap session in a temp folder. Use <code>dispatch_child</code> later to promote it to a real planning folder.</p>
+          <p>If that named slug already has <code>session.json</code>, the session resumes and <code>workflow_id</code> is ignored. A derived dated slug that already holds a session is refused as FOLDER_OCCUPIED.</p>
+          <p>Omit both <code>working_directory</code> and <code>planning_folder</code> to start a meta bootstrap session in a temp folder. Use <code>dispatch_child</code> later to promote it to an empty planning folder.</p>
           <p>Child workflows are started with <code>dispatch_child</code>, not <code>start_session</code>.</p>
         </details>
         <div class="table-wrap">
@@ -134,13 +135,31 @@
           <tbody>
           <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
           <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.</td></tr>
-          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Target owner/repo (or github URL). Always pass when known; written to session.json#repo. Also accepted from planning_folder under …/&lt;owner&gt;/&lt;repo&gt;/….</td></tr>
+          <tr><td><code>working_directory</code></td><td><code>string</code></td><td>no</td><td>Optional. Absolute path of the checkout under work. The bound repository is that checkout's origin. Bare/relative paths rejected.</td></tr>
+          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.</td></tr>
           <tr><td><code>user_request</code></td><td><code>string</code></td><td>no</td><td>The user's free-form request that opened this session. Seeded into the variable bag as <code>user_request</code>, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
           <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
         </table>
         </div>
+        <details class="tool-details">
+          <summary>All parameters</summary>
+        <div class="table-wrap">
+        <table class="param-table">
+          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
+          <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.</td></tr>
+          <tr><td><code>working_directory</code></td><td><code>string</code></td><td>no</td><td>Optional. Absolute path of the checkout under work. The bound repository is that checkout's origin. Bare/relative paths rejected.</td></tr>
+          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.</td></tr>
+          <tr><td><code>user_request</code></td><td><code>string</code></td><td>no</td><td>The user's free-form request that opened this session. Seeded into the variable bag as <code>user_request</code>, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
+          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        </details>
       </section>
       <section class="tool" id="get_workflow_status">
         <h3><code>get_workflow_status</code></h3>
@@ -191,8 +210,8 @@
           <p>Returns the child's <code>session_index</code> and <code>planning_folder_path</code>. The child's variables are seeded from the child workflow's defaults; the parent is unchanged.</p>
           <p>Also returns <code>workflow.initialActivity</code> — the activity the child's first <code>next_activity</code> should name. A parent knows its own workflow's first activity, not its child's, and <code>get_workflow</code> stays where a session reads its own metadata, so this carries the child's across the boundary.</p>
           <p>The child state is stored inside the parent's <code>session.json</code> under <code>triggeredWorkflows</code>.</p>
-          <p>When the parent is a temporary meta-bootstrap session, the server first promotes it to a real planning folder on disk, then embeds the child. You can keep using the parent's original <code>session_index</code>.</p>
-          <p>Dispatching from a temporary parent into a folder that already holds a child of the same workflow REPLACES that child rather than continuing it, and hands back the same <code>session_index</code> with an empty session behind it. A persistent parent appends a second child instead. See issue 429.</p>
+          <p>When the parent is a temporary meta-bootstrap session, the server first promotes it to an empty planning folder on disk, then embeds the child. You can keep using the parent's original <code>session_index</code>.</p>
+          <p>Promoting from a temporary parent onto a folder that already holds a session is refused as FOLDER_OCCUPIED; both session files are left untouched. A persistent parent appends a second child.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
