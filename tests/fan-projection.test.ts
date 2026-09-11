@@ -48,7 +48,12 @@ describe('a later fan of the same activity projects its own collection', () => {
     });
     const first = await harness.client.callTool({
       name: 'get_activity',
-      arguments: { session_index: sessionIndex, activity_id: 'probe-unit#0', context_tokens: 200_000 },
+      arguments: {
+        session_index: sessionIndex,
+        activity_id: 'probe-unit#0',
+        context_tokens: 200_000,
+        agent_id: 'worker-first-0',
+      },
     }) as ToolResult;
     expect(first.isError).toBeFalsy();
     expect(first._meta?.['fan_instance']).toEqual({
@@ -88,7 +93,12 @@ describe('a later fan of the same activity projects its own collection', () => {
     });
     const second = await harness.client.callTool({
       name: 'get_activity',
-      arguments: { session_index: sessionIndex, activity_id: 'probe-unit#0', context_tokens: 200_000 },
+      arguments: {
+        session_index: sessionIndex,
+        activity_id: 'probe-unit#0',
+        context_tokens: 200_000,
+        agent_id: 'worker-second-0',
+      },
     }) as ToolResult;
     expect(second.isError).toBeFalsy();
     expect(second._meta?.['fan_instance']).toEqual({

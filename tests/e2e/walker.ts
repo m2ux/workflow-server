@@ -190,8 +190,9 @@ export interface WalkOptions {
   /**
    * Dispatch each activity under its own worker identity, carried on every `get_activity` and
    * `get_technique` that activity makes, and re-request the activity under that same identity
-   * after each gate. Off by default: the other walks drive the graph, not the delivery ledger,
-   * and they authenticate as the session's own agent.
+   * after each gate. Off by default for sequential walks: those drive the graph, not the delivery
+   * ledger, and they authenticate as the session's own agent. A fan branch always mints: several
+   * activities in flight refuse a shared or session-equal identity.
    */
   workerIdentity?: boolean;
   /** Max times any single activity may be entered before the walk aborts. */
@@ -740,6 +741,8 @@ export async function walk(
    * ids, so N instances of one activity are N visits of it.
    */
   const pendingBranches: string[] = [];
+  /** Branch entries the last fan enter opened. Each takes its own identity while it is in flight. */
+  const openFan = new Set<string>();
   while (current) {
     const v = (visits.get(current) ?? 0) + 1;
     visits.set(current, v);
@@ -763,6 +766,8 @@ export async function walk(
       current = branches[0]!;
       pendingBranches.length = 0;
       pendingBranches.push(...branches.slice(1));
+      openFan.clear();
+      for (const branch of branches) openFan.add(branch);
     }
     exiting = current;
     exitingExit = undefined;
@@ -771,9 +776,10 @@ export async function walk(
 
     // One identity per dispatch, held for every call this activity's worker makes — including
     // every gate it pauses at. A second visit to the same activity is a new dispatch, so it mints
-    // its own, which is what a retry is.
+    // its own, which is what a retry is. A fan branch always mints: several activities in flight
+    // refuse a shared or session-equal identity.
     const visitNo = (path.filter(p => p === current).length);
-    const worker = opts.workerIdentity
+    const worker = (opts.workerIdentity || openFan.has(current))
       ? { agentId: `worker-${current}-${visitNo}`, gateRefetches }
       : undefined;
 

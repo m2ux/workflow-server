@@ -35,7 +35,7 @@ import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
-import { dispatchKind, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
+import { dispatchKind, fanIdentityRefusal, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { batchBound, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
 import { readdir } from 'node:fs/promises';
@@ -1364,7 +1364,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'A dispatch carrying a run of activities walks them under ONE `agent_id`: a `batch` block at the end of the response — and the same reading on `_meta.batch` — reports how many that context has taken, what it has been delivered, and `may_continue`, where false means report the next activity as needing its own dispatch and stop. ' +
     'Asking past the bound is refused with the payload undelivered. ' +
     'An `exit_destinations` block in the header — and the same map on `_meta.exit_destinations` — gives the destination each of this activity\'s exits leads to, exactly as the graph names it: an activity id, `__terminal__`, a list of members, or one activity together with the collection it runs over. ' +
-    'The exits themselves ride the activity body; this is the graph half, which is otherwise reachable only through the orchestrator-only `get_workflow`.',
+    'The exits themselves ride the activity body; this is the graph half, which is otherwise reachable only through the orchestrator-only `get_workflow`. ' +
+    'While several activities are in flight, `agent_id` names the identity this branch was minted: omitted, equal to the session agent, or already holding a sibling is refused.',
     {
       ...sessionIndexParam,
       ...contextTokensParam,
@@ -1387,6 +1388,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!activity_id) {
         throw new Error('No activity in flight. Call next_activity first.');
       }
+      const identityRefusal = fanIdentityRefusal(state, agent_id, activity_id);
+      if (identityRefusal) throw new Error(identityRefusal);
       // The one value this instance is working on, projected onto the response: the shared bag is
       // one flat record, so N instances cannot read different values at one bare name, and no
       // grammar in the tree admits the indirection that would let an instance spell its own read.
@@ -2578,7 +2581,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('get_workflow_status',
-    'Session status (active/blocked/completed), current activity, completed activities, last checkpoint, and parent context if nested.',
+    'Session status (active/blocked/completed), the activities in flight, completed activities, last checkpoint, and parent context if nested.',
     {
       ...sessionIndexParam,
     },
@@ -2587,7 +2590,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       const clientWf = state.workflowId;
-      const clientAct = state.frontier[0] ?? '';
       const clientActive = state.activeCheckpoint;
 
       const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
@@ -2626,7 +2628,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // rather than its own element — which is the truth about where that value lives, and why
         // the projection names itself on the response it arrives with.
         in_flight: state.frontier,
-        current_activity: clientAct || 'none',
         completed_activities: completedActivities,
         // Rolled-up variable bag from session state, so workers/orchestrators can
         // read decisions and computed values on resume without re-deriving them.

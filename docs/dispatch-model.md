@@ -119,7 +119,7 @@ A graph destination may name several branches rather than one activity — sever
 
 **The per-scope batch bound does not limit a fan's width.** The bound exempts a scope with no activity yet and refuses only an activity a scope already holds, so a fresh branch scope asking for its first activity is admitted whatever the width; on the retire call the batch reading reports one activity. What bounds a fan is its own ceiling — the server's configured `DEFAULT_FAN_MAX_BRANCHES`, or a tighter `maxInstances` the destination declares — measured against the branches it opens once every member is flattened, so a list, an instance fan and a mixture of the two answer to one number.
 
-**Every branch takes full delivery, and the figures below are a floor.** Delivery scoping keys on the calling context's identity, which each branch carries, so nothing collapses to a reference marker: a fan pays each branch's payload in full and establishes one harness context per branch where a batch establishes one in total. The meeting point then takes a further fresh context and re-pays whatever the branches collectively held.
+**Every branch takes full delivery, and the figures below are a floor.** Delivery scoping keys on the calling context's identity, which each branch carries, so nothing collapses to a reference marker: a fan pays each branch's payload in full and establishes one harness context per branch where a batch establishes one in total. The meeting point then takes a further fresh context and re-pays whatever the branches collectively held. While several activities are in flight, `get_activity` refuses an omitted identity, one equal to the session agent, and one that already holds a sibling; a resume of the same entry, and a replacement under a fresh identity for that same entry, are served.
 
 No measured figure exists for a *fanned* activity's payload. Every number here is therefore a **substitution and a lower bound** — taken from the standalone activity benchmark, counting eager payloads only and never a lazy fetch — and is re-derived against a fresh benchmark run rather than carried forward. Against the run it replaces: a fan of several different activities is measured against one worker walking them as a batch, which collapses what the second and later activities share; a fan over a collection is measured against one worker looping N times, which pays a single delivery because a loop body's technique is bundled once and reused. Per unit of work the instance form is the more expensive of the two by a wide margin.
 
@@ -135,7 +135,7 @@ get_workflow_status({ session_index: "<child_index>" })
 
 This returns:
 - `status`: `active`, `blocked`, or `completed`
-- `current_activity`: The activity the sub-agent is executing
+- `in_flight`: the activities the session is on — one on an ordinary walk, one per branch while a fan runs, empty when nothing is in flight
 - `completed_activities`: Activities finished so far (derived from `session.json` + trace)
 - `last_checkpoint`: The most recent resolved checkpoint
 
