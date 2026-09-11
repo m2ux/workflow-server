@@ -80,16 +80,22 @@ describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
       expect(res.body).toEqual({ status: 'ok' });
     });
 
-    it('GET /ready returns 200 with status ready when all directories exist', async () => {
+    it('GET /ready returns 200 with status ready when schemas, workspace, and the session key resolve', async () => {
       const res = await get(app, '/ready');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('ready');
       expect(res.body.checks).toEqual({
-        workflowDir: true,
         schemasDir: true,
         workspaceDir: true,
         sessionKeyWritable: true,
       });
+    });
+
+    it('GET /ready returns 200 when the workflow directory is absent', async () => {
+      const readyApp = createHttpApp(buildConfig({ workflowDir: '/nonexistent/workflow/path' }));
+      const res = await get(readyApp, '/ready');
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('ready');
     });
 
     it('GET /ready returns 503 with status not-ready when workspaceDir is missing', async () => {

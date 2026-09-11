@@ -9,7 +9,7 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 | Method / path | Purpose |
 |---------------|---------|
 | `GET /health` | Liveness — process is up |
-| `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist; `engineeringDir` when split from workspace (`--repo` layout); and `sessionKeyWritable` (HMAC key directory is usable) |
+| `GET /ready` | Readiness — `schemasDir` and `workspaceDir` exist; `engineeringDir` when split from workspace (`--repo` layout); and `sessionKeyWritable` (HMAC key directory is usable) |
 | `POST /mcp` | MCP Streamable HTTP (client → server messages) |
 | `GET /mcp` | MCP Streamable HTTP (server → client stream when the session uses GET) |
 | `DELETE /mcp` | MCP Streamable HTTP (end session) |
