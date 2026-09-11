@@ -16,8 +16,8 @@
  * loop with `assertScanned`.
  */
 import { existsSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
-import { type CorpusIndex, indexCorpus, workflowLocation } from '../src/loaders/corpus-index.js';
+import { join, relative, resolve, sep } from 'node:path';
+import { type CorpusIndex, indexCorpus, workflowLocation, workflowOwning } from '../src/loaders/corpus-index.js';
 
 /** A directory a workflow owns, wherever the workflow sits — `null` for an id the corpus lacks. */
 export { workflowSubdir } from '../src/loaders/corpus-index.js';
@@ -43,8 +43,8 @@ export function resolveWorkflowsRootWithOrigin(
 
 /**
  * A workflow in the corpus, as a guard needs it: `id` names it in a finding, `dir` is where its
- * files are read from, and `rel` is its path from the corpus root — what a finding cites, since a
- * workflow sits at whatever depth the corpus organises it to.
+ * files are read from, and `rel` is its path from the corpus root (grouping folders appear here).
+ * Ledger site keys use `citePath`, which names the workflow by id.
  */
 export interface CorpusWorkflow {
   id: string;
@@ -64,6 +64,25 @@ export function corpusWorkflows(root: string, index: CorpusIndex = indexCorpus(r
   return [...index.workflows.values()]
     .filter((location) => workflowLocation(index, location.id))
     .map(({ id, dir, manifest }) => ({ id, dir, manifest, rel: relative(root, dir) }));
+}
+
+function posixRel(from: string, to: string): string {
+  return relative(from, to).split(sep).join('/');
+}
+
+/**
+ * The site key a ledger matches: `<workflow-id>/<path-inside-that-workflow>`.
+ *
+ * Grouping folders (`corpus/`, and any future nest) name nothing in a finding. The same resource
+ * cited from a flat tree and from `corpus/<id>/` is one site, so a ledger written against the
+ * workflow id keeps matching when the tree is nested.
+ */
+export function citePath(root: string, file: string, index: CorpusIndex = indexCorpus(root)): string {
+  const location = workflowOwning(index, resolve(file));
+  if (!location) return posixRel(root, file);
+  const inner = posixRel(location.dir, file);
+  if (!inner || inner === '.') return location.id;
+  return `${location.id}/${inner}`;
 }
 
 export class UnreachableCorpusError extends Error {}

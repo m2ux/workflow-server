@@ -27,7 +27,8 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { ledgerPath, resolveWorkflowsRoot } from './workflows-root.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
+import { citePath, ledgerPath, resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
@@ -87,12 +88,13 @@ function framingLength(text: string): number {
 
 export function collectFramingFindings(): FramingFinding[] {
   const files = walkFiles(ROOT);
+  const index = indexCorpus(ROOT);
 
   // Which resource slugs some other file cites with an #anchor. A file citing itself does not count:
   // an internal cross-reference is read by whoever already has the whole file.
   const anchoredBy = new Map<string, Set<string>>();
   for (const file of files) {
-    const rel = relative(ROOT, file);
+    const rel = citePath(ROOT, file, index);
     const text = readFileSync(file, 'utf-8');
     for (const m of text.matchAll(/\]\(([^)\s]*?)([A-Za-z0-9._-]+)\.md#[a-z0-9-]+\)/g)) {
       const slug = m[2]!.toLowerCase();
@@ -110,7 +112,7 @@ export function collectFramingFindings(): FramingFinding[] {
   const out: FramingFinding[] = [];
   for (const file of files) {
     if (!file.endsWith('.md')) continue;
-    const rel = relative(ROOT, file);
+    const rel = citePath(ROOT, file, index);
     // Resources are what get section-delivered; a README is an index read whole.
     if (!rel.includes('/resources/') || rel.endsWith('README.md')) continue;
 

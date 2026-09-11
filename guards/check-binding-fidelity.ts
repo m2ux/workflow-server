@@ -50,7 +50,7 @@
  * `--root <path>` (or set WORKFLOWS_DIR) — issue #160 follow-up #1.
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { branchKey } from '../src/schema/workflow.schema.js';
@@ -60,7 +60,7 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { assertScanned, corpusWorkflows, ledgerPath, resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { assertScanned, citePath, corpusWorkflows, ledgerPath, resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { indexCorpus, workflowIdFromCorpusPath, type CorpusIndex } from '../src/loaders/corpus-index.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
@@ -77,6 +77,7 @@ const DEFAULT_ROOT = join(DIR, '..', 'workflows');
 const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 let INDEX: CorpusIndex = { workflows: new Map(), ambiguous: [] };
 const TRIAGE = ledgerPath(ROOT, 'binding-fidelity-triage.json');
+const cite = (file: string): string => citePath(ROOT, file, INDEX);
 const META = 'meta';
 let indexed = false;
 
@@ -170,23 +171,23 @@ function buildRegistry(wf: string): void {
   // arg-conformance.
   const rootIdx = join(tdir, 'TECHNIQUE.md');
   const rootDet = existsSync(rootIdx) ? fileSigDetailed(rootIdx) : emptyDetailed();
-  note(rootDet, relative(ROOT, rootIdx));
+  note(rootDet, cite(rootIdx));
   const rootSig = toSig(rootDet);
   const withRoot = (s: Sig): Sig => unionSig(s, rootSig);
   for (const entry of readdirSync(tdir)) {
     const p = join(tdir, entry); const st = statSync(p);
     if (st.isFile() && entry.endsWith('.md') && entry !== 'TECHNIQUE.md') {
-      const det = fileSigDetailed(p); note(det, relative(ROOT, p));
+      const det = fileSigDetailed(p); note(det, cite(p));
       reg.ops.set(entry.slice(0, -3), { own: det, composed: withRoot(toSig(det)) });
     } else if (st.isDirectory()) {
       const idx = join(p, 'TECHNIQUE.md');
       const gdet = existsSync(idx) ? fileSigDetailed(idx) : emptyDetailed();
-      if (existsSync(idx)) note(gdet, relative(ROOT, idx));
+      if (existsSync(idx)) note(gdet, cite(idx));
       const gsig = toSig(gdet);
       reg.groups.set(entry, { own: gdet, composed: withRoot(gsig) });
       for (const f of readdirSync(p)) {
         if (f.endsWith('.md') && f !== 'TECHNIQUE.md') {
-          const own = fileSigDetailed(join(p, f)); note(own, relative(ROOT, join(p, f)));
+          const own = fileSigDetailed(join(p, f)); note(own, cite(join(p, f)));
           reg.ops.set(`${entry}::${f.slice(0, -3)}`, { own, composed: withRoot(unionSig(toSig(own), gsig)) });
         }
       }
@@ -553,8 +554,8 @@ function ensureIndexed(): void {
         if (st.isDirectory()) { if (e !== 'resources') walk(p); }
         else if (e.endsWith('.md')) {
           const raw = readFileSync(p, 'utf-8');
-          collectReads(wf, relative(ROOT, p), raw, 'technique');
-          collectArtifactTemplateTokens(relative(ROOT, p), raw);
+          collectReads(wf, cite(p), raw, 'technique');
+          collectArtifactTemplateTokens(cite(p), raw);
         }
       }
     };
@@ -571,11 +572,11 @@ function ensureIndexed(): void {
     // that is the value's one authoritative consumer. Scanning only activities left those reads
     // invisible, so the id they name read as dead.
     const wfYaml = workflowSubdir(INDEX, wf, 'workflow.yaml');
-    if (wfYaml && existsSync(wfYaml)) collectReads(wf, relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
+    if (wfYaml && existsSync(wfYaml)) collectReads(wf, cite(wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
     const adir = workflowSubdir(INDEX, wf, 'activities');
     if (!adir || !existsSync(adir)) continue;
     for (const path of activityFiles(adir)) {
-      const rel = relative(ROOT, path); let raw = readFileSync(path, 'utf-8');
+      const rel = cite(path); let raw = readFileSync(path, 'utf-8');
       // Materialize checkpoint fragment refs (#166 B10) before analysis, so fragment-declared
       // setVariable producers and message/condition reads attribute to the referencing activity —
       // the same view the server delivers. An unresolved ref is check:fragments' finding; the

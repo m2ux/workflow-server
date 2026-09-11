@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import {
   assertScanned,
+  citePath,
   ledgerPath,
   requireWorkflowsRoot,
   resolveWorkflowsRoot,
@@ -153,5 +154,25 @@ describe('kind roots on a pointed corpus tree', () => {
     mkdirSync(join(root, 'ledgers'));
     writeFileSync(join(root, 'ledgers', 'section-framing-triage.json'), '{"entries":[]}\n');
     expect(ledgerPath(root, 'section-framing-triage.json')).toBe(join(root, 'ledgers', 'section-framing-triage.json'));
+  });
+});
+
+describe('citePath', () => {
+  it('names a nested product file by workflow id, not the grouping folder', () => {
+    const root = mkdtempSync(join(tmpdir(), 'cite-nested-'));
+    const dir = join(root, 'corpus', 'alpha', 'resources');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(root, 'corpus', 'alpha', 'workflow.yaml'), 'id: alpha\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(dir, 'guide.md'), '# g\n');
+    expect(citePath(root, join(dir, 'guide.md'))).toBe('alpha/resources/guide.md');
+  });
+
+  it('names a still-flat product file the same way', () => {
+    const root = mkdtempSync(join(tmpdir(), 'cite-flat-'));
+    const dir = join(root, 'alpha', 'resources');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(root, 'alpha', 'workflow.yaml'), 'id: alpha\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(dir, 'guide.md'), '# g\n');
+    expect(citePath(root, join(dir, 'guide.md'))).toBe('alpha/resources/guide.md');
   });
 });

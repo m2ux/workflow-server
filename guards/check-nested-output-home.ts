@@ -27,9 +27,10 @@
  * Run: npx tsx guards/check-nested-output-home.ts [--root <workflows-dir>] [--json]
  */
 import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
-import { join, resolve, relative } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, ledgerPath, requireWorkflowsRoot } from './workflows-root.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
+import { assertScanned, citePath, ledgerPath, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -107,6 +108,8 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
   const out: Finding[] = [];
   const files = containers(root);
   assertScanned(files.length, 'technique group container(s)', root);
+  const index = indexCorpus(root);
+  const cite = (file: string): string => citePath(root, file, index);
   const accepted = new Map(loadTriage(root).entries.map((e) => [`${e.site} ${e.component}`, e]));
   const matched = new Set<string>();
   for (const container of files) {
@@ -123,7 +126,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
       const opPath = join(dir, name);
       if (statSync(opPath).isDirectory()) continue;
       const opOutputs = outputs(opPath);
-      const site = relative(root, opPath);
+      const site = cite(opPath);
       for (const [opOutputId, comps] of opOutputs) {
         // sibling-top-level: the operation declares at top level what the container nests.
         if (nested.has(opOutputId) && !accepted.has(`${site} ${opOutputId}`)) {
@@ -132,7 +135,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
             site,
             detail:
               `declares '${opOutputId}' as a top-level output while `
-              + `${relative(root, container)} nests it under '${nested.get(opOutputId)}' — two homes for one `
+              + `${cite(container)} nests it under '${nested.get(opOutputId)}' — two homes for one `
               + `value. The producing operation keeps it; drop the container's nested component`,
           });
         }
@@ -149,7 +152,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
               site,
               detail:
                 `output '${opOutputId}' declares component '${c}', which `
-                + `${relative(root, container)} also declares under the same output — two homes for one `
+                + `${cite(container)} also declares under the same output — two homes for one `
                 + `value. The producing operation keeps it; drop the container's nested component`,
             });
           }
