@@ -147,23 +147,12 @@ describe('corpus discovery', () => {
     writeFileSync(join(decoy, 'workflow.yaml'), 'id: decoy\nversion: 1.0.0\ntitle: t\n');
     writeFileSync(join(nested, 'ledgers', 'binding-fidelity-triage.json'), '{}\n');
     const index = indexCorpus(nested);
-    expect([...index.workflows.keys()]).toEqual(['work-package']);
+    expect([...index.workflows.keys()]).toEqual(['fan-conformance', 'work-package']);
     expect(index.workflows.get('work-package')?.dir).toBe(product);
-    expect(index.workflows.has('fan-conformance')).toBe(false);
+    expect(index.workflows.get('fan-conformance')?.dir).toBe(specimen);
     expect(index.workflows.has('example')).toBe(false);
     expect(index.workflows.has('decoy')).toBe(false);
-    expect([...indexCorpus(join(nested, 'corpus')).workflows.keys()]).toEqual(['work-package']);
-    rmSync(nested, { recursive: true, force: true });
-  });
-
-  it('finds a specimen workflow when the walk is pointed at corpus/specimens/', () => {
-    const nested = mkdtempSync(join(tmpdir(), 'corpus-specimens-'));
-    const specimen = join(nested, 'corpus', 'specimens', 'fan-conformance');
-    mkdirSync(specimen, { recursive: true });
-    writeFileSync(join(specimen, 'workflow.yaml'), 'id: fan-conformance\nversion: 1.0.0\ntitle: t\n');
-    const index = indexCorpus(join(nested, 'corpus', 'specimens'));
-    expect([...index.workflows.keys()]).toEqual(['fan-conformance']);
-    expect(index.workflows.get('fan-conformance')?.dir).toBe(specimen);
+    expect([...indexCorpus(join(nested, 'corpus')).workflows.keys()]).toEqual(['fan-conformance', 'work-package']);
     rmSync(nested, { recursive: true, force: true });
   });
 
