@@ -78,5 +78,5 @@ Require `session_index`. Workflow identity comes from the session.
 | Reference delivery and eager step bundling | [Reference delivery](resource-resolution-model.md#reference-delivery) and [hybrid technique bundling](resource-resolution-model.md#hybrid-technique-bundling) |
 | What the server enforces vs agents | [Schema enforcement model](../schemas/README.md#enforcement-model) |
 | Wire descriptions and parameter schemas | [Site API](../site/api/tools.html) (generated from `src/tools/`) |
-| Technique file shape | [Technique protocol](technique-protocol-specification.md) |
+| Technique file shape | [Technique protocol](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md) |
 | Workflow / activity file shapes | [Schema guide](../schemas/README.md) |

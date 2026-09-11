@@ -4,7 +4,7 @@ Orchestra is a design for writing an activity's control flow down explicitly —
 
 **Read this for the design, not to author a definition.** The language the server does load is covered by the [schema guide](../schemas/README.md), and the generated [schema reference](../site/api/schemas.html) gives each file shape field by field. An activity there is a list of steps, each tagged with the kind of work it does, followed by the named outcomes it can reach; where each outcome leads is the workflow file's to state. There are no flow declarations and no `skill:` key, and the grammar below assumes both.
 
-**Who this is for:** anyone weighing the design — how an explicit control-flow language would work, and what it would take — rather than anyone writing workflow definitions today. If you are authoring, the [technique protocol specification](technique-protocol-specification.md) and the schema guide are the two documents you need.
+**Who this is for:** anyone weighing the design — how an explicit control-flow language would work, and what it would take — rather than anyone writing workflow definitions today. If you are authoring, the [technique protocol specification](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md) and the schema guide are the two documents you need.
 
 What follows is the design as specified: the rationale, a formal grammar for activities, the semantic constraints, a worked example, and a table of validation rules. The workflow, technique and resource primitives were never specified.
 
@@ -29,7 +29,7 @@ The design covers four workflow primitives, one of them in full:
 | **Technique** | Markdown definition of a capability, optional inputs/outputs, an ordered protocol, and rules; may contain nested techniques | Not specified |
 | **Resource** | Reference material: documentation, templates, guides | Not specified |
 
-Only the activity primitive is worked out. The shapes the server actually loads for all four are in `schemas/*.schema.json`, and the technique primitive has a specification of its own in [technique-protocol-specification.md](technique-protocol-specification.md).
+Only the activity primitive is worked out. The shapes the server actually loads for all four are in `schemas/*.schema.json`, and the technique primitive has a specification of its own in [technique-protocol-specification.md](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md).
 
 ### Design Goal
 
@@ -902,7 +902,7 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 
 ## 4. Technique
 
-The design does not cover the technique primitive, and it does not need to: techniques have a specification of their own in [technique-protocol-specification.md](technique-protocol-specification.md), and `schemas/technique.schema.json` carries the shape the server loads. A technique is authored as markdown. A technique can contain nested techniques, and there is one kind of technique throughout. Its anatomy is:
+The design does not cover the technique primitive, and it does not need to: techniques have a specification of their own in [technique-protocol-specification.md](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md), and `schemas/technique.schema.json` carries the shape the server loads. A technique is authored as markdown. A technique can contain nested techniques, and there is one kind of technique throughout. Its anatomy is:
 
 * **Frontmatter** — carries `metadata.version`.
 * **`## Capability`** — what the technique accomplishes.

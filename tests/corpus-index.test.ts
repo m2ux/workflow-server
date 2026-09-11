@@ -119,21 +119,25 @@ describe('corpus discovery', () => {
     rmSync(flat, { recursive: true, force: true });
   });
 
-  it('enters corpus/ and skips ledgers, walks, and specimens at the branch root', () => {
+  it('enters corpus/ and skips ledgers, walks, specimens, and docs at the branch root', () => {
     const nested = mkdtempSync(join(tmpdir(), 'corpus-nested-'));
     const product = join(nested, 'corpus', 'work-package');
     const specimen = join(nested, 'specimens', 'fan-conformance');
+    const docsExample = join(nested, 'docs', 'example');
     mkdirSync(product, { recursive: true });
     mkdirSync(specimen, { recursive: true });
+    mkdirSync(docsExample, { recursive: true });
     mkdirSync(join(nested, 'ledgers'), { recursive: true });
     mkdirSync(join(nested, 'walks'), { recursive: true });
     writeFileSync(join(product, 'workflow.yaml'), 'id: work-package\nversion: 1.0.0\ntitle: t\n');
     writeFileSync(join(specimen, 'workflow.yaml'), 'id: fan-conformance\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(docsExample, 'workflow.yaml'), 'id: example\nversion: 1.0.0\ntitle: t\n');
     writeFileSync(join(nested, 'ledgers', 'binding-fidelity-triage.json'), '{}\n');
     const index = indexCorpus(nested);
     expect([...index.workflows.keys()]).toEqual(['work-package']);
     expect(index.workflows.get('work-package')?.dir).toBe(product);
     expect(index.workflows.has('fan-conformance')).toBe(false);
+    expect(index.workflows.has('example')).toBe(false);
     rmSync(nested, { recursive: true, force: true });
   });
 

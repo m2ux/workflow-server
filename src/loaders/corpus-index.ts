@@ -17,9 +17,9 @@ import { parseDefinition } from '../utils/serialization.js';
  * corpus rather than to everything in it. It also stops at a directory that has a definition, so a
  * workflow owns everything beneath it and no workflow contains another.
  *
- * Named roots that are not the product grouping — `ledgers`, `walks`, `specimens` — are skipped
- * the same way. Product definitions live under `corpus/` or as a still-flat tree of workflow
- * directories; a specimen workflow is reached by pointing the walk at `specimens/`.
+ * Named roots that are not the product grouping — `ledgers`, `walks`, `specimens`, `docs` — are
+ * skipped the same way. Product definitions live under `corpus/` or as a still-flat tree of
+ * workflow directories; a specimen workflow is reached by pointing the walk at `specimens/`.
  *
  * The directory name and the `id` the definition declares are one identity. A directory whose file
  * names something else does not resolve, under either name, and `list_workflows` reports the pair.
@@ -42,7 +42,7 @@ const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
  * `corpus/` is the product grouping and is descended into; a still-flat tree has none of these
  * names, so every workflow directory at the root is still a member of the product list.
  */
-const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'specimens']);
+const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'specimens', 'docs']);
 
 /** Definition file extensions, in resolution priority. */
 const DEFINITION_EXTENSIONS = ['yaml', 'yml'] as const;

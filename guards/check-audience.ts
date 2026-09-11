@@ -2,7 +2,7 @@
  * check-audience — artifact audience declaration and JSON-format guard (#224 V4).
  *
  * An output declared with `#### audience` = `agent` is written for the next agent to consume as
- * state, and by convention (docs/technique-protocol-specification.md §3.2) an agent-audience
+ * state, and by convention (workflows/docs/technique-protocol-specification.md §3.2) an agent-audience
  * artifact is serialized as JSON on disk. This guard walks every technique `.md` in the corpus
  * through the real loader and, for each output that is BOTH `audience: agent` AND carries an
  * `#### artifact` filename, asserts the artifact name follows the JSON-format convention: it (or,

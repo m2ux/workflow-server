@@ -49,7 +49,7 @@ The directories, and what each one owns:
 | `scripts/` | Install and container helpers, schema generation, and the benchmarks |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
-| `workflows/` | A worktree of the `workflows` branch. Product definitions live under `corpus/`; `ledgers/`, `walks/` and `specimens/` are named roots discovery skips. A workflow's id is its directory name. |
+| `workflows/` | A worktree of the `workflows` branch. Product definitions live under `corpus/`; `ledgers/`, `walks/`, `specimens/` and `docs/` are named roots discovery skips. A workflow's id is its directory name. Authoring docs live at `workflows/docs/`. |
 | `docs/` | This documentation |
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
@@ -382,48 +382,9 @@ git push origin workflows
 
 A definition change lands as two commits: one on the `workflows` branch, and one on `main` moving the submodule pointer to it. The guards and the end-to-end walks both read that pointer, so the two belong in the same pull request — [corpus-coupled baselines](#corpus-coupled-baselines) covers what happens when they separate.
 
-## Adding a workflow
+## Authoring definitions
 
-Create a directory named for the workflow's id with a `workflow.yaml` in it, under `corpus/` on the
-`workflows` branch (or at the root of a still-flat tree). Grouping folders carry no definition and
-exist to organise the corpus, so `corpus/group/kind/example/workflow.yaml` is the workflow `example`
-and is referenced by that name alone. Discovery skips three kind roots at the branch root —
-`ledgers`, `walks` and `specimens` — and three folder names at every depth — `activities`,
-`resources` and `techniques`. The directory name is the id every reference reaches it by, so it
-matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
-
-### Linking between definition files
-
-A link within a workflow is an ordinary relative path — the workflow moves as a unit, so the distance between two of its own files never changes.
-
-A link **out of** a workflow names the workflow it wants, anchored on the id and written from a leading slash: `[conduct](/shared/techniques/conduct.md)`. The leading segment resolves to wherever discovery found that workflow, so the link survives either end moving. Counting directories out of a workflow (`../../shared/techniques/…`) records the distance between two workflows, which is a fact about today's layout rather than about either of them — and that includes a link that climbs to the corpus root only to come back into its own workflow, whose `..` count is the workflow's own depth. `npx tsx guards/check-corpus-links.ts` reports both forms; it runs by path rather than in the sweep until the corpus is rewritten to the anchored form.
-
-Check it before committing:
-
-```bash
-npx tsx guards/validate-workflow-yaml.ts <path>
-npm run check:refs
-npm run check:binding
-```
-
-The first validates the definition against the schema. The other two confirm that every technique reference resolves and that no binding has drifted.
-
-## Adding a resource
-
-A resource is a slug-named markdown file under a workflow's `resources/` directory, and that slug is the id techniques refer to it by — the frontmatter `name:` matches it. Nothing registers it: the server discovers resources by reading the directory, so creating the file is the whole of the work. A technique in another workflow reaches it through the prefixed form `{workflow}/{slug}`.
-
-## Adding a technique
-
-A technique is a markdown file under a `techniques/` directory. Put it in the `meta` workflow when every workflow should have it, or in one workflow's own directory when only that workflow does — a workflow-local technique shadows a `meta` one of the same name. A technique may hold nested techniques in a folder of its own, and a nested technique is addressed by appending its slug to the parent's path. Like resources, techniques are discovered by reading the directory.
-
-### What a technique file contains
-
-- YAML frontmatter carrying the version.
-- **`## Capability`** — what the technique does.
-- **`## Inputs`** and **`## Outputs`**, both optional. Each `###` entry may carry `####` sub-sections for its components, plus the reserved `#### artifact`, naming the file an output persists to, and `#### default`, giving an input's default.
-- **`## Protocol`** — the ordered procedure, written either as `### N. Title` blocks or as a flat list, with failure handling inline in the step that gives rise to it.
-- **`## Rules`** — the constraints the technique enforces.
-
-### How a technique is addressed
-
-Techniques are addressed by `::`-delimited paths — `[workflow::]technique[::nested…]` — and a reference within a single workflow omits the workflow segment. The slash form `{workflow}/{technique}` normalises to the same thing. Resolution reads the workflow from the session, looks in that workflow's own directory first, and falls back to the shared `meta` layer. [Technique and resource resolution](resource-resolution-model.md) has the full rules.
+How to add a workflow, resource or technique, how definition files link, and the technique file
+contract live on the `workflows` branch under [`docs/`](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
+In a checkout that vendors the corpus they are at `workflows/docs/`. The schema the server loads
+stays in this tree: [`schemas/README.md`](../schemas/README.md).

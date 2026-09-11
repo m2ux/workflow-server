@@ -8,7 +8,7 @@ import { collectAudienceViolations } from '../guards/check-audience.js';
 /**
  * Audience convention guard (#224 V4): an output declared `audience: agent` that also carries an
  * `#### artifact` filename must name a JSON artifact — an agent-audience artifact is serialized as
- * JSON on disk (docs/technique-protocol-specification.md §3.2). Hard zero: the convention has no
+ * JSON on disk (workflows/docs/technique-protocol-specification.md §3.2). Hard zero: the convention has no
  * accepted exceptions, and the retired baseline held an empty array (#327 R5).
  *
  * Presence is checked from the same walk: an output declaring an artifact declares an audience for
