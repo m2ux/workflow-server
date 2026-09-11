@@ -6,7 +6,7 @@ Authoring procedure — adding a workflow, resource or technique, and how defini
 
 ## Named roots
 
-Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names. `specimens` is skipped by name even as a child of `corpus/`, so a product list never includes a specimen. A workflow's id is the directory that holds its `workflow.yaml`.
+Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names. A `workflow.yaml` at any depth under `corpus/` is a workflow; grouping folders organise the tree and name nothing. A workflow's id is the directory that holds its `workflow.yaml`.
 
 ```
 <branch root>
@@ -34,7 +34,7 @@ The workflows an operator starts live here: each is a directory that holds a `wo
 
 ### specimens
 
-A specimen is a worked example of a form. An author copies from it when creating a workflow that needs that form, and a test drives it so the form stays loadable and observable. Specimens are still workflows — they have a definition, activities and techniques — but they are not part of the product list. They sit at `corpus/specimens/` so they travel with the other definitions. Discovery skips any directory named `specimens`, so a walk of `corpus/` does not list them. Pointing `--root` or `--workflow-dir` at `corpus/specimens/` is how a job reaches them. Contents: [`corpus/specimens/README.md`](corpus/specimens/README.md).
+A specimen is a worked example of a form. An author copies from it when creating a workflow that needs that form, and a test drives it so the form stays loadable and observable. They sit at `corpus/specimens/` so they travel with the other definitions. `specimens/` is a grouping folder: discovery walks it, and each child that holds a `workflow.yaml` is a workflow reached by its directory name. Contents: [`corpus/specimens/README.md`](corpus/specimens/README.md).
 
 ### ledgers
 

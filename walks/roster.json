@@ -13,7 +13,8 @@
     "prism-update",
     "codebase-wiki",
     "prism-audit",
-    "meta"
+    "meta",
+    "fan-conformance"
   ],
   "notWalked": [
     {
