@@ -462,6 +462,32 @@ describe('fan load rules', () => {
     expect(rendered(errors)).toContain('admits 2 instances, so slot 3 is never filled');
   });
 
+  it('L13 refuses an authored index above a bare member\'s single slot', async () => {
+    const errors = await loadErrors({
+      ...listFan,
+      activities: [
+        listFan.activities[0]!,
+        listFan.activities[1]!,
+        listFan.activities[2]!,
+        activity('assumptions-review', {
+          exits: exits('approved'),
+          steps: [{
+            kind: 'technique',
+            id: 'combine',
+            technique: {
+              name: 'research-sweep::combine',
+              inputs: { topic_findings: '{research_outputs.1.result.topic_findings}' },
+            },
+          }],
+        }),
+      ],
+    });
+    expect(rendered(errors)).toContain(
+      "Activity 'assumptions-review' reads 'research_outputs.1.result.topic_findings'.",
+    );
+    expect(rendered(errors)).toContain('admits 1 instance, so slot 1 is never filled');
+  });
+
   it('L13 is one-sided: an index the ceiling admits loads', async () => {
     const errors = await loadErrors({
       ...instanceFanFixture,

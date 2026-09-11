@@ -1,0 +1,16 @@
+id: probe-unit
+version: 1.0.0
+name: Probe Unit
+description: The fanned activity — its instances differ by the element each is handed and by nothing else.
+variables:
+  reads:
+    - probe_target
+steps:
+  - kind: action
+    id: probe-the-unit
+    actions:
+      - action: log
+        message: probing {probe_target}
+exits:
+  - id: probed
+    isDefault: true

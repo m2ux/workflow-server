@@ -1,0 +1,7 @@
+id: source-two
+version: 1.0.0
+name: Source Two
+description: Opens the second fan of the shared activity over the second collection.
+exits:
+  - id: scoped
+    isDefault: true

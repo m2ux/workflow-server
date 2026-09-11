@@ -1,0 +1,23 @@
+id: source-one
+version: 1.0.0
+name: Source One
+description: Writes the first collection the shared activity fans over.
+variables:
+  writes:
+    - name: first_targets
+      type: array
+      description: The first fan's units.
+      defaultValue:
+        - first-alpha
+        - first-beta
+        - first-gamma
+steps:
+  - kind: action
+    id: name-first
+    actions:
+      - action: set
+        target: first_targets
+        value: the first fan's units
+exits:
+  - id: scoped
+    isDefault: true

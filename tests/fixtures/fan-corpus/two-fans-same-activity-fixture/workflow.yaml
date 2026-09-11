@@ -1,0 +1,20 @@
+id: two-fans-same-activity-fixture
+version: 1.0.0
+title: Two Fans Same Activity Fixture
+description: Two sequential instance fans of one activity, each over its own collection.
+initialActivity: source-one
+graph:
+  source-one:
+    scoped:
+      activity: probe-unit
+      over: first_targets
+      variable: probe_target
+  probe-unit:
+    probed: mid-point
+  mid-point:
+    passed: source-two
+  source-two:
+    scoped:
+      activity: probe-unit
+      over: second_targets
+      variable: probe_target
