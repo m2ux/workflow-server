@@ -9,6 +9,9 @@ import { currentCorpusSha, readStamp, STAMP_PATH } from './corpus-stamp.js';
  * `driftHint` receives both short shas and says what the caller committed and how to re-record it.
  */
 export function expectStampFresh(driftHint: (stampSha: string, currentSha: string) => string): void {
+  // A corpus-branch job checks out the tree that holds both the definitions and walks/. There is
+  // no gitlink pin for the stamp to drift from; the snapshot and ratchet files are the check.
+  if (process.env.WF_CORPUS_SUBJECT === 'checkout') return;
   const current = currentCorpusSha();
   expect(current, 'the corpus is not a git checkout, so the stamp cannot be verified').not.toBeNull();
   const stamp = readStamp();

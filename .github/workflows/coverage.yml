@@ -63,15 +63,29 @@ jobs:
       - uses: ./.github/actions/workflows-corpus
         if: github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none'
 
-      - uses: actions/setup-node@v4
+      # Walk artifacts live under walks/ of the adopted corpus. A gitlink that has not yet taken
+      # that layout has nothing for this job to measure; definition coverage and the ratchet sit
+      # on the workflows-branch job.
+      - name: Whether the adopted corpus records option coverage
         if: github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none'
+        id: ratchet
+        run: |
+          if [ -f workflows/walks/option-coverage.json ]; then
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "Adopted corpus has no walks/option-coverage.json — nothing to walk here."
+          fi
+
+      - uses: actions/setup-node@v4
+        if: (github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none') && steps.ratchet.outputs.present == 'yes'
         with:
           node-version: 20
           cache: npm
 
-      - if: github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none'
+      - if: (github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none') && steps.ratchet.outputs.present == 'yes'
         run: npm ci
 
       - name: Walk every checkpoint option
-        if: github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none'
+        if: (github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none') && steps.ratchet.outputs.present == 'yes'
         run: npm run test:coverage-walk
