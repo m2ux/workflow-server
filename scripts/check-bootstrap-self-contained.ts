@@ -48,6 +48,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { type CorpusSource, asIndex, indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, stripDestinations, toLines } from './markdown-refs.js';
@@ -60,8 +61,8 @@ const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 const PRE_SESSION_RESOURCE = join('resources', 'bootstrap-protocol.md');
 
 /** Its path from the corpus root, wherever the corpus keeps the meta workflow. */
-export function preSessionResource(root: string): string | null {
-  return workflowSubdir(root, 'meta', PRE_SESSION_RESOURCE);
+export function preSessionResource(root: string, source: CorpusSource = root): string | null {
+  return workflowSubdir(source, 'meta', PRE_SESSION_RESOURCE);
 }
 /** Prose the procedure cannot be shorter than and still be one. It runs to 56 lines today. */
 export const MIN_PROSE_LINES = 20;
@@ -95,7 +96,7 @@ interface Declared {
  * nested a level down, the workflow for one directly under `techniques/` — and is keyed on that name,
  * since keying it on the literal string `TECHNIQUE` produces a left half no reference ever writes.
  */
-function declaredRules(root: string): Declared {
+function declaredRules(root: string, source: CorpusSource = root): Declared {
   const pairs = new Set<string>();
   const names = new Set<string>();
   const addFile = (file: string, owner: string): void => {
@@ -106,7 +107,7 @@ function declaredRules(root: string): Declared {
       if (heading) { pairs.add(`${owner}.${heading[1]}`); names.add(heading[1]!); }
     }
   };
-  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+  for (const { id: workflow, dir } of corpusWorkflows(root, asIndex(source))) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const entry of readdirSync(techniquesDir, { withFileTypes: true })) {
@@ -135,7 +136,8 @@ function resolvableHere(target: string): boolean {
 
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
-  const file = preSessionResource(root);
+  const index = indexCorpus(root);
+  const file = preSessionResource(root, index);
   const resourceSite = file ? relative(root, file) : join('meta', PRE_SESSION_RESOURCE);
   // A CR left on the end of every line would stop each one looking like a fence, taking the fence
   // matcher out of service on a CRLF checkout — so line endings are normalised before anything reads a
@@ -151,7 +153,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     root,
   );
 
-  const declared = declaredRules(root);
+  const declared = declaredRules(root, index);
   const { fenced, unclosed } = fencedLines(lines);
   if (unclosed !== null) {
     findings.push({

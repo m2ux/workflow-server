@@ -61,7 +61,7 @@ import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../s
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
 import { assertScanned, corpusWorkflows, workflowSubdir } from './workflows-root.js';
-import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
+import { indexCorpus, workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
 
@@ -72,6 +72,7 @@ const DIR = fileURLToPath(new URL('.', import.meta.url));
 // to check a dedicated worktree's workflows instead (issue #160 follow-up #1). An unreachable or
 // empty root throws rather than yielding an empty, reassuring result (#327 S2).
 const ROOT = requireRootOrExit('binding-fidelity', join(DIR, '..', 'workflows'));
+const INDEX = indexCorpus(ROOT);
 // The triage file records a verdict per known violation; it lives beside the guard, not beside the
 // corpus, because it classifies findings rather than corpus content.
 const TRIAGE = join(DIR, 'binding-fidelity-triage.json');
@@ -148,7 +149,7 @@ const allDeclaredInputSites = new Map<string, Set<string>>();
 const declaredOutputSites: Array<{ rel: string; id: string; hasArtifact: boolean }> = [];
 
 function buildRegistry(wf: string): void {
-  const tdir = workflowSubdir(ROOT, wf, 'techniques');
+  const tdir = workflowSubdir(INDEX, wf, 'techniques');
   if (!tdir || !existsSync(tdir)) return;
   const reg: Reg = { ops: new Map(), groups: new Map() };
   const declared = new Set<string>();
@@ -193,7 +194,7 @@ function buildRegistry(wf: string): void {
   declaredByWf.set(wf, declared);
 }
 
-const workflows = corpusWorkflows(ROOT).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
+const workflows = corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
 assertScanned(workflows.length, 'workflows with a techniques/ folder', ROOT);
 for (const wf of workflows) buildRegistry(wf);
 
@@ -272,7 +273,7 @@ const fanParameterByActivity = new Map<string, Map<string, string>>();
 const fanContainerMembers = new Map<string, Set<string>>();
 
 function collectWorkflowVars(wf: string): void {
-  const wt = workflowSubdir(ROOT, wf, 'workflow.yaml');
+  const wt = workflowSubdir(INDEX, wf, 'workflow.yaml');
   if (!wt || !existsSync(wt)) return;
   try {
     const p = parseDefinition(readFileSync(wt, 'utf-8')) as {
@@ -529,12 +530,12 @@ for (const wf of workflows) {
       }
     }
   };
-  const techniques = workflowSubdir(ROOT, wf, 'techniques');
+  const techniques = workflowSubdir(INDEX, wf, 'techniques');
   if (techniques) walk(techniques);
 }
 // activities + workflow vars
-const fragmentsLookup = fragmentsLookupSync(ROOT);
-const allWf = new Set([...workflows, ...corpusWorkflows(ROOT).filter(({ dir }) => existsSync(join(dir, 'activities'))).map(({ id }) => id)]);
+const fragmentsLookup = fragmentsLookupSync(ROOT, INDEX);
+const allWf = new Set([...workflows, ...corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'activities'))).map(({ id }) => id)]);
 /**
  * Every activity file under a workflow's `activities/`, INCLUDING nested library subdirectories.
  * The server's own `loadActivitiesFromDir` is deliberately non-recursive (a subdirectory is a
@@ -558,9 +559,9 @@ for (const wf of allWf) {
   // (`When {headless_mode} is true, a checkpoint declaring both resolves to its defaultOption`), and
   // that is the value's one authoritative consumer. Scanning only activities left those reads
   // invisible, so the id they name read as dead.
-  const wfYaml = workflowSubdir(ROOT, wf, 'workflow.yaml');
+  const wfYaml = workflowSubdir(INDEX, wf, 'workflow.yaml');
   if (wfYaml && existsSync(wfYaml)) collectReads(wf, relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
-  const adir = workflowSubdir(ROOT, wf, 'activities');
+  const adir = workflowSubdir(INDEX, wf, 'activities');
   if (!adir || !existsSync(adir)) continue;
   for (const path of activityFiles(adir)) {
     const rel = relative(ROOT, path); let raw = readFileSync(path, 'utf-8');

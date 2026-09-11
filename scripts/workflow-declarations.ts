@@ -10,7 +10,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { workflowSubdir } from '../src/loaders/corpus-index.js';
+import { type CorpusSource, workflowSubdir } from '../src/loaders/corpus-index.js';
 import { mergeActivityVariables, type VariableContributor } from '../src/utils/activity-variables.js';
 import type { VariableDefinition } from '../src/schema/variable.schema.js';
 
@@ -39,8 +39,12 @@ function readContributor(path: string): VariableContributor | null {
  * The declarations one workflow runs with, keyed by name: its file's own, plus those of the
  * activities in its `activities/` directory and of any it includes from another workflow.
  */
-export function declaredVariables(root: string, workflowId: string): Map<string, VariableDefinition> {
-  const workflowYaml = workflowSubdir(root, workflowId, 'workflow.yaml');
+export function declaredVariables(
+  root: string,
+  workflowId: string,
+  source: CorpusSource = root,
+): Map<string, VariableDefinition> {
+  const workflowYaml = workflowSubdir(source, workflowId, 'workflow.yaml');
   if (!workflowYaml || !existsSync(workflowYaml)) return new Map();
   let own: VariableDefinition[] = [];
   let refs: string[] = [];
@@ -54,7 +58,7 @@ export function declaredVariables(root: string, workflowId: string): Map<string,
   }
 
   const contributors: VariableContributor[] = [];
-  for (const path of activityFiles(workflowSubdir(root, workflowId, 'activities'))) {
+  for (const path of activityFiles(workflowSubdir(source, workflowId, 'activities'))) {
     const contributor = readContributor(path);
     if (contributor) contributors.push(contributor);
   }
@@ -63,7 +67,7 @@ export function declaredVariables(root: string, workflowId: string): Map<string,
     const parts = ref.split('/');
     if (parts.length < 2) continue;
     const filename = parts.slice(1).join('/');
-    const path = workflowSubdir(root, parts[0]!, filename.startsWith('activities/') ? filename : join('activities', filename));
+    const path = workflowSubdir(source, parts[0]!, filename.startsWith('activities/') ? filename : join('activities', filename));
     if (!path || !existsSync(path)) continue;
     const contributor = readContributor(path);
     if (contributor) contributors.push(contributor);

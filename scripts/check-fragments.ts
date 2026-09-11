@@ -41,6 +41,7 @@ import {
   resolveCheckpointFragment,
   META_WORKFLOW_ID,
 } from '../src/loaders/fragment-resolver.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { fragmentsLookupSync } from './fragments-index.js';
 import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
 import { declaredVariables } from './workflow-declarations.js';
@@ -113,9 +114,10 @@ const CHECKPOINT_BODY_FIELDS = ['message', 'options', 'defaultOption', 'autoAdva
 
 export function collectFragmentViolations(root: string = ROOT): FragmentViolation[] {
   const violations: FragmentViolation[] = [];
-  const lookup: FragmentsLookup = fragmentsLookupSync(root);
+  const index = indexCorpus(root);
+  const lookup: FragmentsLookup = fragmentsLookupSync(root, index);
 
-  const workflows = corpusWorkflows(root);
+  const workflows = corpusWorkflows(root, index);
 
   // Fragment registry + usage tracking for the unused-fragment check.
   const usedCheckpointFragments = new Set<string>();
@@ -145,7 +147,7 @@ export function collectFragmentViolations(root: string = ROOT): FragmentViolatio
 
     // The workflow's whole variable set: its file's own declarations plus the writes its
     // activities contribute, which is what a fragment's effect writes into at runtime.
-    const declaredVars = new Set(declaredVariables(root, wf).keys());
+    const declaredVars = new Set(declaredVariables(root, wf, index).keys());
 
     // Rules partitions: validate refs, index inline texts.
     const rules = (doc['rules'] ?? {}) as Record<string, unknown>;

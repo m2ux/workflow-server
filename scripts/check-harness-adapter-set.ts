@@ -34,6 +34,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, requireWorkflowsRoot, UnreachableCorpusError, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, toLines } from './markdown-refs.js';
@@ -47,8 +48,8 @@ const GROUP = join('techniques', 'harness-compat');
 const MAP_NAME = 'resolve-harness-operation.md';
 
 /** The group directory, wherever the corpus keeps the meta workflow. */
-function groupDir(root: string): string {
-  const dir = workflowSubdir(root, 'meta', GROUP);
+function groupDir(source: CorpusSource): string {
+  const dir = workflowSubdir(source, 'meta', GROUP);
   if (!dir) {
     throw new UnreachableCorpusError(
       `the corpus holds no meta workflow, so the harness-compat group cannot be measured.`,
@@ -58,8 +59,8 @@ function groupDir(root: string): string {
 }
 
 /** A file inside the group, as a path from the corpus root — what a finding cites. */
-function groupSite(root: string, file = ''): string {
-  return relative(root, join(groupDir(root), file));
+function groupSite(root: string, source: CorpusSource, file = ''): string {
+  return relative(root, join(groupDir(source), file));
 }
 
 /** A numbered Protocol step heading, which is what scopes each enumeration. */
@@ -99,8 +100,8 @@ interface Parsed {
   unparseable: string[];
 }
 
-function parseMap(root: string): Parsed {
-  const lines = toLines(readFileSync(join(groupDir(root), MAP_NAME), 'utf-8'));
+function parseMap(source: CorpusSource): Parsed {
+  const lines = toLines(readFileSync(join(groupDir(source), MAP_NAME), 'utf-8'));
   const rows: Array<{ kind: string; file: string }> = [];
   const unparseable: string[] = [];
 
@@ -150,14 +151,15 @@ function declaredRules(path: string): { declared: string[]; unparseable: string[
 
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
-  const mapPath = join(groupDir(root), MAP_NAME);
-  const mapSite = groupSite(root, MAP_NAME);
+  const index = indexCorpus(root);
+  const mapPath = join(groupDir(index), MAP_NAME);
+  const mapSite = groupSite(root, index, MAP_NAME);
 
   // An absent map is nothing measured, not a clean set. Reading it unguarded would exit 1 with a stack
   // trace, and the sweep reads exit 1 as findings.
   assertScanned(existsSync(mapPath) ? 1 : 0, `the harness map (${mapSite})`, root);
 
-  const { rows, slices, unparseable } = parseMap(root);
+  const { rows, slices, unparseable } = parseMap(index);
   assertScanned(rows.length, `harness rows in ${mapSite}`, root);
   assertScanned(slices.length, `operation kinds in ${mapSite}`, root);
 
@@ -197,7 +199,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     seenFiles.set(file, kind);
     const registered = coreAdapters.delete(slug);
 
-    if (!existsSync(join(groupDir(root), file))) {
+    if (!existsSync(join(groupDir(index), file))) {
       findings.push({
         check: 'adapter-missing',
         site,
@@ -207,7 +209,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       continue;
     }
 
-    const { declared, unparseable: badHeadings } = declaredRules(join(groupDir(root), file));
+    const { declared, unparseable: badHeadings } = declaredRules(join(groupDir(index), file));
     for (const heading of badHeadings) {
       findings.push({
         check: 'name-unparseable',
@@ -267,12 +269,12 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     });
   }
 
-  for (const file of readdirSync(groupDir(root)).sort()) {
+  for (const file of readdirSync(groupDir(index)).sort()) {
     if (!file.endsWith('.md') || file === 'TECHNIQUE.md') continue;
     if (seenFiles.has(file) || GENERIC_OPS.has(file.replace(/\.md$/, ''))) continue;
     findings.push({
       check: 'adapter-unmapped',
-      site: groupSite(root, file),
+      site: groupSite(root, index, file),
       detail: 'is neither a generic operation nor a mapped adapter, so nothing can resolve to it',
     });
   }

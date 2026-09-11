@@ -45,6 +45,7 @@ import {
 } from '../src/utils/activity-variables.js';
 import { branchKey, instanceFans } from '../src/schema/workflow.schema.js';
 import type { VariableDefinition } from '../src/schema/variable.schema.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
@@ -97,9 +98,10 @@ function ownDeclarations(workflowYaml: string): VariableDefinition[] {
 
 export async function collectFindings(root: string): Promise<Finding[]> {
   const findings: Finding[] = [];
+  const index = indexCorpus(root);
   // What the orchestrator consumes out of the same bag, whichever workflow is running.
   const engineInputs = await orchestratorInputs(root);
-  const workflows = corpusWorkflows(root).map(({ id }) => id);
+  const workflows = corpusWorkflows(root, index).map(({ id }) => id);
   assertScanned(workflows.length, 'workflows with a workflow.yaml', root);
 
   for (const workflowId of workflows) {
@@ -112,7 +114,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       continue;
     }
     const { workflow, activitySourceWorkflow } = loaded.value;
-    const rawWorkflowYaml = readFileSync(workflowSubdir(root, workflowId, 'workflow.yaml')!, 'utf-8');
+    const rawWorkflowYaml = readFileSync(workflowSubdir(index, workflowId, 'workflow.yaml')!, 'utf-8');
     const owned = new Set(ownDeclarations(rawWorkflowYaml).map((declaration) => declaration.name));
     const proseReads = workflowProseReads(rawWorkflowYaml);
 
@@ -471,7 +473,8 @@ export async function collectFindings(root: string): Promise<Finding[]> {
 /** The derived contracts, as JSON: `<workflow>::<activity>` → reads, writes, iteration variables. */
 async function emitContracts(root: string): Promise<void> {
   const out: Record<string, { reads: string[]; writes: string[]; internalReads: string[]; sourceWorkflowId: string }> = {};
-  for (const { id: workflowId } of corpusWorkflows(root)) {
+  const index = indexCorpus(root);
+  for (const { id: workflowId } of corpusWorkflows(root, index)) {
     const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
     if (!loaded.success) continue;
     const namespace = new Set((loaded.value.workflow.variables ?? []).map((declaration) => declaration.name));

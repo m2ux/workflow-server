@@ -15,6 +15,7 @@ import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { parseWhen, type WhenAst } from '../src/schema/when-expression.js';
+import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { declaredVariables } from './workflow-declarations.js';
@@ -158,9 +159,9 @@ function decidedVariables(step: Step): Set<string> {
 }
 
 /** Declared variables carrying a `defaultValue`: an earlier read of one has the default to read. */
-function defaultedVariables(root: string, workflowId: string): Set<string> {
+function defaultedVariables(root: string, workflowId: string, source: CorpusSource = root): Set<string> {
   const out = new Set<string>();
-  for (const [name, declaration] of declaredVariables(root, workflowId)) {
+  for (const [name, declaration] of declaredVariables(root, workflowId, source)) {
     if (declaration.defaultValue !== undefined) out.add(name);
   }
   return out;
@@ -169,10 +170,11 @@ function defaultedVariables(root: string, workflowId: string): Set<string> {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const { id: workflow, dir: workflowDir } of corpusWorkflows(root)) {
+  const index = indexCorpus(root);
+  for (const { id: workflow, dir: workflowDir } of corpusWorkflows(root, index)) {
     const activitiesDir = join(workflowDir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
-    const defaulted = defaultedVariables(root, workflow);
+    const defaulted = defaultedVariables(root, workflow, index);
     for (const entry of readdirSync(activitiesDir).sort()) {
       if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
       const path = join(activitiesDir, entry);

@@ -26,6 +26,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
+import { type CorpusSource, asIndex, indexCorpus } from '../src/loaders/corpus-index.js';
 import { corpusWorkflows, resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -94,12 +95,12 @@ function collectTechniqueRefs(node: unknown, out: string[]): void {
  * `[workflow::]group::operation`, the legacy `workflow/technique`, and a bare `technique` — each
  * resolving under some workflow's `techniques/` tree.
  */
-function techniqueBody(root: string, currentWorkflow: string, ref: string): string | null {
+function techniqueBody(source: CorpusSource, currentWorkflow: string, ref: string): string | null {
   const segs = ref.replace(/\//g, '::').split('::').filter((s) => s.length > 0);
   if (!segs.length) return null;
   const candidates: string[] = [];
   const under = (wf: string, rest: string[]): void => {
-    const techniques = workflowSubdir(root, wf, 'techniques');
+    const techniques = workflowSubdir(source, wf, 'techniques');
     if (!techniques) return;
     candidates.push(join(techniques, `${rest.join('/')}.md`));
     candidates.push(join(techniques, ...rest, 'TECHNIQUE.md'));
@@ -113,9 +114,9 @@ function techniqueBody(root: string, currentWorkflow: string, ref: string): stri
 }
 
 /** Workflow ids the corpus holds — a launch target has to be one of them. */
-function corpusWorkflowIds(root: string): Set<string> {
+function corpusWorkflowIds(root: string, source: CorpusSource = root): Set<string> {
   const ids = new Set<string>();
-  for (const { id, manifest } of corpusWorkflows(root)) {
+  for (const { id, manifest } of corpusWorkflows(root, asIndex(source))) {
     try {
       const wf = parseDefinition(readFileSync(manifest, 'utf-8')) as Record<string, unknown>;
       ids.add(typeof wf.id === 'string' ? wf.id : id);
@@ -126,8 +127,9 @@ function corpusWorkflowIds(root: string): Set<string> {
 
 export function collectLaunchedWorkflowViolations(root: string = ROOT): LaunchedWorkflowViolation[] {
   const out: LaunchedWorkflowViolation[] = [];
-  const known = corpusWorkflowIds(root);
-  const wfs = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  const index = indexCorpus(root);
+  const known = corpusWorkflowIds(root, index);
+  const wfs = corpusWorkflows(root, index).filter(({ dir }) => existsSync(join(dir, 'activities')));
   for (const { id: wf, dir } of wfs) {
     const adir = join(dir, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
@@ -150,7 +152,7 @@ export function collectLaunchedWorkflowViolations(root: string = ROOT): Launched
       collectTechniqueRefs(activity.steps, refs);
       const composedLaunch = refs.some((r) => {
         if (r === LAUNCH_OPERATION) return false;
-        return (techniqueBody(root, wf, r) ?? '').includes('handle-sub-workflow');
+        return (techniqueBody(index, wf, r) ?? '').includes('handle-sub-workflow');
       });
 
       for (const id of declared) {

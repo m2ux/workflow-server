@@ -34,6 +34,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
+import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
@@ -50,8 +51,8 @@ const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 const CONTRACT_HOMES = ['workflow-engine', 'agent-conduct.md', 'orchestrator-conduct.md'];
 
 /** The contract homes as paths from the corpus root, wherever the corpus keeps the meta workflow. */
-function contractHomes(root: string): string[] {
-  const techniques = workflowSubdir(root, 'meta', 'techniques');
+function contractHomes(root: string, source: CorpusSource = root): string[] {
+  const techniques = workflowSubdir(source, 'meta', 'techniques');
   if (!techniques) return [];
   return CONTRACT_HOMES.map((home) => relative(root, join(techniques, home)));
 }
@@ -138,9 +139,10 @@ function walkFiles(dir: string, out: string[] = []): string[] {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  const homes = contractHomes(root);
+  const index = indexCorpus(root);
+  const homes = contractHomes(root, index);
 
-  for (const { dir: wfDir } of corpusWorkflows(root)) {
+  for (const { dir: wfDir } of corpusWorkflows(root, index)) {
     const wfFile = join(wfDir, 'workflow.yaml');
     if (existsSync(wfFile)) {
       const def = parse(readFileSync(wfFile, 'utf-8')) as Record<string, unknown> | null;

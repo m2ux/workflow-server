@@ -35,6 +35,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { isOutsideValueSet } from '../src/schema/variable.schema.js';
+import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
 import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
 import { declaredVariables } from './workflow-declarations.js';
 
@@ -65,9 +66,9 @@ interface VariableDeclaration {
  * The declarations one workflow runs with, keyed by name: its file's own, plus the writes each
  * activity in its graph contributes.
  */
-function readDeclarations(root: string, workflowId: string): Map<string, VariableDeclaration> {
+function readDeclarations(root: string, workflowId: string, source: CorpusSource = root): Map<string, VariableDeclaration> {
   const decls = new Map<string, VariableDeclaration>();
-  for (const [name, declaration] of declaredVariables(root, workflowId)) {
+  for (const [name, declaration] of declaredVariables(root, workflowId, source)) {
     decls.set(name, {
       type: declaration.type,
       hasDefault: declaration.defaultValue !== undefined,
@@ -158,11 +159,12 @@ export function lintDeclarations(
 
 export function collectVariableModelViolations(root: string = ROOT): VariableModelViolation[] {
   const violations: VariableModelViolation[] = [];
-  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+  const index = indexCorpus(root);
+  for (const { id: workflow, dir } of corpusWorkflows(root, index)) {
     const workflowYamlPath = join(dir, 'workflow.yaml');
     if (!existsSync(workflowYamlPath)) continue;
     const workflowDoc: unknown = parse(readFileSync(workflowYamlPath, 'utf-8'));
-    const decls = readDeclarations(root, workflow);
+    const decls = readDeclarations(root, workflow, index);
     violations.push(...lintDeclarations(decls, relative(root, workflowYamlPath)));
     violations.push(...lintDocument(workflowDoc, decls, relative(root, workflowYamlPath)));
     const activitiesDir = join(dir, 'activities');

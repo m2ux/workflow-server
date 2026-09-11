@@ -33,6 +33,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { isTemplateReference } from '../src/utils/variable-seed.js';
@@ -153,7 +154,8 @@ function walk(node: unknown, file: string, stepId: string, findings: Finding[], 
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  const workflows = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  const index = indexCorpus(root);
+  const workflows = corpusWorkflows(root, index).filter(({ dir }) => existsSync(join(dir, 'activities')));
   // Recursive, because activity definitions also sit a level down — `meta/activities/patterns/` holds
   // five, and a flat read leaves them unscanned while `assertScanned` still passes on the rest.
   const definitions = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
@@ -165,7 +167,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     });
 
   for (const { id: workflow, dir } of workflows) {
-    const declarations = declaredVariables(root, workflow);
+    const declarations = declaredVariables(root, workflow, index);
     const valueSets: ValueSets = (name) => declarations.get(name)?.values;
     // `workflow.yaml` too: a workflow root carries checkpoint fragments, and a `setVariable` there
     // writes the bag exactly as one inside an activity does.

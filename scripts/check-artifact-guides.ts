@@ -36,6 +36,7 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tryLoadMarkdownTechnique, tryLoadNestedTechnique } from '../src/loaders/markdown-technique-loader.js';
+import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { resolveLink } from './corpus-links.js';
 import { runGuard, type Finding } from './guard-protocol.js';
@@ -87,9 +88,9 @@ function loadBaseline(path: string = BASELINE): BaselineFile {
  * Every resource body of a workflow, keyed by filename. Read once per workflow — the guard asks the
  * same corpus of resources about many artifacts.
  */
-function readResources(root: string, workflow: string): Map<string, string> {
+function readResources(source: CorpusSource, workflow: string): Map<string, string> {
   const out = new Map<string, string>();
-  const dir = workflowSubdir(root, workflow, 'resources');
+  const dir = workflowSubdir(source, workflow, 'resources');
   if (!dir || !existsSync(dir) || !statSync(dir).isDirectory()) return out;
   for (const entry of readdirSync(dir).sort()) {
     if (!entry.endsWith('.md')) continue;
@@ -235,13 +236,14 @@ export async function collectUnmappedArtifacts(
   const accepted = new Set(baseline.entries.map((e) => `${e.site} ${e.artifact}`));
   const matched = new Set<string>();
   const out: UnmappedArtifact[] = [];
-  const sharedResources = readResources(root, SHARED_WORKFLOW);
+  const index = indexCorpus(root);
+  const sharedResources = readResources(index, SHARED_WORKFLOW);
   let scanned = 0;
 
-  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+  for (const { id: workflow, dir } of corpusWorkflows(root, index)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
-    const resources = readResources(root, workflow);
+    const resources = readResources(index, workflow);
     const map = guideMapSection(resources.get('README.md'));
 
     for (const { id, technique } of await loadWorkflowTechniques(techniquesDir)) {

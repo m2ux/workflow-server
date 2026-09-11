@@ -17,7 +17,7 @@
  */
 import { existsSync, statSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
-import { indexCorpus } from '../src/loaders/corpus-index.js';
+import { type CorpusIndex, indexCorpus } from '../src/loaders/corpus-index.js';
 
 /** A directory a workflow owns, wherever the workflow sits — `null` for an id the corpus lacks. */
 export { workflowSubdir } from '../src/loaders/corpus-index.js';
@@ -60,8 +60,8 @@ export interface CorpusWorkflow {
  * depth, outside the reserved `activities`/`resources`/`techniques` names), so a workflow the
  * server runs is a workflow the guards measure.
  */
-export function corpusWorkflows(root: string): CorpusWorkflow[] {
-  return [...indexCorpus(root).workflows.values()].map(({ id, dir, manifest }) => ({ id, dir, manifest, rel: relative(root, dir) }));
+export function corpusWorkflows(root: string, index: CorpusIndex = indexCorpus(root)): CorpusWorkflow[] {
+  return [...index.workflows.values()].map(({ id, dir, manifest }) => ({ id, dir, manifest, rel: relative(root, dir) }));
 }
 
 export class UnreachableCorpusError extends Error {}

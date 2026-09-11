@@ -19,6 +19,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { resolveLink } from './corpus-links.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
@@ -26,6 +27,7 @@ import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
+const INDEX = indexCorpus(ROOT);
 
 export interface BrokenAnchor {
   /** File containing the link, relative to the workflows root. */
@@ -81,7 +83,7 @@ function* walkFiles(dir: string): Generator<string> {
 }
 
 /** Owned by `check-bootstrap-self-contained`, which refuses every corpus link on it. */
-const PRE_SESSION_RESOURCE = workflowSubdir(ROOT, 'meta', join('resources', 'bootstrap-protocol.md'));
+const PRE_SESSION_RESOURCE = workflowSubdir(INDEX, 'meta', join('resources', 'bootstrap-protocol.md'));
 
 /** An anchored markdown destination, once the shared reader has produced it in any spelling. */
 const ANCHORED_RE = /^([^\s#]+\.md)#([A-Za-z0-9][\w-]*)$/;
@@ -124,7 +126,7 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
       // A template body names its file with a placeholder, which resolves to nothing on purpose.
       if (/[{]/.test(target!)) continue;
       // A `/<workflow>/…` link resolves through discovery; a relative one against this file.
-      const resolved = resolveLink(ROOT, file, target!);
+      const resolved = resolveLink(ROOT, file, target!, INDEX);
       if (resolved.form === 'external') continue;
       const targetPath = resolved.path;
       if (targetPath === null) continue; // names no workflow the corpus holds: check:corpus-links' finding

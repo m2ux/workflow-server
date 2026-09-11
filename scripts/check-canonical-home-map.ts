@@ -26,6 +26,7 @@
 import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { type CorpusIndex, type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
@@ -80,9 +81,9 @@ function walk(dir: string | null, out: string[] = []): string[] {
 }
 
 /** Every map the corpus binds as a `canonical_home_map` input, deduplicated by ref. */
-function boundMaps(root: string): MapRef[] {
+function boundMaps(root: string, index: CorpusIndex): MapRef[] {
   const byRef = new Map<string, MapRef>();
-  for (const { dir } of corpusWorkflows(root)) {
+  for (const { dir } of corpusWorkflows(root, index)) {
     const activities = join(dir, 'activities');
     if (!existsSync(activities) || !statSync(activities).isDirectory()) continue;
     for (const entry of readdirSync(activities).sort()) {
@@ -95,8 +96,8 @@ function boundMaps(root: string): MapRef[] {
         // A ref naming no workflow the corpus holds keeps an unresolvable path, which the caller
         // reports as a missing home rather than silently skipping.
         const path = (anchor
-          ? workflowSubdir(root, workflow!, join(tail, 'TECHNIQUE.md'))
-          : workflowSubdir(root, workflow!, join('resources', `${tail}.md`))) ?? '';
+          ? workflowSubdir(index, workflow!, join(tail, 'TECHNIQUE.md'))
+          : workflowSubdir(index, workflow!, join('resources', `${tail}.md`))) ?? '';
         const ref = anchor ? `${m[1]}#${anchor}` : m[1];
         byRef.set(ref, { ref, workflow, path, ...(anchor ? { anchor } : {}) });
       }
@@ -137,9 +138,9 @@ function homeFilenames(body: string): { row: string; artifact: string }[] {
 }
 
 /** Every filename a technique declares under `#### artifact`, for one workflow. */
-function declaredArtifacts(root: string, workflow: string): Set<string> {
+function declaredArtifacts(source: CorpusSource, workflow: string): Set<string> {
   const out = new Set<string>();
-  for (const file of walk(workflowSubdir(root, workflow, 'techniques'))) {
+  for (const file of walk(workflowSubdir(source, workflow, 'techniques'))) {
     const lines = readFileSync(file, 'utf-8').split('\n');
     for (let i = 0; i < lines.length; i++) {
       if (!/^#### +artifact\s*$/i.test(lines[i])) continue;
@@ -173,12 +174,13 @@ function templateMatches(home: string, declared: string): boolean {
 
 export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Finding[]> {
   const out: Finding[] = [];
-  const maps = boundMaps(root);
+  const index = indexCorpus(root);
+  const maps = boundMaps(root, index);
   assertScanned(maps.length, 'canonical-home map binding(s)', root);
   const triage = loadTriage();
   const accepted = new Map(triage.entries.map((e) => [`${e.site} ${e.artifact}`, e]));
   const matched = new Set<string>();
-  const shared = declaredArtifacts(root, SHARED_WORKFLOW);
+  const shared = declaredArtifacts(index, SHARED_WORKFLOW);
   for (const ref of maps) {
     const body = mapBody(ref);
     if (body === null) {
@@ -189,7 +191,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
       });
       continue;
     }
-    const declared = new Set([...declaredArtifacts(root, ref.workflow), ...shared]);
+    const declared = new Set([...declaredArtifacts(index, ref.workflow), ...shared]);
     for (const { row, artifact } of homeFilenames(body)) {
       if (SERVER_MINTED.has(artifact)) continue;
       if (declared.has(artifact)) continue;

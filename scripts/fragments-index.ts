@@ -5,17 +5,18 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { workflowSubdir } from '../src/loaders/corpus-index.js';
+import { type CorpusSource, asIndex, workflowSubdir } from '../src/loaders/corpus-index.js';
 import { WorkflowFragmentsSchema, type WorkflowFragments } from '../src/schema/workflow.schema.js';
 import type { FragmentsLookup } from '../src/loaders/fragment-resolver.js';
 
 /** Lazy, cached lookup: workflow id → its validated `fragments` block (undefined when absent/invalid). */
-export function fragmentsLookupSync(root: string): FragmentsLookup {
+export function fragmentsLookupSync(root: string, source: CorpusSource = root): FragmentsLookup {
+  const index = asIndex(source);
   const cache = new Map<string, WorkflowFragments | undefined>();
   return (workflowId) => {
     if (cache.has(workflowId)) return cache.get(workflowId);
     let fragments: WorkflowFragments | undefined;
-    const path = workflowSubdir(root, workflowId, 'workflow.yaml');
+    const path = workflowSubdir(index, workflowId, 'workflow.yaml');
     if (path && existsSync(path)) {
       try {
         const raw = parseDefinition(readFileSync(path, 'utf-8')) as Record<string, unknown> | null;
