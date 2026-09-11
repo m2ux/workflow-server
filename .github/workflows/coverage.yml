@@ -4,12 +4,11 @@ name: Coverage walk
 # does not reach.
 #
 # This job lives here because its subject is this tree. A pull request that changes a definition is
-# what can move coverage; walking it only after a later gitlink bump on main would grade the change
-# after merge.
+# what can move coverage; walking it only after a later gitlink bump on the engine tree would grade
+# the change after merge.
 #
-# The walker, the policies and the server live on main. This job borrows that tooling and points it
-# at the corpus under review — the same provenance as verify-corpus.yml. A pull request walks only
-# the workflows its diff can move; a dispatch walks the full roster.
+# The walker, the policies and the server live on the engine tree this job checks out. A pull
+# request walks only the workflows its diff can move; a dispatch walks the full roster.
 
 on:
   pull_request:
@@ -27,11 +26,13 @@ jobs:
     name: Every declared checkpoint option is reached
     runs-on: ubuntu-latest
     timeout-minutes: 70
+    env:
+      WF_CORPUS_SUBJECT: checkout
     steps:
-      - name: Check out the server tooling from main
+      - name: Check out the server tooling
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: feat/693-named-roots
           submodules: false
 
       # The tip, not the merge result — see verify-corpus.yml. fetch-depth: 0 so the scope step can

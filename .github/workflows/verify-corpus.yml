@@ -2,8 +2,8 @@ name: Verify corpus
 
 # The guards and the walks whose subject is this tree run against a pull request on THIS branch.
 #
-# Check programs live on `main`, and this branch holds definitions only — no package.json. A pull
-# request here therefore borrows main's tooling and points it at the corpus under review.
+# Check programs live on the engine tree this job checks out. This branch holds definitions only —
+# no package.json — so the job borrows that tooling and points it at the corpus under review.
 #
 # GitHub reads a pull-request workflow file from the head ref, so this file has to sit on the branch
 # it guards.
@@ -28,12 +28,16 @@ jobs:
   guards:
     name: Guard sweep against the corpus under review
     runs-on: ubuntu-latest
+    env:
+      # This checkout is the subject, not a gitlink pin. walks/ sits beside the definitions.
+      WF_CORPUS_SUBJECT: checkout
     steps:
-      # The tooling: main's guards, registry and package manifest.
-      - name: Check out the server tooling from main
+      # This corpus change is stacked on feat/693-named-roots: those guards read ledgers/ and
+      # walks/ of the pointed tree and cite findings by workflow id.
+      - name: Check out the server tooling
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: feat/693-named-roots
           submodules: false
 
       # The corpus under review, where check:all looks for it by default. For a pull request this is
