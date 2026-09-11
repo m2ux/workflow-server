@@ -6,7 +6,7 @@ The technique library for the fan conformance run. Each technique is one capabil
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds the shared input every technique here reads and the rule every technique that runs in a branch obeys — that it records its own start and finish instants, in its own output, because a branch cannot see its siblings and the activity they converge on is where those intervals are compared.
 
-The cross-cutting meta strategy technique [`variable-binding`](../../../corpus/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity`, not bound per step.
+The cross-cutting meta strategy technique [`variable-binding`](../../../meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity`, not bound per step.
 
 ---
 
@@ -24,6 +24,6 @@ One branch technique commits. It writes its note inside the checkout its activit
 
 ## Cross-workflow techniques
 
-Operations under `meta/` are referenced by qualified id from this workflow. [`orchestration-patterns::gather-results`](../../../corpus/meta/techniques/orchestration-patterns/gather-results.md) reconciles a container against the collection that produced it; [`version-control::create-worktree`](../../../corpus/meta/techniques/version-control/create-worktree.md), [`version-control::commit-regular-files`](../../../corpus/meta/techniques/version-control/commit-regular-files.md) and [`version-control::merge-branches`](../../../corpus/meta/techniques/version-control/merge-branches.md) give an isolated writer its checkout, its commit, and the merge at the convergence.
+Operations under `meta/` are referenced by qualified id from this workflow. [`orchestration-patterns::gather-results`](../../../meta/techniques/orchestration-patterns/gather-results.md) reconciles a container against the collection that produced it; [`version-control::create-worktree`](../../../meta/techniques/version-control/create-worktree.md), [`version-control::commit-regular-files`](../../../meta/techniques/version-control/commit-regular-files.md) and [`version-control::merge-branches`](../../../meta/techniques/version-control/merge-branches.md) give an isolated writer its checkout, its commit, and the merge at the convergence.
 
 The first of those version-control operations is load-bearing beyond what it does. An engine rule reads whether a fanned activity binds it and admits the commit operations only where it does, so the binding is what exempts this run's writers from the refusal that otherwise stops a fanned activity from committing.
