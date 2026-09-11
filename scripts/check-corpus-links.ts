@@ -33,7 +33,7 @@ import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 import { resolveLink } from './corpus-links.js';
-import { workflowOwning } from '../src/loaders/corpus-index.js';
+import { indexCorpus, workflowOwning } from '../src/loaders/corpus-index.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
@@ -50,9 +50,10 @@ function* markdownFiles(dir: string): Generator<string> {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
+  const corpus = indexCorpus(root);
 
   for (const file of markdownFiles(root)) {
-    const home = workflowOwning(root, file);
+    const home = workflowOwning(corpus, file);
     // A file under no workflow — the corpus README — has no workflow to be inside of.
     if (!home) continue;
     scanned++;
@@ -65,7 +66,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       for (const destination of linkDestinations(line)) {
         // A template names its file with a placeholder, which resolves to nothing on purpose.
         if (/[{[]/.test(destination)) continue;
-        const link = resolveLink(root, file, destination);
+        const link = resolveLink(root, file, destination, corpus);
         const site = `${relative(root, file)}:${index + 1}`;
 
         if (link.form === 'workflow') {
@@ -90,7 +91,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
         // Out of the corpus altogether — a separate problem, not this guard's.
         if (relative(root, link.path).startsWith('..' + sep)) continue;
 
-        const target = workflowOwning(root, link.path);
+        const target = workflowOwning(corpus, link.path);
         const anchored = target
           ? `/${target.id}/${relative(target.dir, link.path).split(sep).join('/')}`
           : null;

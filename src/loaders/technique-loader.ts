@@ -13,6 +13,7 @@ import {
   getWorkflowTechniquesDir,
   MarkdownTechniqueParseError,
 } from './markdown-technique-loader.js';
+import { type CorpusSource, indexCorpus } from './corpus-index.js';
 
 /* -------------------------------------------------------------------------- */
 /* YAML-projection delivery (B3)                                              */
@@ -65,8 +66,8 @@ export function projectTechniqueToYaml(technique: Technique): string {
  * Whether a leading reference segment names a workflow that carries techniques — what makes it a
  * cross-workflow prefix rather than a group inside the current workflow.
  */
-function hasTechniques(workflowDir: string, workflowId: string): boolean {
-  const dir = getWorkflowTechniquesDir(workflowDir, workflowId);
+function hasTechniques(source: CorpusSource, workflowId: string): boolean {
+  const dir = getWorkflowTechniquesDir(source, workflowId);
   return dir !== null && existsSync(dir);
 }
 
@@ -75,9 +76,9 @@ function hasTechniques(workflowDir: string, workflowId: string): boolean {
  * Accepts `workflowDir + workflowId` so this call site owns the `techniques/` path layout —
  * callers in readTechnique don't need to know it.
  */
-async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<Technique | null> {
+async function tryLoadSkillInWorkflow(source: CorpusSource, workflowId: string, techniqueId: string): Promise<Technique | null> {
   try {
-    return await tryLoadMarkdownTechnique(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId);
+    return await tryLoadMarkdownTechnique(getWorkflowTechniquesDir(source, workflowId), techniqueId);
   } catch (error) {
     // Markdown parser surfaced a loud-failure on a malformed technique. Log and treat as "not found"
     // so the caller's Result-typed contract isn't broken by a synchronous throw deep in the parser.
@@ -121,12 +122,13 @@ export async function readTechniqueWithSource(
   workflowDir: string,
   workflowId?: string,
 ): Promise<Result<{ technique: Technique; sourceWorkflowId: string }, TechniqueNotFoundError>> {
+  const index = indexCorpus(workflowDir);
   if (techniqueId.includes('/')) {
     const [targetWorkflow, actualSkillId] = techniqueId.split('/', 2);
     if (!targetWorkflow || !actualSkillId) {
       return err(new TechniqueNotFoundError(techniqueId));
     }
-    const technique = await tryLoadSkillInWorkflow(workflowDir, targetWorkflow, actualSkillId);
+    const technique = await tryLoadSkillInWorkflow(index, targetWorkflow, actualSkillId);
     if (technique) {
       logInfo('Technique loaded (explicit prefix)', { id: techniqueId, targetWorkflow });
       return ok({ technique, sourceWorkflowId: targetWorkflow });
@@ -142,13 +144,13 @@ export async function readTechniqueWithSource(
     // workflow exactly, with no meta fallback — mirroring the legacy `/` explicit-prefix form and
     // parseTechniquePath, so the canonical `::` form resolves identically on the bundle
     // (resolveTechniques) and standalone (composeTechnique / get_technique) paths.
-    if (segs.length >= 2 && hasTechniques(workflowDir, segs[0]!)) {
+    if (segs.length >= 2 && hasTechniques(index, segs[0]!)) {
       const targetWorkflow = segs[0]!;
       const rest = segs.slice(1);
       try {
         const t = rest.length === 1
-          ? await tryLoadSkillInWorkflow(workflowDir, targetWorkflow, rest[0]!)
-          : await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, targetWorkflow), rest[0]!, rest.slice(1).join('/'));
+          ? await tryLoadSkillInWorkflow(index, targetWorkflow, rest[0]!)
+          : await tryLoadNestedTechnique(getWorkflowTechniquesDir(index, targetWorkflow), rest[0]!, rest.slice(1).join('/'));
         if (t) {
           logInfo('Technique loaded (cross-workflow ::)', { id: techniqueId, targetWorkflow });
           return ok({ technique: t, sourceWorkflowId: targetWorkflow });
@@ -165,7 +167,7 @@ export async function readTechniqueWithSource(
     const candidates = workflowId && workflowId !== META_WORKFLOW_ID ? [workflowId, META_WORKFLOW_ID] : [META_WORKFLOW_ID];
     for (const wf of candidates) {
       try {
-        const t = await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, wf), group, opPath);
+        const t = await tryLoadNestedTechnique(getWorkflowTechniquesDir(index, wf), group, opPath);
         if (t) {
           logInfo('Technique loaded (nested)', { id: techniqueId, workflowId: wf });
           return ok({ technique: t, sourceWorkflowId: wf });
@@ -179,7 +181,7 @@ export async function readTechniqueWithSource(
   }
 
   if (workflowId) {
-    const local = await tryLoadSkillInWorkflow(workflowDir, workflowId, techniqueId);
+    const local = await tryLoadSkillInWorkflow(index, workflowId, techniqueId);
     if (local) {
       logInfo('Technique loaded (workflow-local)', { id: techniqueId, workflowId });
       return ok({ technique: local, sourceWorkflowId: workflowId });
@@ -188,7 +190,7 @@ export async function readTechniqueWithSource(
 
   // Fall back to the meta shared layer (unless the caller already targeted meta).
   if (workflowId !== META_WORKFLOW_ID) {
-    const shared = await tryLoadSkillInWorkflow(workflowDir, META_WORKFLOW_ID, techniqueId);
+    const shared = await tryLoadSkillInWorkflow(index, META_WORKFLOW_ID, techniqueId);
     if (shared) {
       logInfo('Technique loaded (meta shared layer)', { id: techniqueId, workflowId: workflowId ?? '(none)' });
       return ok({ technique: shared, sourceWorkflowId: META_WORKFLOW_ID });
@@ -239,7 +241,7 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
  * Returns `subName` = undefined for a whole-technique ref (deliver its protocol),
  * or the `/`-joined sub-technique path for a sub-technique/rule ref.
  */
-function parseTechniquePath(ref: string, workflowDir: string): { workflow?: string | undefined; technique: string; subName?: string | undefined } | null {
+function parseTechniquePath(ref: string, source: CorpusSource): { workflow?: string | undefined; technique: string; subName?: string | undefined } | null {
   // Normalise a legacy `workflow/technique` leading segment to `workflow::technique`.
   const head = ref.split('::', 1)[0] ?? ref;
   let normalized = ref;
@@ -252,7 +254,7 @@ function parseTechniquePath(ref: string, workflowDir: string): { workflow?: stri
   // Canonical leading-workflow segment (only when explicitly a known workflow);
   // otherwise the parent workflow stays implicit (resolved current-first).
   let workflow: string | undefined;
-  if (segs.length >= 2 && hasTechniques(workflowDir, segs[0] as string)) {
+  if (segs.length >= 2 && hasTechniques(source, segs[0] as string)) {
     workflow = segs.shift();
   }
   const technique = segs[0];
@@ -271,6 +273,7 @@ export async function resolveTechniques(
   workflowDir: string,
   currentWorkflow?: string,
 ): Promise<ResolvedTechnique[]> {
+  const index = indexCorpus(workflowDir);
   const results: ResolvedTechnique[] = [];
   const explicitRules = new Set<string>();
   const touchedSkills = new Map<string, { workflow: string | undefined; technique: string; cached: Technique }>();
@@ -279,7 +282,7 @@ export async function resolveTechniques(
   const ruleKey = (workflow: string | undefined, technique: string, name: string) => `${workflow ?? ''}::${technique}::${name}`;
 
   for (const ref of refs) {
-    const path = parseTechniquePath(ref, workflowDir);
+    const path = parseTechniquePath(ref, index);
     if (!path) {
       results.push({ source: '', name: '', type: 'not-found', body: null, ref });
       continue;
@@ -292,7 +295,7 @@ export async function resolveTechniques(
     if (path.subName === undefined) {
       const tRes = await readTechnique(path.workflow ? `${path.workflow}/${path.technique}` : path.technique, workflowDir, path.workflow ?? currentWorkflow);
       if (tRes.success) {
-        const wholeDir = getWorkflowTechniquesDir(workflowDir, path.workflow ?? currentWorkflow ?? META_WORKFLOW_ID);
+        const wholeDir = getWorkflowTechniquesDir(index, path.workflow ?? currentWorkflow ?? META_WORKFLOW_ID);
         const body = await composeLoaded(tRes.value, [path.technique], wholeDir);
         results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'technique', body: projectTechniqueBody(body), ref });
         touchedSkills.set(skillKey(path.workflow, path.technique), { workflow: path.workflow, technique: path.technique, cached: tRes.value });
@@ -319,7 +322,7 @@ export async function resolveTechniques(
     let opWorkflow = parsed.workflow; // workflow where the nested technique was found
     for (const wf of candidates) {
       try {
-        const t = await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, wf ?? META_WORKFLOW_ID), parsed.technique, parsed.name);
+        const t = await tryLoadNestedTechnique(getWorkflowTechniquesDir(index, wf ?? META_WORKFLOW_ID), parsed.technique, parsed.name);
         if (t) { nested = t; opWorkflow = wf; break; }
       } catch (error) {
         if (!(error instanceof MarkdownTechniqueParseError)) throw error;
@@ -327,7 +330,7 @@ export async function resolveTechniques(
       }
     }
     if (nested) {
-      const nestedDir = getWorkflowTechniquesDir(workflowDir, opWorkflow ?? META_WORKFLOW_ID);
+      const nestedDir = getWorkflowTechniquesDir(index, opWorkflow ?? META_WORKFLOW_ID);
       const pathSegments = [parsed.technique, ...parsed.name.split('/')];
       const body = await composeLoaded(nested, pathSegments, nestedDir);
       results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'technique', body: projectTechniqueBody(body), ref });
@@ -392,7 +395,7 @@ export async function resolveTechniques(
   if (currentWorkflow) {
     const rootKey = skillKey(currentWorkflow, ROOT_INDEX_ID);
     if (!touchedSkills.has(rootKey)) {
-      const root = await loadWorkflowRoot(workflowDir, currentWorkflow);
+      const root = await loadWorkflowRoot(index, currentWorkflow);
       if (root) {
         touchedSkills.set(rootKey, { workflow: currentWorkflow, technique: ROOT_INDEX_ID, cached: root });
       }
@@ -496,8 +499,8 @@ async function wrapProtocolWithAncestors(
 }
 
 /** Load the executing workflow's root index (`techniques/TECHNIQUE.md`) for its contract, or null. */
-async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promise<Technique | null> {
-  return tryLoadMarkdownTechnique(getWorkflowTechniquesDir(workflowDir, workflowId), ROOT_INDEX_ID);
+async function loadWorkflowRoot(source: CorpusSource, workflowId: string): Promise<Technique | null> {
+  return tryLoadMarkdownTechnique(getWorkflowTechniquesDir(source, workflowId), ROOT_INDEX_ID);
 }
 
 /**
@@ -625,7 +628,7 @@ export async function composeTechniqueWithSource(
   // Strip any leading 'workflow/' cross-workflow prefix, then split on '::'.
   const rawId = techniqueId.includes('/') ? (techniqueId.split('/', 2)[1] ?? techniqueId) : techniqueId;
   const pathSegments = rawId.split('::').filter(s => s.length > 0);
-  const techniquesDir = getWorkflowTechniquesDir(workflowDir, workflowId);
+  const techniquesDir = getWorkflowTechniquesDir(indexCorpus(workflowDir), workflowId);
 
   return ok({
     technique: await composeLoaded(base.value.technique, pathSegments, techniquesDir),

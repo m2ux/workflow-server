@@ -6,7 +6,7 @@ import { TechniqueNotFoundError } from '../errors.js';
 import { logWarn } from '../logging.js';
 import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
-import { workflowSubdir } from './corpus-index.js';
+import { type CorpusSource, workflowSubdir } from './corpus-index.js';
 
 /**
  * Markdown technique loader.
@@ -214,22 +214,31 @@ function bodyAsList(body: string): string[] {
 }
 
 /**
- * Rewrite technique-relative resource hyperlinks into get_resource-callable refs.
+ * Rewrite resource hyperlinks into get_resource-callable refs.
  *
- * Authoring uses normal markdown links so the raw file resolves in editors/GitHub:
+ * Authoring uses markdown links so the raw file resolves in editors:
  *   [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log)
- *   [x](../../prism/resources/lens.md#section)         (cross-workflow)
+ *   [x](../../prism/resources/lens.md#section)         (directory-counting, intra- or cross-workflow)
+ *   [x](/prism/resources/lens.md#section)              (workflow-anchored)
  * The agent-facing projection needs the id form get_resource accepts
  * (`<id>[#section]` or `<workflow>/<id>[#section]`), mirroring how `technique::operation`
  * refs surface in the protocol. Only links whose path is under a `resources/` segment are
  * rewritten; technique links (`./<group>/TECHNIQUE.md`, `<op>.md`) are left untouched.
  */
 function rewriteResourceLinks(text: string): string {
-  return text.replace(
-    /\[([^\]]+)\]\((?:\.\.?\/)+(?:([A-Za-z0-9_-]+)\/)?resources\/([A-Za-z0-9_-]+)\.md(#[A-Za-z0-9_-]+)?\)/g,
-    (_full, label: string, workflow: string | undefined, id: string, anchor: string | undefined) =>
-      `[${label}](${workflow ? `${workflow}/` : ''}${id}${anchor ?? ''})`,
-  );
+  const toRef = (label: string, workflow: string | undefined, id: string, anchor: string | undefined): string =>
+    `[${label}](${workflow ? `${workflow}/` : ''}${id}${anchor ?? ''})`;
+  return text
+    .replace(
+      /\[([^\]]+)\]\((?:\.\.?\/)+(?:([A-Za-z0-9_-]+)\/)?resources\/([A-Za-z0-9_-]+)\.md(#[A-Za-z0-9_-]+)?\)/g,
+      (_full, label: string, workflow: string | undefined, id: string, anchor: string | undefined) =>
+        toRef(label, workflow, id, anchor),
+    )
+    .replace(
+      /\[([^\]]+)\]\(\/([A-Za-z0-9_-]+)\/resources\/([A-Za-z0-9_-]+)\.md(#[A-Za-z0-9_-]+)?\)/g,
+      (_full, label: string, workflow: string, id: string, anchor: string | undefined) =>
+        toRef(label, workflow, id, anchor),
+    );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -536,6 +545,6 @@ export async function tryLoadNestedTechnique(techniquesDir: string | null, group
  * Hides the `techniques` path segment so callers in technique-loader.ts pass a workflowDir +
  * workflowId pair and stay out of the corpus layout.
  */
-export function getWorkflowTechniquesDir(workflowDir: string, workflowId: string): string | null {
-  return workflowSubdir(workflowDir, workflowId, 'techniques');
+export function getWorkflowTechniquesDir(source: CorpusSource, workflowId: string): string | null {
+  return workflowSubdir(source, workflowId, 'techniques');
 }

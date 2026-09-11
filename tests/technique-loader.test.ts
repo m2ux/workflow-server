@@ -369,6 +369,8 @@ describe('technique-loader', () => {
           'The running [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log) of items',
           '', '### lens', '',
           'A [lens](../../prism/resources/portfolio.md#scoring) cross-workflow ref',
+          '', '### anchored', '',
+          'An [anchored](/prism/resources/portfolio.md#scoring) workflow-anchored ref',
           '', '## Protocol', '',
           '1. Use [grp](./grp/TECHNIQUE.md)::[op](./grp/op.md), then read [guide](../resources/guide.md)',
           '',
@@ -382,8 +384,10 @@ describe('technique-loader', () => {
         // resource links: path + .md stripped, anchor kept; cross-workflow keeps the wf prefix
         expect(projected).toContain('[log](assumption-reconciliation#integration-with-assumptions-log)');
         expect(projected).toContain('[lens](prism/portfolio#scoring)');
+        expect(projected).toContain('[anchored](prism/portfolio#scoring)');
         expect(projected).toContain('[guide](guide)');
         expect(projected).not.toContain('../resources/');
+        expect(projected).not.toContain('/prism/resources/');
         // technique links are NOT rewritten
         expect(projected).toContain('[grp](./grp/TECHNIQUE.md)');
       }

@@ -30,7 +30,7 @@ import { type Workflow, branchKey, destinationTargets } from '../schema/workflow
 import type { ActivityVariables, VariableDefinition } from '../schema/variable.schema.js';
 import type { Condition } from '../schema/condition.schema.js';
 import { composeActivityTechnique } from '../loaders/technique-loader.js';
-import { workflowSubdir } from '../loaders/corpus-index.js';
+import { indexCorpus, workflowSubdir } from '../loaders/corpus-index.js';
 import { parseDefinition } from './serialization.js';
 import { IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from './binding-provenance.js';
 import { expressionPaths } from '../schema/when-expression.js';
@@ -596,7 +596,8 @@ export async function orchestratorInputs(workflowDir: string): Promise<Set<strin
   const cached = orchestratorInputsCache.get(workflowDir);
   if (cached) return cached;
   const names = new Set<string>();
-  const techniques = workflowSubdir(workflowDir, ORCHESTRATOR_WORKFLOW, 'techniques');
+  const index = indexCorpus(workflowDir);
+  const techniques = workflowSubdir(index, ORCHESTRATOR_WORKFLOW, 'techniques');
   const dir = techniques ? join(techniques, ORCHESTRATOR_GROUP) : null;
   if (!dir || !existsSync(dir)) return names;
   for (const entry of readdirSync(dir)) {
@@ -609,7 +610,7 @@ export async function orchestratorInputs(workflowDir: string): Promise<Set<strin
   }
   // The orchestrator is also an ordinary reader through its own activities: meta drives every
   // session, so a name its graph reads is consumed whichever workflow writes it.
-  const metaActivities = workflowSubdir(workflowDir, ORCHESTRATOR_WORKFLOW, 'activities');
+  const metaActivities = workflowSubdir(index, ORCHESTRATOR_WORKFLOW, 'activities');
   if (metaActivities && existsSync(metaActivities)) {
     for (const entry of readdirSync(metaActivities)) {
       if (!entry.endsWith('.yaml')) continue;
