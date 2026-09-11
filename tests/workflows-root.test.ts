@@ -4,16 +4,19 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import {
   assertScanned,
+  citePath,
+  ledgerPath,
   requireWorkflowsRoot,
   resolveWorkflowsRoot,
   resolveWorkflowsRootWithOrigin,
   UnreachableCorpusError,
-} from '../scripts/workflows-root.js';
+  walkArtifactPath,
+} from '../guards/workflows-root.js';
 
 /**
- * The guard scripts default to the repo's own ../workflows but must be redirectable to a
- * dedicated worktree so they validate the change under review, not the stale main copy
- * (issue #160 follow-up #1). Precedence: --root flag > WORKFLOWS_DIR env > default.
+ * The guard scripts default to `.worktrees/workflows` of the primary checkout and must
+ * be redirectable to another dest (`--root`, `WORKFLOWS_DIR`). Precedence: --root flag >
+ * WORKFLOWS_DIR env > default.
  */
 describe('resolveWorkflowsRoot', () => {
   const DEFAULT = '/repo/workflows';
@@ -87,7 +90,7 @@ describe('requireWorkflowsRoot', () => {
     expect(() => requireWorkflowsRoot('/d', [])).toThrow(/WORKFLOWS_DIR/);
   });
 
-  it('rejects an empty directory — the unprovisioned-submodule state', () => {
+  it('rejects an empty directory — the unprovisioned-worktree state', () => {
     const empty = mkdtempSync(join(tmpdir(), 'corpus-empty-'));
     expect(() => requireWorkflowsRoot(empty, [])).toThrow(/contains no workflow/);
   });
@@ -128,5 +131,48 @@ describe('assertScanned', () => {
 
   it('passes once the guard has inspected something', () => {
     expect(() => assertScanned(1, 'technique files', '/x')).not.toThrow();
+  });
+});
+
+describe('kind roots on a pointed corpus tree', () => {
+  it('places triage files under ledgers/ of the root the guard was pointed at', () => {
+    expect(ledgerPath('/tmp/wf', 'binding-fidelity-triage.json'))
+      .toBe(join('/tmp/wf', 'ledgers', 'binding-fidelity-triage.json'));
+  });
+
+  it('places walk artifacts under walks/ of the same root', () => {
+    expect(walkArtifactPath('/tmp/wf', 'option-coverage.json'))
+      .toBe(join('/tmp/wf', 'walks', 'option-coverage.json'));
+    expect(walkArtifactPath('/tmp/wf', 'corpus-sha.json'))
+      .toBe(join('/tmp/wf', 'walks', 'corpus-sha.json'));
+    expect(walkArtifactPath('/tmp/wf', 'snapshot.test.ts.snap'))
+      .toBe(join('/tmp/wf', 'walks', 'snapshot.test.ts.snap'));
+  });
+
+  it('reads a ledger written under ledgers/ of a temp tree, not beside the check program', () => {
+    const root = mkdtempSync(join(tmpdir(), 'kind-roots-'));
+    mkdirSync(join(root, 'ledgers'));
+    writeFileSync(join(root, 'ledgers', 'section-framing-triage.json'), '{"entries":[]}\n');
+    expect(ledgerPath(root, 'section-framing-triage.json')).toBe(join(root, 'ledgers', 'section-framing-triage.json'));
+  });
+});
+
+describe('citePath', () => {
+  it('names a nested product file by workflow id, not the grouping folder', () => {
+    const root = mkdtempSync(join(tmpdir(), 'cite-nested-'));
+    const dir = join(root, 'corpus', 'alpha', 'resources');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(root, 'corpus', 'alpha', 'workflow.yaml'), 'id: alpha\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(dir, 'guide.md'), '# g\n');
+    expect(citePath(root, join(dir, 'guide.md'))).toBe('alpha/resources/guide.md');
+  });
+
+  it('names a still-flat product file the same way', () => {
+    const root = mkdtempSync(join(tmpdir(), 'cite-flat-'));
+    const dir = join(root, 'alpha', 'resources');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(root, 'alpha', 'workflow.yaml'), 'id: alpha\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(dir, 'guide.md'), '# g\n');
+    expect(citePath(root, join(dir, 'guide.md'))).toBe('alpha/resources/guide.md');
   });
 });

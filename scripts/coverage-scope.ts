@@ -17,11 +17,11 @@
  * Anything else in the corpus — a technique, a resource — cannot move option coverage on its own and
  * scopes to nothing.
  *
- * What this cannot see, and the caller must decide: a change to the walker, the policies, or the
- * server changes how EVERY workflow walks, so it needs the full set. This reads a corpus diff and
- * nothing else.
+ * What this cannot see, and the caller must decide: a change to the walker or the policies
+ * changes how EVERY workflow walks, so it needs the full set. This reads a corpus diff and the
+ * walked ids the caller passes in `WF_WALKED`. A 100% rename is not a coverage change.
  *
- *   npx tsx scripts/coverage-scope.ts <base-corpus-ref> [head-corpus-ref] [--root <workflows-dir>]
+ *   WF_WALKED=id,id npx tsx scripts/coverage-scope.ts <base-corpus-ref> [head-corpus-ref] [--root <dir>]
  *
  * Prints one workflow id per line, or nothing when the change cannot move coverage.
  */
@@ -30,18 +30,40 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
+import { requireWorkflowsRoot, defaultCorpusDest } from '../guards/workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = join(DIR, '..', 'workflows');
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+
+/**
+ * Paths from `git diff --name-status` that can move option coverage.
+ *
+ * A 100% rename leaves every definition byte where the walk already measured it, so the new path
+ * is not a coverage change. A rename that also edits, or an add/modify/delete, is.
+ */
+export function pathsFromNameStatus(stdout: string): string[] {
+  const paths: string[] = [];
+  for (const line of stdout.split('\n')) {
+    if (!line) continue;
+    const [status, ...rest] = line.split('\t');
+    if (!status || rest.length === 0) continue;
+    if (status === 'R100') continue;
+    paths.push(rest[rest.length - 1]!);
+  }
+  return paths;
+}
 
 /** Corpus paths that changed between two refs, as the corpus's own git reports them. */
 export function changedCorpusPaths(root: string, base: string, head = 'HEAD'): string[] {
-  const diff = spawnSync('git', ['-C', root, 'diff', '--name-only', `${base}..${head}`], { encoding: 'utf-8' });
+  const diff = spawnSync(
+    'git',
+    ['-C', root, 'diff', '--name-status', '-M100', `${base}..${head}`],
+    { encoding: 'utf-8' },
+  );
   if (diff.status !== 0) {
     throw new Error(`cannot diff corpus ${base}..${head}: ${diff.stderr.trim() || 'git failed'}`);
   }
-  return diff.stdout.split('\n').map((l) => l.trim()).filter(Boolean);
+  return pathsFromNameStatus(diff.stdout);
 }
 
 /** The activity ids an activity file path could hold, keyed by the workflow that authored it. */
@@ -112,9 +134,9 @@ export async function coverageScope(
   return [...scope].sort();
 }
 
-/** The walked set, read from the test that owns it rather than restated here. */
-export function walkedWorkflows(root: string): string[] {
-  return corpusWorkflows(root).map(({ id }) => id).sort();
+/** Comma-separated workflow ids, as the coverage walk and this CLI take them. */
+export function parseWorkflowIds(raw: string | undefined): string[] {
+  return (raw ?? '').split(',').map((s) => s.trim()).filter(Boolean);
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
@@ -122,12 +144,16 @@ if (isMain) {
   const positional = process.argv.slice(2).filter((a) => !a.startsWith('--'));
   const [base, head] = positional;
   if (!base) {
-    process.stderr.write('usage: coverage-scope <base-corpus-ref> [head-corpus-ref] [--root <dir>]\n');
+    process.stderr.write('usage: WF_WALKED=id,id coverage-scope <base-corpus-ref> [head-corpus-ref] [--root <dir>]\n');
+    process.exit(2);
+  }
+  const walked = parseWorkflowIds(process.env.WF_WALKED);
+  if (walked.length === 0) {
+    process.stderr.write('WF_WALKED is empty — pass the walked ids the corpus roster names\n');
     process.exit(2);
   }
   const root = requireWorkflowsRoot(DEFAULT_ROOT);
-  const { WALKED } = await import('../tests/e2e/walked-workflows.js');
-  const changed = classifyChange(changedCorpusPaths(root, base, head));
-  const scope = await coverageScope(root, changed, WALKED);
+  const paths = changedCorpusPaths(root, base, head);
+  const scope = await coverageScope(root, classifyChange(paths), walked);
   process.stdout.write(scope.join('\n') + (scope.length ? '\n' : ''));
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from 'yaml';
-import { lintDeclarations, lintDocument } from '../scripts/check-variable-model.js';
+import { lintDeclarations, lintDocument } from '../guards/check-variable-model.js';
 
 /**
  * Variable-model guard (B7, issue #166): the corpus stays coherent with the

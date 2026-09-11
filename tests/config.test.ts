@@ -519,9 +519,10 @@ describe('loadConfig — workflowDir', () => {
     restoreRepoEnv(envBefore);
   });
 
-  it('defaults workflowDir to ./workflows under the install root', () => {
+  it('defaults workflowDir to .worktrees/workflows of the primary checkout', async () => {
+    const { defaultCorpusDest } = await import('../src/corpus-dest.js');
     const config = loadConfig(['--workspace=/tmp/ws']);
-    expect(config.workflowDir).toBe(resolve(import.meta.dirname, '..', 'workflows'));
+    expect(config.workflowDir).toBe(defaultCorpusDest(resolve(import.meta.dirname, '..')));
   });
 
   it('accepts --workflow-dir=PATH', () => {

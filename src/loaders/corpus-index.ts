@@ -1,4 +1,4 @@
-import { type Dirent, existsSync, readdirSync, readFileSync } from 'node:fs';
+import { type Dirent, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { logWarn } from '../logging.js';
 import { parseDefinition } from '../utils/serialization.js';
@@ -17,6 +17,11 @@ import { parseDefinition } from '../utils/serialization.js';
  * corpus rather than to everything in it. It also stops at a directory that has a definition, so a
  * workflow owns everything beneath it and no workflow contains another.
  *
+ * When the pointed tree holds a `corpus/` grouping — a directory of that name that is not itself a
+ * workflow — the walk starts there and does not search sibling folders. A still-flat tree has no
+ * such grouping, so the pointed directory is the walk root. `specimens` under `corpus/` is skipped
+ * by name at any depth; a specimen workflow is reached by pointing the walk at `corpus/specimens/`.
+ *
  * The directory name and the `id` the definition declares are one identity. A directory whose file
  * names something else does not resolve, under either name, and `list_workflows` reports the pair.
  * Two directories of the same name are the same class of failure. Identity is applied when an id
@@ -32,6 +37,16 @@ import { parseDefinition } from '../utils/serialization.js';
 
 /** Directory names holding a workflow's own files, which the walk never enters and never searches. */
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
+
+/**
+ * Kind names the walk never enters as children. `specimens` is a grouping under `corpus/`.
+ * `ledgers`, `walks` and `docs` are skipped if they appear under a still-flat tree; a nested
+ * tree never searches them because the walk starts inside `corpus/`.
+ */
+const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'specimens', 'docs']);
+
+/** The product grouping under a nested corpus tree. Not itself a workflow. */
+const PRODUCT_GROUPING = 'corpus';
 
 /** Definition file extensions, in resolution priority. */
 const DEFINITION_EXTENSIONS = ['yaml', 'yml'] as const;
@@ -108,6 +123,24 @@ function definitionIn(dir: string): string | null {
   return null;
 }
 
+/**
+ * Where the walk of a pointed tree starts.
+ *
+ * A `corpus/` directory that holds products and carries no definition of its own is the product
+ * root; sibling folders of that grouping are not searched. A still-flat tree, or a workflow whose
+ * directory is named `corpus`, has no such grouping, so the pointed directory is the walk root.
+ */
+function productRoot(root: string): string {
+  const grouped = join(root, PRODUCT_GROUPING);
+  try {
+    if (!statSync(grouped).isDirectory()) return root;
+  } catch {
+    return root;
+  }
+  if (definitionIn(grouped)) return root;
+  return grouped;
+}
+
 /** The `id` a definition declares, or undefined where the file is unreadable or names no string id. */
 function declaredId(manifest: string): string | undefined {
   try {
@@ -147,7 +180,12 @@ export function indexCorpus(root: string): CorpusIndex {
     }
     for (const entry of entries) {
       // `isDirectory()` is false for a symlink, so the walk cannot cycle through one.
-      if (!entry.isDirectory() || entry.name.startsWith('.') || RESERVED_DIR_NAMES.has(entry.name)) continue;
+      if (
+        !entry.isDirectory()
+        || entry.name.startsWith('.')
+        || RESERVED_DIR_NAMES.has(entry.name)
+        || NON_PRODUCT_ROOTS.has(entry.name)
+      ) continue;
       const path = join(dir, entry.name);
       const manifest = definitionIn(path);
       if (manifest) {
@@ -159,7 +197,7 @@ export function indexCorpus(root: string): CorpusIndex {
       visit(path);
     }
   };
-  visit(root);
+  visit(productRoot(root));
 
   const workflows = new Map<string, WorkflowLocation>();
   const ambiguous: Array<{ id: string; dirs: string[] }> = [];

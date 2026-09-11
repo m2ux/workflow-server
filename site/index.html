@@ -142,7 +142,7 @@
     <figure class="diagram">
       <svg viewBox="0 0 960 300" role="img" aria-labelledby="layers-title layers-desc">
         <title id="layers-title">System layers</title>
-        <desc id="layers-desc">Agents reach the server through the MCP tool surface. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the workflows directory and the session state persisted under the engineering root.</desc>
+        <desc id="layers-desc">Agents reach the server through the MCP tool surface. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the pointed corpus and the session state persisted under the engineering root.</desc>
         <defs>
           <marker id="arrow-layers" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -159,7 +159,7 @@
           <text x="480" y="238" fill="var(--diagram-note)" font-size="13" font-weight="400">fidelity layers · technique bundles</text>
           <rect x="30" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
           <text x="130" y="225" fill="var(--diagram-label)">Workflow definitions</text>
-          <text x="130" y="245" fill="var(--diagram-note)" font-size="13" font-weight="400">workflows/ (read)</text>
+          <text x="130" y="245" fill="var(--diagram-note)" font-size="13" font-weight="400">pointed corpus (read)</text>
           <rect x="730" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
           <text x="830" y="220" fill="var(--diagram-label)">Session state</text>
           <text x="830" y="240" fill="var(--diagram-note)" font-size="12.5" font-weight="400">session.json + .session-token</text>

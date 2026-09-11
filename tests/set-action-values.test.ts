@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectFindings } from '../scripts/check-set-action-values.js';
+import { collectFindings } from '../guards/check-set-action-values.js';
 
 /**
  * A `set` action writes somewhere, and braces what it reads.

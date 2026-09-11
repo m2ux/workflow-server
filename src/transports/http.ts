@@ -79,8 +79,9 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
     res.status(200).json({ status: 'ok' });
   });
 
-  // Readiness: directories every tool call depends on resolve, and the session
-  // HMAC key directory is writable (start_session fails hard otherwise).
+  // Readiness: schemas and the workspace resolve, and the session HMAC key
+  // directory is writable (start_session fails hard otherwise). A workflow
+  // directory is optional: the listener serves without one.
   // `checks.workspaceDir` is the configured worktree / workspace root
   // (`--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` / `--repo`);
   // the JSON key stays `workspaceDir` for existing HTTP consumers.
@@ -89,7 +90,6 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
     const engineeringDir = config.engineeringDir ?? config.workspaceDir;
     const sessionKeyWritable = await probeSessionKeyWritable();
     const checks: Record<string, boolean> = {
-      workflowDir: existsSync(config.workflowDir),
       schemasDir: existsSync(config.schemasDir),
       workspaceDir: existsSync(config.workspaceDir),
       sessionKeyWritable,

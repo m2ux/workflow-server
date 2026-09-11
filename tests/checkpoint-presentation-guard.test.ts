@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collectFindings } from '../scripts/check-checkpoint-presentation.js';
-import { UnreachableCorpusError } from '../scripts/workflows-root.js';
+import { collectFindings } from '../guards/check-checkpoint-presentation.js';
+import { UnreachableCorpusError } from '../guards/workflows-root.js';
 
 /**
  * Checkpoint-presentation guard (#400 W1): when a gate is presented is stated in one home.

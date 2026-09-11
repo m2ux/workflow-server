@@ -7,15 +7,16 @@
  * (cross-activity resource repeat tax). Prints one JSON metrics object to stdout.
  *
  * By default, stdout also includes `vsReference`: relative deltas against the committed
- * baseline fixture (`scripts/fixtures/token-benchmark-baseline.json`). A compact
+ * baseline fixture (`tests/fixtures/token-benchmark-baseline.json`). A compact
  * scorecard is written to stderr.
  *
  * `--gate` is what the Verify workflow runs, at the 1% default. Re-recording it, and why the
- * fixture must name the corpus commit under review: docs/development.md § Token delivery benchmark.
+ * fixture must name the walk under review: docs/development.md § Token delivery benchmark.
  *
- * Usage (from a server checkout with `node_modules` and a `workflows/` worktree):
+ * Usage (from a server checkout with `node_modules`):
  *
- *   npm run bench:token -- --label=check --context-mode=fresh --gate
+ *   WORKFLOWS_DIR=tests/fixtures/token-bench npm run bench:token -- \
+ *     --workflow=delivery-fixture --label=check --context-mode=fresh --gate
  *   npm run bench:token -- --label=opt --context-mode=persistent
  *   WORKFLOWS_DIR=/path/to/workflows npm run bench:token -- \
  *     --label=rerecord --context-mode=fresh --no-compare --server-root=$PWD
@@ -33,7 +34,7 @@
  *   --max-regression-pct=<n>   Gate threshold in percent (default: 1)
  *
  * Env:
- *   WORKFLOWS_DIR   Corpus root for the harness (default: <server-root>/workflows)
+ *   WORKFLOWS_DIR   Corpus root for the harness (default: .worktrees/workflows of the primary checkout)
  *
  * A comparison is only valid when the run and the reference share a context mode
  * (#323 T4): a fresh-vs-persistent delta conflates a mode switch with a code
@@ -53,6 +54,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { extractResourceIds } from '../src/utils/resource-ref.js';
+import { defaultCorpusDest } from '../src/corpus-dest.js';
 
 type ContextMode = 'fresh' | 'persistent';
 
@@ -169,7 +171,7 @@ const HOT_RESOURCES = [
   'review-mode#review-type-selection',
 ] as const;
 
-const DEFAULT_REFERENCE = 'scripts/fixtures/token-benchmark-baseline.json';
+const DEFAULT_REFERENCE = 'tests/fixtures/token-benchmark-baseline.json';
 
 /** Default `--gate` threshold: total delivery chars may not regress by more than this percent. */
 const DEFAULT_MAX_REGRESSION_PCT = 1;
@@ -512,8 +514,8 @@ async function main(): Promise<void> {
       label,
       contextMode,
       agentId,
-      workflowsDir: process.env.WORKFLOWS_DIR ?? join(serverRoot, 'workflows'),
-      workflowsRev: resolveCorpusRev(process.env.WORKFLOWS_DIR ?? join(serverRoot, 'workflows')),
+      workflowsDir: process.env.WORKFLOWS_DIR ?? defaultCorpusDest(serverRoot),
+      workflowsRev: resolveCorpusRev(process.env.WORKFLOWS_DIR ?? defaultCorpusDest(serverRoot)),
       serverRoot,
       path: walkResult.path,
       finalStatus: walkResult.finalStatus,

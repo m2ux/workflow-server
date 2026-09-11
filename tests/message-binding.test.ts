@@ -5,7 +5,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { resolve } from 'node:path';
-import { collectFindings } from '../scripts/check-message-binding.js';
+import { collectFindings } from '../guards/check-message-binding.js';
 
 const FIXTURE = resolve(import.meta.dirname, 'fixtures/message-binding');
 

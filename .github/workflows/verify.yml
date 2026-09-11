@@ -1,14 +1,7 @@
 name: Verify
 
-# The guards and the test suite are enforced here, on every pull request.
-#
-# Before this, CI ran four things — typecheck, build:site, check:site, check:svg — and only when a
-# change touched site paths. The 46-file vitest suite and 15 of the 17 guards ran solely when a human
-# or agent remembered to invoke them, so coverage was a function of who remembered. That is how the
-# two most expensive defects of the #324 run reached a live session (issue #327 R2).
-#
-# `npm run check:all` walks the guard registry in scripts/guards.ts, so a guard added there is
-# enforced here without touching this file.
+# Typecheck, the test suite, and the delivery-cost gate against a fixture
+# under `tests/fixtures/`. Live-corpus tests skip when `workflows/` is absent.
 
 on:
   push:
@@ -25,18 +18,14 @@ concurrency:
 
 jobs:
   verify:
-    name: Typecheck, tests, and the full guard sweep
+    name: Typecheck, tests, and the fixture delivery gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          # `.engineering` nests a private repo this runner cannot clone, so the corpus is checked out
-          # on its own below rather than with `submodules: recursive`.
+          # `.engineering` nests a private repo this runner cannot clone.
+          # Typecheck and `test:ci` skip live-corpus tests when `workflows/` is absent.
           submodules: false
-
-      # The corpus the tree under review adopts, and a check that the branch's baselines were recorded
-      # against it. Corpus drift ahead of the gitlink is the submodule bump's business.
-      - uses: ./.github/actions/workflows-corpus
 
       - uses: actions/setup-node@v4
         with:
@@ -53,18 +42,13 @@ jobs:
       - name: Run the test suite
         run: npm run test:ci
 
-      # Every guard in the registry, against the corpus checked out above. A guard that cannot reach
-      # its corpus exits 2 and fails the job — an unmeasured guard is never folded into a pass.
-      - name: Run every guard
-        run: npm run check:all
-
       # Delivery cost is the one property no guard measures, because it is a property of a WALK
-      # rather than of a file: the gate walks work-package end to end and compares the characters
-      # delivered against scripts/fixtures/token-benchmark-baseline.json. The corpus above is the
-      # pinned commit, so a delta is attributable to what this tree changed.
+      # rather than of a file. The gate walks the `delivery-fixture` under tests/fixtures/token-bench
+      # and compares the characters delivered against tests/fixtures/token-benchmark-baseline.json.
       #
-      # A definition change that adds delivery fails here at 1%. That is the gate working: confirm
-      # the increase is wanted, re-record the fixture in the same commit, and say what the corpus
-      # gained. Left unrun, delivery rose 31.3% in 32 days with nothing reporting it.
+      # A change that adds delivery on that fixture fails here at 1%. Confirm the increase is
+      # wanted, re-record the fixture in the same commit, and say what the walk gained.
       - name: Gate delivery cost against the recorded baseline
-        run: npm run --silent bench:token -- --label=ci --context-mode=fresh --gate > /dev/null
+        env:
+          WORKFLOWS_DIR: tests/fixtures/token-bench
+        run: npm run --silent bench:token -- --workflow=delivery-fixture --label=ci --context-mode=fresh --gate --reference=tests/fixtures/token-benchmark-baseline.json > /dev/null

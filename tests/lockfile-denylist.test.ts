@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { loadDenylist, scanLockfile, type Lockfile } from '../scripts/check-lockfile-denylist.js';
+import { loadDenylist, scanLockfile, type Lockfile } from '../guards/check-lockfile-denylist.js';
 
 /**
  * This repo's tree holds none of the denylisted packages, so the guard's own run is a clean pass

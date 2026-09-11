@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { DEFAULT_RUN, measure } from '../../scripts/run-batch-benchmark.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
  * Batch duration smoke test (#407) — the assertion half of `npm run bench:batch`, whose header states
@@ -8,7 +9,7 @@ import { DEFAULT_RUN, measure } from '../../scripts/run-batch-benchmark.js';
  * Here so a regression that costs a batch its saving fails in CI rather than in a run profile weeks
  * later.
  */
-describe('batch duration smoke (#407)', () => {
+describe.skipIf(!liveCorpusRoot())('batch duration smoke (#407)', () => {
   it('quantifies what a batch saves over a fresh context per activity', async () => {
     const opts = { workflowId: 'work-package', activities: DEFAULT_RUN, contextTokens: 200_000, repeat: 1 };
     const perActivity = await measure('per-activity', opts);

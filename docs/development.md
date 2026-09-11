@@ -8,12 +8,12 @@ Node.js 18 or later, npm, and Git.
 
 ## Getting a working checkout
 
-The workflow definitions are a submodule of this repository, so cloning the server on its own leaves `workflows/` empty and every corpus guard with nothing to measure. Take both:
+The workflow definitions live on the `workflows` branch. Cloning the server on its own leaves `.worktrees/workflows` absent: `typecheck` and `test:ci` still pass (live-corpus tests skip), and every corpus guard has nothing to measure. Take both:
 
 ```bash
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
-git submodule update --init --recursive
+git worktree add .worktrees/workflows workflows
 npm install
 ```
 
@@ -46,9 +46,10 @@ The directories, and what each one owns:
 | `src/utils/` | Session storage and sealing under `session/`, plus delivery accounting, batching, validation and variable seeding |
 | `src/trace.ts` | The trace store and the encoding of trace tokens |
 | `schemas/` | JSON Schemas generated from the Zod sources, for editor tooling |
-| `scripts/` | Install and container helpers, schema generation, the corpus guards, and the benchmarks |
-| `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` |
-| `workflows/` | A worktree of the `workflows` branch: one directory per workflow at any depth, each with `workflow.yaml`, `activities/`, `techniques/` and `resources/` |
+| `scripts/` | Install and container helpers, schema generation, and the benchmarks |
+| `guards/` | Check programs, the guard registry, and corpus-root resolution. Overview: [`guards/README.md`](../guards/README.md). |
+| `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
+| `workflows/` | A worktree of the `workflows` branch. Product definitions live under `corpus/`; discovery walks that grouping and does not search sibling folders. Specimen workflows live under `corpus/specimens/` and are reached by pointing the walk there. A workflow's id is its directory name. Layout authoring lives at `workflows/docs/`. |
 | `docs/` | This documentation |
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
@@ -69,7 +70,7 @@ Other process config:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (`--workflow-dir` takes precedence) |
+| `WORKFLOW_DIR` | `.worktrees/workflows` of the primary checkout | Path to workflow directories (`--workflow-dir` takes precedence) |
 | `SCHEMAS_DIR` | `./schemas` | Path to JSON Schema files |
 | `SERVER_NAME` | `workflow-server` | Server name in health check |
 | `SERVER_VERSION` | `2.1.0` | Server version in health check |
@@ -83,7 +84,7 @@ Examples:
 
 ```bash
 # Legacy single-root (workspace == engineering for planning)
-node dist/index.js --workspace=~/work --workflow-dir=./workflows
+node dist/index.js --workspace=~/work --workflow-dir=.worktrees/workflows
 
 # Per-repo layout (after install.sh + checkout under HOST_PROJECTS_ROOT + deploy.sh)
 node dist/index.js --repo=m2ux/workflow-server --transport=http
@@ -118,7 +119,7 @@ Coverage needs `@vitest/coverage-v8`, which is not a dependency of this reposito
 
 The suite is large enough that naming its files here would go stale faster than it helps. `tests/` holds the unit and integration suites, `tests/e2e/` holds the end-to-end walks through the workflow corpus, and `npm test -- --run` prints the live inventory with the pass and fail counts.
 
-Two things about the suite are worth knowing before changing anything in it. Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too. And the end-to-end walks are snapshotted against a specific corpus commit, which is why a submodule bump and a re-baseline belong in the same change — see [Corpus-coupled baselines](#corpus-coupled-baselines) below.
+Two things about the suite are worth knowing before changing anything in it. Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too when a live corpus is present. Live-corpus tests skip when `workflows/` is missing. The end-to-end walks are snapshotted against a specific corpus commit under `walks/` of that tree, which is why a re-baseline and a stamp belong in the same change on the `workflows` branch — see [Corpus-coupled baselines](#corpus-coupled-baselines) below.
 
 ### Test infrastructure
 
@@ -137,9 +138,9 @@ Stdout is one JSON object with per-activity fresh/resume characters and the aggr
 [`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (the e2e `skip-optional` policy), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
 
 By default each run compares against the committed baseline in
-[`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json).
-The fixture records its own context mode, corpus revision and recording date, so read the
-provenance there rather than from this page. Stderr prints a
+[`tests/fixtures/token-benchmark-baseline.json`](../tests/fixtures/token-benchmark-baseline.json).
+Engine CI walks `delivery-fixture` under `tests/fixtures/token-bench`. The fixture records its own
+context mode and recording date, so read the provenance there rather than from this page. Stderr prints a
 compact scorecard; stdout JSON includes `vsReference` with absolute and percent deltas
 and a **deliveryCostIndex** (baseline = 100, lower is better — the sum of activity,
 workflow, resource and technique characters).
@@ -147,19 +148,18 @@ workflow, resource and technique characters).
 #### The gate runs on every pull request
 
 The [Verify](../.github/workflows/verify.yml) workflow runs `--gate` at the 1% default
-against the pinned corpus. No guard can measure this, because delivery cost is a
-property of a walk rather than of a file — so until the job existed, delivery rose
-31.3% in 32 days with nothing reporting it.
+against `delivery-fixture` under `tests/fixtures/token-bench`. No guard can measure this, because
+delivery cost is a property of a walk rather than of a file.
 
-**A definition change that adds delivery fails the gate, and that is the gate working.**
-Pricing corpus growth at merge is the point. When the increase is wanted:
+**A change that adds delivery on that fixture fails the gate, and that is the gate working.**
+When the increase is wanted:
 
 1. Confirm it — a new activity or a widened contract legitimately costs characters.
-2. Re-record the fixture from a `--no-compare` run on the same corpus commit, in the
+2. Re-record the fixture from a `--no-compare` run on the same walk, in the
    same commit as the change.
-3. Say in the fixture's `description` what the corpus gained for the characters.
+3. Say in the fixture's `description` what the walk gained for the characters.
 
-A fixture recorded against a different corpus makes ordinary authoring read as a
+A fixture recorded against a different workflow makes ordinary authoring read as a
 regression, which is how a gate stops being run at all.
 
 #### A persistent-only comparison is not a valid ship gate
@@ -179,11 +179,12 @@ measurement of the reference-delivery win, never the gate.
 
 ```bash
 # Fresh-mode ship gate (the required arm). Fails with exit 3 above the threshold.
-WORKFLOWS_DIR=/path/to/workflows npm run --silent bench:token -- \
-  --label=AFTER --context-mode=fresh --gate --max-regression-pct=1
+WORKFLOWS_DIR=tests/fixtures/token-bench npm run --silent bench:token -- \
+  --workflow=delivery-fixture --label=AFTER --context-mode=fresh --gate --max-regression-pct=1
 
-# Re-record the baseline (same corpus commit as the change that moved it)
-npm run --silent bench:token -- --label=baseline --context-mode=fresh --no-compare
+# Re-record the baseline (same walk as the change that moved it)
+WORKFLOWS_DIR=tests/fixtures/token-bench npm run --silent bench:token -- \
+  --workflow=delivery-fixture --label=baseline --context-mode=fresh --no-compare
 
 # Supplementary: the reference-delivery win. Banner-warned as cross-mode, not a gate.
 npm run --silent bench:token -- --label=opt --context-mode=persistent
@@ -192,8 +193,8 @@ npm run --silent bench:token -- --label=opt --context-mode=persistent
 npm run --silent bench:token -- --label=raw --context-mode=persistent --no-compare
 ```
 
-Pin `WORKFLOWS_DIR` to the corpus the fixture names (`workflowsRev`) for a gate run
-— a delta measured against a different corpus is not attributable to server code,
+Pin `WORKFLOWS_DIR` to the tree the fixture walked for a gate run
+— a delta measured against a different workflow is not attributable to server code,
 and the scorecard warns when the two disagree.
 
 Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference delivery](resource-resolution-model.md#reference-delivery) for the contract under test.
@@ -232,10 +233,11 @@ npm run check:all -- --only binding-fidelity,refs
 npm run check:all -- --root /path/to/worktree/workflows
 ```
 
-The set of guards is [`scripts/guards.ts`](../scripts/guards.ts). Adding an entry there enforces the
-guard in `check:all`, in `check:delta`, and in CI — nothing else needs editing. Each guard is still
+The set of guards is [`guards/guards.ts`](../guards/guards.ts). Adding an entry there enforces the
+guard in `check:all` and `check:delta`. Corpus CI (`verify-corpus.yml`) runs the sweep; engine CI
+does not. Each guard is still
 runnable on its own (`npm run check:binding`, `npm run check:refs`, …) and reports through one
-protocol ([`scripts/guard-protocol.ts`](../scripts/guard-protocol.ts)):
+protocol ([`guards/guard-protocol.ts`](../guards/guard-protocol.ts)):
 
 | Exit | Meaning |
 |------|---------|
@@ -255,11 +257,10 @@ npm run check:delta -- --base upstream/main
 npm run check:delta -- --only binding-fidelity --verbose
 ```
 
-`check:delta` resolves the merge-base, materialises it in a throwaway worktree with the `workflows`
-submodule pinned to the commit *that* tree recorded, runs the registry against both trees, and
-reports only the difference — including what your change fixed. Nothing is stored, so nothing drifts.
-Base results are cached under `.guard-cache/` keyed by (base commit, base corpus commit), so the
-doubled runtime is paid once per rebase.
+`check:delta` resolves the merge-base, materialises that engine tree in a throwaway worktree, and
+runs the registry against both engine trees pointed at the same `.worktrees/workflows` dest. Nothing is
+stored, so nothing drifts. Base results are cached under `.guard-cache/` keyed by (base commit,
+corpus HEAD), so the doubled runtime is paid once per rebase.
 
 Guards that speak `--json` give a precise per-finding delta; the rest are compared by exit code and
 by new output lines. That is the reason to move a guard onto the finding protocol when its output
@@ -268,7 +269,7 @@ starts mattering.
 ### Corpus debt
 
 `check:binding` reports the corpus's pre-existing binding debt, triaged once per finding in
-[`scripts/binding-fidelity-triage.json`](../scripts/binding-fidelity-triage.json):
+`ledgers/binding-fidelity-triage.json` of the pointed tree:
 
 | Verdict | Guard behaviour |
 |---------|-----------------|
@@ -278,7 +279,7 @@ starts mattering.
 
 A finding absent from the file is *untriaged* and reported; an entry matching nothing is *stale* and
 reported. There is no `--update-baseline`: a verdict is a human judgement, which is exactly what the
-retired baselines let a regenerate flag skip. `npx tsx scripts/check-binding-fidelity.ts
+retired baselines let a regenerate flag skip. `npx tsx guards/check-binding-fidelity.ts
 --emit-untriaged` prints the findings still needing one.
 
 A ledger is the exception, not the shape a new guard starts from. `check:activity-variables` has
@@ -286,12 +287,12 @@ none: each of its findings named a definition defect, and the corpus was fixed r
 classified.
 
 `check:review-mode` follows the same shape with a smaller list —
-`ACCEPTED_HEADLESS_AUTO_ADVANCE` in [`scripts/check-review-mode-gating.ts`](../scripts/check-review-mode-gating.ts),
+`ACCEPTED_HEADLESS_AUTO_ADVANCE` in [`guards/check-review-mode-gating.ts`](../guards/check-review-mode-gating.ts),
 one reason per accepted checkpoint.
 
 ### Running guards in a worktree
 
-A fresh worktree has an empty `workflows/` and no `node_modules`, so the guards and the suite cannot
+A fresh worktree has no `workflows/` checkout and no `node_modules`, so the guards and the suite cannot
 measure the edits that live there:
 
 ```bash
@@ -299,28 +300,25 @@ npm run worktree:provision            # this worktree
 npm run worktree:provision -- <path>  # another one
 ```
 
-It checks out the submodules the worktree records and makes `node_modules` resolvable. Idempotent.
+It adds a `workflows` worktree and makes `node_modules` resolvable. Idempotent.
 
 ### Enforcement
 
 [`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`,
-`npm run test:ci`, and `npm run check:all` on every pull request, against the corpus commit the tree
-under review adopts. That tree is the merge of the branch into its base, so the corpus is the base's
-whenever the base moved the submodule and the branch did not — and the branch's baselines were then
-recorded against a different one.
-[`.github/actions/workflows-corpus`](../.github/actions/workflows-corpus/action.yml) checks the two
-gitlinks agree before either job measures anything, so that case fails saying to merge and
-re-baseline rather than reporting corpus drift as a code regression.
+`npm run test:ci`, and the fixture delivery gate on every pull request. Live-corpus tests skip when
+`workflows/` is absent.
 Guards that also run as Vitest tests (`tests/binding-fidelity.test.ts`,
 `tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`, `tests/audience-guard.test.ts`,
-`tests/review-mode-gating.test.ts`, `tests/identifier-qualification.test.ts`) fail `npm test` too.
+`tests/review-mode-gating.test.ts`, `tests/identifier-qualification.test.ts`) fail `npm test` too
+when a live corpus is present.
 
 ### Corpus-coupled baselines
 
-The walk snapshots in `tests/e2e/__snapshots__/` describe a path through the corpus, so they are only
-meaningful against the corpus that produced them. `tests/e2e/__snapshots__/corpus-sha.json` records
+The walk snapshots under `walks/` of a corpus checkout describe a path through the definitions,
+so they are only meaningful against the corpus that produced them. `walks/corpus-sha.json` records
 that commit, and a mismatch fails with both SHAs named — so corpus drift reads as corpus drift rather
-than as six unrelated regressions. Bump it in the same commit that bumps the submodule:
+than as six unrelated regressions. Update the stamp in the same commit that re-baselines the walk,
+on the `workflows` branch:
 
 ```bash
 npm run test:ci -- -u      # re-baseline the walk
@@ -329,10 +327,10 @@ npm run baseline:stamp     # record the corpus commit it was baselined against
 
 The stamp is a file describing the provenance of sibling files, and a merge takes each file from
 whichever side last touched it. A branch that leaves both alone therefore inherits its base's stamp
-while keeping its own baselines, and the two agree with the base's corpus while describing another —
-which is what the gitlink check in CI is for.
+while keeping its own baselines, and the two agree with the base's corpus while describing another.
+Keep the stamp and the snapshots in the same commit.
 
-How little a corpus bump has to change to move a walk is worth knowing. Replacing `value: true` with
+How little a corpus edit has to change to move a walk is worth knowing. Replacing `value: true` with
 a description on the action that binds `gitnexus_indexed` left every gate expression in the corpus
 untouched and still retired `gitnexus-detect-changes-preflight` from all six walks, because the
 walker binds a `set` action only when it carries an explicit value (#479).
@@ -360,14 +358,14 @@ up, and the `--list` output names each one's folder, recorded version and curren
 
 ## The two branches
 
-Server code lives on `main`. The workflow definitions — the YAML, the techniques and the resources — live on `workflows`, an orphan branch with a history of its own, which the main tree carries as a submodule at `workflows/`.
+Server code lives on `main`. The workflow definitions — the YAML, the techniques and the resources — live on `workflows`, an orphan branch with a history of its own. Check that branch out with `git worktree add .worktrees/workflows workflows`.
 
 ### Working on the definitions
 
-The submodule is a checkout of that branch, so edit the definitions in place and commit them there:
+Edit the definitions in the worktree and commit them on that branch:
 
 ```bash
-git submodule update --init --recursive   # first time, and after a pull moves the pointer
+git worktree add .worktrees/workflows workflows   # first time
 cd workflows
 git pull origin workflows
 # edit definitions
@@ -376,44 +374,12 @@ git commit -m "Describe the definition change"
 git push origin workflows
 ```
 
-A definition change lands as two commits: one on the `workflows` branch, and one on `main` moving the submodule pointer to it. The guards and the end-to-end walks both read that pointer, so the two belong in the same pull request — [corpus-coupled baselines](#corpus-coupled-baselines) covers what happens when they separate.
+A definition change lands on the `workflows` branch. The guards and the end-to-end walks read that checkout — [corpus-coupled baselines](#corpus-coupled-baselines) covers what happens when the snapshots and the definitions separate.
 
-## Adding a workflow
+## Authoring definitions
 
-Create a directory named for the workflow's id with a `workflow.yaml` in it, anywhere under `workflows/`. Grouping folders carry no definition and exist to organise the corpus, so `workflows/group/kind/example/workflow.yaml` is the workflow `example` and is referenced by that name alone. Three folder names are reserved at every depth — `activities`, `resources` and `techniques` — and the search never enters them: they hold a workflow's own files rather than another workflow, so skipping them keeps discovery proportional to the shape of the corpus rather than to everything in it. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
-
-### Linking between definition files
-
-A link within a workflow is an ordinary relative path — the workflow moves as a unit, so the distance between two of its own files never changes.
-
-A link **out of** a workflow names the workflow it wants, anchored on the id and written from a leading slash: `[conduct](/shared/techniques/conduct.md)`. The leading segment resolves to wherever discovery found that workflow, so the link survives either end moving. Counting directories out of a workflow (`../../shared/techniques/…`) records the distance between two workflows, which is a fact about today's layout rather than about either of them — and that includes a link that climbs to the corpus root only to come back into its own workflow, whose `..` count is the workflow's own depth. `npx tsx scripts/check-corpus-links.ts` reports both forms; it runs by path rather than in the sweep until the corpus is rewritten to the anchored form.
-
-Check it before committing:
-
-```bash
-npx tsx scripts/validate-workflow-yaml.ts <path>
-npm run check:refs
-npm run check:binding
-```
-
-The first validates the definition against the schema. The other two confirm that every technique reference resolves and that no binding has drifted.
-
-## Adding a resource
-
-A resource is a slug-named markdown file under a workflow's `resources/` directory, and that slug is the id techniques refer to it by — the frontmatter `name:` matches it. Nothing registers it: the server discovers resources by reading the directory, so creating the file is the whole of the work. A technique in another workflow reaches it through the prefixed form `{workflow}/{slug}`.
-
-## Adding a technique
-
-A technique is a markdown file under a `techniques/` directory. Put it in the `meta` workflow when every workflow should have it, or in one workflow's own directory when only that workflow does — a workflow-local technique shadows a `meta` one of the same name. A technique may hold nested techniques in a folder of its own, and a nested technique is addressed by appending its slug to the parent's path. Like resources, techniques are discovered by reading the directory.
-
-### What a technique file contains
-
-- YAML frontmatter carrying the version.
-- **`## Capability`** — what the technique does.
-- **`## Inputs`** and **`## Outputs`**, both optional. Each `###` entry may carry `####` sub-sections for its components, plus the reserved `#### artifact`, naming the file an output persists to, and `#### default`, giving an input's default.
-- **`## Protocol`** — the ordered procedure, written either as `### N. Title` blocks or as a flat list, with failure handling inline in the step that gives rise to it.
-- **`## Rules`** — the constraints the technique enforces.
-
-### How a technique is addressed
-
-Techniques are addressed by `::`-delimited paths — `[workflow::]technique[::nested…]` — and a reference within a single workflow omits the workflow segment. The slash form `{workflow}/{technique}` normalises to the same thing. Resolution reads the workflow from the session, looks in that workflow's own directory first, and falls back to the shared `meta` layer. [Technique and resource resolution](resource-resolution-model.md) has the full rules.
+How to add a workflow, resource or technique, and how definition files link, live on the
+`workflows` branch under [`docs/`](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
+In a checkout that holds a `workflows` worktree they are at `workflows/docs/`. The technique file contract
+and the schema the server loads stay in this tree: [`technique-protocol-specification.md`](technique-protocol-specification.md),
+[`schemas/README.md`](../schemas/README.md).

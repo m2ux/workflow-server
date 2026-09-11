@@ -12,9 +12,11 @@
 # start.sh loads $INSTALL/env automatically (or the env next to this script).
 # CLI path flags remain as one-off overrides only.
 #
-# Before booting, start.sh refreshes $INSTALL/workflows via update-workflows.sh.
-# That step is best-effort: offline or dirty checkouts warn and the server
-# starts on the definitions already on disk. Skip with --no-update-workflows.
+# Before booting, start.sh refreshes the corpus at HOST_WORKFLOWS_DIR via
+# update-workflows.sh (branch from WORKFLOW_SERVER_WORKFLOWS_BRANCH, default
+# workflows). That step is best-effort: offline or dirty checkouts warn and
+# the server starts on the definitions already on disk. Skip with
+# --no-update-workflows.
 #
 # Needs: docker (public image: ghcr.io/m2ux/workflow-server)
 set -euo pipefail
@@ -81,6 +83,7 @@ INSTALL_DIR_SET=0
 # WORKFLOW_SERVER_CONTAINER_NAME
 # Optional overrides: HOST_WORKFLOWS_DIR, HOST_SCHEMAS_DIR, WORKFLOW_SERVER_INSTALL_DIR
 # Optional overrides: WORKFLOW_WORKSPACE, WORKFLOW_DIR, SCHEMAS_DIR, WORKFLOW_SERVER_ENGINEERING_DIR
+# Optional overrides: WORKFLOW_SERVER_WORKFLOWS_BRANCH, WORKFLOW_SERVER_REPO_URL
 HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
 HOST_PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
 HOST_WORKFLOWS_DIR="${HOST_WORKFLOWS_DIR:-${WORKFLOW_DIR:-}}"
@@ -140,10 +143,10 @@ FEATURE WORKTREES
   Nested only: \$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/
 
 OPTIONS (optional overrides — prefer re-running install to change paths)
-  --install-dir=PATH        Install root (workflows under \$INSTALL/workflows)
+  --install-dir=PATH        Install root (corpus default: \$INSTALL/workflows)
   --projects-root=PATH      One-off host projects root (RW; covers nested .worktrees)
   --worktree-root=PATH      Optional separate feature-tree root (RW)
-  --workflows-dir=PATH      One-off host workflows directory (RO)
+  --workflows-dir=PATH      One-off host corpus directory (RO)
   --schemas-dir=PATH        Host schemas directory (RO); optional
   --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
   --tag=TAG                 Tag for default repo (default: ${DEFAULT_TAG})
@@ -232,13 +235,15 @@ update_workflows() {
     return 0
   fi
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    printf '+ bash %q --install-dir=%q --workflows-dir=%q --no-restart-hint\n' \
-      "$script" "$INSTALL_DIR" "$HOST_WORKFLOWS_DIR"
+    printf '+ bash %q --install-dir=%q --workflows-dir=%q --branch=%q --no-restart-hint\n' \
+      "$script" "$INSTALL_DIR" "$HOST_WORKFLOWS_DIR" \
+      "${WORKFLOW_SERVER_WORKFLOWS_BRANCH:-workflows}"
     return 0
   fi
   if ! bash "$script" \
     --install-dir="$INSTALL_DIR" \
     --workflows-dir="$HOST_WORKFLOWS_DIR" \
+    --branch="${WORKFLOW_SERVER_WORKFLOWS_BRANCH:-workflows}" \
     --no-restart-hint
   then
     echo "warning: workflows refresh failed; starting with the definitions already in ${HOST_WORKFLOWS_DIR}" >&2
@@ -385,14 +390,14 @@ else
 fi
 
 if [[ ! -d "$HOST_WORKFLOWS_DIR" ]]; then
-  die "workflows directory not found: ${HOST_WORKFLOWS_DIR}
+  die "corpus directory not found: ${HOST_WORKFLOWS_DIR}
 
-Clone the workflows orphan branch into the install dir, for example:
-  git clone -b workflows --single-branch \\
-    https://github.com/m2ux/workflow-server.git \\
-    ${INSTALL_DIR}/workflows
+Place a corpus checkout there, for example:
+  git clone -b ${WORKFLOW_SERVER_WORKFLOWS_BRANCH:-workflows} --single-branch \\
+    ${WORKFLOW_SERVER_REPO_URL:-https://github.com/m2ux/workflow-server.git} \\
+    ${HOST_WORKFLOWS_DIR}
 
-Or run install.sh / pass --workflows-dir=PATH / --install-dir=PATH."
+Or run install.sh --corpus-branch=NAME --repo-url=URL / pass --workflows-dir=PATH."
 fi
 
 HOST_WORKTREE_ROOT="$(abs_dir "$HOST_WORKTREE_ROOT")"

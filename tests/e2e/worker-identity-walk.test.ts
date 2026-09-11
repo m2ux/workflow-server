@@ -7,6 +7,7 @@ import { createHarness, type Harness } from './harness.js';
 import { walk } from './walker.js';
 import { fullWorkflowPolicy } from './policies.js';
 import type { HistoryEntry } from '../../src/schema/state.schema.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
  * Worker identity across a whole reference walk (#408).
@@ -19,7 +20,7 @@ import type { HistoryEntry } from '../../src/schema/state.schema.js';
  * re-requests the activity after each one — so identity reuse is measured over many crossings
  * rather than asserted once.
  */
-describe('worker identity survives every gate of a reference walk (#408)', () => {
+describe.skipIf(!liveCorpusRoot())('worker identity survives every gate of a reference walk (#408)', () => {
   let h: Harness;
   let workspaceDir: string;
 

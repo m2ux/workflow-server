@@ -1,0 +1,36 @@
+{
+  "workflowId": "delivery-fixture",
+  "label": "baseline",
+  "description": "Linear two-activity walk under tests/fixtures/token-bench. Engine CI gates delivery against this fixture; a work-package character-count belongs on the corpus tree under walks/.",
+  "contextMode": "fresh",
+  "agentId": "bench-solo",
+  "path": ["start", "finish"],
+  "finalStatus": "completed",
+  "toolCalls": {
+    "start_session": 1,
+    "get_workflow": 1,
+    "next_activity": 3,
+    "get_activity": 2,
+    "get_resource": 14
+  },
+  "chars": {
+    "start_session": 445,
+    "get_workflow": 1222,
+    "next_activity": 232,
+    "get_activity": 2142,
+    "get_resource": 864
+  },
+  "history": {
+    "technique_bundled": 0,
+    "technique_fetched": 0,
+    "resource_fetched": 0
+  },
+  "deliveredContentKeys": 0,
+  "resourceLedgerKeys": 0,
+  "unchangedResourceAnswers": 0,
+  "unchangedTechniqueAnswers": 0,
+  "getActivityChars": 2142,
+  "getWorkflowChars": 1222,
+  "getResourceChars": 864,
+  "getTechniqueChars": 0
+}

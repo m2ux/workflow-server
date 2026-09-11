@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { checkSession, relayGaps } from '../scripts/check-session-contract.js';
+import { checkSession, relayGaps } from '../guards/check-session-contract.js';
 
 /**
  * A run against the contracts its definitions declare (#493).

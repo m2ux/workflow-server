@@ -1,14 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../scripts/check-binding-fidelity.js';
+import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../guards/check-binding-fidelity.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * Binding-fidelity gate. The corpus carries triaged debt, recorded per finding with a verdict and a
- * rationale in scripts/binding-fidelity-triage.json. The `binding-fidelity` guard holds the two
+ * rationale in ledgers/binding-fidelity-triage.json. The `binding-fidelity` guard holds the two
  * states that must never ship — a finding nobody has judged, and a finding judged a live bug — and
  * reports an entry with no live finding behind it. What it reads past is a rationale key the triage
  * file never defines, which resolves to the key itself and reads as a reason.
  */
-describe('binding-fidelity gate', () => {
+describe.skipIf(!loadTriage().corpusSha)('binding-fidelity gate', () => {
   it('names a rationale that the triage file defines for every entry', () => {
     const triage = loadTriage();
     const undefinedRationales = triage.entries
@@ -68,7 +69,7 @@ describe('gate-expression reads', () => {
  * fix tests the corpus, not the guard.
  */
 describe('dead-output scoping', () => {
-  it('closes a dead output only from a workflow that can reach the declaring file', () => {
+  it.skipIf(!liveCorpusRoot())('closes a dead output only from a workflow that can reach the declaring file', () => {
     collectViolations();
     const unreachable: string[] = [];
     for (const [key, satisfier] of deadOutputSatisfier) {

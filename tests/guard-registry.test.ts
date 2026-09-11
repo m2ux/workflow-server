@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { CORPUS_GUARDS, GUARDS, guardById } from '../scripts/guards.js';
-import { findingKey, sortFindings, wantsJson } from '../scripts/guard-protocol.js';
+import { CORPUS_GUARDS, GUARDS, guardById } from '../guards/guards.js';
+import { findingKey, sortFindings, wantsJson } from '../guards/guard-protocol.js';
 
 const REPO = resolve(import.meta.dirname, '..');
 
@@ -48,12 +48,22 @@ describe('guard registry', () => {
       .toEqual(['lockfile-denylist', 'site-links', 'source-encoding', 'svg-layout']);
   });
 
-  /** No test re-runs a guard against the live corpus; the sweep in this job is what holds it at zero. */
-  it('is swept by the same CI job that runs the suite', () => {
+  /**
+   * Engine CI measures this tree: typecheck, the suite, and the fixture delivery gate.
+   */
+  it('the engine job runs typecheck, the suite, and the fixture gate', () => {
     const verify = readFileSync(join(REPO, '.github/workflows/verify.yml'), 'utf-8');
-    expect(verify, 'the guard sweep left the verify job — the corpus is now held at zero by nothing')
-      .toContain('npm run check:all');
-    expect(verify, 'the suite left the verify job').toContain('npm run test:ci');
+    expect(verify).toContain('npm run typecheck');
+    expect(verify).toContain('npm run test:ci');
+    expect(verify).toContain('bench:token');
+  });
+
+  it('lists the engine workflow files', () => {
+    expect(readdirSync(join(REPO, '.github/workflows')).sort()).toEqual([
+      'deploy-docs.yml',
+      'docker-publish.yml',
+      'verify.yml',
+    ]);
   });
 
   it('covers every check:* script in package.json', () => {
@@ -75,24 +85,24 @@ describe('guard registry', () => {
    */
   it('registers every guard script on disk, or records why one runs outside the sweep', () => {
     const outsideTheSweep: Record<string, string> = {
-      'scripts/check-all.ts': 'the runner that walks the registry',
-      'scripts/check-delta.ts': 'the runner that diffs a walk against the merge-base',
-      'scripts/check-session-contract.ts':
+      'guards/check-all.ts': 'the runner that walks the registry',
+      'guards/check-delta.ts': 'the runner that diffs a walk against the merge-base',
+      'guards/check-session-contract.ts':
         'asks whether a run stayed inside its contracts, so it needs a session and has no corpus-wide form',
-      'scripts/check-corpus-links.ts':
+      'guards/check-corpus-links.ts':
         'reads the corpus and holds at 522 findings, every one a link written before a workflow could '
         + 'be organised into a folder and an absolute form existed to name one; enrolling it enforces '
         + 'on definitions written against the old layout, so it runs by path until the corpus is '
         + 'rewritten to the anchored form',
-      'scripts/check-message-binding.ts':
+      'guards/check-message-binding.ts':
         'reads the corpus and holds at 107 findings the engine could not have avoided until '
         + 'yield_checkpoint could publish a gate activity\'s own outputs; enrolling it enforces on '
         + 'definitions written before the remedy existed, so it runs by path until those are triaged',
     };
 
-    const onDisk = readdirSync(join(REPO, 'scripts'))
+    const onDisk = readdirSync(join(REPO, 'guards'))
       .filter((name) => /^(check|validate)-.*\.ts$/.test(name))
-      .map((name) => `scripts/${name}`);
+      .map((name) => `guards/${name}`);
 
     const registered = new Set(GUARDS.map((g) => g.script));
     const unaccounted = onDisk

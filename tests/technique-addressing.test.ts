@@ -1,16 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import { resolve } from 'node:path';
 import { resolveTechniques } from '../src/loaders/technique-loader.js';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * Technique addressing: the `::` path form `[workflow::]technique[::sub]`.
  * Same-workflow refs are implicit (parent workflow filled in via currentWorkflow);
  * the full canonical path is also available; cross-workflow uses an explicit prefix.
  */
-const WF_DIR = corpusRoot();
+const LIVE_CORPUS = liveCorpusRoot();
+const WF_DIR = LIVE_CORPUS ?? '';
 
-describe('technique addressing (:: path)', () => {
+describe.skipIf(!LIVE_CORPUS)('technique addressing (:: path)', () => {
   it('resolves an implicit same-workflow sub-technique', async () => {
     const [r] = await resolveTechniques(['cargo-operations::run-suite'], WF_DIR, 'work-package');
     expect(r.type).toBe('technique');

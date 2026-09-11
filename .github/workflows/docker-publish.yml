@@ -26,8 +26,8 @@ jobs:
 
     steps:
       - name: Checkout repository
-        # No submodules: .engineering nests a private ai-metadata repo that CI
-        # cannot clone, and the Docker image only needs src/schemas/package files.
+        # `.engineering` nests a private repo this runner cannot clone. The image
+        # copies src, schemas, and package files. HTTP smoke reads the fixture corpus.
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           submodules: false
@@ -50,6 +50,7 @@ jobs:
       - name: Test stdio transport
         env:
           WORKTREE_ROOT: ${{ github.workspace }}
+          WORKFLOW_DIR: ${{ github.workspace }}/tests/fixtures/token-bench
         run: |
           timeout 5s node dist/index.js --transport=stdio || EXIT=$?
           # 0 = clean exit on stdin EOF; 124 = timeout killed a waiting server.
@@ -61,6 +62,7 @@ jobs:
       - name: Test HTTP transport
         env:
           WORKTREE_ROOT: ${{ github.workspace }}
+          WORKFLOW_DIR: ${{ github.workspace }}/tests/fixtures/token-bench
         run: |
           node dist/index.js --transport=http &
           SERVER_PID=$!

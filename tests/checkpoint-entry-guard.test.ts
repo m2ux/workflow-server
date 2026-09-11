@@ -3,8 +3,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectFindings } from '../scripts/check-checkpoint-entry.js';
-import { UnreachableCorpusError } from '../scripts/workflows-root.js';
+import { collectFindings } from '../guards/check-checkpoint-entry.js';
+import { UnreachableCorpusError } from '../guards/workflows-root.js';
 
 /**
  * Checkpoint-at-entry guard (#353 §1.4): no activity opens with a checkpoint.

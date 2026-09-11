@@ -1,7 +1,8 @@
 # Dependencies
 node_modules/
 
-# Nested feature worktrees (per-checkout parent; not $INSTALL/worktrees)
+# Nested worktrees (per-checkout parent; not $INSTALL/worktrees). The
+# `workflows` branch dest is `.worktrees/workflows`.
 .worktrees/
 
 # Build output

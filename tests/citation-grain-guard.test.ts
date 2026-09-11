@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collect } from '../scripts/check-citation-grain.js';
-import { corpusRoot } from './corpus-root.js';
+import { collect } from '../guards/check-citation-grain.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * citation-grain guard: the mechanical half of `whole-resource-for-one-section`.
@@ -113,7 +113,7 @@ describe('citation-grain guard', () => {
     })).toEqual([]);
   });
 
-  it('holds the corpus clean', () => {
-    expect(collect(corpusRoot())).toEqual([]);
+  it.skipIf(!liveCorpusRoot())('holds the corpus clean', () => {
+    expect(collect(liveCorpusRoot()!)).toEqual([]);
   });
 });

@@ -14,9 +14,10 @@ import {
   safeValidateTechnique,
 } from '../src/schema/technique.schema.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
-const WORKFLOW_DIR = corpusRoot();
+const LIVE_CORPUS = liveCorpusRoot();
+const WORKFLOW_DIR = LIVE_CORPUS ?? '';
 
 describe('schema-validation', () => {
   describe('ConditionSchema', () => {
@@ -376,7 +377,7 @@ describe('schema-validation', () => {
     });
   });
 
-  describe('loader schema integration', () => {
+  describe.skipIf(!LIVE_CORPUS)('loader schema integration', () => {
     // `WorkflowSchema.activities` is an array of ActivitySchema, so validating the composed object
     // validates every activity the loader resolved into it.
     // ponytail: rests on that nesting, assert the activities separately if the field loosens

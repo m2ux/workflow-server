@@ -108,6 +108,65 @@ describe('corpus discovery', () => {
     expect(workflowIdFromCorpusPath('LICENSE')).toBeNull();
   });
 
+  it('lists every workflow in a still-flat tree that has no named kind roots', () => {
+    const flat = mkdtempSync(join(tmpdir(), 'corpus-flat-'));
+    for (const id of ['alpha', 'beta', 'fan-conformance']) {
+      const dir = join(flat, id);
+      mkdirSync(dir);
+      writeFileSync(join(dir, 'workflow.yaml'), `id: ${id}\nversion: 1.0.0\ntitle: t\n`);
+    }
+    expect([...indexCorpus(flat).workflows.keys()]).toEqual(['alpha', 'beta', 'fan-conformance']);
+    rmSync(flat, { recursive: true, force: true });
+  });
+
+  it('lists a still-flat workflow whose directory is named corpus', () => {
+    const flat = mkdtempSync(join(tmpdir(), 'corpus-named-'));
+    const dir = join(flat, 'corpus');
+    mkdirSync(dir);
+    writeFileSync(join(dir, 'workflow.yaml'), 'id: corpus\nversion: 1.0.0\ntitle: t\n');
+    expect([...indexCorpus(flat).workflows.keys()]).toEqual(['corpus']);
+    expect(indexCorpus(flat).workflows.get('corpus')?.dir).toBe(dir);
+    rmSync(flat, { recursive: true, force: true });
+  });
+
+  it('walks corpus/ when that grouping exists, and does not search sibling folders', () => {
+    const nested = mkdtempSync(join(tmpdir(), 'corpus-nested-'));
+    const product = join(nested, 'corpus', 'work-package');
+    const specimen = join(nested, 'corpus', 'specimens', 'fan-conformance');
+    const docsExample = join(nested, 'docs', 'example');
+    const decoy = join(nested, 'notes', 'decoy');
+    mkdirSync(product, { recursive: true });
+    mkdirSync(specimen, { recursive: true });
+    mkdirSync(docsExample, { recursive: true });
+    mkdirSync(decoy, { recursive: true });
+    mkdirSync(join(nested, 'ledgers'), { recursive: true });
+    mkdirSync(join(nested, 'walks'), { recursive: true });
+    writeFileSync(join(product, 'workflow.yaml'), 'id: work-package\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(specimen, 'workflow.yaml'), 'id: fan-conformance\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(docsExample, 'workflow.yaml'), 'id: example\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(decoy, 'workflow.yaml'), 'id: decoy\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(nested, 'ledgers', 'binding-fidelity-triage.json'), '{}\n');
+    const index = indexCorpus(nested);
+    expect([...index.workflows.keys()]).toEqual(['work-package']);
+    expect(index.workflows.get('work-package')?.dir).toBe(product);
+    expect(index.workflows.has('fan-conformance')).toBe(false);
+    expect(index.workflows.has('example')).toBe(false);
+    expect(index.workflows.has('decoy')).toBe(false);
+    expect([...indexCorpus(join(nested, 'corpus')).workflows.keys()]).toEqual(['work-package']);
+    rmSync(nested, { recursive: true, force: true });
+  });
+
+  it('finds a specimen workflow when the walk is pointed at corpus/specimens/', () => {
+    const nested = mkdtempSync(join(tmpdir(), 'corpus-specimens-'));
+    const specimen = join(nested, 'corpus', 'specimens', 'fan-conformance');
+    mkdirSync(specimen, { recursive: true });
+    writeFileSync(join(specimen, 'workflow.yaml'), 'id: fan-conformance\nversion: 1.0.0\ntitle: t\n');
+    const index = indexCorpus(join(nested, 'corpus', 'specimens'));
+    expect([...index.workflows.keys()]).toEqual(['fan-conformance']);
+    expect(index.workflows.get('fan-conformance')?.dir).toBe(specimen);
+    rmSync(nested, { recursive: true, force: true });
+  });
+
   it('resolves an id claimed by two directories to neither, and reports the claimants', () => {
     const contested = mkdtempSync(join(tmpdir(), 'corpus-contested-'));
     for (const group of ['left', 'right']) {

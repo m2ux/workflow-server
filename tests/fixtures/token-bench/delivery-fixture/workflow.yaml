@@ -1,0 +1,10 @@
+id: delivery-fixture
+version: 1.0.0
+title: Delivery Fixture
+description: Linear two-activity walk for the engine delivery-cost gate.
+initialActivity: start
+graph:
+  start:
+    done: finish
+  finish:
+    done: __terminal__

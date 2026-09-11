@@ -9,8 +9,12 @@ Transport-specific steps for running the **GHCR image** over HTTP.
 
 ## 1. Install
 
-Fetches helper scripts, clones the `workflows` branch, ensures a projects root
-(default `~/projects/dev`), creates `state/` (HMAC key), writes `$INSTALL/env`:
+Fetches helper scripts, places a corpus checkout (default: the `workflows`
+branch at `$INSTALL/workflows`), ensures a projects root (default `~/projects/dev`),
+creates `state/` (HMAC key), writes `$INSTALL/env`. `--corpus-branch`,
+`--repo-url` / `--corpus-url`, and `--workflows-dir` / `--corpus-dir` select
+the corpus; those values are recorded in `env` for `start.sh` and
+`update-workflows.sh`:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash

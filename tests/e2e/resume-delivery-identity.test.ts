@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHarness, type Harness, parseToolResponse, rawText, isError } from './harness.js';
 import type { HistoryEntry } from '../../src/schema/state.schema.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
  * Delivery identity across a gate (#408).
@@ -13,7 +14,7 @@ import type { HistoryEntry } from '../../src/schema/state.schema.js';
  * second time. The walk covers the full yield → respond → resume → re-request sequence over the
  * real server, because the earlier per-call tests could not see what a gate does to the scope.
  */
-describe('delivery identity survives a gate (#408)', () => {
+describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', () => {
   let h: Harness;
   beforeAll(async () => { h = await createHarness(); });
   afterAll(async () => { await h.close(); });

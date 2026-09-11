@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { classifyChange, coverageScope } from '../scripts/coverage-scope.js';
+import { classifyChange, coverageScope, parseWorkflowIds, pathsFromNameStatus } from '../scripts/coverage-scope.js';
 
 /**
  * Which workflows a coverage walk has to cover for a given corpus change.
@@ -35,10 +35,39 @@ describe('coverage scope', () => {
       expect([...c.activityFiles]).toEqual([]);
     });
 
+    it('takes a product workflow under corpus/ as the workflow id', () => {
+      const c = classifyChange(['corpus/work-package/workflow.yaml']);
+      expect([...c.workflows]).toEqual(['work-package']);
+      expect([...c.activityFiles]).toEqual([]);
+    });
+
+    it('takes a product activity under corpus/ for resolution against the graphs', () => {
+      const c = classifyChange(['corpus/work-package/activities/01-create-work-package.yaml']);
+      expect([...c.workflows]).toEqual([]);
+      expect([...c.activityFiles]).toEqual(['corpus/work-package/activities/01-create-work-package.yaml']);
+    });
+
     it('takes a nested activity file for resolution against the graphs', () => {
       const c = classifyChange(['security/audits/prism/activities/01-structural-pass.yaml']);
       expect([...c.workflows]).toEqual([]);
       expect([...c.activityFiles]).toEqual(['security/audits/prism/activities/01-structural-pass.yaml']);
+    });
+
+    it('drops identical-content renames from a name-status diff', () => {
+      expect(pathsFromNameStatus([
+        'R100\twork-package/workflow.yaml\tcorpus/work-package/workflow.yaml',
+        'R100\twork-package/activities/01-create.yaml\tcorpus/work-package/activities/01-create.yaml',
+        'A\tdocs/README.md',
+        'M\tcorpus/work-package/workflow.yaml',
+      ].join('\n'))).toEqual([
+        'docs/README.md',
+        'corpus/work-package/workflow.yaml',
+      ]);
+    });
+
+    it('keeps a rename that also edits', () => {
+      expect(pathsFromNameStatus('R080\told/workflow.yaml\tcorpus/work-package/workflow.yaml'))
+        .toEqual(['corpus/work-package/workflow.yaml']);
     });
 
     it('ignores what cannot move option coverage', () => {
@@ -50,6 +79,11 @@ describe('coverage scope', () => {
       ]);
       expect([...c.workflows]).toEqual([]);
       expect([...c.activityFiles]).toEqual([]);
+    });
+
+    it('parses a comma-separated walked set', () => {
+      expect(parseWorkflowIds('work-package, meta,')).toEqual(['work-package', 'meta']);
+      expect(parseWorkflowIds(undefined)).toEqual([]);
     });
   });
 
