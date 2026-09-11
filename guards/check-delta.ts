@@ -5,15 +5,15 @@
  * pruning PRs, and it silently absorbs real defects (issue #327 R1). The before-state does not need
  * storing: it is the merge-base with the integration branch.
  *
- * This runner resolves that merge-base, materialises it in a throwaway git worktree with the
- * workflows submodule pinned to the commit THAT tree recorded, runs the guard registry against both
- * trees, and reports only the difference. Nothing is stored, so nothing drifts; the verdict is exact
- * and scoped to the change; and every guard gets a ratchet, including the ones that never had a
- * baseline concept.
+ * This runner resolves that merge-base, materialises it in a throwaway git worktree, and runs the
+ * guard registry against both engine trees pointed at the same `./workflows` checkout. The corpus
+ * is not an object this tree stores: both sides measure the worktree (or `WORKFLOWS_DIR`) in front
+ * of the run. Nothing is stored, so nothing drifts; the verdict is exact and scoped to the change;
+ * and every guard gets a ratchet, including the ones that never had a baseline concept.
  *
  *   npx tsx guards/check-delta.ts [--base <ref>] [--only <id,id>] [--no-cache] [--keep-base] [--verbose]
  *
- * Base results are cached under `.guard-cache/` keyed by (base commit, base corpus commit), so the
+ * Base results are cached under `.guard-cache/` keyed by (base commit, corpus HEAD), so the
  * doubled runtime is paid once per rebase rather than once per run.
  *
  * Guards that speak the `--json` finding protocol yield a precise per-finding delta. The rest are
@@ -21,7 +21,7 @@
  * protocol when its findings start mattering.
  *
  * Exit 0 when the change adds nothing, 1 when it adds findings, 2 when the comparison could not be
- * set up (no merge-base, submodule unavailable, guard unmeasurable in either tree).
+ * set up (no merge-base, no workflows checkout, guard unmeasurable in either tree).
  */
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -69,12 +69,13 @@ function integrationRef(): string {
   return die('no integration branch found — pass --base <ref>.');
 }
 
-/** The submodule commit a tree-ish recorded for `workflows`. */
-function recordedCorpusSha(treeish: string): string {
-  const r = git(['ls-tree', treeish, 'workflows']);
-  const sha = r.out.split(/\s+/)[2];
-  if (!r.ok || !sha) return die(`cannot read the workflows submodule commit recorded at ${treeish}.`);
-  return sha;
+/** The workflows checkout this run measures, or a fatal if none is present. */
+function liveCorpus(): string {
+  const root = process.env.WORKFLOWS_DIR ? process.env.WORKFLOWS_DIR : join(REPO, 'workflows');
+  if (!existsSync(root)) {
+    return die(`no workflows checkout at ${root} — run 'git worktree add ./workflows workflows'.`);
+  }
+  return root;
 }
 
 /* ------------------------------- base worktree ------------------------------- */
@@ -85,11 +86,10 @@ interface BaseTree {
 }
 
 /**
- * Materialise the merge-base in a throwaway worktree with the submodule pinned to the commit that
- * commit recorded. Pinning is what removes the "which corpus am I measuring?" ambiguity: the base
- * corpus is whatever the base tree said it was, not whatever is checked out now.
+ * Materialise the merge-base engine tree in a throwaway worktree. Both sides of the delta measure
+ * the same live corpus checkout; this tree is only the engine as of that commit.
  */
-function materialiseBase(mergeBase: string, corpusSha: string): BaseTree {
+function materialiseBase(mergeBase: string): BaseTree {
   const path = join(REPO, '.worktrees', `.delta-base-${mergeBase.slice(0, 12)}`);
   if (existsSync(path)) rmSync(path, { recursive: true, force: true });
   git(['worktree', 'prune']);
@@ -103,23 +103,6 @@ function materialiseBase(mergeBase: string, corpusSha: string): BaseTree {
     spawnSync('git', ['worktree', 'remove', '--force', path], { cwd: REPO });
     if (existsSync(path)) rmSync(path, { recursive: true, force: true });
   };
-  const init = spawnSync('git', ['submodule', 'update', '--init', 'workflows'], { cwd: path, encoding: 'utf-8' });
-  if (init.status !== 0) {
-    cleanup();
-    die(`could not check out the workflows submodule in the base worktree: ${init.stderr?.trim()}`);
-  }
-  const actual = git(['rev-parse', 'HEAD'], join(path, 'workflows')).out;
-  if (actual !== corpusSha) {
-    // The recorded commit is the authority; force it so the base corpus matches the base tree even
-    // if the submodule's default branch has moved on.
-    const fetch = spawnSync('git', ['fetch', 'origin', corpusSha], { cwd: join(path, 'workflows'), encoding: 'utf-8' });
-    const co = spawnSync('git', ['checkout', '--detach', corpusSha], { cwd: join(path, 'workflows'), encoding: 'utf-8' });
-    if (co.status !== 0) {
-      cleanup();
-      die(`base corpus is at ${actual} but ${corpusSha} is recorded, and it could not be checked out`
-        + `${fetch.status === 0 ? '' : ' (fetch failed — is the submodule remote reachable?)'}.`);
-    }
-  }
   return { path, cleanup };
 }
 
@@ -149,16 +132,15 @@ function normalise(text: string, treeRoot: string): string[] {
     .filter((l) => l.trim().length > 0);
 }
 
-function runGuardIn(tree: string, guard: GuardSpec): Promise<GuardRun> {
-  const corpus = join(tree, 'workflows');
+function runGuardIn(tree: string, guard: GuardSpec, corpus: string): Promise<GuardRun> {
   const args = [join(tree, guard.script)];
   if (guard.scope === 'corpus') args.push('--root', corpus);
   if (guard.json) args.push('--json');
   return new Promise((resolveRun) => {
     const child = spawn(process.execPath, [TSX_CLI, ...args], {
       cwd: tree,
-      // A guard must read the corpus it was handed, not an ambient WORKFLOWS_DIR from the caller's
-      // shell — that ambiguity is what made cross-checkout measurement unreliable.
+      // Both trees measure the same live checkout. An ambient WORKFLOWS_DIR from the caller's
+      // shell would make the two sides disagree about which corpus they saw.
       env: { ...process.env, WORKFLOWS_DIR: corpus },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
@@ -185,7 +167,7 @@ function runGuardIn(tree: string, guard: GuardSpec): Promise<GuardRun> {
   });
 }
 
-async function runAll(tree: string, guards: GuardSpec[]): Promise<GuardRun[]> {
+async function runAll(tree: string, guards: GuardSpec[], corpus: string): Promise<GuardRun[]> {
   const limit = Math.max(1, Math.min(guards.length, cpus().length - 1));
   const runs: GuardRun[] = [];
   let next = 0;
@@ -193,7 +175,7 @@ async function runAll(tree: string, guards: GuardSpec[]): Promise<GuardRun[]> {
     for (;;) {
       const i = next++;
       if (i >= guards.length) return;
-      runs[i] = await runGuardIn(tree, guards[i]!);
+      runs[i] = await runGuardIn(tree, guards[i]!, corpus);
     }
   }));
   return runs;
@@ -240,21 +222,21 @@ async function main(): Promise<void> {
     process.stdout.write(`check:delta: HEAD is the merge-base with ${base} — nothing to compare.\n`);
     process.exit(EXIT_CLEAN);
   }
-  const baseCorpus = recordedCorpusSha(mergeBase);
-  const headCorpus = git(['rev-parse', 'HEAD'], join(REPO, 'workflows')).out || '(unavailable)';
+  const corpus = liveCorpus();
+  const corpusSha = git(['rev-parse', 'HEAD'], corpus).out || 'unrevisioned';
 
-  process.stdout.write(`base ${base} @ ${mergeBase.slice(0, 12)} (corpus ${baseCorpus.slice(0, 12)})\n`);
-  process.stdout.write(`head    @ ${headSha.slice(0, 12)} (corpus ${headCorpus.slice(0, 12)})\n`);
+  process.stdout.write(`base ${base} @ ${mergeBase.slice(0, 12)} (corpus ${corpusSha.slice(0, 12)})\n`);
+  process.stdout.write(`head    @ ${headSha.slice(0, 12)} (corpus ${corpusSha.slice(0, 12)})\n`);
 
-  const cache = cachePath(mergeBase, baseCorpus);
+  const cache = cachePath(mergeBase, corpusSha);
   let baseRuns = readCache(cache, guards);
   if (baseRuns) {
     process.stdout.write(`base results reused from ${cache.replace(REPO + '/', '')}\n`);
   } else {
     process.stdout.write('measuring the base tree…\n');
-    const tree = materialiseBase(mergeBase, baseCorpus);
+    const tree = materialiseBase(mergeBase);
     try {
-      baseRuns = await runAll(tree.path, guards);
+      baseRuns = await runAll(tree.path, guards, corpus);
     } finally {
       tree.cleanup();
     }
@@ -262,7 +244,7 @@ async function main(): Promise<void> {
   }
 
   process.stdout.write('measuring this tree…\n');
-  const headRuns = await runAll(REPO, guards);
+  const headRuns = await runAll(REPO, guards, corpus);
 
   /* ------------------------------- the delta ------------------------------- */
   let added = 0;
