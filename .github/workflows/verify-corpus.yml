@@ -1,22 +1,17 @@
 name: Verify corpus
 
-# The guards run against a pull request on THIS branch.
+# The guards and the walks whose subject is this tree run against a pull request on THIS branch.
 #
-# They live on `main`, and this branch holds definitions only — no package.json, no scripts, and
-# until now no CI. A pull request here therefore reported no checks at all: every guard ran only
-# once a later commit on main bumped the submodule pointer, which happens after the merge rather
-# than before it. A workflow whose every technique reference failed to resolve reached a merge that
-# way, and the guard that catches it had been passing on main the whole time — against the older
-# corpus the pointer still named.
+# Check programs live on the engine tree this job checks out. This branch holds definitions only —
+# no package.json — so the job borrows that tooling and points it at the corpus under review.
 #
 # GitHub reads a pull-request workflow file from the head ref, so this file has to sit on the branch
-# it guards. It carries no logic of its own: it borrows main's tooling and points it at the corpus
-# under review.
+# it guards.
 #
-# Guards only, not the test suite. The walk snapshots are stamped against one corpus commit, so
-# running them here would compare a pull request's corpus to a baseline generated from a different
-# one and fail on the difference rather than on a defect. `npm run check:all` walks the registry in
-# scripts/guards.ts, so a guard added there is enforced here without touching this file.
+# `npm run check:all` walks the registry in guards/guards.ts, so a guard added there is enforced here
+# without touching this file. Discovery enters corpus/ and reads ledgers/ of this tree. Snapshot and
+# all-workflows walks read walks/ of this tree. The fourteen-workflow coverage walk is a job of its
+# own (coverage.yml) so a coverage regression is not read as a guard failure.
 
 on:
   pull_request:
@@ -33,16 +28,23 @@ jobs:
   guards:
     name: Guard sweep against the corpus under review
     runs-on: ubuntu-latest
+    env:
+      # This checkout is the subject, not a gitlink pin. walks/ sits beside the definitions.
+      # The second step lands that tree at path: workflows; WORKFLOWS_DIR names it for the
+      # borrowed engine, whose default dest is .worktrees/workflows of a primary checkout.
+      WF_CORPUS_SUBJECT: checkout
+      WORKFLOWS_DIR: workflows
     steps:
-      # The tooling: main's scripts, guard registry and package manifest.
-      - name: Check out the server tooling from main
+      # This corpus change is stacked on feat/693-named-roots: those guards read ledgers/ and
+      # walks/ of the pointed tree and cite findings by workflow id.
+      - name: Check out the server tooling
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: feat/693-named-roots
           submodules: false
 
-      # The corpus under review, where check:all looks for it by default. For a pull request this is
-      # the branch tip; for a manual run it is the ref the run was dispatched on.
+      # The corpus under review. For a pull request this is the branch tip; for a manual run it is
+      # the ref the run was dispatched on.
       #
       # The tip, not the merge result. GitHub computes a pull request's merge commit asynchronously,
       # so the sha in the event payload can name a merge of the previous push — the run then grades a
@@ -50,12 +52,17 @@ jobs:
       # carries. That happened: a commit moving a triage record into the corpus was graded against
       # the tree without it, and the failure named a file the push had already fixed. The tip is
       # whatever was pushed, every time.
+      #
+      # path: workflows is the branch root (corpus/, ledgers/, walks/, docs/), not corpus/.
       - name: Check out the corpus under review
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           path: workflows
+
+      - name: Coverage roster accounts for every product
+        run: bash workflows/walks/check-roster.sh
 
       - uses: actions/setup-node@v4
         with:
@@ -68,3 +75,9 @@ jobs:
       # never folded into a pass.
       - name: Run every guard against the corpus
         run: npm run check:all
+
+      - name: Walk snapshots against this tree
+        run: npx vitest run tests/e2e/snapshot.test.ts
+
+      - name: All-workflows drift against this tree
+        run: npx vitest run tests/e2e/all-workflows-walk.test.ts

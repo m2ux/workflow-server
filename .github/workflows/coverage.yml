@@ -1,0 +1,103 @@
+name: Coverage walk
+
+# Every checkpoint option this corpus declares is taken by some walk, or listed as one this matrix
+# does not reach.
+#
+# This job lives here because its subject is this tree. A pull request that changes a definition
+# walks only the workflows its diff can move. A borrowed engine whose walker, policies or
+# coverage helpers moved, or a change to walks/roster.json, walks the full roster. A dispatch
+# walks the full roster. The walked ids come from walks/roster.json of this tree.
+#
+# The walker, the policies and the server live on the engine tree this job checks out.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverage-corpus-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage-walk:
+    name: Every declared checkpoint option is reached
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      # The corpus checkout lands at path: workflows. WORKFLOWS_DIR names it for the borrowed engine.
+      WF_CORPUS_SUBJECT: checkout
+      WORKFLOWS_DIR: workflows
+    steps:
+      - name: Check out the server tooling
+        uses: actions/checkout@v4
+        with:
+          ref: feat/693-named-roots
+          submodules: false
+          fetch-depth: 0
+
+      # The tip, not the merge result — see verify-corpus.yml. fetch-depth: 0 so the scope step can
+      # diff against the pull-request base.
+      #
+      # path: workflows is the branch root (corpus/, ledgers/, walks/, docs/), not corpus/.
+      - name: Check out the corpus under review
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: workflows
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Read the walked set
+        id: roster
+        run: |
+          walked=$(jq -r '.walked | join(",")' workflows/walks/roster.json)
+          if [ -z "$walked" ]; then
+            echo "walks/roster.json walked is empty" >&2
+            exit 1
+          fi
+          echo "walked=$walked" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve what this change can move
+        if: github.event_name == 'pull_request'
+        id: scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          WF_WALKED: ${{ steps.roster.outputs.walked }}
+        run: |
+          git fetch --no-tags origin main
+          walker_changed=$(git diff --name-only origin/main...HEAD -- \
+            tests/e2e/walker.ts \
+            tests/e2e/policies.ts \
+            tests/e2e/coverage.ts \
+            | head -1)
+          if [ -n "$walker_changed" ]; then
+            echo "borrowed engine walker changed ($walker_changed) — walking every workflow"
+            echo "scope=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git -C workflows fetch --no-tags origin "$BASE_SHA"
+          if git -C workflows diff --name-only "$BASE_SHA" HEAD | grep -qx 'walks/roster.json'; then
+            echo "coverage roster changed — walking every walked product"
+            echo "scope=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          scope=$(npx tsx scripts/coverage-scope.ts "$BASE_SHA" HEAD --root workflows | paste -sd, -)
+          echo "corpus $BASE_SHA..HEAD scopes to: ${scope:-(nothing that moves coverage)}"
+          echo "scope=${scope:-none}" >> "$GITHUB_OUTPUT"
+
+      - name: Walk every checkpoint option
+        if: github.event_name != 'pull_request' || steps.scope.outputs.scope != 'none'
+        env:
+          WF_WALKED: ${{ steps.roster.outputs.walked }}
+          WF_COVERAGE_SCOPE: ${{ steps.scope.outputs.scope }}
+        run: npm run test:coverage-walk

@@ -1,88 +1,62 @@
 # Workflows
 
-This orphan branch contains workflow definitions, activities, techniques, and resources for the MCP Workflow Server.
+This orphan branch holds the workflow definitions the MCP Workflow Server loads, and the artifacts that belong to those definitions: judgements about them, recorded walks of them, and the documentation of how this tree is arranged.
 
-## Branch Structure
+Authoring procedure — adding a workflow, resource or technique, and how definition files link — lives in [`docs/`](docs/README.md). What each folder at this root is *for*, and what it holds, is in that folder's own README.
 
-- **`main`** - Server code (TypeScript implementation)
-- **`workflows`** - Workflow data (YAML definitions) ← You are here
+## Named roots
 
-## Directory Structure
+Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names. `specimens` is skipped by name even as a child of `corpus/`, so a product list never includes a specimen. A workflow's id is the directory that holds its `workflow.yaml`.
 
 ```
-workflows/                        # Worktree checkout
-├── meta/                         # Lifecycle workflow + cross-workflow shared layer
-│   ├── README.md                 # Meta documentation with Mermaid diagrams
-│   ├── workflow.yaml             # Meta definition (activities for lifecycle management)
-│   ├── activities/               # Lifecycle activities (indexed)
-│   │   └── {NN}-{id}.yaml        # 00-discover-session, 01-initialize-session, ...
-│   ├── techniques/               # Markdown techniques (canonical source of truth)
-│   │   ├── TECHNIQUE.md          #   shared Inputs/Outputs/Rules for techniques here
-│   │   ├── {slug}.md             #   standalone technique (agent-conduct, version-control, ...)
-│   │   └── {group}/              #   container technique (workflow-engine, harness-compat, ...)
-│   │       ├── TECHNIQUE.md      #     container technique / base contract
-│   │       └── {sub}.md          #     one file per nested technique, addressed {group}::{sub}
-│   └── resources/                # Markdown resources
-│       └── {slug}.md             #   bootstrap-protocol, planning-readme, workflow-canonical, ...
-├── {workflow-id}/                # Each workflow folder
-│   ├── README.md                 # Workflow documentation with Mermaid diagrams
-│   ├── workflow.yaml             # Workflow definition
-│   ├── activities/               # Activity subdirectory (indexed)
-│   │   └── {NN}-{id}.yaml        # Activities for this workflow
-│   ├── techniques/               # Workflow-local markdown techniques
-│   │   ├── TECHNIQUE.md          #   root base contract for this workflow
-│   │   ├── {slug}.md             #   standalone technique (workflow-local takes precedence over a meta technique of the same name)
-│   │   └── {group}/
-│   │       ├── TECHNIQUE.md
-│   │       └── {sub}.md
-│   └── resources/                # Workflow-local markdown resources
-│       └── {slug}.md
+<branch root>
+├── corpus/                         # product workflows — corpus/README.md
+│   ├── README.md
+│   ├── {workflow-id}/
+│   │   ├── README.md
+│   │   ├── workflow.yaml
+│   │   ├── activities/
+│   │   ├── techniques/
+│   │   └── resources/
+│   └── specimens/                  # worked examples of a form — specimens/README.md
+│       └── {specimen-id}/
+├── ledgers/                        # debt ledgers — ledgers/README.md
+├── walks/                          # recorded walks — walks/README.md
+├── docs/                           # how to add to this tree — docs/README.md
+├── LICENSE
+├── README.md
+└── .github/
 ```
 
-### Precedence: workflow-local → `meta`
+### corpus
+
+The workflows an operator starts live here: each is a directory that holds a `workflow.yaml`, and that directory's name is the id every reference uses. Grouping folders under this root organise the tree and name nothing of their own. Discovery enters this folder when it is pointed at the branch root. Contents: [`corpus/README.md`](corpus/README.md).
+
+### specimens
+
+A specimen is a worked example of a form. An author copies from it when creating a workflow that needs that form, and a test drives it so the form stays loadable and observable. Specimens are still workflows — they have a definition, activities and techniques — but they are not part of the product list. They sit at `corpus/specimens/` so they travel with the other definitions. Discovery skips any directory named `specimens`, so a walk of `corpus/` does not list them. Pointing `--root` or `--workflow-dir` at `corpus/specimens/` is how a job reaches them. Contents: [`corpus/specimens/README.md`](corpus/specimens/README.md).
+
+### ledgers
+
+A check that walks every definition will surface sites that are not all the same kind of problem — a defect to fix now, real debt to keep visible, something correct by design. A **debt ledger** is the file that keeps those judgements separate, so classified debt stays counted and quiet, a live bug stays red, and an unclassified finding is reported. Those files live here, next to the definitions they judge. A check pointed at this branch's root reads this folder. Contents: [`ledgers/README.md`](ledgers/README.md).
+
+### walks
+
+A coverage walk records what it saw: snapshots of delivery, a stamp of which corpus commit was measured, and a ratchet of which checkpoint options were exercised. Those files live here so a later walk compares against this tree. The coverage job and the snapshot walks run on pull requests to this branch. Contents: [`walks/README.md`](walks/README.md).
+
+### docs
+
+Documentation of this tree's layout — how the named roots are arranged, how to add a workflow, resource or technique — lives here. Contents: [`docs/README.md`](docs/README.md).
+
+## Precedence: workflow-local → `meta`
 
 Technique resolution is workflow-local first, then `meta`. The
 `meta` workflow's `techniques/` and `resources/` carry double duty — they are
 both the local content for the meta workflow itself AND the cross-workflow
-shared layer for every other workflow. The
-[workflow-canonical](./meta/resources/workflow-canonical.md) resource
-defines the ontology and section conventions that every technique follows.
-
-## Available Workflows
-
-| Workflow | Description |
-|----------|-------------|
-| [`work-package`](work-package/) | Single work package implementation (issue → PR → merge) |
-| [`work-packages`](work-packages/) | Multi-package planning for large initiatives |
-| [`substrate-node-security-audit`](substrate-node-security-audit/) | Fully automated multi-phase AI security audit for Substrate-based node codebases |
-| [`cicd-pipeline-security-audit`](cicd-pipeline-security-audit/) | Fully automated CI/CD pipeline security audit detecting source-to-sink injection vulnerabilities in GitHub Actions |
-| [`prism`](prism/) | Structural analysis through cognitive lenses — 46 prisms across 11 families, 4 pipeline modes |
-| [`prism-update`](prism-update/) | Sync the prism workflow's resources and routing with upstream agi-in-md changes |
-| [`prism-evaluate`](prism-evaluate/) | Multi-dimensional evaluation of proposals, documents, or codebases through configurable analytical dimensions mapped to prism lenses |
-| [`workflow-authoring`](workflow-authoring/) | Create, update, or audit workflow definitions — guided elicitation, one criteria walk per target, and structural gates on removals and commit |
-| [`workflow-design`](workflow-design/) | **Deprecated** — start `workflow-authoring` instead. Retained only until the sessions already in flight against it finish |
-
-## Universal Techniques ([meta/techniques/](meta/techniques/))
-
-Available for any workflow session, resolved via the workflow-local → `meta` fallback chain.
-
-Techniques are referenced by canonical ID (the file/folder slug). Standalone techniques live at `meta/techniques/<slug>.md`; container techniques live at `meta/techniques/<group>/TECHNIQUE.md` with one `<sub>.md` per nested technique.
-
-| Technique | Description |
-|-----------|-------------|
-| [`workflow-engine`](meta/techniques/workflow-engine/TECHNIQUE.md) | Protocol and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
-| [`agent-conduct`](meta/techniques/agent-conduct.md) | Cross-cutting behavioural boundaries every agent is held to: file sensitivity, communication tone, attribution prohibition, interaction, operational discipline, checkpoint discipline |
-| [`orchestrator-conduct`](meta/techniques/orchestrator-conduct.md) | Boundaries only an orchestrator can honour: no domain work, one level of indirection, dispatch on resume, commit scope, automatic transitions, no ad-hoc interaction |
-| [`version-control`](meta/techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
-| [`github-cli-protocol`](meta/techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks; sole home of REST `gh api` recipes |
-| [`knowledge-base-search`](meta/techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
-| [`atlassian-operations`](meta/techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
-| [`gitnexus-operations`](meta/techniques/gitnexus-operations/TECHNIQUE.md) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
-| [`harness-compat`](meta/techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (spawn-agent, continue-agent, spawn-concurrent) abstracting cross-tool dispatch |
+shared layer for every other workflow. Open that workflow's directories for
+what they currently hold.
 
 ## Worktree Setup
-
-This branch is checked out as a worktree inside the main repo:
 
 ```bash
 git worktree add ./workflows workflows
@@ -90,32 +64,7 @@ git worktree add ./workflows workflows
 
 ## Adding Content
 
-**New Workflow:**
-1. Create `{workflow-id}/` directory
-2. Add `workflow.yaml` workflow definition
-3. Add `README.md` with Mermaid diagrams documenting the workflow
-4. Add `activities/`, `resources/`, `techniques/` subdirectories as needed
-5. Commit to this branch
-
-**Activities:**
-1. Create `{NN}-{activity-id}.yaml` in `{workflow-id}/activities/`
-2. Prefix with two-digit index (01, 02, 03, etc.)
-3. Connect activities with `transitions`; set the workflow's `initialActivity`
-4. Commit to this branch
-
-**Resources:**
-1. Create `{NN}-{name}.md` in `{workflow-id}/resources/`
-2. Prefix with two-digit index (00, 01, 02, etc.)
-3. Commit to this branch
-
-**Techniques (markdown source of truth):**
-1. For a standalone technique, create `{workflow-id}/techniques/{slug}.md` (or `meta/techniques/{slug}.md` for the cross-workflow shared layer) with frontmatter (`metadata.version`), a required `## Capability` section, and optional `## Inputs` / `## Outputs` / `## Protocol` / `## Rules` sections.
-2. For a container technique (such as `gitnexus-operations`), create `{group}/TECHNIQUE.md` as the container technique/base contract plus one `{group}/{sub}.md` per nested technique. Each nested technique file carries `metadata.version` frontmatter and a `## Capability` section. Nested techniques are addressed `{group}::{sub}`.
-3. Optionally add a per-workflow root `TECHNIQUE.md` at `{workflow-id}/techniques/TECHNIQUE.md` for shared Inputs / Outputs / Rules / Protocol (loader composition is defined in [meta/resources/workflow-canonical.md](./meta/resources/workflow-canonical.md)).
-4. Follow the canonical sections defined in that same resource
-5. Commit to this branch
-
-Cross-reference links between techniques and resources are file-relative and end in the target's real filename (`<slug>.md`, `<group>/TECHNIQUE.md`, or `<group>/<sub>.md`).
+See [`docs/README.md`](docs/README.md).
 
 ## Validation
 
