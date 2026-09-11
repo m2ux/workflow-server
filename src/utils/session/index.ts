@@ -5,3 +5,4 @@ export * from './resolver.js';
 export * from './migration.js';
 export * from './crypto.js';
 export * from './scope.js';
+export * from './derive-working-directory.js';
