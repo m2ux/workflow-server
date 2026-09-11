@@ -40,4 +40,4 @@ The catalogue with descriptions is in the [branch README](../README.md#available
 
 ## specimens
 
-[`specimens/`](specimens/README.md) holds workflows that exist so a test can drive a known shape. They travel with the other definitions. Discovery skips any directory named `specimens`, so a walk of this folder does not list them.
+[`specimens/`](specimens/README.md) holds worked examples of a form: an author copies from them when creating a workflow that needs that form, and a test drives them so the form stays loadable and observable. They travel with the other definitions. Discovery skips any directory named `specimens`, so a walk of this folder does not list them.
