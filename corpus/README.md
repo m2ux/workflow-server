@@ -18,4 +18,4 @@ How to add one is in [`docs/README.md`](../docs/README.md#adding-a-workflow).
 
 ## specimens
 
-[`specimens/`](specimens/README.md) holds worked examples of a form: an author copies from them when creating a workflow that needs that form, and a test drives them so the form stays loadable and observable. They travel with the other definitions. Discovery skips any directory named `specimens`, so a walk of this folder does not list them.
+[`specimens/`](specimens/README.md) holds worked examples of a form: an author copies from them when creating a workflow that needs that form, and a test drives them so the form stays loadable and observable. They travel with the other definitions. `specimens/` is a grouping folder — discovery walks it, and each child that holds a `workflow.yaml` is a workflow reached by its directory name.

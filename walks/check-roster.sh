@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Every product under corpus/ is named in walks/roster.json, once, and the file
-# names nothing the tree does not hold. Specimens are not products.
+# Every workflow.yaml under corpus/ is named in walks/roster.json, once, and the
+# file names nothing the tree does not hold. Grouping folders organise the tree
+# and name nothing; a nested definition is still a workflow.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
@@ -28,7 +29,7 @@ trap 'rm -rf "$tmp"' EXIT
 : > "$tmp/products"
 while IFS= read -r -d '' file; do
   basename "$(dirname "$file")"
-done < <(find "$corpus" \( -name workflow.yaml -o -name workflow.yml \) ! -path '*/specimens/*' -print0) \
+done < <(find "$corpus" \( -name workflow.yaml -o -name workflow.yml \) -print0) \
   | sort -u > "$tmp/products"
 
 if ! jq -e '(.walked | type == "array") and (.notWalked | type == "array")' "$roster" >/dev/null; then

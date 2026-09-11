@@ -4,7 +4,7 @@ A walk drives these definitions through the real server and records what it saw.
 
 This folder holds four kinds of record:
 
-- **A roster** — which products a coverage walk drives, and which it leaves with a reason. A product on neither list is measured by nothing. `walks/check-roster.sh` checks the file against the products under `corpus/` (specimens are not products).
+- **A roster** — which workflows a coverage walk drives, and which it leaves with a reason. A workflow on neither list is measured by nothing. `walks/check-roster.sh` checks the file against every `workflow.yaml` under `corpus/`, including those in grouping folders.
 - **Snapshots** — paths, checkpoint decisions, artifacts written, manifest status.
 - **A stamp** — the corpus commit those snapshots were recorded against. A mismatch fails with both SHAs named. Re-record it with `npm run baseline:stamp` in the same commit that re-baselines the walk.
 - **A ratchet** — checkpoint options no walk reaches, grouped by the reason they stay unreached. A newly unreached option is not on the list and fails; an option that becomes reachable is on the list with nothing to explain it and also fails, so the list can only shrink.
