@@ -4,6 +4,10 @@ node_modules/
 # Nested feature worktrees (per-checkout parent; not $INSTALL/worktrees)
 .worktrees/
 
+# Local checkout of the workflows branch. Not a gitlink; add with
+# `git worktree add ./workflows workflows`.
+/workflows
+
 # Build output
 dist/
 
