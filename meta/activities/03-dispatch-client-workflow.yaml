@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 5.12.0
+version: 5.13.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
@@ -45,7 +45,7 @@ steps:
         technique:
           name: workflow-engine::continue-batch
           inputs:
-            activity_id: current_activity
+            activity_id: "{worker_result.next_activity_id}"
             session_index: client_session_index
             worker_agent_id: worker_agent_id
             step_manifest: "{worker_result.steps_completed}"

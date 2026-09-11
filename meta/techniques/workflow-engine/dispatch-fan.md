@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -69,7 +69,7 @@ No other operation states this, because no other operation puts several workers 
 
 ### one-identity-per-branch
 
-Each branch runs under its own identity, distinct from its siblings' and from the session's own agent. The delivery ledger and the batch bound are both keyed on the calling identity, and a scope equal to the session's own agent is exempt from the bound — so a shared or session-equal identity puts the whole fan outside it and delivers a reference marker to a context that never received the bytes. Where the graph runs one activity over a collection the rule is load-bearing twice over: the siblings share an activity id, so only the identity tells the delivery ledger and the batch bound apart.
+Each branch runs under its own identity, distinct from its siblings' and from the session's own agent. The delivery ledger and the batch bound are both keyed on the calling identity, and a scope equal to the session's own agent is exempt from the bound — so a shared or session-equal identity puts the whole fan outside it and delivers a reference marker to a context that never received the bytes. Where the graph runs one activity over a collection the rule is load-bearing twice over: the siblings share an activity id, so only the identity tells the delivery ledger and the batch bound apart. A delivery call while several activities are in flight is refused when the calling identity is omitted, equals the session agent, or already holds a sibling. A resume of the same entry, and a replacement under a fresh identity for that same entry, are admitted.
 
 ### one-commit-before-the-spawn
 
