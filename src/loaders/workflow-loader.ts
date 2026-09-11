@@ -886,7 +886,7 @@ function fanErrors(workflow: Workflow, fan: FanGroup): string[] {
           reported.add(match[0]);
           const reference = text.match(new RegExp(`${key}\\.${slot}[A-Za-z0-9_.]*`))?.[0] ?? match[0];
           errors.push(
-            `Activity '${activity.id}' reads '${reference}'. The fan at ${site} admits ${ceiling} instances, so slot ${slot} is never filled. Hand the container whole to a gather rather than addressing a slot the fan cannot reach.`,
+            `Activity '${activity.id}' reads '${reference}'. The fan at ${site} admits ${ceiling} ${ceiling === 1 ? 'instance' : 'instances'}, so slot ${slot} is never filled. Hand the container whole to a gather rather than addressing a slot the fan cannot reach.`,
           );
         }
       }
@@ -901,7 +901,8 @@ function effectiveCeiling(destination: Destination, branch: string): number {
   for (const member of instanceFans(destination)) {
     if (member.activity === branch) return member.maxInstances ?? DEFAULT_FAN_MAX_BRANCHES;
   }
-  return DEFAULT_FAN_MAX_BRANCHES;
+  // A bare list member runs once and fills slot 0.
+  return 1;
 }
 
 /** The rules an instance-fan member answers to, applied per member so a list checks each of its own. */
