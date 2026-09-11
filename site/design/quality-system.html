@@ -121,7 +121,7 @@
         <path d="M 480 140 L 480 152 L 720 152 L 720 164" marker-end="url(#arrowgsland)"/>
       </g>
     </svg>
-    <figcaption>Guards mirror the specification model: corpus checks group around loadability, technique contracts, static wiring, and workflow-specific safety; site checks keep links and inline diagrams honest. Per-guard behaviour lives in the scripts and in the spec pages that name them — for example <a href="../specs/workflows.html">Workflows</a>, <a href="../specs/state-management.html">State</a>, <a href="../specs/resource-resolution.html">Resolution</a>, and <a href="../specs/workflow-fidelity.html">Fidelity</a>.</figcaption>
+    <figcaption>Guards mirror the specification model: corpus checks group around loadability, technique contracts, static wiring, and workflow-specific safety; site checks keep links and inline diagrams honest. Per-guard behaviour lives in <code>guards/</code> and in the spec pages that name them — for example <a href="../specs/workflows.html">Workflows</a>, <a href="../specs/state-management.html">State</a>, <a href="../specs/resource-resolution.html">Resolution</a>, and <a href="../specs/workflow-fidelity.html">Fidelity</a>.</figcaption>
   </figure>
 
   <figure class="diagram">
@@ -163,7 +163,7 @@
   <ul>
     <li><strong>Unit coverage of the machinery</strong> — schema validation and generation, every loader, and the session store's sharp edges: HMAC sealing, index derivation, collision handling, legacy-folder migration.</li>
     <li><strong>Fidelity behaviour</strong> — the runtime validators, binding provenance, fetch observability (including <code>technique_bundled</code> coverage), reference-not-repeat delivery, and trace-token signing, each tested as an observable contract rather than an implementation detail.</li>
-    <li><strong>End-to-end execution</strong> — <code>mcp-server.test.ts</code> drives real tool calls; a deterministic walker (<a href="https://github.com/m2ux/workflow-server/blob/main/tests/e2e/walker.ts"><code>tests/e2e/walker.ts</code></a>) enumerates every reachable path through every workflow definition and executes each one against the live server, so an unreachable activity or an impossible transition in <em>content</em> fails the <em>server's</em> test suite.</li>
+    <li><strong>End-to-end execution</strong> — <code>mcp-server.test.ts</code> drives real tool calls; a deterministic walker (<a href="https://github.com/m2ux/workflow-server/blob/main/tests/e2e/walker.ts"><code>tests/e2e/walker.ts</code></a>) enumerates every reachable path through every workflow definition and executes each one against the live server when a workflows checkout is present. <a href="https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/verify-corpus.yml"><code>verify-corpus</code></a> walks the registry on corpus pull requests.</li>
     <li><strong>Documentation</strong> — <code>site.test.ts</code> runs the two site guards and the drift check described below, making stale documentation a red build.</li>
     <li><strong>Agent smoke runs</strong> — <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/smoke/smoke-orchestrator.ts"><code>scripts/smoke/</code></a> drives a real agent through a workflow for the behaviour no deterministic walk can check: whether the instructions actually steer a model.</li>
   </ul>
