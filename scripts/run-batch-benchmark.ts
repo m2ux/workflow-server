@@ -74,7 +74,7 @@ import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
 import { flattenActivitySteps, techniqueName } from '../src/schema/activity.schema.js';
 import type { Technique } from '../src/schema/technique.schema.js';
-import { requireWorkflowsRoot } from '../guards/workflows-root.js';
+import { defaultCorpusDest, requireWorkflowsRoot } from '../guards/workflows-root.js';
 
 /** The analysis run through the middle of the main workflow — the best measured batch candidate. */
 export const DEFAULT_RUN = ['implementation-analysis', 'plan-prepare', 'assumptions-review'];
@@ -178,7 +178,7 @@ async function walk(
  * cross-cutting, so a low reach figure describes the design rather than faulting it.
  */
 async function measureRunFanOut(workflowId: string, activities: string[]) {
-  const root = requireWorkflowsRoot(join(import.meta.dirname, '..', 'workflows'));
+  const root = requireWorkflowsRoot(defaultCorpusDest(join(import.meta.dirname, '..')));
   const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
   if (!loaded.success) throw loaded.error;
   const { workflow, activitySourceWorkflow } = loaded.value;

@@ -8,12 +8,12 @@ Node.js 18 or later, npm, and Git.
 
 ## Getting a working checkout
 
-The workflow definitions live on the `workflows` branch. Cloning the server on its own leaves `workflows/` absent: `typecheck` and `test:ci` still pass (live-corpus tests skip), and every corpus guard has nothing to measure. Take both:
+The workflow definitions live on the `workflows` branch. Cloning the server on its own leaves `.worktrees/workflows` absent: `typecheck` and `test:ci` still pass (live-corpus tests skip), and every corpus guard has nothing to measure. Take both:
 
 ```bash
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
-git worktree add ./workflows workflows
+git worktree add .worktrees/workflows workflows
 npm install
 ```
 
@@ -70,7 +70,7 @@ Other process config:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (`--workflow-dir` takes precedence) |
+| `WORKFLOW_DIR` | `.worktrees/workflows` of the primary checkout | Path to workflow directories (`--workflow-dir` takes precedence) |
 | `SCHEMAS_DIR` | `./schemas` | Path to JSON Schema files |
 | `SERVER_NAME` | `workflow-server` | Server name in health check |
 | `SERVER_VERSION` | `2.1.0` | Server version in health check |
@@ -84,7 +84,7 @@ Examples:
 
 ```bash
 # Legacy single-root (workspace == engineering for planning)
-node dist/index.js --workspace=~/work --workflow-dir=./workflows
+node dist/index.js --workspace=~/work --workflow-dir=.worktrees/workflows
 
 # Per-repo layout (after install.sh + checkout under HOST_PROJECTS_ROOT + deploy.sh)
 node dist/index.js --repo=m2ux/workflow-server --transport=http
@@ -258,7 +258,7 @@ npm run check:delta -- --only binding-fidelity --verbose
 ```
 
 `check:delta` resolves the merge-base, materialises that engine tree in a throwaway worktree, and
-runs the registry against both engine trees pointed at the same `./workflows` checkout. Nothing is
+runs the registry against both engine trees pointed at the same `.worktrees/workflows` dest. Nothing is
 stored, so nothing drifts. Base results are cached under `.guard-cache/` keyed by (base commit,
 corpus HEAD), so the doubled runtime is paid once per rebase.
 
@@ -358,14 +358,14 @@ up, and the `--list` output names each one's folder, recorded version and curren
 
 ## The two branches
 
-Server code lives on `main`. The workflow definitions — the YAML, the techniques and the resources — live on `workflows`, an orphan branch with a history of its own. Check that branch out with `git worktree add ./workflows workflows`.
+Server code lives on `main`. The workflow definitions — the YAML, the techniques and the resources — live on `workflows`, an orphan branch with a history of its own. Check that branch out with `git worktree add .worktrees/workflows workflows`.
 
 ### Working on the definitions
 
 Edit the definitions in the worktree and commit them on that branch:
 
 ```bash
-git worktree add ./workflows workflows   # first time
+git worktree add .worktrees/workflows workflows   # first time
 cd workflows
 git pull origin workflows
 # edit definitions

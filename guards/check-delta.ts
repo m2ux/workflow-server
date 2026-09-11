@@ -6,9 +6,9 @@
  * storing: it is the merge-base with the integration branch.
  *
  * This runner resolves that merge-base, materialises it in a throwaway git worktree, and runs the
- * guard registry against both engine trees pointed at the same `./workflows` checkout. The corpus
- * is not an object this tree stores: both sides measure the worktree (or `WORKFLOWS_DIR`) in front
- * of the run. Nothing is stored, so nothing drifts; the verdict is exact and scoped to the change;
+ * guard registry against both engine trees pointed at the same corpus dest. The corpus is not an
+ * object this tree stores: both sides measure `.worktrees/workflows` of the primary checkout (or
+ * `WORKFLOWS_DIR`) in front of the run. Nothing is stored, so nothing drifts; the verdict is exact and scoped to the change;
  * and every guard gets a ratchet, including the ones that never had a baseline concept.
  *
  *   npx tsx guards/check-delta.ts [--base <ref>] [--only <id,id>] [--no-cache] [--keep-base] [--verbose]
@@ -30,6 +30,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { EXIT_CLEAN, EXIT_FINDINGS, EXIT_UNMEASURED, findingKey, type Finding } from './guard-protocol.js';
 import { GUARDS, type GuardSpec } from './guards.js';
+import { defaultCorpusDest, REFERENCE_CORPUS_ADD } from '../src/corpus-dest.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const REPO = join(DIR, '..');
@@ -71,9 +72,9 @@ function integrationRef(): string {
 
 /** The workflows checkout this run measures, or a fatal if none is present. */
 function liveCorpus(): string {
-  const root = process.env.WORKFLOWS_DIR ? process.env.WORKFLOWS_DIR : join(REPO, 'workflows');
+  const root = process.env.WORKFLOWS_DIR ? process.env.WORKFLOWS_DIR : defaultCorpusDest(REPO);
   if (!existsSync(root)) {
-    return die(`no workflows checkout at ${root} — run 'git worktree add ./workflows workflows'.`);
+    return die(`no workflows checkout at ${root} — run '${REFERENCE_CORPUS_ADD}'.`);
   }
   return root;
 }

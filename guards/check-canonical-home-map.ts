@@ -27,11 +27,11 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { type CorpusIndex, type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, ledgerPath, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, ledgerPath, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 interface TriageEntry {
   site: string;

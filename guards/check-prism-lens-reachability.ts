@@ -27,11 +27,11 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { requireRootOrExit } from './guard-protocol.js';
-import { UnreachableCorpusError } from './workflows-root.js';
+import { UnreachableCorpusError, defaultCorpusDest } from './workflows-root.js';
 import { workflowLocation } from '../src/loaders/corpus-index.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = join(DIR, '..', 'workflows');
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 function prismPaths(): { prism: string; resources: string; plan: string; portfolio: string } {
   const corpus = requireRootOrExit('prism-lens-reachability', DEFAULT_ROOT);

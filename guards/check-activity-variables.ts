@@ -46,11 +46,11 @@ import {
 import { branchKey, instanceFans } from '../src/schema/workflow.schema.js';
 import type { VariableDefinition } from '../src/schema/variable.schema.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = join(DIR, '..', 'workflows');
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 /**
  * Names that already differ between the branches of one fan, so an artifact filename keyed on one

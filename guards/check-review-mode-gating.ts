@@ -36,11 +36,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { evaluateCondition, type Condition } from '../src/schema/condition.schema.js';
 import { type Graph, destinationTargets } from '../src/schema/workflow.schema.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 const REVIEW_BAG = { is_review_mode: true } as const;
 
 /**

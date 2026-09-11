@@ -114,12 +114,12 @@
   <pre><code>git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
 npm install
-# corpus at --workflow-dir (default ./workflows)
-git worktree add ./workflows workflows
+# corpus at --workflow-dir (default .worktrees/workflows)
+git worktree add .worktrees/workflows workflows
 npm run build
 # optional host layout (without Docker):
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server</code></pre>
-  <p class="prose">The server reads any corpus at <code>--workflow-dir</code> (default <code>./workflows</code>). Product definitions live under <code>corpus/</code> of that tree. Point the IDE MCP config at <code>dist/index.js</code> with <code>--install-dir</code> and <code>--workflow-dir</code>. Full client snippet and verify: <a href="https://github.com/m2ux/workflow-server/blob/main/stdio.md">stdio.md</a>.</p>
+  <p class="prose">The server reads any corpus at <code>--workflow-dir</code> (default <code>.worktrees/workflows</code> of the primary checkout). Product definitions live under <code>corpus/</code> of that tree. Point the IDE MCP config at <code>dist/index.js</code> with <code>--install-dir</code> and <code>--workflow-dir</code>. Full client snippet and verify: <a href="https://github.com/m2ux/workflow-server/blob/main/stdio.md">stdio.md</a>.</p>
 
   <h2 id="deploy">2. Init a target repo</h2>
   <p class="prose">Two steps per product repo: deploy engineering into the repo, then check it out under <code>$HOST_PROJECTS_ROOT</code>.</p>

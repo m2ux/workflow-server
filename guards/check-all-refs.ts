@@ -10,12 +10,12 @@
 import { resolve } from 'node:path';
 import { listWorkflows, loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { resolveTechniques } from '../src/loaders/technique-loader.js';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 // Defaults to the repo's own ../workflows; pass `--root <path>` or set WORKFLOWS_DIR to
 // validate a dedicated worktree's workflows instead (issue #160 follow-up #1).
-const DEFAULT_ROOT = resolve(import.meta.dirname, '../workflows');
+const DEFAULT_ROOT = defaultCorpusDest(resolve(import.meta.dirname, '..'));
 
 interface ActivityLike { id: string; techniques?: string[] }
 

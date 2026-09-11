@@ -60,7 +60,7 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { assertScanned, citePath, corpusWorkflows, ledgerPath, resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { assertScanned, citePath, corpusWorkflows, ledgerPath, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { indexCorpus, workflowIdFromCorpusPath, type CorpusIndex } from '../src/loaders/corpus-index.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
@@ -73,7 +73,7 @@ const DIR = fileURLToPath(new URL('.', import.meta.url));
 // empty root throws rather than yielding an empty, reassuring result (#327 S2). Path arithmetic is
 // eager so `loadTriage` can see whether the ledger file is present; the walk itself waits until
 // `ensureIndexed`, so importing this module does not require a live corpus.
-const DEFAULT_ROOT = join(DIR, '..', 'workflows');
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 let INDEX: CorpusIndex = { workflows: new Map(), ambiguous: [] };
 const TRIAGE = ledgerPath(ROOT, 'binding-fidelity-triage.json');

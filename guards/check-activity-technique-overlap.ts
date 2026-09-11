@@ -17,11 +17,11 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
-const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 
 export interface ActivityTechniqueOverlapViolation { site: string; detail: string }
 

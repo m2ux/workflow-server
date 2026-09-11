@@ -31,11 +31,11 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { ARTIFACT_NAME_PATTERN } from '../src/schema/technique.schema.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 
 export interface TemplateViolation {
   /** File, relative to the workflows root. */

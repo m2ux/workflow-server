@@ -29,11 +29,11 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
-import { requireWorkflowsRoot } from './workflows-root.js';
+import { requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { report, wantsJson, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = join(DIR, '..', 'workflows');
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 interface SessionHistoryEntry {
   type: string;

@@ -29,14 +29,14 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 import { resolveLink } from './corpus-links.js';
 import { indexCorpus, workflowOwning } from '../src/loaders/corpus-index.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 function* markdownFiles(dir: string): Generator<string> {
   for (const entry of readdirSync(dir)) {

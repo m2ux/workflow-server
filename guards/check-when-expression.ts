@@ -12,10 +12,10 @@ import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { assertWhenAuthoring } from '../src/schema/when-expression.js';
-import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 
 export interface WhenExpressionViolation {
   site: string;

@@ -20,13 +20,13 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { resolveLink } from './corpus-links.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
-const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 const INDEX = indexCorpus(ROOT);
 
 export interface BrokenAnchor {

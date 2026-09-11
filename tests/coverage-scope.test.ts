@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { classifyChange, coverageScope, pathsFromNameStatus } from '../scripts/coverage-scope.js';
+import { classifyChange, coverageScope, pathsFromNameStatus, rosterFileChanged } from '../scripts/coverage-scope.js';
 
 /**
  * Which workflows a coverage walk has to cover for a given corpus change.
@@ -68,6 +68,11 @@ describe('coverage scope', () => {
     it('keeps a rename that also edits', () => {
       expect(pathsFromNameStatus('R080\told/workflow.yaml\tcorpus/work-package/workflow.yaml'))
         .toEqual(['corpus/work-package/workflow.yaml']);
+    });
+
+    it('treats a roster edit as a coverage change', () => {
+      expect(rosterFileChanged(['walks/roster.json'])).toBe(true);
+      expect(rosterFileChanged(['docs/README.md'])).toBe(false);
     });
 
     it('ignores what cannot move option coverage', () => {

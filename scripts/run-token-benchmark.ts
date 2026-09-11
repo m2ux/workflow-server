@@ -34,7 +34,7 @@
  *   --max-regression-pct=<n>   Gate threshold in percent (default: 1)
  *
  * Env:
- *   WORKFLOWS_DIR   Corpus root for the harness (default: <server-root>/workflows)
+ *   WORKFLOWS_DIR   Corpus root for the harness (default: .worktrees/workflows of the primary checkout)
  *
  * A comparison is only valid when the run and the reference share a context mode
  * (#323 T4): a fresh-vs-persistent delta conflates a mode switch with a code
@@ -54,6 +54,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { extractResourceIds } from '../src/utils/resource-ref.js';
+import { defaultCorpusDest } from '../src/corpus-dest.js';
 
 type ContextMode = 'fresh' | 'persistent';
 
@@ -513,8 +514,8 @@ async function main(): Promise<void> {
       label,
       contextMode,
       agentId,
-      workflowsDir: process.env.WORKFLOWS_DIR ?? join(serverRoot, 'workflows'),
-      workflowsRev: resolveCorpusRev(process.env.WORKFLOWS_DIR ?? join(serverRoot, 'workflows')),
+      workflowsDir: process.env.WORKFLOWS_DIR ?? defaultCorpusDest(serverRoot),
+      workflowsRev: resolveCorpusRev(process.env.WORKFLOWS_DIR ?? defaultCorpusDest(serverRoot)),
       serverRoot,
       path: walkResult.path,
       finalStatus: walkResult.finalStatus,

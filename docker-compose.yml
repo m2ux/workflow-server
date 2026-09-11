@@ -35,7 +35,7 @@ services:
       PORT: ${PORT:-3000}
     volumes:
       - type: bind
-        source: ${HOST_WORKFLOWS_DIR:-./workflows}
+        source: ${HOST_WORKFLOWS_DIR:?set HOST_WORKFLOWS_DIR to the corpus dest}
         target: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
         read_only: true
       - type: bind

@@ -12,7 +12,7 @@ import { liveCorpusRoot } from './corpus-root.js';
 
 function buildConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
   return {
-    workflowDir: liveCorpusRoot() ?? resolve(import.meta.dirname, '../workflows'),
+    workflowDir: liveCorpusRoot() ?? resolve(import.meta.dirname, '../tests/fixtures/token-bench'),
     schemasDir: resolve(import.meta.dirname, '../schemas'),
     workspaceDir: mkdtempSync(join(tmpdir(), 'wf-http-test-')),
     serverName: 'test-http-workflow-server',

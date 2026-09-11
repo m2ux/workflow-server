@@ -22,7 +22,7 @@ import { pathToFileURL } from 'url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { safeValidateActivity, populateStepIds } from '../src/schema/activity.schema.js';
 import { requireRootOrExit } from './guard-protocol.js';
-import { corpusWorkflows } from './workflows-root.js';
+import { corpusWorkflows, defaultCorpusDest } from './workflows-root.js';
 
 export interface ValidationResult {
   workflow: string;
@@ -81,7 +81,7 @@ if (isDirectInvocation) {
   const positional = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : undefined;
   const inputPath = positional
     ? resolve(positional)
-    : requireRootOrExit('activities', resolve(import.meta.dirname, '../workflows'));
+    : requireRootOrExit('activities', defaultCorpusDest(resolve(import.meta.dirname, '..')));
 
   const workflowDirs = findWorkflowDirs(inputPath);
 

@@ -8,7 +8,7 @@ import { declaredCheckpoints, declaredOptions, optionCoverage, checkpointGaps } 
 import { corpusRoot } from '../corpus-root.js';
 import { indexCorpus } from '../../src/loaders/corpus-index.js';
 import { expectStampFresh } from '../stamp-freshness.js';
-import { WALKED } from './walked-workflows.js';
+import { loadRoster } from '../../scripts/roster.js';
 
 /**
  * Every checkpoint option the corpus declares gets taken by some walk, or is listed as one this
@@ -70,13 +70,13 @@ const DRY_WALKS = Number(process.env.WF_DRY_WALKS ?? '50');
  */
 const SCOPE = (process.env.WF_COVERAGE_SCOPE ?? '')
   .split(',').map((s) => s.trim()).filter(Boolean);
+const coverageOn = process.env.WF_OPTION_COVERAGE === '1';
+const WALKED = coverageOn ? loadRoster(corpusRoot()).walked : [];
 const scoped: readonly string[] = SCOPE.length ? WALKED.filter((w) => SCOPE.includes(w)) : WALKED;
 
-const EXPECTED_PATH = join(
-  process.env.WORKFLOWS_DIR ?? join(import.meta.dirname, '../../workflows'),
-  'walks',
-  'option-coverage.json',
-);
+const EXPECTED_PATH = coverageOn
+  ? join(corpusRoot(), 'walks', 'option-coverage.json')
+  : '';
 /** What to call the file in a failure message, since the absolute path is the runner's, not a reader's. */
 const EXPECTED_LABEL = 'walks/option-coverage.json';
 

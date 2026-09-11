@@ -15,7 +15,7 @@ Shared sequence: **[setup.md](setup.md)** (layout, deploy, checkout under `HOST_
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
 npm install
-git worktree add ./workflows workflows
+git worktree add .worktrees/workflows workflows
 npm run build
 ```
 

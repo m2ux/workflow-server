@@ -27,11 +27,11 @@ import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { type CorpusSource, asIndex, indexCorpus } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, resolveWorkflowsRoot, workflowSubdir } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree.
-const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 
 const LAUNCH_OPERATION = 'workflow-engine::handle-sub-workflow';
 

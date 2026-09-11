@@ -28,10 +28,10 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { citePath, ledgerPath, resolveWorkflowsRoot } from './workflows-root.js';
+import { citePath, ledgerPath, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 /**
  * The triage lives with the corpus under `ledgers/`. Its entries are judgements about corpus prose,
  * so a change that moves a rule into a section and the entry describing that prose belong in one

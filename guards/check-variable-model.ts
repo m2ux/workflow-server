@@ -36,11 +36,11 @@ import { parse } from 'yaml';
 import { jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { isOutsideValueSet } from '../src/schema/variable.schema.js';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 
 export interface VariableModelViolation {
   /** File, relative to the workflows root. */

@@ -1,11 +1,9 @@
 /**
  * Resolve the workflows corpus root for the guard scripts.
  *
- * By default the guards validate the repo's own `../workflows` checkout. That is the wrong
- * target when edits live in a dedicated git worktree: the guards would validate the stale
- * main copy, not the change under review (issue #160 follow-up #1). Pass `--root <path>` or
- * `--root=<path>`, or set the `WORKFLOWS_DIR` env var, to point the guards at a worktree's
- * workflows directory instead.
+ * By default the guards validate `.worktrees/workflows` of the primary checkout. Pass
+ * `--root <path>` or `--root=<path>`, or set the `WORKFLOWS_DIR` env var, to point them at
+ * another dest (a feature corpus worktree, an install clone).
  *
  * Precedence: `--root` flag > `WORKFLOWS_DIR` env var > the built-in default.
  *
@@ -17,7 +15,10 @@
  */
 import { existsSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
+import { defaultCorpusDest, REFERENCE_CORPUS_ADD } from '../src/corpus-dest.js';
 import { type CorpusIndex, indexCorpus, workflowLocation, workflowOwning } from '../src/loaders/corpus-index.js';
+
+export { defaultCorpusDest, isPrimaryCheckout, primaryCheckoutRoot, REFERENCE_CORPUS_ADD, REFERENCE_CORPUS_REL } from '../src/corpus-dest.js';
 
 /** A directory a workflow owns, wherever the workflow sits — `null` for an id the corpus lacks. */
 export { workflowSubdir } from '../src/loaders/corpus-index.js';
@@ -109,7 +110,7 @@ export function requireWorkflowsRoot(defaultDir: string, argv: string[] = proces
     throw new UnreachableCorpusError(
       `workflows corpus root '${root}' (from ${from}) contains no workflow (no directory with a `
       + `workflow.yaml at any depth). An empty workflows checkout makes every corpus guard pass `
-      + `vacuously — run 'git worktree add ./workflows workflows' to populate it.`,
+      + `vacuously — run '${REFERENCE_CORPUS_ADD}' to populate it.`,
     );
   }
   return root;

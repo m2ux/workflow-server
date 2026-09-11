@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { walkArtifactPath } from '../guards/workflows-root.js';
+import { defaultCorpusDest, walkArtifactPath } from '../guards/workflows-root.js';
 import { corpusRoot } from './corpus-root.js';
 
 /**
@@ -20,7 +20,7 @@ import { corpusRoot } from './corpus-root.js';
 function defaultCorpusRoot(): string {
   return process.env.WORKFLOWS_DIR
     ? resolve(process.env.WORKFLOWS_DIR)
-    : resolve(import.meta.dirname, '../workflows');
+    : defaultCorpusDest(resolve(import.meta.dirname, '..'));
 }
 
 export function stampPath(root: string = defaultCorpusRoot()): string {

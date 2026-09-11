@@ -14,9 +14,9 @@ import {
 } from '../guards/workflows-root.js';
 
 /**
- * The guard scripts default to the repo's own ../workflows but must be redirectable to a
- * dedicated worktree so they validate the change under review, not the stale main copy
- * (issue #160 follow-up #1). Precedence: --root flag > WORKFLOWS_DIR env > default.
+ * The guard scripts default to `.worktrees/workflows` of the primary checkout and must
+ * be redirectable to another dest (`--root`, `WORKFLOWS_DIR`). Precedence: --root flag >
+ * WORKFLOWS_DIR env > default.
  */
 describe('resolveWorkflowsRoot', () => {
   const DEFAULT = '/repo/workflows';

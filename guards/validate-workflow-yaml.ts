@@ -18,7 +18,7 @@ import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { parseActivityFilename } from '../src/loaders/filename-utils.js';
 import { validateActivityFile } from './validate-activities.js';
 import { requireRootOrExit } from './guard-protocol.js';
-import { corpusWorkflows } from './workflows-root.js';
+import { corpusWorkflows, defaultCorpusDest } from './workflows-root.js';
 
 /**
  * Check NN- filename prefix and report duplicate skill/activity IDs.
@@ -106,7 +106,7 @@ const positional = process.argv[2] && !process.argv[2].startsWith('--') ? proces
  * sit in.
  */
 function targets(): { root: string; dirs: string[] } {
-  const root = requireRootOrExit('workflow-yaml', resolve(import.meta.dirname, '../workflows'));
+  const root = requireRootOrExit('workflow-yaml', defaultCorpusDest(resolve(import.meta.dirname, '..')));
   if (positional) {
     const dir = resolve(positional);
     if (!existsSync(dir)) {

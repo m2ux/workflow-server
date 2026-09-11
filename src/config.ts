@@ -6,6 +6,7 @@ import {
   type PathPresentationMap,
 } from './utils/path-presentation.js';
 import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from './utils/session/store.js';
+import { defaultCorpusDest } from './corpus-dest.js';
 
 export type { PathPresentationMap } from './utils/path-presentation.js';
 export {
@@ -506,11 +507,13 @@ function resolveRoots(argv: readonly string[]): ResolvedRoots {
   );
 }
 
-/** CLI `--workflow-dir` > `WORKFLOW_DIR` > `./workflows` (relative to package root). */
+/** CLI `--workflow-dir` > `WORKFLOW_DIR` > `.worktrees/workflows` of the primary checkout. */
 function resolveWorkflowDir(argv: readonly string[]): string {
   const fromCli = parseFlag(argv, 'workflow-dir');
   if (fromCli) return resolve(PROJECT_ROOT, fromCli);
-  return resolve(PROJECT_ROOT, envOrDefault('WORKFLOW_DIR', './workflows'));
+  const fromEnv = process.env['WORKFLOW_DIR']?.trim();
+  if (fromEnv) return resolve(PROJECT_ROOT, fromEnv);
+  return defaultCorpusDest(PROJECT_ROOT);
 }
 
 /**

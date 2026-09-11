@@ -43,11 +43,11 @@ import {
 } from '../src/loaders/fragment-resolver.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { corpusWorkflows, resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 
 /** Rules shorter than this are generic connective phrases, not drift-worthy shared content. */
 const MIN_DUP_RULE_LENGTH = 30;

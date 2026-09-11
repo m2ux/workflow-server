@@ -30,10 +30,10 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, requireWorkflowsRoot } from '../guards/workflows-root.js';
+import { corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from '../guards/workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = join(DIR, '..', 'workflows');
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 /**
  * Paths from `git diff --name-status` that can move option coverage.
@@ -72,6 +72,11 @@ interface CorpusChange {
   workflows: Set<string>;
   /** `<authoring workflow>/<activity file>` paths that changed. */
   activityFiles: Set<string>;
+}
+
+/** True when the coverage roster itself changed — every walked product must be re-judged. */
+export function rosterFileChanged(paths: readonly string[]): boolean {
+  return paths.some((path) => path === 'walks/roster.json' || path.endsWith('/walks/roster.json'));
 }
 
 export function classifyChange(paths: readonly string[]): CorpusChange {
@@ -148,8 +153,11 @@ if (isMain) {
     process.exit(2);
   }
   const root = requireWorkflowsRoot(DEFAULT_ROOT);
-  const { WALKED } = await import('../tests/e2e/walked-workflows.js');
-  const changed = classifyChange(changedCorpusPaths(root, base, head));
-  const scope = await coverageScope(root, changed, WALKED);
+  const { loadRoster } = await import('./roster.js');
+  const paths = changedCorpusPaths(root, base, head);
+  const walked = loadRoster(root).walked;
+  const scope = rosterFileChanged(paths)
+    ? [...walked]
+    : await coverageScope(root, classifyChange(paths), walked);
   process.stdout.write(scope.join('\n') + (scope.length ? '\n' : ''));
 }

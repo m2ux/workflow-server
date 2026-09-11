@@ -29,10 +29,10 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, dirname, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { report, type Finding } from './guard-protocol.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
+const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
 
 /** A markdown link whose target is a `.md` path, with or without a trailing `#anchor`. */
 const LINK = /\[[^\]]*\]\(([^)\s]+?\.md)(#[^)\s]*)?\)/g;

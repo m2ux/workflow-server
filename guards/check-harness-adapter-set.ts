@@ -35,13 +35,13 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, requireWorkflowsRoot, UnreachableCorpusError, workflowSubdir } from './workflows-root.js';
+import { assertScanned, requireWorkflowsRoot, UnreachableCorpusError, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, toLines } from './markdown-refs.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES } from '../src/loaders/core-ops.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 /** The adapter group, within the meta workflow. */
 const GROUP = join('techniques', 'harness-compat');

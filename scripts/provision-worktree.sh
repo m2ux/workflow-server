@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # workflow-server — make a git worktree a place the work can be MEASURED.
 #
-# A fresh feature worktree comes up with no `workflows/` checkout and no `node_modules`, so the
+# A fresh feature worktree comes up with no corpus dest of its own and no `node_modules`, so the
 # guards and the test suite cannot run where the edits are. Every measurement then becomes a
 # cross-checkout operation against the main copy — which measures the wrong corpus (issue #327 R4,
 # promoted from #324 C5). The merge-base delta runner needs the same provisioning for its base tree.
 #
 # This script is idempotent and does two things:
-#   1. adds a `workflows` worktree of the `workflows` branch, and inits `.engineering` when present
+#   1. on the primary checkout, adds `.worktrees/workflows` of the `workflows` branch; a nested
+#      engine worktree reads that dest and does not take the branch lock. Inits `.engineering`
+#      when present.
 #   2. makes `node_modules` resolvable, by symlinking the main checkout's install
 #
 #   scripts/provision-worktree.sh              # provision the worktree this script lives in
@@ -34,31 +36,40 @@ fi
 
 echo "provisioning $TARGET"
 
-# --- 1. workflows worktree ---------------------------------------------------------------------
-# The corpus is a checkout of the `workflows` branch, not an object this tree stores. Guards and
-# live-corpus tests read `./workflows` (or `WORKFLOWS_DIR`). `.engineering` holds planning artifacts
-# and is optional — a missing remote for it must not fail provisioning.
+# --- 1. shared corpus dest ---------------------------------------------------------------------
+# One worktree of the `workflows` branch, at `.worktrees/workflows` of the primary checkout.
+# Guards and live-corpus tests read that dest (or WORKFLOWS_DIR). `.engineering` holds planning
+# artifacts and is optional — a missing remote for it must not fail provisioning.
+common_dir="$(git -C "$TARGET" rev-parse --path-format=absolute --git-common-dir)"
+PRIMARY_ROOT="$(cd "$(dirname "$common_dir")" && pwd)"
+DEST="${PRIMARY_ROOT}/.worktrees/workflows"
+TOPLEVEL="$(git -C "$TARGET" rev-parse --show-toplevel)"
+
 add_workflows_worktree() {
-  git -C "$TARGET" fetch origin workflows --quiet 2>/dev/null || true
-  if git -C "$TARGET" worktree add "$TARGET/workflows" workflows; then
+  mkdir -p "$(dirname "$DEST")"
+  git -C "$PRIMARY_ROOT" fetch origin workflows --quiet 2>/dev/null || true
+  if git -C "$PRIMARY_ROOT" worktree add "$DEST" workflows; then
     return 0
   fi
-  echo "  workflows      FAILED — run 'git worktree add ./workflows workflows'" >&2
+  echo "  workflows      FAILED — run 'git worktree add .worktrees/workflows workflows' from ${PRIMARY_ROOT}" >&2
   return 1
 }
 
-if [[ -d "$TARGET/workflows/.git" || -f "$TARGET/workflows/.git" ]]; then
-  corpus_sha="$(git -C "$TARGET/workflows" rev-parse --short HEAD 2>/dev/null || echo unknown)"
-  echo "  workflows      worktree @ ${corpus_sha}"
-elif [[ -d "$TARGET/workflows" ]] && [[ -z "$(ls -A "$TARGET/workflows" 2>/dev/null)" ]]; then
-  rmdir "$TARGET/workflows"
+report_dest() {
+  if [[ -d "$DEST/.git" || -f "$DEST/.git" ]]; then
+    echo "  workflows      ${DEST} @ $(git -C "$DEST" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+    return 0
+  fi
+  return 1
+}
+
+if report_dest; then
+  :
+elif [[ "$TOPLEVEL" == "$PRIMARY_ROOT" ]]; then
   add_workflows_worktree || exit 1
-  echo "  workflows      worktree @ $(git -C "$TARGET/workflows" rev-parse --short HEAD 2>/dev/null || echo unknown)"
-elif [[ ! -e "$TARGET/workflows" ]]; then
-  add_workflows_worktree || exit 1
-  echo "  workflows      worktree @ $(git -C "$TARGET/workflows" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+  report_dest || true
 else
-  echo "  workflows      present but not a git checkout — the guards cannot measure this worktree" >&2
+  echo "  workflows      shared dest ${DEST} is missing — provision the primary checkout" >&2
   exit 1
 fi
 
