@@ -18,8 +18,8 @@
  * scopes to nothing.
  *
  * What this cannot see, and the caller must decide: a change to the walker, the policies, or the
- * server changes how EVERY workflow walks, so it needs the full set. This reads a corpus diff and
- * nothing else.
+ * walked roster changes how EVERY workflow walks, so it needs the full set. This reads a corpus
+ * diff and nothing else. A 100% rename is not a coverage change.
  *
  *   npx tsx scripts/coverage-scope.ts <base-corpus-ref> [head-corpus-ref] [--root <workflows-dir>]
  *
@@ -35,13 +35,35 @@ import { corpusWorkflows, requireWorkflowsRoot } from '../guards/workflows-root.
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = join(DIR, '..', 'workflows');
 
+/**
+ * Paths from `git diff --name-status` that can move option coverage.
+ *
+ * A 100% rename leaves every definition byte where the walk already measured it, so the new path
+ * is not a coverage change. A rename that also edits, or an add/modify/delete, is.
+ */
+export function pathsFromNameStatus(stdout: string): string[] {
+  const paths: string[] = [];
+  for (const line of stdout.split('\n')) {
+    if (!line) continue;
+    const [status, ...rest] = line.split('\t');
+    if (!status || rest.length === 0) continue;
+    if (status === 'R100') continue;
+    paths.push(rest[rest.length - 1]!);
+  }
+  return paths;
+}
+
 /** Corpus paths that changed between two refs, as the corpus's own git reports them. */
 export function changedCorpusPaths(root: string, base: string, head = 'HEAD'): string[] {
-  const diff = spawnSync('git', ['-C', root, 'diff', '--name-only', `${base}..${head}`], { encoding: 'utf-8' });
+  const diff = spawnSync(
+    'git',
+    ['-C', root, 'diff', '--name-status', '-M100', `${base}..${head}`],
+    { encoding: 'utf-8' },
+  );
   if (diff.status !== 0) {
     throw new Error(`cannot diff corpus ${base}..${head}: ${diff.stderr.trim() || 'git failed'}`);
   }
-  return diff.stdout.split('\n').map((l) => l.trim()).filter(Boolean);
+  return pathsFromNameStatus(diff.stdout);
 }
 
 /** The activity ids an activity file path could hold, keyed by the workflow that authored it. */
