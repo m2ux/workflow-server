@@ -1,8 +1,7 @@
 name: Verify
 
-# Engine checks that do not need a live corpus: typecheck, the test suite (live-corpus
-# tests skip when `workflows/` is absent), and the delivery-cost gate against a fixture
-# under `tests/fixtures/`. Corpus guards and the coverage walk run on corpus jobs.
+# Typecheck, the test suite, and the delivery-cost gate against a fixture
+# under `tests/fixtures/`. Live-corpus tests skip when `workflows/` is absent.
 
 on:
   push:
@@ -24,9 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # `.engineering` nests a private repo this runner cannot clone. Engine CI does not
-          # check a corpus out: typecheck and `test:ci` skip live-corpus tests when
-          # `workflows/` is absent.
+          # `.engineering` nests a private repo this runner cannot clone.
+          # Typecheck and `test:ci` skip live-corpus tests when `workflows/` is absent.
           submodules: false
 
       - uses: actions/setup-node@v4

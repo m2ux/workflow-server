@@ -48,7 +48,7 @@ describe.skipIf(!liveCorpusRoot())('walk baseline corpus stamp', () => {
   // The stamp answers that question for the tree in front of it. It is a file recording the provenance
   // of sibling files, so a merge can take it from one parent and the baselines it speaks for from the
   // other — matching, and silent, while the two describe different corpora (#479). Keep the stamp and
-  // the snapshots in the same commit on the workflows branch.
+  // the snapshots in the same commit.
   it('was generated against the corpus commit now checked out', () => {
     expectStampFresh((stampSha, currentSha) =>
       `walk snapshots were generated against corpus ${stampSha} but the checkout is at ${currentSha}. `
@@ -227,7 +227,7 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
    * the number. A corpus bump that stops binding one variable can retire a step nothing else
    * mentions — `gitnexus_indexed` losing its bound value took `gitnexus-detect-changes-preflight`
    * out of all six walks and one step off this total (#479). Re-baseline in the commit that changes
-   * the walk; the snapshots live on the workflows branch under `walks/`.
+   * the walk; the snapshots live under `walks/` of the pointed corpus tree.
    *
    * Also asserted, and independent of both totals: every step some walk ran is a step its activity
    * declares. That is what an id rename or a manifest drifting from the definition would break.

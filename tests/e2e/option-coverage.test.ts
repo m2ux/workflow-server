@@ -91,11 +91,7 @@ function corpusWorkflows(): string[] {
 
 /**
  * Fourteen full coverage walks do not belong in the suite every unit-test run waits for, so this is
- * `npm run test:coverage-walk` and a job of its own on the `workflows` branch
- * (`.github/workflows/coverage.yml` there) rather than
- * opt-in-if-you-remember: the flag keeps `test:ci` fast, and the job means nobody has to set it.
- * A change to how walking works still runs the full roster from this tree
- * (`.github/workflows/coverage.yml` on `main`).
+ * `npm run test:coverage-walk` rather than part of `test:ci`. The flag keeps the suite fast.
  */
 describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option coverage', () => {
   let h: Harness;
@@ -216,8 +212,8 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     // The margin is the point. At a 2,700-second ceiling the same corpus walked green in 2,514
     // seconds on one runner and timed out on the next, and a timeout is reported as the options the
     // walk had not reached — a coverage failure naming the definitions when the cause is the clock.
-    // So this clears the measured cost by half again rather than by a tenth, and the job timeout in
-    // .github/workflows/coverage.yml clears this.
+    // So this clears the measured cost by half again rather than by a tenth, and the job that
+    // invokes this test sizes its timeout above it.
     //
     // Concurrency cannot buy the next rise back: the walks share one event loop and the wall clock
     // is already the slowest of them. A corpus that brings the cost back here wants that walk made

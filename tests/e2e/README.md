@@ -116,15 +116,8 @@ is a numerator only. A ratio drawn from the walks on both sides is silent about 
 checkpoint no walk reaches: such a ratio reads 100% for nine workflows while three
 of them are at 20%, 24% and 33% of what they declare (issue #472).
 
-Own CI job on the `workflows` branch (`.github/workflows/coverage.yml` there) rather than
-part of `test:ci`: fourteen full walks do not belong in the suite every unit-test
-run waits for, and a coverage regression should not read as a unit-test failure.
-`WF_OPTION_COVERAGE=1` is what the job sets, so nobody has to remember to.
-
-A pull request that changes a definition walks only the workflows its diff can
-move. A change to how walking works — the walker, the policies, the server — runs
-the full roster from this tree ([`coverage.yml`](../../.github/workflows/coverage.yml))
-against the corpus this tree adopts.
+`npm run test:coverage-walk` (`WF_OPTION_COVERAGE=1`) rather than part of `test:ci`:
+fourteen full walks do not belong in the suite every unit-test run waits for.
 
 ---
 

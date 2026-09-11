@@ -305,17 +305,8 @@ It adds a `workflows` worktree and makes `node_modules` resolvable. Idempotent.
 ### Enforcement
 
 [`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`,
-`npm run test:ci`, and the fixture delivery gate on every pull request. Those steps need no corpus
-checkout: live-corpus tests skip when `workflows/` is absent.
-The guard sweep and the snapshot walks run on the `workflows` branch
-([`verify-corpus.yml`](https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/verify-corpus.yml)):
-they borrow this tree's `guards/` and point them at the corpus under review, reading `ledgers/` and
-`walks/` of that tree. The fourteen-workflow coverage walk is a job of its own on that branch
-([`coverage.yml`](https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/coverage.yml)),
-scoped from the corpus diff. A change to how walking works — the walker, the policies, the server —
-still runs the full roster from this tree
-([`.github/workflows/coverage.yml`](../.github/workflows/coverage.yml)), against a checkout of the
-`workflows` branch tip.
+`npm run test:ci`, and the fixture delivery gate on every pull request. Live-corpus tests skip when
+`workflows/` is absent.
 Guards that also run as Vitest tests (`tests/binding-fidelity.test.ts`,
 `tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`, `tests/audience-guard.test.ts`,
 `tests/review-mode-gating.test.ts`, `tests/identifier-qualification.test.ts`) fail `npm test` too
