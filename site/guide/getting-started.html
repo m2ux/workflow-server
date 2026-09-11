@@ -94,12 +94,12 @@
     <table>
       <thead><tr><th scope="col">Path</th><th scope="col">Default</th><th scope="col">Purpose</th></tr></thead>
       <tbody>
-        <tr><td><strong>Install dir</strong></td><td><code>~/.local/share/workflow-server</code></td><td>Helper scripts, <code>env</code>, <code>state/</code>, workflows clone</td></tr>
+        <tr><td><strong>Install dir</strong></td><td><code>~/.local/share/workflow-server</code></td><td>Helper scripts, <code>env</code>, <code>state/</code>, default corpus checkout</td></tr>
         <tr><td><strong>Projects root</strong></td><td><code>$HOST_PROJECTS_ROOT</code> (default <code>~/projects/dev</code>)</td><td>Product checkouts by basename</td></tr>
         <tr><td><strong>Checkout</strong></td><td><code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/</code></td><td>Source / <code>repo_root</code></td></tr>
         <tr><td><strong>Planning</strong></td><td><code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.engineering/…</code></td><td>Planning / sessions</td></tr>
         <tr><td><strong>Feature worktrees</strong></td><td><code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.worktrees/&lt;slug&gt;/</code></td><td>Per-work-package trees</td></tr>
-        <tr><td><strong>Workflows</strong></td><td><code>$INSTALL/workflows</code></td><td>Workflows-branch checkout; products under <code>corpus/</code></td></tr>
+        <tr><td><strong>Corpus</strong></td><td><code>$INSTALL/workflows</code></td><td>Default <code>--workflow-dir</code>; products under <code>corpus/</code></td></tr>
       </tbody>
     </table>
   </div>
@@ -108,17 +108,18 @@
   <h3 id="http-install">Docker / HTTP (quick)</h3>
   <pre><code>curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
 ~/.local/share/workflow-server/start.sh -d</code></pre>
-  <p class="prose">Creates the install layout, clones workflows, writes <code>$INSTALL/env</code>, and starts the GHCR image. Verify and MCP client steps: <a href="https://github.com/m2ux/workflow-server/blob/main/http.md">http.md</a>.</p>
+  <p class="prose">Creates the install layout, places a corpus at <code>$INSTALL/workflows</code>, writes <code>$INSTALL/env</code>, and starts the GHCR image. Verify and MCP client steps: <a href="https://github.com/m2ux/workflow-server/blob/main/http.md">http.md</a>.</p>
 
   <h3 id="stdio-install">stdio (quick)</h3>
   <pre><code>git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
 npm install
+# corpus at --workflow-dir (default ./workflows)
 git worktree add ./workflows workflows
 npm run build
 # optional host layout (without Docker):
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server</code></pre>
-  <p class="prose">That checkout's product definitions live under <code>corpus/</code>. Point the IDE MCP config at <code>dist/index.js</code> with <code>--install-dir</code> and <code>--workflow-dir</code>. Full client snippet and verify: <a href="https://github.com/m2ux/workflow-server/blob/main/stdio.md">stdio.md</a>.</p>
+  <p class="prose">The server reads any corpus at <code>--workflow-dir</code> (default <code>./workflows</code>). Product definitions live under <code>corpus/</code> of that tree. Point the IDE MCP config at <code>dist/index.js</code> with <code>--install-dir</code> and <code>--workflow-dir</code>. Full client snippet and verify: <a href="https://github.com/m2ux/workflow-server/blob/main/stdio.md">stdio.md</a>.</p>
 
   <h2 id="deploy">2. Init a target repo</h2>
   <p class="prose">Two steps per product repo: deploy engineering into the repo, then check it out under <code>$HOST_PROJECTS_ROOT</code>.</p>
@@ -171,7 +172,7 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 
   <h2 id="day-two">Update workflows</h2>
   <p class="prose">Same operations as <a href="https://github.com/m2ux/workflow-server/blob/main/setup.md">setup.md</a> §4 (Update Workflows). The anchor <code>#day-two</code> is stable for existing links.</p>
-  <pre><code>$INSTALL/update-workflows.sh   # refresh workflows branch; restart HTTP if running
+  <pre><code>$INSTALL/update-workflows.sh   # refresh the corpus at $INSTALL/workflows; restart HTTP if running
 $INSTALL/stop.sh               # stop HTTP container</code></pre>
 
   <h2 id="next">Next steps</h2>
