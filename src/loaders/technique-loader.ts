@@ -13,7 +13,7 @@ import {
   getWorkflowTechniquesDir,
   MarkdownTechniqueParseError,
 } from './markdown-technique-loader.js';
-import { type CorpusSource, indexCorpus } from './corpus-index.js';
+import { type CorpusIndex, type CorpusSource, indexCorpus } from './corpus-index.js';
 
 /* -------------------------------------------------------------------------- */
 /* YAML-projection delivery (B3)                                              */
@@ -121,8 +121,8 @@ export async function readTechniqueWithSource(
   techniqueId: string,
   workflowDir: string,
   workflowId?: string,
+  index: CorpusIndex = indexCorpus(workflowDir),
 ): Promise<Result<{ technique: Technique; sourceWorkflowId: string }, TechniqueNotFoundError>> {
-  const index = indexCorpus(workflowDir);
   if (techniqueId.includes('/')) {
     const [targetWorkflow, actualSkillId] = techniqueId.split('/', 2);
     if (!targetWorkflow || !actualSkillId) {
@@ -621,14 +621,15 @@ export async function composeTechniqueWithSource(
   workflowDir: string,
   workflowId: string,
 ): Promise<Result<{ technique: Technique; sourceWorkflowId: string }, TechniqueNotFoundError>> {
-  const base = await readTechniqueWithSource(techniqueId, workflowDir, workflowId);
+  const index = indexCorpus(workflowDir);
+  const base = await readTechniqueWithSource(techniqueId, workflowDir, workflowId, index);
   if (!base.success) return base;
 
   // Derive path segments within the workflow's techniques directory.
   // Strip any leading 'workflow/' cross-workflow prefix, then split on '::'.
   const rawId = techniqueId.includes('/') ? (techniqueId.split('/', 2)[1] ?? techniqueId) : techniqueId;
   const pathSegments = rawId.split('::').filter(s => s.length > 0);
-  const techniquesDir = getWorkflowTechniquesDir(indexCorpus(workflowDir), workflowId);
+  const techniquesDir = getWorkflowTechniquesDir(index, workflowId);
 
   return ok({
     technique: await composeLoaded(base.value.technique, pathSegments, techniquesDir),
