@@ -47,7 +47,7 @@ The directories, and what each one owns:
 | `src/trace.ts` | The trace store and the encoding of trace tokens |
 | `schemas/` | JSON Schemas generated from the Zod sources, for editor tooling |
 | `scripts/` | Install and container helpers, schema generation, and the benchmarks |
-| `guards/` | Check programs, the guard registry, and corpus-root resolution |
+| `guards/` | Check programs, the guard registry, and corpus-root resolution. Overview: [`guards/README.md`](../guards/README.md). |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
 | `workflows/` | A worktree of the `workflows` branch. Product definitions live under `corpus/`; specimen workflows live under `corpus/specimens/`. `ledgers/`, `walks/` and `docs/` are named roots discovery skips at the branch root; `specimens` is skipped by name at any depth. A workflow's id is its directory name. Layout authoring lives at `workflows/docs/`. |
 | `docs/` | This documentation |
