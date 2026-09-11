@@ -1,0 +1,26 @@
+# Run the published engine image with this checkout as the corpus.
+#
+# From this clone (install dest or a worktree of the workflows branch):
+#   docker compose -f deploy/compose.yml up
+#
+# Install already records HOST_WORKFLOWS_DIR in $INSTALL/env and start.sh
+# mounts that path. This file is the same bind when you have the clone and
+# not an engine checkout.
+#
+# Override the image with WORKFLOW_SERVER_IMAGE / WORKFLOW_SERVER_TAG.
+
+services:
+  workflow-server:
+    image: ${WORKFLOW_SERVER_IMAGE:-ghcr.io/m2ux/workflow-server}:${WORKFLOW_SERVER_TAG:-latest}
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    environment:
+      WORKFLOW_DIR: /app/workflows
+      TRANSPORT: http
+      HOST: 0.0.0.0
+      PORT: 3000
+    volumes:
+      - type: bind
+        source: ..
+        target: /app/workflows
+        read_only: true

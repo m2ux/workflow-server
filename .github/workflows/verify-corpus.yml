@@ -75,3 +75,6 @@ jobs:
 
       - name: All-workflows drift against this tree
         run: npx vitest run tests/e2e/all-workflows-walk.test.ts
+
+      - name: Coverage roster accounts for every product
+        run: npx vitest run tests/e2e/coverage-roster.test.ts

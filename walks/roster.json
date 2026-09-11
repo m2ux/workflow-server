@@ -1,0 +1,32 @@
+{
+  "walked": [
+    "workflow-design",
+    "work-package",
+    "prism-evaluate",
+    "prism",
+    "workflow-authoring",
+    "midnight-system-review",
+    "work-packages",
+    "ponytail",
+    "plain-language",
+    "requirements-refinement",
+    "prism-update",
+    "codebase-wiki",
+    "prism-audit",
+    "meta"
+  ],
+  "notWalked": [
+    {
+      "id": "remediate-vuln",
+      "reason": "Six minutes on its own; 21 of 60 walks die on a branch whose checkpoint or transition does not resolve. 92 of its 99 options belong to work-package activities the work-package walk covers; the 7 that are its own go on the uncovered list."
+    },
+    {
+      "id": "cicd-pipeline-security-audit",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it."
+    },
+    {
+      "id": "substrate-node-security-audit",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it."
+    }
+  ]
+}

@@ -65,7 +65,7 @@ jobs:
             tests/e2e/walker.ts \
             tests/e2e/policies.ts \
             tests/e2e/coverage.ts \
-            tests/e2e/walked-workflows.ts \
+            scripts/roster.ts \
             | head -1)
           if [ -n "$walker_changed" ]; then
             echo "borrowed engine walker changed ($walker_changed) — walking every workflow"
