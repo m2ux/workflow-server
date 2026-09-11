@@ -92,6 +92,7 @@ export class SessionStoreError extends Error {
       | 'NOT_FOUND'
       | 'COLLISION'
       | 'SEAL_MISMATCH'
+      | 'FOLDER_OCCUPIED'
       | 'INVALID_INDEX'
       | 'STALE_WRITE'
       | 'WORKSPACE_INVALID',
@@ -424,6 +425,27 @@ export async function writeSessionFile(
   state: unknown,
 ): Promise<{ bytes: string; seal: string }> {
   return persistSessionFile(folderAbsPath, state);
+}
+
+/**
+ * Persist `state` into a folder that does not already hold `session.json`.
+ * When the file is present, throws `SessionStoreError('FOLDER_OCCUPIED')`
+ * and writes nothing. Occupancy lives here so `writeSessionFile` stays the
+ * unconditional persist for migration, concurrency tests, and a folder this
+ * call has already established is empty.
+ */
+export async function createSessionFile(
+  folderAbsPath: string,
+  state: unknown,
+): Promise<{ bytes: string; seal: string }> {
+  if (await sessionFileExists(folderAbsPath)) {
+    throw new SessionStoreError(
+      `session.json already present in ${folderAbsPath}`,
+      'FOLDER_OCCUPIED',
+      { folder: folderAbsPath },
+    );
+  }
+  return writeSessionFile(folderAbsPath, state);
 }
 
 /**

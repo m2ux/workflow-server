@@ -349,7 +349,15 @@ export function describeSessionStoreError(err: unknown): string {
     case 'COLLISION':
       return `${err.message}. Two planning folders hashed to the same session_index — recreate the colliding session(s) or remove a stale folder under the active planning root (legacy: .engineering/artifacts/planning/; repo mode: artifacts/planning/ under the engineering checkout).`;
     case 'SEAL_MISMATCH':
-      return `${err.message}. The session.json (or its parsed contents) does not match the seal recorded in .session-token — restore the folder from the most recent commit before retrying.`;
+      return `${err.message}. The session.json (or its parsed contents) does not match the seal recorded in .session-token — a rotated signing key is the likely cause. Restore the folder from the most recent commit before retrying. Nothing was written.`;
+    case 'FOLDER_OCCUPIED': {
+      const occupiedIndex = err.details?.session_index;
+      const continueHint =
+        typeof occupiedIndex === 'string'
+          ? `Pass session_index ${occupiedIndex} to continue that run, or pass a distinct planning_folder to open another.`
+          : 'Pass that session_index to continue it, or pass a distinct planning_folder to open another.';
+      return `${err.message}. The folder already holds a run; nothing was written. ${continueHint}`;
+    }
     case 'STALE_WRITE':
       return `${err.message}. CALL THIS TOOL AGAIN with the same arguments. Nothing was written, so the repeat is not a double-record: it reads the state as it now stands and applies your change to that. Another call recorded against this session while this one was in flight, and admitting this write would have discarded what that call recorded. Two calls in flight against one session produce this — a parent and its children share a single file, so a parent and one of its children count as two. Keep one call in flight per session and it does not arise.`;
     case 'WORKSPACE_INVALID':

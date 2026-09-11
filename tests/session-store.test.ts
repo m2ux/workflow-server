@@ -19,6 +19,8 @@ import {
   SESSION_FILE_NAME,
   SessionStoreError,
   canonicaliseJson,
+  createSessionFile,
+  describeSessionStoreError,
   ensurePlanningFolder,
   planningRoot,
   readSessionFile,
@@ -372,6 +374,70 @@ describe('session-store primitives', () => {
     });
 
     afterEachCleanup(() => workspace);
+  });
+
+  describe('createSessionFile occupancy (PR528-TC-11)', () => {
+    let workspace: string;
+
+    beforeEach(async () => {
+      workspace = await mkdtemp(join(tmpdir(), 'sx-create-'));
+    });
+
+    it('delegates to writeSessionFile on an empty folder; files match an unconditional write', async () => {
+      const created = await ensurePlanningFolder(workspace, '2026-09-11-create-empty');
+      const written = await ensurePlanningFolder(workspace, '2026-09-11-write-empty');
+      const state = { schemaVersion: 1, sessionIndex: 'ABCDEF', sentinel: 'create' };
+      await createSessionFile(created, state);
+      await writeSessionFile(written, state);
+      expect(await readFile(sessionFilePath(created), 'utf8')).toBe(
+        await readFile(sessionFilePath(written), 'utf8'),
+      );
+      expect(await readFile(sealFilePath(created), 'utf8')).toBe(
+        await readFile(sealFilePath(written), 'utf8'),
+      );
+    });
+
+    it('throws FOLDER_OCCUPIED and leaves both files byte-identical', async () => {
+      const folder = await ensurePlanningFolder(workspace, '2026-09-11-occupied');
+      await writeSessionFile(folder, { schemaVersion: 1, sessionIndex: 'OCCUPD', sentinel: 'before' });
+      const sessionBefore = await readFile(sessionFilePath(folder));
+      const sealBefore = await readFile(sealFilePath(folder));
+      await expect(
+        createSessionFile(folder, { schemaVersion: 1, sessionIndex: 'NEWINX', sentinel: 'after' }),
+      ).rejects.toMatchObject({
+        code: 'FOLDER_OCCUPIED',
+        details: { folder },
+      });
+      expect(await readFile(sessionFilePath(folder))).toEqual(sessionBefore);
+      expect(await readFile(sealFilePath(folder))).toEqual(sealBefore);
+    });
+
+    afterEachCleanup(() => workspace);
+  });
+
+  describe('describeSessionStoreError occupancy arms', () => {
+    it('FOLDER_OCCUPIED names the folder, that nothing was written, and how to continue', () => {
+      const described = describeSessionStoreError(
+        new SessionStoreError(
+          'session.json already present in /planning/x',
+          'FOLDER_OCCUPIED',
+          { folder: '/planning/x', session_index: 'ABCDEF' },
+        ),
+      );
+      expect(described).toContain('session.json already present in /planning/x');
+      expect(described).toContain('already holds a run');
+      expect(described).toContain('nothing was written');
+      expect(described).toContain('ABCDEF');
+      expect(described).toContain('distinct planning_folder');
+    });
+
+    it('SEAL_MISMATCH names key rotation as the likely cause', () => {
+      const described = describeSessionStoreError(
+        new SessionStoreError('seal mismatch in /planning/x', 'SEAL_MISMATCH', { folder: '/planning/x' }),
+      );
+      expect(described).toContain('rotated signing key');
+      expect(described).toContain('Nothing was written');
+    });
   });
 
   describe('planningRoot / ensurePlanningFolder', () => {
