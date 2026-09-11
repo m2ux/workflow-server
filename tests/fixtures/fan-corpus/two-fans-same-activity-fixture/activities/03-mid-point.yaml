@@ -1,0 +1,22 @@
+id: mid-point
+version: 1.0.0
+name: Mid Point
+description: The meeting point both fans converge on, and the step that reaches the second source.
+variables:
+  writes:
+    - name: second_targets
+      type: array
+      description: The second fan's units, assigned before that fan opens.
+      defaultValue:
+        - second-x
+        - second-y
+steps:
+  - kind: action
+    id: name-second
+    actions:
+      - action: set
+        target: second_targets
+        value: the second fan's units
+exits:
+  - id: passed
+    isDefault: true
