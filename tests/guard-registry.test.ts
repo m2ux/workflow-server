@@ -59,6 +59,12 @@ describe('guard registry', () => {
     expect(verify, 'engine CI must not check the gitlink out').not.toContain('workflows-corpus');
   });
 
+  it('scopes definition coverage on the corpus job, not the engine coverage job', () => {
+    const coverage = readFileSync(join(REPO, '.github/workflows/coverage.yml'), 'utf-8');
+    expect(coverage, 'corpus diffs are scoped on the workflows branch').not.toContain('coverage-scope.ts');
+    expect(coverage, 'walker changes still check the adopted gitlink out').toContain('workflows-corpus');
+  });
+
   it('covers every check:* script in package.json', () => {
     const aggregate = new Set(['check:all', 'check:delta']);
     const uncovered = Object.keys(pkg.scripts)
