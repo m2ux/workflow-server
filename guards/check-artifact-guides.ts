@@ -20,7 +20,7 @@
  * An artifact that resolves neither way is a finding, unless `artifact-guide-baseline.json` records
  * it as an accepted gap with a classification. The baseline is not a snapshot to regenerate: an
  * entry is a judgement about one artifact, in the same spirit as
- * `scripts/binding-fidelity-triage.json`. Adding a new artifact with no guide fails the guard;
+ * `ledgers/binding-fidelity-triage.json` of the pointed tree. Adding a new artifact with no guide fails the guard;
  * closing a baselined gap means deleting its entry.
  *
  * Every corpus artifact resolves today, so no baseline file exists — the triage is the escape hatch
@@ -278,7 +278,7 @@ export async function collectUnmappedArtifacts(
 
   // A baseline entry that matched nothing is stale — the artifact gained a guide, was renamed, or
   // stopped being declared. Reporting it is what stops the triage silently outliving the debt it
-  // records, the same convention scripts/binding-fidelity-triage.json states for its own entries.
+  // records, the same convention ledgers/binding-fidelity-triage.json states for its own entries.
   for (const entry of reportStale ? baseline.entries : []) {
     const acceptedKey = `${entry.site} ${entry.artifact}`;
     if (matched.has(acceptedKey)) continue;

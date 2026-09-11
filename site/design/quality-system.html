@@ -88,7 +88,7 @@
         <text x="480" y="40" fill="var(--diagram-label)">Specifications + schemas</text>
         <text x="480" y="58" fill="var(--diagram-note)" font-size="12.5" font-weight="400">the rules guards encode</text>
         <rect x="280" y="92" width="400" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="114" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">scripts/check-*.ts</text>
+        <text x="480" y="114" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">guards/check-*.ts</text>
         <text x="480" y="132" fill="var(--diagram-note)" font-size="12.5" font-weight="400">npm run check:&lt;name&gt;</text>
         <rect x="30" y="168" width="450" height="132" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="255" y="192" fill="var(--diagram-label)">workflows worktree</text>
@@ -144,7 +144,7 @@
         <text x="795" y="48" fill="var(--diagram-label)">deploy-docs CI</text>
         <text x="795" y="68" fill="var(--diagram-note)" font-size="12.5" font-weight="400">site guards + build:site</text>
         <rect x="230" y="130" width="500" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="480" y="154" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">scripts/check-*.ts</text>
+        <text x="480" y="154" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">guards/check-*.ts</text>
         <text x="480" y="174" fill="var(--diagram-note)" font-size="12.5" font-weight="400">same scripts, reproducible exit codes</text>
       </g>
       <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
@@ -153,7 +153,7 @@
         <path d="M 795 80 L 795 108 L 560 108 L 560 126" marker-end="url(#arrowgsrun)"/>
       </g>
     </svg>
-    <figcaption>Authors run guards locally while editing the <code>workflows</code> branch; Vitest mirrors key corpus checks so regressions fail <code>npm test</code>; the <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/verify.yml"><code>verify</code></a> workflow walks the whole registry on every pull request, and <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/deploy-docs.yml"><code>deploy-docs</code></a> rebuilds the generated regions and checks them for drift.</figcaption>
+    <figcaption>Authors run guards locally while editing the <code>workflows</code> branch; Vitest mirrors key corpus checks so regressions fail <code>npm test</code> when a live corpus is present; <a href="https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/verify-corpus.yml"><code>verify-corpus</code></a> walks the registry on corpus pull requests; engine <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/verify.yml"><code>verify</code></a> runs typecheck, <code>test:ci</code>, and the fixture delivery gate; and <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/deploy-docs.yml"><code>deploy-docs</code></a> rebuilds the generated regions and checks them for drift.</figcaption>
   </figure>
 
   <p class="prose">Most guards are <strong>hard-zero</strong> — any finding fails the run. Where a guard measures debt the corpus already carries, every finding is <strong>triaged once by hand</strong> in a committed file that records a verdict and a named rationale against each one: harmless by design, a real seam accepted for now, or a live bug that keeps the guard red until it is fixed. There is no re-snapshot flag, because classifying a finding is a judgement rather than a regeneration — and an entry that stops matching anything is reported too, so a seam cannot leave the ledger by going quiet. The full command list is in <a href="https://github.com/m2ux/workflow-server/blob/main/package.json"><code>package.json</code></a>.</p>

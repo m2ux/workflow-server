@@ -239,7 +239,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       check: 'stale-acceptance',
       site: key,
       detail: 'accepted headless auto-advance no longer matches any checkpoint — delete the entry from '
-        + 'ACCEPTED_HEADLESS_AUTO_ADVANCE in scripts/check-review-mode-gating.ts',
+        + 'ACCEPTED_HEADLESS_AUTO_ADVANCE in guards/check-review-mode-gating.ts',
     });
   }
   return findings;

@@ -32,7 +32,7 @@
  *       at N steps is one seam defect, and the baseline stays stable when steps move.
  *
  * Reference-resolution (every `step.technique` resolves through the loader) is covered by
- * scripts/check-all-refs.ts for `techniques[]` lists; step bindings are covered here by the
+ * guards/check-all-refs.ts for `techniques[]` lists; step bindings are covered here by the
  * binding-resolution check.
  *
  * The corpus carries pre-existing violations. This guard reports ALL of them and exits 1; it no
