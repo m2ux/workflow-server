@@ -3,12 +3,11 @@ name: Coverage walk
 # Every checkpoint option this corpus declares is taken by some walk, or listed as one this matrix
 # does not reach.
 #
-# This job lives here because its subject is this tree. A pull request that changes a definition is
-# what can move coverage; walking it only after a later gitlink bump on the engine tree would grade
-# the change after merge.
+# This job lives here because its subject is this tree. A pull request that changes a definition
+# walks only the workflows its diff can move. A borrowed engine whose walker, policies or server
+# moved walks the full roster. A dispatch walks the full roster.
 #
-# The walker, the policies and the server live on the engine tree this job checks out. A pull
-# request walks only the workflows its diff can move; a dispatch walks the full roster.
+# The walker, the policies and the server live on the engine tree this job checks out.
 
 on:
   pull_request:
@@ -34,6 +33,7 @@ jobs:
         with:
           ref: feat/693-named-roots
           submodules: false
+          fetch-depth: 0
 
       # The tip, not the merge result — see verify-corpus.yml. fetch-depth: 0 so the scope step can
       # diff against the pull-request base.
@@ -60,6 +60,13 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
+          git fetch --no-tags origin main
+          walker_changed=$(git diff --name-only origin/main...HEAD -- src tests/e2e/walker.ts tests/e2e/policies.ts tests/e2e/coverage.ts tests/e2e/walked-workflows.ts tests/e2e/option-coverage.test.ts | head -1)
+          if [ -n "$walker_changed" ]; then
+            echo "borrowed engine walker changed ($walker_changed) — walking every workflow"
+            echo "scope=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git -C workflows fetch --no-tags origin "$BASE_SHA"
           scope=$(npx tsx scripts/coverage-scope.ts "$BASE_SHA" HEAD --root workflows | paste -sd, -)
           echo "corpus $BASE_SHA..HEAD scopes to: ${scope:-(nothing that moves coverage)}"
