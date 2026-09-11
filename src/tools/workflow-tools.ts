@@ -2581,7 +2581,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('get_workflow_status',
-    'Session status (active/blocked/completed), current activity, completed activities, last checkpoint, and parent context if nested.',
+    'Session status (active/blocked/completed), the activities in flight, completed activities, last checkpoint, and parent context if nested.',
     {
       ...sessionIndexParam,
     },
@@ -2590,7 +2590,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       const clientWf = state.workflowId;
-      const clientAct = state.frontier[0] ?? '';
       const clientActive = state.activeCheckpoint;
 
       const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
@@ -2629,7 +2628,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // rather than its own element — which is the truth about where that value lives, and why
         // the projection names itself on the response it arrives with.
         in_flight: state.frontier,
-        current_activity: clientAct || 'none',
         completed_activities: completedActivities,
         // Rolled-up variable bag from session state, so workers/orchestrators can
         // read decisions and computed values on resume without re-deriving them.

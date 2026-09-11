@@ -136,3 +136,39 @@ describe('get_activity while a fan is in flight', () => {
     expect(replacement.isError).toBeFalsy();
   });
 });
+
+describe('get_workflow_status names the frontier', () => {
+  it('reports every branch in flight and no scalar current_activity', async () => {
+    const start = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'instance-fan-fixture',
+        agent_id: 'orchestrator',
+        planning_folder: `${harness.workspaceDir}/.engineering/artifacts/planning/fan-status-frontier`,
+      },
+    }) as ToolResult;
+    const idx = (JSON.parse(textOf(start)) as { session_index: string }).session_index;
+    await harness.client.callTool({
+      name: 'next_activity',
+      arguments: { session_index: idx, activity_id: 'scope-sweep' },
+    });
+    await harness.client.callTool({
+      name: 'next_activity',
+      arguments: {
+        session_index: idx,
+        activity_id: { activity: 'probe-unit', over: 'probe_targets', variable: 'probe_target' },
+        from_activity: 'scope-sweep',
+        exit: 'scoped',
+        variables_changed: { probe_targets: ['a', 'b'] },
+      },
+    });
+    const status = await harness.client.callTool({
+      name: 'get_workflow_status',
+      arguments: { session_index: idx },
+    }) as ToolResult;
+    expect(status.isError).toBeFalsy();
+    const body = JSON.parse(textOf(status)) as Record<string, unknown>;
+    expect(body['in_flight']).toEqual(['probe-unit#0', 'probe-unit#1']);
+    expect(body).not.toHaveProperty('current_activity');
+  });
+});

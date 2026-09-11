@@ -135,7 +135,7 @@ get_workflow_status({ session_index: "<child_index>" })
 
 This returns:
 - `status`: `active`, `blocked`, or `completed`
-- `current_activity`: The activity the sub-agent is executing
+- `in_flight`: the activities the session is on — one on an ordinary walk, one per branch while a fan runs, empty when nothing is in flight
 - `completed_activities`: Activities finished so far (derived from `session.json` + trace)
 - `last_checkpoint`: The most recent resolved checkpoint
 
