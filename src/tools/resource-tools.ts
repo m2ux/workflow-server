@@ -22,7 +22,6 @@ import {
   ensurePlanningFolder,
   findPlanningFolderBySlug,
   sessionFileExists,
-  writeSessionFile,
   createSessionFile,
   replaceSessionFile,
   verifySeal,
@@ -619,6 +618,22 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           promotedSlug,
           { planningRelativeDir: promoteRoot.planningRelativeDir },
         );
+        if (await sessionFileExists(promotedWorkspaceFolder)) {
+          const { state: occupied } = await verifySeal(promotedWorkspaceFolder);
+          const parsed = safeValidateSessionFile(occupied);
+          if (!parsed.success) {
+            const issues = parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
+            throw new Error(
+              `dispatch_child: existing session.json at ${promotedWorkspaceFolder} does not match the SessionFile schema (${issues}). ` +
+              `A rotated signing key is the likely cause. Nothing was written.`,
+            );
+          }
+          throw new SessionStoreError(
+            `planning folder ${promotedWorkspaceFolder} already holds a session`,
+            'FOLDER_OCCUPIED',
+            { folder: promotedWorkspaceFolder, session_index: parsed.data.sessionIndex },
+          );
+        }
         const childSessionIndex = await computeEmbeddedSessionIndex(
           promotedWorkspaceFolder,
           ['triggeredWorkflows', 0, 'state'],
@@ -648,7 +663,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             data: { workflowId: workflow_id, sessionIndex: childSessionIndex },
           });
         });
-        await writeSessionFile(promotedWorkspaceFolder, parentNext);
+        await createSessionFile(promotedWorkspaceFolder, parentNext);
         // The promoted file is durable; redirect the caller's transient
         // index to it and remove the tmp folder.
         await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
