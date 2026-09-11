@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 5.10.0
+version: 5.11.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
@@ -81,6 +81,19 @@ steps:
           - action: set
             target: current_activity
             value: "{fan_convergence_activity}"
+      - kind: action
+        id: retire-fan-envelope
+        when: fan_convergence_activity
+        actions:
+          # After the fan is opened the loop holds the convergence as current_activity.
+          # The envelope and the convergence name stay unset so later steps in this
+          # iteration, and the next iteration, treat that activity as an ordinary next step.
+          - action: set
+            target: worker_result
+            value: null
+          - action: set
+            target: fan_convergence_activity
+            value: null
       - kind: technique
         id: present-yielded-checkpoint
         when: worker_result.result_type == "checkpoint_pending"
