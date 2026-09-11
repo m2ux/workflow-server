@@ -49,7 +49,7 @@ The directories, and what each one owns:
 | `scripts/` | Install and container helpers, schema generation, and the benchmarks |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution. Overview: [`guards/README.md`](../guards/README.md). |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
-| `workflows/` | A worktree of the `workflows` branch. Product definitions live under `corpus/`; specimen workflows live under `corpus/specimens/`. `ledgers/`, `walks/` and `docs/` are named roots discovery skips at the branch root; `specimens` is skipped by name at any depth. A workflow's id is its directory name. Layout authoring lives at `workflows/docs/`. |
+| `workflows/` | A worktree of the `workflows` branch. Product definitions live under `corpus/`; discovery walks that grouping and does not search sibling folders. Specimen workflows live under `corpus/specimens/` and are reached by pointing the walk there. A workflow's id is its directory name. Layout authoring lives at `workflows/docs/`. |
 | `docs/` | This documentation |
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
