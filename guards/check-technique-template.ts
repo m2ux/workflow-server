@@ -2,7 +2,7 @@
  * Technique-template guard (B9, issue #166).
  *
  * Every technique file under `<workflow>/techniques/` follows the normative template
- * (workflows/docs/technique-protocol-specification.md §3):
+ * (docs/technique-protocol-specification.md §3):
  *
  * - Frontmatter carries `metadata.version` and nothing else — identity comes from the path,
  *   and the loader reads no other key.
