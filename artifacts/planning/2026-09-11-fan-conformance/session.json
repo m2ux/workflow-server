@@ -1,0 +1,2633 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "6.1.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "7G762I",
+  "frontier": [
+    "resolve-target"
+  ],
+  "currentTechnique": "",
+  "exit": "done",
+  "seq": 6,
+  "ts": 1789140175,
+  "startedAt": "2026-09-11T15:22:11.426Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session"
+  ],
+  "variables": {
+    "client_initial_activity": "plan-conformance",
+    "client_planning_slug": "2026-09-11-fan-conformance",
+    "client_session_index": "6HJCR3",
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "component_selection_needed": false,
+    "has_saved_state": false,
+    "host_binding_mismatch": false,
+    "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+    "initiative_name": "fan-conformance",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance",
+    "resume_intent_requested": false,
+    "submodules": [],
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "fan-conformance",
+    "user_request": "Run fan-conformance as a catalog workflow on the default dest: every graph fan form against this checkout, then report what the run did.",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-11T15:22:11.426Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "component_selection_needed": false,
+          "has_saved_state": false,
+          "host_binding_mismatch": false,
+          "is_monorepo": false,
+          "is_resuming": false,
+          "resume_intent_requested": false,
+          "submodules": [],
+          "user_request": "Run fan-conformance as a catalog workflow on the default dest: every graph fan form against this checkout, then report what the run did.",
+          "workflow_match_ambiguous": false
+        }
+      },
+      "timestamp": "2026-09-11T15:22:11.426Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-09-11T15:22:18.485Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 73994,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 8232,
+        "delivery": "full",
+        "stepId": "resolve-host-repo",
+        "techniqueId": "version-control::resolve-host-repo"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 6519,
+        "delivery": "full",
+        "stepId": "list-available-workflows",
+        "techniqueId": "workflow-engine::list-workflows"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 7916,
+        "delivery": "full",
+        "stepId": "match-target",
+        "techniqueId": "workflow-engine::match-target-workflow"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 6840,
+        "delivery": "full",
+        "stepId": "detect-resume-intent",
+        "techniqueId": "workflow-engine::detect-resume-intent"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 7377,
+        "delivery": "full",
+        "stepId": "extract-context",
+        "techniqueId": "workflow-engine::extract-identifying-context"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 7849,
+        "delivery": "full",
+        "stepId": "name-initiative",
+        "techniqueId": "workflow-engine::derive-initiative-name"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-09-11T15:22:22.558Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_repo",
+        "source": "variables_changed",
+        "value": "m2ux/workflow-server"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_repo_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_binding_mismatch",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_workflow_id",
+        "source": "variables_changed",
+        "value": "fan-conformance"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "workflow_match_ambiguous",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "resume_intent_requested",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "has_saved_state",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "is_resuming",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "initiative_name",
+        "source": "variables_changed",
+        "value": "fan-conformance"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-09-11T15:22:26.406Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "6HJCR3",
+        "workflowId": "fan-conformance"
+      },
+      "timestamp": "2026-09-11T15:22:30.881Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-09-11T15:22:55.021Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-09-11-fan-conformance"
+      },
+      "timestamp": "2026-09-11T15:22:55.021Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "6HJCR3"
+      },
+      "timestamp": "2026-09-11T15:22:55.021Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_initial_activity",
+        "source": "variables_changed",
+        "value": "plan-conformance"
+      },
+      "timestamp": "2026-09-11T15:22:55.021Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance"
+      },
+      "timestamp": "2026-09-11T15:22:55.021Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-09-11T15:22:55.021Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-09-11T15:22:55.021Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-09-11T15:22:55.021Z",
+      "type": "activity_entered"
+    },
+    {
+      "data": {
+        "sessionIndex": "6HJCR3",
+        "workflowId": "fan-conformance"
+      },
+      "timestamp": "2026-09-11T15:46:46.705Z",
+      "type": "workflow_returned"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "completedAt": "2026-09-11T15:46:46.705Z",
+      "sessionIndex": "6HJCR3",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {},
+        "completedActivities": [
+          "plan-conformance",
+          "survey-files",
+          "survey-history",
+          "survey-tree#0",
+          "survey-tree#1",
+          "choose-probes",
+          "probe-directory#0",
+          "probe-directory#1",
+          "probe-directory#2",
+          "open-notes",
+          "note-probe#0",
+          "note-probe#1",
+          "merge-notes",
+          "report-conformance"
+        ],
+        "currentTechnique": "",
+        "declaredArtifacts": [
+          {
+            "id": "conformance-report",
+            "name": "fan-conformance-report.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/fan-conformance-report.md"
+          }
+        ],
+        "deliveredContent": {
+          "choose-probes-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:choose-probes": "2245e5cac799e9fd",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+            "technique:orchestration-patterns::gather-results": "8e96bc004d4544dd",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+          },
+          "merge-notes-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+            "technique:orchestration-patterns::gather-results": "90c435880c417e50",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:3818572c4d949adc": "3818572c4d949adc",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840",
+            "technique:version-control::merge-branches": "bb87329024f5e31b"
+          },
+          "note-n1-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+            "technique:note-probe": "82ca1153a42c0a7a",
+            "technique:rules:94a72cc9df98a9ea": "94a72cc9df98a9ea",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840",
+            "technique:version-control::commit-regular-files": "dbbf254b0cfef24b",
+            "technique:version-control::create-worktree": "754f7a3b34751745"
+          },
+          "note-n2-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+            "technique:note-probe": "82ca1153a42c0a7a",
+            "technique:rules:94a72cc9df98a9ea": "94a72cc9df98a9ea",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840",
+            "technique:version-control::commit-regular-files": "dbbf254b0cfef24b",
+            "technique:version-control::create-worktree": "754f7a3b34751745"
+          },
+          "open-notes-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+            "technique:open-notes": "f23b0f7f42ab0620",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:ba50533aca8ce329": "ba50533aca8ce329"
+          },
+          "orchestrator": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+            "technique:plan-conformance": "8646e59a4ec7211d",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+          },
+          "probe-p1-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+            "technique:probe-directory": "0fc3d7f6eed68747",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+          },
+          "probe-p2-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+            "technique:probe-directory": "0fc3d7f6eed68747",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+          },
+          "probe-p3-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+            "technique:probe-directory": "0fc3d7f6eed68747",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+          },
+          "report-conformance-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+            "technique:orchestration-patterns::gather-results": "553ecffadb6638df",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:report-conformance": "86e10fb06fb277a8",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840"
+          },
+          "survey-files-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840",
+            "technique:survey-files": "9ca41a2a03acd226"
+          },
+          "survey-history-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:de80fa721c279e20": "de80fa721c279e20",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:f6578b16da66c840": "f6578b16da66c840",
+            "technique:survey-history": "4ef9aabf6d24991e"
+          },
+          "survey-tree-src-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+            "technique:rules:c3cda1b85e5bdaf4": "c3cda1b85e5bdaf4",
+            "technique:survey-tree": "1cc8fbc0e7c3ea0e"
+          },
+          "survey-tree-tests-w": {
+            "bundle:agent-conduct": "9cf9756649880f04",
+            "bundle:rules:7cd148b396f713a6": "7cd148b396f713a6",
+            "bundle:variable-binding": "4ed713672bdbfad7",
+            "bundle:worker-conduct": "2f658c2399e3ea8c",
+            "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+            "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+            "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+            "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "technique:inherited_inputs.items:90d159d0feb914b0": "90d159d0feb914b0",
+            "technique:inherited_inputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_inputs:17c722db8be4e0e7": "17c722db8be4e0e7",
+            "technique:rules:c3cda1b85e5bdaf4": "c3cda1b85e5bdaf4",
+            "technique:survey-tree": "1cc8fbc0e7c3ea0e"
+          }
+        },
+        "exit": "reported",
+        "frontier": [],
+        "history": [
+          {
+            "timestamp": "2026-09-11T15:22:30.882Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "component_path": ".",
+                "has_notes": false,
+                "merge_report": {},
+                "note_targets": [],
+                "probe_budget": 3,
+                "user_request": "Run fan-conformance as a catalog workflow on the default dest: every graph fan form against this checkout, then report what the run did."
+              }
+            },
+            "timestamp": "2026-09-11T15:22:30.882Z",
+            "type": "variables_seeded"
+          },
+          {
+            "activity": "plan-conformance",
+            "timestamp": "2026-09-11T15:23:04.066Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 42335,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:23:09.119Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 3991,
+              "delivery": "full",
+              "stepId": "open-the-run",
+              "techniqueId": "plan-conformance"
+            },
+            "timestamp": "2026-09-11T15:23:09.119Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "open-the-run"
+            },
+            "timestamp": "2026-09-11T15:23:09.119Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-conformance",
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "name": "run_started_at",
+              "source": "variables_changed",
+              "value": "2026-09-11T15:23:17Z"
+            },
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "name": "probe_budget",
+              "source": "variables_changed",
+              "value": 3
+            },
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "name": "survey_plan",
+              "source": "variables_changed",
+              "value": {
+                "roots": [
+                  "src",
+                  "tests"
+                ]
+              }
+            },
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "stepId": "open-the-run"
+            },
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "name": "survey_files_outputs",
+              "source": "fan_enter",
+              "value": [
+                {
+                  "id": "survey-files",
+                  "result": null
+                }
+              ]
+            },
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "name": "survey_history_outputs",
+              "source": "fan_enter",
+              "value": [
+                {
+                  "id": "survey-history",
+                  "result": null
+                }
+              ]
+            },
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-conformance",
+            "data": {
+              "name": "survey_tree_outputs",
+              "source": "fan_enter",
+              "value": [
+                {
+                  "id": "src",
+                  "result": null
+                },
+                {
+                  "id": "tests",
+                  "result": null
+                }
+              ]
+            },
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "survey-files",
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "survey-history",
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "survey-tree#0",
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "survey-tree#1",
+            "timestamp": "2026-09-11T15:23:23.564Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "survey-files",
+            "data": {
+              "agentId": "survey-files-w",
+              "chars": 41002,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:43:06.100Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "survey-files",
+            "data": {
+              "agentId": "survey-files-w",
+              "chars": 3463,
+              "delivery": "full",
+              "stepId": "survey-the-files",
+              "techniqueId": "survey-files"
+            },
+            "timestamp": "2026-09-11T15:43:06.100Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "survey-files",
+            "data": {
+              "agentId": "survey-files-w",
+              "stepId": "survey-the-files"
+            },
+            "timestamp": "2026-09-11T15:43:06.100Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "survey-history",
+            "data": {
+              "agentId": "survey-history-w",
+              "chars": 41237,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:43:06.568Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "survey-history",
+            "data": {
+              "agentId": "survey-history-w",
+              "chars": 3591,
+              "delivery": "full",
+              "stepId": "survey-the-history",
+              "techniqueId": "survey-history"
+            },
+            "timestamp": "2026-09-11T15:43:06.568Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "survey-history",
+            "data": {
+              "agentId": "survey-history-w",
+              "stepId": "survey-the-history"
+            },
+            "timestamp": "2026-09-11T15:43:06.568Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "survey-tree#0",
+            "data": {
+              "agentId": "survey-tree-src-w",
+              "chars": 41643,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:43:07.608Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "survey-tree#0",
+            "data": {
+              "agentId": "survey-tree-src-w",
+              "chars": 3898,
+              "delivery": "full",
+              "stepId": "walk-the-root",
+              "techniqueId": "survey-tree"
+            },
+            "timestamp": "2026-09-11T15:43:07.608Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "survey-tree#0",
+            "data": {
+              "agentId": "survey-tree-src-w",
+              "stepId": "walk-the-root"
+            },
+            "timestamp": "2026-09-11T15:43:07.608Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "survey-tree#1",
+            "data": {
+              "agentId": "survey-tree-tests-w",
+              "chars": 41645,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:43:08.277Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "survey-tree#1",
+            "data": {
+              "agentId": "survey-tree-tests-w",
+              "chars": 3898,
+              "delivery": "full",
+              "stepId": "walk-the-root",
+              "techniqueId": "survey-tree"
+            },
+            "timestamp": "2026-09-11T15:43:08.277Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "survey-tree#1",
+            "data": {
+              "agentId": "survey-tree-tests-w",
+              "stepId": "walk-the-root"
+            },
+            "timestamp": "2026-09-11T15:43:08.277Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "survey-files",
+            "timestamp": "2026-09-11T15:43:23.802Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "survey-files",
+            "data": {
+              "instance": 0,
+              "key": "survey_files_outputs",
+              "member": "file_survey",
+              "name": "file_survey",
+              "source": "variables_changed",
+              "unit": "survey-files",
+              "value": {
+                "extension_counts": [
+                  {
+                    "count": 233,
+                    "extension": "ts"
+                  },
+                  {
+                    "count": 96,
+                    "extension": "yaml"
+                  },
+                  {
+                    "count": 57,
+                    "extension": "md"
+                  },
+                  {
+                    "count": 22,
+                    "extension": "json"
+                  },
+                  {
+                    "count": 20,
+                    "extension": "html"
+                  },
+                  {
+                    "count": 10,
+                    "extension": "py"
+                  },
+                  {
+                    "count": 10,
+                    "extension": "sh"
+                  },
+                  {
+                    "count": 5,
+                    "extension": "jsonl"
+                  },
+                  {
+                    "count": 4,
+                    "extension": "yml"
+                  },
+                  {
+                    "count": 3,
+                    "extension": "(none)"
+                  }
+                ],
+                "finished_at": "2026-09-11T15:43:04Z",
+                "largest_directories": [
+                  {
+                    "count": 94,
+                    "path": "tests"
+                  },
+                  {
+                    "count": 54,
+                    "path": "guards"
+                  },
+                  {
+                    "count": 22,
+                    "path": "scripts"
+                  },
+                  {
+                    "count": 18,
+                    "path": "."
+                  },
+                  {
+                    "count": 15,
+                    "path": "docs"
+                  },
+                  {
+                    "count": 15,
+                    "path": "tests/e2e"
+                  },
+                  {
+                    "count": 14,
+                    "path": "src/utils"
+                  },
+                  {
+                    "count": 11,
+                    "path": "scripts/claude/hooks"
+                  },
+                  {
+                    "count": 11,
+                    "path": "src/schema"
+                  },
+                  {
+                    "count": 9,
+                    "path": "src"
+                  }
+                ],
+                "started_at": "2026-09-11T15:43:04Z",
+                "total_files": 474
+              }
+            },
+            "timestamp": "2026-09-11T15:43:23.802Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "survey-files",
+            "data": {
+              "agentId": "survey-files-w",
+              "stepId": "survey-the-files"
+            },
+            "timestamp": "2026-09-11T15:43:23.802Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "survey-history",
+            "timestamp": "2026-09-11T15:43:28.286Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "survey-history",
+            "data": {
+              "instance": 0,
+              "key": "survey_history_outputs",
+              "member": "history_survey",
+              "name": "history_survey",
+              "source": "variables_changed",
+              "unit": "survey-history",
+              "value": {
+                "active_directories": [
+                  {
+                    "commits": 29,
+                    "path": "tests"
+                  },
+                  {
+                    "commits": 17,
+                    "path": "docs"
+                  },
+                  {
+                    "commits": 14,
+                    "path": "."
+                  },
+                  {
+                    "commits": 12,
+                    "path": "guards"
+                  },
+                  {
+                    "commits": 10,
+                    "path": "scripts"
+                  },
+                  {
+                    "commits": 9,
+                    "path": "src/loaders"
+                  },
+                  {
+                    "commits": 9,
+                    "path": "tests/e2e"
+                  },
+                  {
+                    "commits": 9,
+                    "path": ".github/workflows"
+                  },
+                  {
+                    "commits": 7,
+                    "path": "site/design"
+                  },
+                  {
+                    "commits": 4,
+                    "path": "site/guide"
+                  }
+                ],
+                "authors": [
+                  {
+                    "count": 50,
+                    "name": "Mike Clay"
+                  }
+                ],
+                "commit_count": 50,
+                "finished_at": "2026-09-11T15:43:04Z",
+                "started_at": "2026-09-11T15:43:04Z"
+              }
+            },
+            "timestamp": "2026-09-11T15:43:28.286Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "survey-history",
+            "data": {
+              "agentId": "survey-history-w",
+              "stepId": "survey-the-history"
+            },
+            "timestamp": "2026-09-11T15:43:28.286Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "survey-tree#0",
+            "timestamp": "2026-09-11T15:43:31.115Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "survey-tree#0",
+            "data": {
+              "instance": 0,
+              "key": "survey_tree_outputs",
+              "member": "tree_survey",
+              "name": "tree_survey",
+              "source": "variables_changed",
+              "unit": "survey-tree",
+              "value": {
+                "depth": 3,
+                "directories": 9,
+                "files": 59,
+                "finished_at": "2026-09-11T15:43:04Z",
+                "root": "src",
+                "started_at": "2026-09-11T15:43:04Z"
+              }
+            },
+            "timestamp": "2026-09-11T15:43:31.115Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "survey-tree#0",
+            "data": {
+              "agentId": "survey-tree-src-w",
+              "stepId": "survey-the-tree"
+            },
+            "timestamp": "2026-09-11T15:43:31.115Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "survey-tree#1",
+            "timestamp": "2026-09-11T15:43:34.715Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "survey-tree#1",
+            "data": {
+              "instance": 1,
+              "key": "survey_tree_outputs",
+              "member": "tree_survey",
+              "name": "tree_survey",
+              "source": "variables_changed",
+              "unit": "survey-tree",
+              "value": {
+                "depth": 6,
+                "directories": 78,
+                "files": 233,
+                "finished_at": "2026-09-11T15:43:04Z",
+                "root": "tests",
+                "started_at": "2026-09-11T15:43:04Z"
+              }
+            },
+            "timestamp": "2026-09-11T15:43:34.715Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "survey-tree#1",
+            "data": {
+              "agentId": "survey-tree-tests-w",
+              "stepId": "survey-the-tree"
+            },
+            "timestamp": "2026-09-11T15:43:34.715Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "choose-probes",
+            "timestamp": "2026-09-11T15:43:34.715Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "choose-probes",
+            "data": {
+              "agentId": "choose-probes-w",
+              "chars": 46387,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:43:40.489Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "choose-probes",
+            "data": {
+              "agentId": "choose-probes-w",
+              "chars": 3663,
+              "delivery": "full",
+              "stepId": "gather-the-surveys",
+              "techniqueId": "orchestration-patterns::gather-results"
+            },
+            "timestamp": "2026-09-11T15:43:40.489Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "choose-probes",
+            "data": {
+              "agentId": "choose-probes-w",
+              "stepId": "gather-the-surveys"
+            },
+            "timestamp": "2026-09-11T15:43:40.489Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "choose-probes",
+            "data": {
+              "agentId": "choose-probes-w",
+              "chars": 5525,
+              "delivery": "full",
+              "stepId": "choose-the-probes",
+              "techniqueId": "choose-probes"
+            },
+            "timestamp": "2026-09-11T15:43:40.489Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "choose-probes",
+            "data": {
+              "agentId": "choose-probes-w",
+              "stepId": "choose-the-probes"
+            },
+            "timestamp": "2026-09-11T15:43:40.489Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "choose-probes",
+            "timestamp": "2026-09-11T15:43:46.710Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "choose-probes",
+            "data": {
+              "name": "probe_targets",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "directory": "tests",
+                  "id": "P1",
+                  "reason": "Largest directory (94 files), most active (29 of last 50 commits), and the deeper tree-survey root (depth 6)."
+                },
+                {
+                  "directory": "guards",
+                  "id": "P2",
+                  "reason": "Second-largest (54 files) and among the most-touched directories (12 commits)."
+                },
+                {
+                  "directory": "docs",
+                  "id": "P3",
+                  "reason": "Named by both file and history surveys (15 files, 17 commits)."
+                }
+              ]
+            },
+            "timestamp": "2026-09-11T15:43:46.710Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "choose-probes",
+            "data": {
+              "agentId": "choose-probes-w",
+              "stepId": "choose-the-probes"
+            },
+            "timestamp": "2026-09-11T15:43:46.710Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "choose-probes",
+            "data": {
+              "name": "probe_directory_outputs",
+              "source": "fan_enter",
+              "value": [
+                {
+                  "id": "P1",
+                  "result": null
+                },
+                {
+                  "id": "P2",
+                  "result": null
+                },
+                {
+                  "id": "P3",
+                  "result": null
+                }
+              ]
+            },
+            "timestamp": "2026-09-11T15:43:46.710Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "probe-directory#0",
+            "timestamp": "2026-09-11T15:43:46.710Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "probe-directory#1",
+            "timestamp": "2026-09-11T15:43:46.710Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "probe-directory#2",
+            "timestamp": "2026-09-11T15:43:46.710Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "probe-directory#0",
+            "data": {
+              "agentId": "probe-p1-w",
+              "chars": 41049,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:43:54.973Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "probe-directory#0",
+            "data": {
+              "agentId": "probe-p1-w",
+              "chars": 3207,
+              "delivery": "full",
+              "stepId": "probe-the-directory",
+              "techniqueId": "probe-directory"
+            },
+            "timestamp": "2026-09-11T15:43:54.973Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "probe-directory#0",
+            "data": {
+              "agentId": "probe-p1-w",
+              "stepId": "probe-the-directory"
+            },
+            "timestamp": "2026-09-11T15:43:54.973Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "probe-directory#1",
+            "data": {
+              "agentId": "probe-p2-w",
+              "chars": 41019,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:43:59.484Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "probe-directory#1",
+            "data": {
+              "agentId": "probe-p2-w",
+              "chars": 3207,
+              "delivery": "full",
+              "stepId": "probe-the-directory",
+              "techniqueId": "probe-directory"
+            },
+            "timestamp": "2026-09-11T15:43:59.484Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "probe-directory#1",
+            "data": {
+              "agentId": "probe-p2-w",
+              "stepId": "probe-the-directory"
+            },
+            "timestamp": "2026-09-11T15:43:59.484Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "probe-directory#2",
+            "data": {
+              "agentId": "probe-p3-w",
+              "chars": 41001,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:43:59.527Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "probe-directory#2",
+            "data": {
+              "agentId": "probe-p3-w",
+              "chars": 3207,
+              "delivery": "full",
+              "stepId": "probe-the-directory",
+              "techniqueId": "probe-directory"
+            },
+            "timestamp": "2026-09-11T15:43:59.527Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "probe-directory#2",
+            "data": {
+              "agentId": "probe-p3-w",
+              "stepId": "probe-the-directory"
+            },
+            "timestamp": "2026-09-11T15:43:59.527Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "probe-directory#0",
+            "timestamp": "2026-09-11T15:44:10.612Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "probe-directory#0",
+            "data": {
+              "instance": 0,
+              "key": "probe_directory_outputs",
+              "member": "probe_finding",
+              "name": "probe_finding",
+              "source": "variables_changed",
+              "unit": "probe-directory",
+              "value": {
+                "file_count": {
+                  "direct": 94,
+                  "total": 233
+                },
+                "finished_at": "2026-09-11T15:43:51Z",
+                "largest_file": {
+                  "bytes": 133947,
+                  "path": "tests/mcp-server.test.ts"
+                },
+                "probe_id": "P1",
+                "started_at": "2026-09-11T15:43:51Z",
+                "subdirectories": [
+                  "e2e",
+                  "fixtures"
+                ]
+              }
+            },
+            "timestamp": "2026-09-11T15:44:10.612Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "probe-directory#0",
+            "data": {
+              "agentId": "probe-p1-w",
+              "stepId": "probe-the-directory"
+            },
+            "timestamp": "2026-09-11T15:44:10.612Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "probe-directory#1",
+            "timestamp": "2026-09-11T15:44:16.489Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "probe-directory#1",
+            "data": {
+              "instance": 1,
+              "key": "probe_directory_outputs",
+              "member": "probe_finding",
+              "name": "probe_finding",
+              "source": "variables_changed",
+              "unit": "probe-directory",
+              "value": {
+                "file_count": {
+                  "direct": 54,
+                  "total": 54
+                },
+                "finished_at": "2026-09-11T15:43:51Z",
+                "largest_file": {
+                  "bytes": 52531,
+                  "path": "guards/check-binding-fidelity.ts"
+                },
+                "probe_id": "P2",
+                "started_at": "2026-09-11T15:43:51Z",
+                "subdirectories": []
+              }
+            },
+            "timestamp": "2026-09-11T15:44:16.489Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "probe-directory#1",
+            "data": {
+              "agentId": "probe-p2-w",
+              "stepId": "probe-the-directory"
+            },
+            "timestamp": "2026-09-11T15:44:16.489Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "probe-directory#2",
+            "timestamp": "2026-09-11T15:44:20.798Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "probe-directory#2",
+            "data": {
+              "instance": 2,
+              "key": "probe_directory_outputs",
+              "member": "probe_finding",
+              "name": "probe_finding",
+              "source": "variables_changed",
+              "unit": "probe-directory",
+              "value": {
+                "file_count": {
+                  "direct": 15,
+                  "total": 15
+                },
+                "finished_at": "2026-09-11T15:43:51Z",
+                "largest_file": {
+                  "bytes": 35245,
+                  "path": "docs/orchestra-specification.md"
+                },
+                "probe_id": "P3",
+                "started_at": "2026-09-11T15:43:51Z",
+                "subdirectories": []
+              }
+            },
+            "timestamp": "2026-09-11T15:44:20.798Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "probe-directory#2",
+            "data": {
+              "agentId": "probe-p3-w",
+              "stepId": "probe-the-directory"
+            },
+            "timestamp": "2026-09-11T15:44:20.798Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "open-notes",
+            "timestamp": "2026-09-11T15:44:20.798Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "open-notes",
+            "data": {
+              "agentId": "open-notes-w",
+              "chars": 43462,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:44:24.932Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "open-notes",
+            "data": {
+              "agentId": "open-notes-w",
+              "chars": 5339,
+              "delivery": "full",
+              "stepId": "choose-the-notes",
+              "techniqueId": "open-notes"
+            },
+            "timestamp": "2026-09-11T15:44:24.932Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "open-notes",
+            "data": {
+              "agentId": "open-notes-w",
+              "stepId": "choose-the-notes"
+            },
+            "timestamp": "2026-09-11T15:44:24.932Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "open-notes",
+            "timestamp": "2026-09-11T15:44:43.898Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "open-notes",
+            "data": {
+              "name": "has_notes",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-09-11T15:44:43.898Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "open-notes",
+            "data": {
+              "name": "note_targets",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "branch": "fan-note-N1",
+                  "directory": "tests",
+                  "finding": "Largest file is tests/mcp-server.test.ts at 133947 bytes; the directory also holds e2e and fixtures (233 files, 94 at the top).",
+                  "id": "N1",
+                  "worktree": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/N1"
+                },
+                {
+                  "branch": "fan-note-N2",
+                  "directory": "guards",
+                  "finding": "54 files all at the top of guards/, none nested; largest is guards/check-binding-fidelity.ts at 52531 bytes.",
+                  "id": "N2",
+                  "worktree": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/N2"
+                }
+              ]
+            },
+            "timestamp": "2026-09-11T15:44:43.898Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "open-notes",
+            "data": {
+              "agentId": "open-notes-w",
+              "stepId": "choose-the-notes"
+            },
+            "timestamp": "2026-09-11T15:44:43.898Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "open-notes",
+            "data": {
+              "name": "note_probe_outputs",
+              "source": "fan_enter",
+              "value": [
+                {
+                  "id": "N1",
+                  "result": null
+                },
+                {
+                  "id": "N2",
+                  "result": null
+                }
+              ]
+            },
+            "timestamp": "2026-09-11T15:44:43.898Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "note-probe#0",
+            "timestamp": "2026-09-11T15:44:43.898Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "note-probe#1",
+            "timestamp": "2026-09-11T15:44:43.898Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "chars": 48215,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:44:48.899Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "chars": 4288,
+              "delivery": "full",
+              "stepId": "take-a-checkout-of-this-instance-s-own",
+              "techniqueId": "version-control::create-worktree"
+            },
+            "timestamp": "2026-09-11T15:44:48.899Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "stepId": "take-a-checkout-of-this-instance-s-own"
+            },
+            "timestamp": "2026-09-11T15:44:48.899Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "chars": 3670,
+              "delivery": "full",
+              "stepId": "write-the-note",
+              "techniqueId": "note-probe"
+            },
+            "timestamp": "2026-09-11T15:44:48.899Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "stepId": "write-the-note"
+            },
+            "timestamp": "2026-09-11T15:44:48.899Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "chars": 2120,
+              "delivery": "full",
+              "stepId": "commit-the-note",
+              "techniqueId": "version-control::commit-regular-files"
+            },
+            "timestamp": "2026-09-11T15:44:48.899Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "stepId": "commit-the-note"
+            },
+            "timestamp": "2026-09-11T15:44:48.899Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "chars": 48197,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:44:49.219Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "chars": 4288,
+              "delivery": "full",
+              "stepId": "take-a-checkout-of-this-instance-s-own",
+              "techniqueId": "version-control::create-worktree"
+            },
+            "timestamp": "2026-09-11T15:44:49.219Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "stepId": "take-a-checkout-of-this-instance-s-own"
+            },
+            "timestamp": "2026-09-11T15:44:49.219Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "chars": 3670,
+              "delivery": "full",
+              "stepId": "write-the-note",
+              "techniqueId": "note-probe"
+            },
+            "timestamp": "2026-09-11T15:44:49.219Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "stepId": "write-the-note"
+            },
+            "timestamp": "2026-09-11T15:44:49.219Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "chars": 2120,
+              "delivery": "full",
+              "stepId": "commit-the-note",
+              "techniqueId": "version-control::commit-regular-files"
+            },
+            "timestamp": "2026-09-11T15:44:49.219Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "stepId": "commit-the-note"
+            },
+            "timestamp": "2026-09-11T15:44:49.219Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "note-probe#0",
+            "timestamp": "2026-09-11T15:45:51.816Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "instance": 0,
+              "key": "note_probe_outputs",
+              "member": "note_path",
+              "name": "note_path",
+              "source": "variables_changed",
+              "unit": "note-probe",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/N1/N1.md"
+            },
+            "timestamp": "2026-09-11T15:45:51.816Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "instance": 0,
+              "key": "note_probe_outputs",
+              "member": "note_message",
+              "name": "note_message",
+              "source": "variables_changed",
+              "unit": "note-probe",
+              "value": "docs(fan-conformance): note N1 for tests"
+            },
+            "timestamp": "2026-09-11T15:45:51.816Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "instance": 0,
+              "key": "note_probe_outputs",
+              "member": "note_commit",
+              "name": "note_commit",
+              "source": "variables_changed",
+              "unit": "note-probe",
+              "value": {
+                "branch": "fan-note-N1",
+                "commit": "e6c3bf8e7a012a68e97f284862facf09d68f6628",
+                "finished_at": "2026-09-11T15:45:43Z",
+                "started_at": "2026-09-11T15:45:32Z"
+              }
+            },
+            "timestamp": "2026-09-11T15:45:51.816Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "stepId": "take-a-checkout-of-this-instance-s-own"
+            },
+            "timestamp": "2026-09-11T15:45:51.816Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "stepId": "write-the-note"
+            },
+            "timestamp": "2026-09-11T15:45:51.816Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "note-probe#0",
+            "data": {
+              "agentId": "note-n1-w",
+              "stepId": "commit-the-note"
+            },
+            "timestamp": "2026-09-11T15:45:51.816Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "note-probe#1",
+            "timestamp": "2026-09-11T15:45:57.442Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "instance": 1,
+              "key": "note_probe_outputs",
+              "member": "note_path",
+              "name": "note_path",
+              "source": "variables_changed",
+              "unit": "note-probe",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/N2/N2.md"
+            },
+            "timestamp": "2026-09-11T15:45:57.442Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "instance": 1,
+              "key": "note_probe_outputs",
+              "member": "note_message",
+              "name": "note_message",
+              "source": "variables_changed",
+              "unit": "note-probe",
+              "value": "docs(fan-conformance): note N2 for guards"
+            },
+            "timestamp": "2026-09-11T15:45:57.442Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "instance": 1,
+              "key": "note_probe_outputs",
+              "member": "note_commit",
+              "name": "note_commit",
+              "source": "variables_changed",
+              "unit": "note-probe",
+              "value": {
+                "branch": "fan-note-N2",
+                "commit": "1c573424da7c4716fbbebb786898151d4345dec3",
+                "finished_at": "2026-09-11T15:45:43Z",
+                "started_at": "2026-09-11T15:45:38Z"
+              }
+            },
+            "timestamp": "2026-09-11T15:45:57.442Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "stepId": "take-a-checkout-of-this-instance-s-own"
+            },
+            "timestamp": "2026-09-11T15:45:57.442Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "stepId": "write-the-note"
+            },
+            "timestamp": "2026-09-11T15:45:57.442Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "note-probe#1",
+            "data": {
+              "agentId": "note-n2-w",
+              "stepId": "commit-the-note"
+            },
+            "timestamp": "2026-09-11T15:45:57.442Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "merge-notes",
+            "timestamp": "2026-09-11T15:45:57.442Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "merge-notes",
+            "data": {
+              "agentId": "merge-notes-w",
+              "chars": 47430,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:46:03.450Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "merge-notes",
+            "data": {
+              "agentId": "merge-notes-w",
+              "chars": 3667,
+              "delivery": "full",
+              "stepId": "gather-the-writers",
+              "techniqueId": "orchestration-patterns::gather-results"
+            },
+            "timestamp": "2026-09-11T15:46:03.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "merge-notes",
+            "data": {
+              "agentId": "merge-notes-w",
+              "stepId": "gather-the-writers"
+            },
+            "timestamp": "2026-09-11T15:46:03.450Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "merge-notes",
+            "data": {
+              "agentId": "merge-notes-w",
+              "chars": 5770,
+              "delivery": "full",
+              "stepId": "merge-the-branches",
+              "techniqueId": "version-control::merge-branches"
+            },
+            "timestamp": "2026-09-11T15:46:03.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "merge-notes",
+            "data": {
+              "agentId": "merge-notes-w",
+              "stepId": "merge-the-branches"
+            },
+            "timestamp": "2026-09-11T15:46:03.450Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "merge-notes",
+            "timestamp": "2026-09-11T15:46:21.451Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "merge-notes",
+            "data": {
+              "name": "merge_report",
+              "source": "variables_changed",
+              "value": {
+                "conflicted": [],
+                "empty": [],
+                "integration_head": "027116888be72282327601d74d90ae8e2f073e09",
+                "merged": [
+                  {
+                    "branch": "fan-note-N1",
+                    "commit": "1f670dce7281223cf8aff046411fb0438f99ba17",
+                    "id": "N1"
+                  },
+                  {
+                    "branch": "fan-note-N2",
+                    "commit": "027116888be72282327601d74d90ae8e2f073e09",
+                    "id": "N2"
+                  }
+                ]
+              }
+            },
+            "timestamp": "2026-09-11T15:46:21.451Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "merge-notes",
+            "data": {
+              "agentId": "merge-notes-w",
+              "stepId": "gather-the-writers"
+            },
+            "timestamp": "2026-09-11T15:46:21.451Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "merge-notes",
+            "data": {
+              "agentId": "merge-notes-w",
+              "stepId": "merge-the-branches"
+            },
+            "timestamp": "2026-09-11T15:46:21.451Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "report-conformance",
+            "timestamp": "2026-09-11T15:46:21.451Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "report-conformance",
+            "data": {
+              "agentId": "report-conformance-w",
+              "chars": 49261,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-11T15:46:24.854Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "report-conformance",
+            "data": {
+              "agentId": "report-conformance-w",
+              "chars": 3676,
+              "delivery": "full",
+              "stepId": "gather-the-probes",
+              "techniqueId": "orchestration-patterns::gather-results"
+            },
+            "timestamp": "2026-09-11T15:46:24.854Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "report-conformance",
+            "data": {
+              "agentId": "report-conformance-w",
+              "stepId": "gather-the-probes"
+            },
+            "timestamp": "2026-09-11T15:46:24.854Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "report-conformance",
+            "data": {
+              "agentId": "report-conformance-w",
+              "chars": 7891,
+              "delivery": "full",
+              "stepId": "write-the-report",
+              "techniqueId": "report-conformance"
+            },
+            "timestamp": "2026-09-11T15:46:24.854Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "report-conformance",
+            "data": {
+              "agentId": "report-conformance-w",
+              "stepId": "write-the-report"
+            },
+            "timestamp": "2026-09-11T15:46:24.854Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "report-conformance",
+            "timestamp": "2026-09-11T15:46:46.705Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "report-conformance",
+            "data": {
+              "name": "conformance_report",
+              "source": "variables_changed",
+              "value": {
+                "artifact": "fan-conformance-report.md",
+                "audience": "human"
+              }
+            },
+            "timestamp": "2026-09-11T15:46:46.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "report-conformance",
+            "data": {
+              "agentId": "report-conformance-w",
+              "stepId": "gather-the-probes"
+            },
+            "timestamp": "2026-09-11T15:46:46.705Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "report-conformance",
+            "data": {
+              "agentId": "report-conformance-w",
+              "stepId": "write-the-report"
+            },
+            "timestamp": "2026-09-11T15:46:46.705Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "__terminal__",
+            "timestamp": "2026-09-11T15:46:46.705Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-09-11T15:46:46.705Z",
+            "type": "workflow_completed"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 30,
+        "sessionIndex": "6HJCR3",
+        "startedAt": "2026-09-11T15:22:30.882Z",
+        "status": "completed",
+        "triggeredWorkflows": [],
+        "ts": 1789141606,
+        "variables": {
+          "component_path": ".",
+          "conformance_report": {
+            "artifact": "fan-conformance-report.md",
+            "audience": "human"
+          },
+          "has_notes": true,
+          "merge_report": {
+            "conflicted": [],
+            "empty": [],
+            "integration_head": "027116888be72282327601d74d90ae8e2f073e09",
+            "merged": [
+              {
+                "branch": "fan-note-N1",
+                "commit": "1f670dce7281223cf8aff046411fb0438f99ba17",
+                "id": "N1"
+              },
+              {
+                "branch": "fan-note-N2",
+                "commit": "027116888be72282327601d74d90ae8e2f073e09",
+                "id": "N2"
+              }
+            ]
+          },
+          "note_probe_outputs": [
+            {
+              "id": "N1",
+              "result": {
+                "note_commit": {
+                  "branch": "fan-note-N1",
+                  "commit": "e6c3bf8e7a012a68e97f284862facf09d68f6628",
+                  "finished_at": "2026-09-11T15:45:43Z",
+                  "started_at": "2026-09-11T15:45:32Z"
+                },
+                "note_message": "docs(fan-conformance): note N1 for tests",
+                "note_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/N1/N1.md"
+              }
+            },
+            {
+              "id": "N2",
+              "result": {
+                "note_commit": {
+                  "branch": "fan-note-N2",
+                  "commit": "1c573424da7c4716fbbebb786898151d4345dec3",
+                  "finished_at": "2026-09-11T15:45:43Z",
+                  "started_at": "2026-09-11T15:45:38Z"
+                },
+                "note_message": "docs(fan-conformance): note N2 for guards",
+                "note_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/N2/N2.md"
+              }
+            }
+          ],
+          "note_targets": [
+            {
+              "branch": "fan-note-N1",
+              "directory": "tests",
+              "finding": "Largest file is tests/mcp-server.test.ts at 133947 bytes; the directory also holds e2e and fixtures (233 files, 94 at the top).",
+              "id": "N1",
+              "worktree": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/N1"
+            },
+            {
+              "branch": "fan-note-N2",
+              "directory": "guards",
+              "finding": "54 files all at the top of guards/, none nested; largest is guards/check-binding-fidelity.ts at 52531 bytes.",
+              "id": "N2",
+              "worktree": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-11-fan-conformance/N2"
+            }
+          ],
+          "probe_budget": 3,
+          "probe_directory_outputs": [
+            {
+              "id": "P1",
+              "result": {
+                "probe_finding": {
+                  "file_count": {
+                    "direct": 94,
+                    "total": 233
+                  },
+                  "finished_at": "2026-09-11T15:43:51Z",
+                  "largest_file": {
+                    "bytes": 133947,
+                    "path": "tests/mcp-server.test.ts"
+                  },
+                  "probe_id": "P1",
+                  "started_at": "2026-09-11T15:43:51Z",
+                  "subdirectories": [
+                    "e2e",
+                    "fixtures"
+                  ]
+                }
+              }
+            },
+            {
+              "id": "P2",
+              "result": {
+                "probe_finding": {
+                  "file_count": {
+                    "direct": 54,
+                    "total": 54
+                  },
+                  "finished_at": "2026-09-11T15:43:51Z",
+                  "largest_file": {
+                    "bytes": 52531,
+                    "path": "guards/check-binding-fidelity.ts"
+                  },
+                  "probe_id": "P2",
+                  "started_at": "2026-09-11T15:43:51Z",
+                  "subdirectories": []
+                }
+              }
+            },
+            {
+              "id": "P3",
+              "result": {
+                "probe_finding": {
+                  "file_count": {
+                    "direct": 15,
+                    "total": 15
+                  },
+                  "finished_at": "2026-09-11T15:43:51Z",
+                  "largest_file": {
+                    "bytes": 35245,
+                    "path": "docs/orchestra-specification.md"
+                  },
+                  "probe_id": "P3",
+                  "started_at": "2026-09-11T15:43:51Z",
+                  "subdirectories": []
+                }
+              }
+            }
+          ],
+          "probe_targets": [
+            {
+              "directory": "tests",
+              "id": "P1",
+              "reason": "Largest directory (94 files), most active (29 of last 50 commits), and the deeper tree-survey root (depth 6)."
+            },
+            {
+              "directory": "guards",
+              "id": "P2",
+              "reason": "Second-largest (54 files) and among the most-touched directories (12 commits)."
+            },
+            {
+              "directory": "docs",
+              "id": "P3",
+              "reason": "Named by both file and history surveys (15 files, 17 commits)."
+            }
+          ],
+          "run_started_at": "2026-09-11T15:23:17Z",
+          "survey_files_outputs": [
+            {
+              "id": "survey-files",
+              "result": {
+                "file_survey": {
+                  "extension_counts": [
+                    {
+                      "count": 233,
+                      "extension": "ts"
+                    },
+                    {
+                      "count": 96,
+                      "extension": "yaml"
+                    },
+                    {
+                      "count": 57,
+                      "extension": "md"
+                    },
+                    {
+                      "count": 22,
+                      "extension": "json"
+                    },
+                    {
+                      "count": 20,
+                      "extension": "html"
+                    },
+                    {
+                      "count": 10,
+                      "extension": "py"
+                    },
+                    {
+                      "count": 10,
+                      "extension": "sh"
+                    },
+                    {
+                      "count": 5,
+                      "extension": "jsonl"
+                    },
+                    {
+                      "count": 4,
+                      "extension": "yml"
+                    },
+                    {
+                      "count": 3,
+                      "extension": "(none)"
+                    }
+                  ],
+                  "finished_at": "2026-09-11T15:43:04Z",
+                  "largest_directories": [
+                    {
+                      "count": 94,
+                      "path": "tests"
+                    },
+                    {
+                      "count": 54,
+                      "path": "guards"
+                    },
+                    {
+                      "count": 22,
+                      "path": "scripts"
+                    },
+                    {
+                      "count": 18,
+                      "path": "."
+                    },
+                    {
+                      "count": 15,
+                      "path": "docs"
+                    },
+                    {
+                      "count": 15,
+                      "path": "tests/e2e"
+                    },
+                    {
+                      "count": 14,
+                      "path": "src/utils"
+                    },
+                    {
+                      "count": 11,
+                      "path": "scripts/claude/hooks"
+                    },
+                    {
+                      "count": 11,
+                      "path": "src/schema"
+                    },
+                    {
+                      "count": 9,
+                      "path": "src"
+                    }
+                  ],
+                  "started_at": "2026-09-11T15:43:04Z",
+                  "total_files": 474
+                }
+              }
+            }
+          ],
+          "survey_history_outputs": [
+            {
+              "id": "survey-history",
+              "result": {
+                "history_survey": {
+                  "active_directories": [
+                    {
+                      "commits": 29,
+                      "path": "tests"
+                    },
+                    {
+                      "commits": 17,
+                      "path": "docs"
+                    },
+                    {
+                      "commits": 14,
+                      "path": "."
+                    },
+                    {
+                      "commits": 12,
+                      "path": "guards"
+                    },
+                    {
+                      "commits": 10,
+                      "path": "scripts"
+                    },
+                    {
+                      "commits": 9,
+                      "path": "src/loaders"
+                    },
+                    {
+                      "commits": 9,
+                      "path": "tests/e2e"
+                    },
+                    {
+                      "commits": 9,
+                      "path": ".github/workflows"
+                    },
+                    {
+                      "commits": 7,
+                      "path": "site/design"
+                    },
+                    {
+                      "commits": 4,
+                      "path": "site/guide"
+                    }
+                  ],
+                  "authors": [
+                    {
+                      "count": 50,
+                      "name": "Mike Clay"
+                    }
+                  ],
+                  "commit_count": 50,
+                  "finished_at": "2026-09-11T15:43:04Z",
+                  "started_at": "2026-09-11T15:43:04Z"
+                }
+              }
+            }
+          ],
+          "survey_plan": {
+            "roots": [
+              "src",
+              "tests"
+            ]
+          },
+          "survey_tree_outputs": [
+            {
+              "id": "src",
+              "result": {
+                "tree_survey": {
+                  "depth": 3,
+                  "directories": 9,
+                  "files": 59,
+                  "finished_at": "2026-09-11T15:43:04Z",
+                  "root": "src",
+                  "started_at": "2026-09-11T15:43:04Z"
+                }
+              }
+            },
+            {
+              "id": "tests",
+              "result": {
+                "tree_survey": {
+                  "depth": 6,
+                  "directories": 78,
+                  "files": 233,
+                  "finished_at": "2026-09-11T15:43:04Z",
+                  "root": "tests",
+                  "started_at": "2026-09-11T15:43:04Z"
+                }
+              }
+            }
+          ],
+          "user_request": "Run fan-conformance as a catalog workflow on the default dest: every graph fan form against this checkout, then report what the run did."
+        },
+        "workflowId": "fan-conformance",
+        "workflowVersion": "3.0.0"
+      },
+      "status": "completed",
+      "triggeredAt": "2026-09-11T15:22:30.881Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "fan-conformance"
+    }
+  ],
+  "deliveredContent": {
+    "orchestrator": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:3fb7d711eec389b8": "3fb7d711eec389b8",
+      "bundle:variable-binding": "1bcd6dcadf20c184",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:inherited_inputs.items:13b9f9019e9b2d7b": "13b9f9019e9b2d7b",
+      "technique:inherited_inputs.items:bc00dc1c96282770": "bc00dc1c96282770",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:8523594312b4a179": "8523594312b4a179",
+      "technique:inherited_inputs:b142eecc28c90202": "b142eecc28c90202",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:190889cce4f4767d": "190889cce4f4767d",
+      "technique:rules:2d0a7e864eda76b1": "2d0a7e864eda76b1",
+      "technique:rules:4c7cd383bcb9a4f3": "4c7cd383bcb9a4f3",
+      "technique:rules:8cdd62fb3d74e82b": "8cdd62fb3d74e82b",
+      "technique:version-control::resolve-host-repo": "cda231e25126e390",
+      "technique:workflow-engine::derive-initiative-name": "02d6860f157e2298",
+      "technique:workflow-engine::detect-resume-intent": "fe15caf535e20366",
+      "technique:workflow-engine::extract-identifying-context": "e5360b6bc4fc73b2",
+      "technique:workflow-engine::list-workflows": "22fc9b67c592a6a1",
+      "technique:workflow-engine::match-target-workflow": "1ce52033e7520217"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}
