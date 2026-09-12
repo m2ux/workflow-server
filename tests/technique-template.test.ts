@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { lintTechniqueFile } from '../scripts/check-technique-template.js';
+import { lintTechniqueFile } from '../guards/check-technique-template.js';
 
 /**
  * Technique-template guard (B9, issue #166): every technique file follows the normative

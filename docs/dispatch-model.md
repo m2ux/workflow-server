@@ -85,7 +85,7 @@ The activity cap covers what a character count cannot see: the context the harne
 
 At a 200,000-token window, giving a 280,000-character budget, **the cap binds first on measured content**. The benchmark's three activities cost 222,505 characters batched — 85,775, then 106,893, then 30,182 — which is 79% of budget, because a batch's second and later activities collapse the invariant blocks and the ancestor contract their techniques share (see [Reference delivery](resource-resolution-model.md#reference-delivery)). Standalone, the same three cost 261,971, so batching saves 15%. Reaching the budget takes roughly four activities of that weight, and a worker declaring a smaller window is bounded proportionally: the budget takes over below roughly 159,000 declared tokens on this workload.
 
-These figures come from `npm run bench:batch` against the corpus at submodule `5f92dc06`. They move whenever an activity's payload does, so re-run it rather than trusting the numbers here; the shape of the claim — cap before budget, at this window — is what the paragraph is for.
+These figures come from `npm run bench:batch` against the corpus at `5f92dc06`. They move whenever an activity's payload does, so re-run it rather than trusting the numbers here; the shape of the claim — cap before budget, at this window — is what the paragraph is for.
 
 Admission is checked *before* a delivery rather than after, so the admitted activity can carry a batch past the budget by up to one heavy activity. Refusing after composing would pay the composition and still not un-deliver it.
 

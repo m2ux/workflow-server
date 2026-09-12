@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { fencedLines, linkDestinations, stripDestinations, toLines } from '../scripts/markdown-refs.js';
+import { fencedLines, linkDestinations, stripDestinations, toLines } from '../guards/markdown-refs.js';
 
 /**
  * The shared markdown reader.

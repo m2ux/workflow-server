@@ -111,7 +111,7 @@
         <text x="472" y="58">bind</text>
         <text x="718" y="58">refs</text>
       </g>
-      <text x="480" y="168" font-size="13" text-anchor="middle" fill="var(--diagram-note)">Everything under workflows/&lt;workflow-id&gt;/ in the workflows branch</text>
+      <text x="480" y="168" font-size="13" text-anchor="middle" fill="var(--diagram-note)">Product folders under corpus/&lt;workflow-id&gt;/ of the pointed corpus</text>
     </svg>
     <figcaption>The four file types in a workflow directory and how they reference each other.</figcaption>
   </figure>
@@ -417,7 +417,7 @@
   </figure>
 
   <h2 id="runtime">Runtime delivery</h2>
-  <p class="prose">The agent never opens the <code>workflows/</code> folder directly. Every piece of content arrives through MCP tool calls, and the server decides how much to send based on where the run is.</p>
+  <p class="prose">The agent never opens the corpus tree directly. Every piece of content arrives through MCP tool calls, and the server decides how much to send based on where the run is.</p>
   <p class="prose">The orchestrator and worker play different roles:</p>
   <ul class="prose">
     <li><strong>Orchestrator</strong> — calls <code>get_workflow</code> once at the start, then <code>next_activity</code> each time the run should move to a new phase</li>

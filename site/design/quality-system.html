@@ -69,15 +69,15 @@
 <main id="main">
   <h1>Quality system</h1>
   <p class="lede prose">Executable guards encode conventions that matter: reference integrity, naming rules, schema truthfulness, and site link integrity. Recurring authoring mistakes become named anti-patterns, mechanical guards, and baselines that ratchet toward zero.</p>
-  <p class="prose contributor-note">For contributors. Guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> as <code>npm run check:*</code>; tests run under Vitest in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a>.</p>
+  <p class="prose contributor-note">For contributors. Guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/guards"><code>guards/</code></a> as <code>npm run check:*</code>; tests run under Vitest in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a>.</p>
 
   <h2 id="guards">The guard suite</h2>
-  <p class="prose">Guards are TypeScript scripts under <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> that walk the <code>workflows</code> worktree or this site's HTML and report violations. Each convention named in a <a href="../specifications.html">specification</a> or architecture page has a matching check — the spec defines the rule; the guard enforces it mechanically. Run them with <code>npm run check:&lt;name&gt;</code>; a clean tree always yields the same result.</p>
+  <p class="prose">Guards are TypeScript programs under <a href="https://github.com/m2ux/workflow-server/tree/main/guards"><code>guards/</code></a> that walk the pointed corpus or this site's HTML and report violations. Each convention named in a <a href="../specifications.html">specification</a> or architecture page has a matching check — the spec defines the rule; the guard enforces it mechanically. Run them with <code>npm run check:&lt;name&gt;</code>; a clean tree always yields the same result.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 320" role="img" aria-labelledby="gs-land-title gs-land-desc">
       <title id="gs-land-title">What the guard suite scans</title>
-      <desc id="gs-land-desc">Specifications and schemas define conventions. Guard scripts scan either the workflows worktree — YAML and markdown grouped into loadability, technique shape, wiring, and workflow safety — or the documentation site for link and diagram integrity.</desc>
+      <desc id="gs-land-desc">Specifications and schemas define conventions. Guard scripts scan either the pointed corpus — YAML and markdown grouped into loadability, technique shape, wiring, and workflow safety — or the documentation site for link and diagram integrity.</desc>
       <defs>
         <marker id="arrowgsland" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -88,10 +88,10 @@
         <text x="480" y="40" fill="var(--diagram-label)">Specifications + schemas</text>
         <text x="480" y="58" fill="var(--diagram-note)" font-size="12.5" font-weight="400">the rules guards encode</text>
         <rect x="280" y="92" width="400" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="114" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">scripts/check-*.ts</text>
+        <text x="480" y="114" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">guards/check-*.ts</text>
         <text x="480" y="132" fill="var(--diagram-note)" font-size="12.5" font-weight="400">npm run check:&lt;name&gt;</text>
         <rect x="30" y="168" width="450" height="132" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="255" y="192" fill="var(--diagram-label)">workflows worktree</text>
+        <text x="255" y="192" fill="var(--diagram-label)">pointed corpus</text>
         <text x="255" y="210" fill="var(--diagram-note)" font-size="12.5" font-weight="400">YAML + markdown</text>
         <rect x="48" y="224" width="100" height="58" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
         <text x="98" y="248" fill="var(--diagram-label)" font-size="12.5">Load</text>
@@ -121,7 +121,7 @@
         <path d="M 480 140 L 480 152 L 720 152 L 720 164" marker-end="url(#arrowgsland)"/>
       </g>
     </svg>
-    <figcaption>Guards mirror the specification model: corpus checks group around loadability, technique contracts, static wiring, and workflow-specific safety; site checks keep links and inline diagrams honest. Per-guard behaviour lives in the scripts and in the spec pages that name them — for example <a href="../specs/workflows.html">Workflows</a>, <a href="../specs/state-management.html">State</a>, <a href="../specs/resource-resolution.html">Resolution</a>, and <a href="../specs/workflow-fidelity.html">Fidelity</a>.</figcaption>
+    <figcaption>Guards mirror the specification model: corpus checks group around loadability, technique contracts, static wiring, and workflow-specific safety; site checks keep links and inline diagrams honest. Per-guard behaviour lives in <code>guards/</code> and in the spec pages that name them — for example <a href="../specs/workflows.html">Workflows</a>, <a href="../specs/state-management.html">State</a>, <a href="../specs/resource-resolution.html">Resolution</a>, and <a href="../specs/workflow-fidelity.html">Fidelity</a>.</figcaption>
   </figure>
 
   <figure class="diagram">
@@ -144,7 +144,7 @@
         <text x="795" y="48" fill="var(--diagram-label)">deploy-docs CI</text>
         <text x="795" y="68" fill="var(--diagram-note)" font-size="12.5" font-weight="400">site guards + build:site</text>
         <rect x="230" y="130" width="500" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="480" y="154" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">scripts/check-*.ts</text>
+        <text x="480" y="154" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">guards/check-*.ts</text>
         <text x="480" y="174" fill="var(--diagram-note)" font-size="12.5" font-weight="400">same scripts, reproducible exit codes</text>
       </g>
       <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
@@ -153,7 +153,7 @@
         <path d="M 795 80 L 795 108 L 560 108 L 560 126" marker-end="url(#arrowgsrun)"/>
       </g>
     </svg>
-    <figcaption>Authors run guards locally while editing the <code>workflows</code> branch; Vitest mirrors key corpus checks so regressions fail <code>npm test</code>; the <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/verify.yml"><code>verify</code></a> workflow walks the whole registry on every pull request, and <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/deploy-docs.yml"><code>deploy-docs</code></a> rebuilds the generated regions and checks them for drift.</figcaption>
+    <figcaption>Authors run guards locally while editing a corpus; Vitest mirrors key corpus checks so regressions fail <code>npm test</code> when a live corpus is present; a corpus tree may carry its own verify job that walks the registry; engine <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/verify.yml"><code>verify</code></a> runs typecheck, <code>test:ci</code>, and the fixture delivery gate; and <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/deploy-docs.yml"><code>deploy-docs</code></a> rebuilds the generated regions and checks them for drift.</figcaption>
   </figure>
 
   <p class="prose">Most guards are <strong>hard-zero</strong> — any finding fails the run. Where a guard measures debt the corpus already carries, every finding is <strong>triaged once by hand</strong> in a committed file that records a verdict and a named rationale against each one: harmless by design, a real seam accepted for now, or a live bug that keeps the guard red until it is fixed. There is no re-snapshot flag, because classifying a finding is a judgement rather than a regeneration — and an entry that stops matching anything is reported too, so a seam cannot leave the ledger by going quiet. The full command list is in <a href="https://github.com/m2ux/workflow-server/blob/main/package.json"><code>package.json</code></a>.</p>
@@ -163,7 +163,7 @@
   <ul>
     <li><strong>Unit coverage of the machinery</strong> — schema validation and generation, every loader, and the session store's sharp edges: HMAC sealing, index derivation, collision handling, legacy-folder migration.</li>
     <li><strong>Fidelity behaviour</strong> — the runtime validators, binding provenance, fetch observability (including <code>technique_bundled</code> coverage), reference-not-repeat delivery, and trace-token signing, each tested as an observable contract rather than an implementation detail.</li>
-    <li><strong>End-to-end execution</strong> — <code>mcp-server.test.ts</code> drives real tool calls; a deterministic walker (<a href="https://github.com/m2ux/workflow-server/blob/main/tests/e2e/walker.ts"><code>tests/e2e/walker.ts</code></a>) enumerates every reachable path through every workflow definition and executes each one against the live server, so an unreachable activity or an impossible transition in <em>content</em> fails the <em>server's</em> test suite.</li>
+    <li><strong>End-to-end execution</strong> — <code>mcp-server.test.ts</code> drives real tool calls; a deterministic walker (<a href="https://github.com/m2ux/workflow-server/blob/main/tests/e2e/walker.ts"><code>tests/e2e/walker.ts</code></a>) enumerates every reachable path through every workflow definition and executes each one against the live server when a corpus checkout is present. A corpus verify job walks the registry on that tree's pull requests.</li>
     <li><strong>Documentation</strong> — <code>site.test.ts</code> runs the two site guards and the drift check described below, making stale documentation a red build.</li>
     <li><strong>Agent smoke runs</strong> — <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/smoke/smoke-orchestrator.ts"><code>scripts/smoke/</code></a> drives a real agent through a workflow for the behaviour no deterministic walk can check: whether the instructions actually steer a model.</li>
   </ul>
@@ -218,7 +218,7 @@
     <figcaption>The two generation pipelines. The JSON schemas are compiled from the Zod sources; the site's <a href="../api/tools.html">tool</a> and <a href="../api/schemas.html">schema</a> pages contain regions regenerated by replaying the real tool registrations against a recording stub. In both cases the generated artifact is committed, and a test fails when it no longer matches a fresh generation — documentation cannot silently lie about the code.</figcaption>
   </figure>
 
-  <p>The same discipline extends to deployment: the GitHub Pages workflow rebuilds the generated regions and fails if the committed pages have drifted, so the deployed site is exactly the checked, committed one. The guards themselves run in the verify workflow, which has no path filter — every pull request gets the whole suite, so a site check cannot be skipped by a change that looks unrelated.</p>
+  <p>The same discipline extends to deployment: the <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/deploy-docs.yml">GitHub Pages workflow</a> rebuilds the generated regions and fails if the committed pages have drifted, so the deployed site is exactly the checked, committed one. Site guards (<code>check:site</code>, <code>check:svg</code>) run in that job.</p>
 
   <h2 id="next">Next</h2>
   <p>Where this machinery lives in the server is <a href="./server-anatomy.html">server anatomy</a>; how runs are kept on-script at runtime is <a href="../specs/workflow-fidelity.html">workflow fidelity</a>.</p>

@@ -87,7 +87,8 @@ When workflow definitions change remotely, refresh locally:
 $INSTALL/update-workflows.sh
 ```
 
-This fast-forwards `$INSTALL/workflows` only. Product checkouts under
+This fast-forwards the corpus at `HOST_WORKFLOWS_DIR` (default `$INSTALL/workflows`)
+onto `WORKFLOW_SERVER_WORKFLOWS_BRANCH` (default `workflows`). Product checkouts under
 `HOST_PROJECTS_ROOT` are yours to update.
 Restart the HTTP server afterward if it is running.
 

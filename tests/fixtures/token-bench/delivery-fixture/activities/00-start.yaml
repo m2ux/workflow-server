@@ -1,0 +1,13 @@
+id: start
+version: 1.0.0
+name: Start
+description: First activity of the delivery fixture.
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting the delivery fixture.
+exits:
+  - id: done
+    isDefault: true

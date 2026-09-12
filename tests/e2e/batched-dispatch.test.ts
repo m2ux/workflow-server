@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHarness, type Harness, parseToolResponse, rawText, isError } from './harness.js';
 import type { HistoryEntry } from '../../src/schema/state.schema.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
  * Batched dispatch over the real server (#407). What these walks pin down is the bound that makes a
@@ -12,7 +13,7 @@ import type { HistoryEntry } from '../../src/schema/state.schema.js';
  * candidate the investigation measured — with the implementation activity behind it as the fourth the
  * cap refuses.
  */
-describe('batched dispatch (#407)', () => {
+describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
   let h: Harness;
   beforeAll(async () => { h = await createHarness(); });
   afterAll(async () => { await h.close(); });

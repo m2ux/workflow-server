@@ -28,7 +28,7 @@ $INSTALL/                            # default: ~/.local/share/workflow-server
 ├── env                              # HOST_PROJECTS_ROOT=…  (no HOST_WORKTREE_ROOT)
 ├── state/
 ├── start.sh  stop.sh  update-workflows.sh
-└── workflows/                       # definitions branch (server WORKFLOW_DIR)
+└── workflows/                       # default corpus checkout (HOST_WORKFLOWS_DIR)
 ```
 
 | Path | Role |
@@ -36,11 +36,11 @@ $INSTALL/                            # default: ~/.local/share/workflow-server
 | `$HOST_PROJECTS_ROOT/<repo>/` | The checkout, and the primary source an agent reads |
 | `$HOST_PROJECTS_ROOT/<repo>/.engineering/` | The planning root, holding `artifacts/planning/…` |
 | `$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/` | The only permitted location for a feature worktree |
-| `$INSTALL/workflows/` | The workflow definitions the server loads, shared across every product |
+| `$INSTALL/workflows/` (or `HOST_WORKFLOWS_DIR`) | The corpus the server loads, shared across every product |
 
 ## What install.sh creates
 
-The installer creates `state/` and clones the definitions into `workflows/` on the `workflows` branch. It writes an `env` file recording `HOST_PROJECTS_ROOT`, which defaults to `~/projects/dev` and can be set with `--projects-root=PATH`.
+The installer creates `state/` and places a corpus at `HOST_WORKFLOWS_DIR` (default `$INSTALL/workflows`). An existing tree at that path is used as-is; otherwise it clones `--corpus-branch` (default `workflows`) from `--repo-url`. The `env` file records `HOST_PROJECTS_ROOT` (default `~/projects/dev`, or `--projects-root=PATH`), `HOST_WORKFLOWS_DIR`, and `WORKFLOW_SERVER_WORKFLOWS_BRANCH`.
 
 It does not clone any product repository — those are yours to check out under the projects root.
 
@@ -48,7 +48,7 @@ It does not clone any product repository — those are yours to check out under 
 
 ## What start.sh mounts
 
-Before booting the container, `start.sh` refreshes the definitions in `$INSTALL/workflows` through `update-workflows.sh`. That step is best-effort: if the machine is offline, or the checkout is dirty or missing, it warns and the server starts on whatever definitions are already on disk. Pass `--no-update-workflows`, or set `WORKFLOW_SERVER_UPDATE_WORKFLOWS=0`, to skip it.
+Before booting the container, `start.sh` refreshes the corpus at `HOST_WORKFLOWS_DIR` through `update-workflows.sh`, tracking `WORKFLOW_SERVER_WORKFLOWS_BRANCH`. That step is best-effort: if the machine is offline, or the checkout is dirty or missing, it warns and the server starts on whatever definitions are already on disk. Pass `--no-update-workflows`, or set `WORKFLOW_SERVER_UPDATE_WORKFLOWS=0`, to skip it.
 
 It then mounts `HOST_PROJECTS_ROOT` read-write, which in one bind covers the checkouts, their planning roots and their nested worktrees. The definitions are mounted read-only and `state/` read-write. `WORKFLOW_SERVER_ENGINEERING_DIR` names the projects multi-root base as the container sees it.
 

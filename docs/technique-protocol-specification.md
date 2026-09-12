@@ -470,7 +470,7 @@ naming the bag variable it lands under (§7.1 delivers `destination:` only on re
 ## 8. Authoring rules
 
 A technique's interface stays workflow-agnostic; the full set lives in
-[`workflow-design/resources/anti-patterns.md`](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) (in the `workflows` branch/submodule).
+[`workflow-design/resources/anti-patterns.md`](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) (on the `workflows` branch).
 The protocol-relevant rules:
 
 - An input or output describes what a value is — its meaning, shape, allowed values. A technique names
@@ -502,7 +502,7 @@ activity's `::` references resolve to a technique or rule — an `unresolved` en
 definition defect, which the definition-lint gate enforces.
 
 The file shape of §3 is normative, and the `check:technique-template` guard
-(`scripts/check-technique-template.ts`, run by `check:all`) enforces it corpus-wide: frontmatter
+(`guards/check-technique-template.ts`, run by `check:all`) enforces it corpus-wide: frontmatter
 carries `metadata.version` and nothing else; no H1 title; the H2 sections are the canonical five in
 canonical order (Outputs precede Protocol); entry ids are `snake_case` (a tool-parameter mirror
 keeps the tool's spelling, §3.2); rule names are `kebab-case`; every `{$name}` binding is

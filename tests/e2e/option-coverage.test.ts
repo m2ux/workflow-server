@@ -8,7 +8,7 @@ import { declaredCheckpoints, declaredOptions, optionCoverage, checkpointGaps } 
 import { corpusRoot } from '../corpus-root.js';
 import { indexCorpus } from '../../src/loaders/corpus-index.js';
 import { expectStampFresh } from '../stamp-freshness.js';
-import { WALKED } from './walked-workflows.js';
+import { parseWorkflowIds } from '../../scripts/coverage-scope.js';
 
 /**
  * Every checkpoint option the corpus declares gets taken by some walk, or is listed as one this
@@ -64,17 +64,28 @@ const DRY_WALKS = Number(process.env.WF_DRY_WALKS ?? '50');
  * needs — those move how every workflow walks. `WF_COVERAGE_SCOPE` narrows it to the walked
  * workflows a corpus change can move, which scripts/coverage-scope.ts derives from a corpus diff.
  *
+ * `WF_WALKED` is the walked set the corpus roster names. The engine does not open that file.
+ *
  * The scope bounds BOTH sides of the comparison. Options belonging to a workflow outside it are
  * neither reported as newly unreached nor as newly reachable: this run did not walk them, so it
  * knows nothing about them and says nothing about them.
  */
-const SCOPE = (process.env.WF_COVERAGE_SCOPE ?? '')
-  .split(',').map((s) => s.trim()).filter(Boolean);
+const SCOPE = parseWorkflowIds(process.env.WF_COVERAGE_SCOPE);
+const coverageOn = process.env.WF_OPTION_COVERAGE === '1';
+const WALKED = coverageOn ? parseWorkflowIds(process.env.WF_WALKED) : [];
+if (coverageOn && WALKED.length === 0) {
+  throw new Error(
+    'WF_WALKED is empty — pass the walked ids the corpus roster names, e.g. '
+    + 'WF_WALKED=$(jq -r \'.walked | join(",")\' "$WORKFLOWS_DIR/walks/roster.json")',
+  );
+}
 const scoped: readonly string[] = SCOPE.length ? WALKED.filter((w) => SCOPE.includes(w)) : WALKED;
 
-const EXPECTED_PATH = join(import.meta.dirname, 'option-coverage.json');
+const EXPECTED_PATH = coverageOn
+  ? join(corpusRoot(), 'walks', 'option-coverage.json')
+  : '';
 /** What to call the file in a failure message, since the absolute path is the runner's, not a reader's. */
-const EXPECTED_LABEL = 'tests/e2e/option-coverage.json';
+const EXPECTED_LABEL = 'walks/option-coverage.json';
 
 function listed(expected: Expected): string[] {
   return expected.groups.flatMap((g) => g.options);
@@ -87,8 +98,7 @@ function corpusWorkflows(): string[] {
 
 /**
  * Fourteen full coverage walks do not belong in the suite every unit-test run waits for, so this is
- * `npm run test:coverage-walk` and a job of its own (.github/workflows/coverage.yml) rather than
- * opt-in-if-you-remember: the flag keeps `test:ci` fast, and the job means nobody has to set it.
+ * `npm run test:coverage-walk` rather than part of `test:ci`. The flag keeps the suite fast.
  */
 describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option coverage', () => {
   let h: Harness;
@@ -209,8 +219,8 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     // The margin is the point. At a 2,700-second ceiling the same corpus walked green in 2,514
     // seconds on one runner and timed out on the next, and a timeout is reported as the options the
     // walk had not reached — a coverage failure naming the definitions when the cause is the clock.
-    // So this clears the measured cost by half again rather than by a tenth, and the job timeout in
-    // .github/workflows/coverage.yml clears this.
+    // So this clears the measured cost by half again rather than by a tenth, and the job that
+    // invokes this test sizes its timeout above it.
     //
     // Concurrency cannot buy the next rise back: the walks share one event loop and the wall clock
     // is already the slowest of them. A corpus that brings the cost back here wants that walk made

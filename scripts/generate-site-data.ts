@@ -13,6 +13,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, resolve, relative, dirname } from 'node:path';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../src/config.js';
+import { defaultCorpusDest } from '../src/corpus-dest.js';
 import { registerWorkflowTools } from '../src/tools/workflow-tools.js';
 import { registerResourceTools } from '../src/tools/resource-tools.js';
 
@@ -294,7 +295,7 @@ export function captureTools(): CapturedTool[] {
   } as unknown as McpServer;
 
   const config: ServerConfig = {
-    workflowDir: join(ROOT, 'workflows'),
+    workflowDir: defaultCorpusDest(ROOT),
     schemasDir: join(ROOT, 'schemas'),
     workspaceDir: ROOT,
     serverName: 'workflow-server',

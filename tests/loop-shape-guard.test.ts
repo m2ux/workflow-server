@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectFindings } from '../scripts/check-loop-shape.js';
+import { collectFindings } from '../guards/check-loop-shape.js';
 
 /**
  * A loop declares the fields its iteration type uses, and no others.

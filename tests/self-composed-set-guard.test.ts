@@ -3,8 +3,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectSelfComposedSetViolations } from '../scripts/check-self-composed-set.js';
-import { corpusRoot } from './corpus-root.js';
+import { collectSelfComposedSetViolations } from '../guards/check-self-composed-set.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * Self-composed set guard (#477): a `set` action whose value is built out of the variable
@@ -107,7 +107,7 @@ steps:
     expect(v).toHaveLength(1);
   });
 
-  it('the corpus is clean', () => {
-    expect(collectSelfComposedSetViolations(corpusRoot())).toHaveLength(0);
+  it.skipIf(!liveCorpusRoot())('the corpus is clean', () => {
+    expect(collectSelfComposedSetViolations(liveCorpusRoot()!)).toHaveLength(0);
   });
 });

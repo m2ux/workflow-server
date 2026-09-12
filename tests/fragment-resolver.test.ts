@@ -14,7 +14,7 @@ import {
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import type { CheckpointStep } from '../src/schema/activity.schema.js';
 import { safeValidateWorkflow, type WorkflowFragments } from '../src/schema/workflow.schema.js';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * Shared fragments (B10, issue #166): a checkpoint body declared once under a workflow's
@@ -24,7 +24,8 @@ import { corpusRoot } from './corpus-root.js';
  * steps. Rule text is not shared this way — its home is a conduct technique (#519).
  */
 
-const WORKFLOW_DIR = corpusRoot();
+const LIVE_CORPUS = liveCorpusRoot();
+const WORKFLOW_DIR = LIVE_CORPUS ?? '';
 
 /**
  * The declared body of a checkpoint fragment, read from the corpus itself. Materialization
@@ -200,7 +201,7 @@ steps:
   });
 });
 
-describe('loader materialization over the corpus', () => {
+describe.skipIf(!LIVE_CORPUS)('loader materialization over the corpus', () => {
   it('delivers plain rule strings — no rules bucket in the corpus carries a reference', async () => {
     for (const workflowId of ['work-package', 'prism', 'remediate-vuln']) {
       const result = await loadWorkflow(WORKFLOW_DIR, workflowId);

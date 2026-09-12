@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { parse } from 'yaml';
 import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../src/utils/delivery.js';
 import { createInitialSessionFile, safeValidateSessionFile } from '../src/schema/session.schema.js';
-import { corpusRoot } from './corpus-root.js';
+import { corpusRoot, liveCorpusRoot } from './corpus-root.js';
 import { createHarness, type Harness } from './e2e/harness.js';
 import { sessionOps, type SessionOps } from './session-ops.js';
 
@@ -123,7 +123,7 @@ describe('session schema: contextMode + deliveredContent', () => {
   });
 });
 
-describe('reference-not-repeat delivery (B1)', () => {
+describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
   let harness: Harness;
   let client: Client;
   let mcp: SessionOps;

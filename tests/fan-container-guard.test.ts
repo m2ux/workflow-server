@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { resolve } from 'node:path';
-import { collectFindings } from '../scripts/check-activity-variables.js';
+import { collectFindings } from '../guards/check-activity-variables.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { containerMember, readCarriesIndex, mergeActivityVariables } from '../src/utils/activity-variables.js';
-import type { Finding } from '../scripts/guard-protocol.js';
+import type { Finding } from '../guards/guard-protocol.js';
 
 /**
  * The container in front of the guard. The families here land inside the existing variables entry

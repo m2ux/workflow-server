@@ -8,11 +8,11 @@ import type { ServerConfig } from '../src/config.js';
 import { loadConfig } from '../src/config.js';
 import { createHttpApp, shutdownHandler, startHttpServer } from '../src/transports/http.js';
 import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from '../src/utils/session/store.js';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 function buildConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
   return {
-    workflowDir: corpusRoot(),
+    workflowDir: liveCorpusRoot() ?? resolve(import.meta.dirname, '../tests/fixtures/token-bench'),
     schemasDir: resolve(import.meta.dirname, '../schemas'),
     workspaceDir: mkdtempSync(join(tmpdir(), 'wf-http-test-')),
     serverName: 'test-http-workflow-server',
@@ -59,7 +59,7 @@ const get = (app: Express, path: string, headers: Record<string, string> = {}): 
 const postJson = (app: Express, path: string, body: unknown, headers: Record<string, string> = {}): Promise<Response> =>
   call(app, path, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
 
-describe('HTTP transport', () => {
+describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
   let app: Express;
   let workspaceDir: string;
 
@@ -80,16 +80,22 @@ describe('HTTP transport', () => {
       expect(res.body).toEqual({ status: 'ok' });
     });
 
-    it('GET /ready returns 200 with status ready when all directories exist', async () => {
+    it('GET /ready returns 200 with status ready when schemas, workspace, and the session key resolve', async () => {
       const res = await get(app, '/ready');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('ready');
       expect(res.body.checks).toEqual({
-        workflowDir: true,
         schemasDir: true,
         workspaceDir: true,
         sessionKeyWritable: true,
       });
+    });
+
+    it('GET /ready returns 200 when the workflow directory is absent', async () => {
+      const readyApp = createHttpApp(buildConfig({ workflowDir: '/nonexistent/workflow/path' }));
+      const res = await get(readyApp, '/ready');
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('ready');
     });
 
     it('GET /ready returns 503 with status not-ready when workspaceDir is missing', async () => {

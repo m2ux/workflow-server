@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collectLaunchedWorkflowViolations } from '../scripts/check-launched-workflows.js';
-import { corpusRoot } from './corpus-root.js';
+import { collectLaunchedWorkflowViolations } from '../guards/check-launched-workflows.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * Launched-workflows guard (#656): an activity says it hands work to another workflow twice —
@@ -123,7 +123,7 @@ ${LAUNCH_STEP.split('\n').map((l) => (l ? `  ${l}` : l)).join('\n')}`));
     expect(v[0]!.detail).toContain('does not declare under triggers');
   });
 
-  it('the corpus is clean', () => {
-    expect(collectLaunchedWorkflowViolations(corpusRoot())).toHaveLength(0);
+  it.skipIf(!liveCorpusRoot())('the corpus is clean', () => {
+    expect(collectLaunchedWorkflowViolations(liveCorpusRoot()!)).toHaveLength(0);
   });
 });

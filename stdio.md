@@ -15,7 +15,7 @@ Shared sequence: **[setup.md](setup.md)** (layout, deploy, checkout under `HOST_
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
 npm install
-git worktree add ./workflows workflows
+git worktree add .worktrees/workflows workflows
 npm run build
 ```
 
@@ -114,7 +114,7 @@ Then finish shared steps in [setup.md](setup.md) (**§2** deploy + checkout, **�
 |---------|----------------|
 | Process exits immediately | Provide **`--workspace=…`** or **`--repo=owner/repo`** — `--install-dir` alone is not enough |
 | Spawn error / cannot find `dist/index.js` | Run `npm run build`; use an absolute path to `dist/index.js` |
-| Workflows not found | Readable `--workflow-dir` (or install workflows worktree) |
+| Workflows not found | Readable `--workflow-dir` pointing at a tree discovery can walk: when that tree holds a `corpus/` grouping, discovery walks that grouping and does not search sibling folders; a still-flat tree of workflow directories is walked as the root. A `workflow.yaml` at any depth under that walk is a workflow. Authoring docs live at `docs/` of that tree and are not product workflows. |
 | Planning path / repo errors | [setup.md §2](setup.md#2-initialise-a-target-repo); pass `repo` on `start_session` |
 | Agent never calls `discover` | [docs/ide-setup.md](docs/ide-setup.md) bootstrap rule |
 

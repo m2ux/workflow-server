@@ -5,10 +5,11 @@ import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { parse as parseYaml } from 'yaml';
 import { safeValidateTechnique } from '../src/schema/technique.schema.js';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 import { writeWorkflowFixture } from './corpus-fixture.js';
 
-const WORKFLOW_DIR = corpusRoot();
+const LIVE_CORPUS = liveCorpusRoot();
+const WORKFLOW_DIR = LIVE_CORPUS ?? '';
 const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/markdown-techniques');
 
 /* -------------------------------------------------------------------------- */
@@ -17,7 +18,7 @@ const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/markdown-techniques')
 /* -------------------------------------------------------------------------- */
 
 describe('technique-loader', () => {
-  describe('readTechnique (real content)', () => {
+  describe.skipIf(!LIVE_CORPUS)('readTechnique (real content)', () => {
     it('loads meta/agent-conduct (rules-only technique)', async () => {
       const result = await readTechnique('meta/agent-conduct', WORKFLOW_DIR);
       expect(result.success).toBe(true);

@@ -14,7 +14,7 @@ import { declaredSteps, stepCoverage } from './coverage.js';
 import { expectStampFresh } from '../stamp-freshness.js';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { corpusRoot } from '../corpus-root.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 import { workflowSubdir } from '../../src/loaders/corpus-index.js';
 
 /**
@@ -24,7 +24,7 @@ import { workflowSubdir } from '../../src/loaders/corpus-index.js';
  * chain: filename → server artifactPrefix → get_workflow exposure → robot application.
  */
 function expectedActivityPrefixes(): Map<string, string> {
-  const dir = workflowSubdir(corpusRoot(), 'work-package', 'activities')!;
+  const dir = workflowSubdir(liveCorpusRoot()!, 'work-package', 'activities')!;
   const map = new Map<string, string>();
   for (const f of readdirSync(dir)) {
     const m = f.match(/^(\d+)-(.+)\.yaml$/);
@@ -40,16 +40,15 @@ function expectedActivityPrefixes(): Map<string, string> {
  * snapshot diff). Run retroactively against a legacy (main) build, the same
  * snapshots reveal exactly what the skills→techniques migration changed.
  */
-describe('walk baseline corpus stamp', () => {
+describe.skipIf(!liveCorpusRoot())('walk baseline corpus stamp', () => {
   // These snapshots describe a walk through the corpus, so they are only meaningful against the corpus
   // they were generated from. Checking the stamp first turns "six unrelated tests are red" into one
   // named cause (#327 S3).
   //
   // The stamp answers that question for the tree in front of it. It is a file recording the provenance
   // of sibling files, so a merge can take it from one parent and the baselines it speaks for from the
-  // other — matching, and silent, while the two describe different corpora (#479). Two gitlinks cannot
-  // be separated that way, so the pull-request check in .github/actions/workflows-corpus compares
-  // those instead, and covers the case this cannot see.
+  // other — matching, and silent, while the two describe different corpora (#479). Keep the stamp and
+  // the snapshots in the same commit.
   it('was generated against the corpus commit now checked out', () => {
     expectStampFresh((stampSha, currentSha) =>
       `walk snapshots were generated against corpus ${stampSha} but the checkout is at ${currentSha}. `
@@ -64,7 +63,7 @@ const policies = [
   researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
 ];
 
-describe('work-package walk snapshots (baseline)', () => {
+describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () => {
   let h: Harness;
   /**
    * Every walk, run once before any test reads one.
@@ -227,9 +226,8 @@ describe('work-package walk snapshots (baseline)', () => {
    * That the executed side is corpus-coupled is the whole of its subtlety, and it is not visible in
    * the number. A corpus bump that stops binding one variable can retire a step nothing else
    * mentions — `gitnexus_indexed` losing its bound value took `gitnexus-detect-changes-preflight`
-   * out of all six walks and one step off this total (#479). Re-baseline in the commit that bumps the
-   * submodule; CI checks that the branch walked the corpus its merge adopts, because a baseline
-   * measured against a corpus the tree does not adopt reports drift as a code regression.
+   * out of all six walks and one step off this total (#479). Re-baseline in the commit that changes
+   * the walk; the snapshots live under `walks/` of the pointed corpus tree.
    *
    * Also asserted, and independent of both totals: every step some walk ran is a step its activity
    * declares. That is what an id rename or a manifest drifting from the definition would break.

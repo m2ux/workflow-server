@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { createHarness, type Harness } from './harness.js';
 import { walk, type WalkResult } from './walker.js';
 import { defaultPolicy } from './policies.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
  * Step execution for the workflows the work-package matrix does not reach.
@@ -26,7 +27,7 @@ import { defaultPolicy } from './policies.js';
  * whole-graph reachability stays where it already lives, in the all-workflows walk, and this asks
  * the narrower question that walk cannot answer.
  */
-describe('step execution for the workflows the policy matrix leaves out', () => {
+describe.skipIf(!liveCorpusRoot())('step execution for the workflows the policy matrix leaves out', () => {
   let h: Harness;
   beforeAll(async () => { h = await createHarness(); }, 120_000);
   afterAll(async () => { await h.close(); });

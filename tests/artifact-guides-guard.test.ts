@@ -3,14 +3,14 @@ import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { declareFixtureWorkflows } from './corpus-fixture.js';
-import { collectUnmappedArtifacts } from '../scripts/check-artifact-guides.js';
+import { collectUnmappedArtifacts } from '../guards/check-artifact-guides.js';
 
 /**
  * Creation-guide mapping guard (#403 W5). Design principle 28 and the `no-template-creation-guide`
  * catalog entry both require that every artifact a workflow persists resolves to a guide carrying a
  * template and the rules that populate it. The guard resolves a guide two ways — the workflow's
  * authored artifact-to-guide map, or a resource that names the filename and carries a template
- * heading — and accepts a gap only when `scripts/artifact-guide-baseline.json` classifies it.
+ * heading — and accepts a gap only when `ledgers/artifact-guide-baseline.json` of the pointed tree classifies it.
  */
 
 const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];

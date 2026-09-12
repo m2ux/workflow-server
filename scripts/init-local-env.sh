@@ -5,7 +5,7 @@
 #
 # Defaults match scripts/install.sh + start.sh:
 #   $HOST_PROJECTS_ROOT/<repo>/ + nested .engineering + .worktrees
-#   $INSTALL/{state,workflows}
+#   $INSTALL/state; corpus dest is .worktrees/workflows of this checkout
 #   container targets under /var/lib/workflow-server/...
 set -euo pipefail
 
@@ -113,9 +113,15 @@ fi
 WORKTREE_DEFAULT="$(expand_path "$WORKTREE_DEFAULT")"
 STATE_DIR="${INSTALL_DEFAULT}/state"
 
-# Prefer checkout workflows/schemas when present (dev compose from repo root).
-if [[ -d "${ROOT}/workflows" ]]; then
-  WORKFLOWS_ABS="${ROOT}/workflows"
+# Dev dest: .worktrees/workflows of the primary checkout. Install clone stays $INSTALL/workflows.
+if git -C "$ROOT" rev-parse --git-dir >/dev/null 2>&1; then
+  common_dir="$(git -C "$ROOT" rev-parse --path-format=absolute --git-common-dir 2>/dev/null || true)"
+  if [[ -n "$common_dir" ]]; then
+    PRIMARY_ROOT="$(cd "$(dirname "$common_dir")" && pwd)"
+    WORKFLOWS_ABS="${PRIMARY_ROOT}/.worktrees/workflows"
+  else
+    WORKFLOWS_ABS="${ROOT}/.worktrees/workflows"
+  fi
 else
   WORKFLOWS_ABS="${INSTALL_DEFAULT}/workflows"
 fi
@@ -138,6 +144,7 @@ upsert WORKFLOW_WORKSPACE "${WORKTREE_DEFAULT}"
 upsert WORKTREE_ROOT "${WORKTREE_DEFAULT}"
 upsert WORKFLOW_SERVER_ENGINEERING_DIR "${PROJECTS_DEFAULT}"
 upsert WORKFLOW_DIR "${WORKFLOWS_ABS}"
+upsert WORKFLOWS_DIR "${WORKFLOWS_ABS}"
 upsert SCHEMAS_DIR "${SCHEMAS_ABS}"
 upsert HOST_PROJECTS_ROOT "${PROJECTS_DEFAULT}"
 if [[ "$WORKTREE_DEFAULT" != "$PROJECTS_DEFAULT" ]]; then

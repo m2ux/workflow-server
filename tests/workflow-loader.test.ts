@@ -19,9 +19,10 @@ import type { Workflow } from '../src/schema/workflow.schema.js';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { corpusRoot } from './corpus-root.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
-const WORKFLOW_DIR = corpusRoot();
+const LIVE_CORPUS = liveCorpusRoot();
+const WORKFLOW_DIR = LIVE_CORPUS ?? '';
 
 async function loadMetaWorkflow(): Promise<Workflow> {
   const result = await loadWorkflow(WORKFLOW_DIR, 'meta');
@@ -30,7 +31,7 @@ async function loadMetaWorkflow(): Promise<Workflow> {
 }
 
 describe('workflow-loader', () => {
-  describe('loadWorkflow', () => {
+  describe.skipIf(!LIVE_CORPUS)('loadWorkflow', () => {
     it('should load the meta workflow successfully', async () => {
       const result = await loadWorkflow(WORKFLOW_DIR, 'meta');
 
@@ -67,7 +68,7 @@ describe('workflow-loader', () => {
     });
   });
 
-  describe('listWorkflows', () => {
+  describe.skipIf(!LIVE_CORPUS)('listWorkflows', () => {
     it('should list available workflows with manifest data', async () => {
       const manifests = await listWorkflows(WORKFLOW_DIR);
 
@@ -158,7 +159,7 @@ describe('workflow-loader', () => {
       }
     });
 
-    it('loadWorkflowWithDiagnostics returns no errors for a clean workflow', async () => {
+    it.skipIf(!LIVE_CORPUS)('loadWorkflowWithDiagnostics returns no errors for a clean workflow', async () => {
       const result = await loadWorkflowWithDiagnostics(WORKFLOW_DIR, 'meta');
       expect(result.success).toBe(true);
       if (result.success) {
@@ -213,7 +214,7 @@ describe('workflow-loader', () => {
     });
   });
 
-  describe('getActivity', () => {
+  describe.skipIf(!LIVE_CORPUS)('getActivity', () => {
     it('should find an activity by ID within a loaded workflow', async () => {
       const workflow = await loadMetaWorkflow();
       console.log('META ACTIVITIES:', workflow.activities.map(a => a.id));
@@ -229,7 +230,7 @@ describe('workflow-loader', () => {
     });
   });
 
-  describe('getCheckpoint', () => {
+  describe.skipIf(!LIVE_CORPUS)('getCheckpoint', () => {
     it('should find a checkpoint within an activity', async () => {
       const workflow = await loadMetaWorkflow();
       const checkpoint = getCheckpoint(workflow, 'discover-session', 'resume-session');
@@ -307,13 +308,13 @@ describe('workflow-loader', () => {
       expect(getCheckpoint(wf, 'requirements-refinement', 'no-such#RE-1')).toBeUndefined();
     });
 
-    it('still resolves a plain non-loop checkpoint by exact id (no regression)', async () => {
+    it.skipIf(!LIVE_CORPUS)('still resolves a plain non-loop checkpoint by exact id (no regression)', async () => {
       const workflow = await loadMetaWorkflow();
       expect(getCheckpoint(workflow, 'discover-session', 'resume-session')?.id).toBe('resume-session');
     });
   });
 
-  describe('getExitBindings', () => {
+  describe.skipIf(!LIVE_CORPUS)('getExitBindings', () => {
     it('pairs each declared exit with the destination the workflow binds it to', async () => {
       const workflow = await loadMetaWorkflow();
       const bindings = getExitBindings(workflow, 'discover-session');
@@ -347,7 +348,7 @@ describe('workflow-loader', () => {
     });
   });
 
-  describe('exitDestinations', () => {
+  describe.skipIf(!LIVE_CORPUS)('exitDestinations', () => {
     it('lists the activities an activity can reach, deduped', async () => {
       const workflow = await loadMetaWorkflow();
       const targets = exitDestinations(workflow, 'discover-session');
@@ -370,7 +371,7 @@ describe('workflow-loader', () => {
     });
   });
 
-  describe('validateExitBindings', () => {
+  describe.skipIf(!LIVE_CORPUS)('validateExitBindings', () => {
     const activity = (exits: unknown) => ({
       id: 'thing', version: '1.0.0', name: 'Thing', required: true, exits,
     });

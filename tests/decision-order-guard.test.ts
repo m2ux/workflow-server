@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collectFindings } from '../scripts/check-decision-order.js';
-import { UnreachableCorpusError } from '../scripts/workflows-root.js';
+import { collectFindings } from '../guards/check-decision-order.js';
+import { UnreachableCorpusError } from '../guards/workflows-root.js';
 
 /**
  * Decision-order guard (#469): no checkpoint decides a value a step before it is already gated on.

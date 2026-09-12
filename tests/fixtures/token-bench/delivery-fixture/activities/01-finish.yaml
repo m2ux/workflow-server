@@ -1,0 +1,13 @@
+id: finish
+version: 1.0.0
+name: Finish
+description: Last activity of the delivery fixture.
+steps:
+  - kind: action
+    id: announce-finish
+    actions:
+      - action: log
+        message: Finishing the delivery fixture.
+exits:
+  - id: done
+    isDefault: true

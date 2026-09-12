@@ -19,6 +19,7 @@ set -euo pipefail
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 DEFAULT_HOST_PROJECTS_ROOT="${HOME}/projects/dev"
 DEFAULT_REPO_URL="https://github.com/m2ux/workflow-server.git"
+DEFAULT_CORPUS_BRANCH="workflows"
 DEFAULT_RAW_BASE="https://raw.githubusercontent.com/m2ux/workflow-server"
 DEFAULT_REF="main"
 DEFAULT_START_NAME="start.sh"
@@ -45,6 +46,12 @@ INSTALL_DIR="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
 HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
 HOST_PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-}"
 REPO_URL="${WORKFLOW_SERVER_REPO_URL:-$DEFAULT_REPO_URL}"
+CORPUS_BRANCH="${WORKFLOW_SERVER_WORKFLOWS_BRANCH:-$DEFAULT_CORPUS_BRANCH}"
+CORPUS_BRANCH_SET=0
+if [[ -n "${WORKFLOW_SERVER_WORKFLOWS_BRANCH:-}" ]]; then
+  CORPUS_BRANCH_SET=1
+fi
+HOST_WORKFLOWS_DIR="${HOST_WORKFLOWS_DIR:-${WORKFLOW_DIR:-}}"
 RAW_BASE="${WORKFLOW_SERVER_RAW_BASE:-$DEFAULT_RAW_BASE}"
 REF="${WORKFLOW_SERVER_REF:-$DEFAULT_REF}"
 CONTAINER_NAME="${WORKFLOW_SERVER_CONTAINER_NAME:-$DEFAULT_CONTAINER_NAME}"
@@ -52,9 +59,10 @@ HOST_PORT="${HOST_PORT:-$DEFAULT_HOST_PORT}"
 
 usage() {
   cat <<EOF
-Install workflow-server under a local data dir: fetch helper scripts, clone
-workflows data, ensure a projects root, and write a persistent env file.
-Does not start Docker.
+Install workflow-server under a local data dir: fetch helper scripts, place a
+corpus checkout, ensure a projects root, and write a persistent env file.
+Does not start Docker. This script records the corpus path and branch that
+start.sh mounts and refreshes.
 
 USAGE
   install.sh [options]
@@ -68,7 +76,13 @@ OPTIONS
   --worktree-root=PATH     Optional separate feature-tree root. Prefer nested
                            .worktrees/ under each checkout. When unset, omitted
                            from env (start.sh mounts projects root only).
-  --repo-url=URL           Git remote for workflows branch (default: GitHub m2ux)
+  --workflows-dir=PATH     Corpus checkout (default: \$INSTALL/workflows).
+                           An existing tree is used as-is; otherwise cloned.
+  --corpus-dir=PATH        Same as --workflows-dir
+  --repo-url=URL           Git remote for the corpus (default: GitHub m2ux)
+  --corpus-url=URL         Same as --repo-url
+  --corpus-branch=NAME     Branch to clone and refresh (default: ${DEFAULT_CORPUS_BRANCH})
+  --workflows-branch=NAME  Same as --corpus-branch
   --ref=REF                Branch/tag for helper scripts raw URL (default: ${DEFAULT_REF})
   --name=NAME              Container name persisted for start/stop (default: ${DEFAULT_CONTAINER_NAME})
   --host-port=N            Host port persisted for start (default: ${DEFAULT_HOST_PORT})
@@ -82,8 +96,8 @@ LAYOUT
     ${DEFAULT_DEPLOY_CURSOR_NAME}
     ${DEFAULT_CURSOR_TEMPLATE_REL}/  # template for deploy-cursor-workspace
     ${DEFAULT_CLAUDE_SCRIPTS_REL}/   # Claude hooks + sbx for Cursor workspace deploy
-    ${DEFAULT_ENV_NAME}               # HOST_PROJECTS_ROOT + port / name
-    workflows/               # git clone -b workflows (server definitions)
+    ${DEFAULT_ENV_NAME}               # HOST_PROJECTS_ROOT + corpus path / branch
+    workflows/               # default corpus checkout
     state/                   # durable HMAC key (mounted by start.sh)
 
   \$HOST_PROJECTS_ROOT/               # from env; not necessarily under \$INSTALL
@@ -132,6 +146,12 @@ ensure_dir() {
   else
     echo "${label} already present: ${path}"
   fi
+}
+
+is_git_checkout() {
+  local dest="$1"
+  { [[ -d "${dest}/.git" ]] || [[ -f "${dest}/.git" ]]; } \
+    && git -C "${dest}" rev-parse --is-inside-work-tree >/dev/null 2>&1
 }
 
 fetch_script() {
@@ -227,12 +247,30 @@ while [[ $# -gt 0 ]]; do
       HOST_PROJECTS_ROOT="${2:?}"
       shift 2
       ;;
-    --repo-url=*)
+    --repo-url=*|--corpus-url=*)
       REPO_URL="${1#*=}"
       shift
       ;;
-    --repo-url)
+    --repo-url|--corpus-url)
       REPO_URL="${2:?}"
+      shift 2
+      ;;
+    --workflows-dir=*|--corpus-dir=*)
+      HOST_WORKFLOWS_DIR="${1#*=}"
+      shift
+      ;;
+    --workflows-dir|--corpus-dir)
+      HOST_WORKFLOWS_DIR="${2:?}"
+      shift 2
+      ;;
+    --corpus-branch=*|--workflows-branch=*)
+      CORPUS_BRANCH="${1#*=}"
+      CORPUS_BRANCH_SET=1
+      shift
+      ;;
+    --corpus-branch|--workflows-branch)
+      CORPUS_BRANCH="${2:?}"
+      CORPUS_BRANCH_SET=1
       shift 2
       ;;
     --ref=*)
@@ -286,7 +324,11 @@ DEPLOY_CURSOR_PATH="${INSTALL_DIR}/${DEFAULT_DEPLOY_CURSOR_NAME}"
 CURSOR_TEMPLATE_DIR="${INSTALL_DIR}/${DEFAULT_CURSOR_TEMPLATE_REL}"
 CLAUDE_SCRIPTS_DIR="${INSTALL_DIR}/${DEFAULT_CLAUDE_SCRIPTS_REL}"
 ENV_PATH="${INSTALL_DIR}/${DEFAULT_ENV_NAME}"
-WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
+if [[ -z "$HOST_WORKFLOWS_DIR" ]]; then
+  HOST_WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
+fi
+HOST_WORKFLOWS_DIR=$(abs_path "$HOST_WORKFLOWS_DIR")
+WORKFLOWS_DIR="$HOST_WORKFLOWS_DIR"
 START_URL="${RAW_BASE}/${REF}/scripts/start.sh"
 STOP_URL="${RAW_BASE}/${REF}/scripts/stop.sh"
 UPDATE_URL="${RAW_BASE}/${REF}/scripts/update-workflows.sh"
@@ -316,13 +358,19 @@ for legacy in "${LEGACY_NAMES[@]}"; do
   fi
 done
 
-if [[ -d "${WORKFLOWS_DIR}/.git" ]] || [[ -f "${WORKFLOWS_DIR}/.git" ]]; then
-  echo "Workflows already present: ${WORKFLOWS_DIR}"
+if is_git_checkout "$WORKFLOWS_DIR"; then
+  current_branch=$(git -C "$WORKFLOWS_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo detached)
+  if [[ "$CORPUS_BRANCH_SET" -eq 0 && "$current_branch" != "HEAD" && "$current_branch" != "detached" ]]; then
+    CORPUS_BRANCH="$current_branch"
+  fi
+  echo "Corpus already present: ${WORKFLOWS_DIR} (${current_branch})"
+elif [[ -d "$WORKFLOWS_DIR" ]]; then
+  echo "Corpus directory (not a git checkout): ${WORKFLOWS_DIR}"
 elif [[ -e "$WORKFLOWS_DIR" ]]; then
-  die "${WORKFLOWS_DIR} exists but is not a git checkout"
+  die "${WORKFLOWS_DIR} exists and is not a directory"
 else
-  echo "Cloning workflows branch → ${WORKFLOWS_DIR}"
-  git clone -b workflows --single-branch "$REPO_URL" "$WORKFLOWS_DIR"
+  echo "Cloning corpus ${REPO_URL} (${CORPUS_BRANCH}) → ${WORKFLOWS_DIR}"
+  git clone -b "$CORPUS_BRANCH" --single-branch "$REPO_URL" "$WORKFLOWS_DIR"
 fi
 
 # Persistent config for start.sh / stop.sh (no path args needed at runtime).
@@ -334,9 +382,12 @@ fi
 # Edit and re-run start, or re-run install with new flags.
 # Feature worktrees: \$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/
 HOST_PROJECTS_ROOT=${HOST_PROJECTS_ROOT}
+HOST_WORKFLOWS_DIR=${HOST_WORKFLOWS_DIR}
 HOST_PORT=${HOST_PORT}
 WORKFLOW_SERVER_CONTAINER_NAME=${CONTAINER_NAME}
 WORKFLOW_SERVER_INSTALL_DIR=${INSTALL_DIR}
+WORKFLOW_SERVER_REPO_URL=${REPO_URL}
+WORKFLOW_SERVER_WORKFLOWS_BRANCH=${CORPUS_BRANCH}
 EOF
   if [[ -n "$HOST_WORKTREE_ROOT" ]]; then
     echo "HOST_WORKTREE_ROOT=${HOST_WORKTREE_ROOT}"
@@ -347,7 +398,7 @@ echo "Wrote env → ${ENV_PATH}"
 echo
 echo "Install complete."
 echo "  Install dir  : ${INSTALL_DIR}"
-echo "  Workflows    : ${WORKFLOWS_DIR}"
+echo "  Corpus       : ${WORKFLOWS_DIR}  (branch ${CORPUS_BRANCH})"
 echo "  Projects     : ${HOST_PROJECTS_ROOT}  (you manage <repo>/ checkouts here)"
 if [[ -n "$HOST_WORKTREE_ROOT" ]]; then
   echo "  Worktrees    : ${HOST_WORKTREE_ROOT}"

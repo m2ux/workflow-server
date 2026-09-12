@@ -5,6 +5,7 @@ import { join, resolve } from 'node:path';
 import { parse } from 'yaml';
 import { createHarness, parseToolResponse, parseWorkflowResponse, type Harness } from './e2e/harness.js';
 import { planningFolderPath } from './session-ops.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function resolveCheckpoints(client: Client, sessionIndex: string, activityResponse: any): Promise<string> {
@@ -71,7 +72,7 @@ async function transitionToActivity(client: Client, sessionIndex: string, activi
 
 const SEMVER_RE = /^\d+\.\d+\.\d+$/;
 
-describe('mcp-server integration', () => {
+describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
   let harness: Harness;
   let client: Client;
   let workspaceDir: string;
