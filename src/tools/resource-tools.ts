@@ -47,6 +47,7 @@ import {
 import {
   createInitialSessionFile,
   bindSessionRepo,
+  resolveExecutionPath,
   safeValidateSessionFile,
   type SessionFile,
 } from '../schema/session.schema.js';
@@ -121,6 +122,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Pass `planning_folder` as an absolute path (basename = slug) to resume or pin a named folder. ' +
         '`repo` is optional; when present it must equal the derived owner/repo. ' +
         'Omit both `working_directory` and `planning_folder` for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
+        'Every session records `execution_path` (`agent` when a caller walks the definition, `runner` when the server does) on the session and echoes it here. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks.',
       inputSchema: z
         .object({
@@ -355,6 +357,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         const pathDrift = canonicalFolder !== undefined && state.planningFolderPath !== canonicalFolder;
         const agentDrift = state.agentId !== agent_id;
         const modeDrift = context_mode !== undefined && state.contextMode !== context_mode;
+        const executionPathUnset = state.executionPath === undefined;
         // A resume carries a fresh request from the user — rebind it so the bag
         // describes why the session is running now, not why it opened.
         const requestDrift = user_request !== undefined && state.variables?.['user_request'] !== user_request;
@@ -372,12 +375,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // A fresh context retains nothing it was sent, so its ledger no longer describes it.
         const disownsPriorDeliveries = modeDrift && context_mode === 'fresh';
         let nextState = state;
-        if (pathDrift || agentDrift || modeDrift || requestDrift || versionDrift) {
+        if (pathDrift || agentDrift || modeDrift || requestDrift || versionDrift || executionPathUnset) {
           nextState = {
             ...nextState,
             ...(agentDrift ? { agentId: agent_id } : {}),
             ...(pathDrift ? { planningFolderPath: canonicalFolder } : {}),
             ...(modeDrift ? { contextMode: context_mode } : {}),
+            ...(executionPathUnset ? { executionPath: 'agent' as const } : {}),
             ...(disownsPriorDeliveries && state.deliveredContent
               ? {
                 deliveredContent: Object.fromEntries(
@@ -503,6 +507,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         response['repo_unbound'] = true;
       }
       if (state.contextMode) response['context_mode'] = state.contextMode;
+      response['execution_path'] = resolveExecutionPath(state);
       if (migrationResult.migrated) {
         response['migrated'] = true;
       }
@@ -529,6 +534,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         + 'From a TRANSIENT parent, promoting onto a planning folder that already holds a session is refused as FOLDER_OCCUPIED; both session files are left untouched. A persistent parent appends a second child. ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
 'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
+        'The child records `execution_path` and this response echoes it. ' +
         'Never set `context_mode: "persistent"` on worker-dispatched children — a worker takes full delivery on the first activity of its run and collapses against its own ledger thereafter.',
       inputSchema: z.object({
         ...sessionIndexParam,
@@ -671,7 +677,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // index to it and remove the tmp folder.
         await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder }, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder, execution_path: resolveExecutionPath(childInitial) }, null, 2) }],
           _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
         };
       }
@@ -717,7 +723,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded, parentNext);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_folder_path: presentPlanningPath(parentFolder) ?? parentFolder }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_folder_path: presentPlanningPath(parentFolder) ?? parentFolder, execution_path: resolveExecutionPath(childInitial) }, null, 2) }],
         _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
       };
     }), traceOpts)

@@ -175,6 +175,13 @@ const SessionFileBaseSchema = z.object({
   contextMode: z.enum(['persistent', 'fresh']).optional(),
 
   /**
+   * Which execution path drove this session. `agent` — a caller walks the
+   * definition. `runner` — the server walks it. Absent on a file written
+   * before the field existed: that session is agent-driven.
+   */
+  executionPath: z.enum(['agent', 'runner']).optional(),
+
+  /**
    * Delivery ledger for reference-not-repeat payloads: agentId → content
    * key → hash of the content most recently delivered in full. Content keys
    * are namespaced by channel — see `src/utils/delivery.ts` for the full list
@@ -198,6 +205,14 @@ const SessionFileBaseSchema = z.object({
     path: z.string().optional(),
   })).optional(),
 });
+
+export const EXECUTION_PATHS = ['agent', 'runner'] as const;
+export type ExecutionPath = (typeof EXECUTION_PATHS)[number];
+
+/** Path that drove the session. A file that never recorded one is agent-driven. */
+export function resolveExecutionPath(state: { executionPath?: ExecutionPath }): ExecutionPath {
+  return state.executionPath ?? 'agent';
+}
 
 /**
  * Static type of the recursive `SessionFileSchema`. Declared up front so the
@@ -225,6 +240,7 @@ export interface SessionFile {
   planningFolderPath?: string;
   repo?: string;
   contextMode?: 'persistent' | 'fresh';
+  executionPath?: ExecutionPath;
   deliveredContent?: Record<string, Record<string, string>>;
   declaredArtifacts?: Array<{ id: string; name: string; path?: string }>;
 }
@@ -277,6 +293,7 @@ export function createInitialSessionFile(args: {
   /** Target owner/repo bound on this session (session.json SSOT). */
   repo?: string;
   contextMode?: 'persistent' | 'fresh';
+  executionPath?: ExecutionPath;
   variables?: Record<string, unknown>;
 }): SessionFile {
   const now = new Date();
@@ -307,6 +324,7 @@ export function createInitialSessionFile(args: {
     ],
     status: 'running',
     triggeredWorkflows: [],
+    executionPath: args.executionPath ?? 'agent',
   };
   if (args.planningFolderPath) file.planningFolderPath = args.planningFolderPath;
   if (args.repo) file.repo = args.repo;
