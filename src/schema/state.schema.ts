@@ -75,6 +75,13 @@ export const HistoryEventTypeSchema = z.enum([
   // indistinguishable from one that made it, and a required write whose omission leaves
   // no trace gets omitted.
   'progress_published',
+  // Per-delivery cost (#528 W5): one summary of what a get_activity resolved and
+  // spent, extending the per-step technique_bundled / resource_fetched magnitudes.
+  // `data` carries { agentId, delivery, resolved_techniques, provenance_passes,
+  // bundled_steps, spent_chars, eager_budget_chars }. No `chars` field — wire
+  // size lives on activity_dispatched, and counting this event there would
+  // double-charge the same payload.
+  'activity_delivered',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 

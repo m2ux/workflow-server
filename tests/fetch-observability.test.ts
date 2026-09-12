@@ -151,6 +151,50 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
       expect(resumeChars).toBeLessThan(freshChars!);
     });
 
+    it('records one activity_delivered summary per get_activity and echoes it on _meta', async () => {
+      const slug = '2026-09-12-delivery-cost';
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
+      });
+      const meta = result._meta as {
+        delivery_cost?: {
+          resolved_techniques: number;
+          provenance_passes: number;
+          bundled_steps: number;
+          spent_chars: number;
+          eager_budget_chars: number;
+        };
+      };
+      expect(meta.delivery_cost).toBeDefined();
+      expect(meta.delivery_cost!.resolved_techniques).toBeGreaterThan(0);
+      expect(meta.delivery_cost!.bundled_steps).toBeGreaterThan(0);
+      expect(meta.delivery_cost!.spent_chars).toBeGreaterThan(0);
+      expect(meta.delivery_cost!.eager_budget_chars).toBeGreaterThan(meta.delivery_cost!.spent_chars);
+      expect(meta.delivery_cost!.provenance_passes).toBe(meta.delivery_cost!.bundled_steps);
+
+      const summaries = session.history(slug).filter(h => h.type === 'activity_delivered');
+      expect(summaries).toHaveLength(1);
+      expect(summaries[0]!.activity).toBe('start-work-package');
+      const data = summaries[0]!.data as {
+        agentId: string;
+        delivery: string;
+        resolved_techniques: number;
+        spent_chars: number;
+        eager_budget_chars: number;
+        chars?: number;
+      };
+      expect(data.agentId).toBe('w-1');
+      expect(data.delivery).toBe('full');
+      expect(data.resolved_techniques).toBe(meta.delivery_cost!.resolved_techniques);
+      expect(data.spent_chars).toBe(meta.delivery_cost!.spent_chars);
+      expect(data.eager_budget_chars).toBe(meta.delivery_cost!.eager_budget_chars);
+      expect(data.chars).toBeUndefined();
+    });
+
     it('reads a second worker on the same session as its own fresh dispatch', async () => {
       const slug = '2026-07-30-dispatch-two-workers';
       const idx = await session.start(slug, 'orchestrator');

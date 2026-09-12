@@ -1901,6 +1901,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Dispatch accounting (#353 §1.3): get_activity is the call a dispatched worker makes to
       // receive its payload, so it is where a dispatch announces itself. Derived from the reloaded
       // history, which is what the save writes against.
+      const deliveryCost = {
+        resolved_techniques: producerIndex?.resolvedTechniques ?? 0,
+        provenance_passes: bundledSteps.length,
+        bundled_steps: bundledSteps.length,
+        spent_chars: spentChars,
+        eager_budget_chars: Math.floor(eagerBudgetChars),
+      };
       const dispatch = dispatchKind(reloaded.state, scope);
       // Delivery-identity accounting (#408): the activity is on its way to a context that has not
       // received it, so a scope that already took it is a second copy of the same payload in one
@@ -1939,6 +1946,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             data: { resourceId: r.resourceId, agentId: scope, bundled: true, chars: r.chars, delivery: r.delivery },
           });
         }
+        // One summary of what this delivery resolved and spent, beside the per-step
+        // magnitudes. The same figures ride on `_meta.delivery_cost` so a caller
+        // asserts them without scraping the log line.
+        draft.history.push({
+          timestamp: bundledAt,
+          type: 'activity_delivered',
+          activity: activity_id,
+          data: {
+            agentId: scope,
+            delivery: referenceMode ? 'reference' : 'full',
+            ...deliveryCost,
+          },
+        });
       });
       await saveSessionForTool(reloaded, next);
 
@@ -1972,9 +1992,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // and smaller than the sum of everything named where content collapsed to markers.
       logInfo('Activity delivery cost', {
         session_index, activity: activity_id, agentId: scope, delivery: referenceMode ? 'reference' : 'full',
-        resolved_techniques: producerIndex?.resolvedTechniques ?? 0,
-        provenance_passes: bundledSteps.length,
-        bundled_steps: bundledSteps.length,
+        ...deliveryCost,
         bundled_steps_collapsed: bundledSteps.filter((b) => b.delivery === 'unchanged').length,
         bundled_resources: bundledResourceDeliveries.length,
         worker_bundle_chars: workerBundleChars,
@@ -1982,8 +2000,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         lazy_gate_unbound: lazyUnanswered.unbound,
         lazy_gate_unparsed: lazyUnanswered.unparsed,
         lazy_gate_false: lazyFalseGates,
-        spent_chars: spentChars,
-        eager_budget_chars: Math.floor(eagerBudgetChars),
         // The wire length, batch block included. The block is outside the delivery ledger
         // — it reports on the handover rather than being part of it — but it does go over
         // the wire, and this figure is the one that claims to say what did.
@@ -1994,7 +2010,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content: [{ type: 'text' as const, text: responseText + batchBlock }],
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
-          dispatch, batch,
+          dispatch, batch, delivery_cost: deliveryCost,
           ...(Object.keys(exitDestinationsByExit).length > 0 ? { exit_destinations: exitDestinationsByExit } : {}),
           ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
           // Why each gated technique step stayed lazy. On the response and not only the log because a

@@ -1,7 +1,7 @@
 import type { Technique } from '../schema/technique.schema.js';
 
 /**
- * Fan-out: how much of a delivered operation is content declared somewhere above it (#404 W6).
+ * Fan-out: how much of a delivered operation is content declared somewhere above it (#528 W5).
  *
  * Two things ride along with every operation inside a container. Rules declared on a root or group
  * `TECHNIQUE.md` reach every operation in that container, and inherited I/O entries reach every
@@ -11,6 +11,8 @@ import type { Technique } from '../schema/technique.schema.js';
  *
  * Reported as warn-only figures beside `bench:batch`. A threshold would fail the corpus on its
  * intended design: a container rule is *meant* to apply to operations that do not name it.
+ * Unused delivery content — a body with no tool, input, or observable behaviour behind it — is a
+ * different measurement, and is not a third ratio here.
  */
 
 /** One measurement over a set of delivered operations. */
