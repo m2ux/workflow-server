@@ -39,6 +39,7 @@ import {
   buildSessionScope,
   resolveSessionRoot,
   listSessionSearchRoots,
+  mappedWorkingRoots,
   deriveWorkingDirectory,
   openDecisionPayload,
   type DerivationOk,
@@ -165,6 +166,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         const derivation = await deriveWorkingDirectory({
           workingDirectory: working_directory,
           searchRoots,
+          mappedRoots: mappedWorkingRoots(sessionScope, searchRoots),
           ...(config.pathPresentation ? { pathPresentation: config.pathPresentation } : {}),
           ...(repo?.trim() ? { namedRepo: repo.trim() } : {}),
           ...(user_request ? { userRequest: user_request } : {}),

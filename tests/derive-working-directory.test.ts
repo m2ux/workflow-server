@@ -119,14 +119,40 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
     expect(result.kind === 'ok' && result.derived_repo).toBeUndefined();
   });
 
-  it('returns unmapped-root when the checkout sits outside every search root', async () => {
+  it('returns unmapped-root when the checkout sits outside every served root', async () => {
     const checkout = join(root, 'workflow-server');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const result = await deriveWorkingDirectory({
       workingDirectory: checkout,
-      searchRoots: [join(root, 'elsewhere')],
+      mappedRoots: [join(root, 'elsewhere')],
     });
     expect(result).toMatchObject({ kind: 'decision', decision: 'unmapped-root' });
+  });
+
+  it('treats a checkout beside its .engineering planning tree as on the map', async () => {
+    const checkout = join(root, 'workflow-server');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const engineering = join(checkout, '.engineering');
+    const result = await deriveWorkingDirectory({
+      workingDirectory: checkout,
+      mappedRoots: [engineering, checkout],
+    });
+    expect(result).toMatchObject({ kind: 'ok', repo: 'acme/workflow-server' });
+  });
+
+  it('treats a branch worktree under a served checkout as on the map', async () => {
+    const checkout = join(root, 'workflow-server');
+    const worktree = join(checkout, '.worktrees', 'feat', '528-server-owned-session-setup');
+    await initRepo(worktree, 'https://github.com/acme/workflow-server.git');
+    const result = await deriveWorkingDirectory({
+      workingDirectory: worktree,
+      mappedRoots: [join(checkout, '.engineering'), checkout],
+    });
+    expect(result).toMatchObject({
+      kind: 'ok',
+      repo: 'acme/workflow-server',
+      repo_source: 'origin',
+    });
   });
 
   it('returns component-choice when the working directory is a host with two unnamed components', async () => {

@@ -53,6 +53,11 @@ export interface DeriveWorkingDirectoryInput {
   workingDirectory: string;
   pathPresentation?: PathPresentationMap;
   searchRoots?: string[];
+  /**
+   * Checkouts and project roots the working directory may sit under.
+   * When omitted, `searchRoots` is used (tests that pass a foreign path).
+   */
+  mappedRoots?: string[];
   /** Caller-supplied `repo` (owner/repo) used to detect a named component. */
   namedRepo?: string;
   userRequest?: string;
@@ -284,13 +289,13 @@ export async function deriveWorkingDirectory(
     repoSource = 'caller';
   }
 
-  const roots = input.searchRoots?.filter(Boolean) ?? [];
+  const roots = (input.mappedRoots ?? input.searchRoots)?.filter(Boolean) ?? [];
   if (roots.length > 0 && !sitsUnderSearchRoots(innermost, roots) && !sitsUnderSearchRoots(ascent.hostToplevel, roots)) {
     return decision(
       'unmapped-root',
       facts,
       [{ toplevel: innermost, host_repo_path: ascent.hostToplevel, search_roots: roots }],
-      'Mount this checkout under a configured session search root, or pass a working_directory the presentation map has mounted.',
+      'Pass a working_directory under a checkout this server serves — the projects root, that checkout, or a branch worktree inside it.',
     );
   }
 

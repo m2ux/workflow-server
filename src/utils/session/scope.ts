@@ -304,3 +304,29 @@ export async function listSessionSearchRoots(scope: SessionScope): Promise<strin
   }
   return [...roots];
 }
+
+/**
+ * Roots a `working_directory` may sit under. Session search roots are
+ * planning trees (`.engineering`). A checkout and a branch worktree sit
+ * beside those trees, so this list also includes the projects multi-root,
+ * the process engineering dir, and the parent of each `.engineering` root.
+ */
+export function mappedWorkingRoots(
+  scope: SessionScope,
+  searchRoots: readonly string[],
+): string[] {
+  const out = new Set<string>();
+  if (scope.engineeringMultiRoot) {
+    out.add(resolve(scope.engineeringMultiRoot));
+  }
+  out.add(resolve(scope.engineeringDir));
+  for (const raw of searchRoots) {
+    if (!raw) continue;
+    const root = resolve(raw);
+    out.add(root);
+    if (basename(root) === '.engineering') {
+      out.add(dirname(root));
+    }
+  }
+  return [...out];
+}

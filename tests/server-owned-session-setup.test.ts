@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { execFile } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { createHarness, parseToolResponse, type Harness } from './e2e/harness.js';
@@ -337,5 +338,64 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
       working_directory: 'relative/path',
     });
     expect(err).toMatch(/absolute path/);
+  });
+});
+
+describe.sequential('working_directory beside a .engineering planning root', () => {
+  let harness: Harness;
+  let checkout: string;
+
+  beforeAll(async () => {
+    const root = mkdtempSync(join(tmpdir(), 'wf-e2e-eng-'));
+    checkout = join(root, 'workflow-server');
+    mkdirSync(join(checkout, '.engineering'), { recursive: true });
+    harness = await createHarness({
+      workspaceDir: checkout,
+      engineeringDir: join(checkout, '.engineering'),
+      workflowDir: resolve(import.meta.dirname, 'fixtures/variable-model'),
+    });
+  });
+
+  afterAll(async () => {
+    await harness.close();
+    try {
+      rmSync(checkout, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
+  });
+
+  async function callOk(name: string, args: Record<string, unknown>): Promise<Record<string, unknown>> {
+    const result = await harness.client.callTool({ name, arguments: args });
+    expect(result.isError, toolText(result as { content: Array<{ text?: string }> })).toBeFalsy();
+    return parseToolResponse(result);
+  }
+
+  it('creates from the checkout when planning lives under .engineering', async () => {
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const folder = planningFolderPath(checkout, '2026-09-12-eng-checkout');
+    const body = await callOk('start_session', {
+      workflow_id: 'seed-fixture',
+      working_directory: checkout,
+      planning_folder: folder,
+    });
+    expect(body['repo']).toBe('acme/workflow-server');
+    expect(body['session_index']).toMatch(/^[A-Z2-7]{6}$/);
+    expect(body['decision']).toBeUndefined();
+  });
+
+  it('creates from a branch worktree under that checkout', async () => {
+    const worktree = join(checkout, '.worktrees', 'feat', '528-server-owned-session-setup');
+    await initRepo(worktree, 'https://github.com/acme/workflow-server.git');
+    const folder = planningFolderPath(checkout, '2026-09-12-eng-worktree');
+    const body = await callOk('start_session', {
+      workflow_id: 'seed-fixture',
+      working_directory: worktree,
+      planning_folder: folder,
+    });
+    expect(body['repo']).toBe('acme/workflow-server');
+    expect(body['repo_source']).toBe('origin');
+    expect(body['session_index']).toMatch(/^[A-Z2-7]{6}$/);
+    expect(body['decision']).toBeUndefined();
   });
 });

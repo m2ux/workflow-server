@@ -6,6 +6,7 @@ import {
   buildSessionScope,
   extractRepoFromPath,
   listSessionSearchRoots,
+  mappedWorkingRoots,
   repoCheckoutBasename,
   resolveMultiRootEngineeringDir,
   resolveSessionRoot,
@@ -126,6 +127,21 @@ describe('session scope (multi-root)', () => {
   it('resolveSessionRoot error text tells agents to pass working_directory', () => {
     const scope = buildSessionScope(MULTI_ROOT);
     expect(() => resolveSessionRoot(scope, {})).toThrow(/working_directory/);
+  });
+
+  it('mappedWorkingRoots includes the projects root and the checkout beside each .engineering tree', () => {
+    const scope = buildSessionScope(MULTI_ROOT);
+    const searchRoots = [
+      resolve('/tmp/inst/projects/app/.engineering'),
+      resolve('/tmp/inst/projects/workflow-server/.engineering'),
+    ];
+    const mapped = mappedWorkingRoots(scope, searchRoots);
+    expect(mapped).toEqual(expect.arrayContaining([
+      resolve('/tmp/inst/projects'),
+      resolve('/tmp/inst/projects/app'),
+      resolve('/tmp/inst/projects/workflow-server'),
+      resolve('/tmp/inst/projects/app/.engineering'),
+    ]));
   });
 });
 
