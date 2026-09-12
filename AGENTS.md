@@ -25,7 +25,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 ## Boundaries
 
 - Do **not** modify server source (`src/`, `schemas/`) or workflow YAML files unless the user explicitly asks.
-- When following workflows, respect workflow fidelity as defined in YAML files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`list_workflows` / `start_session` / `get_workflow` / `next_activity` / `get_activity`). Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
+- When following workflows, respect workflow fidelity as defined in YAML files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`list_workflows` / `start_session` / `get_workflow` / `next_activity` / `get_activity`). A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that origin. Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
 
 ## Branches and pull requests
 
