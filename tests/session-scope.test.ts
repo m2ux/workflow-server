@@ -123,9 +123,9 @@ describe('session scope (multi-root)', () => {
     ).toThrow(/repo is required/);
   });
 
-  it('resolveSessionRoot error text tells agents to pass repo from AGENTS.md', () => {
+  it('resolveSessionRoot error text tells agents to pass working_directory', () => {
     const scope = buildSessionScope(MULTI_ROOT);
-    expect(() => resolveSessionRoot(scope, {})).toThrow(/AGENTS\.md/);
+    expect(() => resolveSessionRoot(scope, {})).toThrow(/working_directory/);
   });
 });
 
