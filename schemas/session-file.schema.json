@@ -336,6 +336,13 @@
             "fresh"
           ]
         },
+        "executionPath": {
+          "type": "string",
+          "enum": [
+            "agent",
+            "runner"
+          ]
+        },
         "deliveredContent": {
           "type": "object",
           "additionalProperties": {

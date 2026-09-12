@@ -4,6 +4,7 @@ import {
   validateSessionFile,
   createInitialSessionFile,
   bindSessionRepo,
+  resolveExecutionPath,
   type SessionFile,
 } from '../src/schema/session.schema.js';
 
@@ -249,6 +250,30 @@ describe('SessionFile schema', () => {
         agentId: 'worker',
       });
       expect(file.triggeredWorkflows).toEqual([]);
+    });
+
+    it('records the agent path on every fresh session', () => {
+      const file = createInitialSessionFile({
+        sessionIndex: VALID_INDEX,
+        workflowId: 'work-package',
+        workflowVersion: '3.11.0',
+        agentId: 'worker',
+      });
+      expect(file.executionPath).toBe('agent');
+      expect(resolveExecutionPath(file)).toBe('agent');
+      expect(resolveExecutionPath({})).toBe('agent');
+    });
+
+    it('accepts the runner path when the caller names it', () => {
+      const file = createInitialSessionFile({
+        sessionIndex: VALID_INDEX,
+        workflowId: 'work-package',
+        workflowVersion: '3.11.0',
+        agentId: 'worker',
+        executionPath: 'runner',
+      });
+      expect(file.executionPath).toBe('runner');
+      expect(safeValidateSessionFile(file).success).toBe(true);
     });
 
     it('includes optional repo when provided', () => {

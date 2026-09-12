@@ -338,7 +338,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   ],
   start_session: [
     'Opens a new workflow session or resumes an existing one.',
-    'Returns a `session_index` (six characters), basic workflow metadata, and `planning_folder_path` — the absolute path agents should use for session artifacts (host bind path under Docker when `HOST_PROJECTS_ROOT` is set; server-local path under stdio).',
+    'Returns a `session_index` (six characters), basic workflow metadata, `planning_folder_path` — the absolute path agents should use for session artifacts (host bind path under Docker when `HOST_PROJECTS_ROOT` is set; server-local path under stdio) — and `execution_path` (`agent` when a caller walks the definition, `runner` when the server does).',
     'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin. `repo` is optional and must equal the derived origin when present.',
     'Pass `planning_folder` as any absolute path whose basename is your planning slug (for example, `.../planning/2026-05-28-my-slug`). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.',
     'If that named slug already has `session.json`, the session resumes and `workflow_id` is ignored. A derived dated slug that already holds a session is refused as FOLDER_OCCUPIED.',
@@ -357,7 +357,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   ],
   dispatch_child: [
     'Starts a child workflow inside the parent session you are already in.',
-    'Returns the child\'s `session_index` and `planning_folder_path`. The child\'s variables are seeded from the child workflow\'s defaults; the parent is unchanged.',
+    'Returns the child\'s `session_index`, `planning_folder_path`, and `execution_path`. The child\'s variables are seeded from the child workflow\'s defaults; the parent is unchanged.',
     'Also returns `workflow.initialActivity` — the activity the child\'s first `next_activity` should name. A parent knows its own workflow\'s first activity, not its child\'s, and `get_workflow` stays where a session reads its own metadata, so this carries the child\'s across the boundary.',
     'The child state is stored inside the parent\'s `session.json` under `triggeredWorkflows`.',
     'When the parent is a temporary meta-bootstrap session, the server first promotes it to an empty planning folder on disk, then embeds the child. You can keep using the parent\'s original `session_index`.',

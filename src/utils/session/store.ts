@@ -117,6 +117,7 @@ const TOP_LEVEL_KEY_PRIORITY = [
   'workflowId',
   'workflowVersion',
   'agentId',
+  'executionPath',
   'sessionIndex',
   'planningFolderPath',
   'frontier',

@@ -122,7 +122,7 @@
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Opens a new workflow session or resumes an existing one.</p>
-          <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, and <code>planning_folder_path</code> — the absolute path agents should use for session artifacts (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set; server-local path under stdio).</p>
+          <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, <code>planning_folder_path</code> — the absolute path agents should use for session artifacts (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set; server-local path under stdio) — and <code>execution_path</code> (<code>agent</code> when a caller walks the definition, <code>runner</code> when the server does).</p>
           <p>Pass <code>working_directory</code> as the absolute path of the checkout under work; the server derives <code>owner/repo</code> from that checkout's origin. <code>repo</code> is optional and must equal the derived origin when present.</p>
           <p>Pass <code>planning_folder</code> as any absolute path whose basename is your planning slug (for example, <code>.../planning/2026-05-28-my-slug</code>). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.</p>
           <p>If that named slug already has <code>session.json</code>, the session resumes and <code>workflow_id</code> is ignored. A derived dated slug that already holds a session is refused as FOLDER_OCCUPIED.</p>
@@ -207,7 +207,7 @@
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Starts a child workflow inside the parent session you are already in.</p>
-          <p>Returns the child's <code>session_index</code> and <code>planning_folder_path</code>. The child's variables are seeded from the child workflow's defaults; the parent is unchanged.</p>
+          <p>Returns the child's <code>session_index</code>, <code>planning_folder_path</code>, and <code>execution_path</code>. The child's variables are seeded from the child workflow's defaults; the parent is unchanged.</p>
           <p>Also returns <code>workflow.initialActivity</code> — the activity the child's first <code>next_activity</code> should name. A parent knows its own workflow's first activity, not its child's, and <code>get_workflow</code> stays where a session reads its own metadata, so this carries the child's across the boundary.</p>
           <p>The child state is stored inside the parent's <code>session.json</code> under <code>triggeredWorkflows</code>.</p>
           <p>When the parent is a temporary meta-bootstrap session, the server first promotes it to an empty planning folder on disk, then embeds the child. You can keep using the parent's original <code>session_index</code>.</p>

@@ -398,4 +398,34 @@ describe.sequential('working_directory beside a .engineering planning root', () 
     expect(body['session_index']).toMatch(/^[A-Z2-7]{6}$/);
     expect(body['decision']).toBeUndefined();
   });
+
+  it('records execution_path agent on create, on the session file, and on a child', async () => {
+    const checkout = join(harness.workspaceDir, 'path-drove');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const folder = planningFolderPath(harness.workspaceDir, '2026-09-12-execution-path');
+    const body = await callOk('start_session', {
+      workflow_id: 'seed-fixture',
+      agent_id: 'orchestrator',
+      working_directory: checkout,
+      planning_folder: folder,
+    });
+    expect(body['execution_path']).toBe('agent');
+    const stored = JSON.parse(readFileSync(join(folder, SESSION_FILE_NAME), 'utf8')) as {
+      executionPath?: string;
+    };
+    expect(stored.executionPath).toBe('agent');
+    const child = await callOk('dispatch_child', {
+      session_index: body['session_index'],
+      workflow_id: 'child-fixture',
+      agent_id: 'worker',
+    });
+    expect(child['execution_path']).toBe('agent');
+    const resumed = await callOk('start_session', {
+      workflow_id: 'seed-fixture',
+      agent_id: 'orchestrator',
+      planning_folder: folder,
+    });
+    expect(resumed['execution_path']).toBe('agent');
+    expect(resumed['session_index']).toBe(body['session_index']);
+  });
 });
