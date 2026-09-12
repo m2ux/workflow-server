@@ -35,7 +35,12 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
     const checkout = join(root, 'workflow-server');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const result = await deriveWorkingDirectory({ workingDirectory: checkout });
-    expect(result).toMatchObject({ kind: 'ok', repo: 'acme/workflow-server', toplevel: checkout });
+    expect(result).toMatchObject({
+      kind: 'ok',
+      repo: 'acme/workflow-server',
+      repo_source: 'origin',
+      toplevel: checkout,
+    });
     expect(result.kind === 'ok' && result.host_repo).toBeUndefined();
   });
 
@@ -86,15 +91,32 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
     }
   });
 
-  it('returns binding-mismatch when basename disagrees with the origin repo segment', async () => {
-    const checkout = join(root, 'other-name');
+  it('binds origin when the folder is named for a branch', async () => {
+    const checkout = join(root, 'feat', '528-server-owned-session-setup');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const result = await deriveWorkingDirectory({ workingDirectory: checkout });
-    expect(result).toMatchObject({ kind: 'decision', decision: 'binding-mismatch' });
-    if (result.kind === 'decision') {
-      expect(result.derived_repo).toBe('acme/workflow-server');
-      expect(result.recommendation).toMatch(/basename/);
-    }
+    expect(result).toMatchObject({
+      kind: 'ok',
+      repo: 'acme/workflow-server',
+      repo_source: 'origin',
+      toplevel: checkout,
+    });
+  });
+
+  it('admits caller repo when origin is missing', async () => {
+    const checkout = join(root, 'workflow-server');
+    await initRepo(checkout);
+    const result = await deriveWorkingDirectory({
+      workingDirectory: checkout,
+      namedRepo: 'acme/workflow-server',
+    });
+    expect(result).toMatchObject({
+      kind: 'ok',
+      repo: 'acme/workflow-server',
+      repo_source: 'caller',
+      toplevel: checkout,
+    });
+    expect(result.kind === 'ok' && result.derived_repo).toBeUndefined();
   });
 
   it('returns unmapped-root when the checkout sits outside every search root', async () => {

@@ -21,11 +21,15 @@ export interface DerivationFacts {
   host_repo?: string;
 }
 
+export type RepoSource = 'origin' | 'caller';
+
 export interface DerivationOk extends DerivationFacts {
   kind: 'ok';
   repo: string;
   toplevel: string;
   host_repo_path: string;
+  /** `origin` when git supplied the bind; `caller` when the caller supplied `repo` because origin was missing. */
+  repo_source: RepoSource;
 }
 
 export interface DerivationDecision extends DerivationFacts {
@@ -220,8 +224,11 @@ function decision(
 
 /**
  * Derive the bound `owner/repo` from the checkout under work. Invert path
- * presentation first, then `git -C` (no shell). The outermost superproject is
- * reported when it differs; it is not the bind unless it is the checkout.
+ * presentation first, then `git -C` (no shell). The origin remote is the bind
+ * even when the folder is named for a branch. A checkout with no origin admits
+ * a caller-supplied `repo` and records `repo_source: caller`. The outermost
+ * superproject is reported when it differs; it is not the bind unless it is
+ * the checkout.
  */
 export async function deriveWorkingDirectory(
   input: DeriveWorkingDirectoryInput,
@@ -261,25 +268,20 @@ export async function deriveWorkingDirectory(
     ...(hostRepo && hostRepo !== derivedRepo ? { host_repo: hostRepo } : {}),
   };
 
-  if (!derivedRepo) {
-    return decision(
-      'unbound-repo',
-      facts,
-      [{ toplevel: innermost, ...(origin ? { origin } : {}) }],
-      'Supply repo as owner/repo from the user or the workspace AGENTS.md, then retry.',
-    );
-  }
-
-  if (basename(innermost) !== derivedRepo.split('/')[1]) {
-    return decision(
-      'binding-mismatch',
-      { ...facts, derived_repo: derivedRepo },
-      [
-        { checkout_basename: basename(innermost), derived_repo: derivedRepo, toplevel: innermost },
-      ],
-      `The checkout basename '${basename(innermost)}' does not match repository '${derivedRepo.split('/')[1]}'. ` +
-        'Pass a working_directory whose basename matches the origin, or correct the remote.',
-    );
+  let boundRepo = derivedRepo;
+  let repoSource: RepoSource = 'origin';
+  if (!boundRepo) {
+    const supplied = input.namedRepo ? tryNormalizeRepo(input.namedRepo) : undefined;
+    if (!supplied) {
+      return decision(
+        'unbound-repo',
+        facts,
+        [{ toplevel: innermost, ...(origin ? { origin } : {}) }],
+        'Supply repo as owner/repo from the user or the workspace AGENTS.md, then retry with the same working_directory.',
+      );
+    }
+    boundRepo = supplied;
+    repoSource = 'caller';
   }
 
   const roots = input.searchRoots?.filter(Boolean) ?? [];
@@ -310,12 +312,13 @@ export async function deriveWorkingDirectory(
 
   const ok: DerivationOk = {
     kind: 'ok',
-    repo: derivedRepo,
+    repo: boundRepo,
+    repo_source: repoSource,
     toplevel: innermost,
     host_repo_path: ascent.hostToplevel,
     ...(facts.component_path ? { component_path: facts.component_path } : {}),
     ...(facts.host_repo ? { host_repo: facts.host_repo } : {}),
-    derived_repo: derivedRepo,
+    ...(derivedRepo ? { derived_repo: derivedRepo } : {}),
   };
   return ok;
 }

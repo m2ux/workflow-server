@@ -78,6 +78,7 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     });
     expect(body['session_index']).toMatch(/^[A-Z2-7]{6}$/);
     expect(body['repo']).toBe('acme/workflow-server');
+    expect(body['repo_source']).toBe('origin');
     const slug = datedSlug('seed-fixture');
     const folder = planningFolderPath(harness.workspaceDir, slug);
     expect(existsSync(join(folder, SESSION_FILE_NAME))).toBe(true);
@@ -290,6 +291,44 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     });
     expect(created['session_index']).toMatch(/^[A-Z2-7]{6}$/);
     expect(created['repo']).toBe('acme/portfolio');
+  });
+
+  it('binds origin when working_directory is a branch-named folder', async () => {
+    const checkout = join(harness.workspaceDir, 'feat', '528-server-owned-session-setup');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const folder = planningFolderPath(harness.workspaceDir, '2026-09-12-branch-named');
+    const body = await callOk('start_session', {
+      workflow_id: 'seed-fixture',
+      working_directory: checkout,
+      planning_folder: folder,
+    });
+    expect(body['repo']).toBe('acme/workflow-server');
+    expect(body['repo_source']).toBe('origin');
+    expect(body['session_index']).toMatch(/^[A-Z2-7]{6}$/);
+  });
+
+  it('unbound-repo without caller repo is an open decision; retry with repo creates', async () => {
+    const checkout = join(harness.workspaceDir, 'no-origin', 'workflow-server');
+    await initRepo(checkout);
+    const folder = planningFolderPath(harness.workspaceDir, '2026-09-12-unbound-retry');
+    const first = await harness.client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: 'seed-fixture', working_directory: checkout, planning_folder: folder },
+    });
+    expect(first.isError).toBeFalsy();
+    const decision = parseToolResponse(first);
+    expect(decision['session_index']).toBeUndefined();
+    expect(decision['decision']).toBe('unbound-repo');
+    expect(decision['recommendation']).toMatch(/retry/);
+    const created = await callOk('start_session', {
+      workflow_id: 'seed-fixture',
+      working_directory: checkout,
+      planning_folder: folder,
+      repo: 'acme/workflow-server',
+    });
+    expect(created['repo']).toBe('acme/workflow-server');
+    expect(created['repo_source']).toBe('caller');
+    expect(created['session_index']).toMatch(/^[A-Z2-7]{6}$/);
   });
 
   it('rejects a relative working_directory', async () => {

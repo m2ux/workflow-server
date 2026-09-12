@@ -504,6 +504,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (migrationResult.migrated) {
         response['migrated'] = true;
       }
+      if (derived?.repo_source) response['repo_source'] = derived.repo_source;
       if (derived?.host_repo) response['host_repo'] = derived.host_repo;
       if (derived?.component_path) response['component_path'] = derived.component_path;
       if (derived?.host_repo_path && derived.host_repo_path !== derived.toplevel) {
