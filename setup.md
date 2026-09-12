@@ -95,7 +95,7 @@ Restart the HTTP server afterward if it is running.
 ## 5. Verify
 
 1. Agent calls **`discover`**.
-2. Agent calls **`start_session`** with at least `workflow_id` (default `meta`), `agent_id`, and **`repo: "owner/repo"`**.
+2. Agent calls **`start_session`** with at least `workflow_id` (default `meta`), `agent_id`, and **`working_directory`** as the absolute path of the checkout under work. The server derives `owner/repo` from that origin.
 3. You get a **`session_index`** back.
 
 ---

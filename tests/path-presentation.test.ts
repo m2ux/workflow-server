@@ -6,6 +6,7 @@ import {
   isPathUnderRoot,
   loadConfig,
   presentPathToAgent,
+  receivePathFromAgent,
 } from '../src/config.js';
 import {
   PLANNING_RELATIVE_DIR,
@@ -104,6 +105,65 @@ describe('path presentation helpers', () => {
   it('presentPathToAgent is identity without a map', () => {
     const p = '/tmp/workspace/.engineering/artifacts/planning/slug';
     expect(presentPathToAgent(p, undefined)).toBe(resolve(p));
+  });
+
+  it('receivePathFromAgent rewrites the longest host root onto the server root (PR528-TC-12)', () => {
+    const map = buildPathPresentationMap({
+      serverProjectsRoot: '/var/lib/workflow-server/projects',
+      hostProjectsRoot: '/home/mike1/projects/dev',
+    });
+    expect(
+      receivePathFromAgent(
+        '/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/slug',
+        map,
+      ),
+    ).toBe(
+      resolve(
+        '/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/slug',
+      ),
+    );
+  });
+
+  it('receivePathFromAgent is identity without a map', () => {
+    const p = '/tmp/workspace/.engineering/artifacts/planning/slug';
+    expect(receivePathFromAgent(p, undefined)).toBe(resolve(p));
+  });
+
+  it('receivePathFromAgent does not un-collapse owner/repo', () => {
+    const map = buildPathPresentationMap({
+      serverProjectsRoot: '/var/lib/workflow-server/projects',
+      hostProjectsRoot: '/home/mike1/projects/dev',
+    });
+    // Agent holds the basename layout; inverse must not invent owner/repo.
+    expect(
+      receivePathFromAgent(
+        '/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/slug',
+        map,
+      ),
+    ).toBe(
+      resolve(
+        '/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/slug',
+      ),
+    );
+    expect(
+      receivePathFromAgent(
+        '/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/slug',
+        map,
+      ),
+    ).not.toContain('/m2ux/');
+  });
+
+  it('receivePathFromAgent prefers the longer host worktree prefix', () => {
+    const map = buildPathPresentationMap({
+      serverProjectsRoot: '/var/lib/workflow-server/projects',
+      hostProjectsRoot: '/home/u/projects',
+      serverWorktreeRoot: '/var/lib/workflow-server/worktrees',
+      hostWorktreeRoot: '/home/u/worktrees',
+      collapseOwnerRepo: false,
+    });
+    expect(
+      receivePathFromAgent('/home/u/worktrees/m2ux/app/feature', map),
+    ).toBe(resolve('/var/lib/workflow-server/worktrees/m2ux/app/feature'));
   });
 
   it('presentPathToAgent prefers longer worktree prefix over projects', () => {

@@ -236,9 +236,7 @@ export function resolveSessionRoot(
   if (scope.mode === 'multi') {
     throw new Error(
       'start_session: repo is required when the server is bound to a projects multi-root ' +
-        '(HOST_PROJECTS_ROOT). Pass repo: "owner/repo" derived from git via version-control::resolve-host-repo ' +
-        '(origin remote of the outermost claiming superproject); the user or workspace AGENTS.md is a fallback ' +
-        'only when the workspace is not a git repo or has no origin remote. ' +
+        '(HOST_PROJECTS_ROOT). Pass working_directory so the server derives owner/repo from that checkout\'s origin, or pass repo: "owner/repo" when creating a transient session without a working_directory. ' +
         'Planning lives at <repo>/.engineering/artifacts/planning/ under that root.',
     );
   }
@@ -305,4 +303,30 @@ export async function listSessionSearchRoots(scope: SessionScope): Promise<strin
     }
   }
   return [...roots];
+}
+
+/**
+ * Roots a `working_directory` may sit under. Session search roots are
+ * planning trees (`.engineering`). A checkout and a branch worktree sit
+ * beside those trees, so this list also includes the projects multi-root,
+ * the process engineering dir, and the parent of each `.engineering` root.
+ */
+export function mappedWorkingRoots(
+  scope: SessionScope,
+  searchRoots: readonly string[],
+): string[] {
+  const out = new Set<string>();
+  if (scope.engineeringMultiRoot) {
+    out.add(resolve(scope.engineeringMultiRoot));
+  }
+  out.add(resolve(scope.engineeringDir));
+  for (const raw of searchRoots) {
+    if (!raw) continue;
+    const root = resolve(raw);
+    out.add(root);
+    if (basename(root) === '.engineering') {
+      out.add(dirname(root));
+    }
+  }
+  return [...out];
 }

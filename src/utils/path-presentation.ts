@@ -138,6 +138,46 @@ export function presentPathToAgent(
 }
 
 /**
+ * Rewrite an agent-facing host path onto the server tree using the same
+ * mount map `presentPathToAgent` uses the other way. Unmatched paths (and
+ * missing maps) are returned as resolved agent paths.
+ *
+ * When both projects and worktree maps could match, the longer (more specific)
+ * host root wins. Owner/repo collapse is not inverted: the agent already
+ * holds the basename layout.
+ */
+export function receivePathFromAgent(
+  agentPath: string | undefined | null,
+  map: PathPresentationMap | undefined,
+): string | undefined {
+  if (agentPath === undefined || agentPath === null || agentPath === '') {
+    return undefined;
+  }
+  const resolved = resolve(agentPath);
+  if (!map) return resolved;
+
+  const candidates: Array<{ server: string; host: string }> = [
+    {
+      server: normalizeRoot(map.serverProjectsRoot),
+      host: normalizeRoot(map.hostProjectsRoot),
+    },
+  ];
+  if (map.serverWorktreeRoot && map.hostWorktreeRoot) {
+    candidates.push({
+      server: normalizeRoot(map.serverWorktreeRoot),
+      host: normalizeRoot(map.hostWorktreeRoot),
+    });
+  }
+  candidates.sort((a, b) => b.host.length - a.host.length);
+  for (const { server, host } of candidates) {
+    if (!isPathUnderRoot(resolved, host)) continue;
+    const rest = resolved.slice(host.length);
+    return rest === '' ? server : resolve(server + rest);
+  }
+  return resolved;
+}
+
+/**
  * Build a presentation map from server roots + optional host bind sources.
  * Returns undefined when no host override is set and no rewrite is needed.
  *

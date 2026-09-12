@@ -40,7 +40,7 @@ The response carries three values: the child's `session_index`, the canonical `p
 
 Two consequences follow from the embedding, and both matter when reading the rest of this document. A child inherits the parent's planning folder — the persistent-parent path creates no folder and seeds no README for the child. And a child's place in the tree is its position in the file: the session above it is the one whose `triggeredWorkflows` entry holds it, and nothing is stored on the child that names it.
 
-Where the parent is a transient meta bootstrap, the server first promotes it to a workspace planning folder, and re-dispatching into a folder that already holds a child of the same workflow replaces that child rather than continuing it. A persistent parent appends a second child instead.
+Where the parent is a transient meta bootstrap, the server first promotes it to an empty workspace planning folder. Promoting onto a folder that already holds a session is refused; the existing files are left untouched. A persistent parent appends a second child.
 
 The user-facing agent then uses the host's spawn mechanism to start the orchestrator in the background:
 ```javascript

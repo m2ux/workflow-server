@@ -27,9 +27,9 @@ curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/i
 ```
 
 Binds `$HOST_PROJECTS_ROOT` (default `~/projects/dev`) and `$INSTALL/state`. Planning
-for `start_session({ repo: "owner/repo" })` is under
+for a `start_session` that carries `working_directory` is under
 `$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/` on the host
-when `HOST_PROJECTS_ROOT` is set.
+when `HOST_PROJECTS_ROOT` is set. The server derives `owner/repo` from that checkout's origin.
 
 Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names as `.env.example`).
 
