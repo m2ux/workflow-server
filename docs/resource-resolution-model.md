@@ -230,7 +230,7 @@ context_tokens × headroomFraction × charsPerToken
 
 That budget governs everything inlined eagerly, so the worker technique bundle opens the tally at what it costs this response. Step technique bodies draw on the remainder, in document order; eagerly bundled resource bodies then draw on the same counter. Each loop stops at the first entry that would overflow what remains, and the rest stay lazy. Unchanged-reference markers cost almost nothing and never draw it down.
 
-`spent_chars` on the delivery cost line is that whole tally, against `eager_budget_chars`; `worker_bundle_chars` reports the invariant part on its own.
+`spent_chars` on the delivery cost line is that whole tally, against `eager_budget_chars`; `worker_bundle_chars` reports the invariant part on its own. The same resolve-and-spend figures ride on `_meta.delivery_cost` and as one `activity_delivered` history event, so a caller reads them from the response or the session rather than from the log.
 
 This is how `context_tokens` comes to bound the eager bundle, which is the budget policy's stated purpose in [`src/config.ts`](../src/config.ts).
 

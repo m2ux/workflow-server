@@ -980,6 +980,7 @@ The `history` array tracks all workflow events:
 - `variable_set`, `error`
 - `technique_fetched`, `resource_fetched` — content-fetch records appended by `get_technique` / `get_resource` (`data` carries `techniqueId` + optional `stepId`, or `resourceId`, plus `agentId`); `next_activity`'s manifest validation reads `technique_fetched` events for the warn-only technique-fetch fidelity check
 - `technique_bundled` — an inline step-technique delivery appended by `get_activity` for an activity that declares `bundleTechniques` (`data` carries `techniqueId`, `stepId`, `agentId`); counts as coverage for the technique-fetch fidelity check alongside `technique_fetched`
+- `activity_delivered` — one summary of what a `get_activity` resolved and spent (`data` carries `agentId`, `delivery`, `resolved_techniques`, `provenance_passes`, `bundled_steps`, `spent_chars`, `eager_budget_chars`). The same figures ride on `_meta.delivery_cost`. Per-step magnitudes stay on `technique_bundled` / `resource_fetched`; wire size stays on `activity_dispatched`.
 
 ---
 

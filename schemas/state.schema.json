@@ -172,7 +172,8 @@
                   "activity_redelivered",
                   "batch_refused",
                   "activity_outcome",
-                  "progress_published"
+                  "progress_published",
+                  "activity_delivered"
                 ]
               },
               "activity": {
