@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 6.1.0
+version: 6.3.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -35,9 +35,6 @@ graph:
   end-workflow:
     return: dispatch-client-workflow
     completed: __terminal__
-rules:
-  workflow:
-    - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
 variables:
   - name: user_request
     type: string

@@ -1,5 +1,5 @@
 id: initialize-session
-version: 6.5.0
+version: 6.6.0
 name: Initialize Session
 description: Bind the client planning slug for the run's mode, then dispatch the client workflow as a child of the meta session.
 variables:
@@ -8,7 +8,6 @@ variables:
     - host_repo_path
     - initiative_name
     - is_resuming
-    - mentioned_repo
     - meta_session_index
     - planning_folder_path
     - saved_planning_slug
