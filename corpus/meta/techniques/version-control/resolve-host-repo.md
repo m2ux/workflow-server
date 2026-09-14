@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.2
+  version: 2.1.0
 ---
 
 ## Capability
@@ -31,15 +31,11 @@ Absolute path of the outermost repository that claims the workspace checkout —
 
 Basename of the innermost toplevel when the ascent crossed a non-infrastructure submodule boundary — the component the workspace path already sits inside. Unset when the ascent crossed nothing, or crossed only infrastructure submodules.
 
-### host_binding_mismatch
-
-true when `basename({host_repo_path})` differs from the repository segment of `{target_repo}`. The server maps `owner/repo` onto a filesystem root by basename alone, so it cannot represent this divergence.
-
 ## Protocol
 
 1. Resolve the innermost toplevel: `git -C {workspace_path} rev-parse --show-toplevel`. When the command fails, the workspace is not a git repo — leave every output unset and stop, so the caller takes its documented fallback.
 2. Ascend while the current toplevel's parent directory is itself a git repository whose `.gitmodules` declares the current toplevel's basename as a submodule `path`. Each successful test moves the current toplevel to that parent; the outermost superproject wins. Record each boundary crossed, and whether it was an infrastructure submodule — apply version-control.infrastructure-submodule-paths. Emit `{host_repo_path}` and `{component_hint}` per their Output criteria.
-3. Read `git -C {host_repo_path} remote get-url origin` and emit `{target_repo}`, accepting both the SSH form (`git@host:owner/repo.git`) and the HTTPS form (`https://host/owner/repo.git`) and dropping any trailing `.git`. When the host has no origin remote, leave `{target_repo}` unset and stop — the fallback case again. Emit `{host_binding_mismatch}` per its Output criteria.
+3. Read `git -C {host_repo_path} remote get-url origin` and emit `{target_repo}`, accepting both the SSH form (`git@host:owner/repo.git`) and the HTTPS form (`https://host/owner/repo.git`) and dropping any trailing `.git`. When the host has no origin remote, leave `{target_repo}` unset and stop — the fallback case again.
 
 ## Rules
 

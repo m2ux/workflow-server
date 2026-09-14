@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 5.13.0
+version: 5.14.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
@@ -21,7 +21,7 @@ steps:
     actions:
       - action: validate
         target: client_session_index
-        message: Cannot dispatch without a client session_index; initialize-session must run first
+        message: Cannot dispatch without a client session_index; start_session must have opened the client
   - kind: action
     id: prime-initial-activity
     actions:

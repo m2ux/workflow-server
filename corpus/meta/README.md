@@ -1,6 +1,6 @@
 # Meta Workflow
 
-> Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs activities that take the host repository path from git and identify a target client workflow, match any saved session when the request states resume intent, create or resume the client session as a child of meta, resolve component_path, drive the client workflow's activity loop and mediate its checkpoint yields, and close out. Provides the universal technique repository for all client workflows.
+> Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. `start_session` opens the client when the request uniquely matches a catalog workflow; walk that child. An agent that remains on meta drives the child through dispatch-client-workflow and closes the session. Provides the universal technique repository for all client workflows.
 
 ---
 
@@ -11,16 +11,13 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` → bag `{meta_session_index}` / `{target_repo}` → `get_workflow`. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)). There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - State persistence is server-managed (no agent-side persist/restore); on-disk shape: [`docs/state_management_model.md`](../../docs/state_management_model.md).
 
 | # | Activity | Role |
 |---|----------|------|
-| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Take the host repository path from git, identify the target client workflow, name the work from the request, and on stated resume intent surface any saved session to resume |
-| 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | Give the work package a stable identity and create or resume the client session as a child of meta |
-| 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | Detect the repo structure (regular vs. submodule monorepo), resolve `component_path`, and confirm the host binding agrees with the derivation |
-| 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the client workflow end to end inline, each worker carrying a bounded run of activities, mediating its checkpoints with the user |
+| 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the already-open client workflow end to end inline, each worker carrying a bounded run of activities, mediating its checkpoints with the user |
 | 04 | [**End Workflow**](./activities/README.md#04-end-workflow) | Verify the client workflow's outcomes, summarise the session, and confirm closure |
 
 **Detailed documentation:**
@@ -36,10 +33,8 @@ The meta workflow is the structural home for the orchestration logic that used t
 
 ```mermaid
 graph TD
-    startNode(["Bootstrap"]) -->|"start_session(workflow_id: meta, working_directory)"| DS["00 discover-session"]
-    DS -->|"target_repo, host_repo_path, target_workflow_id, initiative_name, resume_intent_requested, has_saved_state, is_resuming"| INI["01 initialize-session"]
-    INI -->|"client_session_index, client_planning_slug"| RT["02 resolve-target"]
-    RT -->|"component_path"| DSP["03 dispatch-client-workflow"]
+    startNode(["Bootstrap"]) -->|"start_session unique match → walk the child"| childNode(["Client workflow"])
+    startNode -->|"agent stays on meta"| DSP["03 dispatch-client-workflow"]
     DSP -->|"current_activity == null"| END["04 end-workflow"]
     END -.->|"return"| DSP
     END --> doneNode(["Session closed"])
@@ -49,7 +44,7 @@ graph TD
 
 ## Hierarchical Orchestration Model
 
-Meta is the user-facing orchestrator; the client session is a child driven inline by [`03-dispatch-client-workflow`](./activities/03-dispatch-client-workflow.yaml). Dispatch, checkpoint mediation, and role boundaries live in [workflow-engine](./techniques/workflow-engine/TECHNIQUE.md) ([dispatch-activity](./techniques/workflow-engine/dispatch-activity.md), [workflow-orchestrator](./techniques/workflow-engine/workflow-orchestrator.md), [activity-worker](./techniques/workflow-engine/activity-worker.md)) and [agent-conduct](./techniques/agent-conduct.md), which own that HOW.
+Meta is the user-facing orchestrator; the client session is a child `start_session` embeds. An agent that remains on meta drives that child inline through [`03-dispatch-client-workflow`](./activities/03-dispatch-client-workflow.yaml). Dispatch, checkpoint mediation, and role boundaries live in [workflow-engine](./techniques/workflow-engine/TECHNIQUE.md) ([dispatch-activity](./techniques/workflow-engine/dispatch-activity.md), [workflow-orchestrator](./techniques/workflow-engine/workflow-orchestrator.md), [activity-worker](./techniques/workflow-engine/activity-worker.md)) and [agent-conduct](./techniques/agent-conduct.md), which own that HOW.
 
 ---
 
@@ -98,10 +93,10 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory`, bag `{target_repo}`, `get_workflow`. Ongoing delivery policy is in the operations bundle. |
+| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`; unique match walks the child. Ongoing delivery policy is in the operations bundle. |
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
 | `planning-readme` | [Planning Folder README Guide](./resources/planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`. |
-| `resume-intent-lexicon` | [Resume Intent Lexicon](./resources/resume-intent-lexicon.md) | Continuation-phrase vocabulary gating `discover-session`'s saved-session search. |
+| `resume-intent-lexicon` | [Resume Intent Lexicon](./resources/resume-intent-lexicon.md) | Continuation-phrase vocabulary `start_session` matches when deciding whether to scan saved sessions. |
 
 Agent entry Protocol: [`workflow-engine::activity-worker`](./techniques/workflow-engine/activity-worker.md) and [`workflow-engine::workflow-orchestrator`](./techniques/workflow-engine/workflow-orchestrator.md); agent stubs from [`compose-prompt`](./techniques/workflow-engine/compose-prompt.md).
 
@@ -127,9 +122,6 @@ corpus/meta/
 ├── workflow.yaml                            # Meta workflow definition
 ├── README.md                                # This file
 ├── activities/
-│   ├── 00-discover-session.yaml             # Take host path from git, match user request, name the work, scan saved sessions on resume intent
-│   ├── 01-initialize-session.yaml           # Create or resume the client session
-│   ├── 02-resolve-target.yaml               # Detect repo type, set component_path, verify host binding
 │   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop, a bounded run of activities per worker
 │   └── 04-end-workflow.yaml                 # Outcome verification, summary
 ├── techniques/

@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 6.3.0
+version: 7.0.1
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -21,15 +21,8 @@ techniques:
   activity:
     - variable-binding
     - workflow-engine::activity-worker
-initialActivity: discover-session
+initialActivity: dispatch-client-workflow
 graph:
-  discover-session:
-    done: initialize-session
-    abort-binding: end-workflow
-  initialize-session:
-    done: resolve-target
-  resolve-target:
-    done: dispatch-client-workflow
   dispatch-client-workflow:
     "null": end-workflow
   end-workflow:
@@ -56,7 +49,13 @@ variables:
     description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root.
   - name: client_session_index
     type: string
-    description: 6-character base32 session_index for the dispatched client workflow (returned by start_session when initialize-session creates or resumes the session)
+    description: 6-character base32 index of the embedded client session
   - name: client_initial_activity
     type: string
-    description: The client workflow's own first activity, returned by create-session — the id its first next_activity call names
+    description: First activity id of the embedded client workflow
+  - name: component_path
+    type: string
+    description: Path of the component under work relative to host_repo_path
+  - name: target_workflow_id
+    type: string
+    description: Catalog id of the embedded client workflow
