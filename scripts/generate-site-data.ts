@@ -307,7 +307,7 @@ export function captureTools(): CapturedTool[] {
 }
 
 const TOOL_GROUPS: Array<{ title: string; note: string; tools: string[] }> = [
-  { title: 'Bootstrap', note: 'Callable without a session_index.', tools: ['discover', 'list_workflows', 'health_check'] },
+  { title: 'Bootstrap', note: 'Callable without a session_index.', tools: ['discover', 'discover_workflow', 'list_workflows', 'health_check'] },
   { title: 'Session', note: 'Create, inspect, and extend workflow sessions.', tools: ['start_session', 'get_workflow_status', 'inspect_session', 'dispatch_child'] },
   { title: 'Workflow and activity navigation', note: 'Load workflow structure and advance through activities.', tools: ['get_workflow', 'next_activity', 'get_activity'] },
   { title: 'Checkpoint flow', note: 'Yield to the orchestrator, present decisions to the user, and resume.', tools: ['yield_checkpoint', 'resume_checkpoint', 'present_checkpoint', 'respond_checkpoint'] },
@@ -328,6 +328,10 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'Call this first. Returns the server name, version, and the bootstrap steps for starting a workflow.',
     'No session required. Use `list_workflows` to see what you can run.',
   ],
+  discover_workflow: [
+    'Ranks workflows for a free-form request against id, title, description, and tags.',
+    'Returns the top match, an ambiguity flag, and up to five scored ids — not the catalog. No session required.',
+  ],
   list_workflows: [
     'Lists every workflow the server can run, with id, title, version, and tags.',
     'If some workflow files cannot be loaded, you still get the working entries plus a `load_errors` list for the failures.',
@@ -341,7 +345,8 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'Returns a `session_index` (six characters), basic workflow metadata, `planning_folder_path` — the absolute path agents should use for session artifacts (host bind path under Docker when `HOST_PROJECTS_ROOT` is set; server-local path under stdio) — and `execution_path` (`agent` when a caller walks the definition, `runner` when the server does).',
     'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin. `repo` is optional and must equal the derived origin when present.',
     'Pass `planning_folder` as any absolute path whose basename is your planning slug (for example, `.../planning/2026-05-28-my-slug`). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.',
-    'If that named slug already has `session.json`, the session resumes and `workflow_id` is ignored. A derived dated slug that already holds a session is refused as FOLDER_OCCUPIED.',
+    'If that named slug already has `session.json`, the session resumes and `workflow_id` is ignored. A derived dated slug that already holds a session opens the next free `YYYY-MM-DD-<workflow_id>-N` folder in the same call.',
+    'A fresh durable meta session with `user_request` that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client and returns `client.session_index`. Ambiguous matches and saved-session hits return a `decision` with no `session_index`; retry with `target_workflow_id`, `planning_folder`, or `fresh`.',
     'Omit both `working_directory` and `planning_folder` to start a meta bootstrap session in a temp folder. Use `dispatch_child` later to promote it to an empty planning folder.',
     'Child workflows are started with `dispatch_child`, not `start_session`.',
   ],

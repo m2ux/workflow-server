@@ -74,7 +74,7 @@
       <p>Each registered MCP tool is listed below. Expand an entry for the full description and advanced parameters. This page is generated from the server source — do not hand-edit the tool bodies.</p>
       <nav aria-label="Tools on this page">
       <ul>
-        <li>Bootstrap: <a href="#discover"><code>discover</code></a>, <a href="#list_workflows"><code>list_workflows</code></a>, <a href="#health_check"><code>health_check</code></a></li>
+        <li>Bootstrap: <a href="#discover"><code>discover</code></a>, <a href="#discover_workflow"><code>discover_workflow</code></a>, <a href="#list_workflows"><code>list_workflows</code></a>, <a href="#health_check"><code>health_check</code></a></li>
         <li>Session: <a href="#start_session"><code>start_session</code></a>, <a href="#get_workflow_status"><code>get_workflow_status</code></a>, <a href="#inspect_session"><code>inspect_session</code></a>, <a href="#dispatch_child"><code>dispatch_child</code></a></li>
         <li>Workflow and activity navigation: <a href="#get_workflow"><code>get_workflow</code></a>, <a href="#next_activity"><code>next_activity</code></a>, <a href="#get_activity"><code>get_activity</code></a></li>
         <li>Checkpoint flow: <a href="#yield_checkpoint"><code>yield_checkpoint</code></a>, <a href="#resume_checkpoint"><code>resume_checkpoint</code></a>, <a href="#present_checkpoint"><code>present_checkpoint</code></a>, <a href="#respond_checkpoint"><code>respond_checkpoint</code></a></li>
@@ -93,6 +93,23 @@
           <p>No session required. Use <code>list_workflows</code> to see what you can run.</p>
         </details>
         <p class="no-params">No parameters.</p>
+      </section>
+      <section class="tool" id="discover_workflow">
+        <h3><code>discover_workflow</code></h3>
+        <p class="tool-summary">Rank workflows for a free-form request against id, title, description, and tags.</p>
+        <details class="tool-details">
+          <summary>Full description</summary>
+          <p>Ranks workflows for a free-form request against id, title, description, and tags.</p>
+          <p>Returns the top match, an ambiguity flag, and up to five scored ids — not the catalog. No session required.</p>
+        </details>
+        <div class="table-wrap">
+        <table class="param-table">
+          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>query</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. Free-form request to match against workflow keywords.</td></tr>
+          </tbody>
+        </table>
+        </div>
       </section>
       <section class="tool" id="list_workflows">
         <h3><code>list_workflows</code></h3>
@@ -125,7 +142,8 @@
           <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, <code>planning_folder_path</code> — the absolute path agents should use for session artifacts (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set; server-local path under stdio) — and <code>execution_path</code> (<code>agent</code> when a caller walks the definition, <code>runner</code> when the server does).</p>
           <p>Pass <code>working_directory</code> as the absolute path of the checkout under work; the server derives <code>owner/repo</code> from that checkout's origin. <code>repo</code> is optional and must equal the derived origin when present.</p>
           <p>Pass <code>planning_folder</code> as any absolute path whose basename is your planning slug (for example, <code>.../planning/2026-05-28-my-slug</code>). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.</p>
-          <p>If that named slug already has <code>session.json</code>, the session resumes and <code>workflow_id</code> is ignored. A derived dated slug that already holds a session is refused as FOLDER_OCCUPIED.</p>
+          <p>If that named slug already has <code>session.json</code>, the session resumes and <code>workflow_id</code> is ignored. A derived dated slug that already holds a session opens the next free <code>YYYY-MM-DD-&lt;workflow_id&gt;-N</code> folder in the same call.</p>
+          <p>A fresh durable meta session with <code>user_request</code> that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client and returns <code>client.session_index</code>. Ambiguous matches and saved-session hits return a <code>decision</code> with no <code>session_index</code>; retry with <code>target_workflow_id</code>, <code>planning_folder</code>, or <code>fresh</code>.</p>
           <p>Omit both <code>working_directory</code> and <code>planning_folder</code> to start a meta bootstrap session in a temp folder. Use <code>dispatch_child</code> later to promote it to an empty planning folder.</p>
           <p>Child workflows are started with <code>dispatch_child</code>, not <code>start_session</code>.</p>
         </details>
@@ -138,6 +156,9 @@
           <tr><td><code>working_directory</code></td><td><code>string</code></td><td>no</td><td>Optional. Absolute path of the checkout under work. The bound repository is that checkout's origin. Bare/relative paths rejected.</td></tr>
           <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.</td></tr>
           <tr><td><code>user_request</code></td><td><code>string</code></td><td>no</td><td>The user's free-form request that opened this session. Seeded into the variable bag as <code>user_request</code>, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.</td></tr>
+          <tr><td><code>target_workflow_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Client workflow id after a workflow-selection decision. Distinct from workflow_id, which is the top-level session (default meta).</td></tr>
+          <tr><td><code>fresh</code></td><td><code>boolean</code></td><td>no</td><td>Optional. After a resume-session decision, ignore saved hits and embed a new client.</td></tr>
+          <tr><td><code>confirm_host_binding</code></td><td><code>boolean</code></td><td>no</td><td>Optional. After a host-binding-mismatch decision, proceed with this checkout folder.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
           <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
@@ -154,6 +175,9 @@
           <tr><td><code>working_directory</code></td><td><code>string</code></td><td>no</td><td>Optional. Absolute path of the checkout under work. The bound repository is that checkout's origin. Bare/relative paths rejected.</td></tr>
           <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.</td></tr>
           <tr><td><code>user_request</code></td><td><code>string</code></td><td>no</td><td>The user's free-form request that opened this session. Seeded into the variable bag as <code>user_request</code>, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.</td></tr>
+          <tr><td><code>target_workflow_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Client workflow id after a workflow-selection decision. Distinct from workflow_id, which is the top-level session (default meta).</td></tr>
+          <tr><td><code>fresh</code></td><td><code>boolean</code></td><td>no</td><td>Optional. After a resume-session decision, ignore saved hits and embed a new client.</td></tr>
+          <tr><td><code>confirm_host_binding</code></td><td><code>boolean</code></td><td>no</td><td>Optional. After a host-binding-mismatch decision, proceed with this checkout folder.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
           <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
