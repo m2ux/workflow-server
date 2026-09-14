@@ -307,6 +307,27 @@
     },
     {
       "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/start-session.md",
+      "detail": "output 'opening_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/start-session.md",
+      "detail": "output 'opening_decision' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/start-session.md",
+      "detail": "output 'opening_recommendation' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
       "site": "meta/techniques/workflow-engine/verify-outcomes.md",
       "detail": "output 'gaps' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
