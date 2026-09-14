@@ -33,6 +33,7 @@ describe('start.sh isolated instance flags', () => {
     expect(out).toContain('--host-port=0');
     expect(out).toContain('workflow-server-trial');
     expect(out).toContain('workflow-server:local');
+    expect(out).toContain('reload-exp-sidecar.sh');
   });
 
   it('refuses --host-port=0 without -d', () => {

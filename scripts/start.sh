@@ -182,6 +182,9 @@ EXAMPLES
   ./scripts/start.sh -d --build --name=workflow-server-trial --host-port=0 --no-update-workflows
   ./scripts/stop.sh --name=workflow-server-trial
 
+  # Rebuild a named experiment sidecar on the same host port:
+  ./scripts/reload-exp-sidecar.sh --name=NAME --image=IMAGE --workflows-dir=CORPUS
+
   # Product checkouts: manage under \$HOST_PROJECTS_ROOT/<repo>/ yourself.
   # Pass repo: owner/repo on start_session.
 
