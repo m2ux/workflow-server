@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.4.0
+  version: 5.5.0
 ---
 
 ## Capability
@@ -47,6 +47,6 @@ A submodule is infrastructure when its `path` equals `workflows`, equals `.engin
 
 ### host-is-derived-component-is-named
 
-Host repository and component under work are two facts, never one variable. The host is DERIVED from git by [resolve-host-repo](./resolve-host-repo.md) — the outermost superproject that claims the workspace checkout — and lands as `{host_repo_path}` and `{target_repo}`. A repository named in the user's request, such as the `owner/repo` in a PR or issue URL, identifies the COMPONENT and lands as `{mentioned_repo}`; it is component context for [select-target-component](./select-target-component.md) alone and never substitutes for the derived host. Treating a prose-named repository as the host is what produces a checkout that does not exist.
+Host repository and component under work are two facts, never one variable. The session bind is the origin of the checkout passed as `working_directory` on `start_session`. After that bind exists, [resolve-host-repo](./resolve-host-repo.md) takes the host path — the outermost superproject that claims the workspace checkout — and lands as `{host_repo_path}` and `{target_repo}`. A repository named in the user's request, such as the `owner/repo` in a PR or issue URL, identifies the COMPONENT and lands as `{mentioned_repo}`; it is component context for [select-target-component](./select-target-component.md) alone and never substitutes for the bound host. Treating a prose-named repository as the host is what produces a checkout that does not exist.
 
 The component's own repository is derived the same way the host's is: from the `origin` remote of the component's working tree. So a GitHub operation whose subject is the component — its issues, its pull requests, the review posted on one — names that working tree as `repo_path`, and github-cli-protocol.named-tree-outranks-the-binding resolves the coordinates from it. An operation that names no tree addresses `{target_repo}`, which on a monorepo is the superproject.
