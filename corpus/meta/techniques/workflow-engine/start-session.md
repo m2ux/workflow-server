@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ The top-level workflow session, obtained or resumed: its stable index, the serve
 
 ### working_directory
 
-Absolute path of the checkout under work. The bound repository is that checkout's origin remote.
+Absolute path of the checkout under work.
 
 ### workflow_id
 
@@ -23,7 +23,7 @@ Optional. Absolute path whose basename is the planning slug. Omit for a transien
 
 ### repo
 
-Optional. Target repository as `owner/repo` (or GitHub URL). When `{working_directory}` is set, must equal the derived origin. Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
+Optional. Target repository as `owner/repo` (or GitHub URL). Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
 
 ### user_request
 
@@ -58,7 +58,8 @@ Slug the session is keyed on — minted transitionally when no planning folder w
 ## Protocol
 
 1. Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, and optional `{planning_folder}` and `{repo}`, per the [bootstrap protocol](../../../meta/resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
-   > - `{working_directory}` is the absolute path of the checkout under work.
+   > - `{working_directory}` is the absolute path of the checkout under work. The bound `{repo}` is that checkout's origin remote.
+   > - When `{repo}` is passed with `{working_directory}`, it equals that origin.
    > - Pass `{user_request}` verbatim — the server seeds it into the bag and children inherit it, so it reaches downstream agents as state rather than as prose in a spawn prompt.
    > - When the response names a `decision` and has no `session_index`, present the `recommendation` and `candidates` and wait for the user. Retry after they settle it.
 2. Save `{session_index}` and `{planning_folder_path}` from the response. Record `{repo}` as bag `{target_repo}` (the echoed binding). Do not compose or reconcile the planning path yourself.

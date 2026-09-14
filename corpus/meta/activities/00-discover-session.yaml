@@ -1,5 +1,5 @@
 id: discover-session
-version: 7.7.0
+version: 7.8.0
 name: Discover Session
 description: Take the host repository path from git, identify the target workflow and, on stated resume intent, search for an existing client session to resume.
 variables:
@@ -66,8 +66,8 @@ steps:
     message: The host repository folder on disk disagrees with the repository its origin remote names. The session is already bound to that origin. Confirm the host path is the checkout later git operations should use, or stop so no client session is created against a directory that is not that checkout.
     options:
       - id: confirm-binding
-        label: Proceed with the derived binding
-        description: The divergence is understood and the checkout is reachable under the mapped basename.
+        label: Proceed with this host path
+        description: The host path is the checkout later git operations should use.
         effect:
           setVariable:
             host_binding_mismatch: false
