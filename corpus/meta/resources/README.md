@@ -12,10 +12,10 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` → bag `{target_repo}` → `get_workflow`; cites [start-session](../techniques/workflow-engine/start-session.md) / [workflow-engine](../techniques/workflow-engine/TECHNIQUE.md) for folder topology and delivery policy. |
+| `bootstrap-protocol` | [Bootstrap Protocol](./bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`; unique match walks the child; cites [start-session](../techniques/workflow-engine/start-session.md) / [workflow-engine](../techniques/workflow-engine/TECHNIQUE.md) for folder topology and delivery policy. |
 | `session-summary-template` | [Session Summary Template](./session-summary-template.md) | Skeleton for the markdown session summary composed at workflow close |
 | `planning-readme` | [Planning Folder README Guide](./planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`; Progress inventory comes from each workflow's readme-seed profile |
-| `resume-intent-lexicon` | [Resume Intent Lexicon](./resume-intent-lexicon.md) | Continuation-phrase vocabulary and negative cases matched by [detect-resume-intent](../techniques/workflow-engine/detect-resume-intent.md) to gate the saved-session search |
+| `resume-intent-lexicon` | [Resume Intent Lexicon](./resume-intent-lexicon.md) | Continuation-phrase vocabulary and negative cases `start_session` matches when deciding whether to scan saved sessions |
 | `writing-register` | [Artifact Writing Register](./writing-register.md) | Prose and table register for any artifact whose declared audience is a person; creation guides keep the sections and budgets |
 | `token-usage` | [Token Usage](./token-usage.md) | Creation guide: `token-usage.md` — a run's sole cost home, carrying the per-activity ledger, totals, coverage reconciliation and estimate caveat |
 | `session-trace` | [Session Trace](./session-trace.md) | Creation guide: `session-trace.md` — the lean mechanical record of what executed, how long it took, and where it went wrong |

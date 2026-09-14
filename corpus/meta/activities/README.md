@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-The sequential activities that run inside the meta session. Each one's role and place in the sequence is indexed in the [Meta Workflow README](../README.md).
+The sequential activities that run inside the meta session after `start_session` has opened the client. Each one's role and place in the sequence is indexed in the [Meta Workflow README](../README.md).
 
 Borrowable mid-phase orchestration pattern activities live under [`patterns/`](./patterns/README.md) and are **not** part of this lifecycle list.
 
@@ -10,33 +10,9 @@ The authoritative definition of each activity — its steps, technique bindings,
 
 ---
 
-### 00. Discover Session
-
-Takes the host repository path from git — ascending to the outermost superproject that claims the workspace checkout — then identifies the target workflow and, when the request states resume intent, looks for an existing client session to resume. The session bind is already the origin of the checkout passed as `working_directory`; this derivation fills `{host_repo_path}` and raises a basename divergence from that origin at the host-binding-mismatch checkpoint before any matching work is done. It matches the user request against the workflow catalog and detects resume intent against the [resume-intent lexicon](../resources/resume-intent-lexicon.md). Every run extracts the request's identifying context (ticket, branch, PR, work-package name, and any repository the request names as the component under work) and names the work from the request's own words, so the component is identifiable and the planning slug is decided before the client session is created. On stated resume intent it also scans planning folders so saved progress can be surfaced; a request stating a fresh start skips that search. Leads to [Initialize Session](#01-initialize-session).
-
-Definition: [`00-discover-session.yaml`](./00-discover-session.yaml)
-
----
-
-### 01. Initialize Session
-
-Gives the work package a stable, work-item-derived identity, then creates or resumes the client session as a child of the meta session. A fresh run derives the slug from the work item before dispatch so the server reuses it on every resume instead of a date-stamped fallback; a resuming run carries the matched session's slug through instead, so dispatch targets the existing planning folder. The server owns folder creation and returns the canonical `planning_folder_path`; on resume it restores prior variables automatically, so there is no agent-side restore. Leads to [Resolve Target](#02-resolve-target).
-
-Definition: [`01-initialize-session.yaml`](./01-initialize-session.yaml)
-
----
-
-### 02. Resolve Target
-
-Detects the target repository structure — regular directory vs. submodule monorepo — and resolves `component_path` so downstream git operations have a confirmed working git tree to act on. Where a monorepo holds more than one component, the enumerated submodules are offered one at a time and the one accepted lands in `component_path`, so the gate records the choice it asked for; `component_path` is relative to `host_repo_path`, and their join must resolve to a directory containing a working git tree. Leads to [Dispatch Client Workflow](#03-dispatch-client-workflow).
-
-Definition: [`02-resolve-target.yaml`](./02-resolve-target.yaml)
-
----
-
 ### 03. Dispatch Client Workflow
 
-Drives the client workflow end to end inline via [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml) (dispatch → present/respond on yield → commit-and-persist → advance → continue that same worker while its batch has room and the next destination is one activity). A destination that fans ends that identity: the source commits, the worker is released, and [dispatch-fan](../techniques/workflow-engine/dispatch-fan.md) opens the branches. Each worker carries a bounded run of activities, so a fresh context is established once a run rather than once an activity; the bound is the server's, enforced at delivery ([batch-is-bounded-by-the-server](../techniques/workflow-engine/dispatch-activity.md#batch-is-bounded-by-the-server)). Role and auth boundaries: [agent-conduct](../techniques/agent-conduct.md) + [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md). Leads to [End Workflow](#04-end-workflow) when the client workflow is exhausted.
+Drives the already-open client workflow end to end inline via [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml) (dispatch → present/respond on yield → commit-and-persist → advance → continue that same worker while its batch has room and the next destination is one activity). `client_session_index` and `client_initial_activity` come from `start_session`. A destination that fans ends that identity: the source commits, the worker is released, and [dispatch-fan](../techniques/workflow-engine/dispatch-fan.md) opens the branches. Each worker carries a bounded run of activities, so a fresh context is established once a run rather than once an activity; the bound is the server's, enforced at delivery ([batch-is-bounded-by-the-server](../techniques/workflow-engine/dispatch-activity.md#batch-is-bounded-by-the-server)). Role and auth boundaries: [agent-conduct](../techniques/agent-conduct.md) + [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md). Leads to [End Workflow](#04-end-workflow) when the client workflow is exhausted.
 
 Definition: [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml)
 
