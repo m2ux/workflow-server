@@ -50,7 +50,7 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
       parentFolder: dir,
       workflowDir: liveCorpusRoot()!,
       workflowId: 'work-package',
-      bagFacts: { component_path: '.', host_binding_mismatch: false },
+      bagFacts: { component_path: '.' },
     });
     expect(result?.client.workflow.id).toBe('work-package');
     expect(result?.client.workflow.initialActivity).toBe('start-work-package');
@@ -76,6 +76,60 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
     expect(client?.session_index).toMatch(/^[A-Z2-7]{6}$/);
     expect(body.session_index).toMatch(/^[A-Z2-7]{6}$/);
     expect(body.session_index).not.toBe(client?.session_index);
+  });
+
+  it('returns workflow-selection when durable meta has no user_request and no pin', async () => {
+    harness = await createHarness();
+    const checkout = await originCheckout(harness.workspaceDir);
+    const result = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'meta',
+        agent_id: 'orchestrator',
+        working_directory: checkout,
+      },
+    });
+    const body = parseToolResponse(result);
+    expect(body.session_index).toBeUndefined();
+    expect(body.decision).toBe('workflow-selection');
+  });
+
+  it('opens the client from a branch-named working_directory', async () => {
+    harness = await createHarness();
+    const checkout = join(harness.workspaceDir, 'feat', 'start-session-computed-bag');
+    mkdirSync(checkout, { recursive: true });
+    await execFileAsync('git', ['init', checkout]);
+    await execFileAsync('git', ['-C', checkout, 'config', 'user.email', 'test@example.com']);
+    await execFileAsync('git', ['-C', checkout, 'config', 'user.name', 'test']);
+    await execFileAsync('git', ['-C', checkout, 'remote', 'add', 'origin', 'https://github.com/acme/workflow-server.git']);
+    const result = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'meta',
+        agent_id: 'orchestrator',
+        working_directory: checkout,
+        user_request: QUERY,
+      },
+    });
+    const body = parseToolResponse(result);
+    expect(body.decision).toBeUndefined();
+    expect((body.client as { workflow?: { id?: string } } | undefined)?.workflow?.id).toBe('work-package');
+  });
+
+  it('tryEagerClientDispatch throws when the client workflow cannot be loaded', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'eager-missing-'));
+    const parent = createInitialSessionFile({
+      sessionIndex: 'AAAAAA',
+      workflowId: 'meta',
+      workflowVersion: '7.0.0',
+      agentId: 'orchestrator',
+    });
+    await expect(tryEagerClientDispatch({
+      parent,
+      parentFolder: dir,
+      workflowDir: liveCorpusRoot()!,
+      workflowId: 'no-such-workflow',
+    })).rejects.toThrow();
   });
 
   it('returns resume-session when the request states resume intent and a client exists', async () => {

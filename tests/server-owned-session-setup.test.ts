@@ -149,6 +149,7 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     const first = await callOk('start_session', {
       workflow_id: 'meta',
       working_directory: checkout,
+      target_workflow_id: 'seed-fixture',
     });
     const slug = datedSlug('meta');
     const folder = planningFolderPath(harness.workspaceDir, slug);
@@ -157,6 +158,7 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     const second = await callOk('start_session', {
       workflow_id: 'meta',
       working_directory: checkout,
+      target_workflow_id: 'seed-fixture',
     });
     expect(second['session_index']).not.toBe(first['session_index']);
     expect(second['planning_slug']).toBe(`${slug}-2`);
@@ -294,31 +296,19 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     expect(created['repo']).toBe('acme/portfolio');
   });
 
-  it('host-binding-mismatch on a branch-named folder; confirm_host_binding creates', async () => {
+  it('creates on a branch-named folder from origin', async () => {
     const checkout = join(harness.workspaceDir, 'feat', '528-server-owned-session-setup');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const folder = planningFolderPath(harness.workspaceDir, '2026-09-12-branch-named');
-    const first = await harness.client.callTool({
-      name: 'start_session',
-      arguments: {
-        workflow_id: 'seed-fixture',
-        working_directory: checkout,
-        planning_folder: folder,
-      },
-    });
-    expect(first.isError).toBeFalsy();
-    const decision = parseToolResponse(first);
-    expect(decision['session_index']).toBeUndefined();
-    expect(decision['decision']).toBe('host-binding-mismatch');
     const body = await callOk('start_session', {
       workflow_id: 'seed-fixture',
       working_directory: checkout,
       planning_folder: folder,
-      confirm_host_binding: true,
     });
     expect(body['repo']).toBe('acme/workflow-server');
     expect(body['repo_source']).toBe('origin');
     expect(body['session_index']).toMatch(/^[A-Z2-7]{6}$/);
+    expect(body['decision']).toBeUndefined();
   });
 
   it('unbound-repo without caller repo is an open decision; retry with repo creates', async () => {
@@ -397,25 +387,14 @@ describe.sequential('working_directory beside a .engineering planning root', () 
     expect(body['decision']).toBeUndefined();
   });
 
-  it('creates from a branch worktree under that checkout after confirm_host_binding', async () => {
+  it('creates from a branch worktree under that checkout', async () => {
     const worktree = join(checkout, '.worktrees', 'feat', '528-server-owned-session-setup');
     await initRepo(worktree, 'https://github.com/acme/workflow-server.git');
     const folder = planningFolderPath(checkout, '2026-09-12-eng-worktree');
-    const first = await harness.client.callTool({
-      name: 'start_session',
-      arguments: {
-        workflow_id: 'seed-fixture',
-        working_directory: worktree,
-        planning_folder: folder,
-      },
-    });
-    expect(first.isError).toBeFalsy();
-    expect(parseToolResponse(first)['decision']).toBe('host-binding-mismatch');
     const body = await callOk('start_session', {
       workflow_id: 'seed-fixture',
       working_directory: worktree,
       planning_folder: folder,
-      confirm_host_binding: true,
     });
     expect(body['repo']).toBe('acme/workflow-server');
     expect(body['repo_source']).toBe('origin');

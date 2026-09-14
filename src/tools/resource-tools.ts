@@ -103,7 +103,6 @@ function bagFactsFromDerived(derived?: DerivationOk): OpeningBagFacts {
     host_repo_path: derived.host_repo_path,
     target_repo: derived.repo,
     component_path: component,
-    host_binding_mismatch: false,
     is_monorepo: component !== '.',
   };
 }
@@ -140,8 +139,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Every session records `execution_path` (`agent` when a caller walks the definition, `runner` when the server does) on the session and echoes it here. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks. ' +
         'A derived dated slug that already holds a session opens the next free `YYYY-MM-DD-<workflow_id>-N` folder in the same call. ' +
-        'A fresh durable meta session with `user_request` that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client in this call and returns `client.session_index` plus `client.workflow.initialActivity`. ' +
-        'Ambiguous catalog matches and saved-session hits return a `decision` with no `session_index`; retry with `target_workflow_id`, `planning_folder`, or `fresh`.',
+        'A fresh durable meta session that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client in this call and returns `client.session_index` plus `client.workflow.initialActivity`. ' +
+        'A durable meta start that cannot uniquely open a client returns a `decision` with no `session_index`; retry with `user_request`, `target_workflow_id`, `planning_folder`, or `fresh`. ' +
+        'The origin remote binds even when the checkout folder is named for a branch.',
       inputSchema: z
         .object({
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
@@ -151,13 +151,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           user_request: z.string().optional().describe('The user\'s free-form request that opened this session. Seeded into the variable bag as `user_request`, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.'),
           target_workflow_id: z.string().optional().describe('Optional. Client workflow id after a workflow-selection decision. Distinct from workflow_id, which is the top-level session (default meta).'),
           fresh: z.boolean().optional().describe('Optional. After a resume-session decision, ignore saved hits and embed a new client.'),
-          confirm_host_binding: z.boolean().optional().describe('Optional. After a host-binding-mismatch decision, proceed with this checkout folder.'),
           agent_id: z.string().default('orchestrator').describe('Agent identity stored on the session (default "orchestrator"). Use one canonical id for solo persistent walks.'),
           context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. "persistent" = reference delivery; ONLY for solo (same agent retains payloads). Omit/"fresh" for disposable workers. Resume overwrites recorded mode.'),
         })
         .strict(),
     },
-    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, working_directory, repo, agent_id, context_mode, user_request, target_workflow_id, fresh, confirm_host_binding }) => {
+    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, working_directory, repo, agent_id, context_mode, user_request, target_workflow_id, fresh }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
       // start_session is top-level only — it either opens an existing
@@ -193,7 +192,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           ...(config.pathPresentation ? { pathPresentation: config.pathPresentation } : {}),
           ...(repo?.trim() ? { namedRepo: repo.trim() } : {}),
           ...(user_request ? { userRequest: user_request } : {}),
-          ...(confirm_host_binding === true ? { confirmHostBinding: true } : {}),
         });
         if (derivation.kind === 'refuse') {
           throw new Error(`start_session: ${derivation.message}`);
@@ -266,12 +264,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       let openingEmbedId: string | undefined;
       const openingEligible = effectiveWfId === DEFAULT_WORKFLOW_ID
-        && Boolean(user_request)
         && !slugCandidate
         && !wouldBeTransient;
-      if (openingEligible && user_request) {
+      if (openingEligible) {
         const opening = await resolveOpeningIntent({
-          userRequest: user_request,
+          userRequest: user_request ?? '',
           workflowDir: config.workflowDir,
           planningRootDir,
           planningRelativeDir: sessionScope.planningRelativeDir,
@@ -288,6 +285,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
         if (opening.kind === 'embed') {
           openingEmbedId = opening.workflowId;
+          const childLoad = await loadWorkflow(config.workflowDir, openingEmbedId);
+          if (!childLoad.success) throw childLoad.error;
+        } else {
+          return openDecisionResponse({
+            decision: 'workflow-selection',
+            candidates: [],
+            recommendation: 'Pass user_request or target_workflow_id so start_session can open the client.',
+          });
         }
       }
 
@@ -538,12 +543,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflowId: openingEmbedId,
           bagFacts: bagFactsFromDerived(derived),
         });
-        if (eager) {
-          const loaded = await loadSessionForTool(planningRootDir, sessionIndex, await sessionLoadOpts());
-          await saveSessionForTool(loaded, eager.parent);
-          state = eager.parent;
-          eagerClient = eager.client;
+        if (!eager) {
+          throw new Error(
+            `start_session: failed to open client '${openingEmbedId}' in this call`,
+          );
         }
+        const loaded = await loadSessionForTool(planningRootDir, sessionIndex, await sessionLoadOpts());
+        await saveSessionForTool(loaded, eager.parent);
+        state = eager.parent;
+        eagerClient = eager.client;
       }
 
       if (config.traceStore) {

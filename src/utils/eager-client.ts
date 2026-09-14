@@ -22,7 +22,6 @@ export interface OpeningBagFacts {
   host_repo_path?: string;
   target_repo?: string;
   component_path?: string;
-  host_binding_mismatch?: boolean;
   is_monorepo?: boolean;
 }
 
@@ -42,7 +41,7 @@ export async function tryEagerClientDispatch(args: {
   if (args.parent.triggeredWorkflows.length > 0) return null;
 
   const wfResult = await loadWorkflow(args.workflowDir, args.workflowId);
-  if (!wfResult.success) return null;
+  if (!wfResult.success) throw wfResult.error;
   const childWorkflow = wfResult.value;
   const triggeredAt = new Date().toISOString();
   const childJsonPath = ['triggeredWorkflows', 0, 'state'];
@@ -53,7 +52,6 @@ export async function tryEagerClientDispatch(args: {
     ...(facts.host_repo_path !== undefined ? { host_repo_path: facts.host_repo_path } : {}),
     ...(facts.target_repo !== undefined ? { target_repo: facts.target_repo } : {}),
     ...(facts.component_path !== undefined ? { component_path: facts.component_path } : {}),
-    ...(facts.host_binding_mismatch !== undefined ? { host_binding_mismatch: facts.host_binding_mismatch } : {}),
     ...(facts.is_monorepo !== undefined ? { is_monorepo: facts.is_monorepo } : {}),
   };
   const childInitial = createInitialSessionFile({

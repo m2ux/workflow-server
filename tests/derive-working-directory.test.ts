@@ -96,7 +96,6 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const result = await deriveWorkingDirectory({
       workingDirectory: checkout,
-      confirmHostBinding: true,
     });
     expect(result).toMatchObject({
       kind: 'ok',
@@ -104,16 +103,6 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
       repo_source: 'origin',
       toplevel: checkout,
     });
-  });
-
-  it('returns host-binding-mismatch when the folder basename disagrees with origin', async () => {
-    const checkout = join(root, 'feat', '528-server-owned-session-setup');
-    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
-    const result = await deriveWorkingDirectory({ workingDirectory: checkout });
-    expect(result).toMatchObject({ kind: 'decision', decision: 'host-binding-mismatch' });
-    if (result.kind === 'decision') {
-      expect(result.recommendation).toMatch(/confirm_host_binding/);
-    }
   });
 
   it('proceeds when namedRepo equals origin on a branch-named folder', async () => {
@@ -174,7 +163,6 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
     const result = await deriveWorkingDirectory({
       workingDirectory: worktree,
       mappedRoots: [join(checkout, '.engineering'), checkout],
-      confirmHostBinding: true,
     });
     expect(result).toMatchObject({
       kind: 'ok',
