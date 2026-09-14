@@ -10,18 +10,16 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 1. Call `start_session { workflow_id: "meta", agent_id: "orchestrator", working_directory, user_request }`.
    `working_directory` is the absolute path of the checkout under work. The server derives
    `owner/repo` from that checkout's origin remote. `repo` is optional and must equal the derived
-   origin when present.
+   origin when present. Origin binds even when the checkout folder is named for a branch.
 
    When the response names a `decision` and has no `session_index`, present the `recommendation`
    and `candidates` and wait for the user. Retry the same call after they settle it:
 
    - `unbound-repo`: pass `repo` as `owner/repo`.
    - `binding-mismatch`: pass `repo` matching the checkout, or a different `working_directory`.
-   - `host-binding-mismatch`: pass `confirm_host_binding: true`, pass `repo` equal to origin, or a
-     `working_directory` whose folder basename matches the origin repository name.
    - `component-choice`: name a component in the request or pass that component's `working_directory`.
    - `unmapped-root`: pass a `working_directory` under a checkout this server serves.
-   - `workflow-selection`: pass `target_workflow_id` set to the chosen catalog id.
+   - `workflow-selection`: pass `target_workflow_id` set to the chosen catalog id, or `user_request`.
    - `resume-session`: pass `planning_folder` for the chosen saved session, or `fresh: true` to open
      a new client.
 

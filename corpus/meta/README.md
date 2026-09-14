@@ -11,7 +11,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`, `host-binding-mismatch`) return with no session. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - State persistence is server-managed (no agent-side persist/restore); on-disk shape: [`docs/state_management_model.md`](../../docs/state_management_model.md).
 
