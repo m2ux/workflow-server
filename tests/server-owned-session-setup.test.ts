@@ -143,7 +143,7 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     expect(planning.filter((n) => n.includes('tc04'))).toEqual([]);
   });
 
-  it('PR528-TC-05: derived slug that already holds a session throws FOLDER_OCCUPIED; files byte-identical', async () => {
+  it('PR528-TC-05: derived slug that already holds a session opens the next free dated folder', async () => {
     const checkout = join(harness.workspaceDir, 'tc05', 'workflow-server');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const first = await callOk('start_session', {
@@ -154,12 +154,12 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     const folder = planningFolderPath(harness.workspaceDir, slug);
     const sessionBefore = readFileSync(join(folder, SESSION_FILE_NAME));
     const sealBefore = readFileSync(join(folder, SEAL_FILE_NAME));
-    const err = await callErr('start_session', {
+    const second = await callOk('start_session', {
       workflow_id: 'meta',
       working_directory: checkout,
     });
-    expect(err).toMatch(/already holds a run|FOLDER_OCCUPIED|already holds a session/);
-    expect(err).toContain(String(first['session_index']));
+    expect(second['session_index']).not.toBe(first['session_index']);
+    expect(second['planning_slug']).toBe(`${slug}-2`);
     expect(readFileSync(join(folder, SESSION_FILE_NAME))).toEqual(sessionBefore);
     expect(readFileSync(join(folder, SEAL_FILE_NAME))).toEqual(sealBefore);
   });
@@ -294,14 +294,27 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     expect(created['repo']).toBe('acme/portfolio');
   });
 
-  it('binds origin when working_directory is a branch-named folder', async () => {
+  it('host-binding-mismatch on a branch-named folder; confirm_host_binding creates', async () => {
     const checkout = join(harness.workspaceDir, 'feat', '528-server-owned-session-setup');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const folder = planningFolderPath(harness.workspaceDir, '2026-09-12-branch-named');
+    const first = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'seed-fixture',
+        working_directory: checkout,
+        planning_folder: folder,
+      },
+    });
+    expect(first.isError).toBeFalsy();
+    const decision = parseToolResponse(first);
+    expect(decision['session_index']).toBeUndefined();
+    expect(decision['decision']).toBe('host-binding-mismatch');
     const body = await callOk('start_session', {
       workflow_id: 'seed-fixture',
       working_directory: checkout,
       planning_folder: folder,
+      confirm_host_binding: true,
     });
     expect(body['repo']).toBe('acme/workflow-server');
     expect(body['repo_source']).toBe('origin');
@@ -384,14 +397,25 @@ describe.sequential('working_directory beside a .engineering planning root', () 
     expect(body['decision']).toBeUndefined();
   });
 
-  it('creates from a branch worktree under that checkout', async () => {
+  it('creates from a branch worktree under that checkout after confirm_host_binding', async () => {
     const worktree = join(checkout, '.worktrees', 'feat', '528-server-owned-session-setup');
     await initRepo(worktree, 'https://github.com/acme/workflow-server.git');
     const folder = planningFolderPath(checkout, '2026-09-12-eng-worktree');
+    const first = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'seed-fixture',
+        working_directory: worktree,
+        planning_folder: folder,
+      },
+    });
+    expect(first.isError).toBeFalsy();
+    expect(parseToolResponse(first)['decision']).toBe('host-binding-mismatch');
     const body = await callOk('start_session', {
       workflow_id: 'seed-fixture',
       working_directory: worktree,
       planning_folder: folder,
+      confirm_host_binding: true,
     });
     expect(body['repo']).toBe('acme/workflow-server');
     expect(body['repo_source']).toBe('origin');
@@ -400,7 +424,7 @@ describe.sequential('working_directory beside a .engineering planning root', () 
   });
 
   it('records execution_path agent on create, on the session file, and on a child', async () => {
-    const checkout = join(harness.workspaceDir, 'path-drove');
+    const checkout = join(harness.workspaceDir, 'path-drove', 'workflow-server');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const folder = planningFolderPath(harness.workspaceDir, '2026-09-12-execution-path');
     const body = await callOk('start_session', {

@@ -34,6 +34,8 @@ import {
 import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
+import { loadDiscoveryCatalog } from '../utils/load-discovery-catalog.js';
+import { presentDiscoverWorkflow, rankWorkflows } from '../utils/match-workflow.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, fanIdentityRefusal, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { batchBound, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
@@ -601,6 +603,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const payload = errors.length > 0 ? { workflows, load_errors: errors } : workflows;
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
+
+  server.tool(
+    'discover_workflow',
+    'Rank workflows for a free-form request against id, title, description, and tags. Returns the top match, an ambiguity flag, and up to five scored ids — not the catalog. No session_index required.',
+    {
+      query: z.string().min(1).describe('REQUIRED. Free-form request to match against workflow keywords.'),
+    },
+    withAuditLog('discover_workflow', async ({ query }) => {
+      const catalog = await loadDiscoveryCatalog(config.workflowDir);
+      const payload = presentDiscoverWorkflow(rankWorkflows(query, catalog));
+      return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
+    }),
+  );
 
   server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it.',
     {

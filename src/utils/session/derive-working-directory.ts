@@ -10,6 +10,7 @@ const execFileAsync = promisify(execFile);
 export type DerivationDecisionName =
   | 'unbound-repo'
   | 'binding-mismatch'
+  | 'host-binding-mismatch'
   | 'component-choice'
   | 'unmapped-root';
 
@@ -61,6 +62,8 @@ export interface DeriveWorkingDirectoryInput {
   /** Caller-supplied `repo` (owner/repo) used to detect a named component. */
   namedRepo?: string;
   userRequest?: string;
+  /** Skip the basename-vs-origin gate after the caller confirmed this checkout. */
+  confirmHostBinding?: boolean;
 }
 
 interface SubmoduleSection {
@@ -297,6 +300,26 @@ export async function deriveWorkingDirectory(
       [{ toplevel: innermost, host_repo_path: ascent.hostToplevel, search_roots: roots }],
       'Pass a working_directory under a checkout this server serves — the projects root, that checkout, or a branch worktree inside it.',
     );
+  }
+
+  if (!input.confirmHostBinding) {
+    const folderName = basename(innermost);
+    const repoSegment = boundRepo.split('/').pop() ?? boundRepo;
+    const callerPinsOrigin =
+      repoSource === 'origin'
+      && Boolean(input.namedRepo)
+      && tryNormalizeRepo(input.namedRepo!) === boundRepo;
+    if (folderName !== repoSegment && !callerPinsOrigin) {
+      return decision(
+        'host-binding-mismatch',
+        facts,
+        [
+          { source: 'checkout-folder', basename: folderName, toplevel: innermost },
+          { source: 'origin', repo: boundRepo, repo_segment: repoSegment },
+        ],
+        `The checkout folder '${folderName}' disagrees with origin repository '${boundRepo}'. Retry start_session with confirm_host_binding: true to proceed with this path, pass repo '${boundRepo}', or pass a working_directory whose basename is '${repoSegment}'.`,
+      );
+    }
   }
 
   const atHost = innermost === ascent.hostToplevel;

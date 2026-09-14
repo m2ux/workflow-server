@@ -21,6 +21,7 @@ import {
   SessionStoreError,
   ensurePlanningFolder,
   findPlanningFolderBySlug,
+  allocateDerivedPlanningSlug,
   sessionFileExists,
   createSessionFile,
   replaceSessionFile,
@@ -56,6 +57,8 @@ import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance }
 import { seedDefaults } from '../utils/variable-seed.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { stringifyForResponse } from '../utils/serialization.js';
+import { tryEagerClientDispatch, type EagerClient, type OpeningBagFacts } from '../utils/eager-client.js';
+import { resolveOpeningIntent } from '../utils/opening-intent.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { hasDispatch, recordDispatch } from '../utils/dispatch.js';
 import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
@@ -93,6 +96,18 @@ function openDecisionResponse(payload: Record<string, unknown>) {
   };
 }
 
+function bagFactsFromDerived(derived?: DerivationOk): OpeningBagFacts {
+  if (!derived) return {};
+  const component = derived.component_path ?? '.';
+  return {
+    host_repo_path: derived.host_repo_path,
+    target_repo: derived.repo,
+    component_path: component,
+    host_binding_mismatch: false,
+    is_monorepo: component !== '.',
+  };
+}
+
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
   // Process-level engineering root (may be install multi-root). Per-session
@@ -123,7 +138,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         '`repo` is optional; when present it must equal the derived owner/repo. ' +
         'Omit both `working_directory` and `planning_folder` for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
         'Every session records `execution_path` (`agent` when a caller walks the definition, `runner` when the server does) on the session and echoes it here. ' +
-        '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks.',
+        '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks. ' +
+        'A derived dated slug that already holds a session opens the next free `YYYY-MM-DD-<workflow_id>-N` folder in the same call. ' +
+        'A fresh durable meta session with `user_request` that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client in this call and returns `client.session_index` plus `client.workflow.initialActivity`. ' +
+        'Ambiguous catalog matches and saved-session hits return a `decision` with no `session_index`; retry with `target_workflow_id`, `planning_folder`, or `fresh`.',
       inputSchema: z
         .object({
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
@@ -131,12 +149,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           working_directory: z.string().optional().describe('Optional. Absolute path of the checkout under work. The bound repository is that checkout\'s origin. Bare/relative paths rejected.'),
           repo: z.string().optional().describe('Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.'),
           user_request: z.string().optional().describe('The user\'s free-form request that opened this session. Seeded into the variable bag as `user_request`, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.'),
+          target_workflow_id: z.string().optional().describe('Optional. Client workflow id after a workflow-selection decision. Distinct from workflow_id, which is the top-level session (default meta).'),
+          fresh: z.boolean().optional().describe('Optional. After a resume-session decision, ignore saved hits and embed a new client.'),
+          confirm_host_binding: z.boolean().optional().describe('Optional. After a host-binding-mismatch decision, proceed with this checkout folder.'),
           agent_id: z.string().default('orchestrator').describe('Agent identity stored on the session (default "orchestrator"). Use one canonical id for solo persistent walks.'),
           context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. "persistent" = reference delivery; ONLY for solo (same agent retains payloads). Omit/"fresh" for disposable workers. Resume overwrites recorded mode.'),
         })
         .strict(),
     },
-    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, working_directory, repo, agent_id, context_mode, user_request }) => {
+    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, working_directory, repo, agent_id, context_mode, user_request, target_workflow_id, fresh, confirm_host_binding }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
       // start_session is top-level only — it either opens an existing
@@ -172,6 +193,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           ...(config.pathPresentation ? { pathPresentation: config.pathPresentation } : {}),
           ...(repo?.trim() ? { namedRepo: repo.trim() } : {}),
           ...(user_request ? { userRequest: user_request } : {}),
+          ...(confirm_host_binding === true ? { confirmHostBinding: true } : {}),
         });
         if (derivation.kind === 'refuse') {
           throw new Error(`start_session: ${derivation.message}`);
@@ -224,7 +246,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const effectiveWfId = workflow_id ?? DEFAULT_WORKFLOW_ID;
       const derivedDurable = derived !== undefined && !namedPlanningFolder;
       if (derivedDurable) {
-        planning_slug = `${new Date().toISOString().slice(0, 10)}-${effectiveWfId}`;
+        planning_slug = await allocateDerivedPlanningSlug(
+          planningRootDir,
+          `${new Date().toISOString().slice(0, 10)}-${effectiveWfId}`,
+          {
+            planningRelativeDir: sessionScope.planningRelativeDir,
+            searchRoots,
+          },
+        );
       }
       const slugIsSynthetic = planning_slug === undefined;
       const slug = planning_slug ?? `transition-${randomUUID()}`;
@@ -234,6 +263,33 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         planningRelativeDir: sessionScope.planningRelativeDir,
         searchRoots,
       });
+
+      let openingEmbedId: string | undefined;
+      const openingEligible = effectiveWfId === DEFAULT_WORKFLOW_ID
+        && Boolean(user_request)
+        && !slugCandidate
+        && !wouldBeTransient;
+      if (openingEligible && user_request) {
+        const opening = await resolveOpeningIntent({
+          userRequest: user_request,
+          workflowDir: config.workflowDir,
+          planningRootDir,
+          planningRelativeDir: sessionScope.planningRelativeDir,
+          searchRoots,
+          ...(target_workflow_id ? { targetWorkflowId: target_workflow_id } : {}),
+          ...(fresh === true ? { fresh: true } : {}),
+        });
+        if (opening.kind === 'decision') {
+          return openDecisionResponse({
+            decision: opening.decision,
+            candidates: opening.candidates,
+            recommendation: opening.recommendation,
+          });
+        }
+        if (opening.kind === 'embed') {
+          openingEmbedId = opening.workflowId;
+        }
+      }
 
       let folder: string;
       let isTransientSession: boolean;
@@ -325,6 +381,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       //     realpath, persist it via createInitialSessionFile, and return.
       let sessionIndex: string;
       let state: SessionFile;
+      let createdFresh = false;
       // Canonical absolute path of the folder we resolved to — recorded in
       // session.json so the agent can read it back and the server can detect
       // drift on resume. Skipped for transient (tmp) sessions.
@@ -444,12 +501,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
               variables: {
                 ...(wfPreLoad.success ? seedDefaults(wfPreLoad.value.variables) : {}),
                 ...(user_request !== undefined ? { user_request } : {}),
+                ...bagFactsFromDerived(derived),
               },
             }
             : {}),
         });
         state = newState;
         await createSessionFile(folder, state);
+        createdFresh = true;
 
         // If this is a transient session, register so its session_index
         // resolves back to the os.tmpdir() folder. Done AFTER createSessionFile
@@ -467,6 +526,23 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             folder,
             slugIsSynthetic ? undefined : slug,
           );
+        }
+      }
+
+      let eagerClient: EagerClient | undefined;
+      if (createdFresh && !isTransientSession && openingEmbedId) {
+        const eager = await tryEagerClientDispatch({
+          parent: state,
+          parentFolder: folder,
+          workflowDir: config.workflowDir,
+          workflowId: openingEmbedId,
+          bagFacts: bagFactsFromDerived(derived),
+        });
+        if (eager) {
+          const loaded = await loadSessionForTool(planningRootDir, sessionIndex, await sessionLoadOpts());
+          await saveSessionForTool(loaded, eager.parent);
+          state = eager.parent;
+          eagerClient = eager.client;
         }
       }
 
@@ -518,6 +594,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         const presentedHost = presentPathToAgent(derived.host_repo_path, config.pathPresentation);
         if (presentedHost) response['host_repo_path'] = presentedHost;
       }
+      if (eagerClient) response['client'] = eagerClient;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],

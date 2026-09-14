@@ -784,6 +784,32 @@ export async function findPlanningFolderBySlug(
   );
 }
 
+const MAX_DERIVED_SLUG_ATTEMPTS = 100;
+
+/**
+ * First dated slug under the planning root that does not already hold a session.
+ * The base (`YYYY-MM-DD-<workflow_id>`) is tried first; then `base-2`, `base-3`, …
+ * A derived start_session uses this so an occupied dated folder opens a new run
+ * in one call rather than refusing.
+ */
+export async function allocateDerivedPlanningSlug(
+  workspaceDir: string,
+  baseSlug: string,
+  options?: { planningRelativeDir?: string; searchRoots?: readonly string[] },
+): Promise<string> {
+  assertValidSlug(baseSlug);
+  for (let n = 1; n <= MAX_DERIVED_SLUG_ATTEMPTS; n++) {
+    const slug = n === 1 ? baseSlug : `${baseSlug}-${n}`;
+    const existing = await findPlanningFolderBySlug(workspaceDir, slug, options);
+    if (existing === undefined) return slug;
+  }
+  throw new SessionStoreError(
+    `no free derived planning slug under ${baseSlug} after ${MAX_DERIVED_SLUG_ATTEMPTS} attempts`,
+    'FOLDER_OCCUPIED',
+    { slug: baseSlug },
+  );
+}
+
 /**
  * Create a top-level planning folder at
  * `<workspaceDir>/<activePlanningRelativeDir>/<slug>` with mode 0700.
