@@ -1,6 +1,6 @@
 # Setup — Docker / HTTP
 
-Transport-specific steps for running the **GHCR image** over HTTP.
+Transport-specific steps for running the server over HTTP — the published GHCR image, or an image built from a checkout.
 
 ## Prerequisites
 
@@ -31,7 +31,20 @@ for a `start_session` that carries `working_directory` is under
 `$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/` on the host
 when `HOST_PROJECTS_ROOT` is set. The server derives `owner/repo` from that checkout's origin.
 
-Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names as `.env.example`).
+Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names as `.env.example`). `HOST_PORT` selects the published port.
+
+### Second instance from a checkout
+
+`start.sh --name` and `--host-port` address one container. The install instance keeps the default name `workflow-server` and host port 3000. A second process uses a different name and port so the two do not replace each other.
+
+`--build` builds the image from a directory that contains this repo's `Dockerfile` (the current directory when DIR is omitted), tags it `workflow-server:local` unless `--image` names another tag, and skips the GHCR pull. `--host-port=0` with `-d` lets Docker pick a free host port; the script prints the MCP URL after start.
+
+```bash
+./scripts/start.sh -d --build --name=workflow-server-trial --host-port=0 --no-update-workflows
+./scripts/stop.sh --name=workflow-server-trial
+```
+
+The sidecar uses the same install binds (projects root, corpus, HMAC state) as the first instance. Cursor's MCP URL is whatever `.mcp.json` names; point it at the printed URL to talk to the sidecar.
 
 ## 3. Verify
 
@@ -48,7 +61,7 @@ Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names
 
 A green `/health` without `sessionKeyWritable: true` means sessions cannot start.
 
-Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
+Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints when the host port is 0). Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
 
 ## Troubleshooting
 
