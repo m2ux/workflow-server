@@ -1,0 +1,44 @@
+{
+  "mode": "update",
+  "catalog_source": "committed workflow catalog (list_workflows)",
+  "targets": [
+    {
+      "workflow_id": "requirements-refinement",
+      "title": "Requirements Refinement Workflow",
+      "version": "1.5.0",
+      "initial_activity": "intake-and-analyze",
+      "file_counts": {
+        "workflow_yaml": 1,
+        "activity_yaml": 5,
+        "technique_leaf": 6,
+        "technique_container": 1,
+        "resources": 7,
+        "total": 20
+      },
+      "entity_counts": {
+        "activities": 5,
+        "techniques": 6,
+        "resources": 7,
+        "checkpoints": 3,
+        "transitions": 9,
+        "decisions": 0,
+        "variables": 19,
+        "rules": 2
+      },
+      "step_kinds": {
+        "technique": 7,
+        "checkpoint": 3,
+        "action": 2,
+        "loop": 0
+      },
+      "activities": [
+        { "ordinal": "01", "id": "intake-and-analyze" },
+        { "ordinal": "03", "id": "update-specification" },
+        { "ordinal": "04", "id": "validate-specification" },
+        { "ordinal": "05", "id": "finalize-specification" },
+        { "ordinal": "06", "id": "report-failure" }
+      ],
+      "update_scope": "Canon review of requirements-refinement; add a planning README Progress table / readme-seed (defect 5); include other findings the review finds inside this workflow. Defects 1–4 (meta opening and dispatch) are out of scope."
+    }
+  ]
+}
