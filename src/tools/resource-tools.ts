@@ -57,8 +57,8 @@ import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance }
 import { seedDefaults } from '../utils/variable-seed.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import { tryEagerClientDispatch, type EagerClient, type OpeningBagFacts } from '../utils/eager-client.js';
-import { resolveOpeningIntent } from '../utils/opening-intent.js';
+import { tryEagerClientDispatch, type EagerClient, type EagerOpenResult, type OpeningBagFacts } from '../utils/eager-client.js';
+import { resolveOpeningIntent, type OpeningIntent } from '../utils/opening-intent.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { hasDispatch, recordDispatch } from '../utils/dispatch.js';
 import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
@@ -105,6 +105,23 @@ function bagFactsFromDerived(derived?: DerivationOk): OpeningBagFacts {
     component_path: component,
     is_monorepo: component !== '.',
   };
+}
+
+/** Named so the catalog ranker is a graph node, not a tool-handler lambda. */
+async function resolveStartSessionOpening(
+  args: Parameters<typeof resolveOpeningIntent>[0],
+): Promise<OpeningIntent> {
+  return resolveOpeningIntent(args);
+}
+
+/**
+ * Embed the ranked client into an in-memory parent. The caller persists
+ * `session.json` once, after this returns.
+ */
+async function embedFreshMetaClient(
+  args: Parameters<typeof tryEagerClientDispatch>[0],
+): Promise<EagerOpenResult> {
+  return tryEagerClientDispatch(args);
 }
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
@@ -267,7 +284,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         && !slugCandidate
         && !wouldBeTransient;
       if (openingEligible) {
-        const opening = await resolveOpeningIntent({
+        const opening = await resolveStartSessionOpening({
           userRequest: user_request ?? '',
           workflowDir: config.workflowDir,
           planningRootDir,
@@ -283,17 +300,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             recommendation: opening.recommendation,
           });
         }
-        if (opening.kind === 'embed') {
-          openingEmbedId = opening.workflowId;
-          const childLoad = await loadWorkflow(config.workflowDir, openingEmbedId);
-          if (!childLoad.success) throw childLoad.error;
-        } else {
-          return openDecisionResponse({
-            decision: 'workflow-selection',
-            candidates: [],
-            recommendation: 'Pass user_request or target_workflow_id so start_session can open the client.',
-          });
-        }
+        openingEmbedId = opening.workflowId;
+        const childLoad = await loadWorkflow(config.workflowDir, openingEmbedId);
+        if (!childLoad.success) throw childLoad.error;
       }
 
       let folder: string;
@@ -386,7 +395,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       //     realpath, persist it via createInitialSessionFile, and return.
       let sessionIndex: string;
       let state: SessionFile;
-      let createdFresh = false;
+      let eagerClient: EagerClient | undefined;
       // Canonical absolute path of the folder we resolved to — recorded in
       // session.json so the agent can read it back and the server can detect
       // drift on resume. Skipped for transient (tmp) sessions.
@@ -512,8 +521,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             : {}),
         });
         state = newState;
+        if (!isTransientSession && openingEmbedId) {
+          const eager = await embedFreshMetaClient({
+            parent: state,
+            parentFolder: folder,
+            workflowDir: config.workflowDir,
+            workflowId: openingEmbedId,
+            bagFacts: bagFactsFromDerived(derived),
+          });
+          state = eager.parent;
+          eagerClient = eager.client;
+        }
         await createSessionFile(folder, state);
-        createdFresh = true;
 
         // If this is a transient session, register so its session_index
         // resolves back to the os.tmpdir() folder. Done AFTER createSessionFile
@@ -532,26 +551,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             slugIsSynthetic ? undefined : slug,
           );
         }
-      }
-
-      let eagerClient: EagerClient | undefined;
-      if (createdFresh && !isTransientSession && openingEmbedId) {
-        const eager = await tryEagerClientDispatch({
-          parent: state,
-          parentFolder: folder,
-          workflowDir: config.workflowDir,
-          workflowId: openingEmbedId,
-          bagFacts: bagFactsFromDerived(derived),
-        });
-        if (!eager) {
-          throw new Error(
-            `start_session: failed to open client '${openingEmbedId}' in this call`,
-          );
-        }
-        const loaded = await loadSessionForTool(planningRootDir, sessionIndex, await sessionLoadOpts());
-        await saveSessionForTool(loaded, eager.parent);
-        state = eager.parent;
-        eagerClient = eager.client;
       }
 
       if (config.traceStore) {

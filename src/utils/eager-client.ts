@@ -26,9 +26,10 @@ export interface OpeningBagFacts {
 }
 
 /**
- * Embed a client workflow under a fresh meta parent in the same start_session
- * call. Ranking, resume gates, and open decisions are resolved before this
- * runs (`resolveOpeningIntent`).
+ * Embed a client workflow under a fresh meta parent in memory. Ranking, resume
+ * gates, and open decisions are resolved before this runs
+ * (`resolveOpeningIntent`). Persists nothing — the caller writes `session.json`
+ * once, with the embedded parent.
  */
 export async function tryEagerClientDispatch(args: {
   parent: SessionFile;
@@ -36,9 +37,15 @@ export async function tryEagerClientDispatch(args: {
   workflowDir: string;
   workflowId: string;
   bagFacts?: OpeningBagFacts;
-}): Promise<EagerOpenResult | null> {
-  if (args.parent.workflowId !== META_WORKFLOW_ID) return null;
-  if (args.parent.triggeredWorkflows.length > 0) return null;
+}): Promise<EagerOpenResult> {
+  if (args.parent.workflowId !== META_WORKFLOW_ID) {
+    throw new Error(
+      `tryEagerClientDispatch: parent workflow is '${args.parent.workflowId}', not meta`,
+    );
+  }
+  if (args.parent.triggeredWorkflows.length > 0) {
+    throw new Error('tryEagerClientDispatch: parent already has a triggered workflow');
+  }
 
   const wfResult = await loadWorkflow(args.workflowDir, args.workflowId);
   if (!wfResult.success) throw wfResult.error;

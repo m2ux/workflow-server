@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { execFile } from 'node:child_process';
-import { mkdirSync, mkdtempSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
@@ -52,9 +52,10 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
       workflowId: 'work-package',
       bagFacts: { component_path: '.' },
     });
-    expect(result?.client.workflow.id).toBe('work-package');
-    expect(result?.client.workflow.initialActivity).toBe('start-work-package');
-    expect(result?.parent.variables?.['component_path']).toBe('.');
+    expect(result.client.workflow.id).toBe('work-package');
+    expect(result.client.workflow.initialActivity).toBe('start-work-package');
+    expect(result.parent.variables?.['component_path']).toBe('.');
+    expect(existsSync(join(dir, 'session.json'))).toBe(false);
   });
 
   it('start_session on durable meta with the baseline request returns the client', async () => {
@@ -130,6 +131,23 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
       workflowDir: liveCorpusRoot()!,
       workflowId: 'no-such-workflow',
     })).rejects.toThrow();
+    expect(existsSync(join(dir, 'session.json'))).toBe(false);
+  });
+
+  it('tryEagerClientDispatch throws when the parent is not meta', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'eager-not-meta-'));
+    const parent = createInitialSessionFile({
+      sessionIndex: 'AAAAAA',
+      workflowId: 'work-package',
+      workflowVersion: '4.1.0',
+      agentId: 'orchestrator',
+    });
+    await expect(tryEagerClientDispatch({
+      parent,
+      parentFolder: dir,
+      workflowDir: liveCorpusRoot()!,
+      workflowId: 'work-package',
+    })).rejects.toThrow(/not meta/);
   });
 
   it('returns resume-session when the request states resume intent and a client exists', async () => {

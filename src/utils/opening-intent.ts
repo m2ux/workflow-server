@@ -10,12 +10,11 @@ export type OpeningIntent =
     decision: 'workflow-selection' | 'resume-session';
     candidates: Array<Record<string, unknown>>;
     recommendation: string;
-  }
-  | { kind: 'none' };
+  };
 
 /**
- * Resolve whether a fresh durable meta start_session should embed a client,
- * yield an open decision, or skip eager dispatch. Does not create a session.
+ * Resolve whether a fresh durable meta start_session should embed a client
+ * or yield an open decision. Does not create a session.
  */
 export async function resolveOpeningIntent(args: {
   userRequest: string;
