@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Optional. Absolute path whose basename is the planning slug. Omit for a transien
 
 ### repo
 
-Optional. Target repository as `owner/repo` (or GitHub URL). Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
+Optional. Target repository as `owner/repo` (or GitHub URL).
 
 ### user_request
 
