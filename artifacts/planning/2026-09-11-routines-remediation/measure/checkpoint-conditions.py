@@ -8,6 +8,10 @@ reference steps with whether each carries a site condition, and lists the checkp
 inside a loop and carry a condition of their own.
 
 Run from the server checkout root. Reads definitions and writes nothing.
+
+The corpus root is `workflows/` where a submodule holds it and `.worktrees/workflows/corpus/`
+where a branch worktree does, which is the same pair the guard scripts resolve over. Activity
+directories are found at any depth, so a workflow nested under a grouping folder is counted.
 """
 import glob
 import os
@@ -18,8 +22,21 @@ try:
 except ImportError:  # pragma: no cover
     sys.exit("PyYAML is required")
 
-ROOT = os.path.join(os.getcwd(), "workflows")
-files = sorted(glob.glob(os.path.join(ROOT, "*", "activities", "**", "*.yaml"), recursive=True))
+CANDIDATE_ROOTS = [
+    os.path.join(os.getcwd(), "workflows"),
+    os.path.join(os.getcwd(), ".worktrees", "workflows", "corpus"),
+]
+
+
+def corpus_root():
+    for candidate in CANDIDATE_ROOTS:
+        if os.path.isdir(os.path.join(candidate, "work-package", "activities")):
+            return candidate
+    sys.exit("no corpus root: looked for work-package/activities under " + " and ".join(CANDIDATE_ROOTS))
+
+
+ROOT = corpus_root()
+files = sorted(glob.glob(os.path.join(ROOT, "**", "activities", "**", "*.yaml"), recursive=True))
 
 counts = {"condition": 0, "when": 0, "both": 0, "neither": 0}
 total = 0

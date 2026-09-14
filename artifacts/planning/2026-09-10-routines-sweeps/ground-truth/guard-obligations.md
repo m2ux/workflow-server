@@ -90,7 +90,7 @@ lives on** — because a ledger on `main` cannot be edited by a corpus-only pull
 | Guard / script | What it demands | Zero or ledger | Exemption surface | Form it reads | Routines risk |
 |---|---|---|---|---|---|
 | `binding-fidelity` · `scripts/check-binding-fidelity.ts` | every `step.technique` input/output key is in the bound operation's composed signature; every `{token}` and condition variable resolves to a producible bag name **in its own workflow's scope**; no declared output goes unconsumed outside its file; no bound operation's own input lacks a producer (`:4-33`) | ledger — `scripts/binding-fidelity-triage.json`, **72 entries collapsing to 70 distinct finding keys, on `main`**; all 72 verdict `harmless`; stale and misplaced entries are themselves reported (`:892`, `:910`) | 7 named rationales in the ledger; `#### artifact` outputs exempt from `dead-output` (`:24-25`); `(optional)` markings exempt from `orphan-input` (`:29-31`) | activity YAML **as written**, plus technique markdown; it resolves checkpoint fragments itself (`:61-62`, `:529`) and recurses into `activities/` subdirectories (`:496-506`) | **(a)(b)(c)(d)** — the heaviest row. See the (d) sweep below |
-| `activity-variables` · `scripts/check-activity-variables.ts` | every activity's declared reads and writes match what its steps do, every declared read has a writer on every path, every declared write has a reader (`:9-23`) | **hard zero, no ledger** — stated at `:25` | none | the **loader's** materialised activities (`loadWorkflowWithDiagnostics`, `:34`, `:97`) | **(b)(d)** — the sharpest (d), because it bites at stage 3 with no column move |
+| `activity-variables` · `scripts/check-activity-variables.ts` | every activity's declared reads and writes match what its steps do, every declared read has a writer on every path, every declared write has a reader (`:9-23`) | **hard zero, no ledger** — stated at `:25` | none | the **loader's** materialised activities (`loadWorkflowWithDiagnostics`, `:34`, `:97`) | **(b)** — the (d) recorded here is withdrawn; see the (d) sweep below |
 | `artifact-status-once` · `scripts/check-artifact-status-once.ts` | no fenced artifact template carries a lifecycle value in its blockquote header and a closing `**Status:**` field (`:2-12`) | hard zero | none | every `.md` under the corpus root, recursively (`:45-55`) | none |
 | `canonical-home-map` · `scripts/check-canonical-home-map.ts` | every row of a bound canonical-home map names a filename some technique declares under `#### artifact` in the same workflow or in `meta` (`:16-18`) | ledger — `scripts/canonical-home-map-triage.json`, **4 entries, on `main`**, 1 rationale | `README.md`, and a `{token}` template on either side (`:20-23`) | activity YAML by regex, to find `canonical_home_map` bindings (`:86-90`, non-recursive), then resources and technique markdown | **(a)** — a routine body binding the map is invisible to it |
 | `nested-output-home` · `scripts/check-nested-output-home.ts` | no nested `####` output component is declared both by a technique container and by one of its operations, and none is a container component plus a sibling's top-level output (`:9-18`) | ledger — `scripts/nested-output-home-triage.json`, **2 entries, on `main`**; stale entries reported (`:165`) | the triage only | technique markdown | none |
@@ -138,7 +138,9 @@ non-corpus id were not checked.** None of the 15 names a migration-touched activ
 
 ## The (d) sweep: what a routine body breaks by construction
 
-The task names one case and asks for the others. There are **four**, and the proposal names one.
+The task names one case and asks for the others. There are **three**, and the proposal names one. A
+fourth was recorded here and is withdrawn — `check-activity-variables` · `undeclared-use`, below,
+where the repository was re-read at the completeness pass and the rule does not fire.
 
 ### 1. `check-variable-model` · `setvariable-undeclared` — named by the proposal
 
@@ -162,22 +164,29 @@ does not, because each looked like one:
 - `exists-on-defaulted` needs the extension the proposal states (README:1064-1065); an `exists` gate
   on a defaulted input is constant for the same reason, but no routine has to write one.
 
-### 2. `check-activity-variables` · `undeclared-use` — the sharpest, and unnamed
+### 2. `check-activity-variables` · `undeclared-use` — WITHDRAWN, and the live half beside it
 
-`scripts/check-activity-variables.ts` is **hard zero with no ledger** (`:25`) and it already consumes
-the loader (`:34`, `:97`), which is why the proposal leaves it alone. That is what makes it the
-problem. `deriveActivityContract` (`src/utils/activity-variables.ts:417`) computes what an activity
-actually reads and writes by walking its steps through `flattenActivitySteps`. A materialised
-internal — `implement_reconcile_assumptions_assumption_presentation` in the proposal's own example
-(README:194-196) — is written and read by materialised steps and declared in no activity contract,
-so it is `undeclared-use` twice over.
+This section recorded `undeclared-use` as the sharpest unnamed (d): a materialised internal written
+and read by materialised steps while declared in no activity contract, firing at stage 3 the moment
+materialisation splices anything, with the mechanism that would stop it unspecified. **The rule does
+not fire, and the mechanism it asked for is already in the tree.**
 
-This fires at **stage 3**, the moment materialisation splices anything, with no column move and no
-unscoped work in front of it. The proposal's stage-4 criterion covers `check-variable-model` and
-internals (README:876) and says nothing about this guard; its stage-5 criterion removes the eight
-host declarations (README:886-888) without saying what stops the derived side reporting them. The
-mechanism — the loader excluding internals from the derivation, or the derivation learning the
-category — is unspecified.
+Both collectors are namespace-filtered. `read` (`src/utils/activity-variables.ts:449-457`) returns at
+`:452` for any name outside the declared namespace, adding it to `mentions` and nothing else; `write`
+(`:474-481`) adds to `writes` only inside the namespace (`:475`); and the namespace at `:126-129` is
+assembled from the declarations, which is what makes the filter total. `undeclared-use` iterates
+`record.derived.reads` (`scripts/check-activity-variables.ts:210`) and `record.derived.writes` /
+`memberWrites` (`:220`), so a prefixed internal reaches neither. `undeclared-crossing` (`:236-247`)
+does read the wider `produces`, but skips any name with no consumer elsewhere —
+`if (consumers.length === 0) continue` at `:243` — and a name carrying its host activity and its
+reference site has no consumer elsewhere by construction.
+
+**The live half of the same question belongs here instead.** `unused-declaration` (`:257-266`) fires
+when a declared write "no step produces", hard zero with no ledger. That is the rule a
+`challenge_findings` declaration left standing would land on, and the corpus carries **seven** of
+them — `02-design-philosophy.yaml:23`, `04-research.yaml:29`, `05-implementation-analysis.yaml:31`,
+`06-plan-prepare.yaml:34`, `07-assumptions-review.yaml:34`, `08-implement.yaml:32` and
+`15-codebase-comprehension.yaml:22` — against the six the proposal's stage-6 criterion removes.
 
 ### 3. `check-binding-fidelity` · `read-resolution`, `dead-output`, `orphan-input`
 
@@ -569,8 +578,8 @@ last row is the number of distinct guards carrying at least one letter.
 | (a) would have to walk `routines/` | **12** | `activity-technique-overlap`, `canonical-home-map`, `description-hygiene`, `launched-workflows`, `loop-shape`, `self-composed-set`, `self-provisioned-input`, `set-action-values`, `variable-model`, `when-expression`, `activities`, `workflow-yaml` — plus `binding-fidelity` if it stays authored, and `fragments` which retires instead |
 | (b) reports on content stages 5-6 move | **11** | `activity-variables`, `binding-fidelity`, `checkpoint-entry`, `decision-order`, `fragments`, `loop-shape`, `refs`, `review-mode-gating`, `stealth-isolation`, `variable-model`, `workflow-yaml` |
 | (c) ledger entries could go stale | **8 surfaces, 0 entries at risk** | measured entry-by-entry above |
-| (d) violated by a routine's authored form | **4** | `variable-model` (named), `activity-variables` (unnamed, fires at stage 3), `binding-fidelity` (unnamed, conditional on the loader move), `checkpoint-entry` (latent, foreclosed by the same loader move) |
-| **In the blast radius at all** | **20 of 40** | the union of (a), (b) and (d); (d) adds no guard the other two do not already hold |
+| (d) violated by a routine's authored form | **3** | `variable-model` (named), `binding-fidelity` (unnamed, conditional on the loader move), `checkpoint-entry` (latent, foreclosed by the same loader move). `activity-variables` was recorded here and is withdrawn: both collectors are namespace-filtered and the crossing rule needs a consumer a prefixed internal cannot have |
+| **In the blast radius at all** | **20 of 40** | the union of (a), (b) and (d); (d) adds no guard the other two do not already hold, so the withdrawal leaves this figure standing |
 | **Untouched** | **20 of 40** | `artifact-status-once`, `nested-output-home`, `inherited-inputs`, `section-framing`, `citation-grain`, `identifier-qualification`, `audience`, `artifact-guides`, `checkpoint-presentation`, `bootstrap-self-contained`, `harness-adapter-set`, `branch-as-step`, `prism-lens-reachability`, `resource-anchors`, `technique-template`, `site-links`, `svg-layout`, `source-encoding`, `pinned-corpus-paths`, `lockfile-denylist` |
 
 **Guards that walk `routines/`, by the proposal's own assignment: 9** — `variable-model`,

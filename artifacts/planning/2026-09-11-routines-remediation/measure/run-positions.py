@@ -7,6 +7,9 @@ how many step instances there are, whether the parsed step object is identical i
 four hosts, and which fields differ when it is not.
 
 Run from the server checkout root. Reads definitions and writes nothing.
+
+The corpus root is `workflows/` where a submodule holds it and `.worktrees/workflows/corpus/`
+where a branch worktree does, which is the same pair the guard scripts resolve over.
 """
 import json
 import os
@@ -17,7 +20,20 @@ try:
 except ImportError:  # pragma: no cover
     sys.exit("PyYAML is required")
 
-ROOT = os.path.join(os.getcwd(), "workflows", "work-package", "activities")
+CANDIDATE_ROOTS = [
+    os.path.join(os.getcwd(), "workflows"),
+    os.path.join(os.getcwd(), ".worktrees", "workflows", "corpus"),
+]
+
+
+def corpus_root():
+    for candidate in CANDIDATE_ROOTS:
+        if os.path.isdir(os.path.join(candidate, "work-package", "activities")):
+            return candidate
+    sys.exit("no corpus root: looked for work-package/activities under " + " and ".join(CANDIDATE_ROOTS))
+
+
+ROOT = os.path.join(corpus_root(), "work-package", "activities")
 HOSTS = [
     "04-research.yaml",
     "05-implementation-analysis.yaml",

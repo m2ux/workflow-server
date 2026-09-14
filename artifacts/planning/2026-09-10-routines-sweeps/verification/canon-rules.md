@@ -261,18 +261,29 @@ instruction "**Read it before planning any stage**" about that very file, still 
 What the design owes: README:1102-1104 corrected. This is also the whole of CR10's second arm, and
 it is withdrawn below.
 
-### P8. `check-activity-variables` fires at stage 3 and the mechanism is unspecified
+### P8. `check-activity-variables` · `undeclared-use` — WITHDRAWN, and what stands in its place
 
-The construct inventory's variable contract row and the guard that enforces it have to be settled
-together, and the guard's side is the unspecified one.
-[guard-obligations.md:165-180](../ground-truth/guard-obligations.md) records it: the guard is hard
-zero with no ledger (`scripts/check-activity-variables.ts:25`) and already consumes the loader
-(`:34`), `deriveActivityContract` walks materialised steps, and a materialised internal is written
-and read by those steps while declared in no activity contract — `undeclared-use` twice over, at
-stage 3, the moment materialisation splices anything. Stage 4's criterion covers
-`check-variable-model` and internals (README:876) and says nothing about this guard. Stage 5 removes
-the eight host declarations (README:886-888) without saying what stops the derived side reporting
-them.
+This entry repeated [guard-obligations.md](../ground-truth/guard-obligations.md)'s reading: that the
+guard is hard zero with no ledger (`scripts/check-activity-variables.ts:25`), already consumes the
+loader (`:34`), and that `deriveActivityContract` walking materialised steps would report a
+materialised internal as `undeclared-use` twice over at stage 3, with the mechanism that would stop
+it unspecified. **The rule does not fire.** Both collectors are namespace-filtered — `read`
+(`src/utils/activity-variables.ts:449-457`) returns at `:452` for any name outside the declared
+namespace and `write` (`:474-481`) records only inside it — and `undeclared-use` iterates only
+`record.derived.reads` (`:210`) and `record.derived.writes` / `memberWrites` (`:220`).
+`undeclared-crossing` (`:236-247`) reads the wider `produces` and skips any name with no consumer
+elsewhere (`:243`), which a name carrying its host activity and reference site cannot have. The
+class (d) roster has three instances, not four.
+
+**What stands in its place is the live half of the same question, and it is a different rule.**
+`unused-declaration` (`:257-266`) fires when a declared write "no step produces", hard zero with no
+ledger, and that is where a `challenge_findings` declaration left standing lands. The corpus carries
+**seven** of them against the six README:905 removes, which is
+[corpus-vocabulary](corpus-vocabulary.md) PD2 and [docs-and-site](docs-and-site.md) PD3.
+
+What the design owes: stage 6's criterion stated at seven declarations rather than six. Stage 4's
+criterion covering `check-variable-model` and internals (README:876) needs no companion for this
+guard.
 
 ### P9. AP-38's proposed fourth arm and CR21's proposed new entry are two homes for one rule
 

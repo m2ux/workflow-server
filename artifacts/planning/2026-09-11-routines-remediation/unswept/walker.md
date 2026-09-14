@@ -1,497 +1,547 @@
 # The walker, and the routine-level entry that has no entry point
 
-> Item 11c · sweep of a surface no record in either planning folder reaches · measured at server
-> `792f2cc5` and corpus `a4a5d88b`, one server commit past the completeness pass's `ee95e4cd`
+> Item 11c · a surface no record in either planning folder sweeps · measured at server `fe5f5f78`
+> and corpus `e9d26007`, 23 server and 28 corpus commits past the completeness pass's `ee95e4cd` /
+> `a4a5d88b`
 
-The repository owns a mechanical worker. It connects a real MCP client to a real server over an
-in-memory transport, opens a session on a workflow, and then drives that workflow from its first
-activity to its last: at each activity it reads the definition the server delivers, executes the
-steps in order, answers every decision point it meets by asking a policy which option to take,
-accumulates the variable effects, works out which exit the activity took, and reads the next
-destination out of the workflow's graph. It has no language model in it, so the same corpus produces
-the same walk every time. That is the end-to-end walker, `tests/e2e/walker.ts`, 1,045 lines, and its
-`enumeratePaths` entry is what the repository uses to answer a question no guard can answer from a
-file: *is every decision option the corpus declares actually taken by something?*
+The repository owns a mechanical worker. It connects a real client to a real server over an in-memory
+transport, opens a session on a workflow, and then drives that workflow from its first activity to
+its last: at each activity it reads the definition the server delivers, runs the steps in order,
+answers every decision point it meets by asking a policy which option to take, accumulates the
+variable effects, works out which exit the activity took, and reads the next destination out of the
+workflow's graph. There is no language model in it, so the same corpus produces the same walk every
+time. That worker is `tests/e2e/walker.ts`, 1,051 lines, and its `enumeratePaths` entry
+(`tests/e2e/walker.ts:958`) is what the repository uses to answer a question no guard can answer from
+a file: *is every decision option the corpus declares actually taken by something?*
 
-The routines proposal promises that worker a second way in. README:1196-1200: "The walker gains a
-routine-level entry: it walks a routine's steps against a variable set seeded from its declared
-inputs, so every option of every gate inside it is exercised once rather than only through whichever
-host activities a walk happens to reach." The same promise stands at four further places: as a
-**Detected** guarantee in the enforcement table (README:627), as the `W->>R: walk the steps, seeded
-from the declared inputs` arrow in the check-a-routine-on-its-own diagram (README:719-720), as a stage
-4 acceptance criterion (README:877), and again at stage 7, where a technique-parameter routine is
-graded by walking it per reference site (README:923-924).
+The routines proposal promises that worker a second way in. At
+[README:1198-1200](../../2026-09-03-routines/README.md): "The walker gains a routine-level entry: it
+walks a routine's steps against a variable set seeded from its declared inputs, so every option of
+every gate inside it is exercised once rather than only through whichever host activities a walk
+happens to reach." The same promise stands at four further places — as a **Detected** guarantee in
+the enforcement table (README:627), as the `W->>R: walk the steps, seeded from the declared inputs`
+arrow in the check-a-routine-on-its-own diagram (README:719-720), as a stage 4 acceptance criterion
+(README:877), and at stage 7, where a technique-parameter routine is graded by walking it per
+reference site (README:923-924).
 
-**The entry has no entry point, and the criterion is aimed at a population of two gates.** The walk
-takes a workflow id, and its first act is opening a session on it; a routine is not a workflow, so
-the session is refused before the second act runs. That much the completeness pass established. What
-this document adds is measured: what the walk actually needs from its subject, how much of the walk
-is about getting to an activity rather than about exercising a gate, which of the three ways to
-satisfy the criterion costs least, and — the reason this matters more than a single stage item — that
-the mechanism the repository already has measures a routine's gates the moment materialisation lands,
-because the coverage denominator is drawn through the real loader. The migration that renames those
-gates changes that file in two directions at once, and the check that would notice is switched off on
-exactly the run that causes it.
+The completeness pass established that the entry has no entry point. This document establishes four
+things it did not: what the walk actually needs from its subject and which of those a routine can
+supply; how much of the walker is about reaching an activity rather than about exercising a gate;
+what the criterion's subject population actually is, measured across every routine the plan creates;
+and what the three ways out cost.
+
+**The measurement that settles the priority: across stages 5, 6, 7 and 8 — every migration the plan
+names — the routine-level entry has two gates to exercise, and they are both in one routine.** The
+convergence loop stage 6 converges declares no checkpoint. The three `prism` per-unit passes stage 7
+converges declare no checkpoint. The fan-out run stage 8 converges declares no checkpoint. The whole
+subject of a second walker is `assumption-reconciliation`'s batch gate and its per-item gate: 2
+gates, 6 options.
+
+Two coupled facts sit underneath, and both run the other way — they are reasons the existing
+machinery already does more of this job than the proposal credits it with, and reasons a migration
+breaks something if nobody edits a pinned file.
 
 ---
 
 ## One: what the walk needs from its subject
 
 A walk is not a reader of definitions. Every fact it uses arrives through a tool call against a live
-session, and the session is the thing a routine cannot have.
+server. There are eight call sites in the file, naming eight distinct tools:
 
-| The walk needs | Where it reads it | Can a routine supply it? |
+| Line | Tool | What the walk takes from it |
 |---|---|---|
-| A workflow id a session can open | `walker.ts:689-693`, `start_session { workflow_id, agent_id }` | **No.** `resolveWorkflowPath` (`src/loaders/workflow-loader.ts:118-132`) accepts `<root>/<id>/workflow.yaml` or `<root>/<id>.yaml`; a routine lives at `<workflow>/routines/<name>.yaml` |
-| A session index | `walker.ts:695`, minted by `start_session` | **No** — follows from the above, and seven of the walk's eight tool-call sites pass it (`:367`, `:402`, `:541`, `:649`, `:665`, `:669`, `:698`) |
-| A declared variable set with defaults | `walker.ts:709` via `defaultVariables` (`:236-245`), reading `wf.variables` | **Partly.** A routine declares inputs, outputs and internals rather than workflow variables, and the seed the design names is the inputs alone |
-| An initial activity | `walker.ts:710`, `wf.initialActivity` | **No.** Required by `WorkflowSchema` (`src/schema/workflow.schema.ts:174`); a routine is "never a workflow's first or last node" (README:746-748) |
-| A graph binding each exit to a destination | `walker.ts:706`, `wf.graph`; read by `pickExit` (`:252-266`), `destinationVisits` (`:275-283`), `predicateExits` (`:303-305`) | **No.** A routine "is not a transition destination" and declares no outcome (README:746-748) |
-| Exits on the activity | `walker.ts:253`, `act.exits` | **No.** A routine declares none |
-| An artifact prefix and a planning folder | `walker.ts:707` and `:713-714`; used by `writeArtifactStubs` (`:618-640`) | **No.** "A routine has no position and therefore no prefix" (README:646); the planning slug comes back from `start_session` |
-| A terminal sentinel to stop at | `walker.ts:900`, `TERMINAL_SENTINEL` | **No** — it is a graph destination |
-| A session file to read the final status from | `walker.ts:910-913`, `session.json#status` | **No** — no session |
-| Steps, with their gates, checkpoints and loop bodies | `walker.ts:553-585` (robot) and `:806-821` (graph) | **Yes.** This is the whole of what a routine has |
+| `walker.ts:690` | `start_session` | `session_index`, `planning_slug` |
+| `walker.ts:699` | `get_workflow` | `variables[]` with defaults, `activities[]`, `graph`, `initialActivity` |
+| `walker.ts:408` | `next_activity` | the transition, and the branch list a fan opens |
+| `walker.ts:365` | `get_activity` | the `ActivityDef`, the unresolved-operation list, the bundled-step list |
+| `walker.ts:540` | `get_technique` | nothing but the server-side record that the step's technique was fetched |
+| `walker.ts:650` | `yield_checkpoint` | the gate's active state, or a replayed answer |
+| `walker.ts:666` | `respond_checkpoint` | the chosen option's effect |
+| `walker.ts:670` | `resume_checkpoint` | the resumption |
 
-One row is worth reading twice. `walk()` spans `walker.ts:680-921` — 242 lines. The part that
-exercises decision options is `:806-821`: **sixteen lines**, which collect the activity's checkpoint
-steps, skip any whose `condition` is false against the bag, ask the policy or the enumerator for an
-option, apply that option's effect, and record what was taken. The other 226 lines are session
-plumbing, graph reading, transition bookkeeping, fan branch queues, artifact stubs and manifests —
-all of it about *getting to* an activity.
+Seven of the eight are keyed on a `session_index`, and exactly one call issues one. That call takes a
+workflow id: `arguments: { workflow_id: workflowId, agent_id: 'e2e-walker' }` at `walker.ts:692`.
+Every downstream handler then reads the workflow from the session rather than from its own arguments
+— `const workflow_id = state.workflowId;` appears at `src/tools/workflow-tools.ts:614`, `:969`,
+`:1418`, `:2050` and `:2311`, once per tool. So the workflow id is not one argument among many. It is
+the root of the whole tree of calls, and the session is the only thing that carries it forward.
 
-And under `enumeratePaths`, even those sixteen lines are already definition-driven. It walks in
-`mode: 'graph'` with `localCheckpoints: true` (`walker.ts:1017`), which means each option's effect is
-read from the definition (`:812-814`) rather than through the `yield → respond → resume` cycle. So
-the machinery that answers "was this option taken" needs no server at all; the machinery that answers
-"did the walk arrive here" is the entire rest of the file.
+**The refusal is at the first act, and it is measured rather than inferred.** Driving the harness
+directly with a routine-shaped name:
 
-That is the shape of the problem. A routine supplies the sixteen lines' worth of subject and none of
-the 226 lines' worth.
+```
+start_session({ workflow_id: 'assumption-reconciliation' })
+  → isError: true
+  → "Workflow not found: assumption-reconciliation"
+```
+
+against the control `workflow_id: 'work-package'`, which returns the workflow block. The refusal
+comes from `src/tools/resource-tools.ts:482`, `if (!wfPreLoad.success) throw wfPreLoad.error;`, where
+`wfPreLoad` is the `loadWorkflow` at `:319` and the error is `WorkflowNotFoundError`
+(`src/errors.ts:1-2`). Worth noting for anyone who reads the refusal as a cheap guard: it fires
+*after* the session record is built — `state.sessionIndex` is live at `:474-479`, where the trace
+store initialises the session — so the load failure is a late rejection of a session the server has
+already created, not a name check at the door.
+
+Past the session, everything reads an activity. `ActivityDef` at `walker.ts:86-94` requires `id` and
+carries `steps`, `exits`, `operations`, `techniques`, `artifactPrefix` and `artifacts`. The exit
+machinery is the largest consumer: `pickExit` (`:253-267`) needs both the activity's `exits` and the
+workflow's `graph[act.id]`; `predicateExits` (`:304-306`) needs an exit carrying a `when` or an
+`isDefault`; `destinationVisits` (`:276-284`) needs a destination; `advanceToUnvisited`
+(`:315-329`) needs a bound exit leading somewhere unvisited. The walk ends when a destination is the
+terminal sentinel (`:906`) and reports a status read from the session file on disk (`:916-920`).
 
 ---
 
-## Two: where the attempt stops, measured
+## Two: which of those a routine can supply, and which it cannot
 
-I ran it rather than reasoning about it. A throwaway script created the standard harness and called
-`start_session` twice, once with a real workflow id and once with the id of the proposal's own worked
-routine:
+A routine declares inputs, outputs, internals and steps
+([README:217-275](../../2026-09-03-routines/README.md)). It is forbidden to take a place in the graph
+— "not a transition destination, never a workflow's first or last node, and it declares no outcome"
+(README:746-748) — and forbidden to own an artifact prefix, because "prefixes are computed from an
+activity's filename position and a routine has none" (README:755-756).
 
-```
-=== start_session(work-package) isError=false
-  session_index: ZWI3QL | planning_slug: transition-6741e7f5-…
-  get_workflow isError=false
+| What the walk needs | Where it comes from today | Can a routine supply it? |
+|---|---|---|
+| A workflow id for `start_session` | the caller | **No.** A routine is not a workflow, and the load refuses by name |
+| An initial activity | `wf.initialActivity` (`walker.ts:711`) | **No.** A routine is never a workflow's first node |
+| A graph binding exits to destinations | `wf.graph` (`walker.ts:707`) | **No.** A routine declares no exits and no outcome |
+| A terminal destination to stop at | `TERMINAL_SENTINEL` (`walker.ts:906`) | **No.** Same reason |
+| An initial variable bag | `wf.variables[].defaultValue` (`walker.ts:237-246`) | **Yes.** Declared inputs with defaults are the same shape |
+| An ordered step list | `act.steps` (`walker.ts:586`) | **Yes.** This is what a routine is |
+| Gates in document order, loop bodies included | `activityCheckpointSteps` (`walker.ts:592-602`) | **Yes**, unchanged — see below |
+| Per-step technique fetches | `get_technique` with a `session_index` (`walker.ts:540-543`) | **No.** Session-scoped |
+| Gate resolution through the server | `yield`/`respond`/`resume` (`walker.ts:650-671`) | **No.** Session-scoped |
+| Gate resolution locally | `opts.localCheckpoints` (`walker.ts:233`, applied at `:818-820`) | **Yes.** Needs no server at all |
+| An artifact prefix and declared artifacts | `act.artifactPrefix`, `act.artifacts` (`walker.ts:619-641`) | **No**, and by design |
+| An activity id for the policy | `PolicyContext.activityId` (`walker.ts:97`) | **No.** A routine has no position |
 
-=== start_session(assumption-reconciliation) isError=true
-  session_index: undefined
-   [{"type":"text","text":"Workflow not found: assumption-reconciliation"}]
-```
+Two rows deserve expanding, because they are the ones that decide the cost.
 
-The refusal comes from `src/tools/resource-tools.ts:395`, `if (!wfPreLoad.success) throw
-wfPreLoad.error`, raising `WorkflowNotFoundError` (`src/errors.ts:1-2`). Two details of that line are
-worth carrying:
+**The gate collector already works on a routine body.** `activityCheckpointSteps` recurses on any
+step that carries a nested `steps` list — `if (s.steps) rec(s.steps);` at `walker.ts:597` — rather
+than on the loop kind specifically. Driving it with a synthetic tree whose outer step carries
+`kind: 'routine'` and a nested checkpoint returns that checkpoint. So the function that enumerates a
+subject's gates needs no change for a routine, materialised or not.
 
-- **The load is attempted early and the failure is surfaced late.** `loadWorkflow` runs at
-  `resource-tools.ts:242`, and its failure is tolerated there — the version is recorded as `''` and
-  the handler continues. The session folder is created and `writeSessionFile` runs at `:365`. Only
-  then does `:395` throw. So an attempt to walk a routine through this entry point leaves a sealed
-  session folder on disk and returns an error.
-- **The walker's own error message would be wrong about it.** `walker.ts:693` reports
-  `start_session(<id>) failed` with no server text, so the "not a workflow" cause is discarded at the
-  boundary.
+**The step executor does not.** `executeActivitySteps`'s inner `walk` descends only on
+`step.kind === 'loop'` (`walker.ts:568`); any other compound step falls through to `:578-584` and is
+recorded as an executed leaf, its body never entered. So the two walker modes disagree about an
+unrecognised compound kind: graph mode collects its nested gates, robot mode treats it as a leaf.
+Neither says so.
 
-For completeness on the layer below: `get_workflow` reads the session's workflow id and loads it the
-same way (`resource-tools.ts:651` via `loadWorkflowWithDiagnostics`), and `next_activity` resolves the
-activity a call retires against the session frontier, refusing a name that is not in flight
-(`src/tools/workflow-tools.ts:718-737`). There is no tool that delivers a routine body: the corpus
-has no `routines/` directory at all, and `get_technique` serves composed technique content keyed on a
-`step_id` inside the current activity (`walker.ts:539-541`).
+**The policy cannot be reused as written.** `PolicyContext` requires `activityId` (`walker.ts:97`),
+and the convergence simulation that stands in for an agent is a map keyed on activity id —
+`simulate(ctx) { return simulation[ctx.activityId]; }` at `tests/e2e/policies.ts:57-59`, over four
+entries at `:23-30`. One of those four is `'assumptions-review': { …, has_deferred_assumptions:
+false }` (`policies.ts:25`) — and `has_deferred_assumptions` is one of the three outputs the
+proposal's worked routine declares (README:231-233). The stand-in for the agent is keyed on a host
+activity id that a routine-level walk does not have, for a variable the routine owns.
 
-**So the routine-level entry is a second walker.** Not a flag on this one, not a policy, not a mode
-beside `'graph'` and `'robot'`. And the eleven places that import the walker say what a second entry
-point has to avoid breaking: eight under `tests/e2e` (`all-workflows-walk`, `step-execution-walk`,
-`worker-identity-walk`, `snapshot.test`, `snapshot.ts`, `option-coverage`, `fan-walk`, `policies`) and
-**three under `scripts/`** — `scripts/run-3c.ts:15`, `scripts/smoke/smoke-orchestrator.ts:29` and
-`scripts/run-token-benchmark.ts:397`, the last by dynamic import of the `.ts` file by path. The
-walker is not test-only furniture; the token benchmark and the smoke orchestrator drive it.
+**The seed is available, though.** `Policy.initialVariables` (`walker.ts:104-105`) seeds the bag
+before the walk begins, and `reviewModePolicy` already uses it (`policies.ts:99`). Turning a
+routine's declared inputs and their defaults into that map is the same ten lines as
+`defaultVariables` (`walker.ts:237-246`).
 
 ---
 
-## Three: what the criterion is actually about
+## Three: how much of the walker is about reaching an activity
 
-Costing three ways to satisfy a criterion means first knowing what it buys. The criterion concerns
-gates *inside* routines, so its population is the checkpoints that move into a routine across the
-plan's nine stages. Measured through the real loader over all 18 corpus workflows
-at `a4a5d88b`:
+Splitting the file's function bodies by what they need:
 
-| The routine the plan names | Its gates | Option ids |
+| Group | Lines | Functions |
 |---|---|---|
-| Stage 5 · the assumption run (`assumption-reconciliation`, README:216-275) | 2 — the batch gate and the per-item decision | 3 + 3 = **6** |
-| Stage 6 · `converge-assumptions` and `challenge-concerns` (re-derivation.md:110-206) | **0** — the bodies are technique, loop and routine steps only | 0 |
-| Stage 7 · the three `prism` per-unit passes | **0** — `adversarial-pass`, `synthesis-pass` and `behavioral-synthesis-pass` are 2 steps each, one loop, no checkpoint | 0 |
-| Stage 8 · the four-technique fan-out run | **0** — `grep -c "kind: checkpoint"` returns 0 at all five occurrences | 0 |
+| Works on a step tree and a variable bag, unchanged | **46** | `satisfyWhen` (`:332-341`), `interpolate` (`:348-353`), `evaluateWhen` (`:450-452`), `activityDecidedVariables` (`:455-470`), `activityCheckpointSteps` (`:592-602`) |
+| Needs a session, a graph or an activity | **543** | `defaultVariables`, `pickExit`, `destinationVisits`, `pickTargets`, `pickNext`, `predicateExits`, `advanceToUnvisited`, `artifactNames`, `getActivity`, `transition`, `seedFanCollections`, `writeArtifactStubs`, `resolveCheckpoint`, `walk` (`:681-927`, 247 lines), `enumeratePaths` (`:958-1051`, 94 lines) |
+| Shape carries over, parameters do not | **102** | `executeActivitySteps` (`:487-588`), which takes `client` and `sessionIndex` and calls `get_technique` and the gate cycle |
 
-**Two gate definitions and six option ids.** That is the entire constituency of an acceptance
-criterion carried by two stages, and stage 7's version of it — "the walker's routine-level entry …
-walks such a routine per reference site instead" (README:923-924) — grades a routine that declares no
-options at all.
+A further 219 lines are the fourteen interfaces, of which `WalkResult` (`:158-177`) has 13 fields and
+`WalkStep` (`:126-156`) has 12. Nine of `WalkResult`'s 13 have no routine-side meaning — `workflowId`,
+`sessionIndex`, `planningSlug`, `initialActivity`, `declaredActivities`, `orchestratorUnresolved`,
+`path`, `finalStatus`, `gateRefetches` — and nine of `WalkStep`'s 12 likewise: `activityId`,
+`artifacts`, `artifactsWritten`, `manifestStatus`, `orphanCheckpoints`, `unresolved`,
+`declaredOperations`, `lazyGates`, `nextActivity`.
 
-Materialised, those two gates appear once per reference site. The assumption run has four hosts, so
-the loader presents eight checkpoints and **24 option keys** today:
-
-```
-batch | research:research-assumption-interview                          | options 3 | pinned 3 | cond structured
-item  | research:research-assumption-decision#{current_assumption.id}   | options 3 | pinned 0 | cond none
-batch | implementation-analysis:analysis-assumption-interview           | options 3 | pinned 3 | cond structured
-item  | implementation-analysis:analysis-assumption-decision#{…}        | options 3 | pinned 0 | cond none
-batch | assumptions-review:residual-assumption-batch                    | options 3 | pinned 3 | cond structured
-item  | assumptions-review:assumption-decision#{current_assumption.id}  | options 3 | pinned 0 | cond structured
-batch | implement:implementation-assumption-interview                   | options 3 | pinned 3 | cond structured
-item  | implement:implementation-assumption-decision#{…}                | options 3 | pinned 0 | cond none
-```
-
-Half of them are covered today. The four per-item gates contribute **zero** of the 113 pinned
-unreachable options; the four batch gates contribute **twelve**, which is the same twelve
-`verification/docs-and-site.md` PD4 found the renames orphan. Both figures reproduce exactly.
-
-**And the premise the criterion argues from does not hold for this run.** "Only through whichever
-host activities a walk happens to reach" describes a risk: a gate whose hosts no walk enters is
-unmeasured. Measured, all eight of these checkpoints are declared by `work-package`, which is on the
-walked roster and is its most expensive member (`tests/e2e/walked-workflows.ts:20-35`). Corpus-wide,
-**5 of 112** distinct activity-and-checkpoint pairs sit in no walked workflow, and all five are
-`remediate-vuln`'s `start` activity — the seven options the expectation file already pins with the
-cost as the stated reason (`tests/e2e/option-coverage.json:120-129`). None of the five is a candidate
-for any routine.
-
-So the guarantee the entry point would newly provide is: *a gate inside a routine whose every host
-activity is unreached by every walk*. The corpus contains no such gate, and the plan creates none.
+So the ratio is roughly twelve to one: for every line that exercises a gate against a bag, twelve
+lines exist to get the walk to the activity holding it and to record what happened on the way. **That
+is the size of what a routine-level entry does not need, and it is also the reason the entry is not
+an option on the existing walk.** `walk()` is 247 lines with a single `while (current)` loop whose
+every iteration transitions, fetches and routes; there is no seam in it where a subject with no graph
+could enter.
 
 ---
 
-## Four: the three ways to satisfy it, costed
+## Four: the population the criterion is aimed at
 
-### A — a definition-level enumerator, no session (recommended)
+The criterion promises that every option of every gate inside a shared run is exercised once. Measured
+against every routine the plan actually creates:
 
-Not a walker. A recursive function over a loaded routine that finds every checkpoint step at any
-depth, applies each option's declared effect to a bag, and records `<routine>:<gate>=<option>`. Every
-piece of it exists to copy:
+| Stage | The routine it creates | Gates in its body | Options |
+|---|---|---|---|
+| 5 | `assumption-reconciliation` — announce, gate, record, interview per item | **2** | **6** |
+| 6 | the convergence loop, and the challenge pass it iterates | **0** | 0 |
+| 7 | the `prism` per-unit pass | **0** | 0 |
+| 8 | the four-step fan-out dispatch run | **0** | 0 |
 
-| Piece | The existing code it mirrors | Lines |
-|---|---|---|
-| Find every checkpoint at any depth | `activityCheckpointSteps`, `walker.ts:591-601` | 11 |
-| Fire each one locally, forking over options | the graph-mode block, `walker.ts:806-821` | 16 |
-| Key the result comparably | `optionKey`, `tests/e2e/coverage.ts:21-23` | 3 |
-| Load the subject without a host workflow | `declaredCheckpoints`, `tests/e2e/coverage.ts:66-97` | 32 |
+Stage 6's body is the `assumption-convergence` loop, seven copies of which sit in `work-package`; the
+one at `corpus/work-package/activities/04-research.yaml:137-168` is three technique steps —
+`reconcile-assumptions`, `challenge-assumptions`, `combine-assumption-challenges` — inside a
+`doWhile` whose continuation test reads `has_resolvable_assumptions`. No checkpoint. Stage 7's three
+`prism` per-unit passes declare no checkpoint between them: `grep -c "kind: checkpoint"` over the
+thirteen `prism` activity files returns 1, and that one is `00-select-mode.yaml`, which is not a
+per-unit pass. Stage 8 is the same: of the three activities left under `meta/activities/patterns/`,
+`05-lead-researcher.yaml` — a named reference site — and `02-supervisor.yaml` — the occurrence the
+sweep says stage 8 now needs — declare zero checkpoints between them, and the single checkpoint in
+`03-plan-and-execute.yaml` is `plan-confirmed`, which precedes the dispatch run rather than sitting
+inside it.
 
-**Cost: roughly 40-60 lines in a new module, one test, no fixture, no session, no server.** It also
-needs a routine loader callable without a workflow load — which stage 4 owes anyway, because the
-guard-side promise in the same diagram ("A shared run is checkable with no host workflow",
-README:625) needs exactly the same thing. Cost shared, not new.
+So the entire subject of the promised second walker is one routine's two gates. What those two gates
+are, measured through the loader:
 
-One thing it does *not* get for free is the seed. `satisfyWhen` (`walker.ts:331-340`) can make a
-single-comparison `when` string hold by mutating the bag, and there is no counterpart for a
-structured `condition` — which is the dialect **69 of 112** corpus checkpoints use. For the two gates
-actually at stake this does not bite: in the proposal's own worked body neither gate carries a
-condition (README:247-275), the gate moves to the reference site as `when: has_open_assumptions ==
-true` (README:291), and a recursion that ignores enclosing gates reaches both from an empty bag. So
-"seeded from its declared inputs" does no work for either of the six options — worth saying plainly,
-because it is the phrase the criterion is written around.
+```
+assumptions-review/residual-assumption-batch                   3 options   pinned 3
+assumptions-review/assumption-decision#{current_assumption.id} 3 options   pinned 0
+implement/implementation-assumption-interview                  3 options   pinned 3
+implement/implementation-assumption-decision#{…}               3 options   pinned 0
+implementation-analysis/analysis-assumption-interview          3 options   pinned 3
+implementation-analysis/analysis-assumption-decision#{…}       3 options   pinned 0
+research/research-assumption-interview                         3 options   pinned 3
+research/research-assumption-decision#{…}                      3 options   pinned 0
+                                                              ──────────
+                                                              24 option keys, 12 pinned
+```
 
-### B — a synthetic host activity in a fixture corpus
+Eight gates at four hosts today, twenty-four option keys. Twelve of them — the four batch gates — are
+recorded in the corpus's uncovered-option file as options no walk reaches. The other twelve, the
+per-item gates inside each host's `forEach`, are reached today.
 
-The harness already serves a fixture corpus in place of the real one: `createHarness({ workflowDir })`
-(`tests/e2e/harness.ts:29`, `:41`), which `tests/e2e/fan-walk.test.ts:21` uses against
-`tests/fixtures/fan-corpus`. A wrapper tree is a workflow.yaml naming an initial activity, one
-activity carrying one `kind: routine` step, and a `routines/` copy of the routine under test.
+**And the entry would genuinely buy those twelve.** Each batch gate carries a two-conjunct structured
+condition — `is_review_mode != true` and `has_open_assumptions == true` — and the walker has no
+machinery that satisfies a structured condition. `satisfyWhen` (`walker.ts:331-341`) parses a `when`
+expression and sets a single comparison, leaving compound expressions alone by its own doc comment;
+`advanceToUnvisited` (`:315-329`) skips a gate it cannot satisfy; graph mode evaluates a structured
+`condition` at `:814` and never attempts to make it hold. That is why those twelve are pinned, and it
+is a property of the walker rather than of the agent, whatever the file's stated reason says.
 
-The measured floor for a tree is small: `tests/fixtures/variable-model/bare-fixture` is **14 lines**
-across two files, and `ActivitySchema` requires only `id`, `version` and `name`
-(`src/schema/activity.schema.ts:279-281`). The measured precedent for what a construct costs here is
-the graph fan: **15 trees and 70 files**, of which the YAML alone is 989 lines (item 11a's 1,141
-counts every file in the root), driven by a 185-line test.
+The proposal's worked conversion moves that condition out of the body: the routine's batch gate at
+README:248-251 carries `message` and `options` and no condition, while the reference site at
+README:291 carries `when: has_open_assumptions == true`. With the condition at the site, a
+routine-level walk seeded with `gate_message` and `decision_space` meets an unconditional three-option
+gate and can take all three. The loop behind it is gated on `needs_individual_interview == true`
+(README:262), a single comparison that either `satisfyWhen` sets or the batch gate's
+`interview-individually` option sets as its effect — and the walk makes one pass through a `forEach`
+body regardless of whether its collection has anything in it (`walker.ts:568-577` tests only a
+`while` loop's continuation), so the per-item gate is reached even though `open_assumptions` is a
+name the routine's signature does not declare.
 
-**Cost: ~20-30 YAML lines plus a test per routine under test, and a copy of the routine that drifts
-from the corpus one.** Two further costs are specific rather than generic:
+**So the criterion is satisfiable and its value is exactly 3 option keys' worth of coverage the
+corpus does not have today, retiring 12 of the 113 pinned entries.** That is a real gain, and it is
+the whole gain. It is also contingent on stage 2's unmade dismissibility decision: keep the site
+condition inside the routine body and the three options stay unreachable for the same structural
+reason they are unreachable now.
 
-- **A walk over a wrapper produces keys nothing can compare.** The branch key the enumerator records
-  is `<kind>:<activityId>:<id>=<option>` (`walker.ts:1000`), and `activityId` is the host. Walking a
-  synthetic host keys the result on the synthetic host's id, which appears in no declared denominator,
-  so the assertion has to be local to that test and contributes nothing to the corpus figure.
-- **An unresolved reference fails silently rather than loudly.** Item 11a measured it and I re-took
-  it: `loadWorkflow` on `tests/fixtures/fragments/beta-fixture` returns success with **zero**
-  activities. Materialisation drops the host activity and the workflow loads clean. A wrapper whose
-  routine reference does not resolve therefore walks an empty workflow and reports coverage of
-  nothing.
+---
 
-### B′ — a wrapper inside the real corpus (refused by the construct's own rule)
+## Five: the three ways to satisfy it, costed
 
-Putting the wrapper in `workflows/` instead avoids the copy, and the construct forbids it. **A
-routine's home is computed from its referrers** — "the workflow that owns the activity files
-referring to it. One owner, and the routine lives there; two or more, and it lives in the shared
-home" (README:560-569), with a referrer being an activity file or another routine, closed
-transitively. A test wrapper is an activity file referring to the routine, so a wrapper in a second
-workflow gives every routine it wraps a second owner and **relocates it to `meta`**. Stage 4 then
-enforces that placement with a guard (README:872-873). A test cannot wrap a routine in the corpus
-without moving the routine.
+### A — a second entry point
 
-Three further costs land on top: `tests/e2e/coverage-roster.test.ts:22-35` requires every corpus
-workflow to be on `WALKED` or `NOT_WALKED` with a reason, so a synthetic workflow needs a roster
-entry; `tests/e2e/all-workflows-walk.test.ts:55` enters every corpus workflow; and the 40-guard suite
-validates it like any other definition.
+Write a routine walker: load a routine, seed a bag from its declared inputs, walk its step tree, fork
+at every un-taken option.
+
+*What exists already.* The 46 lines in the first group above, unchanged — in particular
+`activityCheckpointSteps`, which already descends a routine body. `evaluateCondition` and
+`evaluateWhenExpression` come from `src/` (`walker.ts:19-20`), so the routine walker imports the same
+dialect the server uses.
+
+*What has to be written.* A seed builder (~10 lines, the shape of `defaultVariables` at `:237-246`); a
+gate loop with local effect application (~15 lines, the shape of `:813-826`); an option fork with the
+recorder-and-queue structure of `enumeratePaths` (`:1003-1047`, 45 lines) minus its transition half;
+a result type, since 9 of `WalkResult`'s 13 fields and 9 of `WalkStep`'s 12 have no meaning here; and
+a policy context that does not require an activity id. Call it 70 to 90 lines plus a test file.
+
+*What is not budgeted anywhere.* A standalone routine load. Stage 3 gives `routines/` "its own
+discovery pass and its own generated JSON schema" (README:846-848), but the materialisation it
+specifies runs inside an activity load (the sequence diagram at README:672-686 begins
+`L->>A: parse, validate, resolve step ids`). A routine that references another routine
+(README:318) has to be whole before it can be walked, and nothing returns a whole routine on its own.
+
+*The decision it forces.* A covered branch is keyed
+`checkpoint:${activityId}:${checkpointId}=${optionId}` (`tests/e2e/coverage.ts:21-23`), and a
+routine-level branch has no activity id. Whatever is put there, the key will not be in the
+denominator, which is built only from loaded workflows' activities (`coverage.ts:66-97`). The
+coverage test asserts `c.unexpected` is empty — "walk covered an option no definition declares",
+`tests/e2e/option-coverage.test.ts:175` — so folding routine-level coverage into the existing
+accounting fails that assertion on day one. Keeping it separate means the entry grades nothing the
+ratchet records.
+
+**Cost: ~80 lines of engine code, one unbudgeted loader entry, one new key namespace, and a decision
+about how the two coverage populations relate. Buys 3 option keys.**
+
+### B — a synthetic host activity wrapping the routine
+
+Build a fixture workflow whose single activity's only step is a `kind: routine` reference, and walk it
+with the walker that exists.
+
+*What exists already.* All of it. `walk(harness, id, defaultPolicy, { mode: 'graph', localCheckpoints:
+true })` is the working template at `tests/e2e/fan-walk.test.ts:36`: graph mode skips step execution
+and technique fetches, and `localCheckpoints` applies each option's declared effect from the
+definition instead of the server's yield-respond-resume cycle, which is what lets a no-agent walk
+drive options it could not drive through the server (`walker.ts:226-233`). The routine's inputs seed
+through `Policy.initialVariables` (`:104-105`), as `reviewModePolicy` already does.
+
+*What has to be built.* Per routine: a `workflow.yaml` with an `initialActivity`, a graph binding one
+exit to the terminal sentinel, and the routine's inputs as variables with defaults; one activity file
+carrying an `artifactPrefix`, the `kind: routine` step and a `done` exit; and resolution for whatever
+techniques the body binds — `review-assumptions::record` and `analyse-challenge::challenge` are
+qualified references that resolve against their source workflow, so the fixture either borrows
+`work-package` or stubs them. The measured precedent is the fan work's own fixture root:
+`tests/fixtures/fan-corpus` is 79 files across 17 workflow trees and 480K, driven by a 185-line test.
+The repository already carries 28 synthetic workflow trees and 68 fixture activity files under
+`tests/`, and zero `routines/` directories.
+
+*The decision it forces.* The same one. The synthetic host's id becomes the activity id in the branch
+key, and that key is not in the corpus denominator either.
+
+**Cost: zero engine lines, two to four fixture files per routine, one new key namespace, the same
+decision. Buys the same 3 option keys, and additionally proves the materialisation end to end through
+the real server rather than through a second implementation of the walk.**
 
 ### C — change the criterion
 
-State the guarantee as the mechanism actually provides it: *every option of every gate a routine
-declares is taken at every reference site the walk reaches, counted against a denominator drawn from
-the definitions through the real loader, with the unreached ones listed by reason.* That is
-`tests/e2e/option-coverage.test.ts` as it stands, and section five shows it already counts a
-materialised routine's gates without a line of change.
+State what the existing machinery does, which is more than the proposal credits it with.
 
-**Cost: zero code.** The loss is the case in section three that the corpus does not contain.
+The coverage denominator is built by loading each workflow the way the server does —
+`loadWorkflow(root, workflowId)` at `coverage.ts:70`, then `activityCheckpoints(activity)` at `:77`
+over `loaded.value.activities`. Materialisation runs inside that load. **So the moment stage 3 lands,
+a materialised routine's gates are in the denominator already, at every reference site, under their
+prefixed identifiers, with no change to `coverage.ts` at all.** The existing walk then grades them
+exactly as it grades any other gate: reached, or listed with a reason.
 
-**Recommendation: C for stage 4, with A only if the guard work of stage 4 lands the standalone
-routine loader anyway** — in which case A is 40-60 lines and answers the one question C cannot, and
-stage 7's version of the criterion should simply be deleted, because a routine with no options cannot
-be graded on option coverage.
+What that does not give is the word "once". Coverage stays per reference site — 24 keys for the
+assumption run rather than 6 — and a routine whose reference sites no walk reaches stays ungraded.
+Those are the two things the criterion promises and this does not.
+
+*Edits.* Five sites: README:627 (the enforcement row's **Detected** level and its justification),
+README:719-720 (the diagram arrow), README:877 (stage 4), README:923-924 (stage 7), README:1196-1200
+(the section). Note that stage 7's wording — "walks such a routine per reference site instead" — is
+already a description of what the coverage walk does, so stage 7's walker criterion is met by the
+machinery that exists as soon as materialisation lands.
+
+*What it gives up.* The row at README:625, "A shared run is checkable with no host workflow", stays
+true for the contract derivation and stops being true for gate coverage. Say so rather than leaving
+the reader to infer that one row covers both.
+
+**Cost: five prose edits, zero code, zero fixtures. Buys nothing new, and stops the plan claiming a
+level it cannot reach.**
+
+### Recommendation
+
+Take C now, because it costs nothing and the stated level is wrong today whatever else is decided.
+Hold A entirely: 80 lines of second walker, an unbudgeted loader entry and a new key namespace to
+grade 3 options in one routine is the wrong trade, and three of the four routines the plan creates
+have no gate for it to grade. If the twelve pinned entries are judged worth buying, take B — it is
+the same purchase with no engine code, and its fixture is the artefact stage 5 wants anyway for
+proving materialisation through the server.
+
+Whichever is taken, stage 4's own table needs correcting: the walker entry appears in stage 4's
+acceptance criteria (README:877) and not in the stage table's "Lands" column (README:772), which
+names only the contract boundary, the signature check and placement.
 
 ---
 
-## Five: the denominator already counts a routine's gates, and the pinned file moves twice
+## Six: what the loader-derived denominator does to the pinned file
 
-This is the coupled fact that matters most, because it fires whether or not anybody builds a second
-walker.
+The uncovered-option file is not an inventory of coverage. It records the options **no walk reaches**,
+each in a group carrying the reason, and it is allowed only to shrink: an unlisted uncovered option
+fails, a listed option that becomes covered fails
+(`tests/e2e/option-coverage.test.ts:203-212`). Measured at this tree it holds **113 keys in three
+groups of 90, 16 and 7**, and **zero** of the 113 name a checkpoint the corpus no longer declares —
+the file is clean right now.
 
-The option-coverage test compares two sides. The numerator is what the walks took, recorded as
-`checkpoint:<activity>:<checkpoint>=<option>` (`walker.ts:1000`, `:1030`). The denominator comes from
-the definitions **through the real loader** — `declaredCheckpoints` calls `loadWorkflow` per workflow
-and reads `activityCheckpoints` off each loaded activity (`tests/e2e/coverage.ts:66-97`), for the
-reason its own header states at `:9-14`: a checkpoint may arrive by fragment `ref`, which raw YAML
-shows as a step with no options at all.
+Against a denominator of **283 declared options corpus-wide** (18 workflows through the loader), of
+which **276** belong to the 15 workflows the roster walks, the seven-key difference is exactly group
+three, "declared only by remediate-vuln". So 170 of 283 declared options are taken by some walk.
 
-Materialisation runs inside that load. So **a materialised routine's gates arrive in the denominator
-on the day stage 5 lands**, keyed on the host activity and the prefixed gate id — `research` plus
-`reconcile-assumptions.batch-gate` under the full-stop prefix rule (README:539-542). Nothing needs
-changing for that to happen, and the two sides keep agreeing, because the numerator reads the same
-materialised delivery.
+**Twelve of the 113 name gates stage 5 renames**, three options at each of
+`research:research-assumption-interview`, `implementation-analysis:analysis-assumption-interview`,
+`implement:implementation-assumption-interview` and `assumptions-review:residual-assumption-batch`.
+Every identifier inside a materialised routine takes the reference step's identifier as a prefix,
+separated by a full stop, and the proposal's own worked example spells the result:
+`reconcile-assumptions.batch-gate` and, inside the loop,
+`reconcile-assumptions.interview.decision#{current_assumption.id}` (README:539-542). So all twelve
+keys change. Stage 5 therefore fails the walk twice over the same twelve options: as twelve stale
+entries naming checkpoints no definition declares, and as twelve newly unreached keys under the
+prefixed names.
 
-That is the good news. Here is what it does to the file.
+**One of those two failures fires on the pull request that causes it, and the other does not.** The
+stale computation is `const stale = SCOPE.length ? [] : allowed.filter((k) => !declaredSet.has(k));`
+at `tests/e2e/option-coverage.test.ts:192` — deliberately inert on a scoped run, with its reasoning
+stated at `:189-191`, because a scoped run cannot tell a renamed option from one merely outside its
+scope. A stage 5 corpus change touches `work-package` activity files, which
+`classifyChange` (`scripts/coverage-scope.ts:88`) resolves to a non-empty scope. So the run is
+scoped, the stale check is inert, and the twelve orphans pass. The newly-unreached check at
+`:187` and `:203-207` is not scoped away and does fail — which is the useful half.
 
-### The keys rename, and the check that notices is off on the run that renames them
+**Three things have moved here since the completeness pass measured them, and all three make the
+orphan harder to find.**
 
-`tests/e2e/option-coverage.json` holds **113** option keys in three reasoned groups of 90, 16 and 7 —
-the options no walk reaches, each group carrying why (`tests/e2e/README.md:100-112`). Twelve of the
-113 name the four batch gates stage 5 moves into a routine; all twelve keys change. The test computes
-the listed options no definition declares and fails with "delete the entries"
-(`option-coverage.test.ts:182`, `:187-191`) — but that computation is `SCOPE.length ? [] : …` on
-`:182` itself, suppressed on a scoped run by design, with its reasoning at `:179-181`.
+*The pinned file and the roster now live on the corpus branch.* They were `tests/e2e/option-coverage.json`
+and `tests/e2e/walked-workflows.ts` in the engine tree; three commits on 2026-09-11 — `89fd934b`
+"Remove this-corpus ledgers and walk artifacts from the engine tree", `8051f047` and `b21fd0d0` —
+moved them to `walks/option-coverage.json` and `walks/roster.json` of the corpus. The test reads
+`join(corpusRoot(), 'walks', 'option-coverage.json')` (`option-coverage.test.ts:84-86`) and the roster
+arrives through `WF_WALKED`. **This is good news for stage 5**: the migration and the twelve entries
+it orphans are now on the same branch, so one commit can rename the gates and rewrite the entries. It
+was not possible before.
 
-One refinement to PD4 on this point, measured from the job rather than from the test.
-`.github/workflows/coverage.yml:80-83` walks **everything** when the diff touches `src`,
-`tests/e2e/walker.ts`, `tests/e2e/policies.ts`, `tests/e2e/coverage.ts`,
-`tests/e2e/option-coverage.json` or `tests/e2e/walked-workflows.ts`. So the suppression bites on a
-corpus-only change — a submodule-pointer bump with no server edit. Stage 3 lands materialisation in
-`src`; stage 5 is described as the corpus migration. **Land them in one pull request and the check
-fires; land the corpus move on its own and it does not.** That is a sequencing instruction, not a
-defect to fix in the test.
+*The coverage job moved with them, and lost a trigger.* `.github/workflows/coverage.yml` no longer
+exists in the engine tree; it is on the corpus branch, running `on: pull_request` and
+`workflow_dispatch` — **no push trigger at all**. It walks the full roster when the engine's
+`tests/e2e/walker.ts`, `policies.ts` or `coverage.ts` changed (`coverage.yml:78-87`), or when
+`walks/roster.json` changed (`:89-93`). There is no clause for `walks/option-coverage.json`. The
+completeness pass recorded that the orphans "surface on the next push to main"; at this tree there is
+no push to surface them on. They surface on the next pull request that changes the roster or the
+borrowed walker, or on a manual dispatch, and not before.
 
-### And the twelve options stop being unreachable, for a reason that is about the walker
+*The corpus stamp no longer fires on that job.* `expectStampFresh` returns immediately when
+`WF_CORPUS_SUBJECT === 'checkout'` (`tests/stamp-freshness.ts:14`), and `coverage.yml:31` sets exactly
+that. So the one assertion the completeness pass identified as still firing on a stage 5 corpus run
+is now inert there too.
 
-The twelve are pinned under group one — "gated on a value only the agent or the environment produces".
-Mechanically, the cause is narrower than that: the batch gate carries a **structured condition**, and
-graph mode honours `condition` and nothing else. `research-assumption-interview` as the loader
-presents it:
+*And a routine file still moves coverage that nothing walks.* `classifyChange`
+(`scripts/coverage-scope.ts:77-91`) recognises two path shapes: a `workflow.yaml`/`workflow.yml` at
+`:84`, and a `*.ya?ml` under an `activities` segment at `:88`. A change to `<wf>/routines/<name>.yaml`
+matches neither, the scope comes out empty, `coverage.yml:96` writes `scope=none`, and the walk step
+is skipped by `if: … steps.scope.outputs.scope != 'none'` at `:99`. A change to a shared routine's gate
+options is graded by nothing, while its steps are materialised into every referring activity in every
+workflow that holds one. That reproduces exactly as the completeness pass found it, at new line
+numbers.
 
-```
-cond {"type":"and","conditions":[
-  {"type":"simple","variable":"is_review_mode","operator":"!=","value":true},
-  {"type":"simple","variable":"has_open_assumptions","operator":"==","value":true}]}
-```
+**What stage 5 owes, stated as work rather than as a hazard.** One commit that renames the four gates
+and rewrites the twelve entries in `walks/option-coverage.json` under their prefixed names, keeping
+them in group one with the reason unchanged — the routine does not change why an agent-produced value
+gates them. The reference step ids the new keys depend on are not fixed anywhere: the proposal writes
+`reconcile-assumptions` at README:285 and `reconcile-research` / `reconcile-implementation` at
+README:692-693, and stage 5's criteria name none of the four. That is one decision the disposition
+record can settle in a line.
 
-`has_open_assumptions` is declared with `defaultValue: false`
-(`workflows/work-package/activities/04-research.yaml:51-54`, and at six further hosts), so
-`evaluateCondition` at `walker.ts:808` is false, the gate is skipped, and its three options go
-unreached. The per-item
-decision beside it carries no condition, so it fires even though its enclosing loop's `when` is
-false — because graph mode collects checkpoints through the loop body (`walker.ts:593-598`) without
-consulting the loop's gate. That is the whole of why 12 are pinned and 12 are not.
+---
 
-Now sort all 113 by the dialect of the gate they sit behind:
+## Seven: the four-kind union in the walker's own types
 
-| Gate dialect | Checkpoints | Options | Pinned as unreachable |
+`StepDef.kind` at `tests/e2e/walker.ts:68` is `'technique' | 'action' | 'checkpoint' | 'loop'`, with a
+doc comment restating the four at `:67`. It is a hand-written copy of the union whose source is the
+Zod discriminated union at `src/schema/activity.schema.ts:167-172`, and `walker.ts` never imports that
+source — `StepDef` is structurally independent of `Step`.
+
+Sweeping the tree for lines naming all four kinds together, excluding `node_modules`, `dist`,
+`.worktrees` and the planning submodule, finds **20 lines across 10 files**: eight in
+`schemas/README.md`, five in `site/` across three pages (`api/schemas.html:77`, `:91`, `:284`,
+`specs/workflows.html:308`, `guide/definitions.html:167`), one each in `schemas/activity.schema.json:4`,
+`scripts/generate-schemas.ts:29`, `src/resources/schema-resources.ts:7`,
+`src/schema/activity.schema.ts:296` and `tests/validation.test.ts:509`, and two in `walker.ts` — the
+doc comment and the type. That figure is a wider net than the folder's sixteen: it reaches `site/`
+and a test comment, which the earlier passes scoped out. Take it as an independent count of the same
+population rather than a correction to it.
+
+Of the twenty, exactly one is a closed TypeScript union restating the source, and it is the one the
+compiler never sees. `tsconfig.json` sets `"include": ["src/**/*"]` with `"rootDir": "./src"`, and
+`tsc --noEmit --listFiles` puts **60 files in the program, all under `src/`, and zero under `tests/`**.
+`npm run typecheck` is `tsc --noEmit` (`package.json:24`) and is the only typecheck step in
+`.github/workflows/verify.yml`. Vitest transpiles through esbuild without checking types. So adding a
+fifth member to the Zod union produces no error in `walker.ts`, and adding a fifth arm to
+`walker.ts`'s own switch would not be caught as unreachable either.
+
+**What the unenforced copy actually costs, measured.** The two walker modes descend an unrecognised
+compound step differently. Feeding `activityCheckpointSteps` a tree whose outer step carries
+`kind: 'routine'` and a nested checkpoint returns the nested checkpoint — graph mode finds it, because
+`:597` recurses on the presence of `steps` rather than on the kind. `executeActivitySteps`'s `walk`
+descends only at `:568` on `kind === 'loop'`, so robot mode records the outer step as an executed leaf
+and never enters the body. One mode over-reaches, the other under-reaches, and nothing reports either.
+
+The exposure is conditional, and saying so is the honest reading: a `kind: routine` step "exists
+between parsing and materialisation and nowhere else" (README:430-431), so a walk against a
+materialised corpus never meets one. The asymmetry bites where a fixture is authored raw, where
+materialisation is being differentially tested (stage 3's criterion at README:859-862 runs both paths
+over every activity), or at the next compound kind that is *not* materialised away.
+
+**The smallest fix is a line, and it is not an exhaustiveness assertion.** Replace
+`walker.ts:68`'s literal union with the schema's own type — `import type { Step } from
+'../../src/schema/activity.schema.js'` and key `StepDef` on `Step['kind']`. The walker already imports
+five modules from `src/` (`walker.ts:19-23`), so the dependency exists. That makes the copy follow the
+source without needing `tests/` in the typecheck program at all. Widening `tsconfig.json`'s include to
+cover `tests/` is the larger version of the same fix, and it is a separate decision with its own blast
+radius — the repository has 100 test files and a `rootDir` of `./src` that a wider include would have
+to give up.
+
+Stage 3's own criterion at README:856 asks for "an exhaustiveness assertion over the step kinds
+[that] fails to compile when a kind is added". Whatever that assertion is, it will live in `src/` and
+be enforced, and this copy will still not be — so the criterion is satisfiable without this site being
+fixed. Name it explicitly in the stage, or the one place a compiler could have caught the fifth kind
+stays the one place it does not.
+
+---
+
+## Figures, and the ones that moved
+
+Re-measured here, against the sweeps folder and the completeness pass:
+
+| Figure | Recorded | Here | Why |
 |---|---|---|---|
-| structured `condition` | 69 | 178 | **109** |
-| `when` string | 2 | 4 | **0** |
-| ungated | 41 | 101 | 4 |
+| `tests/e2e/walker.ts` | 1,045 lines | **1,051** | 23 server commits |
+| Corpus workflows | 17 | **18** | `fan-conformance` |
+| Coverage roster | 14 walked, 3 not | **15 walked, 3 not** | closes against 18 |
+| Declared options | 285 by direct parse, 275/276 in stale comments | **283 corpus-wide, 276 over the walked roster** | through the loader, the denominator's own source |
+| Pinned uncovered options | 113 in 3 groups | **113 in 3 groups of 90/16/7**, 0 of them orphaned today | reproduces |
+| Pinned entries stage 5 renames | 12 | **12** | reproduces |
+| Fixture trees / activity files | 23 / 59 | **28 / 68** under `tests/` | corpus and fixture movement |
+| Four-kind enumeration sites | 11, then 15, then 16 | **20 lines in 10 files** | wider net, includes `site/` and a test comment |
+| The pinned file's home | `tests/e2e/option-coverage.json` | **`walks/option-coverage.json`** on the corpus branch | `89fd934b`, `8051f047`, `b21fd0d0` |
+| The coverage job's home | `.github/workflows/coverage.yml` in the engine tree | **the corpus branch**, `pull_request` and `workflow_dispatch` only | no push trigger, no expectation-file trigger |
+| The stamp assertion on that job | fires | **inert** (`WF_CORPUS_SUBJECT: checkout`) | `tests/stamp-freshness.ts:14` |
 
-The four ungated ones are `remediate-vuln`'s `start`, in the unwalked workflow. The two `when`-gated
-checkpoints are `intake-and-analyze:sources-confirmed` and `intake-and-analyze:analysis-confirmed`,
-both reading `source_readable == true` — a value as agent-produced as `has_open_assumptions`, and all
-four of their options are covered. **A checkpoint step's `when` is invisible to the coverage walk**:
-`CheckpointDef` (`walker.ts:36-43`) has no `when` field, and the graph-mode loop reads only
-`cp.condition`. The schema states the same asymmetry from the other end — "On a checkpoint step, only
-`condition` (not `when`) enables condition_not_met dismissal"
-(`src/schema/activity.schema.ts:75`).
-
-The proposal's worked reference site puts the gate in `when` (README:291) and its routine body carries
-no condition (README:247-275). So after stage 5 the materialised batch gate is either ungated or
-`when`-gated, and in either case the coverage walk fires it. **The twelve pinned options become
-covered** — under new keys, by a walk that reaches them no more truthfully than it does today.
-
-Which assertion catches which is worth being exact about, because they differ:
-
-- `nowCovered` (`:198-202`) compares listed keys against the declared set and the uncovered set. A
-  *renamed* key is in neither, so it does not fire.
-- `stale` (`:182`, `:187-191`) is the only assertion that catches a renamed key, and it is the one
-  scoping suppresses.
-- `nowUncovered` (`:193-197`) stays empty, because the new prefixed keys are covered.
-- `unexpected` (`:165`) stays empty, because both sides read the same materialised load.
-
-Result on a corpus-only run: green, with twelve dead entries in the file and no record that the
-options behind them changed status. The one assertion that does fire is the corpus stamp (`:98-104`
-via `tests/stamp-freshness.ts:11-17`), and `npm run baseline:stamp` satisfies it without touching an
-entry.
-
-**What stage 5 owes, concretely:** delete the twelve entries rather than renaming them, and state in
-the commit that the options behind them are now reachable because the gate moved from `condition` to
-the reference site's `when` — which is the same decision stage 2 owes on dismissibility (plan defect
-9 of the [sweeps folder](../../2026-09-10-routines-sweeps/README.md)), seen from the coverage side.
-
-### And a routine-keyed numerator has nowhere to land
-
-If a routine-level entry is built after all, note what its output does to this comparator. Keys are
-compared only when they start with `checkpoint:` (`tests/e2e/coverage.ts:125`).
-
-- Emit `checkpoint:<routine>:<gate>=<option>` and it lands in `unexpected`, which
-  `option-coverage.test.ts:165` asserts is empty — "walk covered an option no definition declares".
-- Emit `routine:<routine>:<gate>=<option>` and `:125` filters it out silently; it contributes
-  nothing and nothing says so.
-
-So a routine-level numerator needs routine-keyed entries added to the denominator as well — meaning
-`declaredCheckpoints` walks `routines/` too — or its own test with its own assertion, which is option
-A above. There is no third arrangement in which it feeds the existing figure.
+One figure carried rather than re-measured: the coverage walk's wall clock, recorded at 1,269 seconds
+with the roster in flight at once (`tests/e2e/option-coverage.test.ts:216`). Re-taking it costs
+twenty-one minutes and nothing here turns on it. `tests/e2e/README.md:99` still says "~14 minutes, 14
+workflows" against a roster of 15, which is a small stale statement on the walker's own documentation
+surface — worth the same one-line edit as the rest.
 
 ---
 
-## Six: the one four-kind enumeration a compiler could enforce, in a file no compiler reads
+## Commands that re-take these figures
 
-Cluster C of the sweep folder carries "sixteen closed four-kind step enumerations" — statements that a
-step is one of `technique`, `action`, `checkpoint` or `loop`, each of which a fifth kind falsifies.
-Fifteen are prose, JSON descriptions or generated strings. The sixteenth is a TypeScript union:
-
+```bash
+cd /home/mike1/projects/dev/workflow-server
+wc -l tests/e2e/walker.ts tests/e2e/coverage.ts tests/e2e/policies.ts
+grep -n "client.callTool" tests/e2e/walker.ts
+grep -n "kind?:" tests/e2e/walker.ts
+npx tsc --noEmit --listFiles | grep -c "workflow-server/src/"
+npx tsc --noEmit --listFiles | grep "workflow-server/tests/"
+grep -n "include" tsconfig.json
+grep -n "loadWorkflow\|activityCheckpoints\|optionKey" tests/e2e/coverage.ts
+grep -n "SCOPE.length\|EXPECTED_PATH\|unexpected, " tests/e2e/option-coverage.test.ts
+grep -n "classifyChange" -A 15 scripts/coverage-scope.ts
+grep -n "WF_CORPUS_SUBJECT" tests/stamp-freshness.ts .worktrees/workflows/.github/workflows/coverage.yml
+grep -c "kind: checkpoint" .worktrees/workflows/corpus/prism/activities/*.yaml
+grep -c "kind: checkpoint" .worktrees/workflows/corpus/meta/activities/patterns/*.yaml
+find tests -name workflow.yaml | wc -l
+find tests -path "*/activities/*" -name "*.yaml" | wc -l
 ```
-  /** Unified step kind (technique | action | checkpoint | loop). Absent only on pre-migration data. */
-  kind?: 'technique' | 'action' | 'checkpoint' | 'loop';
-```
 
-`tests/e2e/walker.ts:67-68`. A closed union with a doc comment restating it, in the walker's own
-types. It is the only one of the sixteen a type checker could catch, and the type checker never sees
-it:
-
-- `tsconfig.json:22` sets `"include": ["src/**/*"]`.
-- `npm run typecheck` (`package.json:24`) is a bare `tsc --noEmit`, and CI runs that and nothing else
-  (`.github/workflows/verify.yml:49`, `docker-publish.yml:48`, `deploy-docs.yml:46`).
-- Measured: `tsc --noEmit --listFiles` emits **57** files under `/src/` and **0** under `/tests/`.
-- `vitest.config.ts` declares no `typecheck` block, so the runner does not compile types either.
-
-The canonical enumeration in `src` is a Zod discriminated union with four members
-(`src/schema/activity.schema.ts:167-172`), and that one is compiled. The walker's is a claim about the
-same set that nothing checks, in a file three `scripts/` tools import.
-
-What happens when an unhandled kind arrives is not a type error but a behaviour, and it differs by
-mode. Three collectors in one file find nested steps by two different rules:
-
-| Collector | How it recurses | A `kind: routine` step carrying `steps` |
-|---|---|---|
-| `executeActivitySteps`'s `walk` (`:553-584`) | `step.kind === 'loop'` (`:567`) | body never entered; the step falls past the three kind tests to `:577-582` and is **executed as a leaf**, pushed to `stepsExecuted` and to the step manifest |
-| `activityCheckpointSteps` (`:591-601`) | `if (s.steps) rec(s.steps)` (`:596`) | body **is** walked, and gates inside it fire |
-| `activityDecidedVariables` (`:454-469`) | `step.kind === 'loop'` (`:458`) | body's set-actions and option effects are **not** collected, so the unbound-gate bookkeeping at `:561-563` misreads |
-
-None of the three logs anything. And the response is cast rather than parsed —
-`parseWorkflowResponse(res) as unknown as ActivityDef` (`walker.ts:377`) — so the union is not even a
-runtime filter. This is the same hazard the proposal records for the server's own walks at
-README:437: "A compound kind it does not know is walked as a leaf, **silently**." The walker is one
-of the walks that does it, and no record in either folder reaches this file.
-
-Post-materialisation none of it fires, because no `kind: routine` step survives the load. It fires in
-the interval where materialisation is partial or absent: stage 3's own landing, a fixture tree whose
-reference does not resolve (section four, B), and the fragment path's documented behaviour of
-dropping the host activity and loading clean.
-
-**What stage 3 owes:** add the fifth member to `walker.ts:68` and its doc comment at `:67` — a
-two-line edit to the enumeration set's sixteenth site — and decide whether `tests/**` joins the
-typecheck program, because that is the only change that would make this union enforce itself. The
-cheaper half of that decision is a second tsconfig for `tests` and `scripts` run by the same CI step;
-`scripts/` is outside the program too, which the keep list already notes for `breakCondition`.
+The option-coverage figures, the assumption-run table and the start_session refusal come from three
+scripts run under `npx tsx`, each importing the repository's own modules so the numbers are the ones
+the suite would see: `declaredOptions` and `declaredCheckpoints` from `tests/e2e/coverage.ts` over
+`indexCorpus(corpusRoot()).workflows.keys()`; the same two filtered to the four assumption hosts and
+compared against `walks/option-coverage.json`; and `createHarness()` from `tests/e2e/harness.ts`
+calling `start_session` with `workflow_id: 'assumption-reconciliation'` against the control
+`'work-package'`. They live in the session scratchpad rather than the repository, since none of them
+is a check anything should run twice.
 
 ---
-
-## What this changes in the plan
-
-1. **Stage 4's walker criterion (README:877) cannot be satisfied by the mechanism it names.** Replace
-   it with the coverage statement in section four option C, or budget the definition-level enumerator
-   of option A and say which. As written it is a second walker, and no stage budgets one.
-2. **Stage 7's walker criterion (README:923-924) grades a routine with no options.** Measured: the
-   three `prism` per-unit passes declare zero checkpoints. Delete the criterion.
-3. **Stage 5 owes twelve deletions from `tests/e2e/option-coverage.json`, not twelve renames** — and
-   the reason is a behaviour change (the gate moving from a structured `condition` to the reference
-   site's `when`), which is stage 2's disposition seen from the coverage side.
-4. **Stage 5 lands in the same pull request as a `src` change, or the orphan check is inert.** The
-   escape-hatch path list at `.github/workflows/coverage.yml:80` is the mechanism; nothing else in
-   the plan makes it fire.
-5. **Stage 3's enumeration edit includes `tests/e2e/walker.ts:67-68`**, the sixteenth site and the
-   only one of the sixteen a compiler could enforce. Whether it ever does is a separate decision —
-   `tests/**` and `scripts/**` both sit outside the typecheck program.
-6. **The enforcement table's "Detected" row (README:627) overstates what the entry adds.** Corpus-wide
-   only 5 of 112 checkpoints sit in no walked workflow, all five in `remediate-vuln`'s `start`, and
-   none of them is a routine candidate. The row should say what it detects that the loader-drawn
-   denominator does not.
-
----
-
-## Re-taking these figures
-
-```
-cd <server-checkout>
-wc -l tests/e2e/walker.ts                                     # 1045
-grep -n "session_index" tests/e2e/walker.ts                   # 8 lines; 7 are tool arguments
-grep -rn "walker.js" tests/ scripts/ --include=*.ts           # 11 importers, 3 under scripts/
-node_modules/.bin/tsc --noEmit --listFiles | grep -c "/tests/" # 0
-node_modules/.bin/tsc --noEmit --listFiles | grep -c "/src/"   # 57
-grep -rn "'technique' | 'action' | 'checkpoint' | 'loop'" tests/ src/ scripts/   # one hit: walker.ts:68
-grep -c "kind: checkpoint" workflows/meta/activities/patterns/02-supervisor.yaml \
-  workflows/meta/activities/patterns/05-lead-researcher.yaml \
-  workflows/cicd-pipeline-security-audit/activities/03-primary-scan.yaml \
-  workflows/substrate-node-security-audit/activities/02-reconnaissance.yaml \
-  workflows/substrate-node-security-audit/activities/03-primary-audit.yaml   # 0 at all five
-find tests/fixtures/fan-corpus -type f -print | wc -l         # 70, across 15 trees
-find tests/fixtures/variable-model/bare-fixture -type f -print0 | xargs -0 wc -l   # 14 total
-python3 -c "import json;d=json.load(open('tests/e2e/option-coverage.json'));print([len(g['options']) for g in d['groups']], sum(len(g['options']) for g in d['groups']))"
-                                                              # [90, 16, 7] 113
-```
-
-The loader-drawn figures came from throwaway `tsx` scripts at the repository root, deleted after use.
-Each imported `declaredCheckpoints` / `declaredOptions` from `tests/e2e/coverage.js` and
-`loadWorkflow` / `flattenActivitySteps` from `src/`, iterated every directory under the corpus root
-holding a `workflow.yaml` (18 of them), and printed:
-
-- **283** declared option keys and **112** distinct activity-and-checkpoint pairs. The 283 reproduces
-  the completeness pass's re-measurement of 285-now-283. The 112 is a third grain beside the 113 the
-  folder states and the 115 a raw parse of `kind: checkpoint` nodes gives: it counts one entry per
-  (activity, checkpoint) pair as the loader presents it, deduped across borrowing workflows and
-  excluding the pattern-library activities the loader skips.
-- The gate-dialect split — 69 structured, 2 `when`, 41 ungated — and the pinned tally against each
-  (109 / 0 / 4).
-- The eight assumption-run checkpoints with their option counts, pinned counts and condition dialect,
-  and the workflows declaring each host intersected with `WALKED`.
-- **5 of 112** checkpoints declared by no walked workflow, all five in `remediate-vuln`.
-
-The `start_session` probe in section two was likewise a throwaway: `createHarness()` from
-`tests/e2e/harness.js`, then `start_session` with `{ workflow_id, agent_id: 'e2e-walker' }` for
-`work-package` and for `assumption-reconciliation`, printing `isError` and the response content. The
-fragment-fixture load probe is `loadWorkflow(resolve('tests/fixtures/fragments'), tree)` for the three
-trees; `beta-fixture` returns success with `activities 0`.
 
 Measured against the [routines proposal](../../2026-09-03-routines/README.md) and the
-[sweeps folder](../../2026-09-10-routines-sweeps/README.md), whose completeness pass opened this
-surface. Companion to [the fixture corpora](fixtures.md), item 11a, which measures the trees option B
-would live in.
+[verified sweep outcome](../../2026-09-10-routines-sweeps/README.md), whose list of what nobody swept
+names this surface. Companion to
+[permutation-matrix.md](../permutation-matrix.md), which reaches the walker as a provocation site and
+records G20 — the guarantee with no mechanism — from the other direction.

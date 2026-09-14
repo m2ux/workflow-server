@@ -89,8 +89,8 @@ and under the typed language it is a function, not a macro. `run` collides with 
 `protocol:` crosses to a worker who executes it by judgement, after every ancestor container's
 `Initial`/`Final` wrap and renumbering, and it counts against the eager-bundle budget. A `steps:`
 body is read by the server and erased by materialisation; nothing reaches a worker as itself. Every
-technique consumer — `get_technique`, the bundler, `composeLoaded`, the provenance annotator, and
-eleven of the thirty-seven guard scripts — would need a per-file discriminator to know which of the
+technique consumer — `get_technique`, the bundler, `composeLoaded`, the provenance annotator, and the
+guard scripts that read technique markdown — would need a per-file discriminator to know which of the
 two it is holding, where the directory split gives each guard one answer for every file it reads.
 The two sections cannot coexist either, a materialised routine having no fetch site for prose to be
 delivered at, so the merge needs a mutual-exclusion rule plus opt-outs from inherited I/O (a routine
@@ -399,12 +399,12 @@ early exit, so `breakCondition` is one of the fields materialisation substitutes
 stop as the separator.** `#` is taken — `CHECKPOINT_INSTANCE_SEPARATOR` is `#` and `checkpointBaseId`
 splits on the first one, so a prefix using it would swallow the iteration discriminator. `::` is the
 technique-path separator. A full stop collides with neither, and it reads as containment.
-`reconcile-assumptions.interview.decision#{current_assumption.id}` states its reference site, its
-loop and its base, and still resolves to one definition. Two references to one routine in one
+`review-residual-assumptions.interview.decision#{current_assumption.id}` states its reference site,
+its loop and its base, and still resolves to one definition. Two references to one routine in one
 activity are collision-free by construction. That case does not occur in the corpus — identifiers are
 scoped per activity and no activity refers to a shared gate body twice — so the site prefix is
 untested against real content, while the per-iteration discriminator it composes with is load-bearing
-at eleven sites today.
+at twelve checkpoint ids today, across ten activities in three workflows.
 
 **A routine's home is the workflow that owns the activity files referring to it, not the workflows
 whose graphs include them.** The reference-counting rule that #520 proposes puts the assumption
@@ -613,9 +613,12 @@ the other three. So a correction is genuinely available to a user, an unread out
 record the assumptions log carries rather than a gate the corpus routes on, and the routine has one
 gate body to materialise because the corpus already has one.
 
-Two of the census's ten differences are converged by that change without a routine — the
+Two of the census's twelve differences are converged by that change without a routine — the
 inline-versus-reference split and the option count, the latter being one of the two the census
-reserved for a person.
+reserved for a person. A third, the announcement's message text, converged the same way: the three
+nine-line spans at `04-research`, `05-implementation-analysis` and `08-implement` are byte-identical
+today. The full twelve-row table is
+[stage-2-dispositions.md](../2026-09-11-routines-remediation/stage-2-dispositions.md).
 
 **The run happens once per run, at two sites.** Research and implementation-analysis reach
 assumptions-review on every path, so their copies are followed by a definitive reconciliation and are
@@ -631,14 +634,28 @@ Seeding it restores the bundling at both sites. The prerequisite is met: the fla
 `defaultValue: false` on the work-package workflow file, and the absent-default merge change that
 seeding it needed landed with it.
 
-**A routine name resolves exactly as a shared technique's does, so the shared home is `meta` and
-there is no separate question.** *(settled 2026-09-07)* This was recorded as open — is the shared
-home `meta` or something new — and the answer is that the construct never needed one of its own.
-A routine resolves as `[workflow::]name`: qualified means that workflow only, bare means the
-referring workflow and then the fallback, which is the resolution shared gate bodies and technique
-paths both already implement. Mirroring that resolution *is* choosing `meta`, because `meta` is what
-a bare technique reference falls back to. One resolution rule for the corpus rather than two is the
-argument, and it is a better one than the cheapness this record first offered.
+**A routine name resolves as `[workflow::]name`, so the shared home is `meta`, and the premise is the
+bare-name fallback rather than a single resolution rule.** *(settled 2026-09-07; the argument
+corrected 2026-09-14)* This was recorded as open — is the shared home `meta` or something new — and
+the answer is that the construct never needed one of its own. A routine resolves as
+`[workflow::]name`: qualified means that workflow only, bare means the referring workflow and then
+the fallback.
+
+The reason first given was that mirroring the existing resolution gives the corpus one rule rather
+than two. That premise is false and had to be replaced. The corpus has two rules for one spelling,
+implemented three times: the fragment rule reads any `::` head as a workflow and throws on a second
+separator (`src/loaders/fragment-resolver.ts:38-45`), while the technique loader decides
+workflow-versus-group by filesystem probe and admits unbounded depth
+(`src/loaders/technique-loader.ts:136`, `:154-156`), with `parseTechniquePath` (`:233-251`) carrying
+the same probe a second time. Read every technique binding in the corpus's 132 activity files by the
+fragment rule and compare: they agree on 270 of 676 and disagree on 406. So a reader who believes
+"one rule rather than two" also believes there is no resolver divergence to worry about, and there
+is.
+
+What the conclusion actually rests on is narrower and true: **a bare name falls back to `meta` in
+every resolver the tree has**, at `fragment-resolver.ts:50-52` and at `technique-loader.ts:179-186`
+alike, exercised by 266 bindings. A routine name carries one separator at most, so it never reaches
+the divergence, and reconciling the two technique resolvers is separate debt with its own ticket.
 
 The measurement supports it independently. Eight technique groups in `meta` are bound as steps, and
 **all eight are bound by a workflow other than `meta`** — `verify-artifact-conforms` by fifteen
@@ -655,28 +672,204 @@ visibility in `2026-08-31-typed-execution-redesign/polymorphism-survey.md` and b
 typed language rather than to this construct. Placement stays computed from referring files, with
 the fallback the rest of the corpus already uses.
 
+## Settled by re-measurement
+
+Four entries where the repository answered a question this record had answered from the page. Each
+is here rather than in the proposal because the proposal states the system and this record states why.
+
+**The workflow variable merge is standing behaviour, not work the plan owes.** This record and the
+proposal both costed a two-line change: that the merge compares an absent default as `null` and
+reports disagreement with any present one, so a declaration carrying no default would fail the load
+on contact with the corpus. It does not. `disagreement` (`src/utils/activity-variables.ts:63-76`)
+reports a default disagreement only where both declarations name one, `fillSilences` (`:83-91`)
+carries the present default onto the silent declaration, and the doc comment at `:56-61` states the
+rule as "Silence is no opinion". It arrived in `3a36b0db`, the stage 0 commit, so the change was
+already in the tree when the first simulation ran. The consequence worth carrying: the
+zero-contradiction result the variable design rests on is a reading of live behaviour rather than a
+prediction about a prospective rule.
+
+**`assumption_review_presentation` is not an internal, so the assumption run has one and not two.**
+This record and the proposal both counted eight write declarations across four hosts as belonging to
+two internals. Measured, four of the eight belong to a name the host produces before the run begins:
+`review-assumptions::assemble-open-set` declares it as an output, the announcement step binds that
+operation outside the shared body, and the reference site interpolates the value into its
+`gate_message` argument. A name the host produces outside the run cannot be a name that never leaves
+the run. Only `current_assumption`'s four declarations become one internal, which halves what stage 5
+removes and leaves the four presentation declarations standing.
+
+**A routine's signature names every name its body reads, and the boundary is explicit rather than
+tighter.** This record argued two advantages over a technique's declared signature: that a routine's
+is checkable against a mechanical body, and that it is tighter, because a technique's prose leaks its
+`{token}`s into the host's contract while a routine has no free variables. The first survives intact
+and is what stage 4 grades. The second does not. `readSignature` puts two kinds of name into a host's
+reads that no step field carries — an operation's prose interpolations, and that operation's declared
+inputs the step leaves unbound — and materialisation can rewrite neither, because in both cases there
+is no field to rewrite. Run against the two bodies [re-derivation.md](re-derivation.md) writes out,
+that gives `challenge-concerns` eight free names and `converge-assumptions` ten, and not one of the
+eighteen comes from prose. Eight of the twelve are already read by all seven hosts. So the routine
+declares them as inputs, an unbound one takes the host's value under the same name, and the host's
+contract is the same size it was. What changes is that the routine says out loud what it needs.
+
+**The boundary is not an ordering, because only one of the two things being ordered is in the
+loader.** This record specified materialisation running after identifier resolution and before
+contract derivation, with a test failing if the order is swapped. `deriveActivityContract` is defined
+at `src/utils/activity-variables.ts:418` and called at exactly two sites, both in
+`guards/check-activity-variables.ts` (`:158`, `:483`), and the loader performs five of the six drawn
+steps and not that one. Worse, the order as drawn erases what it is drawn to protect: materialisation
+replaces a reference step with the routine's own steps, so a derivation running after it meets a body
+and no reference at all. What makes a reference a boundary is that the derivation reads the form
+still carrying it. Which mechanism supplies that form is open below.
+
 ## Still open
 
-Two items, and they are the same question at two depths. Neither is blocked by anything above and
-nothing above is blocked by them. They are named rather than numbered, because the numbers were
-cited from six files and a list is a poor home for an identifier.
+Nine items. None blocks declaring, referring to or materialising a routine, and each carries the
+recommendation the measurement supports rather than a decision. They are named rather than numbered,
+because the numbers were cited from six files and a list is a poor home for an identifier.
 
-**The identifier-length item — how long may a generated identifier be?** Measured rather than
-guessed:
+**The load-path item — which mechanism supplies the form carrying the reference?** Four are
+available. Moving the derivation into the loader after the splice pays 2.0× the load at all seven
+tool call sites in `src/tools/workflow-tools.ts` for a form that has no reference in it, which is the
+highest price for the property it removes. Moving it in before the splice buys the boundary at the
+same cost, plus the harder problem of what a request-path loader does with findings that are today a
+guard's business. A side table of spliced spans buys what the fourth option buys and adds the only
+silent failure mode of the four, a span drifting by one step yielding a wrong contract with no error
+anywhere.
+
+**Recommended: the loader returns the authored activities alongside the materialised ones.** The
+guard derives from the authored form and meets the reference; the server delivers the materialised
+form; the boundary stops depending on an order. `materializeActivityFragments` mutates in place
+(`src/loaders/fragment-resolver.ts:137-152`), so each activity is copied before the splice — memory
+and a clone per load, no technique-markdown reads, nothing added to the request path. The loader
+already returns a side table of this shape in `activitySourceWorkflow`
+(`src/loaders/workflow-loader.ts:44-53`). Three things the owner confirms: that a routine
+contradicting its signature fails a guard run rather than the load; that a second copy of every
+activity per load is acceptable, the clone being the one figure this has not measured; and that the
+guard column register becomes a field on `GuardSpec` rather than a table in a planning file.
+
+**The unbound-input item — may a reference site leave a declared input unbound?**
+**Recommended: yes, and the name takes the host's value under the same spelling.** That is the
+standing `readSignature` already computes for a technique input (`:517-518`), given a routine input
+declaration to hang on rather than a fourth mechanism. Requiring every site to bind every declared
+input keeps the same two properties and costs sixty argument lines across the six convergence
+reference sites, against the 192 lines of duplication the stage removes — a tax on the mechanism
+whose purpose is to remove repetition. It is a judgement about how much a reference site should have
+to spell.
+
+**The two names the convergence run's routines take.** **Recommended: `concern-challenge-pass` for
+the inner and `assumption-convergence` for the outer.** Both proposed names in
+[re-derivation.md](re-derivation.md) are verb-first phrases, which is the shape the corpus gives a
+technique *operation*; a routine is a named shared body, and the corpus's two of those —
+`assumption-interview` and `assumption-decision` — are kebab-case noun phrases in subject-plus-act
+shape. Every word of `concern-challenge-pass` is written in the contract its body binds
+(`work-package/techniques/analyse-challenge/TECHNIQUE.md:8`), and `pass` is the corpus's head noun
+for one traversal, carried by ten `prism` activities. The qualifier is `concern` rather than
+`assumption` because the same body serves assumptions at six sites and comprehension open questions
+at the seventh. `assumption-convergence` is the id the six sites already spell under one SHA across
+32 lines, so the migration renames nothing and the reference step keeps the id it has. It is right
+for the outer to be domain-specific where the inner is neutral: it declares no inputs and four
+assumption-named outputs, and a name promising neutrality would promise a parameterisation the body
+does not have.
+
+**The assumption run's name and reference-site id.** **Recommended: taken at stage 5, from a
+re-derivation of that run that does not exist yet.** Both provisional spellings collide.
+`assumption-reconciliation` is the id of a loop step at
+`work-package/activities/03-requirements-elicitation.yaml:185` and
+`workflow-design/activities/03-requirements-refinement.yaml:149`; `reconcile-assumptions` is a step
+id at eight sites, six of them the first technique step inside the convergence loop at the very
+hosts this run shares, so adopting it puts one spelling on two different things in one file. The
+four hosts spell the run's six positions fifteen ways, so the reference-site id is a decision with
+evidence still to gather, and every generated-identifier figure for this family moves with it.
+
+**Whether the per-item assumption gate stays dismissible.** **Recommended: keep the condition, in the
+shared body** — and it is the owner's because either answer changes what a live run records. When the
+server is asked to dismiss a checkpoint it checks one thing, that the checkpoint carries a
+`condition` field (`src/tools/workflow-tools.ts:2433-2439`); it never evaluates the value. So the
+field confers a capability and its truth is irrelevant to what removing it does. Of the eight
+fragment reference steps exactly one carries a site condition,
+`07-assumptions-review.yaml:131-135`, and it is the corpus's only dismissible per-item assumption
+gate. Dropping it leaves the corpus with none; keeping it in the shared body gives `implement` a
+capability it lacks. Of those two errors, giving one surviving host a capability it did not ask for
+is recoverable by deleting a block later, while removing the only instance of a capability is a
+subtraction nothing in the guard suite would notice. The countervailing argument is real: a gate
+dismissible in every run is a gate a worker can skip in every run, and nothing evaluates the
+predicate that was meant to bound that. **The same question arrives at the batch gate**, where the
+worked body as drawn carries `message` and `options` and no condition, which takes four of the
+corpus's 70 dismissible gates out of the dismissible set with no census row naming it. Take the two
+together.
+
+**What happens to `assumption_source` and `assumption_categories`.** `review-assumptions::reconcile`
+reads both from the bag by the name-match convention, and neither is declared as a variable anywhere
+in the corpus; they are supplied as literals on the `collect-assumptions` step that sits *outside*
+the convergence loop, with a different literal per host
+(`04-research.yaml:130`, `02-design-philosophy.yaml:168-169`), while the step inside the loop binds
+nothing. So the operation reads two names from a bag that has never held them, which is a defect in
+the corpus today that converting the run is what surfaces. **Recommended: declare them as routine
+inputs the six sites bind**, that being the only one of the three available answers — workflow
+variables, literals inside the body, or routine inputs — which preserves the per-host difference the
+corpus currently expresses outside the loop. It is a stage-2 disposition no census row carries.
+
+**Whether a routine name will ever want a group.** **Recommended: no, and the grammar ships at one
+separator**, because a routine lives one file deep in a flat `routines/` directory and has no group
+level for a grammar to address. Widening a shipped grammar is cheaper than narrowing one, so this is
+worth confirming before stage 3 rather than after.
+
+**The stage order.** The table in the proposal states dependencies; the measured recommendation is a
+different running order. **Recommended: stage 1 first and alone**, because it costs one script,
+covers all 24 windows including the fourteen across 20 activity files in 8 workflows that no stage
+names, and is the only mechanism that can grade a later convergence. Then stages 3 and 4. **Then
+stage 6 before stage 5**, because a routine with no inputs and no gates is the smallest version of
+the construct that works end to end — no argument substitution, no walker entry, no
+`check-variable-model` name scope, no live behaviour change, and a differential test with the easiest
+possible subject. Then stage 5, carrying the twelve dispositions and the fragment retirement, once
+the construct it needs already works. Then stages 8 and 7 last: stage 8 because its whole
+constituency is 45 lines in two files nothing validates and no graph reaches, and stage 7 because it
+is the only stage that adds a schema field and the only one the drift guard cannot see at all.
+
+What follows are the two identifier items, which are one question at two depths.
+
+**The identifier-length item — how long may a generated identifier be?**
+**Recommended: no limit, with the measured ceiling stated as a fact the design carries rather than a
+rule it enforces.** Three measurements support it. Nothing in the server or the schemas bounds a
+length — a search for `maxLength` over `schemas/` returns nothing and the only character-denominated
+bound in the server is an 8,192-character log truncation — so a limit would be new machinery with no
+enforcement point. The migration this item was said to gate produces a maximum of 54 characters
+against a corpus maximum of 58, so a limit set anywhere sensible would be inert on the only
+conversion in scope. And a limit is the wrong instrument for the failure that exists: the hazard is a
+worker mis-composing a key, and capping the key's length does not make a 90-character key easier to
+reproduce than a 110-character one. **Recommended alongside, and independent of stages 3 through 6:
+move composition of the per-iteration checkpoint key from the worker to the server**, which retires
+that failure mode outright. The server already owns the base definition, owns the loop item, and
+already keys the response on the full string.
+
+The populations, taken over all 122 activity files and 990 steps:
 
 | | Characters |
 |---|---|
 | Longest step id in the corpus today | 58 |
 | Longest checkpoint response key today | 76 |
+| Longest identifier the re-derived convergence signature generates | **54** |
 | Generated step id, one level | 32 |
 | Generated step id, nested routine | 45 |
-| Generated internal variable name | 69 |
-| Generated step id, loop body | **105** |
-| Generated response key, worst case | **124** |
+| Generated internal, innermost reference id alone | 66 |
+| Generated internal, full composed reference path | **87** |
 
-So the conversions produce identifiers about 1.6 times the current maximum, not an order of
-magnitude, and nothing anywhere bounds them: these are JSON keys in the session record and
-arguments to `get_technique`, never filenames.
+**The convergence migration sets no new maximum and contributes no checkpoint at all**, because
+neither of its two routines declares a gate: the outer is a loop over a reconcile and a reference,
+the inner is two technique steps. Its cost per host is 91 delivered characters of prefix against 32
+lines of body removed — 0.97% of the delivered activity at `02-design-philosophy.yaml` and 1.65% at
+`05-implementation-analysis.yaml`, the smallest of the six.
+
+Nothing anywhere bounds any of these: they are JSON keys in the session record and arguments to
+`get_technique`, never filenames. The repository bounds a data identifier from below and never from
+above — a variable name must carry at least two words, and nothing says it may not carry eight.
+
+Two figures this record first gave belong to the assumption run rather than the convergence one, and
+they were taken at two different hosts. The 69-character internal is `implementation-analysis`; the
+105-character loop-body step id and the 124-character response key are `assumptions-review`. Read
+consistently at one host the worst case is `implementation-analysis` throughout, and the worst
+response key is **134**. Every one of those figures also moves with the reference-site id stage 5 has
+not chosen. And the per-iteration discriminator sits at **12** checkpoint ids across ten activities in
+three workflows, not the eleven recorded further up this file.
 
 **It is a legibility question where a runtime emits the key it generated, and a correctness
 question while a worker composes one.** `yield-checkpoint` assigns the per-iteration key to the
@@ -704,25 +897,52 @@ weighed once there is a reason to care about the length.
 The scoped-names item below is the third form of the same question, asked at the root.
 
 **The scoped-names item — does a name inside a routine belong to a scope, or to a mangled global?**
-The bag is one flat
-namespace per workflow, and every workaround in this proposal that concerns names descends from
-that: the internals rule and its underscore-joined activity-plus-site prefix, the 124-character
-worst-case response key above, the crossing check reporting an activity-level production for a
-value that never leaves a loop body, and the injection rule that has to fire only into a gap
-because two declarations of one name are a load failure. A routine is already a lexical scope —
-inputs, outputs and internals *are* its declared bindings, and it has no free variables — so the
-flat bag is what forces the scope to be simulated in the spelling of a name rather than held by
-the loader.
+**Recommended: the mangled global for the first version, with scoping recorded as the settled
+direction and scheduled outside this plan.** The bag is one flat namespace per workflow, and every
+workaround in this proposal that concerns names descends from that: the internals rule and its
+underscore-joined activity-plus-site prefix, the 134-character worst-case response key above, the
+crossing check reporting an activity-level production for a value that never leaves a loop body, and
+the injection rule that has to fire only into a gap because two declarations of one name are a load
+failure. A routine is already a lexical scope — inputs, outputs and internals *are* its declared
+bindings — so the flat bag is what forces the scope to be simulated in the spelling of a name rather
+than held by the loader.
+
+The mangled form works and is measured: 87 characters at worst, no bound breached, no parse broken,
+and the guard suite silent on it. `read` returns for any name outside the declared namespace and
+`write` records into `writes` only inside it (`src/utils/activity-variables.ts:450-457`, `:475-482`),
+and `undeclared-crossing` skips a name with no consumer elsewhere
+(`guards/check-activity-variables.ts:243`), which a name carrying its host and reference site cannot
+have. So a prefixed internal reaches neither rule.
+
+**What the measurement adds is the price of the thing the mangling buys.** The internals rule exists
+to stop two activities writing one bag name. Seven activities in one workflow write one bag name
+today — `challenge_findings`, declared at all seven convergence sites — and
+`npx tsx guards/check-activity-variables.ts` reports OK over the whole corpus. `current_assumption`
+and `assumption_review_presentation` are each declared at four. So fifteen write declarations across
+the two runs carry three values that never leave the step sequence producing them, under three flat
+spellings, with nothing reporting it. The mangling does not remove a live fault; it forecloses one
+the flat bag has never produced here, at a cost of 87 characters and of a name a model must reproduce
+inside a gate template.
 
 Scoping the names is the alternative, and it settles the length by removing the reason a name is
-long — including the correctness half of it, since a worker composing a checkpoint key from a
-short scoped name has far less to get right. It is a larger change than either answer there:
-the session record's key layout, the crossing check, the producer index and `inspect_session`'s
-variable view all read the bag as flat today.
+long — it collapses the 87 to 18 — including the correctness half, since a worker composing a
+checkpoint key from a short scoped name has far less to get right. It is a larger change than either
+answer there: the session record's key layout, the crossing check, the producer index and
+`inspect_session`'s variable view all read the bag as flat today. It is a change to what a name is,
+where the routines plan is a change to what a body is, so it belongs to its own work rather than
+inside a stage here.
 
-**The construct is not blocked on it.** The mangled form is measured and materialises correctly,
-and the cheaper answer to the correctness half is the server composing the checkpoint instance id
-rather than the worker — so this item is where the length goes away, not where it becomes safe.
+**One clarification the design owes now, at no cost:** which reading of "the reference site" an
+internal's name takes when the reference is nested. **Recommended: the full composed path**, because
+the shorter reading — the innermost reference id alone — loses exactly the collision-freedom the rule
+exists to provide, the moment one routine is reached by two paths whose innermost reference ids
+agree, which is the shape nesting introduces. At the comprehension site the two readings coincide at
+66 characters, because the reference is one level deep.
+
+**The construct is not blocked on any of it.** The mangled form is measured and materialises
+correctly, and the cheaper answer to the correctness half is the server composing the checkpoint
+instance id rather than the worker — so this item is where the length goes away, not where it becomes
+safe.
 
 Where this reaches beyond routines is worth stating, because the question arrives from that
 direction too. Merging the workflow and activity shapes into one nesting construct — a primary

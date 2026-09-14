@@ -1,440 +1,495 @@
 # The test fixture corpora, and what a fifth step kind costs in them
 
-> Item 11a · sweep of a surface no record in either planning folder reaches · measured at server
-> `792f2cc5` and corpus `a4a5d88b`, one server commit past the completeness pass's `ee95e4cd`
+> Item 11a · a sweep of the one surface no record in either planning folder reaches · measured at
+> server `fe5f5f78` and corpus `e9d26007`, 92 server commits past the completeness pass's `ee95e4cd`
 
-The test suite does not only read the corpus. Alongside the eighteen workflows in the `workflows`
-submodule sits a second body of workflow definitions, written by hand, living under `tests/fixtures`,
-and served to the real server as though it were the corpus. There are 23 of these synthetic workflow
-trees carrying 59 activity files, and the routines proposal names none of them: the word *fixture*
-appears zero times in all thirteen of its records, and in the sweep folder `tests/fixtures` appears
-only where a grep for an identifier collided with one.
+The test suite does not only read the corpus. Beside the eighteen workflow definitions on the
+corpus tree sits a second body of workflow definitions, written by hand, living under
+`tests/fixtures`, and handed to the real server as though it were the corpus. There are **28** of
+these synthetic workflow trees carrying **68** activity files — more trees than the corpus has
+workflows, and about half as many activity files as the corpus has — and the routines proposal
+names none of them. The word *fixture* appears **zero** times in all thirteen of its records.
 
-The construct the proposal describes reaches every one of these trees on the day it lands. A
-`routines/` discovery pass runs wherever the loader discovers an `activities/` directory, and a fifth
-member on the step union changes what every one of these files is allowed to contain. So the question
-this document answers is what that costs, priced against the one measured precedent in the
-repository — the graph fan, which added a fixture root of its own four days ago.
+A `routines/` discovery pass runs wherever the loader discovers an `activities/` directory, and a
+fifth member on the step union changes what every activity file in the repository is allowed to
+contain. Both reach all 28 trees on the day they land. This document measures that surface, prices
+it against the one construct in the repository that has already paid the bill, and says what the
+plan owes.
 
-**The headline is an asymmetry nobody has stated.** The fan is executed, so its fixtures are trees to
-walk, and its illegal forms fail the load loudly enough to assert on. A routine is materialised away
-before anything executes, and it is materialised by the same code path as a checkpoint fragment —
-which, when it cannot resolve a reference, **drops the host activity and lets the workflow load
-clean**. Measured: `tests/fixtures/fragments/beta-fixture` reports `success` from `loadWorkflow` with
-an activity count of zero. An illegal routine form therefore cannot be tested the way the fan's
-illegal forms are tested, and stage 3's criterion that "every terminal state of the reference
-lifecycle but `Checked` fails the load" names a behaviour the mechanism it copies does not have.
+**Three findings drive everything below.**
+
+First, **the engine's continuous integration has no corpus at all.** `.github/workflows/verify.yml:28`
+checks out with `submodules: false` and never provisions a workflows worktree, so
+`liveCorpusRoot()` returns null and 36 `skipIf` sites across 28 test files stand down. Every
+workflow definition that the engine's own CI loads is a fixture. So is the delivery-cost gate, and
+so is the container smoke test in `docker-publish.yml`. The fixture corpora are not a sideline to
+the corpus — on CI they are the whole definition surface.
+
+Second, **a fifth step kind does not fail a load; it drops an activity.** Measured, not argued:
+`tests/fixtures/fragments/beta-fixture` carries a step whose discriminator the schema refuses, and
+`loadWorkflow` returns `success` with an activity count of **zero**. The invalid activity is logged
+as a warning and skipped at `src/loaders/workflow-loader.ts:88-93`; the workflow still resolves at
+line 388. Stage 3's criterion that "every terminal state of the reference lifecycle but `Checked`
+fails the load" names a behaviour the loader does not currently have for anything the activity
+schema rejects.
+
+Third, **the fan put its legal shapes in committed fixture trees and its illegal shapes nowhere
+near them.** Seventeen trees hold the forms that load; 31 illegal forms live in temporary
+directories written inline by one 740-line test file. A construct materialised away at load
+inherits the second half of that split and gets little use out of the first.
 
 ---
 
-## One: the surface, tree by tree
+## One: the surface, root by root
 
-`find tests scripts -name 'workflow.yaml'` returns **23** roots and
-`find tests scripts -path '*/activities/*' -name '*.yaml'` returns **59** activity files. Both
-figures reproduce the completeness pass exactly. All 59 activity files sit inside the 23 trees:
-48 under `fan-corpus`, 5 under `variable-model`, 3 under `fragments`, 3 under `message-binding`.
+`find tests scripts -name 'workflow.yaml'` returns **28** synthetic workflow roots and
+`find tests scripts -path '*/activities/*' -name '*.yaml'` returns **68** fixture activity files.
+`tests/fixtures` holds **124** files and **2,255** lines in total. There is no README anywhere under
+it; every tree's purpose is stated, where it is stated at all, in the header comment of the test
+that reads it.
 
-`tests/fixtures` holds 2,028 lines across 109 files in total.
+The completeness pass's figures reproduce exactly at the revision it measured —
+`git ls-tree -r ee95e4cd --name-only` filtered the same two ways returns **23** and **59**. Five
+trees and nine activity files have landed since, across 92 commits.
 
-### The fifteen trees of `tests/fixtures/fan-corpus` — 70 files, 1,141 lines
+### `tests/fixtures/fan-corpus` — 17 trees, 79 files, 1,290 lines
 
-| Tree | What it exists to prove | Loads |
+The largest fixture root in the repository, and the measured precedent for a new construct. Six
+trees are asserted *clean* by the guard test, seven carry an engineered defect the guard must
+report, and four exist for a single behaviour each.
+
+| Tree | What it exists to prove | Consumed by |
 |---|---|---|
-| `list-fan-fixture` | The flagship shape: one source fanning to two branches that converge on one meeting point | clean |
-| `instance-fan-fixture` | One activity run once per element of a collection | clean |
-| `mixed-fan-fixture` | A bare member and an instance fan in the same destination | clean |
-| `chained-fan-fixture` | A fan whose branch is itself a fan source | clean |
-| `wide-fan-fixture` | The instance ceiling — `maxInstances` and what happens above it | clean |
-| `gather-fixture` | The container read whole, which is what a gather does | clean |
-| `templated-artifact-fixture` | A branch technique whose artifact filename interpolates the per-instance variable | clean |
-| `meta` | A five-line shared home so the transient-bootstrap path works against this root at all | clean |
-| `bare-read-fixture` | A read of the container with no write behind it → `unwritten-read` | clean, guard reports |
-| `missing-member-fixture` | A member read the branch never writes → `unwritten-read` | clean, guard reports |
-| `no-index-fixture` | A container read that omits the index, so it addresses nothing | clean, guard reports |
-| `ungathered-fixture` | A container written and never read → `unread-write` | clean, guard reports |
-| `stray-parameter-fixture` | A per-instance parameter read outside the fan | clean, guard reports |
-| `collision-list-fixture` | Two list branches whose techniques declare the same output name | clean, guard reports |
-| `collision-instance-fixture` | The same collision on the instance form | clean, guard reports |
+| `list-fan-fixture` | A destination naming two activities, converging on the meeting point their own exits name | real server, real loader, guard |
+| `instance-fan-fixture` | A destination naming one activity and the collection to run it over, one worker per element | real server, real loader, guard |
+| `mixed-fan-fixture` | A list whose members are part different activities and part repeats of one | real server, guard |
+| `chained-fan-fixture` | A fan whose collection is an earlier fan's container — the read exempt from the bare-container rule | guard |
+| `gather-fixture` | The container read whole | guard |
+| `templated-artifact-fixture` | An instance-fanned activity whose artifact name carries the fan parameter as a token | guard |
+| `wide-fan-fixture` | An instance fan declaring a ceiling above the server's own, to prove which of the two bounds decides | real server |
+| `dotted-fan-fixture` | An instance fan whose collection is reached at a path into a named object | real server |
+| `two-fans-same-activity-fixture` | Two sequential instance fans of one activity, each over its own collection | real server |
+| `meta` | A two-file shared home so the transient-bootstrap path works against this root at all | real server |
+| `bare-read-fixture` | A container read with no write behind it → `unwritten-read` | guard |
+| `missing-member-fixture` | A member read the branch never writes → `unwritten-read` | guard |
+| `no-index-fixture` | A container read omitting the index, so it addresses nothing → `unwritten-read` | guard |
+| `ungathered-fixture` | A container written and never read → `unread-write` | guard |
+| `stray-parameter-fixture` | A per-instance parameter read outside the fan → `unwritten-read` | guard |
+| `collision-list-fixture` | Two list branches whose composed signatures resolve one literal artifact filename | guard |
+| `collision-instance-fixture` | An instance-fanned activity whose artifact name does not interpolate the fan parameter | guard |
 
-Eight are clean and seven carry an engineered defect. Every one of the fifteen passes the loader.
-That is not incidental — see section three.
+Every one of the seventeen loads clean through `loadWorkflow`. The seven defects are guard findings,
+not load failures — a distinction that decides what a routines fixture root can and cannot be, and
+section four returns to it.
 
-### The other eight trees
+The root carries drift of its own. Six of the seventeen `workflow.yaml` files —
+`bare-read`, `gather`, `missing-member`, `no-index`, `stray-parameter` and `ungathered` — share one
+byte-identical `description:` line, "A correct fan of each form with a gather-bound meeting point,
+plus the collision arms", which describes none of them. A tree's purpose is recoverable only from
+the assertions in `tests/fan-container-guard.test.ts`.
 
-| Root | Trees | What they exist to prove |
+### `tests/fixtures/fragments` — 3 trees, 6 files, 100 lines
+
+The trees for the mechanism stage 5 retires. `alpha-fixture` declares the `fragments:` block and is
+the referenced workflow; `beta-fixture` references it and carries every defect; `gamma-fixture`
+authors one checkpoint body inline at two sites. Section three prices what stage 5 does to them, and
+the answer is not "delete".
+
+### `tests/fixtures/variable-model` — 4 trees, 9 files, 129 lines
+
+`bare-fixture` declares variables with no defaults so nothing seeds; `seed-fixture` exercises
+`defaultValue` seeding and `setVariable` type validation across two activities; `child-fixture` is a
+child workflow whose own defaults must seed the embedded child bag; `meta` is the bootstrap home.
+This is the root handed to the real MCP server most often — four test files start a harness on it.
+
+### `tests/fixtures/message-binding` — 1 tree, 4 files, 116 lines
+
+Three activities covering the bound and unbound cases a user-facing message can reach. Read only by
+`guards/check-message-binding.ts`, and **this tree does not load**: `loadWorkflow` on it fails with
+"checkpoint 'cites-own-output' option 'revise' selects exit 'revise', which the activity does not
+declare." Nothing notices, because nothing loads it.
+
+### `tests/fixtures/markdown-techniques` — 2 trees, 12 files, 186 lines
+
+`meta` and `work-package`, holding only `techniques/` — no `activities/`, and both fail
+`loadWorkflow` with `initialActivity: Required`. They exist so the technique loader has content
+addressed the way the corpus addresses it, including a deliberately malformed operation under
+`work-package/techniques/malformed-ops/`.
+
+### `tests/fixtures/token-bench` — 1 tree, 3 files, 36 lines
+
+`delivery-fixture`, a linear two-activity walk, and the newest tree of the six roots. It is the
+subject of the delivery-cost gate: `.github/workflows/verify.yml:53-54` points `WORKFLOWS_DIR` at
+this root and compares characters delivered against `tests/fixtures/token-benchmark-baseline.json`,
+failing at a 1% regression. `.github/workflows/docker-publish.yml:53,65` points the built container
+at the same root for both transport smoke tests.
+
+### Three fixture roots that are not workflow trees
+
+`legacy-session` (a pre-migration `workflow-state.json` and a token, read by `migration.test.ts` and
+two cases in `mcp-server.test.ts`), `inspect-session` (a Python script the server shells out to), and
+`run-profile` (six recorded run transcripts). A routines change reaches none of these directly. It
+reaches `legacy-session` only if materialisation moves the positional step keys a stored session
+holds — which is the session-record sweep's subject, not this one.
+
+---
+
+## Two: how each root is consumed, and by what
+
+**18** test files read something under `tests/fixtures` at `fe5f5f78`, up from **13** at `ee95e4cd`.
+Restricted to the ones reading a *workflow tree* rather than a session or a transcript, the figure
+is **15**, up from **10** — and ten is exactly the completeness pass's count, so that figure
+reproduces under the reading it intended.
+
+Four consumption paths exist, and they differ in what a routine would be visible to.
+
+**Through the real MCP server.** Nine test files start a harness on a committed fixture root, across
+eleven call sites: `tests/e2e/fan-walk.test.ts:21`, `tests/fan-ceiling.test.ts:18`,
+`tests/fan-exit-destinations.test.ts:16`, `tests/fan-identity.test.ts:16`,
+`tests/fan-projection.test.ts:15`, `tests/launched-workflow-completion.test.ts:126`,
+`tests/server-owned-session-setup.test.ts:52` and `:355`, `tests/session-concurrency.test.ts:144`,
+and `tests/variable-seeding.test.ts:100` and `:529`. A tenth,
+`tests/http-transport.test.ts:15`, builds a server config on `tests/fixtures/token-bench` whenever
+no live corpus is present. These see a routine only after materialisation has removed it.
+
+*A correction the completeness pass owes.* It records "four of the ten go through the real server"
+and names three sites. Re-measured at its own revision with
+`git grep -n "createHarness({ workflowDir" ee95e4cd -- tests`, the count is **five** test files over
+**six** call sites — `e2e/fan-walk`, `fan-ceiling`, `launched-workflow-completion`,
+`session-concurrency`, and `variable-seeding` twice. The figure was one low when it was written and
+is five low now.
+
+**Through the real loader, without the server.** `tests/fan-graph-readers.test.ts:26` calls
+`loadWorkflow(FAN_CORPUS, id)` directly for two trees. Same visibility as above: post-materialisation.
+
+**Through a guard, reading raw YAML.** `tests/fan-container-guard.test.ts:18` runs
+`collectFindings` from `guards/check-activity-variables.ts` over the whole fan root;
+`tests/fragments-guard.test.ts:15` runs `collectFragmentViolations` over the fragments root;
+`tests/message-binding.test.ts:13` runs `collectFindings` over the message-binding root. These read
+the authored file and therefore **do** see a routine reference, and they are the only consumers that
+ever will.
+
+**Through the technique loader.** `tests/technique-loader.test.ts:13` addresses
+`tests/fixtures/markdown-techniques` with `readTechnique`, `composeTechnique` and
+`resolveTechniques`, never through `loadWorkflow`.
+
+**Through the benchmark.** `scripts/run-token-benchmark.ts` walks `token-bench/delivery-fixture`
+with the real server and diffs delivered characters against the committed baseline.
+
+That the fan root serves both a real server and a raw-reading guard is the single most useful fact
+here: `check-activity-variables` is precisely the guard stage 4 requires to "resolve a routine's
+effects against the routine's declared outputs and internals", and the fan has already demonstrated
+that one fixture root can serve it and a harness at once.
+
+### What the guard suite cannot see
+
+Guards resolve their corpus through `requireWorkflowsRoot` in `guards/workflows-root.ts`, whose
+precedence is `--root` > `WORKFLOWS_DIR` > `.worktrees/workflows` of the primary checkout. No
+registered guard is ever pointed at `tests/fixtures` by `check:all`. Grepping `guards/` and
+`package.json` for `tests/fixtures` returns nothing. So a fixture tree is invisible to all 41
+registered guards unless a test hands the guard's collector the path itself — which three tests do.
+
+The consequence is plain and it is what makes fixtures a viable home for illegal forms: **the
+corpus must pass every guard and the loader; a fixture tree must pass only whatever its own test
+asks of it.** `message-binding/binding-fixture` proves the point by failing the load today.
+
+---
+
+## Three: the trees that exist for the mechanism stage 5 retires
+
+`tests/fixtures/fragments` is three trees, six files, 100 lines, with exactly one consumer —
+`tests/fragments-guard.test.ts`, 58 lines. No fragment reference exists in any other fixture tree.
+The resolver's own unit test, `tests/fragment-resolver.test.ts` (246 lines), builds its cases as
+inline objects and reads the live corpus when one is present; it owns no fixture.
+
+Running the guard over the root returns **8** violations, which is the number its test pins:
+
+| Rule | Site | Stage 5 |
 |---|---|---|
-| `tests/fixtures/variable-model` | `bare-fixture`, `child-fixture`, `seed-fixture`, `meta` | Declared defaults are seeded into a session, a worker's variable outputs persist, and a value declaration constrains what it admits |
-| `tests/fixtures/fragments` | `alpha-fixture` (declares), `beta-fixture` (references, with defects), `gamma-fixture` (inline duplication) | The nine rules of the shared-checkpoint-fragment guard, and nothing else |
-| `tests/fixtures/message-binding` | `binding-fixture` | A gate message citing a path its own activity produces, versus one already in the bag |
+| `ref-opens-step` | `beta-fixture/activities/00-beta-activity.yaml` | retires |
+| `ref-body-conflict` | `beta-fixture/activities/00-beta-activity.yaml` | retires |
+| `undeclared-effect-variable` | `beta-fixture/activities/00-beta-activity.yaml` | retires |
+| `unresolved-ref` | `beta-fixture/activities/00-beta-activity.yaml` | retires |
+| `unused-fragment` | `alpha-fixture/workflow.yaml` | retires |
+| `duplicate-rule` | `alpha-fixture/workflow.yaml` | **survives** |
+| `duplicate-rule` | `beta-fixture/workflow.yaml` | **survives** |
+| `duplicate-checkpoint` | `gamma-fixture/activities/00-gamma-activity.yaml` | **survives** |
 
-Four further fixture roots hold no workflow tree and are named here for completeness, because a
-routines change does not reach them: `markdown-techniques` (two directories of technique markdown for
-the technique loader), `legacy-session` (a pre-migration state file), `inspect-session` (a Python
-script), and `run-profile` (four JSONL transcripts).
+**So no tree here is a whole deletion, and the sweep folder's framing needs one correction.** Each
+of the three trees carries exactly one finding for a rule that outlives the mechanism. What stage 5
+removes is a set of *blocks*, not directories:
 
-One detail worth recording. The guards' own enumerator treats a directory as a workflow when it holds
-a `workflow.yaml`, an `activities/` **or** a `techniques/` folder
-(`scripts/workflows-root.ts:41-45`). It does not mention `routines/`. A workflow directory that holds
-routines and nothing else is invisible to that enumeration, and the two `markdown-techniques`
-directories are already workflow directories by that rule and by no other.
+- `alpha-fixture/workflow.yaml` lines 7–31 — the `fragments:` block, 25 of the file's 37 lines. Its
+  `rules:` block at lines 4–6 stays, because it is one half of a `duplicate-rule` pair.
+- `alpha-fixture/activities/00-alpha-activity.yaml`, all 7 lines — its only step is
+  `ref: confirm-gate`.
+- `beta-fixture/activities/00-beta-activity.yaml`, all 16 lines — four of the four retiring
+  reference-side rules. Its manifest stays, carrying both duplicated rule texts.
+- `gamma-fixture` is untouched.
 
----
+Net: **48 of 100 lines**, two of six files, and zero of three directories. The guard test's closing
+assertion that the root "reports nothing beyond the engineered defects" at 8 violations has to be
+re-derived to 3, and the two surviving trees have to keep loading with zero activities each — which
+they will, per the drop-and-continue behaviour measured in section four.
 
-## Two: how each tree is reached, and by what
+Two of the guard's nine rules have no fixture coverage at all today: `malformed-ref` and
+`inline-duplicate-of-fragment` fire on nothing in this root. Both are in the retiring seven, so the
+gap closes by deletion rather than by being filled.
 
-Three read paths exist, and the distinction is the whole of this document.
-
-**The real server.** Five test files hand an on-disk fixture root to `createHarness`, which stands up
-the genuine server over an in-memory transport with that root as its workflows directory
-(`tests/e2e/harness.ts:36-56`; the root is taken from `opts.workflowDir` at line 41, falling back to
-the corpus). Those files are `tests/e2e/fan-walk.test.ts:21` and `tests/fan-ceiling.test.ts:18` on
-`fan-corpus`, and `tests/variable-seeding.test.ts:100`, `tests/session-concurrency.test.ts:144` and
-`tests/launched-workflow-completion.test.ts:126` on `variable-model`. A sixth call,
-`tests/variable-seeding.test.ts:527-529`, copies `variable-model` into a temporary directory first and
-serves the copy, so the drift assertions can mutate it.
-
-The completeness pass says four of the ten go through the real server and names three `createHarness`
-lines. I measure **five** distinct test files, six call sites. I give my own figure.
-
-**The real loader, without the server.** Three test files call `loadWorkflow` against a fixture root
-directly: `tests/e2e/fan-walk.test.ts:29`, `tests/fan-graph-readers.test.ts:26` and
-`tests/fan-container-guard.test.ts:58`. All three read `fan-corpus`.
-
-**Raw YAML, bypassing the loader entirely.** Three guard modules are invoked against a fixture root as
-a plain directory of files: `scripts/check-activity-variables.ts` over `fan-corpus`
-(`tests/fan-container-guard.test.ts:18`), `scripts/check-fragments.ts` over `fragments`
-(`tests/fragments-guard.test.ts:12-15`), and `scripts/check-message-binding.ts` over
-`message-binding` (`tests/message-binding.test.ts:10-13`).
-
-Counting distinct test files that read anything under `tests/fixtures`, I measure **13**; counting
-only those that read one of the 23 workflow trees, **9**. The completeness pass says ten. I give my
-own figures and note the discrepancy is a counting boundary, not a moved tree.
-
-**No registered guard sees any of this.** `grep -rn "tests/" scripts/check-*.ts` returns nothing, and
-the corpus root resolves to `WORKFLOWS_DIR`, `--root`, or the `workflows` submodule and nothing else
-(`scripts/workflows-root.ts:24-38`, `tests/corpus-root.ts:19-40`). So the 40 registered guards —
-`grep -c "  id: '" scripts/guards.ts` — never walk a fixture tree. A fixture is reached by a guard
-only when a test hands the guard's collector a path, and three tests do.
+*A second correction.* `sweeps/stale-restatement.md:133-134` lists `scripts/check-fragments.ts`,
+`scripts/fragments-index.ts`, `scripts/guards.ts` and "their two test files" in its 45-path change
+list. All three now live under `guards/` (`git ls-tree -r ee95e4cd` shows them at `scripts/`, and
+`git ls-tree -r HEAD` at `guards/`), and the list still names no fixture tree. The same paragraph's
+"three committed baselines stage 5 re-records" includes one that moved into this surface: commit
+`76d76e21` deleted `scripts/fixtures/token-benchmark-baseline.json` and created
+`tests/fixtures/token-benchmark-baseline.json` in the same change that created the `token-bench`
+tree.
 
 ---
 
-## Three: what the loader does to an illegal form, and why it decides everything else
+## Four: what a new step kind costs here — the graph fan, measured
 
-The load has five decision points, and they do not agree with each other about failure.
+The fan is the only construct in this repository to have been built since the fixture corpora took
+their current shape, so it is the precedent, and it is recent enough to price exactly.
 
-| Stage in `src/loaders/workflow-loader.ts` | On failure |
-|---|---|
-| Per-file activity schema validation, line 87-92 | **Drops the activity**, records a `DefinitionLoadError`, workflow loads |
-| Workflow schema validation, line 312-315 | **Fails the load** |
-| Fragment materialisation per activity, line 342-356 | **Drops the activity**, records the error, workflow loads |
-| Variable merge contradictions, line 368-373 | **Fails the load** |
-| Exit-binding validation, line 383-384 | **Fails the load** |
+**The fixture root it added.** `tests/fixtures/fan-corpus`: **17** trees, **79** files, **1,290**
+lines. It arrived across five commits between 2026-09-09 and 2026-09-11 — `be325d0f` (4 trees),
+`4defd3cd` (10 trees), `c2d0a50b`, `ebeb4edb`, `d5b70434` (one each). At 1,290 lines it is **57%**
+of everything under `tests/fixtures`.
 
-The two silent stages are stated as design, not as oversight: the comment at lines 348-351 says the
-contract is "the same as a per-file load failure — exclude the activity and surface the error … instead
-of letting an unmaterialized checkpoint fail later downstream".
+**The tests it added.** Eleven files, **2,083** lines, in three distinct idioms:
 
-I probed all 23 trees through `loadWorkflow`. Twenty-two report success. One,
-`message-binding/binding-fixture`, fails with *"Activity 'produce-then-render' checkpoint
-'cites-own-output' option 'revise' selects exit 'revise', which the activity does not declare"* — an
-exit-binding error, one of the loud stages. And one of the twenty-two successes is a success in name
-only: `fragments/beta-fixture` loads with **activityCount 0**, because its single activity carries a
-step with a `ref` and no `kind` (`tests/fixtures/fragments/beta-fixture/activities/00-beta-activity.yaml:16`)
-and a `ref` to a fragment that does not exist (line 15). The activity is dropped at the schema stage
-and the workflow reports clean.
+| Idiom | Files | Lines | What it holds |
+|---|---|---|---|
+| Committed fixture root | 7 | 944 | Every *legal* fan shape, shared by a harness, the loader and a guard |
+| Temporary trees written inline | 1 | 740 | Every *illegal* fan shape — 31 cases, 32 `loadErrors` calls |
+| In-memory objects, no tree | 3 | 399 | Pure functions over a graph or a technique |
 
-**This is the precedent that governs routines, because routine materialisation is the same
-mechanism.** The proposal's construct is materialised at load into the host activity, resolving the
-way a technique reference does. If it is implemented where fragment materialisation sits, then an
-unresolved, cyclic, unbound or overbound routine reference drops the host activity and the workflow
-loads. Stage 3's criterion — *"Every terminal state of the reference lifecycle but `Checked` fails the
-load, with a message naming the routine, the reference site and the reason. None is a warning"*
-(`2026-09-03-routines/README.md:849-850`) — is a stronger guarantee than the code path it copies
-provides, and the proposal nowhere says which of the five decision points the routine check occupies.
+The 740-line file is `tests/fan-load-rules.test.ts`. It `mkdtempSync`es one root in `beforeAll`,
+writes a whole workflow per case, loads it, and asserts on the message. Its own header states the
+design: "The fan's shape rules, one test per rule. They live in the load and only there, so a
+malformed fan cannot be walked at all." Not one of those 31 illegal shapes is a committed file.
 
-The diagnostics are carried, so the information is not lost. But they are barely read: across the
-whole suite, exactly two assertions touch `activityLoadErrors`, both in
-`tests/workflow-loader.test.ts` (lines 140 and 157). A routines load-rules test written against the
-fragment precedent has to assert on a field the suite has two existing consumers for; a test written
-against stage 3's wording has to assert `result.success === false`, which needs the check moved to one
-of the loud stages.
+### What the same shape costs for a construct materialised away at load
 
----
+Four asymmetries change the answer, and each of them shifts cost from the committed root to the
+inline one.
 
-## Four: the trees that are deletions rather than migrations
+**A routine is not observable after the load, so the harness-facing half of the fan's root buys
+less.** The fan's seventeen trees earn their keep because a loaded fan is still a fan — the harness
+walks it, the graph readers read it, the guard finds it. Six test files assert on a fan through the
+server or the loader, naming six of the seventeen trees between them — `instance-fan`, `list-fan`,
+`mixed-fan`, `wide-fan`, `dotted-fan` and `two-fans-same-activity` — plus the shared `meta` every
+harness bootstraps from. A loaded routine is a host
+activity with substituted steps and prefixed identifiers, so a harness-facing assertion can only
+inspect the substitution result. The two stage-3 criteria that need a harness —
+the textual splicer emitting an explicit prefixed `id:` on every spliced step, and delivery being
+byte-identical for an activity carrying no routine — are both properties of delivered bytes, which
+is a walk rather than a file, and the second of them is already gated in CI against
+`token-bench/delivery-fixture`.
 
-Stage 5 retires the shared-checkpoint-fragment mechanism: the `fragments` block leaves
-`work-package/workflow.yaml`, seven of the guard's nine rules are deleted, and `duplicate-checkpoint`
-keeps its rule with a remedy naming a routine (`2026-09-03-routines/README.md:882-884`).
+**The population a fifth kind lands on is small and oddly shaped.** Across all 68 fixture activity
+files there are **58** steps: 44 `action`, 8 `checkpoint`, 5 `technique`, and 1 with no `kind` at
+all (the `ref-opens-step` defect). There are **zero** `loop` steps, and zero nesting of any kind.
+So the fixture corpora contain no instance of the construct stage 0 landed `continueWhile` for, and
+a routine that owns a loop — the whole justification for stage 0 standing alone — has no fixture
+precedent to copy.
 
-`tests/fixtures/fragments` — three trees, 6 files, 100 lines — exists for that guard and for nothing
-else. Its three titles say so: *"Fragments guard fixture — declaring workflow"*, *"— referencing
-workflow with defects"*, *"— inline duplication"*. Its one consumer,
-`tests/fragments-guard.test.ts` (58 lines), asserts exactly eight engineered findings and that there
-are no others (line 56).
+**The guards are the only readers that see a routine, and their fixtures are mostly not committed.**
+Two guard fixture roots are committed (`fragments`, `message-binding`) and one is shared with the
+harness (`fan-corpus`). Nine test files instead build a guard corpus in a temporary directory and
+call `declareFixtureWorkflows` from `tests/corpus-fixture.ts` to make each directory discoverable:
+`artifact-guides-guard`, `audience-guard`, `bootstrap-self-contained`, `branch-as-step-guard`,
+`checkpoint-entry-guard`, `harness-adapter-set`, `loop-shape-guard`, `self-composed-set-guard`,
+`set-action-values`. The helper they share, `writeWorkflowFixture` at `tests/corpus-fixture.ts:10-15`,
+writes a three-line `workflow.yaml` and nothing else. Every authored-form guard that stage 4 sends to
+walk `routines/` needs a routine in its fixture, so either that helper grows a routines writer or
+nine call sites each write their own.
 
-Sorting those eight against what survives stage 5:
+**The path rule that names a file's workflow does not know about routines.** `workflowIdFromCorpusPath`
+at `src/loaders/corpus-index.ts:64-69` finds the owning workflow by looking for one of three reserved
+directory names — `activities`, `resources`, `techniques`, declared at line 39. Measured directly:
+`prism/activities/03-analyse.yaml` resolves to `prism`, and `prism/routines/fold.yaml` resolves to
+`null`, as does `corpus/security/prism/routines/fold.yaml`. `citePath` in `guards/workflows-root.ts`
+falls back to the raw relative path when that happens, so a guard finding sited on a routine would
+be keyed by path rather than by workflow id — the exact thing the function's own doc comment says
+the id-keyed site key exists to prevent. Adding `routines` to the reserved set is one line; not
+adding it silently breaks every ledger site key that lands on a routine.
 
-| Finding | Tree carrying it | Survives? |
-|---|---|---|
-| `unresolved-ref` | `beta-fixture` | no — rule retires |
-| `ref-opens-step` | `beta-fixture` | no |
-| `ref-body-conflict` | `beta-fixture` | no |
-| `undeclared-effect-variable` | `beta-fixture` | no |
-| `unused-fragment` | `alpha-fixture` | no |
-| `duplicate-rule` ×2 | rule text shared `alpha`+`beta`, and `beta`+`gamma` | **yes** — never a fragment rule |
-| `duplicate-checkpoint` | two identical inline checkpoints in `gamma-activity` | **yes** |
+### The estimate
 
-So the deletion is not the root. `beta-fixture` is a pure deletion: every one of its four defects
-belongs to a retiring rule, and it exists for no other purpose. `alpha-fixture` loses its `fragments`
-block and its `unused-fragment-gate` and keeps its workflow-level rule text, because that text is one
-half of a surviving `duplicate-rule` pair. `gamma-fixture` is untouched: both its duplicated inline
-checkpoints and its activity-level rule text feed surviving rules — but `duplicate-rule` fires only
-across two or more workflows, so deleting `beta-fixture` outright takes the second site of the
-`beta`+`gamma` pair with it and silently drops one of the two `duplicate-rule` findings the test
-asserts.
-
-**Net: one tree deleted, two edited, and a guard test whose count changes from 8 to 3.** Nothing in
-either planning folder records this. The 45-path change list names "`scripts/check-fragments.ts`,
-`scripts/fragments-index.ts` and their two test files"
-(`2026-09-10-routines-sweeps/sweeps/stale-restatement.md:133-134`) without naming the tree those tests
-read or which of its defects survive.
-
-And the second of those two test files is not fixture-backed at all. `tests/fragment-resolver.test.ts`
-pins its materialisation assertions to the **real corpus**: `WORKFLOW_DIR = corpusRoot()` at line 27,
-and the block at lines 203-245 names `work-package`, `prism` and `remediate-vuln` by id, three
-activity/checkpoint pairs by id, and the fragment `assumption-interview` by name. Its helper at lines
-34-41 throws outright when the named fragment is absent from `work-package/workflow.yaml` — which is
-precisely what stage 5 makes true. Three tests and one helper, 42 lines, break by construction on the
-day the `fragments` block leaves the corpus, and no stage budgets rewriting them against a fixture.
+Priced against the fan and adjusted for those four differences: a committed root of **5 to 7** trees
+rather than seventeen (a host with one reference, a host with two references to one routine, a
+routine referencing a routine, a cross-workflow reference, a shared `meta`, and one or two carrying
+an engineered defect for the guards); **one** inline-temp-tree test file in the shape of
+`fan-load-rules`, carrying every terminal of the reference lifecycle, which the proposal's own
+lifecycle section puts at four named states plus the `Malformed` terminal it lacks plus the
+input/output collision the sweeps' defect 10 names; and a **routines writer** on
+`tests/corpus-fixture.ts` plus routine content in however many of the nine temp-corpus guard tests
+stage 4 actually changes. The committed root is smaller than the fan's; the inline file is not.
 
 ---
 
-## Five: what a new step kind costs here, priced against the fan
+## Five: can an illegal routine form live in a fixture tree at all?
 
-`tests/fixtures/fan-corpus` arrived in three commits, all within two days, all purely additive:
-`be325d0f` (2026-09-09, 16 files, 159 lines), `4defd3cd` (2026-09-10, 54 file-changes, 920 lines) and
-`c2d0a50b` (2026-09-10, 4 files, 62 lines). The sum, 1,141 insertions, equals the root's current line
-count exactly, so nothing has been rewritten since.
+Yes, with three qualifications, and the qualifications are what decide where the work goes.
 
-The fan's test surface splits into four layers, and only one of them uses an on-disk tree:
+**A committed fixture tree may hold a form the loader refuses.** Nothing walks `tests/fixtures` but
+the tests that name it, and `loadWorkflow` is called on a named id rather than on a root, so one
+illegal tree beside legal ones is inert. `tests/fixtures/message-binding/binding-fixture` is the
+standing proof: it fails `loadWorkflow` with an option selecting an undeclared exit, and it has
+lived there being read by a guard that parses raw YAML. The same holds for
+`tests/fixtures/markdown-techniques/meta` and `work-package`, both of which fail with
+`initialActivity: Required`.
 
-| Layer | Where the cases live | Lines |
-|---|---|---|
-| Destination schema — what parses | in-memory objects, `tests/fan-destination-schema.test.ts` | 131 |
-| Load rules — the illegal shapes | trees written to `mkdtempSync` at run time, `tests/fan-load-rules.test.ts` | 714 |
-| Graph readers, the walk, the guard | the 15 on-disk trees | 592 across 4 files |
-| Arrival intersection — a unit | in-memory graphs, `tests/fan-arrival-intersection.test.ts` | 224 |
+**But the form the routines plan most wants to assert on is not refused — it is dropped.** This is
+the finding that matters most. `tests/fixtures/fragments/beta-fixture/activities/00-beta-activity.yaml`
+carries a step with no `kind` field at line 16. The activity schema rejects it with
+`invalid_union_discriminator`, expecting `'technique' | 'action' | 'checkpoint' | 'loop'`. The loader
+logs "Skipping invalid activity", pushes a `DefinitionLoadError`, and **continues**
+(`src/loaders/workflow-loader.ts:88-93`). The workflow then loads successfully with an activity count
+of zero, and the dropped activity's id is still admitted as a known id for exit-binding validation at
+line 382. A schema-level malformation of a routine reference — an unknown field, a `with` that is not
+an object, a missing `routine:` — therefore produces a green load and a silently smaller workflow.
 
-Total: 1,661 lines of test plus 1,141 lines of fixture, **2,802 lines for one construct**. The largest
-single file, at 714 lines, is the one with no on-disk fixture at all.
+Stage 3's criterion is: *Every terminal state of the reference lifecycle but `Checked` fails the
+load, with a message naming the routine, the reference site and the reason. None is a warning.*
+Against the measured loader, half that sentence describes a change nobody has costed. The terminals
+reachable by *resolution* (unresolved, cyclic, unbound, overbound) can fail the load because the
+resolver runs after the activity validates. The terminals reachable by *shape* cannot, because the
+activity never reaches the resolver. Either the criterion is scoped to resolution terminals, or the
+plan buys a change to drop-and-continue — which is a behaviour change affecting every activity in
+the repository, not a routines feature, and no stage names it.
 
-A routine is a different kind of thing, and the difference changes the shape of the bill in both
-directions.
+**A guard fixture and a load fixture cannot be the same tree.** The three committed guard roots are
+read raw, so an illegal form in them is the *subject*. The harness roots are loaded, so an illegal
+form in them is either invisible (dropped) or fatal to every test in the file. The fan resolved this
+by keeping the two apart — seventeen legal trees in one root, 31 illegal ones in `mkdtemp`. A
+routines landing has the same constraint and less room, because its guard fixtures and its load
+fixtures want the *same* construct at the same site.
 
-**Layers one, two and four transfer at roughly the same size.** The routine step's parse, the
-signature's parse and the substitution unit are all in-memory work. The load rules — unresolved,
-cyclic, unbound, overbound, colliding declaration, malformed name — are a per-rule test file writing
-trees to a temporary directory, exactly as the fan's are. There is more to check than the fan had: the
-fan has one rule family, and the reference lifecycle the proposal draws has at least four terminals
-plus the colliding-declaration terminal it lacks (plan defect 10) and the Malformed terminal the
-sweeps ask for. Call this layer comparable to the fan's 714 lines or larger.
-
-**Layer three is where the asymmetry bites, and it cuts the bill.** The fan needs fifteen on-disk trees
-because a fan changes the walk: to prove the walk you must have a tree to walk, one per shape, and the
-e2e harness must serve the root. A routine changes nothing after the load completes. What has to be
-proved is that the materialised step list is the step list a hand-authored activity would have carried
-— stage 3 says so itself, asking for a differential test comparing "parsed objects field for field"
-and, as text, the fields a worker acts on (`README.md:859-862`). That is not a tree to walk. It is a
-**pair**: one tree whose activity references a routine, one whose activity spells the steps out, and an
-equality assertion between the two loads. Two trees per shape, with no walk and no harness, against the
-fan's one tree per shape with both.
-
-There is no precedent for that pair anywhere in `tests/fixtures`. The nearest thing is
-`fragment-resolver.test.ts:216-234`, which asserts materialisation against the corpus by reading the
-declared fragment body back out of `workflow.yaml` and checking the loaded activity contains it — a
-single-tree, self-referential form that works for a body with no parameters and does not extend to a
-substitution.
-
-**And stage 3's differential test cannot substitute for the fixtures.** It runs "over every activity in
-the corpus on every run". The corpus has 132 activity files
-(`find workflows -path '*/activities/*' -name '*.yaml'`) and on the day stage 3 lands, zero of them
-carry a routine — the first migration is stage 5. A differential test over 132 routine-free activities
-compares two identical paths and asserts the construct is inert, which is worth having and is not
-evidence the construct works. The only place a routine exists between stage 3 and stage 5 is a fixture.
-
-**A fifth step kind also has to not break what is there.** Five test files hand an on-disk fixture root
-to the real server and three call the real loader against one; the schema union it widens is a
-four-member discriminated union at `src/schema/activity.schema.ts:167-172`; and `kind === 'loop'` is
-tested at 21 sites across `src/`, `scripts/` and `tests/`. Seven files under `tests/` name the `loop`
-kind literally — five test files plus the two walk helpers `tests/e2e/walker.ts` and
-`tests/e2e/coverage.ts`, which is where an unhandled fifth kind would surface as a walk error rather
-than an assertion.
-
-**Then the guard column.** Stage 4 requires every guard that reads an activity file to sit in a recorded
-column, with the authored-form guards walking `routines/` (`README.md:874-876`). Measured: of 42
-`scripts/check-*.ts` scripts, **6** reach definitions through `loadWorkflow` and so see the
-materialised expansion, and **17** parse YAML directly and so see the reference. Sixteen of those
-parse-only scripts never load anything. For each of them, "does it false-positive on an unexpanded
-routine reference?" is a question only a fixture tree can answer, and three guard collectors already
-have the plumbing for it — `check-activity-variables` over `fan-corpus`, `check-fragments` over
-`fragments`, `check-message-binding` over `message-binding`. That plumbing is the cheap part; what is
-missing is the tree.
-
-**Estimate.** Six to ten trees, not fifteen: one for `routines/` discovery, one `meta/routines/` for the
-shared-home fallback the resolution rule names, and a reference/expansion pair for each of the three
-shapes worth pairing — a plain parameterised body, a body binding a technique, and a nested reference.
-On the order of 400 to 700 lines of fixture, against the fan's 1,141. The illegal forms add no fixture
-lines and around 700 lines of test. The guard column adds a routine reference to one existing tree per
-root that a guard collector already walks — three edits, not three new trees. Against 2,802 lines for
-the fan, a routine plausibly costs 1,500 to 2,000, weighted away from on-disk fixtures and towards a
-single large load-rules file.
-
-The proposal already owns the raw material and does not know it. Its own worked conversion ships three
-hand-written routine bodies totalling 313 lines
-(`2026-09-03-routines/conversion/routines/analyse-challenge-pass.yaml` 88,
-`assumption-reconciliation.yaml` 143, `converge-concerns.yaml` 82) and two converted host activities
-totalling 231 lines. That is a fixture tree in everything but location, and the word *fixture* does not
-appear in it.
+**A temporary tree is invisible to everything except the assertion beside it.** Forty test files call
+`mkdtempSync`. Nothing in `check:all` walks `/tmp`; nothing regenerates a schema against it; no
+coverage walk reaches it; and no reviewer reading a diff of `tests/fixtures/` sees it. That is the
+right property for a case whose whole content is one error message, and the wrong one for a case
+meant to be shared, re-read, or re-run under a later change. The fan's split is the correct reading
+of that trade, and a routines landing should copy it rather than improve on it.
 
 ---
 
-## Six: can an illegal routine form live in a fixture tree at all?
-
-Directly: **not in a tree that anything loads, and the two trees in the repository that hold an illegal
-form are the exceptions that prove it.**
-
-A tree under `fan-corpus` cannot be loader-illegal, because two test files serve the whole root to the
-real server and three load named trees from it. Every one of its fifteen trees loads clean, including
-all seven that carry an engineered defect — those defects are *guard*-visible, not loader-visible. That
-is why `tests/fan-load-rules.test.ts` exists at 714 lines, writing every illegal shape to
-`mkdtempSync` at line 22 through a helper at lines 47-72, with its own comment at lines 16-17 saying
-plainly that it "authors illegal shapes". The fan's rules "live in the load and only there" (lines
-9-13), so its illegal forms cannot be on disk and are not.
-
-The two on-disk trees that do hold an illegal form both sit outside the loader's reach.
-`message-binding/binding-fixture` cannot load at all and is read only as raw YAML by
-`check-message-binding`. `fragments/beta-fixture` loads to zero activities and is read only as raw YAML
-by `check-fragments`. Neither is served to the server by anything.
-
-For a routine this decides the test design twice over.
-
-- **An illegal routine reference can sit in a fixture tree only if that tree is never served to the
-  harness and never loaded** — that is, only in a raw-YAML-guard root of the `fragments` /
-  `message-binding` kind. Put one in `fan-corpus` or `variable-model` and five existing real-server
-  test files start serving a root with a broken member.
-- **And it buys less than the fan's equivalent, because the failure is quiet.** An illegal fan shape
-  produces `result.error.issues`, which the test asserts per rule and per message. An illegal routine
-  shape, at the materialisation point the proposal implies, produces a dropped activity and a clean
-  load, which the test can only reach through `activityLoadErrors`.
-
-The complement is also true and is the part the proposal should lean on: **a fixture under a temporary
-directory is invisible to every guard.** No registered guard reads under `tests/`, the corpus root is
-the submodule or an explicit override, and a `mkdtempSync` root exists only inside one test's lifetime.
-So the illegal-form fixtures need not be loader-legal, need not be guard-clean, and cost nothing in the
-`check:all` suite — which is exactly why 714 of the fan's 1,661 test lines live there. A routines
-load-rules file should be built the same way, and no stage says so.
-
----
-
-## Seven: what the proposal owes
+## Six: what the proposal owes
 
 ### Which stage carries it
 
-Split across two, matching where the mechanism lands.
+**Stage 3 carries the committed fixture root, and it is a prerequisite for four of its own eight
+criteria, not a follow-on.** Stage 3's deliverable is "the `routines/` directory, the `kind: routine`
+step, resolution, materialisation, identifier prefixing, and the load failures". Every one of those
+needs a definition to run against, and on engine CI the only definitions present are fixtures. Its
+criterion that "the differential test runs both paths over every activity **in the corpus** on every
+run" cannot be graded as written: `verify.yml` checks out with `submodules: false`, so the corpus is
+absent and the population is zero. The criterion has to name a fixture root, or the job has to
+provision a corpus, and the proposal chooses neither.
 
-**Stage 3 carries the fixture root.** Its first criterion already creates the thing that needs
-fixtures — "`routines/` has its own discovery pass and its own generated JSON schema"
-(`README.md:846-848`) — and its differential test is the criterion that cannot be met without them,
-because the corpus carries no routine until stage 5. Stage 3 should own the root, the
-discovery tree, the `meta/routines/` fallback tree, the reference/expansion pairs, and the load-rules
-file. Nothing in stage 3's eight criteria mentions a test input today.
+**Stage 4 carries the guard fixtures.** Its criterion that "the authored-form guards walk
+`routines/`" lands on a population where two guard roots are committed and nine are built in
+temporary directories through one shared three-line helper. That helper is the cheapest single edit
+in the whole fixture surface and no stage names it.
 
-**Stage 4 carries the guard column's fixture, because that is where the column is enforced.** Its
-criterion already says the authored-form guards walk `routines/`; what it does not say is how a guard
-is shown to do so. Sixteen guard scripts parse YAML and never load, and three fixture roots already
-carry a guard collector.
+**Stage 5 carries the fragments edit, which is smaller than "delete the fixture".** 48 of 100 lines
+and two of six files, with all three trees surviving to serve `duplicate-rule` and
+`duplicate-checkpoint`, and the guard test's violation total re-derived from 8 to 3.
 
-**Stage 5 carries the retirement, and owes a line it does not have.** Its criteria list the corpus
-changes and the re-recorded baselines and say nothing about the three `fragments` trees, the guard test
-whose engineered-finding count drops from 8 to 3, or the three corpus-pinned materialisation tests in
-`fragment-resolver.test.ts` that break when `work-package` loses its `fragments` block.
+**Stage 5 and stage 6 also inherit the delivery baseline**, which is now a fixture. Both require
+"the delivery baseline is re-recorded". The baseline that gates CI is
+`tests/fixtures/token-benchmark-baseline.json`, recorded against `token-bench/delivery-fixture` — a
+two-activity tree that carries no routine and never will. It therefore proves stage 3's
+byte-identical-delivery criterion and nothing else, and the criterion about re-recording a baseline
+"at each site" refers to walk artifacts on the corpus tree that engine CI does not have. Say which
+of the two is meant.
 
-### What the criteria would have to say
+### What the acceptance criteria would have to say
 
-For stage 3, replacing nothing and adding four lines:
+Stage 3 gains three, and one existing criterion is rewritten.
 
-- [ ] A fixture workflow root under `tests/fixtures/routines/` carries a tree whose `routines/`
-      directory the discovery pass finds, and a `meta/routines/` whose body a bare reference in a
-      sibling workflow resolves to. The count of trees is stated in the root's own README, not
-      inferred.
-- [ ] For each of a plain parameterised body, a body binding a technique whose prose interpolates a
-      token, and a nested reference, the root carries a **pair** of trees — one referencing the
-      routine, one spelling its steps out — and a test asserts the two loads are equal field for
-      field, and equal as text in the fields a worker reads directly.
-- [ ] Every terminal state of the reference lifecycle is exercised by a tree written to a temporary
-      directory, one case per terminal, each asserting the message names the routine, the reference
-      site and the reason. The criterion states which of the load's five decision points the check
-      occupies, and the test asserts on `loadWorkflow`'s failure rather than on
-      `activityLoadErrors` — or says explicitly that it asserts on the diagnostics and why.
-- [ ] The five test files that serve an on-disk fixture root to the real server, and the three that
-      call the loader against one, pass unchanged. A fifth step kind that breaks one of them is a
-      finding, not a fixture update.
+- [ ] A committed fixture root holds a workflow declaring a routine, a host referring to it, a host
+      carrying two references to one routine, a routine referring to a routine, and a cross-workflow
+      reference. Every tree in it loads clean, and the root is reachable by both a harness and a
+      raw-reading guard, as `tests/fixtures/fan-corpus` is today.
+- [ ] `routines` joins the reserved directory names at `src/loaders/corpus-index.ts:39`, so
+      `workflowIdFromCorpusPath` names a routine file's owning workflow and a guard finding sited on
+      a routine keys by workflow id rather than by path.
+- [ ] Every terminal of the reference lifecycle has a case in one inline-temp-tree test file, in the
+      shape of `tests/fan-load-rules.test.ts`, each asserting the message rather than the failure.
+- [ ] *Rewritten:* the terminals reachable by **resolution** fail the load with a message naming the
+      routine, the reference site and the reason. The terminals reachable by **shape** are stated
+      separately, because an activity the schema rejects is dropped with a warning and its workflow
+      still loads — so either the criterion excludes them, or the stage names the change to
+      drop-and-continue and prices it against all 132 corpus activity files and all 68 fixture ones.
+- [ ] *Rewritten:* the differential test runs both paths over every activity in a named root that is
+      present in continuous integration. Naming "the corpus" grades the criterion against zero
+      activities on the engine tree.
 
-For stage 4, one line:
+Stage 4 gains two.
 
-- [ ] Each of the 17 guard scripts that parse activity YAML without loading is exercised against a
-      fixture tree carrying an unexpanded routine reference, and reports on it exactly what the
-      recorded column says it should — silence, or a finding naming the routine.
+- [ ] `writeWorkflowFixture` in `tests/corpus-fixture.ts` writes a `routines/` directory on request,
+      and each of the nine temporary-corpus guard tests that gains a routines obligation uses it.
+- [ ] Each guard moved into the recorded column has a case proving it reports on a routine body, run
+      against a fixture rather than only through `check:all` — which matters because 14 of the test
+      files in this repository are guard tests and 41 guards are registered.
 
-For stage 5, one line:
+Stage 5 gains one, and loses an assumption.
 
-- [ ] `tests/fixtures/fragments` is reduced to the trees the surviving rules need, and the
-      fragment guard's engineered-finding count is restated from its new fixture rather than
-      decremented. The three materialisation tests in `tests/fragment-resolver.test.ts` that name
-      `work-package`'s `assumption-interview` fragment are rewritten against a fixture root before
-      the corpus block is removed, not after.
-
-### The one thing that is cheaper than it looks
-
-`check-resource-anchors` reaches a new definition directory for free, because its scan is
-directory-shaped rather than path-shaped — the sweeps establish that. The same property does not hold
-for the enumerator every guard shares: `isWorkflowDir` at `scripts/workflows-root.ts:41-45` recognises
-`workflow.yaml`, `activities/` and `techniques/`, and a `routines/` disjunct is a one-line addition
-that stage 4's column criterion should name explicitly, because without it a routines-only directory
-is not a workflow to any guard.
+- [ ] The fragments fixture keeps all three trees. `alpha-fixture`'s `fragments:` block (lines 7–31)
+      and both fragment-referencing activity files are removed, and `tests/fragments-guard.test.ts`
+      asserts the three findings that outlive the mechanism: two `duplicate-rule` and one
+      `duplicate-checkpoint`.
 
 ---
 
-## Re-taking these figures
+## Figures, and how to retake them
+
+Every count above was measured at server `fe5f5f78` and corpus `e9d26007`. Baseline figures were
+extracted with `git ls-tree` at `ee95e4cd` so a disagreement with the completeness pass is about the
+same bytes.
 
 ```
-cd <server-checkout>
-find tests scripts -name 'workflow.yaml' -print | wc -l                   # 23
-find tests scripts -path '*/activities/*' -name '*.yaml' -print | wc -l   # 59
-find tests/fixtures -type f -print | wc -l                                # 109
-find tests/fixtures -type f -print0 | xargs -0 wc -l | tail -1            # 2028 total
-find tests/fixtures/fan-corpus -type f -print0 | xargs -0 wc -l | tail -1 # 1141 total
-ls tests/*.test.ts tests/e2e/*.test.ts | wc -l                            # 91
-ls tests/*guard*.test.ts | wc -l                                          # 14
-grep -c "  id: '" scripts/guards.ts                                       # 40
-ls scripts/check-*.ts | wc -l                                             # 42
-grep -rln "loadWorkflow" scripts/check-*.ts | wc -l                       # 6
-grep -rln "from 'yaml'\|parseDefinition" scripts/check-*.ts | wc -l       # 17
-grep -rn "createHarness(" tests/ --include=*.ts                           # 6 fixture-root calls
-grep -rn "loadWorkflow(" tests/ --include=*.ts                            # 3 fixture-root call sites
-grep -rn "tests/" scripts/check-*.ts                                      # nothing
-grep -rci "fixture" .engineering/artifacts/planning/2026-09-03-routines/   # 0 in every file
-find workflows -path '*/activities/*' -name '*.yaml' -print | wc -l       # 132
-wc -l tests/fan-*.test.ts tests/e2e/fan-walk.test.ts                      # 1661 total
-git show --stat be325d0f -- tests/fixtures/fan-corpus                     # 159 insertions
-git show --stat 4defd3cd -- tests/fixtures/fan-corpus                     # 920 insertions
-git show --stat c2d0a50b -- tests/fixtures/fan-corpus                     #  62 insertions
+find tests scripts -name 'workflow.yaml' | wc -l                          # 28  (23 at ee95e4cd)
+find tests scripts -path '*/activities/*' -name '*.yaml' | wc -l          # 68  (59 at ee95e4cd)
+find tests/fixtures -type f | wc -l                                       # 124
+find tests/fixtures -type f -print0 | xargs -0 wc -l | tail -1            # 2255
+find tests/fixtures/fan-corpus -type f | wc -l                            # 79, 1290 lines, 17 trees
+git grep -ln "fixtures/" HEAD -- tests | grep -v 'tests/fixtures/' | wc -l  # 18 consumers (13 at ee95e4cd)
+grep -rn "createHarness({ workflowDir" tests | grep fixtures              # 11 sites, 9 files
+grep -rln "mkdtempSync" tests/*.ts tests/e2e/*.ts | wc -l                 # 40
+grep -rln "declareFixtureWorkflows" tests/*.ts | wc -l                    # 10, incl. the helper
+grep -rn "skipIf" tests/*.ts tests/e2e/*.ts | wc -l                       # 42, of which 36 corpus-gated
+ls tests/*.test.ts tests/e2e/*.test.ts | wc -l                            # 100 (91 at ee95e4cd)
+ls tests/*guard*.test.ts | wc -l                                          # 14, unchanged
+grep -c "id: '" guards/guards.ts                                          # 41 registered guards
+grep -rci fixture .engineering/.../2026-09-03-routines/*.md               # 0 for all 13 records
+grep -rli routines src/ guards/ schemas/ tests/ scripts/                  # no matches
+find .worktrees/workflows -name 'workflow.yaml' | wc -l                   # 18 corpus workflows
+find .worktrees/workflows -path '*/activities/*' -name '*.yaml' | wc -l   # 132 corpus activity files
 ```
 
-The load probe in section three is not a committed test. It was a throwaway file that iterated the
-four fixture roots, called `loadWorkflow(root, tree)` on each directory holding a `workflow.yaml`, and
-printed success or the joined issues. To re-take it, write that loop, run it under vitest, and delete
-it; the two results that matter are `message-binding/binding-fixture` failing on an undeclared exit
-and `fragments/beta-fixture` succeeding with `activityCount 0`, the second of which is visible in the
-loader's own log line at `src/loaders/workflow-loader.ts:386`.
+Three measurements were taken by running repository code rather than by counting files, and each is
+reproducible by loading the module under `tsx`:
+
+- `loadWorkflow` over all 28 fixture trees: 25 succeed, 3 fail — `message-binding/binding-fixture`
+  on an undeclared exit, and both `markdown-techniques` trees on `initialActivity: Required`.
+  `fragments/beta-fixture` succeeds with an activity count of zero.
+- `collectFragmentViolations('tests/fixtures/fragments')` returns 8 violations at the sites tabled
+  in section three.
+- `workflowIdFromCorpusPath('prism/routines/fold.yaml')` returns `null`; the same call on an
+  `activities/`, `techniques/` or `resources/` path returns `prism`.
+
+Step kinds across all 68 fixture activity files, by a raw YAML parse rather than through the loader,
+so dropped activities are counted: 58 steps — 44 `action`, 8 `checkpoint`, 5 `technique`, 1 with no
+`kind`; zero `loop`, zero nested.
+
+**One figure I could not reproduce.** The completeness pass's "four of the ten go through the real
+server" does not re-derive at its own revision under any reading I could construct: counting
+`createHarness` calls on a committed fixture root gives five files and six sites at `ee95e4cd`.
+The count of ten consuming test files does reproduce, under the reading "test files consuming a
+workflow-tree fixture" — the full consumer count at that revision, including the session and
+transcript fixtures, is thirteen.

@@ -1,12 +1,20 @@
 # Routines — proposal
 
 > Work package for [#531 W3](https://github.com/m2ux/workflow-server/issues/531), from
-> [#520](https://github.com/m2ux/workflow-server/issues/520) · 2026-09-03 · server at `4740f4d6`,
-> `workflows` branch at `131e2942`
+> [#520](https://github.com/m2ux/workflow-server/issues/520) · 2026-09-03 · companion records pinned
+> to server `4740f4d6`, `workflows` branch `131e2942`
 >
-> Measurements in this folder are pinned to those revisions. [gap-review.md](gap-review.md) holds
-> every load-bearing claim here checked against the running system at `f315b772` / `b5e54574`,
-> together with the twelve gaps that remain. **Read it before planning any stage.**
+> **Every figure in this file is re-taken at server `fe5f5f78` on `main` and corpus `e9d26007` on the
+> `workflows` branch.** The guard scripts live under `guards/`, and the corpus definitions sit under
+> `corpus/` inside the `workflows` worktree, so a companion record citing `scripts/check-*.ts` or
+> `meta/...` names the same file at its own pin.
+>
+> [gap-review.md](gap-review.md) holds every load-bearing claim in the companion records checked
+> against the running system at `f315b772` / `b5e54574`, together with the twelve gaps that remain.
+> The [sweeps folder](../2026-09-10-routines-sweeps/README.md) holds ten plan defects and the
+> supersession verdicts, and the [remediation folder](../2026-09-11-routines-remediation/) holds the
+> re-derivations, dispositions and boundary decisions this file carries. **Read all three before
+> planning any stage.**
 
 ## Executive summary
 
@@ -29,7 +37,7 @@ already describes an activity's own steps, "group" and "operation" belong to tec
 It aims at three things.
 
 **One home for a shared run.** One run — announce, gate, record, then walk the items one at a time —
-is reproduced in four activities. The four copies have drifted in ten independent ways, and nothing
+is reproduced in four activities. The four copies have drifted in twelve independent ways, and nothing
 reports any of it, because the one guard that polices duplication compares single gate bodies and
 single rule texts and nothing anywhere compares a *sequence* of steps against another sequence.
 
@@ -69,7 +77,7 @@ Six take part, and the routine changes what four of them see.
 |---|---|---|
 | **Definition author** | Writes a shared run once and refers to it with arguments at each site | **Yes** |
 | **Loader** | Resolves a routine reference, materialises its steps into the referring activity, and prefixes every identifier inside it | **Yes** |
-| **Contract derivation** | Treats a routine reference as a boundary: the routine's signature counts, its body does not | **Yes** |
+| **Contract derivation** | Reads the form still carrying the reference and charges its declared signature: what the routine says it needs and produces, never a name reachable only through the body | **Yes** |
 | **Guard suite** | Loses seven fragment rules, gains four routine rules, walks `routines/` as a second definition directory, and can check a routine's contract with no host workflow | **Yes** |
 | Worker | Receives ordinary steps and cannot tell one came from a routine | No |
 | Server, at run time | Delivers, gates, yields and records steps as it does today | No |
@@ -187,15 +195,26 @@ step list, so a routine may contain technique, action, checkpoint, loop and rout
 
 A routine also declares **internals**: names its body's steps pass between themselves and that never
 leave. The convergence run has one — the challenge pass hands its findings to the fold, and nothing
-else ever sees them. The assumption run has two: the presentation the batch gate displays, and the
-loop's current item. Between them those two occupy eight write declarations across four activities
-today, for values that never cross an activity boundary.
+else ever sees them, and seven activities declare it as an activity-level write today. The assumption
+run has one, the loop's current item, declared as a write at each of the four hosts. Between them
+those two names occupy eleven write declarations for values that never cross an activity boundary.
+
+`assumption_review_presentation` is not an internal, although it reads like one. The host's own
+announcement step produces it with `review-assumptions::assemble-open-set` before the run begins, the
+reference site interpolates it into the gate message, and it is a declared activity-level write at all
+four hosts with no declared read anywhere. A name the host produces outside the run stays the host's.
 
 An internal's materialised name carries **both the host activity and the reference site**,
-underscore-joined — `implement_reconcile_assumptions_assumption_presentation`. A step identifier only
+underscore-joined — `implement_review_residual_assumptions_current_assumption`. A step identifier only
 has to be unique within its activity, but a variable name shares one flat namespace across the whole
 workflow, so prefixing an internal from the reference site alone puts the same name in every activity
 that uses the routine. An internal never enters the workflow's variable set.
+
+**Where a reference is nested, "the reference site" is the whole composed path**, hyphens and full
+stops flattened to underscores. Taking the innermost reference id alone loses the collision-freedom
+the rule exists to provide, because two paths reaching one routine may spell their innermost
+reference the same way. The composed form runs to 87 characters at its longest live case, the
+convergence run's `challenge_findings` at `05-implementation-analysis`.
 
 **An internal declares an id and a description, and nothing else** — no type, no default, no value
 set, because it never enters the workflow's variable set and so nothing merges, seeds or type-checks
@@ -205,19 +224,51 @@ variable and it may hold a collection. It may not go undeclared: a body naming a
 three categories fails the load, and so does a declared internal nothing writes or nothing reads.
 
 The corpus consequence is a subtraction — `challenge_findings` is a declared activity-level write at
-six sites today, so applying this rule removes six declarations rather than adding any.
+**seven** sites today, at `02-design-philosophy.yaml:23`, `04-research.yaml:29`,
+`05-implementation-analysis.yaml:31`, `06-plan-prepare.yaml:34`, `07-assumptions-review.yaml:34`,
+`08-implement.yaml:32` and `15-codebase-comprehension.yaml:22`, so applying this rule removes seven
+declarations rather than adding any. All seven go together: a declaration left standing names a
+value that is no longer a workflow variable, which `unused-declaration` reports hard-zero with no
+ledger (`guards/check-activity-variables.ts:257-266`).
 
 Inside a routine, its input, output and internal ids are **the names in scope**. A routine has no
-free variables: every name its body reads or writes is one of the three, which is what makes the
-signature a contract and the body checkable on its own. The one carve-out is an artifact filename
-template, which the worker interpolates at run time from the technique's own outputs and which the
-definition never reads.
+*undeclared* free variables: every name its body reads or writes is one of the three, which is what
+makes the signature a contract and the body checkable on its own.
+
+**A body's reads are wider than the tokens its step fields spell**, and this is what the signature
+has to cover. When the derivation meets a step binding a technique it asks the technique what it
+needs, and `readSignature` (`src/utils/activity-variables.ts:348-398`) answers with two kinds of name
+that no step field carries. The first is the `{token}` interpolations in the operation's protocol
+blocks, rules and artifact filename templates: measured over the corpus's 676 technique bindings, 174
+carry at least one surviving prose token, contributing 118 distinct names across 130 operations and
+65 of the 132 activity files. The second is larger and quieter — an operation's declared input that
+the step leaves unbound resolves from the session bag under its own name (`:517-518`). Run against
+the two routine bodies [re-derivation.md](re-derivation.md) writes out, that second source supplies
+**eight** free names to `challenge-concerns` and **ten** to `converge-assumptions`, and not one of
+the eighteen comes from prose.
+
+So a routine declares those names as inputs, and **a reference site that leaves a declared input
+unbound takes the host's value under the same name** — the standing `readSignature` already computes
+for a technique input, given a routine input declaration to hang on. That keeps the signature
+complete in both directions: a declared input nothing reads is a finding, and a name the body reads
+that the signature omits is a load failure. The one carve-out is an artifact filename template, which
+the worker interpolates at run time from the technique's own outputs and which the definition never
+reads; it reaches `codebase_area` and `decision_title` and nothing else, and keeping it out of
+`proseReads` at `:369-372` is what implements the carve-out rather than merely stating it.
+
+The example below is a sketch rather than a derived signature. Its name and its reference-site id are
+both free of any live identifier — `assumption-reconciliation` is already the id of a loop step at
+`work-package/activities/03-requirements-elicitation.yaml:185` and
+`workflow-design/activities/03-requirements-refinement.yaml:149`, and `reconcile-assumptions` is
+already a step id at eight sites, six of them the first technique step inside the convergence loop at
+the very hosts this run shares. The name the routine finally takes is stage 5's, from a re-derivation
+of this run that does not exist yet.
 
 ```yaml
-# work-package/routines/assumption-reconciliation.yaml
-id: assumption-reconciliation
+# work-package/routines/residual-assumption-interview.yaml
+id: residual-assumption-interview
 version: 1.0.0
-name: Assumption Reconciliation
+name: Residual Assumption Interview
 description: Gate residual open assumptions, record the batch answer, then interview individually on request.
 
 inputs:
@@ -239,8 +290,6 @@ outputs:
     description: The outcome the deciding gate gave the assumption under discussion.
 
 internals:
-  - id: assumption_presentation
-    description: The judgement-augmentation context the batch gate presents.
   - id: current_assumption
     description: The assumption under discussion during the individual interview.
 
@@ -263,9 +312,7 @@ steps:
     steps:
       - kind: technique
         id: present
-        technique:
-          name: review-assumptions::interview
-          inputs: { assembly_mode: interview }
+        technique: review-assumptions::assemble-one
       - kind: checkpoint
         id: decision#{current_assumption.id}
         options: [...]
@@ -273,6 +320,14 @@ steps:
         id: record
         technique: review-assumptions::record
 ```
+
+Every operation this body binds exists: `work-package/techniques/review-assumptions/` declares
+`assemble-one`, `assemble-open-set`, `collect`, `reconcile` and `record`, and the per-item present
+step binds `assemble-one` with no arguments, taking `current_assumption` by the name-match convention
+the derivation already implements. The loop's `over: open_assumptions` and the gate's
+`has_open_assumptions` are two of the names the signature has to declare as inputs under the
+free-variable rule above; the sketch does not yet declare them, which is the re-derivation stage 5
+owes.
 
 ### The reference site
 
@@ -282,8 +337,8 @@ about routing.
 
 ```yaml
   - kind: routine
-    id: reconcile-assumptions
-    routine: assumption-reconciliation
+    id: review-residual-assumptions
+    routine: residual-assumption-interview
     with:
       gate_message: "Open assumptions remain after research ({assumption_review_presentation}). Accept the agent's positions, defer all, or interview individually."
     outputs:
@@ -309,11 +364,22 @@ here — the rule a technique step's unremapped output follows — would put a r
 into the session bag.
 
 A routine name resolves as `[workflow::]name` — a qualified name in that workflow only, a bare name
-against the referring workflow and then the shared home. That is the resolution the existing shared
-gate reference already implements, and a borrowed activity resolves against its **source** workflow
-rather than its borrower, exactly as today. **The shared home is therefore `meta`**, because that is
-what a bare technique path already falls back to: referencing a routine the way the corpus references
-a shared technique gives the corpus one resolution rule rather than two.
+against the referring workflow and then the shared home. A borrowed activity resolves against its
+**source** workflow rather than its borrower, exactly as a fragment reference does. A routine name
+carries **no group grammar** and a second separator fails the load with a message saying so, because
+a routine lives one file deep in a flat `routines/` directory and has no group level to name.
+**The shared home is therefore `meta`**, because a bare name falls back to `meta` in every resolver
+the tree has — the checkpoint fragment resolver at `src/loaders/fragment-resolver.ts:50-52` and the
+technique loader at `src/loaders/technique-loader.ts:179-186` alike, exercised by 266 corpus
+bindings.
+
+The two resolvers agree on that fallback and on nothing else. Read every technique binding in the
+corpus's 132 activity files by the fragment rule and compare against what the technique loader does
+with it: they agree on 270 of 676 and disagree on 406 — 359 where one separator makes the head a
+workflow for the fragment rule and a group for the technique rule, and 47 where a second separator
+throws for one and resolves for the other, 42 of those being
+`work-package::manage-artifacts::write-artifact` alone. Reconciling the two is real debt with its own
+ticket; a routine name sidesteps it by carrying one separator at most.
 
 ### A routine may reference another routine
 
@@ -332,26 +398,38 @@ Prefixes compose: `converge-assumptions.pass.iteration.challenge`.
 
 ```mermaid
 ---
-title: The load path, with routine resolution in it
+title: The load path, with routine resolution in it, and the derivation beside it
 ---
 flowchart TB
     Files[Definition files<br/>YAML and Markdown]
     Parse[Parse and validate<br/>against the schema]
     Ids[Resolve step identifiers]
     Mat[Materialise routines<br/>splice steps, prefix identifiers]
-    Derive[Derive the activity contract<br/>routine reference = boundary]
     Bind[Bind exits to destinations<br/>contribute variables]
-    Ready[Loaded workflow<br/>ordinary steps only]
+    Ready[Loaded workflow<br/>authored form and materialised form]
+    Derive[Derive the activity contract<br/>reads the form carrying the reference]
+    Guards[[Guard suite]]
 
-    Files --> Parse --> Ids --> Mat --> Derive --> Bind --> Ready
+    Files --> Parse --> Ids --> Mat --> Bind --> Ready
+    Ready --> Derive --> Guards
 
     style Mat fill:#c8e6c9,stroke:#2e7d32
     style Derive fill:#c8e6c9,stroke:#2e7d32
 ```
 
-Materialisation runs **after** identifiers are resolved, so a prefix has something to attach to, and
-**before** the contract is derived, so the derivation still meets the reference and can treat it as a
-boundary. Getting that order wrong erases the signature the whole design rests on.
+Materialisation runs **after** identifiers are resolved, so a prefix has something to attach to. It
+sits inside `loadWorkflowWithDiagnostics` (`src/loaders/workflow-loader.ts:249-393`), which parses and
+validates each activity file, fills in the step identifiers the author left out, validates the
+assembled workflow, splices shared checkpoint bodies, merges every activity's write declarations into
+the workflow's variable set, and checks that the graph binds each declared exit. Six things, and
+deriving a contract is not among them.
+
+**The boundary is therefore not an ordering between two loader passes.** `deriveActivityContract` is
+defined at `src/utils/activity-variables.ts:418` and called at exactly two sites, both inside one
+guard script — `guards/check-activity-variables.ts:158` and `:483`. What makes a reference a boundary
+is that the derivation reads the form still carrying it: a derivation handed spliced steps meets the
+routine's body and no reference at all, whatever order produced it. Which mechanism supplies that
+form is an open decision recorded below, with the loader returning both forms as the recommendation.
 
 ### Materialisation is a substitution
 
@@ -403,8 +481,10 @@ derivable per reference site and not in isolation.
 not need it: its shared body is the challenge pass, the analysis sits outside it, and the six sites
 that share the analysis share the same operation, so nothing there binds a technique by parameter.
 [re-derivation.md](re-derivation.md) carries that working. A different family does need it — three
-`prism` activities whose entire step list is one `forEach` loop over `analysis_units` binding one
-operation, two of them identical but for the operation reference and the step id. Stage 7 takes them.
+`prism` activities of 41 lines each, whose entire step list is one `forEach` loop over
+`analysis_units` binding one operation. Two of the three differ in 7 lines and the third in 11, and
+every structural field agrees across all three; the fields that vary are the identifiers, the
+operation, the prior-paths collection and the mode value. Stage 7 takes them.
 [higher-order-routines.md](higher-order-routines.md) carries the measurement.
 
 While no routine binds a technique by parameter, **three guarantees carry no exception**: every
@@ -470,9 +550,16 @@ believe exists.
 Measured on the four host activities, materialising the seven shared gate bodies already takes 28,154
 characters of source to 34,717 delivered — 6,563 more, 23.3%.
 
-The source shrinks. One run currently occupies 138 lines across the four activity files plus the 51
-lines of shared gate bodies at the workflow root: **189 lines of source describing one run**, against
-roughly 85 for a routine file and four reference steps.
+**The source does not shrink at this family, and the record should say so.** One run occupies 141
+lines across the four activity files plus the 57-line `fragments` block at
+`corpus/work-package/workflow.yaml:15-71` — **198 lines of source describing one run**. The folder's
+own drafted routine file, `conversion/routines/assumption-reconciliation.yaml`, is 123 lines of
+definition, and after stage 2's once-per-run disposition two of the four hosts drop their copies
+outright, leaving two 8-line reference steps against 73 lines of run. At the sites that survive its
+own disposition this conversion adds source, because the two gate bodies living once at the workflow
+root today move inside the body the routine holds. The product here is enforcement strength and the
+fragment mechanism's retirement, not a line count. The line saving is at the convergence family:
+209 lines of source become 153, a saving of 56.
 
 Materialisation puts the delivered form back, so **the mechanism itself changes the delivered payload
 by nothing**, and nobody should expect a delivery saving from it. What does move the payload is a
@@ -521,12 +608,18 @@ its writes.
 **A technique step contributes a declared signature already.** `readSignature` composes the bound
 operation with its container contracts and reads the inputs and outputs the technique file declares;
 it never inspects a body, there being no mechanical body to inspect. So the boundary itself is not
-new, and two differences are what a routine adds to it. The first is that a declared signature
-becomes **checkable against the thing it describes** — an output nothing writes and an input nothing
-reads are findings only where the body is steps. The second is that the boundary becomes **tight**: a
-technique's delivered prose leaks its `{token}`s into the referring activity's reads, which is how
-one clause about open questions puts `has_open_questions` in the contract of all seven activities
-binding the technique, whereas a routine has no free variables and contributes only what it declares.
+new, and **one** difference is what a routine adds to it: a declared signature becomes **checkable
+against the thing it describes**. An output nothing writes and an input nothing reads are findings
+only where the body is steps, and that is the difference stage 4 grades and the guarantees table
+records.
+
+**The boundary is explicit rather than narrow.** A routine's signature names every name its body
+reads, including the ones no step field spells — the `{token}`s a bound operation's prose
+interpolates, and that operation's declared inputs the step leaves unbound. Measured on the two
+bodies [re-derivation.md](re-derivation.md) writes out, eighteen such names arrive, and the corpus
+already carries eight of them as reads at all seven hosts. So a host's contract is the same size
+either way; what changes is that the routine says out loud what it needs, and something can check
+that it does.
 
 That is the single change to the derivation, and it is the whole of what a routine buys over any
 arrangement that shares a body without a signature. It is also what collapses 28 variable
@@ -537,9 +630,14 @@ an activity's own writes already take.
 ### Identifier hygiene
 
 Every identifier inside a materialised routine is prefixed with the reference step's identifier,
-using a full stop as the separator. The example above yields `reconcile-assumptions.batch-gate`,
-`reconcile-assumptions.record-batch`, `reconcile-assumptions.interview`, and inside the loop
-`reconcile-assumptions.interview.decision#{current_assumption.id}`.
+using a full stop as the separator. The example above yields `review-residual-assumptions.batch-gate`,
+`review-residual-assumptions.record-batch`, `review-residual-assumptions.interview`, and inside the
+loop `review-residual-assumptions.interview.decision#{current_assumption.id}`.
+
+Nothing bounds an identifier's length anywhere in the server or the schemas, and the composed forms
+sit inside the range the corpus already occupies: the longest corpus step id is 58 characters, and
+the longest identifier the re-derived convergence signature generates is 54. What a longer name costs
+is legibility in a trace and, while a worker composes a per-iteration key by hand, accuracy.
 
 A full stop is the only separator available. `#` is taken — it is the per-iteration discriminator,
 and the server splits a checkpoint id on the first one to find its base definition, so a prefix using
@@ -608,7 +706,7 @@ divergence between two copies of a run is not detected better, it stops being ex
 
 | Guarantee | Today | With a routine | How |
 |---|---|---|---|
-| Two uses of one run agree on their steps | **Convention** — nothing compares step sequences anywhere in a 35-script, 6,749-line guard suite | **Unrepresentable** | There is one body. Ten measured differences across four copies have nowhere to live. |
+| Two uses of one run agree on their steps | **Convention** — nothing compares step sequences anywhere in a suite of 41 registered guards running to 7,863 lines | **Unrepresentable** | There is one body. Twelve measured differences across four copies have nowhere to live. |
 | Two uses of one run agree on their gates | Detected — an inline copy of a declared gate body is a guard finding | **Unrepresentable** | The gate is inside the routine, and a use site cannot restate it. |
 | A shared run's variables are declared once | Convention — 28 declarations of 7 variables, held consistent by review | **Refused at load** | The outputs are the routine's declaration, contributed through the reference. Two declarations of one name that disagree already fail the load. |
 | A shared body lives somewhere sensible | Convention — it lives where it was first declared | **Refused at load** | Placement is computed from referring files and a guard enforces it. |
@@ -626,13 +724,13 @@ These do not exist at any strength today.
 | A shared run's writes are visible to the producer index | **Refused at load** | An output binding is a write the derivation can see. Today a run writing caller-named variables is invisible to it — measured at 20 parameter bindings, 7 with no declared write anywhere. |
 | Every option of every gate in a shared run is exercised | **Detected** | The walker gains a routine-level entry, so coverage stops depending on which host activities a walk happens to reach. |
 | An argument names a parameter that exists | **Refused at load** | A `with` binding naming an undeclared input, and an unbound input with no default, each fail the load. |
-| A shared run has a use | **Refused at load** | A routine with no reference sites fails, mirroring the finding an unreferenced shared gate body already produces. |
+| A shared run has a use | **Detected** | A corpus-wide guard pass reports a routine nothing references, alongside the `unused-fragment` finding an unreferenced shared gate body already produces. A load reaches one workflow, so only a corpus pass can say "anywhere". |
 
 #### What stays outside reach
 
-- **Whether two runs that differ *should* differ.** The mechanism converges what is shared. Two of
-  the ten measured differences are genuine questions about what the run should do — where the record
-  pass belongs, and what the per-item gate asks — and a person answers those. See
+- **Whether two runs that differ *should* differ.** The mechanism converges what is shared. One of
+  the twelve measured differences is still a question about what the run should do — whether the
+  per-item gate stays dismissible — and a person answers it. See
   [drift-census.md](drift-census.md).
 - **Whether a technique's protocol does what it says.** A routine names a run of steps. Prose stays
   prose.
@@ -725,6 +823,7 @@ sequenceDiagram
 ```mermaid
 stateDiagram-v2
     [*] --> Declared
+    Declared --> Malformed: a name carrying two or more separators
     Declared --> Unresolved: no routine of that name
     Declared --> Cyclic: the routine reaches itself
     Declared --> Unbound: an input with no argument and no default
@@ -732,6 +831,7 @@ stateDiagram-v2
     Declared --> Materialised: resolved
     Materialised --> Checked: contract held against the signature
     Checked --> [*]
+    Malformed --> [*]
     Unresolved --> [*]
     Cyclic --> [*]
     Unbound --> [*]
@@ -739,7 +839,15 @@ stateDiagram-v2
 ```
 
 Every terminal state but `Checked` is a load failure. None is a warning: a routine that half-resolves
-would deliver a worker a step nobody declared.
+would deliver a worker a step nobody declared. Having a use is not a state here, because it is not a
+property of one reference: a routine nothing references is a corpus-wide guard finding, reported
+beside `unused-fragment`.
+
+**The loader has to gain that behaviour.** Today an activity the schema refuses is logged as a
+warning and skipped (`src/loaders/workflow-loader.ts:88-93`) while the workflow still resolves, so a
+malformed step drops its activity rather than failing anything — measured at
+`tests/fixtures/fragments/beta-fixture`, where `loadWorkflow` returns success with an activity count
+of zero. Stage 3 carries that change.
 
 ## What a routine is not allowed to do
 
@@ -754,8 +862,11 @@ would deliver a worker a step nobody declared.
   is not.
 - **Own an artifact prefix.** Prefixes are computed from an activity's filename position and a
   routine has none.
-- **Read a name it does not declare.** No free variables, with artifact filename templates carved
-  out — the worker interpolates those at run time and the definition never reads them.
+- **Read a name its signature does not declare.** Every name the body reads is a declared input, an
+  output or an internal — including the `{token}`s a bound operation's prose interpolates and that
+  operation's declared inputs the step leaves unbound. A reference site may leave a declared input
+  unbound, and the name then takes the host's value. The one carve-out is an artifact filename
+  template: the worker interpolates it at run time and the definition never reads it.
 - **Vary its own steps by anything but a declared input.** A run of steps that needs to differ
   structurally between two sites is two runs.
 
@@ -766,21 +877,24 @@ Each is useful alone and assumes nothing after it.
 | Stage | Lands | What it buys | Depends on |
 |---|---|---|---|
 | 0. The continuation field — **landed** | `continueWhile` on the loop step; `condition` removed from it; `breakCondition` scoped to the `forEach` early exit; 19 loops re-keyed; a loop-shape guard | Six `doWhile` bodies run; 17 body steps become eligible for eager delivery; a routine can own a loop | — |
-| 1. See the drift | A guard comparing step sequences across activities, reporting a run repeated at two or more sites with any difference between the copies | The ten differences stop being invisible. Useful with or without the rest — and it is what proves the migration converged | — |
-| 2. Settle the run | Four recorded decisions: the log pass after the interview, two answers at the per-item gate, the run once per run at two sites, the announcement guarded on review mode alone — plus the one-line seed that last one needs | The migration knows what it is converging on, and one activity's worth of duplicated run disappears. No code | 1 |
-| 3. The construct | The `routines/` directory, the `kind: routine` step, resolution, materialisation, identifier prefixing, and the load failures | A routine can be declared, referred to and materialised | — |
-| 4. The boundary | The contract derivation treats a reference as a boundary; a routine's signature is checked against its own body; placement is computed and enforced | The contract and placement guarantees, and isolated checking | 3 |
-| 5. Migrate the run | The four copies converge onto one routine; the two shared gate bodies and the fragment mechanism retire, taking seven guard rules with them | The drift is gone and the mechanism it replaces is deleted rather than left standing | 2, 4 |
-| 6. Converge the convergence loop | The seven hand-written copies converge onto two routines — the loop and the pass it iterates — nested so the six assumptions sites take the loop and the comprehension site takes the pass alone inside its own loop | 192 lines of byte-identical structure become one body with a signature; the copies stop being able to drift | 5 |
-| 7. The technique parameter | `kind: technique` on an input; substitution into a body step's `technique:` field before the derivation; the three per-site checks; one routine carrying the three `prism` per-unit passes | A run that differs only in the operation it binds has one home. Two of the three sites are identical but for the operation reference | 4 |
-| 8. The fan-out routine | The four-step dispatch run — compose briefs, dispatch, gather, synthesise — becomes one routine, referred to at the three `meta` pattern activities and inside `lead-researcher`'s follow-up loop | Four occurrences of one run, one of them a second copy in the same file that no guard can see, become one body with a signature | 4 |
+| 1. See the drift | A guard comparing step sequences across activities, reporting a run repeated at two or more sites with any difference between the copies, over the file set the corpus's own discovery rule reaches | The twelve differences stop being invisible, and so do the fourteen further repeated-run windows across 20 activity files in 8 workflows that no stage of this plan names. Useful with or without the rest — and it is the only mechanism that can grade a later convergence | — |
+| 2. Settle the run | The twelve-row disposition record in [the remediation folder](../2026-09-11-routines-remediation/stage-2-dispositions.md), plus the one-line seed the announcement decision needs | The migration knows what it is converging on, and one activity's worth of duplicated run disappears. No code | 1 |
+| 3. The construct | The `routines/` directory, the `kind: routine` step, resolution with no group grammar, materialisation, identifier prefixing, and the refusals | A routine can be declared, referred to and materialised | — |
+| 4. The boundary | The contract derivation reads the form carrying the reference; a routine's signature is checked against its own body; placement is computed and enforced | The contract and placement guarantees, and isolated checking | 3 |
+| 5. Migrate the run | The four copies converge onto one routine; the two shared gate bodies and the fragment mechanism retire, taking seven of nine guard rules with them | The drift is gone and the mechanism it replaces is deleted rather than left standing | 2, 4 |
+| 6. Converge the convergence loop | The seven hand-written copies converge onto two routines — the loop and the pass it iterates — nested so the six assumptions sites take the loop and the comprehension site takes the pass alone inside its own loop | 192 lines of byte-identical structure become one body with a signature; the copies stop being able to drift | 4, sequenced against 5 at `07-assumptions-review` and `08-implement`, where the two runs are one contiguous six-step run |
+| 7. The technique parameter | `kind: technique` on an input; substitution into a body step's `technique:` field before the derivation; the three per-site checks; one routine carrying the three `prism` per-unit passes | A run that differs only in the operation it binds has one home. Two of the three sites differ in 7 lines and the third in 11, every structural field agreeing | 4 |
+| 8. The fan-out routine | The four-step dispatch run — compose briefs, dispatch, gather, synthesise — becomes one routine, referred to at `02-supervisor`, at `05-lead-researcher`'s first round, and at the same run inside its `gap-followup` loop | Three occurrences of one run, two of them in one file where no guard can see the pair, become one body with a signature | 4 |
 
 Stages 1 and 2 need no schema and no code path, and they are where the behavioural risk lives — the
 migration changes what happens at live sites whichever way the content decisions go, and two of them
 move a measurable amount of delivered content. Stage 3 is the load-bearing one.
 
-**The dependency column names only stages**, not the prerequisites the simulations proved — the
-absent-default merge change among them. Those are in place, so the column is complete as it stands.
+**The dependency column names only stages.** The one prerequisite outside it is the workflow
+variable merge, and it is standing behaviour: `disagreement`
+(`src/utils/activity-variables.ts:63-76`) reports a default disagreement only where both declarations
+name one, and `fillSilences` (`:83-91`) carries the present default onto the silent declaration. The
+zero-contradiction simulation the variable design rests on was run against that rule.
 
 **Stage 0 stands alone and is landed.** A routine that owns a `while` loop has to say "repeat while
 this holds", and `continueWhile` is the field that carries that continuation test and the only field
@@ -798,6 +912,23 @@ neither is a prerequisite for the other. Stage 8 is the cheaper: it needs no sch
 the fan-out run is generic over the briefs it dispatches rather than over any technique reference it
 binds, so it is an ordinary routine under stage 3's construct. Stage 7 adds one input field and
 makes three guarantees conditional for the routines that use it.
+
+**The graph destination that runs one activity once per element of a collection owns neither
+family**, and this is measured rather than assumed, because both families look like what it just
+replaced. The corpus draws the line between several units inside one worker's context and one whole
+activity per unit, and it draws it three times: at `corpus/meta/activities/patterns/README.md:9`, at
+`corpus/workflow-design/resources/schema-construct-inventory.md:38`, and in the rule
+`dispatch-workers` itself now carries — "Briefs are dispatched one after another, in the calling
+worker's own turn. Running work units together is the graph's business"
+(`corpus/meta/techniques/orchestration-patterns/dispatch-workers.md:30-32`). Stage 8's run is the
+first grain by the bound operation's own rule. Stage 7's three passes are refused by the fan four
+ways: their `analysis_units` elements carry no `id` and the fan-enter throws on the first
+(`src/tools/workflow-tools.ts:836-847`); their declared iteration bound of 100 is twenty-five times
+the default fan ceiling of 4 (`src/config.ts:184`); two of the three read on each iteration the
+`all_artifact_paths` accumulator the previous iteration wrote, which a fan lands in separate slots
+and which four activities in two workflows read as a flat name; and `adversarial-pass →
+synthesis-pass` admits one fan rather than two, because a branch's exit may not fan
+(`src/loaders/workflow-loader.ts:778-784`) and no join activity sits between them.
 
 **A set-valued technique parameter is not a stage.** Its one live site is the audit sweep, whose six
 operations declare three different output shapes, so the argument at that site is a set of records
@@ -822,38 +953,72 @@ guard suite is not sufficient on its own. Stages 2, 5, 6, 7 and 8 each change li
 - [ ] A guard reports any run of two or more consecutive steps that appears in two or more activity
       files with any difference between the copies, matching on step kind and binding and ignoring
       identifiers and site gates.
-- [ ] It recurses into loop bodies. The search in [measure/](measure/) finds 26 maximal windows,
-      five of them nested, and the guard reproduces that count.
+- [ ] It recurses into loop bodies, and its file set is the corpus's own discovery rule rather than a
+      fixed path depth: every `activities/` directory the loader reaches, plus `routines/` beside it
+      once that directory exists, with a routine declaration counting as a site. **The guard
+      reproduces the output of the search in [measure/](measure/) at the revision it lands, stated as
+      the search's output and never as a literal.** Run at corpus `e9d26007` the search reports 24
+      maximal windows, 19 top level and 5 nested. Its own glob reaches 122 of the 132 activity files,
+      missing `corpus/specimens/fan-conformance/activities/` entire; made depth-agnostic it parses all
+      132 and reports the same 24, so the count survives the widening and the file set does not.
 - [ ] A window contained in a longer shared window over the same file set is not reported separately.
 - [ ] It runs from a baseline of the windows present when it lands, and the baseline can only fall.
       A hard zero is wrong here: the drift is what stages 5 and 6 remove, and the guard has to be
-      useful before they do.
+      useful before they do. The baseline lives in the corpus branch's `ledgers/` beside the four
+      already there, which is the branch its findings are about and the branch a corpus pull request
+      can edit.
 - [ ] The windows the register classes provisional pending B6 are reported with that status rather
       than suppressed.
 
 **Stage 2 — Settle the run**
 
-- [ ] Each of the census's ten differences carries a recorded disposition: converged with no
-      decision, converged by a decision naming what the run now does and which site changes, or
-      already converged in the corpus.
-- [ ] The rows that change behaviour at a live site name the site and the change — row 1 at two
-      sites, rows 5 and 6 at two.
+- [ ] Each of the census's **twelve** differences carries a recorded disposition: already converged in
+      the corpus, converges with no decision, or converges by a decision naming what the run now does
+      and which site changes. The population is the census's output at the revision the disposition is
+      taken, not a literal. The record is
+      [stage-2-dispositions.md](../2026-09-11-routines-remediation/stage-2-dispositions.md).
+- [ ] The rows changing behaviour at a site that survives the migration name the site and the change.
+      Measured at corpus `a4a5d88b` those are rows 3, 5, 7, 11 and 12, and the once-per-run decision
+      is a sixth change no row carries. Rows 1, 4 and 6 have no surviving divergent site; rows 2, 8
+      and 9 are already converged.
 - [ ] No definition changes. The deliverable is the disposition record and the one-line seed the
-      announcement decision needs, which is in place.
+      announcement decision needs, which is in place — `is_review_mode` carries `defaultValue: false`
+      at `corpus/work-package/workflow.yaml:78`.
 
 **Stage 3 — The construct**
 
 - [ ] `routines/` has its own discovery pass and its own generated JSON schema, and the schema
-      generator has a verifying variant, so a forgotten regeneration fails continuous integration
-      instead of surfacing as a spurious authoring error.
+      generator has a verifying variant **over the files it writes** — `workflow`, `state`,
+      `condition`, `session-file`, `activity` and the new `routine`, which are the `generate()` calls
+      in `scripts/generate-schemas.ts` — so a forgotten regeneration fails continuous integration
+      instead of surfacing as a spurious authoring error. `schemas/technique.schema.json` is outside
+      the variant's subject: it is hand-authored, carries an `$id` at `:3` the generator's preamble
+      never writes, and has no `generate()` call. The prose describing it as generated —
+      `docs/technique-protocol-specification.md:9`, and the folder-wide claims at
+      `docs/development.md:48` and `docs/documentation-system.md:35` — is corrected in the same
+      change, because a variant written over the directory rather than over the call list goes
+      permanently red on a file the change never touches.
 - [ ] Every terminal state of the reference lifecycle but `Checked` fails the load, with a message
-      naming the routine, the reference site and the reason. None is a warning.
+      naming the routine, the reference site and the reason. None is a warning. **This needs a loader
+      change the plan has not otherwise budgeted**: today an activity the schema refuses is logged as
+      a warning and skipped (`src/loaders/workflow-loader.ts:88-93`), and the workflow still resolves,
+      so a malformed `kind: routine` step drops its activity rather than failing anything.
+- [ ] A reference with two or more separators fails the load with a message naming the routine, the
+      reference site and the one-separator rule. A qualified reference resolves in the named workflow
+      only; a bare reference resolves against the referring activity's source workflow and then
+      `meta`. A test covers all three.
 - [ ] Substitution is simultaneous and covers every field in the list, a nested reference's `with`
       and `outputs` and a `forEach`'s `breakCondition` included. A test asserts that a binding
       mapping `a → b` and `b → c` renames each occurrence exactly once.
-- [ ] Materialisation runs after identifier resolution and before contract derivation, and a test
-      fails if the order is swapped.
+- [ ] The loader returns the authored activities alongside the materialised ones. A test loads an
+      activity whose step list contains a routine reference and asserts that the authored form still
+      carries a `kind: routine` step while the materialised form carries none, and that every
+      identifier inside the materialised body is prefixed from the reference step.
 - [ ] An exhaustiveness assertion over the step kinds fails to compile when a kind is added.
+- [ ] The 28 synthetic workflow trees and 68 fixture activity files under `tests/fixtures` carry the
+      new member. The engine's own continuous integration checks out with `submodules: false`, so the
+      fixtures are the whole definition surface there, and `tests/fixtures/fan-corpus`'s 17 trees are
+      the measured precedent for what one new construct costs in them.
 - [ ] The textual splicer emits an explicit prefixed `id:` on every step it splices, nested bodies
       included, so `injectResolvedStepIds` has nothing to match inside a materialised routine.
 - [ ] The differential test runs both paths over every activity in the corpus on every run, comparing
@@ -864,18 +1029,38 @@ guard suite is not sufficient on its own. Stages 2, 5, 6, 7 and 8 each change li
 
 **Stage 4 — The boundary**
 
-- [ ] The derivation treats a reference as a boundary: the signature counts and the body is never
-      consulted.
-- [ ] A routine's declared signature is held against its own body. An output nothing writes, an
-      input nothing reads, and an internal that is read but not written or written but not read each
-      fail the load.
+- [ ] The contract derivation reads the authored form. A test derives the contract of an activity
+      whose only step is a routine reference and asserts the result is exactly the routine's declared
+      signature — the inputs a `with` binding does not satisfy with a literal as reads, the bound
+      outputs as writes, and no internal and no name reachable only through the body.
+- [ ] A routine's declared signature is held against its own body, where the body's reads are the
+      tokens its step fields spell plus, for every bound operation, that operation's prose
+      interpolations and the declared inputs the step leaves unbound. An output nothing writes, a
+      declared input nothing reads, an internal read but not written or written but not read, and
+      **a name the body reads that the signature does not declare**, each fail the load. An artifact
+      filename template is the one exemption, and it is implemented by keeping those tokens out of
+      `proseReads` at `src/utils/activity-variables.ts:369-372` rather than only stated.
 - [ ] Placement is computed and enforced, with a referrer being an activity file or another routine,
       closed transitively — and the artifact-declaration check uses the same closure.
-- [ ] Every guard that reads an activity file sits in a recorded column. The authored-form guards
-      walk `routines/`; `check-variable-model` resolves a routine's effects against the routine's
-      declared outputs and internals; the guards that have to move onto the loader have moved.
-- [ ] The walker gains a routine-level entry, seeded from the declared inputs.
-- [ ] A routine with no reference site anywhere fails the load.
+- [ ] Every guard that reads an activity file sits in a recorded column, and the register is a field
+      on the guard entry rather than a table in this file — `GuardSpec` (`guards/guards.ts`) does not
+      hold one today. The authored-form guards walk `routines/`; `check-variable-model` resolves a
+      routine's effects against the routine's declared outputs and internals; the guards that have to
+      move onto the loader have moved.
+- [ ] The walker gains a routine-level entry, seeded from the declared inputs — which, by the
+      signature criterion above, name every value the body reads, so the seed is complete by
+      construction rather than by inspection. **The entry is a second walker rather than an option on
+      the existing one**: `walk()` (`tests/e2e/walker.ts:680`) opens with `start_session` and
+      `get_workflow`, and a routine is not a workflow node. Across stages 5 through 8 its whole
+      subject is two gates and six options, both in one routine, because the convergence loop, the
+      three `prism` passes and the fan-out run declare no checkpoint at all.
+- [ ] A routine no activity or routine references **anywhere in the corpus** is a guard finding,
+      reported beside `unused-fragment` by the pass that already enumerates every workflow before
+      collecting anything (`guards/check-fragments.ts:120`, finding at `:242`). It is not a load
+      failure: a load reaches one workflow (`loadWorkflow(workflowDir, workflowId)`,
+      `src/loaders/workflow-loader.ts:239`) and the resolution rule admits a cross-workflow
+      reference, so a per-workflow load would fail while a reference site sits a directory away. The
+      finding lands on the corpus pull request, which is where the definitions it is about live.
 
 **Stage 5 — Migrate the run**
 
@@ -883,9 +1068,15 @@ guard suite is not sufficient on its own. Stages 2, 5, 6, 7 and 8 each change li
       `work-package/workflow.yaml`, seven fragment rules are deleted, and `duplicate-checkpoint`
       keeps its rule with its remedy naming a routine.
 - [ ] Each of stage 2's dispositions is observable in the result.
-- [ ] The eight write declarations for the run's two internals are gone from the four hosts, and the
-      names that change direction rather than disappearing — `assumption_outcome` becoming a read at
-      a dropped site — are declared as they now behave.
+- [ ] The four `current_assumption` write declarations are gone from the four hosts, that being the
+      run's one internal. `assumption_review_presentation`'s four survive, because the announcement
+      producing it stays with the host. The names that change direction rather than disappearing —
+      `assumption_outcome` becoming a read at a dropped site — are declared as they now behave.
+- [ ] Each surviving host's declared read of `is_review_mode` has a site that consults it. Today that
+      read is satisfied at `04-research` and `08-implement` only by the condition the loader copies
+      onto the batch gate from the shared body, so once the body moves inside a routine and the
+      derivation stops at the reference, an authored gate or the reference step's own `when` has to
+      name the flag. `unused-declaration` is hard zero with no ledger.
 - [ ] The full guard suite and the walker pass over the migrated corpus, not over a scratch copy.
 - [ ] The delivery baseline is re-recorded, and the change in bundled characters at each site is
       reviewed against the measured prediction rather than accepted by regeneration.
@@ -902,9 +1093,17 @@ guard suite is not sufficient on its own. Stages 2, 5, 6, 7 and 8 each change li
 - [ ] The two stages are sequenced against each other at `07-assumptions-review` and
       `08-implement`, where the assumption run and the convergence loop are one contiguous six-step
       run.
-- [ ] `challenge_findings` is an internal, and its six activity-level write declarations are removed.
+- [ ] `challenge_findings` is an internal, and **all seven** of its activity-level write declarations
+      are removed together. A declaration left standing names a value that is no longer a workflow
+      variable, which `unused-declaration` reports hard-zero with no ledger.
 - [ ] The byte-identical block exists once. The stage-1 guard's baseline falls by the windows this
-      removes, and does not fall by any others.
+      removes, and does not fall by any others. **The comparison runs on the corpus branch**, as the
+      guard's own ledger entry moving in a pull request the corpus job grades: that job runs
+      `npm run check:all` and nothing else guard-side
+      (`.github/workflows/verify-corpus.yml:77` on the `workflows` branch). `check:delta` cannot
+      supply it — it materialises the merge-base *engine* tree and measures both sides against the
+      same live corpus checkout (`guards/check-delta.ts:90-92`), so a definitions-only change
+      produces no delta at all.
 - [ ] The full guard suite and the walker pass, the delivery baseline is re-recorded and reviewed,
       and the migration is walked before merge.
 
@@ -922,25 +1121,54 @@ guard suite is not sufficient on its own. Stages 2, 5, 6, 7 and 8 each change li
       parameter, and every place claiming them universally is updated with the change.
 - [ ] The walker's routine-level entry, seeded from the declared inputs at stage 4, walks such a
       routine per reference site instead.
-- [ ] The `prism` per-unit passes reference one routine. Its inputs are the operation, the
-      prior-paths collection and the pipeline mode, and the accumulating `set` action stays inside
-      the routine.
+- [ ] The three `prism` per-unit passes reference one routine, at
+      `corpus/prism/activities/02-adversarial-pass.yaml:19-38`, `03-synthesis-pass.yaml:19-38` and
+      `05-behavioral-synthesis-pass.yaml:19-38`. Its inputs are the operation, the prior-paths
+      collection and the mode value — the three fields the 5-hunk `02`/`03` diff and the 8-hunk
+      `02`/`05` diff show varying, every structural field agreeing. The accumulating `set` on
+      `all_artifact_paths` stays inside the routine, which keeps the name flat, which is what its
+      four cross-activity readers in two workflows require —
+      `corpus/prism/activities/04-deliver-result.yaml:7`, `06-generate-report.yaml:7`,
+      `corpus/prism-evaluate/activities/03-consolidate-report.yaml:7` and `04-deliver-results.yaml:7`.
 - [ ] The routine reads none of its parameter's outputs, so no bound is declared and none is needed.
       A routine that does read them fails the load with a message saying why.
+- [ ] The record states why a graph instance fan is not the home, naming the four refusals: the
+      collection's elements carry no `id` and the fan-enter throws on the first; a declared bound of
+      100 against a fan ceiling of 4; the accumulator two of the three read across iterations and
+      four activities read flat; and `adversarial-pass → synthesis-pass` admitting one fan, because a
+      branch's exit cannot fan and no join sits between them. **Convergence is graded by reading the
+      three files.** The stage-1 guard's minimum window is two consecutive steps and each pass has one
+      top-level step and one body step, so this family never entered a baseline and no baseline can
+      fall by it.
 - [ ] Walked before merge, per the criterion above.
 
 **Stage 8 — The fan-out routine**
 
 - [ ] The routine declares ordinary inputs and no `kind: technique` parameter, and its contract
-      derives in isolation.
-- [ ] Four reference sites: `01-orchestrator-workers`, `04-isolated-fan-out`, `05-lead-researcher`
-      and the follow-up loop inside it. The completeness `validate` at `04-isolated-fan-out` stays
-      with the referring activity or becomes a declared input, and the record says which.
-- [ ] The routine declares no concurrency and no dispatch mode. `dispatch_concurrency` reaches
-      `dispatch-workers` as an ordinary binding, and `parallelism-is-optimisation` holds.
-- [ ] The stage-1 guard's baseline falls by the fan-out windows and by nothing else, and the
-      intra-file occurrence at `05-lead-researcher` is gone even though no guard could see it.
-- [ ] Walked before merge, per the criterion above.
+      derives in isolation. The only value varying across the occurrences is `expected_ids`, which
+      `gather-results` declares as one parameter taking either an id list or an object list.
+- [ ] Three reference sites, all in the borrowable pattern library: the supervisor's run at
+      `corpus/meta/activities/patterns/02-supervisor.yaml:42-62`, the lead researcher's first round at
+      `05-lead-researcher.yaml:41-55`, and the same run inside its `gap-followup` loop at `:70-84`.
+      The supervisor's `announce-escalation` action stays with the referring activity, being a site
+      condition on the site's own `lane_id`, and the record says so. Both hosts convert together:
+      converting one alone leaves a routine holding the run beside an inline copy of four fifths of
+      it, and no guard in the suite compares an inline run against a routine declaration.
+- [ ] The routine declares no concurrency and no dispatch mode, and the record states that this is
+      already true of the corpus rather than a property the routine adds. `dispatch_concurrency` and
+      `parallelism-is-optimisation` are at zero sites in the corpus, in `src/`, in `guards/` and in
+      `docs/`.
+- [ ] The three occurrences become one body. The three-step cross-file window over `02-supervisor` and
+      `05-lead-researcher` leaves the stage-1 guard's report, and the guard's total falls by that
+      window and by no other — there is exactly one such window at this tree, not several. The two
+      occurrences inside `05-lead-researcher.yaml` are checked by reading the file, because the census
+      keeps only windows spanning two or more activity files and no guard in the suite compares two
+      runs within one file.
+- [ ] Walked before merge, per the criterion above — weaker in force here, because neither host is
+      reached by any workflow graph and neither is borrowed, so "walked" means the corpus guard suite
+      and a read rather than a session. `npx tsx guards/validate-activities.ts` reports 129 passed
+      against 132 activity files on disk, and the three it never sees are the surviving pattern
+      activities.
 
 ## Designed for the typed language
 
@@ -1017,9 +1245,11 @@ sentence classifies every guard the suite has and every guard it gains.
 
 `check-harness-adapter-set` reads variable values rather than steps and is unaffected by either.
 
-**The table above covers eleven guards plus the harness-adapter one. Nineteen open activity files,
-out of a suite of thirty-seven scripts.** The eight the table does not reach, each with the column
-it belongs in:
+**The table above covers eleven guards plus the harness-adapter one. Twenty-one of the forty-one
+registered guards open an activity file — eighteen reading the file as written, three more reaching
+it through the loader — out of forty-six `check-`/`validate-` scripts on disk, the other five excused
+from the registry by name at `tests/guard-registry.test.ts:87-101`.** Eight more, each with the
+column it belongs in:
 
 | Guard | Column | Walks `routines/`? |
 |---|---|---|
@@ -1031,6 +1261,10 @@ it belongs in:
 | `check-artifact-guides` | Materialised. It already loads workflows, and it is what holds a routine body's artifact-declaring technique to a creation guide | n/a |
 | `check-audience` | Materialised. Named in the prose above and absent from the table | n/a |
 | `check-pinned-corpus-paths` | Neither. It audits this repository's TypeScript for corpus path literals, not definitions | No |
+
+Three more open an activity file and neither table names them: `check-canonical-home-map`,
+`check-launched-workflows` and `validate-activities`. All three read the file as written, and all
+three walk `routines/` for the same reason the first column does.
 
 Two guards fall outside the classification entirely: `check-inherited-inputs` and
 `check-identifier-qualification` read technique markdown, not activity files. The second is still
@@ -1063,12 +1297,15 @@ carried.
   output and stay silent on an internal, which declares no type; `default-type-mismatch` checks a
   routine input's default against its declared type, outputs having none; and `exists-on-defaulted`
   extends to an `exists` gate on a defaulted input, which is constant for the same reason.
-- **Six guards consume the loader today**: `check-audience`, `check-stealth-isolation`,
-  `check-activity-variables`, `check-session-contract`, `check-all-refs` and
-  `check-artifact-guides`. None of the four in the right-hand column above is among them, so that
-  column states where four guards *should* sit, and moving each one there is unscoped work. The two
-  loader consumers this section names nowhere else have no assigned side, and `check-all-refs` is
-  one of the four the converted-corpus sweep reports failing.
+- **Five guards consume the loader**, and four of them are registered:
+  `check-activity-variables`, `check-all-refs`, `check-stealth-isolation` and
+  `validate-workflow-yaml`. The fifth, `check-session-contract`, is excused from the registry by name
+  because it needs a live session and has no corpus-wide form. `check-audience` and
+  `check-artifact-guides` are not among them: the first reads technique markdown directly and the
+  second reaches the corpus through `indexCorpus`. None of the four in the right-hand column above
+  consumes the loader either, so that column states where four guards *should* sit, and moving each
+  one there is unscoped work. `check-all-refs` is one of the four the converted-corpus sweep reports
+  failing.
 
 `check-checkpoint-entry` is the case that forces the second column: it forbids a checkpoint as an
 activity's first step, and the assumption routine's first step is a checkpoint, so a reference in
@@ -1099,13 +1336,18 @@ holds the type and the meaning. Three properties make that work, and all three a
   result.
 - **Injection fires only where the referring activity does not already declare the bound name.**
   Replacing an existing declaration puts two defaults for one variable into the merge.
-- **The merge treats an absent default as no opinion, and a declaration carrying one wins.** Today it
-  compares an absent default as `null` and reports disagreement with any present one, so a
-  no-default declaration would fail the load on contact with the corpus. Two lines.
 
-Under those three, injecting the convergence routine's outputs at all seven of its reference sites
-merges the work-package workflow with **zero contradictions**, and every variable keeps the default
-its owner declares. The copy supplies **12 declarations across the seven sites** — `assumptions_log`
+The fourth thing that makes it work is standing behaviour rather than work this plan owes.
+**The merge treats an absent default as no opinion, and a declaration carrying one wins.**
+`disagreement` (`src/utils/activity-variables.ts:63-76`) reports a default disagreement only where
+both declarations name one, `fillSilences` (`:83-91`) carries the present default onto the silent
+declaration, and the doc comment at `:56-61` states the rule. It arrived with stage 0.
+
+Under those three properties and that rule, injecting the convergence routine's outputs at all seven
+of its reference sites merges the work-package workflow with **zero contradictions**, and every
+variable keeps the default its owner declares. That simulation was run against the live merge rather
+than against a prospective one, which is what makes its result a reading of the system rather than a
+prediction about it. The copy supplies **12 declarations across the seven sites** — `assumptions_log`
 and `has_resolvable_assumptions` at each of the six assumptions sites, and nothing at the
 comprehension site, whose author already declares every name the routine binds. Where an author has
 declared the name by hand the copy is a no-op; where nobody has, it is what makes an invisible write
@@ -1123,18 +1365,37 @@ described under the migration, caught by the very check under suspicion of circu
 
 A routine lives at `routines/<name>.yaml`, without a position number. Activity discovery requires a
 numeric filename prefix, so routines get their own discovery pass, their own generated JSON schema,
-and their own place in `get_workflow`. The schema generator has no verifying variant, so a forgotten
-regeneration passes continuous integration while authors see spurious errors on valid definitions —
-worth fixing alongside, since this adds a third generated schema to forget.
+and their own place in `get_workflow`. The discovery pass runs wherever the loader finds an
+`activities/` directory, which reaches the 28 synthetic workflow trees and 68 fixture activity files
+under `tests/fixtures` on the day it lands.
+
+The schema generator has no verifying variant, so a forgotten regeneration passes continuous
+integration while authors see spurious errors on valid definitions — worth fixing alongside, since
+this makes a sixth schema to forget. `scripts/generate-schemas.ts` writes five today: `workflow`,
+`state`, `condition`, `session-file` and `activity`. `schemas/` holds six files, and the sixth,
+`schemas/technique.schema.json`, is hand-authored — it carries an `$id` at `:3` the generator's
+preamble never writes and has no `generate()` call. A verifying variant therefore has to take the
+call list as its subject rather than the directory, and the prose calling the sixth file generated is
+corrected with it.
 
 ### Sessions in flight
 
-A checkpoint response is keyed on the activity and the checkpoint identifier together, and a session
-pins only the workflow's semantic version. Prefixed identifiers change every key the migration
-touches, so a run that crosses the migration finds no recorded answer for a renamed gate and asks
-again; orphaned responses stay as dead data. **This is accepted and stated rather than mechanised.** A
-definition change is a definition change, and a key-mapping table would be permanent server cruft for
-a one-off rename.
+A checkpoint response is keyed on the activity and the checkpoint identifier together
+(`src/tools/workflow-tools.ts:2110`), and a session pins only the workflow's semantic version.
+Prefixed identifiers change every key the migration touches, so a run that crosses the migration
+finds no recorded answer for a renamed gate and asks again; orphaned responses stay as dead data.
+**This is accepted and stated rather than mechanised.** A definition change is a definition change,
+and a one-off rename does not earn a permanent key-mapping table — though the tree already carries
+one shape of it: `src/utils/session/migration.ts:219-238` normalises legacy checkpoint-response keys,
+and its own comment says "key prefixing is best-effort". So the choice is about not adding a second
+table, rather than about refusing the first.
+
+The session record's other identifier surface is **positional**, and materialisation moves it too.
+`currentStep` and `completedSteps` are keyed on a step index (`src/schema/state.schema.ts:4`, `:163`,
+`:165`), and splicing N steps in place of one shifts every index after a reference site. Both fields
+are vestigial — a search across `src/` returns the two declarations and one initialiser and no writer
+— so the hazard is live in mechanism and zero in incidence, and the discriminator is what makes it
+that rather than a defect.
 
 ### Artifact names
 
@@ -1199,6 +1460,17 @@ The walker gains a routine-level entry: it walks a routine's steps against a var
 its declared inputs, so every option of every gate inside it is exercised once rather than only
 through whichever host activities a walk happens to reach.
 
+**That entry is a second walker rather than an option on the existing one, and the plan prices it as
+one.** `walk()` (`tests/e2e/walker.ts:680`) takes a workflow id, opens with `start_session` and
+`get_workflow`, and reads activity definitions carrying exits, techniques and an artifact prefix; a
+routine is not a transition destination and declares no exits, so there is no session it can be the
+subject of. What the second walker is for is small and should be stated with the cost: across stages
+5 through 8 the whole subject is **two gates and six options**, both in one routine, because the
+convergence loop, the three `prism` per-unit passes and the fan-out run declare no checkpoint at all.
+The walker's own `StepDef.kind` (`tests/e2e/walker.ts:68`) is the one compiler-enforced four-kind
+union in the repository and it sits outside `tsconfig.json`'s `include`, so a fifth kind produces no
+error there and the file has to be edited by hand.
+
 ## Decisions
 
 Settled: what kind of thing a routine is and what it is not — neither an activity nor an extension of
@@ -1212,10 +1484,29 @@ its continuation test, where a routine lives and what counts as a referrer, whet
 outcome, what happens to its artifacts, which guards read which form, and what becomes of the
 mechanism it replaces.
 
-Open: how long a generated identifier may be, and whether a name inside a routine belongs to a scope
-or to a mangled global. They are one question at two depths, neither blocks the construct, and both
-want the identifier measurements re-taken against the signature in
-[re-derivation.md](re-derivation.md) before they are answered.
+**Open, each with the recommendation the measurement supports and none of them settled here.** Nine
+items, and none blocks declaring, referring to or materialising a routine.
+
+| Open question | Recommendation |
+|---|---|
+| **Which mechanism supplies the form carrying the reference**, since the derivation is a guard concern and the loader does not perform it | The loader returns the authored activities alongside the materialised ones. It costs a copy per load and no technique-markdown reads on the request path, where moving the derivation into the loader costs 2.0× the load at all seven tool call sites. The owner confirms that a routine contradicting its signature fails a guard run rather than the load, and that a second copy of every activity per load is acceptable — the clone is the one number this has not measured |
+| **Whether a reference site may leave a declared input unbound** | Yes, and the name takes the host's value. Declaring the body's free names as inputs and requiring every site to bind all of them would add sixty argument lines against the 192 the convergence stage removes |
+| **What happens to `assumption_source` and `assumption_categories`**, read by `review-assumptions::reconcile` from a bag no host fills | Declare them as routine inputs the six sites bind. Only that preserves the per-host difference the corpus expresses today outside the loop at `04-research.yaml:130` and `02-design-philosophy.yaml:168-169` |
+| **Whether a routine name will ever want a group** | No, and the grammar ships at one separator. Widening a shipped grammar is cheaper than narrowing one, so this is worth confirming before stage 3 rather than after |
+| **Whether the per-item assumption gate stays dismissible** — row 11 of the census | Keep the condition, in the shared body. The enclosing loop already tests the same thing, so only the capability is at stake; and of the two errors available, giving one surviving host a capability it did not ask for is recoverable where removing the corpus's only dismissible per-item assumption gate is a subtraction nothing would notice. The same question arrives at the batch gate, where the worked body as drawn takes four of the corpus's 70 dismissible gates out of the dismissible set |
+| **What the assumption run's routine and reference-site ids are** | Taken at stage 5 from a re-derivation of that run, which does not exist. The sketch's `assumption-reconciliation` and `reconcile-assumptions` both collide with live step ids, and the four hosts spell the run's six positions fifteen ways |
+| **What the convergence run's two routines are called** | `concern-challenge-pass` for the inner and `assumption-convergence` for the outer. Every word of the first is in the contract its body binds (`work-package/techniques/analyse-challenge/TECHNIQUE.md:8`), and the second is the id the six sites already spell, so the migration renames nothing |
+| **How long a generated identifier may be** | No limit, and the measured ceiling recorded as a fact the design carries. Nothing in the server or the schemas bounds a length; the convergence migration's longest generated id is 54 characters against a corpus maximum of 58. Recommended alongside and independent of stages 3 through 6: move composition of the per-iteration checkpoint key from the worker to the server, which retires the one failure mode length contributes to |
+| **Whether a name inside a routine belongs to a scope or to a mangled global** | The mangled global for the first version, with scoping recorded as the settled direction. The mangled form is measured — 87 characters at worst, no bound breached, no parse broken — and scoping is where the length goes away rather than where it becomes safe. It is a change to what a name is, and its four surfaces are the session record's key layout, the crossing check, the producer index and `inspect_session`'s variable view |
+
+**The stage order is the owner's too, and the measured recommendation is not the order the table
+states.** Stage 1 first and alone, because it costs one script, covers all 24 windows including the
+fourteen no stage names, and is the only mechanism that can grade a later convergence. Then stages 3
+and 4. Then stage 6 before stage 5, because a routine with no inputs and no gates is the smallest
+version of the construct that works end to end and changes behaviour at no live site. Then stage 5,
+carrying the twelve dispositions and the fragment retirement. Then stages 8 and 7 last — stage 8
+because its whole constituency is 45 lines in files nothing validates, and stage 7 because it is the
+only stage that adds a schema field and the only one the drift guard cannot grade.
 
 Each is recorded with its reasoning in [decisions.md](decisions.md). [gap-review.md](gap-review.md)
 carries the four specification questions it settles and the five pieces of work it leaves.
@@ -1261,6 +1552,29 @@ carries the four specification questions it settles and the five pieces of work 
 - [conversion/](conversion/) — the simulated conversion artifacts: two routines, the converted host
   activity, and one excerpt showing the other reference form. Their signature is superseded by
   [re-derivation.md](re-derivation.md) — see [gap-review.md](gap-review.md) gap 3.
+
+### Two folders beside this one
+
+- [2026-09-10-routines-sweeps/](../2026-09-10-routines-sweeps/README.md) — six supersession sweeps
+  over separate surfaces, each put to a refutation pass, and a completeness pass closing them. It
+  holds the ten plan defects that change what a stage delivers, the removals in four clusters, what
+  merely narrows, the keep list and the sequencing against stages 0 through 8. **Read the first
+  section before scheduling any stage.**
+- [2026-09-11-routines-remediation/](../2026-09-11-routines-remediation/) — what the sweeps asked for,
+  measured. [stage-7-8-rederivation.md](../2026-09-11-routines-remediation/stage-7-8-rederivation.md)
+  re-derives the last two stages against the corpus and shows the graph owns neither family;
+  [remaining-constituency.md](../2026-09-11-routines-remediation/remaining-constituency.md) weighs
+  what is left to serve and recommends a build order;
+  [boundary-decisions.md](../2026-09-11-routines-remediation/boundary-decisions.md) settles the load
+  path, the free variables and the resolution rule, each with the options priced;
+  [stage-2-dispositions.md](../2026-09-11-routines-remediation/stage-2-dispositions.md) is stage 2's
+  deliverable at twelve rows;
+  [identifier-measurements.md](../2026-09-11-routines-remediation/identifier-measurements.md) answers
+  the two open identifier items and proposes the convergence routines' names;
+  [permutation-matrix.md](../2026-09-11-routines-remediation/permutation-matrix.md) and
+  [test-plan.md](../2026-09-11-routines-remediation/test-plan.md) turn the refusal surface into named
+  test files; and [unswept/](../2026-09-11-routines-remediation/unswept/) measures the three surfaces
+  no sweep opened — the test fixture corpora, the session record and the walker.
 
 ## Provenance
 
