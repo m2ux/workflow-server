@@ -156,6 +156,39 @@ describe('corpus discovery', () => {
     rmSync(nested, { recursive: true, force: true });
   });
 
+  it('leaves the grouping-s siblings outside the corpus whatever they are called', () => {
+    // Naming the products rather than the folders that are not products: a tree that grows another
+    // kind of folder needs no list amending, and an unforeseen name is outside for being a sibling.
+    const nested = mkdtempSync(join(tmpdir(), 'corpus-siblings-'));
+    const product = join(nested, 'corpus', 'work-package');
+    for (const sibling of ['deploy', 'archive', 'anything-at-all']) {
+      const dir = join(nested, sibling, 'example');
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(join(dir, 'workflow.yaml'), `id: ${sibling}-example\nversion: 1.0.0\ntitle: t\n`);
+    }
+    mkdirSync(product, { recursive: true });
+    writeFileSync(join(product, 'workflow.yaml'), 'id: work-package\nversion: 1.0.0\ntitle: t\n');
+    expect([...indexCorpus(nested).workflows.keys()]).toEqual(['work-package']);
+    rmSync(nested, { recursive: true, force: true });
+  });
+
+  it('walks a grouping named for a kind, and a workflow named for one, inside the corpus', () => {
+    // A directory the walk skips is a directory nothing reports, so a name excluded inside the
+    // corpus would take every workflow beneath it away in silence.
+    const nested = mkdtempSync(join(tmpdir(), 'corpus-kinds-nested-'));
+    const grouped = join(nested, 'corpus', 'docs', 'beta');
+    const namedForAKind = join(nested, 'corpus', 'walks');
+    const deep = join(nested, 'corpus', 'group', 'ledgers', 'gamma');
+    mkdirSync(grouped, { recursive: true });
+    mkdirSync(namedForAKind, { recursive: true });
+    mkdirSync(deep, { recursive: true });
+    writeFileSync(join(grouped, 'workflow.yaml'), 'id: beta\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(namedForAKind, 'workflow.yaml'), 'id: walks\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(deep, 'workflow.yaml'), 'id: gamma\nversion: 1.0.0\ntitle: t\n');
+    expect([...indexCorpus(nested).workflows.keys()]).toEqual(['beta', 'gamma', 'walks']);
+    rmSync(nested, { recursive: true, force: true });
+  });
+
   it('resolves an id claimed by two directories to neither, and reports the claimants', () => {
     const contested = mkdtempSync(join(tmpdir(), 'corpus-contested-'));
     for (const group of ['left', 'right']) {

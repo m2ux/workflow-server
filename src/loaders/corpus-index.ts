@@ -18,9 +18,12 @@ import { parseDefinition } from '../utils/serialization.js';
  * workflow owns everything beneath it and no workflow contains another.
  *
  * When the pointed tree holds a `corpus/` grouping — a directory of that name that is not itself a
- * workflow — the walk starts there and does not search sibling folders. A still-flat tree has no
- * such grouping, so the pointed directory is the walk root. A `workflow.yaml` at any depth under
- * that walk is a workflow; grouping folders organise the tree and name nothing.
+ * workflow — the walk starts there, and the grouping's siblings are outside the corpus whatever
+ * they are called. That is the whole rule: the products are named, rather than the folders that are
+ * not products, so a tree that grows another kind of folder needs no list amending and no folder
+ * disappears for being named like one. A still-flat tree has no such grouping, so the pointed
+ * directory is the walk root and everything under it is searched. A `workflow.yaml` at any depth
+ * under the walk is a workflow; grouping folders organise the tree and name nothing.
  *
  * The directory name and the `id` the definition declares are one identity. A directory whose file
  * names something else does not resolve, under either name, and `list_workflows` reports the pair.
@@ -37,14 +40,6 @@ import { parseDefinition } from '../utils/serialization.js';
 
 /** Directory names holding a workflow's own files, which the walk never enters and never searches. */
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
-
-/**
- * Kind names the walk never enters as children. `ledgers`, `walks` and `docs` are skipped if
- * they appear under a still-flat tree; a nested tree never searches them because the walk
- * starts inside `corpus/`. Grouping folders under `corpus/` — including `specimens/` — are
- * ordinary nests: a `workflow.yaml` beneath them is a workflow.
- */
-const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'docs']);
 
 /** The product grouping under a nested corpus tree. Not itself a workflow. */
 const PRODUCT_GROUPING = 'corpus';
@@ -185,7 +180,6 @@ export function indexCorpus(root: string): CorpusIndex {
         !entry.isDirectory()
         || entry.name.startsWith('.')
         || RESERVED_DIR_NAMES.has(entry.name)
-        || NON_PRODUCT_ROOTS.has(entry.name)
       ) continue;
       const path = join(dir, entry.name);
       const manifest = definitionIn(path);
