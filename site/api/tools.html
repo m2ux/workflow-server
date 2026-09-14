@@ -74,7 +74,7 @@
       <p>Each registered MCP tool is listed below. Expand an entry for the full description and advanced parameters. This page is generated from the server source — do not hand-edit the tool bodies.</p>
       <nav aria-label="Tools on this page">
       <ul>
-        <li>Bootstrap: <a href="#discover"><code>discover</code></a>, <a href="#discover_workflow"><code>discover_workflow</code></a>, <a href="#list_workflows"><code>list_workflows</code></a>, <a href="#health_check"><code>health_check</code></a></li>
+        <li>Bootstrap: <a href="#discover"><code>discover</code></a>, <a href="#list_workflows"><code>list_workflows</code></a>, <a href="#health_check"><code>health_check</code></a></li>
         <li>Session: <a href="#start_session"><code>start_session</code></a>, <a href="#get_workflow_status"><code>get_workflow_status</code></a>, <a href="#inspect_session"><code>inspect_session</code></a>, <a href="#dispatch_child"><code>dispatch_child</code></a></li>
         <li>Workflow and activity navigation: <a href="#get_workflow"><code>get_workflow</code></a>, <a href="#next_activity"><code>next_activity</code></a>, <a href="#get_activity"><code>get_activity</code></a></li>
         <li>Checkpoint flow: <a href="#yield_checkpoint"><code>yield_checkpoint</code></a>, <a href="#resume_checkpoint"><code>resume_checkpoint</code></a>, <a href="#present_checkpoint"><code>present_checkpoint</code></a>, <a href="#respond_checkpoint"><code>respond_checkpoint</code></a></li>
@@ -93,23 +93,6 @@
           <p>No session required. Use <code>list_workflows</code> to see what you can run.</p>
         </details>
         <p class="no-params">No parameters.</p>
-      </section>
-      <section class="tool" id="discover_workflow">
-        <h3><code>discover_workflow</code></h3>
-        <p class="tool-summary">Rank workflows for a free-form request against id, title, description, and tags.</p>
-        <details class="tool-details">
-          <summary>Full description</summary>
-          <p>Ranks workflows for a free-form request against id, title, description, and tags.</p>
-          <p>Returns the top match, an ambiguity flag, and up to five scored ids — not the catalog. No session required.</p>
-        </details>
-        <div class="table-wrap">
-        <table class="param-table">
-          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
-          <tbody>
-          <tr><td><code>query</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. Free-form request to match against workflow keywords.</td></tr>
-          </tbody>
-        </table>
-        </div>
       </section>
       <section class="tool" id="list_workflows">
         <h3><code>list_workflows</code></h3>

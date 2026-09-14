@@ -27,7 +27,6 @@ Most tools take a `session_index` from `start_session`. Bootstrap tools do not. 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
 | `discover` | — | Server info, bootstrap stub | First call: how to start a session. Pass `working_directory` on `start_session`. |
-| `discover_workflow` | `query` | Top match, ambiguity flag, ranked ids | Rank the catalog against a free-form request. No session required. |
 | `list_workflows` | — | Workflow list (`id`, `title`, `version`, `tags`) | Catalog of available workflows. |
 | `health_check` | — | Status, version, workflow count, uptime | Process health. |
 

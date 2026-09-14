@@ -307,7 +307,7 @@ export function captureTools(): CapturedTool[] {
 }
 
 const TOOL_GROUPS: Array<{ title: string; note: string; tools: string[] }> = [
-  { title: 'Bootstrap', note: 'Callable without a session_index.', tools: ['discover', 'discover_workflow', 'list_workflows', 'health_check'] },
+  { title: 'Bootstrap', note: 'Callable without a session_index.', tools: ['discover', 'list_workflows', 'health_check'] },
   { title: 'Session', note: 'Create, inspect, and extend workflow sessions.', tools: ['start_session', 'get_workflow_status', 'inspect_session', 'dispatch_child'] },
   { title: 'Workflow and activity navigation', note: 'Load workflow structure and advance through activities.', tools: ['get_workflow', 'next_activity', 'get_activity'] },
   { title: 'Checkpoint flow', note: 'Yield to the orchestrator, present decisions to the user, and resume.', tools: ['yield_checkpoint', 'resume_checkpoint', 'present_checkpoint', 'respond_checkpoint'] },
@@ -327,10 +327,6 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   discover: [
     'Call this first. Returns the server name, version, and the bootstrap steps for starting a workflow.',
     'No session required. Use `list_workflows` to see what you can run.',
-  ],
-  discover_workflow: [
-    'Ranks workflows for a free-form request against id, title, description, and tags.',
-    'Returns the top match, an ambiguity flag, and up to five scored ids — not the catalog. No session required.',
   ],
   list_workflows: [
     'Lists every workflow the server can run, with id, title, version, and tags.',

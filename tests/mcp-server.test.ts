@@ -137,23 +137,6 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     });
   });
 
-  describe('tool: discover_workflow', () => {
-    it('ranks work-package for the baseline request without a session', async () => {
-      const result = await client.callTool({
-        name: 'discover_workflow',
-        arguments: {
-          query:
-            'At present the time taken from first prompt to dispatching the client workflow with workflow server is too long. I suspect a lot of the preamble can be scripted with Python or TypeScript, e.g. workflow discovery. Workflows have embedded keywords to aid discovery. Maybe we can add a discover-workflow tool that permits fuzzy discovery based upon keywords provided by an agent. Measure time to dispatch client and use this as a reference for optimisation. Consider other novel techniques also like scripts, new workflow-server MCP tools, or other.',
-        },
-      });
-      expect(result.isError).toBeFalsy();
-      const body = parseToolResponse(result);
-      expect(body.workflow_id).toBe('work-package');
-      expect(body.ambiguous).toBe(false);
-      expect(Array.isArray(body.ranked)).toBe(true);
-    });
-  });
-
   describe('tool: start_session', () => {
     it('should return workflow metadata and opaque token for default meta workflow', async () => {
       const result = await client.callTool({
@@ -241,7 +224,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     // The registered set in full, so a tool added without a test here fails this
     // assertion, and a name the server no longer serves fails it too.
     const TOOLS = [
-      'discover', 'discover_workflow', 'dispatch_child', 'get_activity', 'get_resource', 'get_technique',
+      'discover', 'dispatch_child', 'get_activity', 'get_resource', 'get_technique',
       'get_trace', 'get_workflow', 'get_workflow_status', 'health_check',
       'inspect_session', 'list_workflows', 'next_activity', 'present_checkpoint',
       'record_usage', 'respond_checkpoint', 'resume_checkpoint', 'start_session',
@@ -1574,7 +1557,6 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       // trace event because appendTraceEvent short-circuits when
       // params.session_index is absent.
       await client.callTool({ name: 'discover', arguments: {} });
-      await client.callTool({ name: 'discover_workflow', arguments: { query: 'work package' } });
       await client.callTool({ name: 'list_workflows', arguments: {} });
       await client.callTool({ name: 'health_check', arguments: {} });
 
@@ -1593,7 +1575,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
       // Belt and braces: no event in the trace was emitted by any of the
       // unauthenticated tools.
-      const unauthenticatedNames = new Set(['discover', 'discover_workflow', 'list_workflows', 'health_check']);
+      const unauthenticatedNames = new Set(['discover', 'list_workflows', 'health_check']);
       for (const event of after.events) {
         expect(unauthenticatedNames.has(event.name)).toBe(false);
       }

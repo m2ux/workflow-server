@@ -1,9 +1,9 @@
 /**
  * Score a workflow catalog against a free-form request.
  *
- * The match uses id, title, description, and tags — the same fields
- * `workflow-engine::match-target-workflow` scores — without shipping the catalog
- * through an LLM turn. `discover_workflow` calls this ranker.
+ * The match uses id, title, description, and tags without shipping the catalog
+ * through an LLM turn. `start_session` uses this ranker for unique embed
+ * and for the `workflow-selection` decision.
  */
 
 export interface DiscoveryEntry {
@@ -133,7 +133,7 @@ export interface DiscoverWorkflowPayload {
   ranked: Array<{ id: string; score: number; title: string }>;
 }
 
-/** Wire shape for `discover_workflow`: top matches only, no tags or descriptions. */
+/** Ranked ids for a `workflow-selection` decision: top matches only, no tags or descriptions. */
 export function presentDiscoverWorkflow(match: MatchResult): DiscoverWorkflowPayload {
   return {
     workflow_id: match.workflow_id,
