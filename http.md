@@ -44,7 +44,24 @@ Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names
 ./scripts/stop.sh --name=workflow-server-trial
 ```
 
-The sidecar uses the same install binds (projects root, corpus, HMAC state) as the first instance. Cursor's MCP URL is whatever `.mcp.json` names; point it at the printed URL to talk to the sidecar.
+The sidecar uses the same install binds (projects root, HMAC state) as the first instance. `--workflows-dir` selects the corpus for that container. Cursor's MCP URL is whatever `.mcp.json` names; point it at the printed URL to talk to the sidecar.
+
+### Reload an experiment sidecar on a stable port
+
+`scripts/reload-exp-sidecar.sh` stops one named container, rebuilds (or reuses) its image from a checkout, and starts it again on the same host port with `--workflows-dir`. It refuses the install container name `workflow-server` and host port 3000.
+
+`--name` and `--workflows-dir` are required. `--image` defaults to `workflow-server:local` (pass a distinct tag per experiment). `--build` defaults to the checkout that contains the script; pass a directory when the engine lives in another worktree. `--host-port` defaults to the port that container already publishes, and is required when none is running.
+
+```bash
+./scripts/reload-exp-sidecar.sh \
+  --name=workflow-server-exp \
+  --image=workflow-server:exp-ttd \
+  --build=.worktrees/feat/time-to-dispatch-experiment \
+  --workflows-dir=.worktrees/feat/time-to-dispatch-meta \
+  --host-port=32772
+```
+
+`--no-build` reuses `--image`. Point the experiment MCP server at the printed URL. Leave `workflow-server` on :3000.
 
 ## 3. Verify
 
