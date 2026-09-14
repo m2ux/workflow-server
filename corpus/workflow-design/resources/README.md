@@ -40,7 +40,7 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 
 | Bare filename | Guide |
 |---------------|-------|
-| `README.md` | [planning-readme](../../meta/resources/planning-readme.md) Template + [readme-seed](readme-seed.md) |
+| `README.md` | [planning-readme](/meta/resources/planning-readme.md) Template + [readme-seed](readme-seed.md) |
 | `COMPLETE.md` | [completion-artifact](completion-artifact.md) |
 | `assumptions-log.md` | [design-assumptions](design-assumptions.md) |
 | `structural-inventory.json` | [structural-inventory](structural-inventory.md) |

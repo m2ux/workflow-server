@@ -40,7 +40,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 1. Load Guidance
 
 - Judge the change against [Architectural Significance](../../resources/architecture-review.md#architectural-significance) and [Decision-Making Discipline](../../resources/architecture-review.md#decision-making-discipline); the rules below govern the review findings
-- Identify the base branch (`{$base_branch}`): when `{pr_number}` is set, Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{base_branch}`; otherwise (no PR — stealth mode) the default branch of the configured push remote.
+- Identify the base branch (`{$base_branch}`): when `{pr_number}` is set, Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{base_branch}`; otherwise (no PR — stealth mode) the default branch of the configured push remote.
 - Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch (`{$base_branch}`):
 
   ```bash
@@ -58,11 +58,11 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 
 ### 3. Scope Discipline Check
 
-- Apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[scope-discipline-check](../../../meta/techniques/gitnexus-operations/scope-discipline-check.md)(requirements-scope: `{requirements}`); flag any affected process outside the requirements as scope creep for user decision.
+- Apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[scope-discipline-check](/meta/techniques/gitnexus-operations/scope-discipline-check.md)(requirements-scope: `{requirements}`); flag any affected process outside the requirements as scope creep for user decision.
 
 ### 4. Orphan Check
 
-- Apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[orphan-scan](../../../meta/techniques/gitnexus-operations/orphan-scan.md)(changed_files: `{changed_files}`) to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
+- Apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[orphan-scan](/meta/techniques/gitnexus-operations/orphan-scan.md)(changed_files: `{changed_files}`) to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
 - Where the leanness audit ran, over-engineering is its finding and its designator: cite the entry rather than restating the defect, and record only what this pass reached beyond it. That audit judges proportionality against the review taxonomy and this pass judges scope against the requirements, so a defect both reach is one defect seen from two angles rather than two findings.
 
 ### 5. Identify Artifacts

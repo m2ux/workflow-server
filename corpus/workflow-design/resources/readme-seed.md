@@ -7,7 +7,7 @@ metadata:
 
 # Workflow-Design README Seed
 
-Fill data for [create-readme](../../meta/techniques/workflow-engine/create-readme.md). Layout and policy live in [Planning Folder README Guide](../../meta/resources/planning-readme.md) ([Template](../../meta/resources/planning-readme.md#template)).
+Fill data for [create-readme](/meta/techniques/workflow-engine/create-readme.md). Layout and policy live in [Planning Folder README Guide](/meta/resources/planning-readme.md) ([Template](/meta/resources/planning-readme.md#template)).
 
 ## Classifier
 
@@ -45,11 +45,11 @@ Lifecycle **Status** values: `Planning`, `Drafting`, `Reviewing`, `Complete`.
 | 16 | Retrospective | Session close-out | 15-30m | ⬚ |
 | 17 | [Close-out](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
-Initial Status icons are from [Status vocabulary](../../meta/resources/planning-readme.md#status-vocabulary). Post-update review starts as cancelled/N/A outside update-mode seeds.
+Initial Status icons are from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). Post-update review starts as cancelled/N/A outside update-mode seeds.
 
 ## Row ownership
 
-Which activity owns which rows, per [row-ownership map](../../meta/resources/planning-readme.md#row-ownership-map). Values are Item labels.
+Which activity owns which rows, per [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map). Values are Item labels.
 
 | @ | Rows |
 |---|------|

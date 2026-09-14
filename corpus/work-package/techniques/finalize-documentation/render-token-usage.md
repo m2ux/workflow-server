@@ -45,7 +45,7 @@ Share of the run's dispatches the ledger accounts for: ledger entry count, actua
 
 ### 3. Write the Cost Artifact
 
-- Create `{token_usage_document}` at `{planning_folder_path}` per [artifact-prefix](../manage-artifacts/TECHNIQUE.md#artifact-prefix), following [token-usage](../../../meta/resources/token-usage.md#template) and its [Rules](../../../meta/resources/token-usage.md#rules), filling it from the per-activity figures and `{token_usage_document.usage_coverage}`
+- Create `{token_usage_document}` at `{planning_folder_path}` per [artifact-prefix](../manage-artifacts/TECHNIQUE.md#artifact-prefix), following [token-usage](/meta/resources/token-usage.md#template) and its [Rules](/meta/resources/token-usage.md#rules), filling it from the per-activity figures and `{token_usage_document.usage_coverage}`
 
 ### 4. Link From the README
 

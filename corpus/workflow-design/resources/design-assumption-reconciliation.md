@@ -8,11 +8,11 @@ metadata:
 
 # Design Assumption Reconciliation
 
-Resolvability vocabulary for design assumptions (counterpart framing to work-package [assumption-reconciliation](../../work-package/resources/assumption-reconciliation.md)):
+Resolvability vocabulary for design assumptions (counterpart framing to work-package [assumption-reconciliation](/work-package/resources/assumption-reconciliation.md)):
 
 | Resolvability | Meaning |
 |---------------|---------|
 | **audit** | Settleable by schema, convention, or principle checks against the drafted definition |
 | **open** | Genuine design judgement — remains in the assumptions log for stakeholder batch disposition |
 
-Categories and log template: [design-assumptions](./design-assumptions.md). Bold-label trailing-two-spaces formatting: work-package [assumption-reconciliation](../../work-package/resources/assumption-reconciliation.md).
+Categories and log template: [design-assumptions](./design-assumptions.md). Bold-label trailing-two-spaces formatting: work-package [assumption-reconciliation](/work-package/resources/assumption-reconciliation.md).

@@ -7,7 +7,7 @@ metadata:
 
 # Elicitation Guide
 
-Question bank and mode dimension sets for eliciting a workflow specification — the workflow-design counterpart of the work-package [requirements-elicitation](../../work-package/resources/requirements-elicitation.md) guide.
+Question bank and mode dimension sets for eliciting a workflow specification — the workflow-design counterpart of the work-package [requirements-elicitation](/work-package/resources/requirements-elicitation.md) guide.
 
 ## Mode Dimension Sets
 

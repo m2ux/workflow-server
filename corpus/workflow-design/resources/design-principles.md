@@ -84,7 +84,7 @@ Definition prose (`description`, `outcome`, option text, README orientation for 
 
 ## 18. Prefer Shared Capability
 
-When a meta or shared-workflow technique already owns a capability, reuse it by binding that op from an activity (or borrowing an activity that already binds it). Invent a parallel local recipe only after the shared surface cannot absorb the caller's diversity. Fan-out and consolidate is owned by the layer that runs the work. Several workers on separate activities, or one activity over a collection, is a routing fact: bind it as a graph destination that names them, and gather at the activity they converge on. Work units inside ONE worker are the other layer: a `forEach` loop step, with the meta [`orchestration-patterns`](../../meta/techniques/orchestration-patterns/TECHNIQUE.md) ops for decomposition and the gather, before local merge recipes.
+When a meta or shared-workflow technique already owns a capability, reuse it by binding that op from an activity (or borrowing an activity that already binds it). Invent a parallel local recipe only after the shared surface cannot absorb the caller's diversity. Fan-out and consolidate is owned by the layer that runs the work. Several workers on separate activities, or one activity over a collection, is a routing fact: bind it as a graph destination that names them, and gather at the activity they converge on. Work units inside ONE worker are the other layer: a `forEach` loop step, with the meta [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) ops for decomposition and the gather, before local merge recipes.
 
 ## 19. Name Symbols Affirmatively
 
@@ -116,7 +116,7 @@ All multi-technique work lives in activity `steps[]` (and checkpoints/loops). Bi
 
 ## 26. Atomic Techniques; Compose at Activities
 
-Techniques are small, relatively atomic capabilities: a short produce path over tools and resources, without complex conditional/branching orchestration and without invoking other techniques to do work. Activities are the composition layer — they bind techniques (and checkpoints/loops) into useful work. Activity→activity composition is allowed: borrow, bind, or include activities to reuse standalone orchestration patterns — including the meta pattern library under [`meta/activities/patterns/`](../../meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). Technique→technique work calls remain forbidden — techniques stay atomic over tools and resources. Reuse a shared capability by binding it from an activity (or borrowing that activity), not by `Apply [other-technique]` inside a Protocol.
+Techniques are small, relatively atomic capabilities: a short produce path over tools and resources, without complex conditional/branching orchestration and without invoking other techniques to do work. Activities are the composition layer — they bind techniques (and checkpoints/loops) into useful work. Activity→activity composition is allowed: borrow, bind, or include activities to reuse standalone orchestration patterns — including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). Technique→technique work calls remain forbidden — techniques stay atomic over tools and resources. Reuse a shared capability by binding it from an activity (or borrowing that activity), not by `Apply [other-technique]` inside a Protocol.
 
 ## 27. State Contract Contribution
 

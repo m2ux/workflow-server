@@ -37,7 +37,7 @@ An implicit decision is recorded as an assumption and validated before the work 
 
 ### assembled-entries-carry-their-evidence
 
-An assembled open-assumption entry carries the partial evidence reconcile and challenge produced in its technical context, and resolves reversibility through [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](../../../meta/techniques/gitnexus-operations/reversibility-signal.md) where the assumption names a known symbol.
+An assembled open-assumption entry carries the partial evidence reconcile and challenge produced in its technical context, and resolves reversibility through [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](/meta/techniques/gitnexus-operations/reversibility-signal.md) where the assumption names a known symbol.
 
 ### assumptions-log-is-the-record
 

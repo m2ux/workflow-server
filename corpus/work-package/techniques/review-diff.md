@@ -55,7 +55,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 - Run `git pull` on the `{branch_name}` feature branch to ensure it is up to date
 - Resolve merge conflicts before proceeding if any
-- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{$base_branch}` from `{base_branch}`
+- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{$base_branch}` from `{base_branch}`
 - If HEAD is a merge commit or the branch has merged `{$base_branch}` in, the three-dot range against the merge-base already scopes to the authored diff; log that a merge-in was detected
 
 ### 2. Parse Diff
@@ -67,14 +67,14 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 ### 3. Pin the Citation Base
 
-- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{reviewed_code_base_url}` from the op output.  
+- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{reviewed_code_base_url}` from the op output.  
   > When no PR exists yet, take the repository from `{push_remote}` and the sha from that remote's tip of the branch (`git -C {target_path} ls-remote {push_remote} {branch_name}`); push the branch first when the remote does not carry it, so the sha the citations name is reachable.
 - Every Block title and finding citation this technique writes is built on `{reviewed_code_base_url}`, per [permanent-blob-citations](../resources/manual-diff-review.md#permanent-blob-citations).
 
 ### 4. Create Index
 
 - Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one `### [Block N — file:line]` subsection per block, each title linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
-- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
+- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](/meta/techniques/gitnexus-operations/context.md)(name: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
 - Write index to the `{change_block_index}` under `{planning_folder_path}`
 
 ### 5. Collect Flagged

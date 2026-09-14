@@ -59,22 +59,22 @@ One row per enumeration unit walked, each carrying the unit's home, the unit's a
 
 ### 1. Enumerate the Criteria Units
 
-- Take one enumeration unit per `##` section of each of [Design Principles](../../../workflow-design/resources/design-principles.md), [Schema Construct Inventory](../../../workflow-design/resources/schema-construct-inventory.md) and [Convention Conformance](../../../workflow-design/resources/convention-conformance.md)
+- Take one enumeration unit per `##` section of each of [Design Principles](/workflow-design/resources/design-principles.md), [Schema Construct Inventory](/workflow-design/resources/schema-construct-inventory.md) and [Convention Conformance](/workflow-design/resources/convention-conformance.md)
 - Take the anti-pattern units from the sections below, which are that home in full. Enumerate this list rather than matching section titles by pattern: entries sit outside the family sections, and a pattern match drops them with no error, no warning and no coverage signal.
-  - [Creation Rules](../../../workflow-design/resources/anti-patterns.md#creation-rules)
-  - [Structural Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#structural-anti-patterns)
-  - [Interaction Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#interaction-anti-patterns)
-  - [Schema Expressiveness Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#schema-expressiveness-anti-patterns)
-  - [Rule Hygiene Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#rule-hygiene-anti-patterns)
-  - [Description Hygiene Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns)
-  - [Coupling Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#coupling-anti-patterns)
-  - [Tool-Technique-Doc Consistency Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#tool-technique-doc-consistency-anti-patterns)
-  - [Execution Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#execution-anti-patterns)
-  - [Output Economy Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#output-economy-anti-patterns)
-  - [Canon Hygiene Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#canon-hygiene-anti-patterns)
-  - [Technique Protocol Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#technique-protocol-anti-patterns)
-  - [Authoring Guidance (MR)](../../../workflow-design/resources/anti-patterns.md#authoring-guidance-mr)
-- Where the corpus is indexed, apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[heading-search](../../../meta/techniques/gitnexus-operations/heading-search.md) on each unit's title and read its `{heading_matches}` for the heading that home now carries. An anchor whose heading has been renamed fetches nothing, and a unit fetched as nothing is walked as nothing while the ledger records it walked
+  - [Creation Rules](/workflow-design/resources/anti-patterns.md#creation-rules)
+  - [Structural Anti-Patterns](/workflow-design/resources/anti-patterns.md#structural-anti-patterns)
+  - [Interaction Anti-Patterns](/workflow-design/resources/anti-patterns.md#interaction-anti-patterns)
+  - [Schema Expressiveness Anti-Patterns](/workflow-design/resources/anti-patterns.md#schema-expressiveness-anti-patterns)
+  - [Rule Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#rule-hygiene-anti-patterns)
+  - [Description Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns)
+  - [Coupling Anti-Patterns](/workflow-design/resources/anti-patterns.md#coupling-anti-patterns)
+  - [Tool-Technique-Doc Consistency Anti-Patterns](/workflow-design/resources/anti-patterns.md#tool-technique-doc-consistency-anti-patterns)
+  - [Execution Anti-Patterns](/workflow-design/resources/anti-patterns.md#execution-anti-patterns)
+  - [Output Economy Anti-Patterns](/workflow-design/resources/anti-patterns.md#output-economy-anti-patterns)
+  - [Canon Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#canon-hygiene-anti-patterns)
+  - [Technique Protocol Anti-Patterns](/workflow-design/resources/anti-patterns.md#technique-protocol-anti-patterns)
+  - [Authoring Guidance (MR)](/workflow-design/resources/anti-patterns.md#authoring-guidance-mr)
+- Where the corpus is indexed, apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[heading-search](/meta/techniques/gitnexus-operations/heading-search.md) on each unit's title and read its `{heading_matches}` for the heading that home now carries. An anchor whose heading has been renamed fetches nothing, and a unit fetched as nothing is walked as nothing while the ledger records it walked
 - Do not restate, summarize or number the entries a unit contains; follow each entry as written, and cite entries by their kebab-case name
 
 ### 2. Walk Every Unit Against the Surface
@@ -84,7 +84,7 @@ One row per enumeration unit walked, each carrying the unit's home, the unit's a
 - Take Detect from the anti-pattern and construct-inventory homes; take from the principles home only whether the authored content honours a stance, so one violation is not counted twice under two homes
 - Compare against `{reference_workflows}` wherever a unit states its criteria relative to established sibling convention
 - When `{change_constraints}` is present, check each authored identifier against its collision set and each file against its co-change set
-- When walking [Description Hygiene Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns) or bound-step description criteria, apply Detect to every row of `{prose_field_inventory}` and to the same field classes on the rest of `{surface_files}`. When `{prose_field_inventory}` is required and absent or incomplete for `{changed_files}`, record the unit as `blocked` with that gap — never as `walked`
+- When walking [Description Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns) or bound-step description criteria, apply Detect to every row of `{prose_field_inventory}` and to the same field classes on the rest of `{surface_files}`. When `{prose_field_inventory}` is required and absent or incomplete for `{changed_files}`, record the unit as `blocked` with that gap — never as `walked`
 - For every unit marked `walked` that reaches `{changed_files}`, attach `evidence` rows: each row is `(file, field-or-locus, entry-or-clean, quote-or-path)`. A clean field still gets a row with disposition `clean`. Evidence covers the whole file the unit reaches on the change surface
 - Record every violation into `{audit_findings}` and every unit's disposition into `{coverage_ledger}`, at the shapes their Output declarations state
 

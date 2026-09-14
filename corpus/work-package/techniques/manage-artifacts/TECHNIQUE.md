@@ -79,7 +79,7 @@ Artifacts describe the work, not the process that produced it: no "per user requ
 
 ### plain-technical-language
 
-Human-audience artifacts are written to the [Artifact Writing Register](../../../meta/resources/writing-register.md).
+Human-audience artifacts are written to the [Artifact Writing Register](/meta/resources/writing-register.md).
 
 ### artifact-prefix
 

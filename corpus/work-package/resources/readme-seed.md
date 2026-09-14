@@ -7,7 +7,7 @@ metadata:
 
 # Work Package README Seed
 
-Fill data for the planning-folder README. Layout and policy live in [Planning Folder README Guide](../../meta/resources/planning-readme.md) ([Template](../../meta/resources/planning-readme.md#template)).
+Fill data for the planning-folder README. Layout and policy live in [Planning Folder README Guide](/meta/resources/planning-readme.md) ([Template](/meta/resources/planning-readme.md#template)).
 
 ## Classifier
 
@@ -61,13 +61,13 @@ Lifecycle **Status** values: `Planning`, `Ready`, `In Progress`, `Complete`.
 
 Rows run in the order the activities execute, which is the order a reader watches them complete in. Codebase comprehension therefore sits third, between design philosophy and requirements elicitation, though its artifact prefix is the highest of the set — the prefix follows the definition file, the row follows the run.
 
-Link targets are minted filenames per [Item cell](../../meta/resources/planning-readme.md#item-cell). Deferred items and Follow-ups are the cross-activity registers, minted by whichever activity defers or logs first and therefore unprefixed.
+Link targets are minted filenames per [Item cell](/meta/resources/planning-readme.md#item-cell). Deferred items and Follow-ups are the cross-activity registers, minted by whichever activity defers or logs first and therefore unprefixed.
 
-Initial Status icons are from [Status vocabulary](../../meta/resources/planning-readme.md#status-vocabulary). Prior feedback triage starts as cancelled/N/A in the implement/create seed (review-only).
+Initial Status icons are from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). Prior feedback triage starts as cancelled/N/A in the implement/create seed (review-only).
 
 ## Row ownership
 
-Which activity owns which rows, per [row-ownership map](../../meta/resources/planning-readme.md#row-ownership-map). Values are Item labels.
+Which activity owns which rows, per [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map). Values are Item labels.
 
 | @ | Rows |
 |---|------|

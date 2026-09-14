@@ -69,7 +69,7 @@ These operations are standalone, so another workflow binds them at a step with t
       task_knowledge: "{review_findings}"
 ```
 
-`codebase-wiki/ingest` builds or augments the wiki, `codebase-wiki/query` reads it, and `codebase-wiki/lint` checks it. Internally these techniques delegate file IO to [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` bound to `{wiki_path}`, so the wiki tree is the single place pages, index, log, and overview land.
+`codebase-wiki/ingest` builds or augments the wiki, `codebase-wiki/query` reads it, and `codebase-wiki/lint` checks it. Internally these techniques delegate file IO to [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` bound to `{wiki_path}`, so the wiki tree is the single place pages, index, log, and overview land.
 
 ## The wiki standard
 

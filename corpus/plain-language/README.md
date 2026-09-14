@@ -46,7 +46,7 @@ The governing criteria this workflow applies — the four principles and guideli
 
 ## Outputs
 
-The workflow seeds a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](../meta/resources/planning-readme.md) Template under this workflow's [readme-seed](./resources/readme-seed.md) profile, plus the working artifacts each activity persists via [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md).
+The workflow seeds a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](/meta/resources/planning-readme.md) Template under this workflow's [readme-seed](./resources/readme-seed.md) profile, plus the working artifacts each activity persists via [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md).
 
 **Author and rewrite modes:** a document profile, the plain-language document (also written to `{output_path}`), an evaluation report, and a completed ISO checklist. A rewrite run adds a source analysis.
 

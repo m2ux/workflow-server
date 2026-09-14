@@ -64,7 +64,7 @@ Targeted exploration findings for the selected area: traced data flows, implemen
   > - At `{comprehension_scope}` `same-area`, the selection stays within the area the last pass worked and deepens it; at `new-area`, it comes from the candidate set outside that area.
 - On the mandatory initial pass, attempt to resolve every open question; a subsequent pass narrows to one selected area.
 - For selected area: trace data flows, examine implementation details, document edge cases, applying the [Comprehension Techniques](../../resources/codebase-comprehension.md#comprehension-techniques)
-- When `{gitnexus_indexed}` is true: apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../../meta/techniques/gitnexus-operations/cypher.md) for custom call chain queries
+- When `{gitnexus_indexed}` is true: apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](/meta/techniques/gitnexus-operations/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](/meta/techniques/gitnexus-operations/cypher.md) for custom call chain queries
 
 ### 2. Record the Investigation
 

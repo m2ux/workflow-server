@@ -7,7 +7,7 @@ metadata:
 
 # Plain Language README Seed
 
-Fill data for [create-readme](../../meta/techniques/workflow-engine/create-readme.md). Layout and policy live in [Planning Folder README Guide](../../meta/resources/planning-readme.md) ([Template](../../meta/resources/planning-readme.md#template)).
+Fill data for [create-readme](/meta/techniques/workflow-engine/create-readme.md). Layout and policy live in [Planning Folder README Guide](/meta/resources/planning-readme.md) ([Template](/meta/resources/planning-readme.md#template)).
 
 ## Classifier
 
@@ -34,11 +34,11 @@ Lifecycle **Status** values: `Profiling`, `Drafting`, `Evaluating`, `Complete`.
 | 6 | [ISO checklist](iso-checklist.md) | Completed Annex B checklist | 10-15m | ⬚ |
 | 7 | Delivery | The document written to its output path | 5-10m | ⬚ |
 
-Initial Status icons are from [Status vocabulary](../../meta/resources/planning-readme.md#status-vocabulary). The source-analysis row starts cancelled/N/A because only rewrite and audit runs produce it.
+Initial Status icons are from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). The source-analysis row starts cancelled/N/A because only rewrite and audit runs produce it.
 
 ## Row ownership
 
-Which activity owns which rows, per [row-ownership map](../../meta/resources/planning-readme.md#row-ownership-map). Values are Item labels.
+Which activity owns which rows, per [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map). Values are Item labels.
 
 | @ | Rows |
 |---|------|

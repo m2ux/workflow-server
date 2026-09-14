@@ -6,7 +6,7 @@ The technique library for the codebase-wiki workflow. Each technique is one capa
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds shared Inputs (`wiki_path`, `raw_baseline_commit`), citation and confidence requirements, and workflow invariants for every technique here. Reuse operations: `ingest`, `query`, `lint`, `maintain-index-log`, `cross-link`. Internal: `collect-scope`, `compose-overview` (bound in `confirm-scope` and `publish`).
 
-The cross-cutting meta strategy technique [`variable-binding`](../../meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` / activity level, not bound per step.
+The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` / activity level, not bound per step.
 
 ---
 
@@ -36,4 +36,4 @@ Internally, the techniques delegate raw file IO to work-package's `manage-artifa
 
 | Reference | Used for |
 |-----------|----------|
-| [`work-package::manage-artifacts`](../../work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — page, index, log, and overview writes, with `target_dir` bound to `{wiki_path}`. |
+| [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — page, index, log, and overview writes, with `target_dir` bound to `{wiki_path}`. |

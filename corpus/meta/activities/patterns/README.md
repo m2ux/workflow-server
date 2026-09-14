@@ -29,7 +29,7 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
 ## How to consume
 
-1. **Borrow the activity** into a client `workflow.yaml` `activities:` list (same mechanism as [remediate-vuln](../../../remediate-vuln/workflow.yaml)):
+1. **Borrow the activity** into a client `workflow.yaml` `activities:` list (same mechanism as [remediate-vuln](/remediate-vuln/workflow.yaml)):
 
    ```yaml
    activities:

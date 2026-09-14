@@ -1,6 +1,6 @@
 # Evaluation Workflow
 
-> Evaluate any target across several analytical dimensions at once, by mapping each dimension onto [prism](../prism/README.md) lenses, consolidating what the runs found into one report, and optionally working the findings through into applied mitigations.
+> Evaluate any target across several analytical dimensions at once, by mapping each dimension onto [prism](/prism/README.md) lenses, consolidating what the runs found into one report, and optionally working the findings through into applied mitigations.
 
 ---
 
@@ -12,8 +12,8 @@
 
 | Workflow | Purpose |
 |----------|---------|
-| [`prism`](../prism/README.md) | The analytical engine — lenses, passes, and pipeline modes |
-| [`prism-audit`](../prism-audit/README.md) | Security audit orchestration over prism, with trust-boundary scanning and GitNexus integration |
+| [`prism`](/prism/README.md) | The analytical engine — lenses, passes, and pipeline modes |
+| [`prism-audit`](/prism-audit/README.md) | Security audit orchestration over prism, with trust-boundary scanning and GitNexus integration |
 | `prism-evaluate` | General evaluation orchestration over prism, along user-defined dimensions |
 
 A security audit belongs in `prism-audit`, whose domain logic this workflow does not carry.

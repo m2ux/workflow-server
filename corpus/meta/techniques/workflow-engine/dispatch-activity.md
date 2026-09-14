@@ -45,7 +45,7 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 
 ## Protocol
 
-1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy).
+1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
    > - When `{planning_folder_path}` is unset, skip this phase.
    > - Publish the mark before the worker spawns, per [dispatch-mark-reaches-the-remote](#dispatch-mark-reaches-the-remote): apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
 2. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
@@ -58,8 +58,8 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 5. Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
 6. Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
 7. On `activity_complete`, read `{worker_result.next_activity_id}` and `{worker_result.activity_exit}` as the authoritative next-activity routing, and pass the exit to `next_activity` — the worker resolved both against the activity's exits and the exit destinations its delivery carried, via [finalize-activity](./finalize-activity.md).
-   > - On a **blocked** signal from the worker or the harness, apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
-   > - When the path **skips / cancels** an activity without running it, apply [sync-progress-status](./sync-progress-status.md) for the path-skip / cancel moment in [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites) for that activity's rows.
+   > - On a **blocked** signal from the worker or the harness, apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
+   > - When the path **skips / cancels** an activity without running it, apply [sync-progress-status](./sync-progress-status.md) for the path-skip / cancel moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) for that activity's rows.
 
 ## Rules
 
@@ -83,7 +83,7 @@ Client finalize/retrospective paths that consume execution history MUST resolve 
 
 Leave the user no silent minute. Before spawning, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that it runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. Where a wait falls between one activity and the next, say that they are waiting and roughly how long, without an account of the machinery imposing it.
 
-A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching. What a completed activity delivered is a separate emission, per the [Run Status Guide](../../../meta/resources/run-status.md), made once its artifacts are on the remote.
+A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching. What a completed activity delivered is a separate emission, per the [Run Status Guide](/meta/resources/run-status.md), made once its artifacts are on the remote.
 
 ### dispatch-topology
 

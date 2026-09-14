@@ -62,7 +62,7 @@ graph TD
 
 ## Techniques
 
-The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity. Every step binds one of the workflow's standalone techniques.
+The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity. Every step binds one of the workflow's standalone techniques.
 
 The lean-coding capability is owned by standalone top-level techniques, each inheriting the workflow-root [`techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) base contract and bound bare as `<op>`.
 
@@ -75,7 +75,7 @@ The lean-coding capability is owned by standalone top-level techniques, each inh
 | `harvest-debt` | Harvest ponytail markers into a debt ledger |
 | `report-gain` | Append an honesty-bounded gain scoreboard to the ledger |
 
-`scope-intake` also reaches the cross-workflow [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) `query` / `context` operations for flow tracing when the codebase is indexed.
+`scope-intake` also reaches the cross-workflow [`gitnexus-operations`](/meta/techniques/gitnexus-operations/TECHNIQUE.md) `query` / `context` operations for flow tracing when the codebase is indexed.
 
 **Detailed documentation:** See [techniques/README.md](techniques/README.md) and [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md).
 

@@ -99,7 +99,7 @@ The report header links back to this guide so readers know the methodology used,
 
 ## Review Stance (consult)
 
-Tone / attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Prefer tooling (`rustfmt`, `clippy`) for style/formatting. Implementation comments explain why — never the review process.
+Tone / attribution: [agent-conduct](/meta/techniques/agent-conduct.md). Prefer tooling (`rustfmt`, `clippy`) for style/formatting. Implementation comments explain why — never the review process.
 
 ## Review Criteria
 
