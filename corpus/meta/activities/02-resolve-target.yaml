@@ -1,5 +1,5 @@
 id: resolve-target
-version: 4.7.0
+version: 4.8.0
 name: Resolve Target
 description: Detect the target repository structure (regular directory vs. submodule monorepo), resolve component_path, and confirm the session's host binding agrees with the derivation — headlessly, prompting only when a monorepo has more than one target-component submodule.
 variables:
@@ -49,7 +49,10 @@ steps:
     when: is_monorepo == true
   - kind: technique
     id: select-component
-    technique: version-control::select-target-component
+    technique:
+      name: version-control::select-target-component
+      inputs:
+        mentioned_repo: mentioned_repo
     when: is_monorepo == true
   - kind: loop
     id: component-selection

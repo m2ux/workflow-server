@@ -1,12 +1,11 @@
 id: discover-session
-version: 7.8.0
+version: 7.9.0
 name: Discover Session
 description: Take the host repository path from git, identify the target workflow and, on stated resume intent, search for an existing client session to resume.
 variables:
   reads:
     - component_path
     - host_repo_path
-    - mentioned_repo
     - planning_folder_path
     - user_request
   writes:
