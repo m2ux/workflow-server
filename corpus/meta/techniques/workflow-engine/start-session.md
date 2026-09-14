@@ -57,7 +57,7 @@ Slug the session is keyed on — minted transitionally when no planning folder w
 
 ## Protocol
 
-1. Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, and optional `{planning_folder}` and `{repo}`, per the [bootstrap protocol](../../../meta/resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
+1. Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, and optional `{planning_folder}` and `{repo}`, per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
    > - `{working_directory}` is the absolute path of the checkout under work. The bound `{repo}` is that checkout's origin remote.
    > - When `{repo}` is passed with `{working_directory}`, it equals that origin.
    > - Pass `{user_request}` verbatim — the server seeds it into the bag and children inherit it, so it reaches downstream agents as state rather than as prose in a spawn prompt.

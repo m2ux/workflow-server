@@ -11,7 +11,7 @@ Session retrospective surfacing friction points and prioritized workflow improve
 
 ### retrospective_document
 
-Session [retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) with prioritized lessons learned, written as the `## Workflow Retrospective` section of the close-out document.
+Session [retrospective](/work-package/resources/workflow-retrospective.md#output-section-template) with prioritized lessons learned, written as the `## Workflow Retrospective` section of the close-out document.
 
 ## Protocol
 
@@ -33,7 +33,7 @@ Session [retrospective](../../work-package/resources/workflow-retrospective.md#o
 
 ### 5. Write Retrospective Section
 
-- Write the `{retrospective_document}` as the `## Workflow Retrospective` section of the close-out document (update in place — it is the single terminal artifact) using the [workflow-retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) section template — omit the PR reference and report activities as a count out of the design workflow's activities. Include only the signal categories that have content.
+- Write the `{retrospective_document}` as the `## Workflow Retrospective` section of the close-out document (update in place — it is the single terminal artifact) using the [workflow-retrospective](/work-package/resources/workflow-retrospective.md#output-section-template) section template — omit the PR reference and report activities as a count out of the design workflow's activities. Include only the signal categories that have content.
 
 ## Rules
 

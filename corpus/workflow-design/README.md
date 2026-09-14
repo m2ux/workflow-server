@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> **DEPRECATED — start [`workflow-authoring`](../workflow-authoring/README.md) instead.**
+> **DEPRECATED — start [`workflow-authoring`](/workflow-authoring/README.md) instead.**
 > This workflow remains only so sessions already in flight can finish, and is removed once none
 > remain. Do not start a new session against it. Its version is deliberately frozen: a bump would
 > emit a version-mismatch warning on every call for every in-flight session.
@@ -84,7 +84,7 @@ graph TD
 
 ## Orchestration Model
 
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md) (agent stubs via [compose-prompt](../meta/techniques/workflow-engine/compose-prompt.md)). Do not restate engine dispatch/checkpoint HOW here.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md) (agent stubs via [compose-prompt](/meta/techniques/workflow-engine/compose-prompt.md)). Do not restate engine dispatch/checkpoint HOW here.
 
 ---
 
@@ -102,7 +102,7 @@ Positive design-time framing — see [design-principles](./resources/design-prin
 
 ## Techniques
 
-The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) holding shared Inputs, Outputs, and Rules for every technique here. Each activity step binds exactly one operation via `step.technique`. Cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` and inherited by every activity. Commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md). Planning-folder report artifacts use [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md); the planning-folder `README.md` is seeded and verified via meta [`workflow-engine::create-readme`](../meta/techniques/workflow-engine/create-readme.md) / [`verify-readme-conforms`](../meta/techniques/workflow-engine/verify-readme-conforms.md) (universal [planning-readme](../meta/resources/planning-readme.md) Template + [readme-seed](./resources/readme-seed.md)). The design-assumption lifecycle reuses [`work-package::review-assumptions`](../work-package/techniques/review-assumptions/TECHNIQUE.md) (`collect`, `record`), with workflow-local `reconcile-design-assumptions` (while-loop via `has_resolvable_assumptions`); open judgements batch into Gate 2. A workflow-local `conduct-retrospective` covers the session retrospective.
+The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) holding shared Inputs, Outputs, and Rules for every technique here. Each activity step binds exactly one operation via `step.technique`. Cross-cutting meta [`variable-binding`](/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` and inherited by every activity. Commits go through meta [`version-control::commit-regular-files`](/meta/techniques/version-control/commit-regular-files.md). Planning-folder report artifacts use [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md); the planning-folder `README.md` is seeded and verified via meta [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) / [`verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) (universal [planning-readme](/meta/resources/planning-readme.md) Template + [readme-seed](./resources/readme-seed.md)). The design-assumption lifecycle reuses [`work-package::review-assumptions`](/work-package/techniques/review-assumptions/TECHNIQUE.md) (`collect`, `record`), with workflow-local `reconcile-design-assumptions` (while-loop via `has_resolvable_assumptions`); open judgements batch into Gate 2. A workflow-local `conduct-retrospective` covers the session retrospective.
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
@@ -121,7 +121,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`assemble-file-approach`](./techniques/assemble-file-approach.md) | Assemble and persist the per-file drafting plan | Scope and Draft |
 | [`review-drafted-file`](./techniques/review-drafted-file.md) | Assemble and persist a per-file review note (including update-mode removals) | Scope and Draft |
 | [`yaml-authoring`](./techniques/yaml-authoring.md) | Author syntactically valid YAML files that pass schema validation | Scope and Draft |
-| meta [`verify-artifact-conforms`](../meta/techniques/verify-artifact-conforms.md) | Verify planning artifacts against the design canonical-home map and the guide map, and fix drift in place | Scope and Draft |
+| meta [`verify-artifact-conforms`](/meta/techniques/verify-artifact-conforms.md) | Verify planning artifacts against the design canonical-home map and the guide map, and fix drift in place | Scope and Draft |
 | [`audit-expressiveness`](./techniques/audit-expressiveness.md) | Walk prose against the schema construct inventory | Quality Review (create/update), Post-Update |
 | [`audit-conformance`](./techniques/audit-conformance.md) | Apply convention-conformance against reference workflows | Quality Review (create/update), Post-Update |
 | [`audit-rule-hygiene`](./techniques/audit-rule-hygiene.md) | Apply Rule Hygiene anti-patterns to `rules[]` | Quality Review (create/update) |
@@ -166,7 +166,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 ## Outputs
 
-In create and update modes the workflow seeds and maintains a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](../meta/resources/planning-readme.md) Template plus this workflow's [readme-seed](./resources/readme-seed.md) profile, whose progress tracker is updated on completing each activity. In all modes, report artifacts are written into the planning folder as numbered files via [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md).
+In create and update modes the workflow seeds and maintains a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](/meta/resources/planning-readme.md) Template plus this workflow's [readme-seed](./resources/readme-seed.md) profile, whose progress tracker is updated on completing each activity. In all modes, report artifacts are written into the planning folder as numbered files via [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md).
 
 **Create mode:** A complete workflow file set committed on a feature branch in the workflows repo, with a pull request opened against the `workflows` branch, plus a planning folder.
 

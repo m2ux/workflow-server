@@ -32,7 +32,7 @@ A concise brief recording the task, the target, the chosen intensity and scope, 
 ### 2. Trace the real flow
 
 - Read and trace the affected code per [Understand First](../resources/the-ladder.md#understand-first).
-- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) for concept-driven flow discovery and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) for symbol-level caller/callee inspection when the codebase is indexed; otherwise read the code paths directly.
+- Use [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](/meta/techniques/gitnexus-operations/query.md) for concept-driven flow discovery and [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](/meta/techniques/gitnexus-operations/context.md) for symbol-level caller/callee inspection when the codebase is indexed; otherwise read the code paths directly.
 - Note which [safety-floor](../resources/the-ladder.md#safety-floor) obligations the flow implicates (validation at trust boundaries, error handling, security, accessibility, calibration).
 
 ### 3. Record the brief

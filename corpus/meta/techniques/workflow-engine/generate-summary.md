@@ -21,11 +21,11 @@ Completed activities, checkpoint decisions, and artifacts produced.
 
 ### completion_summary
 
-[Markdown string](../../../meta/resources/session-summary-template.md#session-summary-template) summarizing the completed session.
+[Markdown string](/meta/resources/session-summary-template.md#session-summary-template) summarizing the completed session.
 
 ## Protocol
 
-1. Fill the [Session Summary Template](../../../meta/resources/session-summary-template.md#session-summary-template) from `{workflow_definition}` and `{execution_trace}`, honouring the fill rules stated beneath it. Return the assembled markdown as `{completion_summary}`.
+1. Fill the [Session Summary Template](/meta/resources/session-summary-template.md#session-summary-template) from `{workflow_definition}` and `{execution_trace}`, honouring the fill rules stated beneath it. Return the assembled markdown as `{completion_summary}`.
 
 ## Rules
 

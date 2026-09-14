@@ -33,7 +33,7 @@ Every planning fact has exactly one canonical artifact. Where a second artifact 
 
 ### canonical-home-map
 
-No fact category below has a second canonical home. [verify-artifact-conforms](../../meta/techniques/verify-artifact-conforms.md) enforces the map.
+No fact category below has a second canonical home. [verify-artifact-conforms](/meta/techniques/verify-artifact-conforms.md) enforces the map.
 
 | Fact category | Canonical home |
 |---|---|
@@ -46,4 +46,4 @@ No fact category below has a second canonical home. [verify-artifact-conforms](.
 
 ### apply-canon-when-authoring
 
-Author definition content against [Schema Expressiveness Anti-Patterns](../../workflow-design/resources/anti-patterns.md#schema-expressiveness-anti-patterns) and [Description Hygiene Anti-Patterns](../../workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns) as write-time constraints rather than as findings a later audit recovers. Follow each entry as written; do not restate its criteria here.
+Author definition content against [Schema Expressiveness Anti-Patterns](/workflow-design/resources/anti-patterns.md#schema-expressiveness-anti-patterns) and [Description Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns) as write-time constraints rather than as findings a later audit recovers. Follow each entry as written; do not restate its criteria here.

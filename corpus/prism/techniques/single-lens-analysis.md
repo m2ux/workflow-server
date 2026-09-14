@@ -51,7 +51,7 @@ The lens's findings, in the structure the lens defines
 
 ### 3. Gather Structural Context
 
-- When the lens makes claims about impact, coupling, reachability, or dead code and the target codebase is indexed (check via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md)): use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the target's entry points to obtain execution flows and caller/callee maps as supplementary evidence. If the codebase is not indexed, skip this step.
+- When the lens makes claims about impact, coupling, reachability, or dead code and the target codebase is indexed (check via [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](/meta/techniques/gitnexus-operations/verify-index.md)): use [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](/meta/techniques/gitnexus-operations/query.md) and [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](/meta/techniques/gitnexus-operations/context.md) on the target's entry points to obtain execution flows and caller/callee maps as supplementary evidence. If the codebase is not indexed, skip this step.
 - Structural context is supplementary evidence, not a replacement for the lens operations. The lens chain executes completely regardless of whether graph data is available.
 
 ### 4. Execute Lens

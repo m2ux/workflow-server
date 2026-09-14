@@ -6,7 +6,7 @@ The technique library for the work-package workflow. Each technique is one capab
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds the shared Inputs and Rules every technique here inherits.
 
-The cross-cutting meta strategy techniques [`variable-binding`](../../meta/techniques/variable-binding.md) and [`scatter-gather`](../../meta/techniques/scatter-gather.md) are declared at `workflow.techniques.activity` / activity level, not bound per step.
+The cross-cutting meta strategy techniques [`variable-binding`](/meta/techniques/variable-binding.md) and [`scatter-gather`](/meta/techniques/scatter-gather.md) are declared at `workflow.techniques.activity` / activity level, not bound per step.
 
 ---
 

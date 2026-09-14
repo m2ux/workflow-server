@@ -18,6 +18,6 @@ technique inherits.
 
 ## Why the knowledge graph is absent
 
-This library binds no [`gitnexus-operations`](../../meta/techniques/gitnexus-operations/TECHNIQUE.md) operation, and the group's own `subjects-the-index-holds` rule is the reason. Both of this workflow's subjects sit outside every index: `{source_paths}` names meeting transcripts and unstructured documents supplied for this run, and `{target_doc_path}` is a specification the run is in the middle of rewriting. Neither has been walked by an index, so an operation addressed at either reports on whatever tree the graph does hold.
+This library binds no [`gitnexus-operations`](/meta/techniques/gitnexus-operations/TECHNIQUE.md) operation, and the group's own `subjects-the-index-holds` rule is the reason. Both of this workflow's subjects sit outside every index: `{source_paths}` names meeting transcripts and unstructured documents supplied for this run, and `{target_doc_path}` is a specification the run is in the middle of rewriting. Neither has been walked by an index, so an operation addressed at either reports on whatever tree the graph does hold.
 
 The completeness question the workflow turns on — does every normative statement in every source reach a requirement in the specification — is a comparison of documents in hand, and stays a read of all of them.

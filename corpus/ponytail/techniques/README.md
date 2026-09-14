@@ -33,7 +33,7 @@ These meta techniques are inherited or bound cross-workflow, not authored here:
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](../../meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's operation to the workflow-scoped variable bag |
-| [`gitnexus-operations::query`](../../meta/techniques/gitnexus-operations/query.md) / [`::context`](../../meta/techniques/gitnexus-operations/context.md) | Bound within `scope-intake` for concept-driven flow discovery and symbol-level caller/callee inspection when the codebase is indexed |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's operation to the workflow-scoped variable bag |
+| [`gitnexus-operations::query`](/meta/techniques/gitnexus-operations/query.md) / [`::context`](/meta/techniques/gitnexus-operations/context.md) | Bound within `scope-intake` for concept-driven flow discovery and symbol-level caller/callee inspection when the codebase is indexed |
 
 For the full technique-to-activity picture with capability summaries, see the [workflow README](../README.md#techniques).

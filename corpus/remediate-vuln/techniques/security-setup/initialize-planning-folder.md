@@ -26,4 +26,4 @@ Planning-folder README seeded from the standard template with the Links table om
 ### 1. Initialize Planning Folder
 
 - Create `{planning_folder_path}` if it does not exist.
-- Write `{planning_readme}` into `{planning_folder_path}` per [planning-readme](../../../meta/resources/planning-readme.md#template), omitting the Links table so no public PR or Issue link appears.
+- Write `{planning_readme}` into `{planning_folder_path}` per [planning-readme](/meta/resources/planning-readme.md#template), omitting the Links table so no public PR or Issue link appears.

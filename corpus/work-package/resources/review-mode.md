@@ -100,7 +100,7 @@ A passage that exceeds its budget is over-budget because it has absorbed content
 
 ### Prose Register
 
-Every prose passage — Executive Summary, section scope lines, Action Items entries, caveats — holds to [Prose](../../meta/resources/writing-register.md#prose) in the Artifact Writing Register.
+Every prose passage — Executive Summary, section scope lines, Action Items entries, caveats — holds to [Prose](/meta/resources/writing-register.md#prose) in the Artifact Writing Register.
 
 ### Caveat Form
 

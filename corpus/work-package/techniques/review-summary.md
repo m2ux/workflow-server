@@ -72,14 +72,14 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 
 ### 2. Read the Merge State
 
-- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{host_repo_path}`) and read the pull request's merge state before composing anything.
+- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{host_repo_path}`) and read the pull request's merge state before composing anything.
 - Where it merged while this review ran, the deliverable is advice on a change already in the base branch, not a request against a change awaiting one. Frame the summary as post-merge advisory and say so in it, so a reader is not asked to act on a decision that has already been taken. A review that discovers this after composing has written the wrong document and rewrites it by hand.
 
 ### 3. Resolve the Two Refs
 
 - Resolve `{$eng_git_dir}` as the engineering checkout [directory-scope](./manage-git/TECHNIQUE.md#directory-scope) names.
 - Resolve `{$eng_publish_ref}`: `{artifact_publish_ref}` when it is non-empty; otherwise `git -C {eng_git_dir} branch --show-current` — never hardcode `main`. This is a branch, so the linked tree carries every artifact the run writes after this render.
-- Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{reviewed_code_base_url}` from the op.
+- Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{reviewed_code_base_url}` from the op.
 - Supply `{eng_publish_ref}` as the ref in every engineering-artifact hyperlink and `{reviewed_code_base}` as the prefix of every reviewed-code citation, per the ref split in [Header Fields](../resources/review-mode.md#header-fields) — that section owns the URL shapes and their slots; this step supplies only the two refs.
 
 ### 4. Render the Summary
@@ -96,7 +96,7 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 - Render the header fields per [Header Fields](../resources/review-mode.md#header-fields), supplying `{eng_publish_ref}` for the engineering-artifacts base URL, the reports this run produced, and the anchor each linked activity resolves to.
 - Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment, its `Disposition` cell holding one of the three values that column admits and nothing else, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
 - Apply `{rating_cap}` to the Overall Rating per the rating-cap carve-in below.
-- Render the attribution footer that closes the format template — Apply [viewer-login](../../meta/techniques/github-cli-protocol/viewer-login.md) and substitute `{viewer_login}` for `{user}`; Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and use the short form of `{head_sha}` for `{sha}` — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
+- Render the attribution footer that closes the format template — Apply [viewer-login](/meta/techniques/github-cli-protocol/viewer-login.md) and substitute `{viewer_login}` for `{user}`; Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and use the short form of `{head_sha}` for `{sha}` — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
 - Produce `{review_summary}` as the rendered text.
 - Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is the verbatim source the posting step (`update-pr::post-review-comment`) emits — the bytes bound here are the bytes posted.
 

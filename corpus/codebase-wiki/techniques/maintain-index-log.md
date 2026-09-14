@@ -55,7 +55,7 @@ The appended ledger: one entry per create/update operation, in operation order.
 
 ### 3. Write Both Files
 
-- Write `{wiki_index}` and `{mutation_log}` by delegating to [`work-package::manage-artifacts::write-artifact`](../../work-package/techniques/manage-artifacts/write-artifact.md), binding *bare_filename* to each artifact's declared name, *artifact_content* to the composed content, and *target_dir* to `{wiki_path}`.
+- Write `{wiki_index}` and `{mutation_log}` by delegating to [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md), binding *bare_filename* to each artifact's declared name, *artifact_content* to the composed content, and *target_dir* to `{wiki_path}`.
 
 ## Rules
 

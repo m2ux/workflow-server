@@ -57,4 +57,4 @@ New ADR: `Accepted` + `Supersedes: ADR: Old Decision` · Old ADR: `Superseded by
 
 ## Writing Style
 
-Be specific about trade-offs and measurable criteria; describe paths not taken. The record's length budget is the [ADR creation guide](adr.md#rules)'s. Tone and attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Artifact prose discipline: [manage-artifacts](../techniques/manage-artifacts/TECHNIQUE.md) (`plain-technical-language`, `single-source-and-link`).
+Be specific about trade-offs and measurable criteria; describe paths not taken. The record's length budget is the [ADR creation guide](adr.md#rules)'s. Tone and attribution: [agent-conduct](/meta/techniques/agent-conduct.md). Artifact prose discipline: [manage-artifacts](../techniques/manage-artifacts/TECHNIQUE.md) (`plain-technical-language`, `single-source-and-link`).

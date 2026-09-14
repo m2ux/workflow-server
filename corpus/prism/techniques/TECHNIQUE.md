@@ -41,7 +41,7 @@ All findings cite specific code or text: file paths, function names, line ranges
 
 ### isolated-context
 
-Each analytical pass is dispatched to a fresh sub-agent via [harness-compat](../../meta/techniques/harness-compat/TECHNIQUE.md)::[spawn-agent](../../meta/techniques/harness-compat/spawn-agent.md); never [continue-agent](../../meta/techniques/harness-compat/continue-agent.md) on a prior worker. A worker receives only the textual content provided in its prompt — never the generation history of a prior pass.
+Each analytical pass is dispatched to a fresh sub-agent via [harness-compat](/meta/techniques/harness-compat/TECHNIQUE.md)::[spawn-agent](/meta/techniques/harness-compat/spawn-agent.md); never [continue-agent](/meta/techniques/harness-compat/continue-agent.md) on a prior worker. A worker receives only the textual content provided in its prompt — never the generation history of a prior pass.
 
 ### artifact-mediated
 

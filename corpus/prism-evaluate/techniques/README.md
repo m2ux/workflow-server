@@ -68,8 +68,8 @@ Bound or inherited from elsewhere, not authored here:
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](../../meta/techniques/variable-binding.md) | Binding each step's operation to the session's variable bag |
-| [`scatter-gather`](../../meta/techniques/scatter-gather.md) | The per-group and per-finding fan-out loops |
-| [`workflow-engine::handle-sub-workflow`](../../meta/techniques/workflow-engine/handle-sub-workflow.md) | Triggering prism as a child workflow, once per execution group |
-| [`version-control::commit-regular-files`](../../meta/techniques/version-control/commit-regular-files.md) | Committing the applied mitigations |
-| [`verify-artifact-conforms`](../../work-package/techniques/manage-artifacts/verify-artifact-conforms.md) | Checking each written artifact against its guide |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Binding each step's operation to the session's variable bag |
+| [`scatter-gather`](/meta/techniques/scatter-gather.md) | The per-group and per-finding fan-out loops |
+| [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) | Triggering prism as a child workflow, once per execution group |
+| [`version-control::commit-regular-files`](/meta/techniques/version-control/commit-regular-files.md) | Committing the applied mitigations |
+| [`verify-artifact-conforms`](/work-package/techniques/manage-artifacts/verify-artifact-conforms.md) | Checking each written artifact against its guide |

@@ -23,7 +23,7 @@ Workflow-local operations live in the [`workflow-definition`](./workflow-definit
 | [`yaml-authoring`](./workflow-definition/yaml-authoring.md) | Author one manifest entry as a schema-valid definition file |
 | [`review-drafted-file`](./workflow-definition/review-drafted-file.md) | Detect content a drafted file removes that no inventory accounts for |
 | [`readme-authoring`](./workflow-definition/readme-authoring.md) | Generate or revise the target workflow's root README |
-| meta [`verify-artifact-conforms`](../../meta/techniques/verify-artifact-conforms.md) | Correct the planning artifacts against their own guides and the canonical-home map, bound with this workflow's two maps |
+| meta [`verify-artifact-conforms`](/meta/techniques/verify-artifact-conforms.md) | Correct the planning artifacts against their own guides and the canonical-home map, bound with this workflow's two maps |
 | [`load-known-findings`](./workflow-definition/load-known-findings.md) | Normalise the baselines and a prior register into comparable exclusion keys |
 | [`reload-workflow`](./workflow-definition/reload-workflow.md) | Resolve one target's current definition surface and the base ref its change is measured against |
 | [`resolve-consumer-surface`](./workflow-definition/resolve-consumer-surface.md) | Resolve the references other workflows hold into a target against the files this run changed |
@@ -43,11 +43,11 @@ Resolved directly from the named workflow — no copy is held here.
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](../../meta/techniques/variable-binding.md) | Declared at `workflow.techniques.activity`; inherited by every activity rather than bound per step |
-| [`workflow-engine::create-readme`](../../meta/techniques/workflow-engine/create-readme.md) | Seed the planning-folder `README.md` from the universal Template under this workflow's seed profile |
-| [`workflow-engine::list-workflows`](../../meta/techniques/workflow-engine/list-workflows.md) | The library catalog, remapped as the reference set a conformance walk compares against |
-| [`work-package::manage-artifacts`](../../work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — the numbered planning-folder artifact write |
-| [`work-package::manage-git`](../../work-package/techniques/manage-git/TECHNIQUE.md) | `create-worktree` and `remove-worktree` — materialise and tear down the run's edit worktree |
-| [`workflow-engine::verify-readme-conforms`](../../meta/techniques/workflow-engine/verify-readme-conforms.md) | Drift-check the planning-folder `README.md` against the Template and this workflow's seed profile |
-| [`meta::version-control`](../../meta/techniques/version-control/TECHNIQUE.md) | `commit-regular-files` and `push-branch` |
-| [`meta::github-cli-protocol`](../../meta/techniques/github-cli-protocol/TECHNIQUE.md) | `create-pr` — opened non-draft, because the commit gate already approved publication |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared at `workflow.techniques.activity`; inherited by every activity rather than bound per step |
+| [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) | Seed the planning-folder `README.md` from the universal Template under this workflow's seed profile |
+| [`workflow-engine::list-workflows`](/meta/techniques/workflow-engine/list-workflows.md) | The library catalog, remapped as the reference set a conformance walk compares against |
+| [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — the numbered planning-folder artifact write |
+| [`work-package::manage-git`](/work-package/techniques/manage-git/TECHNIQUE.md) | `create-worktree` and `remove-worktree` — materialise and tear down the run's edit worktree |
+| [`workflow-engine::verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) | Drift-check the planning-folder `README.md` against the Template and this workflow's seed profile |
+| [`meta::version-control`](/meta/techniques/version-control/TECHNIQUE.md) | `commit-regular-files` and `push-branch` |
+| [`meta::github-cli-protocol`](/meta/techniques/github-cli-protocol/TECHNIQUE.md) | `create-pr` — opened non-draft, because the commit gate already approved publication |

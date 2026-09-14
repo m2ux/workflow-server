@@ -37,19 +37,19 @@ Activity `#` columns match the on-disk `NN-` file prefixes; the prefix is server
 
 ## Orchestration Model
 
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) and [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md). Engine dispatch and checkpoint mechanics are not restated here.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) and [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md). Engine dispatch and checkpoint mechanics are not restated here.
 
 ---
 
 ## Criteria
 
-The audit criteria this workflow applies — the anti-pattern catalog, the design principles, the schema construct inventory and the convention checklist — are consulted by cross-workflow reference rather than copied. They currently live in [workflow-design](../workflow-design/resources/), which this workflow depends on until that tree is retired. See [resources/README.md](./resources/README.md#criteria-homes).
+The audit criteria this workflow applies — the anti-pattern catalog, the design principles, the schema construct inventory and the convention checklist — are consulted by cross-workflow reference rather than copied. They currently live in [workflow-design](/workflow-design/resources), which this workflow depends on until that tree is retired. See [resources/README.md](./resources/README.md#criteria-homes).
 
 ---
 
 ## Outputs
 
-In create and update modes the workflow seeds a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](../meta/resources/planning-readme.md) Template under this workflow's [readme-seed](./resources/readme-seed.md) profile, plus the planning artifacts each activity persists as numbered files via [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md).
+In create and update modes the workflow seeds a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](/meta/resources/planning-readme.md) Template under this workflow's [readme-seed](./resources/readme-seed.md) profile, plus the planning artifacts each activity persists as numbered files via [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md).
 
 **Create mode:** a change brief, a confirmed scope manifest, the enumerated definition files authored under `{target_path}`, a findings register, and — once the commit gate approves — a commit on the run's branch, a non-draft pull request against `workflows`, and a `COMPLETE.md` close-out.
 

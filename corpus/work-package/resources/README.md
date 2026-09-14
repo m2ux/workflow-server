@@ -47,7 +47,7 @@ Which guide owns each persisted filename's shape.
 
 | Bare filename | Guide |
 |---------------|-------|
-| `README.md` | [planning-readme](../../meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
+| `README.md` | [planning-readme](/meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
 | `requirements-elicitation.md` | [requirements-elicitation](requirements-elicitation.md) |
 | `implementation-analysis.md` | [implementation-analysis](implementation-analysis.md) |
 | `assumptions-log.md` | [assumptions-review](assumptions-review.md) |
@@ -56,9 +56,9 @@ Which guide owns each persisted filename's shape.
 | `code-review-method.md` | [rust-substrate-code-review](rust-substrate-code-review.md#method-record-template) |
 | `test-suite-review.md` | [test-suite-review](test-suite-review.md) |
 | `test-suite-review-method.md` | [test-suite-review](test-suite-review.md#method-record-template) |
-| `session-trace.md` | [session-trace](../../meta/resources/session-trace.md) |
+| `session-trace.md` | [session-trace](/meta/resources/session-trace.md) |
 | `change-block-index.md` | [manual-diff-review](manual-diff-review.md#file-index-generation) |
-| `token-usage.md` | [token-usage](../../meta/resources/token-usage.md) |
+| `token-usage.md` | [token-usage](/meta/resources/token-usage.md) |
 | `provenance-log.md` | [provenance-log](provenance-log.md) |
 | `NNNN-{decision_title}.md` | [adr](adr.md) |
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |

@@ -26,7 +26,7 @@ Every bare filename this workflow persists maps to a guide that owns its Templat
 
 | Bare filename | Guide |
 |---------------|-------|
-| `README.md` | [planning-readme](../../meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
+| `README.md` | [planning-readme](/meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
 | `document-profile.md` | [document-profile](document-profile.md) |
 | `source-analysis.md` | [source-analysis](source-analysis.md) |
 | `evaluation-report.md` | [evaluation-report](evaluation-report.md) |

@@ -7,7 +7,7 @@ metadata:
 
 # Design Assumptions Guide
 
-Creation guide for bare filename `assumptions-log.md`. Design-time assumption categories and log shape — the workflow-design counterpart of the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) guide. Shared methodology (false-assumption sources, risk assessment, review practice) is reused from that guide; this resource owns the design-session log layout.
+Creation guide for bare filename `assumptions-log.md`. Design-time assumption categories and log shape — the workflow-design counterpart of the work-package [assumptions-review](/work-package/resources/assumptions-review.md) guide. Shared methodology (false-assumption sources, risk assessment, review practice) is reused from that guide; this resource owns the design-session log layout.
 
 ## Assumption Categories
 

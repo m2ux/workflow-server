@@ -61,8 +61,8 @@ The technique library for the substrate-node-security-audit workflow. Each opera
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](../../meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's operation to the workflow-scoped variable bag |
-| [`orchestration-patterns::dispatch-workers`](../../meta/techniques/orchestration-patterns/dispatch-workers.md) / [`gather-results`](../../meta/techniques/orchestration-patterns/gather-results.md) | Bound from reconnaissance / primary-audit after domain brief composition |
-| [`harness-compat::spawn-agent`](../../meta/techniques/harness-compat/spawn-agent.md) / [`spawn-concurrent`](../../meta/techniques/harness-compat/spawn-concurrent.md) | Invoked inside meta `orchestration-patterns::dispatch-workers` |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's operation to the workflow-scoped variable bag |
+| [`orchestration-patterns::dispatch-workers`](/meta/techniques/orchestration-patterns/dispatch-workers.md) / [`gather-results`](/meta/techniques/orchestration-patterns/gather-results.md) | Bound from reconnaissance / primary-audit after domain brief composition |
+| [`harness-compat::spawn-agent`](/meta/techniques/harness-compat/spawn-agent.md) / [`spawn-concurrent`](/meta/techniques/harness-compat/spawn-concurrent.md) | Invoked inside meta `orchestration-patterns::dispatch-workers` |
 
 For the full technique-to-activity picture with capability summaries, see the [workflow README](../README.md#techniques).

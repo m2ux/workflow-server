@@ -59,7 +59,7 @@ Vulnerability domains derived from the architecture that fall outside any §3 ch
 
 - For each pair of interacting components (crates, modules, or subsystems), document the data that flows between them and its direction, the trust assumptions at the boundary, and the security property that must hold for the interaction to be safe, into `{architectural_analysis.interaction_model}`. Focus on cross-crate interactions; intra-crate interactions are covered elsewhere.
 
-> When `{gitnexus_available}`, derive the component-pair interaction set from cross-community call edges via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) (read the graph schema first) and satisfy `interactions-cite-code` with the resolved call edges from [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md), rather than inferring interactions from a manual read.
+> When `{gitnexus_available}`, derive the component-pair interaction set from cross-community call edges via [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](/meta/techniques/gitnexus-operations/cypher.md) (read the graph schema first) and satisfy `interactions-cite-code` with the resolved call edges from [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](/meta/techniques/gitnexus-operations/context.md), rather than inferring interactions from a manual read.
 
 ### 2. Build Privilege Map
 
@@ -70,7 +70,7 @@ Vulnerability domains derived from the architecture that fall outside any §3 ch
 
 - Identify code locations where complexity concentrates and bugs cluster (multiple lock acquisitions, nested match on external/deserialized data, unsafe blocks, error-handling switch points, codec deserialization sites, architectural-layer bridges) and rank them by security relevance into `{architectural_analysis.candidate_points}`; a candidate point at a trust boundary outranks one in internal logic.
 
-> When `{gitnexus_available}`, inform the ranking with objective blast-radius signal: [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) for fan-in (a high-fan-in symbol at a boundary outranks a low-fan-in one) and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md) for the reachable blast radius of a candidate symbol.
+> When `{gitnexus_available}`, inform the ranking with objective blast-radius signal: [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](/meta/techniques/gitnexus-operations/context.md) for fan-in (a high-fan-in symbol at a boundary outranks a low-fan-in one) and [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](/meta/techniques/gitnexus-operations/impact.md) for the reachable blast radius of a candidate symbol.
 
 ### 4. Identify Emergent Domains
 

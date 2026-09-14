@@ -4,7 +4,7 @@ All notable changes to the substrate-node-security-audit workflow.
 
 ## v4.18.0 (2026-07-03) — GitNexus adoption (workflow-design review)
 
-Additive, availability-gated adoption of the meta [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) capability for the workflow's codebase scanning and structural analysis, from a focused workflow-design review against three goals: effective prism-technique reuse / no duplication, effective GitNexus use, and GitNexus preferred over grep where appropriate. No phase, checkpoint, activity, or contract break — every change is a `gitnexus_available`-gated addition beside the retained grep/manual method.
+Additive, availability-gated adoption of the meta [`gitnexus-operations`](/meta/techniques/gitnexus-operations/TECHNIQUE.md) capability for the workflow's codebase scanning and structural analysis, from a focused workflow-design review against three goals: effective prism-technique reuse / no duplication, effective GitNexus use, and GitNexus preferred over grep where appropriate. No phase, checkpoint, activity, or contract break — every change is a `gitnexus_available`-gated addition beside the retained grep/manual method.
 
 **GitNexus indexing (scope-setup):** `01-scope-setup.yaml` gains an `index-codebase` step binding `gitnexus-operations::analyze`, setting the new `gitnexus_available` gate variable. A new `workflow.yaml` rule routes structural analysis (symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, blast radius) through the group when indexed, with grep/full-file reads as the fallback — mirroring `meta.gitnexus-operations.must-use-operations`.
 
