@@ -18,7 +18,8 @@
 # the server starts on the definitions already on disk. Skip with
 # --no-update-workflows.
 #
-# Needs: docker (public image: ghcr.io/m2ux/workflow-server)
+# Needs: docker (public image: ghcr.io/m2ux/workflow-server). `--build` tags a
+# local image from a checkout instead of pulling.
 set -euo pipefail
 
 DEFAULT_IMAGE_REPO="ghcr.io/m2ux/workflow-server"
@@ -107,6 +108,8 @@ TRANSPORT="${TRANSPORT:-$DEFAULT_TRANSPORT}"
 BIND_HOST="${HOST:-$DEFAULT_BIND_HOST}"
 
 PULL=1
+BUILD=0
+BUILD_CONTEXT=""
 UPDATE_WORKFLOWS=1
 case "${WORKFLOW_SERVER_UPDATE_WORKFLOWS:-}" in
   0|false|no) UPDATE_WORKFLOWS=0 ;;
@@ -122,7 +125,7 @@ POSITIONAL=()
 
 usage() {
   cat <<EOF
-workflow-server start — pull GHCR image and run with host binds.
+workflow-server start — pull GHCR image, or build a local checkout, and run with host binds.
 
 USAGE
   start.sh -d
@@ -148,11 +151,12 @@ OPTIONS (optional overrides — prefer re-running install to change paths)
   --worktree-root=PATH      Optional separate feature-tree root (RW)
   --workflows-dir=PATH      One-off host corpus directory (RO)
   --schemas-dir=PATH        Host schemas directory (RO); optional
-  --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
+  --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG}; with --build, workflow-server:local)
   --tag=TAG                 Tag for default repo (default: ${DEFAULT_TAG})
-  --host-port=N             Host port (default: ${DEFAULT_HOST_PORT})
+  --build[=DIR]             Build from DIR (Dockerfile required). DIR defaults to the current directory. Skips pull.
+  --host-port=N             Host port (default: ${DEFAULT_HOST_PORT}). 0 publishes an ephemeral port and requires -d.
   --port=N                  Container PORT (default: ${DEFAULT_CONTAINER_PORT})
-  --name=NAME               Container name (default: ${DEFAULT_NAME})
+  --name=NAME               Container name (default: ${DEFAULT_NAME}). A second instance needs a different name.
   --planning-slug=S         PLANNING_SLUG inside container
   --env KEY=VAL             Extra -e (repeatable)
   --env-file=PATH           docker --env-file
@@ -173,6 +177,10 @@ EXAMPLES
   bash <(curl -fsSL …/install.sh) --projects-root=~/projects/dev
   ~/.local/share/workflow-server/start.sh -d
   ~/.local/share/workflow-server/stop.sh
+
+  # Second instance from a checkout (install instance on :3000 stays up):
+  ./scripts/start.sh -d --build --name=workflow-server-trial --host-port=0 --no-update-workflows
+  ./scripts/stop.sh --name=workflow-server-trial
 
   # Product checkouts: manage under \$HOST_PROJECTS_ROOT/<repo>/ yourself.
   # Pass repo: owner/repo on start_session.
@@ -270,6 +278,17 @@ while [[ $# -gt 0 ]]; do
     --image) IMAGE_REF="${2:?}"; shift 2 ;;
     --tag=*) TAG="${1#*=}"; shift ;;
     --tag) TAG="${2:?}"; shift 2 ;;
+    --build=*) BUILD=1; BUILD_CONTEXT="${1#*=}"; shift ;;
+    --build)
+      BUILD=1
+      if [[ $# -ge 2 && "$2" != -* ]]; then
+        BUILD_CONTEXT="$2"
+        shift 2
+      else
+        BUILD_CONTEXT=""
+        shift
+      fi
+      ;;
     --host-port=*) HOST_PORT="${1#*=}"; shift ;;
     --host-port) HOST_PORT="${2:?}"; shift 2 ;;
     --port=*) CONTAINER_PORT="${1#*=}"; shift ;;
@@ -338,6 +357,10 @@ if [[ -z "$LOADED_ENV_FILE" && -f "${INSTALL_DIR}/${DEFAULT_ENV_NAME}" ]]; then
   # Refresh values that may have been set only after first load attempt.
   NAME="${WORKFLOW_SERVER_CONTAINER_NAME:-$NAME}"
   HOST_PORT="${HOST_PORT:-$DEFAULT_HOST_PORT}"
+fi
+
+if [[ "$HOST_PORT" == "0" && "$DETACH" -eq 0 ]]; then
+  die "--host-port=0 publishes an ephemeral port and requires -d so the assigned port can be printed"
 fi
 
 # Path resolution (CLI > install/process env already in shell > defaults):
@@ -418,12 +441,6 @@ if [[ ! -d "$HOST_STATE_DIR" ]]; then
 fi
 HOST_STATE_DIR="$(abs_dir "$HOST_STATE_DIR")"
 
-if [[ -n "$IMAGE_REF" ]]; then
-  FULL_IMAGE="$IMAGE_REF"
-else
-  FULL_IMAGE="${IMAGE_REPO}:${TAG}"
-fi
-
 run() {
   if [[ "$DRY_RUN" -eq 1 ]]; then
     printf '+'
@@ -433,6 +450,23 @@ run() {
     "$@"
   fi
 }
+
+if [[ -n "$IMAGE_REF" ]]; then
+  FULL_IMAGE="$IMAGE_REF"
+elif [[ "$BUILD" -eq 1 ]]; then
+  FULL_IMAGE="workflow-server:local"
+else
+  FULL_IMAGE="${IMAGE_REPO}:${TAG}"
+fi
+
+if [[ "$BUILD" -eq 1 ]]; then
+  [[ -n "$BUILD_CONTEXT" ]] || BUILD_CONTEXT="$PWD"
+  BUILD_CONTEXT="$(abs_dir "$BUILD_CONTEXT")"
+  [[ -f "${BUILD_CONTEXT}/Dockerfile" ]] || die "no Dockerfile in ${BUILD_CONTEXT} (--build needs a checkout with a Dockerfile)"
+  PULL=0
+  echo "Building ${FULL_IMAGE} from ${BUILD_CONTEXT}"
+  run docker build -t "$FULL_IMAGE" "$BUILD_CONTEXT"
+fi
 
 if [[ "$PULL" -eq 1 ]]; then
   echo "Pulling ${FULL_IMAGE} ..."
@@ -518,9 +552,24 @@ DOCKER_RUN+=("${DOCKER_ARGS[@]+"${DOCKER_ARGS[@]}"}")
 DOCKER_RUN+=("$FULL_IMAGE")
 
 echo "Starting ${FULL_IMAGE}"
-echo "  MCP URL    : http://127.0.0.1:${HOST_PORT}/mcp"
+if [[ "$HOST_PORT" == "0" ]]; then
+  echo "  MCP URL    : http://127.0.0.1:<ephemeral>/mcp"
+else
+  echo "  MCP URL    : http://127.0.0.1:${HOST_PORT}/mcp"
+fi
 
 run "${DOCKER_RUN[@]}"
+
+if [[ "$HOST_PORT" == "0" ]]; then
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    echo "+ docker port ${NAME} ${CONTAINER_PORT}/tcp   # assigned host port"
+  else
+    local_spec="$(docker port "$NAME" "${CONTAINER_PORT}/tcp" | head -n1)"
+    HOST_PORT="${local_spec##*:}"
+    [[ -n "$HOST_PORT" && "$HOST_PORT" != "0" ]] || die "docker did not publish ${CONTAINER_PORT}/tcp on ${NAME}"
+    echo "  MCP URL    : http://127.0.0.1:${HOST_PORT}/mcp"
+  fi
+fi
 
 if [[ "$DETACH" -eq 1 && "$DRY_RUN" -eq 0 ]]; then
   echo "Detached as '${NAME}'. Logs: docker logs -f ${NAME}"

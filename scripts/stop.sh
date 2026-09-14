@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# workflow-server — stop the GHCR container started by start.sh
+# workflow-server — stop the container started by start.sh
 #
 # After install:
 #   ~/.local/share/workflow-server/stop.sh
@@ -45,7 +45,8 @@ USAGE
   stop.sh [options]
 
 OPTIONS
-  --name=NAME   Container name (default from install env, else ${DEFAULT_NAME})
+  --name=NAME   Container name (default from install env, else ${DEFAULT_NAME}).
+                Match start.sh --name when stopping a second instance.
   --dry-run     Print docker commands only
   -h, --help
 EOF
