@@ -156,21 +156,25 @@ describe('corpus discovery', () => {
     rmSync(nested, { recursive: true, force: true });
   });
 
-  it('skips the kind folders beside a flat tree, and only there', () => {
-    const flat = mkdtempSync(join(tmpdir(), 'corpus-kinds-flat-'));
-    const product = join(flat, 'work-package');
-    const besideTheProducts = join(flat, 'docs', 'example');
+  it('leaves the grouping-s siblings outside the corpus whatever they are called', () => {
+    // Naming the products rather than the folders that are not products: a tree that grows another
+    // kind of folder needs no list amending, and an unforeseen name is outside for being a sibling.
+    const nested = mkdtempSync(join(tmpdir(), 'corpus-siblings-'));
+    const product = join(nested, 'corpus', 'work-package');
+    for (const sibling of ['deploy', 'archive', 'anything-at-all']) {
+      const dir = join(nested, sibling, 'example');
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(join(dir, 'workflow.yaml'), `id: ${sibling}-example\nversion: 1.0.0\ntitle: t\n`);
+    }
     mkdirSync(product, { recursive: true });
-    mkdirSync(besideTheProducts, { recursive: true });
     writeFileSync(join(product, 'workflow.yaml'), 'id: work-package\nversion: 1.0.0\ntitle: t\n');
-    writeFileSync(join(besideTheProducts, 'workflow.yaml'), 'id: example\nversion: 1.0.0\ntitle: t\n');
-    expect([...indexCorpus(flat).workflows.keys()]).toEqual(['work-package']);
-    rmSync(flat, { recursive: true, force: true });
+    expect([...indexCorpus(nested).workflows.keys()]).toEqual(['work-package']);
+    rmSync(nested, { recursive: true, force: true });
   });
 
-  it('walks a grouping named for a kind, and a workflow named for one, beneath the starting level', () => {
-    // A directory the walk skips is a directory nothing reports, so a name reserved deeper than it
-    // needs to be takes every workflow beneath it away in silence.
+  it('walks a grouping named for a kind, and a workflow named for one, inside the corpus', () => {
+    // A directory the walk skips is a directory nothing reports, so a name excluded inside the
+    // corpus would take every workflow beneath it away in silence.
     const nested = mkdtempSync(join(tmpdir(), 'corpus-kinds-nested-'));
     const grouped = join(nested, 'corpus', 'docs', 'beta');
     const namedForAKind = join(nested, 'corpus', 'walks');
