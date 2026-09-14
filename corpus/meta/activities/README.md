@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-The sequential activities that run inside the meta session after `start_session` has opened the client. Each one's role and place in the sequence is indexed in the [Meta Workflow README](../README.md).
+Lifecycle activities that run inside the meta session when the agent remains on meta after `start_session` has opened the client. Unique catalog matches walk the child from [bootstrap](../resources/bootstrap-protocol.md). Each activity's role and place in the sequence is indexed in the [Meta Workflow README](../README.md).
 
 Borrowable mid-phase orchestration pattern activities live under [`patterns/`](./patterns/README.md) and are **not** part of this lifecycle list.
 
