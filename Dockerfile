@@ -17,6 +17,13 @@ RUN npm ci --omit=dev
 COPY --from=build /app/dist ./dist
 COPY schemas ./schemas
 
+# Local git only: `start_session` reads toplevel and origin from the bound checkout.
+# `--no-install-recommends` keeps openssh-client out; remote git stays on the host.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends git \
+  && rm -rf /var/lib/apt/lists/*
+ENV GIT_TERMINAL_PROMPT=0
+
 # Defaults match scripts/start.sh + docker-compose.yml (install layout).
 # Prefer start.sh/compose for binds; these ENV values keep bare `docker run` sane.
 ENV WORKFLOW_SERVER_INSTALL_DIR=/var/lib/workflow-server
