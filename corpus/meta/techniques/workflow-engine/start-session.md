@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -28,6 +28,14 @@ Optional. Target repository as `owner/repo` (or GitHub URL).
 ### user_request
 
 The user's free-form request that opened this session.
+
+### target_workflow_id
+
+Optional. Client workflow id after a `workflow-selection` decision. Distinct from `workflow_id`, which remains the top-level session (default `meta`).
+
+### confirm_host_binding
+
+Optional. After a `host-binding-mismatch` decision, proceed with this checkout folder.
 
 ### agent_id
 
@@ -57,11 +65,12 @@ Slug the session is keyed on — minted transitionally when no planning folder w
 
 ## Protocol
 
-1. Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, and optional `{planning_folder}` and `{repo}`, per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
+1. Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, and optional `{planning_folder}` and `{repo}`, per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`). After an open decision, retry with the pin it asked for (`target_workflow_id`, `planning_folder`, `fresh: true`, `confirm_host_binding`, `repo`, or a different `working_directory`).
    > - `{working_directory}` is the absolute path of the checkout under work. The bound `{repo}` is that checkout's origin remote.
    > - When `{repo}` is passed with `{working_directory}`, it equals that origin.
    > - Pass `{user_request}` verbatim — the server seeds it into the bag and children inherit it, so it reaches downstream agents as state rather than as prose in a spawn prompt.
    > - When the response names a `decision` and has no `session_index`, present the `recommendation` and `candidates` and wait for the user. Retry after they settle it.
+   > - When the response includes `client.session_index`, call `get_workflow` and `next_activity` on that child index. Do not walk this technique's remaining steps on the meta session.
 2. Save `{session_index}` and `{planning_folder_path}` from the response. Record `{repo}` as bag `{target_repo}` (the echoed binding). Do not compose or reconcile the planning path yourself.
 3. Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in `workflow-engine.force-full-after-summarization`.
 
