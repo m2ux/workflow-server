@@ -19,8 +19,10 @@ import { parseDefinition } from '../utils/serialization.js';
  *
  * When the pointed tree holds a `corpus/` grouping — a directory of that name that is not itself a
  * workflow — the walk starts there and does not search sibling folders. A still-flat tree has no
- * such grouping, so the pointed directory is the walk root. A `workflow.yaml` at any depth under
- * that walk is a workflow; grouping folders organise the tree and name nothing.
+ * such grouping, so the pointed directory is the walk root, and the kind folders that sit beside
+ * its products — `ledgers`, `walks`, `docs` — are skipped at that one level. A `workflow.yaml` at
+ * any depth under the walk is a workflow; grouping folders organise the tree and name nothing,
+ * whatever they are called.
  *
  * The directory name and the `id` the definition declares are one identity. A directory whose file
  * names something else does not resolve, under either name, and `list_workflows` reports the pair.
@@ -39,10 +41,12 @@ import { parseDefinition } from '../utils/serialization.js';
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
 
 /**
- * Kind names the walk never enters as children. `ledgers`, `walks` and `docs` are skipped if
- * they appear under a still-flat tree; a nested tree never searches them because the walk
- * starts inside `corpus/`. Grouping folders under `corpus/` — including `specimens/` — are
- * ordinary nests: a `workflow.yaml` beneath them is a workflow.
+ * Kind names that sit beside the products on a flat tree, and are not products. `ledgers`, `walks`
+ * and `docs` are skipped where the walk starts on such a tree, and nowhere else: a nested tree
+ * starts inside `corpus/` and never reaches them, and below the starting level a folder of that
+ * name is an ordinary grouping. Restricting them to that one level is what keeps a grouping — or a
+ * workflow — named `docs` from disappearing with everything beneath it, silently, since a directory
+ * the walk skips is a directory nothing reports.
  */
 const NON_PRODUCT_ROOTS = new Set(['ledgers', 'walks', 'docs']);
 
@@ -171,7 +175,7 @@ function declaredId(manifest: string): string | undefined {
 export function indexCorpus(root: string): CorpusIndex {
   const claims = new Map<string, WorkflowLocation[]>();
 
-  const visit = (dir: string): void => {
+  const visit = (dir: string, besideTheKinds: boolean): void => {
     let entries: Dirent[];
     try {
       entries = readdirSync(dir, { withFileTypes: true });
@@ -185,7 +189,7 @@ export function indexCorpus(root: string): CorpusIndex {
         !entry.isDirectory()
         || entry.name.startsWith('.')
         || RESERVED_DIR_NAMES.has(entry.name)
-        || NON_PRODUCT_ROOTS.has(entry.name)
+        || (besideTheKinds && NON_PRODUCT_ROOTS.has(entry.name))
       ) continue;
       const path = join(dir, entry.name);
       const manifest = definitionIn(path);
@@ -195,10 +199,14 @@ export function indexCorpus(root: string): CorpusIndex {
         else claims.set(entry.name, [{ id: entry.name, dir: path, manifest }]);
         continue;
       }
-      visit(path);
+      visit(path, false);
     }
   };
-  visit(productRoot(root));
+  // The kind names are only ever siblings of the products, which is the one level a flat tree puts
+  // them on. Below that — and anywhere under a `corpus/` grouping, whose siblings the walk never
+  // reaches — a folder of that name is an ordinary grouping and is walked like any other.
+  const start = productRoot(root);
+  visit(start, start === root);
 
   const workflows = new Map<string, WorkflowLocation>();
   const ambiguous: Array<{ id: string; dirs: string[] }> = [];

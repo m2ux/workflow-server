@@ -156,6 +156,35 @@ describe('corpus discovery', () => {
     rmSync(nested, { recursive: true, force: true });
   });
 
+  it('skips the kind folders beside a flat tree, and only there', () => {
+    const flat = mkdtempSync(join(tmpdir(), 'corpus-kinds-flat-'));
+    const product = join(flat, 'work-package');
+    const besideTheProducts = join(flat, 'docs', 'example');
+    mkdirSync(product, { recursive: true });
+    mkdirSync(besideTheProducts, { recursive: true });
+    writeFileSync(join(product, 'workflow.yaml'), 'id: work-package\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(besideTheProducts, 'workflow.yaml'), 'id: example\nversion: 1.0.0\ntitle: t\n');
+    expect([...indexCorpus(flat).workflows.keys()]).toEqual(['work-package']);
+    rmSync(flat, { recursive: true, force: true });
+  });
+
+  it('walks a grouping named for a kind, and a workflow named for one, beneath the starting level', () => {
+    // A directory the walk skips is a directory nothing reports, so a name reserved deeper than it
+    // needs to be takes every workflow beneath it away in silence.
+    const nested = mkdtempSync(join(tmpdir(), 'corpus-kinds-nested-'));
+    const grouped = join(nested, 'corpus', 'docs', 'beta');
+    const namedForAKind = join(nested, 'corpus', 'walks');
+    const deep = join(nested, 'corpus', 'group', 'ledgers', 'gamma');
+    mkdirSync(grouped, { recursive: true });
+    mkdirSync(namedForAKind, { recursive: true });
+    mkdirSync(deep, { recursive: true });
+    writeFileSync(join(grouped, 'workflow.yaml'), 'id: beta\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(namedForAKind, 'workflow.yaml'), 'id: walks\nversion: 1.0.0\ntitle: t\n');
+    writeFileSync(join(deep, 'workflow.yaml'), 'id: gamma\nversion: 1.0.0\ntitle: t\n');
+    expect([...indexCorpus(nested).workflows.keys()]).toEqual(['beta', 'gamma', 'walks']);
+    rmSync(nested, { recursive: true, force: true });
+  });
+
   it('resolves an id claimed by two directories to neither, and reports the claimants', () => {
     const contested = mkdtempSync(join(tmpdir(), 'corpus-contested-'));
     for (const group of ['left', 'right']) {
