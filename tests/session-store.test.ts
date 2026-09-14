@@ -22,6 +22,7 @@ import {
   createSessionFile,
   describeSessionStoreError,
   ensurePlanningFolder,
+  allocateDerivedPlanningSlug,
   planningRoot,
   readSessionFile,
   resolveSessionLocation,
@@ -410,6 +411,28 @@ describe('session-store primitives', () => {
       });
       expect(await readFile(sessionFilePath(folder))).toEqual(sessionBefore);
       expect(await readFile(sealFilePath(folder))).toEqual(sealBefore);
+    });
+
+    afterEachCleanup(() => workspace);
+  });
+
+  describe('allocateDerivedPlanningSlug', () => {
+    let workspace: string;
+
+    beforeEach(async () => {
+      workspace = await mkdtemp(join(tmpdir(), 'sx-store-alloc-'));
+      setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+    });
+
+    it('returns the base when free, then the next numbered slug when the base holds a session', async () => {
+      const base = '2026-09-14-meta';
+      expect(await allocateDerivedPlanningSlug(workspace, base)).toBe(base);
+      const folder = await ensurePlanningFolder(workspace, base);
+      await writeSessionFile(folder, { schemaVersion: 1, sessionIndex: 'AAAAAA' });
+      expect(await allocateDerivedPlanningSlug(workspace, base)).toBe(`${base}-2`);
+      const second = await ensurePlanningFolder(workspace, `${base}-2`);
+      await writeSessionFile(second, { schemaVersion: 1, sessionIndex: 'BBBBBB' });
+      expect(await allocateDerivedPlanningSlug(workspace, base)).toBe(`${base}-3`);
     });
 
     afterEachCleanup(() => workspace);

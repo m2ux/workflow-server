@@ -94,12 +94,28 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
   it('binds origin when the folder is named for a branch', async () => {
     const checkout = join(root, 'feat', '528-server-owned-session-setup');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
-    const result = await deriveWorkingDirectory({ workingDirectory: checkout });
+    const result = await deriveWorkingDirectory({
+      workingDirectory: checkout,
+    });
     expect(result).toMatchObject({
       kind: 'ok',
       repo: 'acme/workflow-server',
       repo_source: 'origin',
       toplevel: checkout,
+    });
+  });
+
+  it('proceeds when namedRepo equals origin on a branch-named folder', async () => {
+    const checkout = join(root, 'feat', '528-named-repo-pin');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const result = await deriveWorkingDirectory({
+      workingDirectory: checkout,
+      namedRepo: 'acme/workflow-server',
+    });
+    expect(result).toMatchObject({
+      kind: 'ok',
+      repo: 'acme/workflow-server',
+      repo_source: 'origin',
     });
   });
 

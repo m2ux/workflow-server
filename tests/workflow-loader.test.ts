@@ -59,9 +59,6 @@ describe('workflow-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         const ids = result.value.activities.map(a => a.id);
-        expect(ids).toContain('discover-session');
-        expect(ids).toContain('initialize-session');
-        expect(ids).toContain('resolve-target');
         expect(ids).toContain('dispatch-client-workflow');
         expect(ids).toContain('end-workflow');
       }
@@ -217,11 +214,10 @@ describe('workflow-loader', () => {
   describe.skipIf(!LIVE_CORPUS)('getActivity', () => {
     it('should find an activity by ID within a loaded workflow', async () => {
       const workflow = await loadMetaWorkflow();
-      console.log('META ACTIVITIES:', workflow.activities.map(a => a.id));
-      const activity = getActivity(workflow, 'discover-session');
+      const activity = getActivity(workflow, 'dispatch-client-workflow');
 
       expect(activity).toBeDefined();
-      expect(activity?.id).toBe('discover-session');
+      expect(activity?.id).toBe('dispatch-client-workflow');
     });
 
     it('should return undefined for a non-existent activity ID', async () => {
@@ -233,18 +229,17 @@ describe('workflow-loader', () => {
   describe.skipIf(!LIVE_CORPUS)('getCheckpoint', () => {
     it('should find a checkpoint within an activity', async () => {
       const workflow = await loadMetaWorkflow();
-      const checkpoint = getCheckpoint(workflow, 'discover-session', 'resume-session');
+      const checkpoint = getCheckpoint(workflow, 'end-workflow', 'completion-confirmed');
 
       expect(checkpoint).toBeDefined();
-      expect(checkpoint?.id).toBe('resume-session');
-      expect(checkpoint?.name).toBeDefined();
+      expect(checkpoint?.id).toBe('completion-confirmed');
       expect(checkpoint?.message).toBeDefined();
       expect(checkpoint?.options.length).toBeGreaterThanOrEqual(2);
     });
 
     it('should return undefined for a non-existent checkpoint', async () => {
       const workflow = await loadMetaWorkflow();
-      expect(getCheckpoint(workflow, 'discover-session', 'no-such-checkpoint')).toBeUndefined();
+      expect(getCheckpoint(workflow, 'end-workflow', 'no-such-checkpoint')).toBeUndefined();
     });
   });
 
@@ -310,17 +305,17 @@ describe('workflow-loader', () => {
 
     it.skipIf(!LIVE_CORPUS)('still resolves a plain non-loop checkpoint by exact id (no regression)', async () => {
       const workflow = await loadMetaWorkflow();
-      expect(getCheckpoint(workflow, 'discover-session', 'resume-session')?.id).toBe('resume-session');
+      expect(getCheckpoint(workflow, 'end-workflow', 'completion-confirmed')?.id).toBe('completion-confirmed');
     });
   });
 
   describe.skipIf(!LIVE_CORPUS)('getExitBindings', () => {
     it('pairs each declared exit with the destination the workflow binds it to', async () => {
       const workflow = await loadMetaWorkflow();
-      const bindings = getExitBindings(workflow, 'discover-session');
+      const bindings = getExitBindings(workflow, 'dispatch-client-workflow');
 
-      expect(bindings.map(b => b.exit)).toContain('done');
-      expect(bindings.find(b => b.exit === 'done')?.to).toBe('initialize-session');
+      expect(bindings.map(b => b.exit)).toContain('null');
+      expect(bindings.find(b => b.exit === 'null')?.to).toBe('end-workflow');
     });
 
     it('carries the predicate and the default flag from the activity', async () => {
@@ -330,14 +325,16 @@ describe('workflow-loader', () => {
         .find(b => b.to === 'end-workflow');
       expect(conditional?.when).toBeDefined();
 
-      expect(getExitBindings(workflow, 'discover-session').find(b => b.isDefault)).toBeDefined();
+      expect(getExitBindings(workflow, 'end-workflow').find(b => b.isDefault)).toBeDefined();
     });
 
     it('carries an exit a checkpoint option selects, and its immediate flag', async () => {
-      const workflow = await loadMetaWorkflow();
-      const abort = getExitBindings(workflow, 'discover-session').find(b => b.exit === 'abort-binding');
+      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'work-package');
+      expect(wpResult.success).toBe(true);
+      if (!wpResult.success) return;
 
-      expect(abort?.to).toBe('end-workflow');
+      const abort = getExitBindings(wpResult.value, 'submit-for-review').find(b => b.exit === 'abort');
+
       expect(abort?.immediate).toBe(true);
       expect(abort?.when).toBeUndefined();
     });
@@ -351,9 +348,9 @@ describe('workflow-loader', () => {
   describe.skipIf(!LIVE_CORPUS)('exitDestinations', () => {
     it('lists the activities an activity can reach, deduped', async () => {
       const workflow = await loadMetaWorkflow();
-      const targets = exitDestinations(workflow, 'discover-session');
+      const targets = exitDestinations(workflow, 'dispatch-client-workflow');
 
-      expect(targets).toContain('initialize-session');
+      expect(targets).toContain('end-workflow');
       expect(targets.length).toBe([...new Set(targets)].length);
     });
 

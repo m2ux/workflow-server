@@ -46,7 +46,7 @@
  * Usage (from a server checkout with `node_modules` and a populated `workflows/`):
  *
  *   npm run bench:batch
- *   npm run bench:batch -- --workflow=meta --activities=discover-session,initialize-session,resolve-target
+ *   npm run bench:batch -- --workflow=meta --activities=dispatch-client-workflow,end-workflow
  *   npm run bench:batch -- --gate --min-saving-pct=20
  *
  * Flags:
