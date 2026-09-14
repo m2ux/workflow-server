@@ -24,8 +24,8 @@ A separate pass will also read the same procedure against the project's written 
 |---|------|-------------|----------|--------|
 | 1 | Intake and context | Target, mode, planning folder | 15-30m | ✅ |
 | 2 | [Format conventions](01-format-conventions.md) | Authoring literacy notes | 5-10m | ✅ |
-| 3 | [Design specification](design-specification.md) | Change goals and constraints | 20-40m | ⬚ |
-| 4 | [Assumptions log](assumptions-log.md) | Open and settled assumptions | 10-15m | ⬚ |
+| 3 | [Design specification](design-specification.md) | Change goals and constraints | 20-40m | 🟡 |
+| 4 | [Assumptions log](assumptions-log.md) | Open and settled assumptions | 10-15m | 🟡 |
 | 5 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⬚ |
 | 6 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ⬚ |
 | 7 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
