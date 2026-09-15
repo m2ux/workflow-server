@@ -146,7 +146,7 @@ capture_log() {
   fi
   local file="${LOG_DIR}/${NAME}-$(date -u +%Y%m%dT%H%M%SZ).log"
   if docker logs "$NAME" > "$file" 2>&1; then
-    echo "  log    : ${file}"
+    echo "  log      : ${file}"
   else
     rm -f "$file"
     echo "warning: cannot read the log of ${NAME}; it goes unkept" >&2
@@ -282,13 +282,24 @@ if [[ "$PREFLIGHT" -eq 1 ]]; then
   preflight_corpus
 fi
 
-ENGINE_PIN="$(git_pin "$ENGINE")"
+# An engine pin is taken only where it is claimed — a reused image was built elsewhere, and pinning
+# the checkout this run happens to sit in would name a tree that built nothing.
+ENGINE_PIN=""
+if [[ "$BUILD" -eq 1 ]]; then
+  ENGINE_PIN="$(git_pin "$ENGINE")"
+fi
 CORPUS_PIN="$(git_pin "$CORPUS")"
 
 echo "Reloading ${NAME} on 127.0.0.1:${PORT}"
-echo "  engine : ${ENGINE} @ ${ENGINE_PIN}"
-echo "  corpus : ${CORPUS} @ ${CORPUS_PIN}"
-echo "  image  : ${IMAGE}"
+# The engine line is printed on the terms the labels are stamped on: a build claims the checkout it
+# came from, a reused image names the tag and leaves the checkout unclaimed.
+if [[ "$BUILD" -eq 1 ]]; then
+  echo "  engine   : ${ENGINE} @ ${ENGINE_PIN}"
+else
+  echo "  engine   : whatever built ${IMAGE}"
+fi
+echo "  corpus   : ${CORPUS} @ ${CORPUS_PIN}"
+echo "  image    : ${IMAGE}"
 if [[ -n "$PROJECTS" ]]; then
   echo "  projects : ${PROJECTS}"
 fi

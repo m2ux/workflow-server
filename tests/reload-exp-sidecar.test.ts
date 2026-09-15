@@ -36,7 +36,7 @@ function withCorpus(): string {
 /** Whether `name` resolves on PATH — the preflight sits behind the script's own docker/curl checks. */
 function onPath(name: string): boolean {
   try {
-    execFileSync('command', ['-v', name], { shell: '/bin/bash', stdio: 'ignore' });
+    execFileSync('bash', ['-c', `command -v ${name}`], { stdio: 'ignore' });
     return true;
   } catch {
     return false;
