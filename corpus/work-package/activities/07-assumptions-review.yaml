@@ -120,7 +120,7 @@ steps:
     loopType: forEach
     variable: current_assumption
     over: open_assumptions
-    when: is_review_mode != true && needs_individual_interview == true && has_open_assumptions == true
+    when: needs_individual_interview == true && has_open_assumptions == true
     steps:
       - kind: technique
         id: present-assumption

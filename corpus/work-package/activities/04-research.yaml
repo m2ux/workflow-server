@@ -225,7 +225,7 @@ steps:
   - kind: technique
     id: record-batch-response
     technique: review-assumptions::record
-    when: has_open_assumptions == true && needs_individual_interview != true
+    when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
   - kind: loop
     id: assumption-interview
     name: Individual Assumption Interview Loop
