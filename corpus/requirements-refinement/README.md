@@ -1,6 +1,6 @@
 # Requirements Refinement Workflow
 
-> Refine a canonical requirements specification from a set of source documents (meeting transcripts and unstructured documents): classify, analyze, apply, validate, correct within a bounded loop, and stage the result. Operates on local files; performs no version-control operations.
+> Refine a canonical requirements specification from a set of source documents (meeting transcripts and unstructured documents): classify, analyze, apply, validate, correct within a bounded loop, and stage the result.
 
 ---
 
@@ -20,8 +20,7 @@ one.
 
 It is parameterized: the source documents and the target specification are supplied as inputs, so the
 workflow both **augments** an existing specification and **creates** one from scratch. Every
-intermediate and final artifact lives in the run's planning folder; the workflow makes no commits and
-never edits the canonical document in place.
+intermediate and final artifact lives in the run's planning folder.
 
 **Use this workflow when you want to:**
 
