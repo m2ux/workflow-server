@@ -261,8 +261,13 @@ both free of any live identifier — `assumption-reconciliation` is already the 
 `work-package/activities/03-requirements-elicitation.yaml:185` and
 `workflow-design/activities/03-requirements-refinement.yaml:149`, and `reconcile-assumptions` is
 already a step id at eight sites, six of them the first technique step inside the convergence loop at
-the very hosts this run shares. The name the routine finally takes is stage 5's, from a re-derivation
-of this run that does not exist yet.
+the very hosts this run shares.
+
+The derived signature is
+[re-derivation-assumption-run.md](re-derivation-assumption-run.md), and it differs from the sketch
+below in three places: one of the values it names as produced is private to the run, and two of its
+parameters have no reference site that binds them. The run also converges at two hosts rather than
+four, the other two dropping it under the once-per-run decision.
 
 ```yaml
 # work-package/routines/residual-assumption-interview.yaml
