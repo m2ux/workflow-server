@@ -114,15 +114,27 @@ export async function buildRoutineLookup(
   return (workflowId) => loaded.get(workflowId);
 }
 
-/** Every workflow in the corpus that declares at least one routine, with what it declares. */
+/**
+ * Every workflow in the corpus that declares at least one routine, with what it declares, and the
+ * workflows whose `routines/` could not be read.
+ *
+ * A corpus-wide sweep reports rather than aborts: a single unreadable file is a defect to name, and
+ * a reader that threw would take the whole sweep down and report nothing at all — including for the
+ * files that are fine. The per-workflow read still throws, because a LOAD wants the failure loud.
+ */
 export async function readCorpusRoutines(
   workflowDir: string,
   index: CorpusIndex = indexCorpus(workflowDir),
-): Promise<Map<string, ReadonlyMap<string, Routine>>> {
+): Promise<{ byWorkflow: Map<string, ReadonlyMap<string, Routine>>; errors: Array<{ workflowId: string; error: string }> }> {
   const byWorkflow = new Map<string, ReadonlyMap<string, Routine>>();
+  const errors: Array<{ workflowId: string; error: string }> = [];
   await Promise.all([...index.workflows.keys()].map(async (id) => {
-    const routines = await readWorkflowRoutines(workflowDir, id, index);
-    if (routines.size > 0) byWorkflow.set(id, routines);
+    try {
+      const routines = await readWorkflowRoutines(workflowDir, id, index);
+      if (routines.size > 0) byWorkflow.set(id, routines);
+    } catch (error) {
+      errors.push({ workflowId: id, error: error instanceof Error ? error.message : String(error) });
+    }
   }));
-  return byWorkflow;
+  return { byWorkflow, errors };
 }

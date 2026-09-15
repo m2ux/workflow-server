@@ -190,6 +190,38 @@ describe('materialisation — the reference is gone and the steps are ordinary',
     ]);
   });
 
+  /**
+   * A step id only has to be unique within its scope, so two loops in one activity may each hold a
+   * step called `run` — but a variable name shares one flat namespace across the whole workflow, so
+   * an internal named from the innermost reference id alone lands on both.
+   */
+  it('names an internal from the containers the reference sits in, not the reference alone', () => {
+    const shared = routine({
+      id: 'shared-run',
+      internals: [{ id: 'current_item', description: 'the item in hand' }],
+      steps: [{
+        kind: 'action', id: 'note',
+        actions: [
+          { action: 'set', target: 'current_item', value: '1' },
+          { action: 'log', message: '{current_item}' },
+        ],
+      }] as Step[],
+    });
+    const body = [{ kind: 'routine', id: 'run', routine: 'shared-run' }];
+    const host = activity([
+      { kind: 'loop', id: 'first-pass', loopType: 'forEach', variable: 'a_item', over: 'a_items', steps: body },
+      { kind: 'loop', id: 'second-pass', loopType: 'forEach', variable: 'b_item', over: 'b_items', steps: body },
+    ] as unknown as Step[]);
+    materializeActivityRoutines(host, lookupFrom({ wf: [shared] }), 'wf');
+
+    const internalOf = (index: number): string | undefined => {
+      const loop = host.steps![index] as Extract<Step, { kind: 'loop' }>;
+      return ((loop.steps as Step[])[0] as Extract<Step, { kind: 'action' }>).actions![0]!.target;
+    };
+    expect(internalOf(0)).toBe('host_first_pass_run_current_item');
+    expect(internalOf(1)).toBe('host_second_pass_run_current_item');
+  });
+
   it('keeps two references to one routine collision-free', () => {
     const host = activity([
       { kind: 'routine', id: 'review-research', routine: 'assumption-interview', ...base } as Step,

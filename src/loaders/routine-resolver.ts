@@ -341,10 +341,30 @@ function substituteTargetMap(targets: Record<string, string>, map: SubstitutionM
 // Materialisation
 // ---------------------------------------------------------------------------
 
-/** An internal's materialised name: the host activity and the whole composed reference path. */
-function internalName(activityId: string, referencePath: string, internalId: string): string {
+/**
+ * An internal's materialised name: the host activity and the whole composed reference path.
+ *
+ * A step identifier only has to be unique within its scope, but a variable name shares one flat
+ * namespace across the whole workflow — so the path has to name the reference SITE, not just the
+ * reference. Taking the innermost id alone puts one internal name on two sites whenever two paths
+ * reach one routine and spell their innermost reference the same way: two loops in one activity may
+ * each hold a step called `run`, which is legal, their ids being scoped per loop body.
+ */
+function internalName(activityId: string, sitePath: string, internalId: string): string {
   const flatten = (part: string): string => part.replace(/[-.]/g, '_');
-  return `${flatten(activityId)}_${flatten(referencePath)}_${internalId}`;
+  return `${flatten(activityId)}_${flatten(sitePath)}_${internalId}`;
+}
+
+/**
+ * Extend a site path by one container or reference id.
+ *
+ * A step inside a materialised routine body already carries the path in its id, so a segment that
+ * repeats what the path already says is taken whole rather than appended to — otherwise a reference
+ * nested two deep would name itself twice.
+ */
+function extendSitePath(path: string, id: string): string {
+  if (path === '') return id;
+  return id.startsWith(`${path}.`) ? id : `${path}.${id}`;
 }
 
 /**
@@ -435,12 +455,11 @@ function bindReference(
  */
 function expandReference(
   step: RoutineStep,
-  lookup: RoutineLookup,
-  sourceWorkflowId: string,
-  activityId: string,
+  scope: ExpansionScope,
   chain: string[],
-  context: string,
+  sitePath: string,
 ): Step[] {
+  const { lookup, sourceWorkflowId, activityId, context } = scope;
   const routine = resolveRoutine(lookup, sourceWorkflowId, step.routine, context);
   if (chain.includes(routine.id)) {
     throw new RoutineResolutionError(
@@ -448,12 +467,16 @@ function expandReference(
     );
   }
 
-  const map = bindReference(step, routine, activityId, step.id, context);
+  // The site this reference occupies, containers included — what an internal is named from. The
+  // step-id prefix stays the reference's own id, so a materialised id is scoped the way a
+  // hand-written one in the same body is.
+  const site = extendSitePath(sitePath, step.id);
+  const map = bindReference(step, routine, activityId, site, context);
   const body = structuredClone(routine.steps) as Step[];
   const substituted = body.map((bodyStep) => substituteStep(bodyStep, map, context));
   prefixStepIds(substituted, step.id, context);
 
-  const expanded = expandStepList(substituted, lookup, sourceWorkflowId, activityId, [...chain, routine.id], context);
+  const expanded = expandStepList(substituted, scope, [...chain, routine.id], site);
 
   // The reference site's own gates apply to every step it stands for: the site decided whether the
   // run happens at all, and the run is no longer a single step that could carry that decision.
@@ -482,26 +505,42 @@ export function materializeRoutineStep(
   sourceWorkflowId: string,
   activityId: string,
 ): Step[] {
-  return expandReference(step, lookup, sourceWorkflowId, activityId, [], `Activity '${activityId}'`);
+  return expandReference(
+    step,
+    { lookup, sourceWorkflowId, activityId, context: `Activity '${activityId}'` },
+    [],
+    '',
+  );
+}
+
+/** What every expansion in one activity shares: where names resolve, and what a failure is called. */
+interface ExpansionScope {
+  lookup: RoutineLookup;
+  /** The workflow the activity file was authored in — what a bare reference resolves against. */
+  sourceWorkflowId: string;
+  /** The host activity, which an internal's materialised name carries. */
+  activityId: string;
+  /** The prefix every refusal message opens with. */
+  context: string;
 }
 
 /** Expand every reference in a step list, recursing into loop bodies. */
 function expandStepList(
   steps: Step[],
-  lookup: RoutineLookup,
-  sourceWorkflowId: string,
-  activityId: string,
+  scope: ExpansionScope,
   chain: string[],
-  context: string,
+  sitePath: string,
 ): Step[] {
   const out: Step[] = [];
   for (const step of steps) {
     if (step.kind === 'routine') {
-      out.push(...expandReference(step, lookup, sourceWorkflowId, activityId, chain, context));
+      out.push(...expandReference(step, scope, chain, sitePath));
       continue;
     }
     if (step.kind === 'loop') {
-      step.steps = expandStepList(step.steps as Step[], lookup, sourceWorkflowId, activityId, chain, context);
+      // A loop is a container the site path runs through: two loops in one activity may each hold a
+      // reference spelled the same way, their step ids being scoped per body.
+      step.steps = expandStepList(step.steps as Step[], scope, chain, extendSitePath(sitePath, step.id));
     }
     out.push(step);
   }
@@ -521,11 +560,9 @@ export function materializeActivityRoutines(
   if (!activity.steps) return;
   activity.steps = expandStepList(
     activity.steps,
-    lookup,
-    sourceWorkflowId,
-    activity.id,
+    { lookup, sourceWorkflowId, activityId: activity.id, context: `Activity '${activity.id}'` },
     [],
-    `Activity '${activity.id}'`,
+    '',
   );
   assertUniqueStepIds(activity);
 }
