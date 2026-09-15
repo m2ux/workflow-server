@@ -39,7 +39,7 @@ import { parseDefinition } from '../utils/serialization.js';
  */
 
 /** Directory names holding a workflow's own files, which the walk never enters and never searches. */
-const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques']);
+const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques', 'routines']);
 
 /** The product grouping under a nested corpus tree. Not itself a workflow. */
 const PRODUCT_GROUPING = 'corpus';
