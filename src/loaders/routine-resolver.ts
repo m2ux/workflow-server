@@ -358,9 +358,14 @@ function internalName(activityId: string, sitePath: string, internalId: string):
 /**
  * Extend a site path by one container or reference id.
  *
- * A step inside a materialised routine body already carries the path in its id, so a segment that
- * repeats what the path already says is taken whole rather than appended to — otherwise a reference
- * nested two deep would name itself twice.
+ * A step inside a materialised routine body already carries its own reference's prefix in its id, so
+ * a segment that already spells the whole path is taken as the path rather than appended to it —
+ * which is what keeps the ordinary nested case from naming its reference twice.
+ *
+ * The collapse is a prefix test, so it misses the case where a host container sits above the routine
+ * that prefixed the id: `first-pass` + `run` + `run.cycle` keeps both spellings of `run`. The
+ * property this exists to provide is UNIQUENESS per reference site, which that result has; brevity
+ * is not one, and nothing in the server or the schemas bounds an identifier's length.
  */
 function extendSitePath(path: string, id: string): string {
   if (path === '') return id;
