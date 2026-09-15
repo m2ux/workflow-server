@@ -49,20 +49,23 @@ Each new requirement takes the next available number within its category.
 ## Requirement Entry Format
 
 Each requirement is a four-part entry, with a blank line between the title and each field and between
-fields:
+fields, in this order: title, rationale, Source, Status.
 
 ```markdown
-**REQ-ID: The system SHALL/SHOULD/MAY [atomic, testable requirement statement]**
+REQ-F013: When component is empty, the system SHALL infer component:* from title or repo, then apply the in-scope filter
 
-*Status*: *status value*
+Empty component is common on stubs. Inference is how the in-scope filter still runs.
 
-*Rationale*: explanation of why the requirement exists and any relevant design context
+Source: [SRC-MTG001](meetings/planning.md#component-scope), [SRC-DOC001](briefs/stubs.pdf), [SRC-DOC002](notes/filter.md#in-scope)
 
-*Source*: source reference
+Status: pending
 ```
 
-The statement uses the keyword `SHALL` (mandatory), `SHOULD` (recommended), or `MAY` (optional), and
-is atomic, testable, and unambiguous.
+The first line is the identifier and the atomic, testable statement. The statement uses the keyword
+`SHALL` (mandatory), `SHOULD` (recommended), or `MAY` (optional).
+
+The unlabeled paragraph under the title is the rationale: why the requirement exists and any relevant
+design context.
 
 ## Status Conventions
 
@@ -74,28 +77,23 @@ Permitted status values: `pending`, `under review`, `accepted`, `deprecated`.
 
 ## Source Reference Format
 
-Requirements, constraints, and success criteria cite their sources as:
+Each cited source is a markdown link. The link text is the source reference (`SRC-MTG001`,
+`SRC-DOC001`, …). The href is the source file recorded for that reference in section 2.
 
+- When the source is markdown, the href includes the fragment of the nearest heading above the
+  derived passage — the nearest linkable position in that file.
+- When the source is not markdown, the href is the file alone.
+
+A requirement may cite several sources, comma-separated on one `Source:` line.
+
+When a requirement originates from a specific discussion within a meeting, participant initials MAY
+follow the link; when it originates from a reference document, the document's author MAY follow the
+link:
+
+```markdown
+Source: [SRC-MTG006](meetings/2026-04-12.md#scope) (PW, MC)
+Source: [SRC-DOC001](briefs/settlement.pdf) (Jane Doe)
 ```
-*Source: [Source ID] - [specific section or requirement]*
-```
-
-When a requirement originates from a specific discussion within a meeting, participant initials MAY be
-included for attribution; when it originates from a reference document, the document's author is
-included for attribution:
-
-```
-*Source: [Source ID] (Initials)*
-*Source: [Source ID] (Author Name)*
-```
-
-Examples:
-
-- `*Source*: SRC-PRD001 - Core Features (P0) functional requirements`
-- `*Source*: SRC-MTG006 (PW, MC)`
-- `*Source*: SRC-DOC001 (Jane Doe)`
-
-A requirement may cite multiple comma-separated sources: `*Source*: SRC-PRD001, SRC-MTG005, SRC-DOC001`.
 
 ## Reference Documents
 
