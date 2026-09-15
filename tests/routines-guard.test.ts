@@ -23,6 +23,8 @@ interface Tree {
   activities: Record<string, Record<string, string>>;
   /** Routine files, by workflow id: routine name → its YAML body. */
   routines?: Record<string, Record<string, string>>;
+  /** Technique markdown, by workflow id: `group/operation` → its file body. */
+  techniques?: Record<string, Record<string, string>>;
 }
 
 async function findingsFor(tree: Tree): Promise<Finding[]> {
@@ -42,6 +44,13 @@ async function findingsFor(tree: Tree): Promise<Finding[]> {
     }
     for (const [workflowId, routines] of Object.entries(tree.routines ?? {})) {
       for (const [name, body] of Object.entries(routines)) writeRoutineFixture(root, workflowId, name, body);
+    }
+    for (const [workflowId, techniques] of Object.entries(tree.techniques ?? {})) {
+      for (const [path, body] of Object.entries(techniques)) {
+        const file = join(root, workflowId, 'techniques', `${path}.md`);
+        mkdirSync(join(file, '..'), { recursive: true });
+        writeFileSync(file, body);
+      }
     }
     return await collectRoutineFindings(root);
   } finally {
@@ -180,6 +189,71 @@ steps:
       },
     });
     expect(checks(read)).toContain('routine-internal-unwritten');
+  });
+
+  /**
+   * A binding's unbraced value is a rename only where it names something declared; otherwise it is a
+   * literal, by the repository's own decided position that a value naming another variable has to be
+   * braced. Reported as an undeclared read it would fire on nearly every real body, and the guard is
+   * hard zero — so this needs a technique that actually RESOLVES, since an unresolvable one walks no
+   * inputs and the case passes for the wrong reason.
+   */
+  it('does not report a binding value the namespace settles as a literal', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: referrer('    outputs:\n      run_verdict: host_verdict\n') } },
+      techniques: {
+        wf: {
+          'analysis/sweep': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Sweeps the target at the requested depth.
+
+## Inputs
+
+### analysis_mode
+
+How thorough the sweep is.
+
+## Outputs
+
+### run_verdict
+
+What the sweep concluded.
+
+## Protocol
+
+### 1. Sweep
+
+- Sweep the target.
+`,
+        },
+      },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+outputs:
+  - id: run_verdict
+    type: string
+    description: what the sweep concluded
+steps:
+  - kind: technique
+    id: sweep
+    technique:
+      name: analysis::sweep
+      inputs:
+        analysis_mode: thorough
+`,
+        },
+      },
+    });
+    // `thorough` is a literal, not a name the body reads.
+    expect(findings.filter((f) => f.check === 'routine-undeclared-read')).toEqual([]);
   });
 
   it('reports a name the body reads that the signature does not declare', async () => {
