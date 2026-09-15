@@ -1,6 +1,6 @@
 # Requirement citation precision: analysis heading to specification href
 
-Investigation · 15 September 2026 · **Status:** issue opened; implementation not started
+Investigation · 15 September 2026 · **Status:** issue opened ([#732](https://github.com/m2ux/workflow-server/issues/732)); implementation not started
 
 The specification protocol already says a markdown citation's href includes the fragment of the
 nearest heading above the derived passage. A live requirements-refinement run captured those
