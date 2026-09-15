@@ -16,11 +16,13 @@ Creation guide for bare filename `failure-report.md`. Written when refinement ca
 
 **Verdict:** critical · **Correction passes attempted:** {n}
 
+**Validation report:** [final pass]({path})
+
 ## Unresolved issues
 
-| ID | Check | Detail | Manual resolution |
-|----|-------|--------|-------------------|
-| V3 | source coverage | one line naming the section and the defect | one line naming what to do |
+| ID | Manual resolution |
+|----|-------------------|
+| V3 | one line naming what to do |
 
 {One line stating that no specification was promoted.}
 ```

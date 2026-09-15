@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts for human promotion.
+Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts staged for promotion.
 
 ## Inputs
 
@@ -63,6 +63,6 @@ Absolute path to the written change summary.
 
 ## Rules
 
-### promotion-is-the-users-action
+### promotion-outside-this-operation
 
-The finalized specification is staged in `{planning_folder_path}`; promotion to the canonical location is performed by the user.
+Promotion to `{target_doc_path}` is outside this operation.

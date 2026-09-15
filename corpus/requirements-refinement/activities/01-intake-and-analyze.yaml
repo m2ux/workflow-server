@@ -1,7 +1,7 @@
 id: intake-and-analyze
-version: 1.4.0
+version: 1.5.0
 name: Intake and Analyze
-description: Capture the source-document and target-specification paths, record whether every source document is readable, classify each source as a meeting transcript or an unstructured document, and determine whether the specification is being augmented or created; then parse the sources against the current specification and produce a structured requirements analysis report, confirming each boundary with the user before proceeding.
+description: Produce a user-confirmed requirements analysis from classified, readable source documents against the target specification.
 variables:
   reads:
     - source_paths
@@ -25,7 +25,7 @@ variables:
       defaultValue: ""
     - name: classified_sources
       type: array
-      description: Source documents paired with their classifications, each { path, type } where type is meeting or document. Empty until intake classifies them.
+      description: Source documents paired with their classifications, each { path, type } where type is meeting or document
       defaultValue: []
     - name: spec_basename
       type: string
@@ -35,6 +35,14 @@ variables:
       type: boolean
       description: True when the target specification already exists and is being augmented; false when it is created from scratch
       defaultValue: false
+    - name: update_pass_kind
+      type: string
+      description: Which apply this pass performs
+      values:
+        - initial
+        - correction
+        - revision
+      defaultValue: initial
 required: true
 steps:
   - kind: technique
@@ -85,6 +93,7 @@ steps:
         effect:
           setVariable:
             analysis_confirmed: true
+            update_pass_kind: initial
       - id: revise
         label: Revise the analysis
         description: Analysis misreads a source, misses changes, or leaves a source unread, and must be revised before proceeding.
@@ -101,6 +110,6 @@ exits:
 outcome:
   - The workflow can trust where to read from and where to write to — both paths exist and are confirmed correct by the user
   - Downstream activities know how to read each source, which classification it carries, and whether they are augmenting an existing specification or creating a new one
-  - A source with nothing to read is settled at the boundary, so no pass runs against an incomplete set
+  - A source with nothing to read is settled at the boundary
   - Every requirement change the sources imply is pinned to a stable identifier the specification can be updated against
-  - The user has signed off that the analysis faithfully reflects every source, so the update can proceed without second-guessing scope
+  - The analysis faithfully reflects every source

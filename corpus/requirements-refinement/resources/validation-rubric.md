@@ -1,15 +1,13 @@
 ---
 name: validation-rubric
-description: Validation checks and the severity and type categorization that drives routing.
+description: Validation checks and the severity and type categorization that labels each issue.
 metadata:
   order: 3
 ---
 
 # Validation Rubric
 
-The checks applied to an updated specification and the scheme for categorizing each issue. The verdict
-drives routing: a clean result finalizes, correctable issues trigger another correction pass, and
-critical issues stop refinement.
+The checks applied to an updated specification and the scheme for categorizing each issue.
 
 ## Checks
 
@@ -46,13 +44,13 @@ Each issue is tagged with a severity and a type:
 | severity | `critical`, `high`, `medium`, `low` |
 | type | `irreconcilable`, `structure`, `content`, `syntax` |
 
-**Critical / irreconcilable** issues require manual intervention and stop refinement:
+**Critical / irreconcilable** issues require manual intervention:
 - Fundamental requirement conflicts or contradictions.
 - Essential requirement information that cannot be inferred.
 - Structural damage that breaks document integrity.
 - Source-traceability problems that cannot be resolved automatically.
 
-**Correctable** issues can be addressed by another correction pass:
+**Correctable** issues can be completed from available context:
 - Markdown and formatting errors.
 - Minor wording improvements.
 - Requirement-identifier collisions.

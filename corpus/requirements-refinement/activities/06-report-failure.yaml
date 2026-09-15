@@ -6,6 +6,7 @@ variables:
   reads:
     - source_paths
     - target_doc_path
+    - validation_report_path
   writes:
     - name: failure_report_path
       type: string

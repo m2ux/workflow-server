@@ -236,11 +236,6 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "requirements-refinement/resources/validation-rubric.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "substrate-node-security-audit/resources/audit-prompt-template.md",
       "verdict": "harmless",
       "rationale": "orientation-only"

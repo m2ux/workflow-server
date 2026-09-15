@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.7.1
+  version: 1.8.0
 ---
 
 ## Capability
 
-Validate the updated specification against structural, identifier-uniqueness, consistency, source-coverage, and protocol-conformance checks, categorize each issue as critical or correctable, and derive the routing verdict — whether validation passed, and whether critical or correctable issues remain — with the source-coverage result recorded in the report.
+Validate the updated specification against structural, identifier-uniqueness, consistency, source-coverage, and protocol-conformance checks, categorize each issue as critical or correctable, and derive whether validation passed, and whether critical or correctable issues remain — with the source-coverage result recorded in the report.
 
 ## Inputs
 
@@ -47,6 +47,10 @@ Presence of a defect another correction pass resolves, with no blocking defect a
 
 Overall verdict — `true` when the specification is conformant and covers every source in full, so it is ready to finalize.
 
+### update_pass_kind
+
+`correction` when this pass's issues are correctable with no blocking defect.
+
 ## Protocol
 
 ### 1. Run Conformance Checks
@@ -64,4 +68,4 @@ Overall verdict — `true` when the specification is conformant and covers every
 ### 4. Compile Verdict
 
 - Write `{validation_report}` to `{planning_folder_path}` per [validation-report](../resources/validation-report.md#template) and its [Rules](../resources/validation-report.md#rules); capture its written location as `{validation_report_path}`.
-- Emit `{has_critical_issues}`, `{has_correctable_issues}` and `{validation_passed}` from the categorized issues, each as its declared contract defines it. The source-coverage result is recorded in `{validation_report}` alongside them, per that output's contract.
+- Emit `{has_critical_issues}`, `{has_correctable_issues}`, `{validation_passed}`, and `{update_pass_kind}` from the categorized issues, each as its declared contract defines it. The source-coverage result is recorded in `{validation_report}` alongside them, per that output's contract.

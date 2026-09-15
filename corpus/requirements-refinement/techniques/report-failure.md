@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -13,11 +13,15 @@ Compile a failure report describing the unresolved critical issues, the correcti
 
 Categorized validation findings carrying the critical or unresolved issues.
 
+### validation_report_path
+
+Absolute path to the written validation report for the pass that stopped refinement.
+
 ## Outputs
 
 ### failure_report
 
-Failure report carrying the critical issues, correction history, and manual-resolution guidance.
+Failure report carrying the unresolved issue IDs, correction history, and manual-resolution guidance.
 
 #### artifact
 
@@ -35,15 +39,15 @@ Absolute path to the written failure report.
 
 ### 1. Summarize Failure
 
-- Record the verdict, the number of correction passes attempted (`{correction_iteration}`), and every critical or irreconcilable issue drawn from `{validation_report}`.
+- Record the verdict, the number of correction passes attempted (`{correction_iteration}`), and a link to `{validation_report}` at `{validation_report_path}`.
 
 ### 2. Provide Resolution Guidance
 
-- State, for each critical issue, the manual resolution a requirements engineer should perform.
+- State, for each unresolved issue ID in `{validation_report}`, the manual resolution required.
 
 ### 3. Write Failure Report
 
-- Write `{failure_report}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules); capture its written location as `{failure_report_path}`.
+- Write `{failure_report}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules), filling the template's path slot from `{validation_report_path}`; capture its written location as `{failure_report_path}`.
 
 ## Rules
 

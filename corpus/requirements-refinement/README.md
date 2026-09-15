@@ -36,7 +36,7 @@ never edits the canonical document in place.
 |---|----------|---------|
 | 01 | [Intake and Analyze](activities/01-intake-and-analyze.yaml) | Establish readable, classified sources and a user-confirmed analysis of the requirement changes they imply |
 | 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
-| 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage), categorize issues, and route |
+| 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage) and categorize issues |
 | 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary for promotion |
 | 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when critical issues or the correction budget stop refinement |
 
@@ -55,7 +55,7 @@ No specification is promoted automatically.
 
 ## Structure
 
-- [`workflow.yaml`](workflow.yaml) — metadata, variables, and rules.
+- [`workflow.yaml`](workflow.yaml) — metadata and variables.
 - [`activities/`](activities/) — the pipeline activities.
 - [`techniques/`](techniques/) — the procedures the activities apply.
 - [`resources/`](resources/) — the specification protocol and the report/rubric/summary templates.
