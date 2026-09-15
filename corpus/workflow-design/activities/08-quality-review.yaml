@@ -193,15 +193,6 @@ steps:
     id: audit-expressiveness
     technique: audit-expressiveness
     when: operation_type != 'review' && scope_manifest_confirmed == true
-  - kind: technique
-    id: persist-expressiveness-findings
-    technique:
-      name: work-package::manage-artifacts::write-artifact
-      inputs:
-        bare_filename: expressiveness-findings.md
-        artifact_content: expressiveness_findings
-        target_dir: planning_folder_path
-    when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count > 0
   - kind: action
     id: expressiveness-clean
     when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count == 0
@@ -218,15 +209,6 @@ steps:
     id: audit-conformance
     technique: audit-conformance
     when: operation_type != 'review' && scope_manifest_confirmed == true
-  - kind: technique
-    id: persist-conformance-findings
-    technique:
-      name: work-package::manage-artifacts::write-artifact
-      inputs:
-        bare_filename: conformance-findings.md
-        artifact_content: conformance_findings
-        target_dir: planning_folder_path
-    when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count > 0
   - kind: action
     id: conformance-clean
     when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count == 0
@@ -243,15 +225,6 @@ steps:
     id: audit-rule-hygiene
     technique: audit-rule-hygiene
     when: operation_type != 'review' && scope_manifest_confirmed == true
-  - kind: technique
-    id: persist-rule-hygiene-findings
-    technique:
-      name: work-package::manage-artifacts::write-artifact
-      inputs:
-        bare_filename: rule-hygiene-findings.md
-        artifact_content: rule_hygiene_findings
-        target_dir: planning_folder_path
-    when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count > 0
   - kind: action
     id: rule-hygiene-clean
     when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count == 0
