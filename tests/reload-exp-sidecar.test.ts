@@ -69,10 +69,12 @@ describe('reload-exp-sidecar.sh', () => {
     expect(out.stdout).toContain('--no-preflight');
   });
 
-  it('usage asks only for --name, the corpus defaulting to the running container', () => {
+  it('usage asks only for --name, the corpus and port defaulting to the container record', () => {
     const out = run(['--help']);
     expect(out.stdout).toMatch(/Required:\s*\n\s*--name=NAME[^\n]*\n\s*\n/);
-    expect(out.stdout).toMatch(/Defaults to the corpus the running container binds/);
+    // The record outlives the container running, so the help must not promise a running one.
+    expect(out.stdout).toMatch(/Defaults to the corpus the named container binds,\s*\n\s*running or exited/);
+    expect(out.stdout).toMatch(/Defaults to the binding the named\s*\n\s*container records, running or exited/);
   });
 
   it('refuses a missing --name', () => {

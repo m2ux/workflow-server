@@ -123,9 +123,10 @@ interface CorpusReport {
  * Walk `dir` and report what a tool call would find there.
  *
  * The walk is the directory reads discovery already performs on every resolution, so a probe costs
- * what one `list_workflows` costs and reports the corpus as it stands rather than as it stood at
- * boot. A directory that is not there reports zero without walking, which keeps a probe loop from
- * logging one unreadable-directory warning per interval.
+ * the index `list_workflows` begins with and not the manifest parsing it goes on to do, and reports
+ * the corpus as it stands rather than as it stood at boot. A directory that is not there reports
+ * zero without walking, which keeps a probe loop from logging one unreadable-directory warning per
+ * interval.
  */
 function describeCorpus(dir: string): CorpusReport {
   if (!existsSync(dir)) return { dir, workflows: 0, ambiguous: [] };

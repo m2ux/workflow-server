@@ -50,7 +50,7 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
 
 `scripts/reload-exp-sidecar.sh` stops one named container, rebuilds (or reuses) its image from a checkout, and starts it again on the same host port and corpus. It refuses the install container name `workflow-server` and host port 3000.
 
-`--name` is the only required flag. Host port, corpus and projects root each default to what the named container already binds, so rebuilding the pairing under test is `--name` alone; each is required when no container of that name is running. `--image` defaults to `workflow-server:local` (pass a distinct tag per experiment). `--build` defaults to the checkout that contains the script; pass a directory when the engine lives in another worktree.
+`--name` is the only required flag. Host port, corpus and projects root each default to what the named container records, running or exited, so rebuilding the pairing under test is `--name` alone and a sidecar a reboot left stopped reloads on the port it had; each is required when no container of that name exists. `--image` defaults to `workflow-server:local` (pass a distinct tag per experiment). `--build` defaults to the checkout that contains the script; pass a directory when the engine lives in another worktree.
 
 ```bash
 # First reload of a new experiment: name the pairing.

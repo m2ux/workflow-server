@@ -5,8 +5,8 @@
 # and starts it again on the same host port with a chosen corpus. Refuses the
 # install instance name `workflow-server` and host port 3000.
 #
-# Host port and corpus default to what the named container already runs, so a
-# rebuild of the pairing under test is `--name` alone.
+# Host port and corpus default to what the named container records, running or
+# exited, so a rebuild of the pairing under test is `--name` alone.
 set -euo pipefail
 
 INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
@@ -30,10 +30,10 @@ Required:
 
 Options:
   --workflows-dir=CORPUS   Corpus checkout (directory that contains corpus/).
-                           Defaults to the corpus the running container binds.
-                           Required when none is running.
+                           Defaults to the corpus the named container binds,
+                           running or exited. Required when none exists.
   --projects-root=DIR      Host projects root bound RW. Defaults to the root
-                           the running container binds, then to the install
+                           the named container binds, then to the install
                            root. Planning lands at DIR/<repo>/.engineering/
                            artifacts/planning, so a root of its own keeps an
                            experiment's walks out of the live planning tree.
@@ -41,8 +41,9 @@ Options:
   --build[=DIR]            Checkout whose Dockerfile is built (default: this
                            repo root). DIR is an engine worktree for a branch
                            that is not this checkout.
-  --host-port=N            Host port. Defaults to the port the running
-                           container publishes. Required when none is running.
+  --host-port=N            Host port. Defaults to the binding the named
+                           container records, running or exited. Required when
+                           none exists.
   --log-dir=DIR            Where the outgoing container's log is kept
                            (default: INSTALL/logs). One file per reload,
                            holding the audit line the server writes per tool
@@ -67,8 +68,8 @@ Example (time-to-dispatch sidecar from its engine worktree):
 EOF
 }
 
-# Where start.sh binds the corpus inside the container. Reading the bind back names the corpus a
-# running sidecar serves.
+# Where start.sh binds the corpus inside the container. Reading the bind back names the corpus the
+# named sidecar serves, from a record that outlives the container running.
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-/app/workflows}"
 CONTAINER_PROJECTS_ROOT="${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}"
 CONTAINER_PORT="${CONTAINER_PORT:-3000}"
