@@ -354,4 +354,12 @@ for _ in 1 2 3 4 5 6 7 8 9 10 12 15 18 21 24 30; do
   sleep 1
 done
 
+# The probe answers which check is holding the container back, and the poll above discards that
+# answer because it gates on the status code. Ask once more without the gate, so the failure names
+# the false check — a corpus bind that resolves to nothing looks exactly like a container still
+# booting until the payload is read.
+echo "Last probe of http://127.0.0.1:${PORT}/ready:" >&2
+curl -sS "http://127.0.0.1:${PORT}/ready" >&2 || echo "  (no response)" >&2
+echo >&2
+echo "Container log: docker logs ${NAME}" >&2
 die "sidecar started but http://127.0.0.1:${PORT}/ready did not become ready"
