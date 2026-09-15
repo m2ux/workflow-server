@@ -35,9 +35,6 @@ variables:
       type: string
       description: SHA of the commit carrying the task under construction, empty where it staged nothing.
       defaultValue: ""
-    - name: current_assumption
-      type: object
-      description: The assumption under individual review.
     - name: current_task
       type: object
       description: The implementation-plan task under construction.
@@ -60,10 +57,6 @@ variables:
     - name: has_uncertain_symbols
       type: boolean
       description: True when one or more symbols in the task under construction have unconfirmed provenance.
-      defaultValue: false
-    - name: needs_individual_interview
-      type: boolean
-      description: Whether each residual open assumption is reviewed one at a time.
       defaultValue: false
     - name: open_assumptions
       type: array
@@ -163,37 +156,19 @@ steps:
   - kind: technique
     id: present-resolved-assumptions
     technique: review-assumptions::assemble-open-set
+    when: is_review_mode != true
     actions:
       - action: message
         message: |-
           **Assumptions**
 
           {assumption_review_presentation}
-  - kind: checkpoint
-    id: implementation-assumption-interview
-    ref: assumption-interview
-  - kind: technique
-    id: record-batch-response
-    technique: review-assumptions::record
-    when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
-  - kind: loop
-    id: assumption-interview
-    name: Individual Assumption Interview Loop
-    loopType: forEach
-    variable: current_assumption
-    over: open_assumptions
-    maxIterations: 20
-    when: needs_individual_interview == true && has_open_assumptions == true
-    steps:
-      - kind: technique
-        id: present-assumption
-        technique: review-assumptions::assemble-one
-      - kind: checkpoint
-        id: implementation-assumption-decision#{current_assumption.id}
-        ref: assumption-decision
-      - kind: technique
-        id: record-response
-        technique: review-assumptions::record
+  - kind: routine
+    id: residual-assumptions
+    routine: residual-assumption-interview
+    outputs:
+      assumption_outcome: assumption_outcome
+      has_deferred_assumptions: has_deferred_assumptions
   - kind: technique
     id: update-assumptions-log
     technique: review-assumptions::record
