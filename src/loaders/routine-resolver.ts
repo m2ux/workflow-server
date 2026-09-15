@@ -504,12 +504,14 @@ export function materializeRoutineStep(
   lookup: RoutineLookup,
   sourceWorkflowId: string,
   activityId: string,
+  /** The containers the reference sits inside, which an internal's name carries. */
+  sitePath = '',
 ): Step[] {
   return expandReference(
     step,
     { lookup, sourceWorkflowId, activityId, context: `Activity '${activityId}'` },
     [],
-    '',
+    sitePath,
   );
 }
 
@@ -612,26 +614,39 @@ function assertUniqueStepIds(activity: Activity): void {
  * exists is what a disagreement between them looks like. The ids are explicit by construction: the
  * steps serialised here are the materialised objects, whose ids were resolved and prefixed before
  * they got here, so `injectResolvedStepIds` has nothing left to derive inside a materialised body.
+ *
+ * The same reason is why the splice tracks the loop blocks it is inside: an internal is named from
+ * the SITE a reference occupies, containers included, so a splicer blind to them would name one
+ * thing two ways between the two representations.
  */
 export function injectRoutineSteps(
   rawDefinition: string,
-  materialise: (step: RoutineStep) => Step[],
+  materialise: (step: RoutineStep, sitePath: string) => Step[],
 ): string {
   const lines = rawDefinition.split('\n');
   const out: string[] = [];
+  /** The loop blocks currently open, innermost last — the container path of whatever comes next. */
+  const containers: Array<{ indent: number; id: string }> = [];
 
   for (let i = 0; i < lines.length; i++) {
     const opener = /^(\s*)- /.exec(lines[i]!);
     if (!opener) { out.push(lines[i]!); continue; }
 
     const indent = opener[1]!;
+    // A list item at or left of an open container closes it: its body has ended.
+    while (containers.length > 0 && containers[containers.length - 1]!.indent >= indent.length) containers.pop();
     const end = blockEnd(lines, i, indent.length);
     // Blank lines trailing the block belong to the file's own shape, not to the step: a block that
     // swallowed them would drop the file's final newline when the last step is a reference.
     let last = end - 1;
     while (last > i && lines[last]!.trim() === '') last -= 1;
     const block = parseStepBlock(lines.slice(i, last + 1), indent.length);
-    if (block === null || (block as { kind?: unknown }).kind !== 'routine') {
+    const kind = (block as { kind?: unknown } | null)?.kind;
+    if (kind === 'loop') {
+      const id = (block as { id?: unknown }).id;
+      if (typeof id === 'string') containers.push({ indent: indent.length, id });
+    }
+    if (block === null || kind !== 'routine') {
       out.push(lines[i]!);
       continue;
     }
@@ -643,7 +658,7 @@ export function injectRoutineSteps(
       );
     }
 
-    for (const step of materialise(reference.data)) {
+    for (const step of materialise(reference.data, containers.map((c) => c.id).join('.'))) {
       for (const line of stringifyForResponse([step]).trimEnd().split('\n')) out.push(indent + line);
     }
     for (let blank = last + 1; blank < end; blank++) out.push(lines[blank]!);
