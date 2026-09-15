@@ -26,7 +26,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { requireRootOrExit } from './guard-protocol.js';
+import { EXIT_UNMEASURED, requireRootOrExit } from './guard-protocol.js';
 import { UnreachableCorpusError, defaultCorpusDest } from './workflows-root.js';
 import { workflowLocation } from '../src/loaders/corpus-index.js';
 
@@ -170,7 +170,19 @@ export function collectLensReachabilityViolations(): LensReachabilityViolation[]
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectLensReachabilityViolations();
+  // A corpus holding no prism workflow is one this guard cannot measure, which the protocol reports
+  // as exit 2 with the reason. Letting the error escape instead crashes with a stack trace, and the
+  // runner reads that as findings — an unmeasured corpus counted as a defect it does not have.
+  let violations: LensReachabilityViolation[];
+  try {
+    violations = collectLensReachabilityViolations();
+  } catch (err) {
+    if (err instanceof UnreachableCorpusError) {
+      process.stderr.write(`prism-lens-reachability: cannot measure — ${err.message}\n`);
+      process.exit(EXIT_UNMEASURED);
+    }
+    throw err;
+  }
   if (violations.length) {
     process.stdout.write(`prism lens reachability: ${violations.length} violation(s) — every lens must be goal-routable or pipeline-internal, and every named lens must resolve:\n`);
     for (const v of violations.sort((a, b) => a.site.localeCompare(b.site))) {

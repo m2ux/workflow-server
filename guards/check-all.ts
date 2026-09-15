@@ -5,7 +5,14 @@
  * output formats, and three guards on disk that nothing invoked at all (issue #327 S1). The set of
  * guards is `guards/guards.ts`; adding an entry there enforces it here and in CI.
  *
- *   npx tsx guards/check-all.ts [--root <workflows-dir>] [--only <id,id>] [--corpus-only] [--verbose]
+ *   npx tsx guards/check-all.ts [--root <workflows-dir>] [--only <id,id>] [--corpus-only]
+ *                              [--serving-only] [--verbose]
+ *
+ * `--serving-only` keeps the guards whose failure means the server cannot load, resolve or execute
+ * the definitions, dropping those that measure the corpus this repository ships. It is what a
+ * corpus authored to exercise one construct can be held to: a convention guard finds no bootstrap
+ * protocol and no harness map there and reports that it inspected nothing, which is true of any
+ * such corpus and says nothing about whether a server can serve it.
  *
  * Exit 0 when every guard is clean, 1 when any reports findings, 2 when any could not measure
  * (unreachable corpus) — an unmeasured guard is never folded into "pass".
@@ -23,6 +30,7 @@ const REPO = join(DIR, '..');
 const argv = process.argv.slice(2);
 const verbose = argv.includes('--verbose');
 const corpusOnly = argv.includes('--corpus-only');
+const servingOnly = argv.includes('--serving-only');
 const onlyFlag = argv.indexOf('--only');
 const only = onlyFlag !== -1 && argv[onlyFlag + 1] ? new Set(argv[onlyFlag + 1]!.split(',')) : null;
 
@@ -31,7 +39,7 @@ function forwardedArgs(): string[] {
   const out: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
-    if (a === '--verbose' || a === '--corpus-only') continue;
+    if (a === '--verbose' || a === '--corpus-only' || a === '--serving-only') continue;
     if (a === '--only') { i++; continue; }
     if (a.startsWith('--only=')) continue;
     out.push(a);
@@ -88,7 +96,8 @@ function verdict(run: GuardRun): string {
 async function main(): Promise<void> {
   const selected = GUARDS
     .filter((g) => (only ? only.has(g.id) : true))
-    .filter((g) => (corpusOnly ? g.scope === 'corpus' : true));
+    .filter((g) => (corpusOnly ? g.scope === 'corpus' : true))
+    .filter((g) => (servingOnly ? g.gatesServing : true));
   if (only) {
     for (const id of only) if (!GUARDS.some((g) => g.id === id)) {
       process.stderr.write(`check:all: unknown guard '${id}'. Known: ${GUARDS.map((g) => g.id).join(', ')}\n`);

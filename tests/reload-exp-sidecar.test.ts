@@ -67,6 +67,9 @@ describe('reload-exp-sidecar.sh', () => {
     expect(out.stdout).toContain('--projects-root=DIR');
     expect(out.stdout).toContain('--log-dir=DIR');
     expect(out.stdout).toContain('--no-preflight');
+    // The check exists to answer whether a server can serve the corpus, not whether the corpus is
+    // the one this repo ships — the help has to say which, or the escape reads as the normal path.
+    expect(out.stdout.replace(/\s+/g, ' ')).toContain('load, resolve and parse');
   });
 
   it('usage asks only for --name, the corpus and port defaulting to the container record', () => {
