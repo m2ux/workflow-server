@@ -1,0 +1,266 @@
+{
+  "note": "Every run of steps two or more activity files carry, classified once, at the revision this guard landed: 24 maximal shared runs over 132 activity definitions, 19 at the top level and 5 inside a loop body, measured against workflows 2a9d07ee. That population is stage 1's baseline, and it is the figure the acceptance criterion means by \"the count the search reports at the revision the guard lands\". Re-take it with `npx tsx scripts/check-repeated-runs.ts`. converging = a named stage of the shared-run plan edits the steps in this run, so the stage retires this entry; suppressed, counted. unassigned = a real repeated run no stage claims; suppressed, counted. provisional = the run's existence turns on an open decision, so it is named in every guard run rather than suppressed. A run absent from this file is unclassified and reported; an entry matching no run is stale and reported. There is no regenerate flag — an entry is a human judgement, and the baseline falls by an entry being deleted.",
+  "rationales": {
+    "analysis-head-into-convergence-loop": "The head of the two analysis activities: collect the assumptions, document, record the log, then the convergence loop and the open-set assembly. The loop at its centre is stage 6's subject, so the stage re-signs this window and retires this entry; what the two activities still share afterwards is a new judgement rather than this one.",
+    "artifact-close-out": "Resolve where the artifacts publish, then commit them — the close-out pair the submit and complete activities share. Only the identifiers and one activity-name input differ. No stage claims it.",
+    "assumption-run": "The assumption run's core at the four hosts: gate the batch, record the batch answer, then loop the residual items. Stage 5 migrates it, so this entry retires with that stage.",
+    "assumption-run-and-convergence-loop": "The convergence loop and the assumption run sit adjacent at these activities and read as one window: announce, gate the batch, record the batch answer, then loop the residual items. Stage 5 of the shared-run plan migrates the assumption run and stage 6 the loop, so the two stages edit adjacent steps in the same window and this entry retires with the second of them.",
+    "assumption-run-per-item-half": "The assumption run's per-item half, inside the forEach: present one assumption, gate it, record the answer. The per-item gate carries its own condition at one host and not at the others, which is the dismissibility question stage 2 owes a decision on. Stage 5 migrates it.",
+    "audit-and-fix-cycle": "The audit-and-fix loop body the two workflow-design review activities share: author, validate the schema, apply the fixes, then audit expressiveness and conformance. Nothing but the step identifiers differs. No stage of the shared-run plan claims it. Finding B6 widens this window rather than dissolving it, because the write steps sit outside the run's own signature.",
+    "audit-pass-pair": "Audit the principles, then the anti-patterns — two of the five B6 audits adjacent with no write step between them, at two workflow-design activities. The pair exists independently of B6; closing B6 widens its constituency rather than dissolving it.",
+    "audit-persists-and-caller-persists": "PROVISIONAL pending finding B6 (issue #637). Each of the five workflow-design audits persists its own findings in its protocol and reports the path as an output, and the calling activity binds a write step for the same filename. If the caller's write step is the redundant half, this window dissolves and there is no run here to name; if it is not, the run is real. The decision is open, so the window is named in every guard run rather than accepted as debt.",
+    "commit-and-publish-run": "Commit, verify the commit, push the branch, publish the pull request, create it — a five-step publish run at two workflow-design activities, differing only in identifiers, entry gates and one draft flag. No stage claims it, and it is the clearest constituency for a shared-run construct outside the two migrations.",
+    "conform-then-log-in-the-audit-family": "Verify the artifact conforms to its guide, then log — the same two security audit workflows, at their reporting activities. One shared operation and one control action, so the window is thin for the same reason as the persist-then-announce pair.",
+    "consecutive-control-actions": "Two consecutive control actions whose messages differ at every site. The search admits it because an action step signs as its verbs and targets, and the census discounts it for the same reason: there is no bound work in the window at all.",
+    "convergence-pass": "The convergence pass — reconcile, challenge, combine — and the loop that wraps it. The three-step body is byte-identical at every site it appears, and so is the record-then-loop pair. Stage 6 of the shared-run plan converges it, so these entries retire with that stage.",
+    "dispatch-then-gather-in-the-audit-family": "Log the dispatch, then gather the results — shared by the primary pass of the two security audit workflows, which were authored from one another. The gather binding differs in both of its inputs, so the pair is a copied idiom rather than a settled run.",
+    "persist-then-announce": "Write an artifact, then announce it — one shared binding followed by a control action whose message differs at every site, across three workflows. The pair is an idiom rather than a run worth naming: one of its two steps is the only shared work, and a construct naming it would put a reference in front of a single step.",
+    "read-the-pull-request-body-back": "View the pull request, then verify the rendered body — the read-back pair at the two work-package activities that touch a pull request body. Both copies are gated, and the two gates differ, which is the drift a shared run would settle.",
+    "roster-fan-out-run": "Verify the output files, compose the roster briefs, dispatch the workers — the same fan-out shape as the meta pattern run, at a different operation family, shared by two activities of the substrate audit. Stage 8 names the meta family only, so no stage claims this one.",
+    "sub-workflow-then-accumulate": "Hand a unit to a sub-workflow, read its run manifest, accumulate the result — the per-unit body the two prism analysis activities share, identical field for field. It sits next to stage 7's subject without being named by it, and whether a shared run or a per-element activity fan is its right home is the open question there.",
+    "worker-fan-out-run": "Compose the worker briefs, dispatch the workers, gather the results — the fan-out run at two of the meta pattern activities. Stage 8 of the shared-run plan converts it, and the stage needs its constituency re-derived from the corpus rather than from the plan's file list."
+  },
+  "entries": [
+    {
+      "site": "cicd-pipeline-security-audit/activities/03-primary-scan.yaml + substrate-node-security-audit/activities/03-primary-audit.yaml",
+      "run": [
+        "A:log=",
+        "T:orchestration-patterns::gather-results(dispatched_results,expected_ids)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "dispatch-then-gather-in-the-audit-family"
+    },
+    {
+      "site": "cicd-pipeline-security-audit/activities/04-report-generation.yaml + substrate-node-security-audit/activities/07-gap-analysis.yaml",
+      "run": [
+        "T:verify-artifact-conforms(guide_map)",
+        "A:log="
+      ],
+      "verdict": "unassigned",
+      "rationale": "conform-then-log-in-the-audit-family"
+    },
+    {
+      "site": "codebase-wiki/activities/04-publish.yaml + plain-language/activities/03-draft.yaml + plain-language/activities/05-deliver.yaml + workflow-design/activities/01-intake-and-context.yaml + workflow-design/activities/05-impact-analysis.yaml + workflow-design/activities/08-quality-review.yaml",
+      "run": [
+        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename,target_dir)",
+        "A:message="
+      ],
+      "verdict": "unassigned",
+      "rationale": "persist-then-announce"
+    },
+    {
+      "site": "meta/activities/patterns/02-supervisor.yaml + meta/activities/patterns/05-lead-researcher.yaml",
+      "run": [
+        "T:orchestration-patterns::compose-worker-briefs()",
+        "T:orchestration-patterns::dispatch-workers()",
+        "T:orchestration-patterns::gather-results(expected_ids)"
+      ],
+      "verdict": "converging",
+      "rationale": "worker-fan-out-run"
+    },
+    {
+      "site": "prism-audit/activities/02-execute-analysis.yaml + prism-evaluate/activities/02-execute-analysis.yaml",
+      "run": [
+        "T:workflow-engine::handle-sub-workflow(workflow_id)",
+        "T:prism/read-run-manifest()",
+        "T:accumulate-analysis-run()"
+      ],
+      "verdict": "unassigned",
+      "rationale": "sub-workflow-then-accumulate"
+    },
+    {
+      "site": "substrate-node-security-audit/activities/02-reconnaissance.yaml + substrate-node-security-audit/activities/03-primary-audit.yaml",
+      "run": [
+        "T:dispatch-sub-agents::verify-output-files(expected_output_files)",
+        "T:dispatch-sub-agents::compose-roster-briefs()",
+        "T:orchestration-patterns::dispatch-workers()"
+      ],
+      "verdict": "unassigned",
+      "rationale": "roster-fan-out-run"
+    },
+    {
+      "site": "work-package/activities/01-start-work-package.yaml + work-package/activities/12-strategic-review.yaml",
+      "run": [
+        "T:github-cli-protocol::view-pr(repo_path)",
+        "T:update-pr::verify-body(rendered_pr_body)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "read-the-pull-request-body-back"
+    },
+    {
+      "site": "work-package/activities/01-start-work-package.yaml + workflow-design/activities/01-intake-and-context.yaml + workflow-design/activities/08-quality-review.yaml",
+      "run": [
+        "A:message=",
+        "A:message="
+      ],
+      "verdict": "unassigned",
+      "rationale": "consecutive-control-actions"
+    },
+    {
+      "site": "work-package/activities/02-design-philosophy.yaml + work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/06-plan-prepare.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
+      "run": [
+        "T:review-assumptions::reconcile()",
+        "T:analyse-challenge::challenge(challenge_perspectives,concern_document)",
+        "T:analyse-challenge::combine(concern_document)"
+      ],
+      "verdict": "converging",
+      "rationale": "convergence-pass"
+    },
+    {
+      "site": "work-package/activities/02-design-philosophy.yaml + work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/06-plan-prepare.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml + work-package/activities/15-codebase-comprehension.yaml",
+      "run": [
+        "T:analyse-challenge::challenge(challenge_perspectives,concern_document)",
+        "T:analyse-challenge::combine(concern_document)"
+      ],
+      "verdict": "converging",
+      "rationale": "convergence-pass"
+    },
+    {
+      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml",
+      "run": [
+        "T:review-assumptions::collect(assumption_categories)",
+        "T:document()",
+        "T:review-assumptions::record()",
+        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}",
+        "T:review-assumptions::assemble-open-set()"
+      ],
+      "verdict": "converging",
+      "rationale": "analysis-head-into-convergence-loop"
+    },
+    {
+      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/06-plan-prepare.yaml",
+      "run": [
+        "T:review-assumptions::record()",
+        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}"
+      ],
+      "verdict": "converging",
+      "rationale": "convergence-pass"
+    },
+    {
+      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
+      "run": [
+        "C:ref=assumption-interview",
+        "T:review-assumptions::record()",
+        "L:forEach/open_assumptions{T:review-assumptions::assemble-one();C:ref=assumption-decision;T:review-assumptions::record()}"
+      ],
+      "verdict": "converging",
+      "rationale": "assumption-run"
+    },
+    {
+      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
+      "run": [
+        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}",
+        "T:review-assumptions::assemble-open-set()"
+      ],
+      "verdict": "converging",
+      "rationale": "assumption-run-and-convergence-loop"
+    },
+    {
+      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
+      "run": [
+        "T:review-assumptions::assemble-one()",
+        "C:ref=assumption-decision",
+        "T:review-assumptions::record()"
+      ],
+      "verdict": "converging",
+      "rationale": "assumption-run-per-item-half"
+    },
+    {
+      "site": "work-package/activities/05-implementation-analysis.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
+      "run": [
+        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}",
+        "T:review-assumptions::assemble-open-set()",
+        "C:ref=assumption-interview",
+        "T:review-assumptions::record()",
+        "L:forEach/open_assumptions{T:review-assumptions::assemble-one();C:ref=assumption-decision;T:review-assumptions::record()}"
+      ],
+      "verdict": "converging",
+      "rationale": "assumption-run-and-convergence-loop"
+    },
+    {
+      "site": "work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
+      "run": [
+        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}",
+        "T:review-assumptions::assemble-open-set()",
+        "C:ref=assumption-interview",
+        "T:review-assumptions::record()",
+        "L:forEach/open_assumptions{T:review-assumptions::assemble-one();C:ref=assumption-decision;T:review-assumptions::record()}",
+        "T:review-assumptions::record()"
+      ],
+      "verdict": "converging",
+      "rationale": "assumption-run-and-convergence-loop"
+    },
+    {
+      "site": "work-package/activities/13-submit-for-review.yaml + work-package/activities/14-complete.yaml",
+      "run": [
+        "T:resolve-artifact-publish()",
+        "T:manage-git::artifact-commits(activity_name,branch,files,issue_key)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "artifact-close-out"
+    },
+    {
+      "site": "workflow-design/activities/06-scope-and-draft.yaml + workflow-design/activities/10-post-update-review.yaml",
+      "run": [
+        "T:audit-principles()",
+        "T:audit-anti-patterns()"
+      ],
+      "verdict": "unassigned",
+      "rationale": "audit-pass-pair"
+    },
+    {
+      "site": "workflow-design/activities/08-quality-review.yaml + workflow-design/activities/10-post-update-review.yaml",
+      "run": [
+        "T:audit-conformance()",
+        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename,target_dir)"
+      ],
+      "verdict": "provisional",
+      "rationale": "audit-persists-and-caller-persists"
+    },
+    {
+      "site": "workflow-design/activities/08-quality-review.yaml + workflow-design/activities/10-post-update-review.yaml",
+      "run": [
+        "T:audit-expressiveness()",
+        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename,target_dir)"
+      ],
+      "verdict": "provisional",
+      "rationale": "audit-persists-and-caller-persists"
+    },
+    {
+      "site": "workflow-design/activities/08-quality-review.yaml + workflow-design/activities/10-post-update-review.yaml",
+      "run": [
+        "T:audit-principles()",
+        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename,target_dir)",
+        "T:audit-anti-patterns()",
+        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename,target_dir)",
+        "T:audit-schema-validation()"
+      ],
+      "verdict": "provisional",
+      "rationale": "audit-persists-and-caller-persists"
+    },
+    {
+      "site": "workflow-design/activities/08-quality-review.yaml + workflow-design/activities/10-post-update-review.yaml",
+      "run": [
+        "T:yaml-authoring()",
+        "T:audit-schema-validation()",
+        "T:apply-audit-fixes()",
+        "T:audit-expressiveness()",
+        "T:audit-conformance()"
+      ],
+      "verdict": "unassigned",
+      "rationale": "audit-and-fix-cycle"
+    },
+    {
+      "site": "workflow-design/activities/09-validate-and-commit.yaml + workflow-design/activities/10-post-update-review.yaml",
+      "run": [
+        "T:version-control::commit-regular-files()",
+        "T:commit-verification()",
+        "T:version-control::push-branch(branch,remote_name,repo_path)",
+        "T:publish-workflow-pr()",
+        "T:github-cli-protocol::create-pr(as_draft,base_branch,body,branch_name,repo_path,title)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "commit-and-publish-run"
+    }
+  ]
+}
