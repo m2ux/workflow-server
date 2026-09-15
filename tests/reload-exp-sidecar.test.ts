@@ -169,7 +169,7 @@ describe('reload-exp-sidecar.sh', () => {
       ]);
       expect(result.status).not.toBe(0);
       expect(`${result.stderr}${result.stdout}`).toMatch(/could not be measured \(guard sweep exit 2\)/);
-      expect(`${result.stderr}${result.stdout}`).toMatch(/running sidecar is left up/);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/nothing has been stopped/);
     } finally {
       rmSync(corpus, { recursive: true, force: true });
     }
