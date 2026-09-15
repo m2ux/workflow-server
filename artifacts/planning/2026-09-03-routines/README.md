@@ -428,8 +428,20 @@ deriving a contract is not among them.
 defined at `src/utils/activity-variables.ts:418` and called at exactly two sites, both inside one
 guard script — `guards/check-activity-variables.ts:158` and `:483`. What makes a reference a boundary
 is that the derivation reads the form still carrying it: a derivation handed spliced steps meets the
-routine's body and no reference at all, whatever order produced it. Which mechanism supplies that
-form is an open decision recorded below, with the loader returning both forms as the recommendation.
+routine's body and no reference at all, whatever order produced it.
+
+**The loader returns both forms**, the authored activities beside the materialised ones. The guard
+derives from the authored form and meets the reference; the server delivers the materialised form.
+`materializeActivityFragments` mutates in place (`src/loaders/fragment-resolver.ts:137-152`), so each
+activity is copied before the splice, and the loader already returns a side table of this shape in
+`activitySourceWorkflow` (`src/loaders/workflow-loader.ts:44-53`). The copy costs **3.2 ms against a
+257 ms load across the eighteen corpus workflows and their 140 activities — 1.2% to 1.4% over three
+runs — and retains 534.8 KiB**, with `work-package` the heaviest single tree at 0.84 ms and 136.6 KiB.
+Moving the derivation into the loader would cost 2.0× the load at all seven tool call sites instead,
+so the form that keeps the boundary is some 150 times cheaper than the form that keeps an order. Two
+consequences travel with it: a routine whose body contradicts its signature fails a **guard run**
+rather than the load, and the guard column register becomes a field on `GuardSpec`, which is stage
+4's fourth criterion.
 
 ### Materialisation is a substitution
 
@@ -1484,15 +1496,22 @@ its continuation test, where a routine lives and what counts as a referrer, whet
 outcome, what happens to its artifacts, which guards read which form, and what becomes of the
 mechanism it replaces.
 
-**Open, each with the recommendation the measurement supports and none of them settled here.** Nine
+**Settled on 2026-09-15, each against a measurement that contradicted what the design assumed.**
+Three, and they are the three the construct's boundary rests on, so nothing here could be built until
+they were taken.
+
+| Question | Decision |
+|---|---|
+| **Which mechanism supplies the form carrying the reference**, since the derivation is a guard concern and the loader does not perform it | The loader returns the authored activities alongside the materialised ones. The copy costs 3.2 ms against a 257 ms load over the eighteen corpus workflows — 1.2% to 1.4% over three runs — and retains 534.8 KiB, where moving the derivation into the loader costs 2.0× the load at all seven tool call sites. A routine whose body contradicts its signature therefore fails a guard run rather than the load, and the guard column register becomes a field on `GuardSpec` |
+| **Whether a reference site may leave a declared input unbound** | Yes, and the name takes the host's value under the same spelling — the standing `readSignature` already computes for a technique input. Requiring every site to bind every declared input would add sixty argument lines against the 192 the convergence stage removes |
+| **Whether a routine name carries a group grammar** | No. `[workflow::]name`, one separator at most, and a second fails the load with a message saying so, because a routine lives one file deep in a flat `routines/` directory and has no group level to name. The shared home rests on the `meta` fallback that every resolver in the tree implements identically, not on the claim that a routine reference resolves the way a technique reference does — which is false for 406 of 676 corpus bindings and is [#741](https://github.com/m2ux/workflow-server/issues/741) |
+
+**Open, each with the recommendation the measurement supports and none of them settled here.** Six
 items, and none blocks declaring, referring to or materialising a routine.
 
 | Open question | Recommendation |
 |---|---|
-| **Which mechanism supplies the form carrying the reference**, since the derivation is a guard concern and the loader does not perform it | The loader returns the authored activities alongside the materialised ones. It costs a copy per load and no technique-markdown reads on the request path, where moving the derivation into the loader costs 2.0× the load at all seven tool call sites. The owner confirms that a routine contradicting its signature fails a guard run rather than the load, and that a second copy of every activity per load is acceptable — the clone is the one number this has not measured |
-| **Whether a reference site may leave a declared input unbound** | Yes, and the name takes the host's value. Declaring the body's free names as inputs and requiring every site to bind all of them would add sixty argument lines against the 192 the convergence stage removes |
 | **What happens to `assumption_source` and `assumption_categories`**, read by `review-assumptions::reconcile` from a bag no host fills | Declare them as routine inputs the six sites bind. Only that preserves the per-host difference the corpus expresses today outside the loop at `04-research.yaml:130` and `02-design-philosophy.yaml:168-169` |
-| **Whether a routine name will ever want a group** | No, and the grammar ships at one separator. Widening a shipped grammar is cheaper than narrowing one, so this is worth confirming before stage 3 rather than after |
 | **Whether the per-item assumption gate stays dismissible** — row 11 of the census | Keep the condition, in the shared body. The enclosing loop already tests the same thing, so only the capability is at stake; and of the two errors available, giving one surviving host a capability it did not ask for is recoverable where removing the corpus's only dismissible per-item assumption gate is a subtraction nothing would notice. The same question arrives at the batch gate, where the worked body as drawn takes four of the corpus's 70 dismissible gates out of the dismissible set |
 | **What the assumption run's routine and reference-site ids are** | Taken at stage 5 from a re-derivation of that run, which does not exist. The sketch's `assumption-reconciliation` and `reconcile-assumptions` both collide with live step ids, and the four hosts spell the run's six positions fifteen ways |
 | **What the convergence run's two routines are called** | `concern-challenge-pass` for the inner and `assumption-convergence` for the outer. Every word of the first is in the contract its body binds (`work-package/techniques/analyse-challenge/TECHNIQUE.md:8`), and the second is the id the six sites already spell, so the migration renames nothing |
