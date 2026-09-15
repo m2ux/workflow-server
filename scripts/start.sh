@@ -578,5 +578,6 @@ if [[ "$DETACH" -eq 1 && "$DRY_RUN" -eq 0 ]]; then
   echo "Detached as '${NAME}'. Logs: docker logs -f ${NAME}"
   echo "Health:  curl -fsS http://127.0.0.1:${HOST_PORT}/health"
   echo "Ready:   curl -fsS http://127.0.0.1:${HOST_PORT}/ready"
-  echo "Smoke:   ready must show sessionKeyWritable=true before start_session"
+  echo "Smoke:   ready must show sessionKeyWritable=true before start_session,"
+  echo "         and corpusServes=true before any workflow id resolves"
 fi
