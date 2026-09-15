@@ -52,7 +52,7 @@ Each requirement is a four-part entry, with a blank line between the title and e
 fields, in this order: title, rationale, Source, Status.
 
 ```markdown
-REQ-F013: When component is empty, the system SHALL infer component:* from title or repo, then apply the in-scope filter
+**REQ-F013: When component is empty, the system SHALL infer component:* from title or repo, then apply the in-scope filter**
 
 Empty component is common on stubs. Inference is how the in-scope filter still runs.
 
@@ -61,7 +61,7 @@ Source: [SRC-MTG001](meetings/planning.md#component-scope), [SRC-DOC001](briefs/
 Status: pending
 ```
 
-The first line is the identifier and the atomic, testable statement. The statement uses the keyword
+The title is the identifier and the atomic, testable statement, in bold. The statement uses the keyword
 `SHALL` (mandatory), `SHOULD` (recommended), or `MAY` (optional).
 
 The unlabeled paragraph under the title is the rationale: why the requirement exists and any relevant
