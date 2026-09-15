@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { writeLoadableWorkflowFixture, writeRoutineFixture } from './corpus-fixture.js';
 import { collectRoutineFindings } from '../guards/check-routines.js';
@@ -279,6 +279,19 @@ steps:
     expect(finding!.detail).toContain("'some_workflow_variable'");
     // The remedy names the fall-through, which is what makes declaring it cheap.
     expect(finding!.detail).toContain("host's value");
+  });
+});
+
+describe('the committed fixture root', () => {
+  /**
+   * The routines fixtures are the one tree in the repository that declares a routine, so they are
+   * the only standing example an author reads — and an example that violates the rule the guard
+   * enforces teaches the violation. Nothing else points the guard at them: the registered guards
+   * resolve through the corpus root, which `tests/fixtures` is not.
+   */
+  it('passes the guard it is an example for', async () => {
+    const findings = await collectRoutineFindings(resolve(import.meta.dirname, 'fixtures/routines'));
+    expect(findings).toEqual([]);
   });
 });
 

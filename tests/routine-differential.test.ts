@@ -246,6 +246,82 @@ describe('where the two paths disagree, and why no corpus file reaches it', () =
   });
 });
 
+/**
+ * The flagship fixture puts its reference at top level, where the site path is just the reference id
+ * and the two representations agree without either one tracking a container. A reference inside a
+ * LOOP is where they can part: an internal is named from the site, containers included, and the
+ * splicer walks lines rather than a step tree, so it has to track the loop blocks it is inside.
+ *
+ * This is the shape that hid a divergence the top-level case cannot show.
+ */
+describe('a reference nested inside a host loop', () => {
+  const NESTED_ACTIVITY = `id: host
+version: 1.0.0
+name: Host
+steps:
+  - kind: loop
+    id: each-round
+    loopType: forEach
+    variable: round_item
+    over: round_items
+    steps:
+      - kind: routine
+        id: run
+        routine: nested-run
+`;
+  const NESTED_ROUTINE = `id: nested-run
+version: 1.0.0
+name: Nested Run
+internals:
+  - id: current_item
+    description: the item in hand
+steps:
+  - kind: action
+    id: note
+    actions:
+      - action: set
+        target: current_item
+        value: "1"
+      - action: log
+        message: "{current_item}"
+`;
+
+  let nestedRoot: string;
+  beforeAll(() => {
+    nestedRoot = mkdtempSync(join(tmpdir(), 'routine-nested-'));
+    const dir = join(nestedRoot, 'wf');
+    mkdirSync(join(dir, 'activities'), { recursive: true });
+    mkdirSync(join(dir, 'routines'), { recursive: true });
+    writeFileSync(join(dir, 'workflow.yaml'),
+      'id: wf\nversion: 1.0.0\ntitle: wf\ninitialActivity: host\ngraph:\n  host: {}\n');
+    writeFileSync(join(dir, 'activities', '01-host.yaml'), NESTED_ACTIVITY);
+    writeFileSync(join(dir, 'routines', 'nested-run.yaml'), NESTED_ROUTINE);
+  });
+  afterAll(() => { rmSync(nestedRoot, { recursive: true, force: true }); });
+
+  const innerAction = (activity: Activity): Extract<Step, { kind: 'action' }> => {
+    const loop = activity.steps![0] as Extract<Step, { kind: 'loop' }>;
+    return (loop.steps as Step[])[0] as Extract<Step, { kind: 'action' }>;
+  };
+
+  it('names the internal from the loop it sits in, identically down both paths', async () => {
+    const loaded = await loadWorkflowWithDiagnostics(nestedRoot, 'wf');
+    if (!loaded.success) throw new Error(`load failed: ${loaded.error.message}`);
+    const object = innerAction(loaded.value.workflow.activities![0]!);
+
+    const lookup = await buildRoutineLookup(nestedRoot, ['wf'], collectRoutineRefLines(NESTED_ACTIVITY));
+    const text = innerAction(parseDefinition(injectRoutineSteps(
+      injectResolvedStepIds(NESTED_ACTIVITY),
+      (step, sitePath) => materializeRoutineStep(step, lookup, 'wf', 'host', sitePath),
+    )) as Activity);
+
+    expect(object.actions![0]!.target).toBe('host_each_round_run_current_item');
+    expect(text.actions![0]!.target).toBe(object.actions![0]!.target);
+    expect(text.actions![1]!.message).toBe(object.actions![1]!.message);
+    expect(text.id).toBe(object.id);
+  });
+});
+
 describe('an activity carrying no routine, in a workflow that declares them', () => {
   const FIXTURES = resolve(import.meta.dirname, 'fixtures/routines');
 

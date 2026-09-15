@@ -1432,8 +1432,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (hasRoutineStepLine(rawActivity)) {
         const routineLookup = await buildRoutineLookup(
           config.workflowDir, [sourceWorkflowId], collectRoutineRefLines(rawActivity));
-        activityBody = injectRoutineSteps(activityBody, (step) =>
-          materializeRoutineStep(step, routineLookup, sourceWorkflowId, baseId(activity_id)));
+        activityBody = injectRoutineSteps(activityBody, (step, sitePath) =>
+          materializeRoutineStep(step, routineLookup, sourceWorkflowId, baseId(activity_id), sitePath));
       }
 
       // Materialize checkpoint fragment refs in the delivered YAML (#166 B10): the worker reads
