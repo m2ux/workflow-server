@@ -282,6 +282,25 @@ steps:
   });
 });
 
+/**
+ * What `check-binding-fidelity` does with a routine, pinned rather than left latent.
+ *
+ * It reads raw activity YAML and never consumes the loader, so an activity whose bindings all live
+ * inside a routine looks to it like an activity with no bindings. The consequence is not silence: a
+ * technique whose only consumer is a routine's output remap reads as a DEAD OUTPUT, which is a
+ * finding against a technique that is used, on a guard carrying a triage ledger.
+ *
+ * Its register entry records the form it reads, and the record puts it in the materialised column.
+ * Moving it needs the routine-scope treatment `check-variable-model` got — a routine file is its own
+ * name scope, so reading routine files with the workflow's declarations reports every routine input
+ * as having no producer. That is measured: adding the files alone turns one spurious finding into
+ * two. It belongs with the migration that first puts a routine in the corpus, and until then this
+ * case is what says so out loud.
+ */
+describe('the guard that cannot see a routine', () => {
+  it.todo('check-binding-fidelity resolves a reference to the routine\'s own bindings (#704 E03)');
+});
+
 describe('the committed fixture root', () => {
   /**
    * The routines fixtures are the one tree in the repository that declares a routine, so they are
