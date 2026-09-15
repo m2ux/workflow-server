@@ -109,6 +109,16 @@ resolve_helper() {
   printf '%s\n' "$checkout_path"
 }
 
+# The commit a checkout stands at, carrying a dirty marker when the tree holds uncommitted edits.
+# A directory git does not track reports `unknown`, so a pin is always a value a label can hold.
+git_pin() {
+  local dir="$1" commit dirty=""
+  commit="$(git -C "$dir" rev-parse --short HEAD 2>/dev/null || true)"
+  [[ -n "$commit" ]] || { printf 'unknown\n'; return; }
+  [[ -z "$(git -C "$dir" status --porcelain 2>/dev/null)" ]] || dirty="-dirty"
+  printf '%s%s\n' "$commit" "$dirty"
+}
+
 # The host directory a running container binds at CONTAINER_TARGET, empty when it binds none.
 container_bind_source() {
   local container="$1" target="$2"
@@ -160,9 +170,12 @@ if [[ "$BUILD" -eq 1 ]]; then
   [[ -f "${ENGINE}/Dockerfile" ]] || die "no Dockerfile in engine checkout: ${ENGINE}"
 fi
 
+ENGINE_PIN="$(git_pin "$ENGINE")"
+CORPUS_PIN="$(git_pin "$CORPUS")"
+
 echo "Reloading ${NAME} on 127.0.0.1:${PORT}"
-echo "  engine : ${ENGINE}"
-echo "  corpus : ${CORPUS}"
+echo "  engine : ${ENGINE} @ ${ENGINE_PIN}"
+echo "  corpus : ${CORPUS} @ ${CORPUS_PIN}"
 echo "  image  : ${IMAGE}"
 
 "$STOP" --name="$NAME" || true
@@ -181,12 +194,26 @@ else
   START_ARGS+=(--no-pull)
 fi
 
-"$START" "${START_ARGS[@]}"
+# Provenance the container carries itself, so a walk record cites one `docker inspect` rather than
+# a pin typed from memory. The engine pair is present when this reload built the image; a reused
+# image was built from a checkout this run knows nothing about, and stays unclaimed.
+LABEL_ARGS=(
+  --label "workflow-server.image=${IMAGE}"
+  --label "workflow-server.corpus.dir=${CORPUS}"
+  --label "workflow-server.corpus.pin=${CORPUS_PIN}"
+)
+if [[ "$BUILD" -eq 1 ]]; then
+  LABEL_ARGS+=(--label "workflow-server.engine.dir=${ENGINE}")
+  LABEL_ARGS+=(--label "workflow-server.engine.pin=${ENGINE_PIN}")
+fi
+
+"$START" "${START_ARGS[@]}" -- "${LABEL_ARGS[@]}"
 
 for _ in 1 2 3 4 5 6 7 8 9 10 12 15 18 21 24 30; do
   if curl -fsS "http://127.0.0.1:${PORT}/ready" >/dev/null 2>&1; then
     echo "Ready:   http://127.0.0.1:${PORT}/ready"
     echo "MCP URL: http://127.0.0.1:${PORT}/mcp"
+    echo "Pins:    docker inspect ${NAME} --format '{{json .Config.Labels}}'"
     echo "Cursor:  point the experiment MCP server at that URL (leave workflow-server on :3000)"
     exit 0
   fi
