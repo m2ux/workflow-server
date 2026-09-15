@@ -40,7 +40,10 @@ Options:
   --image=IMAGE            Image tag (default: workflow-server:local).
   --build[=DIR]            Checkout whose Dockerfile is built (default: this
                            repo root). DIR is an engine worktree for a branch
-                           that is not this checkout.
+                           that is not this checkout. Its start.sh/stop.sh run
+                           the image, so a branch changing the server and the
+                           launcher together is exercised as a pair; --no-build
+                           uses the installed copies.
   --host-port=N            Host port. Defaults to the binding the named
                            container records, running or exited. Required when
                            none exists.
@@ -129,17 +132,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# An explicit override, else the preferred copy when it is executable, else the other one. Which
+# copy is preferred depends on where the image came from; see the START/STOP resolution below.
 resolve_helper() {
-  local override="$1" install_path="$2" checkout_path="$3"
+  local override="$1" preferred="$2" fallback="$3"
   if [[ -n "$override" ]]; then
     printf '%s\n' "$override"
     return
   fi
-  if [[ -x "$install_path" ]]; then
-    printf '%s\n' "$install_path"
+  if [[ -x "$preferred" ]]; then
+    printf '%s\n' "$preferred"
     return
   fi
-  printf '%s\n' "$checkout_path"
+  printf '%s\n' "$fallback"
 }
 
 # Keep the outgoing container's log on the host, under a name carrying the container and the hour.
@@ -237,8 +242,21 @@ if [[ -n "$PROJECTS" ]]; then
   PROJECTS="$(cd "$PROJECTS" && pwd)"
 fi
 
-START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" "${ENGINE}/scripts/start.sh")"
-STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${ENGINE}/scripts/stop.sh")"
+# An image and the script that launches it are one pair. A build takes both from the checkout it
+# builds, so a branch changing the server and the launcher together is exercised as a whole — the
+# launcher passes what that server reads. Taking the launcher from the install instead pairs a
+# branch's image with a release's script, and a variable the branch added simply never arrives,
+# which the server cannot distinguish from an operator not setting it. A reused image was built
+# from a checkout this run knows nothing about, so there the installed copies are the better
+# default. Either way `WORKFLOW_SERVER_START` / `_STOP` win, and a checkout's start.sh still reads
+# the install env, so the operator's paths and signing key follow it.
+if [[ "$BUILD" -eq 1 ]]; then
+  START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${ENGINE}/scripts/start.sh" "${INSTALL_DIR}/start.sh")"
+  STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${ENGINE}/scripts/stop.sh" "${INSTALL_DIR}/stop.sh")"
+else
+  START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" "${ENGINE}/scripts/start.sh")"
+  STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${ENGINE}/scripts/stop.sh")"
+fi
 
 [[ -x "$START" ]] || die "start.sh not found or not executable: ${START}"
 [[ -x "$STOP" ]] || die "stop.sh not found or not executable: ${STOP}"
@@ -314,6 +332,9 @@ else
 fi
 echo "  corpus   : ${CORPUS} @ ${CORPUS_PIN}"
 echo "  image    : ${IMAGE}"
+# The launcher passes the environment the served image reads, so which copy ran is part of what
+# this reload is. A mismatch is otherwise visible only as a variable that never arrives.
+echo "  launcher : ${START}"
 if [[ -n "$PROJECTS" ]]; then
   echo "  projects : ${PROJECTS}"
 fi
