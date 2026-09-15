@@ -121,6 +121,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every persisted artifact filename maps to a creation guide, or is triaged as owing one',
   },
   {
+    id: 'repeated-runs',
+    script: 'guards/check-repeated-runs.ts',
+    npmScript: 'check:repeated-runs',
+    scope: 'corpus',
+    json: true,
+    proves: 'every run of steps two or more activity files carry is classified, and the differences between its copies are named',
+  },
+  {
     id: 'description-hygiene',
     script: 'guards/check-description-hygiene.ts',
     npmScript: 'check:description-hygiene',
