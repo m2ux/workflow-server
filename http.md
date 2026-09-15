@@ -69,12 +69,14 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
 
 **Before the swap.** The corpus goes through its own guard suite (`guards/check-all.ts --corpus-only`, about five seconds) before anything is stopped. A tree nothing can be measured on refuses and leaves the container exactly as it found it; guard findings warn, name the failing guards and start, since an experiment branch carries findings by nature. `--no-preflight` skips the sweep. The outgoing container's log is written to `$INSTALL/logs` (or `--log-dir`) before it is removed — that file holds the JSON audit line the server writes per tool call, which is the record of the run being compared against. A reload that never reaches ready prints the probe's own payload, so the check holding it back is named rather than guessed at.
 
-**Reading an instance back.** The container carries the corpus path, both checkouts' commits and a dirty marker as labels, and `/ready` names the mounted corpus and counts the workflows in it:
+**Reading an instance back.** `/ready` names the corpus an instance serves: `corpus.hostDir` is the tree behind the mount, so two sidecars are told apart by the endpoint itself, over the same port a client already talks to. The container also carries the corpus path, both checkouts' commits and a dirty marker as labels, which add the commits and need a Docker socket:
 
 ```bash
 docker inspect workflow-server-exp --format '{{json .Config.Labels}}'
 curl -fsS http://127.0.0.1:32772/ready
 ```
+
+**Cite the pin, not the path.** A corpus is usually served from a worktree under `.worktrees/`, which exists to be removed — a host path names where the tree stood on one machine at one time, and names nothing once the worktree is gone. `corpus.pin` is a commit, and stays resolvable from the repository for as long as the branch holding it does, so it is the handle a record of a run should carry. Whenever a mounted tree stops holding a workflow, readiness reports `corpusServes: false` instead of the server answering every request with a miss.
 
 **Keeping a walk out of live planning.** Planning resolves at `<projects-root>/<repo>/.engineering/artifacts/planning`, so a sidecar sharing the install projects root writes a dated folder beside real work on every run. `--projects-root=DIR` gives an experiment a root of its own, holding its own checkout of the target repo, and the whole run can then be thrown away.
 

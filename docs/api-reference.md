@@ -16,7 +16,9 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 
 `/ready` returns 503 when any check is false. A green `/health` alone does **not** mean `start_session` can run — verify `sessionKeyWritable: true` (Docker non-root with `HOME=/` historically failed here; see [http.md](../http.md) and `WORKFLOW_SERVER_KEY_DIR`).
 
-The payload carries a `corpus` object beside `checks`: `dir` is the tree definitions resolve against, `workflows` is what the walk found there, and `ambiguous` lists ids more than one directory claims. Those name the instance a caller is talking to when several run at once, and the walk reads the corpus as it stands rather than as it stood at boot.
+The payload carries a `corpus` object beside `checks`: `dir` is the tree definitions resolve against, `workflows` is what the walk found there, and `ambiguous` lists ids more than one directory claims. The walk reads the corpus as it stands rather than as it stood at boot.
+
+`hostDir` names the tree behind the mount, and is present when the container was given a corpus bind source (`HOST_WORKFLOWS_DIR`, set by `start.sh` and the compose file). Every container resolves definitions at the same mount point, so `dir` states what a server reads while `hostDir` states which corpus that is — the fact that tells two instances apart. Outside Docker the two coincide and only `dir` appears.
 
 Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. Local `mcp-remote` clients may probe OAuth well-known URLs (`/.well-known/oauth-*`) and receive 404s; that is expected without auth and is logged as info, not error. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
 

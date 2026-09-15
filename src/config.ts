@@ -74,6 +74,11 @@ export interface ServerConfig {
    */
   hostWorktreeRoot?: string;
   /**
+   * Host-side bind source for the corpus. Absent outside Docker, where
+   * `workflowDir` already names the tree on the only filesystem there is.
+   */
+  hostWorkflowsDir?: string;
+  /**
    * Resolved prefix map for agent-facing path presentation. Built at config
    * load from server roots + host bind sources; undefined when presentation
    * is identity (stdio / same path namespace).
@@ -566,12 +571,17 @@ function resolveHost(argv: readonly string[]): string {
  */
 /**
  * Host bind sources for agent-facing path presentation (Docker).
- * Prefer `HOST_PROJECTS_ROOT` / `HOST_WORKTREE_ROOT` (start.sh); accept the
- * underscored aliases some compose files use.
+ * Prefer `HOST_PROJECTS_ROOT` / `HOST_WORKTREE_ROOT` / `HOST_WORKFLOWS_DIR`
+ * (start.sh); accept the underscored aliases some compose files use.
+ *
+ * `hostWorkflowsDir` names the tree behind the corpus mount. Every instance
+ * resolves definitions at the same container path, so that path says what a
+ * server reads and nothing about which tree it reads — the bind source is the
+ * only thing that distinguishes two instances, and it is knowable only here.
  */
 function resolveHostPathPresentation(
   env: NodeJS.ProcessEnv = process.env,
-): { hostProjectsRoot?: string; hostWorktreeRoot?: string } {
+): { hostProjectsRoot?: string; hostWorktreeRoot?: string; hostWorkflowsDir?: string } {
   const hostProjects =
     env['HOST_PROJECTS_ROOT']?.trim() ||
     env['HOST_PROJECTS_DIR']?.trim() ||
@@ -580,9 +590,14 @@ function resolveHostPathPresentation(
     env['HOST_WORKTREE_ROOT']?.trim() ||
     env['HOST_WORKTREE_DIR']?.trim() ||
     undefined;
-  const out: { hostProjectsRoot?: string; hostWorktreeRoot?: string } = {};
+  const hostWorkflows =
+    env['HOST_WORKFLOWS_DIR']?.trim() ||
+    env['HOST_WORKFLOWS_ROOT']?.trim() ||
+    undefined;
+  const out: { hostProjectsRoot?: string; hostWorktreeRoot?: string; hostWorkflowsDir?: string } = {};
   if (hostProjects) out.hostProjectsRoot = resolve(hostProjects);
   if (hostWorktree) out.hostWorktreeRoot = resolve(hostWorktree);
+  if (hostWorkflows) out.hostWorkflowsDir = resolve(hostWorkflows);
   return out;
 }
 
@@ -618,6 +633,9 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
       : {}),
     ...(hostPaths.hostWorktreeRoot !== undefined
       ? { hostWorktreeRoot: hostPaths.hostWorktreeRoot }
+      : {}),
+    ...(hostPaths.hostWorkflowsDir !== undefined
+      ? { hostWorkflowsDir: hostPaths.hostWorkflowsDir }
       : {}),
     ...(pathPresentation !== undefined ? { pathPresentation } : {}),
     serverName: envOrDefault('SERVER_NAME', 'workflow-server'),
