@@ -111,4 +111,23 @@ describe('loop shape', () => {
     expect(collectFindings(declareFixtureWorkflows(root)).map((f) => f.site))
       .toEqual(['demo/activities/01-demo.yaml[inner-cycle]']);
   });
+
+  /**
+   * A routine body holds loops, and an unbounded `while` in a shared body propagates to every
+   * reference site rather than to one — so the guard walks `routines/` beside `activities/` (#704).
+   */
+  it('reaches a loop in a routine body', () => {
+    const root = mkdtempSync(join(tmpdir(), 'loop-shape-routine-'));
+    roots.push(root);
+    mkdirSync(join(root, 'demo', 'routines'), { recursive: true });
+    writeFileSync(join(root, 'demo', 'routines', 'shared-run.yaml'), [
+      'id: shared-run', 'version: 1.0.0', 'name: Shared Run', 'steps:',
+      // A repeat-until loop with no continuation test: unbounded, and shared.
+      '  - kind: loop', '    id: spin', '    loopType: while',
+      '    steps:', '      - kind: action', '        id: do-something', '',
+    ].join('\n'));
+    const findings = collectFindings(declareFixtureWorkflows(root));
+    expect(findings.map((f) => f.check)).toEqual(['repeat-loop-without-continuation']);
+    expect(findings[0]!.site).toBe('demo/routines/shared-run.yaml[spin]');
+  });
 });

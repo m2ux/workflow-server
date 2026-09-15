@@ -26,3 +26,32 @@ export function declareFixtureWorkflows(root: string): string {
   }
   return root;
 }
+
+/**
+ * Make `<root>/<id>` a workflow that LOADS, not merely one discovery finds.
+ *
+ * `writeWorkflowFixture` writes the three lines a raw-reading guard needs, and a workflow with no
+ * `initialActivity` and no graph is refused by the loader — so a guard that consumes the loader sees
+ * a tree with no activities in it and reports clean for the wrong reason. A fixture for such a guard
+ * declares the entry point and binds each activity in the graph.
+ */
+export function writeLoadableWorkflowFixture(root: string, id: string, activityIds: string[]): string {
+  const dir = join(root, id);
+  mkdirSync(dir, { recursive: true });
+  const graph = activityIds.map((activityId) => `  ${activityId}: {}`).join('\n');
+  writeFileSync(
+    join(dir, 'workflow.yaml'),
+    `id: ${id}\nversion: 1.0.0\ntitle: ${id}\ninitialActivity: ${activityIds[0] ?? 'start'}\ngraph:\n${graph}\n`,
+    'utf-8',
+  );
+  return dir;
+}
+
+/** Write `<root>/<workflowId>/routines/<name>.yaml`, the home a routine reference resolves. */
+export function writeRoutineFixture(root: string, workflowId: string, name: string, body: string): string {
+  const dir = join(root, workflowId, 'routines');
+  mkdirSync(dir, { recursive: true });
+  const path = join(dir, `${name}.yaml`);
+  writeFileSync(path, body, 'utf-8');
+  return path;
+}

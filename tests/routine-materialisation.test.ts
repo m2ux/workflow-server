@@ -190,6 +190,38 @@ describe('materialisation — the reference is gone and the steps are ordinary',
     ]);
   });
 
+  /**
+   * A step id only has to be unique within its scope, so two loops in one activity may each hold a
+   * step called `run` — but a variable name shares one flat namespace across the whole workflow, so
+   * an internal named from the innermost reference id alone lands on both.
+   */
+  it('names an internal from the containers the reference sits in, not the reference alone', () => {
+    const shared = routine({
+      id: 'shared-run',
+      internals: [{ id: 'current_item', description: 'the item in hand' }],
+      steps: [{
+        kind: 'action', id: 'note',
+        actions: [
+          { action: 'set', target: 'current_item', value: '1' },
+          { action: 'log', message: '{current_item}' },
+        ],
+      }] as Step[],
+    });
+    const body = [{ kind: 'routine', id: 'run', routine: 'shared-run' }];
+    const host = activity([
+      { kind: 'loop', id: 'first-pass', loopType: 'forEach', variable: 'a_item', over: 'a_items', steps: body },
+      { kind: 'loop', id: 'second-pass', loopType: 'forEach', variable: 'b_item', over: 'b_items', steps: body },
+    ] as unknown as Step[]);
+    materializeActivityRoutines(host, lookupFrom({ wf: [shared] }), 'wf');
+
+    const internalOf = (index: number): string | undefined => {
+      const loop = host.steps![index] as Extract<Step, { kind: 'loop' }>;
+      return ((loop.steps as Step[])[0] as Extract<Step, { kind: 'action' }>).actions![0]!.target;
+    };
+    expect(internalOf(0)).toBe('host_first_pass_run_current_item');
+    expect(internalOf(1)).toBe('host_second_pass_run_current_item');
+  });
+
   it('keeps two references to one routine collision-free', () => {
     const host = activity([
       { kind: 'routine', id: 'review-research', routine: 'assumption-interview', ...base } as Step,
@@ -331,6 +363,49 @@ describe('nesting — a routine may refer to another', () => {
     const loop = host.steps![0] as Extract<Step, { kind: 'loop' }>;
     expect(loop.id).toBe('converge-assumptions.iteration');
     expect((loop.steps as Step[])[0]!.id).toBe('converge-assumptions.iteration.pass.challenge');
+  });
+
+  /**
+   * Four levels, with identical ids on both branches — a host loop holding a reference to a routine
+   * whose body loops over a second reference. Only the site path tells the two apart, so this is
+   * what the uniqueness claim rests on. The names repeat a segment where a host container sits above
+   * the routine that prefixed the id; uniqueness is the property, not brevity.
+   */
+  it('keeps internals distinct through four levels of identical ids', () => {
+    const leaf = routine({
+      id: 'inner-run',
+      internals: [{ id: 'leaf_value', description: 'the leaf' }],
+      steps: [{
+        kind: 'action', id: 'leaf',
+        actions: [{ action: 'set', target: 'leaf_value', value: '1' }, { action: 'log', message: '{leaf_value}' }],
+      }] as Step[],
+    });
+    const wrapper = routine({
+      id: 'outer-run',
+      steps: [{
+        kind: 'loop', id: 'cycle', loopType: 'forEach', variable: 'cycle_item', over: 'cycle_items',
+        steps: [{ kind: 'routine', id: 'deep', routine: 'inner-run' }],
+      }] as Step[],
+    });
+    const reference = [{ kind: 'routine', id: 'run', routine: 'outer-run' }];
+    const host = activity([
+      { kind: 'loop', id: 'first-pass', loopType: 'forEach', variable: 'a_item', over: 'a_items', steps: reference },
+      { kind: 'loop', id: 'second-pass', loopType: 'forEach', variable: 'b_item', over: 'b_items', steps: reference },
+    ] as unknown as Step[]);
+    materializeActivityRoutines(host, lookupFrom({ wf: [leaf, wrapper] }), 'wf');
+
+    const targets: string[] = [];
+    const walk = (steps: Step[]): void => {
+      for (const step of steps) {
+        if (step.kind === 'action' && step.actions?.[0]?.target) targets.push(step.actions[0].target);
+        if (step.kind === 'loop') walk(step.steps as Step[]);
+      }
+    };
+    walk(host.steps!);
+    expect(targets).toHaveLength(2);
+    expect(new Set(targets).size).toBe(2);
+    expect(targets[0]).toContain('host_first_pass_');
+    expect(targets[1]).toContain('host_second_pass_');
   });
 
   it('substitutes the outer scope through the inner reference maps before expanding it', () => {

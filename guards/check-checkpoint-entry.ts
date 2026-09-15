@@ -17,45 +17,45 @@
  * the same wasted dispatch, and the remedy is the same relocation either way, so the check is
  * mechanical: `steps[0].kind == "checkpoint"`.
  *
+ * It reads the MATERIALISED activities rather than the files as written (#704). The rule is about
+ * the step a dispatched worker meets first, and a `kind: routine` reference in first position
+ * expands to whatever the routine opens with — so against unexpanded text a reference to a routine
+ * whose first step is a checkpoint evades the rule entirely, while costing exactly the dispatch the
+ * rule exists to prevent.
+ *
  * Run: npx tsx guards/check-checkpoint-entry.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { parse } from 'yaml';
+import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
-interface StepDef { kind?: string; id?: string }
-interface ActivityDef { id?: string; steps?: StepDef[] }
-
-export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
+export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Finding[]> {
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const { dir } of corpusWorkflows(root)) {
-    const activitiesDir = join(dir, 'activities');
-    if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
-    for (const entry of readdirSync(activitiesDir).sort()) {
-      if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
-      const path = join(activitiesDir, entry);
-      const def = parse(readFileSync(path, 'utf-8')) as ActivityDef | null;
+  for (const { id, dir } of corpusWorkflows(root)) {
+    const loaded = await loadWorkflowWithDiagnostics(root, id);
+    if (!loaded.success) continue;
+    for (const activity of loaded.value.workflow.activities ?? []) {
       scanned++;
-      const first = def?.steps?.[0];
+      const first = activity.steps?.[0];
       if (first?.kind !== 'checkpoint') continue;
+      const file = join(relative(root, dir), 'activities', `${activity.artifactPrefix ?? ''}${activity.artifactPrefix ? '-' : ''}${activity.id}.yaml`);
       findings.push({
         check: 'checkpoint-at-entry',
-        site: `${relative(root, path)}`,
-        detail: `activity '${def?.id ?? entry}' opens with checkpoint '${first.id ?? '?'}' — the worker is `
+        site: file,
+        detail: `activity '${activity.id}' opens with checkpoint '${first.id}' — the worker is `
           + 'dispatched, paid full delivery, and yields before doing any work, so the whole first '
           + "dispatch only asks a question. Move the decision to the preceding activity's tail or to "
           + "the orchestrator's dispatch precondition.",
       });
     }
   }
-  assertScanned(scanned, 'activity files', root);
+  assertScanned(scanned, 'activities', root);
   return findings;
 }
 
