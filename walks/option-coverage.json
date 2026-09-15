@@ -4,6 +4,8 @@
       "reason": "Gated on a value only the agent or the environment produces — a count of findings, an ambiguity flag, whether a pull request already exists. The enumerator varies decisions and cannot invent a bag entry, so no amount of forking reaches these.",
       "options": [
         "checkpoint:assumptions-review:post-summary-review=skip-posting",
+        "checkpoint:assumptions-review:residual-assumptions.batch-gate=accept-agent-positions",
+        "checkpoint:assumptions-review:residual-assumptions.batch-gate=defer-all",
         "checkpoint:assumptions-review:residual-assumptions.batch-gate=interview-individually",
         "checkpoint:codebase-comprehension:comprehension-sufficient=different-area",
         "checkpoint:codebase-comprehension:comprehension-sufficient=dive-deeper",
