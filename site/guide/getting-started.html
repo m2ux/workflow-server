@@ -154,7 +154,7 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
   <h2 id="verify">4. Verify</h2>
   <p class="prose">Transport-specific health checks:</p>
   <ul class="prose">
-    <li><strong>HTTP</strong> — <code>/health</code>, <code>/ready</code> (require <code>sessionKeyWritable: true</code>), container logs (<a href="https://github.com/m2ux/workflow-server/blob/main/http.md">http.md</a> §4).</li>
+    <li><strong>HTTP</strong> — <code>/health</code>, <code>/ready</code> (require <code>sessionKeyWritable: true</code> and <code>corpusServes: true</code>), container logs (<a href="https://github.com/m2ux/workflow-server/blob/main/http.md">http.md</a> §4).</li>
     <li><strong>stdio</strong> — build/paths, MCP spawn without errors (<a href="https://github.com/m2ux/workflow-server/blob/main/stdio.md">stdio.md</a> §3).</li>
   </ul>
   <p class="prose"><strong>Primary MCP smoke:</strong> from the example workspace, ask the agent to start a work-package (or any) workflow. It must call <a href="../api/tools.html#discover"><code>discover</code></a> first, then <a href="../api/tools.html#start_session"><code>start_session</code></a> with <code>repo: "owner/repo"</code>, and return a <code>session_index</code>. <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> alone is not enough. If the agent skips <code>discover</code>, the bootstrap rule is not loaded — see <a href="https://github.com/m2ux/workflow-server/blob/main/docs/ide-setup.md">docs/ide-setup.md</a>.</p>

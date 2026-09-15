@@ -48,20 +48,35 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
 
 ### Reload an experiment sidecar on a stable port
 
-`scripts/reload-exp-sidecar.sh` stops one named container, rebuilds (or reuses) its image from a checkout, and starts it again on the same host port with `--workflows-dir`. It refuses the install container name `workflow-server` and host port 3000.
+`scripts/reload-exp-sidecar.sh` stops one named container, rebuilds (or reuses) its image from a checkout, and starts it again on the same host port and corpus. It refuses the install container name `workflow-server` and host port 3000.
 
-`--name` and `--workflows-dir` are required. `--image` defaults to `workflow-server:local` (pass a distinct tag per experiment). `--build` defaults to the checkout that contains the script; pass a directory when the engine lives in another worktree. `--host-port` defaults to the port that container already publishes, and is required when none is running.
+`--name` is the only required flag. Host port, corpus and projects root each default to what the named container already binds, so rebuilding the pairing under test is `--name` alone; each is required when no container of that name is running. `--image` defaults to `workflow-server:local` (pass a distinct tag per experiment). `--build` defaults to the checkout that contains the script; pass a directory when the engine lives in another worktree.
 
 ```bash
+# First reload of a new experiment: name the pairing.
 ./scripts/reload-exp-sidecar.sh \
   --name=workflow-server-exp \
   --image=workflow-server:exp-ttd \
   --build=.worktrees/feat/time-to-dispatch-experiment \
   --workflows-dir=.worktrees/feat/time-to-dispatch-meta \
   --host-port=32772
+
+# Every reload after it: rebuild the same pairing.
+./scripts/reload-exp-sidecar.sh --name=workflow-server-exp --image=workflow-server:exp-ttd
 ```
 
 `--no-build` reuses `--image`. Point the experiment MCP server at the printed URL. Leave `workflow-server` on :3000.
+
+**Before the swap.** The corpus goes through its own guard suite (`guards/check-all.ts --corpus-only`, about five seconds) while the current container is still up. A tree nothing can be measured on refuses and leaves that container running; guard findings warn, name the failing guards and start, since an experiment branch carries findings by nature. `--no-preflight` skips the sweep. The outgoing container's log is written to `$INSTALL/logs` (or `--log-dir`) before it is removed — that file holds the JSON audit line the server writes per tool call, which is the record of the run being compared against.
+
+**Reading an instance back.** The container carries the corpus path, both checkouts' commits and a dirty marker as labels, and `/ready` names the mounted corpus and counts the workflows in it:
+
+```bash
+docker inspect workflow-server-exp --format '{{json .Config.Labels}}'
+curl -fsS http://127.0.0.1:32772/ready
+```
+
+**Keeping a walk out of live planning.** Planning resolves at `<projects-root>/<repo>/.engineering/artifacts/planning`, so a sidecar sharing the install projects root writes a dated folder beside real work on every run. `--projects-root=DIR` gives an experiment a root of its own, holding its own checkout of the target repo, and the whole run can then be thrown away.
 
 ## 3. Verify
 
@@ -74,9 +89,9 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
 **Expected cues**
 
 - `/health` → JSON with `"status":"ok"` (or equivalent ok payload).
-- `/ready` → ready payload with **`sessionKeyWritable: true`**.
+- `/ready` → ready payload with **`sessionKeyWritable: true`** and **`corpusServes: true`**, beside a `corpus` object naming the mounted tree and counting the workflows in it.
 
-A green `/health` without `sessionKeyWritable: true` means sessions cannot start.
+A green `/health` without `sessionKeyWritable: true` means sessions cannot start. `corpusServes: false` means the mounted tree holds no workflow, so every tool call misses — check the corpus bind against `corpus.dir`.
 
 Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints when the host port is 0). Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
 
@@ -85,6 +100,7 @@ Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints
 | Symptom | What to check |
 |---------|----------------|
 | `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [workflow-fidelity](docs/workflow-fidelity.md) |
+| `corpusServes` is false | The corpus bind — compare `corpus.dir` in the payload with `--workflows-dir` |
 | OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
 | Image/container crash loop | `docker logs workflow-server`; confirm the `state` bind and image pull |
 

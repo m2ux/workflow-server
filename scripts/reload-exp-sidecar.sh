@@ -174,9 +174,6 @@ container_bind_source() {
 [[ -n "$NAME" ]] || die "pass --name (see --help)"
 [[ "$NAME" != "workflow-server" ]] || die "refusing to operate on the install container name"
 
-command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
-command -v curl >/dev/null 2>&1 || die "curl not found on PATH"
-
 if [[ -z "$ENGINE" ]]; then
   ENGINE="$(cd "${SCRIPT_DIR}/.." && pwd)"
 else
@@ -187,7 +184,7 @@ fi
 # Port and corpus both default to what the named container already runs, so reloading a sidecar
 # with a fresh build is `--name` alone and the pairing under test survives the reload by default.
 # Either is required when no container of that name is up, there being nothing to read them from.
-if [[ -z "$PORT" ]]; then
+if [[ -z "$PORT" ]] && command -v docker >/dev/null 2>&1; then
   spec="$(docker port "$NAME" "${CONTAINER_PORT}/tcp" 2>/dev/null | head -n1 || true)"
   if [[ -n "$spec" ]]; then
     PORT="${spec##*:}"
@@ -197,7 +194,7 @@ fi
 [[ "$PORT" =~ ^[0-9]+$ ]] || die "host port must be numeric, got: ${PORT}"
 [[ "$PORT" != "3000" ]] || die "refusing to bind an experiment sidecar on :3000 (install instance)"
 
-if [[ -z "$CORPUS" ]]; then
+if [[ -z "$CORPUS" ]] && command -v docker >/dev/null 2>&1; then
   CORPUS="$(container_bind_source "$NAME" "$CONTAINER_WORKFLOW_DIR")"
 fi
 [[ -n "$CORPUS" ]] || die "pass --workflows-dir (no corpus bind on ${NAME}; see --help)"
@@ -208,7 +205,7 @@ CORPUS="$(cd "$CORPUS" && pwd)"
 # A projects root of its own gives an experiment its own planning tree, since planning resolves at
 # <projects-root>/<repo>/.engineering/artifacts/planning and a walk writes a folder there per run.
 # Empty leaves start.sh on the install root, which the install instance also writes to.
-if [[ -z "$PROJECTS" ]]; then
+if [[ -z "$PROJECTS" ]] && command -v docker >/dev/null 2>&1; then
   PROJECTS="$(container_bind_source "$NAME" "$CONTAINER_PROJECTS_ROOT")"
 fi
 if [[ -n "$PROJECTS" ]]; then
@@ -224,6 +221,9 @@ STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${E
 if [[ "$BUILD" -eq 1 ]]; then
   [[ -f "${ENGINE}/Dockerfile" ]] || die "no Dockerfile in engine checkout: ${ENGINE}"
 fi
+
+command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
+command -v curl >/dev/null 2>&1 || die "curl not found on PATH"
 
 # Put the corpus through its own guard suite before an agent walks it, reading the sweep's three
 # outcomes as they are defined: clean, findings, or nothing measurable. A tree nothing could be
