@@ -4,6 +4,8 @@ import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { writeLoadableWorkflowFixture, writeRoutineFixture } from './corpus-fixture.js';
 import { collectRoutineFindings } from '../guards/check-routines.js';
+import { consumerReaches } from '../guards/check-binding-fidelity.js';
+import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
 import type { Finding } from '../guards/guard-protocol.js';
 
 /**
@@ -283,22 +285,51 @@ steps:
 });
 
 /**
- * What `check-binding-fidelity` does with a routine, pinned rather than left latent.
+ * A routine file is addressable by its path, which is what lets a guard reason about it.
  *
- * It reads raw activity YAML and never consumes the loader, so an activity whose bindings all live
- * inside a routine looks to it like an activity with no bindings. The consequence is not silence: a
- * technique whose only consumer is a routine's output remap reads as a DEAD OUTPUT, which is a
- * finding against a technique that is used, on a guard carrying a triage ledger.
+ * `routines/` sits beside `activities/` and `techniques/` as a directory a workflow owns, and the
+ * resolver that names the owning workflow from a corpus path is the one place that set is spelled.
+ * Left out of it, a routine path resolves to no workflow at all — and every rule phrased as "the
+ * consumer has to reach the file it closes a finding on" then refuses a routine silently, because
+ * a missing workflow fails that test the same way an unrelated one does.
  *
- * Its register entry records the form it reads, and the record puts it in the materialised column.
- * Moving it needs the routine-scope treatment `check-variable-model` got — a routine file is its own
- * name scope, so reading routine files with the workflow's declarations reports every routine input
- * as having no producer. That is measured: adding the files alone turns one spurious finding into
- * two. It belongs with the migration that first puts a routine in the corpus, and until then this
- * case is what says so out loud.
+ * Asserted on the resolver rather than through the guard, because the guard's own case below is
+ * satisfied by scanning the files, and would pass while this stayed broken for every other caller.
  */
-describe('the guard that cannot see a routine', () => {
-  it.todo('check-binding-fidelity resolves a reference to the routine\'s own bindings (#704 E03)');
+describe('a routine path names the workflow that owns it', () => {
+  it('resolves the owning workflow, as an activity or technique path does', () => {
+    expect(workflowIdFromCorpusPath('work-package/routines/converge-assumptions.yaml')).toBe('work-package');
+    expect(workflowIdFromCorpusPath('work-package/activities/04-research.yaml')).toBe('work-package');
+    expect(workflowIdFromCorpusPath('work-package/techniques/analyse-challenge/combine.md')).toBe('work-package');
+  });
+});
+
+/**
+ * The rule that gap breaks, asserted where the rule lives (#704 E03).
+ *
+ * A routine holds the step bindings the activities referring to it used to hold, so a technique
+ * whose only consumer is a routine's output remap needs that routine to be able to close the
+ * finding. A consumer closes one only when it can REACH the declaring file, and a path naming no
+ * workflow fails that test exactly as an unrelated workflow does — so the finding stood, against a
+ * technique that is used, on a guard carrying a triage ledger.
+ *
+ * Asserted on the rule rather than on a corpus instance, which is how the dead-output scoping cases
+ * in `binding-fidelity.test.ts` are written: an instance gets paid down and then tests nothing.
+ */
+describe('a routine reaches the technique whose output it remaps', () => {
+  it('closes a dead output from the routine file of the declaring workflow', () => {
+    expect(consumerReaches(
+      'work-package/routines/converge-assumptions.yaml',
+      'work-package/techniques/analyse-challenge/combine.md',
+    )).toBe(true);
+  });
+
+  it('still refuses a routine in a workflow that cannot reach the declaring file', () => {
+    expect(consumerReaches(
+      'codebase-wiki/routines/some-run.yaml',
+      'prism/techniques/plan-analysis.md',
+    )).toBe(false);
+  });
 });
 
 describe('the committed fixture root', () => {

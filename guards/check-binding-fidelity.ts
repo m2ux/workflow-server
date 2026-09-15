@@ -525,6 +525,42 @@ function collectArtifactTemplateTokens(rel: string, raw: string): void {
  * left `meta/activities/patterns/` completely unmeasured, so its step bindings and the outputs its
  * loop conditions consume were invisible in both directions (#327 S2).
  */
+/**
+ * A workflow's `routines/` read on the same terms as its activities (#704 E03).
+ *
+ * A routine holds the step bindings the activities referring to it used to hold, so a technique
+ * whose only consumer is a routine's output remap reads as a dead output while these files go
+ * unscanned — a finding against a technique that is used, on a guard carrying a triage ledger.
+ *
+ * A routine's declared names are its file's own scope, which is what the local set already models:
+ * seeded with them, a parameter the body reads resolves inside the file instead of demanding a
+ * producer the workflow never declares. Scanning the files without that seeding reports every
+ * routine input as unproduced, which is why both halves are one change.
+ */
+function scanRoutines(wf: string): void {
+  const dir = workflowSubdir(INDEX, wf, 'routines');
+  if (!dir || !existsSync(dir)) return;
+  for (const entry of readdirSync(dir)) {
+    if (!entry.endsWith('.yaml')) continue;
+    const rel = cite(join(dir, entry));
+    const raw = readFileSync(join(dir, entry), 'utf-8');
+    collectReads(wf, rel, raw, 'activity');
+    let parsed: unknown;
+    try { parsed = parseDefinition(raw); } catch { continue; /* check:routines reports a malformed file */ }
+    if (!parsed || typeof parsed !== 'object') continue;
+    const routine = parsed as Record<string, unknown>;
+    const locals = fileLocals.get(rel) ?? new Set<string>();
+    for (const list of ['inputs', 'outputs', 'internals']) {
+      for (const item of Array.isArray(routine[list]) ? routine[list] as unknown[] : []) {
+        const id = (item as { id?: unknown })?.id;
+        if (typeof id === 'string') locals.add(id);
+      }
+    }
+    fileLocals.set(rel, locals);
+    walkSteps(wf, rel, parsed, typeof routine['id'] === 'string' ? routine['id'] : '');
+  }
+}
+
 function activityFiles(dir: string): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(dir)) {
@@ -591,6 +627,7 @@ function ensureIndexed(): void {
         walkSteps(wf, rel, dec, activityId);
       } catch { /* validate-workflow-yaml's job */ }
     }
+    scanRoutines(wf);
   }
 
   const reach = new Map<string, Set<string>>();
