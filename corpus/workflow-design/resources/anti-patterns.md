@@ -197,13 +197,13 @@ A user decision is written as prose instead of a `kind: checkpoint` step.
 
 ### AP-10. loop-not-prose
 
-"Repeat this for each item"
+"Repeat this for each item" / "keep revising until it passes"
 
 Iteration is written as prose instead of a `kind: loop` step.
 
-**Detect:** Description or protocol says to repeat/iterate/for-each over a collection the session carries between steps, without a `kind: loop` (`loopType`, `over`, nested `steps[]`).
+**Detect:** Description or protocol says to repeat work with no `kind: loop` at that `steps[]` position. Two shapes: walking a collection the session carries between steps, whose declared form is `loopType: forEach` with `over` and `variable`; and repeating until a stated condition clears, whose declared form is `loopType: while` or `doWhile` with `continueWhile`. In both the repeated work is the loop's nested `steps[]`.
 
-**Do not flag:** Truly one-shot steps; loops already declared in `steps[]`. Per-item work inside a technique `## Protocol`, where the technique is applied once and handles the set its declared input carries — the phase states what one application does to each entry, not iteration the graph sequences.
+**Do not flag:** Truly one-shot steps; loops already declared in `steps[]`. Per-item work inside a technique `## Protocol`, where the technique is applied once and handles the set its declared input carries — the phase states what one application does to each entry, not iteration the graph sequences. Likewise a protocol phase that refines its own output until it settles, which is one application converging rather than a run an activity repeats.
 
 **Fix:** Replace the prose with a `kind: loop` step and move repeated work into the loop body.
 
@@ -1694,7 +1694,7 @@ A concrete value is written out where a declared variable or technique input alr
 
 A value's only producer sits behind a gate while a reader reaches it from a path that gate excludes, so on that path the reader sees an undefined variable rather than a produced one.
 
-**Detect:** For each step gated by `when` or `condition` that is the sole producer of a variable — step output, output remap, or `set` target — trace every later reader: an input binding, a `when` or `condition` naming it, a `{token}` interpolation. Flag when a reader is reachable on a path where the producer is skipped and the variable declares no `defaultValue`. Two shapes qualify: a reader gated by an equality or relational operator, which cannot distinguish an undefined variable from a produced value; and an ungated reader with no complementary producer arm covering the gate's negation.
+**Detect:** Take each step that is the sole producer of a variable — step output, output remap, or `set` target — and whose execution is conditional: gated by `when` or `condition`, or sitting in the body of a `while` loop, whose `continueWhile` decides the first pass. Trace every later reader: an input binding, a `when`, `condition`, `continueWhile` or `breakCondition` naming it, a `{token}` interpolation. Flag when a reader is reachable on a path where the producer is skipped and the variable declares no `defaultValue`. Two shapes qualify: a reader gated by an equality or relational operator, which cannot distinguish an undefined variable from a produced value; and an ungated reader with no complementary producer arm covering the gate's negation.
 
 **Do not flag:** Variables with a `defaultValue` seeded at session creation, where the gate is constant rather than undefined; readers gated by the same expression as their producer; checkpoint `setVariable` effects that apply on every option. A parallel projection of state another variable already carries is `no-derived-state-shadow`.
 
