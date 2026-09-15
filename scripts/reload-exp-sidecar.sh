@@ -39,6 +39,10 @@ Options:
   --host-port=N            Host port. Defaults to the port the running
                            container publishes. Required when none is running.
   --no-build               Reuse --image; do not rebuild.
+  --no-preflight           Skip the corpus guard sweep. The sweep runs before
+                           the container stops: a corpus nothing can be
+                           measured on refuses and leaves the sidecar up, and
+                           guard findings warn and start.
 
 Environment (overridden by flags):
   EXP_NAME  EXP_IMAGE  EXP_CORPUS  EXP_ENGINE  EXP_HOST_PORT
@@ -64,6 +68,7 @@ CORPUS="${EXP_CORPUS:-}"
 ENGINE="${EXP_ENGINE:-}"
 PORT="${EXP_HOST_PORT:-}"
 BUILD=1
+PREFLIGHT=1
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -86,6 +91,7 @@ while [[ $# -gt 0 ]]; do
     --host-port=*) PORT="${1#*=}"; shift ;;
     --host-port) PORT="${2:?}"; shift 2 ;;
     --no-build) BUILD=0; shift ;;
+    --no-preflight) PREFLIGHT=0; shift ;;
     -h|--help)
       usage
       exit 0
@@ -168,6 +174,49 @@ STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${E
 [[ -x "$STOP" ]] || die "stop.sh not found or not executable: ${STOP}"
 if [[ "$BUILD" -eq 1 ]]; then
   [[ -f "${ENGINE}/Dockerfile" ]] || die "no Dockerfile in engine checkout: ${ENGINE}"
+fi
+
+# Put the corpus through its own guard suite before an agent walks it, reading the sweep's three
+# outcomes as they are defined: clean, findings, or nothing measurable. A tree nothing could be
+# measured on is the state a sidecar cannot serve, and is the one that refuses. Findings are a
+# warning — an experiment branch carries them by nature, and which guard failed is the signal, so
+# a load-level failure reads differently from corpus debt. The sweep runs before the running
+# container is stopped, so a refusal leaves the current sidecar up.
+preflight_corpus() {
+  if [[ ! -f "${ENGINE}/guards/check-all.ts" ]]; then
+    echo "note: no guard suite under ${ENGINE}; skipping corpus preflight" >&2
+    return 0
+  fi
+  if ! (cd "$ENGINE" && npx tsx --version >/dev/null 2>&1); then
+    echo "note: tsx does not resolve from ${ENGINE}; skipping corpus preflight" >&2
+    return 0
+  fi
+
+  local out status
+  set +e
+  out="$(cd "$ENGINE" && npx tsx guards/check-all.ts --root "$CORPUS" --corpus-only 2>&1)"
+  status=$?
+  set -e
+
+  case "$status" in
+    0)
+      echo "Preflight: corpus guards clean"
+      ;;
+    1)
+      printf '%s\n' "$out" | grep -E '^[[:space:]]*\[(FAIL|UNMEASURED)\]|guard\(s\) in' >&2 || true
+      echo "warning: corpus guards report findings on ${CORPUS} — starting anyway" >&2
+      ;;
+    *)
+      printf '%s\n' "$out" | tail -n 20 >&2
+      die "corpus at ${CORPUS} could not be measured (guard sweep exit ${status}).
+  Nothing there is servable, so the running sidecar is left up.
+  Pass --no-preflight to start on it regardless."
+      ;;
+  esac
+}
+
+if [[ "$PREFLIGHT" -eq 1 ]]; then
+  preflight_corpus
 fi
 
 ENGINE_PIN="$(git_pin "$ENGINE")"
