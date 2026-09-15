@@ -96,31 +96,12 @@
       "rationale": "consecutive-control-actions"
     },
     {
-      "site": "work-package/activities/02-design-philosophy.yaml + work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/06-plan-prepare.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
-      "run": [
-        "T:review-assumptions::reconcile()",
-        "T:analyse-challenge::challenge(challenge_perspectives,concern_document)",
-        "T:analyse-challenge::combine(concern_document)"
-      ],
-      "verdict": "converging",
-      "rationale": "convergence-pass"
-    },
-    {
-      "site": "work-package/activities/02-design-philosophy.yaml + work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/06-plan-prepare.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml + work-package/activities/15-codebase-comprehension.yaml",
-      "run": [
-        "T:analyse-challenge::challenge(challenge_perspectives,concern_document)",
-        "T:analyse-challenge::combine(concern_document)"
-      ],
-      "verdict": "converging",
-      "rationale": "convergence-pass"
-    },
-    {
       "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml",
       "run": [
         "T:review-assumptions::collect(assumption_categories)",
         "T:document()",
         "T:review-assumptions::record()",
-        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}",
+        "R:converge-assumptions()",
         "T:review-assumptions::assemble-open-set()"
       ],
       "verdict": "converging",
@@ -130,7 +111,7 @@
       "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/06-plan-prepare.yaml",
       "run": [
         "T:review-assumptions::record()",
-        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}"
+        "R:converge-assumptions()"
       ],
       "verdict": "converging",
       "rationale": "convergence-pass"
@@ -148,7 +129,7 @@
     {
       "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
       "run": [
-        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}",
+        "R:converge-assumptions()",
         "T:review-assumptions::assemble-open-set()"
       ],
       "verdict": "converging",
@@ -167,7 +148,7 @@
     {
       "site": "work-package/activities/05-implementation-analysis.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
       "run": [
-        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}",
+        "R:converge-assumptions()",
         "T:review-assumptions::assemble-open-set()",
         "C:ref=assumption-interview",
         "T:review-assumptions::record()",
@@ -179,7 +160,7 @@
     {
       "site": "work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
       "run": [
-        "L:doWhile/{T:review-assumptions::reconcile();T:analyse-challenge::challenge(challenge_perspectives,concern_document);T:analyse-challenge::combine(concern_document)}",
+        "R:converge-assumptions()",
         "T:review-assumptions::assemble-open-set()",
         "C:ref=assumption-interview",
         "T:review-assumptions::record()",
