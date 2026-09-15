@@ -480,7 +480,8 @@ interface StepExecution {
 
 /**
  * Robot worker (3c): execute an activity's steps in order. Gates on step
- * when/condition, fires the checkpoint a step declares (yield→respond→resume)
+ * when/condition and on a `while` loop's continueWhile continuation test,
+ * fires the checkpoint a step declares (yield→respond→resume)
  * at that step, applies step `set` actions with explicit values, and builds the
  * step manifest. Mechanical only — no LLM — so it is reproducible.
  */
@@ -557,8 +558,11 @@ async function executeActivitySteps(
       // want of an answer — and once the step is skipped that is indistinguishable from a real "no".
       // Record it, because a step absent from stepsExecuted is otherwise silent about why (#469).
       // A `while` loop's continuation test decides its first pass, so it is one of these gates; a
-      // `doWhile`'s is taken after a pass the walk has already made.
-      const preGate = step.loopType === 'while' ? step.continueWhile : step.condition;
+      // `doWhile`'s is taken after a pass the walk has already made, and a `forEach` has none. A
+      // loop carries no `condition`, so the `while` case is the whole of a loop's pre-gate.
+      const preGate = step.kind === 'loop'
+        ? (step.loopType === 'while' ? step.continueWhile : undefined)
+        : step.condition;
       for (const name of unboundPositiveReads(step.when, preGate as Condition | undefined, variables)) {
         if (decidedLater.has(name)) gatesReadUnbound.push(`${step.id ?? '?'}:${name}`);
       }

@@ -83,7 +83,7 @@
         <tr><td><a href="#dispatch"><strong>Dispatch</strong></a></td><td>How orchestrators spawn and coordinate workers</td></tr>
         <tr><td><a href="#fidelity"><strong>Fidelity</strong></a></td><td>Server enforcement that keeps agents on the defined path</td></tr>
         <tr><td><a href="#goal"><strong>Goal</strong></a></td><td>What you ask for in natural language</td></tr>
-        <tr><td><a href="#loop"><strong>Loop</strong></a></td><td>A step that repeats nested steps until a condition clears</td></tr>
+        <tr><td><a href="#loop"><strong>Loop</strong></a></td><td>A step that repeats nested steps while a condition holds</td></tr>
         <tr><td><a href="#manifest"><strong>Manifest</strong></a></td><td>The <code>workflow.yaml</code> file that defines a workflow</td></tr>
         <tr><td><a href="#mcp"><strong>MCP</strong></a></td><td>How your IDE talks to the workflow-server process</td></tr>
         <tr><td><a href="#orchestrator"><strong>Orchestrator</strong></a></td><td>Agent that manages workflow state and user interaction</td></tr>
@@ -135,7 +135,7 @@
   <p class="prose">A <strong>goal</strong> is what you state in natural language — implement issue #42, start a work package for authentication — and the agent matches to a workflow. You never name tools or session tokens; the server and bootstrap procedure handle routing once the goal is understood.</p>
 
   <h3 id="loop">Loop</h3>
-  <p class="prose">A <strong>loop</strong> is a step kind that repeats a nested list of steps until a condition is satisfied or the loop declares completion. Loops let activities revisit work — retry a validation, iterate on a plan — without duplicating step definitions. See <a href="../specs/workflows.html#step-kinds">step kinds</a>.</p>
+  <p class="prose">A <strong>loop</strong> is a step kind that repeats a nested list of steps — once per item of a collection it walks, or for as long as its <code>continueWhile</code> test holds. Loops let activities revisit work — retry a validation, iterate on a plan — without duplicating step definitions. See <a href="../specs/workflows.html#step-kinds">step kinds</a>.</p>
 
   <h3 id="manifest">Manifest</h3>
   <p class="prose">The <strong>manifest</strong> is the <code>workflow.yaml</code> file at the root of a workflow directory. It declares the workflow's identity, variables, activity list, initial activity, and orchestrator-level techniques and rules — the map the server reads when a session starts. See <a href="../specs/workflows.html#workflows">Workflows</a>.</p>
