@@ -89,12 +89,15 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
   // (`--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` / `--repo`);
   // the JSON key stays `workspaceDir` for existing HTTP consumers.
   // `engineeringDir` is included when split from workspace (repo binding).
-  // `corpus` carries the facts a caller needs to tell one instance from
-  // another: which tree is mounted, and what the walk found in it.
+  // `corpus` reports the tree this server resolves against and what the walk
+  // found in it, and names the host tree behind it when a bind source was
+  // passed in. Every container resolves definitions at the same mount point, so
+  // `dir` alone says what a server reads and nothing about which corpus that
+  // is; `hostDir` is what distinguishes two instances.
   app.get('/ready', async (_req, res) => {
     const engineeringDir = config.engineeringDir ?? config.workspaceDir;
     const sessionKeyWritable = await probeSessionKeyWritable();
-    const corpus = describeCorpus(config.workflowDir);
+    const corpus = describeCorpus(config.workflowDir, config.hostWorkflowsDir);
     const checks: Record<string, boolean> = {
       schemasDir: existsSync(config.schemasDir),
       workspaceDir: existsSync(config.workspaceDir),
@@ -111,8 +114,10 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
 
 /** What a readiness probe reports about the mounted corpus. */
 interface CorpusReport {
-  /** The tree the server resolves definitions against. */
+  /** The tree the server resolves definitions against — the mount point under Docker. */
   dir: string;
+  /** The host tree behind `dir`, when a bind source was passed in. Absent outside Docker. */
+  hostDir?: string;
   /** Workflows the walk found, by the server's own discovery rule. */
   workflows: number;
   /** Ids more than one directory claims. Each is unresolvable under either name. */
@@ -128,11 +133,13 @@ interface CorpusReport {
  * zero without walking, which keeps a probe loop from logging one unreadable-directory warning per
  * interval.
  */
-function describeCorpus(dir: string): CorpusReport {
-  if (!existsSync(dir)) return { dir, workflows: 0, ambiguous: [] };
+function describeCorpus(dir: string, hostDir?: string): CorpusReport {
+  const host = hostDir !== undefined && hostDir !== dir ? { hostDir } : {};
+  if (!existsSync(dir)) return { dir, ...host, workflows: 0, ambiguous: [] };
   const index = indexCorpus(dir);
   return {
     dir,
+    ...host,
     workflows: index.workflows.size,
     ambiguous: index.ambiguous.map((claim) => claim.id),
   };

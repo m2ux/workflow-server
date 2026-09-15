@@ -99,6 +99,29 @@ describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
       expect(res.body.corpus.ambiguous).toEqual([]);
     });
 
+    // Two containers resolve definitions at the same mount point, so the bind source is the only
+    // thing in the payload that says which corpus an instance serves.
+    it('GET /ready names the host tree behind the mount when a bind source is configured', async () => {
+      const config = buildConfig({ hostWorkflowsDir: '/host/corpora/experiment-a' });
+      try {
+        const res = await get(createHttpApp(config), '/ready');
+        expect(res.body.corpus.dir).toBe(liveCorpusRoot());
+        expect(res.body.corpus.hostDir).toBe('/host/corpora/experiment-a');
+      } finally {
+        rmSync(config.workspaceDir, { recursive: true, force: true });
+      }
+    });
+
+    it('GET /ready omits the host tree when it is the tree the server already names', async () => {
+      const config = buildConfig({ hostWorkflowsDir: liveCorpusRoot() as string });
+      try {
+        const res = await get(createHttpApp(config), '/ready');
+        expect(res.body.corpus).not.toHaveProperty('hostDir');
+      } finally {
+        rmSync(config.workspaceDir, { recursive: true, force: true });
+      }
+    });
+
     it('GET /ready returns 503 when the workflow directory is absent', async () => {
       const readyApp = createHttpApp(buildConfig({ workflowDir: '/nonexistent/workflow/path' }));
       const res = await get(readyApp, '/ready');

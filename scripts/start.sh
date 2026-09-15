@@ -519,6 +519,9 @@ DOCKER_RUN+=(-e "WORKFLOW_DIR=${CONTAINER_WORKFLOW_DIR}")
 DOCKER_RUN+=(-e "SCHEMAS_DIR=${CONTAINER_SCHEMAS_DIR}")
 # Host bind sources — agent-facing planning_folder_path rewrite (container → host).
 DOCKER_RUN+=(-e "HOST_PROJECTS_ROOT=${HOST_PROJECTS_ROOT}")
+# Corpus bind source: every container resolves definitions at the same mount
+# point, so this is the only thing that names which corpus an instance serves.
+DOCKER_RUN+=(-e "HOST_WORKFLOWS_DIR=${HOST_WORKFLOWS_DIR}")
 if [[ "$NESTED_WORKTREES" -eq 0 ]]; then
   DOCKER_RUN+=(-e "HOST_WORKTREE_ROOT=${HOST_WORKTREE_ROOT}")
 fi

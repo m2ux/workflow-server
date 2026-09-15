@@ -23,6 +23,10 @@ const REPO_ENV_KEYS = [
   'WORKFLOW_SERVER_ENGINEERING_DIR',
   'XDG_DATA_HOME',
   'PLANNING_SLUG',
+  // Host bind sources. A case that sets one and a case that asserts none is set
+  // are the same case in a different order unless they are cleared between.
+  'HOST_WORKFLOWS_DIR',
+  'HOST_WORKFLOWS_ROOT',
 ] as const;
 
 function clearRepoEnv(): Record<string, string | undefined> {
@@ -351,6 +355,23 @@ describe('loadConfig — --repo binding', () => {
     expect(config.workspaceDir).toBe(resolve('/tmp/wf-install/projects'));
     expect(config.engineeringDir).toBe(resolve('/tmp/wf-install/projects'));
     expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
+  });
+
+  it('reads the corpus bind source so a container can name the tree behind its mount', () => {
+    process.env['HOST_WORKFLOWS_DIR'] = '/host/corpora/experiment-a';
+    const config = loadConfig(['--workspace=/tmp/wf-install/projects']);
+    expect(config.hostWorkflowsDir).toBe(resolve('/host/corpora/experiment-a'));
+  });
+
+  it('accepts the underscored corpus bind alias some compose files use', () => {
+    process.env['HOST_WORKFLOWS_ROOT'] = '/host/corpora/experiment-b';
+    const config = loadConfig(['--workspace=/tmp/wf-install/projects']);
+    expect(config.hostWorkflowsDir).toBe(resolve('/host/corpora/experiment-b'));
+  });
+
+  it('leaves the corpus bind source unset outside Docker', () => {
+    const config = loadConfig(['--workspace=/tmp/wf-install/projects']);
+    expect(config.hostWorkflowsDir).toBeUndefined();
   });
 
   it('CLI --workspace at install multi-root with ENGINEERING_DIR stays multi-root', () => {

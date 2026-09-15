@@ -24,6 +24,9 @@ services:
       WORKFLOW_SERVER_ENGINEERING_DIR: ${CONTAINER_ENGINEERING_ROOT:-${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}}
       WORKFLOW_SERVER_INSTALL_DIR: ${CONTAINER_INSTALL_DIR:-/var/lib/workflow-server}
       HOST_PROJECTS_ROOT: ${HOST_PROJECTS_ROOT:-${HOME}/projects/dev}
+      # Corpus bind source. Every container resolves definitions at the same
+      # mount point, so this names which corpus this instance serves.
+      HOST_WORKFLOWS_DIR: ${HOST_WORKFLOWS_DIR:?set HOST_WORKFLOWS_DIR to the corpus dest}
       HOST_WORKTREE_ROOT: ${HOST_WORKTREE_ROOT:-}
       # PLANNING_SLUG: artifacts/planning
       WORKFLOW_DIR: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
