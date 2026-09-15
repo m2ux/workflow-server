@@ -49,6 +49,28 @@ describe('guard registry', () => {
   });
 
   /**
+   * The sidecar preflight holds an experiment corpus to this set and nothing else, so what is in it
+   * decides whether a corpus written for one construct can be served at all. Pinning it makes a
+   * guard joining or leaving the set a decision rather than a side effect.
+   */
+  it('names the guards whose failure means the definitions will not serve', () => {
+    expect(GUARDS.filter((g) => g.gatesServing).map((g) => g.id).sort()).toEqual([
+      'activities',
+      'fragments',
+      'loop-shape',
+      'refs',
+      'when-expression',
+      'workflow-identity',
+      'workflow-yaml',
+    ]);
+  });
+
+  it('gates serving only on guards that read the corpus', () => {
+    // A guard reading `site/` or this repo's own sources cannot speak to whether a corpus serves.
+    expect(GUARDS.filter((g) => g.gatesServing && g.scope !== 'corpus')).toEqual([]);
+  });
+
+  /**
    * Engine CI measures this tree: typecheck, the suite, and the fixture delivery gate.
    */
   it('the engine job runs typecheck, the suite, and the fixture gate', () => {

@@ -52,10 +52,13 @@ Options:
                            holding the audit line the server writes per tool
                            call for the run being replaced.
   --no-build               Reuse --image; do not rebuild.
-  --no-preflight           Skip the corpus guard sweep. The sweep runs before
-                           the container stops: a corpus nothing can be
-                           measured on refuses and leaves the sidecar up, and
-                           guard findings warn and start.
+  --no-preflight           Skip the corpus check. It runs the guards that
+                           decide whether a server can serve the definitions —
+                           they load, resolve and parse — and not those that
+                           measure the corpus this repo ships, which a corpus
+                           written for one construct never satisfies. It runs
+                           before the container stops, so a refusal leaves the
+                           sidecar up.
 
 Environment (overridden by flags):
   EXP_NAME  EXP_IMAGE  EXP_CORPUS  EXP_ENGINE  EXP_HOST_PORT
@@ -267,12 +270,19 @@ fi
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 command -v curl >/dev/null 2>&1 || die "curl not found on PATH"
 
-# Put the corpus through its own guard suite before an agent walks it, reading the sweep's three
-# outcomes as they are defined: clean, findings, or nothing measurable. A tree nothing could be
-# measured on is the state a sidecar cannot serve, and is the one that refuses. Findings are a
-# warning — an experiment branch carries them by nature, and which guard failed is the signal, so
-# a load-level failure reads differently from corpus debt. The sweep runs before anything is
-# stopped, so a refusal leaves the container it was aimed at exactly as it found it.
+# Hold the corpus to the guards that decide whether a server can serve it — the definitions load,
+# resolve and parse — and to nothing else. Both refusals then mean one thing: this corpus will not
+# serve, so an agent walking it meets the failure several minutes in.
+#
+# The convention guards are excluded because they measure the corpus this repository ships. Pointed
+# at a corpus authored to exercise one construct they find no bootstrap protocol and no harness map,
+# report that they inspected nothing, and that verdict is true of every such corpus while saying
+# nothing about whether it serves. Gating on them refused the case this script exists for, which
+# made --no-preflight the ordinary way to run rather than the exception, and a gate everyone skips
+# reports nothing on the run where it would have mattered.
+#
+# The sweep runs before anything is stopped, so a refusal leaves the container it was aimed at
+# exactly as it found it.
 preflight_corpus() {
   if [[ ! -f "${ENGINE}/guards/check-all.ts" ]]; then
     echo "note: no guard suite under ${ENGINE}; skipping corpus preflight" >&2
@@ -287,7 +297,7 @@ preflight_corpus() {
   # an answer rather than a failure. Toggling `set -e` around it would answer the same question by
   # turning the shell's own guarantee off and on again.
   local out status
-  if out="$(cd "$ENGINE" && npx tsx guards/check-all.ts --root "$CORPUS" --corpus-only 2>&1)"; then
+  if out="$(cd "$ENGINE" && npx tsx guards/check-all.ts --root "$CORPUS" --serving-only 2>&1)"; then
     status=0
   else
     status=$?
@@ -295,11 +305,15 @@ preflight_corpus() {
 
   case "$status" in
     0)
-      echo "Preflight: corpus guards clean"
+      echo "Preflight: definitions load, resolve and parse"
       ;;
     1)
       printf '%s\n' "$out" | grep -E '^[[:space:]]*\[(FAIL|UNMEASURED)\]|guard\(s\) in' >&2 || true
-      echo "warning: corpus guards report findings on ${CORPUS} — starting anyway" >&2
+      die "definitions at ${CORPUS} do not load (serving guards report findings).
+  An agent walking them meets the same failure several minutes in, so nothing
+  has been stopped. Run the sweep for the detail:
+    npx tsx guards/check-all.ts --root ${CORPUS} --serving-only --verbose
+  Pass --no-preflight to start on them regardless."
       ;;
     *)
       printf '%s\n' "$out" | tail -n 20 >&2
