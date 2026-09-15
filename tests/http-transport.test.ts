@@ -80,7 +80,7 @@ describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
       expect(res.body).toEqual({ status: 'ok' });
     });
 
-    it('GET /ready returns 200 with status ready when schemas, workspace, and the session key resolve', async () => {
+    it('GET /ready returns 200 with status ready when schemas, workspace, the session key and the corpus resolve', async () => {
       const res = await get(app, '/ready');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('ready');
@@ -88,14 +88,38 @@ describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
         schemasDir: true,
         workspaceDir: true,
         sessionKeyWritable: true,
+        corpusServes: true,
       });
     });
 
-    it('GET /ready returns 200 when the workflow directory is absent', async () => {
+    it('GET /ready names the mounted corpus and counts what the walk found', async () => {
+      const res = await get(app, '/ready');
+      expect(res.body.corpus.dir).toBe(liveCorpusRoot());
+      expect(res.body.corpus.workflows).toBeGreaterThan(0);
+      expect(res.body.corpus.ambiguous).toEqual([]);
+    });
+
+    it('GET /ready returns 503 when the workflow directory is absent', async () => {
       const readyApp = createHttpApp(buildConfig({ workflowDir: '/nonexistent/workflow/path' }));
       const res = await get(readyApp, '/ready');
-      expect(res.status).toBe(200);
-      expect(res.body.status).toBe('ready');
+      expect(res.status).toBe(503);
+      expect(res.body.status).toBe('not-ready');
+      expect(res.body.checks.corpusServes).toBe(false);
+      expect(res.body.corpus).toEqual({ dir: '/nonexistent/workflow/path', workflows: 0, ambiguous: [] });
+    });
+
+    it('GET /ready returns 503 when the corpus holds no workflow', async () => {
+      const empty = mkdtempSync(join(tmpdir(), 'wf-empty-corpus-'));
+      try {
+        const readyApp = createHttpApp(buildConfig({ workflowDir: empty }));
+        const res = await get(readyApp, '/ready');
+        expect(res.status).toBe(503);
+        expect(res.body.status).toBe('not-ready');
+        expect(res.body.checks.corpusServes).toBe(false);
+        expect(res.body.corpus.workflows).toBe(0);
+      } finally {
+        rmSync(empty, { recursive: true, force: true });
+      }
     });
 
     it('GET /ready returns 503 with status not-ready when workspaceDir is missing', async () => {

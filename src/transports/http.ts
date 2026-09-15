@@ -8,6 +8,7 @@ import type { Transport as McpTransport } from '@modelcontextprotocol/sdk/shared
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { createServer } from '../server.js';
 import type { ServerConfig } from '../config.js';
+import { indexCorpus } from '../loaders/corpus-index.js';
 import { logInfo, logWarn } from '../logging.js';
 import { requestId } from '../middleware/request-id.js';
 import { requestLogging } from '../middleware/logging.js';
@@ -79,27 +80,61 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
     res.status(200).json({ status: 'ok' });
   });
 
-  // Readiness: schemas and the workspace resolve, and the session HMAC key
-  // directory is writable (start_session fails hard otherwise). A workflow
-  // directory is optional: the listener serves without one.
+  // Readiness: schemas and the workspace resolve, the session HMAC key
+  // directory is writable (start_session fails hard otherwise), and the corpus
+  // holds at least one workflow — a listener whose corpus names nothing answers
+  // every tool call with a miss, so readiness that ignored it would report a
+  // server that cannot serve.
   // `checks.workspaceDir` is the configured worktree / workspace root
   // (`--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` / `--repo`);
   // the JSON key stays `workspaceDir` for existing HTTP consumers.
   // `engineeringDir` is included when split from workspace (repo binding).
+  // `corpus` carries the facts a caller needs to tell one instance from
+  // another: which tree is mounted, and what the walk found in it.
   app.get('/ready', async (_req, res) => {
     const engineeringDir = config.engineeringDir ?? config.workspaceDir;
     const sessionKeyWritable = await probeSessionKeyWritable();
+    const corpus = describeCorpus(config.workflowDir);
     const checks: Record<string, boolean> = {
       schemasDir: existsSync(config.schemasDir),
       workspaceDir: existsSync(config.workspaceDir),
       sessionKeyWritable,
+      corpusServes: corpus.workflows > 0,
     };
     if (engineeringDir !== config.workspaceDir) {
       checks['engineeringDir'] = existsSync(engineeringDir);
     }
     const ready = Object.values(checks).every(Boolean);
-    res.status(ready ? 200 : 503).json({ status: ready ? 'ready' : 'not-ready', checks });
+    res.status(ready ? 200 : 503).json({ status: ready ? 'ready' : 'not-ready', checks, corpus });
   });
+}
+
+/** What a readiness probe reports about the mounted corpus. */
+interface CorpusReport {
+  /** The tree the server resolves definitions against. */
+  dir: string;
+  /** Workflows the walk found, by the server's own discovery rule. */
+  workflows: number;
+  /** Ids more than one directory claims. Each is unresolvable under either name. */
+  ambiguous: string[];
+}
+
+/**
+ * Walk `dir` and report what a tool call would find there.
+ *
+ * The walk is the directory reads discovery already performs on every resolution, so a probe costs
+ * what one `list_workflows` costs and reports the corpus as it stands rather than as it stood at
+ * boot. A directory that is not there reports zero without walking, which keeps a probe loop from
+ * logging one unreadable-directory warning per interval.
+ */
+function describeCorpus(dir: string): CorpusReport {
+  if (!existsSync(dir)) return { dir, workflows: 0, ambiguous: [] };
+  const index = indexCorpus(dir);
+  return {
+    dir,
+    workflows: index.workflows.size,
+    ambiguous: index.ambiguous.map((claim) => claim.id),
+  };
 }
 
 function registerMcpRoute(app: Express, config: ServerConfig): void {

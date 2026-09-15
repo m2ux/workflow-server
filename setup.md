@@ -105,6 +105,7 @@ Restart the HTTP server afterward if it is running.
 | Problem | Likely cause | Fix |
 |---------|--------------|-----|
 | Sessions fail while HTTP is up | `/ready` not fully ready | Require `sessionKeyWritable: true` — [http.md](http.md) |
+| Every workflow id misses while HTTP is up | Corpus bind points at the wrong tree | Require `corpusServes: true`; compare `corpus.dir` with the bind — [http.md](http.md) |
 | Agent skips `discover` | Bootstrap rule missing | [docs/ide-setup.md](docs/ide-setup.md) |
 | Repo / planning path errors | Missing deploy or checkout under `HOST_PROJECTS_ROOT` | Complete §2a then §2b |
 | stdio exits at startup | No workspace or repo binding | [stdio.md](stdio.md) — `--workspace` or `--repo` required |

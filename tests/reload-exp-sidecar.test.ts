@@ -33,6 +33,18 @@ function withCorpus(): string {
   return tmp;
 }
 
+/** Whether `name` resolves on PATH — the preflight sits behind the script's own docker/curl checks. */
+function onPath(name: string): boolean {
+  try {
+    execFileSync('command', ['-v', name], { shell: '/bin/bash', stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const canReachPreflight = onPath('docker') && onPath('curl');
+
 describe('reload-exp-sidecar.sh', () => {
   it('parses as bash', () => {
     execFileSync('bash', ['-n', SCRIPT]);
@@ -48,6 +60,19 @@ describe('reload-exp-sidecar.sh', () => {
     expect(out.stdout).toContain('--no-build');
     expect(out.stdout).toContain('workflow-server');
     expect(out.stdout).toContain('3000');
+  });
+
+  it('usage names the projects root, the log directory and the preflight opt-out', () => {
+    const out = run(['--help']);
+    expect(out.stdout).toContain('--projects-root=DIR');
+    expect(out.stdout).toContain('--log-dir=DIR');
+    expect(out.stdout).toContain('--no-preflight');
+  });
+
+  it('usage asks only for --name, the corpus defaulting to the running container', () => {
+    const out = run(['--help']);
+    expect(out.stdout).toMatch(/Required:\s*\n\s*--name=NAME[^\n]*\n\s*\n/);
+    expect(out.stdout).toMatch(/Defaults to the corpus the running container binds/);
   });
 
   it('refuses a missing --name', () => {
@@ -105,4 +130,57 @@ describe('reload-exp-sidecar.sh', () => {
     expect(result.status).not.toBe(0);
     expect(`${result.stderr}${result.stdout}`).toMatch(/not a directory|corpus not found/);
   });
+
+  it('asks for a corpus when no container of that name binds one', () => {
+    const result = run(['--name=reload-exp-sidecar-absent', '--host-port=32772']);
+    expect(result.status).not.toBe(0);
+    expect(`${result.stderr}${result.stdout}`).toMatch(/pass --workflows-dir \(no corpus bind/);
+  });
+
+  it('refuses a projects root that is not a directory', () => {
+    const corpus = withCorpus();
+    try {
+      const result = run([
+        '--name=workflow-server-exp',
+        `--workflows-dir=${corpus}`,
+        '--host-port=32772',
+        '--projects-root=/no/such/projects',
+      ]);
+      expect(result.status).not.toBe(0);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/projects root is not a directory/);
+    } finally {
+      rmSync(corpus, { recursive: true, force: true });
+    }
+  });
+
+  // The corpus holds no workflow, so every corpus guard reports it unmeasurable. The refusal lands
+  // before the stop, which is what leaves a running sidecar up when a reload is aimed at a tree
+  // nothing can be served from.
+  it.skipIf(!canReachPreflight)('refuses a corpus the guard sweep cannot measure', () => {
+    const corpus = withCorpus();
+    try {
+      const result = run([
+        '--name=reload-exp-sidecar-absent',
+        `--workflows-dir=${corpus}`,
+        '--host-port=32772',
+        '--no-build',
+      ]);
+      expect(result.status).not.toBe(0);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/could not be measured \(guard sweep exit 2\)/);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/running sidecar is left up/);
+    } finally {
+      rmSync(corpus, { recursive: true, force: true });
+    }
+  }, 120_000);
+
+  // Each pairs the new flag with a refusal that fires before the flag is acted on, so the parse is
+  // proved without a container being stopped or started.
+  it.each(['--no-preflight', '--log-dir=/tmp/reload-exp-sidecar-logs', '--projects-root=/tmp'])(
+    'parses %s',
+    (flag) => {
+      const result = run([flag, '--name=workflow-server', '--host-port=32772']);
+      expect(`${result.stderr}${result.stdout}`).not.toMatch(/unknown option/);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/install container name/);
+    },
+  );
 });
