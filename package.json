@@ -54,6 +54,7 @@
     "check:loop-shape": "tsx guards/check-loop-shape.ts",
     "check:audience": "tsx guards/check-audience.ts",
     "check:artifact-guides": "tsx guards/check-artifact-guides.ts",
+    "check:repeated-runs": "tsx guards/check-repeated-runs.ts",
     "check:description-hygiene": "tsx guards/check-description-hygiene.ts",
     "check:refs": "tsx guards/check-all-refs.ts",
     "check:activities": "tsx guards/validate-activities.ts",
