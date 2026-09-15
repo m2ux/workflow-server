@@ -59,7 +59,7 @@ completeness is verifiable across the whole set. Each row records the source it 
 within that source, whether that section carries a normative obligation, and the requirement
 identifier(s) covering it; a section carrying no obligation is marked out of scope. The source column is
 what keeps one source's sections distinguishable from another's where two sources number their sections
-alike. What counts as a normative obligation, and what makes a row a coverage gap, are defined in
+alike. A markdown source's Source section follows [Source Reference Format](./specification-protocol.md#source-reference-format). What counts as a normative obligation, and what makes a row a coverage gap, are defined in
 [Source Coverage](./validation-rubric.md#source-coverage).
 
 ## Rules
