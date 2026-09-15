@@ -1,32 +1,30 @@
 ---
 name: validation-rubric
-description: Validation checks and the severity and type categorization that drives routing.
+description: Validation checks and the severity and type categorization that labels each issue.
 metadata:
   order: 3
 ---
 
 # Validation Rubric
 
-The checks applied to an updated specification and the scheme for categorizing each issue. The verdict
-drives routing: a clean result finalizes, correctable issues trigger another correction pass, and
-critical issues stop refinement.
+The checks applied to an updated specification and the scheme for categorizing each issue.
 
 ## Checks
 
 ### Structure
-- All canonical sections are present and correctly ordered.
+- All canonical sections are present and correctly ordered per [Section Structure](./specification-protocol.md#section-structure).
 - Requirement entries conform to [Requirement Entry Format](./specification-protocol.md#requirement-entry-format).
 - Markdown syntax is well-formed.
 
 ### Identifiers
 - Every requirement and source identifier is unique.
-- New identifiers fall in the correct category (`REQ-F###`, `REQ-NF###`, `SRC-MTG###`, …).
+- New identifiers fall in the correct category per [Identifier Schemes](./specification-protocol.md#identifier-schemes).
 - Non-sequential identifiers are expected and are **not** a failure.
 
 ### Content
-- Requirement statements are atomic, testable, and use `SHALL` / `SHOULD` / `MAY` appropriately.
+- Requirement statements are atomic, testable, and use `SHALL` / `SHOULD` / `MAY` as [Requirement Entry Format](./specification-protocol.md#requirement-entry-format) requires.
 - Every requirement carries a complete rationale and at least one source reference.
-- Status values are drawn from the permitted set; newly added requirements are `pending`.
+- Status values are drawn from [Status Conventions](./specification-protocol.md#status-conventions); newly added requirements are `pending`.
 
 ### Consistency
 - Source references resolve to entries listed in section 2 (Requirements Sources) and conform to [Source Reference Format](./specification-protocol.md#source-reference-format).
@@ -46,13 +44,13 @@ Each issue is tagged with a severity and a type:
 | severity | `critical`, `high`, `medium`, `low` |
 | type | `irreconcilable`, `structure`, `content`, `syntax` |
 
-**Critical / irreconcilable** issues require manual intervention and stop refinement:
+**Critical / irreconcilable** issues require manual intervention:
 - Fundamental requirement conflicts or contradictions.
 - Essential requirement information that cannot be inferred.
 - Structural damage that breaks document integrity.
 - Source-traceability problems that cannot be resolved automatically.
 
-**Correctable** issues can be addressed by another correction pass:
+**Correctable** issues can be completed from available context:
 - Markdown and formatting errors.
 - Minor wording improvements.
 - Requirement-identifier collisions.

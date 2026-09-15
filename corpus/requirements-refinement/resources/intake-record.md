@@ -7,7 +7,7 @@ metadata:
 
 # Intake Record
 
-Creation guide for bare filename `intake.md`. The record of what a refinement run was given: which sources, which target specification, how each source was classified, and whether the run augments an existing specification or creates one. Written before any analysis, so a later reader can tell what the run was working from.
+Creation guide for bare filename `intake.md`. The record of what a refinement run was given: which sources, which target specification, how each source was classified, and whether the run augments an existing specification or creates one.
 
 ## Template
 
@@ -30,6 +30,6 @@ Creation guide for bare filename `intake.md`. The record of what a refinement ru
 
 - **Captured values only.** The record holds what intake captured and classified. Analysis findings, requirement identifiers, and coverage belong to the analysis artifact.
 - **One row per source.** The source table carries a row for every document the run was given.
-- **Source type carries its reference form.** A meeting source is referenced downstream as `SRC-MTG###`, a document source as `SRC-DOC###` — see [Source Reference Format](./specification-protocol.md#source-reference-format). State each source's type; the format stays there.
-- **Mode is the target's existence.** Augment when the target file exists, create when it does not. No narration of what either mode will do next.
+- **Source type is recorded; the reference form stays in [Source Reference Format](./specification-protocol.md#source-reference-format).**
+- **Mode is the target's existence.** Augment when the target file exists, create when it does not.
 - **Line budget:** ~20 lines.

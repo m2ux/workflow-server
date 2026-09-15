@@ -1,7 +1,7 @@
 id: finalize-specification
-version: 1.7.0
+version: 1.8.0
 name: Finalize Specification
-description: Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts, and confirm the user accepts them for promotion to the canonical location.
+description: Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts.
 variables:
   reads:
     - source_paths
@@ -18,8 +18,16 @@ variables:
       defaultValue: ""
     - name: finalization_accepted
       type: boolean
-      description: Whether the user endorsed the staged specification and change summary for promotion.
+      description: Whether the staged specification and change summary are accepted
       defaultValue: false
+    - name: update_pass_kind
+      type: string
+      description: Which apply this pass performs
+      values:
+        - initial
+        - correction
+        - revision
+      defaultValue: initial
 required: true
 steps:
   - kind: technique
@@ -33,7 +41,7 @@ steps:
     actions:
       - action: validate
         target: final_specification_path
-        message: Acceptance is blocked until the final specification is staged under the planning folder, with the canonical target left as it was found (staging-boundary gate)
+        message: "The final specification is not staged under the planning folder. Write `{final_specification}` to `{planning_folder_path}` and re-run."
   - kind: technique
     id: verify-artifact-conformance
     technique:
@@ -42,25 +50,26 @@ steps:
         guide_map: requirements-refinement/README#planning-artifact-to-guide-map
   - kind: checkpoint
     id: finalization-confirmed
-    message: "The final specification {spec_basename} and the change summary are staged for promotion to the canonical location ([final specification]({final_specification_path}), [change summary]({change_summary_path}))."
+    message: "The final specification {spec_basename} and the change summary are staged ([final specification]({final_specification_path}), [change summary]({change_summary_path}))."
     options:
       - id: accepted
-        label: Accept — staged for promotion
-        description: Final specification and change summary are accepted; the user will promote them to the canonical location.
+        label: Accept — staged
+        description: Final specification and change summary are accepted.
         effect:
           setVariable:
             finalization_accepted: true
       - id: revise
-        label: Revise before finalizing
-        description: The final specification or change summary needs revision before acceptance.
+        label: Revise
+        description: The final specification or change summary needs revision.
         effect:
           setVariable:
             finalization_accepted: false
+            update_pass_kind: revision
 exits:
   - id: accepted
     when: finalization_accepted == true
   - id: revision-requested
     isDefault: true
 outcome:
-  - The user has a promotion-ready specification alongside a human-readable account of what changed, so they can review and promote in one step
-  - The user has explicitly accepted the result for promotion, so the workflow can complete knowing the outcome is endorsed
+  - A staged specification sits alongside a human-readable account of what changed
+  - The staged result is explicitly accepted

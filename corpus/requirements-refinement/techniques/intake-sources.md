@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Capture the source-document and target-specification paths, record whether every source document is readable, classify each source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and record the intake.
+Record the source paths, whether every source is readable, each source's type, and whether the specification is being augmented or created.
 
 ## Outputs
 
@@ -45,22 +45,21 @@ Absolute path to the written intake record.
 
 ### 1. Capture Source Paths
 
-- Capture `{source_paths}` and `{target_doc_path}` from the user request.
-- Set `{spec_basename}` to the basename of `{target_doc_path}` (filename without directory).
+- Capture `{source_paths}` and `{target_doc_path}`.
+- Emit `{spec_basename}` per its output contract.
 
 ### 2. Record Source Readability
 
-- Set `{source_readable}` to `true` when every document named in `{source_paths}` exists and carries content, `false` when any of them is missing or empty.
+- Determine `{source_readable}` per its output contract.
 
 ### 3. Classify Each Source
 
-- For each path in `{source_paths}`, infer from that document's content whether it is a meeting transcript or an unstructured document, and record it in `{classified_sources}` as `{ path, type }` with `type` set to `meeting` or `document`.
-- A `meeting` source is later referenced as `SRC-MTG###`; a `document` source as `SRC-DOC###` credited to the document's author, per [specification-protocol](../resources/specification-protocol.md#source-reference-format). Each source carries its own reference, so a mixed set is classified per document rather than as a whole.
+- For each path in `{source_paths}`, infer from that document's content whether it is a meeting transcript or an unstructured document, and record it in `{classified_sources}` as `{ path, type }` with `type` set to `meeting` or `document`. Each source carries its own type, so a mixed set is classified per document rather than as a whole.
   > A source with no content to read carries no classification.
 
 ### 4. Detect Target Existence
 
-- Set `{target_doc_exists}` to `true` when a file exists at `{target_doc_path}`, `false` otherwise.
+- Determine `{target_doc_exists}` per its output contract.
 
 ### 5. Record Intake
 

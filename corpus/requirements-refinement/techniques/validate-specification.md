@@ -1,21 +1,21 @@
 ---
 metadata:
-  version: 1.7.1
+  version: 1.8.0
 ---
 
 ## Capability
 
-Validate the updated specification against structural, identifier-uniqueness, consistency, source-coverage, and protocol-conformance checks, categorize each issue as critical or correctable, and derive the routing verdict — whether validation passed, and whether critical or correctable issues remain — with the source-coverage result recorded in the report.
+Judge whether the updated specification is conformant and covers every source, with each issue labeled critical or correctable.
 
 ## Inputs
 
 ### working_specification
 
-The updated specification document to validate.
+The updated specification document.
 
 ### requirements_analysis
 
-The structured analysis whose source-coverage matrix is the completeness reference for validation.
+The structured analysis carrying the source-coverage matrix.
 
 ## Outputs
 
@@ -45,23 +45,27 @@ Presence of a defect another correction pass resolves, with no blocking defect a
 
 ### validation_passed
 
-Overall verdict — `true` when the specification is conformant and covers every source in full, so it is ready to finalize.
+Overall verdict — `true` when the specification is conformant and covers every source in full.
+
+### update_pass_kind
+
+`correction` when this pass's issues are correctable with no blocking defect.
 
 ## Protocol
 
 ### 1. Run Conformance Checks
 
-- Validate `{working_specification}` against the checks in [validation-rubric](../resources/validation-rubric.md#checks): section structure, requirement-identifier uniqueness, source-reference accuracy, markdown syntax, and cross-section consistency.
+- Validate `{working_specification}` against the checks in [validation-rubric](../resources/validation-rubric.md#checks).
 
 ### 2. Check Source Coverage
 
-- Using `{requirements_analysis.source_coverage_matrix}`, confirm every normative source statement maps to a requirement present in `{working_specification}`, and record any uncovered statement per [validation-rubric](../resources/validation-rubric.md#source-coverage).
+- Record uncovered statements from `{requirements_analysis.source_coverage_matrix}` per [Source Coverage](../resources/validation-rubric.md#source-coverage).
 
 ### 3. Categorize Issues
 
-- Assign each issue a severity and type per [validation-rubric](../resources/validation-rubric.md#issue-categorization), treating critical or irreconcilable issues as blocking and the remainder — including coverage gaps — as correctable.
+- Assign each issue a severity and type per [Issue Categorization](../resources/validation-rubric.md#issue-categorization).
 
 ### 4. Compile Verdict
 
 - Write `{validation_report}` to `{planning_folder_path}` per [validation-report](../resources/validation-report.md#template) and its [Rules](../resources/validation-report.md#rules); capture its written location as `{validation_report_path}`.
-- Emit `{has_critical_issues}`, `{has_correctable_issues}` and `{validation_passed}` from the categorized issues, each as its declared contract defines it. The source-coverage result is recorded in `{validation_report}` alongside them, per that output's contract.
+- Emit `{has_critical_issues}`, `{has_correctable_issues}`, `{validation_passed}`, and `{update_pass_kind}` from the categorized issues, each as its declared contract defines it. The source-coverage result is recorded in `{validation_report}` alongside them, per that output's contract.

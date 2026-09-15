@@ -2,22 +2,18 @@
 
 > Part of the [Requirements Refinement Workflow](../README.md)
 
-The procedures the activities apply. [`TECHNIQUE.md`](TECHNIQUE.md) is the workflow-root base contract:
-it declares the inputs shared across techniques (`planning_folder_path`, `source_paths`,
-`target_doc_path`, `correction_iteration`) and the specification-fidelity rules every
-technique inherits.
+The procedures the activities apply. [`TECHNIQUE.md`](TECHNIQUE.md) holds the shared inputs
+(`planning_folder_path`, `source_paths`, `target_doc_path`, `correction_iteration`) and the
+specification-fidelity rules.
 
 | Technique | Capability |
 |-----------|-----------|
-| [intake-sources](intake-sources.md) | Capture the source paths, record whether every source is readable, classify each source's type, detect augment-vs-create, and record the intake |
-| [analyze-source](analyze-source.md) | Parse the source documents against the current specification into a structured analysis report |
-| [update-specification](update-specification.md) | Apply the analysis or correction findings to a complete updated specification |
+| [intake-sources](intake-sources.md) | Record the source paths, whether every source is readable, each source's type, and whether the specification is being augmented or created |
+| [analyze-source](analyze-source.md) | Produce a structured analysis of the requirement changes the source documents imply, with a source-coverage matrix |
+| [update-specification](update-specification.md) | Apply the analysis, correction findings, or requested revisions to a complete updated specification |
 | [validate-specification](validate-specification.md) | Validate the updated specification and categorize each issue |
-| [finalize-specification](finalize-specification.md) | Assemble the final specification and change summary for promotion |
-| [report-failure](report-failure.md) | Compile a failure report when refinement cannot complete automatically |
+| [finalize-specification](finalize-specification.md) | Assemble the final specification and change summary |
+| [report-failure](report-failure.md) | Compile a failure report when refinement stops with unresolved critical issues |
 
-## Why the knowledge graph is absent
-
-This library binds no [`gitnexus-operations`](/meta/techniques/gitnexus-operations/TECHNIQUE.md) operation, and the group's own `subjects-the-index-holds` rule is the reason. Both of this workflow's subjects sit outside every index: `{source_paths}` names meeting transcripts and unstructured documents supplied for this run, and `{target_doc_path}` is a specification the run is in the middle of rewriting. Neither has been walked by an index, so an operation addressed at either reports on whatever tree the graph does hold.
-
-The completeness question the workflow turns on — does every normative statement in every source reach a requirement in the specification — is a comparison of documents in hand, and stays a read of all of them.
+Completeness is a comparison of the documents in hand: every normative statement in `{source_paths}`
+reaches a requirement in the specification at `{target_doc_path}`.

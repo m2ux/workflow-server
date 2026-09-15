@@ -5,21 +5,25 @@ metadata:
 
 ## Capability
 
-Apply the requirements analysis (initial pass) or the validation findings (correction pass) to produce the complete updated specification, preserving the specification protocol verbatim.
+Apply requirement changes, validation findings, or requested revisions to produce the complete updated specification, preserving the specification protocol verbatim.
 
 ## Inputs
 
+### update_pass_kind
+
+Which apply this pass performs.
+
 ### requirements_analysis
 
-Structured analysis of the requirement changes to apply on the initial pass.
+Structured analysis of the requirement changes.
 
 ### validation_report
 
-*(optional)* Categorized validation findings to address on a correction pass.
+*(optional)* Categorized validation findings.
 
 ### target_doc_exists
 
-`true` when the target specification already exists and its section structure is preserved; `false` when the full specification structure is instantiated from scratch.
+`true` when a file exists at `{target_doc_path}` (the specification is augmented); `false` when it is created from scratch.
 
 ## Outputs
 
@@ -41,17 +45,16 @@ Absolute path to the written working specification for this pass.
 
 ### correction_iteration
 
-Count of correction passes performed: `0` on the initial pass, and one greater than the preceding pass on each correction pass.
+Count of correction passes performed so far.
 
 ## Protocol
 
 ### 1. Apply Changes
 
-- Operate in correction mode when `{validation_report}` carries correctable findings; otherwise operate in initial mode.
-- In initial mode, apply each change in `{requirements_analysis}`: add source references per [source-reference format](../resources/specification-protocol.md#source-reference-format), create new requirements with sequential identifiers, update existing requirements, and deprecate as directed.
-  - Set every newly added requirement's status to `pending` per [specification-protocol](../resources/specification-protocol.md#status-conventions).
-  - Preserve the existing section structure when `{target_doc_exists}`; instantiate the full [specification-protocol](../resources/specification-protocol.md#section-structure) structure when creating from scratch.
-- In correction mode, address each correctable finding in `{validation_report}`: resolve a source-coverage finding by adding the missing requirement(s); otherwise change no requirement's meaning and introduce no new requirement.
+- Apply the changes `{update_pass_kind}` names.
+  > - When `{update_pass_kind}` is `initial`, apply each change in `{requirements_analysis}`: add source references per [specification-protocol](../resources/specification-protocol.md#source-reference-format), create new requirements with sequential identifiers, update existing requirements, and deprecate as directed. Set every newly added requirement's status to `pending` per [specification-protocol](../resources/specification-protocol.md#status-conventions). Preserve the existing section structure when `{target_doc_exists}`; instantiate the full [specification-protocol](../resources/specification-protocol.md#section-structure) structure when creating from scratch.
+  > - When `{update_pass_kind}` is `correction`, address each correctable finding in `{validation_report}`: resolve a source-coverage finding by adding the missing requirement(s); otherwise change no requirement's meaning and introduce no new requirement.
+  > - When `{update_pass_kind}` is `revision`, apply the requested revisions to `{working_specification}`: change no requirement's meaning except as the revision asks, and introduce no new requirement the revision does not ask for.
 
 ### 2. Write Working Specification
 

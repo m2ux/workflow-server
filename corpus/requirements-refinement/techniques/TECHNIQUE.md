@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Shared inputs and specification-fidelity invariants for every requirements-refin
 
 ### planning_folder_path
 
-Absolute path to this run's planning folder; each technique reads prior artifacts from, and writes its own artifact into, this folder.
+Absolute path to this run's planning folder.
 
 ### source_paths
 
@@ -23,7 +23,7 @@ Filesystem path to the canonical requirements specification being augmented or c
 
 ### correction_iteration
 
-Count of correction passes performed so far; `0` on the initial update.
+Count of correction passes performed so far.
 
 #### default
 
@@ -35,6 +35,6 @@ Count of correction passes performed so far; `0` on the initial update.
 
 The [section structure](../resources/specification-protocol.md#section-structure), [requirement-entry format](../resources/specification-protocol.md#requirement-entry-format), [identifier schemes](../resources/specification-protocol.md#identifier-schemes), and [status conventions](../resources/specification-protocol.md#status-conventions) are preserved verbatim.
 
-### artifacts-confined-to-planning-folder
+### artifacts-write-under-planning-folder
 
-Each technique writes its artifact under `{planning_folder_path}`, performs no version-control operations, and never edits the canonical document in place.
+Each technique writes its artifact under `{planning_folder_path}`.

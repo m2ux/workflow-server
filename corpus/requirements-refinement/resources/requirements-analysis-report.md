@@ -65,7 +65,7 @@ alike. A markdown source's Source section follows [Source Reference Format](./sp
 ## Rules
 
 - **Identifiers are reused where they apply.** Map each change to an existing requirement identifier where one applies; otherwise propose a new identifier within the correct category.
-- **Every source gets its own reference under Document Updates Required.** Assign one per source document and list each there so it reaches the correct section — a meeting transcript (`SRC-MTG###`) to section 2.2, an unstructured document (`SRC-DOC###`, credited to its author) to section 2.5.
+- **Every source gets its own reference under Document Updates Required.** Assign one per source document and list each in the section [Specification Protocol](./specification-protocol.md#section-structure) names for that source type.
 - **A change drawn from several sources cites each of them.** Where two sources bear on one requirement, list both references rather than picking the fuller one.
 - **Each change is applicable without the sources.** State it precisely enough to be applied without re-reading any source document.
 - **Line budget:** ~120 lines, whatever the size of the source set. The source-coverage matrix is the payload; narrative about the sources belongs in the intake record.
