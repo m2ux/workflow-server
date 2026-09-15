@@ -397,10 +397,19 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     const lookup: FragmentsLookup = (id) => fragmentCache.get(id);
     const materialized: Activity[] = [];
     for (const activity of workflow.activities ?? []) {
+      const scope = activitySourceWorkflow.get(activity.id) ?? workflowId;
       try {
         // Also validates inline checkpoints (a step with neither ref nor body is rejected here,
         // not later at yield time).
-        materializeActivityFragments(activity, lookup, activitySourceWorkflow.get(activity.id) ?? workflowId);
+        materializeActivityFragments(activity, lookup, scope);
+        // The authored form is a separate object only where a routine was materialised into the
+        // activity, and it carries the checkpoint refs the file spells. A derivation reading it
+        // needs those bodies for the same reason the materialised form does: a ref step with no
+        // options declares no effect, so every name the fragment's options set would read as
+        // written by nothing. Its refs are a subset of the materialised form's, so the lookup
+        // gathered above already covers them.
+        const authored = authoredActivities.get(activity.id);
+        if (authored !== undefined && authored !== activity) materializeActivityFragments(authored, lookup, scope);
         materialized.push(activity);
       } catch (error) {
         // Same contract as a per-file load failure: exclude the activity and surface the error
@@ -408,6 +417,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
         const message = error instanceof Error ? error.message : String(error);
         logWarn('Excluding activity with unresolvable fragments', { workflowId, activityId: activity.id, error: message });
         activityLoadErrors.push({ file: `${activity.artifactPrefix ?? ''}${activity.artifactPrefix ? '-' : ''}${activity.id}.yaml`, activity_id: activity.id, error: message });
+        authoredActivities.delete(activity.id);
       }
     }
     if (workflow.activities) workflow.activities = materialized;
