@@ -58,8 +58,10 @@ steps:
       - kind: technique
         id: reconcile
         technique: review-assumptions::reconcile
+      # Named for the pass rather than for its first step: a reference id and the body step it
+      # prefixes compose into one identifier, so two segments spelled alike read as a fault.
       - kind: routine
-        id: challenge
+        id: challenge-pass
         routine: challenge-concerns
         with:
           challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
