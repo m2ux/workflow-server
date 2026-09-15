@@ -1,0 +1,71 @@
+id: converge-assumptions
+version: 1.0.0
+name: Assumption Convergence Loop
+description: Reconcile assumptions and challenge the result until no agent-resolvable item remains.
+
+# The reconciliation pass reaches these names through the technique it runs, and no reference site
+# binds any of them: each host supplies its own value under the same spelling. They are declared
+# because a routine has no undeclared free variable — the signature is what makes the run checkable
+# with no host activity, and a name the body reads has to appear in it.
+inputs:
+  - id: assumption_categories
+    description: The categories an assumption is classified into.
+  - id: assumption_source
+    description: The work the assumptions are drawn from — the design decision, the plan, the analysis, or the change under construction.
+  - id: branch_name
+    description: Feature branch name.
+  - id: component_git_dir
+    description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
+  - id: planning_folder_path
+    description: Absolute path to this run's planning folder — the write location for every working artifact.
+  - id: pr_number
+    description: Pull request number.
+  - id: problem_statement
+    description: A clear problem definition with system understanding, impact assessment, success criteria, and constraints — understandable without prior context.
+  - id: requirements
+    description: The captured requirements list elicited across the domains.
+  - id: target_path
+    description: Feature worktree path for edits, builds, and PR ops.
+  - id: target_repo
+    description: GitHub repository as owner/repo.
+
+outputs:
+  - id: assumptions_log
+    type: object
+    description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+  - id: has_resolvable_assumptions
+    type: boolean
+    description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
+  - id: has_open_assumptions
+    type: boolean
+    description: Whether unresolved assumptions requiring stakeholder input remain.
+  - id: open_assumptions
+    type: array
+    description: The irreducible open assumptions after convergence.
+
+steps:
+  - kind: loop
+    id: convergence
+    name: Assumption Convergence Loop
+    loopType: doWhile
+    continueWhile:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    maxIterations: 10
+    steps:
+      - kind: technique
+        id: reconcile
+        technique: review-assumptions::reconcile
+      - kind: routine
+        id: challenge
+        routine: challenge-concerns
+        with:
+          challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+          concern_document: assumptions_log
+        outputs:
+          concern_document: assumptions_log
+          concerns_agent_resolvable: has_resolvable_assumptions
+          residual_opens_remain: has_open_assumptions
+          residual_opens: open_assumptions
