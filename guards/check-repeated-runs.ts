@@ -139,6 +139,13 @@ export function stepSignature(step: Step): string {
         .join(';');
       return `L:${String(step.loopType)}/${step.over ? String(step.over) : ''}{${body}}`;
     }
+    case 'routine': {
+      // The routine named and the parameters bound, on the same terms as a technique step: the run
+      // a reference stands for is decided by which routine it names, and a site varies by the
+      // values it binds rather than by which parameters it binds at all.
+      const bound = isRecord(step.with) ? Object.keys(step.with).sort().join(',') : '';
+      return `R:${String(step.routine)}(${bound})`;
+    }
     default:
       return `X:${String(step.kind)}`;
   }

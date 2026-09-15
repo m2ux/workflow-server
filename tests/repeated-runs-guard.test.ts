@@ -67,6 +67,18 @@ describe('repeated-runs guard (fixture corpus)', () => {
       kind: 'loop', id: 'l', loopType: 'forEach', over: 'items', maxIterations: 20,
       steps: [{ kind: 'technique', id: 'a', technique: 'group::alpha' }],
     })).toBe('L:forEach/items{T:group::alpha()}');
+    // A routine reference signs as the routine it names and the parameters it binds, on the same
+    // terms as a technique step. Two references to DIFFERENT routines are different runs, which the
+    // kind alone cannot say — and a ledger entry has to name what converged for a later reader.
+    expect(stepSignature({ kind: 'routine', id: 'r', routine: 'converge-assumptions' }))
+      .toBe('R:converge-assumptions()');
+    expect(stepSignature({ kind: 'routine', id: 'r', routine: 'converge-assumptions' }))
+      .not.toBe(stepSignature({ kind: 'routine', id: 'r', routine: 'challenge-concerns' }));
+    // Which parameters the site binds is part of the run; what it binds them to is not.
+    expect(stepSignature({ kind: 'routine', id: 'r', routine: 'shared', with: { b: 'one', a: 'two' } }))
+      .toBe('R:shared(a,b)');
+    expect(stepSignature({ kind: 'routine', id: 'r', routine: 'shared', with: { a: 'one' } }))
+      .toBe(stepSignature({ kind: 'routine', id: 's', routine: 'shared', when: 'x', with: { a: 'two' } }));
   });
 
   it('finds a run two activity files carry under different identifiers and gates', async () => {
