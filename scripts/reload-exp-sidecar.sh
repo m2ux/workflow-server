@@ -32,6 +32,11 @@ Options:
   --workflows-dir=CORPUS   Corpus checkout (directory that contains corpus/).
                            Defaults to the corpus the running container binds.
                            Required when none is running.
+  --projects-root=DIR      Host projects root bound RW. Defaults to the root
+                           the running container binds, then to the install
+                           root. Planning lands at DIR/<repo>/.engineering/
+                           artifacts/planning, so a root of its own keeps an
+                           experiment's walks out of the live planning tree.
   --image=IMAGE            Image tag (default: workflow-server:local).
   --build[=DIR]            Checkout whose Dockerfile is built (default: this
                            repo root). DIR is an engine worktree for a branch
@@ -46,7 +51,7 @@ Options:
 
 Environment (overridden by flags):
   EXP_NAME  EXP_IMAGE  EXP_CORPUS  EXP_ENGINE  EXP_HOST_PORT
-  WORKFLOW_SERVER_START  WORKFLOW_SERVER_STOP
+  EXP_PROJECTS_ROOT  WORKFLOW_SERVER_START  WORKFLOW_SERVER_STOP
 
 Example (time-to-dispatch sidecar from its engine worktree):
 
@@ -60,12 +65,14 @@ EOF
 # Where start.sh binds the corpus inside the container. Reading the bind back names the corpus a
 # running sidecar serves.
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-/app/workflows}"
+CONTAINER_PROJECTS_ROOT="${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}"
 CONTAINER_PORT="${CONTAINER_PORT:-3000}"
 
 NAME="${EXP_NAME:-}"
 IMAGE="${EXP_IMAGE:-workflow-server:local}"
 CORPUS="${EXP_CORPUS:-}"
 ENGINE="${EXP_ENGINE:-}"
+PROJECTS="${EXP_PROJECTS_ROOT:-}"
 PORT="${EXP_HOST_PORT:-}"
 BUILD=1
 PREFLIGHT=1
@@ -78,6 +85,8 @@ while [[ $# -gt 0 ]]; do
     --image) IMAGE="${2:?}"; shift 2 ;;
     --workflows-dir=*) CORPUS="${1#*=}"; shift ;;
     --workflows-dir) CORPUS="${2:?}"; shift 2 ;;
+    --projects-root=*) PROJECTS="${1#*=}"; shift ;;
+    --projects-root) PROJECTS="${2:?}"; shift 2 ;;
     --build=*) BUILD=1; ENGINE="${1#*=}"; shift ;;
     --build)
       BUILD=1
@@ -167,6 +176,17 @@ fi
 CORPUS="$(cd "$CORPUS" && pwd)"
 [[ -d "${CORPUS}/corpus" ]] || die "corpus not found (expected ${CORPUS}/corpus)"
 
+# A projects root of its own gives an experiment its own planning tree, since planning resolves at
+# <projects-root>/<repo>/.engineering/artifacts/planning and a walk writes a folder there per run.
+# Empty leaves start.sh on the install root, which the install instance also writes to.
+if [[ -z "$PROJECTS" ]]; then
+  PROJECTS="$(container_bind_source "$NAME" "$CONTAINER_PROJECTS_ROOT")"
+fi
+if [[ -n "$PROJECTS" ]]; then
+  [[ -d "$PROJECTS" ]] || die "projects root is not a directory: ${PROJECTS}"
+  PROJECTS="$(cd "$PROJECTS" && pwd)"
+fi
+
 START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" "${ENGINE}/scripts/start.sh")"
 STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${ENGINE}/scripts/stop.sh")"
 
@@ -226,6 +246,9 @@ echo "Reloading ${NAME} on 127.0.0.1:${PORT}"
 echo "  engine : ${ENGINE} @ ${ENGINE_PIN}"
 echo "  corpus : ${CORPUS} @ ${CORPUS_PIN}"
 echo "  image  : ${IMAGE}"
+if [[ -n "$PROJECTS" ]]; then
+  echo "  projects : ${PROJECTS}"
+fi
 
 "$STOP" --name="$NAME" || true
 
@@ -237,6 +260,9 @@ START_ARGS=(
   --no-update-workflows
   --workflows-dir="$CORPUS"
 )
+if [[ -n "$PROJECTS" ]]; then
+  START_ARGS+=(--projects-root="$PROJECTS")
+fi
 if [[ "$BUILD" -eq 1 ]]; then
   START_ARGS+=(--build="$ENGINE")
 else
@@ -251,6 +277,9 @@ LABEL_ARGS=(
   --label "workflow-server.corpus.dir=${CORPUS}"
   --label "workflow-server.corpus.pin=${CORPUS_PIN}"
 )
+if [[ -n "$PROJECTS" ]]; then
+  LABEL_ARGS+=(--label "workflow-server.projects.dir=${PROJECTS}")
+fi
 if [[ "$BUILD" -eq 1 ]]; then
   LABEL_ARGS+=(--label "workflow-server.engine.dir=${ENGINE}")
   LABEL_ARGS+=(--label "workflow-server.engine.pin=${ENGINE_PIN}")
