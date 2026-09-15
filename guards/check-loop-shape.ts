@@ -13,12 +13,12 @@
  * iterates no collection, and needs no separate exit, because the test it already takes each pass is
  * where an exit belongs. The rules below are the halves of that partition.
  *
- * `breakCondition` earns a rule of its own rather than a deletion. It was measured unused while this
- * work was designed, and gained its only site two days earlier on a branch that had not merged:
- * `08-implement`'s task cycle stops iterating tasks once a symbol's provenance is unaccounted for.
- * So the field carries live meaning on an item loop, and the thing worth refusing is not the field
- * but its appearance on a loop that already has a continuation test — one field, one job, which is
- * the whole point of splitting `condition`.
+ * `breakCondition` earns a rule of its own rather than a deletion. No corpus loop declares one, so
+ * the rule stands on what the field means rather than on a site that exercises it: an item loop is
+ * the only loop that can have a reason to stop before its collection ends, because a repeat-until
+ * loop already takes a stopping decision every pass. What is worth refusing is therefore not the
+ * field but its appearance on a loop that already has a continuation test — one field, one job,
+ * which is the whole point of keeping the two partitions apart.
  *
  * A repeat-until loop with no continuation test is also the unbounded case — nothing in the
  * definition says when it stops — so `repeat-loop-without-continuation` covers it and no separate

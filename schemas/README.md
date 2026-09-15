@@ -29,9 +29,9 @@ The server enforces structure at load time plus a small runtime core; most schem
 |---|---|---|---|
 | Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly); `variables[].defaultValue` (seeded into the session variable bag at session creation, recorded as a `variables_seeded` history event) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (the file's own, plus every `variables.writes` declaration the activities in its graph contribute; rendered in `get_workflow`); `initialActivity` (wrong first activity warns); `variables[].type` and `variables[].values` (checkpoint `setVariable` values validated warn-only — mismatches stored as written) | `author`; `variables[].required` (never checked — authoring metadata) |
 | Activity | `variables.writes[]` (contributed to the including workflow's variable set at load; two declarations of one name that disagree on `type`, `defaultValue` or `values` fail the load); `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle); `bundleTechniques` (hybrid step-technique bundling in `get_activity`) | `variables.reads[]` (the names the activity needs the workflow to supply; `check:activity-variables` holds the graph to them); `name`, `description`, `required`, `rules[]`; `exits[]` (every one bound in the workflow's `graph` or the load fails; the destination reached warns only — `next_activity` moves anywhere) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
-| Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` / `condition` gates (the server never evaluates a condition; on a checkpoint step only `condition` enables `condition_not_met` dismissal); `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag and is slated for removal at the next schema major, #166 B7/B12) |
+| Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` gates, carried by every step kind; `condition` gates, carried by the technique, action and checkpoint kinds (a loop states its continuation test in `continueWhile` instead — see the Loop step row); the server never evaluates a condition, and on a checkpoint step only `condition` enables `condition_not_met` dismissal; `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag and is slated for removal at the next schema major, #166 B7/B12) |
 | Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.exit` (checked at load against the activity's `exits`; the destination is read from the workflow graph, recorded and returned, and the orchestrator enacts it via `next_activity`) | — |
-| Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
+| Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `continueWhile` (the continuation test the agent takes to decide whether the body runs again), `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
 | Technique | `id` (resolution); rule addressing (`tech::rule`, group-prefix expansion); `inputs[].id` / `outputs[].id` (composition merge keys); `outputs[].artifact.name` (drives the composed artifact contract); `Initial` / `Final` protocol titles (composition wrapping) | `version`, `capability`; `inputs[].required` / `default` (rendered; the server neither verifies a required input was supplied nor applies a default); protocol content | input-binding resolution and output remaps (the name-match convention is an agent convention; step-bound `get_technique` annotates resolution statically) |
 | Condition | — | condition text is rendered for warn-only `transition_condition` matching (exact string equality) | all evaluation — `simple` / `and` / `or` / `not`, `exists` / null semantics |
 
@@ -158,7 +158,7 @@ erDiagram
     ExitBinding |o--|| Exit : "gives a destination to"
     
     Step ||--o{ Action : "performs (technique/action kind)"
-    Step |o--o| Condition : "gated by (when/condition)"
+    Step |o--o| Condition : "gated by (when on every kind, condition on technique/action/checkpoint, continueWhile on loop)"
     Step ||--|{ CheckpointOption : "has (checkpoint kind)"
     Step ||--o{ Step : "iterates (loop kind, nested body)"
     CheckpointOption ||--o| Effect : triggers
@@ -380,9 +380,9 @@ A `kind: loop` step is a compound step that iterates over collections or while c
 | `loopType`       | enum      | "forEach", "while", or "doWhile" (renamed from `type` to avoid clashing with `Condition.type`) |
 | `variable`       | string    | Iteration variable name             |
 | `over`           | string    | Collection to iterate (forEach)     |
-| `condition`      | Condition | Continue condition (while/doWhile)  |
+| `continueWhile`  | Condition | Continuation test of a `while`/`doWhile` loop: the body runs again while it holds. Declared by every repeat-until loop and by no `forEach`. Agent-evaluated; `loopType` says when it is taken |
 | `maxIterations`  | integer   | Safety limit (agent-enforced)       |
-| `breakCondition` | Condition | Early exit condition (agent-evaluated each iteration) |
+| `breakCondition` | Condition | Early exit from item iteration, agent-evaluated before each item: the walk stops part way through the collection when it holds. A repeat-until loop states its stopping condition in `continueWhile` |
 | `steps`          | Step[]    | Nested step body executed per iteration |
 
 ### Supporting Types
@@ -496,7 +496,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `description` | string | Workflow description |
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
-| `rules` | { workflow?, activity?, universal?: (string \| { ref })[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both). Entries are rule strings or `{ ref }` fragment imports |
+| `rules` | { workflow?, activity?, universal?: string[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both). Every entry is a rule string: text two workflows both need is neither one's to own, so its home is the conduct technique whose audience it binds and the bundle delivers it |
 | `fragments` | { checkpoints? } | Shared checkpoint bodies importable by `ref` (`[workflow::]name`); resolved at load so delivered content is always materialized |
 | `techniques` | { workflow?, activity?: string[] } | Orchestrator techniques (`workflow`, bundled into `get_workflow`) + techniques inherited by every activity (`activity`, injected into every `get_activity`) |
 | `variables` | array | Variable definitions with types and defaults |
@@ -630,7 +630,7 @@ An adhoc checkpoint — one the activity does not declare, supplied at `yield_ch
 
 ### Loop Steps
 
-A `kind: loop` step is a compound step that iterates over collections or while conditions. Its body is a nested `steps[]` (there is no separate `loops[]` array). It is the one step kind that may carry a `name`:
+A `kind: loop` step is a compound step that walks a collection or repeats while its `continueWhile` test holds. Its body is a nested `steps[]` (there is no separate `loops[]` array). It is the one step kind that may carry a `name`:
 
 ```json
 {
@@ -655,7 +655,7 @@ A `kind: loop` step is a compound step that iterates over collections or while c
 }
 ```
 
-**Loop Types (`loopType`):** `forEach`, `while`, `doWhile`
+**Loop Types (`loopType`):** `forEach` walks the collection named in `over`, binding each item to `variable`; `while` and `doWhile` repeat while the `continueWhile` test holds, `while` taking that test before the first pass and `doWhile` after one.
 
 ### Exits and the graph
 

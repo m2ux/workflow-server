@@ -20,10 +20,10 @@
  * declares `defaultOption` and `autoAdvanceMs`, and one that must declares neither. Both are
  * structure the guard suite can already see.
  *
- * Scope: `rules.workflow`, `rules.activity`, `rules.universal` and `fragments.rules` in every
- * `workflow.yaml`, activity `rules[]`, and the `## Rules` body of every technique. Prose outside a
- * rule — a description, a README, a checkpoint message — is orientation and is not scanned; a rule
- * is what an agent is handed as binding.
+ * Scope: `rules.workflow`, `rules.activity` and `rules.universal` in every `workflow.yaml`,
+ * activity `rules[]`, and the `## Rules` body of every technique — every place a rule text can be
+ * authored. Prose outside a rule — a description, a README, a checkpoint message — is orientation
+ * and is not scanned; a rule is what an agent is handed as binding.
  *
  * This is `AP-117 no-engine-mechanics-as-rules` made mechanical for the one contract whose
  * restatement has already caused a live decision failure.
@@ -88,14 +88,8 @@ function claimsIn(text: string): string[] {
   return PRESENTATION_CLAIMS.filter((c) => c.pattern.test(text)).map((c) => c.says);
 }
 
-/**
- * Rule text carried by a bucket or a fragment. A bucket is a list whose entries are strings or
- * `{ ref }` imports, which carry no text of their own. A fragment is either such a list or one bare
- * string — `remediate-vuln`'s orchestration-model fragment is a string, and reading only the list
- * form is how a whole rule stays unscanned.
- */
+/** The rule texts a bucket carries: a list of plain strings, each one a rule as authored. */
 function ruleStrings(bucket: unknown): string[] {
-  if (typeof bucket === 'string') return [bucket];
   if (!Array.isArray(bucket)) return [];
   return bucket.filter((e): e is string => typeof e === 'string');
 }
@@ -148,22 +142,6 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       const def = parse(readFileSync(wfFile, 'utf-8')) as Record<string, unknown> | null;
       scanned++;
       scanRulesObject(def?.['rules'], relative(root, wfFile), findings);
-      const fragments = def?.['fragments'] as Record<string, unknown> | undefined;
-      if (fragments?.['rules']) {
-        // A rule fragment is imported by `ref` into a bucket, so its text binds the same agents.
-        for (const [name, entries] of Object.entries(fragments['rules'] as Record<string, unknown>)) {
-          for (const entry of ruleStrings(entries)) {
-            const says = claimsIn(entry);
-            if (says.length === 0) continue;
-            findings.push({
-              check: 'presentation-rule-outside-its-home',
-              site: `${relative(root, wfFile)} fragments.rules.${name}`,
-              detail: `rule fragment ${says.join('; ')} — "${entry.slice(0, 110).replace(/\s+/g, ' ')}…". `
-                + 'When a gate is presented is stated once, in meta workflow-engine::present-checkpoint-to-user.',
-            });
-          }
-        }
-      }
     }
 
     const activitiesDir = join(wfDir, 'activities');

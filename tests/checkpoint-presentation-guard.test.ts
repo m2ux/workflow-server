@@ -52,15 +52,6 @@ describe('checkpoint-presentation guard', () => {
     expect(findings[0]!.detail).toContain('names the question-asking tool');
   });
 
-  it('flags a rule fragment, which binds the same agents once imported by ref', () => {
-    const findings = findingsFor({
-      'wf/workflow.yaml':
-        'id: wf\nfragments:\n  rules:\n    shared:\n      - Soft mid-flow checkpoints auto-resolve without AskQuestion.\n',
-    });
-    expect(findings).toHaveLength(1);
-    expect(findings[0]!.site).toBe('wf/workflow.yaml fragments.rules.shared');
-  });
-
   it('flags an activity rule and a technique Rules section', () => {
     const findings = findingsFor({
       'wf/workflow.yaml': CLEAN_WF,

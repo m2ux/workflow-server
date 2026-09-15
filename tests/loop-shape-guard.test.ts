@@ -84,7 +84,8 @@ describe('loop shape', () => {
     '      variable: has_uncertain_symbols', '      operator: "=="', '      value: true'].join('\n');
 
   it('accepts an item loop that stops part way through its collection', () => {
-    // The field's one live site: the task cycle stops once a symbol's provenance is unaccounted for.
+    // The walk can end before the collection does, which only an item loop has a way to say. No
+    // corpus loop declares the field, so this fixture is where its acceptance is pinned.
     expect(checks([ITEM_LOOP, BREAK].join('\n'))).toEqual([]);
   });
 

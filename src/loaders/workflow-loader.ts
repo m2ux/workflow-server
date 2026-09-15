@@ -316,9 +316,9 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     }
     const workflow = result.data;
 
-    // Materialize fragment references (#166 B10): rule `{ ref }` entries splice to their texts and
-    // checkpoint ref steps take their fragment's body, so every downstream reader — tool payloads,
-    // checkpoint yield/respond, guards — sees plain rules and full checkpoint steps. The lookup is
+    // Materialize fragment references (#166 B10): a checkpoint ref step takes its fragment's body,
+    // so every downstream reader — tool payloads, checkpoint yield/respond, guards — sees full
+    // checkpoint steps. Rules are not shared this way, so none of them is a ref. The lookup is
     // scoped to what the refs can actually name: the current workflow's fragments come from the
     // parsed object, other workflow.yaml files are read only when a qualified ref targets them or
     // a bare ref misses locally (meta fallback) — a workflow whose refs all resolve locally costs

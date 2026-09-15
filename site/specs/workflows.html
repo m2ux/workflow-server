@@ -125,7 +125,7 @@
     <li><strong>Activities</strong> — the phases the orchestrator can move between</li>
     <li><strong>Initial activity</strong> — where a new session begins</li>
     <li><strong>Rules and orchestrator techniques</strong> — behaviour that applies across the whole run</li>
-    <li><strong>Fragments</strong> — shared rule texts and checkpoint bodies, imported by <code>{ ref }</code> from rules slots and checkpoint steps (<a href="#fragments">see below</a>)</li>
+    <li><strong>Fragments</strong> — shared checkpoint bodies, imported by <code>{ ref }</code> from <code>kind:checkpoint</code> steps (<a href="#fragments">see below</a>)</li>
   </ul>
   <p class="prose">When a session starts, the server reads this manifest. The first <a href="../api/tools.html#get_workflow"><code>get_workflow</code></a> call returns:</p>
   <ul class="prose">
@@ -226,7 +226,7 @@
   <p class="prose">An activity file can be listed in more than one workflow — the borrowing workflow runs the phase, but the activity file's technique refs resolve against the workflow it was <strong>authored in</strong>. This mirrors fragment scoping: a borrowed activity's bare refs, checkpoint fragment refs, and binding-provenance scans all use the source workflow, not the session workflow. See <a href="./resource-resolution.html#borrowed">Resolution — borrowed activities</a>.</p>
 
   <h3 id="fragments">Shared fragments</h3>
-  <p class="prose">Rule texts and checkpoint bodies reused at several sites are declared once under <code>fragments</code> in <code>workflow.yaml</code> and imported by <code>{ ref: "[workflow::]name" }</code>. Rules slots and <code>kind:checkpoint</code> steps carry the ref; the server materializes the body before delivery, so agents always see full content. A ref-form checkpoint step carries only its site-local <code>id</code> and, when the fragment declares none, a <code>condition</code> — body fields like <code>message</code> and <code>options</code> are forbidden locally. Details are in <a href="./resource-resolution.html#fragments">Resolution — workflow fragments</a> and <a href="./checkpoints.html#fragments">Checkpoints — shared checkpoints</a>.</p>
+  <p class="prose">A checkpoint body reused at several sites is declared once under <code>fragments.checkpoints</code> in <code>workflow.yaml</code> and imported by <code>{ ref: "[workflow::]name" }</code>. A <code>kind:checkpoint</code> step carries the ref; the server materializes the body before delivery, so agents always see full content. A ref-form checkpoint step carries only its site-local <code>id</code> and, when the fragment declares none, a <code>condition</code> — body fields like <code>message</code> and <code>options</code> are forbidden locally. Details are in <a href="./resource-resolution.html#fragments">Resolution — workflow fragments</a> and <a href="./checkpoints.html#fragments">Checkpoints — shared checkpoints</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 260" role="img" aria-labelledby="act-title act-desc">
@@ -336,7 +336,7 @@
         <tr><td><code>technique</code></td><td>Reference to a capability by <code>::</code> path, with optional input bindings</td><td>Call <code>get_technique</code> for the step (or use content already bundled in <code>get_activity</code>), follow the protocol, record outputs</td></tr>
         <tr><td><code>action</code></td><td>One or more inline actions (<code>validate</code>, <code>message</code>, …)</td><td>Execute the listed actions against current variables; the server does not interpret action verbs</td></tr>
         <tr><td><code>checkpoint</code></td><td>A declared pause with options and effects</td><td>Call <code>yield_checkpoint</code>; orchestrator presents and <code>respond_checkpoint</code>; worker <code>resume_checkpoint</code> — see <a href="./checkpoints.html">Checkpoints</a></td></tr>
-        <tr><td><code>loop</code></td><td>A nested step list with an exit condition</td><td>Repeat the nested steps until the condition is satisfied or the loop declares completion</td></tr>
+        <tr><td><code>loop</code></td><td>A nested step list that walks a collection or carries a continuation test</td><td>Walk the collection a <code>forEach</code> names in <code>over</code>; for a <code>while</code> or <code>doWhile</code>, repeat the nested steps while its <code>continueWhile</code> test holds — <code>while</code> taking that test before the first pass, <code>doWhile</code> after one</td></tr>
       </tbody>
     </table>
   </div>
