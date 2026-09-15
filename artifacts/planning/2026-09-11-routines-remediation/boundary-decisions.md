@@ -16,6 +16,14 @@ This record establishes the facts, lays the options out with what each costs, re
 says what only the owner can settle. Where a choice changes an acceptance criterion, the current
 wording is quoted and a replacement is given.
 
+> **All three were taken on 2026-09-15, each as recommended below**: the loader returns both forms,
+> a reference site may leave a declared input unbound, and a routine name carries one separator at
+> most. The decisions live with the construct, in
+> [decisions.md](../2026-09-03-routines/decisions.md) under *Settled where the repository refused the
+> design*. The one figure this record said it did not have — the clone — is now taken, and is in the
+> first section. The technique-resolver divergence the third section describes is
+> [#741](https://github.com/m2ux/workflow-server/issues/741).
+
 **The headline.** The load path the design diagram draws is not merely unbuilt — the order it draws
 cannot produce the property it is drawn for. Materialisation splices a routine's steps in place of
 its reference, so a contract derivation running *after* materialisation meets spliced steps and never
@@ -188,13 +196,21 @@ right outcome for a criterion whose subject does not exist.
 
 - That the contract derivation stays a guard concern and does not become a load failure. C assumes
   this. If the intent is that a routine whose body contradicts its signature fails the *load* rather
-  than failing a guard run, B is the option, and its cost has to be accepted.
-- That a second copy of every activity per load is acceptable. The measurement above prices the
-  derivation, not the clone; the clone should be measured before the stage is scheduled, and it is
-  the one number this record does not have.
+  than failing a guard run, B is the option, and its cost has to be accepted. **Confirmed**: a
+  signature contradiction is a guard finding.
+- That a second copy of every activity per load is acceptable. **Measured**, with
+  [`measure/authored-form-clone-cost.ts`](measure/authored-form-clone-cost.ts) over the eighteen
+  corpus workflows and their 140 activities at corpus `11e94155`, three consecutive runs: a
+  structured clone of every activity costs **3.2 ms against a 257 ms load — 1.2%, 1.3%, 1.4% — and
+  retains 534.8 KiB**. `work-package` is the heaviest single tree at 0.84 ms and 136.6 KiB, 1.8% of
+  its own load. Held against option B's 2.0×, the clone is roughly 150 times cheaper than moving the
+  derivation onto the request path. Discovery in that script is depth-agnostic, so the nested
+  `specimens/fan-conformance` tree is measured with the other seventeen; a flat `readdirSync` of the
+  corpus root reaches 17 workflows and 130 activities and misses it entirely.
 - That the guard column register (README:1024-1083) becomes a real register rather than a planning
   table. Stage 4's fourth criterion already asks for this and `GuardSpec` (`scripts/guards.ts`) does
-  not hold it; under C it stops being a nicety.
+  not hold it; under C it stops being a nicety. **Confirmed**: the column becomes a field on
+  `GuardSpec`, and it is stage 4's work rather than stage 3's.
 
 ## The criteria that change
 
@@ -391,7 +407,8 @@ of `proseReads` at the point they are collected. Two names, and the rule already
 
 - Whether a reference site that does not bind a declared input is legal. 3′ says yes and the
   signature is still complete; 3 says no. This is the whole difference between the two, and it is a
-  judgement about how much a reference site should have to spell.
+  judgement about how much a reference site should have to spell. **Confirmed as 3′**: an unbound
+  declared input takes the host's value under the same spelling.
 - What happens to `assumption_source` and `assumption_categories`. They are read from a bag that does
   not hold them, at every host, today. The options are to declare them as workflow variables, to bind
   them inside the routine body as literals, or to declare them as routine inputs the six sites bind —
@@ -550,10 +567,12 @@ fallback, not from the claim about a single rule.
 - That reconciling the two technique resolvers is a separate decision, not folded into routines. It
   is real debt — 406 bindings read one way by one resolver and another way by the other, and a third
   implementation of the same rule sitting beside the second — but nothing about routines requires
-  fixing it, and a stage that adopts it will not finish. The right home is its own ticket.
+  fixing it, and a stage that adopts it will not finish. **Confirmed**, and the ticket it belongs to
+  is [#741](https://github.com/m2ux/workflow-server/issues/741).
 - That a routine name will never want a group. If the corpus is expected to grow routine families
   that want a namespace, option 1 has to be revisited before the grammar ships, because widening a
-  shipped grammar is cheaper than narrowing one.
+  shipped grammar is cheaper than narrowing one. **Confirmed**, and the grammar ships at one
+  separator.
 
 ## The wording that changes
 

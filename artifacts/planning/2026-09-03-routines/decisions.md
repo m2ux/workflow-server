@@ -718,42 +718,65 @@ at `src/utils/activity-variables.ts:418` and called at exactly two sites, both i
 steps and not that one. Worse, the order as drawn erases what it is drawn to protect: materialisation
 replaces a reference step with the routine's own steps, so a derivation running after it meets a body
 and no reference at all. What makes a reference a boundary is that the derivation reads the form
-still carrying it. Which mechanism supplies that form is open below.
+still carrying it. Which mechanism supplies that form is settled in the section below.
+
+## Settled where the repository refused the design
+
+Three assumptions the construct rested on, each measured false against the running system in
+[boundary-decisions.md](../2026-09-11-routines-remediation/boundary-decisions.md) and each settled by
+the owner on 2026-09-15. They sit in their own section because each one changes what a stage is
+allowed to promise, where the ten interfaces above only say where a boundary falls.
+
+**The loader returns the authored activities alongside the materialised ones.** The guard derives
+from the authored form and meets the reference; the server delivers the materialised form. The
+boundary is two forms coexisting rather than an order between two loader passes, which is what the
+subject requires: `deriveActivityContract` is called at two sites and both are inside one guard
+script, so no order inside the loader can put a reference in front of a derivation that the loader
+does not perform. `materializeActivityFragments` mutates in place
+(`src/loaders/fragment-resolver.ts:137-152`), so each activity is copied before the splice, and the
+loader already returns a side table of this shape in `activitySourceWorkflow`
+(`src/loaders/workflow-loader.ts:44-53`).
+
+The copy is the price, and it is now measured rather than assumed —
+[`authored-form-clone-cost.ts`](../2026-09-11-routines-remediation/measure/authored-form-clone-cost.ts),
+three runs over the eighteen corpus workflows and their 140 activities at corpus `11e94155`. A
+structured clone of every activity costs **3.2 ms against a 257 ms load, 1.2% to 1.4%**, and retains
+**534.8 KiB** across the whole corpus. The heaviest single workflow is `work-package` at 0.84 ms and
+136.6 KiB, 1.8% of its own load. Moving the derivation into the loader costs 2.0× the load instead,
+so the form that keeps the boundary is roughly **150 times cheaper** than the form that keeps an
+order. Three things follow and are settled with it: a routine whose body contradicts its signature
+fails a **guard run** rather than the load; a second copy of every activity per load is accepted at
+the price above; and the guard column register becomes a field on `GuardSpec` rather than a table in
+a planning file, which is already stage 4's fourth criterion.
+
+**A reference site may leave a declared input unbound, and the name takes the host's value under the
+same spelling.** That is the standing `readSignature` already computes for a technique input
+(`src/utils/activity-variables.ts:517-518`), given a routine input declaration to hang on rather than
+a fourth mechanism. The signature stays complete in both directions — a declared input nothing reads
+is a finding, and a name the body reads that the signature omits is a load failure — so the check
+stage 4 grades keeps its subject. Requiring every site to bind every declared input keeps the same
+two properties and costs sixty argument lines across the six convergence reference sites, against the
+192 lines of duplication the stage removes. The one carve-out is an artifact filename template, kept
+out of `proseReads` at `:369-372` rather than only stated, which reaches `codebase_area` and
+`decision_title` and nothing else.
+
+**A routine name carries one separator at most, and a second fails the load with a message saying
+so.** A routine lives one file deep in a flat `routines/` directory, so there is no group level for a
+grammar to address, and widening a shipped grammar is cheaper than narrowing one. The rule the design
+named is the right one and the reason it gave for naming it is false: a routine reference does *not*
+resolve the way a technique reference does, the two resolvers disagreeing on 406 of 676 corpus
+bindings. The shared home rests on the `meta` fallback instead, which the fragment resolver
+(`src/loaders/fragment-resolver.ts:50-52`) and the technique loader
+(`src/loaders/technique-loader.ts:179-186`) implement identically and 266 bindings exercise.
+Reconciling those two resolvers is real debt and it is
+[#741](https://github.com/m2ux/workflow-server/issues/741), not a clause of this construct: a routine
+carrying one separator never reaches the divergence.
 
 ## Still open
 
-Nine items. None blocks declaring, referring to or materialising a routine, and each carries the
+Six items. None blocks declaring, referring to or materialising a routine, and each carries the
 recommendation the measurement supports rather than a decision. They are named rather than numbered,
 because the numbers were cited from six files and a list is a poor home for an identifier.
-
-**The load-path item — which mechanism supplies the form carrying the reference?** Four are
-available. Moving the derivation into the loader after the splice pays 2.0× the load at all seven
-tool call sites in `src/tools/workflow-tools.ts` for a form that has no reference in it, which is the
-highest price for the property it removes. Moving it in before the splice buys the boundary at the
-same cost, plus the harder problem of what a request-path loader does with findings that are today a
-guard's business. A side table of spliced spans buys what the fourth option buys and adds the only
-silent failure mode of the four, a span drifting by one step yielding a wrong contract with no error
-anywhere.
-
-**Recommended: the loader returns the authored activities alongside the materialised ones.** The
-guard derives from the authored form and meets the reference; the server delivers the materialised
-form; the boundary stops depending on an order. `materializeActivityFragments` mutates in place
-(`src/loaders/fragment-resolver.ts:137-152`), so each activity is copied before the splice — memory
-and a clone per load, no technique-markdown reads, nothing added to the request path. The loader
-already returns a side table of this shape in `activitySourceWorkflow`
-(`src/loaders/workflow-loader.ts:44-53`). Three things the owner confirms: that a routine
-contradicting its signature fails a guard run rather than the load; that a second copy of every
-activity per load is acceptable, the clone being the one figure this has not measured; and that the
-guard column register becomes a field on `GuardSpec` rather than a table in a planning file.
-
-**The unbound-input item — may a reference site leave a declared input unbound?**
-**Recommended: yes, and the name takes the host's value under the same spelling.** That is the
-standing `readSignature` already computes for a technique input (`:517-518`), given a routine input
-declaration to hang on rather than a fourth mechanism. Requiring every site to bind every declared
-input keeps the same two properties and costs sixty argument lines across the six convergence
-reference sites, against the 192 lines of duplication the stage removes — a tax on the mechanism
-whose purpose is to remove repetition. It is a judgement about how much a reference site should have
-to spell.
 
 **The two names the convergence run's routines take.** **Recommended: `concern-challenge-pass` for
 the inner and `assumption-convergence` for the outer.** Both proposed names in
@@ -807,11 +830,6 @@ the corpus today that converting the run is what surfaces. **Recommended: declar
 inputs the six sites bind**, that being the only one of the three available answers — workflow
 variables, literals inside the body, or routine inputs — which preserves the per-host difference the
 corpus currently expresses outside the loop. It is a stage-2 disposition no census row carries.
-
-**Whether a routine name will ever want a group.** **Recommended: no, and the grammar ships at one
-separator**, because a routine lives one file deep in a flat `routines/` directory and has no group
-level for a grammar to address. Widening a shipped grammar is cheaper than narrowing one, so this is
-worth confirming before stage 3 rather than after.
 
 **The stage order.** The table in the proposal states dependencies; the measured recommendation is a
 different running order. **Recommended: stage 1 first and alone**, because it costs one script,
