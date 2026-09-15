@@ -8,8 +8,9 @@ import {
   DEFAULT_BATCH_MAX_ACTIVITIES,
   presentPathToAgent,
 } from '../config.js';
-import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, buildRoutineLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { collectRoutineRefLines, hasRoutineStepLine, injectRoutineSteps, materializeRoutineStep } from '../loaders/routine-resolver.js';
+import { buildRoutineLookup } from '../loaders/routine-loader.js';
 import {
   type Destination,
   type Workflow,

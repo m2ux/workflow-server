@@ -31,6 +31,8 @@ import type { ActivityVariables, VariableDefinition } from '../schema/variable.s
 import type { Condition } from '../schema/condition.schema.js';
 import { composeActivityTechnique } from '../loaders/technique-loader.js';
 import { indexCorpus, workflowSubdir } from '../loaders/corpus-index.js';
+import { type RoutineLookup, resolveRoutine } from '../loaders/routine-resolver.js';
+import type { Routine } from '../schema/routine.schema.js';
 import { parseDefinition } from './serialization.js';
 import { IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from './binding-provenance.js';
 import { expressionPaths } from '../schema/when-expression.js';
@@ -315,6 +317,21 @@ export function readCarriesIndex(reference: string, key: string): boolean {
   return segments[0] === key && /^\d+$/.test(segments[1] ?? '');
 }
 
+/**
+ * The routine a reference names, or undefined where it does not resolve.
+ *
+ * A derivation reports a contract rather than a load failure, and an unresolved reference is already
+ * a load failure with a message naming the site — so raising a second error here would report the
+ * same defect twice, in a place whose subject is the variables rather than the reference.
+ */
+function resolveRoutineQuietly(lookup: RoutineLookup, scopeWorkflowId: string, ref: string): Routine | undefined {
+  try {
+    return resolveRoutine(lookup, scopeWorkflowId, ref, 'contract derivation');
+  } catch {
+    return undefined;
+  }
+}
+
 /** The step-binding object of a technique step, when it carries deviations. */
 function bindingOf(step: Step): TechniqueBinding | undefined {
   if (step.kind !== 'technique') return undefined;
@@ -429,8 +446,17 @@ export async function deriveActivityContract(args: {
    * either shape in its own file.
    */
   branchKey?: string | undefined;
+  /**
+   * How a `kind: routine` step's reference resolves (#704). Required rather than optional, and the
+   * activity handed in should be the AUTHORED form: a routine reference is a boundary, so what it
+   * contributes is the routine's declared signature, and a derivation handed materialised steps
+   * meets the body instead. With no lookup a reference would contribute nothing at all and the
+   * host's declarations for the run would read as idle — a silent wrong answer, which is why the
+   * caller supplies this rather than the derivation guessing.
+   */
+  routines: RoutineLookup;
 }): Promise<DerivedContract> {
-  const { activity, workflowDir, scopeWorkflowId, namespace, branchKey: key } = args;
+  const { activity, workflowDir, scopeWorkflowId, namespace, branchKey: key, routines } = args;
   const reads = new Set<string>();
   const writes = new Set<string>();
   const internalReads = new Set<string>();
@@ -535,6 +561,32 @@ export async function deriveActivityContract(args: {
         for (const [outputId, target] of Object.entries(binding?.outputs ?? {})) landed(outputId, target);
         for (const output of signature.outputs) if (!remapped.has(output)) landed(output, output);
       }
+    }
+
+    // A routine reference contributes a DECLARED signature, and the body is never consulted (#704).
+    // Its inputs, less those a `with` binding satisfies with a literal, are the referring activity's
+    // reads; its bound outputs are its writes; its internals are neither, never having been bag
+    // names. This is the same standing a technique step already has — `readSignature` reads what the
+    // technique file declares and never inspects a body — with one difference: a routine's signature
+    // is checkable against the thing it describes, because its body is steps.
+    if (step.kind === 'routine') {
+      const routine = resolveRoutineQuietly(routines, scopeWorkflowId, step.routine);
+      for (const input of routine?.inputs ?? []) {
+        const argument = step.with?.[input.id];
+        if (argument !== undefined) {
+          // A braced argument reads what it names; a bare one is a rename when the whole string
+          // names a variable and a literal otherwise — the reading a technique input's binding gets.
+          if (typeof argument === 'string') {
+            tokenReads(argument).forEach(read);
+            if (!argument.includes('{')) readWholeName(argument);
+          }
+          continue;
+        }
+        // Unbound: the declared default supplies it, or the host does under the input's own name.
+        if (input.default !== undefined) consume(input.id);
+        else read(input.id);
+      }
+      for (const target of Object.values(step.outputs ?? {})) write(target);
     }
 
     if (step.kind === 'checkpoint') {
