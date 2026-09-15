@@ -1,30 +1,72 @@
 #!/usr/bin/env npx tsx
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { WorkflowSchema } from '../src/schema/workflow.schema.js';
 import { WorkflowStateSchema } from '../src/schema/state.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
 import { SessionFileSchema } from '../src/schema/session.schema.js';
 import { ActivitySchema } from '../src/schema/activity.schema.js';
+import { RoutineSchema } from '../src/schema/routine.schema.js';
 
-const schemasDir = join(import.meta.dirname, '..', 'schemas');
-mkdirSync(schemasDir, { recursive: true });
+/**
+ * The JSON Schema files under `schemas/`, generated from the Zod sources they mirror.
+ *
+ * The generated set is declared here and rendered by `renderSchema`, so the guard that verifies the
+ * files on disk match reads the same list rather than the directory. That distinction is
+ * load-bearing: `technique.schema.json` is hand-authored, carries an `$id` this preamble never
+ * writes, and appears in no entry below — a check written over the directory would go permanently
+ * red on a file no change ever touches.
+ */
 
-// `none` inlines fully (no $ref); `root` emits $defs for recursive schemas (the loop-kind step's
-// nested steps[] body references StepSchema, and the and/or/not condition combinators reference
-// ConditionSchema), which `none` cannot represent — it silently degrades each cycle to the empty
-// schema `{}` (accept-anything), so any schema embedding ConditionSchema must use `root`.
-function generate(schema: Parameters<typeof zodToJsonSchema>[0], name: string, desc: string, refStrategy: 'none' | 'root' = 'none'): void {
-  const json = zodToJsonSchema(schema, { name, $refStrategy: refStrategy });
-  writeFileSync(join(schemasDir, `${name}.schema.json`), JSON.stringify({ $schema: 'https://json-schema.org/draft/2020-12/schema', title: name, description: desc, ...json }, null, 2) + '\n');
-  console.log(`[PASS] Generated ${name}.schema.json`);
+export const SCHEMAS_DIR = resolve(import.meta.dirname, '..', 'schemas');
+
+interface GeneratedSchema {
+  name: string;
+  schema: Parameters<typeof zodToJsonSchema>[0];
+  description: string;
+  /**
+   * `none` inlines fully (no $ref); `root` emits $defs for recursive schemas (the loop-kind step's
+   * nested steps[] body references StepSchema, and the and/or/not condition combinators reference
+   * ConditionSchema), which `none` cannot represent — it silently degrades each cycle to the empty
+   * schema `{}` (accept-anything), so any schema embedding ConditionSchema must use `root`.
+   */
+  refStrategy: 'none' | 'root';
 }
 
-console.log('Generating JSON Schema files...\n');
-generate(WorkflowSchema, 'workflow', 'Workflow definition schema', 'root');
-generate(WorkflowStateSchema, 'state', 'Workflow state schema');
-generate(ConditionSchema, 'condition', 'Condition expression schema', 'root');
-generate(SessionFileSchema, 'session-file', 'Server-managed session file (session.json) — canonical session state owned by the workflow server.', 'root');
-generate(ActivitySchema, 'activity', 'Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop).', 'root');
-console.log('\n[PASS] Done');
+export const GENERATED_SCHEMAS: GeneratedSchema[] = [
+  { name: 'workflow', schema: WorkflowSchema, description: 'Workflow definition schema', refStrategy: 'root' },
+  { name: 'state', schema: WorkflowStateSchema, description: 'Workflow state schema', refStrategy: 'none' },
+  { name: 'condition', schema: ConditionSchema, description: 'Condition expression schema', refStrategy: 'root' },
+  { name: 'session-file', schema: SessionFileSchema, description: 'Server-managed session file (session.json) — canonical session state owned by the workflow server.', refStrategy: 'root' },
+  { name: 'activity', schema: ActivitySchema, description: 'Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop | routine).', refStrategy: 'root' },
+  { name: 'routine', schema: RoutineSchema, description: 'Routine definition schema — a named run of steps declaring its inputs, outputs and internals, materialised into the activity that refers to it.', refStrategy: 'root' },
+];
+
+/** One schema's file content, byte for byte as it is written to disk. */
+export function renderSchema(entry: GeneratedSchema): string {
+  const json = zodToJsonSchema(entry.schema, { name: entry.name, $refStrategy: entry.refStrategy });
+  return JSON.stringify(
+    { $schema: 'https://json-schema.org/draft/2020-12/schema', title: entry.name, description: entry.description, ...json },
+    null,
+    2,
+  ) + '\n';
+}
+
+export function schemaPath(name: string): string {
+  return join(SCHEMAS_DIR, `${name}.schema.json`);
+}
+
+function generateAll(): void {
+  mkdirSync(SCHEMAS_DIR, { recursive: true });
+  console.log('Generating JSON Schema files...\n');
+  for (const entry of GENERATED_SCHEMAS) {
+    writeFileSync(schemaPath(entry.name), renderSchema(entry));
+    console.log(`[PASS] Generated ${entry.name}.schema.json`);
+  }
+  console.log('\n[PASS] Done');
+}
+
+// Only when run as a script: importing this module for its exports must not write.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) generateAll();

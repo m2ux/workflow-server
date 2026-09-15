@@ -74,7 +74,7 @@
       <!-- BEGIN GENERATED — edit scripts/generate-site-data.ts, then run npm run build:site -->
       <section class="schema" id="activity">
         <h2><code>activity.schema.json</code></h2>
-        <p class="schema-summary">Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop).</p>
+        <p class="schema-summary">Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop | routine).</p>
         <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/activity.schema.json">Edit source on GitHub</a></p>
         <p class="table-caption">Top-level fields</p>
         <div class="table-wrap">
@@ -88,7 +88,7 @@
           <tr><td><code>variables</code></td><td><code>object</code></td><td>no</td><td>The session variables this activity reads and writes. Its writes are declarations contributed to the including workflow's variable set; its reads are the names it needs that workflow to supply.</td></tr>
           <tr><td><code>techniques</code></td><td><code>string[]</code></td><td>no</td><td>Activity-wide technique references (<code>::</code> paths); bundled into get_activity.</td></tr>
           <tr><td><code>bundleTechniques</code></td><td><code>object</code></td><td>no</td><td>Opt-in hybrid bundling: get_activity inlines each step technique whose composed wire form is at most maxChars and whose gate answers true at activity open; larger ones, and those whose gate has no answer yet, remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check.</td></tr>
-          <tr><td><code>steps</code></td><td><code>(technique | action | checkpoint | loop)[]</code></td><td>no</td><td>Ordered, kind-tagged execution steps for this activity</td></tr>
+          <tr><td><code>steps</code></td><td><code>(technique | action | checkpoint | loop | routine)[]</code></td><td>no</td><td>Ordered, kind-tagged execution steps for this activity</td></tr>
           <tr><td><code>exits</code></td><td><code>object[]</code></td><td>no</td><td>Named outcomes of this activity, one of which it takes when its steps end. Each is bound to a destination in the workflow's <code>graph</code>; an unbound exit fails the workflow load. Omitted on an activity that is terminal by omission.</td></tr>
           <tr><td><code>exits[].id</code></td><td><code>string</code></td><td>yes</td><td>Outcome name, unique within the activity. Kebab-case, in the activity's vocabulary — never an activity id.</td></tr>
           <tr><td><code>exits[].label</code></td><td><code>string</code></td><td>no</td><td>Human-readable statement of the outcome.</td></tr>
@@ -112,6 +112,41 @@
         <p class="schema-summary">Condition expression schema</p>
         <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/condition.schema.json">Edit source on GitHub</a></p>
         <p>One of 4 variants: <code>simple</code>, <code>and</code>, <code>or</code>, <code>not</code>.</p>
+      </section>
+      <section class="schema" id="routine">
+        <h2><code>routine.schema.json</code></h2>
+        <p class="schema-summary">Routine definition schema — a named run of steps declaring its inputs, outputs and internals, materialised into the activity that refers to it.</p>
+        <details class="schema-details">
+          <summary>Full schema description</summary>
+          <p>Routine definition schema — a named run of steps declaring its inputs, outputs and internals, materialised into the activity that refers to it.</p>
+        </details>
+        <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/routine.schema.json">Edit source on GitHub</a></p>
+        <p class="table-caption">Top-level fields</p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>Unique identifier for the routine, and the name a reference resolves.</td></tr>
+          <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>Semantic version of the routine</td></tr>
+          <tr><td><code>name</code></td><td><code>string</code></td><td>yes</td><td>Human-readable routine name</td></tr>
+          <tr><td><code>description</code></td><td><code>string</code></td><td>no</td><td>What the run does, and when to refer to it</td></tr>
+          <tr><td><code>inputs</code></td><td><code>object[]</code></td><td>no</td><td>Declared parameters. Every name the body reads that it does not write is one of these.</td></tr>
+          <tr><td><code>inputs[].id</code></td><td><code>string | &quot;requirements&quot; | &quot;features&quot; | &quot;exclusions&quot; | &quot;dimensions&quot; | &quot;tasks&quot; | &quot;results&quot; | &quot;submodules&quot; | &quot;paths&quot; | &quot;fields&quot; | &quot;filters&quot; | &quot;stats&quot; | &quot;effects&quot; | &quot;substitutions&quot; | &quot;findings&quot; | &quot;assumptions&quot; | &quot;subsystems&quot; | &quot;transitions&quot; | &quot;options&quot; | &quot;branches&quot; | &quot;agents&quot; | &quot;changes&quot; | &quot;failures&quot; | &quot;items&quot; | &quot;files&quot; | &quot;gaps&quot; | &quot;outcomes&quot; | &quot;body&quot; | &quot;query&quot; | &quot;repo&quot; | &quot;owner&quot; | &quot;number&quot; | &quot;title&quot; | &quot;branch&quot; | &quot;diff&quot; | &quot;limit&quot; | &quot;name&quot; | &quot;sha&quot; | &quot;url&quot; | &quot;head&quot; | &quot;base&quot; | &quot;ref&quot; | &quot;labels&quot; | &quot;path&quot; | &quot;cursor&quot; | &quot;cql&quot; | &quot;jql&quot; | &quot;description&quot; | &quot;assignee&quot; | &quot;depth&quot; | &quot;direction&quot; | &quot;summary&quot; | &quot;state&quot; | &quot;target&quot; | &quot;adr&quot; | &quot;type&quot; | &quot;mode&quot; | &quot;kind&quot;</code></td><td>yes</td><td>The name this parameter carries inside the body, and the name an unbound site falls through to in the host's bag.</td></tr>
+          <tr><td><code>inputs[].description</code></td><td><code>string</code></td><td>yes</td><td>What the parameter is for, in the routine's own vocabulary.</td></tr>
+          <tr><td><code>inputs[].default</code></td><td><code>string | number | boolean</code></td><td>no</td><td>The value the body takes where a reference site binds nothing. Without one, an unbound input reads the host's value under this id.</td></tr>
+          <tr><td><code>outputs</code></td><td><code>object[]</code></td><td>no</td><td>Declared produced values, each a full variable declaration bound to a session variable at the point of use.</td></tr>
+          <tr><td><code>outputs[].id</code></td><td><code>0 | 1</code></td><td>yes</td><td>The name this value carries inside the body. A reference site binds it to the session variable its value lands under.</td></tr>
+          <tr><td><code>outputs[].type</code></td><td><code>&quot;string&quot; | &quot;number&quot; | &quot;boolean&quot; | &quot;array&quot; | &quot;object&quot;</code></td><td>yes</td><td>Declared type, carried onto the session variable the reference site binds this output to.</td></tr>
+          <tr><td><code>outputs[].description</code></td><td><code>string</code></td><td>yes</td><td>What the value is.</td></tr>
+          <tr><td><code>outputs[].values</code></td><td><code>string[]</code></td><td>no</td><td>The complete set of values a string output admits, carried onto the bound session variable.</td></tr>
+          <tr><td><code>outputs[].optional</code></td><td><code>true</code></td><td>no</td><td>Declared only when a reference site may leave this output unbound, which drops the bindings that write it. Leaving an unmarked output unbound fails the load.</td></tr>
+          <tr><td><code>internals</code></td><td><code>object[]</code></td><td>no</td><td>Names the body's steps pass between themselves, which never enter the workflow variable set.</td></tr>
+          <tr><td><code>internals[].id</code></td><td><code>0 | 1</code></td><td>yes</td><td>The name this value carries inside the body. Materialised per host activity and per reference site, and never a workflow variable.</td></tr>
+          <tr><td><code>internals[].description</code></td><td><code>string</code></td><td>yes</td><td>What the value is, and which steps pass it.</td></tr>
+          <tr><td><code>steps</code></td><td><code>(technique | action | checkpoint | loop | routine)[]</code></td><td>yes</td><td>The run, an ordered list of kind-tagged steps. A routine with no steps is a signature with nothing behind it.</td></tr>
+          </tbody>
+        </table>
+        </div>
       </section>
       <section class="schema" id="session-file">
         <h2><code>session-file.schema.json</code></h2>
@@ -281,7 +316,7 @@
           <tr><td><code>activities[].variables</code></td><td><code>object</code></td><td>no</td><td>The session variables this activity reads and writes. Its writes are declarations contributed to the including workflow's variable set; its reads are the names it needs that workflow to supply.</td></tr>
           <tr><td><code>activities[].techniques</code></td><td><code>string[]</code></td><td>no</td><td>Activity-wide technique references (<code>::</code> paths); bundled into get_activity.</td></tr>
           <tr><td><code>activities[].bundleTechniques</code></td><td><code>object</code></td><td>no</td><td>Opt-in hybrid bundling: get_activity inlines each step technique whose composed wire form is at most maxChars and whose gate answers true at activity open; larger ones, and those whose gate has no answer yet, remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check.</td></tr>
-          <tr><td><code>activities[].steps</code></td><td><code>(technique | action | checkpoint | loop)[]</code></td><td>no</td><td>Ordered, kind-tagged execution steps for this activity</td></tr>
+          <tr><td><code>activities[].steps</code></td><td><code>(technique | action | checkpoint | loop | routine)[]</code></td><td>no</td><td>Ordered, kind-tagged execution steps for this activity</td></tr>
           <tr><td><code>activities[].exits</code></td><td><code>object[]</code></td><td>no</td><td>Named outcomes of this activity, one of which it takes when its steps end. Each is bound to a destination in the workflow's <code>graph</code>; an unbound exit fails the workflow load. Omitted on an activity that is terminal by omission.</td></tr>
           <tr><td><code>activities[].exits[].id</code></td><td><code>string</code></td><td>yes</td><td>Outcome name, unique within the activity. Kebab-case, in the activity's vocabulary — never an activity id.</td></tr>
           <tr><td><code>activities[].exits[].label</code></td><td><code>string</code></td><td>no</td><td>Human-readable statement of the outcome.</td></tr>

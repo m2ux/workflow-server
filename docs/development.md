@@ -45,7 +45,7 @@ The directories, and what each one owns:
 | `src/tools/` | The MCP tool implementations, split between `workflow-tools.ts` and `resource-tools.ts` |
 | `src/utils/` | Session storage and sealing under `session/`, plus delivery accounting, batching, validation and variable seeding |
 | `src/trace.ts` | The trace store and the encoding of trace tokens |
-| `schemas/` | JSON Schemas generated from the Zod sources, for editor tooling |
+| `schemas/` | JSON Schemas for editor tooling. Six are generated from their Zod sources by `npm run build:schemas`; `technique.schema.json` is hand-authored, and `check:schemas` holds both facts |
 | `scripts/` | Install and container helpers, schema generation, and the benchmarks |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution. Overview: [`guards/README.md`](../guards/README.md). |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |

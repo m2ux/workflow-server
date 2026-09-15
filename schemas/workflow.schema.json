@@ -777,6 +777,54 @@
                         "steps"
                       ],
                       "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "routine",
+                          "description": "Step-kind discriminator."
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "Identifier for this step within the activity, and the prefix every identifier in the materialised body carries."
+                        },
+                        "routine": {
+                          "type": "string",
+                          "description": "Routine reference: `[workflow::]name`. A qualified name resolves in that workflow only; a bare name resolves against the referring activity's source workflow and then meta. A second separator fails the load — a routine name carries no group grammar."
+                        },
+                        "with": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": [
+                              "string",
+                              "number",
+                              "boolean"
+                            ]
+                          },
+                          "description": "Arguments: routine input id → the value it takes here. A braced value is a reference to a host variable and a bare value is a literal. A declared input left unbound takes the host's value under the input's own id, or the input's declared default."
+                        },
+                        "outputs": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and its declaration says whether that is allowed."
+                        },
+                        "when": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
+                        },
+                        "required": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "id",
+                        "routine"
+                      ],
+                      "additionalProperties": false
                     }
                   ]
                 },

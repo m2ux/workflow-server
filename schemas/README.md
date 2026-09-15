@@ -80,7 +80,7 @@ stateDiagram-v2
 The second diagram shows how the schema files depend on each other:
 
 - **workflow.schema.json** defines the overall structure and references `activity.schema.json` for activities
-- **activity.schema.json** defines unified activities with a single ordered `steps[]` (each step a kind: technique, action, checkpoint, or loop), plus the activity's exits and triggers
+- **activity.schema.json** defines unified activities with a single ordered `steps[]` (each step a kind: technique, action, checkpoint, loop, or routine), plus the activity's exits and triggers
 - **technique.schema.json** defines agent capabilities, tool orchestration patterns, and execution protocols
 - **condition.schema.json** provides reusable condition expressions (simple comparisons, AND/OR/NOT combinators)
 - **state.schema.json** describes the in-memory runtime execution state used internally by the workflow engine
@@ -296,7 +296,7 @@ A unified activity defines workflow execution as a single ordered `steps[]` (eac
 | `description`     | string            | What this activity accomplishes            |
 | `techniques`      | TechniquesReference | Activity-wide technique references (`::` paths) |
 | `bundleTechniques` | BundleTechniques | Opt-in hybrid bundling: `get_activity` inlines each ungated step technique whose composed wire form is at most `maxChars`; larger and gated ones stay lazy via `get_technique` |
-| `steps`           | Step[]            | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
+| `steps`           | Step[]            | Ordered, kind-tagged execution list (technique / action / checkpoint / loop / routine) |
 | `exits`           | Exit[]            | Named outcomes of the activity; the workflow's `graph` binds each to a destination |
 | `triggers`        | WorkflowTrigger[] | Workflows to trigger from this activity    |
 | `outcome`         | string[]          | Expected outcomes on completion (advisory; never reconciled against manifests) |
@@ -314,15 +314,16 @@ A step is one entry in the activity's single ordered `steps[]`. Every step carri
 - **`kind: action`** — a control-only step carrying `actions[]` (may be empty for a marker step).
 - **`kind: checkpoint`** — an inline user decision point (see below); its position in `steps[]` is when it is presented.
 - **`kind: loop`** — a compound step whose body is a nested `steps[]` (see below).
+- **`kind: routine`** — a reference to a named run of steps declared in a `routines/` file (see below). The loader replaces it with the steps it stands for, so no consumer downstream ever meets one.
 
 Shared base fields on every kind:
 
 | Field         | Type     | Purpose                           |
 | ------------- | -------- | --------------------------------- |
-| `kind`        | enum     | Required discriminator: `technique`, `action`, `checkpoint`, or `loop` |
+| `kind`        | enum     | Required discriminator: `technique`, `action`, `checkpoint`, `loop`, or `routine` |
 | `id`          | string   | Unique identifier within activity (stable; required on a checkpoint step — it is the replay key) |
 | `when`        | string   | Inline boolean gate — run this step or skip it. Agent-evaluated; the server never evaluates gates |
-| `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped. Agent-evaluated. On a checkpoint step, `condition` (not `when`) is what enables `condition_not_met` dismissal |
+| `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped. Agent-evaluated. On a checkpoint step, `condition` (not `when`) is what enables `condition_not_met` dismissal. Not carried by a `loop` or a `routine` step, whose entry gate is `when` alone |
 | `required`    | `false`  | Worker hint, declared only when `false` (marks an optional step); an omitted `required` means the step is required |
 
 #### Checkpoint Step
@@ -384,6 +385,43 @@ A `kind: loop` step is a compound step that iterates over collections or while c
 | `maxIterations`  | integer   | Safety limit (agent-enforced)       |
 | `breakCondition` | Condition | Early exit from item iteration, agent-evaluated before each item: the walk stops part way through the collection when it holds. A repeat-until loop states its stopping condition in `continueWhile` |
 | `steps`          | Step[]    | Nested step body executed per iteration |
+
+#### Routine Step
+
+A `kind: routine` step refers to a named run of steps declared in a `routines/` file beside `activities/`. The loader resolves the name, substitutes the site's arguments through the routine's body, prefixes every identifier inside it from this step's `id`, and splices the result in place of the reference — so the step manifest, artifact composition, the guard suite and the worker all see ordinary steps. The kind exists between parsing and materialisation and nowhere else.
+
+| Field       | Type                  | Purpose                                      |
+| ----------- | --------------------- | -------------------------------------------- |
+| `id`        | string                | Required. Unique within the activity, and the prefix every identifier in the materialised body carries — it is the prefix, not a label |
+| `kind`      | enum                  | `routine`                                    |
+| `routine`   | string                | `[workflow::]name`. A qualified name resolves in that workflow only; a bare name resolves against the referring activity's source workflow and then `meta`. A second separator fails the load — a routine name carries no group grammar |
+| `with`      | map                   | Arguments: routine input id → its value here. A braced value is a reference to a host variable, a bare value is a literal. A declared input left unbound takes its declared default, or the host's value under the input's own id |
+| `outputs`   | map                   | Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and is a load failure unless its declaration says `optional: true` |
+
+Its entry gate is `when` alone, as a loop's is, and it carries `required: false` and nothing about routing. A structured `condition` is rejected: it would have to reach the run's steps to mean anything, and on a checkpoint that field is what makes the gate dismissible — so a site condition pushed into a body would hand every gate in the run a capability its author never declared.
+
+A site gate applies to every step the reference stands for, because the run is no longer a single step that could carry the decision. A body step with a gate of its own takes **both**, conjoined: the site gate says whether the run happens and the body gate says whether that step happens within it.
+
+Two references to one routine in one activity are collision-free by construction, each body prefixed from its own reference id. A routine may refer to another; prefixes compose (`converge-assumptions.pass.iteration.challenge`) and a reference cycle fails the load.
+
+#### Routine (`routine.schema.json`)
+
+A routine lives at `routines/<name>.yaml`, one file per routine, with no position number because it holds no place in an order. The filename is the name a reference resolves, so the file's `id` has to agree with it.
+
+| Field       | Type       | Purpose                                      |
+| ----------- | ---------- | -------------------------------------------- |
+| `id`        | string     | Kebab-case, matching the filename, carrying no `::` |
+| `version`   | string     | Semantic version                             |
+| `name`      | string     | Human-readable name                          |
+| `description` | string   | What the run does, and when to refer to it   |
+| `inputs`    | Input[]    | Declared parameters: `id`, `description`, optional `default` |
+| `outputs`   | Output[]   | Declared produced values: `id`, `type`, `description`, optional `values`, optional `optional: true` |
+| `internals` | Internal[] | Names the body's steps pass between themselves: `id` and `description`, and nothing else |
+| `steps`     | Step[]     | The run. At least one step — a routine with none is a signature with nothing behind it |
+
+Its input, output and internal ids are the names in scope inside the body, and a routine has no *undeclared* free variables: every name its body reads or writes is one of the three, which is what makes the signature a contract and the body checkable with no host activity. An internal declares no type, no default and no value set, because it never enters the workflow's variable set — its materialised name carries both the host activity and the whole composed reference path, so two activities using one routine do not share it. An output carries a full variable declaration, because the routine is where the value is owned.
+
+A routine declares no `exits`, no `outcome`, no `rules`, no `triggers` and no activity-wide `techniques`: it takes no place in the graph, costs no hand-off, and has no delivery of its own for prose to be delivered at.
 
 ### Supporting Types
 
@@ -557,7 +595,7 @@ Activities are the execution units of a workflow. Each activity contains an orde
 | `name` | string | Human-readable activity name |
 | `description` | string | Activity description |
 | `required` | boolean | Whether activity is required (default: true) |
-| `steps` | array | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
+| `steps` | array | Ordered, kind-tagged execution list (technique / action / checkpoint / loop / routine) |
 | `exits` | array | Named outcomes; the workflow's `graph` binds each to a destination |
 | `triggers` | array | Workflows to trigger from this activity |
 | `outcome` | string[] | Expected outcomes on completion |
@@ -1120,7 +1158,7 @@ if (result.success) {
 
 ## Activity Schema
 
-The activity schema (`activity.schema.json`) defines unified activities that combine workflow execution: a single ordered, kind-tagged `steps[]` (technique / action / checkpoint / loop) plus the activity's exits and triggers. Activities are reached through the workflow's `graph` from its `initialActivity`. This schema is **generated** by [`scripts/generate-schemas.ts`](../scripts/generate-schemas.ts) from the Zod source of truth (it was previously hand-maintained) — do not hand-edit `activity.schema.json`.
+The activity schema (`activity.schema.json`) defines unified activities that combine workflow execution: a single ordered, kind-tagged `steps[]` (technique / action / checkpoint / loop / routine) plus the activity's exits and triggers. Activities are reached through the workflow's `graph` from its `initialActivity`. This schema is **generated** by [`scripts/generate-schemas.ts`](../scripts/generate-schemas.ts) from the Zod source of truth (it was previously hand-maintained) — do not hand-edit `activity.schema.json`.
 
 ### Top-Level Structure
 
@@ -1151,7 +1189,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 |----------|------|-------------|
 | `description` | string | Detailed description |
 | `bundleTechniques` | BundleTechniques | Opt-in hybrid bundling (`{ maxChars }`): `get_activity` inlines each ungated step technique whose composed wire form is at most `maxChars` |
-| `steps` | Step[] | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
+| `steps` | Step[] | Ordered, kind-tagged execution list (technique / action / checkpoint / loop / routine) |
 | `exits` | Exit[] | Named outcomes of the activity |
 | `triggers` | WorkflowTrigger[] | Workflows to trigger from this activity |
 | `outcome` | string[] | Expected outcomes when activity completes |

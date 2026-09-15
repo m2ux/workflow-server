@@ -1,35 +1,36 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "activity",
-  "description": "Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop | routine).",
-  "$ref": "#/definitions/activity",
+  "title": "routine",
+  "description": "Routine definition schema — a named run of steps declaring its inputs, outputs and internals, materialised into the activity that refers to it.",
+  "$ref": "#/definitions/routine",
   "definitions": {
-    "activity": {
+    "routine": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the activity"
+          "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+          "description": "Unique identifier for the routine, and the name a reference resolves."
         },
         "version": {
           "type": "string",
           "pattern": "^\\d+\\.\\d+\\.\\d+$",
-          "description": "Semantic version of the activity"
+          "description": "Semantic version of the routine"
         },
         "name": {
           "type": "string",
-          "description": "Human-readable activity name"
+          "description": "Human-readable routine name"
         },
         "description": {
           "type": "string",
-          "description": "Detailed description of the activity"
+          "description": "What the run does, and when to refer to it"
         },
-        "variables": {
-          "type": "object",
-          "properties": {
-            "reads": {
-              "type": "array",
-              "items": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
                 "anyOf": [
                   {
                     "type": "string",
@@ -98,82 +99,111 @@
                     ]
                   }
                 ],
-                "description": "Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption."
+                "description": "The name this parameter carries inside the body, and the name an unbound site falls through to in the host's bag."
               },
-              "description": "Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound operations' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here."
-            },
-            "writes": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "$ref": "#/definitions/activity/properties/variables/properties/reads/items"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "string",
-                      "number",
-                      "boolean",
-                      "array",
-                      "object"
-                    ],
-                    "description": "Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes."
-                  },
-                  "description": {
-                    "type": "string"
-                  },
-                  "values": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "minItems": 1,
-                    "description": "The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type."
-                  },
-                  "defaultValue": {
-                    "description": "Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this)."
-                  },
-                  "required": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Authoring metadata; the server does not check that the variable is ever set."
-                  }
-                },
-                "required": [
-                  "name",
-                  "type"
+              "description": {
+                "type": "string",
+                "description": "What the parameter is for, in the routine's own vocabulary."
+              },
+              "default": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
                 ],
-                "additionalProperties": false
-              },
-              "description": "Session variables this activity puts into the bag: its bound operations' outputs (under their declared id or the step binding's remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow's variable set, defaultValue included."
-            }
+                "description": "The value the body takes where a reference site binds nothing. Without one, an unbound input reads the host's value under this id."
+              }
+            },
+            "required": [
+              "id",
+              "description"
+            ],
+            "additionalProperties": false
           },
-          "additionalProperties": false,
-          "description": "The session variables this activity reads and writes. Its writes are declarations contributed to the including workflow's variable set; its reads are the names it needs that workflow to supply."
+          "description": "Declared parameters. Every name the body reads that it does not write is one of these."
         },
-        "techniques": {
+        "outputs": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/routine/properties/inputs/items/properties/id/anyOf/0"
+                  },
+                  {
+                    "$ref": "#/definitions/routine/properties/inputs/items/properties/id/anyOf/1"
+                  }
+                ],
+                "description": "The name this value carries inside the body. A reference site binds it to the session variable its value lands under."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "string",
+                  "number",
+                  "boolean",
+                  "array",
+                  "object"
+                ],
+                "description": "Declared type, carried onto the session variable the reference site binds this output to."
+              },
+              "description": {
+                "type": "string",
+                "description": "What the value is."
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "description": "The complete set of values a string output admits, carried onto the bound session variable."
+              },
+              "optional": {
+                "type": "boolean",
+                "const": true,
+                "description": "Declared only when a reference site may leave this output unbound, which drops the bindings that write it. Leaving an unmarked output unbound fails the load."
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "description"
+            ],
+            "additionalProperties": false
           },
-          "description": "Activity-wide technique references (`::` paths); bundled into get_activity."
+          "description": "Declared produced values, each a full variable declaration bound to a session variable at the point of use."
         },
-        "bundleTechniques": {
-          "type": "object",
-          "properties": {
-            "maxChars": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Per-technique character cap layered on the server-derived per-activity eager-delivery budget: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }. Set to 0 to opt this activity out of eager step-technique bundling entirely."
-            }
+        "internals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/routine/properties/inputs/items/properties/id/anyOf/0"
+                  },
+                  {
+                    "$ref": "#/definitions/routine/properties/inputs/items/properties/id/anyOf/1"
+                  }
+                ],
+                "description": "The name this value carries inside the body. Materialised per host activity and per reference site, and never a workflow variable."
+              },
+              "description": {
+                "type": "string",
+                "description": "What the value is, and which steps pass it."
+              }
+            },
+            "required": [
+              "id",
+              "description"
+            ],
+            "additionalProperties": false
           },
-          "required": [
-            "maxChars"
-          ],
-          "additionalProperties": false,
-          "description": "Opt-in hybrid bundling: get_activity inlines each step technique whose composed wire form is at most maxChars and whose gate answers true at activity open; larger ones, and those whose gate has no answer yet, remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check."
+          "description": "Names the body's steps pass between themselves, which never enter the workflow variable set."
         },
         "steps": {
           "type": "array",
@@ -308,7 +338,7 @@
                                 "conditions": {
                                   "type": "array",
                                   "items": {
-                                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                                   },
                                   "minItems": 2
                                 }
@@ -329,7 +359,7 @@
                                 "conditions": {
                                   "type": "array",
                                   "items": {
-                                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                                   },
                                   "minItems": 2
                                 }
@@ -348,7 +378,7 @@
                                   "const": "not"
                                 },
                                 "condition": {
-                                  "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                  "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                                 }
                               },
                               "required": [
@@ -377,7 +407,7 @@
                     "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it."
                   },
                   "condition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
                     "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
                   }
                 },
@@ -402,18 +432,18 @@
                   "actions": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items"
+                      "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items"
                     },
                     "description": "Control actions; may be empty for marker steps."
                   },
                   "when": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"
                   },
                   "required": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/required"
                   },
                   "condition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/condition"
                   }
                 },
                 "required": [
@@ -491,13 +521,13 @@
                     "description": "The interval the server spends before applying a soft gate's default on respond_checkpoint { auto_advance: true }."
                   },
                   "when": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"
                   },
                   "required": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/required"
                   },
                   "condition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/condition"
                   }
                 },
                 "required": [
@@ -532,7 +562,7 @@
                     "description": "Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after."
                   },
                   "continueWhile": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
                     "description": "The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken."
                   },
                   "variable": {
@@ -544,7 +574,7 @@
                     "description": "Collection expression iterated by a forEach loop."
                   },
                   "breakCondition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
                     "description": "Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead."
                   },
                   "maxIterations": {
@@ -555,15 +585,15 @@
                   "steps": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/activity/properties/steps/items"
+                      "$ref": "#/definitions/routine/properties/steps/items"
                     },
                     "description": "The loop body, a nested ordered list of steps."
                   },
                   "when": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"
                   },
                   "required": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/required"
                   }
                 },
                 "required": [
@@ -609,10 +639,10 @@
                     "description": "Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and its declaration says whether that is allowed."
                   },
                   "when": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"
                   },
                   "required": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/required"
                   }
                 },
                 "required": [
@@ -624,99 +654,15 @@
               }
             ]
           },
-          "description": "Ordered, kind-tagged execution steps for this activity"
-        },
-        "exits": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "Outcome name, unique within the activity. Kebab-case, in the activity's vocabulary — never an activity id."
-              },
-              "label": {
-                "type": "string",
-                "description": "Human-readable statement of the outcome."
-              },
-              "when": {
-                "type": "string",
-                "description": "Inline boolean expression selecting this exit, evaluated agent-side against the variable bag in the `when` dialect the step gates use. Omitted on an exit only a checkpoint option selects, and on the default exit."
-              },
-              "isDefault": {
-                "type": "boolean",
-                "const": true,
-                "description": "The outcome when no `when` matched and no checkpoint option selected an exit — including a checkpoint dismissed because its condition was not met. Declared exactly once on an activity with two or more exits; `isDefault: false` is redundant and rejected."
-              },
-              "immediate": {
-                "type": "boolean",
-                "const": true,
-                "description": "Selecting this exit at a checkpoint ends the step sequence there: the remaining steps do not run and the step-manifest check accounts for them. Declared for the aborts, where the tail would otherwise run against the user's decision. Without it an exit is recorded when chosen and taken when the sequence ends. `immediate: false` is redundant and rejected."
-              }
-            },
-            "required": [
-              "id"
-            ],
-            "additionalProperties": false
-          },
-          "description": "Named outcomes of this activity, one of which it takes when its steps end. Each is bound to a destination in the workflow's `graph`; an unbound exit fails the workflow load. Omitted on an activity that is terminal by omission."
-        },
-        "triggers": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "workflow": {
-                "type": "string",
-                "description": "ID of the workflow to trigger"
-              },
-              "description": {
-                "type": "string",
-                "description": "Description of when/why this workflow is triggered"
-              },
-              "passContext": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session's bag starts from the child workflow's own declared defaults, nothing more."
-              }
-            },
-            "required": [
-              "workflow"
-            ],
-            "additionalProperties": false
-          },
-          "description": "Workflows the orchestrator dispatches from this activity (via dispatch_child with an explicit workflow_id); the server does not act on trigger declarations."
-        },
-        "outcome": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Expected outcomes when activity completes successfully. Advisory — the server does not reconcile them against activity_manifest outcomes."
-        },
-        "required": {
-          "type": "boolean",
-          "default": true,
-          "description": "Whether this activity is required in the workflow"
-        },
-        "rules": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Activity-level rules and constraints that agents must follow"
-        },
-        "artifactPrefix": {
-          "type": "string",
-          "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.yaml). Server-computed — do not set in definition files."
+          "minItems": 1,
+          "description": "The run, an ordered list of kind-tagged steps. A routine with no steps is a signature with nothing behind it."
         }
       },
       "required": [
         "id",
         "version",
-        "name"
+        "name",
+        "steps"
       ],
       "additionalProperties": false
     }

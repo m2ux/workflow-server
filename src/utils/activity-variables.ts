@@ -25,7 +25,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Activity, Step, TechniqueBinding } from '../schema/activity.schema.js';
-import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
+import { entryCondition, flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
 import { type Workflow, branchKey, destinationTargets } from '../schema/workflow.schema.js';
 import type { ActivityVariables, VariableDefinition } from '../schema/variable.schema.js';
 import type { Condition } from '../schema/condition.schema.js';
@@ -497,7 +497,7 @@ export async function deriveActivityContract(args: {
       // own steps.
       if (step.variable) write(step.variable);
     } else {
-      conditionReads(step.condition).forEach(read);
+      conditionReads(entryCondition(step)).forEach(read);
     }
 
     if (step.kind === 'technique') {

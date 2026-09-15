@@ -251,7 +251,8 @@ export function checkSiteNavigation(): string[] {
 // Tool capture
 
 interface JsonSchemaNode {
-  type?: string;
+  /** A union of primitives is a LIST of type names, which is what `typeLabel` renders with `|`. */
+  type?: string | string[];
   properties?: Record<string, JsonSchemaNode>;
   required?: string[];
   items?: JsonSchemaNode;
@@ -490,6 +491,9 @@ function typeLabel(prop: JsonSchemaNode): string {
     const inner = prop.items ? typeLabel(prop.items) : 'any';
     return inner.includes(' | ') ? `(${inner})[]` : `${inner}[]`;
   }
+  // A union of primitives arrives as a list of type names — `["string","number","boolean"]` for a
+  // routine input's default — and the table renders it the way it renders any other union.
+  if (Array.isArray(prop.type)) return prop.type.join(' | ');
   return prop.type ?? 'any';
 }
 

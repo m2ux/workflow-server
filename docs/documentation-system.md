@@ -32,7 +32,7 @@ How this repository's documentation is organized: what each source is for, who i
 | [`docs/development.md`](development.md) | Contributing to the server: build, test, conventions | Contributors |
 | [`docs/documentation-system.md`](documentation-system.md) | This page: what each source is for, where new documentation belongs, and the conventions all of it follows | Anyone adding or changing documentation |
 | [`schemas/README.md`](../schemas/README.md) | Schema guide for authoring workflow definitions | Workflow authors |
-| `schemas/*.schema.json` | JSON Schemas generated from the Zod sources (`npm run build:schemas`) | Authoring-time validation and tooling |
+| `schemas/*.schema.json` | JSON Schemas for authoring-time validation. Six are generated from their Zod sources (`npm run build:schemas`) and `technique.schema.json` is hand-authored; `npm run check:schemas` verifies the generated six and reports any file in neither set | Authoring-time validation and tooling |
 | [`site/`](../site/) | The rendered documentation site: user guide, technical specs, API reference, design | Readers in a browser |
 | `AGENTS.md`, `CLAUDE.md` | Instructions for AI agents working in this repository | AI agents |
 | [`examples/cursor-workspace/.claude/rules/`](../examples/cursor-workspace/.claude/rules/) | Agent rules the workspace template ships into a deployed kickoff directory | AI agents in a deployed workspace |

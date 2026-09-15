@@ -414,6 +414,14 @@ export const GUARDS: GuardSpec[] = [
     json: true,
     proves: 'no lockfile entry resolves to a version published with an install-time payload',
   },
+  {
+    id: 'generated-schemas',
+    script: 'guards/check-generated-schemas.ts',
+    npmScript: 'check:schemas',
+    scope: 'repo',
+    json: true,
+    proves: 'every generated schema file matches the Zod source it is rendered from, and every schema on disk is accounted for',
+  },
 ];
 
 export const CORPUS_GUARDS = GUARDS.filter((g) => g.scope === 'corpus');

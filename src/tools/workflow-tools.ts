@@ -8,7 +8,8 @@ import {
   DEFAULT_BATCH_MAX_ACTIVITIES,
   presentPathToAgent,
 } from '../config.js';
-import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, buildRoutineLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { collectRoutineRefLines, hasRoutineStepLine, injectRoutineSteps, materializeRoutineStep } from '../loaders/routine-resolver.js';
 import {
   type Destination,
   type Workflow,
@@ -25,7 +26,7 @@ import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpoi
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES, FAN_DISPATCH_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
-import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
+import { entryCondition, injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
 import {
   bothGates, gateAnswer, variablesWrittenIn,
@@ -1422,6 +1423,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const { content: rawActivity, sourceWorkflowId } = rawResult.value;
       let activityBody = injectResolvedStepIds(rawActivity);
 
+      // Materialise routine references in the delivered YAML (#704): the worker reads the steps the
+      // run stands for, never a reference. Runs before fragment injection, so a checkpoint a routine
+      // body carries reaches the fragment pass like any other. The textual pre-scan keeps
+      // routine-free activities — every corpus activity today — off the splice path entirely, which
+      // is what keeps their delivery byte-identical.
+      if (hasRoutineStepLine(rawActivity)) {
+        const routineLookup = await buildRoutineLookup(
+          config.workflowDir, [sourceWorkflowId], collectRoutineRefLines(rawActivity));
+        activityBody = injectRoutineSteps(activityBody, (step) =>
+          materializeRoutineStep(step, routineLookup, sourceWorkflowId, baseId(activity_id)));
+      }
+
       // Materialize checkpoint fragment refs in the delivered YAML (#166 B10): the worker reads
       // full checkpoint bodies, never a reference. Bare refs resolve against the activity file's
       // SOURCE workflow (which differs from workflow_id for a borrowed activity). The textual
@@ -1592,7 +1605,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               when: s.when,
               // A loop's entry gate is `when` alone: whether its body runs at all is a different
               // question from whether it runs again, which `continueWhile` answers.
-              condition: s.kind === 'loop' ? undefined : s.condition,
+              condition: entryCondition(s),
               variables: bagAtOpen,
               writtenInActivity,
             }));

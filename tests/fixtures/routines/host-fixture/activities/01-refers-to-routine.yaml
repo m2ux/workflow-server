@@ -1,0 +1,31 @@
+id: refers-to-routine
+version: 1.0.0
+name: Refers To Routine
+description: An activity whose review run is a routine reference rather than a copy of the run.
+
+variables:
+  reads:
+    - open_assumptions
+    - assumption_review_presentation
+  writes:
+    - name: research_assumption_outcome
+      type: string
+      description: What the deciding gate settled for the assumption under discussion.
+
+steps:
+  - kind: action
+    id: announce
+    actions:
+      - action: message
+        message: "Reviewing the open assumptions."
+  - kind: routine
+    id: review-residuals
+    routine: assumption-interview
+    with:
+      gate_message: "Open assumptions remain ({assumption_review_presentation}). Accept them, or walk them one at a time."
+    outputs:
+      assumption_outcome: research_assumption_outcome
+
+exits:
+  - id: done
+    isDefault: true

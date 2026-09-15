@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { type Destination, type Workflow, destinationTargets } from '../schema/workflow.schema.js';
 import type { HistoryEntry } from '../schema/state.schema.js';
-import { flattenActivitySteps, techniqueName, topLevelStepIndex } from '../schema/activity.schema.js';
+import { entryCondition, flattenActivitySteps, techniqueName, topLevelStepIndex } from '../schema/activity.schema.js';
 import type { CheckpointResponse } from '../schema/state.schema.js';
 import { baseId, exitDestinations, getActivity, getExitBindings, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 
@@ -120,7 +120,7 @@ export function validateStepManifest(
   // test decides the same thing for its body, so a loop carrying one is gated too.
   const requiredIds = inSequence
     .filter(s => s.when === undefined
-      && (s.kind === 'loop' ? s.continueWhile === undefined : s.condition === undefined))
+      && (s.kind === 'loop' ? s.continueWhile === undefined : entryCondition(s) === undefined))
     .map(s => s.id)
     .filter((id): id is string => id !== undefined);
   // Loop-body step ids are legitimate manifest entries (executed per
