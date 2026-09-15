@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.8.1
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ The updated specification document.
 
 ### requirements_analysis
 
-The structured analysis carrying the source-coverage matrix.
+The structured analysis carrying the source-coverage matrix and, on each new or updated requirement, the source identifier and verbatim heading of each contributing passage.
 
 ## Outputs
 

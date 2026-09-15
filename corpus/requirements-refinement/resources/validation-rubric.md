@@ -28,6 +28,8 @@ The checks applied to an updated specification and the scheme for categorizing e
 
 ### Consistency
 - Source references resolve to entries listed in section 2 (Requirements Sources) and conform to [Source Reference Format](./specification-protocol.md#source-reference-format).
+- For a markdown citation, the fragment is a heading in that source file.
+- Every heading recorded on a new or updated change appears in that requirement's source list.
 - No two requirements contradict one another; duplicates are flagged.
 
 ### Source Coverage

@@ -15,8 +15,9 @@ specification plus a change summary in the planning folder.
 
 Each source is traced in its own right: a meeting transcript is recorded as an `SRC-MTG###` reference,
 an unstructured document as an `SRC-DOC###` reference credited to its author. The source-coverage
-matrix names the source each section came from, so a set of documents stays as traceable as a single
-one.
+matrix names the source each section came from and records that section as the heading above the
+passage. Each new or updated requirement carries those headings so the specification's source list
+can link to them.
 
 It is parameterized: the source documents and the target specification are supplied as inputs, so the
 workflow both **augments** an existing specification and **creates** one from scratch. Every
