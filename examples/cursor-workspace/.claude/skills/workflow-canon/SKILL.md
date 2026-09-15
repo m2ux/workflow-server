@@ -40,6 +40,8 @@ Read [references/canon-map.md](references/canon-map.md) before the first fetch: 
 | Reviewing or auditing existing definitions | **Audit** below |
 | One narrow question ("is X an anti-pattern?", "which construct for Y?") | Fetch that single entry or inventory row, answer, stop. No walk, no report. |
 
+A confirmed finding the pass is asked to close is an Implement specification. Audit enumerates and reports; Implement is the only path that writes a Fix.
+
 ## Draft
 
 For content that does not exist yet.
@@ -61,10 +63,12 @@ Applied when the change is already specified. The surface comes from the specifi
 2. **Fix the construct before the prose**, as Draft step 1. A specification says what to change, not which construct to change it into.
 3. **Load what binds**, as Draft step 2 — plus, where the change answers a finding, that entry's **Fix** and **Do not flag**. Together they are the shape the replacement takes, read as its specification rather than as a test applied afterwards.
 4. **Name what the change preserves**, per the non-negotiable below.
-5. **Write into that shape**, then run § Mechanical checks. A `## Rules` heading or `## Inputs` / `## Outputs` entry written or thickened in this pass takes the split-before-leftover walk in § Audit → Walk before leftover tests are treated as settled.
-6. **Audit** with the base ref set to the branch point, reading the touched set whole per the non-negotiable below. Finding nothing is the expected result of steps 3 and 5; finding something means the shape was read wrong, not that the audit earned its keep.
+5. **Leftover-walk the draft, then write.** Compose the replacement into the shape from step 3. Walk that draft — the prescribing entry's Detect, then every unit the destination file kind routes to, and split-before-leftover on any `## Rules` or I/O heading it writes or thickens — **before the edit lands**. A draft that still fires Detect is not a Fix; rewrite it. The edit lands only when that walk is clean. Then run § Mechanical checks.
+6. **Audit** with the base ref set to the branch point, reading the touched set whole per the non-negotiable below. Finding nothing is the expected result of steps 3 and 5; finding something means the draft walk was skipped or the shape was read wrong, not that the audit earned its keep.
 
 ## Audit
+
+For existing content: enumerate, attribute, verify Highs, report. A request to bring content into compliance hands each confirmed finding to **Implement** as its specification. Implement writes the Fix.
 
 ### 1. Scope the surface
 
@@ -202,8 +206,8 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 **Changing content**
 
 - **A restructuring owes a preservation statement, and a collapse owes a reach statement.** Both are the canon's — Non-Destructive Updates states what a change still has to hold, and the construct inventory states the reach each rule construct carries. The audit's job is to require them as evidence and refuse a finding that asserts either without naming it.
-- **Fix, do not merely file.** When the request is to bring content into compliance, apply the Fix each entry prescribes rather than handing back the register. Enumerate findings before proposing to accept any of them.
-- **A fix is subject to the criteria it was made under.** Replacement text is walked by the entry that prescribed it and by every unit its file kind routes to; prose moved between constructs lands on whatever criteria own the destination. An application that leaves new findings behind has moved the defect, not closed it. **Every file the fix touched is read whole before the pass closes** — that set is small and exactly known, making it the one surface a pass carries no `unread` path over, and a defect the pass wrote itself is the cheapest entry in the register to catch. A `## Rules` heading or I/O entry in that set takes the split-before-leftover walk in § Audit → Walk.
+- **Fix, do not merely file.** When the request is to bring content into compliance, each confirmed finding is an Implement specification. Enumerate findings before proposing to accept any of them. Patching from Detect on the Audit path is the loop the intro forbids.
+- **A fix is subject to the criteria it was made under, and the draft is walked before it lands.** Replacement text is walked by the entry that prescribed it and by every unit its file kind routes to; prose moved between constructs lands on whatever criteria own the destination. A draft that still fires Detect is not a Fix. Writing first and leftover-walking after is the Detect-then-patch loop the intro forbids. An application that leaves new findings behind has moved the defect, not closed it. **Every file the fix touched is read whole before the pass closes** — that set is small and exactly known, making it the one surface a pass carries no `unread` path over, and a defect the pass wrote itself is the cheapest entry in the register to catch. A `## Rules` heading or I/O entry in that set takes the split-before-leftover walk in § Audit → Walk.
 - **Structure a fix introduces owes a consumer.** A remediation answering *encode this as structure* is finished when something reads what it declared, not when the declaration exists. A variable nothing reads, an exit no graph binds, an option whose effect nothing consults: each is inert, and inert structure is the same defect in a spelling that reads as the cure. Name the consumer in the same change, or carry the fact in the construct that already has one.
 - **Edit the field, not the file.** A ledger, fixture or snapshot read whole, changed in memory and written back returns in the writer's conventions — escaped non-ASCII, reordered keys, its own indentation — so removing three entries arrives as a whole-file rewrite. The surplus lines are semantically identical, which is what carries them through review unread, and every later diff of that file is measured against the rewrite. Change the lines the change needs and read the diff's size as the check.
 - **Never edit the schema to make content validate.** That is `schema-is-constraint`; content conforms to the schema.
