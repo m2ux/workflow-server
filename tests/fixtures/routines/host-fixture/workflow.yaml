@@ -1,0 +1,19 @@
+id: host-fixture
+version: 1.0.0
+title: Host Fixture
+description: One activity referring to a routine, and one referring to none — the pair a delivery comparison needs.
+initialActivity: refers-to-routine
+variables:
+  - name: open_assumptions
+    type: array
+    description: The assumptions still open when the run begins.
+  - name: assumption_review_presentation
+    type: string
+    description: The open set, as presented at the batch gate.
+  - name: research_assumption_outcome
+    type: string
+    description: What the deciding gate settled for the assumption under discussion.
+graph:
+  refers-to-routine:
+    done: carries-no-routine
+  carries-no-routine: {}

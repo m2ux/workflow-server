@@ -37,6 +37,12 @@ jobs:
       - name: Typecheck server source
         run: npm run typecheck
 
+      # The generated schemas are what an authoring client validates against, so a schema change
+      # that never reached `schemas/` surfaces to an author as their own file being wrong. The
+      # subject is the files the generator writes; `technique.schema.json` is hand-authored.
+      - name: Verify the generated schemas match their Zod sources
+        run: npm run check:schemas
+
       # `npm test` is vitest in watch mode; `test:ci` is the single-run entry point so the job cannot
       # hang waiting for file changes.
       - name: Run the test suite

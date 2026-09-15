@@ -1,0 +1,7 @@
+id: meta
+version: 1.0.0
+title: Meta
+description: The shared home a bare routine name falls back to, and the bootstrap every harness needs.
+initialActivity: bootstrap
+graph:
+  bootstrap: {}

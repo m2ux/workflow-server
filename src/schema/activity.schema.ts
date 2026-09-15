@@ -164,13 +164,49 @@ export const LoopStepSchema = z.object({
 }).strict();
 export type LoopStep = z.infer<typeof LoopStepSchema>;
 
+// kind:routine — a reference to a named run of steps declared in a `routines/` file (#704). The
+// step names the routine, binds its inputs under `with`, and binds its outputs to session variables
+// under `outputs`. It carries the site gates every step kind carries and nothing about routing.
+//
+// The kind exists between parsing and materialisation and nowhere else: the loader splices the
+// routine's steps in its place, prefixing every identifier inside them from this step's `id`, so
+// every consumer downstream sees ordinary steps. The `id` is therefore required — it is the prefix,
+// not a label.
+export const RoutineStepSchema = z.object({
+  kind: z.literal('routine').describe('Step-kind discriminator.'),
+  id: z.string().describe('Identifier for this step within the activity, and the prefix every identifier in the materialised body carries.'),
+  routine: z.string().describe('Routine reference: `[workflow::]name`. A qualified name resolves in that workflow only; a bare name resolves against the referring activity\'s source workflow and then meta. A second separator fails the load — a routine name carries no group grammar.'),
+  with: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Arguments: routine input id → the value it takes here. A braced value is a reference to a host variable and a bare value is a literal. A declared input left unbound takes the host\'s value under the input\'s own id, or the input\'s declared default.'),
+  outputs: z.record(z.string()).optional().describe('Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and its declaration says whether that is allowed.'),
+  ...stepCommonFields,
+  ...stepEntryCondition,
+}).strict();
+export type RoutineStep = z.infer<typeof RoutineStepSchema>;
+
 export const StepSchema = z.discriminatedUnion('kind', [
   TechniqueStepSchema,
   ActionStepSchema,
   CheckpointStepSchema,
   LoopStepSchema,
+  RoutineStepSchema,
 ]);
 export type Step = z.infer<typeof StepSchema>;
+
+/** Every step kind the union admits, as one closed list. */
+export const STEP_KINDS = ['technique', 'action', 'checkpoint', 'loop', 'routine'] as const;
+export type StepKind = (typeof STEP_KINDS)[number];
+
+/**
+ * Exhaustiveness over the step kinds, checked when this module compiles.
+ *
+ * The corpus's step kinds are tested in dozens of places, every one a positive comparison, with no
+ * exhaustive switch anywhere — so a kind added to the union compiles clean everywhere and is handled
+ * nowhere. This assignment is the one place that fails instead: adding a member to `StepSchema`
+ * without adding it to `STEP_KINDS` is a compile error, which is what sends the author looking for
+ * the consumers.
+ */
+const _stepKindsAreExhaustive: StepKind extends Step['kind'] ? (Step['kind'] extends StepKind ? true : never) : never = true;
+void _stepKindsAreExhaustive;
 
 /** The operation reference of a step's technique binding, whether bare-string or structured. */
 export function techniqueName(technique: TechniqueStep['technique'] | undefined): string | undefined {
@@ -293,7 +329,7 @@ export const ActivitySchema = z.object({
   // Opt-in hybrid bundling of step-bound techniques into get_activity (#166 B11).
   bundleTechniques: BundleTechniquesSchema.optional().describe('Opt-in hybrid bundling: get_activity inlines each step technique whose composed wire form is at most maxChars and whose gate answers true at activity open; larger ones, and those whose gate has no answer yet, remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check.'),
 
-  // Execution — the single ordered list of kind-tagged steps (technique | action | checkpoint | loop).
+  // Execution — the single ordered list of kind-tagged steps (technique | action | checkpoint | loop | routine).
   // Checkpoints are inline kind:checkpoint steps and loops are compound kind:loop steps: there are no
   // separate checkpoints[]/loops[] arrays in the unified model.
   steps: z.array(StepSchema).optional().describe('Ordered, kind-tagged execution steps for this activity'),

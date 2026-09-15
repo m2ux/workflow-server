@@ -1,0 +1,57 @@
+id: assumption-interview
+version: 1.0.0
+name: Assumption Interview
+description: Gate the open assumptions as a batch, then walk them one at a time recording each decision.
+
+inputs:
+  - id: gate_message
+    description: Text presented at the batch gate, naming the phase whose assumptions these are.
+  - id: decision_space
+    description: Which option set the per-item gate offers.
+    default: resolve-or-defer
+
+outputs:
+  - id: assumption_outcome
+    type: string
+    description: The outcome the deciding gate gave the assumption under discussion.
+
+internals:
+  - id: current_assumption
+    description: The assumption under discussion during the individual interview.
+
+steps:
+  - kind: checkpoint
+    id: batch-gate
+    message: "{gate_message}"
+    options:
+      - id: accept-all
+        label: Accept every open assumption
+        effect:
+          setVariable:
+            assumption_outcome: accepted
+      - id: interview
+        label: Walk them one at a time
+        effect:
+          setVariable:
+            assumption_outcome: pending
+  - kind: loop
+    id: interview
+    loopType: forEach
+    variable: current_assumption
+    over: open_assumptions
+    maxIterations: 20
+    steps:
+      - kind: checkpoint
+        id: "decision#{current_assumption.id}"
+        message: "Settle this assumption using {decision_space}."
+        options:
+          - id: resolve
+            label: Resolve it now
+            effect:
+              setVariable:
+                assumption_outcome: resolved
+          - id: defer
+            label: Defer to stakeholder review
+            effect:
+              setVariable:
+                assumption_outcome: deferred

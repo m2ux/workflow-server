@@ -14,6 +14,15 @@ import {
   safeValidateWorkflow,
 } from '../schema/workflow.schema.js';
 import { type Activity, type Step, safeValidateActivity, populateStepIds, activityCheckpoints, flattenActivitySteps } from '../schema/activity.schema.js';
+import { type Routine, safeValidateRoutine } from '../schema/routine.schema.js';
+import {
+  type RoutineLookup,
+  RoutineResolutionError,
+  collectNestedRoutineRefs,
+  collectRoutineRefs,
+  materializeActivityRoutines,
+  parseRoutineRef,
+} from './routine-resolver.js';
 import { VariableNameSchema } from '../schema/variable.schema.js';
 import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
 import { type Result, ok, err } from '../result.js';
@@ -51,6 +60,20 @@ export interface WorkflowWithDiagnostics {
    * unqualified technique refs (and fragment refs) to their source workflow.
    */
   activitySourceWorkflow: Map<string, string>;
+  /**
+   * Activity id → the activity as authored, still carrying its `kind: routine` steps (#704).
+   *
+   * The contract derivation reads this form and the server delivers the materialised one, which is
+   * what makes a reference a boundary: a derivation handed spliced steps meets the routine's body
+   * and no reference at all, whatever order produced it. Two forms coexisting is the guarantee,
+   * rather than an ordering between two loader passes — the derivation is not in the loader.
+   *
+   * An activity carrying no routine reference is the SAME object in both forms: materialisation is
+   * what mutates, so there is nothing to preserve and nothing to copy. Cloning every activity
+   * regardless costs 1.3% of a corpus load; cloning only what materialisation touches costs that
+   * only where a routine is used.
+   */
+  authoredActivities: Map<string, Activity>;
 }
 
 const formatZodIssues = (issues: Array<{ path: PropertyKey[]; message: string }>): string =>
@@ -210,6 +233,93 @@ export async function readWorkflowFragments(
   }
 }
 
+/** The directory a workflow declares its routines in, beside `activities/`. */
+const ROUTINES_DIR = 'routines';
+
+/**
+ * Read a workflow's `routines/` directory (#704): one file per routine, named for the routine it
+ * declares, with no position number because a routine holds no place in an order.
+ *
+ * The filename is the name every reference resolves, so the file's own `id` has to agree with it —
+ * the same identity rule a workflow directory carries, and for the same reason: a reference reaches
+ * the routine by its filename while the definition publishes its declaration. Returns an empty map
+ * where the workflow has no `routines/`, so a corpus that declares none costs one `existsSync`.
+ */
+export async function readWorkflowRoutines(
+  workflowDir: string,
+  workflowId: string,
+  index: CorpusIndex = indexCorpus(workflowDir),
+): Promise<ReadonlyMap<string, Routine>> {
+  const routines = new Map<string, Routine>();
+  const dir = workflowLocation(index, workflowId)?.dir;
+  if (!dir) return routines;
+  const routinesPath = join(dir, ROUTINES_DIR);
+  if (!existsSync(routinesPath)) return routines;
+
+  for (const file of await readdir(routinesPath)) {
+    const name = /^(.+)\.ya?ml$/.exec(file)?.[1];
+    if (!name) continue;
+    const content = await readFile(join(routinesPath, file), 'utf-8');
+    const validation = safeValidateRoutine(parseDefinition(content));
+    if (!validation.success) {
+      throw new RoutineResolutionError(
+        `Routine '${workflowId}::${name}' (${ROUTINES_DIR}/${file}) is not a valid routine: `
+        + formatZodIssues(validation.error.issues),
+      );
+    }
+    if (validation.data.id !== name) {
+      throw new RoutineResolutionError(
+        `Routine ${ROUTINES_DIR}/${file} in workflow '${workflowId}' declares id '${validation.data.id}' `
+        + `but sits in a file named '${name}' — a reference reaches a routine by its filename, so the two names have to match.`,
+      );
+    }
+    populateStepIds({ id: validation.data.id, steps: validation.data.steps } as Activity);
+    routines.set(name, validation.data);
+  }
+  return routines;
+}
+
+/**
+ * Build a synchronous RoutineLookup covering every workflow a set of references can name — the
+ * declaring scopes, the meta fallback, and any workflow a qualified reference targets. Closed over
+ * the references the routines themselves make, so a nested reference into a third workflow resolves.
+ */
+export async function buildRoutineLookup(
+  workflowDir: string,
+  scopeWorkflowIds: Iterable<string>,
+  refs: Iterable<string>,
+): Promise<RoutineLookup> {
+  const index = indexCorpus(workflowDir);
+  const loaded = new Map<string, ReadonlyMap<string, Routine>>();
+  const pending = new Set<string>([META_WORKFLOW_ID, ...scopeWorkflowIds]);
+  const noteRef = (ref: string): void => {
+    try {
+      const { workflowId } = parseRoutineRef(ref, 'Routine lookup');
+      if (workflowId && !loaded.has(workflowId)) pending.add(workflowId);
+    } catch {
+      // Malformed: surfaces as a resolution error at materialisation, where the site is known.
+    }
+  };
+  for (const ref of refs) noteRef(ref);
+
+  // A routine may refer to another, so reading one workflow's routines can name a workflow nothing
+  // has read yet. The walk closes over that rather than assuming one level.
+  while (pending.size > 0) {
+    const batch = [...pending];
+    pending.clear();
+    await Promise.all(batch.map(async (id) => {
+      if (loaded.has(id)) return;
+      loaded.set(id, await readWorkflowRoutines(workflowDir, id, index));
+    }));
+    for (const id of batch) {
+      for (const routine of loaded.get(id)?.values() ?? []) {
+        for (const ref of collectNestedRoutineRefs(routine)) noteRef(ref);
+      }
+    }
+  }
+  return (workflowId) => loaded.get(workflowId);
+}
+
 /**
  * Build a synchronous FragmentsLookup covering every workflow a set of refs (plus the declaring
  * scopes and the meta fallback) can name, pre-reading each fragments block once.
@@ -316,6 +426,46 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     }
     const workflow = result.data;
 
+    // Materialise routine references (#704): a `kind: routine` step is replaced by the routine's
+    // own steps, with the reference site's arguments substituted through them and every identifier
+    // inside them prefixed from the reference step's id. Runs before fragment resolution, so a
+    // checkpoint a routine body carries is on the fragment pass's list like any other; and after
+    // `populateStepIds`, so a prefix has something to attach to.
+    //
+    // The activity as authored is kept beside the materialised one. Only an activity that carries a
+    // reference is copied — materialisation is what mutates, so a routine-free activity has nothing
+    // to preserve and is the same object in both forms.
+    const authoredActivities = new Map<string, Activity>();
+    const routineRefs = (workflow.activities ?? []).flatMap((activity) => collectRoutineRefs(activity));
+    if (routineRefs.length > 0) {
+      const routineLookup = await buildRoutineLookup(
+        workflowDir,
+        [workflowId, ...activitySourceWorkflow.values()],
+        routineRefs,
+      );
+      const withRoutines: Activity[] = [];
+      for (const activity of workflow.activities ?? []) {
+        if (collectRoutineRefs(activity).length === 0) { withRoutines.push(activity); continue; }
+        authoredActivities.set(activity.id, structuredClone(activity));
+        try {
+          materializeActivityRoutines(activity, routineLookup, activitySourceWorkflow.get(activity.id) ?? workflowId);
+          withRoutines.push(activity);
+        } catch (error) {
+          // A reference that half-resolves would hand a worker a step nobody declared, so the
+          // activity is excluded and the reason surfaced — the same contract a per-file load
+          // failure carries (#166 B5).
+          const message = error instanceof Error ? error.message : String(error);
+          logWarn('Excluding activity with unresolvable routines', { workflowId, activityId: activity.id, error: message });
+          activityLoadErrors.push({ file: `${activity.artifactPrefix ?? ''}${activity.artifactPrefix ? '-' : ''}${activity.id}.yaml`, activity_id: activity.id, error: message });
+          authoredActivities.delete(activity.id);
+        }
+      }
+      if (workflow.activities) workflow.activities = withRoutines;
+    }
+    for (const activity of workflow.activities ?? []) {
+      if (!authoredActivities.has(activity.id)) authoredActivities.set(activity.id, activity);
+    }
+
     // Materialize fragment references (#166 B10): a checkpoint ref step takes its fragment's body,
     // so every downstream reader — tool payloads, checkpoint yield/respond, guards — sees full
     // checkpoint steps. Rules are not shared this way, so none of them is a ref. The lookup is
@@ -385,7 +535,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     if (bindingErrors.length > 0) return err(new WorkflowValidationError(workflowId, bindingErrors));
 
     logInfo('Workflow loaded', { workflowId, version: workflow.version, activityCount: workflow.activities?.length ?? 0 });
-    return ok({ workflow, activityLoadErrors, activitySourceWorkflow });
+    return ok({ workflow, activityLoadErrors, activitySourceWorkflow, authoredActivities });
   } catch (error) {
     logError('Failed to load workflow', error instanceof Error ? error : undefined, { workflowId });
     return err(new WorkflowValidationError(workflowId, [error instanceof Error ? error.message : 'Unknown error']));

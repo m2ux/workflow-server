@@ -1,0 +1,11 @@
+id: carries-no-routine
+version: 1.0.0
+name: Carries No Routine
+description: The control. An activity in a workflow that declares routines, referring to none of them — its delivery is byte-identical to its source.
+
+steps:
+  - kind: action
+    id: close-out
+    actions:
+      - action: log
+        message: "Nothing here came from a routine."

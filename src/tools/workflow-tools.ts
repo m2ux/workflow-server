@@ -8,7 +8,8 @@ import {
   DEFAULT_BATCH_MAX_ACTIVITIES,
   presentPathToAgent,
 } from '../config.js';
-import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, buildRoutineLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { collectRoutineRefLines, hasRoutineStepLine, injectRoutineSteps, materializeRoutineStep } from '../loaders/routine-resolver.js';
 import {
   type Destination,
   type Workflow,
@@ -1421,6 +1422,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
       const { content: rawActivity, sourceWorkflowId } = rawResult.value;
       let activityBody = injectResolvedStepIds(rawActivity);
+
+      // Materialise routine references in the delivered YAML (#704): the worker reads the steps the
+      // run stands for, never a reference. Runs before fragment injection, so a checkpoint a routine
+      // body carries reaches the fragment pass like any other. The textual pre-scan keeps
+      // routine-free activities — every corpus activity today — off the splice path entirely, which
+      // is what keeps their delivery byte-identical.
+      if (hasRoutineStepLine(rawActivity)) {
+        const routineLookup = await buildRoutineLookup(
+          config.workflowDir, [sourceWorkflowId], collectRoutineRefLines(rawActivity));
+        activityBody = injectRoutineSteps(activityBody, (step) =>
+          materializeRoutineStep(step, routineLookup, sourceWorkflowId, baseId(activity_id)));
+      }
 
       // Materialize checkpoint fragment refs in the delivered YAML (#166 B10): the worker reads
       // full checkpoint bodies, never a reference. Bare refs resolve against the activity file's

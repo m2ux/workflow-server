@@ -4,7 +4,7 @@ import { readAllSchemas, readSchema, listSchemaIds } from '../loaders/schema-loa
 
 const SCHEMA_DESCRIPTIONS: Record<string, string> = {
   workflow: 'Workflow definition schema — orchestrates activities with rules and variables',
-  activity: 'Activity definition schema — an ordered list of kind-tagged steps (technique | action | checkpoint | loop) plus activity-level decisions and transitions',
+  activity: 'Activity definition schema — an ordered list of kind-tagged steps (technique | action | checkpoint | loop | routine) plus activity-level decisions and transitions',
   condition: 'Condition schema — conditional expressions for transitions, decisions, and loops',
   technique: 'Technique definition schema — reusable capabilities with protocol, tools, inputs/outputs, and rules',
   state: 'State schema — runtime execution progress tracking',
