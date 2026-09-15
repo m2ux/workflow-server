@@ -253,8 +253,8 @@ command -v curl >/dev/null 2>&1 || die "curl not found on PATH"
 # outcomes as they are defined: clean, findings, or nothing measurable. A tree nothing could be
 # measured on is the state a sidecar cannot serve, and is the one that refuses. Findings are a
 # warning — an experiment branch carries them by nature, and which guard failed is the signal, so
-# a load-level failure reads differently from corpus debt. The sweep runs before the running
-# container is stopped, so a refusal leaves the current sidecar up.
+# a load-level failure reads differently from corpus debt. The sweep runs before anything is
+# stopped, so a refusal leaves the container it was aimed at exactly as it found it.
 preflight_corpus() {
   if [[ ! -f "${ENGINE}/guards/check-all.ts" ]]; then
     echo "note: no guard suite under ${ENGINE}; skipping corpus preflight" >&2
@@ -265,11 +265,15 @@ preflight_corpus() {
     return 0
   fi
 
+  # The sweep's exit code is the reading, so the run sits in a condition where a non-zero status is
+  # an answer rather than a failure. Toggling `set -e` around it would answer the same question by
+  # turning the shell's own guarantee off and on again.
   local out status
-  set +e
-  out="$(cd "$ENGINE" && npx tsx guards/check-all.ts --root "$CORPUS" --corpus-only 2>&1)"
-  status=$?
-  set -e
+  if out="$(cd "$ENGINE" && npx tsx guards/check-all.ts --root "$CORPUS" --corpus-only 2>&1)"; then
+    status=0
+  else
+    status=$?
+  fi
 
   case "$status" in
     0)
@@ -282,7 +286,7 @@ preflight_corpus() {
     *)
       printf '%s\n' "$out" | tail -n 20 >&2
       die "corpus at ${CORPUS} could not be measured (guard sweep exit ${status}).
-  Nothing there is servable, so the running sidecar is left up.
+  Nothing there is servable, and nothing has been stopped.
   Pass --no-preflight to start on it regardless."
       ;;
   esac
