@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
 
-Produce a structured analysis of the requirement changes the source documents imply, with a source-coverage matrix.
+Produce a structured analysis of the requirement changes the source documents imply, with a source-coverage matrix and the heading of each contributing passage.
 
 ## Inputs
 
@@ -21,7 +21,7 @@ The source documents paired with their classifications, each `{ path, type }`.
 
 ### requirements_analysis
 
-Structured analysis of the requirement changes derived from the source documents, including the source-coverage matrix.
+Structured analysis of the requirement changes derived from the source documents, including the source-coverage matrix and, on each new or updated requirement, the source identifier and verbatim heading of each contributing passage.
 
 #### artifact
 
@@ -33,7 +33,7 @@ Structured analysis of the requirement changes derived from the source documents
 
 #### source_coverage_matrix
 
-Mapping of each section of each source to the requirement identifier(s) it is covered by, naming the source the section belongs to, with out-of-scope sections marked.
+Mapping of each section of each source to the requirement identifier(s) it is covered by, naming the source and the verbatim heading of that section, with out-of-scope sections marked.
 
 ### requirements_analysis_path
 
@@ -50,6 +50,7 @@ Absolute path to the written analysis report.
 
 - Extract explicit requirement statements, modifications, additions, and deprecations from each source document, and derive reasonably-implied requirements.
 - Map each change to an existing requirement identifier where one applies; otherwise mark it as a new requirement, per [Identifier Schemes](../resources/specification-protocol.md#identifier-schemes).
+- For each new or updated requirement, record each contributing passage the [Rules](../resources/requirements-analysis-report.md#rules) require in `{requirements_analysis}`.
 - Note ambiguities and conflicts in `{requirements_analysis}`.
 
 ### 3. Create Source References
@@ -64,7 +65,7 @@ Absolute path to the written analysis report.
 
 ### 5. Record the Coverage Matrix
 
-- Record each section of each source against the requirement(s) it maps to in `{requirements_analysis.source_coverage_matrix}`.
+- Record each section of each source against the requirement(s) it maps to in `{requirements_analysis.source_coverage_matrix}`, per [Source Coverage Matrix](../resources/requirements-analysis-report.md#source-coverage-matrix).
 
 ### 6. Compile Analysis Report
 

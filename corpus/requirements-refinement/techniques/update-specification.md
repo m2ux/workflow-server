@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Which apply this pass performs.
 
 ### requirements_analysis
 
-Structured analysis of the requirement changes.
+Structured analysis of the requirement changes, each new or updated requirement carrying the source identifier and verbatim heading of each contributing passage.
 
 ### validation_report
 
@@ -52,7 +52,7 @@ Count of correction passes performed so far.
 ### 1. Apply Changes
 
 - Apply the changes `{update_pass_kind}` names.
-  > - When `{update_pass_kind}` is `initial`, apply each change in `{requirements_analysis}`: add source references per [specification-protocol](../resources/specification-protocol.md#source-reference-format), create new requirements with sequential identifiers, update existing requirements, and deprecate as directed. Set every newly added requirement's status to `pending` per [specification-protocol](../resources/specification-protocol.md#status-conventions). Preserve the existing section structure when `{target_doc_exists}`; instantiate the full [specification-protocol](../resources/specification-protocol.md#section-structure) structure when creating from scratch.
+  > - When `{update_pass_kind}` is `initial`, apply each change in `{requirements_analysis}`: add source references per [Source Reference Format](../resources/specification-protocol.md#source-reference-format), building each list from the change's citations — path from that source's section-2 record, fragment from the heading the change recorded, one list entry per recorded heading; create new requirements with sequential identifiers, update existing requirements, and deprecate as directed. Set every newly added requirement's status to `pending` per [Status Conventions](../resources/specification-protocol.md#status-conventions). Preserve the existing section structure when `{target_doc_exists}`; instantiate the full [Section Structure](../resources/specification-protocol.md#section-structure) structure when creating from scratch.
   > - When `{update_pass_kind}` is `correction`, address each correctable finding in `{validation_report}`: resolve a source-coverage finding by adding the missing requirement(s); otherwise change no requirement's meaning and introduce no new requirement.
   > - When `{update_pass_kind}` is `revision`, apply the requested revisions to `{working_specification}`: change no requirement's meaning except as the revision asks, and introduce no new requirement the revision does not ask for.
 
