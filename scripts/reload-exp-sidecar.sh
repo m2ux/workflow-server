@@ -163,11 +163,28 @@ git_pin() {
   printf '%s%s\n' "$commit" "$dirty"
 }
 
-# The host directory a running container binds at CONTAINER_TARGET, empty when it binds none.
+# The host directory a container binds at CONTAINER_TARGET, empty when it binds none.
 container_bind_source() {
   local container="$1" target="$2"
   docker inspect "$container" \
     --format "{{range .Mounts}}{{if eq .Destination \"${target}\"}}{{.Source}}{{end}}{{end}}" \
+    2>/dev/null || true
+}
+
+# The host port a container publishes CONTAINER_PORT on, empty when it publishes none.
+#
+# `docker port` answers for a running container only, while the binding it reports is recorded on
+# the container itself and survives a stop. Reading the record keeps a reload working on a sidecar
+# a reboot left exited, which is the state the port is least likely to be remembered in.
+container_host_port() {
+  local container="$1" port="$2" spec
+  spec="$(docker port "$container" "${port}/tcp" 2>/dev/null | head -n1 || true)"
+  if [[ -n "$spec" ]]; then
+    printf '%s\n' "${spec##*:}"
+    return
+  fi
+  docker inspect "$container" \
+    --format "{{(index (index .HostConfig.PortBindings \"${port}/tcp\") 0).HostPort}}" \
     2>/dev/null || true
 }
 
@@ -181,16 +198,13 @@ else
   ENGINE="$(cd "$ENGINE" && pwd)"
 fi
 
-# Port and corpus both default to what the named container already runs, so reloading a sidecar
+# Port and corpus both default to what the named container already carries, so reloading a sidecar
 # with a fresh build is `--name` alone and the pairing under test survives the reload by default.
-# Either is required when no container of that name is up, there being nothing to read them from.
+# Either is required when no container of that name exists, there being nothing to read them from.
 if [[ -z "$PORT" ]] && command -v docker >/dev/null 2>&1; then
-  spec="$(docker port "$NAME" "${CONTAINER_PORT}/tcp" 2>/dev/null | head -n1 || true)"
-  if [[ -n "$spec" ]]; then
-    PORT="${spec##*:}"
-  fi
+  PORT="$(container_host_port "$NAME" "$CONTAINER_PORT")"
 fi
-[[ -n "$PORT" ]] || die "pass --host-port (no published port for ${NAME})"
+[[ -n "$PORT" ]] || die "pass --host-port (no published port on ${NAME})"
 [[ "$PORT" =~ ^[0-9]+$ ]] || die "host port must be numeric, got: ${PORT}"
 [[ "$PORT" != "3000" ]] || die "refusing to bind an experiment sidecar on :3000 (install instance)"
 
