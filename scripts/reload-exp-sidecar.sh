@@ -4,6 +4,9 @@
 # Stops one named container, rebuilds (or reuses) its image from a checkout,
 # and starts it again on the same host port with a chosen corpus. Refuses the
 # install instance name `workflow-server` and host port 3000.
+#
+# Host port and corpus default to what the named container already runs, so a
+# rebuild of the pairing under test is `--name` alone.
 set -euo pipefail
 
 INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
@@ -16,17 +19,19 @@ usage() {
 Reload an experiment HTTP sidecar on a stable host port.
 
 Stops the named container, rebuilds (or reuses) its image from a checkout,
-and starts it again on the same host port with --workflows-dir. Refuses the
-install instance name workflow-server and host port 3000.
+and starts it again on the same host port and corpus. Refuses the install
+instance name workflow-server and host port 3000.
 
+  scripts/reload-exp-sidecar.sh --name=NAME [options]
   scripts/reload-exp-sidecar.sh --name=NAME --workflows-dir=CORPUS [options]
-  scripts/reload-exp-sidecar.sh --no-build --name=NAME --workflows-dir=CORPUS
 
 Required:
   --name=NAME              Container name (not workflow-server).
-  --workflows-dir=CORPUS   Corpus checkout (directory that contains corpus/).
 
 Options:
+  --workflows-dir=CORPUS   Corpus checkout (directory that contains corpus/).
+                           Defaults to the corpus the running container binds.
+                           Required when none is running.
   --image=IMAGE            Image tag (default: workflow-server:local).
   --build[=DIR]            Checkout whose Dockerfile is built (default: this
                            repo root). DIR is an engine worktree for a branch
@@ -47,6 +52,11 @@ Example (time-to-dispatch sidecar from its engine worktree):
     --workflows-dir=../time-to-dispatch-meta
 EOF
 }
+
+# Where start.sh binds the corpus inside the container. Reading the bind back names the corpus a
+# running sidecar serves.
+CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-/app/workflows}"
+CONTAINER_PORT="${CONTAINER_PORT:-3000}"
 
 NAME="${EXP_NAME:-}"
 IMAGE="${EXP_IMAGE:-workflow-server:local}"
@@ -99,8 +109,19 @@ resolve_helper() {
   printf '%s\n' "$checkout_path"
 }
 
+# The host directory a running container binds at CONTAINER_TARGET, empty when it binds none.
+container_bind_source() {
+  local container="$1" target="$2"
+  docker inspect "$container" \
+    --format "{{range .Mounts}}{{if eq .Destination \"${target}\"}}{{.Source}}{{end}}{{end}}" \
+    2>/dev/null || true
+}
+
 [[ -n "$NAME" ]] || die "pass --name (see --help)"
 [[ "$NAME" != "workflow-server" ]] || die "refusing to operate on the install container name"
+
+command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
+command -v curl >/dev/null 2>&1 || die "curl not found on PATH"
 
 if [[ -z "$ENGINE" ]]; then
   ENGINE="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -109,7 +130,23 @@ else
   ENGINE="$(cd "$ENGINE" && pwd)"
 fi
 
-[[ -n "$CORPUS" ]] || die "pass --workflows-dir (see --help)"
+# Port and corpus both default to what the named container already runs, so reloading a sidecar
+# with a fresh build is `--name` alone and the pairing under test survives the reload by default.
+# Either is required when no container of that name is up, there being nothing to read them from.
+if [[ -z "$PORT" ]]; then
+  spec="$(docker port "$NAME" "${CONTAINER_PORT}/tcp" 2>/dev/null | head -n1 || true)"
+  if [[ -n "$spec" ]]; then
+    PORT="${spec##*:}"
+  fi
+fi
+[[ -n "$PORT" ]] || die "pass --host-port (no published port for ${NAME})"
+[[ "$PORT" =~ ^[0-9]+$ ]] || die "host port must be numeric, got: ${PORT}"
+[[ "$PORT" != "3000" ]] || die "refusing to bind an experiment sidecar on :3000 (install instance)"
+
+if [[ -z "$CORPUS" ]]; then
+  CORPUS="$(container_bind_source "$NAME" "$CONTAINER_WORKFLOW_DIR")"
+fi
+[[ -n "$CORPUS" ]] || die "pass --workflows-dir (no corpus bind on ${NAME}; see --help)"
 [[ -d "$CORPUS" ]] || die "corpus checkout is not a directory: ${CORPUS}"
 CORPUS="$(cd "$CORPUS" && pwd)"
 [[ -d "${CORPUS}/corpus" ]] || die "corpus not found (expected ${CORPUS}/corpus)"
@@ -122,19 +159,6 @@ STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${E
 if [[ "$BUILD" -eq 1 ]]; then
   [[ -f "${ENGINE}/Dockerfile" ]] || die "no Dockerfile in engine checkout: ${ENGINE}"
 fi
-
-if [[ -z "$PORT" ]] && command -v docker >/dev/null 2>&1; then
-  spec="$(docker port "$NAME" 3000/tcp 2>/dev/null | head -n1 || true)"
-  if [[ -n "$spec" ]]; then
-    PORT="${spec##*:}"
-  fi
-fi
-[[ -n "$PORT" ]] || die "pass --host-port (no published port for ${NAME})"
-[[ "$PORT" =~ ^[0-9]+$ ]] || die "host port must be numeric, got: ${PORT}"
-[[ "$PORT" != "3000" ]] || die "refusing to bind an experiment sidecar on :3000 (install instance)"
-
-command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
-command -v curl >/dev/null 2>&1 || die "curl not found on PATH"
 
 echo "Reloading ${NAME} on 127.0.0.1:${PORT}"
 echo "  engine : ${ENGINE}"
