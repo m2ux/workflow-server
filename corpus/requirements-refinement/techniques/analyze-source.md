@@ -44,13 +44,13 @@ Absolute path to the written analysis report.
 ### 1. Read Sources
 
 - Read every document named in `{classified_sources}`; when `{target_doc_exists}`, also read the current specification at `{target_doc_path}`.
-- Where two sources bear on the same subject, carry both readings forward — a disagreement between them is a conflict for the quality-issues section, not a value to pick between here.
+- Where two sources bear on the same subject, carry both readings forward — a disagreement between them is a conflict recorded in `{requirements_analysis}`, not a value to pick between here.
 
 ### 2. Identify Requirement Changes
 
 - Extract explicit requirement statements, modifications, additions, and deprecations from each source document, and derive reasonably-implied requirements.
 - Map each change to an existing requirement identifier where one applies; otherwise mark it as a new requirement, per [Identifier Schemes](../resources/specification-protocol.md#identifier-schemes).
-- Note ambiguities and conflicts for the quality-issues section.
+- Note ambiguities and conflicts in `{requirements_analysis}`.
 
 ### 3. Create Source References
 
@@ -59,16 +59,16 @@ Absolute path to the written analysis report.
 
 ### 4. Complete Source Coverage
 
-- Re-walk each source document section by section as a completeness critic: for every normative statement per [Source Coverage](../resources/validation-rubric.md#source-coverage), confirm it maps to an identified requirement.
+- Re-walk each source document section by section per [Source Coverage](../resources/validation-rubric.md#source-coverage).
 - Add any normative statement that has no mapped requirement as a new requirement.
 
 ### 5. Record the Coverage Matrix
 
-- Record each section of each source against the requirement(s) it maps to in `{requirements_analysis.source_coverage_matrix}`, naming the source the section belongs to and marking any section with no obligation as out of scope.
+- Record each section of each source against the requirement(s) it maps to in `{requirements_analysis.source_coverage_matrix}`.
 
 ### 6. Compile Analysis Report
 
-- Write `{requirements_analysis}` to `{planning_folder_path}` using the [Template](../resources/requirements-analysis-report.md#template) and its [Rules](../resources/requirements-analysis-report.md#rules): a source reference per source, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes; capture its written location as `{requirements_analysis_path}`.
+- Write `{requirements_analysis}` to `{planning_folder_path}` using the [Template](../resources/requirements-analysis-report.md#template) and its [Rules](../resources/requirements-analysis-report.md#rules); capture its written location as `{requirements_analysis_path}`.
 
 ## Rules
 

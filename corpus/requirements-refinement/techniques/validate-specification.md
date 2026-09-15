@@ -55,15 +55,15 @@ Overall verdict — `true` when the specification is conformant and covers every
 
 ### 1. Run Conformance Checks
 
-- Validate `{working_specification}` against the checks in [validation-rubric](../resources/validation-rubric.md#checks): section structure, requirement-identifier uniqueness, source-reference accuracy, markdown syntax, and cross-section consistency.
+- Validate `{working_specification}` against the checks in [validation-rubric](../resources/validation-rubric.md#checks).
 
 ### 2. Check Source Coverage
 
-- Using `{requirements_analysis.source_coverage_matrix}`, confirm every normative source statement maps to a requirement present in `{working_specification}`, and record any uncovered statement per [validation-rubric](../resources/validation-rubric.md#source-coverage).
+- Record uncovered statements from `{requirements_analysis.source_coverage_matrix}` per [Source Coverage](../resources/validation-rubric.md#source-coverage).
 
 ### 3. Categorize Issues
 
-- Assign each issue a severity and type per [validation-rubric](../resources/validation-rubric.md#issue-categorization), treating critical or irreconcilable issues as blocking and the remainder — including coverage gaps — as correctable.
+- Assign each issue a severity and type per [Issue Categorization](../resources/validation-rubric.md#issue-categorization).
 
 ### 4. Compile Verdict
 

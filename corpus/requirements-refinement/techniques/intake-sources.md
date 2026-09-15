@@ -46,11 +46,11 @@ Absolute path to the written intake record.
 ### 1. Capture Source Paths
 
 - Capture `{source_paths}` and `{target_doc_path}`.
-- Set `{spec_basename}` to the basename of `{target_doc_path}` (filename without directory).
+- Emit `{spec_basename}` per its output contract.
 
 ### 2. Record Source Readability
 
-- Set `{source_readable}` to `true` when every document named in `{source_paths}` exists and carries content, `false` when any of them is missing or empty.
+- Determine `{source_readable}` per its output contract.
 
 ### 3. Classify Each Source
 
@@ -59,7 +59,7 @@ Absolute path to the written intake record.
 
 ### 4. Detect Target Existence
 
-- Set `{target_doc_exists}` to `true` when a file exists at `{target_doc_path}`, `false` otherwise.
+- Determine `{target_doc_exists}` per its output contract.
 
 ### 5. Record Intake
 
