@@ -119,7 +119,8 @@ function walk(node: unknown, file: string, findings: Finding[]): void {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  const workflows = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  const workflows = corpusWorkflows(root)
+    .filter(({ dir }) => existsSync(join(dir, 'activities')) || existsSync(join(dir, 'routines')));
   // Recursive, because activity definitions also sit a level down — `meta/activities/patterns/`
   // holds five, and a flat read leaves them unscanned while `assertScanned` still passes.
   const definitions = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
@@ -131,9 +132,14 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     });
 
   for (const { dir } of workflows) {
-    // `workflow.yaml` too: a workflow file may carry activities inline, loops and all.
+    // `workflow.yaml` too: a workflow file may carry activities inline, loops and all. And
+    // `routines/`, because a routine body holds loops and an unbounded `while` in a shared body
+    // propagates to every reference site rather than to one (#704).
     const roots = [join(dir, 'workflow.yaml')].filter((path) => existsSync(path));
-    for (const path of [...roots, ...definitions(join(dir, 'activities'))]) {
+    const owned = [join(dir, 'activities'), join(dir, 'routines')]
+      .filter((path) => existsSync(path))
+      .flatMap((path) => definitions(path));
+    for (const path of [...roots, ...owned]) {
       scanned++;
       try {
         walk(parseDefinition(readFileSync(path, 'utf-8')), relative(root, path), findings);

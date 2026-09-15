@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "build:schemas": "tsx scripts/generate-schemas.ts",
+    "check:routines": "tsx guards/check-routines.ts",
     "check:schemas": "tsx guards/check-generated-schemas.ts",
     "build:site": "tsx scripts/generate-site-data.ts",
     "check:site": "tsx guards/check-site-links.ts",

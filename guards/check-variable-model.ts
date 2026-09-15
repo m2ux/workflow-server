@@ -79,6 +79,40 @@ function readDeclarations(root: string, workflowId: string, source: CorpusSource
   return decls;
 }
 
+/**
+ * The declarations a ROUTINE file runs with (#704): its own three lists, and nothing else.
+ *
+ * A routine file is its own name scope. Inside it a `setVariable` effect names an output id or an
+ * internal, neither of which is a bag name until materialisation — so read against the workflow's
+ * declarations every gate in every routine violates `setvariable-undeclared`, and read against the
+ * routine's own a workflow variable correctly does, a routine having no undeclared free variables.
+ *
+ * An internal declares no type, no default and no value set, so the two rules comparing a literal
+ * against a target's declared type or value set apply to an output and stay silent on an internal.
+ * An input's default is what `default-type-mismatch` and `exists-on-defaulted` see.
+ */
+function routineDeclarations(routine: unknown): Map<string, VariableDeclaration> {
+  const decls = new Map<string, VariableDeclaration>();
+  const doc = (routine ?? {}) as {
+    inputs?: Array<{ id?: string; default?: unknown }>;
+    outputs?: Array<{ id?: string; type?: string; values?: string[] }>;
+    internals?: Array<{ id?: string }>;
+  };
+  for (const input of doc.inputs ?? []) {
+    if (typeof input?.id !== 'string') continue;
+    decls.set(input.id, { hasDefault: input.default !== undefined, defaultValue: input.default });
+  }
+  for (const output of doc.outputs ?? []) {
+    if (typeof output?.id !== 'string') continue;
+    decls.set(output.id, { type: output.type, hasDefault: false, values: output.values });
+  }
+  for (const internal of doc.internals ?? []) {
+    if (typeof internal?.id !== 'string') continue;
+    decls.set(internal.id, { hasDefault: false });
+  }
+  return decls;
+}
+
 /** Depth-first walk over every object/array node of a parsed YAML document. */
 function* walkNodes(node: unknown): Generator<Record<string, unknown>> {
   if (Array.isArray(node)) {
@@ -167,6 +201,19 @@ export function collectVariableModelViolations(root: string = ROOT): VariableMod
     const decls = readDeclarations(root, workflow, index);
     violations.push(...lintDeclarations(decls, relative(root, workflowYamlPath)));
     violations.push(...lintDocument(workflowDoc, decls, relative(root, workflowYamlPath)));
+    // A routine file is its own name scope, so it is linted against its own declarations. Read
+    // against the workflow's, every gate in every routine would violate `setvariable-undeclared`.
+    const routinesDir = join(dir, 'routines');
+    if (existsSync(routinesDir) && statSync(routinesDir).isDirectory()) {
+      for (const entry of readdirSync(routinesDir).sort()) {
+        if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
+        const path = join(routinesDir, entry);
+        const routine: unknown = parse(readFileSync(path, 'utf-8'));
+        const routineDecls = routineDeclarations(routine);
+        violations.push(...lintDeclarations(routineDecls, relative(root, path)));
+        violations.push(...lintDocument(routine, routineDecls, relative(root, path)));
+      }
+    }
     const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
     for (const entry of readdirSync(activitiesDir).sort()) {

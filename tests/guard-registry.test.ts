@@ -38,6 +38,33 @@ describe('guard registry', () => {
     expect(GUARDS.filter((g) => g.proves.trim().length === 0)).toEqual([]);
   });
 
+  /**
+   * A routine reference is spliced away when definitions load, so the authored form and the
+   * materialised form answer different questions and a guard aimed at the wrong one reports clean
+   * over ground it never read (#704). The column is a field on the entry rather than a table in a
+   * planning file, so a guard added without an answer does not compile.
+   */
+  it('records which form of an activity every guard reads', () => {
+    expect(GUARDS.filter((g) => !['authored', 'materialised', 'none'].includes(g.form))).toEqual([]);
+    // A repo-scoped guard reads no corpus at all, so it can only be `none`.
+    expect(GUARDS.filter((g) => g.scope === 'repo' && g.form !== 'none').map((g) => g.id)).toEqual([]);
+    // And the corpus is not uniformly one column: a classification that collapsed to a single value
+    // would pass every other assertion here while meaning nothing.
+    const corpusForms = new Set(GUARDS.filter((g) => g.scope === 'corpus').map((g) => g.form));
+    expect([...corpusForms].sort()).toEqual(['authored', 'materialised', 'none']);
+  });
+
+  /**
+   * The guards that audit what will RUN rather than what an author wrote. Each is pinned by name,
+   * because moving one between columns changes what it can see and is a decision rather than a
+   * refactor — `checkpoint-entry` reads the materialised form precisely so that a routine reference
+   * in first position cannot evade a rule about first steps.
+   */
+  it('names the guards that consume the loader', () => {
+    expect(GUARDS.filter((g) => g.form === 'materialised').map((g) => g.id).sort())
+      .toEqual(['checkpoint-entry', 'refs', 'routines', 'stealth-isolation', 'workflow-yaml']);
+  });
+
   it('separates corpus-scoped guards from repo-scoped ones', () => {
     expect(CORPUS_GUARDS.length).toBeGreaterThan(0);
     expect(CORPUS_GUARDS.every((g) => g.scope === 'corpus')).toBe(true);

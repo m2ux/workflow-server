@@ -2,7 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { buildRoutineLookup, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { buildRoutineLookup } from '../src/loaders/routine-loader.js';
 import {
   collectRoutineRefLines,
   hasRoutineStepLine,

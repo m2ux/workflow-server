@@ -11,6 +11,23 @@
  */
 export type GuardScope = 'corpus' | 'repo';
 
+/**
+ * Which form of an activity a guard reads (#704).
+ *
+ * A routine reference is spliced away when definitions load, so the two forms answer different
+ * questions and a guard aimed at the wrong one reports clean over ground it never read.
+ *
+ *   `authored`    — reads definition files as written. A guard auditing what an AUTHOR wrote wants
+ *                   this: materialisation rewrites `when` expressions and `set` values, so a guard
+ *                   routed through the loader would audit generated text. These gain `routines/` as
+ *                   a second directory to walk.
+ *   `materialised`— takes the loader's activities. A guard auditing what will RUN wants this: a
+ *                   reference in first position evades a rule about first steps entirely against
+ *                   unexpanded text.
+ *   `none`        — reads no activity steps at all, so neither form applies.
+ */
+export type GuardForm = 'authored' | 'materialised' | 'none';
+
 export interface GuardSpec {
   /** Stable id — also the label in `check:all` output and the key in a delta report. */
   id: string;
@@ -23,6 +40,11 @@ export interface GuardSpec {
   json: boolean;
   /** One line: what this guard proves. */
   proves: string;
+  /**
+   * Which form of an activity it reads. A field on the entry rather than a table in a planning
+   * file, so a guard added without an answer is a compile error rather than a row nobody updated.
+   */
+  form: GuardForm;
 }
 
 export const GUARDS: GuardSpec[] = [
@@ -33,6 +55,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'step bindings resolve, args conform, reads have producers, outputs have consumers',
+    form: 'authored',
   },
   {
     id: 'activity-variables',
@@ -41,6 +64,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every activity declares the variables it reads and writes, and every read has a writer on every path',
+    form: 'authored',
   },
   {
     id: 'artifact-status-once',
@@ -49,6 +73,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: "no artifact template states the document's status in both its lean header and a closing field",
+    form: 'none',
   },
   {
     id: 'canonical-home-map',
@@ -57,6 +82,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every canonical-home row names an artifact some technique declares, so the conformance gate bound with the map resolves',
+    form: 'authored',
   },
   {
     id: 'nested-output-home',
@@ -65,6 +91,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every nested output component is declared in one place, so a container and its operation cannot drift into two descriptions of one value',
+    form: 'none',
   },
   {
     id: 'inherited-inputs',
@@ -72,6 +99,7 @@ export const GUARDS: GuardSpec[] = [
     npmScript: 'check:inherited-inputs',
     scope: 'corpus',
     proves: 'no technique redeclares an input a container contract already merges into it',
+    form: 'none',
   },
   {
     id: 'section-framing',
@@ -79,6 +107,7 @@ export const GUARDS: GuardSpec[] = [
     npmScript: 'check:framing',
     scope: 'corpus',
     proves: 'no resource strands prose above its first section from a consumer that cites it by anchor',
+    form: 'none',
   },
   {
     id: 'citation-grain',
@@ -87,6 +116,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'no technique cites one resource both bare and by anchor, so a file never arrives alongside its own sections',
+    form: 'none',
   },
   {
     id: 'identifier-qualification',
@@ -95,6 +125,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every technique I/O id is a qualified noun phrase',
+    form: 'none',
   },
   {
     id: 'review-mode-gating',
@@ -103,6 +134,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'no review-reachable checkpoint auto-advances into unapproved mutating work',
+    form: 'authored',
   },
   {
     id: 'audience',
@@ -111,6 +143,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every artifact declares who reads it, and every agent-audience artifact is JSON on disk',
+    form: 'none',
   },
   {
     id: 'artifact-guides',
@@ -119,6 +152,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every persisted artifact filename maps to a creation guide, or is triaged as owing one',
+    form: 'none',
   },
   {
     id: 'repeated-runs',
@@ -127,6 +161,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every run of steps two or more activity files carry is classified, and the differences between its copies are named',
+    form: 'authored',
   },
   {
     id: 'description-hygiene',
@@ -135,6 +170,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'activity YAML descriptions stay WHAT-only; bound technique steps carry no description/name',
+    form: 'authored',
   },
   {
     id: 'checkpoint-entry',
@@ -143,6 +179,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'no activity opens with a checkpoint, so no dispatch exists only to ask a question',
+    form: 'materialised',
   },
   {
     id: 'workflow-identity',
@@ -151,6 +188,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every workflow declares the id its directory names, so the name it is referenced by and the name it publishes are one',
+    form: 'none',
   },
   {
     id: 'checkpoint-presentation',
@@ -159,6 +197,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'when a gate is presented is stated only in the engine technique that owns the contract',
+    form: 'authored',
   },
   {
     id: 'decision-order',
@@ -167,6 +206,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'no checkpoint decides a value a step before it is already gated on',
+    form: 'authored',
   },
   {
     id: 'bootstrap-self-contained',
@@ -175,6 +215,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'the text delivered before a session exists sends the reader nowhere it cannot go',
+    form: 'none',
   },
   {
     id: 'set-action-values',
@@ -183,6 +224,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every set action names where it writes, and braces a value that names a variable',
+    form: 'authored',
   },
   {
     id: 'harness-adapter-set',
@@ -191,6 +233,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every harness kind resolves to an adapter exposing exactly the operation kinds callers ask for',
+    form: 'none',
   },
   {
     id: 'launched-workflows',
@@ -199,6 +242,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every declared launch is performed by a step, every launch is declared, and both name a workflow the corpus holds',
+    form: 'authored',
   },
   {
     id: 'self-provisioned-input',
@@ -207,6 +251,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'no step interpolates its own set target into its technique inputs',
+    form: 'authored',
   },
   {
     id: 'self-composed-set',
@@ -215,6 +260,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'no set action builds its value out of the variable it writes',
+    form: 'authored',
   },
   {
     id: 'branch-as-step',
@@ -223,6 +269,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'no protocol phase encodes a conditional branch as a step',
+    form: 'none',
   },
   {
     id: 'activity-technique-overlap',
@@ -231,6 +278,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'activity techniques[] and step bindings stay disjoint',
+    form: 'authored',
   },
   {
     id: 'prism-lens-reachability',
@@ -239,6 +287,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every prism lens is goal-routable or pipeline-internal, and resolves',
+    form: 'none',
   },
   {
     id: 'resource-anchors',
@@ -247,6 +296,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every relative .md#anchor link resolves to a rendered heading, and every markdown fence closes',
+    form: 'none',
   },
   {
     id: 'technique-template',
@@ -255,6 +305,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every technique file follows the normative template, artifact bodies included',
+    form: 'none',
   },
   {
     id: 'variable-model',
@@ -263,6 +314,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'defaults, gates and setVariable effects are coherent with the seeded variable model',
+    form: 'authored',
   },
   {
     id: 'fragments',
@@ -271,6 +323,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every checkpoint fragment ref resolves, is used, and is not inlined twice',
+    form: 'authored',
   },
   {
     id: 'stealth-isolation',
@@ -279,6 +332,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'no static leakage path out of a stealth-mode workflow',
+    form: 'materialised',
   },
   {
     id: 'when-expression',
@@ -287,6 +341,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every when: gate parses under the reference dialect and parenthesizes mixed &&/||',
+    form: 'authored',
   },
   {
     id: 'loop-shape',
@@ -295,6 +350,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'an item loop declares its collection, item and early exit, a repeat-until loop its continuation test, and neither declares the other\'s',
+    form: 'authored',
   },
   {
     id: 'refs',
@@ -303,6 +359,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every activity/workflow techniques[] reference resolves through the loader',
+    form: 'materialised',
   },
   {
     id: 'activities',
@@ -311,6 +368,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every activity file validates against the activity schema',
+    form: 'authored',
   },
   {
     id: 'workflow-yaml',
@@ -319,6 +377,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'every workflow.yaml validates against the workflow schema',
+    form: 'materialised',
   },
   {
     id: 'site-links',
@@ -327,6 +386,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'repo',
     json: false,
     proves: 'every internal site href/src and anchor resolves',
+    form: 'none',
   },
   {
     id: 'svg-layout',
@@ -335,6 +395,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'repo',
     json: false,
     proves: 'site SVG diagrams stay within their geometric bounds',
+    form: 'none',
   },
   {
     id: 'source-encoding',
@@ -343,6 +404,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'repo',
     json: true,
     proves: 'no text source carries a literal control character, so grep and git diff stay honest',
+    form: 'none',
   },
   {
     id: 'pinned-corpus-paths',
@@ -351,6 +413,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: true,
     proves: 'every corpus path a TypeScript source resolves still exists in the pinned corpus',
+    form: 'none',
   },
   {
     id: 'lockfile-denylist',
@@ -359,6 +422,16 @@ export const GUARDS: GuardSpec[] = [
     scope: 'repo',
     json: true,
     proves: 'no lockfile entry resolves to a version published with an install-time payload',
+    form: 'none',
+  },
+  {
+    id: 'routines',
+    script: 'guards/check-routines.ts',
+    npmScript: 'check:routines',
+    scope: 'corpus',
+    json: true,
+    proves: "every routine's declared signature matches its own body, every routine is referenced somewhere in the corpus, and every routine sits in the home its referrers compute",
+    form: 'materialised',
   },
   {
     id: 'generated-schemas',
@@ -367,6 +440,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'repo',
     json: true,
     proves: 'every generated schema file matches the Zod source it is rendered from, and every schema on disk is accounted for',
+    form: 'none',
   },
 ];
 
