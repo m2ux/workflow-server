@@ -124,8 +124,12 @@ async function checkSignature(
   // `produces` and `mentions` are the un-narrowed sets — every name a step produces or consults,
   // whether or not a declaration mentions it. The narrowed `reads`/`writes` would answer the wrong
   // question here, having already been filtered to the namespace this check is testing.
+  //
+  // `mentions` less the literals, because a binding's unbraced value is a rename only where it names
+  // something declared: `analysis_mode: thorough` mentions `thorough` and reads nothing, and
+  // reporting it as an undeclared read would fire on nearly every real body.
   const written = derived.produces;
-  const consulted = derived.mentions;
+  const consulted = new Set([...derived.mentions].filter((name) => !derived.literalValues.has(name)));
 
   for (const [id] of scope.outputs) {
     if (written.has(id)) continue;

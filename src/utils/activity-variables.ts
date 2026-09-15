@@ -231,6 +231,16 @@ export interface DerivedContract {
    * data loss rather than hygiene, so this is what the collision family is decided from.
    */
   artifactNames: Set<string>;
+  /**
+   * The unbraced binding values the namespace settled as LITERALS rather than renames.
+   *
+   * `mentions` carries them too, because a checker asking "does anything else consult this name"
+   * wants the widest reading. A checker asking "what does this body read" wants the narrow one, and
+   * the difference is exactly this set: `analysis_mode: thorough` mentions `thorough` and reads
+   * nothing. Kept apart rather than dropped from `mentions`, so neither question has to be answered
+   * with the other one's set.
+   */
+  literalValues: Set<string>;
 }
 
 /**
@@ -471,6 +481,8 @@ export async function deriveActivityContract(args: {
   const pathReads = new Set<string>();
   const memberWrites = new Set<string>();
   const artifactNames = new Set<string>();
+  /** Unbraced binding values the namespace settled as literals — mentioned, and read by nothing. */
+  const literalValues = new Set<string>();
 
   const consumes = new Set<string>();
   const read = (reference: string): void => {
@@ -493,7 +505,7 @@ export async function deriveActivityContract(args: {
    */
   const readWholeName = (value: string): void => {
     if (namespace.has(value)) read(value);
-    else mentions.add(value);
+    else { mentions.add(value); literalValues.add(value); }
   };
   // A branch's productions land whole under its own key, so the write side re-keys to the
   // container plus one entry per member. Inside the branch names stay bare: a later step reads an
@@ -630,7 +642,7 @@ export async function deriveActivityContract(args: {
 
   return {
     reads, writes, internalReads, artifactWrites, produces, mentions, persistedProductions,
-    routingReads, consumes, pathReads, memberWrites, artifactNames,
+    routingReads, consumes, pathReads, memberWrites, artifactNames, literalValues,
   };
 }
 
