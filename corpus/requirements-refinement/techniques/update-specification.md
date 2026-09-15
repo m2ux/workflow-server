@@ -45,7 +45,7 @@ Absolute path to the written working specification for this pass.
 
 ### correction_iteration
 
-Count of correction passes performed: `0` on the initial pass, and one greater than the preceding pass on each correction pass.
+Count of correction passes performed so far.
 
 ## Protocol
 
