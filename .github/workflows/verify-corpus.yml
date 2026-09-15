@@ -35,12 +35,14 @@ jobs:
       WF_CORPUS_SUBJECT: checkout
       WORKFLOWS_DIR: workflows
     steps:
-      # This corpus change is stacked on feat/693-named-roots: those guards read ledgers/ and
-      # walks/ of the pointed tree and cite findings by workflow id.
+      # The engine that grades this corpus is the one the corpus is served by, so a definition
+      # using a construct the released server understands is graded by a guard suite that
+      # understands it too. A pin to anything else grades the corpus against a vocabulary it is no
+      # longer written in, and every guard added since that pin is silently absent from the sweep.
       - name: Check out the server tooling
         uses: actions/checkout@v4
         with:
-          ref: feat/693-named-roots
+          ref: main
           submodules: false
 
       # The corpus under review. For a pull request this is the branch tip; for a manual run it is

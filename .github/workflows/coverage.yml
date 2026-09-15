@@ -31,10 +31,12 @@ jobs:
       WF_CORPUS_SUBJECT: checkout
       WORKFLOWS_DIR: workflows
     steps:
+      # The engine that walks this corpus is the one the corpus is served by — see the same step in
+      # verify-corpus.yml for why a pin to anything else grades it against a stale vocabulary.
       - name: Check out the server tooling
         uses: actions/checkout@v4
         with:
-          ref: feat/693-named-roots
+          ref: main
           submodules: false
           fetch-depth: 0
 
