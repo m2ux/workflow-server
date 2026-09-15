@@ -115,7 +115,7 @@ AFTER INSTALL
   \$INSTALL/${DEFAULT_DEPLOY_CURSOR_NAME} REPO_NAME
   export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:${DEFAULT_HOST_PORT}/mcp
   curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/health
-  curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/ready   # sessionKeyWritable: true
+  curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/ready   # sessionKeyWritable + corpusServes: true
 EOF
 }
 
@@ -425,4 +425,4 @@ echo
 echo "Then:"
 echo "  export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:${HOST_PORT}/mcp"
 echo "  curl -fsS http://127.0.0.1:${HOST_PORT}/health"
-echo "  curl -fsS http://127.0.0.1:${HOST_PORT}/ready   # must include sessionKeyWritable: true"
+echo "  curl -fsS http://127.0.0.1:${HOST_PORT}/ready   # must include sessionKeyWritable and corpusServes: true"

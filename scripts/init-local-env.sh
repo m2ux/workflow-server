@@ -201,5 +201,5 @@ echo
 echo "Next:"
 echo "  1. set -a && source .env && set +a"
 echo "  2. docker compose up --build   # or ~/.local/share/workflow-server/start.sh -d"
-echo "  3. curl -fsS http://127.0.0.1:3000/ready   # sessionKeyWritable: true"
+echo "  3. curl -fsS http://127.0.0.1:3000/ready   # sessionKeyWritable + corpusServes: true"
 echo "  4. Restart Cursor / reload MCP; smoke with discover + start_session"

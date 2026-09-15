@@ -312,3 +312,33 @@ describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
     });
   });
 });
+
+/**
+ * The published-image smoke test boots the server on the token-bench fixture and gates on `/ready`
+ * with a curl that fails on any non-2xx. That fixture is the smallest corpus the server is asked to
+ * serve, so it is the one a readiness check tightened against an empty corpus would strand — and it
+ * is reached by no other test here, every case above needing a live corpus. This runs regardless.
+ */
+describe('readiness on the fixture corpus the published-image smoke test uses', () => {
+  const fixture = resolve(import.meta.dirname, 'fixtures/token-bench');
+
+  it('is ready, the fixture holding a workflow the walk finds', async () => {
+    const workspaceDir = mkdtempSync(join(tmpdir(), 'wf-fixture-ready-'));
+    try {
+      const app = createHttpApp({
+        workflowDir: fixture,
+        schemasDir: resolve(import.meta.dirname, '../schemas'),
+        workspaceDir,
+        serverName: 'test-http-workflow-server',
+        serverVersion: '1.0.0',
+        minCheckpointResponseSeconds: 0,
+      });
+      const res = await get(app, '/ready');
+      expect(res.status).toBe(200);
+      expect(res.body.checks.corpusServes).toBe(true);
+      expect(res.body.corpus).toEqual({ dir: fixture, workflows: 1, ambiguous: [] });
+    } finally {
+      rmSync(workspaceDir, { recursive: true, force: true });
+    }
+  });
+});
