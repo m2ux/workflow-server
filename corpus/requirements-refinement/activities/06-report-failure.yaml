@@ -1,7 +1,7 @@
 id: report-failure
 version: 1.5.0
 name: Report Failure
-description: Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically; no specification is promoted.
+description: Compile a failure report of the unresolved critical issues, the correction history, and the manual resolution each issue needs.
 variables:
   reads:
     - source_paths
@@ -19,7 +19,7 @@ steps:
     technique: report-failure
     actions:
       - action: message
-        message: "Refinement stops with unresolved critical issues and stages no specification for promotion. The issues, the correction history, and the manual resolution each one needs are on record ([failure report]({failure_report_path}))."
+        message: "Refinement stops with unresolved critical issues. The issues, the correction history, and the manual resolution each one needs are on record ([failure report]({failure_report_path}))."
 outcome:
-  - The user knows exactly which critical issues blocked refinement and what manual resolution each one needs
-  - No unvalidated specification reaches the canonical location — the prior state is preserved until a human intervenes
+  - The critical issues that blocked refinement and the manual resolution each one needs are on record
+  - The canonical specification is unchanged

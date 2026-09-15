@@ -12,8 +12,8 @@ specification-fidelity rules.
 | [analyze-source](analyze-source.md) | Parse the source documents against the current specification into a structured analysis report |
 | [update-specification](update-specification.md) | Apply the analysis, correction findings, or requested revisions to a complete updated specification |
 | [validate-specification](validate-specification.md) | Validate the updated specification and categorize each issue |
-| [finalize-specification](finalize-specification.md) | Assemble the final specification and change summary for promotion |
-| [report-failure](report-failure.md) | Compile a failure report when refinement cannot complete automatically |
+| [finalize-specification](finalize-specification.md) | Assemble the final specification and change summary |
+| [report-failure](report-failure.md) | Compile a failure report when refinement stops with unresolved critical issues |
 
 Completeness is a comparison of the documents in hand: every normative statement in `{source_paths}`
 reaches a requirement in the specification at `{target_doc_path}`.

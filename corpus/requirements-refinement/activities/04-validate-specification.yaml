@@ -48,4 +48,4 @@ exits:
   - id: uncorrectable
     isDefault: true
 outcome:
-  - The workflow knows whether the specification is sound and, for every remaining defect, whether it is fatal or fixable
+  - Whether the specification is sound is recorded, and every remaining defect is labeled fatal or fixable

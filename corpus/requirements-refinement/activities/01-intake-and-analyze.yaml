@@ -1,7 +1,7 @@
 id: intake-and-analyze
 version: 1.5.0
 name: Intake and Analyze
-description: Produce a user-confirmed requirements analysis from classified, readable source documents against the target specification.
+description: Produce a confirmed requirements analysis from classified, readable source documents against the target specification.
 variables:
   reads:
     - source_paths
@@ -9,7 +9,7 @@ variables:
   writes:
     - name: analysis_confirmed
       type: boolean
-      description: True once the requirements analysis is approved for application to the specification
+      description: True when the requirements analysis is approved
       defaultValue: false
     - name: source_readable
       type: boolean
@@ -72,7 +72,7 @@ steps:
         description: The source set, the classification each source carries, and the mode are correct.
       - id: revise
         label: Correct the sources
-        description: A source path, a source's classification, or the augment/create mode is wrong, or the set omits a document it should carry, and must be corrected before proceeding.
+        description: A source path, a source's classification, or the augment/create mode is wrong, or the set omits a document it should carry.
         effect:
           exit: revise
   - kind: technique
@@ -85,7 +85,7 @@ steps:
   - kind: checkpoint
     id: analysis-confirmed
     when: source_readable == true
-    message: "The requirements analysis derived from the source set is ready to apply to the specification ([analysis report]({requirements_analysis_path}))."
+    message: "The requirements analysis derived from the source set is on record ([analysis report]({requirements_analysis_path}))."
     options:
       - id: confirmed
         label: Yes, apply this analysis
@@ -96,7 +96,7 @@ steps:
             update_pass_kind: initial
       - id: revise
         label: Revise the analysis
-        description: Analysis misreads a source, misses changes, or leaves a source unread, and must be revised before proceeding.
+        description: Analysis misreads a source, misses changes, or leaves a source unread.
         effect:
           exit: revise
 exits:
@@ -108,8 +108,8 @@ exits:
   - id: revise
     immediate: true
 outcome:
-  - The workflow can trust where to read from and where to write to — both paths exist and are confirmed correct by the user
-  - Downstream activities know how to read each source, which classification it carries, and whether they are augmenting an existing specification or creating a new one
+  - Both the source-document paths and the target-specification path exist and are confirmed
+  - Each source carries its classification, and whether the specification is being augmented or created is recorded
   - A source with nothing to read is settled at the boundary
   - Every requirement change the sources imply is pinned to a stable identifier the specification can be updated against
   - The analysis faithfully reflects every source

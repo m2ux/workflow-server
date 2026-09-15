@@ -5,17 +5,17 @@ metadata:
 
 ## Capability
 
-Validate the updated specification against structural, identifier-uniqueness, consistency, source-coverage, and protocol-conformance checks, categorize each issue as critical or correctable, and derive whether validation passed, and whether critical or correctable issues remain — with the source-coverage result recorded in the report.
+Judge whether the updated specification is conformant and covers every source, with each issue labeled critical or correctable.
 
 ## Inputs
 
 ### working_specification
 
-The updated specification document to validate.
+The updated specification document.
 
 ### requirements_analysis
 
-The structured analysis whose source-coverage matrix is the completeness reference for validation.
+The structured analysis carrying the source-coverage matrix.
 
 ## Outputs
 
@@ -45,7 +45,7 @@ Presence of a defect another correction pass resolves, with no blocking defect a
 
 ### validation_passed
 
-Overall verdict — `true` when the specification is conformant and covers every source in full, so it is ready to finalize.
+Overall verdict — `true` when the specification is conformant and covers every source in full.
 
 ### update_pass_kind
 

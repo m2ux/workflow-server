@@ -11,7 +11,7 @@ variables:
   writes:
     - name: correction_iteration
       type: number
-      description: Count of correction passes performed so far; 0 on the initial update
+      description: Count of correction passes performed so far
       defaultValue: 0
     - name: working_specification_path
       type: string
@@ -35,4 +35,4 @@ exits:
   - id: done
     isDefault: true
 outcome:
-  - The full specification now reflects every confirmed change with its protocol intact, ready for validation to judge against
+  - The full specification now reflects every confirmed change with its protocol intact

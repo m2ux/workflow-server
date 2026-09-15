@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts staged for promotion.
+Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts.
 
 ## Inputs
 
@@ -15,13 +15,13 @@ The validation-passed specification document.
 
 ### requirements_analysis
 
-The structured analysis of requirement changes, used to compose the change summary.
+The structured analysis of requirement changes.
 
 ## Outputs
 
 ### final_specification
 
-The finalized specification staged for promotion.
+The finalized specification staged in the planning folder.
 
 #### artifact
 

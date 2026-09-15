@@ -1,6 +1,6 @@
 # Requirements Refinement Workflow
 
-> Refine a canonical requirements specification from a set of source documents (meeting transcripts and unstructured documents): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
+> Refine a canonical requirements specification from a set of source documents (meeting transcripts and unstructured documents): classify, analyze, apply, validate, correct within a bounded loop, and stage the result. Operates on local files; performs no version-control operations.
 
 ---
 
@@ -11,7 +11,7 @@ This workflow turns one or more source documents — meeting transcripts and uns
 specification (an SRS-style document). It classifies each source, analyzes them for requirement changes,
 applies them while preserving the [specification protocol](resources/specification-protocol.md)
 verbatim, validates the result, iteratively corrects within a bounded loop, and stages a finalized
-specification plus a change summary in the planning folder for a human to review and promote.
+specification plus a change summary in the planning folder.
 
 Each source is traced in its own right: a meeting transcript is recorded as an `SRC-MTG###` reference,
 an unstructured document as an `SRC-DOC###` reference credited to its author. The source-coverage
@@ -34,10 +34,10 @@ never edits the canonical document in place.
 
 | # | Activity | Purpose |
 |---|----------|---------|
-| 01 | [Intake and Analyze](activities/01-intake-and-analyze.yaml) | Establish readable, classified sources and a user-confirmed analysis of the requirement changes they imply |
+| 01 | [Intake and Analyze](activities/01-intake-and-analyze.yaml) | Establish readable, classified sources and a confirmed analysis of the requirement changes they imply |
 | 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
 | 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage) and categorize issues |
-| 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary for promotion |
+| 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary |
 | 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when critical issues or the correction budget stop refinement |
 
 ## Flow
@@ -51,7 +51,7 @@ intake-and-analyze → update-specification → validate-specification
         └─ source unreadable → end
 ```
 
-No specification is promoted automatically.
+The staged specification sits in the planning folder.
 
 ## Structure
 

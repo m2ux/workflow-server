@@ -13,7 +13,7 @@ The checks applied to an updated specification and the scheme for categorizing e
 
 ### Structure
 - All canonical sections are present and correctly ordered.
-- Requirement entries use the four-part format (title, status, rationale, source) with correct spacing.
+- Requirement entries conform to [Requirement Entry Format](./specification-protocol.md#requirement-entry-format).
 - Markdown syntax is well-formed.
 
 ### Identifiers
@@ -27,7 +27,7 @@ The checks applied to an updated specification and the scheme for categorizing e
 - Status values are drawn from the permitted set; newly added requirements are `pending`.
 
 ### Consistency
-- Source references resolve to entries listed in section 2 (Requirements Sources).
+- Source references resolve to entries listed in section 2 (Requirements Sources) and conform to [Source Reference Format](./specification-protocol.md#source-reference-format).
 - No two requirements contradict one another; duplicates are flagged.
 
 ### Source Coverage

@@ -7,7 +7,7 @@ metadata:
 
 # Failure Report
 
-Creation guide for bare filename `failure-report.md`. Written when refinement cannot complete on its own. Answers: what remains unresolved after the correction passes, and what a requirements engineer has to do by hand. This is the run's terminal artifact when it fails, so it stands alone for a reader who never saw the validation reports.
+Creation guide for bare filename `failure-report.md`. Written when refinement cannot complete on its own. Answers: what remains unresolved after the correction passes, and the manual resolution each issue needs. This is the run's terminal artifact when it fails, so it stands alone for a reader who never saw the validation reports.
 
 ## Template
 

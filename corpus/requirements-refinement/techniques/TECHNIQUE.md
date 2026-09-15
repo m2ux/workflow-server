@@ -23,7 +23,7 @@ Filesystem path to the canonical requirements specification being augmented or c
 
 ### correction_iteration
 
-Count of correction passes performed so far; `0` on the initial update.
+Count of correction passes performed so far.
 
 #### default
 

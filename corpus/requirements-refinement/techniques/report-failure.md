@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically.
+Compile a failure report of the unresolved critical issues, the correction history, and the manual resolution each issue needs.
 
 ## Inputs
 
@@ -53,4 +53,4 @@ Absolute path to the written failure report.
 
 ### promotion-withheld-on-failure
 
-A specification is promoted only after passing validation; a failed run stages no specification for promotion.
+A failed run stages no specification for promotion.
