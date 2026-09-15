@@ -23,7 +23,7 @@ Structured analysis of the requirement changes.
 
 ### target_doc_exists
 
-`true` when the target specification already exists and its section structure is preserved; `false` when the full specification structure is instantiated from scratch.
+`true` when a file exists at `{target_doc_path}` (the specification is augmented); `false` when it is created from scratch.
 
 ## Outputs
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Capture the source-document and target-specification paths, record whether every source document is readable, classify each source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and record the intake.
+Record the source paths, whether every source is readable, each source's type, and whether the specification is being augmented or created.
 
 ## Outputs
 
@@ -45,7 +45,7 @@ Absolute path to the written intake record.
 
 ### 1. Capture Source Paths
 
-- Capture `{source_paths}` and `{target_doc_path}` from the user request.
+- Capture `{source_paths}` and `{target_doc_path}`.
 - Set `{spec_basename}` to the basename of `{target_doc_path}` (filename without directory).
 
 ### 2. Record Source Readability
@@ -54,8 +54,7 @@ Absolute path to the written intake record.
 
 ### 3. Classify Each Source
 
-- For each path in `{source_paths}`, infer from that document's content whether it is a meeting transcript or an unstructured document, and record it in `{classified_sources}` as `{ path, type }` with `type` set to `meeting` or `document`.
-- A `meeting` source is later referenced as `SRC-MTG###`; a `document` source as `SRC-DOC###` credited to the document's author, per [specification-protocol](../resources/specification-protocol.md#source-reference-format). Each source carries its own reference, so a mixed set is classified per document rather than as a whole.
+- For each path in `{source_paths}`, infer from that document's content whether it is a meeting transcript or an unstructured document, and record it in `{classified_sources}` as `{ path, type }` with `type` set to `meeting` or `document`. Each source carries its own type, so a mixed set is classified per document rather than as a whole.
   > A source with no content to read carries no classification.
 
 ### 4. Detect Target Existence

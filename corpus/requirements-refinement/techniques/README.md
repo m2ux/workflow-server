@@ -8,8 +8,8 @@ specification-fidelity rules.
 
 | Technique | Capability |
 |-----------|-----------|
-| [intake-sources](intake-sources.md) | Capture the source paths, record whether every source is readable, classify each source's type, detect augment-vs-create, and record the intake |
-| [analyze-source](analyze-source.md) | Parse the source documents against the current specification into a structured analysis report |
+| [intake-sources](intake-sources.md) | Record the source paths, whether every source is readable, each source's type, and whether the specification is being augmented or created |
+| [analyze-source](analyze-source.md) | Produce a structured analysis of the requirement changes the source documents imply, with a source-coverage matrix |
 | [update-specification](update-specification.md) | Apply the analysis, correction findings, or requested revisions to a complete updated specification |
 | [validate-specification](validate-specification.md) | Validate the updated specification and categorize each issue |
 | [finalize-specification](finalize-specification.md) | Assemble the final specification and change summary |

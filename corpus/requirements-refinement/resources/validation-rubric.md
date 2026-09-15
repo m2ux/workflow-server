@@ -18,13 +18,13 @@ The checks applied to an updated specification and the scheme for categorizing e
 
 ### Identifiers
 - Every requirement and source identifier is unique.
-- New identifiers fall in the correct category (`REQ-F###`, `REQ-NF###`, `SRC-MTG###`, …).
+- New identifiers fall in the correct category per [Identifier Schemes](./specification-protocol.md#identifier-schemes).
 - Non-sequential identifiers are expected and are **not** a failure.
 
 ### Content
-- Requirement statements are atomic, testable, and use `SHALL` / `SHOULD` / `MAY` appropriately.
+- Requirement statements are atomic, testable, and use `SHALL` / `SHOULD` / `MAY` as [Requirement Entry Format](./specification-protocol.md#requirement-entry-format) requires.
 - Every requirement carries a complete rationale and at least one source reference.
-- Status values are drawn from the permitted set; newly added requirements are `pending`.
+- Status values are drawn from [Status Conventions](./specification-protocol.md#status-conventions); newly added requirements are `pending`.
 
 ### Consistency
 - Source references resolve to entries listed in section 2 (Requirements Sources) and conform to [Source Reference Format](./specification-protocol.md#source-reference-format).

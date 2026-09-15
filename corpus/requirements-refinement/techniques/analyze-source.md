@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Parse the source documents — meeting transcripts and unstructured documents — against the current specification and produce a structured requirements analysis report identifying new, updated, and deprecated requirements, with a source-coverage matrix tracing every normative statement to a requirement.
+Produce a structured analysis of the requirement changes the source documents imply, with a source-coverage matrix.
 
 ## Inputs
 
@@ -49,15 +49,13 @@ Absolute path to the written analysis report.
 ### 2. Identify Requirement Changes
 
 - Extract explicit requirement statements, modifications, additions, and deprecations from each source document, and derive reasonably-implied requirements.
-- Map each change to an existing requirement identifier (`REQ-F###` or `REQ-NF###`) where one applies; otherwise mark it as a new requirement.
+- Map each change to an existing requirement identifier where one applies; otherwise mark it as a new requirement, per [Identifier Schemes](../resources/specification-protocol.md#identifier-schemes).
 - Note ambiguities and conflicts for the quality-issues section.
 
 ### 3. Create Source References
 
 - Assign one source reference per entry in `{classified_sources}`, so every document the analysis draws on is citable in its own right.
-- For an entry whose `type` is `meeting`, assign a meeting source reference (`SRC-MTG###`) with participant initials for attribution.
-- For an entry whose `type` is `document`, assign a document source reference (`SRC-DOC###`) credited to that document's author.
-- Follow [specification-protocol](../resources/specification-protocol.md#source-reference-format) for both forms.
+- Follow [Source Reference Format](../resources/specification-protocol.md#source-reference-format) for the form each source type takes.
 
 ### 4. Complete Source Coverage
 

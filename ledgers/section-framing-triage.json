@@ -206,11 +206,6 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "requirements-refinement/resources/change-summary.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "requirements-refinement/resources/failure-report.md",
       "verdict": "harmless",
       "rationale": "orientation-only"

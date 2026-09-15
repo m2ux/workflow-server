@@ -59,7 +59,7 @@ steps:
           setVariable:
             finalization_accepted: true
       - id: revise
-        label: Revise before finalizing
+        label: Revise
         description: The final specification or change summary needs revision before acceptance.
         effect:
           setVariable:

@@ -28,7 +28,7 @@ never edits the canonical document in place.
 - Fold the requirement changes from meetings and documents into a specification, with traceability.
 - Keep a specification conformant to a fixed protocol (entry format, identifier schemes, status rules).
 - Review proposed specification changes — analysis, working drafts, validation verdict, and a change
-  summary — as artifacts before anything is promoted.
+  summary — as planning-folder artifacts.
 
 ## Activities
 
