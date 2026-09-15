@@ -2,8 +2,8 @@
 # Reload an experiment HTTP sidecar on a stable host port.
 #
 # Stops one named container, rebuilds (or reuses) its image from a checkout,
-# and starts it again on the same host port with a chosen corpus. Refuses the
-# install instance name `workflow-server` and host port 3000.
+# and starts it again on the same host port and corpus. Refuses the install
+# instance name `workflow-server` and host port 3000.
 #
 # Host port and corpus default to what the named container records, running or
 # exited, so a rebuild of the pairing under test is `--name` alone.
@@ -59,20 +59,29 @@ Environment (overridden by flags):
   EXP_PROJECTS_ROOT  EXP_LOG_DIR
   WORKFLOW_SERVER_START  WORKFLOW_SERVER_STOP
 
-Example (time-to-dispatch sidecar from its engine worktree):
+Container-side paths, shared with start.sh so a lookup matches what it binds:
+  PORT  CONTAINER_INSTALL_DIR  CONTAINER_WORKFLOW_DIR  CONTAINER_PROJECTS_ROOT
+
+Example — name a pairing once, then rebuild it by name:
 
   scripts/reload-exp-sidecar.sh \\
     --name=workflow-server-exp \\
     --image=workflow-server:exp-ttd \\
-    --workflows-dir=../time-to-dispatch-meta
+    --build=.worktrees/feat/time-to-dispatch-experiment \\
+    --workflows-dir=.worktrees/feat/time-to-dispatch-meta \\
+    --host-port=32772
+
+  scripts/reload-exp-sidecar.sh --name=workflow-server-exp --image=workflow-server:exp-ttd
 EOF
 }
 
-# Where start.sh binds the corpus inside the container. Reading the bind back names the corpus the
-# named sidecar serves, from a record that outlives the container running.
+# Where start.sh puts things inside the container, read from the variables start.sh reads and
+# derived the way start.sh derives them. A lookup keyed on anything else finds nothing the moment an
+# operator moves one of them, and reports it as a container that binds or publishes nothing.
+CONTAINER_INSTALL_DIR="${CONTAINER_INSTALL_DIR:-/var/lib/workflow-server}"
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-/app/workflows}"
-CONTAINER_PROJECTS_ROOT="${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}"
-CONTAINER_PORT="${CONTAINER_PORT:-3000}"
+CONTAINER_PROJECTS_ROOT="${CONTAINER_PROJECTS_ROOT:-${CONTAINER_INSTALL_DIR}/projects}"
+CONTAINER_PORT="${PORT:-3000}"
 
 NAME="${EXP_NAME:-}"
 IMAGE="${EXP_IMAGE:-workflow-server:local}"
