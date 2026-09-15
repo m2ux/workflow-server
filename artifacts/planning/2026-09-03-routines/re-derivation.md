@@ -5,13 +5,22 @@ Companion to [README.md](README.md) and [gap-review.md](gap-review.md), for
 the conversion artifacts carry a signature shaped by a technique deleted on 2026-09-06. This is the
 signature taken again from the loop block as it stands.
 
-Measured on 2026-09-07 against `workflows` at `b5e54574`.
+Measured on 2026-09-07 against `workflows` at `b5e54574`, and reconciled on 2026-09-15 against what
+the migration delivered. Four statements here were wrong when held against a running server: the
+spelling of a pass-through argument, the count of write declarations a convergence removes, which
+routine carries the internal, and the field name for an output a site may leave unbound. Each is
+corrected in place and the correction says what made it visible, because the next migration reads
+this document rather than the branch that closed this one.
 
 **It comes out smaller than the designed one, and it takes no capability parameter.** The design's
 `analyse-challenge-pass` takes seven inputs including the analysis operation; what the corpus now
-shares needs two inputs at one level and none at the other, and no higher-order parameter in either.
-The parameter's sites are in another family — see
-[higher-order-routines.md](higher-order-routines.md) and §2 below.
+shares takes no higher-order parameter at either level. The parameter's sites are in another family
+— see [higher-order-routines.md](higher-order-routines.md) and §2 below.
+
+Both signatures did come out larger than the two and zero site parameters first counted, and not by
+gaining any. A routine has no undeclared free variable, so each names the values its techniques
+reach through inherited inputs — eight at the inner level, ten at the outer. No reference site binds
+one. The count that matters to a site is still zero at six of the seven.
 
 ## What the seven sites carry
 
@@ -95,15 +104,22 @@ qualifier returns with them, for those routines only.
 [higher-order-routines.md](higher-order-routines.md) carries the measurement. Nothing in this
 document's two signatures depends on it.
 
-### 3. The outer routine has no inputs at all
+### 3. No reference site binds the outer routine anything
 
-Six byte-identical blocks means every value in them is a constant. `converge-assumptions` declares
-no inputs, four outputs, one internal, and its body is the reconcile step plus a reference to the
-challenge pass, wrapped in the `doWhile`.
+Six byte-identical blocks means every value a SITE could vary is a constant. `converge-assumptions`
+declares four outputs and no internal, and its body is the reconcile step plus a reference to the
+challenge pass, wrapped in the `doWhile`. The six sites bind nothing but the outputs.
 
-A routine with no parameters is the plainest possible case of the construct and the strongest
-possible drift argument: 192 lines of source, nothing varying between the copies, and nothing in the
-guard suite comparing them.
+It does declare inputs, and they are not site parameters. The reconciliation step reaches ten names
+through the technique it runs — the planning folder, the target path, the branch, the pull request
+number and the rest — and a routine has no undeclared free variable, so the signature names them and
+every site falls through to the host's value under the same spelling. The signature states what the
+run needs; the empty argument list at each site states that no site varies it. The inner routine
+carries the same shape for eight names of its own.
+
+A routine no site passes an argument to is the plainest possible case of the construct and the
+strongest possible drift argument: 192 lines of source, nothing varying between the copies, and
+nothing in the guard suite comparing them.
 
 ## The two signatures
 
@@ -119,10 +135,17 @@ inputs:
     description: The adversarial perspectives the challenge pass applies, as a JSON array.
   - id: concern_document
     description: The name of the document holding the concern set this pass reads and updates.
+  # …and the eight names the pass reaches through its techniques' inherited inputs — branch_name,
+  # component_git_dir, planning_folder_path, pr_number, problem_statement, requirements,
+  # target_path, target_repo. No site binds any of them; each host supplies its own.
+
+internals:
+  - id: challenge_findings
+    description: Per-perspective challenge findings, passed from the challenge step to the combine step.
 
 outputs:
   - id: concern_document
-    type: string
+    type: object
     description: The concern document with challenge resolutions applied and newly surfaced items appended.
   - id: concerns_agent_resolvable
     type: boolean
@@ -133,7 +156,7 @@ outputs:
   - id: residual_opens
     type: array
     description: The irreducible open items after this merge.
-    unbound: permitted
+    optional: true
 
 steps:
   - kind: technique
@@ -142,13 +165,13 @@ steps:
       name: analyse-challenge::challenge
       inputs:
         challenge_perspectives: "{challenge_perspectives}"
-        concern_document: "{concern_document}"
+        concern_document: concern_document
   - kind: technique
     id: combine
     technique:
       name: analyse-challenge::combine
       inputs:
-        concern_document: "{concern_document}"
+        concern_document: concern_document
       outputs:
         concern_document: concern_document
         concerns_agent_resolvable: concerns_agent_resolvable
@@ -163,9 +186,14 @@ version: 1.0.0
 name: Assumption Convergence Loop
 description: Reconcile assumptions and challenge the result until no agent-resolvable item remains.
 
+inputs:
+  # The ten names the reconciliation step reaches through its technique — assumption_categories,
+  # assumption_source, branch_name, component_git_dir, planning_folder_path, pr_number,
+  # problem_statement, requirements, target_path, target_repo. No site binds any of them.
+
 outputs:
   - id: assumptions_log
-    type: string
+    type: object
     description: The assumptions log with challenge resolutions applied.
   - id: has_resolvable_assumptions
     type: boolean
@@ -235,12 +263,26 @@ And the comprehension site references the inner routine from inside its own loop
 
 ## Four rules this exercises that the earlier conversion did not
 
-**A bare argument is a literal, and that is what preserves today's semantics.** `concern_document`
-receives the *name* `assumptions_log`, not its value: the body writes
-`concern_document: "{concern_document}"`, materialisation drops the braces because the argument is a
-literal, and the technique step's own name-match resolution then reads the document as it does
-today. Rewriting the token root would have emitted `"{assumptions_log}"` and changed the binding's
-meaning. This is the kind-aware substitution rule doing load-bearing work at its first real site.
+**The body spells a pass-through argument bare, and that is what preserves today's semantics.**
+`concern_document` receives the *name* `assumptions_log`, not its value, and the technique step's own
+name-match resolution then reads the document as it does today. Emitting `"{assumptions_log}"` would
+change the binding's meaning, so the body writes `concern_document: concern_document` and
+substitution replaces one bare name with another.
+
+The braced spelling `"{concern_document}"` does not survive this site. A whole-token argument drops
+its braces only where the reference site binds a LITERAL; where it binds a name the routine's own
+scope declares, the root is rewritten and the braces stay. `converge-assumptions` declares
+`assumptions_log` among its outputs, so at that site the argument is a name and the braced body
+emits `"{assumptions_log}"` — the very value this rule exists to avoid.
+
+The two halves of that rule are not interchangeable and the signature has to pick the one its site
+makes true. A body reaching a value the site supplies verbatim spells it braced; a body naming a
+document the site identifies spells it bare.
+
+**What caught it, and what did not.** Every guard passed on the braced form, and the delivered
+activity parsed and resolved. The divergence showed as a single line in a differential of the
+delivered block before and after the conversion, which is the check a migration is held to. A
+migration that reads correctly and delivers something else is the failure a green suite cannot see.
 
 **An unbound output finally has a case.** The comprehension site binds three of the pass's four
 outputs; `residual_opens` is dropped from the materialised bindings. That is the rule the re-run
@@ -253,8 +295,15 @@ conversion produced, which the identifier-length item's measurements have to be 
 against.
 
 **An internal survives, and it is the one the guard suite forced.** `challenge_findings` passes from
-the challenge step to the combine step and never leaves. It is declared as a write at six activities
-today, so converting removes six declarations.
+the challenge step to the combine step and never leaves. It is declared as a write at **seven**
+activities — the comprehension site runs the same pair and declares it too — so converting removes
+seven declarations. A criterion satisfied at six leaves one standing for a name that is no longer a
+workflow variable.
+
+It is an internal of the INNER routine only. `converge-assumptions` declares none: the name flows
+between two steps inside `challenge-concerns`, and from the outer routine's position a reference
+contributes the inner routine's declared signature and nothing else. The signature §3 prints carries
+none, which is correct.
 
 ## What still needs a person
 
