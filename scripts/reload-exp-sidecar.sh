@@ -2,11 +2,11 @@
 # Reload an experiment HTTP sidecar on a stable host port.
 #
 # Stops one named container, rebuilds (or reuses) its image from a checkout,
-# and starts it again on the same host port with a chosen corpus. Refuses the
-# install instance name `workflow-server` and host port 3000.
+# and starts it again on the same host port and corpus. Refuses the install
+# instance name `workflow-server` and host port 3000.
 #
-# Host port and corpus default to what the named container already runs, so a
-# rebuild of the pairing under test is `--name` alone.
+# Host port and corpus default to what the named container records, running or
+# exited, so a rebuild of the pairing under test is `--name` alone.
 set -euo pipefail
 
 INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
@@ -30,10 +30,10 @@ Required:
 
 Options:
   --workflows-dir=CORPUS   Corpus checkout (directory that contains corpus/).
-                           Defaults to the corpus the running container binds.
-                           Required when none is running.
+                           Defaults to the corpus the named container binds,
+                           running or exited. Required when none exists.
   --projects-root=DIR      Host projects root bound RW. Defaults to the root
-                           the running container binds, then to the install
+                           the named container binds, then to the install
                            root. Planning lands at DIR/<repo>/.engineering/
                            artifacts/planning, so a root of its own keeps an
                            experiment's walks out of the live planning tree.
@@ -41,8 +41,9 @@ Options:
   --build[=DIR]            Checkout whose Dockerfile is built (default: this
                            repo root). DIR is an engine worktree for a branch
                            that is not this checkout.
-  --host-port=N            Host port. Defaults to the port the running
-                           container publishes. Required when none is running.
+  --host-port=N            Host port. Defaults to the binding the named
+                           container records, running or exited. Required when
+                           none exists.
   --log-dir=DIR            Where the outgoing container's log is kept
                            (default: INSTALL/logs). One file per reload,
                            holding the audit line the server writes per tool
@@ -58,20 +59,29 @@ Environment (overridden by flags):
   EXP_PROJECTS_ROOT  EXP_LOG_DIR
   WORKFLOW_SERVER_START  WORKFLOW_SERVER_STOP
 
-Example (time-to-dispatch sidecar from its engine worktree):
+Container-side paths, shared with start.sh so a lookup matches what it binds:
+  PORT  CONTAINER_INSTALL_DIR  CONTAINER_WORKFLOW_DIR  CONTAINER_PROJECTS_ROOT
+
+Example — name a pairing once, then rebuild it by name:
 
   scripts/reload-exp-sidecar.sh \\
     --name=workflow-server-exp \\
     --image=workflow-server:exp-ttd \\
-    --workflows-dir=../time-to-dispatch-meta
+    --build=.worktrees/feat/time-to-dispatch-experiment \\
+    --workflows-dir=.worktrees/feat/time-to-dispatch-meta \\
+    --host-port=32772
+
+  scripts/reload-exp-sidecar.sh --name=workflow-server-exp --image=workflow-server:exp-ttd
 EOF
 }
 
-# Where start.sh binds the corpus inside the container. Reading the bind back names the corpus a
-# running sidecar serves.
+# Where start.sh puts things inside the container, read from the variables start.sh reads and
+# derived the way start.sh derives them. A lookup keyed on anything else finds nothing the moment an
+# operator moves one of them, and reports it as a container that binds or publishes nothing.
+CONTAINER_INSTALL_DIR="${CONTAINER_INSTALL_DIR:-/var/lib/workflow-server}"
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-/app/workflows}"
-CONTAINER_PROJECTS_ROOT="${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}"
-CONTAINER_PORT="${CONTAINER_PORT:-3000}"
+CONTAINER_PROJECTS_ROOT="${CONTAINER_PROJECTS_ROOT:-${CONTAINER_INSTALL_DIR}/projects}"
+CONTAINER_PORT="${PORT:-3000}"
 
 NAME="${EXP_NAME:-}"
 IMAGE="${EXP_IMAGE:-workflow-server:local}"
@@ -146,7 +156,7 @@ capture_log() {
   fi
   local file="${LOG_DIR}/${NAME}-$(date -u +%Y%m%dT%H%M%SZ).log"
   if docker logs "$NAME" > "$file" 2>&1; then
-    echo "  log    : ${file}"
+    echo "  log      : ${file}"
   else
     rm -f "$file"
     echo "warning: cannot read the log of ${NAME}; it goes unkept" >&2
@@ -163,11 +173,28 @@ git_pin() {
   printf '%s%s\n' "$commit" "$dirty"
 }
 
-# The host directory a running container binds at CONTAINER_TARGET, empty when it binds none.
+# The host directory a container binds at CONTAINER_TARGET, empty when it binds none.
 container_bind_source() {
   local container="$1" target="$2"
   docker inspect "$container" \
     --format "{{range .Mounts}}{{if eq .Destination \"${target}\"}}{{.Source}}{{end}}{{end}}" \
+    2>/dev/null || true
+}
+
+# The host port a container publishes CONTAINER_PORT on, empty when it publishes none.
+#
+# `docker port` answers for a running container only, while the binding it reports is recorded on
+# the container itself and survives a stop. Reading the record keeps a reload working on a sidecar
+# a reboot left exited, which is the state the port is least likely to be remembered in.
+container_host_port() {
+  local container="$1" port="$2" spec
+  spec="$(docker port "$container" "${port}/tcp" 2>/dev/null | head -n1 || true)"
+  if [[ -n "$spec" ]]; then
+    printf '%s\n' "${spec##*:}"
+    return
+  fi
+  docker inspect "$container" \
+    --format "{{(index (index .HostConfig.PortBindings \"${port}/tcp\") 0).HostPort}}" \
     2>/dev/null || true
 }
 
@@ -181,16 +208,13 @@ else
   ENGINE="$(cd "$ENGINE" && pwd)"
 fi
 
-# Port and corpus both default to what the named container already runs, so reloading a sidecar
+# Port and corpus both default to what the named container already carries, so reloading a sidecar
 # with a fresh build is `--name` alone and the pairing under test survives the reload by default.
-# Either is required when no container of that name is up, there being nothing to read them from.
+# Either is required when no container of that name exists, there being nothing to read them from.
 if [[ -z "$PORT" ]] && command -v docker >/dev/null 2>&1; then
-  spec="$(docker port "$NAME" "${CONTAINER_PORT}/tcp" 2>/dev/null | head -n1 || true)"
-  if [[ -n "$spec" ]]; then
-    PORT="${spec##*:}"
-  fi
+  PORT="$(container_host_port "$NAME" "$CONTAINER_PORT")"
 fi
-[[ -n "$PORT" ]] || die "pass --host-port (no published port for ${NAME})"
+[[ -n "$PORT" ]] || die "pass --host-port (no published port on ${NAME})"
 [[ "$PORT" =~ ^[0-9]+$ ]] || die "host port must be numeric, got: ${PORT}"
 [[ "$PORT" != "3000" ]] || die "refusing to bind an experiment sidecar on :3000 (install instance)"
 
@@ -229,8 +253,8 @@ command -v curl >/dev/null 2>&1 || die "curl not found on PATH"
 # outcomes as they are defined: clean, findings, or nothing measurable. A tree nothing could be
 # measured on is the state a sidecar cannot serve, and is the one that refuses. Findings are a
 # warning — an experiment branch carries them by nature, and which guard failed is the signal, so
-# a load-level failure reads differently from corpus debt. The sweep runs before the running
-# container is stopped, so a refusal leaves the current sidecar up.
+# a load-level failure reads differently from corpus debt. The sweep runs before anything is
+# stopped, so a refusal leaves the container it was aimed at exactly as it found it.
 preflight_corpus() {
   if [[ ! -f "${ENGINE}/guards/check-all.ts" ]]; then
     echo "note: no guard suite under ${ENGINE}; skipping corpus preflight" >&2
@@ -241,11 +265,15 @@ preflight_corpus() {
     return 0
   fi
 
+  # The sweep's exit code is the reading, so the run sits in a condition where a non-zero status is
+  # an answer rather than a failure. Toggling `set -e` around it would answer the same question by
+  # turning the shell's own guarantee off and on again.
   local out status
-  set +e
-  out="$(cd "$ENGINE" && npx tsx guards/check-all.ts --root "$CORPUS" --corpus-only 2>&1)"
-  status=$?
-  set -e
+  if out="$(cd "$ENGINE" && npx tsx guards/check-all.ts --root "$CORPUS" --corpus-only 2>&1)"; then
+    status=0
+  else
+    status=$?
+  fi
 
   case "$status" in
     0)
@@ -258,7 +286,7 @@ preflight_corpus() {
     *)
       printf '%s\n' "$out" | tail -n 20 >&2
       die "corpus at ${CORPUS} could not be measured (guard sweep exit ${status}).
-  Nothing there is servable, so the running sidecar is left up.
+  Nothing there is servable, and nothing has been stopped.
   Pass --no-preflight to start on it regardless."
       ;;
   esac
@@ -268,13 +296,24 @@ if [[ "$PREFLIGHT" -eq 1 ]]; then
   preflight_corpus
 fi
 
-ENGINE_PIN="$(git_pin "$ENGINE")"
+# An engine pin is taken only where it is claimed — a reused image was built elsewhere, and pinning
+# the checkout this run happens to sit in would name a tree that built nothing.
+ENGINE_PIN=""
+if [[ "$BUILD" -eq 1 ]]; then
+  ENGINE_PIN="$(git_pin "$ENGINE")"
+fi
 CORPUS_PIN="$(git_pin "$CORPUS")"
 
 echo "Reloading ${NAME} on 127.0.0.1:${PORT}"
-echo "  engine : ${ENGINE} @ ${ENGINE_PIN}"
-echo "  corpus : ${CORPUS} @ ${CORPUS_PIN}"
-echo "  image  : ${IMAGE}"
+# The engine line is printed on the terms the labels are stamped on: a build claims the checkout it
+# came from, a reused image names the tag and leaves the checkout unclaimed.
+if [[ "$BUILD" -eq 1 ]]; then
+  echo "  engine   : ${ENGINE} @ ${ENGINE_PIN}"
+else
+  echo "  engine   : whatever built ${IMAGE}"
+fi
+echo "  corpus   : ${CORPUS} @ ${CORPUS_PIN}"
+echo "  image    : ${IMAGE}"
 if [[ -n "$PROJECTS" ]]; then
   echo "  projects : ${PROJECTS}"
 fi
@@ -328,4 +367,12 @@ for _ in 1 2 3 4 5 6 7 8 9 10 12 15 18 21 24 30; do
   sleep 1
 done
 
+# The probe answers which check is holding the container back, and the poll above discards that
+# answer because it gates on the status code. Ask once more without the gate, so the failure names
+# the false check — a corpus bind that resolves to nothing looks exactly like a container still
+# booting until the payload is read.
+echo "Last probe of http://127.0.0.1:${PORT}/ready:" >&2
+curl -sS "http://127.0.0.1:${PORT}/ready" >&2 || echo "  (no response)" >&2
+echo >&2
+echo "Container log: docker logs ${NAME}" >&2
 die "sidecar started but http://127.0.0.1:${PORT}/ready did not become ready"

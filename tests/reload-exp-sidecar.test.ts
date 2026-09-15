@@ -36,7 +36,7 @@ function withCorpus(): string {
 /** Whether `name` resolves on PATH — the preflight sits behind the script's own docker/curl checks. */
 function onPath(name: string): boolean {
   try {
-    execFileSync('command', ['-v', name], { shell: '/bin/bash', stdio: 'ignore' });
+    execFileSync('bash', ['-c', `command -v ${name}`], { stdio: 'ignore' });
     return true;
   } catch {
     return false;
@@ -69,10 +69,14 @@ describe('reload-exp-sidecar.sh', () => {
     expect(out.stdout).toContain('--no-preflight');
   });
 
-  it('usage asks only for --name, the corpus defaulting to the running container', () => {
+  it('usage asks only for --name, the corpus and port defaulting to the container record', () => {
     const out = run(['--help']);
     expect(out.stdout).toMatch(/Required:\s*\n\s*--name=NAME[^\n]*\n\s*\n/);
-    expect(out.stdout).toMatch(/Defaults to the corpus the running container binds/);
+    // The record outlives the container running, so the help must not promise a running one. Read
+    // against collapsed whitespace: the promise is the contract, where the help wraps it is not.
+    const flowed = out.stdout.replace(/\s+/g, ' ');
+    expect(flowed).toContain('Defaults to the corpus the named container binds, running or exited');
+    expect(flowed).toContain('Defaults to the binding the named container records, running or exited');
   });
 
   it('refuses a missing --name', () => {
@@ -167,7 +171,7 @@ describe('reload-exp-sidecar.sh', () => {
       ]);
       expect(result.status).not.toBe(0);
       expect(`${result.stderr}${result.stdout}`).toMatch(/could not be measured \(guard sweep exit 2\)/);
-      expect(`${result.stderr}${result.stdout}`).toMatch(/running sidecar is left up/);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/nothing has been stopped/);
     } finally {
       rmSync(corpus, { recursive: true, force: true });
     }
