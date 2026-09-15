@@ -15,7 +15,7 @@ critical issues stop refinement.
 
 ### Structure
 - All canonical sections are present and correctly ordered.
-- Requirement entries use the four-part format (title, rationale, Source, Status) with correct spacing. The rationale is the unlabeled paragraph under the title.
+- Requirement entries conform to [Requirement Entry Format](./specification-protocol.md#requirement-entry-format).
 - Markdown syntax is well-formed.
 
 ### Identifiers
@@ -29,7 +29,7 @@ critical issues stop refinement.
 - Status values are drawn from the permitted set; newly added requirements are `pending`.
 
 ### Consistency
-- Source references resolve to entries listed in section 2 (Requirements Sources). Each citation is a markdown link whose text is the source reference and whose href is that source's file; a markdown source includes the fragment of the nearest heading above the derived passage.
+- Source references resolve to entries listed in section 2 (Requirements Sources) and conform to [Source Reference Format](./specification-protocol.md#source-reference-format).
 - No two requirements contradict one another; duplicates are flagged.
 
 ### Source Coverage
