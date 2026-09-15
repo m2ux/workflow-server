@@ -67,7 +67,7 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
 
 `--no-build` reuses `--image`. Point the experiment MCP server at the printed URL. Leave `workflow-server` on :3000.
 
-**Before the swap.** The corpus goes through its own guard suite (`guards/check-all.ts --corpus-only`, about five seconds) while the current container is still up. A tree nothing can be measured on refuses and leaves that container running; guard findings warn, name the failing guards and start, since an experiment branch carries findings by nature. `--no-preflight` skips the sweep. The outgoing container's log is written to `$INSTALL/logs` (or `--log-dir`) before it is removed — that file holds the JSON audit line the server writes per tool call, which is the record of the run being compared against.
+**Before the swap.** The corpus goes through its own guard suite (`guards/check-all.ts --corpus-only`, about five seconds) before anything is stopped. A tree nothing can be measured on refuses and leaves the container exactly as it found it; guard findings warn, name the failing guards and start, since an experiment branch carries findings by nature. `--no-preflight` skips the sweep. The outgoing container's log is written to `$INSTALL/logs` (or `--log-dir`) before it is removed — that file holds the JSON audit line the server writes per tool call, which is the record of the run being compared against. A reload that never reaches ready prints the probe's own payload, so the check holding it back is named rather than guessed at.
 
 **Reading an instance back.** The container carries the corpus path, both checkouts' commits and a dirty marker as labels, and `/ready` names the mounted corpus and counts the workflows in it:
 
