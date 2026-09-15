@@ -282,6 +282,23 @@ steps:
   });
 });
 
+describe('a routine file the schema refuses', () => {
+  /**
+   * A corpus-wide sweep reports rather than aborts. A reader that threw would take the whole sweep
+   * down and report nothing at all — including for the files that are fine — and `check:all` would
+   * show a crash where a defect location belongs.
+   */
+  it('is a finding naming the file and the reason, not a crash', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: action\n    id: a\n' } },
+      routines: { wf: { broken: 'id: broken\nversion: nope\nsteps: []\n' } },
+    });
+    expect(checks(findings)).toEqual(['routine-unreadable']);
+    expect(findings[0]!.detail).toContain('broken.yaml');
+    expect(findings[0]!.site).toBe('wf/routines/');
+  });
+});
+
 describe('placement, over the transitive referrer closure', () => {
   const body = (id: string, steps: string): string =>
     `id: ${id}\nversion: 1.0.0\nname: ${id}\nsteps:\n${steps}`;

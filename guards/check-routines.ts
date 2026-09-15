@@ -44,7 +44,7 @@ import type { Routine } from '../src/schema/routine.schema.js';
 import { routineScope } from '../src/schema/routine.schema.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { META_WORKFLOW_ID, collectRoutineRefs, parseRoutineRef } from '../src/loaders/routine-resolver.js';
-import { buildRoutineLookup, readCorpusRoutines } from '../src/loaders/routine-loader.js';
+import { ROUTINES_DIR, buildRoutineLookup, readCorpusRoutines } from '../src/loaders/routine-loader.js';
 import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { deriveActivityContract } from '../src/utils/activity-variables.js';
 import { assertScanned, corpusWorkflows, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
@@ -174,12 +174,16 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const workflows = corpusWorkflows(root, index).map(({ id }) => id);
   assertScanned(workflows.length, 'workflows with a workflow.yaml', root);
 
-  const declared = await readCorpusRoutines(root, index);
-  // A corpus declaring no routine has nothing to check, and says so rather than passing silently on
-  // a sweep that measured nothing.
-  if (declared.size === 0) return [];
+  const { byWorkflow: declared, errors } = await readCorpusRoutines(root, index);
 
-  const findings: Finding[] = [];
+  const findings: Finding[] = errors.map(({ workflowId, error }) => ({
+    check: 'routine-unreadable',
+    site: `${workflowId}/${ROUTINES_DIR}/`,
+    detail: error,
+  }));
+  // A corpus declaring no readable routine has nothing further to check. The unreadable ones are
+  // already reported above, so this is not a silent pass over a sweep that measured nothing.
+  if (declared.size === 0) return findings;
 
   // Every reference, from every activity file and every routine body, across every workflow. The
   // sweep is corpus-wide because the rules are: a load reaches one workflow, and a reference site
@@ -190,9 +194,9 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
     if (!loaded.success) continue;
     for (const activity of loaded.value.authoredActivities.values()) {
       const from = loaded.value.activitySourceWorkflow.get(activity.id) ?? workflowId;
-      for (const ref of collectRoutineRefs(activity)) {
-        references.push({ workflowId: from, site: `${from}/activities/${activity.id}.yaml`, ref });
-      }
+      // The filename, prefix included, so a finding's site is a path that exists on disk.
+      const file = `${from}/activities/${activity.artifactPrefix ? `${activity.artifactPrefix}-` : ''}${activity.id}.yaml`;
+      for (const ref of collectRoutineRefs(activity)) references.push({ workflowId: from, site: file, ref });
     }
   }
   for (const [workflowId, routines] of declared) {
