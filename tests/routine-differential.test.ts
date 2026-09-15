@@ -335,6 +335,122 @@ describe('an activity carrying no routine, in a workflow that declares them', ()
   });
 });
 
+/**
+ * The agreement between the two representations, over a generated space rather than one shape.
+ *
+ * Every divergence found so far was found by building a fixture shape nobody had thought to build —
+ * including one a fix introduced, which the flagship case could not show because it puts its
+ * reference at top level. Enumerating the space is what stops the next one depending on somebody
+ * thinking of it: body × placement × argument × site modifier, each combination loaded through the
+ * real loader and spliced through the real text path, compared field for field.
+ */
+describe('both paths agree over every generated shape', () => {
+  const BODY_HEAD = 'id: shared-run\nversion: 1.0.0\nname: Shared Run\n'
+    + 'inputs:\n  - id: topic_name\n    description: the topic\n'
+    + 'outputs:\n  - id: run_verdict\n    type: string\n    description: the verdict\n'
+    + '  - id: run_notes\n    type: string\n    description: notes\n    optional: true\n'
+    + 'internals:\n  - id: interim_value\n    description: passed between steps\n';
+
+  /** One body per field family the substituter rewrites. */
+  const BODIES: Record<string, string> = {
+    action: 'steps:\n  - kind: action\n    id: note\n    actions:\n'
+      + '      - action: set\n        target: interim_value\n        value: "{topic_name}"\n'
+      + '      - action: log\n        message: "saw {interim_value} for {topic_name}"\n'
+      + '      - action: set\n        target: run_verdict\n        value: "{interim_value}"\n',
+    checkpoint: 'steps:\n  - kind: checkpoint\n    id: gate\n    message: "Decide on {topic_name}"\n'
+      + '    options:\n      - id: yes-go\n        label: Go\n        effect:\n          setVariable:\n'
+      + '            interim_value: seen\n            run_verdict: "{topic_name}"\n            run_notes: noted\n',
+    loop: 'steps:\n  - kind: loop\n    id: cycle\n    loopType: forEach\n'
+      + '    variable: interim_value\n    over: topic_name\n    steps:\n'
+      + '      - kind: checkpoint\n        id: "decide#{interim_value.id}"\n        message: "On {interim_value}"\n'
+      + '        options:\n          - id: ok\n            label: OK\n            effect:\n'
+      + '              setVariable:\n                run_verdict: done\n',
+    gated: 'steps:\n  - kind: action\n    id: always\n    actions:\n'
+      + '      - action: set\n        target: interim_value\n        value: "1"\n'
+      + '  - kind: action\n    id: sometimes\n    when: interim_value == "1" && topic_name != skip\n'
+      + '    actions:\n      - action: set\n        target: run_verdict\n        value: "{interim_value}"\n',
+    nested: 'steps:\n  - kind: routine\n    id: inner\n    routine: inner-run\n'
+      + '    with:\n      inner_topic: "{topic_name}"\n    outputs:\n      inner_result: run_verdict\n'
+      + '  - kind: action\n    id: after\n    actions:\n'
+      + '      - action: set\n        target: interim_value\n        value: "{run_verdict}"\n',
+  };
+
+  const indent = (text: string, pad: string): string =>
+    text.split('\n').map((line) => (line ? `${pad}${line}` : line)).join('\n');
+
+  /** Where the host puts the reference — top level, in a loop, twice, two loops deep. */
+  const PLACEMENTS: Record<string, (ref: string) => string> = {
+    top: (ref) => `steps:\n${ref}`,
+    'in-loop': (ref) => 'steps:\n  - kind: loop\n    id: outer-cycle\n    loopType: forEach\n'
+      + `    variable: outer_item\n    over: outer_items\n    steps:\n${indent(ref, '    ')}`,
+    twice: (ref) => `steps:\n${ref}${ref.replace('id: run\n', 'id: run-again\n')}`,
+    'in-nested-loop': (ref) => 'steps:\n  - kind: loop\n    id: outer-cycle\n    loopType: forEach\n'
+      + '    variable: outer_item\n    over: outer_items\n    steps:\n'
+      + '      - kind: loop\n        id: inner-cycle\n        loopType: forEach\n'
+      + `        variable: inner_item\n        over: inner_items\n        steps:\n${indent(ref, '        ')}`,
+  };
+
+  const BINDINGS: Record<string, string> = {
+    bound: '    with:\n      topic_name: "{host_topic}"\n',
+    literal: '    with:\n      topic_name: a-literal\n',
+    unbound: '',
+  };
+
+  const BOUND_OUTPUTS = '    outputs:\n      run_verdict: host_verdict\n      run_notes: host_notes\n';
+  const MODIFIERS: Record<string, { extra: string; outputs: string }> = {
+    plain: { extra: '', outputs: BOUND_OUTPUTS },
+    gated: { extra: '    when: host_ready == true\n', outputs: BOUND_OUTPUTS },
+    // The optional output left unbound, which drops the bindings that write it.
+    optional: { extra: '    required: false\n', outputs: '    outputs:\n      run_verdict: host_verdict\n' },
+  };
+
+  const INNER_ROUTINE = 'id: inner-run\nversion: 1.0.0\nname: Inner Run\n'
+    + 'inputs:\n  - id: inner_topic\n    description: the inner topic\n'
+    + 'outputs:\n  - id: inner_result\n    type: string\n    description: what it concluded\n'
+    + 'steps:\n  - kind: action\n    id: decide\n    actions:\n'
+    + '      - action: set\n        target: inner_result\n        value: "{inner_topic}"\n';
+
+  const cases = Object.keys(BODIES).flatMap((body) =>
+    Object.keys(PLACEMENTS).flatMap((placement) =>
+      Object.keys(BINDINGS).flatMap((binding) =>
+        Object.keys(MODIFIERS).map((modifier) => ({ body, placement, binding, modifier })))));
+
+  let generatedRoot: string;
+  beforeAll(() => { generatedRoot = mkdtempSync(join(tmpdir(), 'routine-generated-')); });
+  afterAll(() => { rmSync(generatedRoot, { recursive: true, force: true }); });
+
+  it(`covers ${cases.length} shapes, which is the point of enumerating rather than choosing`, () => {
+    expect(cases.length).toBe(180);
+  });
+
+  it.each(cases)('$body / $placement / $binding / $modifier', async ({ body, placement, binding, modifier }) => {
+    const id = `${body}-${placement}-${binding}-${modifier}`.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
+    const dir = join(generatedRoot, id);
+    mkdirSync(join(dir, 'activities'), { recursive: true });
+    mkdirSync(join(dir, 'routines'), { recursive: true });
+    writeFileSync(join(dir, 'workflow.yaml'),
+      `id: ${id}\nversion: 1.0.0\ntitle: ${id}\ninitialActivity: host\ngraph:\n  host: {}\n`);
+    writeFileSync(join(dir, 'routines', 'inner-run.yaml'), INNER_ROUTINE);
+    writeFileSync(join(dir, 'routines', 'shared-run.yaml'), BODY_HEAD + BODIES[body]!);
+    const site = MODIFIERS[modifier]!;
+    const reference = `  - kind: routine\n    id: run\n    routine: shared-run\n${BINDINGS[binding]!}${site.extra}${site.outputs}`;
+    const authored = `id: host\nversion: 1.0.0\nname: Host\n${PLACEMENTS[placement]!(reference)}`;
+    writeFileSync(join(dir, 'activities', '01-host.yaml'), authored);
+
+    const loaded = await loadWorkflowWithDiagnostics(generatedRoot, id);
+    if (!loaded.success) throw new Error(`load failed: ${loaded.error.message}`);
+    expect(loaded.value.activityLoadErrors).toEqual([]);
+
+    const lookup = await buildRoutineLookup(generatedRoot, [id], collectRoutineRefLines(authored));
+    const text = parseDefinition(injectRoutineSteps(
+      injectResolvedStepIds(authored),
+      (step, sitePath) => materializeRoutineStep(step, lookup, id, 'host', sitePath),
+    )) as Activity;
+
+    expect(text.steps).toEqual(loaded.value.workflow.activities![0]!.steps);
+  });
+});
+
 describe('the live corpus', () => {
   const LIVE = liveCorpusRoot();
 
