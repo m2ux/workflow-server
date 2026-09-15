@@ -141,7 +141,7 @@ function renameHead(reference: string, map: SubstitutionMap): string | undefined
 }
 
 const TOKEN_RE = /\{([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*)\}/g;
-const IDENTIFIER_RE = /[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*/g;
+const LEADING_IDENTIFIER_RE = /^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*/;
 const COMPARISON_TAIL_RE = /(?:==|!=|>=|<=|>|<)\s*$/;
 
 /**
@@ -161,15 +161,43 @@ function substituteTokens(text: string, map: SubstitutionMap): string {
 /**
  * Rewrite the bag paths a `when` expression reads, in one pass.
  *
- * An expression names its variables bare, and a right-hand operand is indistinguishable from an
- * identifier by shape — `analysis_type == completion` reads `analysis_type` alone — so an identifier
- * directly following a comparison operator is a value and is left as written.
+ * An expression names its variables bare, so the rewrite has to tell a bag path from the two things
+ * that look exactly like one:
+ *
+ *   - A right-hand operand. `analysis_type == completion` reads `analysis_type` alone, so an
+ *     identifier directly following a comparison operator is a value and is left as written.
+ *   - The contents of a quoted string. `chosen_mode == "current_assumption"` compares against the
+ *     characters `current_assumption`, and renaming them would change what the gate tests — silently,
+ *     because the result is still a well-formed expression.
  */
 function substituteExpression(expression: string, map: SubstitutionMap): string {
-  return expression.replace(IDENTIFIER_RE, (match, offset: number) => {
-    if (COMPARISON_TAIL_RE.test(expression.slice(0, offset))) return match;
-    return renameHead(match, map) ?? match;
-  });
+  let out = '';
+  let index = 0;
+  let quote: string | null = null;
+  while (index < expression.length) {
+    const character = expression[index]!;
+    if (quote !== null) {
+      out += character;
+      if (character === quote) quote = null;
+      index += 1;
+      continue;
+    }
+    if (character === '"' || character === "'") {
+      quote = character;
+      out += character;
+      index += 1;
+      continue;
+    }
+    const identifier = LEADING_IDENTIFIER_RE.exec(expression.slice(index))?.[0];
+    if (identifier === undefined) {
+      out += character;
+      index += 1;
+      continue;
+    }
+    out += COMPARISON_TAIL_RE.test(out) ? identifier : renameHead(identifier, map) ?? identifier;
+    index += identifier.length;
+  }
+  return out;
 }
 
 /** Rewrite a structured condition's variable references, at any nesting depth. */
@@ -429,9 +457,17 @@ function expandReference(
 
   // The reference site's own gates apply to every step it stands for: the site decided whether the
   // run happens at all, and the run is no longer a single step that could carry that decision.
+  //
+  // A body step with a gate of its own takes BOTH, conjoined — the site gate says whether the run
+  // happens and the body gate says whether that step happens within it, and a step that took only
+  // its own would run in a host that never asked for the run. Each side is parenthesised because the
+  // dialect requires it wherever `&&` and `||` meet at one nesting depth, and either side may be a
+  // disjunction.
   for (const produced of expanded) {
-    if (step.when !== undefined && produced.when === undefined) produced.when = step.when;
-    if (step.required === false && produced.required === undefined) produced.required = false;
+    if (step.when !== undefined) {
+      produced.when = produced.when === undefined ? step.when : `(${step.when}) && (${produced.when})`;
+    }
+    if (step.required === false) produced.required = false;
   }
   return expanded;
 }
@@ -553,7 +589,11 @@ export function injectRoutineSteps(
 
     const indent = opener[1]!;
     const end = blockEnd(lines, i, indent.length);
-    const block = parseStepBlock(lines.slice(i, end), indent.length);
+    // Blank lines trailing the block belong to the file's own shape, not to the step: a block that
+    // swallowed them would drop the file's final newline when the last step is a reference.
+    let last = end - 1;
+    while (last > i && lines[last]!.trim() === '') last -= 1;
+    const block = parseStepBlock(lines.slice(i, last + 1), indent.length);
     if (block === null || (block as { kind?: unknown }).kind !== 'routine') {
       out.push(lines[i]!);
       continue;
@@ -569,6 +609,7 @@ export function injectRoutineSteps(
     for (const step of materialise(reference.data)) {
       for (const line of stringifyForResponse([step]).trimEnd().split('\n')) out.push(indent + line);
     }
+    for (let blank = last + 1; blank < end; blank++) out.push(lines[blank]!);
     i = end - 1;
   }
   return out.join('\n');
@@ -605,7 +646,7 @@ function parseStepBlock(blockLines: string[], indent: number): unknown {
  * and their delivery byte-identical.
  */
 export function hasRoutineStepLine(rawDefinition: string): boolean {
-  return /^\s*(?:- )?kind:[ \t]*["']?routine["']?[ \t]*$/m.test(rawDefinition);
+  return /^\s*(?:- )?kind:[ \t]*["']?routine\b/m.test(rawDefinition);
 }
 
 /**
@@ -615,9 +656,11 @@ export function hasRoutineStepLine(rawDefinition: string): boolean {
  */
 export function collectRoutineRefLines(rawDefinition: string): string[] {
   const refs: string[] = [];
-  const re = /^\s*routine:[ \t]*(["']?)([^"'\n]+?)\1[ \t]*$/gm;
+  // A trailing `#` comment is admitted, because a line the scan misses is a workflow left unread
+  // and a reference that then fails to resolve at the splice.
+  const re = /^\s*routine:[ \t]*(["']?)([^"'#\n]+?)\1[ \t]*(?:#.*)?$/gm;
   let match: RegExpExecArray | null;
-  while ((match = re.exec(rawDefinition))) refs.push(match[2]!);
+  while ((match = re.exec(rawDefinition))) refs.push(match[2]!.trim());
   return refs;
 }
 

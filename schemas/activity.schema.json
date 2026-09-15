@@ -613,9 +613,6 @@
                   },
                   "required": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
-                  },
-                  "condition": {
-                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
                   }
                 },
                 "required": [

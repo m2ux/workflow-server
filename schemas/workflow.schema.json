@@ -817,9 +817,6 @@
                         },
                         "required": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
-                        },
-                        "condition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
                         }
                       },
                       "required": [

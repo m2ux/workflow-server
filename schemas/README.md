@@ -323,7 +323,7 @@ Shared base fields on every kind:
 | `kind`        | enum     | Required discriminator: `technique`, `action`, `checkpoint`, `loop`, or `routine` |
 | `id`          | string   | Unique identifier within activity (stable; required on a checkpoint step — it is the replay key) |
 | `when`        | string   | Inline boolean gate — run this step or skip it. Agent-evaluated; the server never evaluates gates |
-| `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped. Agent-evaluated. On a checkpoint step, `condition` (not `when`) is what enables `condition_not_met` dismissal |
+| `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped. Agent-evaluated. On a checkpoint step, `condition` (not `when`) is what enables `condition_not_met` dismissal. Not carried by a `loop` or a `routine` step, whose entry gate is `when` alone |
 | `required`    | `false`  | Worker hint, declared only when `false` (marks an optional step); an omitted `required` means the step is required |
 
 #### Checkpoint Step
@@ -398,7 +398,9 @@ A `kind: routine` step refers to a named run of steps declared in a `routines/` 
 | `with`      | map                   | Arguments: routine input id → its value here. A braced value is a reference to a host variable, a bare value is a literal. A declared input left unbound takes its declared default, or the host's value under the input's own id |
 | `outputs`   | map                   | Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and is a load failure unless its declaration says `optional: true` |
 
-It carries the site gates every step kind carries (`when`, `required`, `condition`) and nothing about routing. A site gate applies to every step the reference stands for, because the run is no longer a single step that could carry the decision.
+Its entry gate is `when` alone, as a loop's is, and it carries `required: false` and nothing about routing. A structured `condition` is rejected: it would have to reach the run's steps to mean anything, and on a checkpoint that field is what makes the gate dismissible — so a site condition pushed into a body would hand every gate in the run a capability its author never declared.
+
+A site gate applies to every step the reference stands for, because the run is no longer a single step that could carry the decision. A body step with a gate of its own takes **both**, conjoined: the site gate says whether the run happens and the body gate says whether that step happens within it.
 
 Two references to one routine in one activity are collision-free by construction, each body prefixed from its own reference id. A routine may refer to another; prefixes compose (`converge-assumptions.pass.iteration.challenge`) and a reference cycle fails the load.
 

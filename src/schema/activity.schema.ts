@@ -172,6 +172,11 @@ export type LoopStep = z.infer<typeof LoopStepSchema>;
 // routine's steps in its place, prefixing every identifier inside them from this step's `id`, so
 // every consumer downstream sees ordinary steps. The `id` is therefore required — it is the prefix,
 // not a label.
+//
+// Its entry gate is `when` alone, as a loop's is. A `condition` would have to reach the run's steps
+// to mean anything, and on a checkpoint that field is what makes the gate dismissible — so a site
+// condition pushed into a body would hand every gate in the run a capability its author never
+// declared. One field for the one question the site decides: whether the run happens.
 export const RoutineStepSchema = z.object({
   kind: z.literal('routine').describe('Step-kind discriminator.'),
   id: z.string().describe('Identifier for this step within the activity, and the prefix every identifier in the materialised body carries.'),
@@ -179,7 +184,6 @@ export const RoutineStepSchema = z.object({
   with: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Arguments: routine input id → the value it takes here. A braced value is a reference to a host variable and a bare value is a literal. A declared input left unbound takes the host\'s value under the input\'s own id, or the input\'s declared default.'),
   outputs: z.record(z.string()).optional().describe('Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and its declaration says whether that is allowed.'),
   ...stepCommonFields,
-  ...stepEntryCondition,
 }).strict();
 export type RoutineStep = z.infer<typeof RoutineStepSchema>;
 
@@ -207,6 +211,19 @@ export type StepKind = (typeof STEP_KINDS)[number];
  */
 const _stepKindsAreExhaustive: StepKind extends Step['kind'] ? (Step['kind'] extends StepKind ? true : never) : never = true;
 void _stepKindsAreExhaustive;
+
+/**
+ * The structured entry gate a step carries, or undefined for the kinds that carry none.
+ *
+ * Two kinds answer entry with `when` alone: a loop, because whether its body runs at all is a
+ * different question from whether it runs again, and a routine reference, because a condition would
+ * have to reach the run's steps to mean anything. Asking each caller to narrow the union itself put
+ * the same `kind === 'loop' ? … : step.condition` in three places, each of which had to be found
+ * again when a second such kind arrived.
+ */
+export function entryCondition(step: Step): z.infer<typeof ConditionSchema> | undefined {
+  return step.kind === 'loop' || step.kind === 'routine' ? undefined : step.condition;
+}
 
 /** The operation reference of a step's technique binding, whether bare-string or structured. */
 export function techniqueName(technique: TechniqueStep['technique'] | undefined): string | undefined {

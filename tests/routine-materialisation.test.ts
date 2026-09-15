@@ -166,6 +166,30 @@ describe('materialisation — the reference is gone and the steps are ordinary',
     expect(host.steps!.map((s) => s.when)).toEqual(['has_open_assumptions == true', 'has_open_assumptions == true']);
   });
 
+  /**
+   * A body step with a gate of its own takes BOTH, conjoined. Taking only its own would run it in a
+   * host that never asked for the run — and the result is still a well-formed expression, so nothing
+   * downstream would notice.
+   */
+  it('conjoins the site gate with a body step that carries its own', () => {
+    const gated = routine({
+      id: 'gated-run',
+      steps: [
+        { kind: 'action', id: 'always', actions: [{ action: 'log', message: 'a' }] },
+        { kind: 'action', id: 'sometimes', when: 'needs_individual_interview == true', actions: [{ action: 'log', message: 'b' }] },
+      ] as Step[],
+    });
+    const host = activity([{
+      kind: 'routine', id: 'run', routine: 'gated-run', when: 'has_open_assumptions == true',
+    } as Step]);
+    materializeActivityRoutines(host, lookupFrom({ wf: [gated] }), 'wf');
+    expect(host.steps!.map((s) => s.when)).toEqual([
+      'has_open_assumptions == true',
+      // Each side parenthesised, because either may be a disjunction and the dialect requires it.
+      '(has_open_assumptions == true) && (needs_individual_interview == true)',
+    ]);
+  });
+
   it('keeps two references to one routine collision-free', () => {
     const host = activity([
       { kind: 'routine', id: 'review-research', routine: 'assumption-interview', ...base } as Step,
@@ -176,6 +200,29 @@ describe('materialisation — the reference is gone and the steps are ordinary',
       'review-research.batch-gate', 'review-research.interview',
       'review-implementation.batch-gate', 'review-implementation.interview',
     ]);
+  });
+});
+
+describe('a `when` expression names its variables bare, so the rewrite has to tell them apart', () => {
+  const quoted = routine({
+    id: 'quoted-run',
+    internals: [{ id: 'current_assumption', description: 'the item in hand' }],
+    steps: [
+      {
+        kind: 'action', id: 'compare',
+        // Three shapes in one expression: a bag path to rename, a right-hand operand, and a quoted
+        // string whose CONTENTS happen to spell a declared name.
+        when: 'current_assumption == open && chosen_mode == "current_assumption"',
+        actions: [{ action: 'set', target: 'current_assumption', value: '1' }],
+      },
+    ] as Step[],
+  });
+
+  it('renames a bag path, and leaves a right-hand operand and a quoted literal alone', () => {
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'quoted-run' } as Step]);
+    materializeActivityRoutines(host, lookupFrom({ wf: [quoted] }), 'wf');
+    expect(host.steps![0]!.when)
+      .toBe('host_run_current_assumption == open && chosen_mode == "current_assumption"');
   });
 });
 

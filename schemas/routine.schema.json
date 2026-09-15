@@ -643,9 +643,6 @@
                   },
                   "required": {
                     "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/required"
-                  },
-                  "condition": {
-                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/condition"
                   }
                 },
                 "required": [

@@ -26,7 +26,7 @@ import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpoi
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES, FAN_DISPATCH_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
-import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
+import { entryCondition, injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
 import {
   bothGates, gateAnswer, variablesWrittenIn,
@@ -1605,7 +1605,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               when: s.when,
               // A loop's entry gate is `when` alone: whether its body runs at all is a different
               // question from whether it runs again, which `continueWhile` answers.
-              condition: s.kind === 'loop' ? undefined : s.condition,
+              condition: entryCondition(s),
               variables: bagAtOpen,
               writtenInActivity,
             }));

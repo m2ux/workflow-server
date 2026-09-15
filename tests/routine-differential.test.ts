@@ -130,6 +130,17 @@ describe('the pre-scan keeps routine-free text off the splice path', () => {
     expect(hasRoutineStepLine(plain)).toBe(false);
     expect(injectRoutineSteps(plain, () => { throw new Error('must not be called'); })).toBe(plain);
   });
+
+  /**
+   * The pre-scan is what decides whether the splice runs at all, so a shape it misses is a reference
+   * handed to a worker while the object graph holds ordinary steps — the one divergence between the
+   * two representations that nothing else would catch.
+   */
+  it('sees a reference step whose kind line carries a trailing comment', () => {
+    const commented = 'steps:\n  - kind: routine  # the shared run\n    id: run\n    routine: shared-run  # in meta\n';
+    expect(hasRoutineStepLine(commented)).toBe(true);
+    expect(collectRoutineRefLines(commented)).toEqual(['shared-run']);
+  });
 });
 
 describe('the raw text path', () => {
@@ -142,6 +153,15 @@ describe('the raw text path', () => {
     // The header and the steps either side of the block survive unchanged, character for character.
     expect(after.slice(0, 6)).toEqual(before.slice(0, 6));
     expect(after.slice(-5)).toEqual(before.slice(-5));
+  });
+
+  it('keeps the blank lines trailing a final reference block', async () => {
+    const raw = 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n'
+      + '    routine: assumption-interview\n    outputs:\n      assumption_outcome: host_outcome\n';
+    const lookup = await buildRoutineLookup(root, [WORKFLOW_ID], collectRoutineRefLines(raw));
+    const out = injectRoutineSteps(raw, (step) => materializeRoutineStep(step, lookup, WORKFLOW_ID, 'host'));
+    // The file's own final newline belongs to the file, not to the step block that happened to be last.
+    expect(out.endsWith('\n')).toBe(true);
   });
 
   it('keeps the host\'s own steps as authored', async () => {
