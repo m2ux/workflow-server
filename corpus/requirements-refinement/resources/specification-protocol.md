@@ -48,24 +48,23 @@ Each new requirement takes the next available number within its category.
 
 ## Requirement Entry Format
 
-Each requirement is a four-part entry, with a blank line between the title and each field and between
-fields, in this order: title, rationale, Source, Status.
+Each requirement is a three-part entry, with a blank line between the title and the rationale and
+between the rationale and Status, in this order: title, rationale, Status.
 
 ```markdown
-REQ-F013: When component is empty, the system SHALL infer component:* from title or repo, then apply the in-scope filter
+**REQ-F013: When component is empty, the system SHALL infer component:* from title or repo, then apply the in-scope filter**
 
-Empty component is common on stubs. Inference is how the in-scope filter still runs.
-
-Source: [SRC-MTG001](meetings/planning.md#component-scope), [SRC-DOC001](briefs/stubs.pdf), [SRC-DOC002](notes/filter.md#in-scope)
+Empty component is common on stubs. Inference is how the in-scope filter still runs. [[1](meetings/planning.md#component-scope), [2](briefs/stubs.pdf), [3](notes/filter.md#in-scope)]
 
 Status: pending
 ```
 
-The first line is the identifier and the atomic, testable statement. The statement uses the keyword
+The title is the identifier and the atomic, testable statement, in bold. The statement uses the keyword
 `SHALL` (mandatory), `SHOULD` (recommended), or `MAY` (optional).
 
 The unlabeled paragraph under the title is the rationale: why the requirement exists and any relevant
-design context.
+design context. The rationale ends with the source list [Source Reference Format](#source-reference-format)
+requires.
 
 ## Status Conventions
 
@@ -77,22 +76,28 @@ Permitted status values: `pending`, `under review`, `accepted`, `deprecated`.
 
 ## Source Reference Format
 
-Each cited source is a markdown link. The link text is the source reference (`SRC-MTG001`,
-`SRC-DOC001`, …). The href is the source file recorded for that reference in section 2.
+Each cited source is a markdown hyperlink. The href is the source file recorded for that reference in
+section 2.
 
 - When the source is markdown, the href includes the fragment of the nearest heading above the
   derived passage — the nearest linkable position in that file.
 - When the source is not markdown, the href is the file alone.
 
-A requirement may cite several sources, comma-separated on one `Source:` line.
-
-When a requirement originates from a specific discussion within a meeting, participant initials MAY
-follow the link; when it originates from a reference document, the document's author MAY follow the
-link:
+On a requirement, citations appear at the end of the rationale as a square-bracketed list of those
+hyperlinks. The link text is the source's 1-based index in that list. Numbering is local to the list:
+every requirement's first source is `1`.
 
 ```markdown
-Source: [SRC-MTG006](meetings/2026-04-12.md#scope) (PW, MC)
-Source: [SRC-DOC001](briefs/settlement.pdf) (Jane Doe)
+[[1](meetings/planning.md#component-scope), [2](briefs/stubs.pdf), [3](notes/filter.md#in-scope)]
+```
+
+When a requirement originates from a specific discussion within a meeting, participant initials MAY
+follow the list; when it originates from a reference document, the document's author MAY follow the
+list:
+
+```markdown
+[[1](meetings/2026-04-12.md#scope)] (PW, MC)
+[[1](briefs/settlement.pdf)] (Jane Doe)
 ```
 
 ## Reference Documents
