@@ -30,9 +30,6 @@ variables:
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
-    - name: current_assumption
-      type: object
-      description: The assumption under individual review.
     - name: deferred_items_register
       type: string
       description: The out-of-scope deferrals register as it stands after this activity's rows.
@@ -48,10 +45,6 @@ variables:
     - name: has_resolvable_assumptions
       type: boolean
       description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
-      defaultValue: false
-    - name: needs_individual_interview
-      type: boolean
-      description: Whether each residual open assumption is reviewed one at a time.
       defaultValue: false
     - name: open_assumptions
       type: array
@@ -78,36 +71,13 @@ steps:
   - kind: technique
     id: present-residual-assumptions
     technique: review-assumptions::assemble-open-set
-    when: is_review_mode != true && has_open_assumptions == true
-  - kind: checkpoint
-    id: residual-assumption-batch
-    ref: assumption-interview
-  - kind: technique
-    id: record-batch-decision
-    technique: review-assumptions::record
-    when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
-  - kind: loop
-    id: assumption-interview-loop
-    name: Individual Assumption Interview Loop
-    loopType: forEach
-    variable: current_assumption
-    over: open_assumptions
-    when: needs_individual_interview == true && has_open_assumptions == true
-    steps:
-      - kind: technique
-        id: present-assumption
-        technique: review-assumptions::assemble-one
-      - kind: checkpoint
-        id: assumption-decision#{current_assumption.id}
-        ref: assumption-decision
-        condition:
-          type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-      - kind: technique
-        id: record-decision
-        technique: review-assumptions::record
+    when: is_review_mode != true
+  - kind: routine
+    id: residual-assumptions
+    routine: residual-assumption-interview
+    outputs:
+      assumption_outcome: assumption_outcome
+      has_deferred_assumptions: has_deferred_assumptions
   - kind: technique
     id: update-assumptions-log
     technique: review-assumptions::record

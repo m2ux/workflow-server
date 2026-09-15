@@ -1,0 +1,133 @@
+id: residual-assumption-interview
+version: 1.0.0
+name: Residual Assumption Interview
+description: Gate the residual open assumptions as a batch, record the batch answer, then interview them one at a time where the batch answer asks for it.
+
+inputs:
+  - id: assumption_review_presentation
+    description: Judgement-augmentation context per open assumption, rendered at the batch gate. Produced by the host's announcement step, which sits outside this run.
+  - id: has_open_assumptions
+    description: Whether irreducible open assumptions remain for this run to settle.
+  - id: open_assumptions
+    description: The residual open assumptions the individual interview walks.
+  - id: is_review_mode
+    description: Whether the run is reviewing someone else's work, in which case no gate asks a user for a decision.
+  # Reached through the techniques the run binds, and bound by no reference site: each host supplies
+  # its own value under the same spelling. Declared because a routine has no undeclared free
+  # variable — the signature is what makes the run checkable with no host activity.
+  - id: assumption_categories
+    description: The categories an assumption is classified into.
+  - id: assumption_source
+    description: The work the assumptions are drawn from — the design decision, the plan, the analysis, or the change under construction.
+  - id: branch_name
+    description: Feature branch name.
+  - id: component_git_dir
+    description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
+  - id: planning_folder_path
+    description: Absolute path to this run's planning folder — the write location for every working artifact.
+  - id: pr_number
+    description: Pull request number.
+  - id: problem_statement
+    description: A clear problem definition with system understanding, impact assessment, success criteria, and constraints — understandable without prior context.
+  - id: requirements
+    description: The captured requirements list elicited across the domains.
+  - id: target_path
+    description: Feature worktree path for edits, builds, and PR ops.
+  - id: target_repo
+    description: GitHub repository as owner/repo.
+
+outputs:
+  - id: assumption_outcome
+    type: string
+    description: The outcome the deciding gate gave the assumption under discussion.
+    values:
+      - confirmed
+      - corrected
+      - deferred
+  - id: has_deferred_assumptions
+    type: boolean
+    description: Whether any assumption was deferred to stakeholder review.
+
+internals:
+  - id: current_assumption
+    description: The assumption under discussion during the individual interview, iterated from the open set.
+  - id: needs_individual_interview
+    description: Whether the batch gate asked for each assumption to be settled one at a time. Set by that gate and read by the two steps after it; no host consults it.
+
+steps:
+  - kind: checkpoint
+    id: batch-gate
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: has_open_assumptions
+          operator: ==
+          value: true
+    message: "Open assumptions remain, each with the agent's favored position: {assumption_review_presentation}"
+    options:
+      - id: accept-agent-positions
+        label: Accept agent positions
+        description: Confirm the agent's favored positions for all listed residual open assumptions
+        effect:
+          setVariable:
+            assumption_outcome: confirmed
+      - id: defer-all
+        label: Defer all to stakeholders
+        description: Queue every listed open assumption for stakeholder review
+        effect:
+          setVariable:
+            has_deferred_assumptions: true
+            assumption_outcome: deferred
+      - id: interview-individually
+        label: Interview individually
+        description: Walk each residual open assumption one at a time
+        effect:
+          setVariable:
+            needs_individual_interview: true
+  - kind: technique
+    id: record-batch
+    technique: review-assumptions::record
+    when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
+  - kind: loop
+    id: interview
+    name: Individual Assumption Interview Loop
+    loopType: forEach
+    variable: current_assumption
+    over: open_assumptions
+    maxIterations: 20
+    when: needs_individual_interview == true && has_open_assumptions == true
+    steps:
+      - kind: technique
+        id: present
+        technique: review-assumptions::assemble-one
+      - kind: checkpoint
+        id: "decision#{current_assumption.id}"
+        message: "Assumption {current_assumption.id}: {current_assumption.statement}"
+        options:
+          - id: resolve-inline
+            label: Accept the assumption
+            description: The assumption holds as stated
+            effect:
+              setVariable:
+                assumption_outcome: confirmed
+          - id: correct-assumption
+            label: Correct the assumption
+            description: The assumption is wrong and the reply carries its correction
+            effect:
+              setVariable:
+                assumption_outcome: corrected
+          - id: defer-to-stakeholder
+            label: Defer to stakeholder review
+            description: Queue this assumption for stakeholder review
+            effect:
+              setVariable:
+                has_deferred_assumptions: true
+                assumption_outcome: deferred
+      - kind: technique
+        id: record
+        technique: review-assumptions::record

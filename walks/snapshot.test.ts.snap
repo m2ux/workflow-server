@@ -243,7 +243,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "gatesReadUnbound": [],
       "lazyGates": {
-        "pending": 4,
+        "pending": 1,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -278,11 +278,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
-      "lazyGates": {
-        "pending": 3,
-        "unbound": 0,
-        "unparsed": 0,
-      },
+      "lazyGates": undefined,
       "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
@@ -349,9 +345,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "07-deferred-items.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
-        "pending": 6,
+        "pending": 5,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -363,6 +361,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "assumption-convergence.convergence.reconcile",
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
+        "present-residual-assumptions",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -379,7 +378,9 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -906,11 +907,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
-      "lazyGates": {
-        "pending": 3,
-        "unbound": 0,
-        "unparsed": 0,
-      },
+      "lazyGates": undefined,
       "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
@@ -977,9 +974,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "07-deferred-items.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
-        "pending": 6,
+        "pending": 5,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -991,6 +990,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "assumption-convergence.convergence.reconcile",
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
+        "present-residual-assumptions",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -1007,7 +1007,9 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -1540,7 +1542,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "gatesReadUnbound": [],
       "lazyGates": {
-        "pending": 4,
+        "pending": 1,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -1575,11 +1577,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
-      "lazyGates": {
-        "pending": 3,
-        "unbound": 0,
-        "unparsed": 0,
-      },
+      "lazyGates": undefined,
       "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
@@ -1646,9 +1644,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "07-deferred-items.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
-        "pending": 6,
+        "pending": 5,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -1660,6 +1660,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "assumption-convergence.convergence.reconcile",
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
+        "present-residual-assumptions",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -1676,7 +1677,9 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -2157,7 +2160,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "gatesReadUnbound": [],
       "lazyGates": {
-        "pending": 4,
+        "pending": 1,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -2192,11 +2195,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
-      "lazyGates": {
-        "pending": 3,
-        "unbound": 0,
-        "unparsed": 0,
-      },
+      "lazyGates": undefined,
       "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
@@ -2263,9 +2262,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "07-deferred-items.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
-        "pending": 6,
+        "pending": 5,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -2277,6 +2278,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "assumption-convergence.convergence.reconcile",
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
+        "present-residual-assumptions",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -2293,7 +2295,9 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -2735,11 +2739,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
-      "lazyGates": {
-        "pending": 3,
-        "unbound": 0,
-        "unparsed": 0,
-      },
+      "lazyGates": undefined,
       "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
@@ -2800,9 +2800,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "07-deferred-items.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
-        "pending": 6,
+        "pending": 5,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -3274,9 +3276,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "07-deferred-items.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
-        "pending": 6,
+        "pending": 5,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -3288,6 +3292,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "assumption-convergence.convergence.reconcile",
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
+        "present-residual-assumptions",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -3304,7 +3309,9 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "gatesReadUnbound": [],
+      "gatesReadUnbound": [
+        "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
+      ],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -3595,13 +3602,13 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredTotal": 298,
-  "executedTotal": 164,
+  "declaredTotal": 286,
+  "executedTotal": 165,
   "perActivity": [
     {
       "activity": "assumptions-review",
       "declared": 17,
-      "executed": 6,
+      "executed": 7,
     },
     {
       "activity": "codebase-comprehension",
@@ -3625,7 +3632,7 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "implementation-analysis",
-      "declared": 16,
+      "declared": 10,
       "executed": 9,
     },
     {
@@ -3650,7 +3657,7 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "research",
-      "declared": 23,
+      "declared": 17,
       "executed": 12,
     },
     {
