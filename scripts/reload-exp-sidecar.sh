@@ -43,6 +43,10 @@ Options:
                            that is not this checkout.
   --host-port=N            Host port. Defaults to the port the running
                            container publishes. Required when none is running.
+  --log-dir=DIR            Where the outgoing container's log is kept
+                           (default: INSTALL/logs). One file per reload,
+                           holding the audit line the server writes per tool
+                           call for the run being replaced.
   --no-build               Reuse --image; do not rebuild.
   --no-preflight           Skip the corpus guard sweep. The sweep runs before
                            the container stops: a corpus nothing can be
@@ -51,7 +55,8 @@ Options:
 
 Environment (overridden by flags):
   EXP_NAME  EXP_IMAGE  EXP_CORPUS  EXP_ENGINE  EXP_HOST_PORT
-  EXP_PROJECTS_ROOT  WORKFLOW_SERVER_START  WORKFLOW_SERVER_STOP
+  EXP_PROJECTS_ROOT  EXP_LOG_DIR
+  WORKFLOW_SERVER_START  WORKFLOW_SERVER_STOP
 
 Example (time-to-dispatch sidecar from its engine worktree):
 
@@ -74,6 +79,7 @@ CORPUS="${EXP_CORPUS:-}"
 ENGINE="${EXP_ENGINE:-}"
 PROJECTS="${EXP_PROJECTS_ROOT:-}"
 PORT="${EXP_HOST_PORT:-}"
+LOG_DIR="${EXP_LOG_DIR:-${INSTALL_DIR}/logs}"
 BUILD=1
 PREFLIGHT=1
 
@@ -99,6 +105,8 @@ while [[ $# -gt 0 ]]; do
       ;;
     --host-port=*) PORT="${1#*=}"; shift ;;
     --host-port) PORT="${2:?}"; shift 2 ;;
+    --log-dir=*) LOG_DIR="${1#*=}"; shift ;;
+    --log-dir) LOG_DIR="${2:?}"; shift 2 ;;
     --no-build) BUILD=0; shift ;;
     --no-preflight) PREFLIGHT=0; shift ;;
     -h|--help)
@@ -122,6 +130,27 @@ resolve_helper() {
     return
   fi
   printf '%s\n' "$checkout_path"
+}
+
+# Keep the outgoing container's log on the host, under a name carrying the container and the hour.
+#
+# The server writes one JSON line per tool call — the tool, its duration and its outcome — which is
+# the run's own record of what an agent did. A reload removes the container, and the log lives in
+# the container, so the record of the run being compared against goes with it. Best-effort: a
+# directory that cannot be written warns and the reload continues.
+capture_log() {
+  docker container inspect "$NAME" >/dev/null 2>&1 || return 0
+  if ! mkdir -p "$LOG_DIR" 2>/dev/null; then
+    echo "warning: cannot create ${LOG_DIR}; the outgoing container's log goes unkept" >&2
+    return 0
+  fi
+  local file="${LOG_DIR}/${NAME}-$(date -u +%Y%m%dT%H%M%SZ).log"
+  if docker logs "$NAME" > "$file" 2>&1; then
+    echo "  log    : ${file}"
+  else
+    rm -f "$file"
+    echo "warning: cannot read the log of ${NAME}; it goes unkept" >&2
+  fi
 }
 
 # The commit a checkout stands at, carrying a dirty marker when the tree holds uncommitted edits.
@@ -250,6 +279,7 @@ if [[ -n "$PROJECTS" ]]; then
   echo "  projects : ${PROJECTS}"
 fi
 
+capture_log
 "$STOP" --name="$NAME" || true
 
 START_ARGS=(
