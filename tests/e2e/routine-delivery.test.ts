@@ -95,6 +95,81 @@ describe('a worker cannot tell a step came from a routine', () => {
 });
 
 /**
+ * Everything past `get_activity` — a checkpoint yielded and answered under a composed id, and a step
+ * manifest reported against prefixed ids.
+ *
+ * Nothing had put a routine in front of this surface. Delivery proves a worker RECEIVES ordinary
+ * steps; it says nothing about whether the server accepts what the worker then reports. The two
+ * identifier shapes materialisation generates both land here: a prefixed checkpoint id, and a
+ * prefixed id carrying the per-iteration discriminator, which the server splits on the FIRST `#` to
+ * find its base definition — so a prefix using anything but a full stop would swallow it.
+ */
+describe('the session path a routine\'s steps reach', () => {
+  it('yields and answers a checkpoint the routine contributed, under its composed id', async () => {
+    const session = await harness.client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: 'host-fixture', agent_id: 'orchestrator' },
+    });
+    const sessionIndex = parseToolResponse(session as ToolResult).session_index as string;
+    await harness.client.callTool({
+      name: 'next_activity',
+      arguments: { session_index: sessionIndex, activity_id: 'refers-to-routine' },
+    });
+
+    const yielded = await harness.client.callTool({
+      name: 'yield_checkpoint',
+      arguments: { session_index: sessionIndex, checkpoint_id: 'review-residuals.batch-gate' },
+    });
+    expect(yielded.isError ?? false, `yield failed: ${JSON.stringify(yielded.content)}`).toBe(false);
+    expect((parseToolResponse(yielded as ToolResult) as { status?: string }).status).toBe('yielded');
+
+    // The option belongs to the routine's body; its effect writes the name the SITE bound.
+    const responded = await harness.client.callTool({
+      name: 'respond_checkpoint',
+      arguments: { session_index: sessionIndex, option_id: 'accept-all' },
+    });
+    expect(responded.isError ?? false, `respond failed: ${JSON.stringify(responded.content)}`).toBe(false);
+
+    const state = await harness.client.callTool({
+      name: 'inspect_session', arguments: { session_index: sessionIndex },
+    });
+    expect(JSON.stringify(state.content)).toContain('research_assumption_outcome');
+  });
+
+  it('accepts a step manifest naming the prefixed ids the run produced', async () => {
+    const session = await harness.client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: 'host-fixture', agent_id: 'orchestrator' },
+    });
+    const sessionIndex = parseToolResponse(session as ToolResult).session_index as string;
+    await harness.client.callTool({
+      name: 'next_activity',
+      arguments: { session_index: sessionIndex, activity_id: 'refers-to-routine' },
+    });
+
+    // What a worker reports having run: its own step, then the two the routine stands for.
+    const advanced = await harness.client.callTool({
+      name: 'next_activity',
+      arguments: {
+        session_index: sessionIndex,
+        activity_id: 'carries-no-routine',
+        from_activity: 'refers-to-routine',
+        completed_steps: [
+          { step_id: 'announce', output: 'announced' },
+          { step_id: 'review-residuals.batch-gate', output: 'accepted' },
+          { step_id: 'review-residuals.interview', output: 'walked' },
+        ],
+      },
+    });
+    expect(advanced.isError ?? false, `advance failed: ${JSON.stringify(advanced.content)}`).toBe(false);
+    // A manifest naming ids the server does not hold comes back as an unexpected-step warning, so a
+    // silent acceptance here would not prove the ids agree — the absence of that warning does.
+    expect(JSON.stringify(advanced.content)).not.toContain('Unexpected steps');
+    expect(JSON.stringify(advanced.content)).not.toContain('Missing steps');
+  });
+});
+
+/**
  * The control — an activity in a routine-declaring workflow that refers to none — is asserted
  * against the raw delivery path in `routine-differential.test.ts` rather than here. Byte-identity is
  * a property of the TEXT, and the harness path wraps the body in a tool payload, so a comparison

@@ -2,7 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { loadWorkflow, loadWorkflowWithDiagnostics, readWorkflowRoutines } from '../src/loaders/workflow-loader.js';
+import { loadWorkflow, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { readWorkflowRoutines } from '../src/loaders/routine-loader.js';
 import { stringifyForResponse } from '../src/utils/serialization.js';
 import type { Step } from '../src/schema/activity.schema.js';
 

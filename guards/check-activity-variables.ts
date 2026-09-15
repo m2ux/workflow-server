@@ -31,7 +31,9 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { fanGroups, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { type WorkflowWithDiagnostics, fanGroups, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { buildRoutineLookup } from '../src/loaders/routine-loader.js';
+import { type RoutineLookup, collectRoutineRefs } from '../src/loaders/routine-resolver.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN } from '../src/utils/binding-provenance.js';
 import {
   activityGraph,
@@ -152,11 +154,16 @@ export async function collectFindings(root: string): Promise<Finding[]> {
     }
 
     const records: ActivityRecord[] = [];
+    const routines = await routineLookupFor(root, loaded.value);
     for (const activity of workflow.activities ?? []) {
       const sourceWorkflowId = activitySourceWorkflow.get(activity.id) ?? workflowId;
       const key = fannedActivityIds.has(activity.id) ? branchKey(activity.id) : undefined;
+      // The AUTHORED form, still carrying its routine references. That is what makes a reference a
+      // boundary: handed the materialised form the derivation would meet the routine's spliced body
+      // and charge this activity its internals, where the signature is what it owes.
+      const authored = loaded.value.authoredActivities.get(activity.id) ?? activity;
       const derived = await deriveActivityContract({
-        activity, workflowDir: root, scopeWorkflowId: sourceWorkflowId, namespace,
+        activity: authored, workflowDir: root, scopeWorkflowId: sourceWorkflowId, namespace, routines,
         ...(key !== undefined ? { branchKey: key } : {}),
       });
       const declaredReads = new Set(activity.variables?.reads ?? []);
@@ -470,6 +477,17 @@ export async function collectFindings(root: string): Promise<Finding[]> {
   return findings;
 }
 
+/**
+ * The routine lookup a workflow's derivations resolve through, built once per workflow rather than
+ * once per activity: it reads a `routines/` directory per workflow it can reach, and a workflow's
+ * activities all resolve against the same set.
+ */
+async function routineLookupFor(root: string, loaded: WorkflowWithDiagnostics): Promise<RoutineLookup> {
+  const refs = [...loaded.authoredActivities.values()].flatMap((activity) => collectRoutineRefs(activity));
+  const scopes = [...loaded.activitySourceWorkflow.values()];
+  return buildRoutineLookup(root, scopes, refs);
+}
+
 /** The derived contracts, as JSON: `<workflow>::<activity>` → reads, writes, iteration variables. */
 async function emitContracts(root: string): Promise<void> {
   const out: Record<string, { reads: string[]; writes: string[]; internalReads: string[]; sourceWorkflowId: string }> = {};
@@ -478,9 +496,11 @@ async function emitContracts(root: string): Promise<void> {
     const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
     if (!loaded.success) continue;
     const namespace = new Set((loaded.value.workflow.variables ?? []).map((declaration) => declaration.name));
+    const routines = await routineLookupFor(root, loaded.value);
     for (const activity of loaded.value.workflow.activities ?? []) {
       const sourceWorkflowId = loaded.value.activitySourceWorkflow.get(activity.id) ?? workflowId;
-      const derived = await deriveActivityContract({ activity, workflowDir: root, scopeWorkflowId: sourceWorkflowId, namespace });
+      const authored = loaded.value.authoredActivities.get(activity.id) ?? activity;
+      const derived = await deriveActivityContract({ activity: authored, workflowDir: root, scopeWorkflowId: sourceWorkflowId, namespace, routines });
       out[`${workflowId}::${activity.id}`] = {
         sourceWorkflowId,
         reads: [...derived.reads].sort(),

@@ -9,6 +9,8 @@ inputs:
   - id: decision_space
     description: Which option set the per-item gate offers.
     default: resolve-or-defer
+  - id: open_assumptions
+    description: The assumptions the run walks. A site that binds nothing takes the host's own.
 
 outputs:
   - id: assumption_outcome

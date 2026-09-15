@@ -14,15 +14,8 @@ import {
   safeValidateWorkflow,
 } from '../schema/workflow.schema.js';
 import { type Activity, type Step, safeValidateActivity, populateStepIds, activityCheckpoints, flattenActivitySteps } from '../schema/activity.schema.js';
-import { type Routine, safeValidateRoutine } from '../schema/routine.schema.js';
-import {
-  type RoutineLookup,
-  RoutineResolutionError,
-  collectNestedRoutineRefs,
-  collectRoutineRefs,
-  materializeActivityRoutines,
-  parseRoutineRef,
-} from './routine-resolver.js';
+import { collectRoutineRefs, materializeActivityRoutines } from './routine-resolver.js';
+import { buildRoutineLookup } from './routine-loader.js';
 import { VariableNameSchema } from '../schema/variable.schema.js';
 import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
 import { type Result, ok, err } from '../result.js';
@@ -231,93 +224,6 @@ export async function readWorkflowFragments(
     logWarn('Failed to read workflow fragments', { workflowId, error: error instanceof Error ? error.message : String(error) });
     return undefined;
   }
-}
-
-/** The directory a workflow declares its routines in, beside `activities/`. */
-const ROUTINES_DIR = 'routines';
-
-/**
- * Read a workflow's `routines/` directory (#704): one file per routine, named for the routine it
- * declares, with no position number because a routine holds no place in an order.
- *
- * The filename is the name every reference resolves, so the file's own `id` has to agree with it —
- * the same identity rule a workflow directory carries, and for the same reason: a reference reaches
- * the routine by its filename while the definition publishes its declaration. Returns an empty map
- * where the workflow has no `routines/`, so a corpus that declares none costs one `existsSync`.
- */
-export async function readWorkflowRoutines(
-  workflowDir: string,
-  workflowId: string,
-  index: CorpusIndex = indexCorpus(workflowDir),
-): Promise<ReadonlyMap<string, Routine>> {
-  const routines = new Map<string, Routine>();
-  const dir = workflowLocation(index, workflowId)?.dir;
-  if (!dir) return routines;
-  const routinesPath = join(dir, ROUTINES_DIR);
-  if (!existsSync(routinesPath)) return routines;
-
-  for (const file of await readdir(routinesPath)) {
-    const name = /^(.+)\.ya?ml$/.exec(file)?.[1];
-    if (!name) continue;
-    const content = await readFile(join(routinesPath, file), 'utf-8');
-    const validation = safeValidateRoutine(parseDefinition(content));
-    if (!validation.success) {
-      throw new RoutineResolutionError(
-        `Routine '${workflowId}::${name}' (${ROUTINES_DIR}/${file}) is not a valid routine: `
-        + formatZodIssues(validation.error.issues),
-      );
-    }
-    if (validation.data.id !== name) {
-      throw new RoutineResolutionError(
-        `Routine ${ROUTINES_DIR}/${file} in workflow '${workflowId}' declares id '${validation.data.id}' `
-        + `but sits in a file named '${name}' — a reference reaches a routine by its filename, so the two names have to match.`,
-      );
-    }
-    populateStepIds({ id: validation.data.id, steps: validation.data.steps } as Activity);
-    routines.set(name, validation.data);
-  }
-  return routines;
-}
-
-/**
- * Build a synchronous RoutineLookup covering every workflow a set of references can name — the
- * declaring scopes, the meta fallback, and any workflow a qualified reference targets. Closed over
- * the references the routines themselves make, so a nested reference into a third workflow resolves.
- */
-export async function buildRoutineLookup(
-  workflowDir: string,
-  scopeWorkflowIds: Iterable<string>,
-  refs: Iterable<string>,
-): Promise<RoutineLookup> {
-  const index = indexCorpus(workflowDir);
-  const loaded = new Map<string, ReadonlyMap<string, Routine>>();
-  const pending = new Set<string>([META_WORKFLOW_ID, ...scopeWorkflowIds]);
-  const noteRef = (ref: string): void => {
-    try {
-      const { workflowId } = parseRoutineRef(ref, 'Routine lookup');
-      if (workflowId && !loaded.has(workflowId)) pending.add(workflowId);
-    } catch {
-      // Malformed: surfaces as a resolution error at materialisation, where the site is known.
-    }
-  };
-  for (const ref of refs) noteRef(ref);
-
-  // A routine may refer to another, so reading one workflow's routines can name a workflow nothing
-  // has read yet. The walk closes over that rather than assuming one level.
-  while (pending.size > 0) {
-    const batch = [...pending];
-    pending.clear();
-    await Promise.all(batch.map(async (id) => {
-      if (loaded.has(id)) return;
-      loaded.set(id, await readWorkflowRoutines(workflowDir, id, index));
-    }));
-    for (const id of batch) {
-      for (const routine of loaded.get(id)?.values() ?? []) {
-        for (const ref of collectNestedRoutineRefs(routine)) noteRef(ref);
-      }
-    }
-  }
-  return (workflowId) => loaded.get(workflowId);
 }
 
 /**

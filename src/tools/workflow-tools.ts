@@ -8,8 +8,9 @@ import {
   DEFAULT_BATCH_MAX_ACTIVITIES,
   presentPathToAgent,
 } from '../config.js';
-import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, buildRoutineLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { collectRoutineRefLines, hasRoutineStepLine, injectRoutineSteps, materializeRoutineStep } from '../loaders/routine-resolver.js';
+import { buildRoutineLookup } from '../loaders/routine-loader.js';
 import {
   type Destination,
   type Workflow,
@@ -1431,8 +1432,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (hasRoutineStepLine(rawActivity)) {
         const routineLookup = await buildRoutineLookup(
           config.workflowDir, [sourceWorkflowId], collectRoutineRefLines(rawActivity));
-        activityBody = injectRoutineSteps(activityBody, (step) =>
-          materializeRoutineStep(step, routineLookup, sourceWorkflowId, baseId(activity_id)));
+        activityBody = injectRoutineSteps(activityBody, (step, sitePath) =>
+          materializeRoutineStep(step, routineLookup, sourceWorkflowId, baseId(activity_id), sitePath));
       }
 
       // Materialize checkpoint fragment refs in the delivered YAML (#166 B10): the worker reads
