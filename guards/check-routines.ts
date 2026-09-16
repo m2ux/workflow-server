@@ -216,7 +216,8 @@ function authoredActivities(workflowId: string, dir: string): AuthoredActivity[]
 
 export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const index = indexCorpus(root);
-  const workflows = corpusWorkflows(root, index).map(({ id }) => id);
+  const corpus = corpusWorkflows(root, index);
+  const workflows = corpus.map(({ id }) => id);
   assertScanned(workflows.length, 'workflows with a workflow.yaml', root);
 
   const { byWorkflow: declared, errors } = await readCorpusRoutines(root, index);
@@ -240,7 +241,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   // also the workflow it was authored in, which is the attribution a borrowed activity needs and
   // costs nothing to read.
   const references: Reference[] = [];
-  for (const { id: workflowId, dir } of corpusWorkflows(root, index)) {
+  for (const { id: workflowId, dir } of corpus) {
     for (const { site, steps } of authoredActivities(workflowId, dir)) {
       for (const ref of collectRoutineRefs({ steps })) references.push({ workflowId, site, ref });
     }
