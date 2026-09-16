@@ -6,7 +6,10 @@ variables:
   writes:
     - name: probe_targets
       type: array
-      description: The elements the fan runs one worker per.
+      description: The elements the fan runs one worker per. Seeded here so a walk enters the fanned activity once per element without a policy having to supply the collection.
+      defaultValue:
+        - alpha-probe
+        - beta-probe
 steps:
   - kind: action
     id: name-the-targets

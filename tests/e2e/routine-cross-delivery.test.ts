@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { resolve } from 'node:path';
-import { createHarness, parseToolResponse, type Harness, type ToolResult } from './harness.js';
-import { parseDefinition } from '../../src/utils/serialization.js';
+import { createHarness, type Harness } from './harness.js';
+import { deliverActivity } from './deliver-activity.js';
+import { walk } from './walker.js';
+import { defaultPolicy } from './policies.js';
 import type { Activity, Step } from '../../src/schema/activity.schema.js';
 
 /**
@@ -21,33 +23,8 @@ let harness: Harness;
 beforeAll(async () => { harness = await createHarness({ workflowDir: CORPUS }); });
 afterAll(async () => { await harness?.close(); });
 
-const asText = (result: ToolResult): string =>
-  (result.content as Array<{ type: string; text: string }>)
-    .filter((part) => part.type === 'text').map((part) => part.text).join('\n');
-
-/** The delivered activity body, parsed back out of the tool payload. */
-async function deliver(workflowId: string, activityId: string): Promise<{ text: string; activity: Activity }> {
-  const session = await harness.client.callTool({
-    name: 'start_session',
-    arguments: { workflow_id: workflowId, agent_id: 'orchestrator' },
-  });
-  expect(session.isError ?? false, `start_session failed: ${asText(session)}`).toBe(false);
-  const sessionIndex = parseToolResponse(session as ToolResult).session_index as string;
-  const opened = await harness.client.callTool({
-    name: 'next_activity',
-    arguments: { session_index: sessionIndex, activity_id: activityId },
-  });
-  expect(opened.isError ?? false, `next_activity failed: ${asText(opened)}`).toBe(false);
-  const payload = await harness.client.callTool({
-    name: 'get_activity',
-    arguments: { activity_id: activityId, session_index: sessionIndex, context_tokens: 200000 },
-  });
-  expect(payload.isError ?? false, `get_activity failed: ${asText(payload)}`).toBe(false);
-  const text = asText(payload);
-  const body = /^(id: [\s\S]*)$/m.exec(text);
-  if (!body) throw new Error(`no activity body in the delivered payload:\n${text.slice(0, 600)}`);
-  return { text, activity: parseDefinition(body[1]!) as Activity };
-}
+const deliver = (workflowId: string, activityId: string): ReturnType<typeof deliverActivity> =>
+  deliverActivity(harness, workflowId, activityId);
 
 const idsOf = (activity: Activity): Array<string | undefined> => {
   const out: Array<string | undefined> = [];
@@ -75,13 +52,27 @@ describe('a borrowed activity delivered by the workflow that borrowed it', () =>
   });
 
   it('names neither the routine nor the construct in what the worker reads', async () => {
-    const { text } = await deliver('borrower-wf', 'shared-review');
+    const { text, activity } = await deliver('borrower-wf', 'shared-review');
     expect(text).not.toContain('kind: routine');
-    expect(text).not.toContain('settle-the-scope\n');
+    expect(text).not.toContain('routine: settle');
+    // The reference step's own id survives only as a prefix on the steps it stands for.
+    expect(idsOf(activity)).not.toContain('settle-the-scope');
   });
 });
 
 describe('a fanned activity delivered with two references inside it', () => {
+  /**
+   * Walked through the graph rather than entered directly, so the fan actually runs: the collection
+   * is seeded with two elements, and the activity holding the references is reached once per
+   * element. Entering it by id would deliver the same body while traversing no fan at all.
+   */
+  it('is entered once per element, each instance carrying the run', async () => {
+    const result = await walk(harness, 'fanned-fixture', defaultPolicy, { mode: 'graph', localCheckpoints: true });
+    expect(result.loadErrors).toEqual([]);
+    expect(result.path).toEqual(['scope-sweep', 'probe-unit#0', 'probe-unit#1', 'combine-probes']);
+    expect(result.finalStatus).toBe('completed');
+  });
+
   it('delivers both runs, each under its own reference prefix', async () => {
     const { activity } = await deliver('fanned-fixture', 'probe-unit');
     expect(idsOf(activity)).toEqual([
