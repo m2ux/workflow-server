@@ -1117,7 +1117,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
 Validate a workflow directory:
 
 ```bash
-npx tsx scripts/validate-workflow-yaml.ts path/to/workflow-dir
+npx tsx guards/validate-workflow-yaml.ts path/to/workflow-dir
 ```
 
 ### Programmatic Validation

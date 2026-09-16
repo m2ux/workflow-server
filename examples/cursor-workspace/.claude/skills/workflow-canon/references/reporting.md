@@ -88,9 +88,9 @@ The two sum to the enumeration. Where they do not, the list the walk consumed is
 
 | Artifact | Guide |
 |----------|-------|
-| `findings-register.md` | `workflows/workflow-authoring/resources/findings-register.md` |
-| `compliance-review.md` / `post-update-review.md` | `workflows/workflow-design/resources/compliance-report.md` |
-| per-pass `*-findings.md` satellites | `workflows/workflow-design/resources/findings-satellite.md` |
+| `findings-register.md` | `corpus/workflow-authoring/resources/findings-register.md` |
+| `compliance-review.md` / `post-update-review.md` | `corpus/workflow-design/resources/compliance-report.md` |
+| per-pass `*-findings.md` satellites | `corpus/workflow-design/resources/findings-satellite.md` |
 
 Fetch the guide's `## Template` section and fill it; persist through the activity's bound `manage-artifacts::write-artifact` step, not by hand.
 
