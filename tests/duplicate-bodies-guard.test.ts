@@ -24,11 +24,21 @@ describe('duplicate-bodies guard (fixture corpus)', () => {
     expect(duplicates[0]!.detail).toContain('conduct technique whose audience it binds');
   });
 
-  it('flags one checkpoint body authored at two sites, and names a routine', () => {
+  it('flags one checkpoint body authored at several sites, and names a routine', () => {
     const duplicates = byRule('duplicate-checkpoint');
     expect(duplicates).toHaveLength(1);
-    expect(duplicates[0]!.detail).toContain('2 sites');
     expect(duplicates[0]!.detail).toContain('declare it as a routine');
+  });
+
+  /**
+   * A routine is where a body shared between activities lives, so it is a place a body can be
+   * written twice — and the one a guard scanning only activities cannot see. The fixture's third
+   * copy sits in a routine, so this case fails on a guard that reads activities alone.
+   */
+  it('counts a copy living in a routine alongside the ones in activities', () => {
+    const detail = byRule('duplicate-checkpoint')[0]!.detail;
+    expect(detail).toContain('3 sites');
+    expect(detail).toContain('routines/settle-scope.yaml#gate');
   });
 
   it('reports nothing beyond the engineered defects', () => {

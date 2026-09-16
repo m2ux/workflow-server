@@ -133,6 +133,29 @@ export function collectDuplicateViolations(root: string = ROOT): DuplicateViolat
         inlineCheckpointSites.set(canon, sites);
       }
     }
+
+    // A routine is where a body shared between activities now lives, so it is a place a body can be
+    // written twice. Scanning only activities would leave the guard blind to the duplication its own
+    // remedy creates — one routine's gate copied into another, or into an activity that could have
+    // referred to it.
+    const rdir = join(dir, 'routines');
+    const routineFiles = existsSync(rdir)
+      ? readdirSync(rdir).filter((f) => f.endsWith('.yaml') || f.endsWith('.yml')).sort()
+      : [];
+    for (const f of routineFiles) {
+      const path = join(rdir, f);
+      const rel = relative(root, path);
+      let rdoc: unknown;
+      try { rdoc = parseDefinition(readFileSync(path, 'utf-8')); } catch { continue; }
+      for (const step of collectCheckpointSteps(rdoc)) {
+        const canon = normalizeCheckpointBody(step);
+        if (!canon) continue;
+        const stepId = typeof step['id'] === 'string' ? step['id'] : '?';
+        const sites = inlineCheckpointSites.get(canon) ?? [];
+        sites.push({ file: rel, stepId });
+        inlineCheckpointSites.set(canon, sites);
+      }
+    }
   }
 
   for (const sites of inlineRuleSites.values()) {
