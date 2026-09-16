@@ -1,7 +1,12 @@
 name: Verify
 
-# Typecheck, the test suite, and the delivery-cost gate against a fixture
-# under `tests/fixtures/`. Live-corpus tests skip when `workflows/` is absent.
+# Typecheck, the test suite against the definitions this engine serves, and the delivery-cost gate
+# against a fixture under `tests/fixtures/`.
+#
+# What this job leaves to the corpus branch: grading the definitions themselves. The guard sweep and
+# the coverage roster run in `verify-corpus.yml` on that branch, against the tree under review there.
+# This job asks the other question — whether the engine still serves the definitions it ships
+# alongside — so a change on either side of that boundary is measured by one of the two.
 
 on:
   push:
@@ -23,9 +28,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # `.engineering` nests a private repo this runner cannot clone.
-          # Typecheck and `test:ci` skip live-corpus tests when `workflows/` is absent.
+          # `.engineering` is a gitlink this runner has no credential for. The corpus is not a
+          # submodule, so refusing them all costs nothing the next step does not supply.
           submodules: false
+
+      # The definitions this engine serves. Without them the corpus-reading tests skip, and a
+      # change on either side of the engine/definitions boundary passes both gates while the two
+      # disagree — which is how three tests here rotted unnoticed (#759).
+      #
+      # The branch head, not a recorded revision. The definitions carry their own walk baselines and
+      # ratchet files, so a corpus commit is self-consistent or its own gate is red; and a pin is a
+      # record someone has to bump, which hides exactly the divergence these tests exist to catch.
+      # A corpus change that breaks the engine reddens the next engine pull request, which is the
+      # point rather than the cost.
+      - name: Check out the definitions the engine serves
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: workflows
+          path: workflows
 
       - uses: actions/setup-node@v4
         with:
@@ -48,7 +69,12 @@ jobs:
 
       # `npm test` is vitest in watch mode; `test:ci` is the single-run entry point so the job cannot
       # hang waiting for file changes.
-      - name: Run the test suite
+      #
+      # `WORKFLOWS_DIR` names the checkout above, so the corpus-reading tests measure rather than
+      # skip. It is the branch root (corpus/, ledgers/, walks/), not corpus/.
+      - name: Run the test suite against the definitions
+        env:
+          WORKFLOWS_DIR: workflows
         run: npm run test:ci
 
       # Delivery cost is the one property no guard measures, because it is a property of a WALK

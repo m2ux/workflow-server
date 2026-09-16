@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { cpSync, mkdirSync, mkdtempSync, renameSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { collect } from '../guards/check-pinned-corpus-paths.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
 /**
@@ -20,8 +21,14 @@ describe.skipIf(!liveCorpusRoot())('pinned corpus paths', () => {
     const root = mkdtempSync(join(tmpdir(), 'pinned-nested-'));
     try {
       cpSync(liveCorpusRoot()!, root, { recursive: true });
-      mkdirSync(join(root, 'security', 'audits'), { recursive: true });
-      renameSync(join(root, 'prism'), join(root, 'security', 'audits', 'prism'));
+      // Discovery finds the workflow wherever it sits, so the grouping folder is built around the
+      // directory the index reports rather than a path spelled here — a layout change moves the
+      // subject of this test, not the test.
+      const prism = indexCorpus(root).workflows.get('prism');
+      expect(prism, 'the corpus declares no prism workflow to nest').toBeDefined();
+      const nested = join(dirname(prism!.dir), 'security', 'audits', 'prism');
+      mkdirSync(dirname(nested), { recursive: true });
+      renameSync(prism!.dir, nested);
       const tally = collect(root);
       expect(tally.findings.filter((f) => f.detail.includes('`prism/'))).toEqual([]);
     } finally {

@@ -143,8 +143,8 @@ describe('kind roots on a pointed corpus tree', () => {
   it('places walk artifacts under walks/ of the same root', () => {
     expect(walkArtifactPath('/tmp/wf', 'option-coverage.json'))
       .toBe(join('/tmp/wf', 'walks', 'option-coverage.json'));
-    expect(walkArtifactPath('/tmp/wf', 'corpus-sha.json'))
-      .toBe(join('/tmp/wf', 'walks', 'corpus-sha.json'));
+    expect(walkArtifactPath('/tmp/wf', 'roster.json'))
+      .toBe(join('/tmp/wf', 'walks', 'roster.json'));
     expect(walkArtifactPath('/tmp/wf', 'snapshot.test.ts.snap'))
       .toBe(join('/tmp/wf', 'walks', 'snapshot.test.ts.snap'));
   });

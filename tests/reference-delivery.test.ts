@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { parse } from 'yaml';
 import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../src/utils/delivery.js';
 import { createInitialSessionFile, safeValidateSessionFile } from '../src/schema/session.schema.js';
+import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
 import { corpusRoot, liveCorpusRoot } from './corpus-root.js';
 import { createHarness, type Harness } from './e2e/harness.js';
 import { sessionOps, type SessionOps } from './session-ops.js';
@@ -250,25 +251,26 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('the inherited activity_rules block collapses on refetch', async () => {
-      // `requirements-refinement` declares both `rules.activity` and `rules.universal`, the two
-      // buckets every activity inherits — so its get_activity carries an `activity_rules` block.
+      // `ponytail` declares `rules.universal`, a bucket every activity inherits — so its
+      // get_activity carries an `activity_rules` block. The first assertion states that premise, so
+      // a corpus that stops declaring the bucket fails on the premise rather than on the collapse.
       const session = await startSession({
-        workflow_id: 'requirements-refinement',
+        workflow_id: 'ponytail',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-03-persistent-activity-rules'),
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      await mcp.enter(idx, 'intake-and-analyze');
+      await mcp.enter(idx, 'intake-and-scope');
 
       const firstBody = parse(splitActivityResponse(await getActivity(idx)).bodyText) as Record<string, unknown>;
-      expect(Array.isArray(firstBody['activity_rules'])).toBe(true);
+      expect(Array.isArray(firstBody['activity_rules']), 'the workflow inherits no activity-facing rules to collapse').toBe(true);
       expect((firstBody['activity_rules'] as unknown[]).length).toBeGreaterThan(0);
 
       const secondBody = parse(splitActivityResponse(await getActivity(idx)).bodyText) as Record<string, unknown>;
       expect(isUnchangedMarker(secondBody['activity_rules'])).toBe(true);
       // The activity body itself is still delivered in full.
-      expect(secondBody['id']).toBe('intake-and-analyze');
+      expect(secondBody['id']).toBe('intake-and-scope');
     });
 
     it('across activities, shared inherited techniques collapse while new ones arrive in full', async () => {
@@ -325,16 +327,16 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
     it('persists contextMode and the delivery ledger in session.json', async () => {
       const slug = '2026-07-03-persistent-ledger-on-disk';
-      // `requirements-refinement` declares inherited `rules.activity` / `rules.universal`, so one
-      // walk exercises all three key shapes asserted below, `activity_rules:*` included.
+      // `ponytail` declares inherited `rules.universal`, so one walk exercises all three key shapes
+      // asserted below, `activity_rules:*` included.
       const session = await startSession({
-        workflow_id: 'requirements-refinement',
+        workflow_id: 'ponytail',
         agent_id: 'solo',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      await mcp.enter(idx, 'intake-and-analyze');
+      await mcp.enter(idx, 'intake-and-scope');
       await getActivity(idx);
 
       const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
@@ -718,13 +720,16 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
         const call1 = await client2.callTool({ name: 'get_activity', arguments: { session_index: idx, context_tokens: 200_000 } });
         expect(call1.isError).toBeFalsy();
 
-        // Mutate the workflow-inherited technique between calls.
-        const techniqueFile = join(mutableWorkflowDir, 'meta/techniques/variable-binding.md');
+        // Mutate the workflow-inherited technique between calls. Discovery reports where the meta
+        // workflow sits, so a grouping folder around it moves the file this reads rather than
+        // stranding the test on a path spelled here.
+        const techniqueFile = workflowSubdir(indexCorpus(mutableWorkflowDir), 'meta', join('techniques', 'variable-binding.md'));
+        expect(techniqueFile, 'the corpus declares no meta workflow to mutate').not.toBeNull();
         // Anchor the mutation on the structural heading, not on the capability's wording —
         // the latter is corpus prose and drifts.
-        const original = readFileSync(techniqueFile, 'utf8');
+        const original = readFileSync(techniqueFile!, 'utf8');
         expect(original).toContain('## Capability\n');
-        writeFileSync(techniqueFile, original.replace('## Capability\n', '## Capability\n\nMUTATED.\n'));
+        writeFileSync(techniqueFile!, original.replace('## Capability\n', '## Capability\n\nMUTATED.\n'));
 
         // The changed technique arrives in full (new content, hash mismatch);
         // untouched techniques collapse to markers.
@@ -807,7 +812,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       // inherit the same set: where one leaf overrides a container declaration and the other does
       // not, their inherited blocks differ and neither can collapse.
       const stepA = 'evaluate-open-assumptions';
-      const stepB = 'reconcile-assumptions';
+      const stepB = 'update-assumptions-log';
       await mcp.enter(idx, 'assumptions-review');
 
       // Technique A (persistent, no prior get_activity) delivers in full and establishes

@@ -314,21 +314,18 @@ read rather than listed here.
 
 ### Corpus-coupled baselines
 
-The walk snapshots under `walks/` of a corpus checkout describe a path through the definitions,
-so they are only meaningful against the corpus that produced them. `walks/corpus-sha.json` records
-that commit, and a mismatch fails with both SHAs named — so corpus drift reads as corpus drift rather
-than as six unrelated regressions. Update the stamp in the same commit that re-baselines the walk,
-on the `workflows` branch:
+The walk snapshots under `walks/` of a corpus checkout describe a path through the definitions, so
+they are only meaningful against the corpus that produced them. They live in that corpus, beside the
+definitions they record, so the two travel together: a commit that changes a walk re-baselines it in
+that commit or the corpus branch's own gate goes red. Re-baseline on the `workflows` branch:
 
 ```bash
 npm run test:ci -- -u      # re-baseline the walk
-npm run baseline:stamp     # record the corpus commit it was baselined against
 ```
 
-The stamp is a file describing the provenance of sibling files, and a merge takes each file from
-whichever side last touched it. A branch that leaves both alone therefore inherits its base's stamp
-while keeping its own baselines, and the two agree with the base's corpus while describing another.
-Keep the stamp and the snapshots in the same commit.
+The same holds for `walks/option-coverage.json`, which records the options no walk is required to
+reach. It is read against the definitions beside it, so a definition change that moves an option
+updates it in the commit that moves it.
 
 How little a corpus edit has to change to move a walk is worth knowing. Replacing `value: true` with
 a description on the action that binds `gitnexus_indexed` left every gate expression in the corpus
