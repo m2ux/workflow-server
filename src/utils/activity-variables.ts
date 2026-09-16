@@ -32,7 +32,7 @@ import type { Condition } from '../schema/condition.schema.js';
 import { composeActivityTechnique } from '../loaders/technique-loader.js';
 import { indexCorpus, workflowSubdir } from '../loaders/corpus-index.js';
 import { type RoutineLookup, resolveRoutine } from '../loaders/routine-resolver.js';
-import type { Routine } from '../schema/routine.schema.js';
+import { type Routine, isOperationInput } from '../schema/routine.schema.js';
 import { parseDefinition } from './serialization.js';
 import { IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from './binding-provenance.js';
 import { expressionPaths } from '../schema/when-expression.js';
@@ -584,6 +584,9 @@ export async function deriveActivityContract(args: {
     if (step.kind === 'routine') {
       const routine = resolveRoutineQuietly(routines, scopeWorkflowId, step.routine);
       for (const input of routine?.inputs ?? []) {
+        // An operation parameter's argument is a reference to a definition rather than a name in the
+        // bag, so the site neither reads nor writes anything by binding it.
+        if (isOperationInput(input)) continue;
         const argument = step.with?.[input.id];
         if (argument !== undefined) {
           // A braced argument reads what it names; a bare one is a rename when the whole string

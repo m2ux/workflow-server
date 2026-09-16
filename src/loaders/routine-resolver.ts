@@ -29,7 +29,7 @@ import {
   type TechniqueBinding,
 } from '../schema/activity.schema.js';
 import type { Condition } from '../schema/condition.schema.js';
-import { type Routine, routineScope } from '../schema/routine.schema.js';
+import { type Routine, isOperationInput, routineScope } from '../schema/routine.schema.js';
 import { parseDefinition, stringifyForResponse } from '../utils/serialization.js';
 import { META_WORKFLOW_ID } from './corpus-index.js';
 
@@ -118,6 +118,23 @@ type Substitution =
 
 type SubstitutionMap = ReadonlyMap<string, Substitution>;
 
+/**
+ * What a reference site supplies for each parameter declared `kind: technique`: the parameter's name
+ * against the operation reference standing in for it.
+ *
+ * This is a namespace of its own rather than an entry in the substitution map, because the two
+ * substitute in disjoint positions. A value moves through bag names, tokens and expressions; an
+ * operation moves into exactly one field, and a body that spelled the parameter anywhere else would
+ * be naming a variable the signature does not declare.
+ */
+export type OperationMap = ReadonlyMap<string, string>;
+
+/** Everything one reference site puts over one routine's body. */
+interface SiteBinding {
+  names: SubstitutionMap;
+  operations: OperationMap;
+}
+
 /** The name a substitution puts in a bare-name position. A dropped binding has none. */
 function substitutedName(substitution: Substitution): string | undefined {
   if (substitution.kind === 'name') return substitution.name;
@@ -159,18 +176,50 @@ function substituteTokens(text: string, map: SubstitutionMap): string {
 }
 
 /**
- * Rewrite the bag paths a `when` expression reads, in one pass.
+ * The value a declared parameter contributes to the right of a comparison.
+ *
+ * The dialect's comparison is `IDENT op literal`, so this position holds a value and never a name. A
+ * string is quoted, because a bare word there is tokenised as `[A-Za-z_][A-Za-z0-9_.]*` and an
+ * operation-era value like `full-prism` would otherwise split at the hyphen.
+ */
+function comparisonValue(
+  substitution: Substitution,
+  identifier: string,
+  expression: string,
+  context: string,
+): string {
+  if (substitution.kind !== 'literal') {
+    throw new RoutineResolutionError(
+      `${context}: '${identifier}' stands to the right of a comparison in '${expression}', where the dialect takes a value — `
+      + 'bind it to a literal, because a comparison reads its right side as the characters it spells rather than as a name to look up.',
+    );
+  }
+  if (typeof substitution.value !== 'string') return String(substitution.value);
+  if (substitution.value.includes("'")) {
+    throw new RoutineResolutionError(
+      `${context}: '${identifier}' stands to the right of a comparison in '${expression}' and its argument '${substitution.value}' carries a quote, `
+      + 'which the dialect has no escape for.',
+    );
+  }
+  return `'${substitution.value}'`;
+}
+
+/**
+ * Rewrite the names a `when` expression carries, in one pass.
  *
  * An expression names its variables bare, so the rewrite has to tell a bag path from the two things
  * that look exactly like one:
  *
- *   - A right-hand operand. `analysis_type == completion` reads `analysis_type` alone, so an
- *     identifier directly following a comparison operator is a value and is left as written.
+ *   - A right-hand operand. `analysis_type == completion` compares against the characters
+ *     `completion`, so an identifier directly following a comparison operator is a value and stays as
+ *     written — UNLESS the routine declares that exact name, in which case it is the parameter
+ *     standing in the value's place and the site's literal replaces it. A routine declares every name
+ *     in its own scope, which is what makes the two distinguishable at all.
  *   - The contents of a quoted string. `chosen_mode == "current_assumption"` compares against the
  *     characters `current_assumption`, and renaming them would change what the gate tests — silently,
  *     because the result is still a well-formed expression.
  */
-function substituteExpression(expression: string, map: SubstitutionMap): string {
+function substituteExpression(expression: string, map: SubstitutionMap, context: string): string {
   let out = '';
   let index = 0;
   let quote: string | null = null;
@@ -194,7 +243,12 @@ function substituteExpression(expression: string, map: SubstitutionMap): string 
       index += 1;
       continue;
     }
-    out += COMPARISON_TAIL_RE.test(out) ? identifier : renameHead(identifier, map) ?? identifier;
+    if (COMPARISON_TAIL_RE.test(out)) {
+      const substitution = map.get(identifier);
+      out += substitution ? comparisonValue(substitution, identifier, expression, context) : identifier;
+    } else {
+      out += renameHead(identifier, map) ?? identifier;
+    }
     index += identifier.length;
   }
   return out;
@@ -241,11 +295,28 @@ function substituteBindingValue(
   return substituteTokens(value, map);
 }
 
+/**
+ * Put the site's operation in the technique position where the step binds a parameter.
+ *
+ * A parameter stands in the position an operation reference occupies, and a routine declares every
+ * name in its own scope, so a reference equal to a declared parameter is that parameter and nothing
+ * else. Substitution happens here, before the contract derives, so the derivation reads a concrete
+ * operation and never a placeholder.
+ */
+function substituteOperation(step: Step & { kind: 'technique' }, operations: OperationMap): void {
+  const reference = typeof step.technique === 'string' ? step.technique : step.technique.name;
+  const supplied = operations.get(reference);
+  if (supplied === undefined) return;
+  if (typeof step.technique === 'string') (step as { technique: string }).technique = supplied;
+  else (step.technique as TechniqueBinding).name = supplied;
+}
+
 /** Rewrite every field of one step that can name a value in the routine's scope. */
-function substituteStep(step: Step, map: SubstitutionMap, context: string): Step {
+function substituteStep(step: Step, binding: SiteBinding, context: string): Step {
+  const { names: map, operations } = binding;
   const out = step as Record<string, unknown>;
 
-  if (typeof out['when'] === 'string') out['when'] = substituteExpression(out['when'], map);
+  if (typeof out['when'] === 'string') out['when'] = substituteExpression(out['when'], map, context);
   if (out['condition']) out['condition'] = substituteCondition(out['condition'] as Condition, map);
 
   if (step.kind === 'loop') {
@@ -261,10 +332,11 @@ function substituteStep(step: Step, map: SubstitutionMap, context: string): Step
       if (variable === undefined) throw new RoutineResolutionError(`${context}: loop '${step.id}' binds its item to a dropped output.`);
       out['variable'] = variable;
     }
-    out['steps'] = (step.steps as Step[]).map((nested) => substituteStep(nested, map, context));
+    out['steps'] = (step.steps as Step[]).map((nested) => substituteStep(nested, binding, context));
   }
 
   if (step.kind === 'technique') {
+    substituteOperation(step, operations);
     if (typeof step.technique === 'object') {
       const binding = step.technique as TechniqueBinding;
       if (binding.inputs) binding.inputs = substituteValueMap(binding.inputs, map) as Record<string, string | number | boolean>;
@@ -293,7 +365,7 @@ function substituteStep(step: Step, map: SubstitutionMap, context: string): Step
   if (step.kind === 'technique' || step.kind === 'action') {
     for (const action of step.actions ?? []) {
       if (action.condition) action.condition = substituteCondition(action.condition, map);
-      if (action.action === 'validate' && action.target) action.target = substituteExpression(action.target, map);
+      if (action.action === 'validate' && action.target) action.target = substituteExpression(action.target, map, context);
       else if (action.target) {
         const target = renameHead(action.target, map);
         if (target === undefined) throw new RoutineResolutionError(`${context}: action on step '${step.id}' targets a dropped output.`);
@@ -400,9 +472,10 @@ function bindReference(
   activityId: string,
   referencePath: string,
   context: string,
-): SubstitutionMap {
+): SiteBinding {
   const scope = routineScope(routine);
   const map = new Map<string, Substitution>();
+  const operations = new Map<string, string>();
 
   // Overbound: an argument naming no declared input. The declared list is the author's fix site.
   for (const argument of Object.keys(step.with ?? {})) {
@@ -423,6 +496,10 @@ function bindReference(
 
   for (const [id, input] of scope.inputs) {
     const argument = step.with?.[id];
+    if (isOperationInput(input)) {
+      operations.set(id, operationArgument(argument ?? input.default, id, routine.id, context));
+      continue;
+    }
     if (argument !== undefined) {
       const braced = typeof argument === 'string' && /^\{[^{}]+\}$/.test(argument);
       map.set(id, braced
@@ -449,7 +526,37 @@ function bindReference(
     map.set(id, { kind: 'name', name: internalName(activityId, referencePath, id) });
   }
 
-  return map;
+  return { names: map, operations };
+}
+
+/**
+ * The operation reference a site supplies for one parameter.
+ *
+ * An operation parameter takes neither the host's fall-through nor a runtime value. A host bag holds
+ * values and never operations, so an unbound parameter has nothing to fall through to; and
+ * substitution runs when the definitions load, so a braced argument names something with no value
+ * yet and would leave the technique position spelling a token.
+ */
+function operationArgument(
+  argument: string | number | boolean | undefined,
+  id: string,
+  routineId: string,
+  context: string,
+): string {
+  if (argument === undefined) {
+    throw new RoutineResolutionError(
+      `${context}: input '${id}' of routine '${routineId}' declares 'kind: technique' and this site binds no argument — `
+      + 'bind it to an operation reference under \'with\', or give the declaration a default. An operation parameter takes '
+      + 'no value from the host, a bag holding values rather than operations.',
+    );
+  }
+  if (typeof argument !== 'string' || argument.includes('{')) {
+    throw new RoutineResolutionError(
+      `${context}: input '${id}' of routine '${routineId}' declares 'kind: technique' and this site binds '${String(argument)}' — `
+      + 'an operation parameter takes a literal reference, because substitution happens when the definitions load and a token has no value then.',
+    );
+  }
+  return argument;
 }
 
 /**
@@ -476,9 +583,9 @@ function expandReference(
   // step-id prefix stays the reference's own id, so a materialised id is scoped the way a
   // hand-written one in the same body is.
   const site = extendSitePath(sitePath, step.id);
-  const map = bindReference(step, routine, activityId, site, context);
+  const binding = bindReference(step, routine, activityId, site, context);
   const body = structuredClone(routine.steps) as Step[];
-  const substituted = body.map((bodyStep) => substituteStep(bodyStep, map, context));
+  const substituted = body.map((bodyStep) => substituteStep(bodyStep, binding, context));
   prefixStepIds(substituted, step.id, context);
 
   const expanded = expandStepList(substituted, scope, [...chain, routine.id], site);
@@ -721,17 +828,41 @@ export function collectRoutineRefLines(rawDefinition: string): string[] {
   return refs;
 }
 
-/** Every routine reference an activity's steps make, for lookup pre-loading. */
-export function collectRoutineRefs(activity: { steps?: Step[] | undefined }): string[] {
-  const refs: string[] = [];
+/** Every routine reference step an activity's steps carry, at any depth. */
+export function collectRoutineSteps(activity: { steps?: Step[] | undefined }): RoutineStep[] {
+  const sites: RoutineStep[] = [];
   const walk = (steps: Step[] | undefined): void => {
     for (const step of steps ?? []) {
-      if (step.kind === 'routine') refs.push(step.routine);
+      if (step.kind === 'routine') sites.push(step);
       else if (step.kind === 'loop') walk(step.steps as Step[]);
     }
   };
   walk(activity.steps);
-  return refs;
+  return sites;
+}
+
+/** Every routine reference an activity's steps make, for lookup pre-loading. */
+export function collectRoutineRefs(activity: { steps?: Step[] | undefined }): string[] {
+  return collectRoutineSteps(activity).map((step) => step.routine);
+}
+
+/**
+ * A routine's body with one site's operation arguments standing in its technique positions.
+ *
+ * What a caller derives a contract from, for a routine whose body binds an operation by argument:
+ * such a body has no signature of its own, so the derivation runs against a site rather than against
+ * the declaration.
+ */
+export function bodyWithOperations(steps: readonly Step[], operations: OperationMap): Step[] {
+  const body = structuredClone(steps) as Step[];
+  const visit = (list: Step[]): void => {
+    for (const step of list) {
+      if (step.kind === 'technique') substituteOperation(step, operations);
+      else if (step.kind === 'loop') visit(step.steps as Step[]);
+    }
+  };
+  visit(body);
+  return body;
 }
 
 /** Every routine reference a routine's own body makes, for transitive lookup pre-loading. */

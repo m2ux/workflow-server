@@ -18,6 +18,15 @@
  *   body's reads are wider than the tokens its step fields spell: they include, for every bound
  *   operation, that operation's prose interpolations and the declared inputs the step leaves
  *   unbound, both of which resolve out of the bag under their own names with no field to rewrite.
+ * - `routine-operation-unbound` — an input declared `kind: technique` that no step of the body binds.
+ *   It stands in a technique position rather than being read as a value, so an unread-input rule
+ *   asking the derivation about it would report every one of them.
+ *
+ * A routine whose body binds an operation by argument names a parameter where an operation reference
+ * belongs, so it has no signature of its own and the signature rules run ONCE PER REFERENCE SITE,
+ * against the operation that site supplies. A routine binding no operation by argument keeps the
+ * once-per-routine path. A routine with an operation parameter and no reference site is reported as
+ * unreferenced, whose remedy — refer to it or delete it — settles the contract question either way.
  *
  * The placement rules, which are corpus-wide by construction:
  *
@@ -43,9 +52,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import type { Activity, Step } from '../src/schema/activity.schema.js';
 import type { Routine } from '../src/schema/routine.schema.js';
-import { routineScope } from '../src/schema/routine.schema.js';
+import { isOperationInput, operationInputs, routineScope } from '../src/schema/routine.schema.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { META_WORKFLOW_ID, collectRoutineRefs, parseRoutineRef } from '../src/loaders/routine-resolver.js';
+import {
+  META_WORKFLOW_ID, type OperationMap, bodyWithOperations, collectRoutineRefs, collectRoutineSteps, parseRoutineRef,
+} from '../src/loaders/routine-resolver.js';
 import { ROUTINES_DIR, buildRoutineLookup, readCorpusRoutines } from '../src/loaders/routine-loader.js';
 import { deriveActivityContract } from '../src/utils/activity-variables.js';
 import { assertScanned, corpusWorkflows, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
@@ -61,6 +72,8 @@ interface Reference {
   site: string;
   /** The routine the reference names, as written. */
   ref: string;
+  /** The arguments the site binds, which an operation parameter's contract is derived against. */
+  args: Record<string, string | number | boolean> | undefined;
   /** The routine name it resolves to, and where. */
   resolved?: { workflowId: string; name: string };
 }
@@ -106,15 +119,22 @@ async function checkSignature(
   workflowId: string,
   routine: Routine,
   routines: Awaited<ReturnType<typeof buildRoutineLookup>>,
+  /** One reference site's operation arguments, for a routine whose body binds an operation. */
+  operations: OperationMap = new Map(),
+  /** What the finding names, which is a reference site where the body has no signature of its own. */
+  reportedAt = `${workflowId}/routines/${routine.id}.yaml`,
 ): Promise<Finding[]> {
   const scope = routineScope(routine);
   const declared = new Set([...scope.inputs.keys(), ...scope.outputs.keys(), ...scope.internals.keys()]);
-  const site = `${workflowId}/routines/${routine.id}.yaml`;
+  const site = reportedAt;
 
   // A routine's body is an activity's step list by construction, so the derivation reads it as one.
   // The namespace is the signature: a name outside it is exactly the undeclared read to report.
   const derived = await deriveActivityContract({
-    activity: { id: routine.id, version: routine.version, name: routine.name, required: true, steps: routine.steps } as Activity,
+    activity: {
+      id: routine.id, version: routine.version, name: routine.name, required: true,
+      steps: bodyWithOperations(routine.steps, operations),
+    } as Activity,
     workflowDir: root,
     scopeWorkflowId: workflowId,
     namespace: declared,
@@ -139,7 +159,29 @@ async function checkSignature(
       detail: `output '${id}' is declared and no step of the body writes it — a reference site binding it would take a value nothing produces`,
     });
   }
-  for (const [id] of scope.inputs) {
+  // An operation parameter stands in a technique position, so the body binds it rather than reading
+  // it, and it is gone from the body by the time the derivation sees one. The position it stands in
+  // is read from the routine as authored, which is the only form that still spells the parameter.
+  const authoredOperations = new Set<string>();
+  const collectOperations = (steps: readonly Step[]): void => {
+    for (const step of steps) {
+      if (step.kind === 'technique') {
+        const reference = typeof step.technique === 'string' ? step.technique : step.technique.name;
+        authoredOperations.add(reference);
+      } else if (step.kind === 'loop') collectOperations(step.steps as Step[]);
+    }
+  };
+  collectOperations(routine.steps);
+
+  for (const [id, input] of scope.inputs) {
+    if (isOperationInput(input)) {
+      if (authoredOperations.has(id)) continue;
+      findings.push({
+        check: 'routine-operation-unbound', site,
+        detail: `input '${id}' declares 'kind: technique' and no step of the body binds it — every reference site is asked for an operation the run never invokes`,
+      });
+      continue;
+    }
     if (consulted.has(id)) continue;
     findings.push({
       check: 'routine-input-unread', site,
@@ -214,6 +256,26 @@ function authoredActivities(workflowId: string, dir: string): AuthoredActivity[]
   return out;
 }
 
+/**
+ * The operations one reference site supplies, or undefined where it supplies something the load
+ * refuses — a missing argument, or one carrying a token that has no value when definitions load.
+ * Reporting those here would name the same defect the load already names, with less of the site.
+ */
+function siteOperations(
+  routine: Routine,
+  parameters: string[],
+  args: Record<string, string | number | boolean> | undefined,
+): Map<string, string> | undefined {
+  const operations = new Map<string, string>();
+  const declared = routineScope(routine).inputs;
+  for (const id of parameters) {
+    const argument = args?.[id] ?? declared.get(id)?.default;
+    if (typeof argument !== 'string' || argument.includes('{')) return undefined;
+    operations.set(id, argument);
+  }
+  return operations;
+}
+
 export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const index = indexCorpus(root);
   const corpus = corpusWorkflows(root, index);
@@ -243,13 +305,17 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const references: Reference[] = [];
   for (const { id: workflowId, dir } of corpus) {
     for (const { site, steps } of authoredActivities(workflowId, dir)) {
-      for (const ref of collectRoutineRefs({ steps })) references.push({ workflowId, site, ref });
+      for (const step of collectRoutineSteps({ steps })) {
+        references.push({ workflowId, site, ref: step.routine, args: step.with });
+      }
     }
   }
   for (const [workflowId, routines] of declared) {
     for (const routine of routines.values()) {
-      for (const ref of collectRoutineRefs({ steps: routine.steps })) {
-        references.push({ workflowId, site: `${workflowId}/routines/${routine.id}.yaml`, ref, });
+      for (const step of collectRoutineSteps({ steps: routine.steps })) {
+        references.push({
+          workflowId, site: `${workflowId}/routines/${routine.id}.yaml`, ref: step.routine, args: step.with,
+        });
       }
     }
   }
@@ -258,12 +324,34 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
     if (resolved) reference.resolved = resolved;
   }
 
-  // The signature check, per declared routine.
+  const sitesByRoutine = new Map<string, Reference[]>();
+  for (const reference of references) {
+    if (!reference.resolved) continue;
+    const key = keyOf(reference.resolved.workflowId, reference.resolved.name);
+    sitesByRoutine.set(key, [...(sitesByRoutine.get(key) ?? []), reference]);
+  }
+
+  // The signature check. Once per routine, and once per REFERENCE SITE for a routine whose body binds
+  // an operation by argument: such a body names a parameter where an operation reference belongs, so
+  // it has no signature of its own and there is nothing to derive until a site says which operation.
+  // A routine no site refers to is reported as unreferenced below, which is the same remedy.
   for (const [workflowId, routines] of declared) {
     const lookup = await buildRoutineLookup(root, [workflowId], [...routines.values()].flatMap(
       (routine) => collectRoutineRefs({ steps: routine.steps })));
     for (const routine of routines.values()) {
-      findings.push(...await checkSignature(root, workflowId, routine, lookup));
+      const parameters = operationInputs(routine);
+      if (parameters.length === 0) {
+        findings.push(...await checkSignature(root, workflowId, routine, lookup));
+        continue;
+      }
+      for (const reference of sitesByRoutine.get(keyOf(workflowId, routine.id)) ?? []) {
+        const operations = siteOperations(routine, parameters, reference.args);
+        if (operations === undefined) continue; // an argument the load refuses; the load names it
+        findings.push(...await checkSignature(
+          root, workflowId, routine, lookup, operations,
+          `${workflowId}/routines/${routine.id}.yaml at ${reference.site}`,
+        ));
+      }
     }
   }
 
