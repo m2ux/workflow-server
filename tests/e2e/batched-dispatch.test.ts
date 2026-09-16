@@ -1,34 +1,37 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { resolve } from 'node:path';
 import { createHarness, type Harness, parseToolResponse, rawText, isError } from './harness.js';
 import type { HistoryEntry } from '../../src/schema/state.schema.js';
-import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
  * Batched dispatch over the real server (#407). What these walks pin down is the bound that makes a
- * run safe, and the gate crossings that make a batch worth having.
+ * run safe, and the gate crossing that makes a batch worth having.
  *
- * The run walked is the analysis run through the middle of the main workflow — the best batch
- * candidate the investigation measured — with the implementation activity behind it as the fourth the
- * cap refuses.
+ * The corpus walked is a fixture, not the product one. What this measures is a property of the
+ * ENGINE — how far one worker context carries a run before a bound refuses it, and what happens when
+ * that worker meets a gate part-way through — and none of that is a claim about which activities a
+ * product workflow contains. Driving the product corpus made an authoring decision able to break a
+ * test about batching bounds, which is what happened when a run converged and an activity stopped
+ * declaring the gate this named.
+ *
+ * The fixture is four contiguous activities, each carrying one operation, with a two-option gate in
+ * the FIRST — a batch is read from the stop where the worker halts and is answered without being
+ * replaced, so the gate has to be there. Four, so a cap of three leaves one behind to be refused.
  */
-describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
+const FIXTURE = resolve(import.meta.dirname, '../fixtures/batched-dispatch');
+
+describe('batched dispatch (#407)', () => {
   let h: Harness;
-  beforeAll(async () => { h = await createHarness(); });
+  beforeAll(async () => { h = await createHarness({ workflowDir: FIXTURE }); });
   afterAll(async () => { await h.close(); });
 
-  /**
-   * A contiguous run of four, so a batch of three leaves one behind that no batch can reach.
-   *
-   * It opens at `plan-prepare` because the gate this exercises has to sit in the FIRST activity: a
-   * batch is read against a worker that reaches a gate part-way through and is answered without
-   * being replaced. `plan-prepare` is the earliest activity on this path that still declares one.
-   */
-  const RUN = ['plan-prepare', 'assumptions-review', 'implement', 'lean-coding-audit'];
-  /** The gate in RUN[0], and the answer that leaves the run on the exit the batch continues along. */
-  const GATE = 'approach-confirmed';
-  const GATE_ANSWER = 'confirmed';
+  const WORKFLOW = 'batch-fixture';
+  const RUN = ['first-stop', 'second-stop', 'third-stop', 'fourth-stop'];
+  /** The gate in RUN[0], and the answer that carries the run on. */
+  const GATE = 'approach-gate';
+  const GATE_ANSWER = 'settled';
 
   interface Walk {
     /** Response text per activity taken, in order. */
@@ -54,7 +57,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', scope);
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator', planning_folder: planningFolder },
     });
     if (isError(start)) throw new Error(`start_session failed: ${rawText(start)}`);
     const sessionIndex = parseToolResponse(start).session_index as string;
@@ -173,7 +176,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const { client } = h;
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator' },
     });
     const sessionIndex = parseToolResponse(start).session_index as string;
     const scope = 'worker-run-gated';
@@ -225,7 +228,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', scope);
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator', planning_folder: planningFolder },
     });
     if (isError(start)) throw new Error(`start_session failed: ${rawText(start)}`);
     const sessionIndex = parseToolResponse(start).session_index as string;
@@ -317,7 +320,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', 'worker-run-replaced');
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator', planning_folder: planningFolder },
     });
     const sessionIndex = parseToolResponse(start).session_index as string;
 
@@ -364,7 +367,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const { client } = h;
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator' },
     });
     const sessionIndex = parseToolResponse(start).session_index as string;
     const scope = 'worker-run-costed';

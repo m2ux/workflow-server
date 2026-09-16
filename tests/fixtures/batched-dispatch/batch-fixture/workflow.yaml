@@ -1,0 +1,20 @@
+id: batch-fixture
+version: 1.0.0
+title: Batch Fixture
+description: Four contiguous activities, the first carrying a gate — the shape a batch walk is read against, and nothing else.
+initialActivity: first-stop
+variables:
+  - name: approach_settled
+    type: boolean
+    required: false
+    description: Whether the gate in the first activity was answered with the answer that continues the run.
+    defaultValue: false
+graph:
+  first-stop:
+    done: second-stop
+  second-stop:
+    done: third-stop
+  third-stop:
+    done: fourth-stop
+  fourth-stop:
+    done: __terminal__

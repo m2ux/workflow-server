@@ -1,0 +1,19 @@
+id: second-stop
+version: 1.0.0
+name: Second Stop
+description: A stop the batch walks through. It carries one operation and no gate, so what it contributes to a batch is delivery alone.
+
+steps:
+  - kind: technique
+    id: prepare
+    technique: prepare
+  - kind: technique
+    id: review
+    technique: review
+  - kind: technique
+    id: record
+    technique: record
+
+exits:
+  - id: done
+    isDefault: true
