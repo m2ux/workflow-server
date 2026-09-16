@@ -13,12 +13,12 @@
  *
  * Run: npx tsx guards/check-message-binding.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, defaultCorpusDest, ownDefinitionsIn, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { declaredVariables } from './workflow-declarations.js';
 
@@ -100,15 +100,12 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
 
-    // The top level, which is where a workflow's own activities sit. Whether a message binds a name
-    // that is bound by the time it renders is answered from the producers across this workflow's
-    // activities; a library activity under a subdirectory writes into whichever workflow borrows
-    // it, so counting its writes here would credit producers this graph never runs.
-    const files = readdirSync(activitiesDir).sort().filter((e) => /\.ya?ml$/.test(e));
+    // This workflow's own activities: whether a message binds a name that is bound by the time it
+    // renders is answered from the producers across them.
     const parsed = new Map<string, Activity>();
-    for (const entry of files) {
-      const def = parse(readFileSync(join(activitiesDir, entry), 'utf-8')) as Activity | null;
-      if (def) parsed.set(entry, def);
+    for (const { rel, path } of ownDefinitionsIn(activitiesDir)) {
+      const def = parse(readFileSync(path, 'utf-8')) as Activity | null;
+      if (def) parsed.set(rel, def);
     }
 
     // A name more than one activity writes may already be bound by whichever ran first, and the

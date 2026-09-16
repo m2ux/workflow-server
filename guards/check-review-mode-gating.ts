@@ -30,13 +30,13 @@
  *
  * Run: npx tsx guards/check-review-mode-gating.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { evaluateCondition, type Condition } from '../src/schema/condition.schema.js';
 import { type Graph, destinationTargets } from '../src/schema/workflow.schema.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, defaultCorpusDest, ownDefinitionsIn, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -197,13 +197,11 @@ export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): Revi
 
     const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
+    // This workflow's own activities: the rule is what a review-mode walk from `initialActivity`
+    // reaches, so it is a question about this graph.
     const activities = new Map<string, ActivityDef>();
-    // The top level, which is where a workflow's own activities sit. The rule is what a review-mode
-    // walk from `initialActivity` reaches, so it is a question about this graph; a library activity
-    // under a subdirectory is in no graph until a workflow borrows it, and is reached from none.
-    for (const entry of readdirSync(activitiesDir).sort()) {
-      if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
-      const def = parse(readFileSync(join(activitiesDir, entry), 'utf-8')) as ActivityDef;
+    for (const { path } of ownDefinitionsIn(activitiesDir)) {
+      const def = parse(readFileSync(path, 'utf-8')) as ActivityDef;
       if (def?.id) activities.set(def.id, def);
       scanned++;
     }

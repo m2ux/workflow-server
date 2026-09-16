@@ -141,12 +141,16 @@ export function walkArtifactPath(root: string, file: string): string {
 /** One definition file: its path on disk, and its path from the directory the walk started at. */
 export interface DefinitionFile { rel: string; path: string }
 
+const isDefinition = (name: string): boolean => name.endsWith('.yaml') || name.endsWith('.yml');
+
 /**
- * Every `.yaml` under a directory, at any depth, in a stable order.
+ * Every definition under a directory, at any depth, in a stable order.
  *
- * A definition sits at any depth: `meta/activities/patterns/` holds a library of activities another
- * workflow borrows by path rather than ones meta's own graph reaches, and a guard measuring authored
- * files measures those too. `rel` carries the nesting, so a caller citing a file cites one on disk.
+ * A definition sits at any depth: `meta/activities/patterns/` holds a library of activities a client
+ * workflow borrows by path rather than ones meta's own graph reaches. A rule about the file in front
+ * of it — a gate that parses, a schema that validates, a set action composing its own target — is
+ * that file's rule wherever it runs, so this is the walk it takes. `rel` carries the nesting, so a
+ * caller citing a file cites one on disk.
  */
 export function definitionsUnder(dir: string, prefix = ''): DefinitionFile[] {
   return readdirSync(dir, { withFileTypes: true })
@@ -155,6 +159,23 @@ export function definitionsUnder(dir: string, prefix = ''): DefinitionFile[] {
       const path = join(dir, entry.name);
       const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
       if (entry.isDirectory()) return definitionsUnder(path, rel);
-      return entry.name.endsWith('.yaml') ? [{ rel, path }] : [];
+      return isDefinition(entry.name) ? [{ rel, path }] : [];
     });
+}
+
+/**
+ * The definitions a workflow's own graph holds: the top level of the directory, and no deeper.
+ *
+ * A rule that grades a definition AGAINST the workflow around it takes this walk — the seeded
+ * variable model, the set of defaults that suppresses a finding, the reachability of an activity
+ * from `initialActivity`, the producers a message binding resolves against. A library activity a
+ * subdirectory holds runs under whichever workflow borrows it, and takes that workflow's model,
+ * graph and producers; graded here it would be graded against a workflow it never runs under.
+ */
+export function ownDefinitionsIn(dir: string): DefinitionFile[] {
+  return readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .flatMap((entry) => (entry.isFile() && isDefinition(entry.name)
+      ? [{ rel: entry.name, path: join(dir, entry.name) }]
+      : []));
 }
