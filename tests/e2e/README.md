@@ -107,8 +107,8 @@ becomes reachable is on the list with nothing to explain it and also fails, so
 the list can only shrink.
 
 The denominator comes from the **loader**, not from reading the YAML, for two
-reasons: a checkpoint may arrive by fragment `ref`, which raw YAML shows as a step
-with no options at all; and an activity one workflow borrows from another is
+reasons: a checkpoint may arrive inside a routine, which raw YAML shows as a
+`kind: routine` step with no options at all; and an activity one workflow borrows from another is
 reached by whichever of them a walk enters, so coverage is a corpus-wide question
 with one entry per declared option.
 

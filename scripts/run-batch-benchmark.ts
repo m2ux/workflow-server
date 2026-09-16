@@ -13,8 +13,8 @@
  * ## What the wall-clock here does and does not measure
  *
  * Both passes drive the real server over an in-memory transport, so the elapsed figures are the
- * SERVER-SIDE component of a walk: composing each payload, resolving techniques and fragments off
- * disk, and writing the session.
+ * SERVER-SIDE component of a walk: composing each payload, resolving techniques off disk, and
+ * writing the session.
  *
  * Delivered characters are counted by the server's own `deliveredChars` (`src/utils/batch.ts`), the
  * same rule the batch bound applies, so this script cannot report a saving the bound disagrees with.
