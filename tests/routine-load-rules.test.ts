@@ -31,8 +31,6 @@ interface TreeSpec {
   metaRoutines?: Array<Record<string, unknown>>;
   /** A filename that deliberately disagrees with the routine's declared id. */
   routineFilenames?: Record<string, string>;
-  /** Checkpoint fragments the workflow declares, for the cases where both sharing forms meet. */
-  fragments?: Record<string, Record<string, unknown>>;
 }
 
 /**
@@ -55,7 +53,6 @@ function writeTree(spec: TreeSpec): { corpus: string; id: string } {
       version: '1.0.0',
       title: workflowId,
       ...(activities.length > 0 ? { initialActivity: activities[0]!['id'] } : {}),
-      ...(workflowId === id && spec.fragments ? { fragments: { checkpoints: spec.fragments } } : {}),
       graph: Object.fromEntries(activities.map((a) => [a['id'] as string, {}])),
     }));
     activities.forEach((activity, index) => {
@@ -197,32 +194,28 @@ describe('the loaded workflow carries both forms', () => {
   });
 
   /**
-   * The two ways a run is shared meeting in one activity. An activity that carries a routine
-   * reference gets an authored form of its own, and that form has to reach the fragment pass like
-   * any other: the contract derivation reads it, and a ref step with no options declares no effect,
-   * so every name the fragment's options set would read as written by nothing.
+   * An activity carrying both a routine reference and a checkpoint of its own keeps the reference
+   * unexpanded in the authored form while the checkpoint stays whole.
    *
-   * The assertion is on the authored form's OPTIONS rather than on a load succeeding, because the
-   * unfixed loader loads this fixture perfectly well and gets the contract wrong in silence. An
-   * activity carrying no routine never showed this, its two forms being one object that the fragment
-   * pass resolves once.
+   * This case existed to cover a loader defect: the authored form was cloned before a second
+   * resolution pass ran, so a checkpoint whose body lived elsewhere reached the contract derivation
+   * with no options and every name its effects set read as written by nothing. That second pass is
+   * gone — a checkpoint carries its own body, and a gate shared between activities is a routine —
+   * so what is left to assert is that the two step kinds coexist without the reference expanding.
    */
-  it('resolves fragments in the authored form of an activity that also carries a routine', async () => {
+  it('keeps a reference unexpanded beside a checkpoint of the activity\'s own', async () => {
     const { corpus, id } = writeTree({
       activities: [{
         id: 'host',
         steps: [
           { kind: 'routine', id: 'run', routine: 'shared-run' },
-          { kind: 'checkpoint', id: 'gate', ref: 'scope-gate' },
+          {
+            kind: 'checkpoint', id: 'gate', message: 'Is the scope settled?',
+            options: [{ id: 'yes', label: 'Settled', effect: { setVariable: { scope_confirmed: true } } }],
+          },
         ],
       }],
       routines: [routine('shared-run')],
-      fragments: {
-        'scope-gate': {
-          message: 'Is the scope settled?',
-          options: [{ id: 'yes', label: 'Settled', effect: { setVariable: { scope_confirmed: true } } }],
-        },
-      },
     });
     const result = await loadWorkflowWithDiagnostics(corpus, id);
     if (!result.success) throw new Error(`load failed: ${result.error.message}`);
@@ -230,8 +223,6 @@ describe('the loaded workflow carries both forms', () => {
     const authored = result.value.authoredActivities.get('host')!;
     const gate = authored.steps!.find((s) => s.id === 'gate') as Extract<Step, { kind: 'checkpoint' }>;
     expect(gate.options?.map((o) => o.effect?.setVariable)).toEqual([{ scope_confirmed: true }]);
-    // And the reference is still a reference — resolving fragments must not materialise routines
-    // into the form whose whole job is to keep them unexpanded.
     expect(authored.steps!.map((s) => s.kind)).toEqual(['routine', 'checkpoint']);
   });
 });

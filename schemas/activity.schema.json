@@ -434,13 +434,9 @@
                     "type": "string",
                     "description": "Identifier for this step within the activity; the stable checkpoint-response replay key."
                   },
-                  "ref": {
-                    "type": "string",
-                    "description": "Checkpoint-fragment reference: `[workflow::]name`, resolved against the declaring workflow's `fragments.checkpoints` (bare name: declaring workflow, then meta). Mutually exclusive with the body fields — a ref step carries only its id and, when the fragment declares none, a condition."
-                  },
                   "message": {
                     "type": "string",
-                    "description": "Message presented to the user. Required on an inline checkpoint; forbidden alongside `ref`."
+                    "description": "Message presented to the user."
                   },
                   "options": {
                     "type": "array",
@@ -479,7 +475,7 @@
                       "additionalProperties": false
                     },
                     "minItems": 1,
-                    "description": "Decision options with effects. Required on an inline checkpoint; forbidden alongside `ref`."
+                    "description": "Decision options with effects."
                   },
                   "defaultOption": {
                     "type": "string",
@@ -502,7 +498,9 @@
                 },
                 "required": [
                   "kind",
-                  "id"
+                  "id",
+                  "message",
+                  "options"
                 ],
                 "additionalProperties": false
               },

@@ -169,8 +169,8 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   for (const { id: workflow, dir } of workflows) {
     const declarations = declaredVariables(root, workflow, index);
     const valueSets: ValueSets = (name) => declarations.get(name)?.values;
-    // `workflow.yaml` too: a workflow root carries checkpoint fragments, and a `setVariable` there
-    // writes the bag exactly as one inside an activity does.
+    // `workflow.yaml` too: a `setVariable` at the workflow root writes the bag exactly as one
+    // inside an activity does.
     const roots = [join(dir, 'workflow.yaml')].filter((path) => existsSync(path));
     for (const path of [...roots, ...definitions(join(dir, 'activities'))]) {
       const rel = relative(root, path);

@@ -111,29 +111,14 @@ export const ActionStepSchema = z.object({
 }).strict();
 export type ActionStep = z.infer<typeof ActionStepSchema>;
 
-// The body of a checkpoint — everything but the step identity (`kind`, `id`) and the site-specific
-// gates (`when`, `required`). This is the shape a workflow-level checkpoint fragment declares once
-// under `fragments.checkpoints.<name>`; a `ref` step imports it (#166 B10).
-export const CheckpointFragmentBodySchema = z.object({
-  message: z.string().describe('Message presented to the user.'),
-  options: z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'),
-  defaultOption: z.string().optional().describe('The answer a soft gate takes when no person is reached.'),
-  autoAdvanceMs: z.number().int().positive().optional().describe('The interval the server spends before applying a soft gate\'s default on respond_checkpoint { auto_advance: true }.'),
-  condition: ConditionSchema.optional().describe('Condition shared by every use site. A referencing step may declare its own `condition` only when the fragment declares none.'),
-}).strict();
-export type CheckpointFragmentBody = z.infer<typeof CheckpointFragmentBodySchema>;
-
-// A checkpoint step is authored in exactly one of two forms (enforced at load, not by the union —
-// the discriminated union needs a plain object per kind): inline (message + options present, no
-// `ref`) or by reference (`ref` names a `fragments.checkpoints` entry; the body fields are
-// forbidden locally so the fragment stays the single home for the checkpoint's content). The
-// loader materializes ref steps before anything downstream reads them.
+// A checkpoint step carries its own body. A run of steps shared between activities is a routine,
+// which prefixes the identifiers it contributes and holds a signature the body is checked against;
+// a gate shared on its own is a one-step routine (#704, #738 W01).
 export const CheckpointStepSchema = z.object({
   kind: z.literal('checkpoint').describe('Step-kind discriminator.'),
   id: z.string().describe('Identifier for this step within the activity; the stable checkpoint-response replay key.'),
-  ref: z.string().optional().describe('Checkpoint-fragment reference: `[workflow::]name`, resolved against the declaring workflow\'s `fragments.checkpoints` (bare name: declaring workflow, then meta). Mutually exclusive with the body fields — a ref step carries only its id and, when the fragment declares none, a condition.'),
-  message: z.string().optional().describe('Message presented to the user. Required on an inline checkpoint; forbidden alongside `ref`.'),
-  options: z.array(CheckpointOptionSchema).min(1).optional().describe('Decision options with effects. Required on an inline checkpoint; forbidden alongside `ref`.'),
+  message: z.string().describe('Message presented to the user.'),
+  options: z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'),
   defaultOption: z.string().optional().describe('The answer a soft gate takes when no person is reached.'),
   autoAdvanceMs: z.number().int().positive().optional().describe('The interval the server spends before applying a soft gate\'s default on respond_checkpoint { auto_advance: true }.'),
   ...stepCommonFields,
@@ -397,22 +382,15 @@ export function topLevelStepIndex(activity: Activity, stepId: string): number {
 }
 
 /**
- * The activity's checkpoint definitions: the inline kind:checkpoint steps, in document order. A
- * kind:checkpoint step carries its message/options/effects inline, so it maps directly to a
- * checkpoint definition (its id is the stable key used for checkpoint yield/respond/replay).
- * Ref-form steps must be materialized first (the loader does this); an unmaterialized ref step
- * has no body to synthesize a definition from.
+ * The activity's checkpoint definitions: its kind:checkpoint steps, in document order. A checkpoint
+ * step carries its message/options/effects, so it maps directly to a definition, and its id is the
+ * stable key used for checkpoint yield/respond/replay. A step a routine contributed is already
+ * materialised by the time anything reads this, under the identifier its reference site prefixes.
  */
 export function activityCheckpoints(activity: Activity): Checkpoint[] {
   return flattenActivitySteps(activity)
     .filter((s): s is CheckpointStep => s.kind === 'checkpoint')
     .map((s) => {
-      if (s.message === undefined || s.options === undefined) {
-        throw new Error(
-          `Activity '${activity.id}': checkpoint '${s.id}' has no message/options` +
-            (s.ref ? ` — fragment ref '${s.ref}' was not materialized before use.` : '.'),
-        );
-      }
       return {
         id: s.id,
         name: s.id,

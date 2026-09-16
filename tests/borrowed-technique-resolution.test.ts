@@ -12,7 +12,7 @@ const WORKFLOW_DIR = LIVE_CORPUS ?? '';
 
 /**
  * Borrowed cross-workflow activities resolve their technique refs against the workflow the
- * activity file was authored in — the technique-side counterpart of #166 B10 fragment scoping.
+ * activity file was authored in, which is the scope a bare reference resolves in.
  * Before this fix, a borrowed activity's unqualified refs resolved [borrower → meta] and failed.
  */
 describe('borrowed-activity technique resolution', () => {

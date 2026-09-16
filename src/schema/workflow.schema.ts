@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ActivitySchema, CheckpointFragmentBodySchema } from './activity.schema.js';
+import { ActivitySchema } from './activity.schema.js';
 import { SemanticVersionSchema } from './common.js';
 import { VariableDefinitionSchema, VariableNameSchema } from './variable.schema.js';
 
@@ -32,15 +32,6 @@ export const WorkflowRulesSchema = z.object({
   universal: z.array(z.string()).optional().describe('Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity.'),
 });
 export type WorkflowRules = z.infer<typeof WorkflowRulesSchema>;
-
-// Shared checkpoint bodies (#166 B10): a gate body declared once at workflow level and imported by
-// `ref` on a kind:checkpoint step. The declaration is the single home for the body; the
-// check:fragments guard rejects inline copies that duplicate one (declaration drift). A fragment
-// body is plain content — it cannot itself contain a reference.
-export const WorkflowFragmentsSchema = z.object({
-  checkpoints: z.record(CheckpointFragmentBodySchema).optional().describe('Named checkpoint bodies (message/options/effects, optionally a shared condition). A kind:checkpoint step imports one via `ref`, contributing its own id.'),
-}).strict();
-export type WorkflowFragments = z.infer<typeof WorkflowFragmentsSchema>;
 
 /**
  * A destination that runs one activity once per element of a collection: an instance fan.
@@ -168,7 +159,6 @@ export const WorkflowSchema = z.object({
   author: z.string().optional().describe('Author metadata; not read by the server.'),
   tags: z.array(z.string()).optional(),
   rules: WorkflowRulesSchema.optional().describe('Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds.'),
-  fragments: WorkflowFragmentsSchema.optional().describe('Shared checkpoint bodies, declared once and imported by `ref` (`[workflow::]name`) from a kind:checkpoint step — this workflow\'s or another\'s. Resolved at load; agents always receive materialized content.'),
   variables: z.array(VariableDefinitionSchema).optional().describe('The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow\'s graph — get_workflow renders the whole set, and two declarations of one name that each name a different type, starting value or value set fail the load — one silent about a starting value takes the value another site names. The session variable bag is seeded from each declaration\'s defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity\'s variables_changed.'),
   techniques: WorkflowTechniquesSchema.optional().describe('Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity).'),
   initialActivity: z.string().describe('ID of the first activity to execute: the id the first `next_activity` call names, and the root the reachability half of the activity-variables guard walks from — the analysis that decides, for each activity, which variables the run has written by the time it arrives there.'),

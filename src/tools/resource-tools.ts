@@ -848,7 +848,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!wfDiag.success) throw wfDiag.error;
       const wfResult = { success: true as const, value: wfDiag.value.workflow };
       // A borrowed activity's technique refs resolve against the workflow the activity file was
-      // authored in (mirroring #166 B10 fragment scoping), not the borrowing session's workflow.
+      // authored in, which is the scope a bare reference resolves in, not the borrowing session's.
       const techniqueScopeWorkflowId = (servedFor
         && wfDiag.value.activitySourceWorkflow.get(servedFor)) || workflow_id;
 

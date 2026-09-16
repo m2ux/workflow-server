@@ -1,0 +1,9 @@
+id: beta-fixture
+version: 1.0.0
+title: Beta Fixture
+initialActivity: beta-activity
+rules:
+  workflow:
+    - Every finding a review pass states names a file within the authored surface it was scoped to.
+graph:
+  beta-activity: {}

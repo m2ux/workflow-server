@@ -66,7 +66,7 @@ describe('branch-as-step guard', () => {
       `${header}### 1. Run the Guards\n\n- Run each guard and record what it proves.\n`
       + '  - `check-refs.ts` — every reference resolves\n'
       + '  - `check-audience.ts` — every artifact declares an audience\n'
-      + '  - `check-fragments.ts` — every fragment is used\n',
+      + '  - `check-duplicate-bodies.ts` — no body is authored twice\n',
     )).toEqual([]);
   });
 

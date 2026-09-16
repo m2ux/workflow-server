@@ -1,0 +1,17 @@
+id: alpha-activity
+version: 1.0.0
+name: Alpha Activity
+steps:
+  - kind: checkpoint
+    id: alpha-confirm
+    message: Is the scope settled?
+    options:
+      - id: yes-settled
+        label: Settled
+        description: The scope is agreed and the run proceeds
+      - id: no-more-work
+        label: Not yet
+        description: The scope needs more work before the run proceeds
+exits:
+  - id: done
+    isDefault: true

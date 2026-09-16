@@ -5,8 +5,6 @@ import {
   type Destination,
   type InstanceFan,
   type Workflow,
-  type WorkflowFragments,
-  WorkflowFragmentsSchema,
   branchKey,
   destinationTargets,
   instanceFans,
@@ -24,14 +22,7 @@ import { logInfo, logError, logWarn } from '../logging.js';
 import { parseDefinition } from '../utils/serialization.js';
 import { parseActivityFilename } from './filename-utils.js';
 import { mergeActivityVariables } from '../utils/activity-variables.js';
-import {
-  META_WORKFLOW_ID,
-  type FragmentsLookup,
-  parseFragmentRef,
-  collectCheckpointRefs,
-  materializeActivityFragments,
-} from './fragment-resolver.js';
-import { type CorpusIndex, indexCorpus, identityMismatches, workflowLocation } from './corpus-index.js';
+import { type CorpusIndex, META_WORKFLOW_ID, indexCorpus, identityMismatches, workflowLocation } from './corpus-index.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
 
@@ -50,7 +41,7 @@ export interface WorkflowWithDiagnostics {
   /**
    * Activity id → the workflow the activity file was authored in. Differs from the loaded
    * workflow's id only for borrowed cross-workflow activities; it scopes those activities'
-   * unqualified technique refs (and fragment refs) to their source workflow.
+   * unqualified technique and routine references to their source workflow.
    */
   activitySourceWorkflow: Map<string, string>;
   /**
@@ -188,68 +179,13 @@ async function resolveActivityReference(index: CorpusIndex, workflowId: string, 
       activity.artifactPrefix = parsed.index;
     }
 
-    // The source workflow scopes the activity's bare fragment refs: a borrowed activity
+    // The source workflow scopes the activity's bare references: a borrowed activity
     // resolves them against the workflow it was authored in, not the borrower.
     return { activity, sourceWorkflowId: targetWorkflowId };
   } catch (error) {
     logWarn('Failed to load referenced activity', { ref, error: error instanceof Error ? error.message : 'Unknown error' });
     return null;
   }
-}
-
-/**
- * Read just the `fragments` block of a workflow's definition file (#166 B10). Reads the raw file
- * rather than loading the workflow — fragment resolution must not recurse into full loads (a
- * cross-workflow ref would otherwise re-enter loadWorkflow). Returns undefined when the workflow
- * or its fragments block is absent; an unparsable file or invalid block also resolves to
- * undefined (the referencing workflow then reports the unresolved ref, naming the source).
- */
-export async function readWorkflowFragments(
-  workflowDir: string,
-  workflowId: string,
-  index: CorpusIndex = indexCorpus(workflowDir),
-): Promise<WorkflowFragments | undefined> {
-  const filePath = resolveWorkflowPath(index, workflowId);
-  if (!filePath) return undefined;
-  try {
-    const raw = parseDefinition(await readFile(filePath, 'utf-8')) as Record<string, unknown> | null;
-    if (!raw || raw['fragments'] === undefined) return undefined;
-    const parsed = WorkflowFragmentsSchema.safeParse(raw['fragments']);
-    if (!parsed.success) {
-      logWarn('Invalid fragments block; refs into it will not resolve', { workflowId, errors: parsed.error.issues });
-      return undefined;
-    }
-    return parsed.data;
-  } catch (error) {
-    logWarn('Failed to read workflow fragments', { workflowId, error: error instanceof Error ? error.message : String(error) });
-    return undefined;
-  }
-}
-
-/**
- * Build a synchronous FragmentsLookup covering every workflow a set of refs (plus the declaring
- * scopes and the meta fallback) can name, pre-reading each fragments block once.
- */
-export async function buildFragmentsLookup(
-  workflowDir: string,
-  scopeWorkflowIds: Iterable<string>,
-  refs: Iterable<string>,
-): Promise<FragmentsLookup> {
-  const wanted = new Set<string>([META_WORKFLOW_ID, ...scopeWorkflowIds]);
-  for (const ref of refs) {
-    try {
-      const { workflowId } = parseFragmentRef(ref);
-      if (workflowId) wanted.add(workflowId);
-    } catch {
-      // Malformed ref: surfaces as a resolution error at materialization, not here.
-    }
-  }
-  const index = indexCorpus(workflowDir);
-  const fragments = new Map<string, WorkflowFragments | undefined>();
-  await Promise.all(
-    [...wanted].map(async (id) => fragments.set(id, await readWorkflowFragments(workflowDir, id, index))),
-  );
-  return (workflowId) => fragments.get(workflowId);
 }
 
 export async function loadWorkflow(workflowDir: string, workflowId: string): Promise<Result<Workflow, WorkflowNotFoundError | WorkflowValidationError>> {
@@ -334,9 +270,8 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
 
     // Materialise routine references (#704): a `kind: routine` step is replaced by the routine's
     // own steps, with the reference site's arguments substituted through them and every identifier
-    // inside them prefixed from the reference step's id. Runs before fragment resolution, so a
-    // checkpoint a routine body carries is on the fragment pass's list like any other; and after
-    // `populateStepIds`, so a prefix has something to attach to.
+    // inside them prefixed from the reference step's id. Runs after `populateStepIds`, so a prefix
+    // has something to attach to.
     //
     // The activity as authored is kept beside the materialised one. Only an activity that carries a
     // reference is copied — materialisation is what mutates, so a routine-free activity has nothing
@@ -372,56 +307,6 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
       if (!authoredActivities.has(activity.id)) authoredActivities.set(activity.id, activity);
     }
 
-    // Materialize fragment references (#166 B10): a checkpoint ref step takes its fragment's body,
-    // so every downstream reader — tool payloads, checkpoint yield/respond, guards — sees full
-    // checkpoint steps. Rules are not shared this way, so none of them is a ref. The lookup is
-    // scoped to what the refs can actually name: the current workflow's fragments come from the
-    // parsed object, other workflow.yaml files are read only when a qualified ref targets them or
-    // a bare ref misses locally (meta fallback) — a workflow whose refs all resolve locally costs
-    // no extra reads on the per-call load path.
-    const wanted = new Set<string>();
-    const noteRef = (ref: string, scopeWf: string): void => {
-      try {
-        const { workflowId: qualified, name } = parseFragmentRef(ref);
-        if (qualified) { if (qualified !== workflowId) wanted.add(qualified); return; }
-        if (scopeWf !== workflowId) { wanted.add(scopeWf); wanted.add(META_WORKFLOW_ID); return; }
-        if (workflow.fragments?.checkpoints?.[name] === undefined) wanted.add(META_WORKFLOW_ID);
-      } catch { /* malformed: surfaces at materialization */ }
-    };
-    for (const activity of workflow.activities ?? []) {
-      const scope = activitySourceWorkflow.get(activity.id) ?? workflowId;
-      for (const ref of collectCheckpointRefs(activity)) noteRef(ref, scope);
-    }
-    const fragmentCache = new Map<string, WorkflowFragments | undefined>([[workflowId, workflow.fragments]]);
-    await Promise.all([...wanted].map(async (id) => fragmentCache.set(id, await readWorkflowFragments(workflowDir, id, index))));
-    const lookup: FragmentsLookup = (id) => fragmentCache.get(id);
-    const materialized: Activity[] = [];
-    for (const activity of workflow.activities ?? []) {
-      const scope = activitySourceWorkflow.get(activity.id) ?? workflowId;
-      try {
-        // Also validates inline checkpoints (a step with neither ref nor body is rejected here,
-        // not later at yield time).
-        materializeActivityFragments(activity, lookup, scope);
-        // The authored form is a separate object only where a routine was materialised into the
-        // activity, and it carries the checkpoint refs the file spells. A derivation reading it
-        // needs those bodies for the same reason the materialised form does: a ref step with no
-        // options declares no effect, so every name the fragment's options set would read as
-        // written by nothing. Its refs are a subset of the materialised form's, so the lookup
-        // gathered above already covers them.
-        const authored = authoredActivities.get(activity.id);
-        if (authored !== undefined && authored !== activity) materializeActivityFragments(authored, lookup, scope);
-        materialized.push(activity);
-      } catch (error) {
-        // Same contract as a per-file load failure: exclude the activity and surface the error
-        // (#166 B5) instead of letting an unmaterialized checkpoint fail later downstream.
-        const message = error instanceof Error ? error.message : String(error);
-        logWarn('Excluding activity with unresolvable fragments', { workflowId, activityId: activity.id, error: message });
-        activityLoadErrors.push({ file: `${activity.artifactPrefix ?? ''}${activity.artifactPrefix ? '-' : ''}${activity.id}.yaml`, activity_id: activity.id, error: message });
-        authoredActivities.delete(activity.id);
-      }
-    }
-    if (workflow.activities) workflow.activities = materialized;
-
     // Contribute each activity's write declarations to the workflow's variable set (#493). Being
     // in the workflow IS the registration: everything downstream — seeding, declared-type validation,
     // the get_workflow payload — reads one merged set, and a name two activities declare is one
@@ -441,8 +326,8 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     if (merged.variables.length > 0) workflow.variables = merged.variables;
 
     // The exits and the graph that binds them are authored in different files, so the load is where
-    // they have to agree. Checked after materialization: a ref-form checkpoint's options are the
-    // fragment's, and the exit each selects has to be one the activity running it declares.
+    // they have to agree. Checked after materialisation: a checkpoint a routine contributed carries
+    // its own options, and the exit each selects has to be one the activity running it declares.
     const knownActivityIds = new Set([
       ...(workflow.activities ?? []).map(a => a.id),
       ...activityLoadErrors.map(e => e.activity_id).filter((id): id is string => id !== undefined),
@@ -1036,7 +921,7 @@ export const TERMINAL_SENTINEL = '__terminal__';
 /**
  * Read raw activity definition (YAML) by ID. Validates but returns the original file content,
  * plus the workflow the file was authored in (`sourceWorkflowId` differs from `workflowId` for a
- * borrowed cross-workflow activity) — the scope the file's bare fragment refs resolve against.
+ * borrowed cross-workflow activity) — the scope the file's bare references resolve against.
  */
 export async function readActivityRaw(
   workflowDir: string,

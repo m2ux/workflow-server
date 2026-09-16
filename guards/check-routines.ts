@@ -21,10 +21,10 @@
  *
  * The placement rules, which are corpus-wide by construction:
  *
- * - `routine-unreferenced` — a routine nothing references anywhere in the corpus. Reported beside
- *   `unused-fragment`, and NOT a load failure: a load reaches one workflow while the resolution rule
- *   admits a cross-workflow reference, so a per-workflow load would fail while a reference site sits
- *   a directory away.
+ * - `routine-unreferenced` — a routine nothing references anywhere in the corpus. Reported here and
+ *   NOT a load failure: a load reaches one workflow while the resolution rule admits a
+ *   cross-workflow reference, so a per-workflow load would fail while a reference site sits a
+ *   directory away.
  * - `routine-misplaced` — a routine whose home disagrees with the workflows its referrers sit in.
  *   One owner and it lives there; two or more and it lives in the shared home. A referrer is an
  *   activity file OR another routine, closed transitively — without the closure a routine referred

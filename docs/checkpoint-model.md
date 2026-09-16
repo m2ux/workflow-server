@@ -110,10 +110,9 @@ steps:
 | `when` | Inline expression alternative to `condition`, and not dismissible by `condition_not_met` |
 | `defaultOption` | The answer a soft gate takes when no person is reached; declared with `autoAdvanceMs` |
 | `autoAdvanceMs` | Milliseconds the server waits before taking `defaultOption`; declared with it |
-| `ref` | Names a shared checkpoint body instead of writing one inline |
 | `required` | Authoring metadata |
 
-A checkpoint used at several sites is declared once as a fragment under `fragments.checkpoints` in the owning workflow's `workflow.yaml`, and each site imports it with `ref`. The site keeps only its own `id`, the `ref`, and a `condition` where the fragment declares none. The loader splices the fragment body into the step before delivery, so every consumer downstream sees an ordinary checkpoint. The `check:fragments` guard rejects an inline body that duplicates a fragment.
+A checkpoint used at several sites is a routine: the gate is declared once under the owning workflow's `routines/`, and each site refers to it with a `kind: routine` step. A gate that is not part of a larger run is a one-step routine. The reference prefixes every identifier the run contributes, so two sites cannot collide, and the routine's signature is held against its body. The loader materialises the reference before delivery, so every consumer downstream sees an ordinary checkpoint. The `check:duplicate-bodies` guard reports a checkpoint body authored inline at two sites.
 
 ## Where a checkpoint belongs
 

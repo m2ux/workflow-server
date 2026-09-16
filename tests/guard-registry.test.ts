@@ -83,7 +83,6 @@ describe('guard registry', () => {
   it('names the guards whose failure means the definitions will not serve', () => {
     expect(GUARDS.filter((g) => g.gatesServing).map((g) => g.id).sort()).toEqual([
       'activities',
-      'fragments',
       'loop-shape',
       'refs',
       'when-expression',

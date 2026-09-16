@@ -58,8 +58,6 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 // is their single source of truth), so guard and server cannot drift apart on what counts as an
 // identifier, an optional input, or an ambient id.
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
-import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
-import { fragmentsLookupSync } from './fragments-index.js';
 import { assertScanned, citePath, corpusWorkflows, ledgerPath, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { indexCorpus, workflowIdFromCorpusPath, type CorpusIndex } from '../src/loaders/corpus-index.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
@@ -599,7 +597,6 @@ function ensureIndexed(): void {
     if (techniques) walk(techniques);
   }
 
-  const fragmentsLookup = fragmentsLookupSync(ROOT, INDEX);
   allWf = new Set([...workflows, ...corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'activities'))).map(({ id }) => id)]);
   for (const wf of allWf) {
     collectWorkflowVars(wf);
@@ -612,14 +609,7 @@ function ensureIndexed(): void {
     const adir = workflowSubdir(INDEX, wf, 'activities');
     if (!adir || !existsSync(adir)) continue;
     for (const path of activityFiles(adir)) {
-      const rel = cite(path); let raw = readFileSync(path, 'utf-8');
-      // Materialize checkpoint fragment refs (#166 B10) before analysis, so fragment-declared
-      // setVariable producers and message/condition reads attribute to the referencing activity —
-      // the same view the server delivers. An unresolved ref is check:fragments' finding; the
-      // file is then analyzed as authored.
-      try {
-        raw = injectCheckpointFragmentBodies(raw, (ref) => resolveCheckpointFragment(fragmentsLookup, wf, ref));
-      } catch { /* check:fragments reports unresolved refs */ }
+      const rel = cite(path); const raw = readFileSync(path, 'utf-8');
       collectReads(wf, rel, raw, 'activity');
       try {
         const dec = parseDefinition(raw);

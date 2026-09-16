@@ -8,7 +8,7 @@ import {
   DEFAULT_BATCH_MAX_ACTIVITIES,
   presentPathToAgent,
 } from '../config.js';
-import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { collectRoutineRefLines, hasRoutineStepLine, injectRoutineSteps, materializeRoutineStep } from '../loaders/routine-resolver.js';
 import { buildRoutineLookup } from '../loaders/routine-loader.js';
 import {
@@ -23,7 +23,6 @@ import {
   isFan,
 } from '../schema/workflow.schema.js';
 import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
-import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES, FAN_DISPATCH_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
@@ -1425,26 +1424,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       let activityBody = injectResolvedStepIds(rawActivity);
 
       // Materialise routine references in the delivered YAML (#704): the worker reads the steps the
-      // run stands for, never a reference. Runs before fragment injection, so a checkpoint a routine
-      // body carries reaches the fragment pass like any other. The textual pre-scan keeps
-      // routine-free activities — every corpus activity today — off the splice path entirely, which
-      // is what keeps their delivery byte-identical.
+      // run stands for, never a reference. The textual pre-scan keeps routine-free activities off
+      // the splice path entirely, which is what keeps their delivery byte-identical.
       if (hasRoutineStepLine(rawActivity)) {
         const routineLookup = await buildRoutineLookup(
           config.workflowDir, [sourceWorkflowId], collectRoutineRefLines(rawActivity));
         activityBody = injectRoutineSteps(activityBody, (step, sitePath) =>
           materializeRoutineStep(step, routineLookup, sourceWorkflowId, baseId(activity_id), sitePath));
-      }
-
-      // Materialize checkpoint fragment refs in the delivered YAML (#166 B10): the worker reads
-      // full checkpoint bodies, never a reference. Bare refs resolve against the activity file's
-      // SOURCE workflow (which differs from workflow_id for a borrowed activity). The textual
-      // pre-scan keeps ref-free activities (the common case) off the resolution path entirely.
-      const fragmentRefs = scanCheckpointRefLines(rawActivity);
-      if (fragmentRefs.length > 0) {
-        const fragmentsLookup = await buildFragmentsLookup(config.workflowDir, [sourceWorkflowId], fragmentRefs);
-        activityBody = injectCheckpointFragmentBodies(activityBody, (ref) =>
-          resolveCheckpointFragment(fragmentsLookup, sourceWorkflowId, ref));
       }
 
       const view = sessionView(state, activity_id);
@@ -1623,7 +1609,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           const ref = techniqueName(step.technique);
           if (!ref) continue;
           // Borrowed activities resolve their step techniques against the source workflow the
-          // activity file was authored in (mirroring #166 B10 fragment scoping).
+          // activity file was authored in, which is the scope a bare reference resolves in.
           const composedStep = await composeActivityTechnique(ref, config.workflowDir, sourceWorkflowId, activity_id);
           // An unresolvable ref is the binding guard's business; delivery skips it (the step's
           // own get_technique fetch will surface the error to the worker).
