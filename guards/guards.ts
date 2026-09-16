@@ -359,13 +359,13 @@ export const GUARDS: GuardSpec[] = [
     form: 'authored',
   },
   {
-    id: 'fragments',
-    script: 'guards/check-fragments.ts',
-    npmScript: 'check:fragments',
+    id: 'duplicate-bodies',
+    script: 'guards/check-duplicate-bodies.ts',
+    npmScript: 'check:duplicate-bodies',
     scope: 'corpus',
-    gatesServing: true,
+    gatesServing: false,
     json: false,
-    proves: 'every checkpoint fragment ref resolves, is used, and is not inlined twice',
+    proves: 'no rule text and no checkpoint body is authored inline at two sites',
     form: 'authored',
   },
   {

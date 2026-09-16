@@ -31,7 +31,7 @@ import {
 import type { Condition } from '../schema/condition.schema.js';
 import { type Routine, routineScope } from '../schema/routine.schema.js';
 import { parseDefinition, stringifyForResponse } from '../utils/serialization.js';
-import { META_WORKFLOW_ID } from './fragment-resolver.js';
+import { META_WORKFLOW_ID } from './corpus-index.js';
 
 export { META_WORKFLOW_ID };
 

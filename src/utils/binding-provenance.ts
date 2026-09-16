@@ -114,7 +114,7 @@ export async function buildProducerIndex(args: {
   /**
    * Per-activity technique-resolution scope: activity id → the workflow the activity file was
    * authored in. A borrowed cross-workflow activity resolves its bound ops against its source
-   * workflow (mirroring fragment scoping); absent entries fall back to the session workflow.
+   * workflow (the scope a bare reference resolves in); absent entries fall back to the session workflow.
    */
   activitySourceWorkflow?: ReadonlyMap<string, string>;
 }): Promise<ProducerIndex> {

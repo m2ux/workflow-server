@@ -65,182 +65,6 @@
           "additionalProperties": false,
           "description": "Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds."
         },
-        "fragments": {
-          "type": "object",
-          "properties": {
-            "checkpoints": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "Message presented to the user."
-                  },
-                  "options": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string"
-                        },
-                        "label": {
-                          "type": "string"
-                        },
-                        "description": {
-                          "type": "string"
-                        },
-                        "effect": {
-                          "type": "object",
-                          "properties": {
-                            "setVariable": {
-                              "type": "object",
-                              "additionalProperties": {},
-                              "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
-                            },
-                            "exit": {
-                              "type": "string",
-                              "description": "Exit of the owning activity this option selects — a name from the activity's `exits[]`, never an activity id. The destination is the workflow's to state: `present_checkpoint` reads it from the workflow graph so the option's consequence is stated before the user chooses. An adhoc checkpoint has no declared exits, so its options carry setVariable only."
-                            }
-                          },
-                          "additionalProperties": false
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "label"
-                      ],
-                      "additionalProperties": false
-                    },
-                    "minItems": 1,
-                    "description": "Decision options with effects."
-                  },
-                  "defaultOption": {
-                    "type": "string",
-                    "description": "The answer a soft gate takes when no person is reached."
-                  },
-                  "autoAdvanceMs": {
-                    "type": "integer",
-                    "exclusiveMinimum": 0,
-                    "description": "The interval the server spends before applying a soft gate's default on respond_checkpoint { auto_advance: true }."
-                  },
-                  "condition": {
-                    "anyOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "simple"
-                          },
-                          "variable": {
-                            "type": "string"
-                          },
-                          "operator": {
-                            "type": "string",
-                            "enum": [
-                              "==",
-                              "!=",
-                              ">",
-                              "<",
-                              ">=",
-                              "<=",
-                              "exists",
-                              "notExists"
-                            ]
-                          },
-                          "value": {
-                            "type": [
-                              "string",
-                              "number",
-                              "boolean",
-                              "null"
-                            ]
-                          }
-                        },
-                        "required": [
-                          "type",
-                          "variable",
-                          "operator"
-                        ],
-                        "additionalProperties": false
-                      },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "and"
-                          },
-                          "conditions": {
-                            "type": "array",
-                            "items": {
-                              "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition"
-                            },
-                            "minItems": 2
-                          }
-                        },
-                        "required": [
-                          "type",
-                          "conditions"
-                        ],
-                        "additionalProperties": false
-                      },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "or"
-                          },
-                          "conditions": {
-                            "type": "array",
-                            "items": {
-                              "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition"
-                            },
-                            "minItems": 2
-                          }
-                        },
-                        "required": [
-                          "type",
-                          "conditions"
-                        ],
-                        "additionalProperties": false
-                      },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "not"
-                          },
-                          "condition": {
-                            "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition"
-                          }
-                        },
-                        "required": [
-                          "type",
-                          "condition"
-                        ],
-                        "additionalProperties": false
-                      }
-                    ],
-                    "description": "Condition shared by every use site. A referencing step may declare its own `condition` only when the fragment declares none."
-                  }
-                },
-                "required": [
-                  "message",
-                  "options"
-                ],
-                "additionalProperties": false
-              },
-              "description": "Named checkpoint bodies (message/options/effects, optionally a shared condition). A kind:checkpoint step imports one via `ref`, contributing its own id."
-            }
-          },
-          "additionalProperties": false,
-          "description": "Shared checkpoint bodies, declared once and imported by `ref` (`[workflow::]name`) from a kind:checkpoint step — this workflow's or another's. Resolved at load; agents always receive materialized content."
-        },
         "variables": {
           "type": "array",
           "items": {
@@ -592,7 +416,106 @@
                                 "description": "Human-readable description of what this action does"
                               },
                               "condition": {
-                                "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "simple"
+                                      },
+                                      "variable": {
+                                        "type": "string"
+                                      },
+                                      "operator": {
+                                        "type": "string",
+                                        "enum": [
+                                          "==",
+                                          "!=",
+                                          ">",
+                                          "<",
+                                          ">=",
+                                          "<=",
+                                          "exists",
+                                          "notExists"
+                                        ]
+                                      },
+                                      "value": {
+                                        "type": [
+                                          "string",
+                                          "number",
+                                          "boolean",
+                                          "null"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "variable",
+                                      "operator"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "and"
+                                      },
+                                      "conditions": {
+                                        "type": "array",
+                                        "items": {
+                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                        },
+                                        "minItems": 2
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "conditions"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "or"
+                                      },
+                                      "conditions": {
+                                        "type": "array",
+                                        "items": {
+                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                        },
+                                        "minItems": 2
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "conditions"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "not"
+                                      },
+                                      "condition": {
+                                        "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "condition"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ],
                                 "description": "Condition that must be true for this action to execute"
                               }
                             },
@@ -612,7 +535,7 @@
                           "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it."
                         },
                         "condition": {
-                          "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
                           "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
                         }
                       },
@@ -669,21 +592,48 @@
                           "type": "string",
                           "description": "Identifier for this step within the activity; the stable checkpoint-response replay key."
                         },
-                        "ref": {
-                          "type": "string",
-                          "description": "Checkpoint-fragment reference: `[workflow::]name`, resolved against the declaring workflow's `fragments.checkpoints` (bare name: declaring workflow, then meta). Mutually exclusive with the body fields — a ref step carries only its id and, when the fragment declares none, a condition."
-                        },
                         "message": {
                           "type": "string",
-                          "description": "Message presented to the user. Required on an inline checkpoint; forbidden alongside `ref`."
+                          "description": "Message presented to the user."
                         },
                         "options": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/options/items"
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "effect": {
+                                "type": "object",
+                                "properties": {
+                                  "setVariable": {
+                                    "type": "object",
+                                    "additionalProperties": {},
+                                    "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
+                                  },
+                                  "exit": {
+                                    "type": "string",
+                                    "description": "Exit of the owning activity this option selects — a name from the activity's `exits[]`, never an activity id. The destination is the workflow's to state: `present_checkpoint` reads it from the workflow graph so the option's consequence is stated before the user chooses. An adhoc checkpoint has no declared exits, so its options carry setVariable only."
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "label"
+                            ],
+                            "additionalProperties": false
                           },
                           "minItems": 1,
-                          "description": "Decision options with effects. Required on an inline checkpoint; forbidden alongside `ref`."
+                          "description": "Decision options with effects."
                         },
                         "defaultOption": {
                           "type": "string",
@@ -706,7 +656,9 @@
                       },
                       "required": [
                         "kind",
-                        "id"
+                        "id",
+                        "message",
+                        "options"
                       ],
                       "additionalProperties": false
                     },
@@ -736,7 +688,7 @@
                           "description": "Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after."
                         },
                         "continueWhile": {
-                          "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
                           "description": "The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken."
                         },
                         "variable": {
@@ -748,7 +700,7 @@
                           "description": "Collection expression iterated by a forEach loop."
                         },
                         "breakCondition": {
-                          "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
                           "description": "Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead."
                         },
                         "maxIterations": {

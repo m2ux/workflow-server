@@ -3,7 +3,7 @@
  *
  * Discovery keys a workflow on the directory that holds its `workflow.yaml`, and that name is what
  * every reference reaches it by: a cross-workflow activity ref (`work-package/02-design.yaml`), a
- * technique prefix (`prism::structural-analysis`), a fragment ref (`meta::confirm`), a launch
+ * technique prefix (`prism::structural-analysis`), a routine reference (`meta::confirm`), a launch
  * target. The `id` inside the file is what `list_workflows` publishes and what a session records.
  * The two are one identity. A directory whose definition names something else does not resolve,
  * under either name. This guard reports those refusals.

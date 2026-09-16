@@ -1,0 +1,9 @@
+id: alpha-fixture
+version: 1.0.0
+title: Alpha Fixture
+initialActivity: alpha-activity
+rules:
+  workflow:
+    - Every finding a review pass states names a file within the authored surface it was scoped to.
+graph:
+  alpha-activity: {}

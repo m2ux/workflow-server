@@ -31,8 +31,6 @@ interface TreeSpec {
   metaRoutines?: Array<Record<string, unknown>>;
   /** A filename that deliberately disagrees with the routine's declared id. */
   routineFilenames?: Record<string, string>;
-  /** Checkpoint fragments the workflow declares, for the cases where both sharing forms meet. */
-  fragments?: Record<string, Record<string, unknown>>;
 }
 
 /**
@@ -55,7 +53,6 @@ function writeTree(spec: TreeSpec): { corpus: string; id: string } {
       version: '1.0.0',
       title: workflowId,
       ...(activities.length > 0 ? { initialActivity: activities[0]!['id'] } : {}),
-      ...(workflowId === id && spec.fragments ? { fragments: { checkpoints: spec.fragments } } : {}),
       graph: Object.fromEntries(activities.map((a) => [a['id'] as string, {}])),
     }));
     activities.forEach((activity, index) => {
@@ -197,42 +194,47 @@ describe('the loaded workflow carries both forms', () => {
   });
 
   /**
-   * The two ways a run is shared meeting in one activity. An activity that carries a routine
-   * reference gets an authored form of its own, and that form has to reach the fragment pass like
-   * any other: the contract derivation reads it, and a ref step with no options declares no effect,
-   * so every name the fragment's options set would read as written by nothing.
+   * A reference sitting among the activity's own steps is replaced IN PLACE.
    *
-   * The assertion is on the authored form's OPTIONS rather than on a load succeeding, because the
-   * unfixed loader loads this fixture perfectly well and gets the contract wrong in silence. An
-   * activity carrying no routine never showed this, its two forms being one object that the fragment
-   * pass resolves once.
+   * The case above uses a host whose only step is the reference, so it cannot say where the run
+   * lands or what happens to anything around it. A splice that appended, prepended, or dropped a
+   * neighbour would satisfy it. This one puts a step on each side: the run's two steps take the
+   * reference's position, in their own order, and the neighbours are untouched down to their ids —
+   * which is what makes a reference substitutable for the run it stands for.
    */
-  it('resolves fragments in the authored form of an activity that also carries a routine', async () => {
+  it('replaces a reference in place, leaving the steps on either side of it alone', async () => {
     const { corpus, id } = writeTree({
       activities: [{
         id: 'host',
         steps: [
+          { kind: 'action', id: 'before', actions: [{ action: 'log', message: 'first' }] },
           { kind: 'routine', id: 'run', routine: 'shared-run' },
-          { kind: 'checkpoint', id: 'gate', ref: 'scope-gate' },
+          {
+            kind: 'checkpoint', id: 'after', message: 'Is the scope settled?',
+            options: [{ id: 'yes', label: 'Settled', effect: { setVariable: { scope_confirmed: true } } }],
+          },
         ],
       }],
-      routines: [routine('shared-run')],
-      fragments: {
-        'scope-gate': {
-          message: 'Is the scope settled?',
-          options: [{ id: 'yes', label: 'Settled', effect: { setVariable: { scope_confirmed: true } } }],
-        },
-      },
+      routines: [routine('shared-run', {
+        steps: [
+          { kind: 'action', id: 'one', actions: [{ action: 'log', message: 'ran' }] },
+          { kind: 'action', id: 'two', actions: [{ action: 'log', message: 'ran again' }] },
+        ],
+      })],
     });
     const result = await loadWorkflowWithDiagnostics(corpus, id);
     if (!result.success) throw new Error(`load failed: ${result.error.message}`);
 
+    const materialised = result.value.workflow.activities!.find((a) => a.id === 'host')!;
+    expect(materialised.steps!.map((s) => s.id)).toEqual(['before', 'run.one', 'run.two', 'after']);
+    // The neighbour that is a checkpoint keeps its body: a splice touches the reference and nothing
+    // else, so a step beside one is the step the file spells.
+    const after = materialised.steps!.find((s) => s.id === 'after') as Extract<Step, { kind: 'checkpoint' }>;
+    expect(after.options?.map((o) => o.effect?.setVariable)).toEqual([{ scope_confirmed: true }]);
+
+    // And the authored form keeps the reference where the file put it, neighbours intact.
     const authored = result.value.authoredActivities.get('host')!;
-    const gate = authored.steps!.find((s) => s.id === 'gate') as Extract<Step, { kind: 'checkpoint' }>;
-    expect(gate.options?.map((o) => o.effect?.setVariable)).toEqual([{ scope_confirmed: true }]);
-    // And the reference is still a reference — resolving fragments must not materialise routines
-    // into the form whose whole job is to keep them unexpanded.
-    expect(authored.steps!.map((s) => s.kind)).toEqual(['routine', 'checkpoint']);
+    expect(authored.steps!.map((s) => s.id)).toEqual(['before', 'run', 'after']);
   });
 });
 

@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { META_WORKFLOW_ID } from '../loaders/fragment-resolver.js';
+import { META_WORKFLOW_ID } from '../loaders/corpus-index.js';
 import { indexCorpus } from '../loaders/corpus-index.js';
 import { parseDefinition } from './serialization.js';
 import type { DiscoveryEntry } from './match-workflow.js';

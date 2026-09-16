@@ -1,4 +1,4 @@
-import { META_WORKFLOW_ID } from '../loaders/fragment-resolver.js';
+import { META_WORKFLOW_ID } from '../loaders/corpus-index.js';
 import { loadWorkflow } from '../loaders/workflow-loader.js';
 import { createInitialSessionFile, type SessionFile } from '../schema/session.schema.js';
 import { advanceSession, computeEmbeddedSessionIndex } from './session/index.js';

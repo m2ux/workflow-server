@@ -1,0 +1,21 @@
+id: settle-scope
+version: 1.0.0
+name: Settle Scope
+description: A gate declared as a run of its own — the shape a checkpoint takes when two activities need it. Its body is deliberately identical to the one both fixture activities author inline, so the guard has a duplicate that spans a routine and an activity.
+
+outputs:
+  - id: scope_settled
+    type: boolean
+    description: Whether the scope was agreed.
+
+steps:
+  - kind: checkpoint
+    id: gate
+    message: Is the scope settled?
+    options:
+      - id: yes-settled
+        label: Settled
+        description: The scope is agreed and the run proceeds
+      - id: no-more-work
+        label: Not yet
+        description: The scope needs more work before the run proceeds

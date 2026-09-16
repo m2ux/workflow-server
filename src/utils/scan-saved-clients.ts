@@ -1,5 +1,5 @@
 import { basename } from 'node:path';
-import { META_WORKFLOW_ID } from '../loaders/fragment-resolver.js';
+import { META_WORKFLOW_ID } from '../loaders/corpus-index.js';
 import { planningRoot, readSessionFile, sessionFileExists } from './session/store.js';
 import { readdir, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';

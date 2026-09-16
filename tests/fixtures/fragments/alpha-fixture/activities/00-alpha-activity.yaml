@@ -1,7 +1,0 @@
-id: alpha-activity
-version: 1.0.0
-name: Alpha Activity
-steps:
-  - kind: checkpoint
-    id: alpha-confirm
-    ref: confirm-gate
