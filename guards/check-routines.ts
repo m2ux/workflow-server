@@ -21,6 +21,9 @@
  * - `routine-operation-unbound` — an input declared `kind: technique` that no step of the body binds.
  *   It stands in a technique position rather than being read as a value, so an unread-input rule
  *   asking the derivation about it would report every one of them.
+ * - `routine-reads-argument-output` — a signature carrying a value the bound operation produces. A
+ *   run takes its argument's operation and not that operation's values, which differ by argument, so
+ *   a declaration naming one holds at the site that supplied it and nowhere else.
  *
  * A routine whose body binds an operation by argument names a parameter where an operation reference
  * belongs, so it has no signature of its own and the signature rules run ONCE PER REFERENCE SITE,
@@ -163,6 +166,17 @@ async function checkSignature(
         detail: `the body reads '${name}' and the signature declares it as neither an input, an output nor an internal — declare it as an input, and a reference site that binds nothing takes the host's value under that name`,
       });
     }
+
+    // A value the ARGUMENT produces cannot be carried onward, because which values those are follows
+    // from the argument. A name the body passes on has to be one the run owns at every site, and a
+    // declaration naming one of the argument's outputs is a signature that holds only at this one.
+    for (const name of await argumentProductions(root, workflowId, routine, body.operations, routines)) {
+      if (!declared.has(name)) continue;
+      findings.push({
+        check: 'routine-reads-argument-output', site: body.site,
+        detail: `'${name}' is an output of the operation this site binds and the signature declares it — a run takes its argument's operation and not that operation's values, which differ by argument, so nothing downstream of the run can be promised one`,
+      });
+    }
   }
 
   // A declaration rule asks whether the body ever honours what the signature promises, so it is
@@ -205,6 +219,50 @@ async function checkSignature(
     }
   }
   return findings;
+}
+
+/**
+ * What the operation one site binds produces, derived from the parameterised steps alone and with
+ * their actions dropped.
+ *
+ * Taking the whole body's productions would answer a different question, and so would keeping the
+ * actions: a step's actions are the RUN's writes, authored beside the binding and the same whichever
+ * operation the site supplies. Only what the operation itself declares varies by argument, and only
+ * that is what a signature may not carry.
+ */
+async function argumentProductions(
+  root: string,
+  workflowId: string,
+  routine: Routine,
+  operations: OperationMap,
+  routines: Awaited<ReturnType<typeof buildRoutineLookup>>,
+): Promise<Set<string>> {
+  if (operations.size === 0) return new Set();
+  const parameterised: Step[] = [];
+  const collect = (authored: readonly Step[], substituted: readonly Step[]): void => {
+    authored.forEach((step, index) => {
+      const mirror = substituted[index]!;
+      if (step.kind === 'technique') {
+        const reference = typeof step.technique === 'string' ? step.technique : step.technique.name;
+        if (operations.has(reference)) parameterised.push({ ...mirror, actions: undefined } as Step);
+      } else if (step.kind === 'loop') {
+        collect(step.steps as Step[], (mirror as Step & { kind: 'loop' }).steps as Step[]);
+      }
+    });
+  };
+  collect(routine.steps, bodyWithOperations(routine.steps, operations));
+  if (parameterised.length === 0) return new Set();
+
+  const derived = await deriveActivityContract({
+    activity: {
+      id: routine.id, version: routine.version, name: routine.name, required: true, steps: parameterised,
+    } as Activity,
+    workflowDir: root,
+    scopeWorkflowId: workflowId,
+    namespace: new Set<string>(),
+    routines,
+  });
+  return derived.produces;
 }
 
 /**
