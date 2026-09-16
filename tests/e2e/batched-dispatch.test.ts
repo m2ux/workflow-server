@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { createHarness, type Harness, parseToolResponse, rawText, isError } from './harness.js';
 import type { HistoryEntry } from '../../src/schema/state.schema.js';
 
@@ -16,9 +15,16 @@ import type { HistoryEntry } from '../../src/schema/state.schema.js';
  * test about batching bounds, which is what happened when a run converged and an activity stopped
  * declaring the gate this named.
  *
- * The fixture is four contiguous activities, each carrying one operation, with a two-option gate in
- * the FIRST — a batch is read from the stop where the worker halts and is answered without being
- * replaced, so the gate has to be there. Four, so a cap of three leaves one behind to be refused.
+ * The fixture is four contiguous stops, and each thing about it is forced by something below:
+ *
+ * - FOUR, so a cap of three leaves one behind to be refused rather than the run merely ending.
+ * - A two-answer gate in the FIRST, because a batch is read from the stop where the worker halts
+ *   and is answered without being replaced.
+ * - The first two stops bind the SAME THREE operations. One walk reads how much of the second
+ *   delivery the holding context already has against how much the first collapsed within itself,
+ *   which needs content shared across stops and at least as much of it as the first stop carries.
+ * - The last two bind one operation each. They exist to reach the cap and to be refused at it, and
+ *   nothing reads what they deliver.
  */
 const FIXTURE = resolve(import.meta.dirname, '../fixtures/batched-dispatch');
 
