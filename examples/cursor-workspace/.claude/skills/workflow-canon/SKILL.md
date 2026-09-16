@@ -5,7 +5,7 @@ description: "Apply the workflow-server design canon — design principles, the 
 
 # Workflow Canon
 
-The canon is a set of criteria homes plus a guard suite, all on disk in this repo and enumerated below.
+The canon is a set of criteria homes plus a guard suite, on disk across the server checkout and the corpus tree, and enumerated below.
 
 **Read the canon forward.** The inventory maps an informal pattern to the construct that carries it, the principles state a stance to author toward, conformance names a sibling to match, and a catalog entry's **Do not flag** and **Fix** describe the shape compliant content takes. Load what binds before writing and the content lands compliant. **Detect** is the fallback for content that already exists — reaching for it first turns every change into a fix-and-recheck loop that ends when someone gets tired.
 
