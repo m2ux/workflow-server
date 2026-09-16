@@ -1,5 +1,5 @@
 id: adversarial-pass
-version: 2.4.0
+version: 3.0.0
 name: Adversarial Analysis Pass
 description: Run the adversarial lens against each full-prism unit's structural artifact.
 variables:
@@ -16,26 +16,16 @@ variables:
 techniques:
   - scatter-gather
 steps:
-  - kind: loop
-    id: adversarial-unit-cycle
-    name: Adversarial Unit Cycle
-    loopType: forEach
-    variable: current_unit
-    over: analysis_units
-    maxIterations: 100
-    steps:
-      - kind: technique
-        id: run-adversarial
-        technique:
-          name: full-prism::adversarial
-          inputs:
-            target_content: "{current_unit.target}"
-            prior_artifact_paths: all_artifact_paths
-        actions:
-          - action: set
-            target: all_artifact_paths
-            description: Accumulated artifact paths across units.
-        when: current_unit.pipeline_mode == 'full-prism'
+  - kind: routine
+    id: adversarial
+    routine: per-unit-pass
+    with:
+      pass_operation: full-prism::adversarial
+      prior_artifact_paths: all_artifact_paths
+      unit_pipeline_mode: full-prism
+    outputs:
+      all_artifact_paths: all_artifact_paths
+      current_unit: current_unit
 exits:
   - id: done
     isDefault: true

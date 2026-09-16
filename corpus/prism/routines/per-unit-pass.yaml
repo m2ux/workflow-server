@@ -1,0 +1,45 @@
+id: per-unit-pass
+version: 1.0.0
+name: Per-Unit Analysis Pass
+description: >-
+  Run one analysis lens against every unit the plan selected for a pipeline, accumulating the
+  artifact paths each unit's lens writes. Refer to it from a pass activity, binding the lens it
+  applies, the artifacts that lens reads as prior context, and the pipeline whose units it serves.
+inputs:
+  - id: analysis_units
+    description: The units the plan selected, which the run iterates. Every site leaves it unbound and the host supplies it under this name.
+  - id: pass_operation
+    kind: technique
+    description: The lens each selected unit is run through.
+  - id: prior_artifact_paths
+    description: The artifacts the lens reads as context, which earlier passes of the same pipeline wrote.
+  - id: unit_pipeline_mode
+    description: The pipeline a unit declares, which decides whether this pass runs against it.
+outputs:
+  - id: all_artifact_paths
+    type: array
+    description: Accumulated list of all artifact paths across all units
+  - id: current_unit
+    type: object
+    description: Current analysis unit during iteration loop
+steps:
+  - kind: loop
+    id: unit-cycle
+    name: Unit Cycle
+    loopType: forEach
+    variable: current_unit
+    over: analysis_units
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: run-pass
+        technique:
+          name: pass_operation
+          inputs:
+            target_content: "{current_unit.target}"
+            prior_artifact_paths: prior_artifact_paths
+        actions:
+          - action: set
+            target: all_artifact_paths
+            description: Accumulated artifact paths across units.
+        when: current_unit.pipeline_mode == unit_pipeline_mode
