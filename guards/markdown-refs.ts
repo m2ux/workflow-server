@@ -80,18 +80,20 @@ export function fencedLines(
 ): { fenced: Set<number>; unclosed: number | null } {
   const fenced = new Set<number>();
   let open: { char: string; len: number; start: number } | null = null;
-  lines.forEach((line, index) => {
+  // A plain loop rather than a callback: the open-fence state is read after the walk, and a
+  // compiler cannot follow an assignment made inside a closure back out to the reader.
+  for (const [index, line] of lines.entries()) {
     if (open) {
       const close = FENCE_CLOSE_RE.exec(line);
       if (close && close[1]![0] === open.char && close[1]!.length >= open.len) {
         for (let fencedLine = open.start; fencedLine <= index; fencedLine++) fenced.add(fencedLine);
         open = null;
       }
-      return;
+      continue;
     }
     const opener = FENCE_OPEN_RE.exec(line);
     if (opener) open = { char: opener[1]![0]!, len: opener[1]!.length, start: index };
-  });
+  }
   if (!open) return { fenced, unclosed: null };
   if (opts?.onUnclosed === 'suppress-to-end') {
     for (let line = open.start; line < lines.length; line++) fenced.add(line);

@@ -76,7 +76,7 @@ export function scanLockfile(lock: Lockfile, denylist: Denylist): Finding[] {
     if (name === null || entry.version === undefined) continue;
     const campaign = banned.get(name)?.get(entry.version);
     if (campaign === undefined) continue;
-    const { summary, trackers } = denylist.campaigns[campaign];
+    const { summary, trackers } = denylist.campaigns[campaign]!;
     findings.push({
       check: 'known-bad-version',
       site: `package-lock.json:${path}`,

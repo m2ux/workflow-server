@@ -30,7 +30,7 @@ export interface DeclaredCheckpoint {
   /** Workflows declaring this activity. More than one means it is borrowed, so any of them may reach it. */
   workflowIds: string[];
   /** The step's own gate, as authored — the evidence for why an unreached checkpoint was skipped. */
-  gate?: string;
+  gate?: string | undefined;
   /** True where the checkpoint sits inside a loop body, so reaching it needs a non-empty collection. */
   inLoop: boolean;
 }
@@ -39,7 +39,8 @@ function gatesById(activity: Activity): Map<string, string> {
   const gates = new Map<string, string>();
   for (const s of flattenActivitySteps(activity)) {
     if (s.id === undefined) continue;
-    const gate = s.when ?? (s.condition ? JSON.stringify(s.condition) : undefined);
+    // A loop step is gated by `when` alone; every other kind may also carry a structured condition.
+    const gate = s.when ?? ('condition' in s && s.condition ? JSON.stringify(s.condition) : undefined);
     if (gate !== undefined) gates.set(s.id, gate);
   }
   return gates;
@@ -193,7 +194,7 @@ export interface CheckpointGap {
   /** How many of the checkpoint's options no walk took, against how many it declares. */
   missed: number;
   declared: number;
-  gate?: string;
+  gate?: string | undefined;
   inLoop: boolean;
   /**
    * Whether any walk entered the activity at all. False is the more basic cause and hides the rest:

@@ -71,7 +71,7 @@ function collect(root: string = ROOT): Finding[] {
     const bareLines = new Map<string, Set<number>>();
     const lineOf = (index: number): number => text.slice(0, index).split('\n').length;
     for (const m of text.matchAll(LINK)) {
-      const target = resolve(dirname(file), m[1]);
+      const target = resolve(dirname(file), m[1]!);
       const anchors = cited.get(target) ?? new Set<string>();
       if (!m[2]) {
         anchors.add('');
@@ -83,7 +83,7 @@ function collect(root: string = ROOT): Finding[] {
     }
     for (const m of text.matchAll(LINK)) {
       if (!m[2]) continue;
-      const target = resolve(dirname(file), m[1]);
+      const target = resolve(dirname(file), m[1]!);
       if (bareLines.get(target)?.has(lineOf(m.index))) continue;
       cited.get(target)?.add(m[2].slice(1));
     }

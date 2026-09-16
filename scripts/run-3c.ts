@@ -34,8 +34,13 @@ const getArg = (k: string, def: string) => {
 };
 const policyName = getArg('policy', 'full-workflow');
 const workflowId = getArg('workflow', 'work-package');
-const policy = POLICIES[policyName];
-if (!policy) { process.stderr.write(`unknown policy "${policyName}" (have: ${Object.keys(POLICIES).join(', ')})\n`); process.exit(1); }
+/** Exit with a message. Typed `never` so a lookup guarded by it narrows for the reader and the compiler alike. */
+function die(message: string): never {
+  process.stderr.write(`${message}\n`);
+  process.exit(1);
+}
+const policy = POLICIES[policyName]
+  ?? die(`unknown policy "${policyName}" (have: ${Object.keys(POLICIES).join(', ')})`);
 
 function listFiles(dir: string, base: string, out: string[] = []): string[] {
   let entries: string[] = [];

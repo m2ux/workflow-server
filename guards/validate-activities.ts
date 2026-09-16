@@ -110,7 +110,7 @@ if (isDirectInvocation) {
         workflow: workflowName,
         file,
         passed: result.passed,
-        errors: result.errors,
+        ...(result.errors ? { errors: result.errors } : {}),
       });
 
       if (result.passed) {

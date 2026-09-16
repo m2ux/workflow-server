@@ -64,7 +64,7 @@ function collectAnchors(mdPath: string): Set<string> {
     if (fenced.has(index)) continue;
     const m = /^#{1,6}\s+(.*)$/.exec(line);
     if (!m) continue;
-    const base = slugify(m[1]);
+    const base = slugify(m[1]!);
     const n = counts.get(base) ?? 0;
     counts.set(base, n + 1);
     anchors.add(n === 0 ? base : `${base}-${n}`);
@@ -139,7 +139,7 @@ export function collectBrokenAnchors(root: string = resolveWorkflowsRoot(DEFAULT
       }
       let anchors = anchorCache.get(targetPath);
       if (!anchors) { anchors = collectAnchors(targetPath); anchorCache.set(targetPath, anchors); }
-      if (!anchors.has(anchor.toLowerCase())) broken.push({ source, link, reason: 'missing-anchor' });
+      if (!anchors.has(anchor!.toLowerCase())) broken.push({ source, link, reason: 'missing-anchor' });
     }
   }
   return broken;

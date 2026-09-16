@@ -13,28 +13,28 @@ const WF_DIR = LIVE_CORPUS ?? '';
 
 describe.skipIf(!LIVE_CORPUS)('technique addressing (:: path)', () => {
   it('resolves an implicit same-workflow sub-technique', async () => {
-    const [r] = await resolveTechniques(['cargo-operations::run-suite'], WF_DIR, 'work-package');
+    const r = (await resolveTechniques(['cargo-operations::run-suite'], WF_DIR, 'work-package'))[0]!;
     expect(r.type).toBe('technique');
     expect(r.source).toBe('cargo-operations');
     expect(r.name).toBe('run-suite');
   });
 
   it('resolves the full canonical path workflow::technique::sub', async () => {
-    const [r] = await resolveTechniques(['work-package::review-assumptions::collect'], WF_DIR, 'meta');
+    const r = (await resolveTechniques(['work-package::review-assumptions::collect'], WF_DIR, 'meta'))[0]!;
     expect(r.type).toBe('technique');
     expect(r.workflow).toBe('work-package');
     expect(r.name).toBe('collect');
   });
 
   it('delivers a whole (standalone) technique protocol from a bare ref', async () => {
-    const [r] = await resolveTechniques(['implement-task'], WF_DIR, 'work-package');
+    const r = (await resolveTechniques(['implement-task'], WF_DIR, 'work-package'))[0]!;
     expect(r.type).toBe('technique');
     expect((r.body as { protocol?: unknown }).protocol).toBeDefined();
   });
 
   it('resolves a cross-workflow ref (legacy / and :: forms equivalently)', async () => {
-    const [slash] = await resolveTechniques(['prism/portfolio-analysis'], WF_DIR, 'work-package');
-    const [colons] = await resolveTechniques(['prism::portfolio-analysis'], WF_DIR, 'work-package');
+    const slash = (await resolveTechniques(['prism/portfolio-analysis'], WF_DIR, 'work-package'))[0]!;
+    const colons = (await resolveTechniques(['prism::portfolio-analysis'], WF_DIR, 'work-package'))[0]!;
     expect(slash.type).toBe('technique');
     expect(colons.type).toBe('technique');
     expect(colons.workflow).toBe('prism');

@@ -186,9 +186,8 @@ describe('technique-loader', () => {
         if (parsed.success) {
           expect(parsed.data.id).toBe(result.value.id);
           expect(parsed.data.version).toBe(result.value.version);
-          expect(Object.keys(parsed.data.operations ?? {}).sort()).toEqual(
-            Object.keys(result.value.operations ?? {}).sort(),
-          );
+          expect(parsed.data.capability).toBe(result.value.capability);
+          expect(parsed.data.protocol).toEqual(result.value.protocol);
         }
       }
     });
@@ -334,7 +333,7 @@ describe('technique-loader', () => {
       if (result.success) {
         expect(result.value.id).toBe('classify');
         expect(result.value.capability).toMatch(/Classify the thing/);
-        expect(result.value.operations).toBeUndefined();
+        expect(result.value.protocol).toBeUndefined();
       }
     });
 

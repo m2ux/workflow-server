@@ -69,14 +69,26 @@ export async function createHarness(opts: HarnessOptions = {}): Promise<Harness>
   };
 }
 
+/**
+ * A tool result as the MCP client returns it. The SDK types it as a union whose arms share no
+ * fields, so a helper that reads `content` and `isError` off any arm takes the value untyped.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ToolResult = any;
+export type ToolResult = any;
+
+/**
+ * The envelope a tool returned, decoded and navigated by field name. A response body has no static
+ * type — the server renders it as JSON or YAML — so a test asserts on the values it reads out of
+ * one rather than on a shape the compiler could hold it to.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ParsedResponse = Record<string, any>;
 
 /**
  * Parse a tool response into a plain object. Mirrors the integration suite's
  * parser: tries JSON, then YAML, then a header + YAML-body split.
  */
-export function parseToolResponse(result: ToolResult): Record<string, unknown> {
+export function parseToolResponse(result: ToolResult): ParsedResponse {
   const text = (result.content[0] as { type: 'text'; text: string }).text;
   try { return JSON.parse(text); } catch { /* not JSON */ }
   try { return parse(text) as Record<string, unknown>; } catch { /* not pure YAML */ }
@@ -100,7 +112,7 @@ export function parseToolResponse(result: ToolResult): Record<string, unknown> {
  * technique/operations bundle separated by a `\n\n---\n\n` marker from the
  * definition body; we return the definition portion.
  */
-export function parseWorkflowResponse(result: ToolResult): Record<string, unknown> {
+export function parseWorkflowResponse(result: ToolResult): ParsedResponse {
   const text = (result.content[0] as { type: 'text'; text: string }).text;
   const sepIdx = text.indexOf('\n\n---\n\n');
   const body = sepIdx >= 0 ? text.substring(sepIdx + 5) : text;
@@ -121,7 +133,7 @@ export function rawText(result: ToolResult): string {
  * a non-empty `unresolved` array means the activity references operations that
  * the technique loader could not resolve (a dangling ref).
  */
-export function parseBundle(result: ToolResult): Record<string, unknown> {
+export function parseBundle(result: ToolResult): ParsedResponse {
   const text = rawText(result);
   const sepIdx = text.indexOf('\n\n---\n\n');
   if (sepIdx < 0) return {};

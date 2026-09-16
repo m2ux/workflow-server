@@ -15,8 +15,8 @@ describe('lockfile denylist', () => {
   it('fails a lockfile resolving a denylisted version', () => {
     const findings = scanLockfile(lockfileWith({ 'node_modules/keyv': { version: '6.0.0' } }), denylist);
     expect(findings).toHaveLength(1);
-    expect(findings[0].check).toBe('known-bad-version');
-    expect(findings[0].detail).toContain('keyv@6.0.0');
+    expect(findings[0]!.check).toBe('known-bad-version');
+    expect(findings[0]!.detail).toContain('keyv@6.0.0');
   });
 
   it('passes the same package at a known-good version', () => {
@@ -30,11 +30,11 @@ describe('lockfile denylist', () => {
       denylist,
     );
     expect(findings).toHaveLength(1);
-    expect(findings[0].detail).toContain('@cacheable/net@2.1.1');
+    expect(findings[0]!.detail).toContain('@cacheable/net@2.1.1');
   });
 
   it('names the campaign and its tracker, so a hit carries the source of the judgement', () => {
-    const [finding] = scanLockfile(lockfileWith({ 'node_modules/ecto': { version: '5.0.1' } }), denylist);
+    const finding = scanLockfile(lockfileWith({ 'node_modules/ecto': { version: '5.0.1' } }), denylist)[0]!;
     expect(finding.detail).toContain('keyv-cacheable-2026-08');
     expect(finding.detail).toContain('https://');
   });

@@ -21,7 +21,7 @@ import { evaluateWhenExpression, parseWhen } from '../../src/schema/when-express
 import { unboundPositiveReads, type GateUnansweredCounts } from '../../src/utils/gate-liveness.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
 import { type Destination, type Graph, isFan, instanceFans } from '../../src/schema/workflow.schema.js';
-import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
+import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness, type ToolResult } from './harness.js';
 
 export interface CheckpointOption {
   id: string;
@@ -102,7 +102,7 @@ export interface PolicyContext {
 export interface Policy {
   name: string;
   /** Variables seeded before the walk begins (e.g. is_review_mode for review mode). */
-  initialVariables?: Record<string, unknown>;
+  initialVariables?: Record<string, unknown> | undefined;
   /** Return the option id to select for a checkpoint. */
   choose(ctx: PolicyContext): string;
   /**
@@ -119,8 +119,8 @@ export interface CheckpointRecord {
   activityId: string;
   checkpointId: string;
   optionId: string;
-  setVariable?: Record<string, unknown>;
-  exit?: string;
+  setVariable?: Record<string, unknown> | undefined;
+  exit?: string | undefined;
 }
 
 export interface WalkStep {
@@ -139,7 +139,7 @@ export interface WalkStep {
    */
   gatesReadUnbound: string[];
   /** next_activity manifest-validation status when leaving this activity (3c mode). */
-  manifestStatus?: string;
+  manifestStatus?: string | undefined;
   /** Checkpoints declared by the activity but referenced by no step/loop step (definition smell). */
   orphanCheckpoints: string[];
   /** Operation refs the activity bundle could not resolve (Layer 2 signal). */
@@ -151,7 +151,7 @@ export interface WalkStep {
    * lazy because this activity produces the variable (`pending`), because nothing on the path so far
    * has written it (`unbound`), or because the expression does not parse (`unparsed`).
    */
-  lazyGates?: GateUnansweredCounts;
+  lazyGates?: GateUnansweredCounts | undefined;
   nextActivity: string | null;
 }
 
@@ -360,7 +360,7 @@ async function getActivity(
   activityId?: string,
 ): Promise<{
   def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number;
-  dispatch?: string; lazyGates?: GateUnansweredCounts;
+  dispatch?: string | undefined; lazyGates?: GateUnansweredCounts | undefined;
 }> {
   const res = await client.callTool({
     name: 'get_activity',
@@ -399,7 +399,7 @@ async function transition(
   takenExit?: string,
   /** Writes the retiring activity reports, as a worker's `variables_changed` map. */
   variablesChanged?: Record<string, unknown>,
-): Promise<{ manifestStatus?: string; branches?: string[] }> {
+): Promise<{ manifestStatus?: string | undefined; branches?: string[] }> {
   const args: Record<string, unknown> = { session_index: sessionIndex, activity_id: activityId };
   if (fromActivity !== undefined) args.from_activity = fromActivity;
   if (takenExit !== undefined) args.exit = takenExit;
@@ -407,7 +407,8 @@ async function transition(
   if (variablesChanged && Object.keys(variablesChanged).length) args.variables_changed = variablesChanged;
   const res = await client.callTool({ name: 'next_activity', arguments: args });
   if (isError(res)) {
-    const text = (res.content?.[0] as { text?: string })?.text ?? JSON.stringify(res.content);
+    const content = (res as ToolResult).content as Array<{ text?: string }> | undefined;
+    const text = content?.[0]?.text ?? JSON.stringify(content);
     throw new Error(`next_activity(${JSON.stringify(activityId)}) failed: ${text}`);
   }
   const meta = res._meta as {
@@ -475,7 +476,7 @@ interface StepExecution {
   stepsExecuted: string[];
   /** `<step>:<variable>` for each gate read with nothing in the bag to read. */
   gatesReadUnbound: string[];
-  selectedExit?: string;
+  selectedExit?: string | undefined;
 }
 
 /**
@@ -543,7 +544,8 @@ async function executeActivitySteps(
       arguments: { session_index: sessionIndex, step_id: stepId, ...(worker ? { agent_id: worker.agentId } : {}) },
     });
     if (isError(res)) {
-      const text = (res.content?.[0] as { text?: string })?.text ?? JSON.stringify(res.content);
+      const content = (res as ToolResult).content as Array<{ text?: string }> | undefined;
+      const text = content?.[0]?.text ?? JSON.stringify(content);
       throw new Error(`get_technique(${activityId}/${stepId}) failed: ${text}`);
     }
   };
@@ -650,7 +652,7 @@ async function resolveCheckpoint(
   sessionIndex: string,
   checkpointId: string,
   optionId: string,
-): Promise<{ setVariable?: Record<string, unknown>; exit?: string }> {
+): Promise<{ setVariable?: Record<string, unknown> | undefined; exit?: string | undefined }> {
   const y = await client.callTool({ name: 'yield_checkpoint', arguments: { session_index: sessionIndex, checkpoint_id: checkpointId } });
   if (isError(y)) throw new Error(`yield_checkpoint(${checkpointId}) failed`);
   const yieldBody = parseToolResponse(y);
@@ -852,7 +854,7 @@ export async function walk(
         // first bound exit — is the base-path suggestion; the enumerator forks the rest.
         let suggested = next;
         if (suggested === null || (visits.get(suggested) ?? 0) > 0) suggested = advanceToUnvisited(act, graph, { ...variables }, visits) ?? next;
-        const chosen = opts.decide({ kind: 'transition', activityId: current, id: 'next', options: targets, suggested: suggested ?? targets[0]! }) ?? suggested ?? targets[0]!;
+        const chosen: string = opts.decide({ kind: 'transition', activityId: current, id: 'next', options: targets, suggested: suggested ?? targets[0]! }) ?? suggested ?? targets[0]!;
         const exit = predicateExits(act).find((e) => firstVisit(e.id) === chosen);
         if (exit?.when) satisfyWhen(exit.when, variables);
         next = chosen;

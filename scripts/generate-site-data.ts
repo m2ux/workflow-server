@@ -713,7 +713,7 @@ export function renderSchemasRegion(): string {
     }
     lines.push(`        <p><a href="${GITHUB_BLOB}/schemas/${file}">Edit source on GitHub</a></p>`);
     if (root.properties) {
-      const topLevel: JsonSchemaNode = { properties: {}, required: root.required };
+      const topLevel: JsonSchemaNode = { properties: {}, ...(root.required ? { required: root.required } : {}) };
       for (const [name, prop] of Object.entries(root.properties)) {
         topLevel.properties![name] = prop;
       }

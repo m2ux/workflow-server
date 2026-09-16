@@ -46,6 +46,7 @@ interface LoopStep {
   over?: unknown;
   variable?: unknown;
   continueWhile?: unknown;
+  breakCondition?: unknown;
 }
 
 function checkLoop(loop: LoopStep, site: string, findings: Finding[]): void {

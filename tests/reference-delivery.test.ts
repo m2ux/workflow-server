@@ -790,7 +790,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       walk(body.steps as never);
       const ids = flat.map(s => s.id!).filter((v, i, a) => a.indexOf(v) === i);
       expect(ids.length, 'expected at least two technique-bound steps').toBeGreaterThanOrEqual(2);
-      return [ids[0], ids[1]];
+      return [ids[0]!, ids[1]!];
     }
 
     it('collapses already-delivered contract/rules blocks to markers while the core stays full', async () => {

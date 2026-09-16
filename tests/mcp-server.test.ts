@@ -3,7 +3,7 @@ import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse } from 'yaml';
-import { createHarness, parseToolResponse, parseWorkflowResponse, type Harness } from './e2e/harness.js';
+import { createHarness, parseToolResponse, parseWorkflowResponse, rawText, type Harness } from './e2e/harness.js';
 import { planningFolderPath } from './session-ops.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
@@ -57,11 +57,11 @@ async function transitionToActivity(client: Client, sessionIndex: string, activi
   if (extra?.activity_manifest) args.activity_manifest = extra.activity_manifest;
 
   const actResult = await client.callTool({ name: 'next_activity', arguments: args });
-  if (actResult.isError) throw new Error(`next_activity failed: ${(actResult.content[0] as { type: string; text: string }).text}`);
+  if (actResult.isError) throw new Error(`next_activity failed: ${rawText(actResult)}`);
   const actMeta = actResult._meta as Record<string, unknown>;
 
   const getResult = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
-  if (getResult.isError) throw new Error(`get_activity failed: ${(getResult.content[0] as { type: string; text: string }).text}`);
+  if (getResult.isError) throw new Error(`get_activity failed: ${rawText(getResult)}`);
   // get_activity prepends a technique bundle separated by '\n\n---\n\n' from the activity body.
   const actResponse = parseWorkflowResponse(getResult);
 
@@ -289,7 +289,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
       // The technique bundle (the activity's own techniques + the workflow's inherited
       // techniques.activity + core worker techniques) precedes the --- separator.
-      const text = (result.content[0] as { type: 'text'; text: string }).text;
+      const text = rawText(result);
       const sepIdx = text.indexOf('\n\n---\n\n');
       expect(sepIdx).toBeGreaterThan(0);
       const bundle = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
@@ -307,7 +307,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: sessionToken, context_tokens: 200_000 },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('No activity in flight');
     });
 
@@ -671,7 +671,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: actToken, step_id: bareStep!.id },
       });
       expect(result.isError).toBeFalsy();
-      const text = (result.content[0] as { type: string; text: string }).text;
+      const text = rawText(result);
       expect(text).toContain('capability:');
       // The bare op resolved to the same-named group's op, whose projected id is the bare name.
       expect(text).toContain(`id: ${bareStep!.technique}`);
@@ -1009,7 +1009,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: sessionToken },
       });
       expect(result.isError).toBeFalsy();
-      const text = (result.content[0] as { type: 'text'; text: string }).text;
+      const text = rawText(result);
       // The technique bundle (the workflow's techniques + core orchestrator techniques) appears before the --- separator
       const sepIdx = text.indexOf('\n\n---\n\n');
       expect(sepIdx).toBeGreaterThan(0);
@@ -1048,7 +1048,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: sessionToken },
       });
       expect(result.isError).toBeFalsy();
-      const text = (result.content[0] as { type: 'text'; text: string }).text;
+      const text = rawText(result);
       const sepIdx = text.indexOf('\n\n---\n\n');
       const preamble = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
       const body = parseWorkflowResponse(result);
@@ -1671,7 +1671,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: tokenWithBcp, activity_id: 'design-philosophy' },
       });
       expect(act2.isError).toBe(true);
-      const errorText = (act2.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(act2);
       expect(errorText).toContain('Active checkpoint');
       expect(errorText).toContain('respond_checkpoint');
     });
@@ -1720,7 +1720,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: cpHandle, option_id: 'nonexistent-option' },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('Invalid option');
     });
 
@@ -1737,7 +1737,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: token, option_id: 'some-opt' },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('no active checkpoint');
     });
 
@@ -1761,7 +1761,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: cpHandle, auto_advance: true },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('missing defaultOption or autoAdvanceMs');
     });
 
@@ -1786,7 +1786,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: cpHandle, condition_not_met: true },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('no condition field');
     });
 
@@ -1871,7 +1871,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: tokenWithBcp, step_id: 'create-issue' },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('Active checkpoint');
     });
 
@@ -1894,7 +1894,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: cpHandle, option_id: 'revise-classification', auto_advance: true },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('Exactly one');
     });
 
@@ -1951,7 +1951,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: sessionToken },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('no active checkpoint');
     });
 
@@ -1961,7 +1961,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: sessionToken, option_id: 'revise-classification' },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
+      const errorText = rawText(result);
       expect(errorText).toContain('no active checkpoint');
     });
   });
@@ -2817,7 +2817,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('PR215-TC-05: out-of-range child_index returns the actionable NOT_FOUND message', async () => {
       const result = await callInspect({ child_index: 5, view: 'identity' });
       expect(result.isError).toBe(true);
-      const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+      const text = rawText(result);
       // navigatePath throws SessionStoreError(NOT_FOUND); withSessionStoreErrors +
       // describeSessionStoreError render the canonical actionable NOT_FOUND message.
       expect(text).toContain('Call start_session to create or resume a planning folder');

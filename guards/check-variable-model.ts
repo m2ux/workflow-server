@@ -57,8 +57,8 @@ export interface VariableModelViolation {
   detail: string;
 }
 
-interface VariableDeclaration {
-  type?: string;
+export interface VariableDeclaration {
+  type?: string | undefined;
   hasDefault: boolean;
   defaultValue?: unknown;
   values?: string[] | undefined;

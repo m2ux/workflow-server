@@ -268,7 +268,7 @@ describe('schema-validation', () => {
   });
 
   describe('VariableDefinitionSchema value sets (#518 W5.4)', () => {
-    const declaration = (extra: Record<string, unknown>) => ({
+    const declaration = (extra: Record<string, unknown>): Record<string, unknown> => ({
       id: 'test-workflow',
       version: '1.0.0',
       title: 'Test Workflow',

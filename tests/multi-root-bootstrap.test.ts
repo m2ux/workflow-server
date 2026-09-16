@@ -3,7 +3,7 @@ import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { createHarness, parseToolResponse, type Harness } from './e2e/harness.js';
+import { createHarness, parseToolResponse, rawText, type Harness } from './e2e/harness.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
 describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
@@ -37,7 +37,7 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
   it('discover always requires repo_binding (no session_scope branching)', async () => {
     const result = await client.callTool({ name: 'discover', arguments: {} });
     expect(result.isError).toBeFalsy();
-    const text = (result.content[0] as { type: 'text'; text: string }).text;
+    const text = rawText(result);
     expect(text).toMatch(/repo_binding:\s*required/);
     expect(text).toMatch(/repo:\s*"owner\/repo"/);
     expect(text).not.toMatch(/session_scope:/);

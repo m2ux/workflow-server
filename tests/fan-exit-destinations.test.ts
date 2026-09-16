@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { resolve } from 'node:path';
-import { createHarness, type Harness } from './e2e/harness.js';
+import { createHarness, type Harness, type ToolResult } from './e2e/harness.js';
 import { sessionOps, type SessionOps } from './session-ops.js';
 
 /**

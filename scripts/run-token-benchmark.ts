@@ -66,7 +66,7 @@ interface Metrics {
   agentId: string;
   workflowsDir: string;
   /** Corpus commit the walk read, so a fixture recorded from this output carries its own provenance. */
-  workflowsRev?: string;
+  workflowsRev?: string | undefined;
   serverRoot: string;
   path: string[];
   finalStatus: string;
@@ -78,8 +78,8 @@ interface Metrics {
     resource_fetched: number;
   };
   repeatedResources: Array<{ resourceId: string; count: number }>;
-  contextModeOnDisk?: string;
-  agentIdOnDisk?: string;
+  contextModeOnDisk?: string | undefined;
+  agentIdOnDisk?: string | undefined;
   deliveredContentKeys: number;
   resourceLedgerKeys: number;
   unchangedResourceAnswers: number;
@@ -127,7 +127,7 @@ interface Delta {
 interface VsReference {
   referenceLabel: string;
   referencePath: string;
-  description?: string;
+  description?: string | undefined;
   /** Run and reference share a context mode. Only a matched comparison is a valid gate (#323 T4). */
   modeMatched: boolean;
   /** Run and reference walked the same workflow. A cross-workflow delta measures two different
@@ -481,8 +481,9 @@ async function main(): Promise<void> {
   }) as typeof client.callTool;
 
   try {
+    // The walk runs under `agentId` because the `start_session` interception above carries it;
+    // the walker itself takes no identity option.
     const walkResult = await walk(harness, workflowId, skipOptionalPolicy, {
-      agentId,
       mode: 'robot',
     });
 
