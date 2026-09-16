@@ -13,10 +13,25 @@
  *   - a second separator fails, because a routine lives one file deep in a flat `routines/`
  *     directory and has no group level to name.
  *
- * Every terminal state of a reference but `Checked` fails: a malformed name, a name nothing
- * declares, a cycle, an input with no argument and no default and no host fall-through, an argument
- * naming no declared input, and an output left unbound whose declaration does not permit it. None is
- * a warning — a routine that half-resolves would hand a worker a step nobody declared.
+ * Every terminal state of a reference but `Checked` fails. None is a warning — a routine that
+ * half-resolves would hand a worker a step nobody declared. The surface, grouped by what a site got
+ * wrong:
+ *
+ *   the name        more than one separator; a name no candidate workflow declares; a cycle
+ *   the arguments   an argument naming no declared input; an output binding naming no declared
+ *                   output; an output left unbound whose declaration does not permit it; an
+ *                   operation parameter with no argument, or one bound to something that is not a
+ *                   literal reference
+ *   the body        a parameter standing where the `when` dialect takes a value; a substitution
+ *                   carrying a quote into that position; a loop iterating or binding its item to a
+ *                   dropped output; an action targeting one
+ *   the result      two reference steps whose materialised ids collide; a reference block the step
+ *                   schema does not admit, which reaches the splice through the raw text path
+ *
+ * Each of those is authorable, so each has a case that provokes it. One refusal is not: a step
+ * reaching materialisation with no resolved id, which `populateStepIds` fills when a file is read.
+ * No definition can produce it, so it has no fixture and is a defect report rather than an
+ * authoring error.
  *
  * The core is synchronous and pure over a `RoutineLookup`, so the async loaders and the synchronous
  * guard scripts share one resolution semantics.

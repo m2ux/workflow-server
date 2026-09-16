@@ -334,6 +334,72 @@ describe('the refusals — every terminal but Checked fails', () => {
     expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [selfish] }), 'wf'))
       .toThrow(/cycle selfish -> selfish/);
   });
+
+  /**
+   * Dropping an unbound optional output removes the bindings that WRITE it, which is the case
+   * above. A position that READS it has nothing to drop to: a loop cannot iterate a collection no
+   * name reaches, and an action cannot write to a target that is not there. Each is refused where
+   * the body names it, because the alternative is a step whose collection or target is the word
+   * `undefined`.
+   */
+  it('refuses a loop iterating an output the site dropped', () => {
+    const iterates = routine({
+      id: 'iterates',
+      outputs: [{ id: 'found_items', type: 'array', description: 'what the run found', optional: true }],
+      steps: [{
+        kind: 'loop', id: 'over-found', loopType: 'forEach', variable: 'each_item', over: 'found_items',
+        steps: [{ kind: 'action', id: 'note', actions: [{ action: 'log', message: 'seen' }] }],
+      }] as Step[],
+      internals: [{ id: 'each_item', description: 'the item under discussion' }],
+    });
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'iterates', outputs: {} } as Step]);
+    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [iterates] }), 'wf'))
+      .toThrow(/loop 'over-found' iterates a dropped output/);
+  });
+
+  it('refuses a loop binding its item to an output the site dropped', () => {
+    const binds = routine({
+      id: 'binds',
+      outputs: [{ id: 'current_item', type: 'object', description: 'the item under discussion', optional: true }],
+      steps: [{
+        kind: 'loop', id: 'over-input', loopType: 'forEach', variable: 'current_item', over: 'supplied_items',
+        steps: [{ kind: 'action', id: 'note', actions: [{ action: 'log', message: 'seen' }] }],
+      }] as Step[],
+      inputs: [{ id: 'supplied_items', description: 'what the host supplies' }],
+    });
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'binds', outputs: {} } as Step]);
+    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [binds] }), 'wf'))
+      .toThrow(/loop 'over-input' binds its item to a dropped output/);
+  });
+
+  it('refuses an action targeting an output the site dropped', () => {
+    const writes = routine({
+      id: 'writes',
+      outputs: [{ id: 'item_tally', type: 'string', description: 'the count', optional: true }],
+      steps: [{ kind: 'action', id: 'count', actions: [{ action: 'set', target: 'item_tally', value: 'one' }] }] as Step[],
+    });
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'writes', outputs: {} } as Step]);
+    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [writes] }), 'wf'))
+      .toThrow(/action on step 'count' targets a dropped output/);
+  });
+
+  /**
+   * A materialised identifier is `<reference id>.<body step id>`, so two references collide only
+   * when a host spells them alike. The containers that would otherwise notice both collapse it
+   * silently — a Set of ids and a Map keyed by id — so the collision is checked here or nowhere.
+   */
+  it('refuses two reference steps whose materialised ids collide', () => {
+    const twice = routine({
+      id: 'twice',
+      steps: [{ kind: 'action', id: 'note', actions: [{ action: 'log', message: 'seen' }] }] as Step[],
+    });
+    const host = activity([
+      { kind: 'routine', id: 'run', routine: 'twice' } as Step,
+      { kind: 'routine', id: 'run', routine: 'twice' } as Step,
+    ]);
+    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [twice] }), 'wf'))
+      .toThrow(/duplicate step id 'run\.note' after materialising a routine/);
+  });
 });
 
 describe('nesting — a routine may refer to another', () => {
