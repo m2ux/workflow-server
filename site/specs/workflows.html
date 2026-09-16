@@ -125,8 +125,8 @@
     <li><strong>Activities</strong> — the phases the orchestrator can move between</li>
     <li><strong>Initial activity</strong> — where a new session begins</li>
     <li><strong>Rules and orchestrator techniques</strong> — behaviour that applies across the whole run</li>
-    <li><strong>Routines</strong> — a run of steps declared once and referred to by <code>kind:routine</code> steps (<a href="#routines">see below</a>)</li>
   </ul>
+  <p class="prose">A run of steps shared between activities is not in the manifest: it is a file of its own under <code>routines/</code>, beside <code>activities/</code> (<a href="#routines">see below</a>).</p>
   <p class="prose">When a session starts, the server reads this manifest. The first <a href="../api/tools.html#get_workflow"><code>get_workflow</code></a> call returns:</p>
   <ul class="prose">
     <li>orchestrator techniques and rules</li>

@@ -194,36 +194,47 @@ describe('the loaded workflow carries both forms', () => {
   });
 
   /**
-   * An activity carrying both a routine reference and a checkpoint of its own keeps the reference
-   * unexpanded in the authored form while the checkpoint stays whole.
+   * A reference sitting among the activity's own steps is replaced IN PLACE.
    *
-   * This case existed to cover a loader defect: the authored form was cloned before a second
-   * resolution pass ran, so a checkpoint whose body lived elsewhere reached the contract derivation
-   * with no options and every name its effects set read as written by nothing. That second pass is
-   * gone — a checkpoint carries its own body, and a gate shared between activities is a routine —
-   * so what is left to assert is that the two step kinds coexist without the reference expanding.
+   * The case above uses a host whose only step is the reference, so it cannot say where the run
+   * lands or what happens to anything around it. A splice that appended, prepended, or dropped a
+   * neighbour would satisfy it. This one puts a step on each side: the run's two steps take the
+   * reference's position, in their own order, and the neighbours are untouched down to their ids —
+   * which is what makes a reference substitutable for the run it stands for.
    */
-  it('keeps a reference unexpanded beside a checkpoint of the activity\'s own', async () => {
+  it('replaces a reference in place, leaving the steps on either side of it alone', async () => {
     const { corpus, id } = writeTree({
       activities: [{
         id: 'host',
         steps: [
+          { kind: 'action', id: 'before', actions: [{ action: 'log', message: 'first' }] },
           { kind: 'routine', id: 'run', routine: 'shared-run' },
           {
-            kind: 'checkpoint', id: 'gate', message: 'Is the scope settled?',
+            kind: 'checkpoint', id: 'after', message: 'Is the scope settled?',
             options: [{ id: 'yes', label: 'Settled', effect: { setVariable: { scope_confirmed: true } } }],
           },
         ],
       }],
-      routines: [routine('shared-run')],
+      routines: [routine('shared-run', {
+        steps: [
+          { kind: 'action', id: 'one', actions: [{ action: 'log', message: 'ran' }] },
+          { kind: 'action', id: 'two', actions: [{ action: 'log', message: 'ran again' }] },
+        ],
+      })],
     });
     const result = await loadWorkflowWithDiagnostics(corpus, id);
     if (!result.success) throw new Error(`load failed: ${result.error.message}`);
 
+    const materialised = result.value.workflow.activities!.find((a) => a.id === 'host')!;
+    expect(materialised.steps!.map((s) => s.id)).toEqual(['before', 'run.one', 'run.two', 'after']);
+    // The neighbour that is a checkpoint keeps its body: a splice touches the reference and nothing
+    // else, so a step beside one is the step the file spells.
+    const after = materialised.steps!.find((s) => s.id === 'after') as Extract<Step, { kind: 'checkpoint' }>;
+    expect(after.options?.map((o) => o.effect?.setVariable)).toEqual([{ scope_confirmed: true }]);
+
+    // And the authored form keeps the reference where the file put it, neighbours intact.
     const authored = result.value.authoredActivities.get('host')!;
-    const gate = authored.steps!.find((s) => s.id === 'gate') as Extract<Step, { kind: 'checkpoint' }>;
-    expect(gate.options?.map((o) => o.effect?.setVariable)).toEqual([{ scope_confirmed: true }]);
-    expect(authored.steps!.map((s) => s.kind)).toEqual(['routine', 'checkpoint']);
+    expect(authored.steps!.map((s) => s.id)).toEqual(['before', 'run', 'after']);
   });
 });
 
