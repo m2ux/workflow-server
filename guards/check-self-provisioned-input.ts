@@ -24,10 +24,12 @@ import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 export interface SelfProvisionedInputViolation { site: string; detail: string }
 
@@ -70,13 +72,13 @@ function walk(node: unknown, file: string, out: SelfProvisionedInputViolation[])
   }
 }
 
-export function collectSelfProvisionedInputViolations(): SelfProvisionedInputViolation[] {
+export function collectSelfProvisionedInputViolations(root: string = ROOT): SelfProvisionedInputViolation[] {
   const out: SelfProvisionedInputViolation[] = [];
-  const wfs = corpusWorkflows(ROOT).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  const wfs = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
   for (const { dir } of wfs) {
     const adir = join(dir, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
-      const rel = relative(ROOT, join(adir, f));
+      const rel = relative(root, join(adir, f));
       try { walk(parseDefinition(readFileSync(join(adir, f), 'utf-8')), rel, out); }
       catch { /* malformed YAML is validate-workflow-yaml's job, not this guard's */ }
     }
@@ -86,7 +88,7 @@ export function collectSelfProvisionedInputViolations(): SelfProvisionedInputVio
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectSelfProvisionedInputViolations();
+  const violations = collectSelfProvisionedInputViolations(requireRootOrExit('self-provisioned-input', DEFAULT_ROOT));
   if (violations.length) {
     process.stdout.write(`self-provisioned input: ${violations.length} step(s) provision their own technique input (AP-68) — hoist the derivation upstream:\n`);
     for (const v of violations.sort((a, b) => a.site.localeCompare(b.site))) process.stdout.write(`  ${v.site} — ${v.detail}\n`);

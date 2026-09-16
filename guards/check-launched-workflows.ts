@@ -28,10 +28,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { type CorpusSource, asIndex, indexCorpus } from '../src/loaders/corpus-index.js';
 import { corpusWorkflows, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree.
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 const LAUNCH_OPERATION = 'workflow-engine::handle-sub-workflow';
 
@@ -182,7 +184,7 @@ export function collectLaunchedWorkflowViolations(root: string = ROOT): Launched
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectLaunchedWorkflowViolations();
+  const violations = collectLaunchedWorkflowViolations(requireRootOrExit('launched-workflows', DEFAULT_ROOT));
   if (violations.length) {
     process.stdout.write(`launched workflows: ${violations.length} finding(s) — a declared launch and the step that performs it must agree:\n`);
     for (const v of violations.sort((a, b) => a.site.localeCompare(b.site))) process.stdout.write(`  ${v.site} — ${v.detail}\n`);

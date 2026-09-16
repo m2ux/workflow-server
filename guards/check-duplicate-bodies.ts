@@ -23,9 +23,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 /** Rules shorter than this are generic connective phrases, not drift-worthy shared content. */
 const MIN_DUP_RULE_LENGTH = 30;
@@ -185,7 +187,7 @@ export function collectDuplicateViolations(root: string = ROOT): DuplicateViolat
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectDuplicateViolations();
+  const violations = collectDuplicateViolations(requireRootOrExit('duplicate-bodies', DEFAULT_ROOT));
   if (violations.length === 0) {
     process.stdout.write('duplicate-bodies: OK — no rule text and no checkpoint body is authored twice\n');
     process.exit(0);

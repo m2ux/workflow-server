@@ -13,9 +13,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { assertWhenAuthoring } from '../src/schema/when-expression.js';
 import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 export interface WhenExpressionViolation {
   site: string;
@@ -52,13 +54,13 @@ function walk(node: unknown, file: string, out: WhenExpressionViolation[]): void
   }
 }
 
-export function collectWhenExpressionViolations(): WhenExpressionViolation[] {
+export function collectWhenExpressionViolations(root: string = ROOT): WhenExpressionViolation[] {
   const out: WhenExpressionViolation[] = [];
-  const wfs = corpusWorkflows(ROOT).filter(({ dir }) => existsSync(join(dir, 'activities')));
+  const wfs = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
   for (const { dir } of wfs) {
     const adir = join(dir, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
-      const rel = relative(ROOT, join(adir, f));
+      const rel = relative(root, join(adir, f));
       try {
         walk(parseDefinition(readFileSync(join(adir, f), 'utf-8')), rel, out);
       } catch {
@@ -71,7 +73,7 @@ export function collectWhenExpressionViolations(): WhenExpressionViolation[] {
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectWhenExpressionViolations();
+  const violations = collectWhenExpressionViolations(requireRootOrExit('when-expression', DEFAULT_ROOT));
   if (violations.length) {
     process.stdout.write(
       `when-expression: ${violations.length} invalid when: gate(s) — fix parse errors or parenthesize mixed &&/||:\n`,
