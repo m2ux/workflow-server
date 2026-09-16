@@ -152,15 +152,16 @@ const isDefinition = (name: string): boolean => name.endsWith('.yaml') || name.e
  * that file's rule wherever it runs, so this is the walk it takes. `rel` carries the nesting, so a
  * caller citing a file cites one on disk.
  */
-export function definitionsUnder(dir: string, prefix = ''): DefinitionFile[] {
-  return readdirSync(dir, { withFileTypes: true })
+export function definitionsUnder(dir: string): DefinitionFile[] {
+  const walk = (at: string, prefix: string): DefinitionFile[] => readdirSync(at, { withFileTypes: true })
     .sort((a, b) => a.name.localeCompare(b.name))
     .flatMap((entry) => {
-      const path = join(dir, entry.name);
+      const path = join(at, entry.name);
       const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
-      if (entry.isDirectory()) return definitionsUnder(path, rel);
+      if (entry.isDirectory()) return walk(path, rel);
       return isDefinition(entry.name) ? [{ rel, path }] : [];
     });
+  return walk(dir, '');
 }
 
 /**
@@ -171,11 +172,14 @@ export function definitionsUnder(dir: string, prefix = ''): DefinitionFile[] {
  * from `initialActivity`, the producers a message binding resolves against. A library activity a
  * subdirectory holds runs under whichever workflow borrows it, and takes that workflow's model,
  * graph and producers; graded here it would be graded against a workflow it never runs under.
+ *
+ * What counts as a definition is what the deep walk counts, so the two agree on every file they
+ * both see and differ only in how far they go.
  */
 export function ownDefinitionsIn(dir: string): DefinitionFile[] {
   return readdirSync(dir, { withFileTypes: true })
     .sort((a, b) => a.name.localeCompare(b.name))
-    .flatMap((entry) => (entry.isFile() && isDefinition(entry.name)
+    .flatMap((entry) => (!entry.isDirectory() && isDefinition(entry.name)
       ? [{ rel: entry.name, path: join(dir, entry.name) }]
       : []));
 }
