@@ -297,16 +297,24 @@ A technique reference is a `::`-delimited path:
 ```
 
 - The workflow is implicit for a same-workflow reference; a leading `<workflow>::` targets another
-  workflow.
+  workflow. The leading segment names a workflow when the corpus declares one of that name and at
+  least one segment follows it — a workflow is a workflow from the moment its `workflow.yaml`
+  exists, whether or not it has written a technique yet. Otherwise every segment is a path inside
+  the referring workflow's own `techniques/`.
 - `<technique>` delivers the technique itself.
 - `<technique>::<nested>` addresses a technique within `<technique>`'s folder; deeper segments recurse
-  into deeper folders.
+  into deeper folders. Depth is unbounded.
 - A trailing segment matching a rule name resolves to that rule; `<technique>::<group>` expands to
   every rule named `<group>-*`.
-- A `<workflow>/<technique>` (slash) form is normalized to `::`.
+- A `<workflow>/<technique>` (slash) form spells the same workflow prefix. The slash carries no
+  other meaning: it appears once, before the technique, and always names a workflow.
+- A reference carrying an empty segment (`::op`, `group::`, `a::::b`), or a slash anywhere else,
+  addresses no file under any reading and is refused at load with a message naming this rule.
 
-`parseTechniquePath` normalizes and splits a reference; `resolveTechniques` looks it up with the
-current-workflow-first precedence of §2.
+`parseTechniqueRef` ([`src/loaders/technique-ref.ts`](../src/loaders/technique-ref.ts)) is the one
+implementation of the rule above: the loader's read and compose paths and the binding-fidelity guard
+all reach it, so a `::` path means one thing wherever it is read. `resolveTechniques` looks the
+parsed reference up with the current-workflow-first precedence of §2.
 
 ### 4.1 Executable references (`::`) vs symbol references (`.`)
 
