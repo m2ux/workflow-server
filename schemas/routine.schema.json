@@ -105,6 +105,11 @@
                 "type": "string",
                 "description": "What the parameter is for, in the routine's own vocabulary."
               },
+              "kind": {
+                "type": "string",
+                "const": "technique",
+                "description": "Declared where the argument is an operation reference standing in a body step's technique position. A reference site binds it with a literal reference, and an unbound one with no default fails the load."
+              },
               "default": {
                 "type": [
                   "string",

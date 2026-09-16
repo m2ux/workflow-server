@@ -32,7 +32,7 @@ import type { Condition } from '../schema/condition.schema.js';
 import { composeActivityTechnique } from '../loaders/technique-loader.js';
 import { indexCorpus, workflowSubdir } from '../loaders/corpus-index.js';
 import { type RoutineLookup, resolveRoutine } from '../loaders/routine-resolver.js';
-import type { Routine } from '../schema/routine.schema.js';
+import { type Routine, isOperationInput } from '../schema/routine.schema.js';
 import { parseDefinition } from './serialization.js';
 import { IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from './binding-provenance.js';
 import { expressionPaths } from '../schema/when-expression.js';
@@ -259,6 +259,8 @@ const PLACEHOLDER = new Set([
 const ENV_PROBES = new Set(['gh', 'gpg', 'git', 'signing', 'workflows']);
 
 const TOKEN_RE = new RegExp(`\\{(${IDENTIFIER_PATTERN}(?:\\.[a-zA-Z0-9_]+)*)\\}`, 'g');
+/** A protocol variable at its point of declaration: the dollar sigil marks the binding, not the reads. */
+const LOCAL_BINDING_RE = new RegExp(`\\{\\$(${IDENTIFIER_PATTERN})\\}`, 'g');
 
 /** The bag name a reference addresses: its head, since `current_unit.mode` reads `current_unit`. */
 export function bagName(reference: string): string {
@@ -281,6 +283,18 @@ function tokenReads(text: string): string[] {
     if (isBagRead(bagName(match[1]!))) out.push(match[1]!);
   }
   return out;
+}
+
+/**
+ * The names a technique's prose binds as its own, written `{$name}` at the one step that produces
+ * them and read bare afterwards.
+ *
+ * A protocol variable is a symbol created and used within one protocol run, so a later `{name}` read
+ * of one names the step's own working value rather than a session variable. Counting it as a session
+ * read charges a host for a name nothing in the bag ever holds.
+ */
+function protocolLocals(text: string): string[] {
+  return [...text.matchAll(LOCAL_BINDING_RE)].map((match) => match[1]!);
 }
 
 /** References a `when:` expression consults. */
@@ -386,19 +400,21 @@ async function readSignature(
     const inputs = [...(technique.inputs ?? []), ...(technique.inherited_inputs?.items ?? [])];
     const outputs = [...(technique.outputs ?? []), ...(technique.inherited_outputs?.items ?? [])];
     const outputIds = new Set(outputs.map((output) => output.id));
-    const prose: string[] = [];
+    const texts: string[] = [];
     for (const block of technique.protocol ?? []) {
-      if (block.title) prose.push(...tokenReads(block.title));
-      for (const step of block.steps) prose.push(...tokenReads(step));
+      if (block.title) texts.push(block.title);
+      texts.push(...block.steps);
     }
     for (const rule of Object.values(technique.rules ?? {})) {
-      for (const text of Array.isArray(rule) ? rule : [rule]) prose.push(...tokenReads(text));
+      for (const text of Array.isArray(rule) ? rule : [rule]) texts.push(text);
     }
     // An artifact filename is a template the worker interpolates from the bag at write time.
     for (const output of outputs) {
-      if (output.artifact?.name) prose.push(...tokenReads(output.artifact.name));
+      if (output.artifact?.name) texts.push(output.artifact.name);
     }
-    const declared = new Set([...outputIds, ...inputs.map((input) => input.id)]);
+    const prose = texts.flatMap(tokenReads);
+    const locals = new Set(texts.flatMap(protocolLocals));
+    const declared = new Set([...outputIds, ...inputs.map((input) => input.id), ...locals]);
     return {
       inputs: inputs.map((input) => ({
         id: input.id,
@@ -584,6 +600,9 @@ export async function deriveActivityContract(args: {
     if (step.kind === 'routine') {
       const routine = resolveRoutineQuietly(routines, scopeWorkflowId, step.routine);
       for (const input of routine?.inputs ?? []) {
+        // An operation parameter's argument is a reference to a definition rather than a name in the
+        // bag, so the site neither reads nor writes anything by binding it.
+        if (isOperationInput(input)) continue;
         const argument = step.with?.[input.id];
         if (argument !== undefined) {
           // A braced argument reads what it names; a bare one is a rename when the whole string

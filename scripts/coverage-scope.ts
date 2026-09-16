@@ -26,10 +26,12 @@
  * Prints one workflow id per line, or nothing when the change cannot move coverage.
  */
 import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
+import { parseDefinition } from '../src/utils/serialization.js';
 import { requireWorkflowsRoot, defaultCorpusDest } from '../guards/workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -109,29 +111,42 @@ export async function coverageScope(
     // An activity file names its activity by `id`, and a workflow's loaded graph lists the ids it
     // holds however they got there — local directory or borrowed reference. Comparing ids rather
     // than paths is what makes a borrow visible.
+    //
+    // The id comes from the file, not from a load of the workflow around it. A changed activity is a
+    // fact the file carries, so whether its workflow loads is a different question — and it is
+    // exactly the change most likely to stop one loading that this has to size.
     const changedIds = new Set<string>();
     for (const path of changed.activityFiles) {
-      const authoring = workflowIdFromCorpusPath(path);
-      if (!authoring) continue;
-      const loaded = await loadWorkflow(root, authoring);
-      if (!loaded.success) continue;
-      const filename = path.split('/').pop()!;
-      for (const activity of loaded.value.activities ?? []) {
-        // The loader records an artifactPrefix taken from the filename, which is the only link back
-        // from a file to the activity it declares without re-reading it.
-        if (activity.artifactPrefix && filename.startsWith(`${activity.artifactPrefix}-`)) {
-          changedIds.add(activity.id);
-        }
-      }
+      const id = activityIdAt(join(root, path));
+      if (id !== undefined) changedIds.add(id);
     }
     for (const id of walked) {
       if (scope.has(id)) continue;
       const loaded = await loadWorkflow(root, id);
-      if (!loaded.success) continue;
+      // A workflow this cannot read is a workflow it cannot rule out. Skipping it narrows the walk
+      // by exactly the workflow most likely to need one, and the walk reports the load failure where
+      // a silently empty scope reports success having measured nothing.
+      if (!loaded.success) { scope.add(id); continue; }
       if ((loaded.value.activities ?? []).some((a) => changedIds.has(a.id))) scope.add(id);
     }
   }
   return [...scope].sort();
+}
+
+/**
+ * The activity id a file declares, read from the file.
+ *
+ * Undefined where the path holds no readable activity — a deletion, most often, the diff naming a
+ * path the worktree no longer has.
+ */
+function activityIdAt(file: string): string | undefined {
+  if (!existsSync(file)) return undefined;
+  try {
+    const parsed = parseDefinition(readFileSync(file, 'utf-8')) as { id?: unknown } | null;
+    return typeof parsed?.id === 'string' ? parsed.id : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /** Comma-separated workflow ids, as the coverage walk and this CLI take them. */

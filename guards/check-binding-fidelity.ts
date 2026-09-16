@@ -248,6 +248,15 @@ const PLACEHOLDER = new Set(['path', 'token', 'placeholder', 'field', 'key', 'va
 /** Per-workflow produced names: workflow.yaml vars + activity set/loop/setVariable targets. */
 const producedByWf = new Map<string, Set<string>>();
 const fileLocals = new Map<string, Set<string>>();
+/**
+ * Per routine file, the inputs whose argument is an operation reference (#739).
+ *
+ * Such a parameter stands where an operation reference belongs and a reference site replaces it when
+ * the definitions load, so the declaration spells a name no technique answers to. Resolving it here
+ * would be resolving a placeholder; what the operation a site supplies is bound to is a question the
+ * routines guard asks once per reference site, where there is an operation to ask about.
+ */
+const fileOperationParameters = new Map<string, Set<string>>();
 
 function produced(wf: string): Set<string> {
   let s = producedByWf.get(wf);
@@ -548,13 +557,17 @@ function scanRoutines(wf: string): void {
     if (!parsed || typeof parsed !== 'object') continue;
     const routine = parsed as Record<string, unknown>;
     const locals = fileLocals.get(rel) ?? new Set<string>();
+    const parameters = fileOperationParameters.get(rel) ?? new Set<string>();
     for (const list of ['inputs', 'outputs', 'internals']) {
       for (const item of Array.isArray(routine[list]) ? routine[list] as unknown[] : []) {
-        const id = (item as { id?: unknown })?.id;
-        if (typeof id === 'string') locals.add(id);
+        const declaration = item as { id?: unknown; kind?: unknown };
+        if (typeof declaration?.id !== 'string') continue;
+        locals.add(declaration.id);
+        if (list === 'inputs' && declaration.kind === 'technique') parameters.add(declaration.id);
       }
     }
     fileLocals.set(rel, locals);
+    fileOperationParameters.set(rel, parameters);
     walkSteps(wf, rel, parsed, typeof routine['id'] === 'string' ? routine['id'] : '');
   }
 }
@@ -777,6 +790,10 @@ export function collectViolations(): Violation[] {
   const callerSupplied = new Set<string>();
   // (1) binding-resolution + arg-conformance + orphan-input
   for (const s of steps) {
+    // The step binds an operation its routine takes as an argument, so the technique position holds
+    // a parameter until a reference site fills it. There is nothing here to resolve, and nothing to
+    // hold a binding against either — both are per-site questions the routines guard asks.
+    if (fileOperationParameters.get(s.rel)?.has(s.technique)) continue;
     const r = resolve(s.technique, s.wf, s.activityId);
     if (!r) {
       // A step's `technique:` ref must resolve to a real operation (workflow-local, meta, or

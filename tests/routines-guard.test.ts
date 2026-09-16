@@ -200,6 +200,220 @@ steps:
    * hard zero — so this needs a technique that actually RESOLVES, since an unresolvable one walks no
    * inputs and the case passes for the wrong reason.
    */
+  /**
+   * A protocol variable is a symbol created and used within one protocol run: bound once as
+   * `{$name}` and read bare afterwards. Those reads name the step's own working value, so charging
+   * them to the bag asks a routine to declare a name nothing in the session ever holds.
+   */
+  it('does not report a name the bound operation binds as a protocol local', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: referrer('    outputs:\n      run_verdict: host_verdict\n') } },
+      techniques: {
+        wf: {
+          'analysis/sweep': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Sweeps the target.
+
+## Outputs
+
+### run_verdict
+
+What the sweep concluded.
+
+## Protocol
+
+### 1. Sweep
+
+- Take the target's shape as \`{$observed_shape}\` and weigh \`{observed_shape}\` against \`{sweep_depth}\`.
+`,
+        },
+      },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: sweep_depth
+    description: how deep the sweep goes
+outputs:
+  - id: run_verdict
+    type: string
+    description: what the sweep concluded
+steps:
+  - kind: technique
+    id: sweep
+    technique: analysis::sweep
+`,
+        },
+      },
+    });
+    expect(findings).toEqual([]);
+  });
+
+  /**
+   * A routine takes its argument's OPERATION and not that operation's values. Which values those are
+   * follows from the argument, so a signature naming one holds at the site that supplied it and
+   * nowhere else — and the host reading it downstream is promised something the next site withdraws.
+   */
+  it('reports a signature carrying a value the bound operation produces', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    with:\n      pass_operation: analysis::sweep\n    outputs:\n      run_verdict: host_verdict\n` } },
+      techniques: {
+        wf: {
+          'analysis/sweep': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Sweeps the target.
+
+## Outputs
+
+### run_verdict
+
+What the sweep concluded.
+
+## Protocol
+
+### 1. Sweep
+
+- Sweep the target.
+`,
+        },
+      },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: pass_operation
+    kind: technique
+    description: the sweep each site applies
+outputs:
+  - id: run_verdict
+    type: string
+    description: what the sweep concluded
+steps:
+  - kind: technique
+    id: sweep
+    technique:
+      name: pass_operation
+`,
+        },
+      },
+    });
+    expect(checks(findings)).toEqual(['routine-reads-argument-output']);
+    expect(findings[0]?.detail).toContain("'run_verdict' is an output of the operation this site binds");
+  });
+
+  /**
+   * Every signature rule for such a routine runs against a site, so a routine whose every site binds
+   * an argument this cannot read has no rule that can fire. A guard reporting nothing there is not
+   * reporting that the routine is sound — it is reporting that it looked at nothing, and the two read
+   * identically unless one of them says so.
+   */
+  it('says so when no reference site supplies an operation it can read', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    with:\n      pass_operation: "{chosen_lens}"\n` } },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: pass_operation
+    kind: technique
+    description: the sweep each site applies
+  - id: unread_topic_name
+    description: nothing in the body reads this
+outputs:
+  - id: unwritten_run_verdict
+    type: string
+    description: nothing in the body writes this
+steps:
+  - kind: technique
+    id: sweep
+    technique:
+      name: pass_operation
+`,
+        },
+      },
+    });
+    expect(checks(findings)).toEqual(['routine-signature-unheld']);
+    expect(findings[0]?.detail).toContain('1 site(s) refer');
+  });
+
+  /**
+   * The counterpart, and the one the corpus actually has: a step's actions are the RUN's writes,
+   * authored beside the binding and the same whichever operation the site supplies. Only what the
+   * operation declares varies by argument.
+   */
+  it('does not report an output the run writes through an action beside the binding', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    with:\n      pass_operation: analysis::sweep\n    outputs:\n      run_notes: host_notes\n` } },
+      techniques: {
+        wf: {
+          'analysis/sweep': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Sweeps the target.
+
+## Outputs
+
+### run_verdict
+
+What the sweep concluded.
+
+## Protocol
+
+### 1. Sweep
+
+- Sweep the target.
+`,
+        },
+      },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: pass_operation
+    kind: technique
+    description: the sweep each site applies
+outputs:
+  - id: run_notes
+    type: string
+    description: what the run noted of its own accord
+steps:
+  - kind: technique
+    id: sweep
+    technique:
+      name: pass_operation
+    actions:
+      - action: set
+        target: run_notes
+        description: noted beside the binding
+`,
+        },
+      },
+    });
+    expect(findings).toEqual([]);
+  });
+
   it('does not report a binding value the namespace settles as a literal', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: referrer('    outputs:\n      run_verdict: host_verdict\n') } },

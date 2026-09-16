@@ -18,6 +18,23 @@
  *   body's reads are wider than the tokens its step fields spell: they include, for every bound
  *   operation, that operation's prose interpolations and the declared inputs the step leaves
  *   unbound, both of which resolve out of the bag under their own names with no field to rewrite.
+ * - `routine-operation-unbound` — an input declared `kind: technique` that no step of the body binds.
+ *   It stands in a technique position rather than being read as a value, so an unread-input rule
+ *   asking the derivation about it would report every one of them.
+ * - `routine-reads-argument-output` — a signature carrying a value the bound operation produces. A
+ *   run takes its argument's operation and not that operation's values, which differ by argument, so
+ *   a declaration naming one holds at the site that supplied it and nowhere else.
+ *
+ * A routine whose body binds an operation by argument names a parameter where an operation reference
+ * belongs, so it has no signature of its own and the signature rules run ONCE PER REFERENCE SITE,
+ * against the operation that site supplies. A routine binding no operation by argument keeps the
+ * once-per-routine path. A routine with an operation parameter and no reference site is reported as
+ * unreferenced, whose remedy — refer to it or delete it — settles the contract question either way.
+ *
+ * - `routine-signature-unheld` — a routine that HAS reference sites and not one of them supplies an
+ *   operation this can read. Every site is skipped, so nothing is derived and no signature rule can
+ *   fire; saying so is what keeps a routine nothing checked from reading as a routine nothing found
+ *   fault with.
  *
  * The placement rules, which are corpus-wide by construction:
  *
@@ -43,9 +60,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import type { Activity, Step } from '../src/schema/activity.schema.js';
 import type { Routine } from '../src/schema/routine.schema.js';
-import { routineScope } from '../src/schema/routine.schema.js';
+import { isOperationInput, operationInputs, routineScope } from '../src/schema/routine.schema.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { META_WORKFLOW_ID, collectRoutineRefs, parseRoutineRef } from '../src/loaders/routine-resolver.js';
+import {
+  META_WORKFLOW_ID, type OperationMap, bodyWithOperations, collectRoutineRefs, collectRoutineSteps, parseRoutineRef,
+} from '../src/loaders/routine-resolver.js';
 import { ROUTINES_DIR, buildRoutineLookup, readCorpusRoutines } from '../src/loaders/routine-loader.js';
 import { deriveActivityContract } from '../src/utils/activity-variables.js';
 import { assertScanned, corpusWorkflows, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
@@ -61,6 +80,8 @@ interface Reference {
   site: string;
   /** The routine the reference names, as written. */
   ref: string;
+  /** The arguments the site binds, which an operation parameter's contract is derived against. */
+  args: Record<string, string | number | boolean> | undefined;
   /** The routine name it resolves to, and where. */
   resolved?: { workflowId: string; name: string };
 }
@@ -106,22 +127,17 @@ async function checkSignature(
   workflowId: string,
   routine: Routine,
   routines: Awaited<ReturnType<typeof buildRoutineLookup>>,
+  /** The bodies to derive: one per reference site where the routine binds an operation by argument. */
+  bodies: ReadonlyArray<{ operations: OperationMap; site: string }>,
 ): Promise<Finding[]> {
   const scope = routineScope(routine);
   const declared = new Set([...scope.inputs.keys(), ...scope.outputs.keys(), ...scope.internals.keys()]);
   const site = `${workflowId}/routines/${routine.id}.yaml`;
+  const findings: Finding[] = [];
 
   // A routine's body is an activity's step list by construction, so the derivation reads it as one.
   // The namespace is the signature: a name outside it is exactly the undeclared read to report.
-  const derived = await deriveActivityContract({
-    activity: { id: routine.id, version: routine.version, name: routine.name, required: true, steps: routine.steps } as Activity,
-    workflowDir: root,
-    scopeWorkflowId: workflowId,
-    namespace: declared,
-    routines,
-  });
-
-  const findings: Finding[] = [];
+  //
   // `produces` and `mentions` are the un-narrowed sets — every name a step produces or consults,
   // whether or not a declaration mentions it. The narrowed `reads`/`writes` would answer the wrong
   // question here, having already been filtered to the namespace this check is testing.
@@ -129,9 +145,48 @@ async function checkSignature(
   // `mentions` less the literals, because a binding's unbraced value is a rename only where it names
   // something declared: `analysis_mode: thorough` mentions `thorough` and reads nothing, and
   // reporting it as an undeclared read would fire on nearly every real body.
-  const written = derived.produces;
-  const consulted = new Set([...derived.mentions].filter((name) => !derived.literalValues.has(name)));
+  const written = new Set<string>();
+  const consulted = new Set(bodyUses(routine));
+  for (const body of bodies) {
+    const derived = await deriveActivityContract({
+      activity: {
+        id: routine.id, version: routine.version, name: routine.name, required: true,
+        steps: bodyWithOperations(routine.steps, body.operations),
+      } as Activity,
+      workflowDir: root,
+      scopeWorkflowId: workflowId,
+      namespace: declared,
+      routines,
+    });
+    for (const name of derived.produces) written.add(name);
+    for (const name of derived.mentions) if (!derived.literalValues.has(name)) consulted.add(name);
 
+    // An undeclared read is something the body DOES, so it is reported where it happens. One site's
+    // operation reading a name is a gap in the signature whether or not another site's operation
+    // reads it.
+    for (const name of derived.mentions) {
+      if (declared.has(name) || derived.literalValues.has(name)) continue;
+      findings.push({
+        check: 'routine-undeclared-read', site: body.site,
+        detail: `the body reads '${name}' and the signature declares it as neither an input, an output nor an internal — declare it as an input, and a reference site that binds nothing takes the host's value under that name`,
+      });
+    }
+
+    // A value the ARGUMENT produces cannot be carried onward, because which values those are follows
+    // from the argument. A name the body passes on has to be one the run owns at every site, and a
+    // declaration naming one of the argument's outputs is a signature that holds only at this one.
+    for (const name of await argumentProductions(root, workflowId, routine, body.operations, routines)) {
+      if (!declared.has(name)) continue;
+      findings.push({
+        check: 'routine-reads-argument-output', site: body.site,
+        detail: `'${name}' is an output of the operation this site binds and the signature declares it — a run takes its argument's operation and not that operation's values, which differ by argument, so nothing downstream of the run can be promised one`,
+      });
+    }
+  }
+
+  // A declaration rule asks whether the body ever honours what the signature promises, so it is
+  // graded over every body and reported against the declaration. An input one site's operation
+  // consults and another's does not is still an input the run consults.
   for (const [id] of scope.outputs) {
     if (written.has(id)) continue;
     findings.push({
@@ -139,7 +194,15 @@ async function checkSignature(
       detail: `output '${id}' is declared and no step of the body writes it — a reference site binding it would take a value nothing produces`,
     });
   }
-  for (const [id] of scope.inputs) {
+  for (const [id, input] of scope.inputs) {
+    if (isOperationInput(input)) {
+      if (consulted.has(id)) continue;
+      findings.push({
+        check: 'routine-operation-unbound', site,
+        detail: `input '${id}' declares 'kind: technique' and no step of the body binds it — every reference site is asked for an operation the run never invokes`,
+      });
+      continue;
+    }
     if (consulted.has(id)) continue;
     findings.push({
       check: 'routine-input-unread', site,
@@ -160,14 +223,77 @@ async function checkSignature(
       });
     }
   }
-  for (const name of consulted) {
-    if (declared.has(name)) continue;
-    findings.push({
-      check: 'routine-undeclared-read', site,
-      detail: `the body reads '${name}' and the signature declares it as neither an input, an output nor an internal — declare it as an input, and a reference site that binds nothing takes the host's value under that name`,
-    });
-  }
   return findings;
+}
+
+/**
+ * What the operation one site binds produces, derived from the parameterised steps alone and with
+ * their actions dropped.
+ *
+ * Taking the whole body's productions would answer a different question, and so would keeping the
+ * actions: a step's actions are the RUN's writes, authored beside the binding and the same whichever
+ * operation the site supplies. Only what the operation itself declares varies by argument, and only
+ * that is what a signature may not carry.
+ */
+async function argumentProductions(
+  root: string,
+  workflowId: string,
+  routine: Routine,
+  operations: OperationMap,
+  routines: Awaited<ReturnType<typeof buildRoutineLookup>>,
+): Promise<Set<string>> {
+  if (operations.size === 0) return new Set();
+  const parameterised: Step[] = [];
+  const collect = (authored: readonly Step[], substituted: readonly Step[]): void => {
+    authored.forEach((step, index) => {
+      const mirror = substituted[index]!;
+      if (step.kind === 'technique') {
+        const reference = typeof step.technique === 'string' ? step.technique : step.technique.name;
+        if (operations.has(reference)) parameterised.push({ ...mirror, actions: undefined } as Step);
+      } else if (step.kind === 'loop') {
+        collect(step.steps as Step[], (mirror as Step & { kind: 'loop' }).steps as Step[]);
+      }
+    });
+  };
+  collect(routine.steps, bodyWithOperations(routine.steps, operations));
+  if (parameterised.length === 0) return new Set();
+
+  const derived = await deriveActivityContract({
+    activity: {
+      id: routine.id, version: routine.version, name: routine.name, required: true, steps: parameterised,
+    } as Activity,
+    workflowDir: root,
+    scopeWorkflowId: workflowId,
+    namespace: new Set<string>(),
+    routines,
+  });
+  return derived.produces;
+}
+
+/**
+ * The names the routine as AUTHORED puts in positions the derivation cannot report.
+ *
+ * Two of them, and both are gone by the time a derived body is read. An operation parameter stands
+ * in a technique position, which substitution has replaced with a concrete reference. And a
+ * comparison's right-hand operand is a value by the dialect's grammar, so a parameter standing there
+ * is never a bag read however plainly the body consults it.
+ */
+function bodyUses(routine: Routine): Set<string> {
+  const used = new Set<string>();
+  const operand = /(?:==|!=|>=|<=|>|<)\s*([A-Za-z_][A-Za-z0-9_]*)(?![A-Za-z0-9_.])/g;
+  const visit = (steps: readonly Step[]): void => {
+    for (const step of steps) {
+      if (step.kind === 'technique') {
+        used.add(typeof step.technique === 'string' ? step.technique : step.technique.name);
+      }
+      if (typeof step.when === 'string') {
+        for (const match of step.when.matchAll(operand)) used.add(match[1]!);
+      }
+      if (step.kind === 'loop') visit(step.steps as Step[]);
+    }
+  };
+  visit(routine.steps);
+  return used;
 }
 
 /** One activity as authored: where it sits, and the steps a reference can be found among. */
@@ -214,6 +340,26 @@ function authoredActivities(workflowId: string, dir: string): AuthoredActivity[]
   return out;
 }
 
+/**
+ * The operations one reference site supplies, or undefined where it supplies something the load
+ * refuses — a missing argument, or one carrying a token that has no value when definitions load.
+ * Reporting those here would name the same defect the load already names, with less of the site.
+ */
+function siteOperations(
+  routine: Routine,
+  parameters: string[],
+  args: Record<string, string | number | boolean> | undefined,
+): Map<string, string> | undefined {
+  const operations = new Map<string, string>();
+  const declared = routineScope(routine).inputs;
+  for (const id of parameters) {
+    const argument = args?.[id] ?? declared.get(id)?.default;
+    if (typeof argument !== 'string' || argument.includes('{')) return undefined;
+    operations.set(id, argument);
+  }
+  return operations;
+}
+
 export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const index = indexCorpus(root);
   const corpus = corpusWorkflows(root, index);
@@ -243,13 +389,17 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const references: Reference[] = [];
   for (const { id: workflowId, dir } of corpus) {
     for (const { site, steps } of authoredActivities(workflowId, dir)) {
-      for (const ref of collectRoutineRefs({ steps })) references.push({ workflowId, site, ref });
+      for (const step of collectRoutineSteps({ steps })) {
+        references.push({ workflowId, site, ref: step.routine, args: step.with });
+      }
     }
   }
   for (const [workflowId, routines] of declared) {
     for (const routine of routines.values()) {
-      for (const ref of collectRoutineRefs({ steps: routine.steps })) {
-        references.push({ workflowId, site: `${workflowId}/routines/${routine.id}.yaml`, ref, });
+      for (const step of collectRoutineSteps({ steps: routine.steps })) {
+        references.push({
+          workflowId, site: `${workflowId}/routines/${routine.id}.yaml`, ref: step.routine, args: step.with,
+        });
       }
     }
   }
@@ -258,12 +408,50 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
     if (resolved) reference.resolved = resolved;
   }
 
-  // The signature check, per declared routine.
+  const sitesByRoutine = new Map<string, Reference[]>();
+  for (const reference of references) {
+    if (!reference.resolved) continue;
+    const key = keyOf(reference.resolved.workflowId, reference.resolved.name);
+    sitesByRoutine.set(key, [...(sitesByRoutine.get(key) ?? []), reference]);
+  }
+
+  // The signature check. Once per routine, and once per REFERENCE SITE for a routine whose body binds
+  // an operation by argument: such a body names a parameter where an operation reference belongs, so
+  // it has no signature of its own and there is nothing to derive until a site says which operation.
+  // A routine no site refers to is reported as unreferenced below, which is the same remedy.
   for (const [workflowId, routines] of declared) {
     const lookup = await buildRoutineLookup(root, [workflowId], [...routines.values()].flatMap(
       (routine) => collectRoutineRefs({ steps: routine.steps })));
     for (const routine of routines.values()) {
-      findings.push(...await checkSignature(root, workflowId, routine, lookup));
+      const parameters = operationInputs(routine);
+      const declaration = `${workflowId}/routines/${routine.id}.yaml`;
+      if (parameters.length === 0) {
+        findings.push(...await checkSignature(root, workflowId, routine, lookup, [
+          { operations: new Map(), site: declaration },
+        ]));
+        continue;
+      }
+      const sites = sitesByRoutine.get(keyOf(workflowId, routine.id)) ?? [];
+      const bodies = [];
+      for (const reference of sites) {
+        const operations = siteOperations(routine, parameters, reference.args);
+        if (operations === undefined) continue; // an argument the load refuses; the load names it
+        bodies.push({ operations, site: `${declaration} at ${reference.site}` });
+      }
+      if (bodies.length > 0) {
+        findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
+        continue;
+      }
+      // Sites exist and not one of them supplies an operation this can derive against, so the
+      // signature went unheld. Saying so is the difference between a guard with no verdict and a
+      // guard reporting that a routine is sound.
+      if (sites.length > 0) {
+        findings.push({
+          check: 'routine-signature-unheld', site: declaration,
+          detail: `no reference site supplies an operation argument this can read — ${sites.length} site(s) refer to '${routine.id}' and each binds `
+            + `${parameters.map((id) => `'${id}'`).join(', ')} to something that resolves at run time or not at all, so the signature was not held against the body`,
+        });
+      }
     }
   }
 
