@@ -37,15 +37,16 @@
  *
  * Run: npx tsx guards/check-routines.ts [--root <workflows-dir>]
  */
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { Activity } from '../src/schema/activity.schema.js';
+import { parseDefinition } from '../src/utils/serialization.js';
+import type { Activity, Step } from '../src/schema/activity.schema.js';
 import type { Routine } from '../src/schema/routine.schema.js';
 import { routineScope } from '../src/schema/routine.schema.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { META_WORKFLOW_ID, collectRoutineRefs, parseRoutineRef } from '../src/loaders/routine-resolver.js';
 import { ROUTINES_DIR, buildRoutineLookup, readCorpusRoutines } from '../src/loaders/routine-loader.js';
-import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { deriveActivityContract } from '../src/utils/activity-variables.js';
 import { assertScanned, corpusWorkflows, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
@@ -169,9 +170,54 @@ async function checkSignature(
   return findings;
 }
 
+/** One activity as authored: where it sits, and the steps a reference can be found among. */
+interface AuthoredActivity {
+  /** Path from the corpus root, so a finding names a file that exists on disk. */
+  site: string;
+  steps: Step[] | undefined;
+}
+
+/**
+ * Every activity a workflow authors, read from its files.
+ *
+ * The directory is the one the manifest names and `activities` otherwise, matching the loader's
+ * rule. A manifest may also carry an activity inline, which no file holds, so those are read from
+ * the manifest itself. A file that does not parse contributes no reference and is not reported
+ * here: an unreadable activity is a louder failure than this guard's subject, and the guards that
+ * own it name it already.
+ */
+function authoredActivities(workflowId: string, dir: string): AuthoredActivity[] {
+  const out: AuthoredActivity[] = [];
+  let manifest: Record<string, unknown> = {};
+  try {
+    manifest = (parseDefinition(readFileSync(join(dir, 'workflow.yaml'), 'utf-8')) ?? {}) as Record<string, unknown>;
+  } catch { /* a manifest that does not parse is the load's finding, not this guard's */ }
+
+  for (const entry of Array.isArray(manifest['activities']) ? manifest['activities'] : []) {
+    // A string entry is a path to a file, read below from whichever workflow directory holds it.
+    if (entry && typeof entry === 'object') {
+      const inline = entry as { id?: unknown; steps?: unknown };
+      const id = typeof inline.id === 'string' ? inline.id : 'inline';
+      out.push({ site: `${workflowId}/workflow.yaml#${id}`, steps: inline.steps as Step[] | undefined });
+    }
+  }
+
+  const activitiesDir = typeof manifest['activitiesDir'] === 'string' ? manifest['activitiesDir'] : 'activities';
+  const dirPath = join(dir, activitiesDir);
+  if (!existsSync(dirPath)) return out;
+  for (const name of readdirSync(dirPath).filter((f: string) => f.endsWith('.yaml')).sort()) {
+    try {
+      const doc = parseDefinition(readFileSync(join(dirPath, name), 'utf-8')) as { steps?: Step[] } | null;
+      out.push({ site: `${workflowId}/${activitiesDir}/${name}`, steps: doc?.steps });
+    } catch { continue; }
+  }
+  return out;
+}
+
 export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const index = indexCorpus(root);
-  const workflows = corpusWorkflows(root, index).map(({ id }) => id);
+  const corpus = corpusWorkflows(root, index);
+  const workflows = corpus.map(({ id }) => id);
   assertScanned(workflows.length, 'workflows with a workflow.yaml', root);
 
   const { byWorkflow: declared, errors } = await readCorpusRoutines(root, index);
@@ -186,17 +232,18 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   if (declared.size === 0) return findings;
 
   // Every reference, from every activity file and every routine body, across every workflow. The
-  // sweep is corpus-wide because the rules are: a load reaches one workflow, and a reference site
-  // may sit a directory away.
+  // sweep is corpus-wide because the rules are: a reference site may sit a directory away.
+  //
+  // Read from disk rather than through the loader. A reference is a field an activity file carries,
+  // so reading the file answers for it, and a workflow that fails to load is then a workflow whose
+  // references are still counted — where a load-based sweep contributes none of them and a routine
+  // only that workflow refers to presents as a routine nothing refers to. An activity's directory is
+  // also the workflow it was authored in, which is the attribution a borrowed activity needs and
+  // costs nothing to read.
   const references: Reference[] = [];
-  for (const workflowId of workflows) {
-    const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
-    if (!loaded.success) continue;
-    for (const activity of loaded.value.authoredActivities.values()) {
-      const from = loaded.value.activitySourceWorkflow.get(activity.id) ?? workflowId;
-      // The filename, prefix included, so a finding's site is a path that exists on disk.
-      const file = `${from}/activities/${activity.artifactPrefix ? `${activity.artifactPrefix}-` : ''}${activity.id}.yaml`;
-      for (const ref of collectRoutineRefs(activity)) references.push({ workflowId: from, site: file, ref });
+  for (const { id: workflowId, dir } of corpus) {
+    for (const { site, steps } of authoredActivities(workflowId, dir)) {
+      for (const ref of collectRoutineRefs({ steps })) references.push({ workflowId, site, ref });
     }
   }
   for (const [workflowId, routines] of declared) {
