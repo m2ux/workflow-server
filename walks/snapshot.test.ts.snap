@@ -344,7 +344,15 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "02-assumptions-log.md",
         "07-deferred-items.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
       ],
@@ -362,6 +370,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-residual-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -377,7 +386,15 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
       ],
@@ -399,6 +416,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-resolved-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -973,7 +991,15 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "02-assumptions-log.md",
         "07-deferred-items.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
       ],
@@ -991,6 +1017,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-residual-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -1006,7 +1033,15 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
       ],
@@ -1028,6 +1063,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-resolved-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -1643,7 +1679,15 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "02-assumptions-log.md",
         "07-deferred-items.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
       ],
@@ -1661,6 +1705,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-residual-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -1676,7 +1721,15 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
       ],
@@ -1698,6 +1751,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-resolved-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -2261,7 +2315,15 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "02-assumptions-log.md",
         "07-deferred-items.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
       ],
@@ -2279,6 +2341,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-residual-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -2294,7 +2357,15 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
       ],
@@ -2316,6 +2387,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-resolved-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -3275,7 +3347,15 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "02-assumptions-log.md",
         "07-deferred-items.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:assumptions_review_residual_assumptions_needs_individual_interview",
       ],
@@ -3293,6 +3373,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-residual-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
         "register-deferred-assumptions",
       ],
@@ -3308,7 +3389,15 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "residual-assumptions.batch-gate",
+          "option": "accept-agent-positions",
+          "setVariable": {
+            "assumption_outcome": "confirmed",
+          },
+        },
+      ],
       "gatesReadUnbound": [
         "residual-assumptions.interview:implement_residual_assumptions_needs_individual_interview",
       ],
@@ -3330,6 +3419,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "assumption-convergence.convergence.challenge-pass.challenge",
         "assumption-convergence.convergence.challenge-pass.combine",
         "present-resolved-assumptions",
+        "residual-assumptions.record-batch",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -3603,12 +3693,12 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
 {
   "activitiesEntered": 15,
   "declaredTotal": 286,
-  "executedTotal": 165,
+  "executedTotal": 167,
   "perActivity": [
     {
       "activity": "assumptions-review",
       "declared": 17,
-      "executed": 7,
+      "executed": 8,
     },
     {
       "activity": "codebase-comprehension",
@@ -3628,7 +3718,7 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     {
       "activity": "implement",
       "declared": 21,
-      "executed": 10,
+      "executed": 11,
     },
     {
       "activity": "implementation-analysis",
