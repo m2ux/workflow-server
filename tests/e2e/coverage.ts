@@ -7,9 +7,10 @@
  * which records what happened rather than what should have (#472).
  *
  * The denominator here comes from the definitions instead, so it does not move when the walk does.
- * Two things make the loader the only honest source for it. A checkpoint may arrive by fragment
- * `ref`, which raw YAML shows as a step with no options at all; and an activity may be borrowed by
- * another workflow, so the walk that reaches it need not be the walk of the workflow it lives in.
+ * Two things make the loader the only honest source for it. A checkpoint may arrive inside a
+ * routine, which raw YAML shows as a `kind: routine` step with no options at all; and an activity
+ * may be borrowed by another workflow, so the walk that reaches it need not be the walk of the
+ * workflow it lives in.
  * Loading each workflow the way the server does resolves both, and coverage is then a corpus-wide
  * question: one entry per declared option, covered if any walk took it.
  */

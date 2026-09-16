@@ -225,8 +225,8 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
       logInfo('Loaded local activities from directory', { workflowId, activitiesDir: activitiesDirName, count: localActivities.length });
     }
 
-    // Fragment scope per activity: local activities resolve bare refs against this workflow;
-    // borrowed cross-workflow activities against their source workflow (#166 B10).
+    // Resolution scope per activity: local activities resolve a bare routine name against this
+    // workflow; borrowed cross-workflow activities against their source workflow (#166 B10).
     const activitySourceWorkflow = new Map<string, string>(resolvedActivities.map(a => [a.id, workflowId]));
 
     if (existingActivities && existingActivities.length > 0) {

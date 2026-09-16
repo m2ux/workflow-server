@@ -276,7 +276,6 @@ A workflow is the top-level container representing a complete process definition
 | `author`          | string     | Author metadata (not read by the server)                   |
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | { workflow?, activity?, universal?: string[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds |
-| `fragments`       | { checkpoints? } | Shared checkpoint bodies, declared once and imported by `ref` (`[workflow::]name`) from a `kind: checkpoint` step — this workflow's or another's. Resolved at load; agents always receive materialized content |
 | `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
 | `variables`       | Variable[] | State variables                                            |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
@@ -328,20 +327,16 @@ Shared base fields on every kind:
 
 #### Checkpoint Step
 
-A `kind: checkpoint` step is a decision point requiring user input, inlined at its concrete position in `steps[]` (replacing the old separate `checkpoints[]` array and the `step.checkpoint` reference). It blocks by default; declaring `defaultOption` and `autoAdvanceMs` is what makes it auto-advanceable.
+A `kind: checkpoint` step is a decision point requiring user input, inlined at its concrete position in `steps[]`. It blocks by default; declaring `defaultOption` and `autoAdvanceMs` is what makes it auto-advanceable.
 
-A checkpoint step is authored in exactly one of two forms:
-
-- **Inline** — the step carries its own body (`message` + `options`, plus the optional body fields below).
-- **By reference** — the step declares `ref: [workflow::]name` naming a `fragments.checkpoints` entry, and contributes only its `id` and site gates (`when`, `required`, and `condition` — the latter only when the fragment declares none). The body fields are forbidden alongside `ref` so the fragment stays the single home for the checkpoint's content; the loader materializes the body before anything downstream reads the step, and `check:fragments` rejects an inline body that duplicates a fragment.
+A checkpoint step carries its own body: `message` and `options` are required, alongside the optional fields below. A body two activities both need is declared as a routine (see [Routine Step](#routine-step)) and referred to from each site, so one home serves both.
 
 | Field       | Type               | Purpose                                             |
 | ----------- | ------------------ | --------------------------------------------------- |
 | `id`        | string             | Checkpoint identity. Bare ids (`confirm-proceed`) are the response-replay key as written. Loop-body checkpoints that need a distinct answer per iteration use a template form `<baseId>#{...}` (e.g. `assumption-decision#{current_assumption.id}`); workers yield the expanded `<baseId>#<instance>` and the server matches the definition on the base id while recording under the full string. |
 | `kind`      | enum               | `checkpoint`                                        |
-| `ref`       | string             | Checkpoint-fragment reference (`[workflow::]name` into `fragments.checkpoints`; bare names resolve against the declaring workflow, then meta). Mutually exclusive with the body fields |
-| `message`   | string             | Question to present to user (inline form)           |
-| `options`   | CheckpointOption[] | Available choices (inline form)                     |
+| `message`   | string             | Question to present to user                         |
+| `options`   | CheckpointOption[] | Available choices                                   |
 | `defaultOption` | string          | The answer a soft gate takes when no person is reached. |
 | `autoAdvanceMs` | integer         | Milliseconds the server spends before applying a soft gate's default on `respond_checkpoint { auto_advance }`; it enforces the full interval. |
 
@@ -535,7 +530,6 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
 | `rules` | { workflow?, activity?, universal?: string[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both). Every entry is a rule string: text two workflows both need is neither one's to own, so its home is the conduct technique whose audience it binds and the bundle delivers it |
-| `fragments` | { checkpoints? } | Shared checkpoint bodies importable by `ref` (`[workflow::]name`); resolved at load so delivered content is always materialized |
 | `techniques` | { workflow?, activity?: string[] } | Orchestrator techniques (`workflow`, bundled into `get_workflow`) + techniques inherited by every activity (`activity`, injected into every `get_activity`) |
 | `variables` | array | Variable definitions with types and defaults |
 | `initialActivity` | string | ID of first activity (required for sequential workflows) |
@@ -625,7 +619,7 @@ Activities are the execution units of a workflow. Each activity contains an orde
 
 ### Checkpoint Steps
 
-A `kind: checkpoint` step pauses execution and requires user input. It sits inline in `steps[]` at the position where it is presented (there is no separate `checkpoints[]` array and no `step.checkpoint` reference):
+A `kind: checkpoint` step pauses execution and requires user input. It sits inline in `steps[]` at the position where it is presented:
 
 ```json
 {
