@@ -28,8 +28,6 @@ import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
-const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
-const INDEX = indexCorpus(ROOT);
 
 export interface BrokenAnchor {
   /** File containing the link, relative to the workflows root. */
@@ -84,21 +82,21 @@ function* walkFiles(dir: string): Generator<string> {
   }
 }
 
-/** Owned by `check-bootstrap-self-contained`, which refuses every corpus link on it. */
-const PRE_SESSION_RESOURCE = workflowSubdir(INDEX, 'meta', join('resources', 'bootstrap-protocol.md'));
-
 /** An anchored markdown destination, once the shared reader has produced it in any spelling. */
 const ANCHORED_RE = /^([^\s#]+\.md)#([A-Za-z0-9][\w-]*)$/;
 
-export function collectBrokenAnchors(): BrokenAnchor[] {
+export function collectBrokenAnchors(root: string = resolveWorkflowsRoot(DEFAULT_ROOT)): BrokenAnchor[] {
+  const corpusIndex = indexCorpus(root);
+  /** Owned by `check-bootstrap-self-contained`, which refuses every corpus link on it. */
+  const preSessionResource = workflowSubdir(corpusIndex, 'meta', join('resources', 'bootstrap-protocol.md'));
   const broken: BrokenAnchor[] = [];
   const anchorCache = new Map<string, Set<string>>();
-  for (const file of walkFiles(ROOT)) {
+  for (const file of walkFiles(root)) {
     // The pre-session bootstrap resource belongs to `check-bootstrap-self-contained`, which refuses
     // EVERY corpus link on it — nothing can be followed before a session exists. So anything this guard
     // could report there is already a finding of that one's, and reporting it twice would make one bad
     // line yield two findings that one edit clears.
-    if (file === PRE_SESSION_RESOURCE) continue;
+    if (file === preSessionResource) continue;
     // Scan only rendered prose: drop fenced code blocks (template bodies carry placeholder
     // links like NN-work-package-plan.md) and inline code spans (anti-pattern docs quote
     // illustrative link forms in backticks).
@@ -109,7 +107,7 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
     // from the same signal and one vocabulary is easier to act on than two.
     if (unclosed !== null && file.endsWith('.md')) {
       broken.push({
-        source: `${relative(ROOT, file)}:${unclosed}`,
+        source: `${relative(root, file)}:${unclosed}`,
         link: 'a code fence left open',
         reason: 'unbalanced-fence',
       });
@@ -128,12 +126,12 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
       // A template body names its file with a placeholder, which resolves to nothing on purpose.
       if (/[{]/.test(target!)) continue;
       // A `/<workflow>/…` link resolves through discovery; a relative one against this file.
-      const resolved = resolveLink(ROOT, file, target!, INDEX);
+      const resolved = resolveLink(root, file, target!, corpusIndex);
       if (resolved.form === 'external') continue;
       const targetPath = resolved.path;
       if (targetPath === null) continue; // names no workflow the corpus holds: check:corpus-links' finding
-      if (relative(ROOT, targetPath).startsWith('..' + sep)) continue; // outside the corpus
-      const source = relative(ROOT, file);
+      if (relative(root, targetPath).startsWith('..' + sep)) continue; // outside the corpus
+      const source = relative(root, file);
       const link = `${target}#${anchor}`;
       if (!existsSync(targetPath)) {
         broken.push({ source, link, reason: 'missing-file' });
@@ -149,10 +147,7 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  // Called for the refusal: this guard reads the corpus through module-level state, so the root is
-  // proven reachable rather than threaded through.
-  requireRootOrExit('resource-anchors', DEFAULT_ROOT);
-  const broken = collectBrokenAnchors();
+  const broken = collectBrokenAnchors(requireRootOrExit('resource-anchors', DEFAULT_ROOT));
   if (broken.length === 0) {
     process.stdout.write('resource-anchors: OK — every relative .md#anchor link resolves to a rendered heading, and every fence closes\n');
     process.exit(0);

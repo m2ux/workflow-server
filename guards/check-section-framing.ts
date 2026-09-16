@@ -33,19 +33,18 @@ import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
-const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
+
 /**
  * The triage lives with the corpus under `ledgers/`. Its entries are judgements about corpus prose,
  * so a change that moves a rule into a section and the entry describing that prose belong in one
  * commit.
  *
- * Exported so a test asserts against the same file the guard read rather than resolving the path a
- * second time.
+ * Exported so a test asserts against the same file the guard read, derived from the same root
+ * rather than resolved a second time.
  */
-export const TRIAGE_PATH = ledgerPath(ROOT, 'section-framing-triage.json');
-
-/** What to call the triage in a finding, so the message names the file the reader has to open. */
-const TRIAGE_LABEL = relative(process.cwd(), TRIAGE_PATH);
+export function triagePath(root: string = resolveWorkflowsRoot(DEFAULT_ROOT)): string {
+  return ledgerPath(root, 'section-framing-triage.json');
+}
 
 /**
  * Below this, framing is a line of orientation rather than a place an obligation can hide. The
@@ -88,15 +87,18 @@ function framingLength(text: string): number {
   return lines.join('\n').trim().length;
 }
 
-export function collectFramingFindings(): FramingFinding[] {
-  const files = walkFiles(ROOT);
-  const index = indexCorpus(ROOT);
+export function collectFramingFindings(root: string = resolveWorkflowsRoot(DEFAULT_ROOT)): FramingFinding[] {
+  const files = walkFiles(root);
+  const index = indexCorpus(root);
+  const triageFile = triagePath(root);
+  /** What to call the triage in a finding, so the message names the file the reader has to open. */
+  const triageLabel = relative(process.cwd(), triageFile);
 
   // Which resource slugs some other file cites with an #anchor. A file citing itself does not count:
   // an internal cross-reference is read by whoever already has the whole file.
   const anchoredBy = new Map<string, Set<string>>();
   for (const file of files) {
-    const rel = citePath(ROOT, file, index);
+    const rel = citePath(root, file, index);
     const text = readFileSync(file, 'utf-8');
     for (const m of text.matchAll(/\]\(([^)\s]*?)([A-Za-z0-9._-]+)\.md#[a-z0-9-]+\)/g)) {
       const slug = m[2]!.toLowerCase();
@@ -105,8 +107,8 @@ export function collectFramingFindings(): FramingFinding[] {
     }
   }
 
-  const triage: Triage = existsSync(TRIAGE_PATH)
-    ? (JSON.parse(readFileSync(TRIAGE_PATH, 'utf-8')) as Triage)
+  const triage: Triage = existsSync(triageFile)
+    ? (JSON.parse(readFileSync(triageFile, 'utf-8')) as Triage)
     : {};
   const classified = new Map((triage.entries ?? []).map((e) => [e.site, e]));
   const matched = new Set<string>();
@@ -114,7 +116,7 @@ export function collectFramingFindings(): FramingFinding[] {
   const out: FramingFinding[] = [];
   for (const file of files) {
     if (!file.endsWith('.md')) continue;
-    const rel = citePath(ROOT, file, index);
+    const rel = citePath(root, file, index);
     // Resources are what get section-delivered; a README is an index read whole.
     if (!rel.includes('/resources/') || rel.endsWith('README.md')) continue;
 
@@ -132,7 +134,7 @@ export function collectFramingFindings(): FramingFinding[] {
       site: rel,
       detail: `${chars} characters before the first '##', and ${citers.size} file(s) cite this resource by anchor — `
         + `a section consumer never receives that prose. Move an obligation into a section a citer can ask for, `
-        + `or classify the site in ${TRIAGE_LABEL} when the framing is orientation only`,
+        + `or classify the site in ${triageLabel} when the framing is orientation only`,
     });
   }
 
@@ -141,7 +143,7 @@ export function collectFramingFindings(): FramingFinding[] {
       out.push({
         check: 'stale-triage',
         site,
-        detail: `triaged framing no longer occurs — delete the entry from ${TRIAGE_LABEL}`,
+        detail: `triaged framing no longer occurs — delete the entry from ${triageLabel}`,
       });
     }
   }
@@ -150,10 +152,7 @@ export function collectFramingFindings(): FramingFinding[] {
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  // Called for the refusal: this guard reads the corpus through module-level state, so the root is
-  // proven reachable rather than threaded through.
-  requireRootOrExit('section-framing', DEFAULT_ROOT);
-  const findings = collectFramingFindings();
+  const findings = collectFramingFindings(requireRootOrExit('section-framing', DEFAULT_ROOT));
   if (findings.length === 0) {
     process.stdout.write('section-framing: OK — no resource strands prose above its first section from an anchored citer\n');
     process.exit(0);

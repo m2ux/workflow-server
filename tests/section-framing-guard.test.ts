@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
-import { TRIAGE_PATH } from '../guards/check-section-framing.js';
+import { triagePath } from '../guards/check-section-framing.js';
 
 /**
  * The `section-framing` guard reports untriaged sites; the judgement for each lives in
  * `ledgers/section-framing-triage.json`. The guard does not read that file's shape, so this does.
  */
+const TRIAGE_PATH = triagePath();
 const triage = existsSync(TRIAGE_PATH)
   ? JSON.parse(readFileSync(TRIAGE_PATH, 'utf-8')) as {
     rationales: Record<string, string>;
