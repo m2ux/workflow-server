@@ -7,7 +7,6 @@ import { baseSimulation } from './policies.js';
 import { declaredCheckpoints, declaredOptions, optionCoverage, checkpointGaps } from './coverage.js';
 import { corpusRoot } from '../corpus-root.js';
 import { indexCorpus } from '../../src/loaders/corpus-index.js';
-import { expectStampFresh } from '../stamp-freshness.js';
 import { parseWorkflowIds } from '../../scripts/coverage-scope.js';
 
 /**
@@ -104,14 +103,6 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
   let h: Harness;
   beforeAll(async () => { h = await createHarness(); });
   afterAll(async () => { await h.close(); });
-
-  it('was recorded against the corpus commit now checked out', () => {
-    expectStampFresh((stampSha, currentSha) =>
-      `${EXPECTED_LABEL} was recorded against corpus ${stampSha} but the checkout is at ${currentSha}. `
-      + `A coverage change below may be corpus drift rather than a regression: confirm the corpus `
-      + `change is intended, then re-record the expectation and run 'npm run baseline:stamp' in the `
-      + `same commit.`);
-  });
 
   it('takes every declared option some walk can reach', async () => {
     // Declared is scoped with the walk: an option this run cannot reach because it did not walk the

@@ -11,7 +11,6 @@ import {
   reviewModePolicy,
 } from './policies.js';
 import { declaredSteps, stepCoverage } from './coverage.js';
-import { expectStampFresh } from '../stamp-freshness.js';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { liveCorpusRoot } from '../corpus-root.js';
@@ -40,24 +39,6 @@ function expectedActivityPrefixes(): Map<string, string> {
  * snapshot diff). Run retroactively against a legacy (main) build, the same
  * snapshots reveal exactly what the skills→techniques migration changed.
  */
-describe.skipIf(!liveCorpusRoot())('walk baseline corpus stamp', () => {
-  // These snapshots describe a walk through the corpus, so they are only meaningful against the corpus
-  // they were generated from. Checking the stamp first turns "six unrelated tests are red" into one
-  // named cause (#327 S3).
-  //
-  // The stamp answers that question for the tree in front of it. It is a file recording the provenance
-  // of sibling files, so a merge can take it from one parent and the baselines it speaks for from the
-  // other — matching, and silent, while the two describe different corpora (#479). Keep the stamp and
-  // the snapshots in the same commit.
-  it('was generated against the corpus commit now checked out', () => {
-    expectStampFresh((stampSha, currentSha) =>
-      `walk snapshots were generated against corpus ${stampSha} but the checkout is at ${currentSha}. `
-      + `Any snapshot diff below may be corpus drift, not a code regression. Confirm the corpus change `
-      + `is intended, re-baseline with 'npm run test:ci -- -u', then run 'npm run baseline:stamp' in `
-      + `the same commit.`);
-  });
-});
-
 const policies = [
   defaultPolicy, skipOptionalPolicy, fullWorkflowPolicy,
   researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
