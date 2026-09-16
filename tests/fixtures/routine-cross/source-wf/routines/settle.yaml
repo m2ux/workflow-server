@@ -7,11 +7,6 @@ inputs:
   - id: settlement_subject
     description: What the run settles, named by the site.
 
-outputs:
-  - id: settled_by
-    type: string
-    description: Which declaring workflow's body ran.
-
 steps:
   - kind: action
     id: weigh

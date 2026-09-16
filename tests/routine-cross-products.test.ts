@@ -107,9 +107,10 @@ describe('a gate reaching a fanned branch from inside a routine', () => {
     expect(result.success).toBe(false);
     if (result.success) return;
 
-    const issues = (result.error as { issues?: string[] }).issues ?? [];
-    expect(issues.join('\n')).toContain('first-probe.confirm');
-    // The id written in the routine file, unprefixed, would name a step no activity holds.
-    expect(issues.some((i) => /\bconfirm\b(?!\.)/.test(i.replace(/first-probe\.confirm/g, '')))).toBe(false);
+    const issues = ((result.error as { issues?: string[] }).issues ?? []).join('\n');
+    expect(issues).toContain("declares checkpoint 'first-probe.confirm'");
+    // The id as written in the routine file names a step no activity holds, so naming it there
+    // would send a reader to a file whose `confirm` is not the one the fan objected to.
+    expect(issues).not.toContain("declares checkpoint 'confirm'");
   });
 });
