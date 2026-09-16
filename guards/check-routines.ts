@@ -119,29 +119,17 @@ async function checkSignature(
   workflowId: string,
   routine: Routine,
   routines: Awaited<ReturnType<typeof buildRoutineLookup>>,
-  /** One reference site's operation arguments, for a routine whose body binds an operation. */
-  operations: OperationMap = new Map(),
-  /** What the finding names, which is a reference site where the body has no signature of its own. */
-  reportedAt = `${workflowId}/routines/${routine.id}.yaml`,
+  /** The bodies to derive: one per reference site where the routine binds an operation by argument. */
+  bodies: ReadonlyArray<{ operations: OperationMap; site: string }>,
 ): Promise<Finding[]> {
   const scope = routineScope(routine);
   const declared = new Set([...scope.inputs.keys(), ...scope.outputs.keys(), ...scope.internals.keys()]);
-  const site = reportedAt;
+  const site = `${workflowId}/routines/${routine.id}.yaml`;
+  const findings: Finding[] = [];
 
   // A routine's body is an activity's step list by construction, so the derivation reads it as one.
   // The namespace is the signature: a name outside it is exactly the undeclared read to report.
-  const derived = await deriveActivityContract({
-    activity: {
-      id: routine.id, version: routine.version, name: routine.name, required: true,
-      steps: bodyWithOperations(routine.steps, operations),
-    } as Activity,
-    workflowDir: root,
-    scopeWorkflowId: workflowId,
-    namespace: declared,
-    routines,
-  });
-
-  const findings: Finding[] = [];
+  //
   // `produces` and `mentions` are the un-narrowed sets — every name a step produces or consults,
   // whether or not a declaration mentions it. The narrowed `reads`/`writes` would answer the wrong
   // question here, having already been filtered to the namespace this check is testing.
@@ -149,9 +137,37 @@ async function checkSignature(
   // `mentions` less the literals, because a binding's unbraced value is a rename only where it names
   // something declared: `analysis_mode: thorough` mentions `thorough` and reads nothing, and
   // reporting it as an undeclared read would fire on nearly every real body.
-  const written = derived.produces;
-  const consulted = new Set([...derived.mentions].filter((name) => !derived.literalValues.has(name)));
+  const written = new Set<string>();
+  const consulted = new Set(bodyUses(routine));
+  for (const body of bodies) {
+    const derived = await deriveActivityContract({
+      activity: {
+        id: routine.id, version: routine.version, name: routine.name, required: true,
+        steps: bodyWithOperations(routine.steps, body.operations),
+      } as Activity,
+      workflowDir: root,
+      scopeWorkflowId: workflowId,
+      namespace: declared,
+      routines,
+    });
+    for (const name of derived.produces) written.add(name);
+    for (const name of derived.mentions) if (!derived.literalValues.has(name)) consulted.add(name);
 
+    // An undeclared read is something the body DOES, so it is reported where it happens. One site's
+    // operation reading a name is a gap in the signature whether or not another site's operation
+    // reads it.
+    for (const name of derived.mentions) {
+      if (declared.has(name) || derived.literalValues.has(name)) continue;
+      findings.push({
+        check: 'routine-undeclared-read', site: body.site,
+        detail: `the body reads '${name}' and the signature declares it as neither an input, an output nor an internal — declare it as an input, and a reference site that binds nothing takes the host's value under that name`,
+      });
+    }
+  }
+
+  // A declaration rule asks whether the body ever honours what the signature promises, so it is
+  // graded over every body and reported against the declaration. An input one site's operation
+  // consults and another's does not is still an input the run consults.
   for (const [id] of scope.outputs) {
     if (written.has(id)) continue;
     findings.push({
@@ -159,23 +175,9 @@ async function checkSignature(
       detail: `output '${id}' is declared and no step of the body writes it — a reference site binding it would take a value nothing produces`,
     });
   }
-  // An operation parameter stands in a technique position, so the body binds it rather than reading
-  // it, and it is gone from the body by the time the derivation sees one. The position it stands in
-  // is read from the routine as authored, which is the only form that still spells the parameter.
-  const authoredOperations = new Set<string>();
-  const collectOperations = (steps: readonly Step[]): void => {
-    for (const step of steps) {
-      if (step.kind === 'technique') {
-        const reference = typeof step.technique === 'string' ? step.technique : step.technique.name;
-        authoredOperations.add(reference);
-      } else if (step.kind === 'loop') collectOperations(step.steps as Step[]);
-    }
-  };
-  collectOperations(routine.steps);
-
   for (const [id, input] of scope.inputs) {
     if (isOperationInput(input)) {
-      if (authoredOperations.has(id)) continue;
+      if (consulted.has(id)) continue;
       findings.push({
         check: 'routine-operation-unbound', site,
         detail: `input '${id}' declares 'kind: technique' and no step of the body binds it — every reference site is asked for an operation the run never invokes`,
@@ -202,14 +204,33 @@ async function checkSignature(
       });
     }
   }
-  for (const name of consulted) {
-    if (declared.has(name)) continue;
-    findings.push({
-      check: 'routine-undeclared-read', site,
-      detail: `the body reads '${name}' and the signature declares it as neither an input, an output nor an internal — declare it as an input, and a reference site that binds nothing takes the host's value under that name`,
-    });
-  }
   return findings;
+}
+
+/**
+ * The names the routine as AUTHORED puts in positions the derivation cannot report.
+ *
+ * Two of them, and both are gone by the time a derived body is read. An operation parameter stands
+ * in a technique position, which substitution has replaced with a concrete reference. And a
+ * comparison's right-hand operand is a value by the dialect's grammar, so a parameter standing there
+ * is never a bag read however plainly the body consults it.
+ */
+function bodyUses(routine: Routine): Set<string> {
+  const used = new Set<string>();
+  const operand = /(?:==|!=|>=|<=|>|<)\s*([A-Za-z_][A-Za-z0-9_]*)(?![A-Za-z0-9_.])/g;
+  const visit = (steps: readonly Step[]): void => {
+    for (const step of steps) {
+      if (step.kind === 'technique') {
+        used.add(typeof step.technique === 'string' ? step.technique : step.technique.name);
+      }
+      if (typeof step.when === 'string') {
+        for (const match of step.when.matchAll(operand)) used.add(match[1]!);
+      }
+      if (step.kind === 'loop') visit(step.steps as Step[]);
+    }
+  };
+  visit(routine.steps);
+  return used;
 }
 
 /** One activity as authored: where it sits, and the steps a reference can be found among. */
@@ -340,18 +361,20 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
       (routine) => collectRoutineRefs({ steps: routine.steps })));
     for (const routine of routines.values()) {
       const parameters = operationInputs(routine);
+      const declaration = `${workflowId}/routines/${routine.id}.yaml`;
       if (parameters.length === 0) {
-        findings.push(...await checkSignature(root, workflowId, routine, lookup));
+        findings.push(...await checkSignature(root, workflowId, routine, lookup, [
+          { operations: new Map(), site: declaration },
+        ]));
         continue;
       }
+      const bodies = [];
       for (const reference of sitesByRoutine.get(keyOf(workflowId, routine.id)) ?? []) {
         const operations = siteOperations(routine, parameters, reference.args);
         if (operations === undefined) continue; // an argument the load refuses; the load names it
-        findings.push(...await checkSignature(
-          root, workflowId, routine, lookup, operations,
-          `${workflowId}/routines/${routine.id}.yaml at ${reference.site}`,
-        ));
+        bodies.push({ operations, site: `${declaration} at ${reference.site}` });
       }
+      if (bodies.length > 0) findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
     }
   }
 

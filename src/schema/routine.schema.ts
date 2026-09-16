@@ -12,6 +12,16 @@
  * makes the signature a contract and the body checkable with no host activity. A reference site that
  * leaves a declared input unbound takes the host's value under the same spelling.
  *
+ * Three guarantees hold for every routine EXCEPT one that binds an operation by argument — an input
+ * declared `kind: technique`, whose value stands in a body step's technique position. Such a body
+ * names a parameter where an operation reference belongs, so what it reads and what artifact it
+ * declares depend on the argument, and until a site supplies one there is nothing to derive:
+ *
+ * - A contract derives in isolation. For a routine binding an operation by argument it derives once
+ *   per reference site, against the operation that site supplies.
+ * - A routine walks from its declared inputs. Such a routine is walked per reference site instead.
+ * - The artifact check runs once per routine. For such a routine it runs once per reference site.
+ *
  * The routine is erased at load: `materializeActivityRoutines` copies its steps into the referring
  * activity, so everything downstream sees ordinary steps.
  */
