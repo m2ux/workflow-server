@@ -376,6 +376,32 @@ describe('placement, over the transitive referrer closure', () => {
     expect(findings[0]!.detail).toContain('workflow(s)');
   });
 
+  /**
+   * A reference is a field an activity file carries, so whether the workflow around it loads is a
+   * different question. Counted only through the load, a routine referred to from a workflow that
+   * does not load reads as a routine nothing refers to — and the remedy that finding names, delete
+   * the file, is destructive applied to a file the corpus uses.
+   *
+   * Every other tree in this file loads clean, which is the assumption that kept this out of view.
+   */
+  it('counts a reference from a workflow that does not load', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'wf-routines-unread-'));
+    try {
+      // A workflow whose graph names a destination no activity declares, so the load refuses it.
+      mkdirSync(join(root, 'broken-wf', 'activities'), { recursive: true });
+      writeFileSync(
+        join(root, 'broken-wf', 'workflow.yaml'),
+        'id: broken-wf\nversion: 1.0.0\ntitle: broken-wf\ninitialActivity: host\ngraph:\n  host:\n    done: no-such-activity\n',
+      );
+      writeFileSync(join(root, 'broken-wf', 'activities', '01-host.yaml'), referrer());
+      writeRoutineFixture(root, 'broken-wf', 'shared-run', body('shared-run', action));
+
+      expect(checks(await collectRoutineFindings(root))).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it('reports a single-owner routine sitting in the shared home', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: referrer() }, meta: { bootstrap: 'id: bootstrap\nversion: 1.0.0\nname: Bootstrap\nsteps:\n' + action } },
