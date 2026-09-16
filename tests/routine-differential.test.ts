@@ -142,6 +142,22 @@ describe('the pre-scan keeps routine-free text off the splice path', () => {
     expect(hasRoutineStepLine(commented)).toBe(true);
     expect(collectRoutineRefLines(commented)).toEqual(['shared-run']);
   });
+
+  /**
+   * The pre-scan admits a block on its `kind` line alone, so what it hands the splice is a shape
+   * nothing has validated. A block naming no routine, or carrying a field the reference grammar has
+   * no place for, is refused here — where the object path would have been refused by the step
+   * schema at load. Left to pass, the splice would read `routine: undefined` and resolve nothing.
+   */
+  it('refuses a reference block the step schema does not admit', () => {
+    const noName = 'steps:\n  - kind: routine\n    id: run\n';
+    expect(() => injectRoutineSteps(noName, () => { throw new Error('must not be reached'); }))
+      .toThrow(/Routine reference step 'run' is not a valid reference.*routine/s);
+
+    const strayField = 'steps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    technique: not-here\n';
+    expect(() => injectRoutineSteps(strayField, () => { throw new Error('must not be reached'); }))
+      .toThrow(/Routine reference step 'run' is not a valid reference/);
+  });
 });
 
 describe('the raw text path', () => {
