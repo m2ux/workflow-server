@@ -3,7 +3,52 @@ import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse } from 'yaml';
-import { createHarness, parseToolResponse, parseWorkflowResponse, rawText, type Harness } from './e2e/harness.js';
+import { createHarness, parseToolResponse, parseWorkflowResponse, rawText, type Harness, type ParsedResponse } from './e2e/harness.js';
+
+/**
+ * What a reader expects of a response it navigates.
+ *
+ * The decoder hands back an open bag of unknown fields, because the server renders a response as
+ * JSON or YAML and publishes no type for it. A shape here is this file's claim about one tool's
+ * envelope, stated once where the response is read rather than at every assertion over it. A field
+ * the tests only compare needs no entry — the index signature carries it as `unknown`.
+ */
+type TraceEvent = { name: string; s: string; aid?: string; err?: unknown; [field: string]: unknown };
+type TraceView = ParsedResponse & { events: TraceEvent[]; token_errors: unknown[] };
+
+type UsageRow = {
+  agentId?: string;
+  activity?: string;
+  basis?: string;
+  wall_clock_ms?: number;
+  usage?: { input_tokens?: number; total_tokens?: number };
+};
+type UsageView = ParsedResponse & {
+  rows: UsageRow[];
+  usage?: UsageRow[];
+  totals: { input_tokens?: number; total_tokens?: number };
+  cumulative_latest_by_agent: Record<string, { total_tokens?: number }>;
+  elapsed_ms: number;
+};
+
+type WorkflowView = ParsedResponse & { workflow: ParsedResponse };
+type WorkflowDefinitionView = ParsedResponse & { activities: ParsedResponse[] };
+type ActivityView = ParsedResponse & { steps: Array<{ kind?: string }> };
+type ResourceView = ParsedResponse & { _body: string };
+
+type InspectSummary = ParsedResponse & {
+  identity: ParsedResponse;
+  activities: { completed?: string[] };
+  variables: ParsedResponse;
+  checkpoints: Record<string, { optionId?: string }>;
+  history: { count?: number };
+  children: ParsedResponse[];
+};
+type HistoryView = ParsedResponse & {
+  byType: Record<string, number>;
+  milestones: Array<{ type: string }>;
+};
+
 import { planningFolderPath } from './session-ops.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
@@ -94,13 +139,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       name: 'start_session',
       arguments: { workflow_id: 'work-package', agent_id: 'test-worker' },
     });
-    sessionToken = parseToolResponse(result).session_index;
+    sessionToken = parseToolResponse(result).session_index as string;
 
     const metaResult = await client.callTool({
       name: 'start_session',
       arguments: { agent_id: 'test-orchestrator' },
     });
-    metaToken = parseToolResponse(metaResult).session_index;
+    metaToken = parseToolResponse(metaResult).session_index as string;
   });
 
   afterAll(async () => { await harness.close(); });
@@ -129,7 +174,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('should not require session_index', async () => {
       const result = await client.callTool({ name: 'list_workflows', arguments: {} });
       expect(result.isError).toBeFalsy();
-      const workflows = parseToolResponse(result);
+      const workflows = parseToolResponse(result) as unknown as Array<{ id: string }>;
       expect(Array.isArray(workflows)).toBe(true);
       const ids = workflows.map((w: { id: string }) => w.id);
       expect(ids).toContain('work-package');
@@ -144,7 +189,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { agent_id: 'test-agent' },
       });
       expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
+      const response = parseToolResponse(result) as WorkflowView;
       expect(response.rules).toBeUndefined();
       expect(response.workflow.id).toBe('meta');
       expect(response.session_index).toBeDefined();
@@ -268,7 +313,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: nextToken, context_tokens: 200_000 },
       });
       expect(result.isError).toBeFalsy();
-      const activity = parseWorkflowResponse(result);
+      const activity = parseWorkflowResponse(result) as ActivityView;
       expect(activity.id).toBe('start-work-package');
       expect(activity.steps).toBeDefined();
       expect(Array.isArray(activity.steps)).toBe(true);
@@ -685,7 +730,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: sessionToken, resource_id: 'issue-creation' },
       });
       expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
+      const response = parseToolResponse(result) as ResourceView;
       expect(response.resource_id).toBe('issue-creation');
       expect(response._body).toBeDefined();
       expect(response._body.length).toBeGreaterThan(0);
@@ -698,7 +743,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: sessionToken, resource_id: 'meta/bootstrap-protocol' },
       });
       expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
+      const response = parseToolResponse(result) as ResourceView;
       expect(response.resource_id).toBe('meta/bootstrap-protocol');
       expect(response.id).toBe('bootstrap-protocol');
       expect(response._body.length).toBeGreaterThan(0);
@@ -709,7 +754,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_resource',
         arguments: { session_index: sessionToken, resource_id: 'issue-creation' },
       });
-      const response = parseToolResponse(result);
+      const response = parseToolResponse(result) as ResourceView;
       expect(response._body).not.toMatch(/^---/);
     });
 
@@ -772,7 +817,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { session_index: sessionToken, resource_id: 'meta/bootstrap-protocol' },
       });
       expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
+      const response = parseToolResponse(result) as ResourceView;
       expect(response.id).toBe('bootstrap-protocol');
       expect(response._body.length).toBeGreaterThan(0);
     });
@@ -1029,7 +1074,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
 
-      const wf = parseWorkflowResponse(result);
+      const wf = parseWorkflowResponse(result) as WorkflowDefinitionView;
       expect(wf.id).toBe('work-package');
       expect(wf.version).toMatch(SEMVER_RE);
       // work-package declares no orchestrator rules of its own — its conduct comes from the
@@ -1037,9 +1082,9 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(wf.rules).toBeUndefined();
       expect(wf.variables).toBeDefined();
       expect(wf.activities).toBeDefined();
-      expect(wf.activities[0].id).toBeDefined();
-      expect(wf.activities[0].steps).toBeUndefined();
-      expect(wf.activities[0].checkpoints).toBeUndefined();
+      expect(wf.activities[0]!.id).toBeDefined();
+      expect(wf.activities[0]!.steps).toBeUndefined();
+      expect(wf.activities[0]!.checkpoints).toBeUndefined();
     });
 
     it('excludes worker-scoped content (rules.activity, techniques.activity) from the orchestrator response', async () => {
@@ -1073,7 +1118,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const before = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
-      }));
+      })) as UsageView;
       const baselineRows = Array.isArray(before) ? before : (before.rows ?? before.usage ?? []);
       const baseline = baselineRows.length;
 
@@ -1097,7 +1142,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const after = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
-      }));
+      })) as UsageView;
       const rows = Array.isArray(after) ? after : (after.rows ?? after.usage ?? []);
       expect(rows.length).toBe(baseline + 2);
 
@@ -1140,13 +1185,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const all = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
-      }));
+      })) as UsageView;
       expect(all.rows.some((r: { agentId?: string }) => r.agentId === 'worker-a')).toBe(true);
       expect(all.rows.some((r: { agentId?: string }) => r.agentId === undefined)).toBe(true);
       const filtered = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage', agent_id: 'worker-a' },
-      }));
+      })) as UsageView;
       expect(filtered.rows.every((r: { agentId?: string }) => r.agentId === 'worker-a')).toBe(true);
       expect(filtered.rows.length).toBeGreaterThanOrEqual(1);
     });
@@ -1155,7 +1200,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const view = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
-      }));
+      })) as UsageView;
       expect(view.rows).toBeDefined();
       expect(view.totals).toBeDefined();
       expect(view.cost).toBeUndefined();
@@ -1171,7 +1216,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const before = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
-      }));
+      })) as UsageView;
       const deltaBefore = before.totals.total_tokens ?? 0;
 
       // A harness reporting a running total per agent: the second figure already
@@ -1193,18 +1238,18 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const after = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
-      }));
+      })) as UsageView;
       // The delta total is untouched by either cumulative row.
       expect(after.totals.total_tokens ?? 0).toBe(deltaBefore);
       // The agent's latest figure is the one that stands, not 1400.
-      expect(after.cumulative_latest_by_agent['worker-cumulative'].total_tokens).toBe(900);
+      expect(after.cumulative_latest_by_agent['worker-cumulative']!.total_tokens).toBe(900);
     });
 
     it('a row states its basis, and one that does not is counted apart (#474 F7)', async () => {
       const view = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
-      }));
+      })) as UsageView;
       expect(view.rows.every((r: { basis?: string }) => r.basis === 'delta' || r.basis === 'cumulative')).toBe(true);
       expect(view.unstated_basis).toBe(0);
     });
@@ -1213,7 +1258,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const view = parseToolResponse(await client.callTool({
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
-      }));
+      })) as UsageView;
       // Spans nest and hold user think time, so the run's elapsed time is the
       // outer span rather than the sum of the parts.
       expect(view.wall_clock_ms_not_additive).toBe(true);
@@ -1270,11 +1315,11 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_index: sessionToken },
       });
-      const trace = parseToolResponse(result);
+      const trace = parseToolResponse(result) as TraceView;
       expect(trace.source).toBe('memory');
       expect(trace.events.length).toBeGreaterThanOrEqual(1);
       // sessionToken is from start_session with workflow_id
-      expect(trace.events[0].name).toBe('start_session');
+      expect(trace.events[0]!.name).toBe('start_session');
     });
 
     it('next_activity returns _meta.trace_token (IT-7)', async () => {
@@ -1297,7 +1342,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_index: sessionToken },
       });
-      const trace = parseToolResponse(result);
+      const trace = parseToolResponse(result) as TraceView;
       expect(trace.source).toBe('memory');
       expect(trace.events.length).toBeGreaterThan(0);
     });
@@ -1311,8 +1356,8 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_index: sessionToken },
       });
-      const trace = parseToolResponse(result);
-      const event = trace.events[0];
+      const trace = parseToolResponse(result) as TraceView;
+      const event = trace.events[0]!;
       expect(event.ts).toBeDefined();
       expect(event.ms).toBeDefined();
       expect(event.s).toBeDefined();
@@ -1329,7 +1374,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_index: sessionToken },
       });
-      const trace = parseToolResponse(result);
+      const trace = parseToolResponse(result) as TraceView;
       for (const event of trace.events) {
         expect(JSON.stringify(event)).not.toContain('session_index');
       }
@@ -1338,7 +1383,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('get_trace excludes itself from trace (IT-14)', async () => {
       await client.callTool({ name: 'get_trace', arguments: { session_index: sessionToken } });
       const result = await client.callTool({ name: 'get_trace', arguments: { session_index: sessionToken } });
-      const trace = parseToolResponse(result);
+      const trace = parseToolResponse(result) as TraceView;
       const traceNames = trace.events.map((e: { name: string }) => e.name);
       expect(traceNames).not.toContain('get_trace');
     });
@@ -1355,15 +1400,15 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const all = parseToolResponse(await client.callTool({
         name: 'get_trace',
         arguments: { session_index: sessionToken },
-      }));
+      })) as TraceView;
       const filteredA = parseToolResponse(await client.callTool({
         name: 'get_trace',
         arguments: { session_index: sessionToken, agent_id: 'worker-aid-a' },
-      }));
+      })) as TraceView;
       const filteredB = parseToolResponse(await client.callTool({
         name: 'get_trace',
         arguments: { session_index: sessionToken, agent_id: 'worker-aid-b' },
-      }));
+      })) as TraceView;
       const aids = new Set((all.events as Array<{ aid?: string }>).map(e => e.aid).filter(Boolean));
       expect(aids.has('worker-aid-a')).toBe(true);
       expect(aids.has('worker-aid-b')).toBe(true);
@@ -1385,10 +1430,10 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_index: sessionToken },
       });
-      const trace = parseToolResponse(result);
+      const trace = parseToolResponse(result) as TraceView;
       const errorEvents = trace.events.filter((e: { s: string }) => e.s === 'error');
       expect(errorEvents.length).toBeGreaterThan(0);
-      expect(errorEvents[0].err).toBeDefined();
+      expect(errorEvents[0]!.err).toBeDefined();
     });
 
     it('accumulated trace tokens resolve via get_trace (IT-8)', async () => {
@@ -1425,7 +1470,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_index: sessionToken, trace_tokens: ['invalid.token.here'] },
       });
-      const trace = parseToolResponse(result);
+      const trace = parseToolResponse(result) as TraceView;
       expect(trace.token_errors).toBeDefined();
       expect(trace.token_errors.length).toBeGreaterThan(0);
     });
@@ -1525,7 +1570,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_index: sessionToken },
       });
-      const trace = parseToolResponse(traceResult);
+      const trace = parseToolResponse(traceResult) as TraceView;
 
       // Locate the most recent get_activity event — that call was re-resolved
       // by appendTraceEvent against the post-next_activity session.json.
@@ -1536,13 +1581,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
       // sid is the session_index (the re-resolution path uses state.sessionIndex
       // as the trace sid for the event).
-      expect(getActEvent.traceId).toBe(sessionToken);
+      expect(getActEvent!.traceId).toBe(sessionToken);
       // wf/act/aid sourced from session.json, not from a decoded token.
-      expect(getActEvent.wf).toBe('work-package');
-      expect(getActEvent.act).toBe('start-work-package');
-      expect(getActEvent.aid).toBe('test-worker');
+      expect(getActEvent!.wf).toBe('work-package');
+      expect(getActEvent!.act).toBe('start-work-package');
+      expect(getActEvent!.aid).toBe('test-worker');
       // Status is recorded.
-      expect(getActEvent.s).toBe('ok');
+      expect(getActEvent!.s).toBe('ok');
     });
 
     it('trace events for unauthenticated tools omit session-derived fields without warning', async () => {
@@ -1550,7 +1595,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const before = parseToolResponse(await client.callTool({
         name: 'get_trace',
         arguments: { session_index: sessionToken },
-      }));
+      })) as TraceView;
       const beforeLen: number = before.events.length;
 
       // Invoke each unauthenticated tool. None of these emit a session-keyed
@@ -1565,7 +1610,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const after = parseToolResponse(await client.callTool({
         name: 'get_trace',
         arguments: { session_index: sessionToken },
-      }));
+      })) as TraceView;
 
       // get_trace itself is excluded from the trace (IT-14), so the only delta
       // possible here would come from a unauthenticated tool slipping a
@@ -1635,7 +1680,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_index: token2 },
       });
-      const traceData = parseToolResponse(trace2);
+      const traceData = parseToolResponse(trace2) as TraceView;
       const names = traceData.events.map((e: { name: string }) => e.name);
       expect(names).not.toContain('next_activity');
     });
@@ -1973,7 +2018,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { agent_id: 'orchestrator' },
       });
       expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
+      const response = parseToolResponse(result) as WorkflowView;
       expect(response.workflow.id).toBe('meta');
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
       expect(response.planning_slug).toBeDefined();
@@ -1988,7 +2033,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
       });
       expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
+      const response = parseToolResponse(result) as WorkflowView;
       expect(response.workflow.id).toBe('work-package');
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
     });
@@ -2082,7 +2127,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'start_session',
         arguments: { workflow_id: 'remediate-vuln', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
-      const secondResponse = parseToolResponse(second);
+      const secondResponse = parseToolResponse(second) as WorkflowView;
       expect(secondResponse.session_index).toBe(firstIdx);
       expect(secondResponse.workflow.id).toBe('work-package');
     });
@@ -2108,7 +2153,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         },
       });
       expect(child.isError).toBeFalsy();
-      const childResponse = parseToolResponse(child);
+      const childResponse = parseToolResponse(child) as WorkflowView;
       expect(childResponse.workflow.id).toBe('remediate-vuln');
       expect(childResponse.session_index).toMatch(/^[A-Z2-7]{6}$/);
       expect(childResponse.session_index).not.toBe(parentIdx);
@@ -2129,7 +2174,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_folder: planningFolder(metaSlug) },
       });
       expect(meta.isError).toBeFalsy();
-      const metaResponse = parseToolResponse(meta);
+      const metaResponse = parseToolResponse(meta) as WorkflowView;
       expect(metaResponse.workflow.id).toBe('meta');
       expect(metaResponse.session_index).toMatch(/^[A-Z2-7]{6}$/);
 
@@ -2159,7 +2204,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         },
       });
       expect(child.isError).toBeFalsy();
-      const childResponse = parseToolResponse(child);
+      const childResponse = parseToolResponse(child) as WorkflowView;
       expect(childResponse.workflow.id).toBe('work-package');
 
       // The promoted folder lives under the workspace at the slug the meta
@@ -2539,7 +2584,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
       });
       expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
+      const response = parseToolResponse(result) as WorkflowView;
       // The migrated workflow_id wins over the default 'meta'.
       expect(response.workflow.id).toBe('work-package');
       expect(response.migrated).toBe(true);
@@ -2721,7 +2766,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('PR215-TC-01: default summary view returns all sub-projections', async () => {
       const result = await callInspect({});
       expect(result.isError).toBeFalsy();
-      const summary = parseToolResponse(result);
+      const summary = parseToolResponse(result) as InspectSummary;
       expect(Object.keys(summary).sort()).toEqual(
         ['activities', 'checkpoints', 'children', 'history', 'identity', 'variables'],
       );
@@ -2729,10 +2774,10 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(summary.identity.sessionIndex).toBe(ROOT_INDEX);
       expect(summary.activities.completed).toContain('wp-plan');
       expect(summary.variables.pr_number).toBe('215');
-      expect(summary.checkpoints['wp-plan-plan-approved'].optionId).toBe('approved');
+      expect(summary.checkpoints['wp-plan-plan-approved']!.optionId).toBe('approved');
       expect(summary.history.count).toBe(8);
       expect(summary.children).toHaveLength(1);
-      expect(summary.children[0].sessionIndex).toBe(CHILD_INDEX);
+      expect(summary.children[0]!.sessionIndex).toBe(CHILD_INDEX);
     });
 
     it('PR215-TC-02: each narrow view returns only its slice', async () => {
@@ -2768,7 +2813,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         variablesSet: {},
       });
 
-      const history = parseToolResponse(await callInspect({ view: 'history' }));
+      const history = parseToolResponse(await callInspect({ view: 'history' })) as HistoryView;
       expect(history.count).toBe(8);
       expect(history.byType.activity_entered).toBe(2);
       expect(history.byType.technique_fetched).toBe(1);
@@ -2902,7 +2947,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         totals: {},
       }]);
 
-      const summary = parseToolResponse(await callInspect({ child_index: 0, view: 'summary' }));
+      const summary = parseToolResponse(await callInspect({ child_index: 0, view: 'summary' })) as InspectSummary;
       // summary.identity is the child; summary.children is the child's children.
       expect(summary.identity.sessionIndex).toBe(CHILD_INDEX);
       expect(summary.children).toEqual(children);

@@ -77,12 +77,12 @@ export async function createHarness(opts: HarnessOptions = {}): Promise<Harness>
 export type ToolResult = any;
 
 /**
- * The envelope a tool returned, decoded and navigated by field name. A response body has no static
- * type — the server renders it as JSON or YAML — so a test asserts on the values it reads out of
- * one rather than on a shape the compiler could hold it to.
+ * The envelope a tool returned, decoded and keyed by field name. A response body has no static type
+ * — the server renders it as JSON or YAML — so a field arrives as `unknown` and a reader that does
+ * more than compare it states the shape it expects. That assertion is the reader's claim about the
+ * response, written where it is made rather than inherited from the decoder.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ParsedResponse = Record<string, any>;
+export type ParsedResponse = Record<string, unknown>;
 
 /**
  * Parse a tool response into a plain object. Mirrors the integration suite's
