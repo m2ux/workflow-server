@@ -125,7 +125,7 @@
     <li><strong>Activities</strong> — the phases the orchestrator can move between</li>
     <li><strong>Initial activity</strong> — where a new session begins</li>
     <li><strong>Rules and orchestrator techniques</strong> — behaviour that applies across the whole run</li>
-    <li><strong>Fragments</strong> — shared checkpoint bodies, imported by <code>{ ref }</code> from <code>kind:checkpoint</code> steps (<a href="#fragments">see below</a>)</li>
+    <li><strong>Routines</strong> — a run of steps declared once and referred to by <code>kind:routine</code> steps (<a href="#routines">see below</a>)</li>
   </ul>
   <p class="prose">When a session starts, the server reads this manifest. The first <a href="../api/tools.html#get_workflow"><code>get_workflow</code></a> call returns:</p>
   <ul class="prose">
@@ -223,10 +223,10 @@
   </ul>
 
   <h3 id="borrowed">Borrowed activities</h3>
-  <p class="prose">An activity file can be listed in more than one workflow — the borrowing workflow runs the phase, but the activity file's technique refs resolve against the workflow it was <strong>authored in</strong>. This mirrors fragment scoping: a borrowed activity's bare refs, checkpoint fragment refs, and binding-provenance scans all use the source workflow, not the session workflow. See <a href="./resource-resolution.html#borrowed">Resolution — borrowed activities</a>.</p>
+  <p class="prose">An activity file can be listed in more than one workflow — the borrowing workflow runs the phase, but the activity file's technique refs resolve against the workflow it was <strong>authored in</strong>. One rule covers every bare reference: a borrowed activity's technique refs, its routine references, and binding-provenance scans all use the source workflow, not the session workflow. See <a href="./resource-resolution.html#borrowed">Resolution — borrowed activities</a>.</p>
 
-  <h3 id="fragments">Shared fragments</h3>
-  <p class="prose">A checkpoint body reused at several sites is declared once under <code>fragments.checkpoints</code> in <code>workflow.yaml</code> and imported by <code>{ ref: "[workflow::]name" }</code>. A <code>kind:checkpoint</code> step carries the ref; the server materializes the body before delivery, so agents always see full content. A ref-form checkpoint step carries only its site-local <code>id</code> and, when the fragment declares none, a <code>condition</code> — body fields like <code>message</code> and <code>options</code> are forbidden locally. Details are in <a href="./resource-resolution.html#fragments">Resolution — workflow fragments</a> and <a href="./checkpoints.html#fragments">Checkpoints — shared checkpoints</a>.</p>
+  <h3 id="routines">Shared runs of steps</h3>
+  <p class="prose">A run of steps carried at more than one activity is declared once under the workflow's <code>routines/</code> and referred to by a <code>kind:routine</code> step naming <code>[workflow::]name</code>. The routine declares what it takes, what it produces and what its own steps pass between themselves, so its body can be checked against that signature on its own. The server materializes the reference before delivery, so agents always see ordinary steps — with every identifier the run contributes prefixed from the referring step, which is what lets two sites carry the same run without colliding on a step id or a replay key. A gate shared on its own is a one-step routine. Details are in <a href="./resource-resolution.html#routines">Resolution — routines</a> and <a href="./checkpoints.html#routines">Checkpoints — a checkpoint used at several sites</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 260" role="img" aria-labelledby="act-title act-desc">
