@@ -77,12 +77,12 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { assertScanned, citePath, corpusWorkflows, ledgerPath, UnreachableCorpusError } from './workflows-root.js';
+import { assertScanned, citePath, corpusWorkflows, defaultCorpusDest, ledgerPath, UnreachableCorpusError } from './workflows-root.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { EXIT_UNMEASURED, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 const BASELINE_FILE = 'repeated-run-baseline.json';
 
 /** A run is two or more consecutive steps; the ceiling bounds the index, not the corpus. */

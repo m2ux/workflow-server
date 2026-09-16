@@ -24,10 +24,11 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { report, requireRootOrExit, type Finding } from './guard-protocol.js';
+import { defaultCorpusDest } from './workflows-root.js';
 import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
 
 const REPO = resolve(import.meta.dirname, '..');
-const DEFAULT_ROOT = join(REPO, 'workflows');
+const DEFAULT_ROOT = defaultCorpusDest(REPO);
 
 /** Directories of this repo's own TypeScript that may name a corpus file. */
 const SOURCE_DIRS = ['guards', 'scripts', 'src', 'tests'];
