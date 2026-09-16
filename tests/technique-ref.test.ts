@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { indexCorpus, type CorpusIndex } from '../src/loaders/corpus-index.js';
 import { isBareName, parseTechniqueRef, techniqueRef, TechniqueRefError } from '../src/loaders/technique-ref.js';
-import { readTechnique } from '../src/loaders/technique-loader.js';
+import { composeActivityTechnique, readTechnique } from '../src/loaders/technique-loader.js';
 import { writeWorkflowFixture } from './corpus-fixture.js';
 
 /**
@@ -129,6 +129,24 @@ describe('technique reference rule', () => {
       expect(isBareName('standalone')).toBe(true);
       expect(isBareName('group::operation')).toBe(false);
       expect(isBareName('shared-wf/standalone')).toBe(false);
+    });
+  });
+
+  describe('the activity-group convention', () => {
+    it('prefixes the activity group only onto a name that still parses once prefixed', () => {
+      expect(isBareName('standalone')).toBe(true);
+      expect(() => parseTechniqueRef('an-activity::standalone', index)).not.toThrow();
+      // Why the convention tests for a bare name rather than for an absent `::`: prefixing a
+      // reference that already names a workflow composes one the rule refuses, and every caller
+      // building the candidate would otherwise refuse a well-formed corpus reference.
+      expect(isBareName('shared-wf/standalone')).toBe(false);
+      expect(() => parseTechniqueRef('an-activity::shared-wf/standalone', index)).toThrow(TechniqueRefError);
+    });
+
+    it('composes a qualified reference as authored when an activity is in scope', async () => {
+      const composed = await composeActivityTechnique('shared-wf/standalone', root, 'local-wf', 'an-activity');
+      expect(composed.success).toBe(true);
+      if (composed.success) expect(composed.value.techniqueId).toBe('shared-wf/standalone');
     });
   });
 
