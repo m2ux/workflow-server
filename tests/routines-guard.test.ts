@@ -644,6 +644,48 @@ describe('placement, over the transitive referrer closure', () => {
     expect(checks(findings)).toEqual([]);
   });
 
+  /**
+   * A per-site finding cites the reference site in its own text, so the path a nested file
+   * contributes is user-facing: cited by its basename alone it names a file that is not there.
+   */
+  it('cites a nested referrer by its path from the corpus root', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      libraryActivities: {
+        wf: {
+          'patterns/02-borrowed':
+            'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n'
+            + '    routine: shared-run\n    with:\n      pass_operation: analysis::sweep\n',
+        },
+      },
+      techniques: {
+        wf: {
+          'analysis/sweep': '---\nmetadata:\n  version: 1.0.0\n---\n\n## Capability\n\nSweeps the target.\n\n'
+            + '## Protocol\n\n### 1. Sweep\n\n- Sweep the target, noting `{some_workflow_variable}`.\n',
+        },
+      },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: pass_operation
+    kind: technique
+    description: the lens each site applies
+steps:
+  - kind: technique
+    id: apply
+    technique: pass_operation
+`,
+        },
+      },
+    });
+    const finding = findings.find((f) => f.check === 'routine-undeclared-read');
+    expect(finding).toBeDefined();
+    expect(finding!.site).toBe('wf/routines/shared-run.yaml at wf/activities/patterns/02-borrowed.yaml');
+  });
+
   it('computes the home from a referrer a level down', async () => {
     const findings = await findingsFor({
       activities: {

@@ -54,7 +54,7 @@
  *
  * Run: npx tsx guards/check-routines.ts [--root <workflows-dir>]
  */
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
@@ -67,7 +67,7 @@ import {
 } from '../src/loaders/routine-resolver.js';
 import { ROUTINES_DIR, buildRoutineLookup, readCorpusRoutines } from '../src/loaders/routine-loader.js';
 import { deriveActivityContract } from '../src/utils/activity-variables.js';
-import { assertScanned, corpusWorkflows, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, defaultCorpusDest, definitionsUnder, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -301,18 +301,6 @@ interface AuthoredActivity {
   /** Path from the corpus root, so a finding names a file that exists on disk. */
   site: string;
   steps: Step[] | undefined;
-}
-
-/** Every `.yaml` under a directory, at any depth, in a stable order. */
-function definitionsUnder(dir: string, prefix = ''): { rel: string; path: string }[] {
-  return readdirSync(dir, { withFileTypes: true })
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .flatMap((entry) => {
-      const path = join(dir, entry.name);
-      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
-      if (entry.isDirectory()) return definitionsUnder(path, rel);
-      return entry.name.endsWith('.yaml') ? [{ rel, path }] : [];
-    });
 }
 
 /**

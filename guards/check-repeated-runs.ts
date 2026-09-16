@@ -73,11 +73,11 @@
  *
  * Run: npx tsx guards/check-repeated-runs.ts [--root <workflows-dir>] [--json]
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { assertScanned, citePath, corpusWorkflows, defaultCorpusDest, ledgerPath, UnreachableCorpusError } from './workflows-root.js';
+import { assertScanned, citePath, corpusWorkflows, defaultCorpusDest, definitionsUnder, ledgerPath, UnreachableCorpusError } from './workflows-root.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { EXIT_UNMEASURED, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 
@@ -169,17 +169,6 @@ function sequences(steps: unknown, depth = 0): Sequence[] {
   return out;
 }
 
-/** Activity definitions live a level down as well — `meta/activities/patterns/` holds a library. */
-function definitionsUnder(dir: string): string[] {
-  return readdirSync(dir, { withFileTypes: true })
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .flatMap((entry) => {
-      const path = join(dir, entry.name);
-      if (entry.isDirectory()) return definitionsUnder(path);
-      return entry.name.endsWith('.yaml') ? [path] : [];
-    });
-}
-
 /**
  * Enumeration goes through `corpusWorkflows` rather than reading the root directly, so a workflow
  * the server runs is a workflow this guard measures — discovery is the server's rule, and it finds a
@@ -190,7 +179,7 @@ function activityFiles(root: string): string[] {
   for (const workflow of corpusWorkflows(root)) {
     const dir = join(workflow.dir, 'activities');
     if (!existsSync(dir) || !statSync(dir).isDirectory()) continue;
-    out.push(...definitionsUnder(dir));
+    out.push(...definitionsUnder(dir).map(({ path }) => path));
   }
   return out;
 }

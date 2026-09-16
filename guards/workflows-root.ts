@@ -13,7 +13,7 @@
  * as coverage the run never had (issue #327 S2). Guards that count what they inspect close the
  * loop with `assertScanned`.
  */
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 import { defaultCorpusDest, REFERENCE_CORPUS_ADD } from '../src/corpus-dest.js';
 import { type CorpusIndex, indexCorpus, workflowLocation, workflowOwning } from '../src/loaders/corpus-index.js';
@@ -136,4 +136,25 @@ export function ledgerPath(root: string, file: string): string {
 /** A recorded walk artifact on the pointed-at corpus tree. */
 export function walkArtifactPath(root: string, file: string): string {
   return join(root, 'walks', file);
+}
+
+/** One definition file: its path on disk, and its path from the directory the walk started at. */
+export interface DefinitionFile { rel: string; path: string }
+
+/**
+ * Every `.yaml` under a directory, at any depth, in a stable order.
+ *
+ * A definition sits at any depth: `meta/activities/patterns/` holds a library of activities another
+ * workflow borrows by path rather than ones meta's own graph reaches, and a guard measuring authored
+ * files measures those too. `rel` is what a finding cites, so the file it names is the file on disk.
+ */
+export function definitionsUnder(dir: string, prefix = ''): DefinitionFile[] {
+  return readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .flatMap((entry) => {
+      const path = join(dir, entry.name);
+      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) return definitionsUnder(path, rel);
+      return entry.name.endsWith('.yaml') ? [{ rel, path }] : [];
+    });
 }
