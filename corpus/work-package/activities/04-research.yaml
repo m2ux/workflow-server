@@ -7,7 +7,6 @@ variables:
     - assumption_outcome
     - branch_name
     - component_git_dir
-    - is_review_mode
     - planning_folder_path
     - pr_number
     - problem_statement
@@ -15,10 +14,6 @@ variables:
     - target_path
     - target_repo
   writes:
-    - name: assumption_outcome
-      type: string
-      description: The outcome given the assumption under discussion. Empty before one has been decided.
-      defaultValue: ""
     - name: assumption_review_presentation
       type: object
       description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility — with a link to the assumptions log.
@@ -37,9 +32,6 @@ variables:
       type: boolean
       description: True when research run evidence cannot decide repo-only vs web-retrieval vs mixed for context_scope.
       defaultValue: false
-    - name: current_assumption
-      type: object
-      description: The assumption under individual review.
     - name: has_deferred_assumptions
       type: boolean
       description: Whether any assumption was deferred to stakeholders.
@@ -55,10 +47,6 @@ variables:
     - name: has_resolvable_assumptions
       type: boolean
       description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
-      defaultValue: false
-    - name: needs_individual_interview
-      type: boolean
-      description: Whether each residual open assumption is reviewed one at a time.
       defaultValue: false
     - name: needs_research
       type: boolean
@@ -191,31 +179,6 @@ steps:
           setVariable:
             context_scope: mixed
             context_scope_uncertain: false
-  - kind: checkpoint
-    id: research-assumption-interview
-    ref: assumption-interview
-  - kind: technique
-    id: record-batch-response
-    technique: review-assumptions::record
-    when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
-  - kind: loop
-    id: assumption-interview
-    name: Individual Assumption Interview Loop
-    loopType: forEach
-    variable: current_assumption
-    over: open_assumptions
-    maxIterations: 20
-    when: needs_individual_interview == true && has_open_assumptions == true
-    steps:
-      - kind: technique
-        id: present-assumption
-        technique: review-assumptions::assemble-one
-      - kind: checkpoint
-        id: research-assumption-decision#{current_assumption.id}
-        ref: assumption-decision
-      - kind: technique
-        id: record-response
-        technique: review-assumptions::record
 exits:
   - id: done
     isDefault: true
