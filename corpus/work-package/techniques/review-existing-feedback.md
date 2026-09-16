@@ -48,7 +48,7 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
   - **Superseded** — the concern was valid but a later commit or a subsequent comment resolves it; record the resolving change.
 - Tag each row with the author class (human / bot) and whether the original concern is blocker-class (it asserts a correctness, safety, data-loss, or runtime-failure defect) or non-blocker (style, preference, question).
 - Tag any reported runtime error so it is traceable as a reported failure downstream — captured once here.
-- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and set `{$base_branch}` from `{base_branch}`. Disposition a reported check failure against it, not against the report alone: a check failing on both the branch and `{base_branch}` is Refuted as pre-existing, and one failing only on the branch is Confirmed. The comment reporting it says a check is red, which is true either way.
+- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and set `{base_branch}` from the op output. Disposition a reported check failure against it, not against the report alone: a check failing on both the branch and `{base_branch}` is Refuted as pre-existing, and one failing only on the branch is Confirmed. The comment reporting it says a check is red, which is true either way.
 
 ### 3. Derive the Rating Cap
 
