@@ -78,6 +78,14 @@ const checks = (findings: Finding[]): string[] => findings.map((f) => f.check).s
 const referrer = (binding = ''): string =>
   `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n${binding}`;
 
+/**
+ * The same, for a library activity a level down. It carries its own id because it sits in a
+ * workflow that also holds a graph activity, and two definitions under one workflow answering to
+ * one id would be a fixture saying something the case is not about.
+ */
+const borrowed = (binding = ''): string =>
+  `id: borrowed\nversion: 1.0.0\nname: Borrowed\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n${binding}`;
+
 describe('a routine signature held against its own body', () => {
   it('reports nothing on a routine whose body matches what it declares', async () => {
     const findings = await findingsFor({
@@ -638,7 +646,7 @@ describe('placement, over the transitive referrer closure', () => {
   it('counts a reference from an activity a level down', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
-      libraryActivities: { wf: { 'patterns/02-borrowed': referrer() } },
+      libraryActivities: { wf: { 'patterns/02-borrowed': borrowed() } },
       routines: { wf: { 'shared-run': body('shared-run', action) } },
     });
     expect(checks(findings)).toEqual([]);
@@ -653,9 +661,7 @@ describe('placement, over the transitive referrer closure', () => {
       activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
       libraryActivities: {
         wf: {
-          'patterns/02-borrowed':
-            'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n'
-            + '    routine: shared-run\n    with:\n      pass_operation: analysis::sweep\n',
+          'patterns/02-borrowed': borrowed('    with:\n      pass_operation: analysis::sweep\n'),
         },
       },
       techniques: {
@@ -692,7 +698,7 @@ steps:
         wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action },
         meta: { bootstrap: 'id: bootstrap\nversion: 1.0.0\nname: Bootstrap\nsteps:\n' + action },
       },
-      libraryActivities: { wf: { 'patterns/02-borrowed': referrer() } },
+      libraryActivities: { wf: { 'patterns/02-borrowed': borrowed() } },
       routines: { meta: { 'shared-run': body('shared-run', action) } },
     });
     const finding = findings.find((f) => f.check === 'routine-misplaced');

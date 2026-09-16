@@ -146,7 +146,7 @@ export interface DefinitionFile { rel: string; path: string }
  *
  * A definition sits at any depth: `meta/activities/patterns/` holds a library of activities another
  * workflow borrows by path rather than ones meta's own graph reaches, and a guard measuring authored
- * files measures those too. `rel` is what a finding cites, so the file it names is the file on disk.
+ * files measures those too. `rel` carries the nesting, so a caller citing a file cites one on disk.
  */
 export function definitionsUnder(dir: string, prefix = ''): DefinitionFile[] {
   return readdirSync(dir, { withFileTypes: true })
