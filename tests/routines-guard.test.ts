@@ -200,6 +200,62 @@ steps:
    * hard zero — so this needs a technique that actually RESOLVES, since an unresolvable one walks no
    * inputs and the case passes for the wrong reason.
    */
+  /**
+   * A protocol variable is a symbol created and used within one protocol run: bound once as
+   * `{$name}` and read bare afterwards. Those reads name the step's own working value, so charging
+   * them to the bag asks a routine to declare a name nothing in the session ever holds.
+   */
+  it('does not report a name the bound operation binds as a protocol local', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: referrer('    outputs:\n      run_verdict: host_verdict\n') } },
+      techniques: {
+        wf: {
+          'analysis/sweep': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Sweeps the target.
+
+## Outputs
+
+### run_verdict
+
+What the sweep concluded.
+
+## Protocol
+
+### 1. Sweep
+
+- Take the target's shape as \`{$observed_shape}\` and weigh \`{observed_shape}\` against \`{sweep_depth}\`.
+`,
+        },
+      },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: sweep_depth
+    description: how deep the sweep goes
+outputs:
+  - id: run_verdict
+    type: string
+    description: what the sweep concluded
+steps:
+  - kind: technique
+    id: sweep
+    technique: analysis::sweep
+`,
+        },
+      },
+    });
+    expect(findings).toEqual([]);
+  });
+
   it('does not report a binding value the namespace settles as a literal', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: referrer('    outputs:\n      run_verdict: host_verdict\n') } },
