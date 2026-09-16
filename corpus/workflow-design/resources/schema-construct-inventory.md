@@ -87,12 +87,10 @@ A routine is a named run of steps at `routines/<name>.yaml`, beside `activities/
 | "First do A, then do B" (procedure) | **Protocol** | `protocol[]` — ordered blocks `{ title?, steps[] }`; titled blocks `Initial`/`Final` on a container wrap descendants (server renumbers) |
 | "Shared I/O/rules for every technique in the folder" | **Container TECHNIQUE.md** | Workflow-root or group `TECHNIQUE.md` — loader merges Inputs/Outputs/Rules/Errors into descendants; container `Initial`/`Final` protocol wraps (server renumbers). Capability names contribution only (`platform-semantics-in-capability`); set membership is the folder contents |
 | "Needs a checklist path as input" | **Inputs** | `inputs[].id`, `.description`, `.required`, `.default`, `.components` (composite members as `####` sub-sections) |
-| "Produces an audit report" | **Output** | `output[].id`, `.description`, `.components` (`####` sub-sections), `.artifact.name` (`#### artifact`) |
+| "Produces an audit report" | **Output** | `outputs[].id`, `.description`, `.components` (`####` sub-sections), `.artifact.name` (`#### artifact`) |
 | "Never modify the schema" | **Rules** | `rules.{rule-name}` — flat name-value pairs |
-| "Use get_workflow to load data" | **Tools** | `tools.{name}.when`, `.params`, `.returns`, `.next` |
 | "If X fails, recover by Y" (failure handling) | **Protocol step** | written inline in the protocol step that gives rise to the failure |
-| "How to interpret checkpoints" | **Interpretation** | `interpretation.checkpoints`, `.transitions`, `.decisions` |
-| "How to resume after restart" | **Resumption** | `resumption.description`, `.steps[]` |
+| "How to interpret a gate, or resume after a restart" | **Protocol step or Rules** | the technique contract is closed over `id`, `version`, `capability`, `rules`, `inputs`, `protocol` and `outputs` — a duty about interpretation or resumption is a Protocol phase where it is work, and a `## Rules` entry where it is a standing invariant |
 
 ## Condition Constructs (condition.schema.json)
 
