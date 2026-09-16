@@ -23,11 +23,11 @@
  * Run:
  *   npx tsx guards/check-self-composed-set.ts
  */
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { corpusWorkflows, defaultCorpusDest, definitionsUnder, resolveWorkflowsRoot } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -99,9 +99,9 @@ export function collectSelfComposedSetViolations(root: string = ROOT): SelfCompo
   const wfs = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
   for (const { dir } of wfs) {
     const adir = join(dir, 'activities');
-    for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
-      const rel = relative(root, join(adir, f));
-      try { walk(parseDefinition(readFileSync(join(adir, f), 'utf-8')), rel, out); }
+    for (const { path } of definitionsUnder(adir)) {
+      const rel = relative(root, path);
+      try { walk(parseDefinition(readFileSync(path, 'utf-8')), rel, out); }
       catch { /* malformed YAML is validate-workflow-yaml's job, not this guard's */ }
     }
   }

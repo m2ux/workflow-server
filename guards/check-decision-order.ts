@@ -10,13 +10,13 @@
  *
  * Run: npx tsx guards/check-decision-order.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { parseWhen, type WhenAst } from '../src/schema/when-expression.js';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, defaultCorpusDest, ownDefinitionsIn, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { declaredVariables } from './workflow-declarations.js';
 
@@ -174,10 +174,9 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   for (const { id: workflow, dir: workflowDir } of corpusWorkflows(root, index)) {
     const activitiesDir = join(workflowDir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
+    // This workflow's own activities: what suppresses a finding here is its defaulted set.
     const defaulted = defaultedVariables(root, workflow, index);
-    for (const entry of readdirSync(activitiesDir).sort()) {
-      if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
-      const path = join(activitiesDir, entry);
+    for (const { path } of ownDefinitionsIn(activitiesDir)) {
       const def = parse(readFileSync(path, 'utf-8')) as { id?: string; steps?: Step[] } | null;
       scanned++;
       const steps = def?.steps ?? [];

@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import {
   assertScanned,
   citePath,
+  definitionsUnder,
   ledgerPath,
+  ownDefinitionsIn,
   requireWorkflowsRoot,
   resolveWorkflowsRoot,
   resolveWorkflowsRootWithOrigin,
@@ -174,5 +176,60 @@ describe('citePath', () => {
     writeFileSync(join(root, 'alpha', 'workflow.yaml'), 'id: alpha\nversion: 1.0.0\ntitle: t\n');
     writeFileSync(join(dir, 'guide.md'), '# g\n');
     expect(citePath(root, join(dir, 'guide.md'))).toBe('alpha/resources/guide.md');
+  });
+});
+
+/**
+ * The two definition walks. They differ in depth and in nothing else, which is what lets a guard
+ * pick between them on the grain of its rule: a rule about the file in front of it takes the deep
+ * walk, and one grading a definition against the workflow around it takes the shallow one.
+ *
+ * `meta/activities/patterns/` is the tree these exist for — a library a client workflow borrows by
+ * path, which the borrowing workflow's graph never registers and the loader never enumerates.
+ */
+describe('the definition walks', () => {
+  let root = '';
+
+  beforeEach(() => {
+    root = mkdtempSync(join(tmpdir(), 'walks-'));
+    mkdirSync(join(root, 'patterns'), { recursive: true });
+    writeFileSync(join(root, '02-second.yaml'), 'id: second\n');
+    writeFileSync(join(root, '01-first.yaml'), 'id: first\n');
+    writeFileSync(join(root, 'notes.md'), '# not a definition\n');
+    writeFileSync(join(root, 'patterns', '02-borrowed.yaml'), 'id: borrowed\n');
+  });
+
+  afterEach(() => { rmSync(root, { recursive: true, force: true }); });
+
+  it('reaches a definition a level down, named by its path from the walk root', () => {
+    expect(definitionsUnder(root).map((d) => d.rel))
+      .toEqual(['01-first.yaml', '02-second.yaml', 'patterns/02-borrowed.yaml']);
+  });
+
+  it('stops at the top level, where a workflow keeps its own definitions', () => {
+    expect(ownDefinitionsIn(root).map((d) => d.rel)).toEqual(['01-first.yaml', '02-second.yaml']);
+  });
+
+  it('takes both definition spellings and nothing else', () => {
+    writeFileSync(join(root, '03-third.yml'), 'id: third\n');
+    expect(definitionsUnder(root).map((d) => d.rel)).toContain('03-third.yml');
+    expect(ownDefinitionsIn(root).map((d) => d.rel)).toContain('03-third.yml');
+    expect(definitionsUnder(root).map((d) => d.rel)).not.toContain('notes.md');
+  });
+
+  /**
+   * Two walks that exist to be one answer to "which files" cannot disagree about what a file is.
+   * A test for a REGULAR file rather than for "not a directory" drops a symlinked definition from
+   * one of them and keeps it in the other.
+   */
+  it('agrees on a symlinked definition', () => {
+    symlinkSync(join(root, '01-first.yaml'), join(root, '04-linked.yaml'));
+    expect(definitionsUnder(root).map((d) => d.rel)).toContain('04-linked.yaml');
+    expect(ownDefinitionsIn(root).map((d) => d.rel)).toContain('04-linked.yaml');
+  });
+
+  it('pairs each name with the path that file sits at', () => {
+    const nested = definitionsUnder(root).find((d) => d.rel === 'patterns/02-borrowed.yaml');
+    expect(nested?.path).toBe(join(root, 'patterns', '02-borrowed.yaml'));
   });
 });

@@ -58,7 +58,7 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 // is their single source of truth), so guard and server cannot drift apart on what counts as an
 // identifier, an optional input, or an ambient id.
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
-import { assertScanned, citePath, corpusWorkflows, ledgerPath, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, citePath, corpusWorkflows, definitionsUnder, ledgerPath, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { indexCorpus, workflowIdFromCorpusPath, type CorpusIndex } from '../src/loaders/corpus-index.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
@@ -526,13 +526,6 @@ function collectArtifactTemplateTokens(rel: string, raw: string): void {
 }
 
 /**
- * Every activity file under a workflow's `activities/`, INCLUDING nested library subdirectories.
- * The server's own `loadActivitiesFromDir` is deliberately non-recursive (a subdirectory is a
- * borrowable library, not part of the lifecycle graph), and this guard used to mirror that — which
- * left `meta/activities/patterns/` completely unmeasured, so its step bindings and the outputs its
- * loop conditions consume were invisible in both directions (#327 S2).
- */
-/**
  * A workflow's `routines/` read on the same terms as its activities (#704 E03).
  *
  * A routine holds the step bindings the activities referring to it used to hold, so a technique
@@ -572,14 +565,16 @@ function scanRoutines(wf: string): void {
   }
 }
 
+/**
+ * Every activity file under a workflow's `activities/`, library subdirectories included.
+ *
+ * The server's own `loadActivitiesFromDir` is deliberately non-recursive — a subdirectory is a
+ * borrowable library rather than part of the lifecycle graph — and a guard mirroring that leaves
+ * `meta/activities/patterns/` unmeasured, its step bindings and the outputs its loop conditions
+ * consume invisible in both directions (#327 S2).
+ */
 function activityFiles(dir: string): string[] {
-  const out: string[] = [];
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) out.push(...activityFiles(p));
-    else if (entry.endsWith('.yaml')) out.push(p);
-  }
-  return out;
+  return definitionsUnder(dir).map(({ path }) => path);
 }
 
 let allWf = new Set<string>();

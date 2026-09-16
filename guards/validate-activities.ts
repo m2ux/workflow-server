@@ -22,7 +22,7 @@ import { pathToFileURL } from 'url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { safeValidateActivity, populateStepIds } from '../src/schema/activity.schema.js';
 import { requireRootOrExit } from './guard-protocol.js';
-import { corpusWorkflows, defaultCorpusDest } from './workflows-root.js';
+import { corpusWorkflows, defaultCorpusDest, definitionsUnder } from './workflows-root.js';
 
 export interface ValidationResult {
   workflow: string;
@@ -98,12 +98,11 @@ if (isDirectInvocation) {
   for (const workflowDir of workflowDirs) {
     const workflowName = basename(workflowDir);
     const activitiesDir = join(workflowDir, 'activities');
-    const files = readdirSync(activitiesDir).filter(f => f.endsWith('.yaml'));
+    const files = definitionsUnder(activitiesDir);
 
     console.log(`\n[INFO] ${workflowName} (${files.length} activities)`);
 
-    for (const file of files) {
-      const filePath = join(activitiesDir, file);
+    for (const { rel: file, path: filePath } of files) {
       const result = validateActivityFile(filePath);
 
       results.push({

@@ -36,7 +36,7 @@ import { parse } from 'yaml';
 import { jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { isOutsideValueSet } from '../src/schema/variable.schema.js';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { corpusWorkflows, defaultCorpusDest, ownDefinitionsIn, resolveWorkflowsRoot } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 import { declaredVariables } from './workflow-declarations.js';
 
@@ -218,9 +218,9 @@ export function collectVariableModelViolations(root: string = ROOT): VariableMod
     }
     const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
-    for (const entry of readdirSync(activitiesDir).sort()) {
-      if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
-      const path = join(activitiesDir, entry);
+    // This workflow's own activities: every rule below reads a document against `decls`, the
+    // variable model this workflow seeds.
+    for (const { path } of ownDefinitionsIn(activitiesDir)) {
       violations.push(...lintDocument(parse(readFileSync(path, 'utf-8')), decls, relative(root, path)));
     }
   }
