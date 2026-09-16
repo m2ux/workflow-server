@@ -23,6 +23,11 @@ import type { Finding } from '../guards/guard-protocol.js';
 interface Tree {
   /** Activity files, by workflow id: activity id → its YAML body. */
   activities: Record<string, Record<string, string>>;
+  /**
+   * Activity files a level down, by workflow id: `subdirectory/activity id` → its YAML body.
+   * A library another workflow borrows by path, which the workflow's own graph never reaches.
+   */
+  libraryActivities?: Record<string, Record<string, string>>;
   /** Routine files, by workflow id: routine name → its YAML body. */
   routines?: Record<string, Record<string, string>>;
   /** Technique markdown, by workflow id: `group/operation` → its file body. */
@@ -42,6 +47,13 @@ async function findingsFor(tree: Tree): Promise<Finding[]> {
           join(root, workflowId, 'activities', `${String(index).padStart(2, '0')}-${activityId}.yaml`),
           body,
         );
+      }
+    }
+    for (const [workflowId, library] of Object.entries(tree.libraryActivities ?? {})) {
+      for (const [path, body] of Object.entries(library)) {
+        const file = join(root, workflowId, 'activities', `${path}.yaml`);
+        mkdirSync(join(file, '..'), { recursive: true });
+        writeFileSync(file, body);
       }
     }
     for (const [workflowId, routines] of Object.entries(tree.routines ?? {})) {
@@ -614,6 +626,36 @@ describe('placement, over the transitive referrer closure', () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+
+  /**
+   * A definition sits at any depth under `activities/`: `meta/activities/patterns/` holds a library
+   * another workflow borrows by path, which meta's own graph never reaches and the loader never
+   * enumerates. The reference the borrowed activity carries is a reference wherever it runs, so a
+   * walk stopping at the top level reports the routine as referred to by nothing — and the remedy
+   * that finding names, delete the file, is destructive applied to a file three sites use.
+   */
+  it('counts a reference from an activity a level down', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      libraryActivities: { wf: { 'patterns/02-borrowed': referrer() } },
+      routines: { wf: { 'shared-run': body('shared-run', action) } },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  it('computes the home from a referrer a level down', async () => {
+    const findings = await findingsFor({
+      activities: {
+        wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action },
+        meta: { bootstrap: 'id: bootstrap\nversion: 1.0.0\nname: Bootstrap\nsteps:\n' + action },
+      },
+      libraryActivities: { wf: { 'patterns/02-borrowed': referrer() } },
+      routines: { meta: { 'shared-run': body('shared-run', action) } },
+    });
+    const finding = findings.find((f) => f.check === 'routine-misplaced');
+    expect(finding).toBeDefined();
+    expect(finding!.detail).toContain("computed home is 'wf'");
   });
 
   it('reports a single-owner routine sitting in the shared home', async () => {

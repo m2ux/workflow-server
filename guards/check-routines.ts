@@ -303,6 +303,18 @@ interface AuthoredActivity {
   steps: Step[] | undefined;
 }
 
+/** Every `.yaml` under a directory, at any depth, in a stable order. */
+function definitionsUnder(dir: string, prefix = ''): { rel: string; path: string }[] {
+  return readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .flatMap((entry) => {
+      const path = join(dir, entry.name);
+      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) return definitionsUnder(path, rel);
+      return entry.name.endsWith('.yaml') ? [{ rel, path }] : [];
+    });
+}
+
 /**
  * Every activity a workflow authors, read from its files.
  *
@@ -311,6 +323,12 @@ interface AuthoredActivity {
  * the manifest itself. A file that does not parse contributes no reference and is not reported
  * here: an unreadable activity is a louder failure than this guard's subject, and the guards that
  * own it name it already.
+ *
+ * Definitions sit at any depth under that directory: `meta/activities/patterns/` holds a library of
+ * activities another workflow borrows by path rather than ones meta's own graph reaches. A borrowed
+ * activity carries its references wherever it runs, so a routine it names has a referrer and a home
+ * to compute from — and a walk that stopped at the top level would report the routine as referred to
+ * by nothing.
  */
 function authoredActivities(workflowId: string, dir: string): AuthoredActivity[] {
   const out: AuthoredActivity[] = [];
@@ -331,10 +349,10 @@ function authoredActivities(workflowId: string, dir: string): AuthoredActivity[]
   const activitiesDir = typeof manifest['activitiesDir'] === 'string' ? manifest['activitiesDir'] : 'activities';
   const dirPath = join(dir, activitiesDir);
   if (!existsSync(dirPath)) return out;
-  for (const name of readdirSync(dirPath).filter((f: string) => f.endsWith('.yaml')).sort()) {
+  for (const { rel, path } of definitionsUnder(dirPath)) {
     try {
-      const doc = parseDefinition(readFileSync(join(dirPath, name), 'utf-8')) as { steps?: Step[] } | null;
-      out.push({ site: `${workflowId}/${activitiesDir}/${name}`, steps: doc?.steps });
+      const doc = parseDefinition(readFileSync(path, 'utf-8')) as { steps?: Step[] } | null;
+      out.push({ site: `${workflowId}/${activitiesDir}/${rel}`, steps: doc?.steps });
     } catch { continue; }
   }
   return out;
