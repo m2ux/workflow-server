@@ -38,18 +38,15 @@ steps:
   - kind: technique
     id: plan-questions
     technique: orchestration-patterns::plan-research-questions
-  - kind: technique
-    id: compose-briefs
-    technique: orchestration-patterns::compose-worker-briefs
-  - kind: technique
-    id: dispatch
-    technique: orchestration-patterns::dispatch-workers
-  - kind: technique
-    id: gather
-    technique:
-      name: orchestration-patterns::gather-results
-      inputs:
-        expected_ids: work_units
+  - kind: routine
+    id: research-round
+    routine: dispatch-round
+    with:
+      expected_ids: work_units
+    outputs:
+      worker_briefs: worker_briefs
+      dispatched_results: dispatched_results
+      gathered_results: gathered_results
   - kind: technique
     id: synthesise
     technique: orchestration-patterns::synthesise-results
@@ -67,18 +64,15 @@ steps:
       operator: "=="
       value: true
     steps:
-      - kind: technique
-        id: compose-followup-briefs
-        technique: orchestration-patterns::compose-worker-briefs
-      - kind: technique
-        id: dispatch-followup
-        technique: orchestration-patterns::dispatch-workers
-      - kind: technique
-        id: gather-followup
-        technique:
-          name: orchestration-patterns::gather-results
-          inputs:
-            expected_ids: work_units
+      - kind: routine
+        id: followup-round
+        routine: dispatch-round
+        with:
+          expected_ids: work_units
+        outputs:
+          worker_briefs: worker_briefs
+          dispatched_results: dispatched_results
+          gathered_results: gathered_results
       - kind: technique
         id: synthesise-followup
         technique: orchestration-patterns::synthesise-results

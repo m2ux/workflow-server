@@ -21,7 +21,7 @@ Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness ag
 
 ## Protocol
 
-1. Normalise `{worker_briefs}` into harness `{agents}` entries `{ description, prompt }`, preserving order and ids alongside.
+1. Normalise `{worker_briefs}` into ordered `{ description, prompt }` entries, keeping each brief's id alongside.
 2. For each brief in order, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with that brief's prompt; append each `{ id, result }` to `{dispatched_results}`.
 3. Record empty or failed slots in `{dispatched_results}`; do not invent results.
 

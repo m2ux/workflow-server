@@ -39,18 +39,15 @@ steps:
   - kind: technique
     id: classify
     technique: orchestration-patterns::classify-request
-  - kind: technique
-    id: compose-brief
-    technique: orchestration-patterns::compose-worker-briefs
-  - kind: technique
-    id: dispatch
-    technique: orchestration-patterns::dispatch-workers
-  - kind: technique
-    id: gather
-    technique:
-      name: orchestration-patterns::gather-results
-      inputs:
-        expected_ids: worker_briefs
+  - kind: routine
+    id: lane-round
+    routine: dispatch-round
+    with:
+      expected_ids: worker_briefs
+    outputs:
+      worker_briefs: worker_briefs
+      dispatched_results: dispatched_results
+      gathered_results: gathered_results
   - kind: action
     id: announce-escalation
     when: lane_id == 'escalate'
