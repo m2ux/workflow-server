@@ -316,6 +316,43 @@ steps:
   });
 
   /**
+   * Every signature rule for such a routine runs against a site, so a routine whose every site binds
+   * an argument this cannot read has no rule that can fire. A guard reporting nothing there is not
+   * reporting that the routine is sound — it is reporting that it looked at nothing, and the two read
+   * identically unless one of them says so.
+   */
+  it('says so when no reference site supplies an operation it can read', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    with:\n      pass_operation: "{chosen_lens}"\n` } },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: pass_operation
+    kind: technique
+    description: the sweep each site applies
+  - id: unread_topic_name
+    description: nothing in the body reads this
+outputs:
+  - id: unwritten_run_verdict
+    type: string
+    description: nothing in the body writes this
+steps:
+  - kind: technique
+    id: sweep
+    technique:
+      name: pass_operation
+`,
+        },
+      },
+    });
+    expect(checks(findings)).toEqual(['routine-signature-unheld']);
+    expect(findings[0]?.detail).toContain('1 site(s) refer');
+  });
+
+  /**
    * The counterpart, and the one the corpus actually has: a step's actions are the RUN's writes,
    * authored beside the binding and the same whichever operation the site supplies. Only what the
    * operation declares varies by argument.

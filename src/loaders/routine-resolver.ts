@@ -312,8 +312,8 @@ function substituteOperation(step: Step & { kind: 'technique' }, operations: Ope
 }
 
 /** Rewrite every field of one step that can name a value in the routine's scope. */
-function substituteStep(step: Step, binding: SiteBinding, context: string): Step {
-  const { names: map, operations } = binding;
+function substituteStep(step: Step, siteBinding: SiteBinding, context: string): Step {
+  const { names: map, operations } = siteBinding;
   const out = step as Record<string, unknown>;
 
   if (typeof out['when'] === 'string') out['when'] = substituteExpression(out['when'], map, context);
@@ -332,7 +332,7 @@ function substituteStep(step: Step, binding: SiteBinding, context: string): Step
       if (variable === undefined) throw new RoutineResolutionError(`${context}: loop '${step.id}' binds its item to a dropped output.`);
       out['variable'] = variable;
     }
-    out['steps'] = (step.steps as Step[]).map((nested) => substituteStep(nested, binding, context));
+    out['steps'] = (step.steps as Step[]).map((nested) => substituteStep(nested, siteBinding, context));
   }
 
   if (step.kind === 'technique') {

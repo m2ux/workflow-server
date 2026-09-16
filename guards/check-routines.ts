@@ -31,6 +31,11 @@
  * once-per-routine path. A routine with an operation parameter and no reference site is reported as
  * unreferenced, whose remedy — refer to it or delete it — settles the contract question either way.
  *
+ * - `routine-signature-unheld` — a routine that HAS reference sites and not one of them supplies an
+ *   operation this can read. Every site is skipped, so nothing is derived and no signature rule can
+ *   fire; saying so is what keeps a routine nothing checked from reading as a routine nothing found
+ *   fault with.
+ *
  * The placement rules, which are corpus-wide by construction:
  *
  * - `routine-unreferenced` — a routine nothing references anywhere in the corpus. Reported here and
@@ -426,13 +431,27 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
         ]));
         continue;
       }
+      const sites = sitesByRoutine.get(keyOf(workflowId, routine.id)) ?? [];
       const bodies = [];
-      for (const reference of sitesByRoutine.get(keyOf(workflowId, routine.id)) ?? []) {
+      for (const reference of sites) {
         const operations = siteOperations(routine, parameters, reference.args);
         if (operations === undefined) continue; // an argument the load refuses; the load names it
         bodies.push({ operations, site: `${declaration} at ${reference.site}` });
       }
-      if (bodies.length > 0) findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
+      if (bodies.length > 0) {
+        findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
+        continue;
+      }
+      // Sites exist and not one of them supplies an operation this can derive against, so the
+      // signature went unheld. Saying so is the difference between a guard with no verdict and a
+      // guard reporting that a routine is sound.
+      if (sites.length > 0) {
+        findings.push({
+          check: 'routine-signature-unheld', site: declaration,
+          detail: `no reference site supplies an operation argument this can read — ${sites.length} site(s) refer to '${routine.id}' and each binds `
+            + `${parameters.map((id) => `'${id}'`).join(', ')} to something that resolves at run time or not at all, so the signature was not held against the body`,
+        });
+      }
     }
   }
 
