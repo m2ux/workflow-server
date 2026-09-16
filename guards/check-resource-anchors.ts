@@ -21,12 +21,14 @@ import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 import { resolveLink } from './corpus-links.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 const INDEX = indexCorpus(ROOT);
 
 export interface BrokenAnchor {
@@ -147,6 +149,9 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
+  // Called for the refusal: this guard reads the corpus through module-level state, so the root is
+  // proven reachable rather than threaded through.
+  requireRootOrExit('resource-anchors', DEFAULT_ROOT);
   const broken = collectBrokenAnchors();
   if (broken.length === 0) {
     process.stdout.write('resource-anchors: OK — every relative .md#anchor link resolves to a rendered heading, and every fence closes\n');

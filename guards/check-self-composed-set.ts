@@ -28,10 +28,12 @@ import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree.
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 export interface SelfComposedSetViolation { site: string; detail: string }
 
@@ -108,7 +110,7 @@ export function collectSelfComposedSetViolations(root: string = ROOT): SelfCompo
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectSelfComposedSetViolations();
+  const violations = collectSelfComposedSetViolations(requireRootOrExit('self-composed-set', DEFAULT_ROOT));
   if (violations.length) {
     process.stdout.write(`self-composed set: ${violations.length} set action(s) compose a value from the variable they write — split the base from the derivation:\n`);
     for (const v of violations.sort((a, b) => a.site.localeCompare(b.site))) process.stdout.write(`  ${v.site} — ${v.detail}\n`);

@@ -37,10 +37,12 @@ import { jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { isOutsideValueSet } from '../src/schema/variable.schema.js';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
 import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 export interface VariableModelViolation {
   /** File, relative to the workflows root. */
@@ -227,7 +229,7 @@ export function collectVariableModelViolations(root: string = ROOT): VariableMod
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectVariableModelViolations();
+  const violations = collectVariableModelViolations(requireRootOrExit('variable-model', DEFAULT_ROOT));
   if (violations.length === 0) {
     process.stdout.write('variable-model: OK — defaults, gates and setVariable effects are coherent with the seeded variable model\n');
     process.exit(0);

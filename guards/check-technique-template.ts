@@ -32,10 +32,12 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 import { ARTIFACT_NAME_PATTERN } from '../src/schema/technique.schema.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 export interface TemplateViolation {
   /** File, relative to the workflows root. */
@@ -208,7 +210,7 @@ export function collectTemplateViolations(root: string = ROOT): TemplateViolatio
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectTemplateViolations();
+  const violations = collectTemplateViolations(requireRootOrExit('technique-template', DEFAULT_ROOT));
   if (violations.length === 0) {
     process.stdout.write('technique-template: OK — every technique file follows the normative template\n');
     process.exit(0);

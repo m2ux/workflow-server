@@ -27,8 +27,8 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { type CorpusIndex, type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, ledgerPath, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
-import { runGuard, type Finding } from './guard-protocol.js';
+import { assertScanned, corpusWorkflows, ledgerPath, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit, runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
@@ -225,7 +225,9 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const resolveRoot = () => requireWorkflowsRoot(DEFAULT_ROOT);
+  // `requireRootOrExit` rather than the raw require: this resolution happens before `runGuard`, so
+  // an unreachable corpus would escape the catch that turns it into the refusal.
+  const resolveRoot = () => requireRootOrExit('canonical-home-map', DEFAULT_ROOT);
   const owed = loadTriage(resolveRoot()).entries.length;
   await runGuard('canonical-home-map', resolveRoot, collectFindings, {
     okMessage: owed === 0

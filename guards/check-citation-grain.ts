@@ -28,11 +28,12 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, dirname, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { report, type Finding } from './guard-protocol.js';
+import { requireRootOrExit, report, type Finding } from './guard-protocol.js';
 import { resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 /** A markdown link whose target is a `.md` path, with or without a trailing `#anchor`. */
 const LINK = /\[[^\]]*\]\(([^)\s]+?\.md)(#[^)\s]*)?\)/g;
@@ -105,9 +106,10 @@ function collect(root: string = ROOT): Finding[] {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  report('citation-grain', collect(), {
+  const root = requireRootOrExit('citation-grain', DEFAULT_ROOT);
+  report('citation-grain', collect(root), {
     okMessage: 'no file cites one resource both bare and by anchor',
-    root: ROOT,
+    root,
     remedy: 'anchor the bare citation at the section it reads, or drop it where the anchored ones already cover the need',
   });
 }

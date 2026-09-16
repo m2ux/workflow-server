@@ -29,9 +29,11 @@ import { join, resolve, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { citePath, ledgerPath, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(defaultCorpusDest(join(DIR, '..')));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 /**
  * The triage lives with the corpus under `ledgers/`. Its entries are judgements about corpus prose,
  * so a change that moves a rule into a section and the entry describing that prose belong in one
@@ -148,6 +150,9 @@ export function collectFramingFindings(): FramingFinding[] {
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
+  // Called for the refusal: this guard reads the corpus through module-level state, so the root is
+  // proven reachable rather than threaded through.
+  requireRootOrExit('section-framing', DEFAULT_ROOT);
   const findings = collectFramingFindings();
   if (findings.length === 0) {
     process.stdout.write('section-framing: OK — no resource strands prose above its first section from an anchored citer\n');
