@@ -18,8 +18,17 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
   beforeAll(async () => { h = await createHarness(); });
   afterAll(async () => { await h.close(); });
 
-  /** The analysis run, plus the activity behind it that no batch of three can reach. */
-  const RUN = ['implementation-analysis', 'plan-prepare', 'assumptions-review', 'implement'];
+  /**
+   * A contiguous run of four, so a batch of three leaves one behind that no batch can reach.
+   *
+   * It opens at `plan-prepare` because the gate this exercises has to sit in the FIRST activity: a
+   * batch is read against a worker that reaches a gate part-way through and is answered without
+   * being replaced. `plan-prepare` is the earliest activity on this path that still declares one.
+   */
+  const RUN = ['plan-prepare', 'assumptions-review', 'implement', 'lean-coding-audit'];
+  /** The gate in RUN[0], and the answer that leaves the run on the exit the batch continues along. */
+  const GATE = 'approach-confirmed';
+  const GATE_ANSWER = 'confirmed';
 
   interface Walk {
     /** Response text per activity taken, in order. */
@@ -117,7 +126,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const walk = await walkBatch('worker-run-capped', RUN, 2_000_000);
 
     expect(walk.texts).toHaveLength(3);
-    expect(walk.refusedAt).toBe('implement');
+    expect(walk.refusedAt).toBe(RUN[3]);
     expect(walk.refusedWith).toContain('Batch full');
     expect(walk.refusedWith).toContain('cap of 3');
 
@@ -129,7 +138,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     // The limit it ran into is countable from the session.
     const refusals = walk.history.filter(e => e.type === 'batch_refused');
     expect(refusals).toHaveLength(1);
-    expect(refusals[0]!.activity).toBe('implement');
+    expect(refusals[0]!.activity).toBe(RUN[3]);
     expect(refusals[0]!.data as Record<string, unknown>).toMatchObject({
       agentId: 'worker-run-capped',
       limit: 'activity_cap',
@@ -139,23 +148,25 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
   });
 
   it('refuses on the delivery budget before the cap when the declared window is narrow', async () => {
-    // A window narrow enough that the first activity alone spends the batch budget.
+    // A window narrow enough that the budget binds before three activities are taken. Which
+    // activity it stops at depends on how much content each delivers, so the assertions are on
+    // WHICH limit refused and on it refusing short of the cap — pinning the position instead would
+    // be pinning the size of one activity's prose.
     const walk = await walkBatch('worker-run-narrow', RUN, 1_000);
 
-    expect(walk.texts).toHaveLength(1);
-    expect(walk.refusedAt).toBe('plan-prepare');
+    expect(walk.texts.length).toBeGreaterThan(0);
+    expect(walk.texts.length).toBeLessThan(3);
     expect(walk.refusedWith).toContain('over the batch budget');
 
     const refusals = walk.history.filter(e => e.type === 'batch_refused');
     expect(refusals).toHaveLength(1);
-    expect(refusals[0]!.data as Record<string, unknown>).toMatchObject({
-      limit: 'delivery_budget',
-      activities: 1,
-      budgetChars: 1400,
-    });
-    // The batch reported its own headroom as spent on the way in, so a cooperating worker stops here
-    // without needing the refusal.
-    expect(walk.batches[0]!['may_continue']).toBe(false);
+    const refusal = refusals[0]!.data as Record<string, unknown>;
+    expect(refusal).toMatchObject({ limit: 'delivery_budget', budgetChars: 1400 });
+    // Short of the cap is the whole point: the budget is what stopped this run, not the count.
+    expect(refusal['activities'] as number).toBeLessThan(3);
+    // The batch reported its own headroom as spent on the way in, so a cooperating worker stops
+    // there without needing the refusal.
+    expect(walk.batches.at(-1)!['may_continue']).toBe(false);
   });
 
   it('serves an activity the context already holds, so a batch survives its gates', async () => {
@@ -235,14 +246,14 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     // The worker reaches a gate and stops.
     const yielded = await client.callTool({
       name: 'yield_checkpoint',
-      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+      arguments: { session_index: sessionIndex, checkpoint_id: GATE },
     });
     if (isError(yielded)) throw new Error(`yield_checkpoint failed: ${rawText(yielded)}`);
 
     // The orchestrator answers it and clears the worker to continue.
     const responded = await client.callTool({
       name: 'respond_checkpoint',
-      arguments: { session_index: sessionIndex, option_id: 'accept-agent-positions' },
+      arguments: { session_index: sessionIndex, option_id: GATE_ANSWER },
     });
     if (isError(responded)) throw new Error(`respond_checkpoint failed: ${rawText(responded)}`);
     const resumed = await client.callTool({ name: 'resume_checkpoint', arguments: { session_index: sessionIndex } });
@@ -317,11 +328,11 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     });
     await client.callTool({
       name: 'yield_checkpoint',
-      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+      arguments: { session_index: sessionIndex, checkpoint_id: GATE },
     });
     await client.callTool({
       name: 'respond_checkpoint',
-      arguments: { session_index: sessionIndex, option_id: 'accept-agent-positions' },
+      arguments: { session_index: sessionIndex, option_id: GATE_ANSWER },
     });
 
     // The worker dies. A replacement is dispatched under a NEW identity for the same activity.
@@ -338,7 +349,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     // Reaching the same gate, it is waved through rather than yielded to the user a second time.
     const reCross = await client.callTool({
       name: 'yield_checkpoint',
-      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+      arguments: { session_index: sessionIndex, checkpoint_id: GATE },
     });
     if (isError(reCross)) throw new Error(`yield_checkpoint (replay) failed: ${rawText(reCross)}`);
     expect((parseToolResponse(reCross) as { status?: string }).status).toBe('replayed');
