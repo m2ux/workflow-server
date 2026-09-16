@@ -1,25 +1,43 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { createHarness, type Harness, parseToolResponse, rawText, isError } from './harness.js';
 import type { HistoryEntry } from '../../src/schema/state.schema.js';
-import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
  * Batched dispatch over the real server (#407). What these walks pin down is the bound that makes a
- * run safe, and the gate crossings that make a batch worth having.
+ * run safe, and the gate crossing that makes a batch worth having.
  *
- * The run walked is the analysis run through the middle of the main workflow — the best batch
- * candidate the investigation measured — with the implementation activity behind it as the fourth the
- * cap refuses.
+ * The corpus walked is a fixture, not the product one. What this measures is a property of the
+ * ENGINE — how far one worker context carries a run before a bound refuses it, and what happens when
+ * that worker meets a gate part-way through — and none of that is a claim about which activities a
+ * product workflow contains. Driving the product corpus made an authoring decision able to break a
+ * test about batching bounds, which is what happened when a run converged and an activity stopped
+ * declaring the gate this named.
+ *
+ * The fixture is four contiguous stops, and each thing about it is forced by something below:
+ *
+ * - FOUR, so a cap of three leaves one behind to be refused rather than the run merely ending.
+ * - A two-answer gate in the FIRST, because a batch is read from the stop where the worker halts
+ *   and is answered without being replaced.
+ * - The first two stops bind the SAME THREE operations. One walk reads how much of the second
+ *   delivery the holding context already has against how much the first collapsed within itself,
+ *   which needs content shared across stops and at least as much of it as the first stop carries.
+ * - The last two bind one operation each. They exist to reach the cap and to be refused at it, and
+ *   nothing reads what they deliver.
  */
-describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
+const FIXTURE = resolve(import.meta.dirname, '../fixtures/batched-dispatch');
+
+describe('batched dispatch (#407)', () => {
   let h: Harness;
-  beforeAll(async () => { h = await createHarness(); });
+  beforeAll(async () => { h = await createHarness({ workflowDir: FIXTURE }); });
   afterAll(async () => { await h.close(); });
 
-  /** The analysis run, plus the activity behind it that no batch of three can reach. */
-  const RUN = ['implementation-analysis', 'plan-prepare', 'assumptions-review', 'implement'];
+  const WORKFLOW = 'batch-fixture';
+  const RUN = ['first-stop', 'second-stop', 'third-stop', 'fourth-stop'];
+  /** The gate in RUN[0], and the answer that carries the run on. */
+  const GATE = 'approach-gate';
+  const GATE_ANSWER = 'settled';
 
   interface Walk {
     /** Response text per activity taken, in order. */
@@ -45,7 +63,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', scope);
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator', planning_folder: planningFolder },
     });
     if (isError(start)) throw new Error(`start_session failed: ${rawText(start)}`);
     const sessionIndex = parseToolResponse(start).session_index as string;
@@ -117,7 +135,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const walk = await walkBatch('worker-run-capped', RUN, 2_000_000);
 
     expect(walk.texts).toHaveLength(3);
-    expect(walk.refusedAt).toBe('implement');
+    expect(walk.refusedAt).toBe(RUN[3]);
     expect(walk.refusedWith).toContain('Batch full');
     expect(walk.refusedWith).toContain('cap of 3');
 
@@ -129,7 +147,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     // The limit it ran into is countable from the session.
     const refusals = walk.history.filter(e => e.type === 'batch_refused');
     expect(refusals).toHaveLength(1);
-    expect(refusals[0]!.activity).toBe('implement');
+    expect(refusals[0]!.activity).toBe(RUN[3]);
     expect(refusals[0]!.data as Record<string, unknown>).toMatchObject({
       agentId: 'worker-run-capped',
       limit: 'activity_cap',
@@ -139,22 +157,25 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
   });
 
   it('refuses on the delivery budget before the cap when the declared window is narrow', async () => {
-    // A window narrow enough that the first activity alone spends the batch budget.
+    // A window narrow enough that the first stop alone spends the batch budget. The fixture is
+    // fixed content, so where this stops is exact rather than a range — the earlier version of this
+    // walk drove the product corpus, where the stopping point moved with an activity's prose.
     const walk = await walkBatch('worker-run-narrow', RUN, 1_000);
 
     expect(walk.texts).toHaveLength(1);
-    expect(walk.refusedAt).toBe('plan-prepare');
+    expect(walk.refusedAt).toBe(RUN[1]);
     expect(walk.refusedWith).toContain('over the batch budget');
 
     const refusals = walk.history.filter(e => e.type === 'batch_refused');
     expect(refusals).toHaveLength(1);
+    // The budget is what stopped this run, not the count: one activity taken against a cap of three.
     expect(refusals[0]!.data as Record<string, unknown>).toMatchObject({
       limit: 'delivery_budget',
       activities: 1,
       budgetChars: 1400,
     });
-    // The batch reported its own headroom as spent on the way in, so a cooperating worker stops here
-    // without needing the refusal.
+    // The batch reported its own headroom as spent on the way in, so a cooperating worker stops
+    // there without needing the refusal.
     expect(walk.batches[0]!['may_continue']).toBe(false);
   });
 
@@ -162,7 +183,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const { client } = h;
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator' },
     });
     const sessionIndex = parseToolResponse(start).session_index as string;
     const scope = 'worker-run-gated';
@@ -214,7 +235,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', scope);
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator', planning_folder: planningFolder },
     });
     if (isError(start)) throw new Error(`start_session failed: ${rawText(start)}`);
     const sessionIndex = parseToolResponse(start).session_index as string;
@@ -235,18 +256,21 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     // The worker reaches a gate and stops.
     const yielded = await client.callTool({
       name: 'yield_checkpoint',
-      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+      arguments: { session_index: sessionIndex, checkpoint_id: GATE },
     });
     if (isError(yielded)) throw new Error(`yield_checkpoint failed: ${rawText(yielded)}`);
 
     // The orchestrator answers it and clears the worker to continue.
     const responded = await client.callTool({
       name: 'respond_checkpoint',
-      arguments: { session_index: sessionIndex, option_id: 'accept-agent-positions' },
+      arguments: { session_index: sessionIndex, option_id: GATE_ANSWER },
     });
     if (isError(responded)) throw new Error(`respond_checkpoint failed: ${rawText(responded)}`);
     const resumed = await client.callTool({ name: 'resume_checkpoint', arguments: { session_index: sessionIndex } });
     if (isError(resumed)) throw new Error(`resume_checkpoint failed: ${rawText(resumed)}`);
+    // The answer did something. Surviving a gate is worth nothing if the gate's effect did not
+    // land, and a batch that crosses one carries the value the answer set into what follows.
+    expect(parseToolResponse(responded).effect).toMatchObject({ setVariable: { approach_settled: true } });
 
     // Resumed on the activity it still holds: the already-taken carve-out serves it, and the batch has
     // not grown, because this is the same activity.
@@ -306,7 +330,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', 'worker-run-replaced');
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator', planning_folder: planningFolder },
     });
     const sessionIndex = parseToolResponse(start).session_index as string;
 
@@ -317,11 +341,11 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     });
     await client.callTool({
       name: 'yield_checkpoint',
-      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+      arguments: { session_index: sessionIndex, checkpoint_id: GATE },
     });
     await client.callTool({
       name: 'respond_checkpoint',
-      arguments: { session_index: sessionIndex, option_id: 'accept-agent-positions' },
+      arguments: { session_index: sessionIndex, option_id: GATE_ANSWER },
     });
 
     // The worker dies. A replacement is dispatched under a NEW identity for the same activity.
@@ -338,7 +362,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     // Reaching the same gate, it is waved through rather than yielded to the user a second time.
     const reCross = await client.callTool({
       name: 'yield_checkpoint',
-      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+      arguments: { session_index: sessionIndex, checkpoint_id: GATE },
     });
     if (isError(reCross)) throw new Error(`yield_checkpoint (replay) failed: ${rawText(reCross)}`);
     expect((parseToolResponse(reCross) as { status?: string }).status).toBe('replayed');
@@ -353,7 +377,7 @@ describe.skipIf(!liveCorpusRoot())('batched dispatch (#407)', () => {
     const { client } = h;
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator' },
     });
     const sessionIndex = parseToolResponse(start).session_index as string;
     const scope = 'worker-run-costed';

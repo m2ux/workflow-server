@@ -1,0 +1,13 @@
+id: third-stop
+version: 1.0.0
+name: Third Stop
+description: The stop that brings a batch to the cap. One operation, no gate.
+
+steps:
+  - kind: technique
+    id: prepare
+    technique: prepare
+
+exits:
+  - id: done
+    isDefault: true

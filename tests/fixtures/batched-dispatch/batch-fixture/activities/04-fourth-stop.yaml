@@ -1,0 +1,13 @@
+id: fourth-stop
+version: 1.0.0
+name: Fourth Stop
+description: The stop beyond the cap. It exists to be refused, so a walk can show the bound refusing rather than the run simply ending.
+
+steps:
+  - kind: technique
+    id: prepare
+    technique: prepare
+
+exits:
+  - id: done
+    isDefault: true

@@ -1,0 +1,48 @@
+id: first-stop
+version: 1.0.0
+name: First Stop
+description: The activity a batch opens at. It carries the gate, because a batch crossing a gate is read from the stop where the worker halts and is answered without being replaced.
+
+variables:
+  writes:
+    - name: approach_settled
+      type: boolean
+      description: Whether the gate was answered with the answer that continues the run.
+      defaultValue: false
+
+steps:
+  # Three operations, every one of them bound at the next stop too. The walk reads how much of the
+  # second delivery the holding context already has AGAINST how much the first delivery collapsed
+  # within itself, so the second stop has to share at least as many as this one carries.
+  - kind: technique
+    id: prepare
+    technique: prepare
+  - kind: technique
+    id: review
+    technique: review
+  - kind: technique
+    id: record
+    technique: record
+  - kind: checkpoint
+    id: approach-gate
+    message: The approach this run is built on, summarised above.
+    options:
+      - id: settled
+        label: Approach settled
+        description: Proceed with this approach
+        effect:
+          setVariable:
+            approach_settled: true
+      # The answer the walks do not take. It carries an exit of its own so the gate is a real
+      # decision between two routes rather than one answer and a decoration — a gate whose second
+      # answer went nowhere would not be the thing a batch is read as surviving.
+      - id: revise
+        label: Revise approach
+        description: Send the run back to be reworked rather than continuing
+        effect:
+          exit: reworked
+
+exits:
+  - id: done
+    isDefault: true
+  - id: reworked
