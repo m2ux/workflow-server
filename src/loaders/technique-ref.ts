@@ -15,11 +15,11 @@
  * reference under an older spelling and always names a workflow, whether or not the corpus holds
  * one. A slash carries no other meaning: a second slash, or one after a `::`, is malformed.
  *
- * Deciding the leading segment against the corpus INDEX rather than against the presence of a
- * `techniques/` directory is what keeps a reference's meaning tied to what the corpus declares. A
- * workflow is a workflow from the moment its definition exists, so a reference to one that has yet
- * to write its first technique fails as an unresolved technique rather than quietly re-reading its
- * prefix as a group in the referring workflow.
+ * What a leading segment means is settled by the corpus index, so it follows from what the corpus
+ * DECLARES rather than from the interior shape of a directory. A workflow is a workflow from the
+ * moment its definition exists: a reference to one that has yet to write its first technique names
+ * that workflow and fails as an unresolved technique, and a group in the referring workflow sharing
+ * its name is not what the reference addresses.
  */
 import { workflowLocation, type CorpusSource } from './corpus-index.js';
 

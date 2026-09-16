@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { indexCorpus, type CorpusIndex } from '../src/loaders/corpus-index.js';
 import { isBareName, parseTechniqueRef, techniqueRef, TechniqueRefError } from '../src/loaders/technique-ref.js';
-import { composeActivityTechnique, readTechnique } from '../src/loaders/technique-loader.js';
+import { composeActivityTechnique, readTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
 import { writeWorkflowFixture } from './corpus-fixture.js';
 
 /**
@@ -29,7 +29,7 @@ describe('technique reference rule', () => {
     technique(shared, 'standalone');
     technique(shared, join('group', 'operation'));
     technique(shared, join('group', 'subgroup', 'operation'));
-    // A workflow with no techniques/ directory at all — the case the two readings used to split on.
+    // A workflow with no techniques/ directory: a declared workflow is still what its name means.
     writeWorkflowFixture(root, 'bare-wf');
     // The workflow whose activities do the referring, carrying a group named after another workflow.
     const local = writeWorkflowFixture(root, 'local-wf');
@@ -49,8 +49,8 @@ describe('technique reference rule', () => {
     });
 
     it('reads it as a workflow whether or not that workflow carries techniques yet', () => {
-      // `bare-wf` holds no techniques/ directory, so a rule deciding by that probe would read this
-      // as a group in the referring workflow — and silently deliver local-wf/techniques/bare-wf/.
+      // `bare-wf` holds no techniques/ directory, and local-wf holds a group folder of that name:
+      // the reference names the workflow, so the local group is not what it addresses.
       expect(parseTechniqueRef('bare-wf::operation', index))
         .toMatchObject({ workflowId: 'bare-wf', segments: ['operation'] });
     });
@@ -129,6 +129,18 @@ describe('technique reference rule', () => {
       expect(isBareName('standalone')).toBe(true);
       expect(isBareName('group::operation')).toBe(false);
       expect(isBareName('shared-wf/standalone')).toBe(false);
+    });
+  });
+
+  describe('the two delivery paths', () => {
+    it('reads and bundles a slash-prefixed nested reference the same way', async () => {
+      // One rule, so `workflow/group::op` names the same file whichever path asks: the slash carries
+      // the workflow and the `::` that follows walks into a group folder, on both.
+      const read = await readTechnique('shared-wf/group::operation', root, 'local-wf');
+      expect(read.success).toBe(true);
+      const bundled = (await resolveTechniques(['shared-wf/group::operation'], root, 'local-wf'))[0]!;
+      expect(bundled.type).toBe('technique');
+      expect(bundled.workflow).toBe('shared-wf');
     });
   });
 
