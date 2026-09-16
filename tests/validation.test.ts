@@ -35,20 +35,26 @@ function makeWorkflow(overrides: Partial<Workflow> = {}): Workflow {
     activities: [
       {
         id: 'planning',
-        title: 'Planning',
-        steps: [{ id: 'plan-step', title: 'Plan', instructions: 'Plan it' }],
+        name: 'Planning',
+        version: '1.0.0',
+        required: true,
+        steps: [{ kind: 'action', id: 'plan-step' }],
         exits: [{ id: 'done', isDefault: true }],
       },
       {
         id: 'implementation',
-        title: 'Implementation',
-        steps: [{ id: 'impl-step', title: 'Implement', instructions: 'Do it' }],
+        name: 'Implementation',
+        version: '1.0.0',
+        required: true,
+        steps: [{ kind: 'action', id: 'impl-step' }],
         exits: [{ id: 'done', isDefault: true }],
       },
       {
         id: 'review',
-        title: 'Review',
-        steps: [{ id: 'review-step', title: 'Review', instructions: 'Review it' }],
+        name: 'Review',
+        version: '1.0.0',
+        required: true,
+        steps: [{ kind: 'action', id: 'review-step' }],
       },
     ],
     ...overrides,
@@ -103,13 +109,15 @@ describe('validation', () => {
         activities: [
           {
             id: 'hub',
-            title: 'Hub',
-            steps: [{ id: 's1', title: 'Step', instructions: 'Do' }],
+            name: 'Hub',
+            version: '1.0.0',
+            required: true,
+            steps: [{ kind: 'action', id: 's1' }],
             exits: [{ id: 'a-chosen', when: 'wants_a == true' }, { id: 'b-chosen', isDefault: true }],
           },
-          { id: 'branch-a', title: 'A', steps: [{ id: 'a1', title: 'A', instructions: 'A' }] },
-          { id: 'branch-b', title: 'B', steps: [{ id: 'b1', title: 'B', instructions: 'B' }] },
-          { id: 'branch-c', title: 'C', steps: [{ id: 'c1', title: 'C', instructions: 'C' }] },
+          { id: 'branch-a', name: 'A', version: '1.0.0', required: true, steps: [{ kind: 'action', id: 'a1' }] },
+          { id: 'branch-b', name: 'B', version: '1.0.0', required: true, steps: [{ kind: 'action', id: 'b1' }] },
+          { id: 'branch-c', name: 'C', version: '1.0.0', required: true, steps: [{ kind: 'action', id: 'c1' }] },
         ],
       });
       const token = makeToken({ act: 'hub' });

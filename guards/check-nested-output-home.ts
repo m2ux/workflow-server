@@ -74,13 +74,13 @@ function outputs(path: string): Map<string, string[]> {
     if (!inside) continue;
     const top = line.match(/^### +(\S+)\s*$/);
     if (top) {
-      current = top[1].trim();
+      current = top[1]!.trim();
       out.set(current, []);
       continue;
     }
     const nested = line.match(/^#### +(\S+)\s*$/);
     if (nested && current) {
-      const id = nested[1].trim();
+      const id = nested[1]!.trim();
       if (!NOT_A_COMPONENT.has(id.toLowerCase())) out.get(current)!.push(id);
     }
   }

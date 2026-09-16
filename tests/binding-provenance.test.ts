@@ -248,15 +248,16 @@ describe('buildProvenanceContext', () => {
     id: 'testwf',
     version: '1.0.0',
     title: 'Test workflow',
+    initialActivity: 'intake',
     variables: [{ name: 'target_path', type: 'string', required: false }],
     activities: [
       {
         id: 'intake', version: '1.0.0', name: 'Intake', required: true,
         steps: [
           // Bare op ref resolving through the activity-group shorthand (`intake::classify`).
-          { kind: 'technique', id: 'classify', technique: 'classify', required: true },
+          { kind: 'technique', id: 'classify', technique: 'classify' },
           {
-            kind: 'checkpoint', id: 'confirm', message: 'Proceed?', required: true,
+            kind: 'checkpoint', id: 'confirm', message: 'Proceed?',
             options: [{ id: 'yes', label: 'Yes', effect: { setVariable: { approved: true } } }],
           },
         ],
@@ -264,9 +265,9 @@ describe('buildProvenanceContext', () => {
       {
         id: 'work', version: '1.0.0', name: 'Work', required: true,
         steps: [
-          { kind: 'technique', id: 'gather', technique: 'gather', required: true },
+          { kind: 'technique', id: 'gather', technique: 'gather' },
           {
-            kind: 'technique', id: 'record', required: true,
+            kind: 'technique', id: 'record',
             technique: { name: 'record', inputs: { analysis_report: '{analysis_report}' }, outputs: { record_log: 'final_log' } },
           },
         ],

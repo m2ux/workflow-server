@@ -129,7 +129,7 @@ function mapRowFor(section: string | null, artifact: string): string | null {
   for (const row of section.split('\n')) {
     const cells = row.split('|');
     if (cells.length < 3) continue;
-    const named = cells[1].split(',').map((c) => c.trim().replace(/`/g, '').trim());
+    const named = cells[1]!.split(',').map((c) => c.trim().replace(/`/g, '').trim());
     if (named.includes(artifact)) return row;
   }
   return null;
@@ -148,7 +148,7 @@ function mapRowFor(section: string | null, artifact: string): string | null {
  */
 function mapRowTargetsResolve(root: string, row: string, resourcesDir: string): boolean {
   const targets = [...row.matchAll(/\]\(([^)]+)\)/g)]
-    .map((m) => m[1].split('#')[0].trim())
+    .map((m) => m[1]!.split('#')[0]!.trim())
     .filter((t) => t.endsWith('.md'));
   if (targets.length === 0) return true;
   // The row sits in the resources README, so a relative target resolves beside it and a

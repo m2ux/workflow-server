@@ -53,17 +53,18 @@ describe('provenance resolve work per delivery', () => {
     id: 'testwf',
     version: '1.0.0',
     title: 'Test workflow',
+    initialActivity: 'first',
     activities: [
       {
         id: 'first', version: '1.0.0', name: 'First', required: true,
-        steps: [{ kind: 'technique', id: 'run-alpha', technique: 'alpha', required: true }],
+        steps: [{ kind: 'technique', id: 'run-alpha', technique: 'alpha' }],
       },
       {
         id: 'second', version: '1.0.0', name: 'Second', required: true,
         steps: [
-          { kind: 'technique', id: 'run-beta', technique: 'beta', required: true },
-          { kind: 'technique', id: 'run-gamma', technique: 'gamma', required: true },
-          { kind: 'technique', id: 'run-delta', technique: 'delta', required: true },
+          { kind: 'technique', id: 'run-beta', technique: 'beta' },
+          { kind: 'technique', id: 'run-gamma', technique: 'gamma' },
+          { kind: 'technique', id: 'run-delta', technique: 'delta' },
         ],
       },
     ],

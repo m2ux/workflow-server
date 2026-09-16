@@ -30,7 +30,7 @@ const HEADING = /^### (\w+)[ \t]*$/gm;
 /** The `## Inputs` span of a technique file, or '' when it declares none. */
 function inputsSpan(body: string): string {
   const m = /^## Inputs[ \t]*$([\s\S]*?)(?=^## |$(?![\s\S]))/m.exec(body);
-  return m ? m[1] : '';
+  return m?.[1] ?? '';
 }
 
 /** id -> the entry's text, for each `### id` in an Inputs span. */
@@ -39,8 +39,8 @@ function entries(span: string): Map<string, string> {
   const out = new Map<string, string>();
   heads.forEach((h, i) => {
     const start = h.index!;
-    const end = i + 1 < heads.length ? heads[i + 1].index! : span.length;
-    out.set(h[1], span.slice(start, end));
+    const end = i + 1 < heads.length ? heads[i + 1]!.index! : span.length;
+    out.set(h[1]!, span.slice(start, end));
   });
   return out;
 }

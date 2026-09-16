@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import type { Express } from 'express';
-import type { Server as HttpServer, AddressInfo } from 'node:net';
+import type { Server as HttpServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { resolve, join } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -179,7 +180,9 @@ describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
         const loaded = loadConfig([]);
         const config = buildConfig({
           workspaceDir: loaded.workspaceDir,
-          planningRelativeDir: loaded.planningRelativeDir,
+          ...(loaded.planningRelativeDir !== undefined
+            ? { planningRelativeDir: loaded.planningRelativeDir }
+            : {}),
         });
         const readyApp = createHttpApp(config);
         const res = await get(readyApp, '/ready');
@@ -284,7 +287,7 @@ describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
 
       const listRes = await postJson(app, '/mcp', { jsonrpc: '2.0', method: 'tools/list', params: {}, id: 2 }, {
         Accept: 'application/json, text/event-stream',
-        'mcp-session-id': sessionId,
+        'mcp-session-id': sessionId!,
       });
 
       expect(listRes.status).toBe(200);

@@ -23,13 +23,13 @@ import type { WalkResult } from './walker.js';
 
 export interface StepSnapshot {
   activity: string;
-  checkpoints: Array<{ id: string; option: string; setVariable?: Record<string, unknown> }>;
+  checkpoints: Array<{ id: string; option: string; setVariable?: Record<string, unknown> | undefined }>;
   artifacts: string[];
   artifactsWritten: string[];
   stepsExecuted: string[];
   gatesReadUnbound: string[];
-  lazyGates?: { pending: number; unbound: number; unparsed: number };
-  manifestStatus?: string;
+  lazyGates?: { pending: number; unbound: number; unparsed: number } | undefined;
+  manifestStatus?: string | undefined;
   orphanCheckpoints: string[];
   unresolved: string[];
   next: string | null;

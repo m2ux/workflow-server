@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from 'yaml';
-import { lintDeclarations, lintDocument } from '../guards/check-variable-model.js';
+import { lintDeclarations, lintDocument, type VariableDeclaration } from '../guards/check-variable-model.js';
 
 /**
  * Variable-model guard (B7, issue #166): the corpus stays coherent with the
@@ -10,7 +10,7 @@ import { lintDeclarations, lintDocument } from '../guards/check-variable-model.j
  * Hard-zero over the corpus.
  */
 
-const DECLS = new Map([
+const DECLS = new Map<string, VariableDeclaration>([
   ['review_needed', { type: 'boolean', hasDefault: true, defaultValue: false }],
   ['repo_root', { type: 'string', hasDefault: false, defaultValue: undefined }],
   ['finding_items', { type: 'array', hasDefault: true, defaultValue: '[]' }],
@@ -61,7 +61,7 @@ options:
   });
 
   describe('declared value sets (#518 W5.4)', () => {
-    const SET_DECLS = new Map([
+    const SET_DECLS = new Map<string, VariableDeclaration>([
       ...DECLS,
       ['operation_type', { type: 'string', hasDefault: false, defaultValue: undefined, values: ['create', 'update', 'review'] }],
     ]);

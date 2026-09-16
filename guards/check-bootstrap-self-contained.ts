@@ -187,7 +187,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       // Every adjacent pair, not the leftmost match: a full ancestry address puts the technique and the
       // rule in the last two segments, and a single scan consumes `<workflow>.<technique>` and moves
       // past the pair that matters.
-      const parts = run.split('.');
+      const parts = run!.split('.');
       const pair = parts.slice(0, -1).map((left, i) => `${left}.${parts[i + 1]}`).find((p) => declared.pairs.has(p));
       if (!pair) continue;
       findings.push({

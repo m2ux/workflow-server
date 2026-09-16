@@ -44,8 +44,8 @@ describe('citation-grain guard', () => {
         + '### 2. Record\n\n- Record per [rubric](../resources/rubric.md#rules).\n',
     });
     expect(findings.map((f) => f.check)).toEqual(['citation-grain']);
-    expect(findings[0].site).toBe('wf/techniques/op.md');
-    expect(findings[0].detail).toContain('rules');
+    expect(findings[0]!.site).toBe('wf/techniques/op.md');
+    expect(findings[0]!.detail).toContain('rules');
   });
 
   it('names every anchor the pair delivers alongside the file', () => {
@@ -57,7 +57,7 @@ describe('citation-grain guard', () => {
         + '### 3. Apply\n\n- Per [rubric](../resources/rubric.md#rules).\n',
     });
     expect(findings).toHaveLength(1);
-    expect(findings[0].detail).toContain('checks, rules');
+    expect(findings[0]!.detail).toContain('checks, rules');
   });
 
   /**

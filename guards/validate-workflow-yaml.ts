@@ -89,7 +89,7 @@ function checkTechniqueProtocolRefs(file: string): string[] {
     if (/^\s*#{1,4}\s/.test(rawLine)) continue; // skip headings
     const line = stripCode(rawLine);
     for (const mm of line.matchAll(/(?<![\w{])([a-z][a-z0-9]*(?:_[a-z0-9]+)+)(?![\w}:])/g)) {
-      bare.add(mm[1]);
+      bare.add(mm[1]!);
     }
   }
   return [...bare].map(
@@ -132,7 +132,7 @@ async function validateWorkflowDir(root: string, workflowDirPath: string): Promi
   const loadResult = await loadWorkflow(root, workflowId);
   if (loadResult.success) {
     console.log('[PASS] workflow.yaml valid');
-    console.log(`   ID: ${loadResult.value.id}, Version: ${loadResult.value.version}, Activities: ${loadResult.value.activities.length}`);
+    console.log(`   ID: ${loadResult.value.id}, Version: ${loadResult.value.version}, Activities: ${loadResult.value.activities?.length ?? 0}`);
   } else {
     console.error('[FAIL] workflow.yaml validation failed:', loadResult.error);
     failed++;

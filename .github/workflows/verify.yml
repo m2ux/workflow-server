@@ -34,7 +34,10 @@ jobs:
 
       - run: npm ci
 
-      - name: Typecheck server source
+      # Two compilations: the server source under the full house style, then the guards, tests and
+      # scripts under the same strictness with the index-signature preference relaxed. A script that
+      # stops resolving fails here on the commit that breaks it.
+      - name: Typecheck the server source, the guards, the tests and the scripts
         run: npm run typecheck
 
       # The generated schemas are what an authoring client validates against, so a schema change

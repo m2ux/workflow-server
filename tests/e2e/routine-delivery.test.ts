@@ -26,7 +26,7 @@ afterAll(async () => { await harness?.close(); });
 
 /** The delivered activity body, parsed back out of the tool payload. */
 async function deliver(workflowId: string, activityId: string): Promise<{ text: string; activity: Activity }> {
-  const asText = (result: { content: unknown }): string =>
+  const asText = (result: ToolResult): string =>
     (result.content as Array<{ type: string; text: string }>)
       .filter((part) => part.type === 'text').map((part) => part.text).join('\n');
 

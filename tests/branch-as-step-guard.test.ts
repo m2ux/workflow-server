@@ -41,7 +41,7 @@ describe('branch-as-step guard', () => {
       + '  - When `{intensity}` is ultra, trim the requirement too.\n',
     );
     expect(findings.map(f => f.check)).toEqual(['qualifier-as-sub-bullet', 'qualifier-as-sub-bullet']);
-    expect(findings[0].site).toMatch(/op\.md:\d+$/);
+    expect(findings[0]!.site).toMatch(/op\.md:\d+$/);
   });
 
   it('flags an indented fallback and an indented prohibition', () => {
@@ -95,7 +95,7 @@ describe('branch-as-step guard', () => {
       + '   - If the run exceeds available memory, halve the job budget and retry.\n',
     );
     expect(findings.map(f => f.check)).toEqual(['qualifier-as-sub-bullet']);
-    expect(findings[0].site).toMatch(/op\.md:\d+$/);
+    expect(findings[0]!.site).toMatch(/op\.md:\d+$/);
   });
 
   it('passes a flat numbered protocol whose caveat is a note', () => {

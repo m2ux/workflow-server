@@ -106,11 +106,11 @@ export interface UsageTotals {
 export interface WorkerProfile {
   agentId: string;
   /** Harness label for the dispatch, e.g. `initialize-session worker`. */
-  description?: string;
+  description?: string | undefined;
   /** Dispatch time, from the spawning tool call in the main transcript. */
-  dispatchedAt?: string;
+  dispatchedAt?: string | undefined;
   /** Minutes from t0 to dispatch. */
-  dispatchOffsetMin?: number;
+  dispatchOffsetMin?: number | undefined;
   usage: UsageTotals;
   /** Result characters this worker received, by tool. */
   resultCharsByTool: Record<string, number>;
@@ -122,7 +122,7 @@ export interface Milestones {
   firstWorker?: string;
   firstCheckpoint?: string;
   clientFirstActivity?: string;
-  openingComplete?: string;
+  openingComplete?: string | undefined;
 }
 
 export interface RunProfile {
@@ -289,8 +289,8 @@ const SPAWN_TOOLS = new Set(['Agent', 'Task']);
 /** One `next_activity` call: the session it transitions and the activity it asks for. */
 interface Transition {
   at: string;
-  sessionIndex?: string;
-  activityId?: string;
+  sessionIndex?: string | undefined;
+  activityId?: string | undefined;
 }
 
 function transitions(main: TranscriptRecord[]): Transition[] {
@@ -331,7 +331,7 @@ const META_ACTIVITIES = new Set([
  * opens on a different id, so reading the session scope is what lets one profiler walk any of them —
  * and it holds on a run that creates a second meta session before dispatching.
  */
-function findMilestones(main: TranscriptRecord[]): { milestones: Milestones; openingActivity?: string } {
+function findMilestones(main: TranscriptRecord[]): { milestones: Milestones; openingActivity?: string | undefined } {
   const found: Milestones = {};
   let openingActivity: string | undefined;
   for (const record of main) {

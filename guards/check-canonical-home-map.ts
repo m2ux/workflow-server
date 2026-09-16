@@ -90,15 +90,16 @@ function boundMaps(root: string, index: CorpusIndex): MapRef[] {
       if (!entry.endsWith('.yaml')) continue;
       const body = readFileSync(join(activities, entry), 'utf-8');
       for (const m of body.matchAll(MAP_BIND)) {
-        const [workflow, ...rest] = m[1].split('/');
+        const target = m[1]!;
+        const [workflow, ...rest] = target.split('/') as [string, ...string[]];
         const tail = rest.join('/');
         const anchor = m[2];
         // A ref naming no workflow the corpus holds keeps an unresolvable path, which the caller
         // reports as a missing home rather than silently skipping.
         const path = (anchor
-          ? workflowSubdir(index, workflow!, join(tail, 'TECHNIQUE.md'))
-          : workflowSubdir(index, workflow!, join('resources', `${tail}.md`))) ?? '';
-        const ref = anchor ? `${m[1]}#${anchor}` : m[1];
+          ? workflowSubdir(index, workflow, join(tail, 'TECHNIQUE.md'))
+          : workflowSubdir(index, workflow, join('resources', `${tail}.md`))) ?? '';
+        const ref = anchor ? `${target}#${anchor}` : target;
         byRef.set(ref, { ref, workflow, path, ...(anchor ? { anchor } : {}) });
       }
     }
@@ -130,9 +131,9 @@ function homeFilenames(body: string): { row: string; artifact: string }[] {
   for (const row of body.split('\n')) {
     const cells = row.split('|');
     if (cells.length < 3) continue;
-    const category = cells[1].trim();
+    const category = cells[1]!.trim();
     if (!category || /^-+$/.test(category) || /^Fact category$/i.test(category)) continue;
-    for (const m of cells[2].matchAll(FILENAME)) out.push({ row: category, artifact: m[1] });
+    for (const m of cells[2]!.matchAll(FILENAME)) out.push({ row: category, artifact: m[1]! });
   }
   return out;
 }
@@ -143,14 +144,15 @@ function declaredArtifacts(source: CorpusSource, workflow: string): Set<string> 
   for (const file of walk(workflowSubdir(source, workflow, 'techniques'))) {
     const lines = readFileSync(file, 'utf-8').split('\n');
     for (let i = 0; i < lines.length; i++) {
-      if (!/^#### +artifact\s*$/i.test(lines[i])) continue;
+      if (!/^#### +artifact\s*$/i.test(lines[i]!)) continue;
       for (let j = i + 1; j < Math.min(i + 5, lines.length); j++) {
-        const m = lines[j].match(/^\s*`([^`]+)`\s*$/);
+        const line = lines[j]!;
+        const m = line.match(/^\s*`([^`]+)`\s*$/);
         if (m) {
-          out.add(m[1].trim());
+          out.add(m[1]!.trim());
           break;
         }
-        if (/^#/.test(lines[j])) break;
+        if (/^#/.test(line)) break;
       }
     }
   }

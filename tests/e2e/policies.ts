@@ -9,7 +9,7 @@ import type { Policy, PolicyContext } from './walker.js';
 function defaultChoice(ctx: PolicyContext): string {
   const cp = ctx.checkpoint;
   if (cp.defaultOption && cp.options.some(o => o.id === cp.defaultOption)) return cp.defaultOption;
-  return cp.options[0].id;
+  return cp.options[0]!.id;
 }
 
 /**

@@ -23,7 +23,7 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "test:coverage-walk": "WF_OPTION_COVERAGE=1 vitest run tests/e2e/option-coverage.test.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.tools.json",
     "check:binding": "tsx guards/check-binding-fidelity.ts",
     "check:identifiers": "tsx guards/check-identifier-qualification.ts",
     "check:home-map": "tsx guards/check-canonical-home-map.ts",

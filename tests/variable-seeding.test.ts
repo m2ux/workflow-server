@@ -283,7 +283,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     // A fresh orchestrator that lost its context recovers the worker's value
     // from the server rather than from a prompt.
     const status = await call('get_workflow_status', { session_index: sessionIndex });
-    expect(JSON.parse((status.content as { text: string }[])[0].text).variables.review_needed).toBe(true);
+    expect(JSON.parse((status.content as { text: string }[])[0]!.text).variables.review_needed).toBe(true);
   });
 
   it('omitting variables_changed leaves the bag untouched', async () => {

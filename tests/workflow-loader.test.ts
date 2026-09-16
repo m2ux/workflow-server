@@ -40,7 +40,7 @@ describe('workflow-loader', () => {
         expect(result.value.id).toBe('meta');
         expect(result.value.version).toBeDefined();
         expect(result.value.title).toBe('Meta Workflow');
-        expect(result.value.activities.length).toBeGreaterThanOrEqual(2);
+        expect(result.value.activities!.length).toBeGreaterThanOrEqual(2);
       }
     });
 
@@ -58,7 +58,7 @@ describe('workflow-loader', () => {
 
       expect(result.success).toBe(true);
       if (result.success) {
-        const ids = result.value.activities.map(a => a.id);
+        const ids = result.value.activities!.map(a => a.id);
         expect(ids).toContain('dispatch-client-workflow');
         expect(ids).toContain('end-workflow');
       }

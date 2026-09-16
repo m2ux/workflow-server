@@ -14,7 +14,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - **Run (stdio, default):** `npm start` or `npm run dev`
 - **Run (HTTP):** `npm run start:http` or `npm run dev:http`
 - **Tests:** `npm test` (watch) / `npm run test:ci` (single run)
-- **Typecheck:** `npm run typecheck`
+- **Typecheck:** `npm run typecheck` — two compilations, and a failure in either fails the script. `tsconfig.json` compiles the server source under the full house style. `tsconfig.tools.json` compiles the guards, the tests and the scripts under the same strictness with `noPropertyAccessFromIndexSignature` relaxed, so a file outside `src/` follows every rule but the bracket-access preference.
 - **Guards:** `npm run check:all` (every guard, one table) / `npm run check:delta` (only what your change added, against the merge-base)
 - **Guarding a corpus worktree:** `npx tsx guards/check-all.ts --root <path-to-worktree> --corpus-only`. A worktree of the corpus is a checkout of `workflows` alone — no `package.json`, so `worktree:provision` does not apply to it — and a run without `--root` measures `.worktrees/workflows` of the primary checkout. Point `--root` at the branch root: discovery walks `corpus/` and does not search sibling folders. A `workflow.yaml` at any depth under that grouping is a workflow.
 - **Work a branch in its own worktree.** The checkout at `.worktrees/workflows` stays on the `workflows` branch, and a feature branch lives under `.worktrees/<branch>`. Switching the shared dest moves the corpus under anything reading it — a guard sweep, a coverage walk, another agent — and the result is wrong in a way that reads as a defect in the change.

@@ -27,11 +27,11 @@ import { fileURLToPath } from 'node:url';
 import { createHarness } from '../../tests/e2e/harness.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../../tests/e2e/harness.js';
 import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
-import { type Graph } from '../../src/schema/workflow.schema.js';
+import { type Graph, destinationTargets } from '../../src/schema/workflow.schema.js';
 import { defaultPolicy, makePolicy } from '../../tests/e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
 import { parseWhen } from '../../src/schema/when-expression.js';
-import { checkSession, relayGaps } from '../check-session-contract.js';
+import { checkSession, relayGaps } from '../../guards/check-session-contract.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = resolve(HERE, '../..');
@@ -163,8 +163,11 @@ function collectWorkerVariables(reports: string[]): Record<string, unknown> {
 }
 
 /** A tool result's text, for an error the driver has to report rather than swallow. */
-function toolText(result: { content?: unknown }): string {
-  const first = Array.isArray(result.content) ? result.content[0] : undefined;
+// The SDK's tool result is a union, and one arm carries no `content` at all, so the parameter takes
+// the union whole and probes for the field rather than declaring a shape only some arms satisfy.
+function toolText(result: unknown): string {
+  const content = (result as { content?: unknown }).content;
+  const first = Array.isArray(content) ? content[0] : undefined;
   return (first as { text?: string } | undefined)?.text ?? '(no detail)';
 }
 
@@ -378,8 +381,13 @@ async function main() {
       if (next === null || visited.has(next)) {
         const bound = graph[act.id] ?? {};
         for (const exit of act.exits ?? []) {
-          const to = bound[exit.id];
-          if (to === undefined || visited.has(to)) continue;
+          const destination = bound[exit.id];
+          // A binding may name one activity or fan to several; the fallback drives one branch, so
+          // it takes the first target the run has not already entered.
+          const to = destination === undefined
+            ? undefined
+            : destinationTargets(destination).find((target) => !visited.has(target));
+          if (to === undefined) continue;
           if (exit.when === undefined) { next = to; break; }
           const parsed = parseWhen(exit.when);
           if (parsed.ok && parsed.ast.kind === 'cmp') {

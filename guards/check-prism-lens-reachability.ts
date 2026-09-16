@@ -93,7 +93,7 @@ function indexToSlug(readme: string): Map<string, string> {
   const map = new Map<string, string>();
   const rowRe = /\|\s*`(\d+)`\s*\|\s*\[[^\]]*\]\(([a-z0-9-]+)\.md\)/gi;
   let m: RegExpExecArray | null;
-  while ((m = rowRe.exec(readme)) !== null) map.set(m[1], m[2].toLowerCase());
+  while ((m = rowRe.exec(readme)) !== null) map.set(m[1]!, m[2]!.toLowerCase());
   return map;
 }
 
@@ -102,7 +102,7 @@ function slugIndexPairs(text: string): Array<{ slug: string; index: string }> {
   const out: Array<{ slug: string; index: string }> = [];
   const re = /([a-z0-9][a-z0-9-]*) \((\d{2})\)/gi;
   let m: RegExpExecArray | null;
-  while ((m = re.exec(text)) !== null) out.push({ slug: m[1].toLowerCase(), index: m[2] });
+  while ((m = re.exec(text)) !== null) out.push({ slug: m[1]!.toLowerCase(), index: m[2]! });
   return out;
 }
 

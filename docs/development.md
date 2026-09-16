@@ -22,7 +22,7 @@ A linked worktree needs the same two things and starts with neither. `npm run wo
 ## Commands
 
 ```bash
-npm run typecheck     # type check
+npm run typecheck     # type check: server source, then guards + tests + scripts
 npm run build         # production build
 npm run dev           # hot reload via tsx, stdio transport
 npm run dev:http      # hot reload over HTTP
