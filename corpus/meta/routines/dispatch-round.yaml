@@ -14,7 +14,7 @@ inputs:
   - id: work_units
     description: The ordered units this round works through, each { id, brief, tools_hint? }.
   - id: work_goal
-    description: The caller-facing goal the units were planned from, carried into every brief.
+    description: The caller-facing goal the pattern operates on, which every orchestration operation takes.
   - id: planning_folder_path
     description: Absolute path to this run's planning folder, carried into a brief whose output persists as a file.
   - id: host_repo_path
