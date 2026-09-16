@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { resolve } from 'node:path';
 import { createHarness, parseToolResponse, type Harness, type ToolResult } from './harness.js';
-import { parseDefinition } from '../../src/utils/serialization.js';
-import type { Activity, Step } from '../../src/schema/activity.schema.js';
+import { deliverActivity } from './deliver-activity.js';
+import type { Step } from '../../src/schema/activity.schema.js';
 
 /**
  * What a worker receives when an activity refers to a routine (#704 W02).
@@ -24,33 +24,8 @@ let harness: Harness;
 beforeAll(async () => { harness = await createHarness({ workflowDir: FIXTURES }); });
 afterAll(async () => { await harness?.close(); });
 
-/** The delivered activity body, parsed back out of the tool payload. */
-async function deliver(workflowId: string, activityId: string): Promise<{ text: string; activity: Activity }> {
-  const asText = (result: ToolResult): string =>
-    (result.content as Array<{ type: string; text: string }>)
-      .filter((part) => part.type === 'text').map((part) => part.text).join('\n');
-
-  const session = await harness.client.callTool({
-    name: 'start_session',
-    arguments: { workflow_id: workflowId, agent_id: 'orchestrator' },
-  });
-  expect(session.isError ?? false, `start_session failed: ${asText(session)}`).toBe(false);
-  const sessionIndex = parseToolResponse(session as ToolResult).session_index as string;
-  const opened = await harness.client.callTool({
-    name: 'next_activity',
-    arguments: { session_index: sessionIndex, activity_id: activityId },
-  });
-  expect(opened.isError ?? false, `next_activity failed: ${asText(opened)}`).toBe(false);
-  const payload = await harness.client.callTool({
-    name: 'get_activity',
-    arguments: { activity_id: activityId, session_index: sessionIndex, context_tokens: 200000 },
-  });
-  expect(payload.isError ?? false, `get_activity failed: ${asText(payload)}`).toBe(false);
-  const text = asText(payload);
-  const body = /^(id: [\s\S]*)$/m.exec(text);
-  if (!body) throw new Error(`no activity body in the delivered payload:\n${text.slice(0, 600)}`);
-  return { text, activity: parseDefinition(body[1]!) as Activity };
-}
+const deliver = (workflowId: string, activityId: string): ReturnType<typeof deliverActivity> =>
+  deliverActivity(harness, workflowId, activityId);
 
 describe('a worker cannot tell a step came from a routine', () => {
   it('delivers ordinary steps, with no kind:routine at any depth', async () => {

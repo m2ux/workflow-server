@@ -1,0 +1,15 @@
+id: fanned-gate-fixture
+version: 1.0.0
+title: Fanned Gate Fixture
+description: The refused arm of the fan-and-reference pairing. Its fanned activity holds no gate of its own; the gate arrives inside the run it refers to, so the fixture asks whether the rule against a gate in a fanned branch reads the activity as authored or as materialised.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

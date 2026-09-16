@@ -1,0 +1,13 @@
+id: own-start
+version: 1.0.0
+name: Own Start
+description: The borrower's own entry point, carrying no routine.
+steps:
+  - kind: action
+    id: begin
+    actions:
+      - action: log
+        message: starting
+exits:
+  - id: ready
+    isDefault: true

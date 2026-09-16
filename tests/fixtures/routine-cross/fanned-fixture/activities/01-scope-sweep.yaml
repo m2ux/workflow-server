@@ -1,0 +1,21 @@
+id: scope-sweep
+version: 1.0.0
+name: Scope Sweep
+description: Names the collection the fan runs over.
+variables:
+  writes:
+    - name: probe_targets
+      type: array
+      description: The elements the fan runs one worker per. Seeded here so a walk enters the fanned activity once per element without a policy having to supply the collection.
+      defaultValue:
+        - alpha-probe
+        - beta-probe
+steps:
+  - kind: action
+    id: name-the-targets
+    actions:
+      - action: log
+        message: sweeping for targets
+exits:
+  - id: scoped
+    isDefault: true

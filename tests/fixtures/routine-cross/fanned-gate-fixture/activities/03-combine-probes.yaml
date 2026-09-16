@@ -1,0 +1,13 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: The meeting point the fan converges on.
+steps:
+  - kind: action
+    id: combine
+    actions:
+      - action: log
+        message: combining probe findings
+exits:
+  - id: settled
+    isDefault: true
