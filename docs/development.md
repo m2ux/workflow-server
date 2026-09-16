@@ -307,10 +307,10 @@ It adds a `workflows` worktree and makes `node_modules` resolvable. Idempotent.
 [`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`,
 `npm run test:ci`, and the fixture delivery gate on every pull request. Live-corpus tests skip when
 `workflows/` is absent.
-Guards that also run as Vitest tests (`tests/binding-fidelity.test.ts`,
-`tests/technique-template.test.ts`, `tests/duplicate-bodies-guard.test.ts`, `tests/audience-guard.test.ts`,
-`tests/review-mode-gating.test.ts`, `tests/identifier-qualification.test.ts`) fail `npm test` too
-when a live corpus is present.
+A guard with a Vitest wrapper fails `npm test` as well as its own `check:` script, when a live
+corpus is present. The wrappers are the tests under `tests/` that import from `guards/`, which
+`grep -rl "from '../guards/" tests/*.test.ts` enumerates; the set grows with the suite, so it is
+read rather than listed here.
 
 ### Corpus-coupled baselines
 

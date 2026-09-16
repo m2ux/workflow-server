@@ -619,7 +619,7 @@ Activities are the execution units of a workflow. Each activity contains an orde
 
 ### Checkpoint Steps
 
-A `kind: checkpoint` step pauses execution and requires user input. It sits inline in `steps[]` at the position where it is presented (there is no separate `checkpoints[]` array and no `step.checkpoint` reference):
+A `kind: checkpoint` step pauses execution and requires user input. It sits inline in `steps[]` at the position where it is presented:
 
 ```json
 {
