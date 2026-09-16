@@ -38,7 +38,8 @@ import { existsSync } from 'node:fs';
 import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
 import { stringifyForResponse } from '../src/utils/serialization.js';
-import type { Activity, Step, Condition } from '../src/schema/index.js';
+import type { Activity, Step } from '../src/schema/activity.schema.js';
+import type { Condition } from '../src/schema/condition.schema.js';
 import { evaluateWhenExpression, parseWhen } from '../src/schema/when-expression.js';
 import { requireRootOrExit } from './guard-protocol.js';
 

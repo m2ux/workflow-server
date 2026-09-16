@@ -31,7 +31,7 @@ import { type Graph } from '../../src/schema/workflow.schema.js';
 import { defaultPolicy, makePolicy } from '../../tests/e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
 import { parseWhen } from '../../src/schema/when-expression.js';
-import { checkSession, relayGaps } from '../check-session-contract.js';
+import { checkSession, relayGaps } from '../../guards/check-session-contract.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = resolve(HERE, '../..');
