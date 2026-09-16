@@ -22,7 +22,12 @@ function defaultChoice(ctx: PolicyContext): string {
 export const baseSimulation: Record<string, Record<string, unknown>> = {
   'codebase-comprehension': { needs_comprehension: false, has_open_questions: false },
   'requirements-elicitation': { elicitation_complete: true },
-  'assumptions-review': { needs_plan_revision: false, needs_further_discussion: false, has_deferred_assumptions: false },
+  // Residual opens remain after convergence, which is what the assumption run exists to settle.
+  // Set here rather than on assumptions-review because a simulation applies AFTER the activity's
+  // own checkpoints, and the gate that reads it is inside that activity — set on the activity
+  // itself, the value arrives one activity too late and only the second host's gate is reached.
+  'plan-prepare': { has_open_assumptions: true },
+  'assumptions-review': { needs_plan_revision: false, needs_further_discussion: false, has_deferred_assumptions: false, has_open_assumptions: true },
   // strategic-findings-analysis emits review_passed on the finding-free / minor
   // path (work-package #192): with no findings the review-findings checkpoint
   // auto-dismisses (condition_not_met) and this signal drives the transition to
