@@ -426,8 +426,14 @@ async function transition(
  * no technique, so the operation that assigns the work units never runs and the enter would be
  * refused for want of a collection. Two units is the smallest width a fan opens, and it sits under
  * every ceiling. The seed travels as the retiring activity's own reported write, which is the
- * activity the graph holds responsible for the collection; a fan whose collection is already in the
- * bag — a declared default, an earlier write — keeps the value it has.
+ * activity the graph holds responsible for the collection; a fan whose collection already holds
+ * elements — an earlier write, a seeded default — keeps the value it has.
+ *
+ * An EMPTY collection is no value to keep. A fan of no instances is refused when it opens, so a name
+ * the bag holds as `[]` leaves the walk exactly where a name the bag does not hold at all does — and
+ * a declared `defaultValue: []` is the ordinary way to write a collection an operation fills in. The
+ * walk drives the gated exit that reaches such a fan, so refusing to seed there is the walk holding
+ * a flag true while the collection standing behind it is empty, which is a state no run reaches.
  */
 function seedFanCollections(
   destination: Destination,
@@ -437,13 +443,40 @@ function seedFanCollections(
   for (const member of instanceFans(destination)) {
     const path = member.over.split('.');
     const head = path[0]!;
-    if (variables[head] !== undefined) continue;
+    if (holdsElements(variables, path)) continue;
     const units = ['unit-1', 'unit-2'];
-    const value = path.slice(1).reduceRight<unknown>((inner, segment) => ({ [segment]: inner }), units);
-    variables[head] = value;
-    seeded[head] = value;
+    // The head is written whole only where it IS the collection. A dotted path writes at its leaf,
+    // so the container's other fields survive being seeded through.
+    if (path.length === 1) {
+      variables[head] = units;
+      seeded[head] = units;
+      continue;
+    }
+    const container = (typeof variables[head] === 'object' && variables[head] !== null)
+      ? variables[head] as Record<string, unknown>
+      : {};
+    let cursor = container;
+    for (const segment of path.slice(1, -1)) {
+      const next = cursor[segment];
+      cursor[segment] = (typeof next === 'object' && next !== null) ? next : {};
+      cursor = cursor[segment] as Record<string, unknown>;
+    }
+    cursor[path[path.length - 1]!] = units;
+    variables[head] = container;
+    seeded[head] = container;
   }
   return seeded;
+}
+
+/** Whether the bag holds, at this path, a collection with something in it to fan over. */
+function holdsElements(variables: Record<string, unknown>, path: readonly string[]): boolean {
+  let cursor: unknown = variables;
+  for (const segment of path) {
+    if (typeof cursor !== 'object' || cursor === null) return false;
+    cursor = (cursor as Record<string, unknown>)[segment];
+  }
+  if (cursor === undefined) return false;
+  return !Array.isArray(cursor) || cursor.length > 0;
 }
 
 /** Evaluate a step's inline `when` expression via the shared reference dialect.
