@@ -1,0 +1,15 @@
+id: fanned-fixture
+version: 1.0.0
+title: Fanned Fixture
+description: An instance fan over an activity that refers to a routine. Two identity mechanisms meet here — the fan gives each worker its own instance, and the reference prefixes every identifier the run contributes — so the fixture exists to show they compose rather than collide.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

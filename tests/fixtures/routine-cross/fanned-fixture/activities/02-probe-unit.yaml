@@ -1,0 +1,21 @@
+id: probe-unit
+version: 1.0.0
+name: Probe Unit
+description: The fanned activity. Two references to one routine, so the fixture carries both mechanisms at once — the fan running this file once per element, and two sites inside it each prefixing the run's identifiers from their own id.
+variables:
+  reads:
+    - probe_target
+steps:
+  - kind: routine
+    id: first-probe
+    routine: probe-one
+    with:
+      probe_element: "{probe_target}"
+  - kind: routine
+    id: confirming-probe
+    routine: probe-one
+    with:
+      probe_element: "{probe_target}"
+exits:
+  - id: probed
+    isDefault: true

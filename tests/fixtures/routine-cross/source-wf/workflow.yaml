@@ -1,0 +1,8 @@
+id: source-wf
+version: 1.0.0
+title: Source Workflow
+description: Declares a routine and an activity that refers to it by bare name. The activity is borrowed by another workflow, so the bare name has to resolve here rather than in the borrower or in meta.
+initialActivity: shared-review
+graph:
+  shared-review:
+    done: __terminal__

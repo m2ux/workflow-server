@@ -1,0 +1,16 @@
+id: settle
+version: 1.0.0
+name: Settle (meta)
+description: The meta-scoped run of this name. A borrowed activity naming `settle` bare must not reach this one — its body writes a value the source workflow's body never writes, so a reference resolving here is legible in the delivered steps rather than silent.
+
+outputs:
+  - id: settled_by
+    type: string
+    description: Which declaring workflow's body ran.
+
+steps:
+  - kind: action
+    id: mark
+    actions:
+      - action: log
+        message: settled by meta

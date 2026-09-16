@@ -1,0 +1,25 @@
+id: settle
+version: 1.0.0
+name: Settle (source)
+description: The run the borrowed activity means. Its step ids and its logged message differ from the meta routine of the same name, so which one a bare reference reached is readable off the materialised steps.
+
+inputs:
+  - id: settlement_subject
+    description: What the run settles, named by the site.
+
+outputs:
+  - id: settled_by
+    type: string
+    description: Which declaring workflow's body ran.
+
+steps:
+  - kind: action
+    id: weigh
+    actions:
+      - action: log
+        message: weighing {settlement_subject}
+  - kind: action
+    id: mark
+    actions:
+      - action: log
+        message: settled by source-wf

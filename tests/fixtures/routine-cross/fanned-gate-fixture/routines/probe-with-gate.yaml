@@ -1,0 +1,31 @@
+id: probe-with-gate
+version: 1.0.0
+name: Probe With Gate
+description: A run holding a checkpoint. Referred to from a fanned branch it is the form the loader refuses, and the refusal names the gate by its composed id rather than by the id written here.
+
+inputs:
+  - id: probe_element
+    description: The element this worker was handed.
+
+outputs:
+  - id: probe_finding
+    type: string
+    description: What the probe settled for this element.
+
+steps:
+  - kind: checkpoint
+    id: confirm
+    message: "Accept the reading for {probe_element}?"
+    options:
+      - id: accept
+        label: Accept the reading
+        description: The reading stands for this element
+        effect:
+          setVariable:
+            probe_finding: accepted
+      - id: retake
+        label: Take it again
+        description: The reading is discarded and the probe repeats
+        effect:
+          setVariable:
+            probe_finding: retaken

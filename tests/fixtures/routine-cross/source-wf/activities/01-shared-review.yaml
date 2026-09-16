@@ -1,0 +1,20 @@
+id: shared-review
+version: 1.0.0
+name: Shared Review
+description: Refers to a routine by bare name. Borrowed by another workflow, so the name resolves against the workflow this file was authored in.
+variables:
+  writes:
+    - name: review_settled_by
+      type: string
+      description: Which declaring workflow's routine body ran.
+steps:
+  - kind: routine
+    id: settle-the-scope
+    routine: settle
+    with:
+      settlement_subject: the borrowed scope
+    outputs:
+      settled_by: review_settled_by
+exits:
+  - id: done
+    isDefault: true

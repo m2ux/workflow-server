@@ -1,0 +1,22 @@
+id: probe-unit
+version: 1.0.0
+name: Probe Unit
+description: The fanned activity. It writes no gate of its own — the one the loader objects to arrives with the run it refers to.
+variables:
+  reads:
+    - probe_target
+  writes:
+    - name: probe_outcome
+      type: string
+      description: What the probe settled for this element.
+steps:
+  - kind: routine
+    id: first-probe
+    routine: probe-with-gate
+    with:
+      probe_element: "{probe_target}"
+    outputs:
+      probe_finding: probe_outcome
+exits:
+  - id: probed
+    isDefault: true

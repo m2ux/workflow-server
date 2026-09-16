@@ -1,0 +1,20 @@
+id: probe-one
+version: 1.0.0
+name: Probe One
+description: The run a fanned worker carries, holding no gate. A fanned branch may not hold one, so this is the form that survives the pairing — the gated form lives in the sibling fixture that exists to be refused.
+
+inputs:
+  - id: probe_element
+    description: The element this worker was handed.
+
+steps:
+  - kind: action
+    id: take-reading
+    actions:
+      - action: log
+        message: reading {probe_element}
+  - kind: action
+    id: file-reading
+    actions:
+      - action: log
+        message: filing the reading for {probe_element}

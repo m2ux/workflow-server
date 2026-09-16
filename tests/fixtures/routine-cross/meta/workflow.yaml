@@ -1,0 +1,5 @@
+id: meta
+version: 1.0.0
+title: Meta Fixture
+description: Minimal meta so the transient-bootstrap path works, carrying a routine whose name a source workflow also declares — so a bare reference resolving here instead of there is visible rather than silent.
+initialActivity: bootstrap-activity
