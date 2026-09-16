@@ -16,9 +16,13 @@ sbx. A `deny` decision is reliable, unlike an `updatedInput` rewrite, which
 misbehaves when several PreToolUse Bash hooks are configured.
 
 Writable roots are computed exactly as sbx computes them (see bin/sbx): /tmp
-always, plus the git top-level of the launch cwd when that root lives under
+always, plus the git top-level of the launch cwd and any directory named in
+$CLAUDE_SBX_EXTRA_ROOTS, each kept only where it lives under
 $CLAUDE_PROJECTS_BASE (default $HOME/projects). Agreement matters — a redirect
-whose target the sandbox cannot write trades a prompt for an EROFS failure.
+whose target the sandbox cannot write trades a prompt for an EROFS failure. An
+extra root counts here when it is set in this hook's own environment, which is
+the session-wide case; a root named on the command line alone reaches sbx but
+not the hook, so that segment stays undecided and prompts.
 
 The hook stays SILENT (normal permission flow, i.e. a prompt) whenever the
 target cannot be proven writable:
@@ -107,19 +111,28 @@ def writable_roots(base_cwd: str) -> list[str]:
     base = os.environ.get("CLAUDE_PROJECTS_BASE") or os.path.join(
         str(Path.home()), "projects")
     base = os.path.realpath(base)
+
+    def under_base(path: str) -> bool:
+        return path == base or path.startswith(base + os.sep)
+
     try:
         done = subprocess.run(
             ["git", "-C", base_cwd, "rev-parse", "--show-toplevel"],
             capture_output=True, text=True, timeout=2,
         )
     except (OSError, subprocess.SubprocessError):
-        return roots
-    root = done.stdout.strip()
-    if done.returncode != 0 or not root:
-        return roots
-    root = os.path.realpath(root)
-    if root == base or root.startswith(base + os.sep):
-        roots.append(root)
+        done = None
+    if done is not None and done.returncode == 0 and done.stdout.strip():
+        root = os.path.realpath(done.stdout.strip())
+        if under_base(root):
+            roots.append(root)
+
+    for extra in (os.environ.get("CLAUDE_SBX_EXTRA_ROOTS") or "").split(os.pathsep):
+        if not extra:
+            continue
+        extra = os.path.realpath(extra)
+        if os.path.isdir(extra) and under_base(extra) and extra not in roots:
+            roots.append(extra)
     return roots
 
 

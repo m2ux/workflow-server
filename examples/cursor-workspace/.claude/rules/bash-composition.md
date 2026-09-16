@@ -32,13 +32,21 @@ Unsure whether a command will trip? Write it to a file and dry-run the hook: `py
 
 # Sandboxed execution (`sbx`)
 
-`__WORKSPACE__/scripts/claude/bin/sbx <command> [args...]` runs under bubblewrap: the active project (git top-level, when under the projects root) and `/tmp` read-write, rest of the filesystem read-only, no network. **Always invoke by that absolute path** — it is allowlisted and auto-approves; bare `sbx` is not on PATH and fails.
+`__WORKSPACE__/scripts/claude/bin/sbx <command> [args...]` runs under bubblewrap: the active project (git top-level, when under the projects root), `/tmp`, and any directory named in `CLAUDE_SBX_EXTRA_ROOTS` read-write, rest of the filesystem read-only, no network. **Always invoke by that absolute path** — it is allowlisted and auto-approves; bare `sbx` is not on PATH and fails.
 
 **`cd` before `sbx`, never inside it.** The writable project root is resolved by running `git rev-parse --show-toplevel` in the OUTER shell, before the sandbox starts. So `cd <dir> && __WORKSPACE__/scripts/claude/bin/sbx <cmd>` gets a writable `<dir>`; `sbx bash -lc 'cd <dir> && <cmd>'` gets a read-only one. This also fixes `npx` binary resolution, which depends on cwd.
+
+**When the tool and the files it writes are in different checkouts, name the second root.** Git reports a linked worktree as its own top-level, so two worktrees of one repository are two roots and `cd` buys only one of them. Start in the checkout the tool resolves from, and name the other in `CLAUDE_SBX_EXTRA_ROOTS` — a colon-separated list, each entry bound read-write only where it resolves under the projects root, anything else left read-only with a note on stderr:
+
+```bash
+cd <server-worktree> && CLAUDE_SBX_EXTRA_ROOTS=<definitions-worktree> __WORKSPACE__/scripts/claude/bin/sbx npx vitest run <test>
+```
+
+A run that exits non-zero ends with a line naming the roots it could write, so `Read-only file system` on a path outside them reads as the sandbox boundary rather than as a permissions fault.
 
 - **Inline eval** (`python3 -c`, `node -e`, `perl -e`, `ruby -e`, `php -r`, `bun -e`, `Rscript -e`, `deno eval`) — must be `sbx`-prefixed. A PreToolUse hook denies the bare form, so reach for `sbx` first.
 - **An interpreter reading its program from stdin** is inline eval by another spelling, and is denied the same way: `python3 - <<'EOF'`, `python3 <<'EOF'`, `cat x.py | node`, `deno run -`. Heredocs are still fine as *data* (`git commit -F - <<'EOF'`) — it is the interpreter, not the heredoc, that triggers the deny. Prefix with `sbx`, or write the program to a file and run the file.
 - **`rm` / `mv` / `ln` / `dd` / `chmod` inside the project or `/tmp`** — prefix with `sbx` to auto-approve. Bare forms are the escape hatch for paths OUTSIDE the project, which the sandbox blocks; they prompt.
 - **Project-local tools** (`npx tsx`, `npx vitest`, and anything already in `node_modules/.bin`) — an `sbx` candidate, and the preferred way to run them: no allowlist rule needed. `npx` walks up the tree to find the binary, so a git worktree with no `node_modules` of its own still resolves from the parent repo. If the package is genuinely absent, `npx` falls through to the registry and dies with `EAI_AGAIN` — read that as "not installed locally", not as a sandbox fault. (`--no-install` and `--no` do NOT suppress the registry lookup on npm 9, and `--no` swallows a following `--version`.) To bypass `npx` entirely, call the binary by path: `node_modules/.bin/tsx`, or `../../node_modules/.bin/tsx` from a worktree.
-- **Not an `sbx` candidate** — anything needing network: `git fetch`/`push`, `gh`, dep installs, and `npx` that must *install* the package (not merely run an installed one). Also writes outside the project and `/tmp`.
+- **Not an `sbx` candidate** — anything needing network: `git fetch`/`push`, `gh`, dep installs, and `npx` that must *install* the package (not merely run an installed one). Also writes outside the writable roots, which for a path beyond the projects root no extra root can reach.
 - **Git writes inside a linked worktree** — not an `sbx` candidate. The worktree's `.git` file points into the main repo's `.git/worktrees/<name>`, which stays read-only, so `git add`/`commit` fail there. Running scripts against worktree files is fine.

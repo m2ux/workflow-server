@@ -12,7 +12,7 @@ scripts/claude/
 ├── README.md
 ├── .gitignore
 ├── bin/
-│   └── sbx                         # bubblewrap profile-C launcher (no net; project+/tmp RW)
+│   └── sbx                         # bubblewrap profile-C launcher (no net; project, /tmp and $CLAUDE_SBX_EXTRA_ROOTS RW)
 └── hooks/
     ├── allow-project-scripts.py    # optional PreToolUse: bare project-script location allow
     ├── block-dynamic-shell.py      # PreToolUse: deny $() / backticks / $VAR dynamic shell
