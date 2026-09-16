@@ -33,10 +33,16 @@ steps:
         effect:
           setVariable:
             approach_settled: true
+      # The answer the walks do not take. It carries an exit of its own so the gate is a real
+      # decision between two routes rather than one answer and a decoration — a gate whose second
+      # answer went nowhere would not be the thing a batch is read as surviving.
       - id: revise
         label: Revise approach
-        description: Adjust the approach before the run continues
+        description: Send the run back to be reworked rather than continuing
+        effect:
+          exit: reworked
 
 exits:
   - id: done
     isDefault: true
+  - id: reworked

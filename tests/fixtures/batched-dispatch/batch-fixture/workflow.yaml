@@ -12,6 +12,7 @@ variables:
 graph:
   first-stop:
     done: second-stop
+    reworked: first-stop
   second-stop:
     done: third-stop
   third-stop:

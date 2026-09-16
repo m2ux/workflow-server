@@ -151,25 +151,26 @@ describe('batched dispatch (#407)', () => {
   });
 
   it('refuses on the delivery budget before the cap when the declared window is narrow', async () => {
-    // A window narrow enough that the budget binds before three activities are taken. Which
-    // activity it stops at depends on how much content each delivers, so the assertions are on
-    // WHICH limit refused and on it refusing short of the cap — pinning the position instead would
-    // be pinning the size of one activity's prose.
+    // A window narrow enough that the first stop alone spends the batch budget. The fixture is
+    // fixed content, so where this stops is exact rather than a range — the earlier version of this
+    // walk drove the product corpus, where the stopping point moved with an activity's prose.
     const walk = await walkBatch('worker-run-narrow', RUN, 1_000);
 
-    expect(walk.texts.length).toBeGreaterThan(0);
-    expect(walk.texts.length).toBeLessThan(3);
+    expect(walk.texts).toHaveLength(1);
+    expect(walk.refusedAt).toBe(RUN[1]);
     expect(walk.refusedWith).toContain('over the batch budget');
 
     const refusals = walk.history.filter(e => e.type === 'batch_refused');
     expect(refusals).toHaveLength(1);
-    const refusal = refusals[0]!.data as Record<string, unknown>;
-    expect(refusal).toMatchObject({ limit: 'delivery_budget', budgetChars: 1400 });
-    // Short of the cap is the whole point: the budget is what stopped this run, not the count.
-    expect(refusal['activities'] as number).toBeLessThan(3);
+    // The budget is what stopped this run, not the count: one activity taken against a cap of three.
+    expect(refusals[0]!.data as Record<string, unknown>).toMatchObject({
+      limit: 'delivery_budget',
+      activities: 1,
+      budgetChars: 1400,
+    });
     // The batch reported its own headroom as spent on the way in, so a cooperating worker stops
     // there without needing the refusal.
-    expect(walk.batches.at(-1)!['may_continue']).toBe(false);
+    expect(walk.batches[0]!['may_continue']).toBe(false);
   });
 
   it('serves an activity the context already holds, so a batch survives its gates', async () => {
@@ -261,6 +262,9 @@ describe('batched dispatch (#407)', () => {
     if (isError(responded)) throw new Error(`respond_checkpoint failed: ${rawText(responded)}`);
     const resumed = await client.callTool({ name: 'resume_checkpoint', arguments: { session_index: sessionIndex } });
     if (isError(resumed)) throw new Error(`resume_checkpoint failed: ${rawText(resumed)}`);
+    // The answer did something. Surviving a gate is worth nothing if the gate's effect did not
+    // land, and a batch that crosses one carries the value the answer set into what follows.
+    expect(parseToolResponse(responded).effect).toMatchObject({ setVariable: { approach_settled: true } });
 
     // Resumed on the activity it still holds: the already-taken carve-out serves it, and the batch has
     // not grown, because this is the same activity.
