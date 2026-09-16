@@ -27,7 +27,7 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { type CorpusIndex, type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, ledgerPath, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, defaultCorpusDest, definitionsUnder, ledgerPath, workflowSubdir } from './workflows-root.js';
 import { requireRootOrExit, runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -86,9 +86,8 @@ function boundMaps(root: string, index: CorpusIndex): MapRef[] {
   for (const { dir } of corpusWorkflows(root, index)) {
     const activities = join(dir, 'activities');
     if (!existsSync(activities) || !statSync(activities).isDirectory()) continue;
-    for (const entry of readdirSync(activities).sort()) {
-      if (!entry.endsWith('.yaml')) continue;
-      const body = readFileSync(join(activities, entry), 'utf-8');
+    for (const { path } of definitionsUnder(activities)) {
+      const body = readFileSync(path, 'utf-8');
       for (const m of body.matchAll(MAP_BIND)) {
         const target = m[1]!;
         const [workflow, ...rest] = target.split('/') as [string, ...string[]];

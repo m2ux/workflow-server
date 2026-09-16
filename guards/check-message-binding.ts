@@ -100,6 +100,10 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
 
+    // The top level, which is where a workflow's own activities sit. Whether a message binds a name
+    // that is bound by the time it renders is answered from the producers across this workflow's
+    // activities; a library activity under a subdirectory writes into whichever workflow borrows
+    // it, so counting its writes here would credit producers this graph never runs.
     const files = readdirSync(activitiesDir).sort().filter((e) => /\.ya?ml$/.test(e));
     const parsed = new Map<string, Activity>();
     for (const entry of files) {

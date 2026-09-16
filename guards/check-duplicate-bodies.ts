@@ -22,7 +22,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { corpusWorkflows, defaultCorpusDest, definitionsUnder, resolveWorkflowsRoot } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -106,11 +106,8 @@ export function collectDuplicateViolations(root: string = ROOT): DuplicateViolat
     }
 
     const adir = join(dir, 'activities');
-    const activityFiles = existsSync(adir)
-      ? readdirSync(adir).filter((f) => f.endsWith('.yaml') || f.endsWith('.yml')).sort()
-      : [];
-    for (const f of activityFiles) {
-      const path = join(adir, f);
+    const activityFiles = existsSync(adir) ? definitionsUnder(adir) : [];
+    for (const { path } of activityFiles) {
       const rel = relative(root, path);
       let adoc: unknown;
       try { adoc = parseDefinition(readFileSync(path, 'utf-8')); } catch { continue; }

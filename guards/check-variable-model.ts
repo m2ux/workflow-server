@@ -218,6 +218,9 @@ export function collectVariableModelViolations(root: string = ROOT): VariableMod
     }
     const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
+    // The top level, which is where a workflow's own activities sit. Every rule here reads a
+    // document against `decls` — the seeded variable model this workflow declares — and a library
+    // activity under a subdirectory takes the model of whichever workflow borrows it.
     for (const entry of readdirSync(activitiesDir).sort()) {
       if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
       const path = join(activitiesDir, entry);

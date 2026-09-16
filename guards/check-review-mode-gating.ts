@@ -198,6 +198,9 @@ export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): Revi
     const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
     const activities = new Map<string, ActivityDef>();
+    // The top level, which is where a workflow's own activities sit. The rule is what a review-mode
+    // walk from `initialActivity` reaches, so it is a question about this graph; a library activity
+    // under a subdirectory is in no graph until a workflow borrows it, and is reached from none.
     for (const entry of readdirSync(activitiesDir).sort()) {
       if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
       const def = parse(readFileSync(join(activitiesDir, entry), 'utf-8')) as ActivityDef;

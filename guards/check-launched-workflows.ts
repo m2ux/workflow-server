@@ -27,7 +27,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { type CorpusSource, asIndex, indexCorpus } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { corpusWorkflows, definitionsUnder, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -134,11 +134,11 @@ export function collectLaunchedWorkflowViolations(root: string = ROOT): Launched
   const wfs = corpusWorkflows(root, index).filter(({ dir }) => existsSync(join(dir, 'activities')));
   for (const { id: wf, dir } of wfs) {
     const adir = join(dir, 'activities');
-    for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
-      const rel = relative(root, join(adir, f));
+    for (const { path } of definitionsUnder(adir)) {
+      const rel = relative(root, path);
       let activity: Record<string, unknown>;
       try {
-        activity = parseDefinition(readFileSync(join(adir, f), 'utf-8')) as Record<string, unknown>;
+        activity = parseDefinition(readFileSync(path, 'utf-8')) as Record<string, unknown>;
       } catch {
         continue; // malformed YAML is validate-workflow-yaml's job, not this guard's
       }

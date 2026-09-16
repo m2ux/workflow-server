@@ -175,6 +175,10 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     const activitiesDir = join(workflowDir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
     const defaulted = defaultedVariables(root, workflow, index);
+    // The top level, which is where a workflow's own activities sit. What suppresses a finding here
+    // is the workflow's defaulted set, and a library activity under a subdirectory is borrowed by
+    // another workflow — graded against this one's defaults, its gates would be read against a
+    // variable model that is not the one it runs under.
     for (const entry of readdirSync(activitiesDir).sort()) {
       if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
       const path = join(activitiesDir, entry);
