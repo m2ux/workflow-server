@@ -15,9 +15,8 @@
     "dispatch-then-gather-in-the-audit-family": "Log the dispatch, then gather the results — shared by the primary pass of the two security audit workflows, which were authored from one another. The gather binding differs in both of its inputs, so the pair is a copied idiom rather than a settled run.",
     "persist-then-announce": "Write an artifact, then announce it — one shared binding followed by a control action whose message differs at every site, across three workflows. The pair is an idiom rather than a run worth naming: one of its two steps is the only shared work, and a construct naming it would put a reference in front of a single step.",
     "read-the-pull-request-body-back": "View the pull request, then verify the rendered body — the read-back pair at the two work-package activities that touch a pull request body. Both copies are gated, and the two gates differ, which is the drift a shared run would settle.",
-    "roster-fan-out-run": "Verify the output files, compose the roster briefs, dispatch the workers — the same fan-out shape as the meta pattern run, at a different operation family, shared by two activities of the substrate audit. Stage 8 names the meta family only, so no stage claims this one.",
+    "roster-fan-out-run": "Verify the output files, compose the roster briefs, dispatch the workers — a fan-out run over a roster, shared by two activities of the substrate audit. Its operations are the substrate audit's own dispatch family rather than the orchestration patterns, and no stage of the shared-run plan claims it.",
     "sub-workflow-then-accumulate": "Hand a unit to a sub-workflow, read its run manifest, accumulate the result — the per-unit body the two prism analysis activities share, identical field for field. It sits next to stage 7's subject without being named by it, and whether a shared run or a per-element activity fan is its right home is the open question there.",
-    "worker-fan-out-run": "Compose the worker briefs, dispatch the workers, gather the results — the fan-out run at two of the meta pattern activities. Stage 8 of the shared-run plan converts it, and the stage needs its constituency re-derived from the corpus rather than from the plan's file list.",
     "announcement-between-two-runs": "The two hosts that keep the assumption run carry it after the convergence run, with the announcement that produces the gate presentation between them and the record pass after. Both runs are shared already; what repeats is the four step positions and their order. The two differences are the announcement's identifier and whether it renders the presentation itself, and both are host-authored by a recorded decision that keeps the announcement outside the shared body. Converging the window would mean a run whose only unshared step is the one deliberately left to its host."
   },
   "entries": [
@@ -47,16 +46,6 @@
       ],
       "verdict": "unassigned",
       "rationale": "persist-then-announce"
-    },
-    {
-      "site": "meta/activities/patterns/02-supervisor.yaml + meta/activities/patterns/05-lead-researcher.yaml",
-      "run": [
-        "T:orchestration-patterns::compose-worker-briefs()",
-        "T:orchestration-patterns::dispatch-workers()",
-        "T:orchestration-patterns::gather-results(expected_ids)"
-      ],
-      "verdict": "converging",
-      "rationale": "worker-fan-out-run"
     },
     {
       "site": "prism-audit/activities/02-execute-analysis.yaml + prism-evaluate/activities/02-execute-analysis.yaml",

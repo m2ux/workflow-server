@@ -1,0 +1,50 @@
+id: dispatch-round
+version: 1.0.0
+name: Worker Dispatch Round
+description: >-
+  Compose one brief per work unit, dispatch the briefs one at a time inside the calling worker, and
+  gather the returns against an expectation list. Refer to it from an orchestration activity,
+  binding the name that holds the expectation the gather checks completeness against.
+
+# The three steps reach these names through the techniques they run, and no reference site binds any
+# of them but the expectation: each host supplies its own value under the same spelling. They are
+# declared because a routine has no undeclared free variable — the signature is what makes the run
+# checkable with no host activity, and a name the body reads has to appear in it.
+inputs:
+  - id: work_units
+    description: The ordered units this round works through, each { id, brief, tools_hint? }.
+  - id: work_goal
+    description: The caller-facing goal the pattern operates on, which every orchestration operation takes.
+  - id: planning_folder_path
+    description: Absolute path to this run's planning folder, carried into a brief whose output persists as a file.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: expected_ids
+    description: The name holding the expectation the gather measures completeness against — the units this round was planned from, or the briefs it composed.
+
+outputs:
+  - id: worker_briefs
+    type: array
+    description: Ordered dispatch-ready briefs, each { id, description, prompt }.
+  - id: dispatched_results
+    type: array
+    description: Per-worker returns in brief order, each { id, result }.
+  - id: gathered_results
+    type: object
+    description: Ordered keyed collection of worker returns with its dispatch manifest and completeness verdict.
+
+steps:
+  - kind: technique
+    id: compose
+    technique: orchestration-patterns::compose-worker-briefs
+  - kind: technique
+    id: dispatch
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: gather
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        expected_ids: expected_ids
