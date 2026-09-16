@@ -183,5 +183,42 @@ describe('coverage scope', () => {
         rmSync(root, { recursive: true, force: true });
       }
     });
+
+    /**
+     * The gate runs this with the engine the corpus is served by, so a change adopting a construct
+     * that engine does not yet know is a change whose own workflow will not load — and that is the
+     * change most in need of a walk. A resolver that skipped an unreadable workflow returned an empty
+     * scope, the walk step was skipped, and the run reported success having measured nothing.
+     */
+    it('scopes a workflow it cannot read, rather than passing over it', async () => {
+      const root = corpus();
+      try {
+        // alpha's version is one this engine's schema refuses, so alpha does not load. Its own
+        // activity file still says which activity changed, and beta still shares the id.
+        writeFileSync(join(root, 'alpha', 'workflow.yaml'),
+          'id: alpha\nversion: not-a-version\ntitle: alpha\ninitialActivity: shared-stage\n');
+        expect(await coverageScope(root, classifyChange(['alpha/activities/01-shared-stage.yaml']), walked))
+          .toEqual(['alpha', 'beta']);
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+      }
+    });
+
+    it('reads the changed activity id from the file, not from a load of its workflow', async () => {
+      const root = corpus();
+      try {
+        // The activity declares an id its filename does not spell, and its workflow does not load.
+        writeFileSync(join(root, 'alpha', 'workflow.yaml'),
+          'id: alpha\nversion: not-a-version\ntitle: alpha\ninitialActivity: shared-stage\n');
+        writeFileSync(join(root, 'beta', 'activities', '01-shared-stage.yaml'),
+          'id: shared-stage\nversion: 1.0.0\nname: shared-stage\n');
+        writeFileSync(join(root, 'alpha', 'activities', '02-alpha-only.yaml'),
+          'id: shared-stage\nversion: 1.0.0\nname: renamed onto the shared id\n');
+        expect(await coverageScope(root, classifyChange(['alpha/activities/02-alpha-only.yaml']), ['beta']))
+          .toEqual(['beta']);
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+      }
+    });
   });
 });
