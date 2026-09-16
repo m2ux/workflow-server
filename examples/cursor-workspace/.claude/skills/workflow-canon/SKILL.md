@@ -5,7 +5,7 @@ description: "Apply the workflow-server design canon — design principles, the 
 
 # Workflow Canon
 
-The canon is a set of criteria homes plus a guard suite, all on disk in this repo and enumerated below.
+The canon is a set of criteria homes plus a guard suite, on disk across the server checkout and the corpus tree, and enumerated below.
 
 **Read the canon forward.** The inventory maps an informal pattern to the construct that carries it, the principles state a stance to author toward, conformance names a sibling to match, and a catalog entry's **Do not flag** and **Fix** describe the shape compliant content takes. Load what binds before writing and the content lands compliant. **Detect** is the fallback for content that already exists — reaching for it first turns every change into a fix-and-recheck loop that ends when someone gets tired.
 
@@ -13,19 +13,21 @@ The canon is a set of criteria homes plus a guard suite, all on disk in this rep
 
 ## Homes
 
-**Locate the checkout first.** Every path below is relative to the workflow-server repo root. When the cwd is inside the checkout, `git rev-parse --show-toplevel` gives it. When the session is rooted in a cursor workspace instead — a directory holding `.mcp.json` and a `*.code-workspace` but no `workflows/` — the checkout is the `project` folder that `*.code-workspace` names, and it is an additional working directory of the session.
+**Locate the checkout first.** When the cwd is inside the checkout, `git rev-parse --show-toplevel` gives it. When the session is rooted in a cursor workspace instead — a directory holding `.mcp.json` and a `*.code-workspace` but no `package.json` — the checkout is the `project` folder that `*.code-workspace` names, and it is an additional working directory of the session.
 
-Confirm the resolved root holds `workflows/workflow-design/resources/` before reading anything. `workflows/` is a git submodule, so a shallow checkout may not have it; if the canon files are absent, say so rather than auditing from memory.
+**Two roots, and the homes are split across them.** Guard programs sit in the server checkout under `guards/`. The criteria homes, the ledgers and the walk artifacts sit in the **corpus tree**: a worktree of the `workflows` branch, at `.worktrees/workflows` of the primary checkout unless `WORKFLOWS_DIR` or `--root` names another. Each path below says which root it is read from.
+
+Confirm the corpus tree holds `corpus/workflow-design/resources/` before reading anything. It is a worktree rather than part of the server checkout, so a fresh clone does not have it until `npm run worktree:provision` adds it; if the canon files are absent, say so rather than auditing from memory.
 
 **Definitions and code sit on different branches.** A schema-reading guard failing on the corpus branch may be reading a field the code branch has not merged; that clears on the code merge and is not a corpus defect. Establish which before recording one.
 
-| Home | Path | Owns |
-|------|------|------|
-| Design Principles | `workflows/workflow-design/resources/design-principles.md` | *Prefer / before / only after* stance |
-| Anti-Patterns | `workflows/workflow-design/resources/anti-patterns.md` | Specific smells as **Detect / Do not flag / Fix**. Exceeds the eager-delivery cap — fetch by anchor |
-| Schema Construct Inventory | `workflows/workflow-design/resources/schema-construct-inventory.md` | Informal-prose → formal-construct mappings |
-| Convention Conformance | `workflows/workflow-design/resources/convention-conformance.md` | Comparison against sibling workflows |
-| Guard suite | `scripts/guards.ts` (registry) | Mechanical checks. The registry is the enumeration — never maintain a parallel list |
+| Home | Path | Root | Owns |
+|------|------|------|------|
+| Design Principles | `corpus/workflow-design/resources/design-principles.md` | corpus | *Prefer / before / only after* stance |
+| Anti-Patterns | `corpus/workflow-design/resources/anti-patterns.md` | corpus | Specific smells as **Detect / Do not flag / Fix**. Exceeds the eager-delivery cap — fetch by anchor |
+| Schema Construct Inventory | `corpus/workflow-design/resources/schema-construct-inventory.md` | corpus | Informal-prose → formal-construct mappings |
+| Convention Conformance | `corpus/workflow-design/resources/convention-conformance.md` | corpus | Comparison against sibling workflows |
+| Guard suite | `guards/guards.ts` (registry) | server | Mechanical checks. The registry is the enumeration — never maintain a parallel list |
 
 Anchors on the principles home embed the section ordinal (`#13-separate-contract-from-procedure`), so an anchor breaks when the canon gains a principle ahead of it while the heading survives. Cite by **title**; where an anchor fails to resolve, re-read the heading rather than guessing.
 
@@ -82,7 +84,7 @@ Name, before reading criteria. Build the **change surface** first; the walk is a
   - **Reference** means any of: activity `techniques[]` or step `technique` / `technique.name` binds; technique Protocol `Apply` / `::` / markdown links to a sibling or cross-workflow op; resource or README cites that resolve to the op file. Resolve each reference to a concrete definition file path.
   - Sweep the whole workflows tree (same target and other workflows). A referencer outside the original target still joins the change surface.
 - **Change surface** — the union of **touched files** and **I/O-contract closure**, each entry the full file. Report the two subsets separately in the audit header so a reader can see what git touched versus what contract reach pulled in.
-- **Consumer surface** — the references other workflows hold *into* the target, each resolved to the file it names. Always computed; when a resolved target file is on the change surface (touched or pulled in by I/O-contract closure), that consumer file is on the change surface too. `grep -rn "<target-id>/" workflows/ --include=*.md --include=*.yaml` finds the cross-workflow refs; expand with bind and Apply resolution, not path string match alone.
+- **Consumer surface** — the references other workflows hold *into* the target, each resolved to the file it names. Always computed; when a resolved target file is on the change surface (touched or pulled in by I/O-contract closure), that consumer file is on the change surface too. `grep -rn "<target-id>/" corpus/ --include=*.md --include=*.yaml` in the corpus tree finds the cross-workflow refs; expand with bind and Apply resolution, not path string match alone.
 - **Reference workflows** — the siblings of similar type whose conventions the target is compared against.
 - **Prior residual** — the `unread` list of the most recent audit of this target, from its findings register under `.engineering/artifacts/planning/`. Re-derive the enumeration from the tree at this commit and inherit only the dispositions, matched by path; a path absent from the tree is absent from the worklist too. Those paths are where this pass's reading starts. A pass re-reading what the last one read whole buys coverage the target already holds and leaves the residual standing, which is how a target carries a full register every pass and stays unaudited. A pass inheriting a residual hands on a smaller one, or records why not as a scope decision.
 
@@ -96,7 +98,7 @@ It is also the **resolution domain** every existence claim resolves against. Tha
 
 ### 2. Run the mechanical checks first
 
-Per § Mechanical checks. Here prefer `npx tsx scripts/check-delta.ts --base <ref>` over `check:all`: the delta runner materialises the merge-base in a throwaway worktree and diffs the two runs, which does step 5's attribution mechanically and exactly.
+Per § Mechanical checks. Here prefer `npm run check:delta -- --base <ref>` over `check:all`: the delta runner materialises the merge-base in a throwaway worktree and diffs the two runs, which does step 5's attribution mechanically and exactly.
 
 Findings are evidence, not judgment — they settle the schema-invalid, unresolved-reference and binding-drift classes before any reading starts, and a failure is `Critical` on sight. Exit 2 means a check could not measure: `blocked` coverage, never a pass.
 
@@ -165,7 +167,7 @@ Shared by all three paths. **`AGENTS.md` owns how they run** — the guard comma
 **Reading a result**
 
 - **A pipe reports the filter's exit code, not the check's.** `check | tail` exits as `tail` did, so a failing run reads as a pass. Write the check's output to a file and read the file, or read the exit code before anything filters it.
-- **The walk ratchets over a reasoned exemption list.** `tests/e2e/option-coverage.json` groups options under stated reasons. An unreachable option is either made reachable or placed in the group whose reason covers it — matching the reason is the work. Where no reason fits, it is a finding, not an entry.
+- **The walk ratchets over a reasoned exemption list.** `walks/option-coverage.json` of the corpus tree groups options under stated reasons. An unreachable option is either made reachable or placed in the group whose reason covers it — matching the reason is the work. Where no reason fits, it is a finding, not an entry.
 - **A triaged binding-fidelity finding is not `Critical` on sight**, since that guard exits `OK` carrying accepted debt. Its verdicts also carry the corpus commit they were made against; on a large drift a clean result says the verdicts are old, and the walk records `blocked`. Re-affirming them is bounded by the drift rather than by the ledger: the entries at risk are the ones whose cited file changed since the stamp, which is a diff away and is usually a small fraction of the whole.
 - **A ledger states its judgement in fields no check reads.** A suppression entry is matched on a normalised key, so the reason it cites and the line it points at sit outside what the guard compares, and either can be wrong while the guard reports clean. Two entries sharing a key are not evidence of one: the key drops the line number, so a designator read twice on one line yields two findings and earns two entries. Count the findings at the site before calling an entry redundant.
 - **A clean run is not a clean change.** These read structure, not whether the workflow still does what it did. The preservation the canon requires, and the option-coverage walk, carry that.

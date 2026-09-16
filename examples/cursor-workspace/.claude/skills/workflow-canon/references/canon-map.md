@@ -39,9 +39,9 @@ this file is a second home for a judgement, and the copy goes stale the moment t
 
 | Authority | Where | Records |
 |-----------|-------|---------|
-| A guard's own exemption surface | Inside the guard or a module it shares — e.g. `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`, the kind and pipeline sets in `scripts/check-prism-lens-reachability.ts` | Which instances the check excuses, each against a stated reason |
-| Triage ledgers | `scripts/binding-fidelity-triage.json`, `workflows/section-framing-triage.json` | A verdict per finding and a named rationale per verdict. The binding-fidelity ledger also stamps the corpus commit its verdicts were made against, so a clean result on a drifted corpus says the verdicts are old rather than that nothing is wrong |
-| Reasoned exemption lists | `tests/e2e/option-coverage.json` | Which options a walk is not required to reach, grouped under the reason that covers them |
+| A guard's own exemption surface | Inside the guard or a module it shares, in the server checkout — e.g. `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`, the kind and pipeline sets in `guards/check-prism-lens-reachability.ts` | Which instances the check excuses, each against a stated reason |
+| Triage ledgers | `ledgers/binding-fidelity-triage.json` and `ledgers/section-framing-triage.json` of the corpus tree | A verdict per finding and a named rationale per verdict. The binding-fidelity ledger also stamps the corpus commit its verdicts were made against, so a clean result on a drifted corpus says the verdicts are old rather than that nothing is wrong |
+| Reasoned exemption lists | `walks/option-coverage.json` of the corpus tree | Which options a walk is not required to reach, grouped under the reason that covers them |
 
 **A guard's silence has two causes, and they point opposite ways.** Out of reach means the entry is
 the sole detector for that spelling and the finding stands. Exempted means the judgement is already
@@ -100,7 +100,7 @@ carve-out.
 | Design Principles | Whether authored content honours the stance. Detect **only** where no catalog entry's Detect reaches the shape — the principles home states that it covers failures not yet catalogued, and that class has no other detector | Detect for a shape a catalog entry already keys on. Scoring a principle is not a second finding for a defect an entry already named |
 | Construct Inventory | The informal→formal mapping, as Detect for prose that substitutes for a construct | Field-level schema truth; `schemas/*.schema.json` and `schemas/README.md` are that home |
 | Convention Conformance | The concerns to compare, and the justified-vs-conform disposition | The conventions themselves — the live sibling files are the baseline |
-| Guards | Verdicts and findings as evidence | A restated roster; read `scripts/guards.ts` |
+| Guards | Verdicts and findings as evidence | A restated roster; read `guards/guards.ts` |
 
 Where a principle and a catalog entry share a concern, the entry carries the operative criterion and
 the principle carries the framing: report the entry, cite the principle.
