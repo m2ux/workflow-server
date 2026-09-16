@@ -25,8 +25,8 @@ The authored surface of the PR — GitHub's changed-files list. The canonical se
 
 ### 1. Checkout Baseline State
 
-- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{$base_branch}` from `{base_branch}`.
-- Check out `{$base_branch}` inside `{target_path}` to analyse the pre-change state: `git -C {target_path} checkout {$base_branch}`.
+- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{base_branch}` from the op output.
+- Check out `{base_branch}` inside `{target_path}` to analyse the pre-change state: `git -C {target_path} checkout {base_branch}`.
 - Capture the base commit SHA for reference and record it as `{base_sha}`: `git -C {target_path} rev-parse HEAD`.
 
 ### 2. Document Expected Changes
@@ -38,11 +38,11 @@ The authored surface of the PR — GitHub's changed-files list. The canonical se
 
 - Check out the PR branch, so the authored surface is read against it rather than against the base.
 - Apply [list-pr-files](/meta/techniques/github-cli-protocol/list-pr-files.md)(*repo_path*=`{component_git_dir}`); set `{changed_files}` from the op output.
-- Take the authored diff as `{$base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {$base_branch}...HEAD`.
+- Take the authored diff as `{$base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {base_branch}...HEAD`.
 
 ### 4. Merge-In Guard
 
-- When HEAD is a merge commit or the branch contains merges of `{$base_branch}`, recompute the three-dot set against a freshly resolved merge-base and **log** the merge-in.
+- When HEAD is a merge commit or the branch contains merges of `{base_branch}`, recompute the three-dot set against a freshly resolved merge-base and **log** the merge-in.
 - When the authored surface is a document describing code that lives outside it — a specification, a design record, an interface note — re-read its claims against the recomputed base. A merge-in moves that code without touching the document, so the pair drifts with nothing in the diff to show it, and the diff is where a review looks.
 
 ## Rules

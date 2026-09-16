@@ -55,15 +55,15 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 - Run `git pull` on the `{branch_name}` feature branch to ensure it is up to date
 - Resolve merge conflicts before proceeding if any
-- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{$base_branch}` from `{base_branch}`
-- If HEAD is a merge commit or the branch has merged `{$base_branch}` in, the three-dot range against the merge-base already scopes to the authored diff; log that a merge-in was detected
+- Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{base_branch}` from the op output
+- If HEAD is a merge commit or the branch has merged `{base_branch}` in, the three-dot range against the merge-base already scopes to the authored diff; log that a merge-in was detected
 
 ### 2. Parse Diff
 
-- Parse `git diff {$base_branch}...HEAD` to extract the list of changed files and hunks
+- Parse `git diff {base_branch}...HEAD` to extract the list of changed files and hunks
 - If the diff contains no changes, verify the correct branch and commit range before proceeding
 - Assign `{$row_index}` to each change block
-- Estimate review time at 30 seconds per hunk (count: `git diff {$base_branch}...HEAD | grep -c "^@@"`); formula `total hunks × 0.5 minutes`, rounded to the nearest minute, displayed as "~X minutes" (or "~Xh Ym" for longer reviews)
+- Estimate review time at 30 seconds per hunk (count: `git diff {base_branch}...HEAD | grep -c "^@@"`); formula `total hunks × 0.5 minutes`, rounded to the nearest minute, displayed as "~X minutes" (or "~Xh Ym" for longer reviews)
 
 ### 3. Pin the Citation Base
 

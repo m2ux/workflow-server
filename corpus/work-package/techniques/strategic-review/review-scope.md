@@ -29,7 +29,7 @@ The strategic review document holding categorized findings — scope creep, orph
 
 ### unsigned_commits_in_pr
 
-Boolean — `true` when any commit in the `{$base_branch}..HEAD` range carries no valid GPG signature (`%G?` reports `N` or `B`).
+Boolean — `true` when any commit in the `{base_branch}..HEAD` range carries no valid GPG signature (`%G?` reports `N` or `B`).
 
 ### unsigned_commit_list_summary
 
@@ -40,12 +40,12 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 1. Load Guidance
 
 - Judge the change against [Architectural Significance](../../resources/architecture-review.md#architectural-significance) and [Decision-Making Discipline](../../resources/architecture-review.md#decision-making-discipline); the rules below govern the review findings
-- Identify the base branch (`{$base_branch}`): when `{pr_number}` is set, Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{base_branch}`; otherwise (no PR — stealth mode) the default branch of the configured push remote.
-- Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch (`{$base_branch}`):
+- Identify the base branch `{base_branch}`: when `{pr_number}` is set, Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take it from the op output; otherwise (no PR — stealth mode) the default branch of the configured push remote.
+- Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch `{base_branch}`:
 
   ```bash
   # For each file in {changed_files}, ask: Is this change necessary for the solution?
-  git diff {$base_branch}...HEAD -- <file>
+  git diff {base_branch}...HEAD -- <file>
   ```
 
 - Assess each changed file against [per-file-necessity](#per-file-necessity)
@@ -76,7 +76,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 
 ### 7. Scan Commit Signatures
 
-- Scan the branch range for signature status: `git log --format='%h %G? %s' {$base_branch}..HEAD`.
+- Scan the branch range for signature status: `git log --format='%h %G? %s' {base_branch}..HEAD`.
 - Set `{unsigned_commits_in_pr}` `true` and build `{unsigned_commit_list_summary}` from the commits reporting `N` or `B`; otherwise set it `false` with an empty summary.
 
 ### 8. Record Pr Body Conformance
