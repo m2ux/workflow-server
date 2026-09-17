@@ -390,13 +390,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(text).toMatch(/^batch:$/m);
       expect(text).toMatch(/^ {2}may_continue: (true|false)$/m);
       expect(text).toMatch(/^ {2}max_activities: \d+$/m);
-      expect(text).toMatch(/^ {2}activities: \d+$/m);
+      expect(text).toMatch(/^ {2}activities_delivered: \d+$/m);
 
       // The same figures, so a caller asserting on either reads one answer.
       const batch = (result._meta as { batch?: Record<string, number | boolean> }).batch!;
       expect(batch).toBeDefined();
       expect(text).toContain(`max_activities: ${batch['max_activities']}`);
-      expect(text).toContain(`activities: ${batch['activities']}`);
+      expect(text).toContain(`activities_delivered: ${batch['activities_delivered']}`);
       expect(text).toContain(`may_continue: ${batch['may_continue']}`);
     });
   });
@@ -1060,11 +1060,19 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(sepIdx).toBeGreaterThan(0);
       const preamble = text.substring(0, sepIdx);
       const decoded = parse(preamble) as Record<string, unknown>;
-      // All techniques — standalone and nested — live in the single `techniques` bucket,
-      // nested ones keyed by their `<technique>::<name>` path. There is no separate sub-technique bucket.
-      expect(decoded['techniques']).toBeDefined();
-      expect(typeof decoded['techniques']).toBe('object');
-      expect(Array.isArray(decoded['techniques'])).toBe(false);
+      // All techniques — standalone and nested — live in the single `techniques` bucket, nested ones
+      // keyed by their `<technique>::<name>` path. There is no separate sub-technique bucket. The
+      // response bound decides how many of them arrive as a body and how many as an id under
+      // `operation_refs`, so every operation is accounted for across the two and the assertion is
+      // that neither bucket is a list.
+      const carried = decoded['techniques'];
+      const deferred = decoded['operation_refs'];
+      expect(carried ?? deferred).toBeDefined();
+      if (carried !== undefined) {
+        expect(typeof carried).toBe('object');
+        expect(Array.isArray(carried)).toBe(false);
+      }
+      if (deferred !== undefined) expect(Array.isArray(deferred)).toBe(true);
     });
 
     it('returns lightweight metadata: rules, variables, and activity stubs without step detail', async () => {
@@ -1099,9 +1107,14 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const body = parseWorkflowResponse(result);
 
       // work-package declares `variable-binding` at techniques.activity (worker-inherited). It is NOT
-      // an orchestrator technique, so the orchestrator's bundle must never contain it.
-      const bundled = Object.keys(preamble['techniques'] as Record<string, unknown>);
-      expect(bundled).not.toContain('variable-binding');
+      // an orchestrator technique, so it appears in neither half of the orchestrator's account of its
+      // operations — the bodies it carried, and the ids the response bound left for a fetch.
+      const accounted = [
+        ...Object.keys((preamble['techniques'] ?? {}) as Record<string, unknown>),
+        ...((preamble['operation_refs'] ?? []) as string[]),
+      ];
+      expect(accounted.length).toBeGreaterThan(0);
+      expect(accounted).not.toContain('variable-binding');
 
       // The metadata body carries the flattened orchestrator `rules` list (workflow + universal),
       // and no `techniques` field — the worker buckets stay out of the orchestrator response.

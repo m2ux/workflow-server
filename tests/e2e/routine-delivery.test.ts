@@ -28,6 +28,10 @@ afterAll(async () => { await harness?.close(); });
 const deliver = (workflowId: string, activityId: string): ReturnType<typeof deliverActivity> =>
   deliverActivity(harness, workflowId, activityId);
 
+/** Advisory validation rides `_meta`, never the response body. */
+const warningsOf = (result: unknown): string[] =>
+  ((result as { _meta?: { validation?: { warnings?: string[] } } })._meta?.validation?.warnings) ?? [];
+
 describe('a worker cannot tell a step came from a routine', () => {
   it('delivers ordinary steps, with no kind:routine at any depth', async () => {
     const { activity } = await deliver('host-fixture', 'refers-to-routine');
@@ -130,7 +134,7 @@ describe('the session path a routine\'s steps reach', () => {
         session_index: sessionIndex,
         activity_id: 'carries-no-routine',
         from_activity: 'refers-to-routine',
-        completed_steps: [
+        step_manifest: [
           { step_id: 'announce', output: 'announced' },
           { step_id: 'review-residuals.batch-gate', output: 'accepted' },
           { step_id: 'review-residuals.interview', output: 'walked' },
@@ -139,9 +143,24 @@ describe('the session path a routine\'s steps reach', () => {
     });
     expect(advanced.isError ?? false, `advance failed: ${JSON.stringify(advanced.content)}`).toBe(false);
     // A manifest naming ids the server does not hold comes back as an unexpected-step warning, so a
-    // silent acceptance here would not prove the ids agree — the absence of that warning does.
-    expect(JSON.stringify(advanced.content)).not.toContain('Unexpected steps');
-    expect(JSON.stringify(advanced.content)).not.toContain('Missing steps');
+    // silent acceptance here would not prove the ids agree — the absence of that warning does. The
+    // warnings ride `_meta.validation`, so that is where the absence has to be read: against the
+    // response body they are absent whatever the manifest said.
+    expect(warningsOf(advanced).join('\n')).not.toContain('Unexpected steps');
+    expect(warningsOf(advanced).join('\n')).not.toContain('Missing steps');
+    // And the check is live: an id the run does not produce is reported. Without this the two
+    // assertions above hold for any argument the call quietly drops, which is how a manifest sent
+    // under a name the tool does not declare read as agreement for as long as it did.
+    const misnamed = await harness.client.callTool({
+      name: 'next_activity',
+      arguments: {
+        session_index: sessionIndex,
+        activity_id: '__terminal__',
+        from_activity: 'carries-no-routine',
+        step_manifest: [{ step_id: 'review-residuals-interview', output: 'walked' }],
+      },
+    });
+    expect(warningsOf(misnamed).join('\n')).toContain('Unexpected steps');
   });
 });
 

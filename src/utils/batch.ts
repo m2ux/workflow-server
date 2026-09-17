@@ -49,6 +49,12 @@ export interface BatchState {
  *
  * `mayContinue` is passed rather than read off `stand` because the advance answers it against the
  * activity being taken, which admits one the scope already holds.
+ *
+ * The count is named `activities_delivered` because that is what it counts. A delivery is the only
+ * record that an activity reached a context: `activity_entered` names no agent, so a scope advanced
+ * onto an activity whose body it never fetched leaves nothing to count. It is also the figure the
+ * bound wants — both limits protect what a context is holding, and an activity it was never sent is
+ * not in it.
  */
 export function batchReading(
   stand: BatchState,
@@ -57,14 +63,14 @@ export function batchReading(
 ): Record<string, unknown> {
   if (!stand.bounded) {
     return {
-      activities: stand.activities.length,
+      activities_delivered: stand.activities.length,
       delivered_chars: stand.chars,
       bounded: false,
       may_continue: mayContinue,
     };
   }
   return {
-    activities: stand.activities.length,
+    activities_delivered: stand.activities.length,
     max_activities: bound.maxActivities,
     delivered_chars: stand.chars,
     budget_chars: bound.budgetChars,
@@ -76,7 +82,7 @@ export function batchReading(
 /** A refusal to extend a batch, carrying the arithmetic that produced it. */
 export interface BatchRefusal {
   limit: 'activity_cap' | 'delivery_budget';
-  /** Distinct activities this scope has already taken. */
+  /** Distinct activities already delivered to this scope — see `batchReading` on why that is the count. */
   activities: number;
   /** Characters already delivered to this scope. */
   chars: number;
@@ -228,7 +234,7 @@ export function batchRefusal(
 /** What the refused caller is told, and what the recorded event carries as its reason. */
 export function batchRefusalMessage(activityId: string, scope: string, refusal: BatchRefusal): string {
   const cause = refusal.limit === 'activity_cap'
-    ? `it has already taken ${refusal.activities} activit${refusal.activities === 1 ? 'y' : 'ies'}, `
+    ? `${refusal.activities} activit${refusal.activities === 1 ? 'y has' : 'ies have'} already been delivered to it, `
       + `which is the cap of ${refusal.bound.maxActivities} per worker context`
     : `${refusal.chars} characters have been delivered to it, over the batch budget of `
       + `${refusal.bound.budgetChars} characters for its declared context window`;

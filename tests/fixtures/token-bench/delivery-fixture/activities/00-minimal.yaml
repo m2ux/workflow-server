@@ -1,0 +1,21 @@
+id: minimal
+version: 1.0.0
+name: Minimal
+description: One step binding one small operation — the least an activity can carry, so its delivery is almost entirely the role contract.
+required: true
+variables:
+  reads:
+    - target_path
+  writes:
+    - name: entry_total
+      type: number
+      description: What the one-step activity measured.
+steps:
+  - kind: technique
+    id: count-the-entries
+    technique: measure-one
+exits:
+  - id: measured
+    isDefault: true
+outcome:
+  - One directory is counted, so the four-step activity has an earlier figure to compare against

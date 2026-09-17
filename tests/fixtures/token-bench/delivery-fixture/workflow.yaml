@@ -1,10 +1,24 @@
 id: delivery-fixture
 version: 1.0.0
 title: Delivery Fixture
-description: Linear two-activity walk for the engine delivery-cost gate.
-initialActivity: start
+description: Two activities at opposite ends of one scale — a one-step activity and a four-step one — so a walk prices the per-delivery cost that does not vary and the per-activity cost that does.
+initialActivity: minimal
 graph:
-  start:
-    done: finish
-  finish:
-    done: __terminal__
+  minimal:
+    measured: large
+  large:
+    measured: __terminal__
+variables:
+  - name: target_path
+    type: string
+    description: The directory the fixture's measurements are taken against, relative to the component root.
+    defaultValue: .
+    required: false
+  - name: entry_total
+    type: number
+    description: What the one-step activity measured.
+    required: false
+  - name: pass_report
+    type: string
+    description: What the four-step activity reported.
+    required: false

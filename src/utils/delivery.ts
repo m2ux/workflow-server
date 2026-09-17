@@ -26,6 +26,8 @@ import { stringifyForResponse } from './serialization.js';
  *   - `technique:inherited_inputs.note:<hash>` / `…items:<hash>` (and the same
  *     for `inherited_outputs`) — invariant note vs items of an inherited block
  *   - `workflow_bundle:<hash>`   — the `get_workflow` orchestrator ops bundle
+ *   - `note:<id>:<hash>`         — one delivery note (`bundle`, `step_techniques`,
+ *     `resources`), the invariant prose explaining how to read the response
  *   - `resource:<resource_id>`   — a full `get_resource` payload (exact caller
  *     `resource_id`, including any `#section` anchor)
  *
@@ -87,6 +89,33 @@ export function recordDeliveries(draft: SessionFile, scope: string, entries: Rec
  */
 export function unchangedMarker(hash: string): { delivery: 'unchanged'; content_hash: string } {
   return { delivery: 'unchanged', content_hash: hash };
+}
+
+/**
+ * A delivery note under the same ledger as the content it explains.
+ *
+ * The notes are the most invariant blocks a response carries — the same characters on every
+ * delivery, whatever the activity — so a context that holds one needs it no more than it needs a
+ * technique it holds. Keyed by content (`note:<id>:<hash>`), so an edited note delivers in full
+ * under a key of its own and no invalidation is involved. `bundle: 'full'` restores every note
+ * along with everything else it restores, which is the one escape a reader needs.
+ *
+ * `held` false is a context whose ledger does not describe what it holds — a freshly spawned
+ * worker — and such a context always takes the note whole.
+ */
+export function stageNote(
+  id: string,
+  text: string,
+  state: SessionFile,
+  newDeliveries: Record<string, string>,
+  scope: string,
+  held: boolean,
+): string | { delivery: 'unchanged'; content_hash: string } {
+  const hash = contentHash(text);
+  const key = `note:${id}:${hash}`;
+  if (held && deliveredHash(state, key, scope) === hash) return unchangedMarker(hash);
+  newDeliveries[key] = hash;
+  return text;
 }
 
 /**

@@ -1,0 +1,15 @@
+id: gated-parameter-fixture
+version: 1.0.0
+title: Gated Parameter Fixture
+description: A fan whose branch gates a technique step on the per-instance parameter, so what the delivery reads of that parameter decides whether the step is inlined.
+initialActivity: scope-sweep
+graph:
+  scope-sweep:
+    scoped:
+      activity: probe-unit
+      over: probe_targets
+      variable: probe_target
+  probe-unit:
+    probed: combine-probes
+  combine-probes:
+    settled: __terminal__

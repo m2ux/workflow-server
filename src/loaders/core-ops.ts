@@ -44,54 +44,55 @@ export const FAN_DISPATCH_TECHNIQUES: readonly string[] = [
   'harness-compat::spawn-concurrent',
 ];
 
+/**
+ * Technique refs every orchestrator needs at the workflow level. Returned by `get_workflow`
+ * alongside the workflow's declared technique refs.
+ *
+ * **The order is the priority order.** `get_workflow` holds its response to what one tool result
+ * may carry, and what gives is operation bodies from the end of this list. So the operations every
+ * dispatch applies lead, then the ones a run applies at its own boundaries, then the ones a
+ * particular run may never reach at all. A ref moved later is a ref more likely to arrive as an id
+ * the orchestrator has to fetch before it can act.
+ *
+ * Every entry's rules ride the response whatever the bound does, so moving a ref late defers a
+ * procedure and never a boundary.
+ */
 export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
-  // Engine traversal
+  // Every dispatch. compose-prompt and spawn-agent are invoked inline by dispatch-activity's body,
+  // and an inline ref is not re-resolved, so each needs its own entry to reach the orchestrator at
+  // all; without them it reaches the dispatch step with nothing to apply and improvises.
   'workflow-engine::dispatch-activity',
-  'workflow-engine::evaluate-transition',
-  'workflow-engine::commit-and-persist',
-  'workflow-engine::handle-sub-workflow',
-  // compose-prompt is invoked inline by dispatch-activity's body; inline refs are
-  // not re-resolved, so it must be bundled explicitly to reach the orchestrator.
   'workflow-engine::compose-prompt',
-  // Checkpoint flow at orchestrator level
-  'workflow-engine::present-checkpoint-to-user',
-  'workflow-engine::respond-checkpoint',
-  // State persistence: commit-and-persist invokes these inline (same inline-ref
-  // caveat), so bundle them so the orchestrator gets the submodule/regular-file
-  // commit protocols. (The former 'persist'/'bubble-checkpoint-up' refs were
-  // stale — no such op files.)
-  'version-control::commit-submodule',
-  'version-control::commit-regular-files',
-  // Progress Status writer (#324 B2). Both dispatch-activity and
-  // commit-and-persist say "Apply sync-progress-status", but get_technique
-  // resolves only step-bound or first-declared techniques and orchestrators are
-  // barred from get_activity — so without this entry the named op has no
-  // delivery path and every Progress write is hand-rolled from the resource.
-  'workflow-engine::sync-progress-status',
-  // Sub-agent dispatch primitives — dispatch-activity invokes spawn-agent in
-  // its body, so the orchestrator must receive the harness-specific prose for
-  // these to actually dispatch instead of improvising / inlining.
   'harness-compat::spawn-agent',
   'harness-compat::continue-agent',
-  // The two hops spawn-agent/continue-agent Apply mid-Protocol: the kind → file
-  // map, then the resolved harness file's `spawn`/`resume`/`concurrent` Rules
-  // section. A technique named inside another technique's Protocol has no other
-  // delivery path — get_technique resolves only step-bound or first-declared
-  // techniques, and no tool loads a technique by id — so an orchestrator without
-  // these entries reaches the dispatch step with nothing to apply and improvises
-  // the invocation. All four harness files ship because nothing binds
-  // `{harness_kind}` server-side; the orchestrator selects its own through the
-  // map, which stays the single authoritative table.
+  // The kind → file map spawn-agent and continue-agent apply mid-Protocol. All four harness files
+  // ship because nothing binds `{harness_kind}` server-side; the orchestrator selects its own
+  // through the map, which stays the single authoritative table. Its own harness is the one it
+  // needs at the first dispatch — the other three are here for the map to resolve into and are the
+  // cheapest thing in the list to defer.
   'harness-compat::resolve-harness-operation',
   'harness-compat::claude-code',
+  // Every activity boundary.
+  'workflow-engine::evaluate-transition',
+  'workflow-engine::commit-and-persist',
+  // The Progress Status writer both dispatch-activity and commit-and-persist name (#324 B2).
+  'workflow-engine::sync-progress-status',
+  // State persistence: commit-and-persist invokes these inline (same inline-ref caveat), so bundle
+  // them so the orchestrator gets the submodule/regular-file commit protocols.
+  'version-control::commit-regular-files',
+  'version-control::commit-submodule',
+  // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
+  // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
+  // writing rules are not an orchestrator's to honour. The bodies are a capability line apiece;
+  // what binds is their rules, which no bound touches.
+  'agent-conduct',
+  'orchestrator-conduct',
+  // What a particular run may never reach: a child workflow it never launches, and the three
+  // harness files that are not the one it runs under.
+  'workflow-engine::handle-sub-workflow',
   'harness-compat::cursor',
   'harness-compat::cline',
   'harness-compat::generic',
-  // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
-  // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
-  // writing rules are not an orchestrator's to honour.
-  'agent-conduct',
-  'orchestrator-conduct',
 ];
 
 /**
@@ -103,9 +104,8 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // `techniques.activity` — so for a client workflow it was named and never delivered, with no tool
   // able to fetch it by id. A worker that cannot read its own role reads none of the rules it owes.
   'workflow-engine::activity-worker',
-  // Step execution surface
-  'workflow-engine::yield-checkpoint',
-  'workflow-engine::resume-from-checkpoint',
+  // Step execution surface. The checkpoint pair is in WORKER_CHECKPOINT_TECHNIQUES, added by
+  // `get_activity` where the activity holds a gate.
   'workflow-engine::finalize-activity',
   // Conduct: the boundaries every agent is held to, then the worker's specialisation of them.
   // `orchestrator-conduct` is absent — a worker cannot dispatch, advance an activity or resolve a
@@ -113,3 +113,61 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   'agent-conduct',
   'worker-conduct',
 ];
+
+/**
+ * The checkpoint operations, delivered where a gate is reachable.
+ *
+ * Two lists rather than one, because the two roles meet a gate from opposite sides: a worker
+ * pauses at one, an orchestrator puts it in front of the user and resolves it. Both are held out
+ * of the core lists above and added by the delivery that can see whether the run declares a
+ * checkpoint at all — and both stay fetchable by id, which is what makes leaving them out safe:
+ * a worker may raise a decision its activity never declared, and then asks for the protocol.
+ */
+export const WORKER_CHECKPOINT_TECHNIQUES: readonly string[] = [
+  'workflow-engine::yield-checkpoint',
+  'workflow-engine::resume-from-checkpoint',
+];
+
+export const ORCHESTRATOR_CHECKPOINT_TECHNIQUES: readonly string[] = [
+  'workflow-engine::present-checkpoint-to-user',
+  'workflow-engine::respond-checkpoint',
+];
+
+/**
+ * Rules that govern an activity only where the graph runs it as a branch of a fan, by the ref the
+ * bundle resolves them under.
+ *
+ * A rule arrives with the whole file it is declared in, so an operation that is otherwise wanted
+ * carries these to every activity — including the ones whose exits fan onto nothing, where the
+ * rule describes a position in the graph the activity never occupies. Named here, they are held
+ * back from those, on the same terms `FAN_DISPATCH_TECHNIQUES` is held back from a workflow whose
+ * graph fans nothing.
+ */
+export const FAN_ONLY_RULES: readonly string[] = [
+  'variable-binding::a-branch-lands-under-its-own-derived-key',
+];
+
+/**
+ * Every operation a session's role contracts can name.
+ *
+ * The union of both roles' sets, because one session serves both and a `get_technique` call does
+ * not say which it speaks for. This is the set a by-id fetch admits: derived from the definitions
+ * the run is already walking, so an id names an operation of its own contract or nothing at all —
+ * nothing here reaches a file neither role would have been sent.
+ */
+export function contractOperations(refs: {
+  workflowTechniques?: readonly string[] | undefined;
+  activityTechniques?: readonly string[] | undefined;
+  activityOwnTechniques?: readonly string[] | undefined;
+}): Set<string> {
+  return new Set([
+    ...CORE_ORCHESTRATOR_TECHNIQUES,
+    ...CORE_WORKER_TECHNIQUES,
+    ...WORKER_CHECKPOINT_TECHNIQUES,
+    ...ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
+    ...FAN_DISPATCH_TECHNIQUES,
+    ...(refs.workflowTechniques ?? []),
+    ...(refs.activityTechniques ?? []),
+    ...(refs.activityOwnTechniques ?? []),
+  ]);
+}
