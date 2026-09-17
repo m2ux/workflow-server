@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -52,7 +52,7 @@ The identity now holding the activity: the one the worker was continued under wh
 ### 3. Await the envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
-  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)) — is a context that is gone, with nothing further to arrive from it. Replace it below.
+  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./TECHNIQUE.md#reject-partial-worker-result)) — is a context that is gone, with nothing further to arrive from it. Replace it below.
 
 ### 4. Replace a context that is gone
 

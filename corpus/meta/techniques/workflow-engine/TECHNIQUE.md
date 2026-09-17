@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.13.0
+  version: 6.14.0
 ---
 
 ## Capability
@@ -46,3 +46,7 @@ Omitting `agent_id` falls back to the session's own identity, which several cont
 ### force-full-after-summarization
 
 When this agent context no longer holds previously delivered content (e.g. after summarization), force full re-delivery with `get_activity { bundle: "full" }`, `get_technique { full: true }`, or `get_resource { full: true }`. Unchanged-references are valid only for content this same agent already received. Each escape is for a call its reader makes.
+
+### reject-partial-worker-result
+
+An accepted result is one of the two tagged envelopes — `checkpoint_pending` or `activity_complete` — carrying the fields that envelope requires. An interim status report, a progress table, a narrative of work still in flight, or prose describing an envelope without being one is not an accepted result. Neither is an envelope reporting fewer steps than the activity defines, or leaving a required checkpoint without a response.
