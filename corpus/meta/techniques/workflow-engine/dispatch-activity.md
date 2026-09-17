@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.24.0
+  version: 1.25.0
 ---
 
 ## Capability
@@ -16,6 +16,14 @@ Transition the session to a target activity and spawn a worker to carry it, and 
 ### activity_id
 
 Activity ID to enter.
+
+### from_activity
+
+*(optional)* The activity this call retires — the one its exit and step manifest belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
+
+### exit_id
+
+*(optional)* The exit that activity took, which the server checks against the destination this call enters. Unset alongside `{from_activity}`.
 
 ### agent_technique
 
@@ -48,7 +56,7 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
    > - When `{planning_folder_path}` is unset, skip this phase.
    > - Publish the mark before the worker spawns, per [dispatch-mark-reaches-the-remote](#dispatch-mark-reaches-the-remote): apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
-2. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
+2. Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token`.
    - **`step_manifest`:** a dispatch whose activity ran steps carries one manifest entry per completed step — the server validates step completion against it, and reports a gap when it is absent. A first dispatch has no prior worker context to attribute it to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
    - **Trace accumulate (required):** when `_meta.trace_token` is present, append it to `trace_tokens[]`. Tokens stay opaque — no routine per-activity `get_trace`. Live `_meta.validation` self-correct remains; do not resolve tokens mid-run (close-out resolve is [resolve-trace-at-close-out](#resolve-trace-at-close-out)).
 3. Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
@@ -57,7 +65,7 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
    > - When the harness still reports the worker live and what came back is not an accepted result ([reject-partial-worker-result](#reject-partial-worker-result)), apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` with explicit instructions to finish what the result left undone and return the envelope.
 5. Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
 6. Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
-7. On `activity_complete`, read `{worker_result.next_activity_id}` and `{worker_result.activity_exit}` as the authoritative next-activity routing, and pass the exit to `next_activity` — the worker resolved both against the activity's exits and the exit destinations its delivery carried, via [finalize-activity](./finalize-activity.md).
+7. On `activity_complete`, read `{worker_result.next_activity_id}` and `{worker_result.activity_exit}` as the authoritative next-activity routing — the worker resolved both against the activity's exits and the exit destinations its delivery carried, via [finalize-activity](./finalize-activity.md).
    > - On a **blocked** signal from the worker or the harness, apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
    > - When the path **skips / cancels** an activity without running it, apply [sync-progress-status](./sync-progress-status.md) for the path-skip / cancel moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) for that activity's rows.
 
@@ -69,7 +77,7 @@ A Progress mark is unreadable to anyone who does not hold the working tree it wa
 
 ### account-every-activity
 
-Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, agent_id: worker_agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records the delta at each activity boundary, so cost keeps a figure per activity; the bound those figures inform is the server's, not this operation's ([batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server)). Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
+Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, basis, agent_id: worker_agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records a figure at each activity boundary and says what that figure counts, read from the harness rather than assumed, so cost keeps a figure per activity; the bound those figures inform is the server's, not this operation's ([batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server)). Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
 
 ### distrust-then-reconcile
 
