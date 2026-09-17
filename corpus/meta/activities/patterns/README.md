@@ -6,7 +6,7 @@ Borrowable mid-phase multi-agent pipelines. They are **not** part of meta's life
 
 Session-level orchestrator/worker dispatch remains [`dispatch-activity`](../../techniques/workflow-engine/dispatch-activity.md). These activities cover **in-activity decompose / dispatch / consolidate** only, and they work through their units one at a time inside the calling worker.
 
-Running units together is the graph's layer: bind the exit that reaches the per-unit activity to a destination naming that activity and the collection to run it over, and the run opens one worker per element, each with its own frontier entry, its own container slot and its own identity — see [`dispatch-fan`](../../techniques/workflow-engine/dispatch-fan.md) and [`scatter-gather`](../../techniques/scatter-gather.md). Reach for a pattern activity when the units are cheap enough to sit in one worker's context, and for the graph fan when each unit is worth a whole delivery of its own.
+Running units together is the graph's layer: bind the exit that reaches the per-unit activity to a destination naming that activity and the collection to run it over, and the run opens one worker per element, each with its own frontier entry, its own container slot and its own identity — see the [fan](../../techniques/fan/TECHNIQUE.md) group and [`scatter-gather`](../../techniques/scatter-gather.md). Reach for a pattern activity when the units are cheap enough to sit in one worker's context, and for the graph fan when each unit is worth a whole delivery of its own.
 
 Atomic ops live under [`orchestration-patterns/`](../../techniques/orchestration-patterns/TECHNIQUE.md). Fan-out primitives remain [`scatter-gather`](../../techniques/scatter-gather.md) and [`harness-compat`](../../techniques/harness-compat/TECHNIQUE.md).
 
@@ -16,7 +16,7 @@ Atomic ops live under [`orchestration-patterns/`](../../techniques/orchestration
 
 | Catalog pattern | Activity | Borrow ref |
 |-----------------|----------|------------|
-| orchestrator-workers | *(graph)* a destination naming one activity and the collection to run it over | see [dispatch-fan](../../techniques/workflow-engine/dispatch-fan.md) |
+| orchestrator-workers | *(graph)* a destination naming one activity and the collection to run it over | see the [fan](../../techniques/fan/TECHNIQUE.md) group |
 | supervisor | [supervisor](./02-supervisor.yaml) | `meta/patterns/02-supervisor.yaml` |
 | plan-and-execute | [plan-and-execute](./03-plan-and-execute.yaml) | `meta/patterns/03-plan-and-execute.yaml` |
 | lead-researcher | [lead-researcher](./05-lead-researcher.yaml) | `meta/patterns/05-lead-researcher.yaml` |

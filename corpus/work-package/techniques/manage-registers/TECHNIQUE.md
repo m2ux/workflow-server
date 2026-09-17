@@ -11,7 +11,7 @@ Shared contract for the work package's two open-work registers — the single ho
 
 ### register-is-the-single-statement
 
-Each register is the one home for its class of item: out-of-scope deferrals in the deferred-items register, work still owed inside the package in the follow-ups register. Every other artifact links to the row rather than restating it, per [single-source-and-link](../manage-artifacts/TECHNIQUE.md#single-source-and-link).
+Each register is the one home for its class of item: out-of-scope deferrals in the deferred-items register, work still owed inside the package in the follow-ups register. Every other artifact links to the row rather than restating it, per `manage-artifacts.single-source-and-link`.
 
 ### created-lazily-and-unprefixed
 

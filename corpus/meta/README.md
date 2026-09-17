@@ -6,7 +6,7 @@
 
 ## Overview
 
-The meta workflow is the structural home for the orchestration logic that used to live in technique prose. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique operation via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a `while` loop. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
+The meta workflow is the structural home for the orchestration logic that used to live in technique prose. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique operation via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
 
 **Key characteristics:**
 
@@ -124,6 +124,9 @@ corpus/meta/
 ├── activities/
 │   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop, a bounded run of activities per worker
 │   └── 04-end-workflow.yaml                 # Outcome verification, summary
+├── routines/
+│   ├── activity-loop.yaml                   # Walk a session one activity at a time, until none follows
+│   └── dispatch-round.yaml                  # Compose, dispatch and gather one round of worker briefs
 ├── techniques/
 │   ├── TECHNIQUE.md                         # Root base contract (inherited by every meta technique)
 │   ├── agent-conduct.md                     # Cross-cutting rules any agent can act on (single source of truth)

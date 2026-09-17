@@ -1,0 +1,21 @@
+id: plan-probes
+version: 1.0.0
+name: Plan Probes
+description: Choose the directory the two passes open with.
+variables:
+  reads:
+    - component_path
+  writes:
+    - name: initial_target
+      type: string
+      description: The directory both passes open with, relative to the component root.
+required: true
+steps:
+  - kind: technique
+    id: choose-the-opening-target
+    technique: plan-probes
+exits:
+  - id: planned
+    isDefault: true
+outcome:
+  - Both passes open with the same target, so what the two measurements report is about the measurement rather than about where each one started

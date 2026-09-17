@@ -1,5 +1,5 @@
 id: execute-analysis
-version: 1.4.0
+version: 2.0.0
 name: Execute Prism Analysis
 description: Trigger the prism workflow for each audit scope and record each run from its manifest.
 variables:
@@ -12,6 +12,12 @@ variables:
     - name: all_analysis_artifact_paths
       type: array
       description: Accumulated paths to all analysis artifacts across triggered prism workflows, taken from each run's manifest
+    - name: current_activity
+      type: string
+      description: The prism activity the walk holds, and null once the prism graph routes to none
+    - name: from_activity
+      type: string
+      description: The prism activity an advance retires
     - name: completed_analyses
       type: array
       description: "Array of completed prism runs, each read from that run's RUN-MANIFEST.json: { report_path, definitive_findings_path, status } plus the run's scope reference"
@@ -78,6 +84,17 @@ steps:
           name: workflow-engine::handle-sub-workflow
           inputs:
             workflow_id: prism
+      - kind: routine
+        id: walk-prism-child
+        routine: activity-loop
+        with:
+          session_index: child_session_index
+          initial_activity: child_initial_activity
+          enter_activity: workflow-engine::take-activity
+          planning_folder_path: child_planning_folder_path
+        outputs:
+          current_activity: current_activity
+          from_activity: from_activity
       - kind: technique
         id: read-run-manifest
         technique: prism/read-run-manifest

@@ -35,7 +35,7 @@ The resumed agent's next yield or final output
 
 ### 2. Resume
 
-- Resume by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{agent_id}`, `{session_index}`, and `{composed_prompt}`, under [foreground-always](./TECHNIQUE.md#foreground-always).
+- Resume by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{agent_id}`, `{session_index}`, and `{composed_prompt}`, under `foreground-always`.
 
 ### 3. Await result
 
@@ -49,4 +49,4 @@ Harness-level resume preserves the context window. Useful, not required for corr
 
 ### resume-preserves-delivery-scope
 
-A resumed agent is the same delivery context, so `{composed_prompt}` re-binds the workflow-server worker `agent_id` the dispatch bound — the identity the ledger is keyed on ([delivery-keys-on-agent-context](../workflow-engine/dispatch-activity.md#delivery-keys-on-agent-context)), distinct from the harness `{agent_id}` this operation resumes. Under that identity the resumed agent's refetches collapse to unchanged markers; a resume that did not preserve the window still holds the identity and takes [force-full-after-summarization](../workflow-engine/TECHNIQUE.md#force-full-after-summarization).
+A resumed agent is the same delivery context, so `{composed_prompt}` re-binds the workflow-server worker `agent_id` the dispatch bound — the identity the ledger is keyed on (`dispatch-activity.delivery-keys-on-agent-context`), distinct from the harness `{agent_id}` this operation resumes. Under that identity the resumed agent's refetches collapse to unchanged markers; a resume that did not preserve the window still holds the identity and takes `workflow-engine.force-full-after-summarization`.

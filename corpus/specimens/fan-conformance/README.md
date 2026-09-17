@@ -102,7 +102,7 @@ So nothing detects that a fan is complete and announces it — completeness is s
 
 ## Orchestration Model
 
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md). Fanning adds [dispatch-fan](/meta/techniques/workflow-engine/dispatch-fan.md), which is delivered only to a workflow whose graph holds a fan: it is what tells an orchestrator to open every branch in one turn, give each its own identity, and take the convergence from what the record shows rather than judging for itself when the fan is done.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md). Fanning adds the [fan](/meta/techniques/fan/TECHNIQUE.md) group, which is delivered only to a workflow whose graph holds a fan: its operations are what tell an orchestrator to open every branch in one turn, give each its own identity, and take the convergence from what the record shows rather than judging for itself when the fan is done.
 
 ---
 

@@ -61,7 +61,7 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 
 - Replace a restated fact with a link to its canonical home, delete a section whose content is an absence, collapse a table whose every row passes, condense prose over its guide's budget, and rewrite a passage that breaks the register
 - Preserve content the user asked for explicitly, whatever the budget says
-- Leave an artifact under a published contract as it stands, recording its violations with `fixed` false — see [published-contracts-are-reported](#published-contracts-are-reported)
+- Leave an artifact under a published contract as it stands, recording its violations with `fixed` false — see `published-contracts-are-reported`
 
 ### 4. Surface the Exceptions
 

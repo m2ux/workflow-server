@@ -27,11 +27,11 @@ The ids come from the delivery: the `resources` map keys, `resource_refs`, and t
 
 A fetch hands over the whole composed body — thousands of characters, whatever fraction of it a step reads — so ask for what the step needs and reuse what a response already carried.
 
-A second ask is cheap rather than free, and cheap is not a licence: how to avoid it is [resource-section-or-whole](#resource-section-or-whole), when a marker comes back instead of a body is [agent-id-scopes-delivery](#agent-id-scopes-delivery), and a marker inside one response is explained by that response's own notes, which govern. Read a marker as the expected answer rather than an error, and where content has genuinely left this context, [force-full-after-summarization](#force-full-after-summarization) is how to get it back.
+A second ask is cheap rather than free, and cheap is not a licence: how to avoid it is `resource-section-or-whole`, when a marker comes back instead of a body is `agent-id-scopes-delivery`, and a marker inside one response is explained by that response's own notes, which govern. Read a marker as the expected answer rather than an error, and where content has genuinely left this context, `force-full-after-summarization` is how to get it back.
 
 ### resource-section-or-whole
 
-Choose bare vs `#section` `resource_id` by how much of the resource this agent context will need. Prefer a `#section` anchor when the current step needs a single slice of a large resource. When the same agent context will need two or more sections from the same resource in the current activity (or in the immediate next steps of that activity), call `get_resource` once with the bare resource id and reuse that content — do not issue repeated section fetches for the same file. Bare and `#section` ids are distinct delivery keys: loading sections does not populate the whole-resource key, and loading the whole file does not collapse a later section fetch under a different key. In the eager `resources` map the file takes precedence — a bundled whole resource carries its own sections, so a technique citing both ways receives the file alone and its sections are read out of that body rather than fetched again. Unchanged-references and `full: true` follow [force-full-after-summarization](#force-full-after-summarization).
+Choose bare vs `#section` `resource_id` by how much of the resource this agent context will need. Prefer a `#section` anchor when the current step needs a single slice of a large resource. When the same agent context will need two or more sections from the same resource in the current activity (or in the immediate next steps of that activity), call `get_resource` once with the bare resource id and reuse that content — do not issue repeated section fetches for the same file. Bare and `#section` ids are distinct delivery keys: loading sections does not populate the whole-resource key, and loading the whole file does not collapse a later section fetch under a different key. In the eager `resources` map the file takes precedence — a bundled whole resource carries its own sections, so a technique citing both ways receives the file alone and its sections are read out of that body rather than fetched again. Unchanged-references and `full: true` follow `force-full-after-summarization`.
 
 ### variable-mutation-source
 
@@ -39,7 +39,7 @@ Variables mutate from two sources only: checkpoint option effects (`setVariable`
 
 ### agent-id-scopes-delivery
 
-`agent_id` names an agent context, and what has already been delivered is scoped to that name rather than to the session. Pass it on every delivery call. A context calling for the first time receives bodies; the same context calling again receives unchanged markers for what it already holds, which is the expected answer rather than an error ([fetch-costs-what-it-delivers](#fetch-costs-what-it-delivers)).
+`agent_id` names an agent context, and what has already been delivered is scoped to that name rather than to the session. Pass it on every delivery call. A context calling for the first time receives bodies; the same context calling again receives unchanged markers for what it already holds, which is the expected answer rather than an error (`fetch-costs-what-it-delivers`).
 
 Omitting `agent_id` falls back to the session's own identity, which several contexts can hold at once. A name is then no evidence of one context, so a repeat collapses only where the call declares reference delivery — the case of a solo walk, the one context that legitimately owns that identity.
 

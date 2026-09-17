@@ -59,4 +59,4 @@ Create PRs as drafts initially. Convert to ready-for-review only when a later st
 
 ### remote-git-runs-on-the-host-shell
 
-Every operation here that reaches the remote runs under [manage-git](../manage-git/TECHNIQUE.md#host-shell-for-remote-git).
+Every operation here that reaches the remote runs under `manage-git.host-shell-for-remote-git`.

@@ -36,7 +36,7 @@ SHA of the new commit on `{branch_name}`, or empty when there was nothing to com
 
 ### 3. Commit
 
-- Commit with `{commit_message}`, honouring [code-commit-coauthor-trailer](./TECHNIQUE.md#code-commit-coauthor-trailer). Whether commits are GPG-signed follows the user's local git config — do not impose `--no-gpg-sign` / `--gpg-sign` overrides here.
+- Commit with `{commit_message}`, honouring `code-commit-coauthor-trailer`. Whether commits are GPG-signed follows the user's local git config — do not impose `--no-gpg-sign` / `--gpg-sign` overrides here.
 - Capture `{commit_sha}` (`git rev-parse HEAD`).
 
 ## Rules

@@ -20,7 +20,7 @@ Activity that just completed.
 ## Protocol
 
 1. **README Progress:** Resolve the Progress moment from [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites): if `{mark_progress_na}` is true, use path-skip / cancel / mark N/A; otherwise use `activity_complete`. Apply [sync-progress-status](./sync-progress-status.md)(*activity_id*={activity_id}, *planning_folder_path*={planning_folder_path}, *target_status*=that moment's status, with its overwrite defaults per [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy)). Do not restate [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). When `{mark_progress_na}` was true, set it false after the Apply.  
-   > Apply [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile) when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
+   > Apply `dispatch-activity.distrust-then-reconcile` when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
 2. Set the header-line `**Status:**` to the current lifecycle milestone for that workflow (text — distinct from Progress Status; see [Progress table](/meta/resources/planning-readme.md#progress-table)).
    > Where the README already carries both marks, leave its content equivalent and still include the file in the engineering commit — an earlier edit may be local only.
 3. If `{host_repo_path}/{component_path}` has uncommitted changes (`git status --porcelain` non-empty), apply [version-control](../version-control/TECHNIQUE.md)::[commit-submodule](../version-control/commit-submodule.md)(*paths*=changed files, *submodule_message*=`'<type>(<workflow-id>): <activity-id> source changes'` with the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, *parent_branch*=current parent branch). Skip when the working tree is clean.
@@ -38,7 +38,7 @@ Activity that just completed.
 After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities.
 
 - Skip the engineering commit only where the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows its intended post-activity status on the remote — complete, or cancelled/N/A where `{mark_progress_na}` applied, per [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary).
-- Scope: this orchestrator post-activity hook only. Ad-hoc commits outside it are [explicit-commit](../version-control/TECHNIQUE.md#explicit-commit); the meta workflow's own setup sequence has its own cadence, [setup-sequence-persists-once](#setup-sequence-persists-once).
+- Scope: this orchestrator post-activity hook only. Ad-hoc commits outside it are `version-control.explicit-commit`; the meta workflow's own setup sequence has its own cadence, `setup-sequence-persists-once`.
 
 ### setup-sequence-persists-once
 
@@ -47,7 +47,7 @@ Across the meta workflow's setup activities — every activity up to and includi
 - Mark Progress and set the header lifecycle Status as each activity completes: both are local edits to a README someone watches while the ceremony runs.
 - Hold the source-side commit and the engineering commit-and-push until the client workflow is dispatched, then make them once over everything those activities produced. That is the first moment anything outside this session reads the artifacts, since the client workflow's own commits land after it.
 - A session interrupted mid-ceremony still resumes from server-side state rather than from the remote, so holding the commit does not put the resume at risk.
-- Scope: the setup sequence only. Client-workflow activities persist per activity, per [commit-after-activity](#commit-after-activity).
+- Scope: the setup sequence only. Client-workflow activities persist per activity, per `commit-after-activity`.
 
 ### session-files-ride-along
 

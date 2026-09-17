@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 5.15.0
+version: 6.0.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
@@ -14,143 +14,23 @@ variables:
       type: boolean
       description: Whether the dispatched client workflow has reached workflow_complete
       defaultValue: false
+    - name: current_activity
+      type: string
+      description: The client activity the walk holds, and null once the client graph routes to none
+    - name: from_activity
+      type: string
+      description: The client activity an advance retires
 required: true
 steps:
-  - kind: action
-    id: verify-preconditions
-    actions:
-      - action: validate
-        target: client_session_index
-        message: Cannot dispatch without a client session_index; start_session must have opened the client
-  - kind: action
-    id: prime-initial-activity
-    actions:
-      - action: set
-        target: current_activity
-        value: "{client_initial_activity}"
-  - kind: loop
+  - kind: routine
     id: client-activity-loop
-    name: Client Activity Loop
-    loopType: while
-    continueWhile:
-      type: simple
-      variable: current_activity
-      operator: "!="
-      value: null
-    maxIterations: 200
-    steps:
-      - kind: technique
-        id: continue-batched-worker
-        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id && !worker_result.next_activity_fans
-        technique:
-          name: workflow-engine::continue-batch
-          inputs:
-            activity_id: "{worker_result.next_activity_id}"
-            exit_id: "{worker_result.activity_exit}"
-            session_index: client_session_index
-            worker_agent_id: worker_agent_id
-            step_manifest: "{worker_result.steps_completed}"
-            state: variables
-      - kind: technique
-        id: dispatch-activity
-        when: "!worker_agent_id && !worker_result.next_activity_fans"
-        technique:
-          name: workflow-engine::dispatch-activity
-          inputs:
-            activity_id: current_activity
-            session_index: client_session_index
-            agent_technique: workflow-engine::activity-worker
-            state: variables
-      - kind: technique
-        id: dispatch-fan
-        when: "!worker_agent_id && worker_result.next_activity_fans"
-        technique:
-          name: workflow-engine::dispatch-fan
-          inputs:
-            fan_destination: current_activity
-            exit_id: "{worker_result.activity_exit}"
-            session_index: client_session_index
-            agent_technique: workflow-engine::activity-worker
-            state: variables
-          outputs:
-            convergence_activity: fan_convergence_activity
-      - kind: action
-        id: advance-past-fan
-        when: fan_convergence_activity
-        actions:
-          - action: set
-            target: current_activity
-            value: "{fan_convergence_activity}"
-      - kind: action
-        id: retire-fan-envelope
-        when: fan_convergence_activity
-        actions:
-          # After the fan is opened the loop holds the convergence as current_activity.
-          # The envelope and the convergence name stay unset so later steps in this
-          # iteration, and the next iteration, treat that activity as an ordinary next step.
-          - action: set
-            target: worker_result
-            value: null
-          - action: set
-            target: fan_convergence_activity
-            value: null
-      - kind: technique
-        id: present-yielded-checkpoint
-        when: worker_result.result_type == "checkpoint_pending"
-        technique:
-          name: workflow-engine::present-checkpoint-to-user
-          inputs:
-            session_index: client_session_index
-      - kind: technique
-        id: respond-yielded-checkpoint
-        when: worker_result.result_type == "checkpoint_pending"
-        technique:
-          name: workflow-engine::respond-checkpoint
-          inputs:
-            session_index: client_session_index
-            checkpoint_resolution: user_selection
-      - kind: technique
-        id: resume-yielded-worker
-        when: worker_result.result_type == "checkpoint_pending"
-        technique:
-          name: workflow-engine::resume-worker
-          inputs:
-            session_index: client_session_index
-            activity_id: current_activity
-            worker_agent_id: worker_agent_id
-            effects: effects
-            state: variables
-      - kind: technique
-        id: commit-activity-artifacts
-        when: worker_result.result_type == "activity_complete"
-        technique:
-          name: workflow-engine::commit-and-persist
-          inputs:
-            activity_id: current_activity
-      - kind: action
-        id: note-exiting-activity
-        when: worker_result.result_type == "activity_complete"
-        actions:
-          # Kept before the pointer moves: every advance names the activity it retires, and the
-          # next step makes current_activity the destination. Each operation's `from_activity`
-          # input resolves to this target by name, so no step binds it.
-          - action: set
-            target: from_activity
-            value: "{current_activity}"
-      - kind: action
-        id: advance-activity
-        when: worker_result.result_type == "activity_complete"
-        actions:
-          - action: set
-            target: current_activity
-            value: "{worker_result.next_activity_id}"
-      - kind: action
-        id: release-spent-worker
-        when: worker_result.result_type == "activity_complete" && (!worker_result.batch_may_continue || !worker_result.next_activity_id || worker_result.next_activity_fans)
-        actions:
-          - action: set
-            target: worker_agent_id
-            value: null
+    routine: activity-loop
+    with:
+      session_index: client_session_index
+      initial_activity: client_initial_activity
+    outputs:
+      current_activity: current_activity
+      from_activity: from_activity
   - kind: action
     id: record-client-completion
     when: current_activity == null

@@ -33,14 +33,14 @@ Worker agent identity for this dispatch.
 
 ### 1. Verify dispatch
 
-- Confirm the activity `id` on the `get_activity` response whose operations bundle delivered this technique equals `{activity_id}` per [verify-dispatched-activity](#verify-dispatched-activity)
+- Confirm the activity `id` on the `get_activity` response whose operations bundle delivered this technique equals `{activity_id}` per `verify-dispatched-activity`
 - Follow the operations bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
-- Read `may_continue` from the `batch:` block leading that response — this context's standing against its bound ([batch-ends-where-the-server-says](#batch-ends-where-the-server-says))
+- Read `may_continue` from the `batch:` block leading that response — this context's standing against its bound (`batch-ends-where-the-server-says`)
 
 ### 2. Load resources
 
-- Load resources per [resource-loading-via-tool](./TECHNIQUE.md#resource-loading-via-tool)
-- Use [force-full-after-summarization](./TECHNIQUE.md#force-full-after-summarization) when this context no longer holds prior deliveries
+- Load resources per `resource-loading-via-tool`
+- Use `force-full-after-summarization` when this context no longer holds prior deliveries
 
 ### 3. Take the walk position
 
@@ -51,14 +51,14 @@ Worker agent identity for this dispatch.
 
 - Execute each activity step in document order
 - Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
-- For `kind: technique` steps, load the bound operation on reach per [progressive-step-technique-load](#progressive-step-technique-load)
+- For `kind: technique` steps, load the bound operation on reach per `progressive-step-technique-load`
 - Apply each bound operation via [variable-binding](../variable-binding.md)
 - Honor `when:` gates against the variable bag, evaluating each expression as the activity schema's `when` field defines it; an expression that does not parse does not run its step
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
 
 ### 5. Finalize the activity
 
-- When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` this context's standing reports ([batch-ends-where-the-server-says](#batch-ends-where-the-server-says)) as `batch_may_continue`
+- When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` this context's standing reports (`batch-ends-where-the-server-says`) as `batch_may_continue`
 
 ## Rules
 
@@ -70,7 +70,7 @@ Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TE
 
 Never call the workflow-server control-plane tools `next_activity` or `get_workflow` against `{session_index}` — the session this worker was dispatched for, whose pointer the orchestrator owns. A further activity arrives here the way the first one did: as a stub naming it. Until a stub names one there is no next activity to act on, so never issue its `get_activity` on your own initiative.
 
-A workflow this worker launches is a session of its own, with no other owner: driving that one is [workflow-engine](./TECHNIQUE.md)::[handle-sub-workflow](./handle-sub-workflow.md)::[solo-walk-the-child](./handle-sub-workflow.md#solo-walk-the-child).
+A workflow this worker launches is a session of its own, with no other owner: driving that one is [workflow-engine](./TECHNIQUE.md)::`handle-sub-workflow.solo-walk-the-child`.
 
 ### one-activity-at-a-time-in-a-batch
 
@@ -78,7 +78,7 @@ Return each activity's `activity_complete` envelope as it finishes per [finalize
 
 ### agent-id-on-delivery-calls
 
-Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch holds no prior deliveries and takes full delivery; every call after it under that same identity carries `bundle: "reference"`, whether it resumes the activity this context holds or takes the next activity of its batch, so content this context already holds arrives as unchanged markers.
+Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on (`agent-id-scopes-delivery`). A first dispatch holds no prior deliveries and takes full delivery; every call after it under that same identity carries `bundle: "reference"`, whether it resumes the activity this context holds or takes the next activity of its batch, so content this context already holds arrives as unchanged markers.
 
 ### outlive-dispatched-children
 
@@ -86,7 +86,7 @@ While a step of this activity holds work still running outside this context — 
 
 ### final-message-is-an-envelope
 
-The last thing this context emits is the envelope this activity owes — the `checkpoint_pending` yield, or the `activity_complete` result. Anything emitted in its place ends the context with the envelope still owed, and is not an accepted result ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)).
+The last thing this context emits is the envelope this activity owes — the `checkpoint_pending` yield, or the `activity_complete` result. Anything emitted in its place ends the context with the envelope still owed, and is not an accepted result (`dispatch-activity.reject-partial-worker-result`).
 
 ### verify-dispatched-activity
 
@@ -94,7 +94,7 @@ Before executing any step, confirm the activity `id` returned by the `get_activi
 
 ### progressive-step-technique-load
 
-A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle; re-fetching it pays the round trip for content the response already delivered ([fetch-costs-what-it-delivers](./TECHNIQUE.md#fetch-costs-what-it-delivers)).
+A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle; re-fetching it pays the round trip for content the response already delivered (`fetch-costs-what-it-delivers`).
 
 ### batch-ends-where-the-server-says
 

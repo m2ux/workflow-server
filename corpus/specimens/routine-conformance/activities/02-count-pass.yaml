@@ -1,0 +1,26 @@
+id: count-pass
+version: 1.0.0
+name: Count Pass
+description: Walk the targets counting what each one holds.
+variables:
+  reads:
+    - component_path
+    - initial_target
+  writes:
+    - name: entry_counts
+      type: array
+      description: One entry per target the counting pass measured, in the order it walked them.
+required: true
+steps:
+  - kind: routine
+    id: counting
+    routine: measured-pass
+    with:
+      probe_operation: count-entries
+    outputs:
+      pass_measurements: entry_counts
+exits:
+  - id: passed
+    isDefault: true
+outcome:
+  - Every target the counting measurement named has been walked and counted, so the report has one measurement per target this pass reached

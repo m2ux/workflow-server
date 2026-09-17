@@ -1,0 +1,212 @@
+id: activity-loop
+version: 1.0.0
+name: Activity Loop
+description: >-
+  Walk a session one activity at a time — enter the current activity and carry it, answer any
+  checkpoint it yields, commit what it produced, and advance onto what its exit routes to — until
+  no activity follows.
+
+inputs:
+  - id: session_index
+    description: The session this run walks, whose pointer each entry advances.
+  - id: initial_activity
+    description: The activity the walk opens with.
+  - id: enter_activity
+    kind: technique
+    default: workflow-engine::dispatch-activity
+    description: The operation that enters an activity and carries it to the envelope it returns.
+  - id: planning_folder_path
+    description: Absolute path to the walked session's planning folder, whose Progress surface each entry marks.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: target_status
+    description: The Progress status an entry publishes for the activity it marks.
+
+outputs:
+  - id: current_activity
+    type: string
+    description: The activity the walk holds, and null once the graph routes to none.
+  - id: from_activity
+    type: string
+    description: The activity an advance retires, which every entry names as the one its exit belongs to.
+
+internals:
+  - id: fan_convergence_activity
+    description: The activity a fan's branches converge on, which the walk resumes from once the fan is opened.
+
+steps:
+  - kind: action
+    id: verify-preconditions
+    actions:
+      - action: validate
+        target: session_index
+        message: Cannot walk a session without a session_index; the session must be open
+  - kind: action
+    id: prime-initial-activity
+    actions:
+      - action: set
+        target: current_activity
+        value: "{initial_activity}"
+  - kind: loop
+    id: activity-cycle
+    name: Activity Cycle
+    loopType: while
+    continueWhile:
+      type: simple
+      variable: current_activity
+      operator: "!="
+      value: null
+    maxIterations: 200
+    steps:
+      - kind: technique
+        id: continue-batched-worker
+        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id && !worker_result.next_activity_fans
+        technique:
+          name: workflow-engine::continue-batch
+          inputs:
+            activity_id: "{worker_result.next_activity_id}"
+            exit_id: "{worker_result.activity_exit}"
+            session_index: session_index
+            worker_agent_id: worker_agent_id
+            step_manifest: "{worker_result.steps_completed}"
+            state: variables
+      - kind: technique
+        id: enter-activity
+        when: "!worker_agent_id && !worker_result.next_activity_fans"
+        technique:
+          name: enter_activity
+          inputs:
+            activity_id: current_activity
+            session_index: session_index
+            agent_technique: workflow-engine::activity-worker
+            state: variables
+      - kind: technique
+        id: enter-fan
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        technique:
+          name: fan::enter-fan
+          inputs:
+            fan_destination: current_activity
+            exit_id: "{worker_result.activity_exit}"
+            session_index: session_index
+          outputs:
+            barrier_destination: fan_convergence_activity
+      - kind: technique
+        id: spawn-branches
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        technique:
+          name: fan::spawn-branches
+          inputs:
+            branch_list: branch_list
+            agent_technique: workflow-engine::activity-worker
+            state: variables
+          outputs:
+            branch_envelopes: branch_envelopes
+      - kind: loop
+        id: branch-retirement
+        name: Branch Retirement
+        loopType: forEach
+        variable: current_branch
+        over: branch_list
+        maxIterations: 50
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        steps:
+          - kind: technique
+            id: retire-branch
+            technique:
+              name: fan::retire-branch
+              inputs:
+                branch_activity: current_branch
+                branch_envelope: "{branch_envelopes}"
+                barrier_destination: fan_convergence_activity
+                session_index: session_index
+            actions:
+              - action: set
+                target: trace_tokens
+                description: The token this retirement returned, appended to the run's accumulated tokens.
+      - kind: technique
+        id: persist-the-fan
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        technique:
+          name: workflow-engine::commit-and-persist
+          inputs:
+            activity_id: "{branch_list}"
+      - kind: action
+        id: advance-past-fan
+        when: fan_convergence_activity
+        actions:
+          - action: set
+            target: current_activity
+            value: "{fan_convergence_activity}"
+      - kind: action
+        id: retire-fan-envelope
+        when: fan_convergence_activity
+        actions:
+          # After the fan is opened the walk holds the convergence as current_activity.
+          # The envelope and the convergence name stay unset so later steps in this
+          # iteration, and the next iteration, treat that activity as an ordinary next step.
+          - action: set
+            target: worker_result
+            value: null
+          - action: set
+            target: fan_convergence_activity
+            value: null
+      - kind: technique
+        id: present-yielded-checkpoint
+        when: worker_result.result_type == "checkpoint_pending"
+        technique:
+          name: workflow-engine::present-checkpoint-to-user
+          inputs:
+            session_index: session_index
+      - kind: technique
+        id: respond-yielded-checkpoint
+        when: worker_result.result_type == "checkpoint_pending"
+        technique:
+          name: workflow-engine::respond-checkpoint
+          inputs:
+            session_index: session_index
+            checkpoint_resolution: user_selection
+      - kind: technique
+        id: resume-yielded-worker
+        when: worker_result.result_type == "checkpoint_pending"
+        technique:
+          name: workflow-engine::resume-worker
+          inputs:
+            session_index: session_index
+            activity_id: current_activity
+            worker_agent_id: worker_agent_id
+            effects: effects
+            state: variables
+      - kind: technique
+        id: commit-activity-artifacts
+        when: worker_result.result_type == "activity_complete"
+        technique:
+          name: workflow-engine::commit-and-persist
+          inputs:
+            activity_id: current_activity
+      - kind: action
+        id: note-exiting-activity
+        when: worker_result.result_type == "activity_complete"
+        actions:
+          # Kept before the pointer moves: every advance names the activity it retires, and the
+          # next step makes current_activity the destination. Each operation's `from_activity`
+          # input resolves to this target by name, so no step binds it.
+          - action: set
+            target: from_activity
+            value: "{current_activity}"
+      - kind: action
+        id: advance-activity
+        when: worker_result.result_type == "activity_complete"
+        actions:
+          - action: set
+            target: current_activity
+            value: "{worker_result.next_activity_id}"
+      - kind: action
+        id: release-spent-worker
+        when: worker_result.result_type == "activity_complete" && (!worker_result.batch_may_continue || !worker_result.next_activity_id || worker_result.next_activity_fans)
+        actions:
+          - action: set
+            target: worker_agent_id
+            value: null
