@@ -24,6 +24,7 @@ import {
 } from '../schema/workflow.schema.js';
 import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
+import { isBareName, SEGMENT_SEPARATOR } from '../loaders/technique-ref.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES, FAN_DISPATCH_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { entryCondition, injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
@@ -161,13 +162,14 @@ export async function composeActivityArtifacts(
   };
   collect(activity.steps);
   if (refs.size === 0) return [];
-  // Resolve like get_technique: a bare op may be activity-group shorthand (`<activityId>::<op>`), so
+  // Resolve like get_technique: a BARE op may be activity-group shorthand (`<activityId>::<op>`), so
   // try the activity-named-group form too. resolveTechniques returns type 'not-found' for a candidate
-  // that doesn't exist, so passing both forms is safe.
+  // that doesn't exist, so passing both forms is safe. A reference already spelling a path says where
+  // it lives, and prefixing one would compose a reference the rule refuses.
   const candidates = new Set<string>();
   for (const r of refs) {
     candidates.add(r);
-    if (activityId && !r.includes('::')) candidates.add(`${activityId}::${r}`);
+    if (activityId && isBareName(r)) candidates.add(`${activityId}${SEGMENT_SEPARATOR}${r}`);
   }
   const resolved = await resolveTechniques([...candidates], workflowDir, workflowId);
   const artifacts: Array<{ id: string; name: string; audience?: 'human' | 'agent' }> = [];

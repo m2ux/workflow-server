@@ -27,6 +27,7 @@ import type { TechniqueBinding } from '../schema/activity.schema.js';
 import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
 import type { Technique, InputItemDefinition, OutputItemDefinition } from '../schema/technique.schema.js';
 import { readTechnique } from '../loaders/technique-loader.js';
+import { isBareName, SEGMENT_SEPARATOR } from '../loaders/technique-ref.js';
 import { logWarn } from '../logging.js';
 
 /** Bag names supplied by the caller/user at runtime rather than produced inside a workflow. */
@@ -135,8 +136,8 @@ export async function buildProducerIndex(args: {
     try {
       // Mirror get_technique's activity-group shorthand: a bare op resolves first against the
       // group named after its activity, then as-authored.
-      let result = (!ref.includes('::') && !ref.includes('/'))
-        ? await readTechnique(`${activityId}::${ref}`, workflowDir, scopeWorkflowId)
+      let result = isBareName(ref)
+        ? await readTechnique(`${activityId}${SEGMENT_SEPARATOR}${ref}`, workflowDir, scopeWorkflowId)
         : null;
       if (!result?.success) result = await readTechnique(ref, workflowDir, scopeWorkflowId);
       if (result.success) ids = (result.value.outputs ?? []).map((o) => o.id);

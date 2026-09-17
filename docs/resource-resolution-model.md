@@ -41,7 +41,7 @@ techniques:
     - meta::agent-conduct::file-sensitivity     # workflow-prefixed
 ```
 
-A same-workflow reference omits the workflow segment; the current workflow is filled in at resolution. Include a leading workflow segment only to reach another workflow. A `workflow/technique` slash form is normalized to the `::` form.
+A same-workflow reference omits the workflow segment; the current workflow is filled in at resolution. Include a leading workflow segment only to reach another workflow — a leading segment is read as a workflow when the corpus declares one of that name and at least one segment follows it, and as the first folder of a path inside the referring workflow otherwise. A `workflow/technique` slash form spells the same prefix.
 
 A reference addresses one of two things:
 
@@ -62,7 +62,7 @@ The inline form points at the same technique body. Agents read the technique fro
 
 Each reference resolves as follows:
 
-1. **Locate the technique.** If the reference carries a workflow segment, load from that workflow's `techniques/` folder. Otherwise resolve **current-workflow-first, then the `meta` shared layer** — the current workflow's technique shadows a same-named `meta` one.
+1. **Locate the technique.** If the reference carries a workflow segment, load from that workflow's `techniques/` folder and nowhere else — a prefix says where the technique lives, so a fallback would deliver a different file under the same reference. Otherwise resolve **current-workflow-first, then the `meta` shared layer** — the current workflow's technique shadows a same-named `meta` one.
 2. **Whole-technique reference** (no nested segment) — deliver the technique's own body (capability, flow, inputs, protocol, outputs) and auto-include its rules.
 3. **Nested reference** — try a `{group}/{sub}.md` nested technique first (current-workflow-first, then `meta`); deliver its body and auto-include its rules.
 4. **Rule reference** — if no nested technique matches, match the trailing segment against the technique's rules. A direct name match resolves to that rule. A group prefix `{group}` expands to every `{group}-*` rule.

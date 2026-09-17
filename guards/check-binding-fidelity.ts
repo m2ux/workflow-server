@@ -60,6 +60,8 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { assertScanned, citePath, corpusWorkflows, definitionsUnder, ledgerPath, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { indexCorpus, workflowIdFromCorpusPath, type CorpusIndex } from '../src/loaders/corpus-index.js';
+// The reference rule itself, shared with the server, so guard and loader read a `::` path the same way.
+import { isBareName, parseTechniqueRef, TechniqueRefError, type TechniqueRef } from '../src/loaders/technique-ref.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 import { spawnSync } from 'node:child_process';
 
@@ -197,47 +199,53 @@ function buildRegistry(wf: string): void {
 
 let workflows: string[] = [];
 
+/**
+ * Which operation a step's `technique:` names, over this guard's own signature registry.
+ *
+ * The reference is read by the server's rule (`parseTechniqueRef`), so guard and server cannot
+ * disagree about whether a leading segment names a workflow or a group. Only the lookup is the
+ * guard's own: the registry holds parsed signatures rather than technique files.
+ */
 function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry; homeWf: string; key: string } | null {
-  // Cross-workflow canonical prefix (mirrors the server's readTechnique `::` cross-workflow branch in
-  // technique-loader.ts): `<workflow>::<technique>` or `<workflow>::<group>::<op>` resolves DIRECTLY
-  // against that workflow's registry, with NO meta fallback. The leading segment is treated as a
-  // workflow only when it names a real workflow in the registry; otherwise it is a same-workflow
-  // `<group>::<op>` and falls through to the blocks below.
-  if (ref.includes('::')) {
-    const segs = ref.split('::');
-    if (segs.length >= 2 && registry.has(segs[0]!)) {
-      const r = registry.get(segs[0]!)!;
-      const rest = segs.slice(1).join('::');
-      if (r.ops.has(rest)) return { entry: r.ops.get(rest)!, homeWf: segs[0]!, key: rest };
-      if (r.groups.has(rest)) return { entry: r.groups.get(rest)!, homeWf: segs[0]!, key: rest };
-      return null;
-    }
+  let parsed: TechniqueRef;
+  try {
+    parsed = parseTechniqueRef(ref, INDEX);
+  } catch {
+    return null; // the rule refuses it; the binding-resolution finding carries its refusal
   }
   // Activity-group convention (mirrors the server's get_technique): a bare op resolves FIRST against
   // the group named after the current activity — `<activity-id>::<op>` — taking precedence over a
   // same-named standalone/group-base, so an op that shares its group's name (`research` ->
   // `research::research`) selects the op, not the group base.
-  if (activityId && !ref.includes('::')) {
+  if (activityId && isBareName(ref)) {
+    const key = `${activityId}::${ref}`;
     for (const c of wf !== META ? [wf, META] : [META]) {
-      const r = registry.get(c);
-      if (r?.ops.has(`${activityId}::${ref}`)) return { entry: r.ops.get(`${activityId}::${ref}`)!, homeWf: c, key: `${activityId}::${ref}` };
+      const entry = registry.get(c)?.ops.get(key);
+      if (entry) return { entry, homeWf: c, key };
     }
   }
-  const slash = ref.indexOf('/');
-  if (slash > 0 && !ref.includes('::')) {
-    const home = ref.slice(0, slash);
-    const r = registry.get(home); const rest = ref.slice(slash + 1);
-    if (r) {
-      if (r.ops.has(rest)) return { entry: r.ops.get(rest)!, homeWf: home, key: rest };
-      if (r.groups.has(rest)) return { entry: r.groups.get(rest)!, homeWf: home, key: rest };
-    }
-  }
-  for (const c of wf !== META ? [wf, META] : [META]) {
+  // A workflow prefix resolves in that workflow and nowhere else; a bare reference resolves against
+  // the binding workflow and then meta. A group base answers only a single-segment reference — a
+  // deeper path names a file inside one.
+  const key = parsed.segments.join('::');
+  const candidates = parsed.workflowId ? [parsed.workflowId] : wf !== META ? [wf, META] : [META];
+  for (const c of candidates) {
     const r = registry.get(c); if (!r) continue;
-    if (r.ops.has(ref)) return { entry: r.ops.get(ref)!, homeWf: c, key: ref };
-    if (!ref.includes('::') && r.groups.has(ref)) return { entry: r.groups.get(ref)!, homeWf: c, key: ref };
+    const entry = r.ops.get(key) ?? (parsed.segments.length === 1 ? r.groups.get(key) : undefined);
+    if (entry) return { entry, homeWf: c, key };
   }
   return null;
+}
+
+/** Why a reference resolves to nothing: the rule refuses it, or the corpus holds no such operation. */
+function unresolvedDetail(ref: string): string {
+  try {
+    parseTechniqueRef(ref, INDEX);
+  } catch (error) {
+    if (error instanceof TechniqueRefError) return error.message;
+    throw error;
+  }
+  return `step technique '${ref}' does not resolve`;
 }
 
 /* ----------------------------- corpus collection ----------------------------- */
@@ -794,7 +802,7 @@ export function collectViolations(): Violation[] {
       // A step's `technique:` ref must resolve to a real operation (workflow-local, meta, or
       // cross-workflow). check-all-refs only validates the activity/workflow `techniques[]` list, so
       // after the step-binding migration this is the only guard covering step.technique bindings.
-      v.push({ check: 'binding-resolution', site: `${s.rel}[${s.stepId}]`, detail: `step technique '${s.technique}' does not resolve` });
+      v.push({ check: 'binding-resolution', site: `${s.rel}[${s.stepId}]`, detail: unresolvedDetail(s.technique) });
       continue;
     }
     for (const cand of techniqueRels(r.homeWf, r.key)) {
