@@ -49,8 +49,11 @@ Failure handling lives **inline in the protocol step that triggers it**.
 
 ### Protocol
 
-`## Protocol` is a **single ordered list of steps**. It may be a flat
-numbered/bulleted list, or `### N. Title` blocks each holding an ordered list. The
+`## Protocol` is a **single ordered list of steps**, authored as `### N. Title`
+blocks whose headings name each phase's outcome and whose bodies hold that phase's
+steps as a list ([Phase by Sequenced Outcome](/workflow-design/resources/design-principles.md#15-phase-by-sequenced-outcome)).
+The parser also reads a flat numbered or bulleted list, which is what a definition
+written before that form carries. The
 server treats it as one ordered sequence and assigns step numbers at load time.
 A step number is therefore a position the loader assigns, not an address:
 **do not write absolute intra-protocol step-number references** ("go to step 3").

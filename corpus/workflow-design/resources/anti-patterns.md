@@ -2023,3 +2023,15 @@ A Protocol writes a call signature naming an argument the tool does not declare,
 **Do not flag:** A call to a tool the corpus does not register, whose schema is not this repository's to read. A response field the prose names alongside the call, which is what the caller reads rather than what it passes.
 
 **Fix:** Delete the argument, or correct it to the name the tool declares. Where it names a parameter the tool once carried, sweep every call the corpus describes to that tool rather than correcting the one site (`stale-restatement-after-change`).
+
+### AP-156. protocol-phase-as-list-item
+
+"`1. **Engineering commit + push:** Commit ALL changes under .engineering/…`"
+
+A Protocol phase is an entry in a flat numbered list, so it has a number and no section of its own.
+
+**Detect:** A technique `## Protocol` holds its phases as `N. …` list entries rather than `### N. Title` sub-sections. The bold-label spelling is the near-miss and is flagged the same way: a lead like `**Engineering commit + push:**` names the outcome, which is the harder half, and still leaves the phase with no heading — nothing can anchor to it, the name renders as emphasis on the first sentence rather than as the phase's title, and a file mixing the two spellings reads as though only some of its phases were worth naming. Test: ask what a citation needing this one phase would link to. Where the answer is the whole technique, flag it.
+
+**Do not flag:** Bullets, notes, and sub-bullets under a phase — a phase's body is a list and only the phase itself is a section. A `## Rules` entry, which is already its own sub-section. Ordered sub-steps inside one phase's body, which elaborate that phase rather than indexing the sequence.
+
+**Fix:** Give each phase a `### N. Title` heading naming its outcome, and move its work to bullets beneath. A bold label already present is the title — lift it into the heading rather than writing a second name. A phase whose outcome cannot be named is not one, and its disposal is `rule-as-protocol-step` or `constraint-as-blockquote` rather than a heading. See [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome).
