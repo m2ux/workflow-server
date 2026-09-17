@@ -11,7 +11,7 @@ Post-activity Progress mark plus commit/push of source-side changes and engineer
 
 ### activity_id
 
-Activity that just completed.
+Activity that just completed — or, where a fan converges, the branches it retired, this operation persisting once for all of them per `fan.persist-the-fan-at-convergence`.
 
 ### mark_progress_na
 

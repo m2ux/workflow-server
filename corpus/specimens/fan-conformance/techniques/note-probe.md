@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,13 +11,13 @@ Write one note in a checkout of its own and commit it there, reporting the branc
 
 ### note_target
 
-This instance's own note: its designator at `id`, the directory it covers at `directory`, and what its probe found at `finding`.
+This instance's own note: its designator at `id`, the directory it covers at `directory`, what its probe found at `finding`, and at `note_path` where the note goes inside this instance's checkout.
 
 ## Outputs
 
 ### note_path
 
-The note file this instance wrote, inside its own checkout — the one path the commit step stages.
+The note file this instance wrote, which is the `note_path` it was handed — reported back so a writer that wrote somewhere else is visible at the convergence. It is the one path the commit step stages.
 
 ### note_message
 
@@ -43,7 +43,7 @@ The instant this instance finished, ISO 8601 UTC.
 
 ### 1. Write The Note
 
-- Inside that checkout and nowhere else, write `{note_target.finding}` as a short markdown note under the planning folder, named for `{note_target.id}`, and record it as `{note_path}`, with `{note_message}` naming the directory it covers. Siblings are writing their own checkouts at the same moment; a write outside this one lands in a tree another instance is also changing, which is the arrangement a checkout of one's own exists to avoid.
+- Write `{note_target.finding}` as a short markdown note at `{note_target.note_path}` inside that checkout and nowhere else, and record that same path as `{note_path}`, with `{note_message}` naming the directory it covers. The path arrives already chosen, so every writer of a fan lands its note in the same place under its own designator; a writer that picks its own makes the run's layout a function of which instance ran. Siblings are writing their own checkouts at the same moment, and a write outside this one lands in a tree another instance is also changing, which is the arrangement a checkout of one's own exists to avoid.
 - Record the commit the following step lands as `{note_commit.commit}`. Where the note turned out to say nothing worth committing, leave it empty and still report the branch — the activity the fan converges on accounts for an empty branch as an outcome rather than a gap.
 
 ### 2. Record The Interval
