@@ -15,8 +15,8 @@
  *
  * Usage (from a server checkout with `node_modules`):
  *
- *   WORKFLOWS_DIR=tests/fixtures/token-bench npm run bench:token -- \
- *     --workflow=delivery-fixture --label=check --context-mode=fresh --gate
+ *   npm run bench:token -- --workflow=delivery-fixture --fixture-corpus \
+ *     --label=check --context-mode=fresh --gate
  *   npm run bench:token -- --label=opt --context-mode=persistent
  *   WORKFLOWS_DIR=/path/to/workflows npm run bench:token -- \
  *     --label=rerecord --context-mode=fresh --no-compare --server-root=$PWD
@@ -24,6 +24,9 @@
  * Flags:
  *   --workflow=<id>            Workflow to walk (default: work-package). Recorded in the output; a
  *                              comparison across two different workflows is reported but never gated.
+ *   --fixture-corpus           Build the delivery-cost fixture corpus into a temp root and walk
+ *                              that, ignoring WORKFLOWS_DIR. Its `meta` namespace is derived from
+ *                              `core-ops.ts` rather than checked in — see tests/token-bench-corpus.ts.
  *   --label=<string>           Run label in the JSON output (default: run)
  *   --context-mode=fresh|persistent   Forced on start_session (default: fresh)
  *   --agent-id=<string>        Forced agent_id / ledger key (default: bench-solo)
@@ -49,7 +52,7 @@
  * § Reference Delivery.
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parse as parseYaml } from 'yaml';
@@ -424,6 +427,16 @@ async function main(): Promise<void> {
     throw new Error(`--max-regression-pct must be numeric, got ${arg('max-regression-pct', '')}`);
   }
 
+  // The fixture corpus is built rather than checked out: its `meta` namespace is derived from the
+  // core-ops lists, so a ref added there arrives here with no edit and the two cannot disagree.
+  // Set before the harness loads, which reads WORKFLOWS_DIR at construction.
+  let fixtureCorpus: string | undefined;
+  if (hasFlag('fixture-corpus')) {
+    const corpusMod = await import(pathToFileURL(join(serverRoot, 'tests/token-bench-corpus.ts')).href) as typeof import('../tests/token-bench-corpus.js');
+    fixtureCorpus = corpusMod.buildTokenBenchCorpusInTemp();
+    process.env.WORKFLOWS_DIR = fixtureCorpus;
+  }
+
   const harnessMod = await import(pathToFileURL(join(serverRoot, 'tests/e2e/harness.ts')).href) as typeof import('../tests/e2e/harness.js');
   const walkerMod = await import(pathToFileURL(join(serverRoot, 'tests/e2e/walker.ts')).href) as typeof import('../tests/e2e/walker.js');
   const policiesMod = await import(pathToFileURL(join(serverRoot, 'tests/e2e/policies.ts')).href) as typeof import('../tests/e2e/policies.js');
@@ -624,6 +637,7 @@ async function main(): Promise<void> {
     }
   } finally {
     await harness.close();
+    if (fixtureCorpus) rmSync(fixtureCorpus, { recursive: true, force: true });
   }
 }
 

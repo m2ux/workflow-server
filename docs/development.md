@@ -153,20 +153,28 @@ similarly-sized activities reports one number for both, so a change that moves o
 share is indistinguishable from one that moves only the variable share.
 
 `delivery-fixture` therefore holds one activity at each end of the scale — `minimal`, one step
-binding one small operation, and `large`, four steps binding a group of four — against a `meta`
-namespace carrying a stand-in for every operation
-[`src/loaders/core-ops.ts`](../src/loaders/core-ops.ts) names. Each `get_activity` is recorded
-under `activityDeliveries` as `roleContract` (the server's own `worker_bundle_chars`, echoed on
-`_meta.delivery_cost`) and `activityBody` (the remainder), and the two are summed into
+binding one small operation, and `large`, four steps binding a group of four. Each `get_activity`
+is recorded under `activityDeliveries` as `roleContract` (the server's own `worker_bundle_chars`,
+echoed on `_meta.delivery_cost`) and `activityBody` (the remainder), and the two are summed into
 `roleContractChars` and `activityBodyChars`, which the scorecard prints under `get_activity chars`.
 The contract arrives whole on the first delivery and collapses to markers on the second, so the
 two rows read as the fixed share and the variable share in turn.
 
-The stand-ins are not copies of the corpus's own prose: what the fixture owes is a technique at
-each ref, so a reading taken here prices how the engine *delivers* a contract.
-[`tests/core-ops-fixture.test.ts`](../tests/core-ops-fixture.test.ts) holds the fixture to the
-lists, because a ref added to `core-ops.ts` and not to the fixture resolves to nothing there — the
-gate would keep passing while the content it was meant to price never reached the walk.
+#### The contract the fixture is priced against is derived, not checked in
+
+The client workflow is authored under `tests/fixtures/token-bench/`. The `meta` namespace it
+resolves its role contract from is built by
+[`tests/token-bench-corpus.ts`](../tests/token-bench-corpus.ts), which `--fixture-corpus`
+materialises into a temp root: a technique at every ref the lists in
+[`src/loaders/core-ops.ts`](../src/loaders/core-ops.ts) name, under a root contract the operations
+inherit and a contract per group.
+
+A checked-in namespace owing that is a mirror of an engine constant — kept true by hand, and by a
+test whose only job is to police the copy. Deriving it removes both: a ref added to `core-ops.ts`
+reaches the gate with no fixture to edit, and the two cannot disagree. What the stand-ins say is
+deliberately not the corpus's own prose, because a reading taken here prices how the engine
+*delivers* a contract rather than what any contract says; uniform bodies measure that at least as
+honestly as varied ones, and they are reproducible, which a recorded baseline requires.
 
 #### The gate runs on every pull request
 
@@ -202,12 +210,12 @@ measurement of the reference-delivery win, never the gate.
 
 ```bash
 # Fresh-mode ship gate (the required arm). Fails with exit 3 above the threshold.
-WORKFLOWS_DIR=tests/fixtures/token-bench npm run --silent bench:token -- \
-  --workflow=delivery-fixture --label=AFTER --context-mode=fresh --gate --max-regression-pct=1
+npm run --silent bench:token -- \
+  --workflow=delivery-fixture --fixture-corpus --label=AFTER --context-mode=fresh --gate --max-regression-pct=1
 
 # Re-record the baseline (same walk as the change that moved it)
-WORKFLOWS_DIR=tests/fixtures/token-bench npm run --silent bench:token -- \
-  --workflow=delivery-fixture --label=baseline --context-mode=fresh --no-compare
+npm run --silent bench:token -- \
+  --workflow=delivery-fixture --fixture-corpus --label=baseline --context-mode=fresh --no-compare
 
 # Supplementary: the reference-delivery win. Banner-warned as cross-mode, not a gate.
 npm run --silent bench:token -- --label=opt --context-mode=persistent
