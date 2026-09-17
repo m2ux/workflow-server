@@ -1,5 +1,5 @@
 id: execute-analysis
-version: 2.2.0
+version: 3.0.0
 name: Execute Prism Analyses
 description: Trigger the prism workflow for each execution group.
 variables:
@@ -16,6 +16,12 @@ variables:
     - name: completed_analyses
       type: array
       description: Completed analysis runs, each { report_path, definitive_findings_path, status }
+    - name: current_activity
+      type: string
+      description: The prism activity the walk holds, and null once the prism graph routes to none
+    - name: from_activity
+      type: string
+      description: The prism activity an advance retires
     - name: current_group
       type: object
       description: The execution group under analysis
@@ -93,6 +99,17 @@ steps:
           name: workflow-engine::handle-sub-workflow
           inputs:
             workflow_id: prism
+      - kind: routine
+        id: walk-prism-child
+        routine: activity-loop
+        with:
+          session_index: child_session_index
+          initial_activity: child_initial_activity
+          enter_activity: workflow-engine::take-activity
+          planning_folder_path: child_planning_folder_path
+        outputs:
+          current_activity: current_activity
+          from_activity: from_activity
       - kind: technique
         id: read-run-manifest
         technique: prism/read-run-manifest

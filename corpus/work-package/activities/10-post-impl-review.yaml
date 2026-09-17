@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.29.0
+version: 2.0.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -12,6 +12,8 @@ variables:
     - commit_sha
     - component_git_dir
     - component_name
+    - component_path
+    - host_repo_path
     - gitnexus_indexed
     - is_review_mode
     - issue_title
@@ -35,6 +37,9 @@ variables:
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.
       defaultValue: false
+    - name: current_activity
+      type: string
+      description: The prism activity the walk holds, and null once the prism graph routes to none.
     - name: current_block_index
       type: number
       description: Current block index during manual diff review loop (from flagged_block_indices).
@@ -51,6 +56,9 @@ variables:
       type: string
       description: The in-task follow-ups register as it stands after this activity's rows.
       defaultValue: ""
+    - name: from_activity
+      type: string
+      description: The prism activity an advance retires.
     - name: has_critical_blocker
       type: boolean
       description: Whether any flagged block is a critical blocker.
@@ -193,6 +201,18 @@ steps:
       name: workflow-engine::handle-sub-workflow
       inputs:
         workflow_id: prism
+  - kind: routine
+    id: walk-prism-child
+    when: problem_complexity == 'complex'
+    routine: activity-loop
+    with:
+      session_index: child_session_index
+      initial_activity: child_initial_activity
+      enter_activity: workflow-engine::take-activity
+      planning_folder_path: child_planning_folder_path
+    outputs:
+      current_activity: current_activity
+      from_activity: from_activity
   - kind: technique
     id: read-prism-manifest
     when: problem_complexity == 'complex'

@@ -293,13 +293,6 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/workflow-engine/handle-sub-workflow.md",
-      "detail": "output 'child_session_index' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "meta/techniques/workflow-engine/start-session.md",
       "detail": "output 'opening_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
