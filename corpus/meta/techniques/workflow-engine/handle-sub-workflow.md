@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -30,7 +30,7 @@ The canonical absolute path of the child's planning folder, as resolved by the s
 ## Protocol
 
 1. Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'workflow-orchestrator' }`; capture `{child_session_index}`, `{child_planning_folder_path}` (server-resolved; do not compose the path), and `workflow.initialActivity` as the activity the walk below opens with. A session that has entered no activity reports none and refuses to serve one, so that id is the only route into the child. Same child-session shape as [create-session](./create-session.md) (server embeds under the parent; no separate child folder).
-2. Walk the child from its opening activity to its end, under [solo-walk-the-child](#solo-walk-the-child): call `next_activity { session_index: {child_session_index}, activity_id }`, then `get_activity { session_index: {child_session_index} }`, execute the activity's steps, and route from its exits to the next `next_activity` — until the child reports `workflow_complete`.
+2. Walk the child from its opening activity to its end, under [solo-walk-the-child](#solo-walk-the-child): open it with `next_activity { session_index: {child_session_index}, activity_id }`, then `get_activity { session_index: {child_session_index} }`, execute the activity's steps, and route from its exits onto the next activity with `next_activity { session_index: {child_session_index}, activity_id, from_activity: <the child activity just completed> }` — until the child reports `workflow_complete`. The opening call alone names no activity to return, the child then holding none.
 3. Read what the child produced from `{child_planning_folder_path}` — the artifacts it declared there. The launch record the server keeps carries the child's completion, not its results.
 
 ## Rules

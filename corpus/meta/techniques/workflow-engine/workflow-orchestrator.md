@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -41,7 +41,7 @@ Orchestrator agent identity for this session.
 - After each `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the pointer advances onto the routed activity — a continuation, a fresh dispatch, or a fan. That includes a source whose exit fans: the source is a completed activity, and the persist the fan itself does at convergence names the branches, not this one. The operation's last phase emits the run status, so nothing about the completed activity is said at the dispatch moment (Applies [sync-progress-status](./sync-progress-status.md) per [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites)). When a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable. Blocked and path-skip moments stay [dispatch-activity](./dispatch-activity.md) Protocol duties.
 - Route from `{worker_result.next_activity_id}` ([finalize-activity](./finalize-activity.md)). `{worker_result.next_activity_fans}` is true when that destination is not a string — a list of members, or one activity together with the collection it runs over.
 - On `{worker_result.next_activity_fans}`, release the worker's identity ([delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context)) and enter the destination via [dispatch-fan](./dispatch-fan.md). A fan is not a batch: each branch takes one activity under its own identity, and this worker is not continued onto it ([dispatch-topology](./dispatch-activity.md#dispatch-topology)).
-- On `{worker_result.batch_may_continue}` with a non-null `{worker_result.next_activity_id}` that is a single activity, apply [continue-batch](./continue-batch.md) to advance that same worker onto the routed activity. Otherwise release the worker's identity and enter the routed activity via [dispatch-activity](./dispatch-activity.md).
+- On `{worker_result.batch_may_continue}` with a non-null `{worker_result.next_activity_id}` that is a single activity, apply [continue-batch](./continue-batch.md) to advance that same worker onto the routed activity. Otherwise release the worker's identity and enter the routed activity via [dispatch-activity](./dispatch-activity.md). Either way bind `exiting_activity` to the activity the worker just finished: the advance names the activity it is returning, and the server retires that one rather than inferring it.
 
 ## Rules
 
