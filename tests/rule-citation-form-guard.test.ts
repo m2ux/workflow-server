@@ -118,20 +118,24 @@ describe('checkCitation', () => {
 
   it('asks for the bare name when the rule is the citing file own', () => {
     const f = checkCitation({ line: 12, text: 'x', anchor: 'account-every-activity', targetAbs: OP }, OP, site);
-    expect(f.check).toBe('own-rule');
-    expect(f.detail).toContain('bare name');
+    expect(f!.check).toBe('own-rule');
+    expect(f!.detail).toContain('bare name');
   });
 
-  it('asks for the bare name when the rule merges in from a container above', () => {
+  /**
+   * The merge puts a container's rules in the hands of whoever the delivery reaches, so a bare name
+   * resolves for an agent. A person opening the file gets a slug and nothing to follow, and the
+   * container is the one target a relative link can always name — so the link is left to the author.
+   */
+  it('reports nothing when the rule merges in from a container above', () => {
     const f = checkCitation({ line: 12, text: 'x', anchor: 'agent-id-scopes-delivery', targetAbs: CONTAINER }, OP, site);
-    expect(f.check).toBe('inherited-rule');
-    expect(f.detail).toContain('already holds it');
+    expect(f).toBeNull();
   });
 
   it('asks for the dotted address when the rule belongs to a technique the citer does not inherit', () => {
     const f = checkCitation({ line: 12, text: 'x', anchor: 'one-advance-per-activity', targetAbs: SIBLING }, OP, site);
-    expect(f.check).toBe('foreign-rule');
-    expect(f.detail).toContain('dotted address');
-    expect(f.detail).toContain('continue-batch');
+    expect(f!.check).toBe('foreign-rule');
+    expect(f!.detail).toContain('dotted address');
+    expect(f!.detail).toContain('continue-batch');
   });
 });
