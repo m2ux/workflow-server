@@ -7,6 +7,10 @@ name: Verify
 # the coverage roster run in `verify-corpus.yml` on that branch, against the tree under review there.
 # This job asks the other question — whether the engine still serves the definitions it ships
 # alongside — so a change on either side of that boundary is measured by one of the two.
+#
+# One guard runs here as well as there, because it is the one whose inputs straddle the boundary:
+# `check-tool-call-shape` reads the calls the definitions describe against the schemas this source
+# registers. Running it on both sides is what makes the sentence above true of it.
 
 on:
   push:
@@ -66,6 +70,18 @@ jobs:
       # subject is the files the generator writes; `technique.schema.json` is hand-authored.
       - name: Verify the generated schemas match their Zod sources
         run: npm run check:schemas
+
+      # The one guard with an input on each side of the engine/definitions boundary: it reads the
+      # calls the definitions describe against the schemas this source registers for those tools.
+      # Every other guard reads definitions against definitions, so the corpus branch's sweep
+      # measures each of its inputs; this one's other input is here, and a parameter renamed in
+      # `src/tools/` falsifies a corpus nobody is touching. The suite would not catch it — it drives
+      # the server directly rather than through the operation text, which is how a contract change
+      # reached the corpus without its callers (#788). So the sweep keeps grading the definitions on
+      # their own branch, and this single guard also runs where its other input changes, which puts
+      # the failure on the pull request that caused it.
+      - name: Verify the definitions call the tools this engine registers
+        run: npx tsx guards/check-tool-call-shape.ts --root workflows
 
       # `npm test` is vitest in watch mode; `test:ci` is the single-run entry point so the job cannot
       # hang waiting for file changes.
