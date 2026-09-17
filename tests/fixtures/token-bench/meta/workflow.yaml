@@ -1,0 +1,8 @@
+id: meta
+version: 1.0.0
+title: Fixture Meta
+description: Host for the role-contract operations every delivery carries. The benchmark fixture's meta namespace.
+initialActivity: bootstrap
+graph:
+  bootstrap:
+    done: __terminal__

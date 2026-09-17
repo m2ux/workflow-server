@@ -145,6 +145,29 @@ compact scorecard; stdout JSON includes `vsReference` with absolute and percent 
 and a **deliveryCostIndex** (baseline = 100, lower is better — the sum of activity,
 workflow, resource and technique characters).
 
+#### What the fixture is shaped to separate
+
+A delivery carries two things: the role contract, identical whichever activity a worker is
+dispatched for, and the activity's own body and step techniques, which vary. A walk of
+similarly-sized activities reports one number for both, so a change that moves only the fixed
+share is indistinguishable from one that moves only the variable share.
+
+`delivery-fixture` therefore holds one activity at each end of the scale — `minimal`, one step
+binding one small operation, and `large`, four steps binding a group of four — against a `meta`
+namespace carrying a stand-in for every operation
+[`src/loaders/core-ops.ts`](../src/loaders/core-ops.ts) names. Each `get_activity` is recorded
+under `activityDeliveries` as `roleContract` (the server's own `worker_bundle_chars`, echoed on
+`_meta.delivery_cost`) and `activityBody` (the remainder), and the two are summed into
+`roleContractChars` and `activityBodyChars`, which the scorecard prints under `get_activity chars`.
+The contract arrives whole on the first delivery and collapses to markers on the second, so the
+two rows read as the fixed share and the variable share in turn.
+
+The stand-ins are not copies of the corpus's own prose: what the fixture owes is a technique at
+each ref, so a reading taken here prices how the engine *delivers* a contract.
+[`tests/core-ops-fixture.test.ts`](../tests/core-ops-fixture.test.ts) holds the fixture to the
+lists, because a ref added to `core-ops.ts` and not to the fixture resolves to nothing there — the
+gate would keep passing while the content it was meant to price never reached the walk.
+
 #### The gate runs on every pull request
 
 The [Verify](../.github/workflows/verify.yml) workflow runs `--gate` at the 1% default

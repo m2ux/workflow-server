@@ -1,10 +1,10 @@
 {
   "workflowId": "delivery-fixture",
   "label": "baseline",
-  "description": "Linear two-activity walk under tests/fixtures/token-bench. Engine CI gates delivery against this fixture; a work-package character-count belongs on the corpus tree under walks/.",
+  "description": "Two-activity walk under tests/fixtures/token-bench, one activity at each end of the size scale, against a meta namespace standing in for the role contract every delivery carries. Engine CI gates delivery against this fixture; a work-package character-count belongs on the corpus tree under walks/. `activityDeliveries` splits each delivery into the role contract and the body that varies with the activity, so a change that moves one share is not mistaken for one that moves the other.",
   "contextMode": "fresh",
   "agentId": "bench-solo",
-  "path": ["start", "finish"],
+  "path": ["minimal", "large"],
   "finalStatus": "completed",
   "toolCalls": {
     "start_session": 1,
@@ -14,23 +14,29 @@
     "get_resource": 14
   },
   "chars": {
-    "start_session": 445,
-    "get_workflow": 1222,
-    "next_activity": 232,
-    "get_activity": 2142,
+    "start_session": 598,
+    "get_workflow": 11151,
+    "next_activity": 251,
+    "get_activity": 15103,
     "get_resource": 864
   },
   "history": {
-    "technique_bundled": 0,
+    "technique_bundled": 5,
     "technique_fetched": 0,
     "resource_fetched": 0
   },
-  "deliveredContentKeys": 0,
+  "deliveredContentKeys": 21,
   "resourceLedgerKeys": 0,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 2142,
-  "getWorkflowChars": 1222,
+  "getActivityChars": 15103,
+  "getWorkflowChars": 11151,
   "getResourceChars": 864,
-  "getTechniqueChars": 0
+  "getTechniqueChars": 0,
+  "activityDeliveries": [
+    { "activity": "minimal", "chars": 7848, "roleContract": 4028, "activityBody": 3820 },
+    { "activity": "large", "chars": 7255, "roleContract": 419, "activityBody": 6836 }
+  ],
+  "roleContractChars": 4447,
+  "activityBodyChars": 10656
 }

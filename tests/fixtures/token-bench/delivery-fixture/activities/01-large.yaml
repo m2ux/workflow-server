@@ -1,0 +1,31 @@
+id: large
+version: 1.0.0
+name: Large
+description: Four steps binding four operations of a shared group — the same role contract as the one-step activity, carrying several times the activity-specific content.
+required: true
+variables:
+  reads:
+    - target_path
+    - entry_total
+  writes:
+    - name: pass_report
+      type: string
+      description: What the four-step activity reported.
+steps:
+  - kind: technique
+    id: scan-the-target
+    technique: deep-pass::scan
+  - kind: technique
+    id: weigh-the-entries
+    technique: deep-pass::weigh
+  - kind: technique
+    id: compare-against-the-earlier-figure
+    technique: deep-pass::compare
+  - kind: technique
+    id: report-the-pass
+    technique: deep-pass::report
+exits:
+  - id: measured
+    isDefault: true
+outcome:
+  - The pass is written up with every figure named, so what the delivery carried can be read against what the activity produced

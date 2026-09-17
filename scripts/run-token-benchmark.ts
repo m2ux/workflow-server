@@ -88,6 +88,27 @@ interface Metrics {
   getWorkflowChars: number;
   getResourceChars: number;
   getTechniqueChars: number;
+  /** One row per `get_activity`, so the two shares are readable per activity and not only in sum. */
+  activityDeliveries: ActivityDelivery[];
+  /** Summed `roleContract` — what every delivery carries whatever activity it is for. */
+  roleContractChars: number;
+  /** Summed `activityBody` — what varies with the activity this delivery is for. */
+  activityBodyChars: number;
+}
+
+/**
+ * What one `get_activity` cost, split at the boundary the gate reasons about.
+ *
+ * `roleContract` is the operations bundle — the worker's contract, identical whichever activity it
+ * is dispatched for. `activityBody` is the remainder: the activity definition, its step techniques
+ * and the blocks that ride with them. A fixture walking one small activity and one large one makes
+ * the two shares separable, which a walk of similarly-sized activities cannot do.
+ */
+interface ActivityDelivery {
+  activity: string;
+  chars: number;
+  roleContract: number;
+  activityBody: number;
 }
 
 interface ReferenceFixture {
@@ -113,6 +134,10 @@ interface ReferenceFixture {
   resourceLedgerKeys: number;
   unchangedResourceAnswers: number;
   unchangedTechniqueAnswers: number;
+  /** Absent on a fixture recorded before the split was measured; the deltas then read against zero. */
+  activityDeliveries?: ActivityDelivery[];
+  roleContractChars?: number;
+  activityBodyChars?: number;
 }
 
 interface Delta {
@@ -237,6 +262,8 @@ function buildVsReference(metrics: Metrics, reference: ReferenceFixture, referen
     metrics: {
       deliveryChars: makeDelta(currentDelivery, referenceDelivery, 'lower'),
       getActivityChars: makeDelta(metrics.getActivityChars, reference.getActivityChars, 'lower'),
+      roleContractChars: makeDelta(metrics.roleContractChars, reference.roleContractChars ?? 0, 'lower'),
+      activityBodyChars: makeDelta(metrics.activityBodyChars, reference.activityBodyChars ?? 0, 'lower'),
       getWorkflowChars: makeDelta(metrics.getWorkflowChars, reference.getWorkflowChars, 'lower'),
       getResourceChars: makeDelta(metrics.getResourceChars, reference.getResourceChars, 'lower'),
       getTechniqueChars: makeDelta(metrics.getTechniqueChars, reference.getTechniqueChars, 'lower'),
@@ -306,6 +333,8 @@ function writeScorecard(vs: VsReference, contextMode: ContextMode, corpusNote?: 
   const rows: Array<[string, Delta]> = [
     ['delivery chars (act+wf+res+tech)', vs.metrics.deliveryChars!],
     ['get_activity chars', vs.metrics.getActivityChars!],
+    ['  · role contract (fixed)', vs.metrics.roleContractChars!],
+    ['  · activity body (variable)', vs.metrics.activityBodyChars!],
     ['get_resource chars', vs.metrics.getResourceChars!],
     ['get_technique chars', vs.metrics.getTechniqueChars!],
     ['get_resource calls', vs.metrics.getResourceCalls!],
@@ -405,6 +434,7 @@ async function main(): Promise<void> {
 
   const toolCalls: Record<string, number> = {};
   const chars: Record<string, number> = {};
+  const activityDeliveries: ActivityDelivery[] = [];
   let unchangedResourceAnswers = 0;
   let unchangedTechniqueAnswers = 0;
   const seenResource = new Set<string>();
@@ -447,6 +477,21 @@ async function main(): Promise<void> {
     const delivery = (result as { _meta?: { delivery?: string } })._meta?.delivery;
     if (delivery === 'unchanged') {
       if (name === 'get_technique') unchangedTechniqueAnswers += 1;
+    }
+
+    // The fixed/variable split of one delivery. `worker_bundle_chars` is the server's own count of
+    // the operations bundle it assembled, so the two shares sum to the response rather than being
+    // re-derived here from a text the walker would have to parse.
+    if (name === 'get_activity' && !(result as { isError?: boolean }).isError) {
+      const meta = (result as { _meta?: { delivery_cost?: { worker_bundle_chars?: number } } })._meta;
+      const roleContract = meta?.delivery_cost?.worker_bundle_chars ?? 0;
+      activityDeliveries.push({
+        // A call that names no activity is a resumed context re-reading the one it holds.
+        activity: String(args.activity_id ?? '(refetch)'),
+        chars: text.length,
+        roleContract,
+        activityBody: text.length - roleContract,
+      });
     }
 
     if (fetchingResources) return result;
@@ -541,6 +586,9 @@ async function main(): Promise<void> {
       getWorkflowChars: chars.get_workflow ?? 0,
       getResourceChars: chars.get_resource ?? 0,
       getTechniqueChars: chars.get_technique ?? 0,
+      activityDeliveries,
+      roleContractChars: activityDeliveries.reduce((sum, d) => sum + d.roleContract, 0),
+      activityBodyChars: activityDeliveries.reduce((sum, d) => sum + d.activityBody, 0),
     };
 
     let vsReference: VsReference | undefined;
