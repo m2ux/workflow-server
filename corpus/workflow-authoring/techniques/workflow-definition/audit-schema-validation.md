@@ -31,12 +31,13 @@ Number of definition files a guard rejected, counted after every resolvable fail
 
 A clean guard is evidence only for the form that guard matches.
 
-> - A resource reference in already-projected form carries no `.md` and is invisible to the anchor guard.
-> - An unresolvable resource is skipped at delivery with no warning at all.
+> A resource reference in already-projected form carries no `.md`, so the anchor guard does not see it.
 
 ### absence-in-a-payload-is-a-defect
 
 An unexplained absence in a delivered payload reads as a reference defect rather than as an empty result.
+
+> An unresolvable resource is skipped at delivery with no warning at all.
 
 ### guard-green-is-not-canon-green
 
