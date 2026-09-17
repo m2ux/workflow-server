@@ -261,6 +261,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'none',
   },
   {
+    id: 'rule-citation-form',
+    script: 'guards/check-rule-citation-form.ts',
+    npmScript: 'check:rule-citations',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every technique names the rules it cites, rather than linking to the file they are written in',
+    form: 'none',
+  },
+  {
     id: 'set-action-values',
     script: 'guards/check-set-action-values.ts',
     npmScript: 'check:set-values',
