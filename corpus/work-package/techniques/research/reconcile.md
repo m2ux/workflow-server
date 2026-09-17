@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -54,7 +54,7 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 
 - Re-classify all open candidates after the pass
 - If any open candidate is research-reconcilable (including newly surfaced ones), signal another pass is needed — set `{has_reconcilable_research}` true
-- If no open candidate is research-reconcilable, convergence is reached per the [convergence-definition](#convergence-definition) — set `{has_reconcilable_research}` false; the remaining open set is irreducible through research
+- If no open candidate is research-reconcilable, convergence is reached per the convergence-definition — set `{has_reconcilable_research}` false; the remaining open set is irreducible through research
 - Emit the [scorecard](../../resources/research-reconciliation.md#scorecard) after each pass; the candidate rows are the persisted record, so no count table lands in the artifact
 
 ## Rules

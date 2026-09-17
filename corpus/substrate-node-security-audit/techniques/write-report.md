@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -45,7 +45,7 @@ Table of all in-scope crates with classification, priority, and reviewing agent
 
 #### findings
 
-All numbered findings, ordered by severity (Critical, High, Medium, Low, Informational, Undetermined), each rendered per [Finding Entry](../resources/audit-prompt-template.md#finding-entry). Per-finding adversarial-disposition prose belongs to the adversarial-verification artifact rather than the finding block ([adversarial-disposition-is-auxiliary](#adversarial-disposition-is-auxiliary)).
+All numbered findings, ordered by severity (Critical, High, Medium, Low, Informational, Undetermined), each rendered per [Finding Entry](../resources/audit-prompt-template.md#finding-entry). Per-finding adversarial-disposition prose belongs to the adversarial-verification artifact rather than the finding block (adversarial-disposition-is-auxiliary).
 
 #### severity_distribution
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ The canonical absolute path of the child's planning folder, as resolved by the s
 
 ### 2. Run the child to completion
 
-- Walk the child from its opening activity to its end, under [solo-walk-the-child](#solo-walk-the-child): open it with `next_activity { session_index: {child_session_index}, activity_id }`, then `get_activity { session_index: {child_session_index}, context_tokens }`, execute the activity's steps, and route from its exits onto the next activity with `next_activity { session_index: {child_session_index}, activity_id, from_activity: <the child activity just completed> }` — until the child reports `workflow_complete`.
+- Walk the child from its opening activity to its end, under solo-walk-the-child: open it with `next_activity { session_index: {child_session_index}, activity_id }`, then `get_activity { session_index: {child_session_index}, context_tokens }`, execute the activity's steps, and route from its exits onto the next activity with `next_activity { session_index: {child_session_index}, activity_id, from_activity: <the child activity just completed> }` — until the child reports `workflow_complete`.
 
 ### 3. Collect the child's artifacts
 

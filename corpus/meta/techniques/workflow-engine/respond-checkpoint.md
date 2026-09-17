@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -27,7 +27,7 @@ Variable updates the server returned on clearing the active checkpoint.
 
 ### 1. Verify an auto-advance is permitted
 
-- When `{checkpoint_resolution}` is `{ auto_advance: true }`, apply [verify-auto-advance-on-resolve](#verify-auto-advance-on-resolve) before calling `respond_checkpoint`.
+- When `{checkpoint_resolution}` is `{ auto_advance: true }`, apply verify-auto-advance-on-resolve before calling `respond_checkpoint`.
 
 ### 2. Clear the active gate
 

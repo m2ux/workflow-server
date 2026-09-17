@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.28.0
+  version: 1.29.0
 ---
 
 ## Capability
@@ -57,17 +57,17 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 
 - Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
   > - When `{planning_folder_path}` is unset, skip this phase.
-  > - Publish the mark before the worker spawns, per [dispatch-mark-reaches-the-remote](#dispatch-mark-reaches-the-remote): apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
+  > - Publish the mark before the worker spawns, per dispatch-mark-reaches-the-remote: apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
 
 ### 2. Advance the session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per [accumulate-trace-per-advance](#accumulate-trace-per-advance).
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per accumulate-trace-per-advance.
   > - A dispatch whose activity ran steps carries one `step_manifest` entry per completed step; the server validates step completion against it and reports a gap when it is absent.
   > - A first dispatch has no prior worker context to attribute the manifest to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
 
 ### 3. Mint the identity and compose the stub
 
-- Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
+- Mint `{worker_agent_id}` for this dispatch per delivery-keys-on-agent-context, then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
 
 ### 4. Spawn the worker and await its envelope
 
@@ -77,11 +77,11 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 
 ### 5. Record the activity's cost
 
-- Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
+- Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per account-every-activity.
 
 ### 6. Settle what the orchestrator routes on
 
-- Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
+- Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain (distrust-then-reconcile).
 
 ### 7. Read the routing the worker resolved
 
@@ -97,7 +97,7 @@ A Progress mark is unreadable to anyone who does not hold the working tree it wa
 
 ### account-every-activity
 
-Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, basis, agent_id: worker_agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records a figure at each activity boundary and says what that figure counts, read from the harness rather than assumed, so cost keeps a figure per activity; the bound those figures inform is the server's, not this operation's ([batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server)). Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
+Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, basis, agent_id: worker_agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records a figure at each activity boundary and says what that figure counts, read from the harness rather than assumed, so cost keeps a figure per activity; the bound those figures inform is the server's, not this operation's (batch-is-bounded-by-the-server). Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
 
 ### distrust-then-reconcile
 
@@ -119,7 +119,7 @@ A dispatch produces nothing the user can read while it runs, and a gate arrives 
 
 ### dispatch-topology
 
-Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see [batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [delivery-keys-on-agent-context](#delivery-keys-on-agent-context).
+Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see batch-is-bounded-by-the-server. Do not set `context_mode: "persistent"` on worker-dispatched sessions — see delivery-keys-on-agent-context.
 
 Where the exit taken is bound to several branches rather than one activity, [dispatch-fan](./dispatch-fan.md) carries them instead: one call opens every branch, they run in one turn under their own identities, and the run continues from the activity they converge on. That operation's width is the destination's, and it is not a batch — a branch takes one activity and is not continued.
 

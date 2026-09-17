@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 2. Establish whether the gate is soft or hard
 
-- Apply [verify-auto-advance-capability](#verify-auto-advance-capability) against the `present_checkpoint` payload (and the activity definition when needed) to establish whether the gate is soft or hard.
+- Apply verify-auto-advance-capability against the `present_checkpoint` payload (and the activity definition when needed) to establish whether the gate is soft or hard.
 
 ### 3. Check the links a reader will open
 
@@ -61,7 +61,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### softness-is-declared
 
-A gate is **soft** when it declares an answer the run may take where no person is reached, and **hard** when it does not: a hard gate resolves only on an explicit selection. Which fields carry that declaration, and the refusal of a gate that declares half of it, are the definition schema's — [verify-auto-advance-capability](#verify-auto-advance-capability) is how a presenter reads them off the gate in front of it. The declared interval is spent by the resolving call, per [respond-checkpoint](./respond-checkpoint.md)::[auto-advance-spends-the-declared-interval](./respond-checkpoint.md#auto-advance-spends-the-declared-interval); the headless path below makes no such call and spends none, so there the declaration only marks the gate soft.
+A gate is **soft** when it declares an answer the run may take where no person is reached, and **hard** when it does not: a hard gate resolves only on an explicit selection. Which fields carry that declaration, and the refusal of a gate that declares half of it, are the definition schema's — verify-auto-advance-capability is how a presenter reads them off the gate in front of it. The declared interval is spent by the resolving call, per [respond-checkpoint](./respond-checkpoint.md)::[auto-advance-spends-the-declared-interval](./respond-checkpoint.md#auto-advance-spends-the-declared-interval); the headless path below makes no such call and spends none, so there the declaration only marks the gate soft.
 
 ### present-before-any-resolution
 

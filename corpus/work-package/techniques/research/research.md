@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -36,7 +36,7 @@ Best practices, documentation, and resources gathered from web research, each ca
 - Identify knowledge gaps from the knowledge base pass: questions internal documentation didn't answer, technologies needing current docs, areas where external validation adds value
 - Use `WebSearch` to fill the gaps with current external information: official documentation for libraries/frameworks/APIs, community best practices, recent developments (new versions, deprecations, security advisories), and alternative approaches not covered internally — knowledge base research provides institutional knowledge; web research provides current industry context
 - Search authoritative sources first: official documentation sites, established technical blogs, GitHub repositories/discussions, Stack Overflow accepted answers; include version numbers when relevant, add the current year for recent information, and use site-specific searches (e.g. `site:docs.rust-lang.org`)
-- Validate each finding per [source-validation](#source-validation) before it enters `{web_findings}`
+- Validate each finding per source-validation before it enters `{web_findings}`
 - Cross-reference `{web_findings}` with `{kb_findings}`: do external sources confirm internal patterns? Note contradictions for resolution, any additional context, and each source's publication date and freshness
 
 ## Rules
@@ -47,7 +47,7 @@ Full web research when using external libraries or frameworks, integrating third
 
 ### source-validation
 
-Validate every web finding on four axes: recency (current for the technology's pace of change — see [staleness-threshold](#staleness-threshold)), authority (reputable source?), relevance (applies to our context?), and consistency (aligns with other findings?).
+Validate every web finding on four axes: recency (current for the technology's pace of change — see staleness-threshold), authority (reputable source?), relevance (applies to our context?), and consistency (aligns with other findings?).
 
 ### staleness-threshold
 

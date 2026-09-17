@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -48,7 +48,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
   git diff {base_branch}...HEAD -- <file>
   ```
 
-- Assess each changed file against [per-file-necessity](#per-file-necessity)
+- Assess each changed file against per-file-necessity
 
 ### 2. Examine Scope
 
