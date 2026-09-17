@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -52,8 +52,19 @@ The identity now holding the activity: the one the worker was continued under wh
 ### 3. Await the envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
-- When the continuation returns no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)) — that context is gone and nothing further will arrive from it. Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, no `effects`, and `{state}` as substitutions with `agent_id` bound to the identity just minted — not the dead one, or the ledger credits the replacement to a context that never received it — then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME `{activity_id}`; return that identity with the replacement's envelope. The replacement takes the activity in full and re-crosses the answered gate without asking again — a checkpoint response is keyed by activity and checkpoint with no agent component, so the server replays the answer already given and the user is not asked twice. It does re-execute the steps before that gate, so their side effects run a second time; that is the price of the recovery, and it is why the branch is for a context that is gone rather than one that answered badly.
+  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)) — is a context that is gone, with nothing further to arrive from it. Replace it below.
 
-### 4. Account for the continuation
+### 4. Replace a context that is gone
+
+- Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, no `effects`, and `{state}` as substitutions with `agent_id` bound to the identity just minted, then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME `{activity_id}`; return that identity with the replacement's envelope
+  > Bind `agent_id` to the minted identity rather than the one that is gone — the ledger keyed on the dead context credits the replacement with deliveries it never received.
+
+### 5. Account for the continuation
 
 - Account for this continuation of `{activity_id}` per [account-every-activity](./dispatch-activity.md#account-every-activity).
+
+## Rules
+
+### a-replacement-repeats-the-work-not-the-question
+
+A checkpoint response is keyed by activity and checkpoint with no agent component, so a replacement worker re-crossing an answered gate takes the stored answer and the user is not asked twice. The steps before that gate do run a second time, side effects and all, which is the price this recovery pays and the reason it is reached for a context that is gone rather than one that answered badly.
