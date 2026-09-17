@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createHarness, type Harness } from './harness.js';
 import { deliverActivity } from './deliver-activity.js';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { liveCorpusRoot } from '../corpus-root.js';
 import { evaluateWhenExpression } from '../../src/schema/when-expression.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
@@ -26,7 +28,10 @@ import type { Step } from '../../src/schema/activity.schema.js';
  * sites running in one bag are shown not to tread on each other's internals.
  */
 
-const LIVE_CORPUS = liveCorpusRoot();
+// The specimen may be absent: the engine suite runs against whatever corpus is checked out, and
+// this one is only meaningful where routine-conformance is in it.
+const CORPUS = liveCorpusRoot();
+const LIVE_CORPUS = CORPUS !== null && existsSync(join(CORPUS, 'corpus', 'specimens', 'routine-conformance')) ? CORPUS : null;
 
 let harness: Harness;
 

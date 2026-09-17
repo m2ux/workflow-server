@@ -22,19 +22,25 @@
  */
 /**
  * The fan's own operations, delivered to an orchestrator whose workflow graph actually fans an exit
- * rather than to every orchestrator. Neither is core: a workflow with no fanning exit can never
- * reach either, and together they cost several thousand characters of what an orchestrator receives
+ * rather than to every orchestrator. None is core: a workflow with no fanning exit can never reach
+ * any of them, and together they cost several thousand characters of what an orchestrator receives
  * before its first decision. `get_workflow` adds them where the graph in the same response shows a
  * fan, so the procedure and the routing that needs it arrive together.
  *
- * `spawn-concurrent` is here because `dispatch-fan` applies it mid-Protocol, and a technique named
+ * The three `fan::` operations are the steps the activity loop takes on a fanning exit — open every
+ * branch, spawn them together, retire them in order. Their shared rules ride in on the group
+ * contract each of them sits beneath.
+ *
+ * `spawn-concurrent` is here because `spawn-branches` applies it mid-Protocol, and a technique named
  * inside another technique's Protocol has no other delivery path — `get_technique` resolves only
  * step-bound or first-declared techniques, and no tool loads a technique by id. Without it the
  * orchestrator reaches the spawn step holding the instruction to emit the batch in one turn and
  * nothing that says what a batch is.
  */
 export const FAN_DISPATCH_TECHNIQUES: readonly string[] = [
-  'workflow-engine::dispatch-fan',
+  'fan::enter-fan',
+  'fan::spawn-branches',
+  'fan::retire-branch',
   'harness-compat::spawn-concurrent',
 ];
 

@@ -114,16 +114,19 @@ describe('the concurrent-dispatch operation reaches the orchestrator that can us
   };
 
   it('rides the response for a workflow whose graph fans, with the batch spawn it applies', async () => {
-    // dispatch-fan applies spawn-concurrent mid-Protocol, and a technique named inside another
+    // spawn-branches applies spawn-concurrent mid-Protocol, and a technique named inside another
     // technique's Protocol has no other delivery path.
     const bundle = await workflowBundle('instance-fan-fixture');
-    expect(bundle).toContain('dispatch-fan');
+    expect(bundle).toContain('enter-fan');
+    expect(bundle).toContain('spawn-branches');
+    expect(bundle).toContain('retire-branch');
     expect(bundle).toContain('spawn-concurrent');
   });
 
   it('is absent from one whose graph fans nowhere, which can never reach it', async () => {
     const bundle = await workflowBundle('meta');
-    expect(bundle).not.toContain('dispatch-fan');
+    expect(bundle).not.toContain('enter-fan');
+    expect(bundle).not.toContain('spawn-branches');
     expect(bundle).not.toContain('spawn-concurrent');
   });
 });
