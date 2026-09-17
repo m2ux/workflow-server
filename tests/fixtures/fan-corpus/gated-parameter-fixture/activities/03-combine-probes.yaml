@@ -1,0 +1,13 @@
+id: combine-probes
+version: 1.0.0
+name: Combine Probes
+description: The meeting point every branch returns to.
+steps:
+  - kind: action
+    id: settle
+    actions:
+      - action: log
+        message: every branch returned
+exits:
+  - id: settled
+    isDefault: true

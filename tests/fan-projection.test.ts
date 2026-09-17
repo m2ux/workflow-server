@@ -108,3 +108,59 @@ describe('a later fan of the same activity projects its own collection', () => {
     });
   });
 });
+
+/**
+ * The projection an instance receives is also the bag the delivery reads when it decides which
+ * bound steps to inline. A branch gating a step on its own fan parameter is what tells the two
+ * apart: read against the shared bag the parameter is unbound, the gate has no answer, and the
+ * step stays lazy for every instance of every fan.
+ */
+describe('a branch\'s own parameter answers that branch\'s gates', () => {
+  it('inlines a step gated on the fan parameter, rather than leaving it unanswered', async () => {
+    const start = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'gated-parameter-fixture',
+        agent_id: 'orchestrator',
+        planning_folder: harness.workspaceDir + '/.engineering/artifacts/planning/gated-parameter',
+      },
+    });
+    const sessionIndex = (JSON.parse((start.content as Array<{ text: string }>)[0]!.text) as { session_index: string }).session_index;
+
+    await harness.client.callTool({
+      name: 'next_activity',
+      arguments: { session_index: sessionIndex, activity_id: 'scope-sweep' },
+    });
+    await harness.client.callTool({
+      name: 'next_activity',
+      arguments: {
+        session_index: sessionIndex,
+        activity_id: { activity: 'probe-unit', over: 'probe_targets', variable: 'probe_target' },
+        from_activity: 'scope-sweep',
+        exit: 'scoped',
+        variables_changed: { probe_targets: ['alpha-probe', 'beta-probe'] },
+      },
+    });
+
+    const branch = await harness.client.callTool({
+      name: 'get_activity',
+      arguments: {
+        session_index: sessionIndex,
+        activity_id: 'probe-unit#1',
+        context_tokens: 200_000,
+        agent_id: 'worker-gated-1',
+      },
+    }) as ToolResult;
+    expect(branch.isError).toBeFalsy();
+    // The element this instance was handed, and the gate answered against it.
+    expect(branch._meta?.['fan_instance']).toEqual({
+      variable: 'probe_target',
+      instance: 1,
+      value: 'beta-probe',
+    });
+    expect(branch._meta?.['bundled_steps']).toEqual(['survey']);
+    // `lazy_gates` rides the response only where a gate went unanswered, so its absence is the
+    // reading: nothing on this branch was left lazy for want of the parameter.
+    expect(branch._meta?.['lazy_gates']).toBeUndefined();
+  });
+});

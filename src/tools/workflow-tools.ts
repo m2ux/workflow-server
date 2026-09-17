@@ -1655,9 +1655,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const fanInstance = diagResult.success
         ? fanProjection(diagResult.value.workflow, state.variables, activity_id, state.completedActivities)
         : undefined;
-      // Overlaid onto the bag the eager-bundling decision reads, which reads state as it stands at
-      // the moment of delivery. Unoverlaid, a step gated on the parameter has no answer and stays
-      // lazily fetched — a slower fan, not a wrong one.
+      // Overlaid onto the bag the eager-bundling decision reads (`bagAtOpen`), which reads state as
+      // it stands at the moment of delivery.
       const deliveryVariables = fanInstance === undefined
         ? state.variables
         : { ...state.variables, [fanInstance.variable]: fanInstance.value };
@@ -1828,7 +1827,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const writtenInActivity = producerIndex
           ? variablesWrittenIn(producerIndex.producers, activity_id)
           : new Set<string>();
-        const bagAtOpen = state.variables ?? {};
+        // The bag this instance opens on, its own fan parameter included. The shared bag holds the
+        // collection rather than the element, so an instance reading the bare name reads nothing —
+        // and a step gated on the parameter would have no answer and stay lazily fetched.
+        const bagAtOpen = deliveryVariables ?? {};
 
         const eligible: Array<Step & { kind: 'technique' }> = [];
         // An enclosing loop's gate narrows its body, so a step joins only where every gate above it
