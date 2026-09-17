@@ -158,7 +158,6 @@ steps:
         effect:
           setVariable:
             remediation_selected: false
-            has_critical_finding: false
   - kind: action
     id: bump-remediation-round
     when: remediation_selected == true
@@ -166,6 +165,12 @@ steps:
       - action: set
         target: remediation_round
         message: The next remediation round for this run, one higher than the round just answered.
+  - kind: action
+    id: announce-critical-blocks-commit
+    when: operation_type != 'review' && remediation_selected != true && update_seeded_from_review != true && has_critical_finding == true
+    actions:
+      - action: message
+        message: "A Critical finding stands in the [findings register]({report_path}), so the run holds at the register with nothing committed. Remediation is the path that clears it."
   - kind: technique
     id: verify-scope-manifest
     technique: workflow-definition::scope-verification
@@ -196,6 +201,10 @@ steps:
           value: true
         - type: simple
           variable: update_seeded_from_review
+          operator: "!="
+          value: true
+        - type: simple
+          variable: has_critical_finding
           operator: "!="
           value: true
     message: "{addressed_count} of {total_count} manifest entries are delivered with {unaddressed_count} outstanding, {open_finding_count} findings open, blocked units={has_coverage_gap} ([change brief]({change_brief_path}), [scope manifest]({scope_manifest_path}), [findings register]({report_path}))."
@@ -280,4 +289,5 @@ outcome:
   - The register is the run's durable audit record, and a review run terminates on it with nothing committed
   - Scope is re-verified in both directions before the commit gate, not after it
   - A remediation round leaves the worktree, the branch and the register intact, because nothing past the disposition runs until the round that resolves it
+  - A schema-invalid or structurally broken construct holds the run at the register, because the commit gate reads the severity the re-derivation measured rather than a disposition taken over it
   - A committed change is published as a non-draft pull request with a close-out that states delivery, limitations and what the run itself taught
