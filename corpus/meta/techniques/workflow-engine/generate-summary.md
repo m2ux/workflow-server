@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -25,7 +25,9 @@ Completed activities, checkpoint decisions, and artifacts produced.
 
 ## Protocol
 
-1. Fill the [Session Summary Template](/meta/resources/session-summary-template.md#session-summary-template) from `{workflow_definition}` and `{execution_trace}`, honouring the fill rules stated beneath it. Return the assembled markdown as `{completion_summary}`.
+### 1. Write Session Record
+
+- Fill the [Session Summary Template](/meta/resources/session-summary-template.md#session-summary-template) from `{workflow_definition}` and `{execution_trace}`, honouring the fill rules stated beneath it. Return the assembled markdown as `{completion_summary}`.
 
 ## Rules
 
