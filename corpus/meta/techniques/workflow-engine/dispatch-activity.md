@@ -53,37 +53,37 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 
 ## Protocol
 
-### 1. Mark the activity in progress
+### 1. Mark Activity Entering
 
 - Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
   > - When `{planning_folder_path}` is unset, skip this phase.
   > - Publish the mark before the worker spawns, per dispatch-mark-reaches-the-remote: apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
 
-### 2. Advance the session
+### 2. Advance Session
 
 - Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per accumulate-trace-per-advance.
   > - A dispatch whose activity ran steps carries one `step_manifest` entry per completed step; the server validates step completion against it and reports a gap when it is absent.
   > - A first dispatch has no prior worker context to attribute the manifest to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
 
-### 3. Mint the identity and compose the stub
+### 3. Compose Worker Stub
 
 - Mint `{worker_agent_id}` for this dispatch per delivery-keys-on-agent-context, then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
 
-### 4. Spawn the worker and await its envelope
+### 4. Spawn And Await Worker
 
 - Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
   > - When the harness reports the worker ended without returning an envelope, dispatch a fresh worker for the same `{activity_id}`, which mints its own identity.
   > - When the harness still reports the worker live and what came back is not an accepted result (reject-partial-worker-result), apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` with explicit instructions to finish what the result left undone and return the envelope.
 
-### 5. Record the activity's cost
+### 5. Record Activity Cost
 
 - Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per account-every-activity.
 
-### 6. Settle what the orchestrator routes on
+### 6. Reconcile Routing State
 
 - Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain (distrust-then-reconcile).
 
-### 7. Read the routing the worker resolved
+### 7. Read Resolved Routing
 
 - On `activity_complete`, read `{worker_result.next_activity_id}` and `{worker_result.activity_exit}` as the authoritative next-activity routing — the worker resolved both against the activity's exits and the exit destinations its delivery carried, via [finalize-activity](./finalize-activity.md).
   > - On a **blocked** signal from the worker or the harness, apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.

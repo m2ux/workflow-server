@@ -41,25 +41,25 @@ The identity now holding the activity: the one the worker was continued under wh
 
 ## Protocol
 
-### 1. Compose the continuation stub
+### 1. Compose Continuation Stub
 
 - Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{state}` as substitutions, binding `agent_id` to `{worker_agent_id}` and carrying `{effects}`. The worker role is what carries the duty to return an envelope, and `{effects}` is what makes the stub clear the gate first.
 
-### 2. Continue the worker
+### 2. Continue Worker
 
 - Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with the composed prompt and `{session_index}`.
 
-### 3. Await the envelope
+### 3. Await Envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
   > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results (reject-partial-worker-result) — is a context that is gone, with nothing further to arrive from it. Replace it below.
 
-### 4. Replace a context that is gone
+### 4. Replace Dead Context
 
 - Mint a new `{worker_agent_id}` per dispatch-activity.delivery-keys-on-agent-context, apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, no `effects`, and `{state}` as substitutions with `agent_id` bound to the identity just minted, then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME `{activity_id}`; return that identity with the replacement's envelope
   > Bind `agent_id` to the minted identity rather than the one that is gone — the ledger keyed on the dead context credits the replacement with deliveries it never received.
 
-### 5. Record the continuation's cost
+### 5. Record Continuation Cost
 
 - Account for this continuation of `{activity_id}` per dispatch-activity.account-every-activity.
 

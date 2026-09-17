@@ -49,29 +49,29 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 ## Protocol
 
-### 1. Advance the session
+### 1. Advance Session
 
 - Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, agent_id: worker_agent_id }`; capture `_meta.trace_token` per dispatch-activity.accumulate-trace-per-advance. `agent_id` names the context whose technique fetches the manifest is checked against; one identity covers several activities, and an unattributed manifest credits any agent.
   > This call is the transition a commit has to precede (commit-and-persist.commit-after-activity). Where the finished activity has not landed, commit it first.
 
-### 2. Compose the continuation stub
+### 2. Compose Continuation Stub
 
 - Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{state}` as substitutions, binding `activity_id` to the advanced activity and `agent_id` to `{worker_agent_id}`.
 
-### 3. Continue the worker
+### 3. Continue Worker
 
 - Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with the composed prompt and `{session_index}`.
 
-### 4. Await the envelope
+### 4. Await Envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
   > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results (reject-partial-worker-result), which is also how a server refusal of the advanced activity surfaces — ends the batch here. Replace the context below.
 
-### 5. Replace a spent context
+### 5. Replace Spent Context
 
 - Mint a new `{worker_agent_id}` per dispatch-activity.delivery-keys-on-agent-context, apply [compose-prompt](./compose-prompt.md) with `holds_prior_deliveries: false` and [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME advanced `{activity_id}`, and return that identity with the replacement's envelope. Holding no prior deliveries, the replacement takes the advanced activity in full
 
-### 6. Record the activity's cost
+### 6. Record Activity Cost
 
 - Account for `{activity_id}` — this activity of the batch — per dispatch-activity.account-every-activity.
 

@@ -37,7 +37,7 @@ The canonical absolute path of the planning folder, as resolved by the server un
 
 ## Protocol
 
-### 1. Create the session
+### 1. Create Session
 
 - Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'orchestrator', planning_slug: {planning_slug}, repo: {repo} }`; capture `{session_index}` and `{planning_folder_path}` (server-resolved; do not compose the path). Child session embed under the parent follows the `dispatch_child` response / [handle-sub-workflow](./handle-sub-workflow.md).
   Omit `context_mode` (or `"fresh"`) per dispatch-activity.dispatch-topology / dispatch-activity.delivery-keys-on-agent-context.

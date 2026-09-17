@@ -85,7 +85,7 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 ## Protocol
 
-### 1. Open the session
+### 1. Open Session
 
 - Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, and optional `{planning_folder}`, `{repo}`, `{target_workflow_id}`, and `{fresh_client}` as `fresh`, per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). Omit `{context_mode}` or pass `"fresh"`.
   > - The bound `{repo}` is the origin remote of `{working_directory}`.
@@ -94,11 +94,11 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
   > - When the response has `{opening_decision}` and no `{session_index}`, capture `{opening_decision}`, `{opening_candidates}`, and `{opening_recommendation}`. Retry with the pin `{opening_recommendation}` names.
   > - When the response has `{client_session_index}`, capture `{client_session_index}` and `{client_initial_activity}`. Call `get_workflow` and `next_activity` on `{client_session_index}` with `{client_initial_activity}`. Remaining steps of this technique do not apply.
 
-### 2. Save the session bindings
+### 2. Save Session Bindings
 
 - Save `{session_index}` and `{planning_folder_path}` from the response. Record `{repo}` as bag `{target_repo}` (the echoed binding). Do not compose or reconcile the planning path yourself.
 
-### 3. Take the workflow's operations
+### 3. Take Operations Bundle
 
 - Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in `workflow-engine.force-full-after-summarization`.
 

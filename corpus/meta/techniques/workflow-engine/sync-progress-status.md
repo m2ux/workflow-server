@@ -39,32 +39,32 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 
 ## Protocol
 
-### 1. Open the README
+### 1. Open README
 
 - Open `{planning_folder_path}/README.md` and locate the Progress surface per [Progress table](/meta/resources/planning-readme.md#progress-table).
 
-### 2. Resolve the artifact prefix
+### 2. Resolve Artifact Prefix
 
 - Resolve `{artifact_prefix}`: use the bound value, else derive from `{activity_id}`'s server `artifactPrefix` (activity filename index).
 
-### 3. Read the rows that prefix owns
+### 3. Read Owned Rows
 
 - Load `{seed_profile}` and read the Item labels `{artifact_prefix}` owns from its [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map).
 
-### 4. Narrow to the rows in scope
+### 4. Narrow To Scope
 
 - Select candidate rows per [Matching](/meta/resources/planning-readme.md#matching) using those labels and, when bound, `{item_match}`.
 
-### 5. Write the selected cells
+### 5. Write Selected Cells
 
 - For each candidate, set the status field to `{target_status}` per [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy) (honour `{allow_overwrite_na}` when bound; otherwise use that section's defaults). Skip candidates the policy forbids.
   > A status field carries an icon from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary) and nothing else.
 
-### 6. Repoint the item links
+### 6. Repoint Item Links
 
 - Bring each written row's item field into line with what its status now asserts, per the same policy section: a cancelled/N/A write strips the item link to plain text; a complete write with `{delivered_artifact}` bound repoints the item link at that artifact. Leave the item label either way.
 
-### 7. Restore the icon key
+### 7. Restore Icon Key
 
 - Ensure Progress chrome required by the resource is present per [Icon key](/meta/resources/planning-readme.md#icon-key).
 

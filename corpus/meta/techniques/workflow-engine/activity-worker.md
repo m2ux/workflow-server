@@ -31,23 +31,23 @@ Worker agent identity for this dispatch.
 
 ## Protocol
 
-### 1. Verify dispatch
+### 1. Verify Dispatch
 
 - Confirm the activity `id` on the `get_activity` response whose operations bundle delivered this technique equals `{activity_id}` per verify-dispatched-activity
 - Follow the operations bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
 - Read `may_continue` from the `batch:` block leading that response — this context's standing against its bound (batch-ends-where-the-server-says)
 
-### 2. Take the declared resources
+### 2. Take Declared Resources
 
 - Load resources per resource-loading-via-tool
 - Use force-full-after-summarization when this context no longer holds prior deliveries
 
-### 3. Take the walk position
+### 3. Set Walk Position
 
 - Open the activity at its first step
   > When `{effects}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) and carry on from the paused step instead. The remaining steps and the envelope are owed either way — a gate pauses the walk, it does not end it.
 
-### 4. Walk the activity's steps
+### 4. Walk Activity Steps
 
 - Execute each activity step in document order
 - Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
@@ -56,7 +56,7 @@ Worker agent identity for this dispatch.
 - Honor `when:` gates against the variable bag, evaluating each expression as the activity schema's `when` field defines it; an expression that does not parse does not run its step
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
 
-### 5. Finalize the activity
+### 5. Finalize Activity
 
 - When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` this context's standing reports (batch-ends-where-the-server-says) as `batch_may_continue`
 

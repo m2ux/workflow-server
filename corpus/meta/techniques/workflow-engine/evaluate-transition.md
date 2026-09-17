@@ -41,23 +41,23 @@ The exit id taken, passed to `next_activity` as `exit` — or `workflow_complete
 
 ## Protocol
 
-### 1. Take a checkpoint's chosen exit
+### 1. Take Checkpoint Exit
 
 - If `{selected_exit}` is set, that is the exit taken: the user's choice at a checkpoint decides the outcome, and no predicate overrides it.
 
-### 2. Evaluate the conditional exits
+### 2. Evaluate Conditional Exits
 
 - Otherwise iterate `current_activity.exits[]` in array order, evaluating each `when` against the current `{state}`, and take the first whose `when` is true. Where more than one holds at the activity boundary, take the first in array order and log a warning. An exit with no `when` is not selected here — it is either the default or one only a checkpoint option names.
 
-### 3. Fall back to the default exit
+### 3. Fall Back To Default
 
 - Where nothing above selected an exit, take the exit marked `isDefault`. This is also what a checkpoint dismissed on an unmet condition resolves to, and what an activity with a single unconditional exit takes.
 
-### 4. Read the destination the exit leads to
+### 4. Read Exit Destination
 
 - Set `{activity_exit}` to the exit taken and read `{next_activity_id}` from `{exit_destinations}` under that exit id. Set `{next_activity_fans}` true when `{next_activity_id}` is not a string. A destination of `__terminal__` ends the run.
 
-### 5. Record an activity that declares no exit
+### 5. Record Missing Exit
 
 - Where no exit was taken — the activity declares none — set `{next_activity_id}` to null, `{next_activity_fans}` to false, and `{activity_exit}` to `workflow_complete`.
 

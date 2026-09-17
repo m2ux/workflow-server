@@ -23,33 +23,33 @@ Orchestrator agent identity for this session.
 
 ## Protocol
 
-### 1. Take the declared resources
+### 1. Take Declared Resources
 
 - Load resources declared on bundle operations per resource-loading-via-tool
 - Use force-full-after-summarization when the context `{agent_id}` names no longer holds prior deliveries
 
-### 2. Choose and dispatch first activity
+### 2. Dispatch First Activity
 
 - Call `get_workflow_status { session_index }`
 - Dispatch `current_activity` when set, otherwise the `initialActivity` that `get_workflow` returns, via [dispatch-activity](./dispatch-activity.md). A session that has not entered an activity reports none, so the workflow's own first activity is the only id to reach for; a session part-way through reports the cursor to resume on
 - Always dispatch a worker — never execute activity steps inline (orchestrator-conduct.no-inline-on-resume, orchestrator-conduct.no-domain-work)
 
-### 3. Run the activity
+### 3. Run Activity
 
 - Apply [dispatch-activity](./dispatch-activity.md) from the bundle and hold the envelope it returns
   > On `checkpoint_pending`, bubble the yield, then apply [resume-worker](./resume-worker.md) with the resolved effects and hold the envelope that comes back.
 
-### 4. Persist the completed activity
+### 4. Persist Completed Activity
 
 - On `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the pointer advances onto the routed activity — a continuation, a fresh dispatch, or a fan
   > - A source whose exit fans is a completed activity like any other. The persist the fan makes at convergence names the branches, not this source.
   > - Where a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable.
 
-### 5. Route the exit
+### 5. Route Exit
 
 - Read the destination from `{worker_result.next_activity_id}` ([finalize-activity](./finalize-activity.md)). `{worker_result.next_activity_fans}` is true when that destination is not a string — a list of members, or one activity together with the collection it runs over
 
-### 6. Enter the destination
+### 6. Enter Destination
 
 - On `{worker_result.next_activity_fans}`, release the worker's identity (dispatch-activity.delivery-keys-on-agent-context) and enter the destination via [dispatch-fan](./dispatch-fan.md)
 - On `{worker_result.batch_may_continue}` with a non-null `{worker_result.next_activity_id}` that is a single activity, apply [continue-batch](./continue-batch.md) to advance that same worker onto the routed activity

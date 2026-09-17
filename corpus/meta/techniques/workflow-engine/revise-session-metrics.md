@@ -29,23 +29,23 @@ Updated lean mechanical trace under the planning folder (`*session-trace.md`).
 
 ## Protocol
 
-### 1. Read the full client ledger
+### 1. Read Client Ledger
 
 - Read rolled-up `activity_usage` from the **client** session after its terminal activity has exited and the orchestrator has had its chance to `record_usage` for that dispatch (dispatch-activity.account-every-activity).
 - Include every activity that ran, including the terminal activity and any failed or partial dispatches that left a ledger row.
 - When the ledger is empty, leave existing artifacts untouched and stop — do not fabricate figures.
 
-### 2. Re-render token usage
+### 2. Re-Render Token Usage
 
 - Find-or-update the existing `token-usage.md` (same prefix the client close-out minted) from the ledger, to the shape [token-usage](/meta/resources/token-usage.md#template) lays out and the [Rules](/meta/resources/token-usage.md#rules) that populate it.
 - Do not mint a second prefix.
 
-### 3. Re-render session trace
+### 3. Re-Render Session Trace
 
 - Find-or-update the existing `session-trace.md` from the same ledger, to the shape [session-trace](/meta/resources/session-trace.md#template) lays out and the [Rules](/meta/resources/session-trace.md#rules) that populate it.
 - When a successful terminal dispatch left no ledger row, record that gap in mechanical notes and in the coverage reconciliation. Wall-clock from durable `activity_dispatched`/`activity_entered` to `activity_exited` may appear as an **unpriced duration note** only when both timestamps exist — never as invented tokens.
 
-### 4. Refresh the README cost line
+### 4. Refresh Cost Line
 
 - Update the planning-folder README token-use summary line to match the revised totals. When usage is absent, omit the line.
 
