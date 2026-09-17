@@ -39,7 +39,7 @@ Downstream `when`/`condition`/`transition` reference an operation's output by it
 
 Where the graph runs this activity as a branch of a fan, its whole reported map lands in a slot of its own under a key derived from the activity id — the id in snake case with `_outputs` appended, so `research-pass` lands under `research_pass_outputs`. The server derives the key from the graph it has already loaded and no caller supplies it, so two branches cannot collide by writing the same name. Report outputs at their bare names, unchanged: nothing about position in the graph reaches the envelope. Inside the branch names stay bare too — a later step reads an earlier step's output directly, never through the key.
 
-Downstream, a member is read at `{<key>.<instance>.result.<member>}`; the index is always present, including slot zero, so a read form does not depend on the fan's shape and an activity borrowed into two workflows reads its inputs the same way in each. A meeting point that needs the members combined gathers the container whole rather than addressing a slot — see [scatter-gather](./scatter-gather.md)::a-join-gathers-the-container-not-an-index.
+Downstream, a member is read at `{<key>.<instance>.result.<member>}`; the index is always present, including slot zero, so a read form does not depend on the fan's shape and an activity borrowed into two workflows reads its inputs the same way in each. A meeting point that needs the members combined gathers the container whole rather than addressing a slot — see `scatter-gather.a-join-gathers-the-container-not-an-index`.
 
 ### outputs-mutate-state-only-via-sanctioned-path
 
