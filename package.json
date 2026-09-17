@@ -50,6 +50,7 @@
     "check:decision-order": "tsx guards/check-decision-order.ts",
     "check:bootstrap": "tsx guards/check-bootstrap-self-contained.ts",
     "check:tool-calls": "tsx guards/check-tool-call-shape.ts",
+    "check:rule-citations": "tsx guards/check-rule-citation-form.ts",
     "check:set-values": "tsx guards/check-set-action-values.ts",
     "check:harness-set": "tsx guards/check-harness-adapter-set.ts",
     "check:stealth": "tsx guards/check-stealth-isolation.ts",
