@@ -1,5 +1,5 @@
 id: post-update-review
-version: 1.11.0
+version: 1.12.0
 name: Post-Update Review
 description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation. When findings remain, remediates automatically (never asks accept/iterate/revert) and publishes the remediation to the open pull request.
 variables:
@@ -42,7 +42,7 @@ variables:
       defaultValue: ""
     - name: fail_count
       type: number
-      description: Count of YAML files that failed schema validation.
+      description: Count of guards reporting findings against the tree under review.
       defaultValue: 0
     - name: needs_audit_fixes
       type: boolean
@@ -54,7 +54,7 @@ variables:
       defaultValue: false
     - name: pass_count
       type: number
-      description: Count of YAML files that passed schema validation.
+      description: Count of guards reporting clean against the tree under review.
       defaultValue: 0
     - name: pr_number
       type: string

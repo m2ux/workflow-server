@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,34 +11,20 @@ The repository's definition guards run against one target, with every resolvable
 
 ### fail_count
 
-Number of definition files a guard rejected, counted after every resolvable failure has been resolved. Zero when the whole suite is clean against the target.
+Number of guards still reporting findings, counted after every resolvable failure has been resolved. Zero when the whole sweep is clean against the target.
 
 ## Protocol
 
 ### 1. Run the Definition Guards
 
+- Run `npx tsx guards/check-all.ts --root {target_path}`. One invocation walks the guard registry, `guards/guards.ts`, and reports the whole sweep in one table. The registry is the single enumeration of what verifies that repository, so a guard added to it is run here by the same command, and a program retired with the mechanism it policed leaves with it.
 - Each guard resolves its corpus root from `--root`, then `WORKFLOWS_DIR`, then a default relative path. Pass `--root {target_path}` so every guard reads the tree this run edits; an empty value is treated as absent and silently falls back to that default, which is a checkout the run never touched.
-- The two validators take a **positional** path and implement no `--root`:
-  - `npx tsx guards/validate-workflow-yaml.ts {target_path}/{target_workflow_id}` — every definition file against its schema
-  - `npx tsx guards/validate-activities.ts {target_path}` — every activity file, including resolved step-id collisions
-- The remaining guards each take `--root {target_path}`:
-  - `npx tsx guards/check-all-refs.ts` — every activity and workflow technique reference resolves through the loader
-  - `npx tsx guards/check-binding-fidelity.ts` — no new binding drift: every bound input key is declared, every read resolves to a producer, no declared output is dead, no bound op's own input is unsuppliable
-  - `npx tsx guards/check-resource-anchors.ts` — every relative resource link with an anchor resolves to a rendered heading
-  - `npx tsx guards/check-variable-model.ts` — declared defaults, existence gates and checkpoint effects are coherent with the seeded variable model
-  - `npx tsx guards/check-fragments.ts` — every fragment reference resolves, every fragment is used, and no inline body duplicates a fragment or another site
-  - `npx tsx guards/check-technique-template.ts` — every technique file follows the normative template
-  - `npx tsx guards/check-activity-technique-overlap.ts` — no activity-level technique reference duplicates a step binding
-  - `npx tsx guards/check-audience.ts` — every output declaring an agent audience carries a machine-readable artifact name
-  - `npx tsx guards/check-description-hygiene.ts` — mechanical net on activity YAML: procedure essays in `description` / `action: set` description, and `description`/`name` on bound technique steps
-  - `npx tsx guards/check-self-provisioned-input.ts` — no step interpolates its own set target into its own technique inputs
-  - `npx tsx guards/check-identifier-qualification.ts` — no new bare-word data identifier
-  - `npx tsx guards/check-review-mode-gating.ts` — review-reachable gates are resolvable without a person
-  - `npx tsx guards/check-stealth-isolation.ts` — no leakage path out of an isolated workflow
+- Add `--corpus-only` where the target holds definitions alone, which drops the guards that read the repository's own files rather than the corpus. Add `--only <id,id>` to re-run named guards while resolving failures.
+- The sweep exits 0 clean, 1 with findings, and 2 where a guard could not measure at all. An unmeasured guard is a failed measurement, never a pass, so a run that reports one has not been audited.
 
 ### 2. Resolve the Failures
 
-- Record each rejection with the guard that raised it and the message it printed, then correct the definition and re-run that guard
+- Record each rejection with the guard that raised it and the message it printed, then correct the definition and re-run that guard with `--only`
 - A guard reporting against a committed baseline fails only on violations beyond it; a violation that is genuinely intended is recorded as a finding for disposition rather than baselined away here
 
 ## Rules

@@ -1,5 +1,5 @@
 id: quality-review
-version: 2.0.0
+version: 2.1.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 variables:
@@ -45,7 +45,7 @@ variables:
       defaultValue: ""
     - name: fail_count
       type: number
-      description: Count of YAML files that failed schema validation.
+      description: Count of guards reporting findings against the tree under review.
       defaultValue: 0
     - name: has_critical_finding
       type: boolean
@@ -60,7 +60,7 @@ variables:
       description: The classified operation for the request — create, update, or review.
     - name: pass_count
       type: number
-      description: Count of YAML files that passed schema validation.
+      description: Count of guards reporting clean against the tree under review.
       defaultValue: 0
     - name: principle_findings_path
       type: string

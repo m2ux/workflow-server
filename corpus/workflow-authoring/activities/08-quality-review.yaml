@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.3.0
+version: 1.4.0
 name: Quality Review
 description: "Criteria walk with field-level coverage evidence per target, consumer-surface reach, and definition guards as a separate mechanical net."
 variables:
@@ -28,7 +28,7 @@ variables:
       description: One row per enumeration unit walked, each carrying the unit's home, the unit's anchor, one of three statuses, and — when status is `walked` and the unit reaches any file in `{changed_files}` — a non-empty `evidence` list. `walked` means the unit's criteria were applied to every file in scope **and** each change-surface file the unit reaches has at least one evidence row naming the field (or construct locus) inspected and a short quote or path:line — evidence spans the **whole file**, not the diff hunk. `not-applicable` carries the reason the unit does not reach this surface and is an evidenced negative, not a skip. `blocked` carries what prevented the walk and is the only status representing missing coverage. A unit may not be recorded as `walked` with an empty `evidence` list when it intersects `{changed_files}`.
     - name: fail_count
       type: number
-      description: Count of YAML files that failed schema validation.
+      description: Count of guards reporting findings against the tree under review.
       defaultValue: 0
     - name: impact_analysis
       type: object

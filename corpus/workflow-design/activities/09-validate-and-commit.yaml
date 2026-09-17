@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.9.0
+version: 1.10.0
 name: Validate and Commit
 description: Final validation, scope verification, and README generation/update, then Gate 2 approve-to-commit and commit of the workflow changes on the session feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 variables:
@@ -27,11 +27,11 @@ variables:
       description: "Pull-request body: the change stated in a short paragraph, the manifest's entries as the file breakdown, and a link to the planning folder for the artifacts behind the change."
     - name: fail_count
       type: number
-      description: Count of YAML files that failed schema validation.
+      description: Count of guards reporting findings against the tree under review.
       defaultValue: 0
     - name: pass_count
       type: number
-      description: Count of YAML files that passed schema validation.
+      description: Count of guards reporting clean against the tree under review.
       defaultValue: 0
     - name: pr_number
       type: string
@@ -85,7 +85,7 @@ steps:
     when: operation_type != 'review' && fail_count == 0
     actions:
       - action: message
-        message: "Schema validation passed — {pass_count} file(s), 0 failed."
+        message: "Definition guards passed — {pass_count} guard(s) clean, 0 reporting findings."
   - kind: checkpoint
     id: validation-passed
     condition:
@@ -99,7 +99,7 @@ steps:
           variable: fail_count
           operator: ">"
           value: 0
-    message: "Schema validation results: {pass_count} passed, {fail_count} failed."
+    message: "Definition guard sweep: {pass_count} clean, {fail_count} reporting findings."
     defaultOption: proceed
     autoAdvanceMs: 30000
     options:
@@ -234,7 +234,7 @@ exits:
   - id: return-to-draft
     immediate: true
 outcome:
-  - Every YAML file passes schema validation, so the workflow is guaranteed loadable and the server will run it without surprise
+  - Every definition guard reports clean, so the workflow is guaranteed loadable and the server will run it without surprise
   - Nothing planned is left undone — every scope-manifest item is accounted for before the work lands
   - Gate 2 (`approve-to-commit`) batches design specification, open judgements, impact, draft attestation, and planning README for a single interactive commit decision
   - The work is committed from the session `{target_path}` worktree on `{workflow_branch}`, with a PR opened against `workflows`
