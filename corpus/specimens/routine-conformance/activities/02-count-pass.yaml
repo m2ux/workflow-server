@@ -13,7 +13,7 @@ variables:
 required: true
 steps:
   - kind: routine
-    id: count-pass
+    id: counting
     routine: measured-pass
     with:
       probe_operation: count-entries

@@ -13,7 +13,7 @@ variables:
 required: true
 steps:
   - kind: routine
-    id: size-pass
+    id: sizing
     routine: measured-pass
     with:
       probe_operation: measure-size
