@@ -392,6 +392,16 @@ const steps: Step[] = [];
 const expressionConsumes: Array<{ rel: string; wf: string; stepId: string; name: string }> = [];
 
 /**
+ * Arguments a `kind: routine` step binds, as written: `{token}` for a reference to a host variable
+ * and a bare name for a rename, alongside literals like an operation reference. Read the same way a
+ * technique step's input deviations are, and for the same question — whether anything consumes a
+ * declared output. Held apart from `expressionConsumes` because these are not expressions: a literal
+ * argument names no bag variable, and asking a resolution rule about one reports a missing producer
+ * for a value the site never meant as a read.
+ */
+const routineArguments: Array<{ rel: string; value: string }> = [];
+
+/**
  * Namespaces naming the ENVIRONMENT rather than the variable bag: `gh.auth.status == 0` asks the
  * GitHub CLI, not the session. A probe head has no producer by construction, so resolution has to
  * know them by name — dotted-ness cannot discriminate, since `planning_folder_path.writable` is a
@@ -439,6 +449,19 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
       rel, wf, stepId: typeof o.id === 'string' ? o.id : '?', technique: tb.name,
       inputsMap: tb.inputs ?? {}, outputsMap: tb.outputs ?? {}, activityId,
     });
+  }
+  // A `kind: routine` step binds the run the way a technique step binds an operation: `with` values
+  // name what the host hands it — braced for a reference, bare for a rename — and `outputs` values
+  // name the host variables its productions land under. The walk reads authored files and never the
+  // materialised body, so a value whose only consumer is a routine argument reads as dead without
+  // this, and a variable only a run writes reads as unproduced.
+  if (typeof o.routine === 'string') {
+    for (const value of Object.values((o.with ?? {}) as Record<string, unknown>)) {
+      if (typeof value === 'string') routineArguments.push({ rel, value });
+    }
+    for (const target of Object.values((o.outputs ?? {}) as Record<string, unknown>)) {
+      if (typeof target === 'string') produced(wf).add(target);
+    }
   }
   if (o.action === 'set' && typeof o.target === 'string') produced(wf).add(o.target);
   // A `validate` action's `target` and a step's `when` are expressions over bag names
@@ -736,6 +759,10 @@ function collectConsumedSites(): Map<string, Set<string>> {
       for (const m of v.matchAll(VALUE_TOKEN_RE)) add(m[1]!, s.rel);
       if (BARE_NAME_RE.test(v)) add(v, s.rel);
     }
+  }
+  for (const { rel, value } of routineArguments) {
+    for (const m of value.matchAll(VALUE_TOKEN_RE)) add(m[1]!, rel);
+    if (BARE_NAME_RE.test(value)) add(value, rel);
   }
   for (const [id, rels] of allDeclaredInputSites) rels.forEach((rel) => add(id, rel));
   for (const v of expressionConsumes) add(v.name, v.rel);

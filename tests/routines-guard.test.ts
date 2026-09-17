@@ -336,6 +336,67 @@ steps:
   });
 
   /**
+   * The same value one step down: a run steering its later steps on what its own earlier step put in
+   * the bag. No site supplies it, so there is nothing for a declaration to say — and a rule asking
+   * for one leaves the value nowhere to go, an input the host never reads being refused as an output
+   * the argument produces.
+   */
+  it('passes a body that reads what its own step produced', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    with:\n      pass_operation: analysis::sweep\n` } },
+      techniques: {
+        wf: {
+          'analysis/sweep': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Sweeps the target.
+
+## Outputs
+
+### run_verdict
+
+What the sweep concluded.
+
+## Protocol
+
+### 1. Sweep
+
+- Sweep the target.
+`,
+        },
+      },
+      routines: {
+        wf: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: pass_operation
+    kind: technique
+    description: the sweep each site applies
+steps:
+  - kind: technique
+    id: sweep
+    technique:
+      name: pass_operation
+  - kind: action
+    id: note-clean
+    when: run_verdict == "clean"
+    actions:
+      - action: log
+        message: the sweep came back clean
+`,
+        },
+      },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  /**
    * Every signature rule for such a routine runs against a site, so a routine whose every site binds
    * an argument this cannot read has no rule that can fire. A guard reporting nothing there is not
    * reporting that the routine is sound — it is reporting that it looked at nothing, and the two read
