@@ -3,6 +3,7 @@ import { createInitialSessionFile, type SessionFile } from '../src/schema/sessio
 import {
   batchActivities,
   batchBound,
+  batchReading,
   batchState,
   batchRefusal,
   batchRefusalMessage,
@@ -242,6 +243,43 @@ describe('batch bound arithmetic (#407)', () => {
     deliver(state, 'orchestrator', 'assumptions-review', 1_000_000);
 
     expect(batchRefusal(state, 'orchestrator', 'implement', batchBound(200_000, POLICY))).toBeUndefined();
+  });
+
+  it('names the limits to a bounded scope and withholds them from one they do not bind', () => {
+    // A tally past a cap, sitting beside permission to continue, reads as a contradiction. The
+    // session's own agent runs past both limits legitimately, so the reading it gets says it has
+    // none rather than printing limits for a reader to compare its tally against.
+    const state = session();
+    const bound = batchBound(200_000, POLICY);
+    deliver(state, 'orchestrator', 'implementation-analysis', 1_000);
+    deliver(state, 'orchestrator', 'plan-prepare', 1_000);
+    deliver(state, 'orchestrator', 'assumptions-review', 1_000);
+    deliver(state, 'orchestrator', 'implement', 1_000);
+    deliver(state, 'worker-a', 'implementation-analysis', 1_000);
+
+    const own = batchState(state, 'orchestrator', bound);
+    expect(own.bounded).toBe(false);
+    expect(own.activities.length).toBeGreaterThan(bound.maxActivities);
+    const ownReading = batchReading(own, bound, own.mayContinue);
+    expect(ownReading).toEqual({
+      activities: 4,
+      delivered_chars: 4_000,
+      bounded: false,
+      may_continue: true,
+    });
+    expect(ownReading).not.toHaveProperty('max_activities');
+    expect(ownReading).not.toHaveProperty('budget_chars');
+
+    const worker = batchState(state, 'worker-a', bound);
+    expect(worker.bounded).toBe(true);
+    expect(batchReading(worker, bound, worker.mayContinue)).toEqual({
+      activities: 1,
+      max_activities: bound.maxActivities,
+      delivered_chars: 1_000,
+      budget_chars: bound.budgetChars,
+      bounded: true,
+      may_continue: true,
+    });
   });
 
   it('tells the refused caller the replacement needs a new identity', () => {

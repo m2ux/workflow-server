@@ -38,7 +38,7 @@ import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, fanIdentityRefusal, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
-import { batchBound, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
+import { batchBound, batchReading, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
@@ -940,7 +940,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     return { key: branchKey(base), slot: instanceIndex(entry) ?? 0, unit: base };
   }
 
-  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Optional manifests enable advisory validation.',
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`.',
     {
       ...sessionIndexParam,
       activity_id: DestinationSchema.describe(
@@ -1301,13 +1301,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           charsPerToken: config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN,
         });
         const stand = batchState(state, agent_id, bound);
-        meta['batch'] = {
-          activities: stand.activities.length,
-          max_activities: bound.maxActivities,
-          delivered_chars: stand.chars,
-          budget_chars: bound.budgetChars,
-          may_continue: batchRefusal(state, agent_id, targets[0]!, bound) === undefined,
-        };
+        meta['batch'] = batchReading(
+          stand,
+          bound,
+          batchRefusal(state, agent_id, targets[0]!, bound) === undefined,
+        );
       }
 
       // The barrier rides every fan-related response in one shape: a reading rather than a verdict,
@@ -1346,11 +1344,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const entered = next.frontier;
+      // One activity in flight is an ordinary walk, and its display name is the useful thing to say.
+      // Branches in flight are named by the id each is addressed by: `get_activity` and the
+      // retirement that names `from_activity` both take the frontier entry, which is
+      // instance-qualified where one activity runs once per element. Display names are not — two
+      // instances of one activity share theirs.
+      //
+      // Whether these are branches is a fact about the call, not about the shape of the ids. A
+      // retirement that did not empty the frontier left branches behind, however few and whether or
+      // not they are instance-qualified; and the call that opens a fan enters a frontier of them.
+      // What remains — a call that entered its destination and holds one activity — is the ordinary
+      // walk, where the name is the useful thing to say.
+      const branchesInFlight = !entering || entered.length > 1;
       const responseData: Record<string, unknown> = {
         activity_id: destinationField(destination),
-        name: entered.length === 1
-          ? (getActivity(result.value, entered[0]!)?.name ?? 'Workflow Complete')
-          : entered.map((id) => getActivity(result.value, id)?.name ?? id),
+        ...(branchesInFlight
+          ? { outstanding: entered }
+          : { name: getActivity(result.value, entered[0] ?? '')?.name ?? 'Workflow Complete' }),
         session_index,
       };
 
@@ -1364,7 +1374,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
-    'A dispatch carrying a run of activities walks them under ONE `agent_id`: a `batch` block at the end of the response — and the same reading on `_meta.batch` — reports how many that context has taken, what it has been delivered, and `may_continue`, where false means report the next activity as needing its own dispatch and stop. ' +
+    'A dispatch carrying a run of activities walks them under ONE `agent_id`: a `batch` block at the end of the response — and the same reading on `_meta.batch` — reports how many that context has taken, what it has been delivered, and `may_continue`, where false means report the next activity as needing its own dispatch and stop. It carries the two limits alongside those counts where `bounded` is true; a scope the bound does not govern is told `bounded: false` and given no limits to read its tally against. ' +
     'Asking past the bound is refused with the payload undelivered. ' +
     'An `exit_destinations` block in the header — and the same map on `_meta.exit_destinations` — gives the destination each of this activity\'s exits leads to, exactly as the graph names it: an activity id, `__terminal__`, a list of members, or one activity together with the collection it runs over. ' +
     'The exits themselves ride the activity body; this is the graph half, which is otherwise reachable only through the orchestrator-only `get_workflow`. ' +
@@ -1969,13 +1979,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // is the worker stopping and the refusal above is the backstop. The counts make that answer
       // auditable from the response.
       const stand = batchState(next, scope, bound);
-      const batch = {
-        activities: stand.activities.length,
-        max_activities: bound.maxActivities,
-        delivered_chars: stand.chars,
-        budget_chars: bound.budgetChars,
-        may_continue: stand.mayContinue,
-      };
+      const batch = batchReading(stand, bound, stand.mayContinue);
       // The same reading in the response body, because that is where a worker reads. A
       // definition can tell a worker to report its own bound, and a reading that arrives
       // only as protocol metadata is one the harness may never put in front of it — six

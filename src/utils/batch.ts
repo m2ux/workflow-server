@@ -31,6 +31,46 @@ export interface BatchState {
   chars: number;
   /** Whether it may take a further activity. Always true for the session's own agent. */
   mayContinue: boolean;
+  /**
+   * Whether the bound applies to this scope at all. False for a scope carved out of the batch model
+   * — the session's own agent, which owns the whole walk — whose tally is therefore free to run past
+   * limits that were never in force. A reading that names those limits anyway states a cap and a
+   * count past it alongside permission to continue, which cannot all be true of one scope.
+   */
+  bounded: boolean;
+}
+
+/**
+ * The standing handed back on a delivery, in the one shape both the activity response and the
+ * advance metadata report it. A bounded scope is told where it stands against each limit. An
+ * unbounded one is told it has none: naming a limit that is not in force invites the reader to
+ * compare the tally against it, and a tally past a cap sitting beside permission to continue reads
+ * as a contradiction rather than as the carve-out it is.
+ *
+ * `mayContinue` is passed rather than read off `stand` because the advance answers it against the
+ * activity being taken, which admits one the scope already holds.
+ */
+export function batchReading(
+  stand: BatchState,
+  bound: BatchBound,
+  mayContinue: boolean,
+): Record<string, unknown> {
+  if (!stand.bounded) {
+    return {
+      activities: stand.activities.length,
+      delivered_chars: stand.chars,
+      bounded: false,
+      may_continue: mayContinue,
+    };
+  }
+  return {
+    activities: stand.activities.length,
+    max_activities: bound.maxActivities,
+    delivered_chars: stand.chars,
+    budget_chars: bound.budgetChars,
+    bounded: true,
+    may_continue: mayContinue,
+  };
 }
 
 /** A refusal to extend a batch, carrying the arithmetic that produced it. */
@@ -156,6 +196,9 @@ export function batchState(state: SessionFile, scope: string, bound: BatchBound)
     activities,
     chars,
     mayContinue: exempt || (activities.length < bound.maxActivities && chars <= bound.budgetChars),
+    // A scope with no activity yet is exempt from the refusal but still bounded: it is a worker
+    // taking its first, and the limits govern every activity after it.
+    bounded: scope !== state.agentId,
   };
 }
 
