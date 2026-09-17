@@ -251,6 +251,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'none',
   },
   {
+    id: 'tool-call-shape',
+    script: 'guards/check-tool-call-shape.ts',
+    npmScript: 'check:tool-calls',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every tool call a definition describes names arguments that tool declares, and every whole signature names the required ones',
+    form: 'none',
+  },
+  {
     id: 'set-action-values',
     script: 'guards/check-set-action-values.ts',
     npmScript: 'check:set-values',
