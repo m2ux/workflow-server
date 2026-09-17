@@ -65,11 +65,11 @@ describe.skipIf(!LIVE_CORPUS)('one run delivered at two sites that supply differ
   it('delivers both bodies under their own reference prefix', async () => {
     const counting = (await passBody('count-pass')).map((s) => s.id);
     const sizing = (await passBody('size-pass')).map((s) => s.id);
-    expect(counting.every((id) => id!.startsWith('count-pass.'))).toBe(true);
-    expect(sizing.every((id) => id!.startsWith('size-pass.'))).toBe(true);
+    expect(counting.every((id) => id!.startsWith('counting.'))).toBe(true);
+    expect(sizing.every((id) => id!.startsWith('sizing.'))).toBe(true);
     // One authored body, so the two differ in the prefix and in nothing else.
-    expect(counting.map((id) => id!.replace('count-pass.', '')))
-      .toEqual(sizing.map((id) => id!.replace('size-pass.', '')));
+    expect(counting.map((id) => id!.replace('counting.', '')))
+      .toEqual(sizing.map((id) => id!.replace('sizing.', '')));
   });
 
   it('delivers the gates that read what the supplied operation produced', async () => {
@@ -92,7 +92,7 @@ describe.skipIf(!LIVE_CORPUS)('one run delivered at two sites that supply differ
     const sizing = nameIn(await passBody('size-pass'));
     // An internal never becomes a workflow variable, so the two sites cannot collide on one.
     expect(counting).not.toBe(sizing);
-    expect(counting).toContain('count_pass');
-    expect(sizing).toContain('size_pass');
+    expect(counting).toContain('count_pass_counting_');
+    expect(sizing).toContain('size_pass_sizing_');
   });
 });
