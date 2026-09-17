@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.27.0
+  version: 1.28.0
 ---
 
 ## Capability
@@ -62,7 +62,7 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 3. Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
 4. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    > - When the harness reports the worker ended without returning an envelope, dispatch a fresh worker for the same `{activity_id}`, which mints its own identity.
-   > - When the harness still reports the worker live and what came back is not an accepted result ([reject-partial-worker-result](./TECHNIQUE.md#reject-partial-worker-result)), apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` with explicit instructions to finish what the result left undone and return the envelope.
+   > - When the harness still reports the worker live and what came back is not an accepted result (reject-partial-worker-result), apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` with explicit instructions to finish what the result left undone and return the envelope.
 5. Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
 6. Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
 7. On `activity_complete`, read `{worker_result.next_activity_id}` and `{worker_result.activity_exit}` as the authoritative next-activity routing — the worker resolved both against the activity's exits and the exit destinations its delivery carried, via [finalize-activity](./finalize-activity.md).
@@ -113,7 +113,7 @@ NEVER call `get_technique` to pre-load techniques for the worker. Step technique
 
 ### delivery-keys-on-agent-context
 
-Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held for as long as that worker carries its batch, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the same context collapses what it already received, whether it is resumed on the activity it holds ([resume-worker](./resume-worker.md)) or advanced to the next activity of its batch ([continue-batch](./continue-batch.md)). The orchestrator releases the identity when the batch is spent ([workflow-orchestrator](./workflow-orchestrator.md)), and a retry that spawns a NEW worker for the same activity is a new context, taking full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions.
+Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held for as long as that worker carries its batch, and the server scopes its ledger to that context (agent-id-scopes-delivery). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the same context collapses what it already received, whether it is resumed on the activity it holds ([resume-worker](./resume-worker.md)) or advanced to the next activity of its batch ([continue-batch](./continue-batch.md)). The orchestrator releases the identity when the batch is spent ([workflow-orchestrator](./workflow-orchestrator.md)), and a retry that spawns a NEW worker for the same activity is a new context, taking full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions.
 
 ### batch-is-bounded-by-the-server
 

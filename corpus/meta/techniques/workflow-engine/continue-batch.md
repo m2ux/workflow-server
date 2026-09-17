@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -65,7 +65,7 @@ The identity now holding the advanced activity: the one the batch was carried un
 ### 4. Await the envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
-  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./TECHNIQUE.md#reject-partial-worker-result)), which is also how a server refusal of the advanced activity surfaces — ends the batch here. Replace the context below.
+  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results (reject-partial-worker-result), which is also how a server refusal of the advanced activity surfaces — ends the batch here. Replace the context below.
 
 ### 5. Replace a spent context
 
