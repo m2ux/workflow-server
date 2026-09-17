@@ -22,6 +22,10 @@
       "reason": "Six minutes on its own; 21 of 60 walks die on a branch whose checkpoint or transition does not resolve. 92 of its 99 options belong to work-package activities the work-package walk covers; the 7 that are its own go on the uncovered list."
     },
     {
+      "id": "routine-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it, and the routine walk drives its two reference sites directly."
+    },
+    {
       "id": "cicd-pipeline-security-audit",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it."
     },

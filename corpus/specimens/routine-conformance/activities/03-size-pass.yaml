@@ -1,0 +1,26 @@
+id: size-pass
+version: 1.0.0
+name: Size Pass
+description: Walk the targets measuring how much each one holds.
+variables:
+  reads:
+    - component_path
+    - initial_target
+  writes:
+    - name: size_measurements
+      type: array
+      description: One entry per target the sizing pass measured, in the order it walked them.
+required: true
+steps:
+  - kind: routine
+    id: size-pass
+    routine: measured-pass
+    with:
+      probe_operation: measure-size
+    outputs:
+      pass_measurements: size_measurements
+exits:
+  - id: passed
+    isDefault: true
+outcome:
+  - The same run has walked the same targets under a second measurement, so the report can hold the two side by side
