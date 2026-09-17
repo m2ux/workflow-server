@@ -1987,3 +1987,39 @@ One `## Rules` entry states several constraints, so no part of it can be cited o
 **Do not flag:** A single constraint stated with the failure mode that makes it matter, which is the corpus convention. Paragraphs or bullets elaborating one constraint across the cases it covers, each case subordinate to the named invariant rather than a further invariant — so length settles nothing on its own. A rule scoped to one protocol step is the converse defect (`no-one-step-rules`), one invariant with two homes is `single-rule-authority`, and two entries whose triggers intersect is `overlapping-rule-scopes`.
 
 **Fix:** Give each constraint its own entry, named for the invariant it states. Demote cost guidance and hazards to a `>` caveat on the rule they qualify (`constraint-as-blockquote`). Delete, rather than re-head, any part whose claim another surface already owns — a schema field's own description, a load-time refusal message, another operation's rule (`schema-semantics-restated`, `rule-binds-beyond-its-operation`). See [SOLID at the Definition Layer](./design-principles.md#34-solid-at-the-definition-layer).
+
+### AP-153. call-omits-conditionally-required-argument
+
+"`next_activity { session_index, activity_id, step_manifest }`, against a tool that refuses the call whenever the session holds an open activity"
+
+A Protocol writes a call signature without an argument its schema marks optional and its server demands in the state that Protocol arrives in, so the call is refused at run time and the caller improvises a repair the definition never specified.
+
+**Detect:** For each tool call a Protocol phase or Rule writes as a signature, read the tool's own description and its refusal text for a state in which an optional argument becomes required. Name the state the operation is in when it reaches that call, and ask whether the tool refuses without the argument there. Flag a signature that cannot be executed from the state its own Protocol arrives in. Optionality is declared once for a tool and the requirement holds for a state, so comparing a signature against the schema settles nothing here: both the executable call and the refused one satisfy it.
+
+**Do not flag:** An argument the schema requires outright, which is `call-omits-required-argument`. A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. An argument the tool accepts either way in every state the operation reaches. The conditional obligation itself, carried in the signature or in a phrase naming which calls must pass it, which `tool-contract-restated-in-protocol` sanctions as the obligation a schema cannot express.
+
+**Fix:** Name the argument in the signature, and declare the value as an input where the operation takes it from its caller. Where the operation reaches the call in both states, mark that input optional and state the state that leaves it unset — the condition is what the schema cannot carry, so the declaration is its only home. The operation-to-operation form of the same silence is `apply-omits-declared-input`.
+
+### AP-154. call-omits-required-argument
+
+"`record_usage { session_index, activity, usage }`, against a tool declaring a fourth parameter as required"
+
+A Protocol writes a whole call signature without an argument the tool's schema declares required, so the operation describes a step no run can take.
+
+**Detect:** For each tool call a Protocol phase or Rule writes as a whole signature, compare the arguments it names against the parameters that tool declares required. Flag every required parameter the signature does not name. Test: read the signature as the call it stands for and make that call; one the tool refuses before its handler runs is a step the operation cannot take, however well the surrounding prose reads. A signature is whole unless its own text marks it partial.
+
+**Do not flag:** A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. A call to a tool the corpus does not register, whose schema is not this repository's to read. An argument required only in a state the schema cannot express, which is `call-omits-conditionally-required-argument`.
+
+**Fix:** Name the argument in the signature, and declare the value as an input where the operation takes it from its caller. Where the omission traces to a parameter the tool gained after the operation was written, every call the corpus describes to that tool is suspect and the sweep is the fix — one site corrected leaves the rest asserting the same dead call (`stale-restatement-after-change`).
+
+### AP-155. call-names-an-undeclared-argument
+
+"`start_session { session_index, agent_id }`, against a tool declaring no session parameter"
+
+A Protocol writes a call signature naming an argument the tool does not declare, so the call is refused where that schema rejects unknown keys and the value is dropped in silence where it does not.
+
+**Detect:** Compare every argument a described signature names against the parameters the tool declares, whole signature or partial alike. Flag each name the tool does not carry. Test: the text cannot distinguish its two causes — a parameter renamed or withdrawn since the operation was written, and a name that was never one — and it does not need to, because neither is executable and the fix is the same. Where the argument sits on a nested object the tool declares, read the name at that level rather than at the top.
+
+**Do not flag:** A call to a tool the corpus does not register, whose schema is not this repository's to read. A response field the prose names alongside the call, which is what the caller reads rather than what it passes.
+
+**Fix:** Delete the argument, or correct it to the name the tool declares. Where it names a parameter the tool once carried, sweep every call the corpus describes to that tool rather than correcting the one site (`stale-restatement-after-change`).
