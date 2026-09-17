@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -41,9 +41,9 @@ Single combined result produced from `{gathered_results}` under caller-supplied 
 
 ## Rules
 
-### isolation-then-combine
+### isolation-is-honoured-not-structural
 
-Honor [scatter-gather](../scatter-gather.md)::isolation-then-combine: per-unit outputs are gathered into an isolated ordered collection and merged only through the combine step.
+A unit's output enters the ordered collection and reaches the parent bag only through the combine step, never auto-bound under its scalar name. The units share one worker, so the gather is the whole of what keeps them apart — the mode-independent form is `scatter-gather.isolation-then-combine`.
 
 ### one-workspace-one-writer
 
