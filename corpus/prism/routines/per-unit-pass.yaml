@@ -1,13 +1,12 @@
 id: per-unit-pass
-version: 1.0.0
+version: 1.1.0
 name: Per-Unit Analysis Pass
 description: >-
   Run one analysis lens against every unit the plan selected for a pipeline, accumulating the
-  artifact paths each unit's lens writes. Refer to it from a pass activity, binding the lens it
-  applies, the artifacts that lens reads as prior context, and the pipeline whose units it serves.
+  artifact paths each unit's lens writes.
 inputs:
   - id: analysis_units
-    description: The units the plan selected, which the run iterates. Every site leaves it unbound and the host supplies it under this name.
+    description: The units the plan selected, which the run iterates.
   - id: pass_operation
     kind: technique
     description: The lens each selected unit is run through.
