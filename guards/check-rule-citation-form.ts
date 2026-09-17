@@ -27,8 +27,8 @@
  * declared relative to the citer and the author should not have to re-derive it:
  *
  *   own-rule        the rule is declared in the citing file — the bare slug.
- *   inherited-rule  the rule is on a container the citing file sits beneath — the bare slug, because
- *                   the merge already delivered it.
+ *   inherited-rule  the rule is on a container the citing file sits beneath — a link is allowed and
+ *                   not reported, the container being the one target a relative link always has.
  *   foreign-rule    the rule belongs to a technique the citer does not inherit — the dotted address.
  *
  * What this does NOT prove: that a bare slug resolves to a declared rule, which is the dangling half
@@ -120,7 +120,7 @@ export function ruleCitations(
   return out;
 }
 
-export function checkCitation(citation: RuleCitation, citerAbs: string, site: string): Finding {
+export function checkCitation(citation: RuleCitation, citerAbs: string, site: string): Finding | null {
   const { anchor, targetAbs } = citation;
   if (targetAbs === citerAbs) {
     return {
@@ -129,13 +129,10 @@ export function checkCitation(citation: RuleCitation, citerAbs: string, site: st
       detail: `${anchor} is declared in this file — cite it as the bare name \`${anchor}\`, not a link to its heading`,
     };
   }
-  if (inherits(citerAbs, targetAbs)) {
-    return {
-      check: 'inherited-rule',
-      site,
-      detail: `${anchor} merges in from ${basename(dirname(targetAbs))} — cite it as the bare name \`${anchor}\`; the reader already holds it`,
-    };
-  }
+  // A rule the citer inherits may be linked. The merge puts the text in an agent's hands, so a bare
+  // name resolves for the reader the delivery reaches — but a person opening the file gets a slug
+  // and no way to the declaration, and the container is the one target a relative link always has.
+  if (inherits(citerAbs, targetAbs)) return null;
   // A container is named by its folder — every group's contract file is spelled `TECHNIQUE.md`.
   const owner =
     basename(targetAbs) === 'TECHNIQUE.md' ? basename(dirname(targetAbs)) : basename(targetAbs, '.md');
@@ -164,7 +161,8 @@ export function collectFindings(root: string): Finding[] {
     const rel = relative(root, path);
     if (citerKind(rel) !== 'technique') continue;
     for (const citation of ruleCitations(readFileSync(path, 'utf-8'), path, rulesOf)) {
-      findings.push(checkCitation(citation, path, `${rel}:${citation.line}`));
+      const finding = checkCitation(citation, path, `${rel}:${citation.line}`);
+      if (finding) findings.push(finding);
     }
   }
   assertScanned(scanned, 'markdown files', root);
