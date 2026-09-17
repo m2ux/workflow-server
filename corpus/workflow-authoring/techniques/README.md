@@ -46,8 +46,8 @@ Resolved directly from the named workflow — no copy is held here.
 | [`variable-binding`](/meta/techniques/variable-binding.md) | Declared at `workflow.techniques.activity`; inherited by every activity rather than bound per step |
 | [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) | Seed the planning-folder `README.md` from the universal Template under this workflow's seed profile |
 | [`workflow-engine::list-workflows`](/meta/techniques/workflow-engine/list-workflows.md) | The library catalog, remapped as the reference set a conformance walk compares against |
-| [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — the numbered planning-folder artifact write |
-| [`work-package::manage-git`](/work-package/techniques/manage-git/TECHNIQUE.md) | `create-worktree` and `remove-worktree` — materialise and tear down the run's edit worktree |
 | [`workflow-engine::verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) | Drift-check the planning-folder `README.md` against the Template and this workflow's seed profile |
-| [`meta::version-control`](/meta/techniques/version-control/TECHNIQUE.md) | `commit-regular-files` and `push-branch` |
+| [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — the numbered planning-folder artifact write |
+| [`work-package::manage-git`](/work-package/techniques/manage-git/TECHNIQUE.md) | `remove-worktree` — tear down the run's edit worktree |
+| [`meta::version-control`](/meta/techniques/version-control/TECHNIQUE.md) | `derive-workflows-target-path` and `create-worktree` for the edit surface; `commit-regular-files` and `push-branch` to publish it |
 | [`meta::github-cli-protocol`](/meta/techniques/github-cli-protocol/TECHNIQUE.md) | `create-pr` — opened non-draft, because the commit gate already approved publication |

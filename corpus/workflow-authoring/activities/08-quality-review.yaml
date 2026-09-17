@@ -8,7 +8,6 @@ variables:
     - current_file
     - host_repo_path
     - impact_analysis_path
-    - open_finding_count
     - planning_folder_path
     - pr_number
     - remediation_round

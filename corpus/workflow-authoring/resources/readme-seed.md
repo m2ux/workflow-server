@@ -36,7 +36,7 @@ Lifecycle **Status** values: `Planning`, `Drafting`, `Reviewing`, `Complete`.
 | 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ⬚ |
 | 7 | [Findings register](findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
 | 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
-| 9 | [Close-out](COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
+| 9 | [Close-out](completion-artifact.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
 
 Initial Status icons are from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). The impact-analysis row starts cancelled/N/A because only an update run produces it.
 
