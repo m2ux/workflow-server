@@ -59,6 +59,13 @@ describe('describedCalls', () => {
     expect(describedCalls('```\n`next_activity { session_index }`\n```\n', TOOLS)).toEqual([]);
   });
 
+  it('passes over a wholly-quoted exemplar line, which a catalog entry writes defective on purpose', () => {
+    expect(describedCalls('"`record_usage { session_index, activity }`, against a tool declaring a third"', TOOLS))
+      .toEqual([]);
+    expect(describedCalls('Call `record_usage { session_index, activity }` at each boundary.', TOOLS))
+      .toHaveLength(1);
+  });
+
   it('reads a call naming session_index as the whole signature', () => {
     expect(one('`next_activity { session_index, activity_id }`').signature).toBe(true);
   });

@@ -11,7 +11,9 @@
  *
  * A call is recognised as `tool_name { ... }` inside an inline code span, which is how the corpus
  * writes one. The name has to be a tool this server registers; a harness or knowledge-base tool the
- * corpus also describes belongs to a schema this repository does not hold, and is passed over.
+ * corpus also describes belongs to a schema this repository does not hold, and is passed over. So
+ * is a fenced block and a wholly-quoted exemplar line — both show a call rather than instruct one,
+ * and an anti-pattern entry opens with a defective one deliberately.
  *
  * Two findings:
  *
@@ -58,6 +60,13 @@ const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 /** An inline code span. */
 const CODE_SPAN = /`([^`]+)`/g;
+/**
+ * A line that is wholly a quoted string, which is prose showing a call rather than instructing one.
+ * An anti-pattern entry opens with a defective exemplar on purpose, so reading it as an instruction
+ * reports the catalog for carrying the very shape it exists to name — the same reason a fenced block
+ * is passed over.
+ */
+const EXEMPLAR = /^\s*["“][^"”]*["”]\s*$/;
 /** `tool_name { arguments }` — the shape the corpus writes a call in. */
 const CALL = /^([a-zA-Z_][a-zA-Z0-9_]*)\s*\{(.*)\}$/s;
 /**
@@ -133,7 +142,7 @@ export function describedCalls(body: string, tools: Map<string, ToolParameters>)
   const { fenced } = fencedLines(lines);
   const out: DescribedCall[] = [];
   for (const [index, line] of lines.entries()) {
-    if (fenced.has(index)) continue;
+    if (fenced.has(index) || EXEMPLAR.test(line)) continue;
     for (const span of line.matchAll(CODE_SPAN)) {
       const call = CALL.exec(span[1]!.trim());
       if (!call) continue;
