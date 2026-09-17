@@ -729,11 +729,11 @@ A declared id is used unbraced where a designator is required.
 
 A rule is cited in prose instead of its dotted symbol address.
 
-**Detect:** A protocol step cites/relies on a rule as prose ("per the X rule", "following the X rule") or with `::` (invokes a technique, does not name a rule). Also: prose citation of a rule that is not declared anywhere (dangling).
+**Detect:** A protocol step cites/relies on a rule as prose ("per the X rule", "following the X rule"), with `::` (invokes a technique, does not name a rule), or as a markdown hyperlink to the rule's heading anchor. The hyperlink is the spelling that survives a walk looking only for prose: it resolves, so the anchor guard passes it, and it still sends a reader to a container whose rules the loader already merged into the file they are reading. Also: prose citation of a rule that is not declared anywhere (dangling).
 
-**Do not flag:** Correct dotted ancestry address — `[<workflow>.]<technique>.<rule-name>` (e.g. `meta.gitnexus-operations.index-freshness-first`). Shorten when in ancestry: omit workflow for same-workflow; bare rule name when inherited from self/group/workflow root. Full path only for rules outside current ancestry.
+**Do not flag:** Correct dotted ancestry address — `[<workflow>.]<technique>.<rule-name>` (e.g. `meta.gitnexus-operations.index-freshness-first`). Shorten to what the reader's own position already supplies: a rule inherited from self, group, or workflow root is its bare name, because nothing else could be meant; a rule outside that ancestry is `<owner>.<rule-name>`, the declaring technique and the rule, with a container named by its folder rather than by the `TECHNIQUE.md` every folder spells alike. Rule slugs are distinctive across the corpus, so the owner is what disambiguates and the workflow is carried only where two workflows hold the same technique id. A hyperlink from a surface that runs no Protocol — a resource or a README — which names a rule to send a reader to it rather than to honour it. A technique citing any rule takes the dotted address at the length its ancestry allows, whether or not the rule is one it inherits. Test: ask whether the citing file is a technique; if it is, the form is dotted.
 
-**Fix:** Replace prose/`::` with the dotted symbol address (shortened per ancestry). For dangling citations, point at the real inline content — never invent a rule. Mnemonic: `::` invokes, `.` names.
+**Fix:** Replace prose, `::`, or an anchor hyperlink with the dotted symbol address (shortened per ancestry) — a rule inherited from self, group, or workflow root is its bare name. For dangling citations, point at the real inline content — never invent a rule. Mnemonic: `::` invokes, `.` names, and a link navigates to something the reader has not got.
 
 ### AP-54. anchored-protocol-references
 
@@ -2023,3 +2023,15 @@ A Protocol writes a call signature naming an argument the tool does not declare,
 **Do not flag:** A call to a tool the corpus does not register, whose schema is not this repository's to read. A response field the prose names alongside the call, which is what the caller reads rather than what it passes.
 
 **Fix:** Delete the argument, or correct it to the name the tool declares. Where it names a parameter the tool once carried, sweep every call the corpus describes to that tool rather than correcting the one site (`stale-restatement-after-change`).
+
+### AP-156. protocol-phase-as-list-item
+
+"`1. **Engineering commit + push:** Commit ALL changes under .engineering/…`"
+
+A Protocol phase is an entry in a flat numbered list, so it has a number and no section of its own.
+
+**Detect:** A technique `## Protocol` holds its phases as `N. …` list entries rather than `### N. Title` sub-sections. The bold-label spelling is the near-miss and is flagged the same way: a lead like `**Engineering commit + push:**` names the outcome, which is the harder half, and still leaves the phase with no heading — nothing can anchor to it, the name renders as emphasis on the first sentence rather than as the phase's title, and a file mixing the two spellings reads as though only some of its phases were worth naming. Test: ask what a citation needing this one phase would link to. Where the answer is the whole technique, flag it.
+
+**Do not flag:** Bullets, notes, and sub-bullets under a phase — a phase's body is a list and only the phase itself is a section. A `## Rules` entry, which is already its own sub-section. Ordered sub-steps inside one phase's body, which elaborate that phase rather than indexing the sequence.
+
+**Fix:** Give each phase a `### N. Title` heading naming its outcome, and move its work to bullets beneath. A bold label already present is the title — lift it into the heading rather than writing a second name. A phase whose outcome cannot be named is not one, and its disposal is `rule-as-protocol-step` or `constraint-as-blockquote` rather than a heading. What a heading is made of — its length, and that it names rather than repeats its bullet — is [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome).

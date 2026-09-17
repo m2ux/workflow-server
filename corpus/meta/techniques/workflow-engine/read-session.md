@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -19,8 +19,9 @@ Completed activities, checkpoint decisions, artifacts produced, and the event hi
 
 ## Protocol
 
-1. Read the session through the `inspect_session` tool: `view: variables` yields `{session_state}`; `view: activities`, `view: checkpoints` and `view: history` each yield a slice of `{execution_trace}`, and `view: summary` yields both products in one call.
+### 1. Inspect Session
 
+- Read the session through the `inspect_session` tool: `view: variables` yields `{session_state}`; `view: activities`, `view: checkpoints` and `view: history` each yield a slice of `{execution_trace}`, and `view: summary` yields both products in one call.
 ## Rules
 
 ### session-file-is-not-a-source

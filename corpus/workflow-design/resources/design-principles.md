@@ -74,6 +74,10 @@ Each fact of session state has exactly one authoritative variable. Compare that 
 
 A Protocol index marks a distinct outcome that must complete before the next begins. Co-aspects of the same act — facets of one survey, constraints on one write, mode branches of one apply — stay as elaborating bullets under that phase. Topic partitions that can be reordered or dropped without changing the phase sequence do not get their own numbers.
 
+Each index is a `### N. Title` sub-section whose heading names that outcome, and the work sits as bullets beneath it. The headings alone are then the sequence — an agent part-way through a run finds its place by scanning them, where a flat list makes it read every body to learn what each entry was for, and a reader looking for one phase has no anchor to be sent to. Avoids `protocol-phase-as-list-item`, whose near-miss is a flat entry led by a bold label: it names the outcome but leaves the phase without a section of its own, so nothing can cite it and the name reads as emphasis on the first sentence.
+
+A heading is two or three words in Title Case with the articles dropped — `Fold Activity Results`, not `Fold the activity's results together`. Length is the tell: past four words it has stopped naming the phase and started carrying the bullet's detail, which the bullet is about to state anyway. It is a name rather than the instruction's opening words repeated above it, so a reader scanning headings for the shape of the work learns something the bodies were not already going to tell them. A heading that can only be written by copying its bullet is usually a phase with no outcome of its own.
+
 ## 16. Distinguish Designators from Parameters
 
 In technique Protocol, declared values use braced designators (`{id}`); operation argument names are italicised (*arg*); argument lists attach in parentheses on the op reference. Keep argument names out of the brace and backtick namespaces reserved for values and code tokens.
