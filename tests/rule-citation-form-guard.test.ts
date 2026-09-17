@@ -59,7 +59,7 @@ describe('citerKind', () => {
   });
 
   it('exempts a README wherever it sits', () => {
-    expect(citerKind('meta/techniques/workflow-engine/README.md')).toBe('readme');
+    expect(citerKind('meta/techniques/README.md')).toBe('readme');
   });
 });
 
