@@ -29,7 +29,7 @@ Engineering branch to push to
 
 ### 1. Commit Artifacts
 
-- Resolve `{$eng_git_dir}` as the engineering checkout [directory-scope](./TECHNIQUE.md#directory-scope) names.
+- Resolve `{$eng_git_dir}` as the engineering checkout `directory-scope` names.
 - Stage the artifact files: `git -C {eng_git_dir} add {files}`.
 - Commit with the canonical pattern: `git commit -m "docs(work-package): {activity_name} artifacts for {issue_key}"`. Whether commits are GPG-signed is governed by the user's local git config — do NOT impose `--no-gpg-sign` or `--gpg-sign` overrides.
 

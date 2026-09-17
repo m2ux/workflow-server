@@ -63,4 +63,4 @@ Phrase [query](./query.md) as keywords, not as a natural-language question. Its 
 
 Indexed-codebase structural analysis (call relationships, execution flows, blast radius, change impact) MUST go through these operations — do NOT paste raw `gitnexus_*` calls or Cypher into technique protocols; raw calls live only inside the operation procedures here. For that analysis, grep / Read / glob are the fallback ONLY when the codebase is not indexed or stale.
 
-Two questions fall outside this rule rather than under its fallback, and each names its own instrument: a subject no index holds ([subjects-the-index-holds](#subjects-the-index-holds)) and a question the graph cannot answer ([query-not-grep](#query-not-grep)). Grep is the first instrument for both, on a fresh index as much as a stale one.
+Two questions fall outside this rule rather than under its fallback, and each names its own instrument: a subject no index holds (`subjects-the-index-holds`) and a question the graph cannot answer (`query-not-grep`). Grep is the first instrument for both, on a fresh index as much as a stale one.

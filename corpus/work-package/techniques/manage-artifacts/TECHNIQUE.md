@@ -16,7 +16,7 @@ Every fact has exactly one canonical artifact. When another artifact needs it, l
 
 ### canonical-home-map
 
-Which artifact homes each shared fact category is stated in [Map](../../resources/canonical-home-map.md#map), and the slot every other template carries in its place in [link-only-slots](../../resources/canonical-home-map.md#link-only-slots).
+Which artifact homes each shared fact category is stated in [Map](../../resources/canonical-home-map.md#map), and the slot every other template carries in its place in `canonical-home-map.link-only-slots`.
 
 ### exception-only-reporting
 
@@ -45,7 +45,7 @@ Symbol and test references hyperlink to their definition line (the definition, n
 | Target | Form |
 |---|---|
 | A sibling artifact in the same planning folder | relative path (`NN-code-review.md#anchor`) |
-| Code, a test, or a document in a repo under review | a permanent blob URL in the form [permanent-blob-citations](../../resources/manual-diff-review.md#permanent-blob-citations) states |
+| Code, a test, or a document in a repo under review | a permanent blob URL in the form `manual-diff-review.permanent-blob-citations` states |
 | Anything else outside the planning folder | full URL |
 
 A path relative to a checkout is never a citation form: the checkout it resolves against is removed at close-out, so the link dies inside the run that wrote it. A resource or technique id is never a link target — ids address the loader, not the git host.

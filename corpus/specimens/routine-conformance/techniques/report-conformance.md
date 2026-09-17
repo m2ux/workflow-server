@@ -39,15 +39,15 @@ What the run did, shaped by [Template](../resources/conformance-report.md#templa
 
 ### 1. Name What Each Site Supplied
 
-- Fill the first table from the two activities' own bindings: the counting site supplies [count-entries](./count-entries.md) and the sizing site supplies [measure-size](./measure-size.md), and each row carries the target count and measurement count that site produced. [say-which-measurement-each-site-supplied](../resources/conformance-report.md#say-which-measurement-each-site-supplied) governs what the column may omit.
+- Fill the first table from the two activities' own bindings: the counting site supplies [count-entries](./count-entries.md) and the sizing site supplies [measure-size](./measure-size.md), and each row carries the target count and measurement count that site produced. `conformance-report.say-which-measurement-each-site-supplied` governs what the column may omit.
 
 ### 2. Put The Two Readings Side By Side
 
-- Take `{entry_counts}` and `{size_measurements}` in their own orders and write one row per target, carrying each pass's reading for it. A target only one pass reached keeps its row, per [a-gap-is-written-as-a-gap](../resources/conformance-report.md#a-gap-is-written-as-a-gap).
+- Take `{entry_counts}` and `{size_measurements}` in their own orders and write one row per target, carrying each pass's reading for it. A target only one pass reached keeps its row, per `conformance-report.a-gap-is-written-as-a-gap`.
 
 ### 3. Say How Each Pass Ended
 
-- Write the closing paragraph from the two passes' lengths against the iteration bound the run declares, opening from `{initial_target}`. [the-bound-is-an-outcome-worth-naming](../resources/conformance-report.md#the-bound-is-an-outcome-worth-naming) governs which endings have to be distinguished.
+- Write the closing paragraph from the two passes' lengths against the iteration bound the run declares, opening from `{initial_target}`. `conformance-report.the-bound-is-an-outcome-worth-naming` governs which endings have to be distinguished.
 
 ### 4. Write The Report
 

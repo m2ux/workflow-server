@@ -41,4 +41,4 @@ The child workflow's `initialActivity`, and the only route into it: a session th
 
 ### solo-walk-the-child
 
-The context that launches a workflow walks it, in that same context: it holds the child's identity and nothing else can be pointed at the child. A spawned agent has no dispatch primitive ([spawn-agent](../harness-compat/spawn-agent.md)::[depth-1-only](../harness-compat/spawn-agent.md#depth-1-only)), so there is no orchestrator/worker split available inside a launch — the walk is one context taking every activity of the child, each through [take-activity](./take-activity.md).
+The context that launches a workflow walks it, in that same context: it holds the child's identity and nothing else can be pointed at the child. A spawned agent has no dispatch primitive (`spawn-agent.depth-1-only`), so there is no orchestrator/worker split available inside a launch — the walk is one context taking every activity of the child, each through [take-activity](./take-activity.md).

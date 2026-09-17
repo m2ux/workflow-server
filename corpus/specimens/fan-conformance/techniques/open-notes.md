@@ -52,7 +52,7 @@ The checkout that writer works in, a path of its own under the planning folder n
 ### 2. Choose What Is Worth Committing
 
 - Take the probes whose finding says something a reader would want recorded, and leave the rest. A note per probe by reflex makes the run's commits a count of the fan's width; a note per finding makes them evidence.
-- Where every probe found something ordinary, choose none and emit an empty `{note_targets}`. The exit that fans over it refuses an empty collection, so the graph routes past the notes rather than opening writers with nothing to write — see [an-empty-choice-routes-past](#an-empty-choice-routes-past).
+- Where every probe found something ordinary, choose none and emit an empty `{note_targets}`. The exit that fans over it refuses an empty collection, so the graph routes past the notes rather than opening writers with nothing to write — see `an-empty-choice-routes-past`.
 
 ### 3. Name Each Note
 

@@ -69,7 +69,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 - Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); set `{reviewed_code_base_url}` from the op output.  
   > When no PR exists yet, take the repository from `{push_remote}` and the sha from that remote's tip of the branch (`git -C {target_path} ls-remote {push_remote} {branch_name}`); push the branch first when the remote does not carry it, so the sha the citations name is reachable.
-- Every Block title and finding citation this technique writes is built on `{reviewed_code_base_url}`, per [permanent-blob-citations](../resources/manual-diff-review.md#permanent-blob-citations).
+- Every Block title and finding citation this technique writes is built on `{reviewed_code_base_url}`, per `manual-diff-review.permanent-blob-citations`.
 
 ### 4. Create Index
 
@@ -97,7 +97,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 ### rationale-quality
 
-Each Block Rationale paragraph is 3–5 sentences covering intent, context, and any non-obvious design choices. Focus on *why* the change exists, not just *what* it does — reviewers see the *what* in the diff. Mention relevant prior state, trade-offs, or constraints that informed the approach; plain technical language per [manage-artifacts](./manage-artifacts/TECHNIQUE.md#plain-technical-language).
+Each Block Rationale paragraph is 3–5 sentences covering intent, context, and any non-obvious design choices. Focus on *why* the change exists, not just *what* it does — reviewers see the *what* in the diff. Mention relevant prior state, trade-offs, or constraints that informed the approach; plain technical language per `manage-artifacts.plain-technical-language`.
 
 ### review-conduct
 

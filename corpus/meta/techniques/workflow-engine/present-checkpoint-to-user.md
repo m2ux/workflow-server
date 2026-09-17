@@ -26,7 +26,7 @@ Load the active checkpoint's details and present them to the user.
 ## Protocol
 
 1. Call `present_checkpoint { session_index }`; it returns the active checkpoint's message and options. If this returns `no active checkpoint on session`, the worker has not yet yielded a checkpoint or the previous one was already resolved — re-check that you are presenting against the correct `{session_index}`.
-2. Apply [verify-auto-advance-capability](#verify-auto-advance-capability) against the `present_checkpoint` payload (and the activity definition when needed) to establish whether the gate is soft or hard.
+2. Apply `verify-auto-advance-capability` against the `present_checkpoint` payload (and the activity definition when needed) to establish whether the gate is soft or hard.
 3. Resolve the checklist against the remote before it is published. A gate is reached mid-activity, before that activity's commit, so `git -C {host_repo_path} rev-parse --abbrev-ref HEAD` names the session branch `{$branch}`, and `git -C {host_repo_path} ls-tree -r --name-only origin/{branch} {planning_folder_path}` lists exactly what a reader can open: an item whose artifact is present renders as a link, and one whose artifact is absent renders as plain text. This stops a dead link being published; it does not make an artifact available sooner. It also catches a push that silently failed and an edit made out of band.
 4. Take the resolution path this run uses from `{headless_mode}` — interactive where it is unset.
 5. On the interactive path, and on every hard gate whatever the run's mode: put the checkpoint's message and its `options[]` to the user through the host's own question primitive, and wait for an explicit selection. This is the user's only opportunity to respond. Capture their `option_id`.
@@ -38,7 +38,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### softness-is-declared
 
-A gate is **soft** when it declares an answer the run may take where no person is reached, and **hard** when it does not: a hard gate resolves only on an explicit selection. Which fields carry that declaration, and the refusal of a gate that declares half of it, are the definition schema's — [verify-auto-advance-capability](#verify-auto-advance-capability) is how a presenter reads them off the gate in front of it. The declared interval is spent by the resolving call, per [respond-checkpoint](./respond-checkpoint.md)::[auto-advance-spends-the-declared-interval](./respond-checkpoint.md#auto-advance-spends-the-declared-interval); the headless path below makes no such call and spends none, so there the declaration only marks the gate soft.
+A gate is **soft** when it declares an answer the run may take where no person is reached, and **hard** when it does not: a hard gate resolves only on an explicit selection. Which fields carry that declaration, and the refusal of a gate that declares half of it, are the definition schema's — `verify-auto-advance-capability` is how a presenter reads them off the gate in front of it. The declared interval is spent by the resolving call, per `respond-checkpoint.auto-advance-spends-the-declared-interval`; the headless path below makes no such call and spends none, so there the declaration only marks the gate soft.
 
 ### present-before-any-resolution
 
