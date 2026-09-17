@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -42,16 +42,23 @@ Worker agent identity for this dispatch.
 - Load resources per [resource-loading-via-tool](./TECHNIQUE.md#resource-loading-via-tool)
 - Use [force-full-after-summarization](./TECHNIQUE.md#force-full-after-summarization) when this context no longer holds prior deliveries
 
-### 3. Execute steps
+### 3. Take the walk position
 
-- When `{effects}` is bound, this context is continuing past a gate it yielded rather than opening the activity: apply [resume-from-checkpoint](./resume-from-checkpoint.md), then carry on from the paused step rather than the first. The remaining steps and the envelope below are owed either way — a gate pauses the walk, it does not end it
-- Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
+- Open the activity at its first step
+  > When `{effects}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) and carry on from the paused step instead. The remaining steps and the envelope are owed either way — a gate pauses the walk, it does not end it.
+
+### 4. Execute steps
+
 - Execute each activity step in document order
+- Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
 - For `kind: technique` steps, load the bound operation on reach per [progressive-step-technique-load](#progressive-step-technique-load)
 - Apply each bound operation via [variable-binding](../variable-binding.md)
 - Honor `when:` gates against the variable bag, evaluating each expression as the activity schema's `when` field defines it; an expression that does not parse does not run its step
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
-- When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` read in step 1 as `batch_may_continue`
+
+### 5. Finalize the activity
+
+- When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` this context's standing reports ([batch-ends-where-the-server-says](#batch-ends-where-the-server-says)) as `batch_may_continue`
 
 ## Rules
 

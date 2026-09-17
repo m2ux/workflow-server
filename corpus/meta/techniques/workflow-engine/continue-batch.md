@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -51,8 +51,8 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 ### 1. Advance the session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, agent_id: worker_agent_id }`; capture `_meta.trace_token` and accumulate it per [dispatch-activity](./dispatch-activity.md) step 2. `agent_id` names the context whose technique fetches the manifest is checked against; one identity covers several activities, and an unattributed manifest credits any agent.
-- Advance only where the finished activity is already committed: this call is the transition that commit has to precede ([commit-after-activity](./commit-and-persist.md#commit-after-activity)). Where it has not landed, commit it first.
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, agent_id: worker_agent_id }`; capture `_meta.trace_token` per [dispatch-activity](./dispatch-activity.md)::[accumulate-trace-per-advance](./dispatch-activity.md#accumulate-trace-per-advance). `agent_id` names the context whose technique fetches the manifest is checked against; one identity covers several activities, and an unattributed manifest credits any agent.
+  > This call is the transition a commit has to precede ([commit-after-activity](./commit-and-persist.md#commit-after-activity)). Where the finished activity has not landed, commit it first.
 
 ### 2. Compose the continuation stub
 
@@ -65,9 +65,13 @@ The identity now holding the advanced activity: the one the batch was carried un
 ### 4. Await the envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
-- When the continuation returns no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)), which is also how a server refusal of the advanced activity surfaces — the batch ends here. Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `holds_prior_deliveries: false` and [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME advanced `{activity_id}`, and return that identity with the replacement's envelope. The replacement holds no prior deliveries, so it takes the advanced activity in full.
+  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)), which is also how a server refusal of the advanced activity surfaces — ends the batch here. Replace the context below.
 
-### 5. Account for the activity
+### 5. Replace a spent context
+
+- Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `holds_prior_deliveries: false` and [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME advanced `{activity_id}`, and return that identity with the replacement's envelope. Holding no prior deliveries, the replacement takes the advanced activity in full
+
+### 6. Account for the activity
 
 - Account for `{activity_id}` — this activity of the batch — per [account-every-activity](./dispatch-activity.md#account-every-activity).
 

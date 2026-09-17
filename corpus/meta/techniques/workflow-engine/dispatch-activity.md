@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.25.0
+  version: 1.26.0
 ---
 
 ## Capability
@@ -49,16 +49,16 @@ Server-side worker identity this dispatch bound — the identity the delivery le
 
 ### trace_tokens
 
-The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_activity` call that returned `_meta.trace_token`. Empty when the server returned none; the close-out path resolves the list once, and individual tokens stay opaque.
+The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_activity` call that returned `_meta.trace_token`. Empty when the server returned none.
 
 ## Protocol
 
 1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
    > - When `{planning_folder_path}` is unset, skip this phase.
    > - Publish the mark before the worker spawns, per [dispatch-mark-reaches-the-remote](#dispatch-mark-reaches-the-remote): apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
-2. Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token`.
-   - **`step_manifest`:** a dispatch whose activity ran steps carries one manifest entry per completed step — the server validates step completion against it, and reports a gap when it is absent. A first dispatch has no prior worker context to attribute it to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
-   - **Trace accumulate (required):** when `_meta.trace_token` is present, append it to `trace_tokens[]`. Tokens stay opaque — no routine per-activity `get_trace`. Live `_meta.validation` self-correct remains; do not resolve tokens mid-run (close-out resolve is [resolve-trace-at-close-out](#resolve-trace-at-close-out)).
+2. Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per [accumulate-trace-per-advance](#accumulate-trace-per-advance).
+   > - A dispatch whose activity ran steps carries one `step_manifest` entry per completed step; the server validates step completion against it and reports a gap when it is absent.
+   > - A first dispatch has no prior worker context to attribute the manifest to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
 3. Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
 4. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    > - When the harness reports the worker ended without returning an envelope, dispatch a fresh worker for the same `{activity_id}`, which mints its own identity.
@@ -83,9 +83,13 @@ Every activity carries exactly one usage entry, recorded with `record_usage { se
 
 Where the session record and a just-completed worker's `activity_complete` envelope (`variables_changed` and related fields) disagree on routing or path state, the envelope governs, and the discrepancy is logged.
 
+### accumulate-trace-per-advance
+
+Every `next_activity` returning `_meta.trace_token` has that token appended to `trace_tokens[]` — the first advance of a dispatch, each continuation of a batch ([continue-batch](./continue-batch.md)), and each branch a fan retires ([dispatch-fan](./dispatch-fan.md)). The list is the whole execution history close-out reads, so a token dropped at any of those call sites is history no later reader can recover.
+
 ### resolve-trace-at-close-out
 
-Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). This operation owns the accumulate half of the contract; the client's close-out path owns the resolve. Skip resolve when `trace_tokens` is empty.
+Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). Tokens stay opaque until that resolve, which reads the whole run where a per-activity `get_trace` reads one advance. Skip resolve when `trace_tokens` is empty.
 
 ### say-what-a-dispatch-is-doing
 
