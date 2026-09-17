@@ -111,4 +111,4 @@ The change surface is never "the lines the diff shows". Every touched path is a 
 
 ### guards-are-not-canon-coverage
 
-A clean definition-guard suite is not evidence that any canon enumeration unit was walked. Guard results land only under schema-validation; they never set a coverage_ledger row to `walked`.
+A clean definition-guard suite is not evidence that any canon enumeration unit was walked, and it leaves the open finding count where the walk put it. Guard results land only under schema-validation; they never set a coverage_ledger row to `walked`. A mechanical net reaches the subset of Detect its pattern matches — Description Hygiene and every other unit is walked on its own terms whatever the net reports.

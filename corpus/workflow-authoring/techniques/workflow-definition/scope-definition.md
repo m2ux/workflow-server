@@ -63,7 +63,7 @@ Number of entries in `{scope_manifest}`.
 ### 5. Compose the Manifest
 
 - Fold the table and both sections into `{scope_manifest}` at the shape [Template](../../resources/scope-manifest.md#template) declares
-- Link the change brief and the impact classification for purpose and removals rather than restating either
+- Link `{change_brief}` for purpose and the impact classification for removals rather than restating either
 
 ## Rules
 

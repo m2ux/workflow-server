@@ -29,8 +29,15 @@ Number of definition files a guard rejected, counted after every resolvable fail
 
 ### guard-green-is-narrow-evidence
 
-A clean guard is evidence only for the form that guard matches. Two known blind spots stand: a resource reference in already-projected form carries no `.md` and is invisible to the anchor guard, and an unresolvable resource is skipped at delivery with no warning at all. Treat an unexplained absence in a delivered payload as a reference defect, not as an empty result.
+A clean guard is evidence only for the form that guard matches.
+
+> - A resource reference in already-projected form carries no `.md` and is invisible to the anchor guard.
+> - An unresolvable resource is skipped at delivery with no warning at all.
+
+### absence-in-a-payload-is-a-defect
+
+An unexplained absence in a delivered payload reads as a reference defect rather than as an empty result.
 
 ### guard-green-is-not-canon-green
 
-`{fail_count}` zero never implies the criteria walk is complete or that `{open_finding_count}` may be treated as zero. Canon coverage is decided only by `{coverage_ledger}` under [audit-canon](./audit-canon.md) (including `audit-canon.walked-requires-evidence`). Description-hygiene and other mechanical nets catch a subset of Detect; they do not replace the Description Hygiene enumeration unit.
+`{fail_count}` zero is a verdict about the guard suite and about nothing else. Canon coverage is decided under `audit-canon.guards-are-not-canon-coverage`.
