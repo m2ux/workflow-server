@@ -19,7 +19,11 @@ Activity ID to enter.
 
 ### from_activity
 
-*(optional)* The activity this call retires — the one its step manifest belongs to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
+*(optional)* The activity this call retires — the one its exit and step manifest belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
+
+### exit_id
+
+*(optional)* The exit that activity took, which the server checks against the destination this call enters. Unset alongside `{from_activity}`.
 
 ### agent_technique
 
@@ -52,7 +56,7 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
    > - When `{planning_folder_path}` is unset, skip this phase.
    > - Publish the mark before the worker spawns, per [dispatch-mark-reaches-the-remote](#dispatch-mark-reaches-the-remote): apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
-2. Call `next_activity { session_index, activity_id, from_activity, step_manifest }`; capture `_meta.trace_token`.
+2. Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token`.
    - **`step_manifest`:** a dispatch whose activity ran steps carries one manifest entry per completed step — the server validates step completion against it, and reports a gap when it is absent. A first dispatch has no prior worker context to attribute it to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
    - **Trace accumulate (required):** when `_meta.trace_token` is present, append it to `trace_tokens[]`. Tokens stay opaque — no routine per-activity `get_trace`. Live `_meta.validation` self-correct remains; do not resolve tokens mid-run (close-out resolve is [resolve-trace-at-close-out](#resolve-trace-at-close-out)).
 3. Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).

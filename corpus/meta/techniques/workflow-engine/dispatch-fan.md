@@ -19,7 +19,7 @@ The destination exactly as the graph names it — a list of members, or one acti
 
 ### from_activity
 
-The activity this call retires — the one its exit and step manifest belong to, and whose exit is the one that fans. Instance-qualified where the graph runs that activity once per element of a collection.
+The activity this call retires — the one its exit and step manifest belong to, and whose exit the graph fans. Instance-qualified where the graph runs that activity once per element of a collection.
 
 ### exit_id
 
