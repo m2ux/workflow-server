@@ -29,7 +29,7 @@ Aggregate verdict: true exactly when `failed_checks` is empty.
 
 1. Start four concurrent shell invocations of [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same `{build_scope}`, passing the same `{features}` flags to each compiling op. Each op carries its own budget, and fmt-check compiles nothing at all, so the suite adds no cap of its own.
    > - When the combined peak still exceeds available RAM, halve the job cap for all (`export CARGO_BUILD_JOBS=2`) and retry.
-   > - Below the host floor `resource-budget` names, run check, clippy and test one after another through the per-op operations.
+   > - Below the host floor [resource-budget](./TECHNIQUE.md#resource-budget) names, run check, clippy and test one after another through the per-op operations.
 2. Wait for all four to finish before composing results, collecting every per-op status and its diagnostics.
 3. Take each per-check status as its operation publishes it, each carrying that operation's diagnostics: `{check_status}` with `{check_diagnostics}`, `{clippy_status}` with `{lint_diagnostics}`, `{test_status}` with `{failures}`, `{fmt_status}` with `{fmt_diff_summary}`.
 4. Derive `{$failed_checks}` = those statuses with `passed == false` in suite order (check, clippy, test, fmt-check); set `{$first_failure}` = the first entry of `{$failed_checks}` projected to `{ check_id, diagnostics }`, or null when `{$failed_checks}` is empty.

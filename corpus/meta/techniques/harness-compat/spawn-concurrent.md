@@ -27,7 +27,7 @@ Array of agent results, one per dispatched agent
 
 ### 2. Dispatch batch
 
-- Dispatch all agents by applying `{harness_technique}`'s `{harness_operation}` Rules section under `foreground-always`.
+- Dispatch all agents by applying `{harness_technique}`'s `{harness_operation}` Rules section under [foreground-always](./TECHNIQUE.md#foreground-always).
 
 ### 3. Await results
 
