@@ -130,13 +130,13 @@ steps:
         id: note-exiting-activity
         when: worker_result.result_type == "activity_complete"
         actions:
-          # Kept before the pointer moves: every advance names the activity it is returning, and
-          # the next step makes current_activity the destination. The dispatch, continuation and
-          # fan operations each declare an `exiting_activity` input, which resolves to this target
-          # by name — a step binding restating the name reads as a literal where it fails to
-          # resolve, so the orphan-input finding is only surfaced while none is written.
+          # Kept before the pointer moves: every advance names the activity it retires, and the
+          # next step makes current_activity the destination. The dispatch, continuation and fan
+          # operations each declare a `from_activity` input, which resolves to this target by name
+          # — a step binding restating the name reads as a literal where it fails to resolve, so
+          # the orphan-input finding is only surfaced while none is written.
           - action: set
-            target: exiting_activity
+            target: from_activity
             value: "{current_activity}"
       - kind: action
         id: advance-activity
