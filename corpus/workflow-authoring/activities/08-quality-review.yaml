@@ -18,17 +18,17 @@ variables:
   writes:
     - name: audit_findings
       type: array
-      description: The repo-wide findings ranked biggest-cut-first — each carrying a taxonomy tag, the path locator, the simpler alternative, and the lines and dependencies it would remove — closing with the repo-wide scoreboard.
+      description: One entry per criteria violation, each carrying its entry name, location, evidence, severity, origin and known marking.
     - name: changed_files
       type: array
-      description: Ordered list of changed file paths (each `.filename` from the pulls files endpoint).
+      description: The change surface for the bound target — whole touched files closed under I/O-contract referencers.
       defaultValue: []
     - name: consumer_surface
       type: array
-      description: "One entry per reference another workflow holds into the target: the referencing file, the reference form it uses, the target file it resolves to, and whether that target file is on `{changed_files}`. Empty when nothing outside the target references it. Every referencing file whose resolved target is on `{changed_files}` is itself part of the change surface the criteria walk covers (whole file)."
+      description: One entry per reference another workflow holds into the target, resolved against the change surface.
     - name: coverage_ledger
       type: array
-      description: One row per enumeration unit walked, each carrying the unit's home, the unit's anchor, one of three statuses, and — when status is `walked` and the unit reaches any file in `{changed_files}` — a non-empty `evidence` list. `walked` means the unit's criteria were applied to every file in scope **and** each change-surface file the unit reaches has at least one evidence row naming the field (or construct locus) inspected and a short quote or path:line — evidence spans the **whole file**, not the diff hunk. `not-applicable` carries the reason the unit does not reach this surface and is an evidenced negative, not a skip. `blocked` carries what prevented the walk and is the only status representing missing coverage. A unit may not be recorded as `walked` with an empty `evidence` list when it intersects `{changed_files}`.
+      description: One row per enumeration unit, each carrying its home, its anchor, its status and its evidence rows.
     - name: fail_count
       type: number
       description: Count of YAML files that failed schema validation.
@@ -42,17 +42,17 @@ variables:
       defaultValue: ""
     - name: known_finding_keys
       type: array
-      description: One key per already-accepted finding, each pairing the criteria entry by its kebab-case name with the location it was recorded against, in the single form a criteria walk compares against. Empty when no baseline and no prior register carry an entry for this target.
+      description: One key per already-accepted finding, pairing its criteria entry name with the location it was recorded against.
     - name: register_sections
       type: array
-      description: Per-target register sections accumulated across the sweep.
+      description: Per-target register sections accumulated across the sweep, each carrying that target's findings, coverage, validation result and change-surface membership.
       defaultValue: []
     - name: target_workflow_id
       type: string
       description: The workflow id currently being authored, updated or audited.
     - name: touched_files
       type: array
-      description: Every path under the target that differs from `{base_ref}`, each entry a **whole file**. Diff hunks only discover membership. Empty when the branch has not yet touched this target.
+      description: Every path under the target whose bytes differ from the base ref, each entry a whole file.
     - name: yaml_file
       type: string
       description: The authored file at the manifest entry's path, parsing cleanly and conforming to the schema its kind selects.
@@ -117,7 +117,7 @@ steps:
         actions:
           - action: set
             target: register_sections
-            message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, `{coverage_ledger}` (divergences and evidence), and `{fail_count}`. Appends; never replaces a prior target's section."
+            message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, `{coverage_ledger}` (divergences and evidence), `{fail_count}`, and the target's change-surface membership from `{touched_files}`, `{changed_files}` and `{consumer_surface}` as they stand for this iteration. Appends; never replaces a prior target's section."
 exits:
   - id: done
     isDefault: true

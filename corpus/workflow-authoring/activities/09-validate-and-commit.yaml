@@ -6,9 +6,7 @@ variables:
   reads:
     - audit_findings
     - change_brief_path
-    - changed_files
     - component_git_dir
-    - consumer_surface
     - coverage_ledger
     - fail_count
     - host_repo_path
@@ -24,7 +22,6 @@ variables:
     - scope_manifest_path
     - target_path
     - target_workflow_ids
-    - touched_files
     - workflow_branch
     - worktree_created
   writes:
