@@ -20,6 +20,13 @@
     },
     {
       "check": "dead-output",
+      "site": "meta/techniques/harness-compat/spawn-concurrent.md",
+      "detail": "output 'results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
       "site": "meta/techniques/atlassian-operations/list-confluence-page-descendants.md",
       "detail": "output 'child_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
@@ -239,13 +246,6 @@
       "check": "dead-output",
       "site": "meta/techniques/gitnexus-operations/verify-index.md",
       "detail": "output 'index_stale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "meta/techniques/harness-compat/spawn-concurrent.md",
-      "detail": "output 'results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },

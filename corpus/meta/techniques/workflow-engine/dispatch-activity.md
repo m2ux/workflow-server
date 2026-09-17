@@ -85,7 +85,7 @@ Where the session record and a just-completed worker's `activity_complete` envel
 
 ### accumulate-trace-per-advance
 
-Every `next_activity` returning `_meta.trace_token` has that token appended to `trace_tokens[]` — the first advance of a dispatch, each continuation of a batch ([continue-batch](./continue-batch.md)), and each branch a fan retires ([dispatch-fan](./dispatch-fan.md)). The list is the whole execution history close-out reads, so a token dropped at any of those call sites is history no later reader can recover.
+Every `next_activity` returning `_meta.trace_token` has that token appended to `trace_tokens[]` — the first advance of a dispatch, each continuation of a batch ([continue-batch](./continue-batch.md)), and each branch a fan retires ([retire-branch](../fan/retire-branch.md)). The list is the whole execution history close-out reads, so a token dropped at any of those call sites is history no later reader can recover.
 
 ### resolve-trace-at-close-out
 
@@ -101,7 +101,7 @@ A dispatch produces nothing the user can read while it runs, and a gate arrives 
 
 Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see `batch-is-bounded-by-the-server`. Do not set `context_mode: "persistent"` on worker-dispatched sessions — see `delivery-keys-on-agent-context`.
 
-Where the exit taken is bound to several branches rather than one activity, [dispatch-fan](./dispatch-fan.md) carries them instead: one call opens every branch, they run in one turn under their own identities, and the run continues from the activity they converge on. That operation's width is the destination's, and it is not a batch — a branch takes one activity and is not continued.
+Where the exit taken is bound to several branches rather than one activity, the [fan](../fan/TECHNIQUE.md) group carries them instead: one call opens every branch, they run in one turn under their own identities, and the run continues from the activity they converge on. That group's width is the destination's, and it is not a batch — a branch takes one activity and is not continued.
 
 ### no-get-activity-from-orchestrator
 

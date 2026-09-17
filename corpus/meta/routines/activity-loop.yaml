@@ -83,18 +83,56 @@ steps:
             agent_technique: workflow-engine::activity-worker
             state: variables
       - kind: technique
-        id: dispatch-fan
+        id: enter-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
         technique:
-          name: workflow-engine::dispatch-fan
+          name: fan::enter-fan
           inputs:
             fan_destination: current_activity
             exit_id: "{worker_result.activity_exit}"
             session_index: session_index
+          outputs:
+            barrier_destination: fan_convergence_activity
+      - kind: technique
+        id: spawn-branches
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        technique:
+          name: fan::spawn-branches
+          inputs:
+            branch_list: branch_list
             agent_technique: workflow-engine::activity-worker
             state: variables
           outputs:
-            convergence_activity: fan_convergence_activity
+            branch_envelopes: branch_envelopes
+      - kind: loop
+        id: branch-retirement
+        name: Branch Retirement
+        loopType: forEach
+        variable: current_branch
+        over: branch_list
+        maxIterations: 50
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        steps:
+          - kind: technique
+            id: retire-branch
+            technique:
+              name: fan::retire-branch
+              inputs:
+                branch_activity: current_branch
+                branch_envelope: "{branch_envelopes}"
+                barrier_destination: fan_convergence_activity
+                session_index: session_index
+            actions:
+              - action: set
+                target: trace_tokens
+                description: The token this retirement returned, appended to the run's accumulated tokens.
+      - kind: technique
+        id: persist-the-fan
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        technique:
+          name: workflow-engine::commit-and-persist
+          inputs:
+            activity_id: "{branch_list}"
       - kind: action
         id: advance-past-fan
         when: fan_convergence_activity
