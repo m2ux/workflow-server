@@ -23,7 +23,7 @@ Orchestrator agent identity for this session.
 
 ## Protocol
 
-### 1. Load resources
+### 1. Take the declared resources
 
 - Load resources declared on bundle operations per resource-loading-via-tool
 - Use force-full-after-summarization when the context `{agent_id}` names no longer holds prior deliveries

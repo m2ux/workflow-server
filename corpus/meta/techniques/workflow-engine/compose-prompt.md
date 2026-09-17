@@ -45,7 +45,7 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 - When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context (agent-id-scopes-delivery); `activity_id` names the activity this worker was dispatched for, which the server refuses to guess while several are in flight, so a branch worker that omits it is refused on its first call. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise, because a fresh context needs the bytes
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `get_workflow { session_index }`, which delivers the operations bundle the Direct Apply phase names. Its session is already open and its identity is bound in the block above; this call scopes to neither, and the orchestrator spends `agent_id` on the delivery calls that take one
 
-### 3. Direct Apply
+### 3. Point the agent at its technique
 
 - Instruct the agent to Apply `{agent_technique}` from the returned ops bundle and follow that technique's Protocol and Rules
 - Do not project the technique Protocol into the stub

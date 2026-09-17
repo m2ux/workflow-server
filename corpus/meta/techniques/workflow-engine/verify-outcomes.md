@@ -29,15 +29,15 @@ Array of unsatisfied outcomes
 
 ## Protocol
 
-### 1. Resolve the outcome list
+### 1. Pick the list to measure
 
 - Resolve the outcome list to evaluate: prefer a non-empty `{outcomes}` binding when supplied; otherwise take the outcome each completed client activity reported, which `{execution_trace}` carries per activity. Outcome strings are plain declarative prose — never encode or parse conditional predicates inside them. When a producing step was structurally gated out on the path taken, skip the outcomes that step would have satisfied rather than reporting them as unmet gaps.
 
-### 2. Evaluate each outcome
+### 2. Collect the unmet ones
 
 - For each entry in that list, evaluate satisfaction against `{session_state}`, artifact presence in `planning_folder_path`, and `{execution_trace}`; collect every unmet item into `{gaps}`.
 
-### 3. Report which source the list came from
+### 3. Name the list's provenance
 
 - Report which of the two sources the list came from, so a reader knows whether the run was measured against a list the workflow seeded or against what its activities reported as they completed.
 

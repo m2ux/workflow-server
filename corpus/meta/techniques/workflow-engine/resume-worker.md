@@ -59,7 +59,7 @@ The identity now holding the activity: the one the worker was continued under wh
 - Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, no `effects`, and `{state}` as substitutions with `agent_id` bound to the identity just minted, then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME `{activity_id}`; return that identity with the replacement's envelope
   > Bind `agent_id` to the minted identity rather than the one that is gone — the ledger keyed on the dead context credits the replacement with deliveries it never received.
 
-### 5. Account for the continuation
+### 5. Record the continuation's cost
 
 - Account for this continuation of `{activity_id}` per [account-every-activity](./dispatch-activity.md#account-every-activity).
 

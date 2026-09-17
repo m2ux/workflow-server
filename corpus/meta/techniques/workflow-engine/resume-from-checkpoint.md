@@ -24,7 +24,7 @@ Variable updates carried by the resolved checkpoint.
 - Call `resume_checkpoint { session_index }`; it confirms the orchestrator's `respond_checkpoint` has cleared the active checkpoint before the paused worker proceeds.
   > When `resume_checkpoint` returns `no active checkpoint` or `checkpoint is still active`, the checkpoint is not yet resolved: wait for the resume prompt to arrive before calling again.
 
-### 2. Apply the effects and continue
+### 2. Carry the effects into the walk
 
 - Apply `{effects}` to local state and continue from the paused step.
 

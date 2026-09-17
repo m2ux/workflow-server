@@ -45,19 +45,19 @@ Full path to the created `README.md`
 
 ## Protocol
 
-### 1. Load the Template
+### 1. Take the planning Template
 
 - Load [Template](/meta/resources/planning-readme.md#template).
 
-### 2. Load the seed profile
+### 2. Take the workflow's seed
 
 - Load the readme-seed profile named by `{seed_profile}`.
 
-### 3. Populate the header and Links
+### 3. Fill the header and Links
 
 - Populate the header (title, classifier from seed + `{entity_context}`, date, lifecycle Status), Executive Summary placeholder, and Links table (seed defaults merged with `{entity_context}` URLs when present), each per its entry in [Rules](/meta/resources/planning-readme.md#rules).
 
-### 4. Seed the Progress table
+### 4. Lay in the Progress rows
 
 - Replace the Progress table body with the seed profile's Progress inventory rows as authored (icons from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Insert any seed-declared append H2 sections after Solution Overview and before Progress.
 
@@ -65,7 +65,7 @@ Full path to the created `README.md`
 
 - Apply the seed profile's mode-exclusion map using `{is_review_mode}` and/or `{operation_type}` when bound (else implement/create defaults on the profile), per [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
 
-### 6. Write the README
+### 6. Land the file in the folder
 
 - Write the populated `README.md` to `{planning_folder_path}/README.md`, and return that location as `{created_readme}`.
 

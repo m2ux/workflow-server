@@ -71,7 +71,7 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 - Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `holds_prior_deliveries: false` and [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME advanced `{activity_id}`, and return that identity with the replacement's envelope. Holding no prior deliveries, the replacement takes the advanced activity in full
 
-### 6. Account for the activity
+### 6. Record the activity's cost
 
 - Account for `{activity_id}` — this activity of the batch — per [account-every-activity](./dispatch-activity.md#account-every-activity).
 

@@ -73,15 +73,15 @@ Whether this context may take another activity, folded from the input of the sam
 
 ## Protocol
 
-### 1. Compile the envelope
+### 1. Fold the activity's results together
 
 - Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Include `{selected_exit}` if a checkpoint effect named an exit.
 
-### 2. Resolve the next activity
+### 2. Read where the run goes next
 
 - Resolve the next activity: with the current activity definition and its `exit_destinations` both in hand from `get_activity`, and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope. Do not omit these fields: the delivery they were resolved from reached this context and no other, so an omission cannot be recovered later.
 
-### 3. Return the envelope
+### 3. Hand the envelope back
 
 - Return `{activity_result}`.
 

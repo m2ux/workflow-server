@@ -24,7 +24,7 @@ Activity that just completed.
 - Resolve the Progress moment from [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites): if `{mark_progress_na}` is true, use path-skip / cancel / mark N/A; otherwise use `activity_complete`. Apply [sync-progress-status](./sync-progress-status.md)(*activity_id*={activity_id}, *planning_folder_path*={planning_folder_path}, *target_status*=that moment's status, with its overwrite defaults per [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy)). Do not restate [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). When `{mark_progress_na}` was true, set it false after the Apply.
   > Apply [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile) when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
 
-### 2. Set the lifecycle Status line
+### 2. Mark the lifecycle milestone
 
 - Set the header-line `**Status:**` to the current lifecycle milestone for that workflow (text — distinct from Progress Status; see [Progress table](/meta/resources/planning-readme.md#progress-table)).
   > Where the README already carries both marks, leave its content equivalent and still include the file in the engineering commit — an earlier edit may be local only.
@@ -40,11 +40,11 @@ Activity that just completed.
   > - Otherwise apply [commit-regular-files](../version-control/commit-regular-files.md) — the artifacts are ordinary files of the host checkout.
   > - Where the host branch accepts changes only through pull requests, the parent's submodule-pointer bump lands in a PR; a direct push to that branch is refused, and the engineering push above already satisfies this step without it.
 
-### 5. Confirm the push landed
+### 5. Prove the remote holds it
 
 - Confirm the engineering push landed (remote tracking branch includes the new commit). If push failed, retry once; if still failing, surface the error and do not advance to the next activity.
 
-### 6. Emit the run status
+### 6. Publish what the activity delivered
 
 - Emit the run status, filling the [Template](/meta/resources/run-status.md#template) and honouring the [Rules](/meta/resources/run-status.md#rules) beneath it. This is the last phase, after the push is confirmed, so every link the emission publishes points at an artifact the remote already holds.
 

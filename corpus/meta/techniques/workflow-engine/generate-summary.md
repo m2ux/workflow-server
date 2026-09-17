@@ -25,7 +25,7 @@ Completed activities, checkpoint decisions, and artifacts produced.
 
 ## Protocol
 
-### 1. Compose the summary
+### 1. Write the session's record
 
 - Fill the [Session Summary Template](/meta/resources/session-summary-template.md#session-summary-template) from `{workflow_definition}` and `{execution_trace}`, honouring the fill rules stated beneath it. Return the assembled markdown as `{completion_summary}`.
 

@@ -75,11 +75,11 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
   > - When the harness reports the worker ended without returning an envelope, dispatch a fresh worker for the same `{activity_id}`, which mints its own identity.
   > - When the harness still reports the worker live and what came back is not an accepted result (reject-partial-worker-result), apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` with explicit instructions to finish what the result left undone and return the envelope.
 
-### 5. Account for the activity
+### 5. Record the activity's cost
 
 - Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
 
-### 6. Reconcile the critical variables
+### 6. Settle what the orchestrator routes on
 
 - Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
 

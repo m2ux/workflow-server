@@ -21,11 +21,11 @@ ID of the checkpoint being yielded — the activity YAML `id`, or `<baseId>#<ins
 
 ## Protocol
 
-### 1. Choose the checkpoint id and yield
+### 1. Yield the gate
 
 - Choose `{checkpoint_id}`: the activity YAML `id` as written for one-shot gates and for loop-body gates whose first answer should apply to every later iteration; for loop-body gates that need a distinct user decision per iteration, use `<baseId>#<instance>` (base id before `#`, plus a stable per-iteration discriminator — expand a declared `#{...}` template, or use the loop item's id/slug). Call `yield_checkpoint { session_index, checkpoint_id }`.
 
-### 2. Branch on the response status
+### 2. Pause or continue
 
 - Branch on the response `status`
   - **`yielded`** — the gate is recorded as the session's active checkpoint. Emit the `{yielded_checkpoint}` `<checkpoint_yield>` block (no payload required — the active checkpoint is server-resident and is read by the orchestrator via `present_checkpoint`). STOP — make no further tool calls until the orchestrator resumes you.

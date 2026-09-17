@@ -37,7 +37,7 @@ Worker agent identity for this dispatch.
 - Follow the operations bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
 - Read `may_continue` from the `batch:` block leading that response — this context's standing against its bound ([batch-ends-where-the-server-says](#batch-ends-where-the-server-says))
 
-### 2. Load resources
+### 2. Take the declared resources
 
 - Load resources per resource-loading-via-tool
 - Use force-full-after-summarization when this context no longer holds prior deliveries
@@ -47,7 +47,7 @@ Worker agent identity for this dispatch.
 - Open the activity at its first step
   > When `{effects}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) and carry on from the paused step instead. The remaining steps and the envelope are owed either way — a gate pauses the walk, it does not end it.
 
-### 4. Execute steps
+### 4. Walk the activity's steps
 
 - Execute each activity step in document order
 - Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content

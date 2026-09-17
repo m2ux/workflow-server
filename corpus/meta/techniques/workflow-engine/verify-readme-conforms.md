@@ -37,7 +37,7 @@ array of header-block fields missing or renamed relative to [Template](/meta/res
 
 ## Protocol
 
-### 1. Read the README
+### 1. Open the planning README
 
 - Read `{planning_folder_path}/README.md`. If absent, re-apply [create-readme](./create-readme.md) with the bound `{seed_profile}` (required when re-seeding) before continuing; confirm the returned `{created_readme}` path exists.
 
@@ -45,7 +45,7 @@ array of header-block fields missing or renamed relative to [Template](/meta/res
 
 - Load [Template](/meta/resources/planning-readme.md#template). When `{seed_profile}` is bound, load that profile and union any declared append H2 titles into the required section set.
 
-### 3. Compare the README against it
+### 3. Find the drift
 
 - Extract H1/H2 sections from the README. Compare H2s against the required set (Template H2s plus seed appends). Compare the header blockquote against Template header fields (classifier · Created · **Status:**).
 
