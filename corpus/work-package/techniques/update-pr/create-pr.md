@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ URL to the PR
 
 ### 1. Prepare PR Inputs
 
-- BEFORE creating the PR: honor [push-before-linking](../manage-artifacts/TECHNIQUE.md#push-before-linking) for `{planning_folder_path}`.
+- BEFORE creating the PR: honor manage-artifacts.push-before-linking for `{planning_folder_path}`.
 - Compose the PR title and body using the [Template (Initial)](../../resources/pr-description.md#template-initial). Reference `{issue_number}` per `{issue_platform}` (GitHub `#N` vs Jira `KEY-N`).
 
 ### 2. Create Draft PR

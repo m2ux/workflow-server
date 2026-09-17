@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -33,4 +33,4 @@ A clean guard is evidence only for the form that guard matches. Two known blind 
 
 ### guard-green-is-not-canon-green
 
-`{fail_count}` zero never implies the criteria walk is complete or that `{open_finding_count}` may be treated as zero. Canon coverage is decided only by `{coverage_ledger}` under [audit-canon](./audit-canon.md) (including [walked-requires-evidence](./audit-canon.md#walked-requires-evidence)). Description-hygiene and other mechanical nets catch a subset of Detect; they do not replace the Description Hygiene enumeration unit.
+`{fail_count}` zero never implies the criteria walk is complete or that `{open_finding_count}` may be treated as zero. Canon coverage is decided only by `{coverage_ledger}` under [audit-canon](./audit-canon.md) (including audit-canon.walked-requires-evidence). Description-hygiene and other mechanical nets catch a subset of Detect; they do not replace the Description Hygiene enumeration unit.

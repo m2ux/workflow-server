@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 ## Capability
@@ -11,11 +11,11 @@ Harness-specific invoke details for `harness_kind: cursor`. Catalogue of alterna
 
 ### spawn
 
-- Cursor exposes the Claude Code agent primitive across CLI, IDE and web, so the invoke is [claude-code](./claude-code.md)::[spawn](./claude-code.md#spawn) unchanged, `run_in_background` included.
+- Cursor exposes the Claude Code agent primitive across CLI, IDE and web, so the invoke is claude-code.spawn unchanged, `run_in_background` included.
 
 ### resume
 
-- Cursor exposes the Claude Code resume primitive, so the invoke and the signal that discharges the wait are [claude-code](./claude-code.md)::[resume](./claude-code.md#resume) unchanged.
+- Cursor exposes the Claude Code resume primitive, so the invoke and the signal that discharges the wait are claude-code.resume unchanged.
 
 ### concurrent
 

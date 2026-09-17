@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -29,4 +29,4 @@ Boolean gate — true iff `{open_assumptions}` is non-empty.
 3. Assign a risk letter (**H** / **M** / **L**) from the classification vocabulary; treat **H** as requiring validation before proceeding and **M** as checkpoint-confirmable for the current task
 4. If no significant assumptions are identified, record a single null row in the log (`No significant assumptions ([reason])`) and proceed — do not prompt the user to confirm a null result
 5. Append collected assumptions to the `{assumptions_log}` (or start a fresh log if none exists) as one table row each — ID, phase, category, risk, statement with rationale — per the [log template](../../resources/assumptions-review.md#assumptions-log-template); record alternatives considered for architectural assumptions (they become the decision space if the assumption stays open)
-6. Write Open Assumptions entries to the [markdown-line-breaks](../manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule
+6. Write Open Assumptions entries to the manage-artifacts.markdown-line-breaks rule

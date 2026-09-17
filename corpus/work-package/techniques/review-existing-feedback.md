@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -66,7 +66,7 @@ Every prior comment and review thread receives an explicit Confirmed / Refuted /
 
 ### confirmed-blocker-sets-the-cap
 
-A blocker-class concern dispositioned Confirmed sets `{rating_cap}` to the request-changes tier, and a triage that surfaced few concerns does not soften it. How the rendered Overall Rating then relates to the cap is [rating-cap-carve-in](./review-summary.md#rating-cap-carve-in), which this pass has not seen the findings to decide.
+A blocker-class concern dispositioned Confirmed sets `{rating_cap}` to the request-changes tier, and a triage that surfaced few concerns does not soften it. How the rendered Overall Rating then relates to the cap is review-summary.rating-cap-carve-in, which this pass has not seen the findings to decide.
 
 ### single-ingest-of-reported-failures
 

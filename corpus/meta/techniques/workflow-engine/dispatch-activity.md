@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.29.0
+  version: 1.30.0
 ---
 
 ## Capability
@@ -129,7 +129,7 @@ Workflow orchestrators NEVER call `get_activity`.
 
 ### no-pre-load-techniques
 
-NEVER call `get_technique` to pre-load techniques for the worker. Step techniques load on the worker via [progressive-step-technique-load](./activity-worker.md#progressive-step-technique-load).
+NEVER call `get_technique` to pre-load techniques for the worker. Step techniques load on the worker via activity-worker.progressive-step-technique-load.
 
 ### delivery-keys-on-agent-context
 

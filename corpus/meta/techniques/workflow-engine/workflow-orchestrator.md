@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.11.0
+  version: 1.12.0
 ---
 
 ## Capability
@@ -32,7 +32,7 @@ Orchestrator agent identity for this session.
 
 - Call `get_workflow_status { session_index }`
 - Dispatch `current_activity` when set, otherwise the `initialActivity` that `get_workflow` returns, via [dispatch-activity](./dispatch-activity.md). A session that has not entered an activity reports none, so the workflow's own first activity is the only id to reach for; a session part-way through reports the cursor to resume on
-- Always dispatch a worker — never execute activity steps inline ([no-inline-on-resume](../orchestrator-conduct.md#no-inline-on-resume), [no-domain-work](../orchestrator-conduct.md#no-domain-work))
+- Always dispatch a worker — never execute activity steps inline (orchestrator-conduct.no-inline-on-resume, orchestrator-conduct.no-domain-work)
 
 ### 3. Run the activity
 
@@ -51,10 +51,10 @@ Orchestrator agent identity for this session.
 
 ### 6. Enter the destination
 
-- On `{worker_result.next_activity_fans}`, release the worker's identity ([delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context)) and enter the destination via [dispatch-fan](./dispatch-fan.md)
+- On `{worker_result.next_activity_fans}`, release the worker's identity (dispatch-activity.delivery-keys-on-agent-context) and enter the destination via [dispatch-fan](./dispatch-fan.md)
 - On `{worker_result.batch_may_continue}` with a non-null `{worker_result.next_activity_id}` that is a single activity, apply [continue-batch](./continue-batch.md) to advance that same worker onto the routed activity
 - Otherwise release the worker's identity and enter the routed activity via [dispatch-activity](./dispatch-activity.md)
-  > - A fan is not a batch: each branch takes one activity under its own identity, and this worker is not continued onto it ([dispatch-topology](./dispatch-activity.md#dispatch-topology)).
+  > - A fan is not a batch: each branch takes one activity under its own identity, and this worker is not continued onto it (dispatch-activity.dispatch-topology).
   > - Entering a destination opens the next turn of the loop — run it, persist it, route it, enter what it routes to — until the session reports no activity following.
 
 ## Rules
@@ -69,8 +69,8 @@ The server restores session state on attach. Read it rather than rebuilding it f
 
 ### orchestrator-worker-boundaries
 
-Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), [batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server), [resume-preserves-delivery-scope](../harness-compat/continue-agent.md#resume-preserves-delivery-scope), and [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile).
+Honor dispatch-activity.no-get-activity-from-orchestrator, dispatch-activity.no-pre-load-techniques, dispatch-activity.delivery-keys-on-agent-context, dispatch-activity.batch-is-bounded-by-the-server, continue-agent.resume-preserves-delivery-scope, and dispatch-activity.distrust-then-reconcile.
 
 ### resolve-trace-at-close-out
 
-At client finalize / retrospective close-out, honor [resolve-trace-at-close-out](./dispatch-activity.md#resolve-trace-at-close-out).
+At client finalize / retrospective close-out, honor dispatch-activity.resolve-trace-at-close-out.

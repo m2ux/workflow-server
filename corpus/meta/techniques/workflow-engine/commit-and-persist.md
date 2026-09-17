@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.17.0
+  version: 1.18.0
 ---
 
 ## Capability
@@ -22,7 +22,7 @@ Activity that just completed.
 ### 1. Mark Progress for the completed activity
 
 - Resolve the Progress moment from [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites): if `{mark_progress_na}` is true, use path-skip / cancel / mark N/A; otherwise use `activity_complete`. Apply [sync-progress-status](./sync-progress-status.md)(*activity_id*={activity_id}, *planning_folder_path*={planning_folder_path}, *target_status*=that moment's status, with its overwrite defaults per [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy)). Do not restate [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). When `{mark_progress_na}` was true, set it false after the Apply.
-  > Apply [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile) when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
+  > Apply dispatch-activity.distrust-then-reconcile when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
 
 ### 2. Mark the lifecycle milestone
 
@@ -55,7 +55,7 @@ Activity that just completed.
 After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities.
 
 - Skip the engineering commit only where the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows its intended post-activity status on the remote — complete, or cancelled/N/A where `{mark_progress_na}` applied, per [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary).
-- Scope: this orchestrator post-activity hook only. Ad-hoc commits outside it are [explicit-commit](../version-control/TECHNIQUE.md#explicit-commit); the meta workflow's own setup sequence has its own cadence, setup-sequence-persists-once.
+- Scope: this orchestrator post-activity hook only. Ad-hoc commits outside it are version-control.explicit-commit; the meta workflow's own setup sequence has its own cadence, setup-sequence-persists-once.
 
 ### setup-sequence-persists-once
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Array of artifact entries (`id`, `name`, `path`).
 
 ### batch_may_continue
 
-Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity ([batch-ends-where-the-server-says](./activity-worker.md#batch-ends-where-the-server-says)). The envelope is the only place this answer appears again, so it is read here and carried there unchanged.
+Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity (activity-worker.batch-ends-where-the-server-says). The envelope is the only place this answer appears again, so it is read here and carried there unchanged.
 
 ## Outputs
 
@@ -69,7 +69,7 @@ The exit id this activity took, from evaluate-transition, or `workflow_complete`
 
 #### batch_may_continue
 
-Whether this context may take another activity, folded from the input of the same name. Required on every successful `activity_complete`: the server answered it for this context and the envelope is the only report of that answer ([batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server)).
+Whether this context may take another activity, folded from the input of the same name. Required on every successful `activity_complete`: the server answered it for this context and the envelope is the only report of that answer (dispatch-activity.batch-is-bounded-by-the-server).
 
 ## Protocol
 

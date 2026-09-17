@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.0.0
+  version: 6.1.0
 ---
 
 ## Capability
@@ -39,7 +39,7 @@ Domain-specific tools may ONLY be invoked from operations bundled into the curre
 
 ### operational-discipline-resources-via-tool
 
-Workflow resources reach an agent from the server. Load them per [resource-loading-via-tool](./workflow-engine/TECHNIQUE.md#resource-loading-via-tool) rather than reading resource files from disk.
+Workflow resources reach an agent from the server. Load them per workflow-engine.resource-loading-via-tool rather than reading resource files from disk.
 
 ### operational-discipline-artifact-location
 

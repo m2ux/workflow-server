@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -72,4 +72,4 @@ Do not emit a remediation instruction for a row whose claim has not been re-deri
 
 ### empty-evidence-is-a-gap
 
-A coverage row marked `walked` without the evidence list [walked-requires-evidence](./audit-canon.md#walked-requires-evidence) demands sets `{has_coverage_gap}` true. Narrative completeness is not coverage.
+A coverage row marked `walked` without the evidence list audit-canon.walked-requires-evidence demands sets `{has_coverage_gap}` true. Narrative completeness is not coverage.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -59,4 +59,4 @@ Skip formal test plan for: simple bug fixes with obvious test cases, documentati
 
 ### structure-and-fill
 
-The artifact's section set, its table shape, its test-ID and test-case forms, its acceptance matrix and its content boundaries are the guide's [Rules](../resources/test-plan.md#rules). Symbol and test hyperlinks follow [manage-artifacts](./manage-artifacts/TECHNIQUE.md#hyperlink-conventions).
+The artifact's section set, its table shape, its test-ID and test-case forms, its acceptance matrix and its content boundaries are the guide's [Rules](../resources/test-plan.md#rules). Symbol and test hyperlinks follow manage-artifacts.hyperlink-conventions.

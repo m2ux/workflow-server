@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -31,4 +31,4 @@ This session's file on disk is the server's own store rather than a read surface
 
 ### trace-is-not-the-only-witness
 
-A worker's `activity_complete` envelope holds ground truth from its own user interaction, so where the record and a just-completed envelope disagree on a value an orchestrator decision rests on, apply [dispatch-activity](./dispatch-activity.md#distrust-then-reconcile).
+A worker's `activity_complete` envelope holds ground truth from its own user interaction, so where the record and a just-completed envelope disagree on a value an orchestrator decision rests on, apply dispatch-activity.distrust-then-reconcile.

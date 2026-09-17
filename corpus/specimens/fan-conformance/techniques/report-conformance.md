@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -59,21 +59,21 @@ What the run did, shaped by [Template](../resources/conformance-report.md#templa
 
 ### 1. Read The Containers Whole
 
-- Read `{survey_files_outputs}`, `{survey_history_outputs}`, `{survey_tree_outputs}` and `{probe_directory_outputs}` as they stand. Each holds one slot per branch in the order its collection named, so the correspondence is the container's own order — do not index a slot by a position authored here, per [a-container-is-read-by-its-order](../resources/conformance-report.md#a-container-is-read-by-its-order).
+- Read `{survey_files_outputs}`, `{survey_history_outputs}`, `{survey_tree_outputs}` and `{probe_directory_outputs}` as they stand. Each holds one slot per branch in the order its collection named, so the correspondence is the container's own order — do not index a slot by a position authored here, per conformance-report.a-container-is-read-by-its-order.
 
 ### 2. Report Each Fan's Shape
 
 - For the first destination, record all three of its members together. The two written as bare ids fill one slot each; the one written as an instance fan fills one slot per entry of `{survey_plan.roots}`, reporting the root it walked at `tree_survey.root`. They are one fan of four branches rather than two fans, so they share one row of the overlap table's summary.
-- For the probe fan, record one row per entry of `{probe_targets}`: the entry's id, the `probe_id` the slot reports back, and whether the two agree. A slot reporting a designator other than the one its unit was handed is the finding this run exists to catch, and [a-mismatch-is-not-reconciled](../resources/conformance-report.md#a-mismatch-is-not-reconciled) governs how the row is written.
+- For the probe fan, record one row per entry of `{probe_targets}`: the entry's id, the `probe_id` the slot reports back, and whether the two agree. A slot reporting a designator other than the one its unit was handed is the finding this run exists to catch, and conformance-report.a-mismatch-is-not-reconciled governs how the row is written.
 
 ### 3. Record Which Forms The Run Reached
 
-- Fill the forms table against the graph as it is written, marking a form reached only where this run opened it. The route past the note writers leaves the forms that stage carries unreached, and [a-form-not-reached-is-recorded-as-not-reached](../resources/conformance-report.md#a-form-not-reached-is-recorded-as-not-reached) governs how those rows are written.
+- Fill the forms table against the graph as it is written, marking a form reached only where this run opened it. The route past the note writers leaves the forms that stage carries unreached, and conformance-report.a-form-not-reached-is-recorded-as-not-reached governs how those rows are written.
 
 ### 4. Report The Overlap
 
 - Put every branch's `started_at` and `finished_at` on one axis against `{run_started_at}` and state, per fan, whether the branches' intervals overlap.
-- Overlapping intervals are a batch; intervals that abut end-to-start are a queue, meaning the branches ran one after another. Both are outcomes the routing permits, and [state-the-reading-not-the-design](../resources/conformance-report.md#state-the-reading-not-the-design) governs how each is written.
+- Overlapping intervals are a batch; intervals that abut end-to-start are a queue, meaning the branches ran one after another. Both are outcomes the routing permits, and conformance-report.state-the-reading-not-the-design governs how each is written.
 - For the first destination, say separately whether its bare members overlapped its fanned instances. Members of one kind running together while the two kinds run in sequence is a queue at the destination's own grain, and the summary row alone would not show it.
 - Record the wall clock each fan took as the span from its earliest branch start to its latest branch finish, and the total of the branches' own durations beside it. The difference between the two is what the batch bought.
 
