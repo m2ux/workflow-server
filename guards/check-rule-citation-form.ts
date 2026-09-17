@@ -71,7 +71,9 @@ export function declaredRules(text: string): Set<string> {
   const section = RULES_SECTION.exec(text);
   if (!section) return new Set();
   const slugs = new Set<string>();
-  for (const m of section[1].matchAll(RULE_HEADING)) slugs.add(m[1]);
+  for (const m of (section[1] ?? '').matchAll(RULE_HEADING)) {
+    if (m[1]) slugs.add(m[1]);
+  }
   return slugs;
 }
 
@@ -109,6 +111,7 @@ export function ruleCitations(
     if (fenced.has(i)) continue;
     for (const m of line.matchAll(RULE_LINK)) {
       const [, linkText, dest, anchor] = m;
+      if (linkText === undefined || dest === undefined || anchor === undefined) continue;
       const targetAbs = dest === '' ? citerAbs : resolve(dirname(citerAbs), dest);
       if (!rulesOf(targetAbs).has(anchor)) continue;
       out.push({ line: i + 1, text: linkText, anchor, targetAbs });

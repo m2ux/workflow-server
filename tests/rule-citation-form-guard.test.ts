@@ -89,7 +89,7 @@ describe('ruleCitations', () => {
     const text = 'per [account-every-activity](#account-every-activity)\n';
     const found = ruleCitations(text, OP, rulesOf);
     expect(found).toHaveLength(1);
-    expect(found[0].targetAbs).toBe(OP);
+    expect(found[0]?.targetAbs).toBe(OP);
   });
 
   it('passes over an anchor that is not a rule on the target', () => {
@@ -104,7 +104,7 @@ describe('ruleCitations', () => {
 
   it('reports the line each citation sits on', () => {
     const text = ['intro', '', 'per [account-every-activity](#account-every-activity)'].join('\n');
-    expect(ruleCitations(text, OP, rulesOf)[0].line).toBe(3);
+    expect(ruleCitations(text, OP, rulesOf)[0]?.line).toBe(3);
   });
 
   it('finds every citation on one line', () => {
