@@ -161,9 +161,11 @@ describe('resolution — where a reference looks', () => {
     expect(errors.join('\n')).toMatch(/Activity 'host'.*nonesuch.*or 'meta'/s);
   });
 
-  it('refuses a second separator, naming the one-separator rule', async () => {
+  it('reads a multi-segment reference as a namespace path, and names it when nothing is there', async () => {
+    // `a::b::c` is the routine `c` in the namespace `a/b`, so the refusal is an unresolved name in
+    // one place rather than a grammar complaint about the second separator.
     const errors = await activityErrors({ activities: [host({ routine: 'a::b::c' })] });
-    expect(errors.join('\n')).toMatch(/carries 2 separators.*no group grammar/s);
+    expect(errors.join('\n')).toMatch(/unresolved routine 'a::b::c'.*routines\/c\.yaml in 'a\/b'/s);
   });
 });
 

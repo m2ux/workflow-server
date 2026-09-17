@@ -54,23 +54,31 @@ const INTERVIEW = routine({
   ] as Step[],
 });
 
-describe('parseRoutineRef — one separator at most', () => {
+describe('parseRoutineRef — the last segment is the routine', () => {
   it('reads a bare name', () => {
     expect(parseRoutineRef('assumption-interview', 'ctx')).toEqual({ name: 'assumption-interview' });
   });
 
-  it('reads a workflow-qualified name', () => {
+  it('reads a namespace-qualified name', () => {
     expect(parseRoutineRef('work-package::assumption-interview', 'ctx'))
-      .toEqual({ workflowId: 'work-package', name: 'assumption-interview' });
+      .toEqual({ namespace: 'work-package', name: 'assumption-interview' });
+  });
+
+  it('reads every segment before the last as the namespace path', () => {
+    // A routine has no group grammar, so the name is one segment and the rest spells where it
+    // lives — which is how a reference reaches a namespace the corpus holds below the root without
+    // any corpus being consulted to find the boundary.
+    expect(parseRoutineRef('support::gitnexus::probe-index', 'ctx'))
+      .toEqual({ namespace: 'support/gitnexus', name: 'probe-index' });
   });
 
   it.each([
-    ['a::b::c', 2],
-    ['work-package::', 1],
-    ['::name', 1],
-  ])('refuses %s, naming the one-separator rule', (ref) => {
+    ['work-package::'],
+    ['::name'],
+    ['a::::b'],
+  ])('refuses %s, naming what a reference is', (ref) => {
     expect(() => parseRoutineRef(ref, "Activity 'host'")).toThrow(RoutineResolutionError);
-    expect(() => parseRoutineRef(ref, "Activity 'host'")).toThrow(/no group grammar/);
+    expect(() => parseRoutineRef(ref, "Activity 'host'")).toThrow(/carries an empty segment/);
   });
 });
 

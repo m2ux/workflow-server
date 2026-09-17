@@ -1,4 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { qualifyResourceId, parseResourceRef, extractResourceIds } from '../src/utils/resource-ref.js';
 
 describe('extractResourceIds', () => {
@@ -43,5 +46,43 @@ describe('qualifyResourceId (PR366-TC-20)', () => {
     const q = qualifyResourceId('bootstrap-protocol#steps', 'meta', 'work-package');
     expect(q).toBe('meta/bootstrap-protocol#steps');
     expect(parseResourceRef(q).section).toBe('steps');
+  });
+});
+
+describe('parseResourceRef — where the namespace ends', () => {
+  let root: string;
+
+  beforeAll(() => {
+    root = mkdtempSync(join(tmpdir(), 'resource-ns-'));
+    mkdirSync(join(root, 'support', 'gitnexus', 'resources'), { recursive: true });
+    mkdirSync(join(root, 'meta', 'resources'), { recursive: true });
+  });
+
+  afterAll(() => rmSync(root, { recursive: true, force: true }));
+
+  it('takes the first segment when no corpus says otherwise', () => {
+    // The spelling a namespace at the corpus root has always had, and the answer every caller
+    // holding no corpus gets.
+    expect(parseResourceRef('meta/bootstrap-protocol'))
+      .toEqual({ namespace: 'meta', id: 'bootstrap-protocol', section: undefined });
+    expect(parseResourceRef('support/gitnexus/index-reading'))
+      .toEqual({ namespace: 'support', id: 'gitnexus/index-reading', section: undefined });
+  });
+
+  it('takes the longest run naming a namespace when a corpus is supplied', () => {
+    expect(parseResourceRef('support/gitnexus/index-reading', root))
+      .toEqual({ namespace: 'support/gitnexus', id: 'index-reading', section: undefined });
+    expect(parseResourceRef('gitnexus/index-reading', root))
+      .toEqual({ namespace: 'support/gitnexus', id: 'index-reading', section: undefined });
+  });
+
+  it('keeps a section anchor across either reading', () => {
+    expect(parseResourceRef('support/gitnexus/index-reading#freshness', root))
+      .toEqual({ namespace: 'support/gitnexus', id: 'index-reading', section: 'freshness' });
+  });
+
+  it('names no namespace where no leading run spells one', () => {
+    expect(parseResourceRef('nowhere/at-all', root))
+      .toEqual({ namespace: undefined, id: 'nowhere/at-all', section: undefined });
   });
 });

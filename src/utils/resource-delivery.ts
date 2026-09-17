@@ -27,8 +27,8 @@ export async function loadResourceDelivery(
   resourceId: string,
   sessionIndex: string,
 ): Promise<{ success: true; value: LoadedResourceDelivery } | { success: false; error: Error }> {
-  const parsed = parseResourceRef(resourceId);
-  const targetWorkflow = parsed.workflowId ?? sessionWorkflowId;
+  const parsed = parseResourceRef(resourceId, workflowDir);
+  const targetWorkflow = parsed.namespace ?? sessionWorkflowId;
   const result = await readResourceStructured(workflowDir, targetWorkflow, parsed.id);
   if (!result.success) {
     return { success: false, error: result.error instanceof Error ? result.error : new Error(String(result.error)) };

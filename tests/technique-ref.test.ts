@@ -8,7 +8,7 @@ import { composeActivityTechnique, readTechnique, resolveTechniques } from '../s
 import { writeWorkflowFixture } from './corpus-fixture.js';
 
 /**
- * The one rule a technique reference resolves by: `[workflow::]technique[::nested…]`, with the
+ * The one rule a technique reference resolves by: `[namespace::]technique[::nested…]`, with the
  * leading segment naming a workflow when the corpus declares one of that name.
  */
 describe('technique reference rule', () => {
@@ -45,53 +45,53 @@ describe('technique reference rule', () => {
   describe('what a leading segment names', () => {
     it('reads it as a workflow when the corpus declares one of that name', () => {
       expect(parseTechniqueRef('shared-wf::standalone', index))
-        .toMatchObject({ workflowId: 'shared-wf', segments: ['standalone'] });
+        .toMatchObject({ namespace: 'shared-wf', segments: ['standalone'] });
     });
 
     it('reads it as a workflow whether or not that workflow carries techniques yet', () => {
       // `bare-wf` holds no techniques/ directory, and local-wf holds a group folder of that name:
       // the reference names the workflow, so the local group is not what it addresses.
       expect(parseTechniqueRef('bare-wf::operation', index))
-        .toMatchObject({ workflowId: 'bare-wf', segments: ['operation'] });
+        .toMatchObject({ namespace: 'bare-wf', segments: ['operation'] });
     });
 
     it('reads it as a group when the corpus declares no such workflow', () => {
       expect(parseTechniqueRef('group::operation', index))
-        .toMatchObject({ workflowId: undefined, segments: ['group', 'operation'] });
+        .toMatchObject({ namespace: undefined, segments: ['group', 'operation'] });
     });
 
     it('reads a bare name as a technique in the referring workflow', () => {
       expect(parseTechniqueRef('standalone', index))
-        .toMatchObject({ workflowId: undefined, segments: ['standalone'] });
+        .toMatchObject({ namespace: undefined, segments: ['standalone'] });
     });
 
     it('takes a workflow prefix only when a segment follows it', () => {
       expect(parseTechniqueRef('shared-wf', index))
-        .toMatchObject({ workflowId: undefined, segments: ['shared-wf'] });
+        .toMatchObject({ namespace: undefined, segments: ['shared-wf'] });
     });
   });
 
   describe('depth', () => {
     it('admits a path of any depth inside a workflow', () => {
       expect(parseTechniqueRef('group::subgroup::operation', index))
-        .toMatchObject({ workflowId: undefined, segments: ['group', 'subgroup', 'operation'] });
+        .toMatchObject({ namespace: undefined, segments: ['group', 'subgroup', 'operation'] });
     });
 
     it('admits a workflow prefix before a nested path', () => {
       expect(parseTechniqueRef('shared-wf::group::subgroup::operation', index))
-        .toMatchObject({ workflowId: 'shared-wf', segments: ['group', 'subgroup', 'operation'] });
+        .toMatchObject({ namespace: 'shared-wf', segments: ['group', 'subgroup', 'operation'] });
     });
   });
 
   describe('the slash spelling of a workflow prefix', () => {
     it('names the workflow, and the rest is the path within it', () => {
       expect(parseTechniqueRef('shared-wf/group::operation', index))
-        .toMatchObject({ workflowId: 'shared-wf', segments: ['group', 'operation'] });
+        .toMatchObject({ namespace: 'shared-wf', segments: ['group', 'operation'] });
     });
 
     it('names a workflow whether or not the corpus holds one', () => {
       expect(parseTechniqueRef('no-such-wf/standalone', index))
-        .toMatchObject({ workflowId: 'no-such-wf', segments: ['standalone'] });
+        .toMatchObject({ namespace: 'no-such-wf', segments: ['standalone'] });
     });
   });
 
@@ -103,7 +103,7 @@ describe('technique reference rule', () => {
         try {
           parseTechniqueRef(ref, index);
         } catch (error) {
-          expect((error as Error).message).toContain('[workflow::]technique[::nested…]');
+          expect((error as Error).message).toContain('[namespace::]technique[::nested…]');
         }
       });
     }
@@ -159,6 +159,51 @@ describe('technique reference rule', () => {
       const composed = await composeActivityTechnique('shared-wf/standalone', root, 'local-wf', 'an-activity');
       expect(composed.success).toBe(true);
       if (composed.success) expect(composed.value.techniqueId).toBe('shared-wf/standalone');
+    });
+  });
+
+  describe('a namespace that declares no workflow', () => {
+    let libRoot: string;
+
+    beforeAll(() => {
+      libRoot = mkdtempSync(join(tmpdir(), 'technique-ns-'));
+      // A library under a grouping folder, with no definition beside it, and a workflow to refer
+      // from. The grouping folder holds no library of its own, so it names nothing.
+      technique(join(libRoot, 'support', 'gitnexus'), 'analyze');
+      const client = writeWorkflowFixture(libRoot, 'client-wf');
+      technique(client, 'standalone');
+      writeWorkflowFixture(libRoot, 'meta');
+    });
+
+    afterAll(() => rmSync(libRoot, { recursive: true, force: true }));
+
+    it('reads its name, and the path reaching it, as the same namespace', () => {
+      const index = indexCorpus(libRoot);
+      expect(parseTechniqueRef('gitnexus::analyze', index))
+        .toMatchObject({ namespace: 'support/gitnexus', segments: ['analyze'] });
+      expect(parseTechniqueRef('support::gitnexus::analyze', index))
+        .toMatchObject({ namespace: 'support/gitnexus', segments: ['analyze'] });
+    });
+
+    it('delivers the technique under either spelling', async () => {
+      for (const ref of ['gitnexus::analyze', 'support::gitnexus::analyze']) {
+        const found = await readTechnique(ref, libRoot, 'client-wf');
+        expect(found.success).toBe(true);
+        if (found.success) expect(found.value.capability).toContain('analyze');
+      }
+    });
+
+    it('keeps it out of the workflow catalogue, holding no definition', () => {
+      const index = indexCorpus(libRoot);
+      expect(index.workflows.has('gitnexus')).toBe(false);
+      expect([...index.workflows.keys()]).toEqual(['client-wf', 'meta']);
+    });
+
+    it('round-trips a built reference through the rule', () => {
+      const index = indexCorpus(libRoot);
+      const built = techniqueRef('support/gitnexus', ['analyze']);
+      expect(built.text).toBe('support::gitnexus::analyze');
+      expect(parseTechniqueRef(built.text, index)).toMatchObject({ namespace: 'support/gitnexus', segments: ['analyze'] });
     });
   });
 

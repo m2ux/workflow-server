@@ -8,10 +8,11 @@
  * the construct.
  *
  * Reference addressing carries NO group grammar:
- *   - `workflow::name` — resolved ONLY in that workflow's routines (no fallback).
+ *   - `namespace::name` — resolved ONLY in that namespace's routines (no fallback). The namespace is
+ *     spelled by its directory name or by the path from the corpus root reaching it, so every
+ *     segment but the last belongs to it.
  *   - `name` — the declaring workflow's routines first, then meta's.
- *   - a second separator fails, because a routine lives one file deep in a flat `routines/`
- *     directory and has no group level to name.
+ *   - an empty segment fails, there being no directory or routine of no name.
  *
  * Every terminal state of a reference but `Checked` fails. None is a warning — a routine that
  * half-resolves would hand a worker a step nobody declared. The surface, grouped by what a site got
@@ -67,25 +68,31 @@ const SEPARATOR = '::';
 const PREFIX_SEPARATOR = '.';
 
 /**
- * Split `[workflow::]name`. A routine name carries one separator at most: a routine lives one file
- * deep in a flat `routines/` directory, so there is no group level for a second segment to address.
+ * Split `[namespace::]name`.
+ *
+ * The last segment is the routine, and every segment before it spells the namespace holding it: a
+ * routine lives one file deep in a flat `routines/` directory, so there is no group level competing
+ * for a segment and no corpus has to be consulted to find where the name begins. A namespace named
+ * by a path contributes one segment per directory, so `support::gitnexus::probe` is the routine
+ * `probe` in `support/gitnexus`.
  */
-export function parseRoutineRef(ref: string, context: string): { workflowId?: string; name: string } {
+export function parseRoutineRef(ref: string, context: string): { namespace?: string; name: string } {
   const segments = ref.split(SEPARATOR);
-  if (segments.length === 1 && segments[0]) return { name: segments[0] };
-  if (segments.length === 2 && segments[0] && segments[1]) {
-    return { workflowId: segments[0], name: segments[1] };
+  const name = segments[segments.length - 1];
+  if (!name || segments.some((segment) => segment.length === 0)) {
+    throw new RoutineResolutionError(
+      `${context}: routine reference '${ref}' carries an empty segment — a routine name is `
+      + `'name' or 'namespace::name', the namespace spelled by its directory name or by the path reaching it.`,
+    );
   }
-  throw new RoutineResolutionError(
-    `${context}: routine reference '${ref}' carries ${segments.length - 1} separators — a routine name is `
-    + `'name' or 'workflow::name' and carries no group grammar, because a routine lives one file deep in a flat routines/ directory.`,
-  );
+  if (segments.length === 1) return { name };
+  return { namespace: segments.slice(0, -1).join('/'), name };
 }
 
-/** The workflows a reference may resolve in, in order. */
+/** The namespaces a reference may resolve in, in order. */
 function candidateWorkflows(ref: string, currentWorkflowId: string, context: string): { workflowIds: string[]; name: string } {
-  const { workflowId, name } = parseRoutineRef(ref, context);
-  if (workflowId) return { workflowIds: [workflowId], name };
+  const { namespace, name } = parseRoutineRef(ref, context);
+  if (namespace) return { workflowIds: [namespace], name };
   const workflowIds = currentWorkflowId === META_WORKFLOW_ID
     ? [META_WORKFLOW_ID]
     : [currentWorkflowId, META_WORKFLOW_ID];

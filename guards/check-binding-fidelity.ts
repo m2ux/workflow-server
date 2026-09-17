@@ -75,7 +75,7 @@ const DIR = fileURLToPath(new URL('.', import.meta.url));
 // `ensureIndexed`, so importing this module does not require a live corpus.
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
-let INDEX: CorpusIndex = { workflows: new Map(), ambiguous: [] };
+let INDEX: CorpusIndex = { workflows: new Map(), namespaces: new Map(), namespacesByName: new Map(), ambiguous: [], shadowed: [] };
 const TRIAGE = ledgerPath(ROOT, 'binding-fidelity-triage.json');
 const cite = (file: string): string => citePath(ROOT, file, INDEX);
 const META = 'meta';
@@ -224,11 +224,11 @@ function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry
       if (entry) return { entry, homeWf: c, key };
     }
   }
-  // A workflow prefix resolves in that workflow and nowhere else; a bare reference resolves against
-  // the binding workflow and then meta. A group base answers only a single-segment reference — a
-  // deeper path names a file inside one.
+  // A namespace prefix resolves in that namespace and nowhere else; a bare reference resolves
+  // against the binding workflow and then meta. A group base answers only a single-segment
+  // reference — a deeper path names a file inside one.
   const key = parsed.segments.join('::');
-  const candidates = parsed.workflowId ? [parsed.workflowId] : wf !== META ? [wf, META] : [META];
+  const candidates = parsed.namespace ? [parsed.namespace] : wf !== META ? [wf, META] : [META];
   for (const c of candidates) {
     const r = registry.get(c); if (!r) continue;
     const entry = r.ops.get(key) ?? (parsed.segments.length === 1 ? r.groups.get(key) : undefined);

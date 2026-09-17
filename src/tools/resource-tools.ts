@@ -1094,8 +1094,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const workflow_id = state.workflowId;
       const scope = deliveryScope(state, agent_id);
 
-      const parsed = parseResourceRef(resource_id);
-      const targetWorkflow = parsed.workflowId ?? workflow_id;
+      const parsed = parseResourceRef(resource_id, config.workflowDir);
+      const targetWorkflow = parsed.namespace ?? workflow_id;
       const result = await readResourceStructured(config.workflowDir, targetWorkflow, parsed.id);
       if (!result.success) throw result.error;
 
