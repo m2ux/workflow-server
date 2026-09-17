@@ -241,12 +241,17 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(secondBody['id']).toBe('start-work-package');
       expect(secondBody['steps']).toBeDefined();
 
-      // Marker hashes match the full content delivered on the first call.
-      for (const [key, value] of Object.entries(secondTechniques)) {
-        const marker = value as UnchangedMarker;
-        // stringifyForResponse is YAML; hash the same projection of the first call's body.
-        const { stringify } = await import('yaml');
-        expect(marker.content_hash).toBe(contentHash(stringify(firstTechniques[key], { lineWidth: 0 })));
+      // A marker identifies the technique's own composed content, which is what the ledger is keyed
+      // on — not the bytes the response happened to emit, since a first delivery leaves out the
+      // contract blocks an earlier sibling in the same response already carried. So the identity to
+      // assert is stability and distinctness: one hash per technique, the same on every later call.
+      const hashes = Object.values(secondTechniques).map((v) => (v as UnchangedMarker).content_hash);
+      expect(new Set(hashes).size).toBe(hashes.length);
+      const third = splitActivityResponse(await getActivity(idx));
+      for (const [key, value] of Object.entries(third.bundle['techniques'] as Record<string, unknown>)) {
+        expect(isUnchangedMarker(value), `expected a marker for ${key}`).toBe(true);
+        expect((value as UnchangedMarker).content_hash)
+          .toBe((secondTechniques[key] as UnchangedMarker).content_hash);
       }
     });
 
@@ -1034,9 +1039,13 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const first = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
       expect(first.isError).toBeFalsy();
       const firstSplit = splitWorkflowResponse(first as never);
-      // First call: ops bundle delivered full (carries technique bodies, not a marker).
-      expect(firstSplit.opsBlock).toContain('capability:');
+      // First call: ops bundle delivered full, not a marker. What proves "full" is the role's rules
+      // and an account of every operation — whether an operation arrives as a body or as an id under
+      // `operation_refs` is the response bound's business, and varies with the size of the workflow.
       expect(isUnchangedMarker(parse(firstSplit.opsBlock))).toBe(false);
+      const firstBundle = parse(firstSplit.opsBlock) as Record<string, unknown>;
+      expect(Array.isArray(firstBundle['rules'])).toBe(true);
+      expect(firstSplit.opsBlock).toMatch(/capability:|operation_refs:/);
 
       const second = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
       expect(second.isError).toBeFalsy();
@@ -1059,7 +1068,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(first.isError).toBeFalsy();
       expect(second.isError).toBeFalsy();
       // Ops bundle repeats in full on every call — byte-identical, never a marker.
-      expect(splitWorkflowResponse(first as never).opsBlock).toContain('capability:');
+      expect(isUnchangedMarker(parse(splitWorkflowResponse(first as never).opsBlock))).toBe(false);
       expect(splitWorkflowResponse(second as never).opsBlock).toBe(splitWorkflowResponse(first as never).opsBlock);
     });
 

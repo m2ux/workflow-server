@@ -115,7 +115,7 @@ describe('batched dispatch (#407)', () => {
     expect(dispatches.map(e => e.activity)).toEqual(RUN.slice(0, 3));
 
     // The batch count rises with each activity the context takes.
-    expect(walk.batches.map(b => b['activities'])).toEqual([1, 2, 3]);
+    expect(walk.batches.map(b => b['activities_delivered'])).toEqual([1, 2, 3]);
     expect(walk.batches[0]!['max_activities']).toBe(3);
     // At the cap, the context is told not to ask again.
     expect(walk.batches[2]!['may_continue']).toBe(false);
@@ -210,7 +210,7 @@ describe('batched dispatch (#407)', () => {
     });
     expect(isError(reRequest)).toBe(false);
     expect(rawText(reRequest)).toContain('delivery: unchanged');
-    expect(((reRequest._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities']).toBe(3);
+    expect(((reRequest._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities_delivered']).toBe(3);
   });
 
   it('leaves the session agent unbounded, whose run is the session rather than a batch', async () => {
@@ -280,7 +280,7 @@ describe('batched dispatch (#407)', () => {
     });
     if (isError(afterGate)) throw new Error(`get_activity after gate failed: ${rawText(afterGate)}`);
     expect(rawText(afterGate)).toContain('delivery: unchanged');
-    expect(((afterGate._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities']).toBe(1);
+    expect(((afterGate._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities_delivered']).toBe(1);
 
     // The orchestrator commits, advances, and continues the SAME worker onto the next activity.
     await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: RUN[1], from_activity: RUN[0] } });
@@ -293,7 +293,7 @@ describe('batched dispatch (#407)', () => {
     // The batch grew across the gate, and the second activity collapsed against what the context has
     // been holding since before the gate was answered.
     const secondBatch = (second._meta as Record<string, unknown>)['batch'] as Record<string, unknown>;
-    expect(secondBatch['activities']).toBe(2);
+    expect(secondBatch['activities_delivered']).toBe(2);
     expect(secondBatch['may_continue']).toBe(true);
     expect(rawText(second)).toContain('delivery: unchanged');
     // The claim, stated as reuse rather than as a size: arriving into a context that has held the
@@ -357,7 +357,7 @@ describe('batched dispatch (#407)', () => {
     // A new context holds nothing, so it takes the activity whole — which is the one activity a failed
     // resume costs, and the reason the batch is reported per activity rather than at its end.
     expect((replacement._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
-    expect(((replacement._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities']).toBe(1);
+    expect(((replacement._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities_delivered']).toBe(1);
 
     // Reaching the same gate, it is waved through rather than yielded to the user a second time.
     const reCross = await client.callTool({

@@ -123,8 +123,10 @@ export function validateStepManifest(
       && (s.kind === 'loop' ? s.continueWhile === undefined : entryCondition(s) === undefined))
     .map(s => s.id)
     .filter((id): id is string => id !== undefined);
-  // Loop-body step ids are legitimate manifest entries (executed per
-  // iteration) but never required — the iteration count may be zero.
+  // Loop-body step ids are legitimate manifest entries and repeat once per iteration, so an id
+  // appearing several times is the body having run several times. None is ever required: the
+  // iteration count may be zero, and the server does not run the loop, so it holds no count to
+  // check a report against — what it can check is that every id names a step of this activity.
   const knownIds = new Set(
     flattenActivitySteps(activity).map(s => s.id).filter((id): id is string => id !== undefined),
   );

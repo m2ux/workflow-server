@@ -6,6 +6,7 @@ import { withAuditLog, logInfo } from '../logging.js';
 import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { composeActivityTechnique, projectTechnique } from '../loaders/technique-loader.js';
+import { contractOperations } from '../loaders/core-ops.js';
 import {
   sessionIndexParam,
   agentIdParam,
@@ -817,18 +818,24 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load one fully composed technique (step-bound when `step_id` is set; otherwise the activity\'s or workflow\'s first). ' +
+    'Load one fully composed technique (step-bound when `step_id` is set, named when `technique_id` is; otherwise the activity\'s or workflow\'s first). ' +
     'Under `context_mode: "persistent"` or `bundle: "reference"`, a byte-identical refetch to the SAME `agent_id` scope may return an unchanged-reference; pass `full: true` when earlier content was summarized away. ' +
     'A fresh worker context must not ask for reference delivery — it holds no prior delivery to reference.',
     {
       ...sessionIndexParam,
       ...agentIdParam,
+      technique_id: z.string().optional().describe(
+        'Optional. An operation of your role\'s contract, by the id it is keyed under — one of the `operation_refs` a response listed without a body, or a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared). Only operations this session\'s roles name are servable; anything else is refused. Not for a step\'s own technique, which `step_id` addresses.',
+      ),
       step_id: z.string().optional().describe('Optional. Step id whose bound technique to load; omit for the activity/workflow first technique.'),
       activity_id: z.string().optional().describe('Optional. The activity you were dispatched for. A step id resolves against the session\'s CURRENT activity, so passing this turns a pointer that has moved on into an error instead of a technique from the wrong activity.'),
       bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses a refetch already delivered to THIS agent_id scope. "full" forces full delivery. Defaults from context_mode.'),
       full: z.boolean().optional().describe('Optional. Force full content when reference delivery would return an unchanged-reference (e.g. after summarization). Overrides bundle.'),
     },
-    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, agent_id, step_id, activity_id, bundle, full }) => {
+    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, agent_id, technique_id, step_id, activity_id, bundle, full }) => {
+      if (technique_id && step_id) {
+        throw new Error('Pass either technique_id or step_id: one names an operation of your role\'s contract, the other the technique a step binds.');
+      }
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -855,7 +862,25 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       let techniqueId: string | undefined;
       let boundStep: Step | undefined;
 
-      if (!servedFor) {
+      if (technique_id) {
+        // An operation of the role contract, addressed by the id the bundle keys it under. The
+        // admissible set is derived from the definitions this session is already walking, so an id
+        // names an operation of its own contract or nothing at all — this is not a way to read an
+        // arbitrary file. A run reaches here for what a bounded `get_workflow` deferred, and for a
+        // protocol a role needs that its activity never declared.
+        const servedActivityDef = servedFor ? getActivity(wfResult.value, servedFor) : undefined;
+        const admissible = contractOperations({
+          workflowTechniques: (wfResult.value as { techniques?: { workflow?: string[] } }).techniques?.workflow,
+          activityTechniques: (wfResult.value as { techniques?: { activity?: string[] } }).techniques?.activity,
+          activityOwnTechniques: (servedActivityDef as { techniques?: string[] } | undefined)?.techniques,
+        });
+        if (!admissible.has(technique_id)) {
+          throw new Error(
+            `'${technique_id}' is not an operation this session's roles name. Servable: [${[...admissible].sort().join(', ')}]`,
+          );
+        }
+        techniqueId = technique_id;
+      } else if (!servedFor) {
         if (step_id) {
           throw new Error('Cannot provide step_id when no activity is active. Call next_activity first.');
         }
@@ -895,9 +920,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       // Activity-group convention (see composeActivityTechnique): a bare op id resolves first
       // against the group named after the current activity, falling back to as-authored — both
-      // within the activity's source-workflow scope.
+      // within the activity's source-workflow scope. A contract operation named outright resolves
+      // as authored and never through that group: it is the role's operation, not the activity's,
+      // and a same-named op under the activity would answer for it.
       const composed = await composeActivityTechnique(
-        techniqueId, config.workflowDir, techniqueScopeWorkflowId, servedFor || undefined,
+        techniqueId, config.workflowDir, techniqueScopeWorkflowId,
+        technique_id ? undefined : (servedFor || undefined),
       );
       if (!composed.success) throw composed.error;
       techniqueId = composed.value.techniqueId;

@@ -262,7 +262,7 @@ describe('batch bound arithmetic (#407)', () => {
     expect(own.activities.length).toBeGreaterThan(bound.maxActivities);
     const ownReading = batchReading(own, bound, own.mayContinue);
     expect(ownReading).toEqual({
-      activities: 4,
+      activities_delivered: 4,
       delivered_chars: 4_000,
       bounded: false,
       may_continue: true,
@@ -273,7 +273,7 @@ describe('batch bound arithmetic (#407)', () => {
     const worker = batchState(state, 'worker-a', bound);
     expect(worker.bounded).toBe(true);
     expect(batchReading(worker, bound, worker.mayContinue)).toEqual({
-      activities: 1,
+      activities_delivered: 1,
       max_activities: bound.maxActivities,
       delivered_chars: 1_000,
       budget_chars: bound.budgetChars,

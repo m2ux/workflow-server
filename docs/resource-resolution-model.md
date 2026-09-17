@@ -88,18 +88,34 @@ The server resolves an activity's declared references and bundles them into the 
 
 ### The orchestrator bundle
 
-The response is the union of the workflow's declared technique references and the core orchestrator technique references the server auto-includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`): the engine traversal, checkpoint flow, state-persistence, sub-agent dispatch, and orchestrator-discipline references every orchestrator needs. Duplicates are deduplicated.
+The response is the union of the workflow's declared technique references and the core orchestrator technique references the server auto-includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`): the engine traversal, state-persistence, sub-agent dispatch, and orchestrator-discipline references every orchestrator needs. Duplicates are deduplicated.
+
+The assembled bundle is then held to what one tool result may carry (`MAX_WORKFLOW_RESPONSE_CHARS`, default 60,000). Operation bodies ride the response in document order and stop at the first that would overflow; the remainder are named under `operation_refs`, with `operations_note` saying how to get them. The role's `rules` list is never bounded — those rules are the contract an orchestrator is held to from its first call, while a procedure it has not reached yet is one it fetches with `get_technique { technique_id }` when it does.
 
 ### The worker bundle
 
-The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the worker role itself, the yield/resume checkpoint, finalize-activity, and the conduct every worker is held to. The role is in that set because every worker stub names it and only the meta workflow declares it, so a client worker would otherwise be told to apply a technique its bundle never carried.
+The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the worker role itself, finalize-activity, and the conduct every worker is held to. The role is in that set because every worker stub names it and only the meta workflow declares it, so a client worker would otherwise be told to apply a technique its bundle never carried.
+
+### What arrives only where it can be reached
+
+Three things are added by the delivery rather than carried in a core list, because each is decidable from definitions the server has already loaded and each is dead weight where the answer is no.
+
+| Content | Delivered when |
+|---------|----------------|
+| `ORCHESTRATOR_CHECKPOINT_TECHNIQUES` — `present-checkpoint-to-user`, `respond-checkpoint` | any activity of the run declares a `kind: checkpoint` step |
+| `WORKER_CHECKPOINT_TECHNIQUES` — `yield-checkpoint`, `resume-from-checkpoint` | the same reading, over the same roster |
+| `FAN_DISPATCH_TECHNIQUES`, and the rules named in `FAN_ONLY_RULES` | the graph fans an exit |
+
+Each reading is over the **whole workflow**, not the activity in hand, and that is load-bearing rather than approximate: a bundle's rules are keyed as one set, so a technique set that varied activity by activity would re-deliver the entire rules list at every activity whose set differed — measured at twenty thousand characters against the four and a half thousand the narrower reading saves.
+
+What is held back stays reachable. A worker may raise a decision its activity never declared, and an orchestrator then has to present and resolve it, so both checkpoint pairs are servable by `get_technique { technique_id }` from any session. That is what makes the omission safe rather than merely cheap.
 
 ### What the two core sets contain
 
 | Set | Technique references |
 |-----|----------------------|
-| `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`; `agent-conduct`, `orchestrator-conduct` |
-| `CORE_WORKER_TECHNIQUES` | `workflow-engine::activity-worker`, `yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct`, `worker-conduct` |
+| `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `sync-progress-status`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`, `resolve-harness-operation`, `claude-code`, `cursor`, `cline`, `generic`; `agent-conduct`, `orchestrator-conduct` |
+| `CORE_WORKER_TECHNIQUES` | `workflow-engine::activity-worker`, `finalize-activity`; `agent-conduct`, `worker-conduct` |
 
 Conduct is the engine's baseline rather than a workflow's choice, so both lists name it and no workflow declares it. `agent-conduct` binds every agent and is in both; `orchestrator-conduct` and `worker-conduct` specialise it for one role each and appear in that role's list alone.
 
@@ -186,13 +202,19 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 - **`get_resource`** — a byte-identical refetch of the same `resource_id` returns `delivery: unchanged` and a `content_hash` instead of the body. The key is the caller's exact `resource_id`, anchor included, so `pr-description` and `pr-description#templates` occupy independent slots.
 - **`get_workflow`** — under `context_mode: "persistent"` the orchestrator ops bundle (everything above the `---` separator) is keyed under `workflow_bundle:<hash>`. On a resume where the agent already holds it, the whole bundle collapses to a single marker, while the workflow summary below the separator stays full.
 
+- **the delivery notes** — `bundle_note`, `step_techniques_note` and `resources_note` are the most invariant blocks a response carries, so they pass through the same ledger under `note:<id>:<hash>`. A context that holds one receives a marker in its place; `get_activity { bundle: "full" }` restores them with everything else it restores. Keyed by content, so an edited note delivers whole under a key of its own.
+
 `get_technique` and `get_resource` collapse under either `bundle: "reference"` or a session-wide `context_mode: "persistent"`. Fresh and default sessions always receive full bodies.
 
 ### Blocks inside a technique
 
 Collapsing can go finer than a whole technique. Techniques sharing a workflow contract share blocks: the contract-inherited `inherited_inputs` and `inherited_outputs`, and the merged `rules`. Each is hashed on its own, under `technique:<block>:<hash>`.
 
-So when a technique is new to the context but one of its shared blocks already arrived with a sibling technique, that block becomes a marker in place while the technique-specific core arrives in full. This happens both on the `get_technique` full-delivery path and inside each eagerly inlined `get_activity` `step_techniques` entry.
+So when a technique is new to the context but one of its shared blocks already arrived with a sibling technique, that block becomes a marker in place while the technique-specific core arrives in full. This happens on the `get_technique` full-delivery path, inside each eagerly inlined `get_activity` `step_techniques` entry, and across the operations bundle of both `get_activity` and `get_workflow`, where most entries inherit one meta contract.
+
+Across an operations bundle the pass is response-local and the per-entry ledger key stays hashed on the technique's **full** composed body, not on the bytes the response emitted. Those two go together: what a later call compares against must not depend on which entry happened to carry a shared block this time, or a technique would re-deliver whenever the bundle around it changed. A collapsed entry is therefore found by its key — the same `techniques.<ref>` slot it occupied before — and its `content_hash` identifies the technique's content rather than the emitted form.
+
+One rule arrives once per response too. A technique inherits its ancestor group's rules, and the bundle hoists that same group's rules into the response's own `rules` list, so an inlined step would otherwise restate what the payload already carries: an entry keeps only the rules that list does not state, and an entry left with nothing carries no `rules` block at all.
 
 Inside one `get_activity` response this pass runs **in every delivery mode**, because composition merges each ancestor group's rules into every technique that group covers: a response bundling ten techniques of one group would otherwise carry that group's rules ten times. The marker points at the sibling entry in the same payload, so it is readable by a worker holding nothing from before. Widening it to the ledger — collapsing against what arrived on an *earlier call* — is what reference delivery adds.
 
