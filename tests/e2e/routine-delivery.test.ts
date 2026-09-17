@@ -13,8 +13,9 @@ import type { Step } from '../../src/schema/activity.schema.js';
  * on a broken implementation.
  *
  * This points the harness at a fixture corpus, which every other e2e file reaches through the live
- * one. The corpus declares no routine yet, so a fixture root is the only place the construct can be
- * exercised end to end at all.
+ * one. A fixture root is where the permutations live — a body pairing a reference with every other
+ * identity mechanism, which no corpus workflow has reason to carry. The shapes the corpus does carry
+ * are walked against it in `routine-argument-walk.test.ts`.
  */
 
 const FIXTURES = resolve(import.meta.dirname, '../fixtures/routines');
