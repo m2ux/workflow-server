@@ -68,7 +68,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 5. Identify Artifacts
 
 - Probe each area of the [Speculative Changes Audit](../../resources/strategic-review.md#speculative-changes-audit)
-- Classify every candidate per the group's `finding-categories`
+- Classify every candidate per the group's [finding-categories](./TECHNIQUE.md#finding-categories)
 
 ### 6. Minimality Check
 

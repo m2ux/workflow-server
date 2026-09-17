@@ -31,7 +31,7 @@ The sub-agent's final output (text, including any `<checkpoint_yield>` block) â€
 
 ### 2. Dispatch
 
-- Dispatch by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{composed_prompt}` and `{description}`, under `foreground-always`.
+- Dispatch by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{composed_prompt}` and `{description}`, under [foreground-always](./TECHNIQUE.md#foreground-always).
 
 ### 3. Await result
 
