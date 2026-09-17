@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -49,15 +49,43 @@ The opaque HMAC-signed trace tokens this fan accumulated, one per `next_activity
 
 ## Protocol
 
-1. **Progress in-progress, once for every branch.** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress — see one-commit-before-the-spawn.
-   > When `{planning_folder_path}` is unset, skip this phase.
-2. **Enter the fan with one call.** Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token`, and read `_meta.fan` for the branch list and `_meta.barrier.destination` for the activity the fan converges on. One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen.
-3. **Mint one identity per branch.** For each entry in the branch list, mint an identity per one-identity-per-branch.
-4. **Compose one prompt per branch.** For each entry, apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false`, and `{state}` as substitutions, passing that entry as `activity_id` and its own minted identity as `agent_id`.
-5. **Spawn the batch in one turn.** Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-concurrent](../harness-compat/spawn-concurrent.md) with every composed prompt in a single response turn; the turn does not resume until every branch has returned, so joining the envelopes is a fact of the turn and nothing polls, times out or is scheduled.
-6. **Retire the branches in input order.** For each entry, in the order the branch list gave them, call `next_activity { session_index, activity_id: <the destination the barrier reported>, from_activity: <that entry>, exit: <that branch's exit>, step_manifest, variables_changed, artifacts_produced }` from that branch's envelope. Each call reports what is still outstanding; the call that empties the frontier is the one that enters the convergence activity, and only that one. Accumulate `_meta.trace_token` per dispatch-activity.accumulate-trace-per-advance.
-7. **Account for every branch**, per dispatch-activity.account-every-activity, which names an instance where the graph runs one activity over a collection.
-8. **Persist once, at convergence.** After the last branch returns and before the run continues, apply [commit-and-persist](./commit-and-persist.md) naming every branch — see persist-the-fan-at-convergence.
+### 1. Mark Branches Entering
+
+- Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress — see one-commit-before-the-spawn.
+  > When `{planning_folder_path}` is unset, skip this phase.
+
+### 2. Open Every Branch
+
+- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token`, and read `_meta.fan` for the branch list and `_meta.barrier.destination` for the activity the fan converges on. One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen.
+
+### 3. Mint Branch Identities
+
+- For each entry in the branch list, mint an identity per one-identity-per-branch.
+
+### 4. Compose Branch Prompts
+
+- For each entry, apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false`, and `{state}` as substitutions, passing that entry as `activity_id` and its own minted identity as `agent_id`.
+
+### 5. Spawn Branches Concurrently
+
+- Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-concurrent](../harness-compat/spawn-concurrent.md) with every composed prompt in a single response turn; the turn does not resume until every branch has returned, so joining the envelopes is a fact of the turn and nothing polls, times out or is scheduled.
+
+### 6. Replace Failed Branch
+
+- For each branch whose result is not an accepted envelope (reject-partial-worker-result), mint a fresh identity, apply [compose-prompt](./compose-prompt.md) with `holds_prior_deliveries: false`, and apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for that one branch alone. The replacement names the same entry, which the frontier still holds, so it needs no re-binding call.
+  > Where the replacement also returns no accepted envelope, apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) on that branch's rows and leave its entry on the frontier: nothing is retired and the barrier does not release.
+
+### 7. Retire Branches
+
+- For each entry, in the order the branch list gave them, call `next_activity { session_index, activity_id: <the destination the barrier reported>, from_activity: <that entry>, exit: <that branch's exit>, step_manifest, variables_changed, artifacts_produced }` from that branch's envelope. Each call reports what is still outstanding; the call that empties the frontier is the one that enters the convergence activity, and only that one. Accumulate `_meta.trace_token` per dispatch-activity.accumulate-trace-per-advance.
+
+### 8. Account For Branches
+
+- Account for every branch per dispatch-activity.account-every-activity, which names an instance where the graph runs one activity over a collection.
+
+### 9. Persist At Convergence
+
+- After the last branch returns and before the run continues, apply [commit-and-persist](./commit-and-persist.md) naming every branch — see persist-the-fan-at-convergence.
 
 ## Rules
 
@@ -87,7 +115,7 @@ Each retirement reports what is still outstanding and, on the last, the activity
 
 ### replace-one-branch-alone
 
-A branch whose result is not an accepted envelope (reject-partial-worker-result) is replaced on its own: mint a fresh identity, compose a prompt with no prior deliveries, and spawn ONE agent — not the concurrent spawn. The replacement names the same entry, which the frontier still holds, so it needs no re-binding call. The siblings that returned are untouched: their work is committed and their outputs landed on their own returns. A second failure advances nothing — the blocked moment is synced onto that branch's rows and the entry stays on the frontier, because entering the convergence activity on fewer branches than the fan opened would hand its gather a value no branch produced.
+A branch that fails is replaced on its own, and the siblings that returned are untouched — their work is committed and their outputs landed on their own returns. The fan retires on the full set of branches it opened and no fewer, so a branch with no accepted envelope holds the frontier rather than releasing the barrier: entering the convergence activity short would hand its gather a value no branch produced.
 
 ### a-branch-reaches-no-gate
 

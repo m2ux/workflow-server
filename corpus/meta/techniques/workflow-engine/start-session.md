@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.13.0
+  version: 1.14.0
 ---
 
 ## Capability
@@ -100,7 +100,7 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 ### 3. Take Operations Bundle
 
-- Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in `workflow-engine.force-full-after-summarization`.
+- Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in force-full-after-summarization.
 
 ## Rules
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -79,6 +79,4 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 ### one-advance-per-activity
 
-This operation advances the session pointer, so it owns getting a worker onto the activity it advanced to — the held one, or a replacement it spawns itself. It does not hand that job back to [dispatch-activity](./dispatch-activity.md), which advances the pointer of its own accord: a second advance onto an activity already current records that activity as exited and complete before a worker has walked a step of it, and every later reader of the session — resume, status, activity-manifest validation — believes it.
-
-So a batch that cannot continue ends inside this operation, and the only paths that reach `dispatch-activity` are the ones where no advance has happened yet: the first activity of a walk, and the activity after the orchestrator released a spent batch's identity (dispatch-activity.delivery-keys-on-agent-context).
+An activity's session pointer advances exactly once, and the operation that advances it owns getting a worker onto it, rather than handing that job to [dispatch-activity](./dispatch-activity.md), which advances the pointer of its own accord. A second advance onto an activity already current records that activity as exited and complete before a worker has walked a step of it, and every later reader of the session — resume, status, activity-manifest validation — believes it.

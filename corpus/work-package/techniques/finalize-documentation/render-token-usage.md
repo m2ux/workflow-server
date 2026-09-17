@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -39,7 +39,7 @@ Share of the run's dispatches the ledger accounts for: ledger entry count, actua
 
 ### 2. Reconcile Against Dispatches
 
-- Resolve `{trace_tokens}` and count the run's actual dispatches from the resolved trace. Skip the count when `{trace_tokens}` is empty.
+- Call `get_trace { session_index, trace_tokens }` once for the whole run, per workflow-engine.resolve-trace-at-close-out, and count the run's actual dispatches from the resolved trace. Skip the call and the count when `{trace_tokens}` is empty.
 - Count the ledger's entries — the transition-keyed usage records session state holds.
 - Emit `{token_usage_document.usage_coverage}` from the two counts. The ledger carries one entry per recorded dispatch, so the remainder counts the dispatches whose figure the harness never surfaced or that went unrecorded.
 

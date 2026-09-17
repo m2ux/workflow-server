@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.30.0
+  version: 1.31.0
 ---
 
 ## Capability
@@ -107,10 +107,6 @@ Where the session record and a just-completed worker's `activity_complete` envel
 
 Every `next_activity` returning `_meta.trace_token` has that token appended to `trace_tokens[]` — the first advance of a dispatch, each continuation of a batch ([continue-batch](./continue-batch.md)), and each branch a fan retires ([dispatch-fan](./dispatch-fan.md)). The list is the whole execution history close-out reads, so a token dropped at any of those call sites is history no later reader can recover.
 
-### resolve-trace-at-close-out
-
-Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). Tokens stay opaque until that resolve, which reads the whole run where a per-activity `get_trace` reads one advance. Skip resolve when `trace_tokens` is empty.
-
 ### say-what-a-dispatch-is-doing
 
 Leave the user no silent minute. Before spawning, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that it runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. Where a wait falls between one activity and the next, say that they are waiting and roughly how long, without an account of the machinery imposing it.
@@ -119,7 +115,7 @@ A dispatch produces nothing the user can read while it runs, and a gate arrives 
 
 ### dispatch-topology
 
-Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see batch-is-bounded-by-the-server. Do not set `context_mode: "persistent"` on worker-dispatched sessions — see delivery-keys-on-agent-context.
+Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see batch-is-bounded-by-the-server.
 
 Where the exit taken is bound to several branches rather than one activity, [dispatch-fan](./dispatch-fan.md) carries them instead: one call opens every branch, they run in one turn under their own identities, and the run continues from the activity they converge on. That operation's width is the destination's, and it is not a batch — a branch takes one activity and is not continued.
 

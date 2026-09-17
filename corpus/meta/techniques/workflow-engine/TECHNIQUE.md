@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.15.0
+  version: 6.16.0
 ---
 
 ## Capability
@@ -36,6 +36,10 @@ Choose bare vs `#section` `resource_id` by how much of the resource this agent c
 ### variable-mutation-source
 
 Variables mutate from two sources only: checkpoint option effects (`setVariable`) and worker `activity_complete` results (`variables-changed`). Never mutate state through ad-hoc reasoning.
+
+### resolve-trace-at-close-out
+
+A `trace_token` stays opaque until it is resolved, and `trace_tokens[]` resolves once for the whole run rather than per advance. A per-activity `get_trace` reads a single transition, so a close-out resolving that way reports on a fraction of the run it claims to measure.
 
 ### agent-id-scopes-delivery
 
