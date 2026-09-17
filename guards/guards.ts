@@ -500,6 +500,36 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every generated schema file matches the Zod source it is rendered from, and every schema on disk is accounted for',
     form: 'none',
   },
+  {
+    id: 'inventory-schema-agreement',
+    script: 'guards/check-inventory-schema-agreement.ts',
+    npmScript: 'check:inventory',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every field path the construct inventory names resolves in a schema, and every step kind has a row routing an author to it',
+    form: 'none',
+  },
+  {
+    id: 'guard-roster',
+    script: 'guards/check-guard-roster.ts',
+    npmScript: 'check:guard-roster',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every guard program the corpus cites exists, and no definition file keeps a roster of them beside the registry',
+    form: 'none',
+  },
+  {
+    id: 'routine-signature-prose',
+    script: 'guards/check-routine-signature-prose.ts',
+    npmScript: 'check:routine-prose',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'no routine signature teaches a reference site what to bind, which the declaration and the schema already settle',
+    form: 'none',
+  },
 ];
 
 export const CORPUS_GUARDS = GUARDS.filter((g) => g.scope === 'corpus');
