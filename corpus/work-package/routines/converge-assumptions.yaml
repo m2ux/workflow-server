@@ -3,10 +3,6 @@ version: 1.0.0
 name: Assumption Convergence Loop
 description: Reconcile assumptions and challenge the result until no agent-resolvable item remains.
 
-# The reconciliation pass reaches these names through the technique it runs, and no reference site
-# binds any of them: each host supplies its own value under the same spelling. They are declared
-# because a routine has no undeclared free variable — the signature is what makes the run checkable
-# with no host activity, and a name the body reads has to appear in it.
 inputs:
   - id: assumption_categories
     description: The categories an assumption is classified into.

@@ -5,16 +5,13 @@ description: Gate the residual open assumptions as a batch, record the batch ans
 
 inputs:
   - id: assumption_review_presentation
-    description: Judgement-augmentation context per open assumption, rendered at the batch gate. Produced by the host's announcement step, which sits outside this run.
+    description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility.
   - id: has_open_assumptions
     description: Whether irreducible open assumptions remain for this run to settle.
   - id: open_assumptions
     description: The residual open assumptions the individual interview walks.
   - id: is_review_mode
     description: Whether the run is reviewing someone else's work, in which case no gate asks a user for a decision.
-  # Reached through the techniques the run binds, and bound by no reference site: each host supplies
-  # its own value under the same spelling. Declared because a routine has no undeclared free
-  # variable — the signature is what makes the run checkable with no host activity.
   - id: assumption_categories
     description: The categories an assumption is classified into.
   - id: assumption_source

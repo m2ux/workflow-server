@@ -36,9 +36,9 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
      - meta/patterns/02-supervisor.yaml
    ```
 
-   Wire your own `transitions` in a thin local wrapper activity when the borrowed file has none, or copy the step list into a local activity. A copied `kind: routine` step travels with it: a bare routine name resolves in the copying workflow first and in meta after, so the run it names stays reachable.
+   Wire your own `transitions` in a thin local wrapper activity when the borrowed file has none, or copy the step list into a local activity. A copied `kind: routine` step travels with it and the run it names stays reachable.
 
-2. **Bind your own names.** A technique step takes `{ name, inputs }` deviations. A `kind: routine` step takes them at the reference — `with` binds the run's declared inputs and `outputs` binds what it produces — so a consumer whose bag spells a value differently says so at the site rather than inside the shared run. Read the run's signature off its file under [`meta/routines/`](../../routines/).
+2. **Bind your own names.** A technique step takes `{ name, inputs }` deviations and a `kind: routine` step takes its arguments and output bindings at the reference, so a consumer whose bag spells a value differently says so at the site rather than inside the shared run. Read the run's signature off its file under [`meta/routines/`](../../routines/).
 
 3. **Seed the bag** before the pattern runs (consumer responsibility). Each activity's `variables.reads` names what it expects to find there, and its `variables.writes` what it puts back — read them off the `.yaml`.
 

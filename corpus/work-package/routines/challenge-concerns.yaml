@@ -8,9 +8,6 @@ inputs:
     description: The adversarial perspectives the challenge pass applies, as a JSON array.
   - id: concern_document
     description: The name of the document holding the concern set this pass reads and updates.
-  # Reached through the techniques the pass runs, and bound by no reference site: each host supplies
-  # its own value under the same spelling. Declared because a routine has no undeclared free
-  # variable — the signature is what makes the run checkable with no host activity.
   - id: branch_name
     description: Feature branch name.
   - id: component_git_dir
