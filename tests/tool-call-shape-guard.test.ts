@@ -83,6 +83,11 @@ describe('checkCall', () => {
       .toMatchObject([{ check: 'unknown-argument' }]);
   });
 
+  it('reads an argument under the bag grammar, so a camelCase name is measured rather than skipped', () => {
+    expect(findings('`next_activity { session_index, activity_id, fromActivity: x }`'))
+      .toMatchObject([{ check: 'unknown-argument' }]);
+  });
+
   it('reports a required argument a whole signature omits', () => {
     const reported = findings('`record_usage { session_index, activity, usage, agent_id }`');
     expect(reported).toMatchObject([{ check: 'missing-required' }]);

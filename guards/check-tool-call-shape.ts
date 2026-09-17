@@ -30,7 +30,10 @@
  *   is discussing — every authenticated tool takes that argument, so a whole call carries it.
  *
  * A fragment still has its named arguments checked; it is only the completeness question that does
- * not apply to it.
+ * not apply to it. The second mark costs one case to buy the rest: a call that genuinely forgets
+ * `session_index` reads as a fragment, so that one omission is the one the completeness check
+ * cannot report. Nothing else in the text tells a partial call from a whole one, and reading every
+ * partial call as whole would report the corpus for showing an argument on its own.
  *
  * What this does NOT prove: that a run made the call, or that what it passed was true. Nor does it
  * reach an argument the schema accepts but the server requires conditionally — `from_activity` is
@@ -56,9 +59,13 @@ const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 /** An inline code span. */
 const CODE_SPAN = /`([^`]+)`/g;
 /** `tool_name { arguments }` — the shape the corpus writes a call in. */
-const CALL = /^([a-z_][a-z0-9_]*)\s*\{(.*)\}$/s;
-/** An argument name: the identifier left of the colon, or the whole token where it carries none. */
-const ARGUMENT_NAME = /^([a-z_][a-z0-9_]*)\s*(?::|$)/;
+const CALL = /^([a-zA-Z_][a-zA-Z0-9_]*)\s*\{(.*)\}$/s;
+/**
+ * An argument name: the identifier left of the colon, or the whole token where it carries none.
+ * The grammar is the bag's own (`binding-provenance`), so a camelCase parameter is read rather
+ * than passed over as unrecognised text.
+ */
+const ARGUMENT_NAME = /^([a-zA-Z_][a-zA-Z0-9_]*)\s*(?::|$)/;
 /** Either spelling of "and the rest": the ellipsis character, and the spread that stands in for it. */
 const ELISION = /^(?:…|\.{3})/;
 
