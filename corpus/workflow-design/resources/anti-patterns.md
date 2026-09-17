@@ -729,11 +729,11 @@ A declared id is used unbraced where a designator is required.
 
 A rule is cited in prose instead of its dotted symbol address.
 
-**Detect:** A protocol step cites/relies on a rule as prose ("per the X rule", "following the X rule") or with `::` (invokes a technique, does not name a rule). Also: prose citation of a rule that is not declared anywhere (dangling).
+**Detect:** A protocol step cites/relies on a rule as prose ("per the X rule", "following the X rule"), with `::` (invokes a technique, does not name a rule), or as a markdown hyperlink to the rule's heading anchor. The hyperlink is the spelling that survives a walk looking only for prose: it resolves, so the anchor guard passes it, and it still sends a reader to a container whose rules the loader already merged into the file they are reading. Also: prose citation of a rule that is not declared anywhere (dangling).
 
 **Do not flag:** Correct dotted ancestry address — `[<workflow>.]<technique>.<rule-name>` (e.g. `meta.gitnexus-operations.index-freshness-first`). Shorten when in ancestry: omit workflow for same-workflow; bare rule name when inherited from self/group/workflow root. Full path only for rules outside current ancestry.
 
-**Fix:** Replace prose/`::` with the dotted symbol address (shortened per ancestry). For dangling citations, point at the real inline content — never invent a rule. Mnemonic: `::` invokes, `.` names.
+**Fix:** Replace prose, `::`, or an anchor hyperlink with the dotted symbol address (shortened per ancestry) — a rule inherited from self, group, or workflow root is its bare name. For dangling citations, point at the real inline content — never invent a rule. Mnemonic: `::` invokes, `.` names, and a link navigates to something the reader has not got.
 
 ### AP-54. anchored-protocol-references
 
