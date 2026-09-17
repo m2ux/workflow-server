@@ -13,7 +13,7 @@ variables:
       defaultValue: false
     - name: note_targets
       type: array
-      description: One entry per note to be written — its designator, the directory it covers, and what its probe found worth recording. The graph fans this activity's exit over it, each instance in a checkout of its own.
+      description: One entry per note to be written — its designator, the directory it covers, what its probe found worth recording, and the branch, checkout and path its writer uses. The graph fans this activity's exit over it, each instance in a checkout of its own.
       defaultValue: []
 required: true
 steps:

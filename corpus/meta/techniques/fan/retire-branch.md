@@ -31,7 +31,7 @@ What the branches returned, in the order the fan opened them. This call reads th
 
 - Take the entry of `{branch_envelopes}` belonging to `{branch_activity}` — the returns are in the order the fan opened the branches, and that order is the correspondence. Call `next_activity { session_index, activity_id: barrier_destination, from_activity: branch_activity, exit, step_manifest, variables_changed, artifacts_produced }`, taking every field after the destination from that entry; append the `_meta.trace_token` it returns to the run's accumulated tokens per `dispatch-activity.accumulate-trace-per-advance`
   > Retiring a branch against another branch's return is the failure this selection exists to prevent: the call would name one activity and carry another's exit, and the server checks the exit against the destination rather than against the branch.
-  > The call reports what is still outstanding. The one that empties the frontier is the one that enters the convergence activity, and only that one — see `the-barrier-is-a-reading`.
+  > The call reports what is still outstanding at `outstanding`, each branch as the id that addresses it. The one that empties the frontier is the one that enters the convergence activity, and only that one — see `the-barrier-is-a-reading`.
 
 ### 2. Account for the branch
 

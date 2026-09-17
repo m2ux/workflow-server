@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -43,6 +43,10 @@ The branch this note's writer commits on, `fan-note-<id>`. Derived from the entr
 
 The checkout that writer works in, a path of its own under the planning folder named for the same designator. Git registers one checkout per path, so two writers naming one path would be asking for a checkout that cannot exist twice.
 
+#### note_path
+
+Where that writer's note goes, `notes/<id>.md`, relative to the checkout named above. A fresh checkout carries the planning folder as an uninitialised submodule, whose paths a parent-repo checkout cannot stage, so the note takes a regular path of the checkout named for the same designator. Deriving it here is what makes two writers handed one instruction write to one place.
+
 ## Protocol
 
 ### 1. Read What The Probes Found
@@ -56,7 +60,7 @@ The checkout that writer works in, a path of its own under the planning folder n
 
 ### 3. Name Each Note
 
-- Emit `{note_targets}` in probe order, each entry carrying `id` (`N1`-`Nn`), `directory`, the `finding` that earned it, and the `branch` and `worktree` derived from that id. The designator is what makes them collision-free, and deriving them here rather than inside each writer is what lets the writer's first step be the one that materialises the checkout.
+- Emit `{note_targets}` in probe order, each entry carrying `id` (`N1`-`Nn`), `directory`, the `finding` that earned it, and the `branch`, `worktree` and `note_path` derived from that id. The designator is what makes them collision-free, and deriving them here rather than inside each writer is what lets the writer's first step be the one that materialises the checkout, and what makes every writer's note land at a path the run chose.
 - Set `{has_notes}` true where that list holds anything and false where it is empty, which is the value the exit predicate reads.
 
 ## Rules
