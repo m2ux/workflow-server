@@ -8,10 +8,10 @@ import { workflowSubdir } from '../src/loaders/corpus-index.js';
 /**
  * The client activity loop's control flow (#407).
  *
- * A batch is carried by the loop in `03-dispatch-client-workflow`, and which of its steps fires is
- * decided entirely by `when:` gates over the variable bag. Two of those gates decide whether a worker
- * is continued onto the next activity or replaced, and getting either wrong is silent: the walk still
- * completes, having skipped a commit or redone an activity.
+ * A batch is carried by the `activity-cycle` loop of the `activity-loop` run, and which of its steps
+ * fires is decided entirely by `when:` gates over the variable bag. Two of those gates decide whether
+ * a worker is continued onto the next activity or replaced, and getting either wrong is silent: the
+ * walk still completes, having skipped a commit or redone an activity.
  *
  * So this reads the gates OUT of the definition and evaluates them against the bag states a walk
  * actually reaches. Reading rather than restating them is the point — a copy here would drift from the
@@ -20,11 +20,11 @@ import { workflowSubdir } from '../src/loaders/corpus-index.js';
 describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
   const root = liveCorpusRoot();
   if (!root) return;
-  const activity = parseYaml(
-    readFileSync(workflowSubdir(root, 'meta', 'activities/03-dispatch-client-workflow.yaml')!, 'utf8'),
+  const routine = parseYaml(
+    readFileSync(workflowSubdir(root, 'meta', 'routines/activity-loop.yaml')!, 'utf8'),
   ) as { steps: Array<{ id: string; kind: string; steps?: Array<{ id: string; when?: string }> }> };
 
-  const loop = activity.steps.find((s) => s.kind === 'loop');
+  const loop = routine.steps.find((s) => s.kind === 'loop');
   const body = loop?.steps ?? [];
   const gateOf = (id: string): string => {
     const step = body.find((s) => s.id === id);
@@ -37,8 +37,8 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
   function firing(vars: Record<string, unknown>): Record<string, boolean> {
     return {
       continueBatch: evaluateWhenExpression(gateOf('continue-batched-worker'), vars),
-      dispatch: evaluateWhenExpression(gateOf('dispatch-activity'), vars),
-      dispatchFan: evaluateWhenExpression(gateOf('dispatch-fan'), vars),
+      enterActivity: evaluateWhenExpression(gateOf('enter-activity'), vars),
+      enterFan: evaluateWhenExpression(gateOf('enter-fan'), vars),
       gatePath: evaluateWhenExpression(gateOf('present-yielded-checkpoint'), vars),
       commit: evaluateWhenExpression(gateOf('commit-activity-artifacts'), vars),
       release: evaluateWhenExpression(gateOf('release-spent-worker'), vars),
@@ -58,7 +58,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
     // Order matters as much as the gates: the continuation must be reached before dispatch, so a
     // worker carried into an iteration is continued rather than replaced.
     const ids = body.map((s) => s.id);
-    expect(ids.indexOf('continue-batched-worker')).toBeLessThan(ids.indexOf('dispatch-activity'));
+    expect(ids.indexOf('continue-batched-worker')).toBeLessThan(ids.indexOf('enter-activity'));
     // And the commit must be reached before the pointer advances off the activity it covers.
     expect(ids.indexOf('commit-activity-artifacts')).toBeLessThan(ids.indexOf('advance-activity'));
     // Releasing a spent identity comes last, so the continuation gate reads it on the NEXT iteration.
@@ -67,7 +67,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
 
   it('dispatches a fresh worker on the first iteration, when the bag holds nothing', () => {
     const fired = firing({});
-    expect(fired.dispatch).toBe(true);
+    expect(fired.enterActivity).toBe(true);
     expect(fired.continueBatch).toBe(false);
     expect(fired.gatePath).toBe(false);
     expect(fired.commit).toBe(false);
@@ -77,7 +77,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
   it('holds the identity when a completed activity leaves the batch room', () => {
     const fired = firing(complete({}));
     expect(fired.continueBatch).toBe(true);
-    expect(fired.dispatch).toBe(false);
+    expect(fired.enterActivity).toBe(false);
     expect(fired.commit).toBe(true);
     // Not released, so the next iteration continues this same context.
     expect(fired.release).toBe(false);
@@ -93,7 +93,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
     expect(fired.continueBatch).toBe(false);
     // With the identity released, the following iteration reaches dispatch.
     expect(firing({ worker_result: (spent as { worker_result: unknown }).worker_result }))
-      .toMatchObject({ continueBatch: false, dispatch: true });
+      .toMatchObject({ continueBatch: false, enterActivity: true });
   });
 
   it('releases the identity on the terminal activity, whatever the batch had left', () => {
@@ -124,21 +124,21 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
     ];
     for (const vars of bags) {
       const fired = firing(vars);
-      expect(fired.continueBatch && fired.dispatch).toBe(false);
-      expect(fired.continueBatch && fired.dispatchFan).toBe(false);
-      expect(fired.dispatch && fired.dispatchFan).toBe(false);
+      expect(fired.continueBatch && fired.enterActivity).toBe(false);
+      expect(fired.continueBatch && fired.enterFan).toBe(false);
+      expect(fired.enterActivity && fired.enterFan).toBe(false);
     }
   });
 
   it('ends the batch when the next destination fans, even with room left', () => {
     // A fan is not another activity for this worker. continue-batch would call next_activity with
-    // one identity; dispatch-fan mints one per branch. The identity is released this iteration so
+    // one identity; spawn-branches mints one per branch. The identity is released this iteration so
     // the next iteration can open the fan.
     const held = fanComplete();
     const fired = firing(held);
     expect(fired.continueBatch).toBe(false);
-    expect(fired.dispatch).toBe(false);
-    expect(fired.dispatchFan).toBe(false);
+    expect(fired.enterActivity).toBe(false);
+    expect(fired.enterFan).toBe(false);
     expect(fired.commit).toBe(true);
     expect(fired.release).toBe(true);
   });
@@ -152,9 +152,9 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
         next_activity_fans: true,
       },
     });
-    expect(opened.dispatchFan).toBe(true);
+    expect(opened.enterFan).toBe(true);
     expect(opened.continueBatch).toBe(false);
-    expect(opened.dispatch).toBe(false);
+    expect(opened.enterActivity).toBe(false);
     expect(opened.release).toBe(true);
     expect(opened.commit).toBe(true);
   });
@@ -174,7 +174,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
     const fired = firing({ worker_agent_id: 'worker-1', worker_result: { result_type: 'checkpoint_pending' } });
     expect(fired.gatePath).toBe(true);
     expect(fired.continueBatch).toBe(false);
-    expect(fired.dispatch).toBe(false);
+    expect(fired.enterActivity).toBe(false);
     // A gate is not an activity boundary: nothing is committed and nothing is released.
     expect(fired.commit).toBe(false);
     expect(fired.release).toBe(false);

@@ -33,8 +33,14 @@ import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
  * the operations rather than buried in the walk.
  */
 
-/** The step ids that call `next_activity`, and so move the session pointer. */
-const ADVANCING_STEPS = ['continue-batched-worker', 'dispatch-activity', 'dispatch-fan'];
+/**
+ * The body step ids that call `next_activity`, and so move the session pointer.
+ *
+ * `retire-branch` also calls it, once per branch, but it sits inside the `branch-retirement` forEach
+ * rather than in the body — this walk reads the body only, so a branch retirement is one body step
+ * whose inner advances are outside what these scenarios model.
+ */
+const ADVANCING_STEPS = ['continue-batched-worker', 'enter-activity', 'enter-fan'];
 
 interface Envelope {
   /**
@@ -56,8 +62,16 @@ type Bag = Record<string, unknown>;
  *
  * - `continue-batched-worker` → `workflow-engine::continue-batch`: advances the pointer, then returns
  *   an envelope and the identity now holding the activity — the held one, or a replacement it spawned.
- * - `dispatch-activity` → `workflow-engine::dispatch-activity`: advances the pointer, mints an
- *   identity, returns an envelope.
+ * - `enter-activity` → the run's `enter_activity` input: advances the pointer, mints an identity,
+ *   returns an envelope.
+ * - `enter-fan` → `fan::enter-fan`: one call opens every branch and reports the activity they
+ *   converge on.
+ * - `spawn-branches` → `fan::spawn-branches`: emits the batch and collects the returns. No gate
+ *   reads what it produces.
+ * - `branch-retirement` → the forEach over `branch_list`, whose `fan::retire-branch` advances once
+ *   per branch. Its inner steps are outside this walk, which reads the body only.
+ * - `persist-the-fan` → `workflow-engine::commit-and-persist` over the branch list: the fan's one
+ *   commit, at convergence.
  * - `resume-yielded-worker` → `workflow-engine::resume-worker`: returns a fresh envelope under the
  *   identity already held. It does NOT touch the pointer.
  * - `commit-activity-artifacts`, `advance-activity`, `release-spent-worker`: as the YAML declares.
@@ -71,17 +85,21 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     bag['worker_result'] = next();
   },
   // Also declares trace_token, which no gate reads.
-  'dispatch-activity': (bag, next, log) => {
+  'enter-activity': (bag, next, log) => {
     log.push('advance');
     bag['worker_agent_id'] = 'worker-minted';
     bag['worker_result'] = next();
   },
-  'dispatch-fan': (bag, _next, log) => {
+  'enter-fan': (bag, _next, log) => {
     log.push('advance');
-    // The enter opens every branch in one call. Branch envelopes are internal to the operation;
-    // this walk only sees the convergence the barrier reported.
+    // One call opens every branch. Branch envelopes belong to the spawn that follows; this walk
+    // only sees the convergence the barrier reported.
     bag['fan_convergence_activity'] = 'gather';
+    bag['branch_list'] = ['probe-unit#0', 'probe-unit#1'];
   },
+  'spawn-branches': () => { /* returns branch_envelopes; no gate reads it */ },
+  'branch-retirement': () => { /* the forEach whose retirements advance, one per branch */ },
+  'persist-the-fan': (_bag, _next, log) => { log.push('commit'); },
   'advance-past-fan': (bag) => {
     bag['current_activity'] = (bag['fan_convergence_activity'] as string | undefined) ?? null;
   },
@@ -134,9 +152,15 @@ function activityDef(): { steps: OuterStep[] } {
   ) as { steps: OuterStep[] };
 }
 
+function routineDef(): { steps: OuterStep[] } {
+  return parseYaml(
+    readFileSync(workflowSubdir(liveCorpusRoot()!, 'meta', 'routines/activity-loop.yaml')!, 'utf8'),
+  ) as { steps: OuterStep[] };
+}
+
 function loop(): LoopDef {
-  const found = activityDef().steps.find((s) => s.kind === 'loop');
-  if (!found?.steps?.length) throw new Error('no loop body in 03-dispatch-client-workflow');
+  const found = routineDef().steps.find((s) => s.kind === 'loop');
+  if (!found?.steps?.length) throw new Error('no loop body in the activity-loop run');
   return found as LoopDef;
 }
 
@@ -240,22 +264,25 @@ function longestWorkflowActivityCount(): number {
 
 describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
   it('carries the frame a batch of any length needs, outside the body', () => {
-    const def = activityDef();
+    const def = routineDef();
 
     // Exactly these steps up to and including the loop, in this order. Naming positions instead would
     // miss a step inserted between the prime and the loop — one that nulls the pointer keeps the loop
     // from ever running — and a second `kind: loop` the walk's own `find` cannot see.
     const ids = def.steps.map((s) => s.id);
-    const loopAt = ids.indexOf('client-activity-loop');
+    const loopAt = ids.indexOf('activity-cycle');
     expect(ids.slice(0, loopAt + 1)).toEqual([
       'verify-preconditions',
       'prime-initial-activity',
-      'client-activity-loop',
+      'activity-cycle',
     ]);
     expect(def.steps.filter((s) => s.kind === 'loop')).toHaveLength(1);
     // A step after the loop reads the pointer to say how the loop ended; one that WRITES it re-primes a
-    // spent walk, so the activity's transition never fires and close-out is never reached.
-    for (const after of def.steps.slice(loopAt + 1)) {
+    // spent walk, so the activity's transition never fires and close-out is never reached. The run's
+    // own tail and the activity's steps after the reference are both downstream of the loop.
+    const host = activityDef();
+    const hostAt = host.steps.map((s) => s.id).indexOf('client-activity-loop');
+    for (const after of [...def.steps.slice(loopAt + 1), ...host.steps.slice(hostAt + 1)]) {
       expect(
         after.actions?.some((a) => a.action === 'set' && a.target === 'current_activity'),
         `step '${after.id}' sits after the loop and re-primes the pointer`,
@@ -265,16 +292,16 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     const [precondition, prime] = def.steps;
     const l = loop();
 
-    // Nothing in the body checks that a client session exists, and nothing primes the pointer the
+    // Nothing in the body checks that a session exists, and nothing primes the pointer the
     // continuation test reads. Both live ahead of the loop, and a walk that starts inside the body
     // cannot see either — so they are asserted here rather than assumed.
-    expect(precondition?.actions?.some((a) => a.action === 'validate' && a.target === 'client_session_index')).toBe(true);
+    expect(precondition?.actions?.some((a) => a.action === 'validate' && a.target === 'session_index')).toBe(true);
     const primeWrite = prime?.actions?.find((a) => a.action === 'set');
     expect(primeWrite?.target).toBe(l.continueWhile?.variable);
-    // Primed from a bound variable, braced like every other reference in the corpus. Written bare it
+    // Primed from a bound input, braced like every other reference in the corpus. Written bare it
     // reads as the literal string, and no workflow declares an activity by that name, so the first
     // `next_activity` fails outright — an error naming the id it could not find, not the one to use.
-    expect(primeWrite?.value).toBe('{client_initial_activity}');
+    expect(primeWrite?.value).toBe('{initial_activity}');
     expect(l.loopType).toBe('while');
     // The exit test is on the pointer the body advances, against null — the two have to agree, or the
     // walk either never enters or never leaves.
@@ -295,7 +322,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     expect(advanceWrite?.value).toBe('{worker_result.next_activity_id}');
 
     // And the activity leaves for close-out on the same condition the loop exits by.
-    const exits = (def as unknown as { exits?: Array<{ id: string; when?: string }> }).exits ?? [];
+    const exits = (host as unknown as { exits?: Array<{ id: string; when?: string }> }).exits ?? [];
     expect(exits.map((e) => e.when)).toContain('current_activity == null');
   });
 
@@ -354,7 +381,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
 
     expect(result.stopped).toBe('condition');
     expect(result.iterations).toEqual([
-      ['dispatch-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
+      ['enter-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
       ['continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
       ['continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
     ]);
@@ -370,7 +397,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // because a gate is not an activity boundary. The resumed envelope then completes the activity in
     // that same iteration, which is where the commit belongs.
     expect(result.iterations[0]).toEqual([
-      'dispatch-activity',
+      'enter-activity',
       'present-yielded-checkpoint',
       'respond-yielded-checkpoint',
       'resume-yielded-worker',
@@ -401,14 +428,18 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // A source that fans is a completed activity: it commits and releases even when the batch has
     // room. The next iteration opens the fan; retire clears the envelope so the join is an ordinary
     // dispatch. continue-batch never fires — a fan is not the next activity of this worker.
+    //
+    // The fan iteration commits once, through `persist-the-fan` rather than through
+    // `commit-activity-artifacts`: retiring the envelope precedes that step and empties the result
+    // its gate reads, which is what keeps a fan from committing twice.
     const fanDest = { activity: 'probe-unit', over: 'targets', variable: 'probe_target' };
     const result = walk([complete(fanDest, true, true), complete(null)]);
 
     expect(result.stopped).toBe('condition');
     expect(result.iterations).toEqual([
-      ['dispatch-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
-      ['dispatch-fan', 'advance-past-fan', 'retire-fan-envelope'],
-      ['dispatch-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+      ['enter-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+      ['enter-fan', 'spawn-branches', 'branch-retirement', 'persist-the-fan', 'advance-past-fan', 'retire-fan-envelope'],
+      ['enter-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
     ]);
     expect(result.iterations.flat().filter((id) => id === 'continue-batched-worker')).toEqual([]);
     expect(result.bag['current_activity']).toBeNull();
@@ -420,7 +451,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
 
     expect(result.iterations[0]).toContain('release-spent-worker');
     // Released, so the following iteration reaches dispatch rather than continuation.
-    expect(result.iterations[1]?.[0]).toBe('dispatch-activity');
+    expect(result.iterations[1]?.[0]).toBe('enter-activity');
     expect(result.iterations[1]).not.toContain('continue-batched-worker');
   });
 
