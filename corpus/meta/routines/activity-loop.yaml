@@ -119,7 +119,7 @@ steps:
               name: fan::retire-branch
               inputs:
                 branch_activity: current_branch
-                branch_envelope: "{branch_envelopes}"
+                branch_envelopes: branch_envelopes
                 barrier_destination: fan_convergence_activity
                 session_index: session_index
             actions:
