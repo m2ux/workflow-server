@@ -18,6 +18,8 @@
  *   body's reads are wider than the tokens its step fields spell: they include, for every bound
  *   operation, that operation's prose interpolations and the declared inputs the step leaves
  *   unbound, both of which resolve out of the bag under their own names with no field to rewrite.
+ *   A name the body itself produces is none of those: the run reads its own step's production back
+ *   out of the bag, so no site supplies it and the host derivation reads it the same way.
  * - `routine-operation-unbound` — an input declared `kind: technique` that no step of the body binds.
  *   It stands in a technique position rather than being read as a value, so an unread-input rule
  *   asking the derivation about it would report every one of them.
@@ -164,8 +166,15 @@ async function checkSignature(
     // An undeclared read is something the body DOES, so it is reported where it happens. One site's
     // operation reading a name is a gap in the signature whether or not another site's operation
     // reads it.
+    //
+    // Less what the body produces, which is the same narrowing a host activity gets: a name an
+    // earlier step of the run puts in the bag is read back from there, so no site supplies it and no
+    // declaration can say anything true about it. Held to the wider rule, a run consuming its own
+    // step's envelope would have to declare it as an input, which is a value the host is asked for
+    // and never reads — and where the producing step binds its operation by argument, the rule below
+    // then refuses the same declaration.
     for (const name of derived.mentions) {
-      if (declared.has(name) || derived.literalValues.has(name)) continue;
+      if (declared.has(name) || derived.literalValues.has(name) || derived.produces.has(name)) continue;
       findings.push({
         check: 'routine-undeclared-read', site: body.site,
         detail: `the body reads '${name}' and the signature declares it as neither an input, an output nor an internal — declare it as an input, and a reference site that binds nothing takes the host's value under that name`,
