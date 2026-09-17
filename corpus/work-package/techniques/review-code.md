@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.7.0
+  version: 2.8.0
 ---
 
 ## Capability
@@ -51,7 +51,7 @@ Method [record](../resources/rust-substrate-code-review.md#method-record-templat
 
 ### 1. Load Guidance
 
-- Review against the attached [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria) ([resource-loading-via-tool](/meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool) — never read workflow resources from disk).
+- Review against the attached [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria) (workflow-engine.resource-loading-via-tool — never read workflow resources from disk).
 - Review against `{changed_files}` as the authored surface.
   > Where it is empty, verify the branch and commit range before reviewing an empty set.
 

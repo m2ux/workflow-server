@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -37,7 +37,7 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 1. Load Schemas
 
-- Load all five JSON schema definitions from `workflow-server://schemas` (workflow, activity, technique, condition, state) — conformance reference for drafted content. Delivery: [resource-loading-via-tool](/meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool).
+- Load all five JSON schema definitions from `workflow-server://schemas` (workflow, activity, technique, condition, state) — conformance reference for drafted content. Delivery: workflow-engine.resource-loading-via-tool.
 - Read `schemas/README.md` for ontology, field tables, examples, and validation guidance
 
 ### 2. Load Design-Time Canon
@@ -47,7 +47,7 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 3. Survey Reference Workflows
 
-- Refresh the catalog via [list-workflows](/meta/techniques/workflow-engine/list-workflows.md) and survey 2+ similar-type workflows from orchestrator-supplied definitions ([no-domain-work](/meta/techniques/orchestrator-conduct.md#no-domain-work) — workers do not load full workflow definitions)
+- Refresh the catalog via [list-workflows](/meta/techniques/workflow-engine/list-workflows.md) and survey 2+ similar-type workflows from orchestrator-supplied definitions (orchestrator-conduct.no-domain-work — workers do not load full workflow definitions)
 
 ### 4. Ground YAML Syntax
 

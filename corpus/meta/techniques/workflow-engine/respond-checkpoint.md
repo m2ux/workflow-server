@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -27,22 +27,23 @@ Variable updates the server returned on clearing the active checkpoint.
 
 ### 1. Verify Auto-Advance
 
-- When `{checkpoint_resolution}` is `{ auto_advance: true }`, apply verify-auto-advance-on-resolve before calling `respond_checkpoint`.
+- When `{checkpoint_resolution}` is `{ auto_advance: true }`, read the gate's softness per present-checkpoint-to-user.verify-auto-advance-capability, and resolve it some other way where the gate is hard
 
 ### 2. Clear Active Gate
 
 - Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns `{effects}`. Capture `{effects}` and propagate them to the worker on resume.
-  > When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
+  > - When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
+  > - When it returns `Invalid option`, the resolution named an option the gate does not declare: apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` for the options it does declare, and resolve again from those.
 
 ## Rules
 
 ### no-option-hallucination
 
-If `respond_checkpoint` returns `Invalid option`, STOP. Apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to retrieve the valid options. Never guess.
+An `option_id` this operation sends is one the gate itself declared. Never invent one, and never carry one over from a prior run or infer it from the checkpoint's message text.
 
 ### verify-auto-advance-on-resolve
 
-`auto_advance: true` is valid only on a gate the definition declares soft. Confirm via present-checkpoint-to-user.verify-auto-advance-capability before calling `respond_checkpoint`; the server refuses the call on a gate that carries no such declaration. Do not invent auto-advance on a hard gate.
+`auto_advance: true` is valid only on a gate the definition declares soft; the server refuses it on any other, and a hard gate resolves on an explicit selection alone.
 
 ### auto-advance-spends-the-declared-interval
 

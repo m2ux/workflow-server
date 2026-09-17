@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 2. Establish Gate Softness
 
-- Apply verify-auto-advance-capability against the `present_checkpoint` payload (and the activity definition when needed) to establish whether the gate is soft or hard.
+- Read whether the gate is soft or hard from the `present_checkpoint` payload, or from the checkpoint definition it mirrors where the payload leaves it unsettled, per verify-auto-advance-capability.
 
 ### 3. Resolve Published Links
 
@@ -77,4 +77,4 @@ A gate whose subject is content the resolving dispatch itself authored is hard w
 
 ### verify-auto-advance-capability
 
-Read a gate's softness off the gate in front of you: confirm from the `present_checkpoint` payload — or the checkpoint definition it mirrors — that this gate carries the declaration the checkpoint schema defines softness as. Never assert it from memory, from a prior run, or from prose. Capability is verified, not assumed.
+A gate's softness is whatever the gate in front of you declares, and the checkpoint schema defines which fields carry that declaration. Never assert it from memory, from a prior run, or from prose — capability is verified, not assumed.

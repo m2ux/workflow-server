@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -44,7 +44,7 @@ Lean mechanical summary of resolved trace events (dispatch counts, tool counts, 
 
 ### 2. Resolve Session Trace
 
-- Resolve `{trace_tokens}` once at close-out per [resolve-trace-at-close-out](/meta/techniques/workflow-engine/dispatch-activity.md#resolve-trace-at-close-out); skip when empty (no fabrication).
+- Resolve `{trace_tokens}` once at close-out per dispatch-activity.resolve-trace-at-close-out; skip when empty (no fabrication).
 - Write `{session_trace_document}` under `{planning_folder_path}` via find-or-update (manage-artifacts.artifact-prefix) following the [session-trace template](/meta/resources/session-trace.md#template) — mechanical execution only, no token or cost figure.
 
 ### 3. Conduct Retrospective
