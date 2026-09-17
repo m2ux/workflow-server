@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -15,4 +15,7 @@ Array of `{ id, title, description, tags }` entries
 
 ## Protocol
 
-1. Call `list_workflows` and return its result as the `{workflow_catalog}`.
+### 1. List the catalog
+
+- Call `list_workflows` and return its result as the `{workflow_catalog}`.
+

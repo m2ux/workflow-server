@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.3.0
+  version: 3.4.0
 ---
 
 ## Capability
@@ -45,12 +45,29 @@ Full path to the created `README.md`
 
 ## Protocol
 
-1. Load [Template](/meta/resources/planning-readme.md#template).
-2. Load the readme-seed profile named by `{seed_profile}`.
-3. Populate the header (title, classifier from seed + `{entity_context}`, date, lifecycle Status), Executive Summary placeholder, and Links table (seed defaults merged with `{entity_context}` URLs when present), each per its entry in [Rules](/meta/resources/planning-readme.md#rules).
-4. Replace the Progress table body with the seed profile's Progress inventory rows as authored (icons from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Insert any seed-declared append H2 sections after Solution Overview and before Progress.
-5. Apply the seed profile's mode-exclusion map using `{is_review_mode}` and/or `{operation_type}` when bound (else implement/create defaults on the profile), per [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
-6. Write the populated `README.md` to `{planning_folder_path}/README.md`, and return that location as `{created_readme}`.
+### 1. Load the Template
+
+- Load [Template](/meta/resources/planning-readme.md#template).
+
+### 2. Load the seed profile
+
+- Load the readme-seed profile named by `{seed_profile}`.
+
+### 3. Populate the header and Links
+
+- Populate the header (title, classifier from seed + `{entity_context}`, date, lifecycle Status), Executive Summary placeholder, and Links table (seed defaults merged with `{entity_context}` URLs when present), each per its entry in [Rules](/meta/resources/planning-readme.md#rules).
+
+### 4. Seed the Progress table
+
+- Replace the Progress table body with the seed profile's Progress inventory rows as authored (icons from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Insert any seed-declared append H2 sections after Solution Overview and before Progress.
+
+### 5. Apply the mode exclusions
+
+- Apply the seed profile's mode-exclusion map using `{is_review_mode}` and/or `{operation_type}` when bound (else implement/create defaults on the profile), per [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
+
+### 6. Write the README
+
+- Write the populated `README.md` to `{planning_folder_path}/README.md`, and return that location as `{created_readme}`.
 
 ## Rules
 

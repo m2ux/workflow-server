@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -25,14 +25,37 @@ Load the active checkpoint's details and present them to the user.
 
 ## Protocol
 
-1. Call `present_checkpoint { session_index }`; it returns the active checkpoint's message and options. If this returns `no active checkpoint on session`, the worker has not yet yielded a checkpoint or the previous one was already resolved — re-check that you are presenting against the correct `{session_index}`.
-2. Apply [verify-auto-advance-capability](#verify-auto-advance-capability) against the `present_checkpoint` payload (and the activity definition when needed) to establish whether the gate is soft or hard.
-3. Resolve the checklist against the remote before it is published. A gate is reached mid-activity, before that activity's commit, so `git -C {host_repo_path} rev-parse --abbrev-ref HEAD` names the session branch `{$branch}`, and `git -C {host_repo_path} ls-tree -r --name-only origin/{branch} {planning_folder_path}` lists exactly what a reader can open: an item whose artifact is present renders as a link, and one whose artifact is absent renders as plain text. This stops a dead link being published; it does not make an artifact available sooner. It also catches a push that silently failed and an edit made out of band.
-4. Take the resolution path this run uses from `{headless_mode}` — interactive where it is unset.
-5. On the interactive path, and on every hard gate whatever the run's mode: put the checkpoint's message and its `options[]` to the user through the host's own question primitive, and wait for an explicit selection. This is the user's only opportunity to respond. Capture their `option_id`.
-6. On the headless path, and only for a soft gate: resolve to the answer the gate declares without putting anything to the user, and record that the resolution reached no user. The audit record carries the distinction, so a reader of the session can tell a person's answer from a default.
-7. Record the resolved `{user_selection}` — the `option_id` and its `effects` (or `auto_advance` / `condition_not_met`).
-8. Apply the effects carried on `{user_selection}` to internal state, then pass `{user_selection}` down to the orchestrator or worker awaiting the resolution.
+### 1. Load the active checkpoint
+
+- Call `present_checkpoint { session_index }`; it returns the active checkpoint's message and options. If this returns `no active checkpoint on session`, the worker has not yet yielded a checkpoint or the previous one was already resolved — re-check that you are presenting against the correct `{session_index}`.
+
+### 2. Establish whether the gate is soft or hard
+
+- Apply [verify-auto-advance-capability](#verify-auto-advance-capability) against the `present_checkpoint` payload (and the activity definition when needed) to establish whether the gate is soft or hard.
+
+### 3. Resolve the checklist against the remote
+
+- Resolve the checklist against the remote before it is published. A gate is reached mid-activity, before that activity's commit, so `git -C {host_repo_path} rev-parse --abbrev-ref HEAD` names the session branch `{$branch}`, and `git -C {host_repo_path} ls-tree -r --name-only origin/{branch} {planning_folder_path}` lists exactly what a reader can open: an item whose artifact is present renders as a link, and one whose artifact is absent renders as plain text. This stops a dead link being published; it does not make an artifact available sooner. It also catches a push that silently failed and an edit made out of band.
+
+### 4. Take the resolution path
+
+- Take the resolution path this run uses from `{headless_mode}` — interactive where it is unset.
+
+### 5. Put the gate to the user
+
+- On the interactive path, and on every hard gate whatever the run's mode: put the checkpoint's message and its `options[]` to the user through the host's own question primitive, and wait for an explicit selection. This is the user's only opportunity to respond. Capture their `option_id`.
+
+### 6. Resolve a soft gate unattended
+
+- On the headless path, and only for a soft gate: resolve to the answer the gate declares without putting anything to the user, and record that the resolution reached no user. The audit record carries the distinction, so a reader of the session can tell a person's answer from a default.
+
+### 7. Record the resolution
+
+- Record the resolved `{user_selection}` — the `option_id` and its `effects` (or `auto_advance` / `condition_not_met`).
+
+### 8. Hand the selection on
+
+- Apply the effects carried on `{user_selection}` to internal state, then pass `{user_selection}` down to the orchestrator or worker awaiting the resolution.
 
 ## Rules
 
