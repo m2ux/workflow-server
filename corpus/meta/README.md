@@ -6,7 +6,7 @@
 
 ## Overview
 
-The meta workflow is the structural home for the orchestration logic that used to live in technique prose. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique operation via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
+The meta workflow is the structural home for the session's orchestration logic. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique operation via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
 
 **Key characteristics:**
 
@@ -50,19 +50,14 @@ Meta is the user-facing orchestrator; the client session is a child `start_sessi
 
 ## Techniques and the cross-workflow shared layer
 
-The `meta/techniques/` and `meta/resources/` folders carry double duty. They
-are the local content for the meta workflow itself AND the cross-workflow
-shared layer — when any workflow asks for a technique that has no
-workflow-local definition, the loader resolves it from `meta/techniques/`.
-The ontology and section conventions every technique follows are defined in
-[`meta/resources/workflow-canonical.md`](./resources/workflow-canonical.md).
+The [`meta/techniques/`](techniques/) and [`meta/resources/`](resources/)
+folders carry double duty. They are the local content for the meta workflow
+itself AND the cross-workflow shared layer every other workflow reaches.
 
-Markdown techniques live under [`meta/techniques/`](techniques/). A standalone
-technique is a single `<slug>.md` file; a grouped technique is a `<group>/`
-folder containing `TECHNIQUE.md` (the index/base contract) plus one `<op>.md`
-per operation, each addressed `<group>::<op>`. The
-[`meta/techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) root base contract
-is inherited by every meta technique.
+The on-disk layout a technique takes, how a base contract reaches the
+operations beneath it, the cross-reference format, and the section
+conventions every technique follows are defined in
+[`meta/resources/workflow-canonical.md`](./resources/workflow-canonical.md).
 
 ---
 
@@ -122,7 +117,7 @@ corpus/meta/
 │   ├── activity-loop.yaml                   # Walk a session one activity at a time, until none follows
 │   └── dispatch-round.yaml                  # Compose, dispatch and gather one round of worker briefs
 ├── techniques/
-│   ├── TECHNIQUE.md                         # Root base contract (inherited by every meta technique)
+│   ├── TECHNIQUE.md                         # Root base contract
 │   ├── agent-conduct.md                     # Cross-cutting rules any agent can act on (single source of truth)
 │   ├── orchestrator-conduct.md              # The boundaries only an orchestrator can honour
 │   ├── worker-conduct.md                    # The boundaries only a dispatched worker can honour

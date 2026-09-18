@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.5.1
 ---
 
 ## Capability
@@ -46,13 +46,13 @@ Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo
 
 ### generated-product-built-once
 
-Some projects compile a second product beside the binary, and building it on every check, lint and test costs far more than it returns. Where a project has one, each compiling operation suppresses it and the single operation whose product it is builds it — [build-release](./build-release.md), which interpolates no `{generated_product_skip}` at all.
+Some projects compile a second product beside the binary. Where a project has one, each compiling operation suppresses it and the single operation whose product it is builds it — [build-release](./build-release.md), which interpolates no `{generated_product_skip}` at all.
 
 `{generated_product_skip}` is that suppression: on a Substrate project, whose second product is the runtime wasm blob, it is `SKIP_WASM_BUILD=1`. On a project with no second product it is empty, and these operations read the same with it absent.
 
 ### foreground-only
 
-Run every cargo operation as a foreground shell invocation, and wait for it. A backgrounded invocation dies with the context that spawned it, taking the build with it, so its result is unreadable to whoever asked for it. Running several foreground shells at once is within this rule; backgrounding any of them is not. A run that cannot finish in the foreground is a blocker to surface, carrying the scope that was attempted.
+Run every cargo operation as a foreground shell invocation, and wait for it. A backgrounded invocation dies with the context that spawned it, taking the build with it. Running several foreground shells at once is within this rule; backgrounding any of them is not. A run that cannot finish in the foreground is a blocker to surface, carrying the scope that was attempted.
 
 ### scope-narrow-then-wide
 
