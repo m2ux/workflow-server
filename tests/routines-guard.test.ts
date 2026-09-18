@@ -662,13 +662,17 @@ describe('placement, over the transitive referrer closure', () => {
     `id: ${id}\nversion: 1.0.0\nname: ${id}\nsteps:\n${steps}`;
   const action = '  - kind: action\n    id: do-it\n    actions:\n      - action: log\n        message: ran\n';
 
-  it('reports a routine nothing references anywhere in the corpus', async () => {
+  /**
+   * A routine is an artifact offered to whatever binds it, on the terms the techniques beside it
+   * are offered, so how many callers reach it is not a property this guard measures. Its signature
+   * is held against its own body either way.
+   */
+  it('accepts a routine nothing references anywhere in the corpus', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
       routines: { wf: { 'shared-run': body('shared-run', action) } },
     });
-    expect(checks(findings)).toEqual(['routine-unreferenced']);
-    expect(findings[0]!.detail).toContain('workflow(s)');
+    expect(checks(findings)).toEqual([]);
   });
 
   /**
@@ -852,6 +856,52 @@ Probe the target.
       routines: { lib: { 'shared-run': body('shared-run', '  - kind: technique\n    id: probe\n    technique: lib::probe\n') } },
     });
     expect(checks(findings)).toEqual([]);
+  });
+
+  /**
+   * A library offers its artifacts to whatever binds them — a caller may arrive from any workflow,
+   * or from none yet — which is the standing a technique in the same directory already has. Held to
+   * the workflow rule, a library could carry no run until some workflow happened to want one.
+   */
+  it('accepts a library-homed routine no caller references', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      techniques: { lib: { probe } },
+      routines: { lib: { 'shared-run': body('shared-run', '  - kind: technique\n    id: probe\n    technique: lib::probe\n') } },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  /**
+   * The run a missing caller does bear on: its signature is derived against the operation a site
+   * supplies, so with no site nothing derives and no signature rule can fire. Silence there would
+   * read as a run nothing found fault with.
+   */
+  it('reports a routine whose signature no site can hold', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    default: lib::probe
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    const finding = findings.find((f) => f.check === 'routine-signature-unheld');
+    expect(finding).toBeDefined();
+    expect(finding!.detail).toContain('nothing in the corpus refers to');
   });
 
   it('reports a library-homed routine that binds none of that library\'s operations', async () => {
