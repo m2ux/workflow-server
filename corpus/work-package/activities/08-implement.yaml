@@ -63,7 +63,7 @@ variables:
       description: The residual open assumptions awaiting a stakeholder judgement.
     - name: test_status
       type: object
-      description: The test check's status — its check identifier, whether every test passed, and the per-test failure detail behind that verdict.
+      description: "The test check's status — `{ check_id, passed, diagnostics }`."
       defaultValue: {}
     - name: uncertain_symbols
       type: string
