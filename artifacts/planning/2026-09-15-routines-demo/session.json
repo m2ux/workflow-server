@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "routines-demo",
+  "workflowVersion": "1.0.0",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "TMRMDF",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-09-15-routines-demo",
+  "frontier": [],
+  "currentTechnique": "",
+  "exit": "",
+  "seq": 0,
+  "ts": 1789476758,
+  "startedAt": "2026-09-15T12:52:38.517Z",
+  "completedActivities": [],
+  "variables": {
+    "component_path": ".",
+    "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+    "is_monorepo": false,
+    "open_findings": [],
+    "review_presentation": "three findings remain",
+    "review_topic": "the routines construct",
+    "target_repo": "m2ux/workflow-server"
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-15T12:52:38.517Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "component_path": ".",
+          "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+          "is_monorepo": false,
+          "open_findings": [],
+          "review_presentation": "three findings remain",
+          "review_topic": "the routines construct",
+          "target_repo": "m2ux/workflow-server"
+        }
+      },
+      "timestamp": "2026-09-15T12:52:38.517Z",
+      "type": "variables_seeded"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "repo": "m2ux/workflow-server"
+}

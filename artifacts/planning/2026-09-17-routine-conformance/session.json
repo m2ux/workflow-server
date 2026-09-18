@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "routine-conformance",
+  "workflowVersion": "1.0.0",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "P4JWLQ",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-09-17-routine-conformance",
+  "frontier": [
+    "count-pass"
+  ],
+  "currentTechnique": "",
+  "exit": "planned",
+  "seq": 5,
+  "ts": 1789652733,
+  "startedAt": "2026-09-17T13:41:27.231Z",
+  "completedActivities": [
+    "plan-probes"
+  ],
+  "variables": {
+    "component_path": ".",
+    "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+    "initial_target": ".",
+    "is_monorepo": false,
+    "target_repo": "m2ux/workflow-server",
+    "user_request": "Reproduce the delivery-cost readings for issue 801."
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-17T13:41:27.231Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "component_path": ".",
+          "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+          "is_monorepo": false,
+          "target_repo": "m2ux/workflow-server",
+          "user_request": "Reproduce the delivery-cost readings for issue 801."
+        }
+      },
+      "timestamp": "2026-09-17T13:41:27.231Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "plan-probes",
+      "timestamp": "2026-09-17T13:44:40.343Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "plan-probes",
+      "data": {
+        "agentId": "worker-A",
+        "chars": 39861,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-17T13:44:42.477Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "plan-probes",
+      "data": {
+        "agentId": "worker-A",
+        "chars": 2608,
+        "delivery": "full",
+        "stepId": "choose-the-opening-target",
+        "techniqueId": "plan-probes"
+      },
+      "timestamp": "2026-09-17T13:44:42.477Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "plan-probes",
+      "data": {
+        "agentId": "worker-A",
+        "stepId": "choose-the-opening-target"
+      },
+      "timestamp": "2026-09-17T13:44:42.477Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "plan-probes",
+      "data": {
+        "agentId": "worker-A",
+        "bundled_steps": 1,
+        "delivery": "full",
+        "eager_budget_chars": 640000,
+        "provenance_passes": 1,
+        "resolved_techniques": 4,
+        "spent_chars": 37866
+      },
+      "timestamp": "2026-09-17T13:44:42.477Z",
+      "type": "activity_delivered"
+    },
+    {
+      "activity": "plan-probes",
+      "timestamp": "2026-09-17T13:45:28.764Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "plan-probes",
+      "data": {
+        "name": "initial_target",
+        "source": "variables_changed",
+        "value": "."
+      },
+      "timestamp": "2026-09-17T13:45:28.764Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "plan-probes",
+      "data": {
+        "agentId": "worker-A",
+        "stepId": "choose-the-opening-target"
+      },
+      "timestamp": "2026-09-17T13:45:28.764Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "count-pass",
+      "timestamp": "2026-09-17T13:45:28.764Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "count-pass",
+      "data": {
+        "agentId": "worker-A",
+        "chars": 6416,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-09-17T13:45:33.489Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "count-pass",
+      "data": {
+        "agentId": "worker-A",
+        "chars": 3299,
+        "delivery": "full",
+        "stepId": "counting.probe-cycle.measure",
+        "techniqueId": "count-entries"
+      },
+      "timestamp": "2026-09-17T13:45:33.489Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "count-pass",
+      "data": {
+        "agentId": "worker-A",
+        "stepId": "counting.probe-cycle.measure"
+      },
+      "timestamp": "2026-09-17T13:45:33.489Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "count-pass",
+      "data": {
+        "agentId": "worker-A",
+        "bundled_steps": 1,
+        "delivery": "reference",
+        "eager_budget_chars": 640000,
+        "provenance_passes": 1,
+        "resolved_techniques": 4,
+        "spent_chars": 3995
+      },
+      "timestamp": "2026-09-17T13:45:33.489Z",
+      "type": "activity_delivered"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "contextMode": "fresh",
+  "deliveredContent": {
+    "worker-A": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:1d99071a7f4162ad": "1d99071a7f4162ad",
+      "bundle:variable-binding": "dc1a5a33cc94f3ec",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "10c52c9e356de2a0",
+      "bundle:workflow-engine::finalize-activity": "2f764effa5c781f4",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:count-entries": "e2ec56875ad1fcb5",
+      "technique:inherited_inputs.items:524d2484113ac69b": "524d2484113ac69b",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:9ec0e75c5a586105": "9ec0e75c5a586105",
+      "technique:plan-probes": "050afc28d1f4f90b",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:8ec2ad277808a670": "8ec2ad277808a670"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}

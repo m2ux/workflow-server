@@ -1,0 +1,909 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "6.3.0",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "NJBQ4E",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-09-14-session-clock-install",
+  "frontier": [
+    "dispatch-client-workflow"
+  ],
+  "currentTechnique": "",
+  "exit": "done",
+  "seq": 10,
+  "ts": 1789382749,
+  "startedAt": "2026-09-14T10:45:47.546Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target"
+  ],
+  "variables": {
+    "client_initial_activity": "start-work-package",
+    "client_planning_slug": "2026-09-14-session-clock-install-wp",
+    "client_session_index": "PB7UVO",
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "component_selection_needed": false,
+    "gitmodules_present": true,
+    "has_saved_state": false,
+    "host_binding_mismatch": false,
+    "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+    "identifying_context": {},
+    "initiative_name": "session-clock-sidecar",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-14-session-clock-install",
+    "resume_intent_requested": false,
+    "submodules": [],
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "work-package",
+    "user_request": "At present the time taken from first prompt to dispatching the client workflow with workflow server is too long. I suspect a lot of the preamble can be scripted with Python or TypeScript, e.g. workflow discovery. Workflows have embedded keywords to aid discovery. Maybe we can add a discover-workflow tool that permits fuzzy discovery based upon keywords provided by an agent. Measure time to dispatch client and use this as a reference for optimisation. Consider other novel techniques also like scripts, new workflow-server MCP tools, or other.",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-14T10:45:47.546Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "component_selection_needed": false,
+          "has_saved_state": false,
+          "host_binding_mismatch": false,
+          "is_monorepo": false,
+          "is_resuming": false,
+          "resume_intent_requested": false,
+          "submodules": [],
+          "user_request": "At present the time taken from first prompt to dispatching the client workflow with workflow server is too long. I suspect a lot of the preamble can be scripted with Python or TypeScript, e.g. workflow discovery. Workflows have embedded keywords to aid discovery. Maybe we can add a discover-workflow tool that permits fuzzy discovery based upon keywords provided by an agent. Measure time to dispatch client and use this as a reference for optimisation. Consider other novel techniques also like scripts, new workflow-server MCP tools, or other.",
+          "workflow_match_ambiguous": false
+        }
+      },
+      "timestamp": "2026-09-14T10:45:47.546Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-09-14T10:45:47.991Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 72999,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 7368,
+        "delivery": "full",
+        "stepId": "resolve-host-repo",
+        "techniqueId": "version-control::resolve-host-repo"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 6519,
+        "delivery": "full",
+        "stepId": "list-available-workflows",
+        "techniqueId": "workflow-engine::list-workflows"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 7916,
+        "delivery": "full",
+        "stepId": "match-target",
+        "techniqueId": "workflow-engine::match-target-workflow"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 6840,
+        "delivery": "full",
+        "stepId": "detect-resume-intent",
+        "techniqueId": "workflow-engine::detect-resume-intent"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 7377,
+        "delivery": "full",
+        "stepId": "extract-context",
+        "techniqueId": "workflow-engine::extract-identifying-context"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 7849,
+        "delivery": "full",
+        "stepId": "name-initiative",
+        "techniqueId": "workflow-engine::derive-initiative-name"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled_steps": 6,
+        "delivery": "full",
+        "eager_budget_chars": 409600,
+        "provenance_passes": 6,
+        "resolved_techniques": 24,
+        "spent_chars": 78737
+      },
+      "timestamp": "2026-09-14T10:45:48.312Z",
+      "type": "activity_delivered"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "has_saved_state",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_binding_mismatch",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_repo_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server"
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "initiative_name",
+        "source": "variables_changed",
+        "value": "session-clock-sidecar"
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "is_resuming",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "resume_intent_requested",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_repo",
+        "source": "variables_changed",
+        "value": "m2ux/workflow-server"
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_workflow_id",
+        "source": "variables_changed",
+        "value": "work-package"
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "workflow_match_ambiguous",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "identifying_context",
+        "source": "variables_changed",
+        "value": {}
+      },
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-09-14T10:45:48.500Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 52387,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-09-14T10:45:48.800Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 5351,
+        "delivery": "full",
+        "stepId": "derive-planning-slug",
+        "techniqueId": "version-control::derive-planning-slug"
+      },
+      "timestamp": "2026-09-14T10:45:48.801Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-09-14T10:45:48.801Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 8688,
+        "delivery": "full",
+        "stepId": "start-or-resume-session",
+        "techniqueId": "workflow-engine::create-session"
+      },
+      "timestamp": "2026-09-14T10:45:48.801Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-09-14T10:45:48.801Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled_steps": 2,
+        "delivery": "full",
+        "eager_budget_chars": 409600,
+        "provenance_passes": 2,
+        "resolved_techniques": 24,
+        "spent_chars": 48907
+      },
+      "timestamp": "2026-09-14T10:45:48.801Z",
+      "type": "activity_delivered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "PB7UVO",
+        "workflowId": "work-package"
+      },
+      "timestamp": "2026-09-14T10:45:49.053Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-09-14T10:45:49.215Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "PB7UVO"
+      },
+      "timestamp": "2026-09-14T10:45:49.215Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-09-14-session-clock-install-wp"
+      },
+      "timestamp": "2026-09-14T10:45:49.215Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_initial_activity",
+        "source": "variables_changed",
+        "value": "start-work-package"
+      },
+      "timestamp": "2026-09-14T10:45:49.215Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-09-14-session-clock-install"
+      },
+      "timestamp": "2026-09-14T10:45:49.215Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-09-14T10:45:49.215Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 46878,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-09-14T10:45:49.447Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 5285,
+        "delivery": "full",
+        "stepId": "detect-monorepo",
+        "techniqueId": "version-control::detect-repo-type"
+      },
+      "timestamp": "2026-09-14T10:45:49.447Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-09-14T10:45:49.447Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled_steps": 1,
+        "delivery": "full",
+        "eager_budget_chars": 409600,
+        "provenance_passes": 1,
+        "resolved_techniques": 24,
+        "spent_chars": 40153
+      },
+      "timestamp": "2026-09-14T10:45:49.447Z",
+      "type": "activity_delivered"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-09-14T10:45:49.556Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-14T10:45:49.556Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "component_path",
+        "source": "variables_changed",
+        "value": "."
+      },
+      "timestamp": "2026-09-14T10:45:49.556Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "component_selection_needed",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-09-14T10:45:49.556Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "submodules",
+        "source": "variables_changed",
+        "value": []
+      },
+      "timestamp": "2026-09-14T10:45:49.556Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "gitmodules_present",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-09-14T10:45:49.556Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-09-14T10:45:49.556Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 41740,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-09-14T10:45:49.826Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled_steps": 0,
+        "delivery": "full",
+        "eager_budget_chars": 409600,
+        "provenance_passes": 0,
+        "resolved_techniques": 24,
+        "spent_chars": 34868
+      },
+      "timestamp": "2026-09-14T10:45:49.826Z",
+      "type": "activity_delivered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "PB7UVO",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {},
+        "completedActivities": [],
+        "currentTechnique": "",
+        "executionPath": "agent",
+        "exit": "",
+        "frontier": [
+          "start-work-package"
+        ],
+        "history": [
+          {
+            "timestamp": "2026-09-14T10:45:49.053Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "artifact_publish_ref": "",
+                "assumption_outcome": "",
+                "attestation_option": "certify",
+                "awaiting_review": false,
+                "base_branch": "",
+                "block_line_range": "",
+                "block_path": "",
+                "body_conforms": false,
+                "body_findings": [],
+                "broken_artifact_links": [],
+                "build_dependent_artifacts_pending": false,
+                "change_block_index": "",
+                "changed_files": [],
+                "code_findings_actionable": false,
+                "commit_sha": "",
+                "completion_document_path": "",
+                "component_name": "",
+                "component_path": ".",
+                "comprehension_artifact": "",
+                "comprehension_artifact_path": "",
+                "comprehension_scope": "same-area",
+                "context_scope": "repo-only",
+                "context_scope_uncertain": false,
+                "current_block_index": 0,
+                "current_question": "",
+                "deferred_item_issue_number": "",
+                "deferred_item_issue_url": "",
+                "deferred_item_rows": [],
+                "deferred_items_register": "",
+                "domain_answered": false,
+                "elicitation_complete": false,
+                "elicitation_log": [],
+                "existing_pr_number": "",
+                "failures": [],
+                "flagged_block_indices": [],
+                "floor_breached": false,
+                "follow_up_rows": [],
+                "follow_ups_register": "",
+                "github_issue_found": false,
+                "gitnexus_indexed": false,
+                "has_critical_blocker": false,
+                "has_debt_markers": false,
+                "has_deferred_assumptions": false,
+                "has_flagged_blocks": false,
+                "has_open_assumptions": false,
+                "has_open_questions": false,
+                "has_reconcilable_research": false,
+                "has_resolvable_assumptions": false,
+                "has_uncertain_symbols": false,
+                "has_unraised_deferred_items": false,
+                "head_sha": "",
+                "headless_mode": false,
+                "is_review_mode": false,
+                "issue_cancelled": false,
+                "issue_present": false,
+                "issue_request": "",
+                "issue_skipped": false,
+                "issue_type_ambiguous": false,
+                "issue_url": "",
+                "jira_issue_key": "",
+                "mark_progress_na": false,
+                "needs_comprehension": true,
+                "needs_elicitation": false,
+                "needs_further_discussion": false,
+                "needs_github_issue_creation": false,
+                "needs_individual_interview": false,
+                "needs_issue_creation": false,
+                "needs_plan_revision": false,
+                "needs_research": false,
+                "needs_simplification": false,
+                "open_deferred_items": [],
+                "post_summary_approved": false,
+                "pr_body": "",
+                "pr_exists": false,
+                "pr_skipped": false,
+                "pr_url": "",
+                "prior_feedback_triage": {},
+                "problem_statement": "",
+                "provenance_log_path": "",
+                "push_remote": "origin",
+                "push_remote_url": "",
+                "question_domains": [],
+                "raise_current_deferred_item": false,
+                "raised_findings_scope": "all",
+                "rating_cap": "",
+                "rationale_attested": false,
+                "requirements": [],
+                "resign_unsigned_commits_requested": false,
+                "review_comments_summary": "",
+                "review_mode_ambiguous": false,
+                "review_passed": false,
+                "review_posted": false,
+                "review_pr_captured": false,
+                "review_pr_missing": false,
+                "review_requires_changes": false,
+                "review_summary": "",
+                "reviewed_code_base_url": "",
+                "run_local_validation": false,
+                "skip_optional_activities": false,
+                "squash_merge_supported": false,
+                "stakeholder_baseline": "",
+                "stakeholder_discussion_held": false,
+                "stealth_mode": false,
+                "strategic_findings_summary": "",
+                "summary_budget_overruns": [],
+                "summary_refine_requested": false,
+                "test_findings_actionable": false,
+                "test_status": "",
+                "ticket_gaps_documented": false,
+                "uncertain_symbols": "",
+                "unsigned_commit_list_summary": "",
+                "unsigned_commits_in_pr": false,
+                "use_existing_pr": false,
+                "user_request": "At present the time taken from first prompt to dispatching the client workflow with workflow server is too long. I suspect a lot of the preamble can be scripted with Python or TypeScript, e.g. workflow discovery. Workflows have embedded keywords to aid discovery. Maybe we can add a discover-workflow tool that permits fuzzy discovery based upon keywords provided by an agent. Measure time to dispatch client and use this as a reference for optimisation. Consider other novel techniques also like scripts, new workflow-server MCP tools, or other.",
+                "worktree_created": false
+              }
+            },
+            "timestamp": "2026-09-14T10:45:49.053Z",
+            "type": "variables_seeded"
+          },
+          {
+            "activity": "start-work-package",
+            "timestamp": "2026-09-14T10:45:50.276Z",
+            "type": "activity_entered"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 2,
+        "sessionIndex": "PB7UVO",
+        "startedAt": "2026-09-14T10:45:49.053Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1789382750,
+        "variables": {
+          "artifact_publish_ref": "",
+          "assumption_outcome": "",
+          "attestation_option": "certify",
+          "awaiting_review": false,
+          "base_branch": "",
+          "block_line_range": "",
+          "block_path": "",
+          "body_conforms": false,
+          "body_findings": [],
+          "broken_artifact_links": [],
+          "build_dependent_artifacts_pending": false,
+          "change_block_index": "",
+          "changed_files": [],
+          "code_findings_actionable": false,
+          "commit_sha": "",
+          "completion_document_path": "",
+          "component_name": "",
+          "component_path": ".",
+          "comprehension_artifact": "",
+          "comprehension_artifact_path": "",
+          "comprehension_scope": "same-area",
+          "context_scope": "repo-only",
+          "context_scope_uncertain": false,
+          "current_block_index": 0,
+          "current_question": "",
+          "deferred_item_issue_number": "",
+          "deferred_item_issue_url": "",
+          "deferred_item_rows": [],
+          "deferred_items_register": "",
+          "domain_answered": false,
+          "elicitation_complete": false,
+          "elicitation_log": [],
+          "existing_pr_number": "",
+          "failures": [],
+          "flagged_block_indices": [],
+          "floor_breached": false,
+          "follow_up_rows": [],
+          "follow_ups_register": "",
+          "github_issue_found": false,
+          "gitnexus_indexed": false,
+          "has_critical_blocker": false,
+          "has_debt_markers": false,
+          "has_deferred_assumptions": false,
+          "has_flagged_blocks": false,
+          "has_open_assumptions": false,
+          "has_open_questions": false,
+          "has_reconcilable_research": false,
+          "has_resolvable_assumptions": false,
+          "has_uncertain_symbols": false,
+          "has_unraised_deferred_items": false,
+          "head_sha": "",
+          "headless_mode": false,
+          "is_review_mode": false,
+          "issue_cancelled": false,
+          "issue_present": false,
+          "issue_request": "",
+          "issue_skipped": false,
+          "issue_type_ambiguous": false,
+          "issue_url": "",
+          "jira_issue_key": "",
+          "mark_progress_na": false,
+          "needs_comprehension": true,
+          "needs_elicitation": false,
+          "needs_further_discussion": false,
+          "needs_github_issue_creation": false,
+          "needs_individual_interview": false,
+          "needs_issue_creation": false,
+          "needs_plan_revision": false,
+          "needs_research": false,
+          "needs_simplification": false,
+          "open_deferred_items": [],
+          "post_summary_approved": false,
+          "pr_body": "",
+          "pr_exists": false,
+          "pr_skipped": false,
+          "pr_url": "",
+          "prior_feedback_triage": {},
+          "problem_statement": "",
+          "provenance_log_path": "",
+          "push_remote": "origin",
+          "push_remote_url": "",
+          "question_domains": [],
+          "raise_current_deferred_item": false,
+          "raised_findings_scope": "all",
+          "rating_cap": "",
+          "rationale_attested": false,
+          "requirements": [],
+          "resign_unsigned_commits_requested": false,
+          "review_comments_summary": "",
+          "review_mode_ambiguous": false,
+          "review_passed": false,
+          "review_posted": false,
+          "review_pr_captured": false,
+          "review_pr_missing": false,
+          "review_requires_changes": false,
+          "review_summary": "",
+          "reviewed_code_base_url": "",
+          "run_local_validation": false,
+          "skip_optional_activities": false,
+          "squash_merge_supported": false,
+          "stakeholder_baseline": "",
+          "stakeholder_discussion_held": false,
+          "stealth_mode": false,
+          "strategic_findings_summary": "",
+          "summary_budget_overruns": [],
+          "summary_refine_requested": false,
+          "test_findings_actionable": false,
+          "test_status": "",
+          "ticket_gaps_documented": false,
+          "uncertain_symbols": "",
+          "unsigned_commit_list_summary": "",
+          "unsigned_commits_in_pr": false,
+          "use_existing_pr": false,
+          "user_request": "At present the time taken from first prompt to dispatching the client workflow with workflow server is too long. I suspect a lot of the preamble can be scripted with Python or TypeScript, e.g. workflow discovery. Workflows have embedded keywords to aid discovery. Maybe we can add a discover-workflow tool that permits fuzzy discovery based upon keywords provided by an agent. Measure time to dispatch client and use this as a reference for optimisation. Consider other novel techniques also like scripts, new workflow-server MCP tools, or other.",
+          "worktree_created": false
+        },
+        "workflowId": "work-package",
+        "workflowVersion": "4.1.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-09-14T10:45:49.053Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "work-package"
+    }
+  ],
+  "deliveredContent": {
+    "orchestrator": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:3fb7d711eec389b8": "3fb7d711eec389b8",
+      "bundle:variable-binding": "1bcd6dcadf20c184",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:inherited_inputs.items:13b9f9019e9b2d7b": "13b9f9019e9b2d7b",
+      "technique:inherited_inputs.items:7f611a069f20416a": "7f611a069f20416a",
+      "technique:inherited_inputs.items:bc00dc1c96282770": "bc00dc1c96282770",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:8523594312b4a179": "8523594312b4a179",
+      "technique:inherited_inputs:b142eecc28c90202": "b142eecc28c90202",
+      "technique:inherited_inputs:ef999f0b85d386ef": "ef999f0b85d386ef",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:14ac96717805331d": "14ac96717805331d",
+      "technique:rules:190889cce4f4767d": "190889cce4f4767d",
+      "technique:rules:4c7cd383bcb9a4f3": "4c7cd383bcb9a4f3",
+      "technique:rules:8cdd62fb3d74e82b": "8cdd62fb3d74e82b",
+      "technique:rules:f89047e7ceb7128a": "f89047e7ceb7128a",
+      "technique:version-control::derive-planning-slug": "ccbc33d225184dc4",
+      "technique:version-control::detect-repo-type": "ef4f5e7febbefbaf",
+      "technique:version-control::resolve-host-repo": "87615baa57900730",
+      "technique:workflow-engine::create-session": "528d98ce46368358",
+      "technique:workflow-engine::derive-initiative-name": "02d6860f157e2298",
+      "technique:workflow-engine::detect-resume-intent": "fe15caf535e20366",
+      "technique:workflow-engine::extract-identifying-context": "e5360b6bc4fc73b2",
+      "technique:workflow-engine::list-workflows": "22fc9b67c592a6a1",
+      "technique:workflow-engine::match-target-workflow": "1ce52033e7520217"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}

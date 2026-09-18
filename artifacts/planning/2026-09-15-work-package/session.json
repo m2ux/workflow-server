@@ -1,0 +1,560 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "work-package",
+  "workflowVersion": "4.1.0",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "2YGZRB",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-09-15-work-package",
+  "frontier": [
+    "research"
+  ],
+  "currentTechnique": "",
+  "exit": "",
+  "seq": 2,
+  "ts": 1789483697,
+  "startedAt": "2026-09-15T14:48:12.410Z",
+  "completedActivities": [],
+  "variables": {
+    "artifact_publish_ref": "",
+    "assumption_outcome": "",
+    "attestation_option": "certify",
+    "awaiting_review": false,
+    "base_branch": "",
+    "block_line_range": "",
+    "block_path": "",
+    "body_conforms": false,
+    "body_findings": [],
+    "broken_artifact_links": [],
+    "build_dependent_artifacts_pending": false,
+    "change_block_index": "",
+    "changed_files": [],
+    "code_findings_actionable": false,
+    "commit_sha": "",
+    "completion_document_path": "",
+    "component_name": "",
+    "component_path": ".",
+    "comprehension_artifact": "",
+    "comprehension_artifact_path": "",
+    "comprehension_scope": "same-area",
+    "context_scope": "repo-only",
+    "context_scope_uncertain": false,
+    "current_block_index": 0,
+    "current_question": "",
+    "deferred_item_issue_number": "",
+    "deferred_item_issue_url": "",
+    "deferred_item_rows": [],
+    "deferred_items_register": "",
+    "domain_answered": false,
+    "elicitation_complete": false,
+    "elicitation_log": [],
+    "existing_pr_number": "",
+    "failures": [],
+    "flagged_block_indices": [],
+    "floor_breached": false,
+    "follow_up_rows": [],
+    "follow_ups_register": "",
+    "github_issue_found": false,
+    "gitnexus_indexed": false,
+    "has_critical_blocker": false,
+    "has_debt_markers": false,
+    "has_deferred_assumptions": false,
+    "has_flagged_blocks": false,
+    "has_open_assumptions": false,
+    "has_open_questions": false,
+    "has_reconcilable_research": false,
+    "has_resolvable_assumptions": false,
+    "has_uncertain_symbols": false,
+    "has_unraised_deferred_items": false,
+    "head_sha": "",
+    "headless_mode": false,
+    "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+    "is_monorepo": false,
+    "is_review_mode": false,
+    "issue_cancelled": false,
+    "issue_present": false,
+    "issue_request": "",
+    "issue_skipped": false,
+    "issue_type_ambiguous": false,
+    "issue_url": "",
+    "jira_issue_key": "",
+    "mark_progress_na": false,
+    "needs_comprehension": true,
+    "needs_elicitation": false,
+    "needs_further_discussion": false,
+    "needs_github_issue_creation": false,
+    "needs_individual_interview": false,
+    "needs_issue_creation": false,
+    "needs_plan_revision": false,
+    "needs_research": false,
+    "needs_simplification": false,
+    "open_deferred_items": [],
+    "post_summary_approved": false,
+    "pr_body": "",
+    "pr_exists": false,
+    "pr_skipped": false,
+    "pr_url": "",
+    "prior_feedback_triage": {},
+    "problem_statement": "",
+    "provenance_log_path": "",
+    "push_remote": "origin",
+    "push_remote_url": "",
+    "question_domains": [],
+    "raise_current_deferred_item": false,
+    "raised_findings_scope": "all",
+    "rating_cap": "",
+    "rationale_attested": false,
+    "requirements": [],
+    "resign_unsigned_commits_requested": false,
+    "review_comments_summary": "",
+    "review_mode_ambiguous": false,
+    "review_passed": false,
+    "review_posted": false,
+    "review_pr_captured": false,
+    "review_pr_missing": false,
+    "review_requires_changes": false,
+    "review_summary": "",
+    "reviewed_code_base_url": "",
+    "run_local_validation": false,
+    "skip_optional_activities": false,
+    "squash_merge_supported": false,
+    "stakeholder_baseline": "",
+    "stakeholder_discussion_held": false,
+    "stealth_mode": false,
+    "strategic_findings_summary": "",
+    "summary_budget_overruns": [],
+    "summary_refine_requested": false,
+    "target_repo": "m2ux/workflow-server",
+    "test_findings_actionable": false,
+    "test_status": "",
+    "ticket_gaps_documented": false,
+    "uncertain_symbols": "",
+    "unsigned_commit_list_summary": "",
+    "unsigned_commits_in_pr": false,
+    "use_existing_pr": false,
+    "user_request": "Exercise the converged assumption-convergence routine live.",
+    "worktree_created": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-15T14:48:12.410Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "artifact_publish_ref": "",
+          "assumption_outcome": "",
+          "attestation_option": "certify",
+          "awaiting_review": false,
+          "base_branch": "",
+          "block_line_range": "",
+          "block_path": "",
+          "body_conforms": false,
+          "body_findings": [],
+          "broken_artifact_links": [],
+          "build_dependent_artifacts_pending": false,
+          "change_block_index": "",
+          "changed_files": [],
+          "code_findings_actionable": false,
+          "commit_sha": "",
+          "completion_document_path": "",
+          "component_name": "",
+          "component_path": ".",
+          "comprehension_artifact": "",
+          "comprehension_artifact_path": "",
+          "comprehension_scope": "same-area",
+          "context_scope": "repo-only",
+          "context_scope_uncertain": false,
+          "current_block_index": 0,
+          "current_question": "",
+          "deferred_item_issue_number": "",
+          "deferred_item_issue_url": "",
+          "deferred_item_rows": [],
+          "deferred_items_register": "",
+          "domain_answered": false,
+          "elicitation_complete": false,
+          "elicitation_log": [],
+          "existing_pr_number": "",
+          "failures": [],
+          "flagged_block_indices": [],
+          "floor_breached": false,
+          "follow_up_rows": [],
+          "follow_ups_register": "",
+          "github_issue_found": false,
+          "gitnexus_indexed": false,
+          "has_critical_blocker": false,
+          "has_debt_markers": false,
+          "has_deferred_assumptions": false,
+          "has_flagged_blocks": false,
+          "has_open_assumptions": false,
+          "has_open_questions": false,
+          "has_reconcilable_research": false,
+          "has_resolvable_assumptions": false,
+          "has_uncertain_symbols": false,
+          "has_unraised_deferred_items": false,
+          "head_sha": "",
+          "headless_mode": false,
+          "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+          "is_monorepo": false,
+          "is_review_mode": false,
+          "issue_cancelled": false,
+          "issue_present": false,
+          "issue_request": "",
+          "issue_skipped": false,
+          "issue_type_ambiguous": false,
+          "issue_url": "",
+          "jira_issue_key": "",
+          "mark_progress_na": false,
+          "needs_comprehension": true,
+          "needs_elicitation": false,
+          "needs_further_discussion": false,
+          "needs_github_issue_creation": false,
+          "needs_individual_interview": false,
+          "needs_issue_creation": false,
+          "needs_plan_revision": false,
+          "needs_research": false,
+          "needs_simplification": false,
+          "open_deferred_items": [],
+          "post_summary_approved": false,
+          "pr_body": "",
+          "pr_exists": false,
+          "pr_skipped": false,
+          "pr_url": "",
+          "prior_feedback_triage": {},
+          "problem_statement": "",
+          "provenance_log_path": "",
+          "push_remote": "origin",
+          "push_remote_url": "",
+          "question_domains": [],
+          "raise_current_deferred_item": false,
+          "raised_findings_scope": "all",
+          "rating_cap": "",
+          "rationale_attested": false,
+          "requirements": [],
+          "resign_unsigned_commits_requested": false,
+          "review_comments_summary": "",
+          "review_mode_ambiguous": false,
+          "review_passed": false,
+          "review_posted": false,
+          "review_pr_captured": false,
+          "review_pr_missing": false,
+          "review_requires_changes": false,
+          "review_summary": "",
+          "reviewed_code_base_url": "",
+          "run_local_validation": false,
+          "skip_optional_activities": false,
+          "squash_merge_supported": false,
+          "stakeholder_baseline": "",
+          "stakeholder_discussion_held": false,
+          "stealth_mode": false,
+          "strategic_findings_summary": "",
+          "summary_budget_overruns": [],
+          "summary_refine_requested": false,
+          "target_repo": "m2ux/workflow-server",
+          "test_findings_actionable": false,
+          "test_status": "",
+          "ticket_gaps_documented": false,
+          "uncertain_symbols": "",
+          "unsigned_commit_list_summary": "",
+          "unsigned_commits_in_pr": false,
+          "use_existing_pr": false,
+          "user_request": "Exercise the converged assumption-convergence routine live.",
+          "worktree_created": false
+        }
+      },
+      "timestamp": "2026-09-15T14:48:12.410Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "research",
+      "timestamp": "2026-09-15T14:48:14.360Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 101465,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 6105,
+        "delivery": "full",
+        "stepId": "research-knowledge-base",
+        "techniqueId": "research::research"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "research-knowledge-base"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 4826,
+        "delivery": "full",
+        "stepId": "synthesize",
+        "techniqueId": "research::synthesize"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "synthesize"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 5855,
+        "delivery": "full",
+        "stepId": "triage-research-candidates",
+        "techniqueId": "research::triage"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "triage-research-candidates"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 5545,
+        "delivery": "full",
+        "stepId": "collect-assumptions",
+        "techniqueId": "review-assumptions::collect"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "collect-assumptions"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 4086,
+        "delivery": "full",
+        "stepId": "document",
+        "techniqueId": "research::document"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "document"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 5034,
+        "delivery": "full",
+        "stepId": "update-assumptions-log",
+        "techniqueId": "review-assumptions::record"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "update-assumptions-log"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 9970,
+        "delivery": "full",
+        "stepId": "assumption-convergence.convergence.reconcile",
+        "techniqueId": "review-assumptions::reconcile"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "assumption-convergence.convergence.reconcile"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 4343,
+        "delivery": "full",
+        "stepId": "assumption-convergence.convergence.challenge.challenge",
+        "techniqueId": "analyse-challenge::challenge"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "assumption-convergence.convergence.challenge.challenge"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 4941,
+        "delivery": "full",
+        "stepId": "assumption-convergence.convergence.challenge.combine",
+        "techniqueId": "analyse-challenge::combine"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "assumption-convergence.convergence.challenge.combine"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 5096,
+        "delivery": "full",
+        "stepId": "present-resolved-assumptions",
+        "techniqueId": "review-assumptions::assemble-open-set"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "present-resolved-assumptions"
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "research",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled_steps": 10,
+        "delivery": "full",
+        "eager_budget_chars": 640000,
+        "provenance_passes": 10,
+        "resolved_techniques": 177,
+        "spent_chars": 98882
+      },
+      "timestamp": "2026-09-15T14:48:17.264Z",
+      "type": "activity_delivered"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "deliveredContent": {
+    "orchestrator": {
+      "bundle:agent-conduct": "9cf9756649880f04",
+      "bundle:rules:5627776c81e672d5": "5627776c81e672d5",
+      "bundle:scatter-gather": "e9956e490a702bc3",
+      "bundle:variable-binding": "8579e4738f391afe",
+      "bundle:worker-conduct": "2f658c2399e3ea8c",
+      "bundle:workflow-engine::activity-worker": "a1cf2b3b1c6c04c1",
+      "bundle:workflow-engine::finalize-activity": "4048687f39a57dc8",
+      "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
+      "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+      "technique:analyse-challenge::challenge": "6b1f065ae0d18765",
+      "technique:analyse-challenge::combine": "fd9b598071beff49",
+      "technique:inherited_inputs.items:1c6314a7c6a86aef": "1c6314a7c6a86aef",
+      "technique:inherited_inputs.items:2aad4e4a37ba344a": "2aad4e4a37ba344a",
+      "technique:inherited_inputs.items:4094761d8b2af963": "4094761d8b2af963",
+      "technique:inherited_inputs.items:4fb6a592d9e03a04": "4fb6a592d9e03a04",
+      "technique:inherited_inputs.items:55c1b647edf7c56e": "55c1b647edf7c56e",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:8ef5ff518c9eec99": "8ef5ff518c9eec99",
+      "technique:inherited_inputs:91a4d8e55e46e2d4": "91a4d8e55e46e2d4",
+      "technique:inherited_inputs:da613641d41ce917": "da613641d41ce917",
+      "technique:inherited_inputs:dd17da885c5514f1": "dd17da885c5514f1",
+      "technique:inherited_inputs:e5ec5416fc583d31": "e5ec5416fc583d31",
+      "technique:inherited_outputs.items:0398c75b430f2248": "0398c75b430f2248",
+      "technique:inherited_outputs.items:d553d236ce0c8650": "d553d236ce0c8650",
+      "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+      "technique:inherited_outputs:43a7c0415c779e45": "43a7c0415c779e45",
+      "technique:inherited_outputs:f9171c889165ee68": "f9171c889165ee68",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:research::document": "9599ed07c21fdaf2",
+      "technique:research::research": "a7a0d923f1c4eb28",
+      "technique:research::synthesize": "973d9f964ac490c0",
+      "technique:research::triage": "fe99ffc6d73f63d0",
+      "technique:review-assumptions::assemble-open-set": "65b6eaa0bf140585",
+      "technique:review-assumptions::collect": "d81246d265dcfbc1",
+      "technique:review-assumptions::reconcile": "a1da85d1ef334c3c",
+      "technique:review-assumptions::record": "5f135de3a3ab907f",
+      "technique:rules:101e0c806327c17d": "101e0c806327c17d",
+      "technique:rules:2a5287e8435bca85": "2a5287e8435bca85",
+      "technique:rules:6444c9767205e926": "6444c9767205e926",
+      "technique:rules:8e2702bfa077dc9a": "8e2702bfa077dc9a",
+      "technique:rules:a6aa444c81b65dc9": "a6aa444c81b65dc9",
+      "technique:rules:bcc27870d950059a": "bcc27870d950059a",
+      "technique:rules:bd770d8359597898": "bd770d8359597898"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}

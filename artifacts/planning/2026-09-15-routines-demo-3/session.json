@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "routines-demo",
+  "workflowVersion": "",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "PPIPWG",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-09-15-routines-demo-3",
+  "frontier": [],
+  "currentTechnique": "",
+  "exit": "",
+  "seq": 0,
+  "ts": 1789476843,
+  "startedAt": "2026-09-15T12:54:03.903Z",
+  "completedActivities": [],
+  "variables": {},
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-15T12:54:03.903Z",
+      "type": "workflow_started"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "repo": "m2ux/workflow-server"
+}

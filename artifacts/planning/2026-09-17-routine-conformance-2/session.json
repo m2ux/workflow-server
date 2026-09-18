@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "routine-conformance",
+  "workflowVersion": "1.0.0",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "QO5H7M",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-09-17-routine-conformance-2",
+  "frontier": [],
+  "currentTechnique": "",
+  "exit": "",
+  "seq": 1,
+  "ts": 1789655057,
+  "startedAt": "2026-09-17T14:24:15.496Z",
+  "completedActivities": [],
+  "variables": {
+    "component_path": ".",
+    "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+    "is_monorepo": false,
+    "target_repo": "m2ux/workflow-server",
+    "user_request": "Evaluate the delivery-cost fixes for issue 801 against the same specimen."
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-17T14:24:15.496Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "component_path": ".",
+          "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+          "is_monorepo": false,
+          "target_repo": "m2ux/workflow-server",
+          "user_request": "Evaluate the delivery-cost fixes for issue 801 against the same specimen."
+        }
+      },
+      "timestamp": "2026-09-17T14:24:15.496Z",
+      "type": "variables_seeded"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "contextMode": "fresh",
+  "repo": "m2ux/workflow-server"
+}
