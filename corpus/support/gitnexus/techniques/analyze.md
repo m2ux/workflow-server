@@ -47,6 +47,10 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ## Rules
 
+### a-rebuilt-index-reaches-a-reader-on-reload
+
+A completed rebuild writes the graph to disk; a server already holding the previous one keeps answering from it. So a read taken straight after a successful analyze can report the index stale, and every answer drawn from it describes the tree as it was — the rebuild succeeded and the reader has not met it. Reload the MCP server where the read disagrees with the rebuild, and treat the second read rather than the exit status as what says the graph is current.
+
 ### index-every-addressed-tree
 
 Index each tree whose answers a caller will ask for by name. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
