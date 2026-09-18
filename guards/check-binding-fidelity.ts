@@ -678,6 +678,11 @@ function ensureIndexed(): void {
   // library's techniques are measured above while nothing reads a graph no name reaches.
   const graphed = new Set(corpusNamespaces(ROOT, INDEX).filter((n) => n.manifest !== undefined).map(({ ref }) => ref));
   for (const wf of allWf) {
+    // A run is read whether or not a name can start the namespace holding it. A library declares
+    // runs and no activities, so its `routines/` sits outside the graph half below — and a run
+    // there is where the library's own operations are composed, so leaving it unscanned reports
+    // every output those runs consume as one nothing consumes.
+    scanRoutines(wf);
     if (!graphed.has(wf)) continue;
     collectWorkflowVars(wf);
     // workflow.yaml is a reader too: its `rules` and `description` prose interpolates declared ids
@@ -686,11 +691,6 @@ function ensureIndexed(): void {
     // invisible, so the id they name read as dead.
     const wfYaml = namespaceSubdir(INDEX, wf, 'workflow.yaml');
     if (wfYaml && existsSync(wfYaml)) collectReads(wf, cite(wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
-    // Routines are read before the activities, because a library declares runs and no activities at
-    // all — its `routines/` is reached only by a scan that does not depend on an `activities/`
-    // beside it. A run there is where a library's own operations are composed, so leaving it
-    // unscanned reports every output those runs consume as one nothing consumes.
-    scanRoutines(wf);
     const adir = namespaceSubdir(INDEX, wf, 'activities');
     if (!adir || !existsSync(adir)) continue;
     for (const path of activityFiles(adir)) {
