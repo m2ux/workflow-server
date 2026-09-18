@@ -16,7 +16,7 @@ A separate pass will also read the same procedure against the project's written 
 
 ## Solution Overview
 
-[Design specification](03-design-specification.md) — seed profile, `create-readme` bind, and index updates. File breakdown in the scope manifest once written.
+*Placeholder — a later step replaces it.*
 
 ## 📊 Progress
 
@@ -41,13 +41,6 @@ A separate pass will also read the same procedure against the project's written 
 | 17 | [Close-out](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
-
-## Design Decisions
-
-| Decision | Home |
-|----------|------|
-| Seed profile, `create-readme` bind, Progress inventory | [Design specification](03-design-specification.md) |
-| Out of scope (defects 1–4, `02` gap, write-artifact migration) | [Design specification](03-design-specification.md#purpose) |
 
 ## 🔗 Links
 
