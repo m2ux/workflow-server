@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 4.0.0
+version: 4.1.0
 name: Reconnaissance
 description: Run codebase reconnaissance and security decomposition.
 variables:
@@ -20,6 +20,9 @@ variables:
     - name: domain_map
       type: object
       description: Structured domain map partitioned by crate, ready for sub-agent distribution.
+    - name: gathered_results
+      type: object
+      description: Ordered `{ items, dispatch_manifest, completeness }` collection over the expected brief ids.
     - name: worker_briefs
       type: array
       description: Ordered `{ id, description, prompt }` array produced by compose operations for the next meta dispatch step.

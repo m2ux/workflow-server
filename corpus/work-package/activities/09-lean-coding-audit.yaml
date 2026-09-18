@@ -1,19 +1,11 @@
 id: lean-coding-audit
-version: 1.7.0
+version: 1.8.0
 name: Lean-Coding Audit
 description: Apply the ponytail lean-coding lens to the just-implemented change.
 variables:
   reads:
-    - branch_name
-    - component_git_dir
     - floor_breached
     - is_review_mode
-    - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
-    - target_path
-    - target_repo
   writes:
     - name: floor_breached
       type: boolean

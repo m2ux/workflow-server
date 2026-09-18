@@ -1,12 +1,15 @@
 id: quality-review
-version: 2.0.0
+version: 2.1.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 variables:
   reads:
+    - component_git_dir
     - operation_type
     - planning_folder_path
+    - pr_number
     - scope_manifest_confirmed
+    - target_path
     - target_workflow_ids
   writes:
     - name: anti_pattern_findings_path

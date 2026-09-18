@@ -1,10 +1,11 @@
 id: choose-probes
-version: 1.1.0
+version: 1.2.0
 name: Choose Probes
 description: The first fan's meeting point — gather every survey it opened and pick the directories to probe.
 variables:
   reads:
     - component_path
+    - planning_folder_path
     - probe_budget
     - survey_files_outputs
     - survey_history_outputs

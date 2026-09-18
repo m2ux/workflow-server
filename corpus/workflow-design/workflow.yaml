@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.38.0
+version: 1.39.0
 title: DEPRECATED — use workflow-authoring — Workflow Design Workflow
 description: >-
   DEPRECATED — start `workflow-authoring` instead. This workflow remains only so sessions already in flight can finish; it is removed once none remain. Guide agents through creating, updating, or reviewing workflow definitions.
@@ -28,6 +28,11 @@ variables:
     type: string
     description: What the gate that decided an assumption gave it — always empty in this workflow.
     defaultValue: ""
+  # Seeded with the session and named by the shared contract of the operations this workflow
+  # borrows, so the file owns the name and no activity produces it.
+  - name: host_repo_path
+    type: string
+    description: Absolute path to the host repository the session belongs to.
   - name: scope_manifest
     type: array
     description: List of files to create, modify, or remove with full paths and actions.

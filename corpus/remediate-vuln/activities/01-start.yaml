@@ -1,15 +1,20 @@
 id: start
-version: 2.2.0
+version: 2.3.0
 name: Start Security Vulnerability Remediation
 description: Initialize a high-sensitivity security fix.
 variables:
   reads:
     - branch_name
+    - component_git_dir
     - host_repo_path
     - planning_folder_path
+    - pr_number
     - private_fork_url
+    - problem_statement
+    - requirements
     - sec_vuln_url
     - target_path
+    - target_repo
   writes:
     - name: branch_name
       type: string

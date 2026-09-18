@@ -1,10 +1,13 @@
 id: pattern-analysis
-version: 1.4.0
+version: 1.5.0
 name: Pattern Analysis
 description: Structural and content patterns extracted from comparable existing workflows for reuse in the target workflow.
 variables:
   reads:
+    - component_git_dir
     - planning_folder_path
+    - pr_number
+    - target_path
   writes:
     - name: pattern_adoption
       type: string

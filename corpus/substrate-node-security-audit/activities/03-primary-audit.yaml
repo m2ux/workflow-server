@@ -1,5 +1,5 @@
 id: primary-audit
-version: 5.0.0
+version: 5.1.0
 name: Primary Audit
 description: Gather the agent branches the graph opened, verify their coverage, and merge their findings.
 variables:
@@ -21,6 +21,9 @@ variables:
     - name: dispatched_results
       type: array
       description: Returns from the agents this activity dispatches singly — verification, gap re-dispatch and merge. The crate-review, static-analysis and toolkit groups are branches the graph opened and land in containers of their own.
+    - name: gathered_results
+      type: object
+      description: Ordered `{ items, dispatch_manifest, completeness }` collection over the expected brief ids.
     - name: merge_complete
       type: boolean
       description: Phase 1b merge gate — set from the merge sub-agent's reconciliation; gates report-generation entry

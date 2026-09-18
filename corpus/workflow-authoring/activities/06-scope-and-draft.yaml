@@ -1,13 +1,15 @@
 id: scope-and-draft
-version: 1.7.0
+version: 1.8.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
 variables:
   reads:
     - component_git_dir
+    - host_repo_path
     - impact_analysis_path
     - operation_type
     - planning_folder_path
+    - pr_number
     - removals_approved
     - scope_manifest_confirmed
     - target_path

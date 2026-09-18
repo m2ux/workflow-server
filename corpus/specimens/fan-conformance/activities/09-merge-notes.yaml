@@ -1,5 +1,5 @@
 id: merge-notes
-version: 1.0.0
+version: 1.1.0
 name: Merge Notes
 description: Where the note writers converge — bring the branches they committed onto one.
 variables:
@@ -7,6 +7,7 @@ variables:
     - component_path
     - note_probe_outputs
     - note_targets
+    - planning_folder_path
   writes:
     - name: merge_report
       type: object
