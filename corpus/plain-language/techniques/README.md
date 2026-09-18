@@ -30,6 +30,6 @@ Resolved directly from the named workflow — no copy is held here.
 
 ## Why the knowledge graph is absent
 
-This library binds no [`gitnexus-operations`](/meta/techniques/gitnexus-operations/TECHNIQUE.md) operation, and the group's own `subjects-the-index-holds` rule is the reason. Its subject is a single document handed over by its author, which no index has walked, and the questions asked of that document are which sentence breaches which guideline and which passage a reader will stumble on. The graph holds each heading and each link between files and none of the prose beneath them, so every one of those questions is a read of the document itself.
+This library binds no [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) operation, and that namespace's own `subjects-the-index-holds` rule is the reason. Its subject is a single document handed over by its author, which no index has walked, and the questions asked of that document are which sentence breaches which guideline and which passage a reader will stumble on. The graph holds each heading and each link between files and none of the prose beneath them, so every one of those questions is a read of the document itself.
 
 A heading question is the one exception in shape — and it is still a question about the document under revision rather than about an indexed tree, so it is answered by reading the headings that are already in hand.

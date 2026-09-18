@@ -725,13 +725,13 @@ A declared id is used unbraced where a designator is required.
 
 ### AP-53. dotted-rule-address
 
-"per the gitnexus-operations index-freshness rule"
+"per the gitnexus index-freshness rule"
 
 A rule is cited in prose instead of its dotted symbol address.
 
 **Detect:** A protocol step cites/relies on a rule as prose ("per the X rule", "following the X rule"), with `::` (invokes a technique, does not name a rule), or as a markdown hyperlink to the rule's heading anchor. The hyperlink is the spelling that survives a walk looking only for prose: it resolves, so the anchor guard passes it, and it still sends a reader to a container whose rules the loader already merged into the file they are reading. Also: prose citation of a rule that is not declared anywhere (dangling).
 
-**Do not flag:** Correct dotted ancestry address — `[<workflow>.]<technique>.<rule-name>` (e.g. `meta.gitnexus-operations.index-freshness-first`). Shorten to what the reader's own position already supplies: a rule inherited from self, group, or workflow root is its bare name, because nothing else could be meant; a rule outside that ancestry is `<owner>.<rule-name>`, the declaring technique and the rule, with a container named by its folder rather than by the `TECHNIQUE.md` every folder spells alike. Rule slugs are distinctive across the corpus, so the owner is what disambiguates and the workflow is carried only where two workflows hold the same technique id. A hyperlink from a surface that runs no Protocol — a resource or a README — which names a rule to send a reader to it rather than to honour it. A technique citing any rule takes the dotted address at the length its ancestry allows, whether or not the rule is one it inherits. Test: ask whether the citing file is a technique; if it is, the form is dotted.
+**Do not flag:** Correct dotted ancestry address — `[<namespace>.]<technique>.<rule-name>` (e.g. `meta.cargo-operations.resource-budget`). Shorten to what the reader's own position already supplies: a rule inherited from self, group, or namespace root is its bare name, because nothing else could be meant; a rule outside that ancestry is `<owner>.<rule-name>`, the declaring technique and the rule, with a container named by its folder rather than by the `TECHNIQUE.md` every folder spells alike. A namespace's own root index is named by the namespace, the folder holding its library — `gitnexus.index-freshness-first`. Rule slugs are distinctive across the corpus, so the owner is what disambiguates and the namespace is carried only where two of them hold the same technique id. A hyperlink from a surface that runs no Protocol — a resource or a README — which names a rule to send a reader to it rather than to honour it. A technique citing any rule takes the dotted address at the length its ancestry allows, whether or not the rule is one it inherits. Test: ask whether the citing file is a technique; if it is, the form is dotted.
 
 **Fix:** Replace prose, `::`, or an anchor hyperlink with the dotted symbol address (shortened per ancestry) — a rule inherited from self, group, or workflow root is its bare name. For dangling citations, point at the real inline content — never invent a rule. Mnemonic: `::` invokes, `.` names, and a link navigates to something the reader has not got.
 
@@ -761,7 +761,7 @@ The same shared input is redeclared instead of hoisted.
 
 ### AP-56. paren-invocation-args
 
-"`gitnexus-operations::context {name: <symbol>}`" / "with target_dir in backticks beside a braced value"
+"`gitnexus::context {name: <symbol>}`" / "with target_dir in backticks beside a braced value"
 
 Invocation argument names or lists use the wrong typographic namespace.
 

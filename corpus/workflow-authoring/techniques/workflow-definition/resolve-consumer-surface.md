@@ -23,7 +23,7 @@ One entry per reference another workflow holds into the target: the referencing 
 
 ### 1. Find the References Into the Target
 
-- Where the corpus is indexed — [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[resolve-graph](/meta/techniques/gitnexus-operations/resolve-graph.md) names the graph holding it — apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[reference-lookup](/meta/techniques/gitnexus-operations/reference-lookup.md) on each file of the target and take its `{referencing_files}` as the link-borne consumers. They come back exactly, and the sweep below narrows to the forms a link does not carry
+- Where the corpus is indexed — [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[resolve-graph](/gitnexus/techniques/resolve-graph.md) names the graph holding it — apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[reference-lookup](/gitnexus/techniques/reference-lookup.md) on each file of the target and take its `{referencing_files}` as the link-borne consumers. They come back exactly, and the sweep below narrows to the forms a link does not carry
 - Sweep every workflow directory other than `{target_workflow_id}` for references that resolve into it: step and activity technique binds carrying it as their leading segment, technique Protocol Apply and `::` addresses, resource references qualified with it, and activity file references borrowed from it. Where the graph answered above, markdown links are already enumerated; where it did not, they are swept here too
 
 ### 2. Resolve Each Reference Against the Change Surface

@@ -30,7 +30,7 @@ steps:
     steps:
       - kind: technique
         id: check-gitnexus
-        technique: gitnexus-operations::verify-index
+        technique: gitnexus::verify-index
       - kind: technique
         id: run-structural
         technique:

@@ -167,84 +167,84 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/complexity-signal.md",
+      "site": "gitnexus/techniques/complexity-signal.md",
       "detail": "output 'complexity_signal' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/cypher.md",
+      "site": "gitnexus/techniques/cypher.md",
       "detail": "output 'result_rows' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/detect-changes.md",
+      "site": "gitnexus/techniques/detect-changes.md",
       "detail": "output 'change_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/diagram-source-select.md",
+      "site": "gitnexus/techniques/diagram-source-select.md",
       "detail": "output 'diagram_source' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/diff-coverage-map.md",
+      "site": "gitnexus/techniques/diff-coverage-map.md",
       "detail": "output 'coverage_gaps' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/diff-coverage-map.md",
+      "site": "gitnexus/techniques/diff-coverage-map.md",
       "detail": "output 'update_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/orphan-scan.md",
+      "site": "gitnexus/techniques/orphan-scan.md",
       "detail": "output 'orphan_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/public-api-enum.md",
+      "site": "gitnexus/techniques/public-api-enum.md",
       "detail": "output 'public_api_symbols' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/rename.md",
+      "site": "gitnexus/techniques/rename.md",
       "detail": "output 'changes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/reversibility-signal.md",
+      "site": "gitnexus/techniques/reversibility-signal.md",
       "detail": "output 'reversibility_class' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/scope-discipline-check.md",
+      "site": "gitnexus/techniques/scope-discipline-check.md",
       "detail": "output 'scope_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/gitnexus-operations/verify-index.md",
+      "site": "gitnexus/techniques/verify-index.md",
       "detail": "output 'index_stale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
@@ -342,7 +342,7 @@
     },
     {
       "check": "orphan-input",
-      "site": "prism-audit :: meta::gitnexus-operations::analyze",
+      "site": "prism-audit :: gitnexus::analyze",
       "detail": "own input 'force_rebuild' has no producer in workflow 'prism-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
@@ -391,7 +391,7 @@
     },
     {
       "check": "orphan-input",
-      "site": "substrate-node-security-audit :: meta::gitnexus-operations::analyze",
+      "site": "substrate-node-security-audit :: gitnexus::analyze",
       "detail": "own input 'force_rebuild' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
@@ -426,14 +426,14 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: meta::gitnexus-operations::analyze",
+      "site": "work-package :: gitnexus::analyze",
       "detail": "own input 'force_rebuild' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: meta::gitnexus-operations::detect-changes",
+      "site": "work-package :: gitnexus::detect-changes",
       "detail": "own input 'diff_scope' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"

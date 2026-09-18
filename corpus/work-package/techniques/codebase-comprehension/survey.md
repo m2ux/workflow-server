@@ -11,7 +11,7 @@ Initial mental model of the codebase area — architecture, abstractions, design
 
 ### gitnexus_indexed
 
-Whether the codebase under work has a usable GitNexus index; selects between gitnexus-operations and grep/read/glob for structural analysis.
+Whether the codebase under work has a usable GitNexus index; selects between gitnexus and grep/read/glob for structural analysis.
 
 ## Outputs
 
@@ -46,15 +46,15 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 
 ### 2. Check Gitnexus
 
-- Honor the bound `{gitnexus_indexed}` flag — it records whether the codebase under work has a usable index; re-probe only where it is unset, through the operation `gitnexus-operations.index-freshness-first` names
-- If `{gitnexus_indexed}` is true: structural analysis throughout this technique goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here, the default over grep
+- Honor the bound `{gitnexus_indexed}` flag — it records whether the codebase under work has a usable index; re-probe only where it is unset, through the operation `gitnexus.index-freshness-first` names
+- If `{gitnexus_indexed}` is true: structural analysis throughout this technique goes through the gitnexus operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here, the default over grep
 - Only when `{gitnexus_indexed}` is false (the codebase is genuinely not indexed or stale): fall back to grep/read/glob for all exploration steps
 
 ### 3. Architecture Survey
 
 - Top-down survey: start with the `{target_path}` project root structure, build system, and entry points
 - Confirm the `{project_type}` from the build system and language conventions encountered, and use it to shape which abstractions and patterns to look for in later steps
-- When GitNexus is available: apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](/meta/techniques/gitnexus-operations/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](/meta/techniques/gitnexus-operations/context.md) for dependency mapping — faster than grep and the required primary approach
+- When GitNexus is available: apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) for dependency mapping — faster than grep and the required primary approach
 - Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
 - Map dependency relationships between modules (imports, trait implementations, cross-module calls)

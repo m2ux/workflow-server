@@ -81,7 +81,6 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks; sole home of REST `gh api` recipes |
 | [`knowledge-base-search`](techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
 | [`atlassian-operations`](techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
-| [`gitnexus-operations`](techniques/gitnexus-operations/TECHNIQUE.md) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
 | [`cargo-operations`](techniques/cargo-operations/TECHNIQUE.md) | Resource-constrained cargo subcommands (build, check, clippy, test, fmt, doc, preflight) with an inline resource budget |
 | [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
 
@@ -144,7 +143,6 @@ corpus/meta/
 │   ├── github-cli-protocol/
 │   ├── knowledge-base-search/
 │   ├── atlassian-operations/
-│   ├── gitnexus-operations/
 │   ├── cargo-operations/
 │   └── harness-compat/
 └── resources/
