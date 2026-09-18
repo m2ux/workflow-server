@@ -1,11 +1,17 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
 
 Durable planning-folder review surface for the accumulated design specification.
+
+## Inputs
+
+### accumulated_design
+
+*(optional)* The assembled design specification, from the dimension capture on a create run or the update synthesis on an update run. Absent where the specification is assembled from the dimensions that ran for the mode instead.
 
 ## Outputs
 
