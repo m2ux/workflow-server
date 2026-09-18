@@ -1,20 +1,24 @@
 /**
- * check-corpus-links — a reference out of a workflow names the workflow, rather than counting
+ * check-corpus-links — a reference out of a namespace names the namespace, rather than counting
  * directories up to it.
  *
- * A workflow sits at whatever depth the corpus organises it to, and it can move. A link that climbs
- * out of the workflow holding it — `../../meta/techniques/orchestrator-conduct.md` — encodes the
- * distance between two workflows, which is a fact about today's layout rather than about either
- * workflow. Moving either end breaks it, and it breaks silently for a reader who follows the link by
- * hand.
+ * A namespace sits at whatever depth the corpus organises it to, and it can move. A link that climbs
+ * out of the namespace holding it — `../../meta/techniques/orchestrator-conduct.md` — encodes the
+ * distance between two of them, which is a fact about today's layout rather than about either.
+ * Moving either end breaks it, and it breaks silently for a reader who follows the link by hand.
  *
- * The workflow-anchored form carries no distance: `/meta/techniques/orchestrator-conduct.md` names
- * the workflow, and the leading segment resolves to wherever discovery found it. Inside a workflow
- * an ordinary relative link is right and stays right, because a workflow moves as a unit.
+ * The anchored form carries no distance: `/meta/techniques/orchestrator-conduct.md` names the
+ * namespace, and the leading segment resolves to wherever discovery found it. Inside a namespace an
+ * ordinary relative link is right and stays right, because a namespace moves as a unit.
  *
- * The same rule catches a link that climbs to the corpus root and comes back into its OWN workflow.
- * That one reads as harmless and is not: its `../..` count is the workflow's depth from the root, so
- * it breaks the moment the workflow is organised into a folder, having never needed to leave.
+ * A library is a namespace holding no definition, and both halves here read it as one: its own files
+ * are scanned, and a link INTO one is offered the anchored form by name. Read as workflows instead,
+ * a library's files would go unscanned and a link into one would be told it is wrong without being
+ * told what to write.
+ *
+ * The same rule catches a link that climbs to the corpus root and comes back into its OWN namespace.
+ * That one reads as harmless and is not: its `../..` count is the namespace's depth from the root, so
+ * it breaks the moment it is organised into a folder, having never needed to leave.
  *
  * Links that reach out of the corpus entirely — into the server repo's `docs/` or `schemas/` — are a
  * separate problem and are not reported here.
@@ -33,7 +37,7 @@ import { assertScanned, requireWorkflowsRoot, defaultCorpusDest } from './workfl
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 import { resolveLink } from './corpus-links.js';
-import { indexCorpus, workflowOwning } from '../src/loaders/corpus-index.js';
+import { indexCorpus, namespaceOwning } from '../src/loaders/corpus-index.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
@@ -53,8 +57,9 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const corpus = indexCorpus(root);
 
   for (const file of markdownFiles(root)) {
-    const home = workflowOwning(corpus, file);
-    // A file under no workflow — the corpus README — has no workflow to be inside of.
+    const home = namespaceOwning(corpus, file);
+    // A file under no namespace — the corpus README — has nothing to be inside of. A library is a
+    // namespace like any other, and its links climb out of it the same way a workflow's do.
     if (!home) continue;
     scanned++;
 
@@ -82,43 +87,46 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
         }
         if (link.form === 'external' || link.path === null) continue;
 
-        // What matters is whether the link climbs out of the workflow, not where it lands. One that
-        // reaches the corpus root and comes back into its own workflow lands inside it and is still
-        // counting the workflow's depth, so it breaks the same way.
+        // What matters is whether the link climbs out of the namespace, not where it lands. One that
+        // reaches the corpus root and comes back into its own namespace lands inside it and is still
+        // counting the namespace's depth, so it breaks the same way.
         const within = relative(home.dir, dirname(file)).split(sep).filter(Boolean).length;
         const climbs = destination.split('/').findIndex((segment) => segment !== '..');
         if ((climbs === -1 ? destination.split('/').length : climbs) <= within) continue;
         // Out of the corpus altogether — a separate problem, not this guard's.
         if (relative(root, link.path).startsWith('..' + sep)) continue;
 
-        const target = workflowOwning(corpus, link.path);
+        // Resolved as a namespace, so a link into a library is offered the same anchored form a link
+        // into a workflow is. Resolved as a workflow it would land on nothing, and the finding would
+        // name the fault without naming the fix.
+        const target = namespaceOwning(corpus, link.path);
         const anchored = target
           ? `/${target.id}/${relative(target.dir, link.path).split(sep).join('/')}`
           : null;
         findings.push({
-          check: 'traversal-out-of-workflow',
+          check: 'traversal-out-of-namespace',
           site,
           detail: target?.id === home.id
             ? `'${destination}' climbs to the corpus root and comes back into '${home.id}' itself — its `
-              + `'..' count is this workflow's depth, so organising the workflow into a folder breaks a `
-              + `link that never had to leave. Write it as a path inside the workflow, or as `
+              + `'..' count is this namespace's depth, so organising it into a folder breaks a `
+              + `link that never had to leave. Write it as a path inside the namespace, or as `
               + `\`${anchored}\``
             : `'${destination}' counts directories out of '${home.id}' to reach ${target ? `'${target.id}'` : 'another part of the corpus'}, `
-              + `which fixes the distance between them at today's layout — name the workflow instead: `
-              + `${anchored ? `\`${anchored}\`` : 'an absolute link anchored on the workflow id'}`,
+              + `which fixes the distance between them at today's layout — name the namespace instead: `
+              + `${anchored ? `\`${anchored}\`` : 'an absolute link anchored on the namespace id'}`,
         });
       }
     }
   }
 
-  assertScanned(scanned, 'markdown files inside a workflow', root);
+  assertScanned(scanned, 'markdown files inside a namespace', root);
   return findings;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   await runGuard('corpus-links', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
-    okMessage: 'every reference out of a workflow names the workflow rather than counting directories to it',
-    remedy: 'rewrite the link as `/<workflow-id>/<path>`, which resolves wherever the workflow sits',
+    okMessage: 'every reference out of a namespace names the namespace rather than counting directories to it',
+    remedy: 'rewrite the link as `/<namespace>/<path>`, which resolves wherever the namespace sits',
   });
 }

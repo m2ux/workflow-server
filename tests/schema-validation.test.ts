@@ -144,7 +144,7 @@ describe('schema-validation', () => {
     });
 
     it('should validate a technique-bound step without an explicit id', () => {
-      const step = { kind: 'technique', technique: 'cargo-operations::run-suite' };
+      const step = { kind: 'technique', technique: 'cargo::run-suite' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(true);
     });

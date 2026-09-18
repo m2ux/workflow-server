@@ -32,7 +32,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -115,11 +115,17 @@ function inLadder(bullets: { text: string }[], i: number): boolean {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const { dir } of corpusWorkflows(root)) {
+  // A protocol is a protocol wherever it is written, so the sweep enumerates namespaces and reaches
+  // the libraries no workflow declares. One file can sit under two namespaces where one nests inside
+  // another, so a path is checked once.
+  const seen = new Set<string>();
+  for (const { dir } of corpusNamespaces(root)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const path of walk(techniquesDir)) {
       if (!path.endsWith('.md') || path.endsWith('README.md')) continue;
+      if (seen.has(path)) continue;
+      seen.add(path);
       scanned++;
       const rel = relative(root, path);
       for (const phase of protocolPhases(readFileSync(path, 'utf-8'))) {

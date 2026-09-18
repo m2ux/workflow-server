@@ -51,7 +51,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { captureTools } from '../scripts/generate-site-data.js';
-import { assertScanned, corpusWorkflows, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, toLines } from './markdown-refs.js';
 
@@ -193,8 +193,16 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const tools = registeredTools();
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const { dir } of corpusWorkflows(root)) {
+  // Namespaces, not workflows. A library is where tool calls concentrate — the GitHub namespace is
+  // the sole home of every `gh api` recipe, the Atlassian and GitNexus ones of their MCP calls — so
+  // a workflow-only walk leaves the densest tool-call prose in the corpus unmeasured, and reports
+  // the same success it would report having read it. One file can sit under two namespaces where
+  // one nests inside another, so a path is checked once.
+  const seen = new Set<string>();
+  for (const { dir } of corpusNamespaces(root)) {
     for (const path of markdownUnder(dir)) {
+      if (seen.has(path)) continue;
+      seen.add(path);
       scanned++;
       const rel = relative(root, path);
       for (const call of describedCalls(readFileSync(path, 'utf-8'), tools)) {

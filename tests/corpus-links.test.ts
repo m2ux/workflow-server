@@ -91,12 +91,27 @@ describe('corpus links', () => {
 
     it('refuses a link that counts directories into another workflow', () => {
       expect(checksFor('alpha/techniques/a.md', '[c](../../group/beta/techniques/conduct.md)\n'))
-        .toEqual(['traversal-out-of-workflow']);
+        .toEqual(['traversal-out-of-namespace']);
     });
 
-    it('refuses a link that climbs to the corpus root and comes back into its own workflow', () => {
+    it('refuses a link that climbs to the corpus root and comes back into its own namespace', () => {
       expect(checksFor('group/beta/techniques/a.md', '[r](../../beta/resources/register.md)\n'))
-        .toEqual(['traversal-out-of-workflow']);
+        .toEqual(['traversal-out-of-namespace']);
+    });
+
+    it('measures a library, which is a namespace the same way a workflow is', () => {
+      expect(checksFor('support/gitnexus/techniques/a.md', '[c](../../../group/beta/techniques/conduct.md)\n'))
+        .toEqual(['traversal-out-of-namespace']);
+    });
+
+    it('names the library a link counts its way into, so the finding carries the form to write', () => {
+      const path = write('alpha/techniques/a.md', '[z](../../support/gitnexus/techniques/analyze.md)\n');
+      try {
+        const [finding] = collectFindings(root).filter((f) => f.site.startsWith('alpha/techniques/a.md'));
+        expect(finding?.detail).toContain('/gitnexus/techniques/analyze.md');
+      } finally {
+        rmSync(path, { force: true });
+      }
     });
 
     it('refuses an absolute link naming no workflow', () => {

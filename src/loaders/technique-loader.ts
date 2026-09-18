@@ -401,7 +401,7 @@ function blocksTitled(protocol: ProtocolBlock[] | undefined, title: string): Pro
  * root.Initial … innermostParent.Initial, own protocol, innermostParent.Final … root.Final.
  *
  * `pathSegments` is the technique's location under `techniquesDir`; the LAST segment is the
- * technique itself (never an ancestor). e.g. ['cargo-operations','check'] or ['classify-problem'].
+ * technique itself (never an ancestor). e.g. ['validate-build','analyze-failure'] or ['classify-problem'].
  */
 async function wrapProtocolWithAncestors(
   techniquesDir: string | null,

@@ -8,6 +8,7 @@ import {
   FAN_ONLY_RULES,
   contractOperations,
 } from '../src/loaders/core-ops.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * What a delivery serves is what its caller can reach.
@@ -48,6 +49,24 @@ describe('the operations a by-id fetch admits', () => {
     const servable = contractOperations({});
     for (const ref of [...CORE_ORCHESTRATOR_TECHNIQUES, ...CORE_WORKER_TECHNIQUES]) {
       expect(servable).toContain(ref);
+    }
+  });
+
+  /**
+   * A ref in these lists is written in the server and named in no definition, so the guard that
+   * resolves every `techniques[]` reference never sees one. Rename the corpus folder it names and
+   * the loader returns `not-found`, which the bundle carries into every delivery of that role — the
+   * orchestrator losing its commit protocols, say, with nothing red. That exact drift happened while
+   * these operations were moving into namespaces of their own, and the only thing that caught it was
+   * a walk incidentally counting unresolved refs. This asks the question directly.
+   */
+  it.skipIf(!liveCorpusRoot())('names only refs the corpus resolves', async () => {
+    const { resolveTechniques } = await import('../src/loaders/technique-loader.js');
+    const root = liveCorpusRoot()!;
+    for (const refs of [CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES]) {
+      const resolved = await resolveTechniques([...refs], root, 'meta');
+      const dead = resolved.filter((entry) => entry.type === 'not-found').map((entry) => entry.ref);
+      expect(dead, 'a core delivery ref the corpus no longer holds').toEqual([]);
     }
   });
 

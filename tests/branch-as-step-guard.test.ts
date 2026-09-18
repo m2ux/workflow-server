@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { declareFixtureWorkflows } from './corpus-fixture.js';
+import { declareFixtureWorkflows, writeWorkflowFixture } from './corpus-fixture.js';
 import { collectFindings } from '../guards/check-branch-as-step.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
@@ -86,8 +86,8 @@ describe('branch-as-step guard', () => {
 
   /**
    * A Protocol takes either shape, and the flat numbered sequence is the majority of the corpus —
-   * every `atlassian-operations`, `cargo-operations`, `gitnexus-operations` and
-   * `knowledge-base-search` op is written that way. A caveat is reached under both.
+   * every `atlassian`, `cargo`, `gitnexus` and
+   * `concept-rag` op is written that way. A caveat is reached under both.
    */
   it('flags a caveat under a flat numbered protocol', () => {
     const findings = findingsFor(
@@ -130,5 +130,29 @@ describe('branch-as-step guard', () => {
    */
   it.skipIf(!liveCorpusRoot())('holds the corpus clean of caveats written as sub-bullets', () => {
     expect(collectFindings(liveCorpusRoot()!)).toEqual([]);
+  });
+
+  /**
+   * A protocol is a protocol wherever it is written. A library declares no workflow, so a sweep
+   * enumerating workflows reaches none of one's techniques and reports the clean it would report
+   * having read them — the silence this guard was written to end, one layer in.
+   */
+  it('reaches a technique in a library, which declares no workflow', () => {
+    const root = mkdtempSync(join(tmpdir(), 'wf-branchstep-lib-'));
+    try {
+      writeWorkflowFixture(root, 'wf');
+      mkdirSync(join(root, 'support', 'lib', 'techniques'), { recursive: true });
+      writeFileSync(
+        join(root, 'support', 'lib', 'techniques', 'op.md'),
+        `${header}### 1. Choose the Rung\n\n- Let \`{intensity}\` govern how the code is built.\n`
+        + '  - When `{intensity}` is lite, build what was asked.\n'
+        + '  - When `{intensity}` is full, build the surrounding structure too.\n',
+      );
+      const findings = collectFindings(root);
+      expect(findings.map((f) => f.check)).toContain('qualifier-as-sub-bullet');
+      expect(findings.some((f) => f.site.includes('lib'))).toBe(true);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

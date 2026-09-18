@@ -127,7 +127,7 @@ What is held back stays reachable. A worker may raise a decision its activity ne
 
 | Set | Technique references |
 |-----|----------------------|
-| `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `sync-progress-status`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`, `resolve-harness-operation`, `claude-code`, `cursor`, `cline`, `generic`; `agent-conduct`, `orchestrator-conduct` |
+| `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `sync-progress-status`; `git::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`, `resolve-harness-operation`, `claude-code`, `cursor`, `cline`, `generic`; `agent-conduct`, `orchestrator-conduct` |
 | `CORE_WORKER_TECHNIQUES` | `workflow-engine::activity-worker`, `finalize-activity`; `agent-conduct`, `worker-conduct` |
 
 Conduct is the engine's baseline rather than a workflow's choice, so both lists name it and no workflow declares it. `agent-conduct` binds every agent and is in both; `orchestrator-conduct` and `worker-conduct` specialise it for one role each and appear in that role's list alone.

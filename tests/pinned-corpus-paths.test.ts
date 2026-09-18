@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { cpSync, mkdirSync, mkdtempSync, renameSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collect } from '../guards/check-pinned-corpus-paths.js';
+import { authorsIntoFixture, collect } from '../guards/check-pinned-corpus-paths.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
@@ -34,5 +34,46 @@ describe.skipIf(!liveCorpusRoot())('pinned corpus paths', () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+});
+
+/**
+ * A fixture write is a fixture write whichever line its path lands on. The exemption reads the call
+ * rather than the line, so a wrapped write is exempt and a literal deeper in an unrelated call is not.
+ */
+describe('a path authored into a fixture tree', () => {
+  // These lines are data the function reads, so their paths name a fixture id rather than a
+  // workflow — a real corpus path spelled here would be a pin of this file's own.
+  it('is recognised beside its call', () => {
+    expect(authorsIntoFixture(["  write('wf/techniques/plan.md', body);"], 0)).toBe(true);
+  });
+
+  it('is recognised below a call that wraps, across blank and comment lines', () => {
+    const lines = [
+      '  write(',
+      '    // An operation inside a group, keyed on its own filename.',
+      '',
+      "    'wf/techniques/group/op.md',",
+      "    '## Rules',",
+      '  );',
+    ];
+    expect(authorsIntoFixture(lines, 3)).toBe(true);
+  });
+
+  it('is not claimed by a literal several arguments into an unrelated call', () => {
+    const lines = [
+      '  consumerReaches(',
+      "    'wf/techniques/present-result.md',",
+      '  );',
+    ];
+    expect(authorsIntoFixture(lines, 1)).toBe(false);
+  });
+
+  it('is not claimed by an argument of a call the authoring call already closed', () => {
+    const lines = [
+      "  write('wf/techniques/one.md', body);",
+      "  consumerReaches('wf/techniques/present-result.md');",
+    ];
+    expect(authorsIntoFixture(lines, 1)).toBe(false);
   });
 });

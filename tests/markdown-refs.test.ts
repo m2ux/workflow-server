@@ -10,7 +10,7 @@ import { fencedLines, linkDestinations, stripDestinations, toLines } from '../gu
  * says nothing about whether this module works. These are the direct tests.
  */
 
-const T = '../techniques/version-control/resolve-host-repo.md';
+const T = '../techniques/git/resolve-host-repo.md';
 
 describe('linkDestinations', () => {
   it('reads every spelling of an inline destination', () => {

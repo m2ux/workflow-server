@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { writeWorkflowFixture } from './corpus-fixture.js';
 import {
   checkCall,
+  collectFindings,
   describedCalls,
   registeredTools,
   splitArguments,
@@ -128,5 +133,30 @@ describe('registeredTools', () => {
       .filter(([, params]) => [...params.declared].some((name) => /session/.test(name) && name !== 'session_index'))
       .map(([name]) => name);
     expect(misspelt).toEqual([]);
+  });
+});
+
+/**
+ * Where the calls are. A library declares no workflow, and the libraries are the sole homes of the
+ * REST and MCP recipes the rest of the corpus is forbidden to restate — so a sweep enumerating
+ * workflows misses the densest tool-call prose there is, and reports the same success it would
+ * report having read every line of it.
+ */
+describe('the sweep', () => {
+  it('reads a technique in a library, which declares no workflow', () => {
+    const root = mkdtempSync(join(tmpdir(), 'wf-toolcall-lib-'));
+    try {
+      writeWorkflowFixture(root, 'wf');
+      mkdirSync(join(root, 'support', 'lib', 'techniques'), { recursive: true });
+      writeFileSync(
+        join(root, 'support', 'lib', 'techniques', 'op.md'),
+        '## Protocol\n\n- Call `next_activity { session_index, activity_id, not_a_parameter }`.\n',
+      );
+      const findings = collectFindings(root);
+      expect(findings.map((f) => f.detail).join(' ')).toContain('not_a_parameter');
+      expect(findings.some((f) => f.site.includes('lib'))).toBe(true);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

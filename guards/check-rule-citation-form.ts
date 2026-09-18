@@ -27,8 +27,8 @@
  * declared relative to the citer and the author should not have to re-derive it:
  *
  *   own-rule        the rule is declared in the citing file — the bare slug.
- *   inherited-rule  the rule is on a container the citing file sits beneath — a link is allowed and
- *                   not reported, the container being the one target a relative link always has.
+ *   inherited-rule  the rule is on a container the citing file sits beneath, so the loader merges it
+ *                   in before the reader sees the file — the bare slug.
  *   foreign-rule    the rule belongs to a technique the citer does not inherit — the dotted address.
  *
  * What this does NOT prove: that a bare slug resolves to a declared rule, which is the dangling half
@@ -129,10 +129,15 @@ export function checkCitation(citation: RuleCitation, citerAbs: string, site: st
       detail: `${anchor} is declared in this file — cite it as the bare name \`${anchor}\`, not a link to its heading`,
     };
   }
-  // A rule the citer inherits may be linked. The merge puts the text in an agent's hands, so a bare
-  // name resolves for the reader the delivery reaches — but a person opening the file gets a slug
-  // and no way to the declaration, and the container is the one target a relative link always has.
-  if (inherits(citerAbs, targetAbs)) return null;
+  // A rule the citer inherits is merged into the file before the reader sees it, so the link
+  // navigates to text they were already handed. The ancestry supplies the owner, leaving the name.
+  if (inherits(citerAbs, targetAbs)) {
+    return {
+      check: 'inherited-rule',
+      site,
+      detail: `${anchor} is merged into this file from its container — cite it as the bare name \`${anchor}\`, not a link to its heading`,
+    };
+  }
   // A container is named by its folder — every group's contract file is spelled `TECHNIQUE.md`.
   const owner =
     basename(targetAbs) === 'TECHNIQUE.md' ? basename(dirname(targetAbs)) : basename(targetAbs, '.md');

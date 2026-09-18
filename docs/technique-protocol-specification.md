@@ -170,10 +170,10 @@ ancestor, and the producing technique additionally declares it as an output.
   translation.
 - A **name** — a technique, operation, or resource identity, and the file / hyperlink / `::` target
   that addresses it — is a slug, never an evaluated variable, and is **`kebab-case`**
-  (`create-issue`, `gitnexus-operations`, `resolve-cloud-id.md`). **Rule names are names too**: a rule
+  (`create-issue`, `gitnexus`, `resolve-cloud-id.md`). **Rule names are names too**: a rule
   is never an evaluated variable; it is cited by its dotted symbol address `[workflow.]technique.rule-name`
   (§4.1), sitting beside the kebab technique name, so a rule name is `kebab-case` and the citation reads
-  uniformly (`gitnexus-operations.index-freshness-first`).
+  uniformly (`gitnexus.index-freshness-first`).
 
 The split is the classical one: evaluated identifiers are snake (a `-` is the subtraction operator),
 surface/slug tokens are kebab. Here it is also a binding requirement — a kebab symbol id would not
@@ -284,7 +284,7 @@ variable). See AP-60.
 An error arises from a specific step's action, so its handling lives in that step: the step states the
 failure condition and the recovery inline ("if `cargo check` fails — type errors — surface the
 diagnostics and retry"). A recovery that applies another technique names it inline, as any protocol
-technique reference ("apply `cargo-operations::fmt-fix`").
+technique reference ("apply `cargo::fmt-fix`").
 
 ---
 
@@ -319,13 +319,13 @@ parsed reference up with the current-workflow-first precedence of §2.
 ### 4.1 Executable references (`::`) vs symbol references (`.`)
 
 A `::` path is an **executable reference** — it names a technique or operation to apply/invoke
-("apply `cargo-operations::fmt-fix`", "go through `gitnexus-operations::context`"). The
+("apply `cargo::fmt-fix`", "go through `gitnexus::context`"). The
 rule-resolution and group-expansion forms above are the bundle layer: how an activity's technique
 list pulls rule entries into delivery.
 
 A `.` path is a **symbol reference** — it names an addressable symbol (a rule) by walking its
 ancestry, without invoking anything: `[<workflow>.]<technique>.<rule-name>` (e.g.
-`meta.gitnexus-operations.index-freshness-first`). A protocol step that cites or relies on a rule
+`work-package.validate-build.no-cargo-here`). A protocol step that cites or relies on a rule
 uses the dotted symbol address — never prose ("per the index-freshness rule") and never the `::`
 executable form. The workflow segment is implicit for a same-workflow reference; when the rule is in
 the citing technique's own ancestry (its own rule, or one it inherits from a containing group or the
@@ -414,13 +414,13 @@ ancestorRoot.Final
   blocks in authored order — itself wrapped by its ancestors' `Initial`/`Final`.
 - The server renumbers the combined sequence; the authored array order is the order.
 
-Example — delivering `work-package::cargo-operations::check`:
+Example — delivering `work-package::validate-build::analyze-failure`:
 
 ```
 work-package root TECHNIQUE.md  → Initial blocks
-cargo-operations TECHNIQUE.md   → Initial blocks
-check.md                        → its own protocol
-cargo-operations TECHNIQUE.md   → Final blocks
+validate-build TECHNIQUE.md     → Initial blocks
+analyze-failure.md              → its own protocol
+validate-build TECHNIQUE.md     → Final blocks
 work-package root TECHNIQUE.md  → Final blocks
 ```
 
@@ -442,7 +442,7 @@ A delivered technique body (`projectTechniqueBody`) carries `capability`, `input
 
 | Key | Contents |
 |-----|----------|
-| `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `cargo-operations::check`), a standalone by its id. |
+| `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `validate-build::analyze-failure`), a standalone by its id. |
 | `rules` | `[name, text]` pairs: a technique's rules plus its inherited and group rules. |
 | `unresolved` | References that did not resolve (a non-empty list is a definition defect). |
 
@@ -483,7 +483,7 @@ The protocol-relevant rules:
 
 - An input or output describes what a value is — its meaning, shape, allowed values. A technique names
   another technique only in `## Protocol` or `## Capability`, as utilisation ("use
-  `cargo-operations::fmt-fix`").
+  `cargo::fmt-fix`").
 - A protocol references data by its Input/Output id. An artifact filename lives in the `#### artifact`
   declaration (literal or `{token}`-template), one filename per output.
 - A capability or description states what a construct is; the sequence of steps and phases lives in
