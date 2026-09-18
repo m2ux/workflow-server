@@ -61,7 +61,7 @@ One row per enumeration unit, each carrying the unit's home, the unit's anchor, 
 
 - Take one enumeration unit per `##` section of each of [Design Principles](/workflow-design/resources/design-principles.md), [Schema Construct Inventory](/workflow-design/resources/schema-construct-inventory.md), [Convention Conformance](/workflow-design/resources/convention-conformance.md) and [Anti-Patterns](/workflow-design/resources/anti-patterns.md), reading each home's `##` headings from that home at the commit under audit
 - Read each anti-pattern family to its end: its entries are the `###` subsections beneath it, and the last family absorbs entries appended after it was named, so its title does not bound its contents
-- Where the corpus is indexed, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[heading-search](/gitnexus/techniques/heading-search.md) against a home to take its section headings as `{heading_matches}`, which reads the enumeration without delivering the whole file. A home fetched by a renamed anchor returns nothing, and a unit fetched as nothing is walked as nothing while the ledger records it walked
+- Where a unit's anchor fetches nothing and the corpus is indexed, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[heading-search](/gitnexus/techniques/heading-search.md) with the unit's title as its *heading_pattern*, and read `{heading_matches}` for the heading that home now carries. A unit fetched as nothing is walked as nothing while the ledger records it walked
 - Do not restate, summarize or number the entries a unit contains; follow each entry as written, and cite entries by their kebab-case name
 
 ### 2. Walk Every Unit Against the Surface
@@ -83,6 +83,10 @@ One row per enumeration unit, each carrying the unit's home, the unit's anchor, 
 - Mark a finding whose key appears in `{known_finding_keys}` as known and leave it out of the decision surface — recorded, not deleted, so a later pass can ask whether the acceptance still holds
 
 ## Rules
+
+### absence-in-a-payload-is-a-defect
+
+An unexplained absence in a delivered payload reads as a reference defect rather than as an empty result, because an unresolvable resource is skipped at delivery with no warning.
 
 ### structural-evidence-first
 

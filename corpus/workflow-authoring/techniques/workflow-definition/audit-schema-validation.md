@@ -33,12 +33,6 @@ A clean guard is evidence only for the form that guard matches.
 
 > A resource reference in already-projected form carries no `.md`, so the anchor guard does not see it.
 
-### absence-in-a-payload-is-a-defect
-
-An unexplained absence in a delivered payload reads as a reference defect rather than as an empty result.
-
-> An unresolvable resource is skipped at delivery with no warning at all.
-
 ### guard-green-is-not-canon-green
 
 `{fail_count}` zero is a verdict about the guard suite and about nothing else. Canon coverage is decided under `audit-canon.guards-are-not-canon-coverage`.
