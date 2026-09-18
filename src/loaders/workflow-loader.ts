@@ -632,7 +632,7 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
  * planning folder, and the child-workflow dispatch records one activity id where a fan holds
  * several in flight.
  *
- * The git group is the conditional case and is handled at the rule rather than here.
+ * The git namespace is the conditional case and is handled at the rule rather than here.
  * It is refused where a fan's branches share one working tree and one git index — a commit derives
  * its paths from that tree's status, so no instance could stage or attribute its own change — and
  * permitted where the fanned activity binds the operation that gives each instance a checkout of
@@ -649,7 +649,17 @@ const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map(
   ],
 ]);
 
-/** The git group stages and commits, so none of its operations is executable in a branch. */
+/**
+ * The git namespace, refused whole in a branch.
+ *
+ * The key is the namespace rather than the operations that stage, which is coarser than the hazard
+ * it guards: five of the eleven only read or compute — a slug composed from a date, a path derived
+ * from the planning folder, a name-status diff — and a fan binding one of those is refused for what
+ * its siblings do. The prefix is what a rule can decide from a step's ref alone, without loading
+ * each operation's protocol to ask whether it writes; and the caller that needs one takes the same
+ * worktree binding that admits the rest, so the coarseness costs a binding rather than the
+ * capability.
+ */
 const CHECKOUT_GROUP_PREFIX = 'git::';
 
 /**
