@@ -1,0 +1,48 @@
+id: public-api-enum
+version: 1.0.0
+name: Public API Enumeration
+description: >-
+  Take the symbols a diff changed, compose the visibility filter over them, and return the exported
+  surface among them — the symbols a consumer outside the module can reach.
+
+inputs:
+  - id: diff_scope
+    description: Which diff the changed-symbol set is taken from — the working tree, the index, both, or a comparison against another ref.
+    default: all
+
+outputs:
+  - id: public_api_symbols
+    type: array
+    description: The exported symbols present in the diff, each with the file and kind the graph records.
+
+internals:
+  - id: change_report
+    description: The changed-symbol set the filter is composed over.
+  - id: cypher_query
+    description: The visibility filter over the changed symbols, passed from the composition to the graph query.
+
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: gitnexus::detect-changes
+      inputs:
+        diff_scope: diff_scope
+      outputs:
+        change_report: change_report
+  - kind: technique
+    id: compose-filter
+    technique:
+      name: gitnexus::compose-visibility-filter
+      inputs:
+        change_report: change_report
+      outputs:
+        cypher_query: cypher_query
+  - kind: technique
+    id: filter
+    technique:
+      name: gitnexus::cypher
+      inputs:
+        cypher_query: cypher_query
+      outputs:
+        result_rows: public_api_symbols

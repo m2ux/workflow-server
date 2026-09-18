@@ -42,7 +42,7 @@ Always apply [detect-changes](./detect-changes.md) after applying a rename or ba
 
 ### index-freshness-first
 
-Apply [verify-index](./verify-index.md) at the start of any GitNexus session, and again before any operation whose answer turns on the current tree — [impact](./impact.md), [detect-changes](./detect-changes.md), [orphan-scan](./orphan-scan.md), [diff-coverage-map](./diff-coverage-map.md). A stale index answers in the same shape as a fresh one and says nothing about its own age, so an unverified answer is indistinguishable from a correct one.
+Apply [verify-index](./verify-index.md) at the start of any GitNexus session, and again before any operation whose answer turns on the current tree — [impact](./impact.md), [detect-changes](./detect-changes.md), [context](./context.md), [query](./query.md). A stale index answers in the same shape as a fresh one and says nothing about its own age, so an unverified answer is indistinguishable from a correct one. Where the read reports the graph behind, apply [analyze](./analyze.md) on the tree and read again — a rebuild that succeeds while the read still reports staleness is the server holding the graph it loaded, and the answer stays old until it reloads.
 
 [group-freshness](./group-freshness.md) is the same check for an answer drawn from a whole repository group, and it reads one failure more than age — which it states.
 

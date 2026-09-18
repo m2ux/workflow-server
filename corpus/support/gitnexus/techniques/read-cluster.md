@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -13,6 +13,12 @@ Read a functional-area cluster resource — area members and cohesion score.
 
 Cluster identifier
 
+## Outputs
+
+### cluster_members
+
+The area's members, each with the file it sits in, alongside the area's cohesion score.
+
 ## Protocol
 
-1. Read the MCP resource `gitnexus://repo/{repo_name}/cluster/{cluster_name}`.
+1. Read the MCP resource `gitnexus://repo/{repo_name}/cluster/{cluster_name}` and record the `{cluster_members}` it lists.

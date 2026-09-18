@@ -1,0 +1,41 @@
+id: scope-discipline-check
+version: 1.0.0
+name: Scope Discipline Check
+description: >-
+  Take the execution flows a diff reaches and hold them against the flows the work was meant to
+  touch, collecting the ones outside it.
+
+inputs:
+  - id: diff_scope
+    description: Which diff the affected flows are taken from — the working tree, the index, both, or a comparison against another ref.
+    default: all
+  - id: requirements_scope
+    description: the processes / functional areas the work package is meant to touch
+
+outputs:
+  - id: scope_findings
+    type: array
+    description: Affected flows falling outside the intended scope, each with the changed symbol that reaches it.
+
+internals:
+  - id: change_report
+    description: The affected-flow set the comparison reads.
+
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: gitnexus::detect-changes
+      inputs:
+        diff_scope: diff_scope
+      outputs:
+        change_report: change_report
+  - kind: technique
+    id: compare
+    technique:
+      name: gitnexus::compare-affected-scope
+      inputs:
+        change_report: change_report
+        requirements_scope: requirements_scope
+      outputs:
+        scope_findings: scope_findings

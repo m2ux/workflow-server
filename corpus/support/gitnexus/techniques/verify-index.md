@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Read the GitNexus index context resource and check freshness for the target repo.
+Read the GitNexus index context resource for the target repo: what the graph holds, and whether it still describes the tree it was built from.
 
 ## Outputs
 
@@ -15,10 +15,10 @@ Symbol / relationship / process counts
 
 ### index_stale
 
-Boolean — true if the index is out of date
+Boolean — true where the graph is behind the tree it was built from, and true where no graph covers that tree at all.
 
 ## Protocol
 
-1. Read the MCP resource `gitnexus://repo/{repo_name}/context` and record the reported `{stats}` (symbol / relationship / process counts).
-   > If no GitNexus index exists for the target repository, apply [analyze](./analyze.md) from the project root, then retry [verify-index](./verify-index.md).
-2. If `{index_stale}`, apply [analyze](./analyze.md) before proceeding. When the index is out of date relative to recent code changes, apply [analyze](./analyze.md) to refresh, or apply [analyze](./analyze.md) with `force_rebuild=true` for a full rebuild.
+1. Read the MCP resource `gitnexus://repo/{repo_name}/context` and record the reported `{stats}` and `{index_stale}`.
+   > Where no graph covers the target repository the read answers nothing: `{index_stale}` is true and `{stats}` is empty, which is the verdict a stale graph earns and takes the same remedy.
+2. Carry `{index_stale}` as the age of every answer taken from this graph afterwards; `gitnexus.index-freshness-first` says what clears it.

@@ -15,7 +15,11 @@ Filesystem path of the tree to index. GitNexus walks the working tree from here 
 
 ### force_rebuild
 
-Optional. Boolean. When true, rebuilds the index from scratch instead of incrementally updating. Defaults to false.
+*(optional)* Whether the rebuild starts from scratch rather than updating what the index already holds.
+
+#### default
+
+`false`
 
 ## Outputs
 

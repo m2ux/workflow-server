@@ -1,0 +1,90 @@
+id: diagram-source-select
+version: 1.0.0
+name: Diagram Source Selection
+description: >-
+  Bound a diagram to what a change reaches, then draw its structure out of the graph — the members
+  of each functional area the change touches, or the ordered trace of each flow it runs through.
+
+inputs:
+  - id: diagram_type
+    description: Which structure the run sources — `package` for functional areas and their members, `sequence` for step-by-step flow traces.
+
+outputs:
+  - id: diagram_source
+    type: array
+    description: The graph-sourced structure the diagram is drawn from, bounded to what the change reaches.
+
+internals:
+  - id: change_report
+    description: The affected-flow and changed-file set that bounds the selection.
+  - id: cluster_inventory
+    description: Every functional area the graph holds, read once and narrowed to the affected ones.
+  - id: affected_clusters
+    description: The functional areas the change reaches, which the package pass walks.
+  - id: affected_cluster
+    description: The functional area the package pass holds, whose members it reads.
+  - id: affected_process
+    description: The execution flow the sequence pass holds, whose ordered trace it reads.
+
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: gitnexus::detect-changes
+      outputs:
+        change_report: change_report
+  - kind: technique
+    id: read-inventory
+    when: diagram_type == "package"
+    technique:
+      name: gitnexus::read-clusters
+      outputs:
+        cluster_inventory: cluster_inventory
+  - kind: technique
+    id: select-clusters
+    when: diagram_type == "package"
+    technique:
+      name: gitnexus::select-affected-clusters
+      inputs:
+        cluster_inventory: cluster_inventory
+        change_report: change_report
+      outputs:
+        affected_clusters: affected_clusters
+  - kind: loop
+    id: cluster-cycle
+    name: Cluster Cycle
+    loopType: forEach
+    variable: affected_cluster
+    over: affected_clusters
+    maxIterations: 100
+    when: diagram_type == "package"
+    steps:
+      - kind: technique
+        id: read-members
+        technique:
+          name: gitnexus::read-cluster
+          inputs:
+            cluster_name: "{affected_cluster.name}"
+        actions:
+          - action: set
+            target: diagram_source
+            description: This area's members, appended to the structure the diagram is drawn from.
+  - kind: loop
+    id: process-cycle
+    name: Process Cycle
+    loopType: forEach
+    variable: affected_process
+    over: change_report.processes
+    maxIterations: 100
+    when: diagram_type == "sequence"
+    steps:
+      - kind: technique
+        id: read-trace
+        technique:
+          name: gitnexus::read-process
+          inputs:
+            process_name: "{affected_process.name}"
+        actions:
+          - action: set
+            target: diagram_source
+            description: This flow's ordered step trace, appended to the structure the diagram is drawn from.

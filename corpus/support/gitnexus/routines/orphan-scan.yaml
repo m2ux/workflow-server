@@ -1,0 +1,38 @@
+id: orphan-scan
+version: 1.0.0
+name: Orphan Scan
+description: >-
+  Ask the graph for every function and method nothing references, then narrow the answer to the
+  files this work changed.
+
+inputs:
+  - id: changed_files
+    description: the set of files changed by the work package
+
+outputs:
+  - id: orphan_candidates
+    type: array
+    description: Symbols in the changed files that nothing references — over-engineering and dead-code candidates for user decision.
+
+internals:
+  - id: result_rows
+    description: The whole-graph unreferenced set, passed from the query to the narrowing.
+
+steps:
+  - kind: technique
+    id: query-unreferenced
+    technique:
+      name: gitnexus::cypher
+      inputs:
+        cypher_query: "MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) AND NOT (()-[:CodeRelation {type: 'HANDLES_ROUTE'}]->(f)) AND NOT (()-[:CodeRelation {type: 'HANDLES_TOOL'}]->(f)) RETURN f.name AS symbol_name, f.filePath AS file_path UNION ALL MATCH (m:Method) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(m)) AND NOT (()-[:CodeRelation {type: 'METHOD_OVERRIDES'}]->(m)) AND NOT (()-[:CodeRelation {type: 'METHOD_IMPLEMENTS'}]->(m)) RETURN m.name AS symbol_name, m.filePath AS file_path"
+      outputs:
+        result_rows: result_rows
+  - kind: technique
+    id: narrow-to-changed
+    technique:
+      name: gitnexus::intersect-orphan-candidates
+      inputs:
+        result_rows: result_rows
+        changed_files: changed_files
+      outputs:
+        orphan_candidates: orphan_candidates

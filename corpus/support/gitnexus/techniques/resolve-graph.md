@@ -11,7 +11,7 @@ Name the indexed graph an operation addresses, and report which graphs and repos
 
 ### tree_path
 
-Optional. Filesystem path of the tree whose answers are wanted. Omit to enumerate what is indexed without resolving a particular tree.
+*(optional)* Filesystem path of the tree whose answers are wanted. Absent, the answer is the inventory alone and resolves no particular tree.
 
 ## Outputs
 
