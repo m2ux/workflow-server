@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
@@ -25,8 +25,8 @@ Orchestrator agent identity for this session.
 
 ### 1. Load resources
 
-- Load resources declared on bundle operations per [resource-loading-via-tool](./TECHNIQUE.md#resource-loading-via-tool)
-- Use [force-full-after-summarization](./TECHNIQUE.md#force-full-after-summarization) when the context `{agent_id}` names no longer holds prior deliveries
+- Load resources declared on bundle operations per `resource-loading-via-tool`
+- Use `force-full-after-summarization` when the context `{agent_id}` names no longer holds prior deliveries
 
 ### 2. Resolve the activity to open with
 
