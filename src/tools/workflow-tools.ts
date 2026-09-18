@@ -330,14 +330,21 @@ function variablesAt(
   });
 }
 
-/** What a response says about the prose it left out, and where the prose is. */
-function variablesNote(fidelity: VariableFidelity): string {
+/**
+ * What a response says about the prose it left out, and where the prose is.
+ *
+ * Chosen by what the declarations actually carry rather than by the stage that produced them: a
+ * workflow whose own file declares no variable has nothing for the `policy` stage to keep, so the
+ * stage that describes some and the stage that describes none come out as the same response, and a
+ * note naming the first would describe prose the reader cannot find.
+ */
+function variablesNote(describedAny: boolean): string {
   const where = 'A variable an activity writes is described in that activity\'s own file, which '
     + 'arrives whole with the get_activity that dispatches a worker to it.';
-  return fidelity === 'policy'
+  return describedAny
     ? 'Every declaration this run carries is above, with its type, its value set and its starting '
       + 'value. Descriptions ride for the variables this workflow\'s own file declares — the policy '
-      + `the run operates under — because stating all of them would put this response past what one `
+      + 'the run operates under — because stating all of them would put this response past what one '
       + `tool result may hold. ${where}`
     : 'Every declaration this run carries is above, with its type, its value set and its starting '
       + 'value, and none carries a description: stating them would put this response past what one '
@@ -1034,10 +1041,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           const orch = [...(r?.workflow ?? []), ...(r?.universal ?? [])];
           return orch.length ? orch : undefined;
         })(),
-        ...(wf.variables === undefined ? {} : {
-          variables: variablesAt(fidelity, wf.variables, policy),
-          ...(fidelity === 'full' ? {} : { variables_note: variablesNote(fidelity) }),
-        }),
+        ...(wf.variables === undefined ? {} : ((): Record<string, unknown> => {
+          const declared = variablesAt(fidelity, wf.variables!, policy);
+          const describedAny = declared.some((v) => v.description !== undefined);
+          return {
+            variables: declared,
+            ...(fidelity === 'full' ? {} : { variables_note: variablesNote(describedAny) }),
+          };
+        })()),
         initialActivity: wf.initialActivity,
         // The workflow's shape, in one place: for each activity, where each of its exits leads.
         // Report the exit on next_activity and the target is this map's answer, not a guess.
@@ -1097,8 +1108,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
       // The bound is on the response, because the response is what a harness refuses — and a harness
       // weighs the whole tool result, so what rides beside the text answers to it too. That share is
-      // charged at its widest: every operation deferred is the longest `operation_refs` this response
-      // can carry, and nothing else in it varies with what the budget decides.
+      // reserved at its widest: every operation deferred is the longest `operation_refs` this
+      // response can carry, and nothing else in it varies with what the budget decides.
+      //
+      // Reserved rather than charged, which is the reverse of the worker path, because the two have
+      // different room to correct in. A worker delivery spends on step techniques AFTER its bundle is
+      // bounded, so the exact list is known before the rest of the budget goes and charging it costs
+      // nothing. Here the bundle is the last thing spent, so there is nothing after it to charge
+      // against. What is left is a circle — a longer ref list leaves less room, which defers another
+      // body, which lengthens the list — and reserving the widest is that circle's settled point,
+      // reached without a second pass. It gives away at most the ids of the bodies that did ride,
+      // and only where the bundle had room to spare.
       const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
       const operationRefs = Object.keys((opsBundle['techniques'] ?? {}) as Record<string, unknown>);
       const metaChars = metadataChars({
@@ -1113,14 +1133,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // the fidelity is chosen against is the bundle carrying no body at all, so a definition never
       // sheds to make room for a procedure: it sheds only where the room does not exist.
       const floor = operationsFloor(opsBundle) + SEPARATOR.length + metaChars;
-      let variableFidelity: VariableFidelity = 'full';
-      let summaryData = summaryAt(variableFidelity);
+      let variableFidelity: VariableFidelity = VARIABLE_FIDELITIES[0];
+      let summaryText = '';
       for (const fidelity of VARIABLE_FIDELITIES) {
         variableFidelity = fidelity;
-        summaryData = summaryAt(fidelity);
-        if (floor + stringifyForResponse(summaryData).length <= responseBound) break;
+        summaryText = stringifyForResponse(summaryAt(fidelity));
+        if (floor + summaryText.length <= responseBound) break;
       }
-      const summaryText = stringifyForResponse(summaryData);
 
       const deferredOps = boundOperationsBundle(
         opsBundle, responseBound - summaryText.length - SEPARATOR.length - metaChars,
@@ -1137,7 +1156,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           session_index, workflow: workflow_id,
           bound: responseBound,
           rules_and_notes_chars: opsText.length,
-          metadata_chars: summaryText.length,
+          // The workflow definition below the separator, and the protocol metadata beside the text.
+          // Two different things, so two names rather than one word doing both jobs.
+          definition_chars: summaryText.length,
           protocol_metadata_chars: metaChars,
           variable_fidelity: variableFidelity,
           deferred_operations: deferredOps.length,
@@ -1991,15 +2012,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // its fields are fixed and only their digits vary, and one delivery cannot add more than one
       // whole response to the tally it reports.
       const standBeforeDelivery = batchState(state, scope, bound);
-      const batchWidest = stringifyForResponse({
-        batch: batchReading(
-          {
-            activities: [...standBeforeDelivery.activities, activity_id],
-            chars: standBeforeDelivery.chars + responseBound, mayContinue: false, bounded: true,
-          },
-          bound, false,
-        ),
-      }).length;
+      const batchAtWidest = batchReading(
+        {
+          activities: [...standBeforeDelivery.activities, activity_id],
+          chars: standBeforeDelivery.chars + responseBound, mayContinue: false, bounded: true,
+        },
+        bound, false,
+      );
+      const batchWidest = stringifyForResponse({ batch: batchAtWidest }).length;
       // A gate is reachable from a gate step, and routines are materialised by the load, so the
       // question is answered over the steps the run declares. A workflow holding none takes
       // neither protocol — and a worker that raises a decision its activity never declared fetches
@@ -2092,19 +2112,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // answers for this as well. The parts whose shape is settled before the budget runs are
       // reserved here at the widest each renders, their lists down to the key they ride under; the
       // entries of those lists are charged where the response commits to them, so a reservation
-      // never stands in for something this delivery turns out not to carry.
-      //
-      // A composition warning rides outside this reservation. Its text is a defect report rather
-      // than a field of the delivery, and reserving room for warnings a healthy delivery never
-      // raises would take that room from every response. What the whole result came to is measured
-      // below, so a delivery that carried enough of them to matter says so.
+      // never stands in for something this delivery turns out not to carry. A composition warning
+      // is charged the same way, at the site that raises it: its text exists only once it is
+      // raised, which is after this floor is settled.
       const metaFloor = batchWidest + metadataChars({
         session_index, validation: buildValidation(), dispatch: 'resume',
         artifact_prefix: fixed.artifactPrefix, artifacts: fixed.artifacts,
         activity_rules: fixed.inheritedRules, exit_destinations: fixed.exitDestinations,
         enforcement_notes: fixed.enforcementNotes,
         ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
-        batch: batchReading(standBeforeDelivery, bound, false),
+        batch: batchAtWidest,
         delivery_cost: Object.fromEntries(DELIVERY_COST_FIELDS.map((f) => [f, responseBound])),
         lazy_gates: { pending: 0, unbound: 0, unparsed: 0 } satisfies GateUnansweredCounts,
         operation_refs: [], bundled_steps: [], bundled_resources: [], resource_refs: [],
@@ -2185,6 +2202,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // leaves this tally with more room than it started with, never less.
       let responseChars = responseFloor + workerBundleChars
         + deferredOperations.reduce((chars, ref) => chars + metaListEntryChars(ref), 0);
+      /**
+       * Raise a composition warning, and charge the result for carrying it.
+       *
+       * A warning rides the delivery's validation block, which a harness weighs with everything
+       * else. Its text exists only once the warning is raised, which is after the floor is settled —
+       * so it is charged here, where the response commits to it, and every entry admitted after it
+       * is decided against a tally that already accounts for it.
+       */
+      const raiseWarning = (warning: string): void => {
+        bundlingWarnings.push(warning);
+        responseChars += metaListEntryChars(warning);
+      };
       /**
        * Technique steps left for get_technique, by the answer their gate gave. The unanswered ones
        * are counted by reason, because they mean different things: `pending` is this activity's own
@@ -2281,11 +2310,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             .filter((rid) => !linkedResourceIds.has(rid));
           const mapNotesCost = (Object.keys(bundledStepTechniques).length === 0 ? STEP_MAP_NOTES_CHARS : 0)
             + (links.length > 0 ? blockChars('resource_refs', links) : 0)
-            // And what it costs the metadata beside the text: its own id in the bundled list, and
-            // each resource it links in one of the two resource lists. Charged here so the bound
-            // decides on an entry with everything that entry brings with it.
+            // And what it costs the metadata beside the text: its own id in the bundled list, each
+            // resource it links in one of the two resource lists, and any provenance warning
+            // decorating it raised, which rides the delivery's validation block. Charged here so the
+            // bound decides on an entry with everything that entry brings with it — and so an entry
+            // the bound turns away brings none of it, the break below leaving all three unpushed.
             + metaListEntryChars(step.id!)
-            + links.reduce((chars, rid) => chars + metaListEntryChars(rid), 0);
+            + links.reduce((chars, rid) => chars + metaListEntryChars(rid), 0)
+            + provenanceWarnings.reduce((chars, warning) => chars + metaListEntryChars(warning), 0);
           if (alreadyDelivered) {
             // A reference marker draws down no window budget — this context holds the content
             // already — but it does cost the response the bytes it is written in.
@@ -2379,7 +2411,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               );
               if (!loaded.success) {
                 // Warn and continue — unresolvable refs must not abort get_activity (SC-13).
-                bundlingWarnings.push(
+                raiseWarning(
                   `Unresolvable resource ref '${resourceId}' linked from bundled step techniques: ${loaded.error.message}`,
                 );
                 continue;
@@ -2446,7 +2478,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                 config.workflowDir, workflow_id, resourceId, session_index,
               );
               if (!loaded.success) {
-                bundlingWarnings.push(
+                raiseWarning(
                   `Unresolvable resource ref '${resourceId}' linked from bundled step techniques: ${loaded.error.message}`,
                 );
               }
