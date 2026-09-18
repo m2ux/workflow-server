@@ -25,5 +25,5 @@ A GitHub issue raised for the work package, labelled for the kind of change it r
 
 ### 2. Create and Verify
 
-- Apply [create-issue](/meta/techniques/github-cli-protocol/create-issue.md)(*repo_path*=`{component_git_dir}`) with the drafted title, body and label, then capture `{issue_number}` and `{issue_url}` from the verified issue
+- Apply [create-issue](/github/techniques/create-issue.md)(*repo_path*=`{component_git_dir}`) with the drafted title, body and label, then capture `{issue_number}` and `{issue_url}` from the verified issue
   > Where the op fails on auth, permissions or network, verify `gh` auth status and repository access and retry. Where it still fails, leave `{issue_number}` unset so the run carries an unsatisfied issue rather than a fabricated one.

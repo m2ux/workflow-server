@@ -20,9 +20,9 @@ Create a directory named for the workflow's id with a `workflow.yaml` in it, und
 
 ### Linking between definition files
 
-A link within a workflow is an ordinary relative path — the workflow moves as a unit, so the distance between two of its own files never changes.
+A link within a namespace is an ordinary relative path — the namespace moves as a unit, so the distance between two of its own files never changes.
 
-A link **out of** a workflow names the workflow it wants, anchored on the id and written from a leading slash: `[conduct](/shared/techniques/conduct.md)`. The leading segment resolves to wherever discovery found that workflow, so the link survives either end moving. Counting directories out of a workflow (`../../shared/techniques/…`) records the distance between two workflows, which is a fact about today's layout rather than about either of them — and that includes a link that climbs to the corpus root only to come back into its own workflow, whose `..` count is the workflow's own depth. `npx tsx guards/check-corpus-links.ts` reports both forms; it runs by path rather than in the sweep until the corpus is rewritten to the anchored form.
+A link **out of** a namespace names the namespace it wants, anchored on the id and written from a leading slash: `[commit-regular-files](/git/techniques/commit-regular-files.md)`. The leading segment resolves to wherever discovery found that namespace, so the link survives either end moving, and it reads the same whether the target is a workflow or a library. Counting directories out of a namespace (`../../git/techniques/…`) records the distance between two of them, which is a fact about today's layout rather than about either of them — and that includes a link that climbs to the corpus root only to come back into its own namespace, whose `..` count is the namespace's own depth. `npx tsx guards/check-corpus-links.ts` reports both forms; it runs by path rather than in the sweep until the corpus is rewritten to the anchored form.
 
 Check it before committing:
 

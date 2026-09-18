@@ -50,7 +50,7 @@ steps:
         value: true
   - kind: technique
     id: preflight
-    technique: cargo-operations::preflight
+    technique: cargo::preflight
     when: project_type == 'rust-substrate' && run_local_validation == true
     actions:
       - action: validate
@@ -59,7 +59,7 @@ steps:
   - kind: technique
     id: run-suite
     technique:
-      name: cargo-operations::run-suite
+      name: cargo::run-suite
       inputs:
         build_scope: --workspace
     when: project_type == 'rust-substrate' && run_local_validation == true
@@ -112,7 +112,7 @@ steps:
       - kind: technique
         id: revalidate
         technique:
-          name: cargo-operations::run-suite
+          name: cargo::run-suite
           inputs:
             build_scope: --workspace
 exits:

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.6.1
 ---
 
 ## Capability
@@ -40,7 +40,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 1. Load Guidance
 
 - Judge the change against [Architectural Significance](../../resources/architecture-review.md#architectural-significance) and [Decision-Making Discipline](../../resources/architecture-review.md#decision-making-discipline); the rules below govern the review findings
-- Identify the base branch `{base_branch}`: when `{pr_number}` is set, Apply [view-pr](/meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take it from the op output; otherwise (no PR — stealth mode) the default branch of the configured push remote.
+- Identify the base branch `{base_branch}`: when `{pr_number}` is set, Apply [view-pr](/github/techniques/view-pr.md)(*repo_path*=`{component_git_dir}`) and take it from the op output; otherwise (no PR — stealth mode) the default branch of the configured push remote.
 - Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch `{base_branch}`:
 
   ```bash
@@ -68,7 +68,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 5. Identify Artifacts
 
 - Probe each area of the [Speculative Changes Audit](../../resources/strategic-review.md#speculative-changes-audit)
-- Classify every candidate per the group's [finding-categories](./TECHNIQUE.md#finding-categories)
+- Classify every candidate per the group's `finding-categories`
 
 ### 6. Minimality Check
 

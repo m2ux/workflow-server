@@ -36,9 +36,9 @@ URL to the PR
 
 ### 2. Create Draft PR
 
-- Apply [create-pr](/meta/techniques/github-cli-protocol/create-pr.md) (*repo_path*=`{target_path}`, *branch_name*=`{branch_name}`, *base_branch*=the repo default or the configured base, *title* and *body* from step 1, *as_draft*=true); capture `{pr_number}` and `{pr_url}`
+- Apply [create-pr](/github/techniques/create-pr.md) (*repo_path*=`{target_path}`, *branch_name*=`{branch_name}`, *base_branch*=the repo default or the configured base, *title* and *body* from step 1, *as_draft*=true); capture `{pr_number}` and `{pr_url}`
 
 ### 3. Assign Current User
 
-- Apply [assign-issue](/meta/techniques/github-cli-protocol/assign-issue.md)(*repo_path*=`{target_path}`, *issue_number*=`{pr_number}`, *assignee*=`@me`) — PR numbers share the issues assignees endpoint.
+- Apply [assign-issue](/github/techniques/assign-issue.md)(*repo_path*=`{target_path}`, *issue_number*=`{pr_number}`, *assignee*=`@me`) — PR numbers share the issues assignees endpoint.
 - Keep the PR as draft until implementation and review complete

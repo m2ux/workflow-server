@@ -43,7 +43,7 @@ The activity the branches converge on, as the barrier reported it — what the r
 
 ### 1. Publish one in-progress mark for every branch
 
-- Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [version-control::commit-regular-files](../version-control/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress — see `one-commit-before-the-spawn`
+- Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress — see `one-commit-before-the-spawn`
   > When `{planning_folder_path}` is unset, skip this phase.
 
 ### 2. Open every branch with one call

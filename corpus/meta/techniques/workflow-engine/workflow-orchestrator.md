@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -25,12 +25,12 @@ Orchestrator agent identity for this session.
 
 ### 1. Load resources
 
-- Load resources declared on bundle operations per [resource-loading-via-tool](./TECHNIQUE.md#resource-loading-via-tool)
-- Use [force-full-after-summarization](./TECHNIQUE.md#force-full-after-summarization) when the context `{agent_id}` names no longer holds prior deliveries
+- Load resources declared on bundle operations per `resource-loading-via-tool`
+- Use `force-full-after-summarization` when the context `{agent_id}` names no longer holds prior deliveries
 
 ### 2. Resolve the activity to open with
 
-- Call `get_workflow_status { session_index }`; take `current_activity` when set, otherwise the `initialActivity` that `get_workflow` returns. A session that has not entered an activity reports none, so the workflow's own first activity is the only id to reach for; a session part-way through reports the cursor to resume on
+- Call `get_workflow_status { session_index }`; take the activity `in_flight` names when it holds one, otherwise the `initialActivity` that `get_workflow` returns. A session that has not entered an activity reports `in_flight` empty, so the workflow's own first activity is the only id to reach for; a session part-way through names the cursor to resume on
 
 ### 3. Walk the workflow to its end
 

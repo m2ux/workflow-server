@@ -77,7 +77,7 @@ steps:
     when: operation_type == 'review'
   - kind: technique
     id: commit-report
-    technique: version-control::commit-regular-files
+    technique: git::commit-regular-files
     when: operation_type == 'review'
   - kind: technique
     id: run-schema-validation
@@ -184,7 +184,7 @@ steps:
           exit: return-to-draft
   - kind: technique
     id: stage-and-commit
-    technique: version-control::commit-regular-files
+    technique: git::commit-regular-files
     when: operation_type != 'review'
   - kind: technique
     id: verify-commit
@@ -192,7 +192,7 @@ steps:
   - kind: technique
     id: push-branch
     technique:
-      name: version-control::push-branch
+      name: git::push-branch
       inputs:
         repo_path: target_path
         branch: workflow_branch
@@ -205,7 +205,7 @@ steps:
   - kind: technique
     id: create-pr
     technique:
-      name: github-cli-protocol::create-pr
+      name: github::create-pr
       inputs:
         repo_path: target_path
         branch_name: workflow_branch
@@ -217,7 +217,7 @@ steps:
   - kind: technique
     id: mark-ready
     technique:
-      name: github-cli-protocol::mark-ready
+      name: github::mark-ready
       inputs:
         repo_path: target_path
         pr_number: pr_number

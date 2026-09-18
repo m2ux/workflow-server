@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.4.1
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ The resumed agent's next yield or final output
 
 ### 2. Resume
 
-- Resume by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{agent_id}`, `{session_index}`, and `{composed_prompt}`, under [foreground-always](./TECHNIQUE.md#foreground-always).
+- Resume by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{agent_id}`, `{session_index}`, and `{composed_prompt}`, under `foreground-always`.
 
 ### 3. Await result
 

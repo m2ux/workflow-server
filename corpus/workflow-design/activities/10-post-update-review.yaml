@@ -216,7 +216,7 @@ steps:
     when: needs_recommit == true
   - kind: technique
     id: republish-stage-and-commit
-    technique: version-control::commit-regular-files
+    technique: git::commit-regular-files
     when: needs_recommit == true
   - kind: technique
     id: republish-verify-commit
@@ -225,7 +225,7 @@ steps:
   - kind: technique
     id: republish-push-branch
     technique:
-      name: version-control::push-branch
+      name: git::push-branch
       inputs:
         repo_path: target_path
         branch: workflow_branch
@@ -238,7 +238,7 @@ steps:
   - kind: technique
     id: republish-pull-request
     technique:
-      name: github-cli-protocol::create-pr
+      name: github::create-pr
       inputs:
         repo_path: target_path
         branch_name: workflow_branch

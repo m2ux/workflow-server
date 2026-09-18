@@ -80,7 +80,7 @@ The authoritative gates, options and effects live in each activity's YAML.
 | [`compose-evaluation-report`](./techniques/compose-evaluation-report/TECHNIQUE.md) | Consolidating sibling runs into one evaluation of the target |
 | [`resolve-findings`](./techniques/resolve-findings/TECHNIQUE.md) | Carrying a finding from criticism to decided change |
 
-The analysis itself is reached by trigger: `execute-analysis` dispatches prism as a child workflow per execution group, and `apply-mitigations` commits through a shared version-control operation.
+The analysis itself is reached by trigger: `execute-analysis` dispatches prism as a child workflow per execution group, and `apply-mitigations` commits through a shared git operation.
 
 **Detailed documentation:** [techniques/README.md](./techniques/README.md) for the operation index.
 

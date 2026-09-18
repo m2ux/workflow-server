@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 3.6.0
+  version: 3.6.1
 ---
 
 ## Capability
 
-GitHub PR and issue tasks. Callers Apply leaf ops; REST paths, `gh api` recipes, and owner/repo resolution live only in this group.
+GitHub PR and issue tasks. Callers Apply leaf ops; REST paths, `gh api` recipes, and owner/repo resolution live only in this namespace.
 
 ## Inputs
 
@@ -29,7 +29,7 @@ A list endpoint answers with one page — 30 items — unless the call asks for 
 
 ### github-access-only-here
 
-Outside this technique group, GitHub access is an Apply of a leaf op. Domain techniques do not embed `gh api` recipes or split `{target_repo}` into owner/repo.
+Outside this namespace, GitHub access is an Apply of a leaf op. Domain techniques do not embed `gh api` recipes or split `{target_repo}` into owner/repo.
 
 ### ask-before-replying
 

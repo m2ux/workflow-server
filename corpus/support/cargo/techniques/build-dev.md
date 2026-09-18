@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -15,5 +15,7 @@ The compiled dev binaries/libraries for `{build_scope}` under the cargo target d
 
 ## Protocol
 
-1. `{generated_product_skip} {build_budget} cargo build {build_scope} {features}`
-   > If the link or codegen step exceeds available RAM, halve `CARGO_BUILD_JOBS` and retry.
+### 1. Compile Dev Artifacts
+
+- `{generated_product_skip} {build_budget} cargo build {build_scope} {features}`
+  > If the link or codegen step exceeds available RAM, halve `CARGO_BUILD_JOBS` and retry.

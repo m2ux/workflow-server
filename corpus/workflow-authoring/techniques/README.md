@@ -49,5 +49,5 @@ Resolved directly from the named workflow — no copy is held here.
 | [`workflow-engine::verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) | Drift-check the planning-folder `README.md` against the Template and this workflow's seed profile |
 | [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — the numbered planning-folder artifact write |
 | [`work-package::manage-git`](/work-package/techniques/manage-git/TECHNIQUE.md) | `remove-worktree` — tear down the run's edit worktree |
-| [`meta::version-control`](/meta/techniques/version-control/TECHNIQUE.md) | `derive-workflows-target-path` and `create-worktree` for the edit surface; `commit-regular-files` and `push-branch` to publish it |
-| [`meta::github-cli-protocol`](/meta/techniques/github-cli-protocol/TECHNIQUE.md) | `create-pr` — opened non-draft, because the commit gate already approved publication |
+| [`git`](/git/techniques/TECHNIQUE.md) | `derive-workflows-target-path` and `create-worktree` for the edit surface; `commit-regular-files` and `push-branch` to publish it |
+| [`github`](/github/techniques/TECHNIQUE.md) | `create-pr` — opened non-draft, because the commit gate already approved publication |
