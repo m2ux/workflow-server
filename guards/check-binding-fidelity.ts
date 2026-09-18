@@ -83,7 +83,12 @@ let indexed = false;
 
 /* ----------------------------- signature parsing ----------------------------- */
 type InputMeta = { hasDefault: boolean; optional: boolean };
-type OutputMeta = { hasArtifact: boolean };
+/**
+ * `components` names the `####` sub-sections an output declares. An output declaring none is one
+ * whose shape the contract does not state, so a reader reaching into it is reaching past what was
+ * declared rather than contradicting it.
+ */
+type OutputMeta = { hasArtifact: boolean; components: Set<string> };
 type DetailedSig = { inputs: Map<string, InputMeta>; outputs: Map<string, OutputMeta> };
 type Sig = { inputs: Set<string>; outputs: Set<string> };
 type OpEntry = { own: DetailedSig; composed: Sig };
@@ -121,7 +126,7 @@ function fileSigDetailed(p: string): DetailedSig {
       entry = h3[1]!.trim();
       awaitingProse = true;
       if (section === 'inputs') det.inputs.set(entry, { hasDefault: false, optional: false });
-      else det.outputs.set(entry, { hasArtifact: false });
+      else det.outputs.set(entry, { hasArtifact: false, components: new Set() });
       continue;
     }
     if (!entry) continue;
@@ -131,6 +136,9 @@ function fileSigDetailed(p: string): DetailedSig {
       const sub = h4[1]!.trim();
       if (section === 'inputs' && sub === 'default') det.inputs.get(entry)!.hasDefault = true;
       if (section === 'outputs' && sub === 'artifact') det.outputs.get(entry)!.hasArtifact = true;
+      // `artifact` names a file the technique writes rather than a member of the value, so it is
+      // not a path a reader can address into.
+      if (section === 'outputs' && sub !== 'artifact') det.outputs.get(entry)!.components.add(sub);
       continue;
     }
     if (awaitingProse && line.trim().length > 0) {
@@ -383,6 +391,16 @@ type Step = {
   inputsMap: Record<string, unknown>; outputsMap: Record<string, string>; activityId: string;
 };
 const steps: Step[] = [];
+
+/**
+ * A read that addresses INTO a value — `change_report.changed_symbols` rather than `change_report`.
+ *
+ * The head is what the resolution rules answer for; the tail is a claim about the value's shape,
+ * which the producing operation states in its output's `####` components. Kept whole here because
+ * every other scan splits the head off and discards the rest, which is why a tail naming a member
+ * no contract declares reads exactly like a member that is there.
+ */
+const pathConsumes: Array<{ rel: string; wf: string; activityId: string; path: string }> = [];
 /**
  * Bag names read by an EXPRESSION rather than a `{token}` or a structured `variable:` key — a step's
  * `when` string and a `validate` action's `target`. Both are consumption sites, and neither was
@@ -483,6 +501,7 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
   // object itself (`implementation_plan.tasks`), so it resolves against its head like any read.
   if (typeof o.over === 'string') {
     expressionConsumes.push({ rel, wf, stepId: here, name: o.over.split('.')[0]! });
+    if (o.over.includes('.')) pathConsumes.push({ rel, wf, activityId, path: o.over });
   }
   for (const v of Object.values(o)) walkSteps(wf, rel, v, activityId, here);
 }
@@ -677,6 +696,13 @@ function ensureIndexed(): void {
   // its routines. A namespace carries a definition here only where the corpus can start it, so a
   // library's techniques are measured above while nothing reads a graph no name reaches.
   const graphed = new Set(corpusNamespaces(ROOT, INDEX).filter((n) => n.manifest !== undefined).map(({ ref }) => ref));
+  // A run is read because a `routines/` directory holds it, and for no other reason. A library
+  // declares runs and may declare neither activities nor techniques, so every membership the sweep
+  // below tests for is one a library can fail while still holding the runs where its own operations
+  // are composed — and an unscanned run reports every output it consumes as one nothing consumes.
+  for (const { ref, dir } of corpusNamespaces(ROOT, INDEX)) {
+    if (existsSync(join(dir, 'routines'))) scanRoutines(ref);
+  }
   for (const wf of allWf) {
     if (!graphed.has(wf)) continue;
     collectWorkflowVars(wf);
@@ -697,7 +723,6 @@ function ensureIndexed(): void {
         walkSteps(wf, rel, dec, activityId);
       } catch { /* validate-workflow-yaml's job */ }
     }
-    scanRoutines(wf);
   }
 
   const reach = new Map<string, Set<string>>();
@@ -841,7 +866,8 @@ export { consumerReaches };
 
 /* --------------------------------- checks --------------------------------- */
 export interface Violation {
-  check: 'arg-conformance' | 'read-resolution' | 'binding-resolution' | 'dead-output' | 'orphan-input';
+  check: 'arg-conformance' | 'read-resolution' | 'binding-resolution' | 'dead-output' | 'orphan-input'
+  | 'output-path-undeclared';
   site: string;
   detail: string;
 }
@@ -934,6 +960,10 @@ export function collectViolations(): Violation[] {
   // nothing produces was accepted and could never fire (#341 R1, the #324 A2 class).
   for (const e of expressionConsumes) {
     if (PLACEHOLDER.has(e.name)) continue;
+    // A file's own declared names satisfy a gate in it, on the terms they satisfy a `{token}` read
+    // above: a routine's signature IS the scope its body reads, so a gate naming a declared input
+    // resolves inside the file and never against the workflow the run is spliced into.
+    if (fileLocals.get(e.rel)?.has(e.name)) continue;
     const wf = e.wf;
     if (scopeOf(wf).has(e.name)) continue;
     v.push({
@@ -953,6 +983,77 @@ export function collectViolations(): Violation[] {
       check: 'dead-output', site: site.rel,
       detail: `output '${site.id}' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)`,
     });
+  }
+  // (4) output-path-undeclared — a read addressing into a value names a member its producer declares
+  v.push(...collectPathViolations());
+  return v;
+}
+
+/**
+ * Which operation output lands under each bag name, by the name the value is read under.
+ *
+ * A step's `outputs` map remaps a declared output onto another name; an output the map leaves alone
+ * lands under its own id. Both are producers, and a reader addressing into either is making a claim
+ * about that operation's declared shape.
+ */
+function producersByBagName(): Map<string, Array<{ ref: string; wf: string; activityId: string; outputId: string }>> {
+  const byName = new Map<string, Array<{ ref: string; wf: string; activityId: string; outputId: string }>>();
+  const add = (name: string, entry: { ref: string; wf: string; activityId: string; outputId: string }): void => {
+    byName.set(name, [...(byName.get(name) ?? []), entry]);
+  };
+  for (const s of steps) {
+    const resolved = resolve(s.technique, s.wf, s.activityId);
+    if (!resolved) continue;
+    const remapped = new Set(Object.keys(s.outputsMap));
+    for (const [outputId, bagName] of Object.entries(s.outputsMap)) {
+      add(bagName, { ref: s.technique, wf: s.wf, activityId: s.activityId, outputId });
+    }
+    for (const outputId of resolved.entry.own.outputs.keys()) {
+      if (!remapped.has(outputId)) add(outputId, { ref: s.technique, wf: s.wf, activityId: s.activityId, outputId });
+    }
+  }
+  return byName;
+}
+
+/**
+ * A path whose head is a produced value and whose first tail segment names no declared component.
+ *
+ * Only an output that declares components is measured. One declaring none states nothing about its
+ * shape, so a reader addressing into it is reaching past the contract rather than contradicting it,
+ * and reporting that would be reporting every under-declared output in the corpus.
+ *
+ * An index segment is a position rather than a member, so a path stepping through one addresses the
+ * element and the declaration describes the collection — a different claim, and not this one.
+ */
+function collectPathViolations(): Violation[] {
+  const v: Violation[] = [];
+  const producers = producersByBagName();
+  const seen = new Set<string>();
+  const sites = [
+    ...pathConsumes,
+    // A `{token}` addressing into a value is the same claim a loop's `over` makes, written in a
+    // binding or in prose. The text scan already keeps these whole.
+    ...reads.filter((r) => r.full.includes('.')).map((r) => ({ rel: r.rel, wf: r.wf, activityId: '', path: r.full })),
+  ];
+  for (const { rel, wf, activityId, path } of sites) {
+    const [head, member] = path.split('.');
+    if (!head || !member || /^\d+$/.test(member)) continue;
+    const key = `${rel} ${path}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    for (const producer of producers.get(head) ?? []) {
+      if (producer.wf !== wf && producer.activityId !== activityId) continue;
+      const resolved = resolve(producer.ref, producer.wf, producer.activityId);
+      const declared = resolved?.entry.own.outputs.get(producer.outputId)?.components;
+      if (!declared || declared.size === 0) continue;
+      if (declared.has(member)) continue;
+      v.push({
+        check: 'output-path-undeclared', site: `${rel}[${activityId}]`,
+        detail: `reads '${path}', and '${producer.ref}' declares no '${member}' on its '${producer.outputId}' output `
+          + `— it states ${[...declared].map((c) => `'${c}'`).join(', ')}`,
+      });
+      break;
+    }
   }
   return v;
 }

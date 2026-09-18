@@ -662,13 +662,17 @@ describe('placement, over the transitive referrer closure', () => {
     `id: ${id}\nversion: 1.0.0\nname: ${id}\nsteps:\n${steps}`;
   const action = '  - kind: action\n    id: do-it\n    actions:\n      - action: log\n        message: ran\n';
 
-  it('reports a routine nothing references anywhere in the corpus', async () => {
+  /**
+   * A routine is an artifact offered to whatever binds it, on the terms the techniques beside it
+   * are offered, so how many callers reach it is not a property this guard measures. Its signature
+   * is held against its own body either way.
+   */
+  it('accepts a routine nothing references anywhere in the corpus', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
       routines: { wf: { 'shared-run': body('shared-run', action) } },
     });
-    expect(checks(findings)).toEqual(['routine-unreferenced']);
-    expect(findings[0]!.detail).toContain('workflow(s)');
+    expect(checks(findings)).toEqual([]);
   });
 
   /**
@@ -820,5 +824,345 @@ steps:
     expect(finding).toBeDefined();
     expect(finding!.site).toBe('meta/routines/inner-run.yaml');
     expect(finding!.detail).toContain("computed home is 'wf'");
+  });
+
+  /**
+   * A library declares no workflow, so it holds no activity file and the owner computation can only
+   * name somewhere else. Left at that, a run composing a library's operations could never sit beside
+   * them — which is the arrangement the resolver's `namespace::name` form exists for.
+   */
+  const probe = `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Probe the target.
+
+## Protocol
+
+### 1. Probe
+
+- Probe the target.
+`;
+
+  const libraryReferrer = 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: lib::shared-run\n';
+
+  it('accepts a library-homed routine whose body binds that library\'s operations', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: libraryReferrer } },
+      techniques: { lib: { probe } },
+      routines: { lib: { 'shared-run': body('shared-run', '  - kind: technique\n    id: probe\n    technique: lib::probe\n') } },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  /**
+   * A library offers its artifacts to whatever binds them — a caller may arrive from any workflow,
+   * or from none yet — which is the standing a technique in the same directory already has. Held to
+   * the workflow rule, a library could carry no run until some workflow happened to want one.
+   */
+  it('accepts a library-homed routine no caller references', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      techniques: { lib: { probe } },
+      routines: { lib: { 'shared-run': body('shared-run', '  - kind: technique\n    id: probe\n    technique: lib::probe\n') } },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  /**
+   * The run a missing caller does bear on: its signature is derived against the operation that
+   * stands in the parameter's place, which a site supplies or a declared default carries. A
+   * parameter with neither has nothing to derive against, and silence there would read as a run
+   * nothing found fault with.
+   */
+  it('reports a routine whose signature no site can hold', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    const finding = findings.find((f) => f.check === 'routine-signature-unheld');
+    expect(finding).toBeDefined();
+    expect(finding!.detail).toContain('nothing in the corpus refers to');
+  });
+
+  it('reports a library-homed routine that binds none of that library\'s operations', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: libraryReferrer } },
+      techniques: { lib: { probe } },
+      routines: { lib: { 'shared-run': body('shared-run', action) } },
+    });
+    const finding = findings.find((f) => f.check === 'routine-misplaced');
+    expect(finding).toBeDefined();
+    expect(finding!.site).toBe('lib/routines/shared-run.yaml');
+    expect(finding!.detail).toContain("computed home is 'wf'");
+    expect(finding!.detail).toContain('this body binds none');
+  });
+
+  /**
+   * The exemption is a library's, and a workflow declaring the same shape is held to the ordinary
+   * rule: its activities are what the owner computation reads, so a run one other workflow reaches
+   * belongs to that workflow whatever its own directory offers. A reader granting the exemption on
+   * the operations alone would move every workflow's runs out of reach of the placement rule.
+   */
+  it('reports a workflow-homed routine binding its own operations, the exemption being a library\'s', async () => {
+    const findings = await findingsFor({
+      activities: {
+        wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: other::shared-run\n' },
+        other: { own: 'id: own\nversion: 1.0.0\nname: Own\nsteps:\n' + action },
+      },
+      techniques: { other: { probe } },
+      routines: { other: { 'shared-run': body('shared-run', '  - kind: technique\n    id: probe\n    technique: other::probe\n') } },
+    });
+    const finding = findings.find((f) => f.check === 'routine-misplaced');
+    expect(finding).toBeDefined();
+    expect(finding!.site).toBe('other/routines/shared-run.yaml');
+    expect(finding!.detail).toContain("computed home is 'wf'");
+  });
+
+  /**
+   * A run composes a library by reaching another of its runs as readily as by binding one of its
+   * operations: the reference splices that run's body, which is the library's operations, where it
+   * stands.
+   */
+  it('accepts a library-homed routine that reaches a sibling run of the same library', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: lib::outer-run\n' } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'inner-run': body('inner-run', '  - kind: technique\n    id: probe\n    technique: lib::probe\n'),
+          'outer-run': body('outer-run', '  - kind: routine\n    id: inner\n    routine: lib::inner-run\n'),
+        },
+      },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  /**
+   * An operation arriving by parameter carries its reference in the declaration's default rather
+   * than in the step, so the body is read with that substituted. Read as authored, the step names a
+   * bare parameter id, which names no namespace and would send the file away from the library whose
+   * operation it runs.
+   */
+  it('accepts a library-homed routine whose operation arrives from a declared default', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: libraryReferrer } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    default: lib::probe
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  /**
+   * A parameter carries no namespace of its own, so a run whose every operation arrives that way
+   * names its library through what a site binds into it. Read from the authored steps alone the
+   * body names nothing, and the file is sent to the workflow that refers to it.
+   */
+  it('accepts a library-homed routine whose operation arrives from a site argument', async () => {
+    const findings = await findingsFor({
+      activities: {
+        wf: {
+          host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: lib::shared-run\n    with:\n      probe_operation: lib::probe\n',
+        },
+      },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  /**
+   * A run the authored steps name the library in is homed there whatever stands in its operation
+   * positions. A reading that only ever substitutes would have no body to inspect where a parameter
+   * has neither an argument nor a default, and would send the file away from the library it spells.
+   */
+  it('accepts a library-homed routine naming the library outright, its other operation unbound', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: libraryReferrer } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: named
+    technique: lib::probe
+  - kind: technique
+    id: parameterised
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    expect(findings.find((f) => f.check === 'routine-misplaced')).toBeUndefined();
+  });
+
+  /**
+   * Where sites exist and none supplies an operation this can read, nothing is derived and the
+   * unheld finding says so. Grading the declaration against its own default there would report on a
+   * body no reference site runs, and would retire the one verdict that says nothing was checked.
+   */
+  it('reports unheld where a site overrides the default with something unreadable', async () => {
+    const findings = await findingsFor({
+      activities: {
+        wf: {
+          host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: lib::shared-run\n    with:\n      probe_operation: "{chosen_operation}"\n',
+        },
+      },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    default: lib::probe
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    const finding = findings.find((f) => f.check === 'routine-signature-unheld');
+    expect(finding).toBeDefined();
+    expect(finding!.detail).toContain('1 site(s) refer to');
+  });
+
+  /**
+   * A declaration supplying its own operation holds its signature without a site, the default being
+   * the operation every site that says nothing runs. Reporting it unheld states that nothing could
+   * be derived, which the default falsifies — and what is derived is graded, so a body contradicting
+   * the declaration is reported rather than passed over.
+   */
+  it('grades a caller-less routine against the body its declared default derives', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    default: lib::probe
+    description: the measurement each pass applies
+  - id: unread_input
+    description: a value no step of this body reads
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    expect(findings.find((f) => f.check === 'routine-input-unread')).toBeDefined();
+    expect(findings.find((f) => f.check === 'routine-signature-unheld')).toBeUndefined();
+  });
+
+  it('holds the signature of a caller-less routine whose operation carries a default', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    default: lib::probe
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    expect(findings.find((f) => f.check === 'routine-signature-unheld')).toBeUndefined();
+  });
+
+  /**
+   * A namespace answers to its directory name and to the path reaching it, and a body naming the
+   * library it sits in may use either. Matching the name alone leaves a body spelling the path
+   * unmatched, which is the spelling a corpus reaches for where two directories claim one name.
+   */
+  it('accepts a library whose body names it by the path reaching it', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: libraryReferrer } },
+      techniques: { 'support/lib': { probe } },
+      routines: {
+        'support/lib': {
+          'shared-run': body('shared-run', '  - kind: technique\n    id: probe\n    technique: support::lib::probe\n'),
+        },
+      },
+    });
+    expect(checks(findings)).toEqual([]);
   });
 });

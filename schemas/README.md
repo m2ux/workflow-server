@@ -389,7 +389,7 @@ A `kind: routine` step refers to a named run of steps declared in a `routines/` 
 | ----------- | --------------------- | -------------------------------------------- |
 | `id`        | string                | Required. Unique within the activity, and the prefix every identifier in the materialised body carries — it is the prefix, not a label |
 | `kind`      | enum                  | `routine`                                    |
-| `routine`   | string                | `[workflow::]name`. A qualified name resolves in that workflow only; a bare name resolves against the referring activity's source workflow and then `meta`. A second separator fails the load — a routine name carries no group grammar |
+| `routine`   | string                | `[namespace::]name`. A qualified name resolves in that namespace only, the namespace spelled by its directory name or by the path from the corpus root reaching it (`support::gitnexus::probe`); a bare name resolves against the referring activity's source workflow and then `meta`. The last segment is the routine and every segment before it belongs to the namespace — a routine name carries no group grammar |
 | `with`      | map                   | Arguments: routine input id → its value here. A braced value is a reference to a host variable, a bare value is a literal. A declared input left unbound takes its declared default, or the host's value under the input's own id |
 | `outputs`   | map                   | Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and is a load failure unless its declaration says `optional: true` |
 
@@ -402,6 +402,8 @@ Two references to one routine in one activity are collision-free by construction
 #### Routine (`routine.schema.json`)
 
 A routine lives at `routines/<name>.yaml`, one file per routine, with no position number because it holds no place in an order. The filename is the name a reference resolves, so the file's `id` has to agree with it.
+
+Which `routines/` directory is the one whose referrers the run serves: the workflow whose activities reach it, or `meta` where two or more do. A library — a namespace offering `techniques/`, `resources/` or `routines/` and declaring no workflow — is a third home, for a run that binds that library's own operations. `check:routines` holds a routine to it.
 
 | Field       | Type       | Purpose                                      |
 | ----------- | ---------- | -------------------------------------------- |

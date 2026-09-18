@@ -28,27 +28,34 @@
  *   a declaration naming one holds at the site that supplied it and nowhere else.
  *
  * A routine whose body binds an operation by argument names a parameter where an operation reference
- * belongs, so it has no signature of its own and the signature rules run ONCE PER REFERENCE SITE,
- * against the operation that site supplies. A routine binding no operation by argument keeps the
- * once-per-routine path. A routine with an operation parameter and no reference site is reported as
- * unreferenced, whose remedy — refer to it or delete it — settles the contract question either way.
+ * belongs, so it has no signature of its own and the rules are derived against whatever stands in
+ * that position: once per reference site, against the operation that site supplies; or, where no
+ * site refers to it at all, once against the operation its own declaration defaults to. A routine
+ * binding no operation by argument keeps the once-per-routine path, which needs neither.
  *
- * - `routine-signature-unheld` — a routine that HAS reference sites and not one of them supplies an
- *   operation this can read. Every site is skipped, so nothing is derived and no signature rule can
- *   fire; saying so is what keeps a routine nothing checked from reading as a routine nothing found
- *   fault with.
+ * - `routine-signature-unheld` — a routine whose body binds an operation by argument and for which
+ *   nothing is derived: sites refer to it and not one supplies an operation this can read, or no site
+ *   and no declared default puts an operation in the parameter's place. Every reading is skipped, so
+ *   no signature rule can fire; saying so is what keeps a routine nothing checked from reading as a
+ *   routine nothing found fault with.
  *
- * The placement rules, which are corpus-wide by construction:
+ * The placement rule, which is corpus-wide by construction. A routine is an artifact offered to
+ * whatever binds it, on the terms the techniques beside it are offered, so a caller may arrive from
+ * any workflow or from none yet — how many reach it is not a property the guard measures. Where
+ * callers do exist, they say where the file belongs:
  *
- * - `routine-unreferenced` — a routine nothing references anywhere in the corpus. Reported here and
- *   NOT a load failure: a load reaches one workflow while the resolution rule admits a
- *   cross-workflow reference, so a per-workflow load would fail while a reference site sits a
- *   directory away.
  * - `routine-misplaced` — a routine whose home disagrees with the workflows its referrers sit in.
  *   One owner and it lives there; two or more and it lives in the shared home. A referrer is an
  *   activity file OR another routine, closed transitively — without the closure a routine referred
  *   to only by other routines has no referring activity file and the rule returns nothing, which is
  *   a guard with no verdict rather than a wrong one.
+ *
+ *   A library namespace is a home of its own, on the terms the shared home is one. It declares no
+ *   workflow, so no activity of its own ever reaches a routine and the owner computation can only
+ *   send the file somewhere else. What earns it is the body, read as authored and again with each
+ *   operation a declared default or a reference site can put in a parameter's place: a run composing
+ *   that library's operations sits beside them, and one binding none of them under any of those
+ *   readings is governed by the owner rule like any other.
  *
  * Findings are guard findings rather than load failures, which is the recorded decision: the
  * contract derivation stays a guard's business, so a routine contradicting its signature fails a
@@ -63,7 +70,7 @@ import { parseDefinition } from '../src/utils/serialization.js';
 import type { Activity, Step } from '../src/schema/activity.schema.js';
 import type { Routine } from '../src/schema/routine.schema.js';
 import { isOperationInput, operationInputs, routineScope } from '../src/schema/routine.schema.js';
-import { indexCorpus } from '../src/loaders/corpus-index.js';
+import { type CorpusIndex, type NamespaceLocation, indexCorpus } from '../src/loaders/corpus-index.js';
 import {
   META_WORKFLOW_ID, type OperationMap, bodyWithOperations, collectRoutineRefs, collectRoutineSteps, parseRoutineRef,
 } from '../src/loaders/routine-resolver.js';
@@ -375,6 +382,67 @@ function siteOperations(
   return operations;
 }
 
+/**
+ * The namespace declaring a routine, where that namespace declares no workflow.
+ *
+ * A library is a home references reach and no activity sits in, which is what separates it from a
+ * workflow: the owner computation reads activity files, and a library has none to read.
+ */
+function libraryNamespace(index: CorpusIndex, namespaceId: string): NamespaceLocation | undefined {
+  const location = index.namespacesByName.get(namespaceId);
+  if (!location) return undefined;
+  // A library carries the field holding null rather than not carrying it, so a reader testing for
+  // the field alone would read every library as declaring a workflow.
+  const manifest = (location as { manifest?: string | null }).manifest ?? undefined;
+  return manifest === undefined ? location : undefined;
+}
+
+/**
+ * Whether a routine's body binds an operation the namespace holding it offers.
+ *
+ * A reference names its namespace by that directory's name or by the path from the corpus root
+ * reaching it, so both spellings answer. Every segment before the last belongs to the namespace,
+ * and a reference carrying none names no namespace at all: it resolves in the host workflow once
+ * the run is spliced, which is a relation to the host rather than to the library.
+ *
+ * A run composes a library two ways, and both count. It binds an operation the library declares, and
+ * it refers to another of the library's runs — a reference whose own body is the library's
+ * operations, spliced where it stands.
+ *
+ * A parameter standing in an operation's place carries no reference of its own, so the body is read
+ * once per operation the declaration or a site can put there: the declared defaults, and each site's
+ * arguments. A run whose every operation arrives that way names the library through what is bound
+ * into it rather than in its own steps, and one spelling naming the library is enough.
+ */
+function bindsNamespaceOperation(
+  namespace: NamespaceLocation,
+  routine: Routine,
+  sites: readonly Reference[],
+): boolean {
+  const spellings = new Set([namespace.id, namespace.path]);
+  const namesNamespace = (reference: string): boolean => {
+    const segments = reference.split('::');
+    return segments.slice(0, -1).some((_, take) => spellings.has(segments.slice(0, take + 1).join('/')));
+  };
+  const binds = (steps: readonly Step[]): boolean => steps.some((step) => {
+    if (step.kind === 'loop') return binds(step.steps as Step[]);
+    if (step.kind === 'routine') return namesNamespace(step.routine);
+    if (step.kind !== 'technique') return false;
+    return namesNamespace(typeof step.technique === 'string' ? step.technique : step.technique.name);
+  });
+  const parameters = operationInputs(routine);
+  // The body as authored is always one of the readings. A parameter id names no namespace, so it
+  // grants nothing on its own — and where no argument and no default stand in its place, the steps
+  // spelling the library outright are the only reading there is.
+  const candidates = [
+    new Map<string, string>(),
+    siteOperations(routine, parameters, undefined),
+    ...sites.map((reference) => siteOperations(routine, parameters, reference.args)),
+  ];
+  return candidates.some((operations) =>
+    operations !== undefined && binds(bodyWithOperations(routine.steps, operations) as Step[]));
+}
+
 export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const index = indexCorpus(root);
   const corpus = corpusWorkflows(root, index);
@@ -433,7 +501,8 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   // The signature check. Once per routine, and once per REFERENCE SITE for a routine whose body binds
   // an operation by argument: such a body names a parameter where an operation reference belongs, so
   // it has no signature of its own and there is nothing to derive until a site says which operation.
-  // A routine no site refers to is reported as unreferenced below, which is the same remedy.
+  // A routine no site refers to holds its signature against nothing, which `routine-signature-unheld`
+  // reports.
   for (const [workflowId, routines] of declared) {
     const lookup = await buildRoutineLookup(root, [workflowId], [...routines.values()].flatMap(
       (routine) => collectRoutineRefs({ steps: routine.steps })));
@@ -457,16 +526,28 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
         continue;
       }
-      // Sites exist and not one of them supplies an operation this can derive against, so the
-      // signature went unheld. Saying so is the difference between a guard with no verdict and a
-      // guard reporting that a routine is sound.
-      if (sites.length > 0) {
-        findings.push({
-          check: 'routine-signature-unheld', site: declaration,
-          detail: `no reference site supplies an operation argument this can read — ${sites.length} site(s) refer to '${routine.id}' and each binds `
-            + `${parameters.map((id) => `'${id}'`).join(', ')} to something that resolves at run time or not at all, so the signature was not held against the body`,
-        });
+      // A declaration supplying its own operation holds the signature where NO site refers to it:
+      // the default is then the only operation that ever stands in the parameter's place. Where
+      // sites exist and none is readable, nothing was derived and that is what the finding below
+      // says — grading the declaration against its default there would report on a body no site runs.
+      const fromDefaults = sites.length === 0 ? siteOperations(routine, parameters, undefined) : undefined;
+      if (fromDefaults) {
+        findings.push(...await checkSignature(root, workflowId, routine, lookup, [
+          { operations: fromDefaults, site: `${declaration} at its declared defaults` },
+        ]));
+        continue;
       }
+      // Nothing was derived, so no signature rule could fire. Saying so is the difference between a
+      // guard with no verdict and a guard reporting that a routine is sound. Two ways to arrive
+      // here: sites exist and not one supplies an operation this can read, or no site exists at all.
+      findings.push({
+        check: 'routine-signature-unheld', site: declaration,
+        detail: sites.length > 0
+          ? `no reference site supplies an operation argument this can read — ${sites.length} site(s) refer to '${routine.id}' and each binds `
+            + `${parameters.map((id) => `'${id}'`).join(', ')} to something that resolves at run time or not at all, so the signature was not held against the body`
+          : `no reference site supplies an operation argument this can read — nothing in the corpus refers to '${routine.id}', and its body binds `
+            + `${parameters.map((id) => `'${id}'`).join(', ')} in a technique position, so there is no operation to derive the signature against`,
+      });
     }
   }
 
@@ -498,22 +579,18 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
     for (const routine of routines.values()) {
       const key = keyOf(workflowId, routine.id);
       const site = `${workflowId}/routines/${routine.id}.yaml`;
-      if ((directReferrers.get(key) ?? []).length === 0) {
-        findings.push({
-          check: 'routine-unreferenced', site,
-          detail: `no activity file and no routine in the corpus references '${routine.id}' — the search covered ${workflows.length} workflow(s)`,
-        });
-        continue;
-      }
+      const library = libraryNamespace(index, workflowId);
       const owners = owningWorkflows(key);
-      if (owners.size === 0) continue; // referred to only through a cycle the load already refuses
+      if (library && bindsNamespaceOperation(library, routine, sitesByRoutine.get(key) ?? [])) continue;
+      if (owners.size === 0) continue; // no referrer, or a cycle the load already refuses: no home to compute
       const home = owners.size === 1 ? [...owners][0]! : META_WORKFLOW_ID;
       if (home === workflowId) continue;
       findings.push({
         check: 'routine-misplaced', site,
         detail: `computed home is '${home}' and the file sits in '${workflowId}' — its referrers are `
           + `${[...owners].sort().map((owner) => `'${owner}'`).join(', ')}, so `
-          + (owners.size === 1 ? 'the one workflow that owns them is its home' : 'the shared home is its home'),
+          + (owners.size === 1 ? 'the one workflow that owns them is its home' : 'the shared home is its home')
+          + (library ? `; '${workflowId}' is a library, which is a home for a run that binds its operations, and this body binds none` : ''),
       });
     }
   }
@@ -523,7 +600,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   await runGuard('routines', () => requireWorkflowsRoot(defaultCorpusDest(join(DIR, '..'))), collectRoutineFindings, {
-    okMessage: 'every routine\'s signature matches its body, every routine is referenced, and every routine sits in its computed home',
-    remedy: 'declare what the body reads, remove what it does not, or move the file to the home its referrers compute',
+    okMessage: 'every routine\'s signature matches its body, and every routine sits in a home that answers for it',
+    remedy: 'declare what the body reads, remove what it does not, or move the file to the home its referrers compute — or to the library whose operations it binds',
   });
 }

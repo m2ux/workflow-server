@@ -67,7 +67,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: 'step bindings resolve, args conform, reads have producers, outputs have consumers',
+    proves: 'step bindings resolve, args conform, reads have producers, outputs have consumers, and a read into a value names a member its producer declares',
     form: 'authored',
   },
   {
@@ -517,7 +517,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: "every routine's declared signature matches its own body, every routine is referenced somewhere in the corpus, and every routine sits in the home its referrers compute",
+    proves: "every routine's declared signature matches its own body, and every routine sits in the home its referrers compute or in a library whose operations it binds",
     form: 'materialised',
   },
   {
