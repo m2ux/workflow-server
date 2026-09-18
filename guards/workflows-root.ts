@@ -16,7 +16,7 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 import { defaultCorpusDest, REFERENCE_CORPUS_ADD } from '../src/corpus-dest.js';
-import { type CorpusIndex, indexCorpus, namespaceLocation, namespaceOwning, workflowLocation } from '../src/loaders/corpus-index.js';
+import { type CorpusIndex, type WorkflowLocation, indexCorpus, namespaceLocation, namespaceOwning, workflowLocation } from '../src/loaders/corpus-index.js';
 
 export { defaultCorpusDest, isPrimaryCheckout, primaryCheckoutRoot, REFERENCE_CORPUS_ADD, REFERENCE_CORPUS_REL } from '../src/corpus-dest.js';
 
@@ -83,7 +83,11 @@ export interface CorpusNamespace {
   path: string;
   dir: string;
   rel: string;
-  /** The definition file, absent for a library that declares no workflow. */
+  /**
+   * The definition file, for a directory the corpus can start under its name. Absent for a library
+   * that declares no workflow, and for one whose name two directories claim: nothing can enter a
+   * graph no name reaches, so a guard grading a graph has nothing here to read.
+   */
   manifest?: string;
 }
 
@@ -110,12 +114,20 @@ export interface CorpusNamespace {
  * `corpusWorkflows` leaves one out: a definition declaring an id other than its directory's name
  * resolves to nothing by path as by name, and measuring it would hold a corpus to rules about a
  * directory the server declines to serve.
+ *
+ * A directory reached only by its path is published here as a library, whatever sits beside its
+ * techniques. Its operations are borrowable and so are measured; its graph is enterable only by
+ * starting it under its name, which is the one thing a claimed name takes away. `manifest` is how a
+ * guard tells the two halves apart.
  */
 export function corpusNamespaces(root: string, index: CorpusIndex = indexCorpus(root)): CorpusNamespace[] {
   return [...index.namespaces.values()].filter((location) => namespaceLocation(index, location.path)).map((location) => {
-    // A library carries the field holding null rather than not carrying it, so a reader testing for
-    // the field alone would read every library as declaring a definition.
-    const manifest = (location as { manifest?: string | null }).manifest ?? undefined;
+    // The definition is carried only where the corpus answers for the workflow it declares, which is
+    // the same question `corpusWorkflows` asks. A library carries the field holding null rather than
+    // not carrying it, so a reader testing for the field alone would read every library as declaring
+    // a definition.
+    const startable = workflowLocation(index, location.id) === location;
+    const manifest = startable ? (location as WorkflowLocation).manifest : undefined;
     return {
       ref: location.ref,
       path: location.path,

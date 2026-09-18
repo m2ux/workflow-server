@@ -83,7 +83,10 @@ function walk(dir: string | null, out: string[] = []): string[] {
 /** Every map the corpus binds as a `canonical_home_map` input, deduplicated by ref. */
 function boundMaps(root: string, index: CorpusIndex): MapRef[] {
   const byRef = new Map<string, MapRef>();
-  for (const { dir } of corpusNamespaces(root, index)) {
+  // An activity takes its place in a graph, so it is read under the namespace whose graph the corpus
+  // can enter. A namespace carrying no definition here has none to enter.
+  for (const { dir, manifest } of corpusNamespaces(root, index)) {
+    if (manifest === undefined) continue;
     const activities = join(dir, 'activities');
     if (!existsSync(activities) || !statSync(activities).isDirectory()) continue;
     for (const { path } of definitionsUnder(activities)) {

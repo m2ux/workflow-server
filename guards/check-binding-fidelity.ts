@@ -673,7 +673,12 @@ function ensureIndexed(): void {
       .filter(({ manifest, dir }) => manifest !== undefined && existsSync(join(dir, 'activities')))
       .map(({ ref }) => ref),
   ]);
+  // The graph half of a namespace: its variables, the prose in its definition, its activities and
+  // its routines. A namespace carries a definition here only where the corpus can start it, so a
+  // library's techniques are measured above while nothing reads a graph no name reaches.
+  const graphed = new Set(corpusNamespaces(ROOT, INDEX).filter((n) => n.manifest !== undefined).map(({ ref }) => ref));
   for (const wf of allWf) {
+    if (!graphed.has(wf)) continue;
     collectWorkflowVars(wf);
     // workflow.yaml is a reader too: its `rules` and `description` prose interpolates declared ids
     // (`When {headless_mode} is true, a checkpoint declaring both resolves to its defaultOption`), and

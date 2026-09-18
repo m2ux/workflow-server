@@ -69,6 +69,24 @@ describe('what the guards enumerate', () => {
       .toEqual(['left/twin', 'right/twin']);
   });
 
+  it('publishes a workflow two directories claim as a library, carrying no definition', () => {
+    // Its operations are borrowable by path and so are measured. Its graph is enterable only by
+    // starting it under its name, which is the one thing a claimed name takes away, so a guard
+    // grading a graph finds nothing here to read and does not hold an author to rules about a
+    // product nobody can run.
+    const twinned = mkdtempSync(join(tmpdir(), 'corpus-twin-wf-'));
+    for (const side of ['one', 'two']) {
+      const dir = join(twinned, side, 'clash');
+      mkdirSync(join(dir, 'techniques'), { recursive: true });
+      writeFileSync(join(dir, 'workflow.yaml'), 'id: clash\nversion: 1.0.0\ntitle: t\n');
+    }
+    const listed = corpusNamespaces(twinned);
+    expect(listed.map((n) => n.ref)).toEqual(['one/clash', 'two/clash']);
+    expect(listed.map((n) => n.manifest)).toEqual([undefined, undefined]);
+    expect(corpusWorkflows(twinned)).toEqual([]);
+    rmSync(twinned, { recursive: true, force: true });
+  });
+
   it('names a namespace by the reference that reaches it and by the path reaching it', () => {
     const probe = corpusNamespaces(root).find((n) => n.ref === 'shared-probe');
     expect(probe).toMatchObject({ ref: 'shared-probe', path: 'support/shared-probe' });

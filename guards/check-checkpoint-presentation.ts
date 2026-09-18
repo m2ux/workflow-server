@@ -136,13 +136,13 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const index = indexCorpus(root);
   const homes = contractHomes(root, index);
 
-  for (const { dir: wfDir } of corpusNamespaces(root, index)) {
-    const wfFile = join(wfDir, 'workflow.yaml');
-    if (existsSync(wfFile)) {
-      const def = parse(readFileSync(wfFile, 'utf-8')) as Record<string, unknown> | null;
-      scanned++;
-      scanRulesObject(def?.['rules'], relative(root, wfFile), findings);
-    }
+  // Rules and activities are a graph's own, so both are read under the namespaces the corpus can
+  // start. A library declares no rules, and a directory no name reaches has a graph nothing enters.
+  for (const { dir: wfDir, manifest } of corpusNamespaces(root, index)) {
+    if (manifest === undefined) continue;
+    const def = parse(readFileSync(manifest, 'utf-8')) as Record<string, unknown> | null;
+    scanned++;
+    scanRulesObject(def?.['rules'], relative(root, manifest), findings);
 
     const activitiesDir = join(wfDir, 'activities');
     if (existsSync(activitiesDir) && statSync(activitiesDir).isDirectory()) {
