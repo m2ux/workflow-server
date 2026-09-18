@@ -1,0 +1,44 @@
+id: index-refresh
+version: 1.0.0
+name: Index Refresh
+description: >-
+  Read what a graph holds and how far behind its tree it has fallen, rebuild that tree where the
+  read reports it behind, and read again so what follows is measured against the tree as it stands.
+
+inputs:
+  - id: repo_path
+    description: Filesystem path of the tree a rebuild walks and keys its index under.
+
+outputs:
+  - id: stats
+    type: object
+    description: File, symbol and process counts the graph holds.
+  - id: index_stale
+    type: boolean
+    description: Whether the graph is behind the tree it was built from.
+
+steps:
+  - kind: technique
+    id: read-index
+    technique:
+      name: gitnexus::verify-index
+      outputs:
+        stats: stats
+        index_stale: index_stale
+  - kind: technique
+    id: rebuild
+    when: index_stale
+    technique:
+      name: gitnexus::analyze
+      inputs:
+        repo_path: repo_path
+      outputs:
+        stats: stats
+  - kind: technique
+    id: confirm-index
+    when: index_stale
+    technique:
+      name: gitnexus::verify-index
+      outputs:
+        stats: stats
+        index_stale: index_stale

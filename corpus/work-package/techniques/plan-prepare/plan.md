@@ -43,7 +43,7 @@ Atomic tasks with explicit dependencies and ordering — each implementable, tes
 - Document assumptions in planning decisions
 - Break work into atomic tasks with explicit dependencies
 - Define task ordering — never assume ordering is obvious
-- When the target symbols are knowable, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md) `{target, direction: 'upstream'}` to bound task scope and order tasks by dependency depth (edit leaves before callers).
+- When the target symbols are knowable, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: each knowable target symbol, *direction*: `upstream`) to bound task scope and order tasks by dependency depth (edit leaves before callers).
 
 ### 4. Write Plan
 

@@ -9,6 +9,8 @@
     "audit-and-fix-cycle": "The audit-and-fix loop body the two workflow-design review activities share: author, validate the schema, apply the fixes, then audit expressiveness and conformance. Nothing but the step identifiers differs. No stage of the shared-run plan claims it. Finding B6 widens this window rather than dissolving it, because the write steps sit outside the run's own signature.",
     "audit-pass-pair": "Audit the principles, then the anti-patterns — two of the five B6 audits adjacent with no write step between them, at two workflow-design activities. The pair exists independently of B6; closing B6 widens its constituency rather than dissolving it.",
     "commit-and-publish-run": "Commit, verify the commit, push the branch, publish the pull request, create it — a five-step publish run at two workflow-design activities, differing only in identifiers, entry gates and one draft flag. No stage claims it, and it is the clearest constituency for a shared-run construct outside the two migrations.",
+    "diagram-source-by-kind": "The package source and the sequence source, referred to one after the other. They are two runs of one shape — each bounds itself to what the change reaches, then reads a different structure out of the graph — so two adjacent references is what asking for both looks like, in the strategic review that draws the diagrams and in the specimen that evidences both landing side by side. No stage claims it.",
+    "coverage-map-then-test-review": "Map the diff onto the changed symbols a test reaches, then review the suite against that map — the three points work-package assesses test coverage at: the review-mode pass in validate, the post-implementation review, and the re-review inside its fix-and-revalidate loop. Each copy carries its own gate and its own identifiers, and the graph answer has to be taken again at each because the diff has moved between them, so the repetition is three readings of a changing diff rather than one run written three times. No stage claims it.",
     "conform-then-log-in-the-audit-family": "Verify the artifact conforms to its guide, then log — the same two security audit workflows, at their reporting activities. One shared operation and one control action, so the window is thin for the same reason as the persist-then-announce pair.",
     "consecutive-control-actions": "Two consecutive control actions whose messages differ at every site. The search admits it because an action step signs as its verbs and targets, and the census discounts it for the same reason: there is no bound work in the window at all.",
     "convergence-pass": "The convergence pass — reconcile, challenge, combine — and the loop that wraps it. The three-step body is byte-identical at every site it appears, and so is the record-then-loop pair. Stage 6 of the shared-run plan converges it, so these entries retire with that stage.",
@@ -21,6 +23,24 @@
     "announcement-between-two-runs": "The two hosts that keep the assumption run carry it after the convergence run, with the announcement that produces the gate presentation between them and the record pass after. Both runs are shared already; what repeats is the four step positions and their order. The two differences are the announcement's identifier and whether it renders the presentation itself, and both are host-authored by a recorded decision that keeps the announcement outside the shared body. Converging the window would mean a run whose only unshared step is the one deliberately left to its host."
   },
   "entries": [
+    {
+      "site": "gitnexus-graph-conformance/activities/03-trace-and-draw.yaml + work-package/activities/12-strategic-review.yaml",
+      "run": [
+        "R:gitnexus::package-diagram-source()",
+        "R:gitnexus::sequence-diagram-source()"
+      ],
+      "verdict": "unassigned",
+      "rationale": "diagram-source-by-kind"
+    },
+    {
+      "site": "work-package/activities/10-post-impl-review.yaml + work-package/activities/11-validate.yaml",
+      "run": [
+        "R:gitnexus::diff-coverage-map()",
+        "T:review-test-suite()"
+      ],
+      "verdict": "unassigned",
+      "rationale": "coverage-map-then-test-review"
+    },
     {
       "site": "cicd-pipeline-security-audit/activities/03-primary-scan.yaml + substrate-node-security-audit/activities/03-primary-audit.yaml",
       "run": [

@@ -1,0 +1,36 @@
+id: gate-a-rename
+version: 1.0.0
+name: Gate A Rename
+description: Refer to the run that previews a rename's edits, takes the decision on them, and writes only what the decision allows.
+variables:
+  reads:
+    - file_path
+    - new_name
+    - symbol_name
+  writes:
+    - name: changes
+      type: array
+      description: The per-file edit list, each edit carrying the confidence its provenance earns.
+      defaultValue: []
+    - name: rename_approved
+      type: boolean
+      description: Whether the previewed edit list was accepted at the gate.
+      defaultValue: false
+    - name: change_report
+      type: object
+      description: The symbols and execution flows the applied rename moved, read back off the diff.
+required: true
+steps:
+  - kind: routine
+    id: guard-the-rename
+    routine: gitnexus::guarded-rename
+    outputs:
+      changes: changes
+      rename_approved: rename_approved
+      change_report: change_report
+exits:
+  - id: gated
+    isDefault: true
+outcome:
+  - The edit list reached a user before anything was written, so the decision is taken on what the rename would do rather than on what it did
+  - The steps after the gate carry its answer, so a refusal leaves the tree untouched

@@ -1,0 +1,66 @@
+id: diff-coverage-map
+version: 1.0.0
+name: Diff Coverage Map
+description: >-
+  Take the symbols a diff changed, read each one's callers out of the graph, and separate the
+  symbols a test reaches from the ones no test reaches and the ones whose tests the change outran.
+
+inputs:
+  - id: diff_scope
+    description: Which diff the changed-symbol set is taken from — the working tree, the index, both, or a comparison against another ref.
+    default: all
+
+outputs:
+  - id: coverage_gaps
+    type: array
+    description: Changed symbols no test file calls.
+  - id: update_candidates
+    type: array
+    description: Changed symbols a test file calls against a signature or behaviour the change moved.
+
+internals:
+  - id: change_report
+    description: The changed-symbol set the run iterates and classifies against.
+  - id: changed_symbol
+    description: The changed symbol the run holds, whose callers the pass reads.
+  - id: symbol_context_reports
+    description: One context report per changed symbol, accumulated across the passes and read by the classification.
+
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: gitnexus::detect-changes
+      inputs:
+        diff_scope: diff_scope
+      outputs:
+        change_report: change_report
+  - kind: loop
+    id: symbol-cycle
+    name: Symbol Cycle
+    loopType: forEach
+    variable: changed_symbol
+    over: change_report.changed_symbols
+    maxIterations: 200
+    steps:
+      - kind: technique
+        id: read-callers
+        technique:
+          name: gitnexus::context
+          inputs:
+            name: "{changed_symbol.name}"
+            file_path: "{changed_symbol.filePath}"
+        actions:
+          - action: set
+            target: symbol_context_reports
+            description: This symbol's callers, callees and flow membership, appended to the run's ordered list.
+  - kind: technique
+    id: classify
+    technique:
+      name: gitnexus::classify-test-coverage
+      inputs:
+        change_report: change_report
+        symbol_context_reports: symbol_context_reports
+      outputs:
+        coverage_gaps: coverage_gaps
+        update_candidates: update_candidates

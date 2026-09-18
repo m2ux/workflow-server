@@ -43,9 +43,9 @@ Repository-relative paths this task wrote, as the set a commit stages.
 
 ### 2. Pre Edit Impact Check
 
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(target: `{target_symbol}`, direction: `upstream`) before any edit
-- Read the resulting `impact_report`; where it reports HIGH or CRITICAL risk, record that level and the symbols it names in `{task_implementation}` before editing
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(name: `{target_symbol}`) to understand callers/callees of the symbol
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: `{target_symbol}`, *direction*: `upstream`) before any edit
+- Read the resulting `{impact_report}`; where it reports HIGH or CRITICAL risk, record that level and the symbols it names in `{task_implementation}` before editing
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{target_symbol}`) to understand callers/callees of the symbol
 
 ### 3. Write Code
 

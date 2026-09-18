@@ -1,0 +1,89 @@
+id: group-refresh
+version: 1.0.0
+name: Group Refresh
+description: >-
+  Read how far every member of a repository group has fallen behind its code, rebuild each member
+  the report names, and rebuild the contract registry those members' moves left behind.
+
+inputs:
+  - id: group_name
+    description: Name of the configured repository group the run reads and rebuilds.
+
+outputs:
+  - id: group_freshness_report
+    type: object
+    description: The group's name, when its contract registry last synced, and one freshness entry per member, keyed by the name the registry gives it.
+  - id: contract_registry_stats
+    type: object
+    description: What the rebuilt registry holds — the contracts extracted per member, and how many cross-link to another member.
+  - id: member_rebuild_stats
+    type: object
+    optional: true
+    description: The counts the graph of the member rebuilt last holds afterwards. Held here so a rebuild's answer does not land under the name a direct index read writes.
+  - id: repo_name
+    type: string
+    optional: true
+    description: The graph the inventory read resolved, which this run takes no answer from.
+  - id: unrebuildable_members
+    type: array
+    optional: true
+    description: The members this run leaves behind — stale, and with no graph to name the tree a rebuild would walk.
+
+internals:
+  - id: graph_inventory
+    description: Every indexed graph with the tree it was built from, which is where a member's tree is named.
+  - id: stale_members
+    description: The members a rebuild reaches, as a list, each with the tree that rebuild walks.
+  - id: stale_member
+    description: The member the run holds, whose own tree the rebuild in that pass walks.
+
+steps:
+  - kind: technique
+    id: read-group
+    technique:
+      name: gitnexus::group-freshness
+      inputs:
+        group_name: group_name
+      outputs:
+        group_freshness_report: group_freshness_report
+  - kind: technique
+    id: read-inventory
+    technique:
+      name: gitnexus::resolve-graph
+      outputs:
+        graph_inventory: graph_inventory
+        repo_name: repo_name
+  - kind: technique
+    id: select-stale
+    technique:
+      name: gitnexus::select-stale-members
+      inputs:
+        group_freshness_report: group_freshness_report
+        graph_inventory: graph_inventory
+      outputs:
+        stale_members: stale_members
+        unrebuildable_members: unrebuildable_members
+  - kind: loop
+    id: member-cycle
+    name: Member Cycle
+    loopType: forEach
+    variable: stale_member
+    over: stale_members
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: rebuild-member
+        technique:
+          name: gitnexus::analyze
+          inputs:
+            repo_path: "{stale_member.tree_path}"
+          outputs:
+            stats: member_rebuild_stats
+  - kind: technique
+    id: sync-registry
+    technique:
+      name: gitnexus::group-sync
+      inputs:
+        group_name: group_name
+      outputs:
+        contract_registry_stats: contract_registry_stats

@@ -32,5 +32,6 @@ The documented rationale for the chosen problem type and complexity, including a
 ### 1. Classify Problem
 
 - Settle `{problem_type}` and `{problem_complexity}` against [Problem Classification](../../resources/design-framework.md#problem-classification), which carries the type tree and what each complexity value holds
-- If preliminary target symbols can be inferred from the issue, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[complexity-signal](/gitnexus/techniques/complexity-signal.md)(target: `{target_symbol}`) for an objective complexity signal — high fan-out or many affected processes indicate higher complexity than the issue text suggests.
+- Where a preliminary target symbol can be inferred from the issue, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: `{target_symbol}`, *direction*: `upstream`, *max_depth*: 2) and read its `{impact_report}` fan-out and affected-process count as an objective complexity signal — a symbol many callers reach, or one many flows run through, is more complex than the issue text suggests.
+  > No symbol can be inferred from some issues. The estimate then rests on the issue text alone, and `{classification_rationale}` says so.
 - Document classification rationale

@@ -1,0 +1,103 @@
+id: area-comprehension
+version: 1.0.0
+name: Area Comprehension
+description: >-
+  Name the graph holding an area, bring it current, find the execution flows the area's concept
+  lands in, and read each named symbol's connections and each flow's ordered trace.
+
+inputs:
+  - id: search_query
+    description: The area's concept, as the keywords a ranking matches.
+  - id: tree_path
+    description: Filesystem path of the tree whose answers are wanted, which names the graph to address.
+  - id: repo_path
+    description: Filesystem path of the tree a rebuild walks and keys its index under.
+
+outputs:
+  - id: repo_name
+    type: string
+    description: The graph every answer in this run came from, which a report naming those answers names too.
+  - id: index_stats
+    type: object
+    description: File, symbol and process counts the graph holds.
+  - id: index_stale
+    type: boolean
+    description: Whether the graph is still behind the tree after the rebuild, which is the age every answer below carries.
+  - id: query_report
+    type: object
+    description: The execution flows the area's concept lands in, the symbols those flows run, and the definitions reached outside any flow.
+  - id: symbol_contexts
+    type: array
+    description: Per named symbol, its callers, callees and flow membership.
+  - id: flow_traces
+    type: array
+    description: The ordered step trace of each execution flow the area's concept ranked into.
+
+internals:
+  - id: area_symbol
+    description: The symbol the run holds, whose connections the pass reads.
+  - id: area_process
+    description: The execution flow the run holds, whose ordered trace the pass reads. A flow from a ranked answer is named by its summary.
+
+steps:
+  - kind: technique
+    id: resolve
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: tree_path
+      outputs:
+        repo_name: repo_name
+  - kind: routine
+    id: refresh
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{repo_path}"
+    outputs:
+      stats: index_stats
+      index_stale: index_stale
+  - kind: technique
+    id: find-flows
+    technique:
+      name: gitnexus::query
+      inputs:
+        search_query: search_query
+      outputs:
+        query_report: query_report
+  - kind: loop
+    id: symbol-cycle
+    name: Symbol Cycle
+    loopType: forEach
+    variable: area_symbol
+    over: query_report.process_symbols
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: read-connections
+        technique:
+          name: gitnexus::context
+          inputs:
+            name: "{area_symbol.name}"
+            file_path: "{area_symbol.filePath}"
+        actions:
+          - action: set
+            target: symbol_contexts
+            description: This symbol's callers, callees and flow membership, appended to the contexts the run holds.
+  - kind: loop
+    id: flow-cycle
+    name: Flow Cycle
+    loopType: forEach
+    variable: area_process
+    over: query_report.processes
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: read-trace
+        technique:
+          name: gitnexus::read-process
+          inputs:
+            process_name: "{area_process.summary}"
+        actions:
+          - action: set
+            target: flow_traces
+            description: This flow's ordered step trace, appended to the traces the run holds.

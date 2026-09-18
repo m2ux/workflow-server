@@ -13,15 +13,15 @@
   "entries": [
     {
       "check": "dead-output",
-      "site": "atlassian/techniques/get-confluence-page.md",
-      "detail": "output 'page_body' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "site": "atlassian/techniques/create-jira-issue.md",
+      "detail": "output 'issueKey' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/harness-compat/spawn-concurrent.md",
-      "detail": "output 'results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "site": "atlassian/techniques/get-confluence-page.md",
+      "detail": "output 'page_body' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
@@ -90,55 +90,6 @@
     },
     {
       "check": "dead-output",
-      "site": "github/techniques/list-issues.md",
-      "detail": "output 'issue_records' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "github/techniques/list-prs.md",
-      "detail": "output 'pull_requests' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "read-resolution",
-      "site": "substrate-node-security-audit/workflow.yaml:51",
-      "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "artifact-template-placeholder"
-    },
-    {
-      "check": "dead-output",
-      "site": "codebase-wiki/techniques/cross-link.md",
-      "detail": "output 'linked_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "codebase-wiki/techniques/query.md",
-      "detail": "output 'wiki_answer' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "atlassian/techniques/create-jira-issue.md",
-      "detail": "output 'issueKey' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "meta/techniques/verify-artifact-conforms.md",
-      "detail": "output 'artifact_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "cargo/techniques/build-dev.md",
       "detail": "output 'build_artifacts' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
@@ -167,78 +118,15 @@
     },
     {
       "check": "dead-output",
-      "site": "gitnexus/techniques/complexity-signal.md",
-      "detail": "output 'complexity_signal' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "site": "codebase-wiki/techniques/cross-link.md",
+      "detail": "output 'linked_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "gitnexus/techniques/cypher.md",
-      "detail": "output 'result_rows' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/detect-changes.md",
-      "detail": "output 'change_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/diagram-source-select.md",
-      "detail": "output 'diagram_source' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/diff-coverage-map.md",
-      "detail": "output 'coverage_gaps' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/diff-coverage-map.md",
-      "detail": "output 'update_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/orphan-scan.md",
-      "detail": "output 'orphan_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/rename.md",
-      "detail": "output 'changes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/reversibility-signal.md",
-      "detail": "output 'reversibility_class' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/scope-discipline-check.md",
-      "detail": "output 'scope_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/verify-index.md",
-      "detail": "output 'index_stale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "site": "codebase-wiki/techniques/query.md",
+      "detail": "output 'wiki_answer' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
@@ -246,6 +134,83 @@
       "check": "dead-output",
       "site": "concept-rag/techniques/load-domain-index.md",
       "detail": "output 'domain_index' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "git/techniques/identify-path-type.md",
+      "detail": "output 'kind' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "github/techniques/list-issues.md",
+      "detail": "output 'issue_records' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "github/techniques/list-prs.md",
+      "detail": "output 'pull_requests' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/api-impact.md",
+      "detail": "output 'api_impact_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/group-contracts.md",
+      "detail": "output 'contract_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/read-cluster.md",
+      "detail": "output 'cluster_members' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/read-process.md",
+      "detail": "output 'process_trace' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/route-map.md",
+      "detail": "output 'route_inventory' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/shape-check.md",
+      "detail": "output 'shape_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/tool-map.md",
+      "detail": "output 'tool_inventory' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "meta/techniques/harness-compat/spawn-concurrent.md",
+      "detail": "output 'results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
@@ -265,8 +230,8 @@
     },
     {
       "check": "dead-output",
-      "site": "git/techniques/identify-path-type.md",
-      "detail": "output 'kind' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "site": "meta/techniques/verify-artifact-conforms.md",
+      "detail": "output 'artifact_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
@@ -320,6 +285,13 @@
       "rationale": "shared-op-return-contract"
     },
     {
+      "check": "dead-output",
+      "site": "workflow-design/techniques/TECHNIQUE.md",
+      "detail": "output 'workflow_files' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "container-contract-shape"
+    },
+    {
       "check": "orphan-input",
       "site": "meta :: orchestration-patterns::classify-request",
       "detail": "own input 'lane_roster' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
@@ -332,13 +304,6 @@
       "detail": "own input 'synthesis_criteria' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "prism-audit :: gitnexus::analyze",
-      "detail": "own input 'force_rebuild' has no producer in workflow 'prism-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
@@ -356,20 +321,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: meta::workflow-engine::handle-sub-workflow",
-      "detail": "own input 'parent_session_index' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
-      "site": "substrate-node-security-audit :: execute-sub-agent",
-      "detail": "own input 'agent_id' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "sub-agent-brief-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "substrate-node-security-audit :: apply-checklist",
       "detail": "own input 'items' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
@@ -384,10 +335,10 @@
     },
     {
       "check": "orphan-input",
-      "site": "substrate-node-security-audit :: gitnexus::analyze",
-      "detail": "own input 'force_rebuild' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
+      "site": "substrate-node-security-audit :: execute-sub-agent",
+      "detail": "own input 'agent_id' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
+      "rationale": "sub-agent-brief-seed"
     },
     {
       "check": "orphan-input",
@@ -419,15 +370,8 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: gitnexus::analyze",
-      "detail": "own input 'force_rebuild' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: gitnexus::detect-changes",
-      "detail": "own input 'diff_scope' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
+      "site": "work-package :: meta::workflow-engine::handle-sub-workflow",
+      "detail": "own input 'parent_session_index' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
@@ -458,6 +402,13 @@
       "detail": "{current_task.crate} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "documentation-notation"
+    },
+    {
+      "check": "read-resolution",
+      "site": "substrate-node-security-audit/workflow.yaml:51",
+      "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)",
+      "verdict": "harmless",
+      "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
@@ -500,13 +451,6 @@
       "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/TECHNIQUE.md",
-      "detail": "output 'workflow_files' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "container-contract-shape"
     }
   ]
 }

@@ -5,6 +5,7 @@ description: Wrap up the work package at the terminal state its mode reaches —
 variables:
   reads:
     - branch_name
+    - changed_files
     - component_git_dir
     - component_name
     - component_path
@@ -20,6 +21,10 @@ variables:
     - target_repo
     - worktree_created
   writes:
+    - name: public_api_symbols
+      type: array
+      description: The exported symbols present in the diff, each with the file and kind the graph records.
+      defaultValue: []
     - name: artifact_publish_ref
       type: string
       description: Engineering checkout's branch name.
@@ -131,13 +136,12 @@ steps:
   - kind: technique
     id: render-token-usage
     technique: finalize-documentation::render-token-usage
-  - kind: technique
-    id: enumerate-public-apis
-    technique:
-      name: gitnexus::public-api-enum
-      inputs:
-        repo_name: component_name
+  - kind: routine
+    id: enumerate-public-api
+    routine: gitnexus::public-api-enum
     when: is_review_mode != true
+    outputs:
+      public_api_symbols: public_api_symbols
   - kind: technique
     id: ensure-docs
     technique: finalize-documentation::ensure-docs

@@ -26,6 +26,14 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: coverage_gaps
+      type: array
+      description: Changed symbols no test file calls.
+      defaultValue: []
+    - name: update_candidates
+      type: array
+      description: Changed symbols a test file calls against a signature or behaviour the change moved.
+      defaultValue: []
     - name: change_block_index
       type: string
       description: Absolute path to the index mapping change-block IDs to their per-block artifacts.
@@ -231,6 +239,12 @@ steps:
       name: prism/read-definitive-findings
       outputs:
         definitive_findings: structural_findings
+  - kind: routine
+    id: map-diff-coverage
+    routine: gitnexus::diff-coverage-map
+    outputs:
+      coverage_gaps: coverage_gaps
+      update_candidates: update_candidates
   - kind: technique
     id: test-suite-review
     technique: review-test-suite
@@ -279,6 +293,12 @@ steps:
       - kind: technique
         id: re-code-review
         technique: review-code
+      - kind: routine
+        id: remap-diff-coverage
+        routine: gitnexus::diff-coverage-map
+        outputs:
+          coverage_gaps: coverage_gaps
+          update_candidates: update_candidates
       - kind: technique
         id: re-test-suite-review
         technique: review-test-suite

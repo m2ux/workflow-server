@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-(Re)build the GitNexus index for a repository. Used at the start of a work package after the reference monorepo's submodules have been bumped to HEAD, and to recover from `index_not_found` / `index_stale` conditions.
+(Re)build the GitNexus index for a repository — before the first answer a run takes from its graph, after the tree it was built from has moved, and to recover from `index_not_found` / `index_stale` conditions.
 
 ## Inputs
 
@@ -15,7 +15,11 @@ Filesystem path of the tree to index. GitNexus walks the working tree from here 
 
 ### force_rebuild
 
-Optional. Boolean. When true, rebuilds the index from scratch instead of incrementally updating. Defaults to false.
+*(optional)* Whether the rebuild starts from scratch rather than updating what the index already holds.
+
+#### default
+
+`false`
 
 ## Outputs
 
@@ -27,8 +31,8 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ### 1. Lock and Check Freshness
 
-- Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on `{repo_path}/.git/.workflow-gitnexus-refresh.lock` (blocking). Concrete form: `flock {repo_path}/.git/.workflow-gitnexus-refresh.lock -c <command>`. The lock prevents two parallel analyze invocations from racing on the shared GitNexus index for this repo.
-- Skip-if-recent (under the lock): check the mtime of `{repo_path}/.git/.workflow-gitnexus-refresh`. If it exists, was modified within the last 300 seconds, AND `{force_rebuild}` is not true, skip the analyze entirely — a sibling work package already (re)built the index and another rebuild adds no value. Release the lock and return cached `{stats}`.
+- Coordinate concurrent invocations from sibling runs against one tree: serialize via an exclusive flock on `{repo_path}/.git/.workflow-gitnexus-refresh.lock` (blocking). Concrete form: `flock {repo_path}/.git/.workflow-gitnexus-refresh.lock -c <command>`. The lock prevents two parallel analyze invocations from racing on the shared GitNexus index for this repo.
+- Skip-if-recent (under the lock): check the mtime of `{repo_path}/.git/.workflow-gitnexus-refresh`. If it exists, was modified within the last 300 seconds, AND `{force_rebuild}` is not true, skip the analyze entirely — a sibling run already (re)built the index and another rebuild adds no value. Release the lock and return cached `{stats}`.
 
 ### 2. Run Analyze
 
@@ -42,6 +46,10 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 - After exit, optionally apply [verify-index](./verify-index.md) to confirm freshness — useful when chained immediately into a downstream comprehension or impact step.
 
 ## Rules
+
+### a-rebuilt-index-reaches-a-reader-on-reload
+
+A completed rebuild writes the graph to disk; a server already holding the previous one keeps answering from it. So a read taken straight after a successful analyze can report the index stale, and every answer drawn from it describes the tree as it was — the rebuild succeeded and the reader has not met it. Reload the MCP server where the read disagrees with the rebuild, and treat the second read rather than the exit status as what says the graph is current.
 
 ### index-every-addressed-tree
 

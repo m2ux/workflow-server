@@ -1,0 +1,23 @@
+id: weigh-risk
+version: 1.0.0
+name: Weigh Risk
+description: Refer to the run that settles one rating from three measurements.
+variables:
+  reads:
+    - target
+  writes:
+    - name: change_risk_verdict
+      type: object
+      description: One rating for the change, the counts it rests on, and the flows a reviewer exercises to cover it.
+required: true
+steps:
+  - kind: routine
+    id: assess-risk
+    routine: gitnexus::change-risk-assessment
+    outputs:
+      change_risk_verdict: change_risk_verdict
+exits:
+  - id: weighed
+    isDefault: true
+outcome:
+  - A run reaching three operations before its judgement landed the one verdict they settle

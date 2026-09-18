@@ -106,6 +106,15 @@
         "checkpoint:start:verify-isolation=authorized",
         "checkpoint:start:verify-isolation=cancel"
       ]
+    },
+    {
+      "reason": "Declared by a run a library holds, and reached only through the specimen that refers to it — which declares no checkpoint of its own, so the roster lists it as one a coverage walk covers nothing of. The gates arrive spliced in at load, and no workflow this matrix walks refers to either run, so measuring them means walking the specimen.",
+      "options": [
+        "checkpoint:gate-an-edit:guard-the-edit.accept-blast-radius=hold",
+        "checkpoint:gate-an-edit:guard-the-edit.accept-blast-radius=proceed",
+        "checkpoint:gate-a-rename:guard-the-rename.accept-edit-list=abandon",
+        "checkpoint:gate-a-rename:guard-the-rename.accept-edit-list=apply"
+      ]
     }
   ]
 }

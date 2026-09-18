@@ -1,0 +1,21 @@
+id: report-conformance
+version: 1.0.0
+name: Report Conformance
+description: State what each gated run measured and what its gate decided.
+variables:
+  reads:
+    - change_report
+    - changes
+    - edit_approved
+    - impact_report
+    - rename_approved
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-gate-conformance
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Each gate is named with the answer it took and the work that answer allowed, so a refusal is visible as a refusal rather than as an absent measurement

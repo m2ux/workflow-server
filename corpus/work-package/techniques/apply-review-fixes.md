@@ -29,7 +29,7 @@ Whether test improvements are in scope for this cycle.
 
 ### 2. Implement Fixes
 
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(target: the symbol the finding names, direction: `upstream`) before editing a symbol
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: the symbol the finding names, *direction*: `upstream`) before editing a symbol
   > Where the report reads HIGH or CRITICAL, record that level and the symbols it names alongside the fix.
 - Implement each selected finding in `{target_path}`, following existing code patterns and conventions.
 - Apply test improvements alongside the code fixes when `{test_findings_actionable}` is true.

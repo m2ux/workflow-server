@@ -58,7 +58,7 @@ Method [record](../resources/rust-substrate-code-review.md#method-record-templat
 ### 2. Bound Review Scope
 
 - Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[detect-changes](/gitnexus/techniques/detect-changes.md) to map the diff to affected execution flows and the changed-symbol set
-- For each changed symbol of interest, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md) `{target, direction: 'upstream'}` to surface upstream callers and bound the review's blast radius
+- For each changed symbol of interest, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: the changed symbol, *direction*: `upstream`) to surface upstream callers and bound the review's blast radius
 - Use the resulting blast radius to inform severity judgements — high-fanout callers and process-critical paths raise the severity ceiling for findings in those symbols.
 
 #### Associated-type / trait-impl swap

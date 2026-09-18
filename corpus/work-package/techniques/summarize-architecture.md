@@ -13,6 +13,14 @@ Create high-level architecture summary with Mermaid diagrams for management stak
 
 List of files changed in the implementation
 
+### package_diagram_source
+
+*(optional)* The functional areas the change reaches, each with its members — the structure a package diagram is drawn from.
+
+### sequence_diagram_source
+
+*(optional)* The ordered step trace of each execution flow the change runs through — the structure a sequence diagram is drawn from.
+
 ### design_philosophy_doc
 
 *(optional)* Design [philosophy](../resources/design-framework.md#design-philosophy-artifact-template) with scope and rationale
@@ -38,7 +46,6 @@ Stakeholder-facing architecture [summary](../resources/architecture-summary.md#a
 - Determine which architectural components are affected by the changes
 - Map each entry in `{changed_files}` to its modules and subsystems
 - Identify external interactions and boundaries
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[diagram-source-select](/gitnexus/techniques/diagram-source-select.md) to bound diagram scope to the affected processes and source diagram structure from graph resources.
 - Select which diagram types the change warrants, and their notation, per [Diagram Selection](../resources/architecture-summary.md#diagram-selection).
 - If the changes are too minor to warrant a full architectural summary, create a minimal summary noting the low architectural impact rather than the full set of diagrams.
 
@@ -53,14 +60,14 @@ Stakeholder-facing architecture [summary](../resources/architecture-summary.md#a
 - If module structure is affected, create package diagram
 - Show internal organization and boundaries
 - Use Mermaid syntax
-- Source package-diagram structure via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[diagram-source-select](/gitnexus/techniques/diagram-source-select.md)(diagram-type: `package`) (functional-area clusters and their members) when the codebase is indexed.
+- Draw the internal organization from `{package_diagram_source}` — the functional areas the change reaches, with their members — so the boundaries are the ones the graph measured rather than the ones the directory layout suggests.
 
 ### 4. Create Sequence Diagrams
 
 - For key flows affected by changes, create sequence diagrams
 - Show interactions between components
 - Use Mermaid sequence diagram syntax
-- Source sequence-diagram structure via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[diagram-source-select](/gitnexus/techniques/diagram-source-select.md)(diagram-type: `sequence`) (step-by-step execution traces) when the codebase is indexed.
+- Draw each flow from `{sequence_diagram_source}` — the ordered step trace of every execution flow the change runs through — rather than from a hand-traced call sequence.
 
 ### 5. Write Summary
 

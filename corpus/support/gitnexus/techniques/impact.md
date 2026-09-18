@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -15,27 +15,51 @@ the symbol name to analyse
 
 ### direction
 
-`'upstream'` (dependents — what breaks if target changes; the work-package default) or `'downstream'` (dependencies)
+`'upstream'` (dependents — what breaks if `{target}` changes) or `'downstream'` (what `{target}` itself depends on)
 
 ### max_depth
 
-optional traversal depth (default 3).
+*(optional)* How many edges out from `{target}` the traversal reaches.
 
 ### min_confidence
 
-optional confidence floor (e.g. `0.8` to keep only high-confidence edges).
+*(optional)* The confidence an edge carries to be counted, such as `0.8` to keep only the edges the parser resolved exactly.
+
+### relation_types
+
+*(optional)* The edge kinds the traversal walks, named from the set the graph schema declares.
+
+### include_tests
+
+*(optional)* Whether the answer carries the test files that reach `{target}`.
 
 ## Outputs
 
 ### impact_report
 
-d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); affected execution flows; risk level (LOW / MEDIUM / HIGH / CRITICAL); and whether the rating rests on graph edges or on a hand-derived caller set.
+d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); the entry points whose flows the change reaches, each with the number of flows from it; risk level (LOW / MEDIUM / HIGH / CRITICAL); and whether the rating rests on graph edges or on a hand-derived caller set.
+
+#### risk
+
+`LOW`, `MEDIUM`, `HIGH` or `CRITICAL`.
+
+#### summary
+
+The counts the rating rests on: `direct` callers, `processes_affected` — the entry points reached, not the flows behind them — and `modules_affected`, the functional areas hit.
+
+#### byDepth
+
+The affected nodes keyed by traversal depth as the strings `"1"`, `"2"` and `"3"`, present as far as the traversal reaches. Each entry carries its `depth`, `id`, `name`, `filePath`, the `relationType` it was reached by and the `confidence` that edge holds. Function and file nodes both appear, the `id` prefix naming which.
+
+#### affected_processes
+
+The entry points whose flows the change reaches. Each names the entry-point symbol — its `name`, its `type`, and the `filePath` separating entries that share a name — and carries `affected_process_count`, the flows from that entry point the change reaches. The flow total is the sum of those counts rather than the length of this list.
 
 ## Protocol
 
 ### 1. Invoke
 
-- Call `gitnexus_impact {target, direction, max_depth, min_confidence, repo_name}`.
+- Call `gitnexus_impact { target, direction, maxDepth: max_depth, minConfidence: min_confidence, relationTypes: relation_types, includeTests: include_tests, repo: repo_name }`.
 - If the call reports the index is out of date, run `npx gitnexus analyze` in terminal, then retry.
 - If `{target}` does not resolve in the graph, verify the symbol name; if it is new or unindexed, fall back to grep for callers.
 
@@ -43,4 +67,5 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 
 - Read d=1 items first — these WILL break. Weight high-confidence (>0.8) edges.
 - Derive the risk level and assemble the `{impact_report}`: <5 symbols/few processes = LOW; 5–15 symbols/2–5 processes = MEDIUM; >15 symbols or many processes = HIGH; critical path (auth, payments, consensus) = CRITICAL.
-  > When `{target}` is called from a macro body or reached by type-level reference, the graph holds no edge for it — gitnexus.edges-the-parser-cannot-see. Re-derive the caller set by hand and rate against that instead, and record on `{impact_report}` which of the two the rating rests on.
+  > - When `{target}` is called from a macro body or reached by type-level reference, the graph holds no edge for it — gitnexus.edges-the-parser-cannot-see. Re-derive the caller set by hand and rate against that instead, and record on `{impact_report}` which of the two the rating rests on.
+  > - A class member, an overriding method and a field read reach `{target}` through edges the default set leaves out, and a test reaches it through a file the default answer omits. Where `{target}` is one of those, name the edges in `{relation_types}` and set `{include_tests}`, so a short answer is a measurement rather than the default's silence.

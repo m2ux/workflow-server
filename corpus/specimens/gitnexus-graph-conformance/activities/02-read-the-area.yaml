@@ -1,0 +1,65 @@
+id: read-the-area
+version: 1.0.0
+name: Read The Area
+description: Refer to the run that comprehends an area — which refers to the index refresh in turn — and to the one that maps a restructuring's surface.
+variables:
+  reads:
+    - repo_path
+    - restructure_target
+    - search_query
+    - tree_path
+  writes:
+    - name: repo_name
+      type: string
+      description: The graph every answer in this run came from.
+    - name: nested_index_stats
+      type: object
+      description: File, symbol and process counts the graph holds, as the refresh nested inside the area run read them.
+    - name: nested_index_stale
+      type: boolean
+      description: Whether the graph is behind its tree, as the nested refresh read it — held against the direct read the first activity took.
+      defaultValue: false
+    - name: query_report
+      type: object
+      description: The execution flows the area's concept lands in, the symbols those flows run, and the definitions reached outside any flow.
+    - name: symbol_contexts
+      type: array
+      description: Per named symbol, its callers, callees and flow membership.
+      defaultValue: []
+    - name: flow_traces
+      type: array
+      description: The ordered step trace of each execution flow the area's concept ranked into.
+      defaultValue: []
+    - name: context_report
+      type: object
+      description: The restructured symbol's callers, callees and flow membership.
+    - name: impact_report
+      type: object
+      description: What depends on the restructured symbol, with the execution flows reached and a risk level.
+required: true
+steps:
+  - kind: routine
+    id: comprehend
+    routine: gitnexus::area-comprehension
+    outputs:
+      repo_name: repo_name
+      index_stats: nested_index_stats
+      index_stale: nested_index_stale
+      query_report: query_report
+      symbol_contexts: symbol_contexts
+      flow_traces: flow_traces
+  - kind: routine
+    id: map-restructure
+    routine: gitnexus::restructure-surface
+    with:
+      name: "{restructure_target}"
+    outputs:
+      context_report: context_report
+      impact_report: impact_report
+exits:
+  - id: read
+    isDefault: true
+outcome:
+  - A run referring to another run materialised, so the inner body spliced inside the outer and carries both prefixes on its identifiers
+  - The graph the run resolved is in the bag beside the answers taken from it, so a report naming those answers can name the graph too
+  - A run taking its one input by a braced argument landed both measurements a restructuring rests on
