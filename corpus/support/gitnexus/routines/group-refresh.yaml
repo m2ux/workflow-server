@@ -1,0 +1,54 @@
+id: group-refresh
+version: 1.0.0
+name: Group Refresh
+description: >-
+  Read how far every member of a repository group has fallen behind its code, rebuild each member
+  the report names, and rebuild the contract registry those members' moves left behind.
+
+inputs:
+  - id: group_name
+    description: Name of the configured repository group the run reads and rebuilds.
+
+outputs:
+  - id: group_freshness_report
+    type: object
+    description: Per member, whether its index is behind the member's HEAD and by how many commits, whether the group's contract registry is behind, and whether the member has no index at all.
+  - id: contract_registry_stats
+    type: object
+    description: What the rebuilt registry holds — the contracts extracted per member, and how many cross-link to another member.
+
+internals:
+  - id: stale_member
+    description: The member the run holds, whose own tree the rebuild in that pass walks.
+
+steps:
+  - kind: technique
+    id: read-group
+    technique:
+      name: gitnexus::group-freshness
+      inputs:
+        group_name: group_name
+      outputs:
+        group_freshness_report: group_freshness_report
+  - kind: loop
+    id: member-cycle
+    name: Member Cycle
+    loopType: forEach
+    variable: stale_member
+    over: group_freshness_report.stale_members
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: rebuild-member
+        technique:
+          name: gitnexus::analyze
+          inputs:
+            repo_path: "{stale_member.tree_path}"
+  - kind: technique
+    id: sync-registry
+    technique:
+      name: gitnexus::group-sync
+      inputs:
+        group_name: group_name
+      outputs:
+        contract_registry_stats: contract_registry_stats
