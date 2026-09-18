@@ -1,6 +1,8 @@
-# Product workflows
+# Definitions
 
-A workflow the server offers an operator is a directory that holds a `workflow.yaml`. Those directories live here so a walk that loads products has one place to enter. The directory's name is the id every reference uses. Grouping folders under this root organise the tree and name nothing of their own.
+A directory here that holds `techniques/`, `resources/` or `routines/` is a **namespace**, and the directory's name is the id every reference uses. One that also holds a `workflow.yaml` is a **workflow** — a product the server offers an operator. One that does not is a **library** of shared operations any workflow binds.
+
+Both live under this root so a walk that loads definitions has one place to enter. Grouping folders under it organise the tree and name nothing of their own.
 
 Discovery enters this folder when it is pointed at the branch root. What each named root on this branch is for is mapped in the [branch README](../README.md#named-roots). The directories themselves are the catalogue.
 
@@ -15,6 +17,10 @@ Each product workflow is a directory of its own, typically carrying:
 - `resources/` — documents a technique names
 
 How to add one is in [`docs/README.md`](../docs/README.md#adding-a-workflow).
+
+## support
+
+[`support/`](support/README.md) holds the libraries: `git`, `github`, `atlassian` and `gitnexus`. Each is a namespace of shared operations belonging to no single product, reached by its own directory name — `support/` appears in no reference. A library declares no `workflow.yaml`, so discovery offers none of them to an operator.
 
 ## specimens
 

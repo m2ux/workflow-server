@@ -8,6 +8,8 @@ Authoring procedure — adding a workflow, resource or technique, and how defini
 
 Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names. A `workflow.yaml` at any depth under `corpus/` is a workflow; grouping folders organise the tree and name nothing. A workflow's id is the directory that holds its `workflow.yaml`.
 
+A directory under `corpus/` that holds `techniques/`, `resources/` or `routines/` is a **namespace**, and references reach it by its directory name. One that also holds a `workflow.yaml` is a workflow — a product an operator starts. One that does not is a **library**: shared operations any workflow binds, with no graph of its own.
+
 ```
 <branch root>
 ├── corpus/                         # product workflows — corpus/README.md
@@ -18,8 +20,11 @@ Each folder at this branch's root is a kind of content. A walk that loads the wo
 │   │   ├── activities/
 │   │   ├── techniques/
 │   │   └── resources/
-│   └── specimens/                  # worked examples of a form — specimens/README.md
-│       └── {specimen-id}/
+│   ├── specimens/                  # worked examples of a form — specimens/README.md
+│   │   └── {specimen-id}/
+│   └── support/                    # libraries every workflow binds — support/README.md
+│       └── {namespace}/
+│           └── techniques/
 ├── ledgers/                        # debt ledgers — ledgers/README.md
 ├── walks/                          # recorded walks — walks/README.md
 ├── docs/                           # how to add to this tree — docs/README.md
@@ -35,6 +40,10 @@ The workflows an operator starts live here: each is a directory that holds a `wo
 ### specimens
 
 A specimen is a worked example of a form. An author copies from it when creating a workflow that needs that form, and a test drives it so the form stays loadable and observable. They sit at `corpus/specimens/` so they travel with the other definitions. `specimens/` is a grouping folder: discovery walks it, and each child that holds a `workflow.yaml` is a workflow reached by its directory name. Contents: [`corpus/specimens/README.md`](corpus/specimens/README.md).
+
+### support
+
+A library is a namespace of shared operations that declares no workflow: `git`, `github`, `atlassian` and `gitnexus` each hold one. They sit at `corpus/support/` because they belong to no single product and to every one that reaches them. `support/` is a grouping folder and appears in no reference — each library is reached by its own directory name, `git::commit-regular-files`. Contents: [`corpus/support/README.md`](corpus/support/README.md).
 
 ### ledgers
 
