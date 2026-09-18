@@ -1,5 +1,5 @@
 id: complete
-version: 1.12.0
+version: 1.13.0
 name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
@@ -8,6 +8,7 @@ variables:
     - changed_files
     - component_git_dir
     - component_name
+    - component_path
     - host_repo_path
     - is_review_mode
     - issue_number

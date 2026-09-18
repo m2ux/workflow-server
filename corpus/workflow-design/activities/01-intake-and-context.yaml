@@ -1,10 +1,14 @@
 id: intake-and-context
-version: 1.10.0
+version: 1.11.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 variables:
   reads:
+    - component_git_dir
+    - host_repo_path
+    - pr_number
     - report_path
+    - target_path
     - update_seeded_from_review
   writes:
     - name: applicable_constructs_path

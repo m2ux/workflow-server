@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.6.0
+version: 1.7.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -23,6 +23,11 @@ variables:
     type: boolean
     description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
     defaultValue: true
+  # Seeded with the session and named by the shared contract of the operations this workflow
+  # borrows, so the file owns the name and no activity produces it.
+  - name: host_repo_path
+    type: string
+    description: Absolute path to the host repository the session belongs to.
   - name: scope_manifest
     type: array
     description: List of files to create, modify or remove with full paths and actions.

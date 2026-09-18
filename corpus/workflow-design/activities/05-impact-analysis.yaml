@@ -1,11 +1,14 @@
 id: impact-analysis
-version: 1.6.0
+version: 1.7.0
 name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, transitions, and references.
 variables:
   reads:
+    - component_git_dir
     - operation_type
     - planning_folder_path
+    - pr_number
+    - target_path
   writes:
     - name: impact_analysis_path
       type: string

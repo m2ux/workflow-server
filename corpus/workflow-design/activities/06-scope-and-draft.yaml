@@ -1,13 +1,15 @@
 id: scope-and-draft
-version: 1.14.0
+version: 1.15.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
 variables:
   reads:
+    - host_repo_path
     - impact_analysis_path
     - operation_type
     - pattern_adoption
     - planning_folder_path
+    - pr_number
     - preservation_required
     - verified_findings
     - workflow_id
@@ -50,6 +52,9 @@ variables:
       type: boolean
       description: True when content drafting detects removals not flagged during impact analysis.
       defaultValue: false
+    - name: host_repo_path
+      type: string
+      description: Absolute path to the host repository the session belongs to.
     - name: file_approach_disposition
       type: string
       description: What the reader decided about the drafting approach for the current file. Absent until an approach is presented.

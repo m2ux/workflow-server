@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.23.0
+version: 1.24.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -8,6 +8,7 @@ variables:
     - branch_name
     - changed_files
     - component_git_dir
+    - component_path
     - head_sha
     - host_repo_path
     - is_review_mode

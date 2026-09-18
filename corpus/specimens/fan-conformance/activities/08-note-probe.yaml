@@ -1,11 +1,12 @@
 id: note-probe
-version: 1.0.0
+version: 1.1.0
 name: Note Probe
 description: Write this note in a checkout of its own and commit it there.
 variables:
   reads:
     - component_path
     - note_target
+    - planning_folder_path
   writes:
     - name: note_commit
       type: object

@@ -1,13 +1,16 @@
 id: requirements-refinement
-version: 1.15.0
+version: 1.16.0
 name: Requirements Refinement
 description: A workflow specification across its design dimensions, with design assumptions surfaced, reconciled in a while-loop, and open judgements deferred to Gate 2.
 variables:
   reads:
     - assumption_outcome
     - change_category
+    - component_git_dir
     - operation_type
     - planning_folder_path
+    - pr_number
+    - target_path
   writes:
     - name: assumptions_log
       type: object

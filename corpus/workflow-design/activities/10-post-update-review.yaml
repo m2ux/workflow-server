@@ -1,10 +1,13 @@
 id: post-update-review
-version: 1.11.0
+version: 1.12.0
 name: Post-Update Review
 description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation. When findings remain, remediates automatically (never asks accept/iterate/revert) and publishes the remediation to the open pull request.
 variables:
   reads:
+    - component_git_dir
+    - host_repo_path
     - planning_folder_path
+    - pr_number
     - scope_manifest
     - target_path
     - verified_findings

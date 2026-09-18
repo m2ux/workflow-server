@@ -1,16 +1,19 @@
 id: validate-and-commit
-version: 1.9.0
+version: 1.10.0
 name: Validate and Commit
 description: Final validation, scope verification, and README generation/update, then Gate 2 approve-to-commit and commit of the workflow changes on the session feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 variables:
   reads:
     - assumptions_log
     - compliance_report
+    - component_git_dir
     - draft_attestation_path
     - has_open_assumptions
+    - host_repo_path
     - impact_analysis_path
     - operation_type
     - planning_folder_path
+    - pr_number
     - scope_manifest
     - scope_manifest_path
     - specification_path

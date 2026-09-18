@@ -1,11 +1,13 @@
 id: assumptions-review
-version: 2.14.0
+version: 2.15.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
   reads:
     - branch_name
     - component_git_dir
+    - component_path
+    - host_repo_path
     - is_review_mode
     - issue_number
     - issue_platform

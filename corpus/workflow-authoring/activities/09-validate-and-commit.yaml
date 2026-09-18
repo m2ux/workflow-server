@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.4.0
+version: 1.5.0
 name: Validate and Commit
 description: "Re-derive the high-severity findings independently, persist the register, take the operator's disposition, then re-verify scope, commit, publish and close out. Terminal."
 variables:
@@ -11,10 +11,12 @@ variables:
     - consumer_surface
     - coverage_ledger
     - fail_count
+    - host_repo_path
     - judgements_disposition
     - known_finding_keys
     - operation_type
     - planning_folder_path
+    - pr_number
     - register_sections
     - remediation_round
     - removals_approved
@@ -49,6 +51,10 @@ variables:
     - name: operation_type
       type: string
       description: The classified operation for the request — create, update, or review.
+    - name: pr_number
+      type: string
+      description: Number of the pull request opened for the authored change.
+      defaultValue: ""
     - name: remediation_round
       type: number
       description: Remediation round for this run.

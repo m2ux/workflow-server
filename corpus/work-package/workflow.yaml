@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 4.1.0
+version: 4.2.0
 title: Work Package Implementation Workflow
 description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, an audit of an existing pull request, or any other deliverable. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -59,6 +59,11 @@ variables:
   - name: user_request
     type: string
     description: The user's free-form request that opened this work package.
+  # Seeded with the session and named by the shared contract of the operations this workflow
+  # borrows, so the file owns the name and no activity produces it.
+  - name: host_repo_path
+    type: string
+    description: Absolute path to the host repository the session belongs to.
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}."
