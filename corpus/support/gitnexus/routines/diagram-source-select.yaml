@@ -74,7 +74,7 @@ steps:
     name: Process Cycle
     loopType: forEach
     variable: affected_process
-    over: change_report.processes
+    over: change_report.affected_processes
     maxIterations: 100
     when: diagram_type == "sequence"
     steps:

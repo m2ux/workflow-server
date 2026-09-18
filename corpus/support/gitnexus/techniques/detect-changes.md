@@ -27,21 +27,17 @@ Map a git diff to the changed-symbol set and the execution flows it affects. The
 
 changed symbols, changed files, affected execution flows, risk level
 
-#### symbols
+#### changed_symbols
 
-The indexed symbols the diff's hunks land in, each with the file it sits in.
+The indexed symbols the diff's hunks land in, each carrying its `name`, the `filePath` it sits in, and the `change_type` the hunk made.
 
-#### files
+#### affected_processes
 
-The files the diff touches.
+The execution flows those symbols participate in, each carrying its `name` and the steps the change lands on.
 
-#### processes
+#### summary
 
-The execution flows the changed symbols participate in.
-
-#### risk_level
-
-LOW, MEDIUM, HIGH or CRITICAL, from the breadth of the symbols and flows reached.
+The counts — changed symbols, affected flows, changed files — and the `risk_level` they add up to.
 
 ## Protocol
 

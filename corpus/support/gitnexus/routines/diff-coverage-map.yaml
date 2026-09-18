@@ -40,7 +40,7 @@ steps:
     name: Symbol Cycle
     loopType: forEach
     variable: changed_symbol
-    over: change_report.symbols
+    over: change_report.changed_symbols
     maxIterations: 200
     steps:
       - kind: technique
@@ -49,7 +49,7 @@ steps:
           name: gitnexus::context
           inputs:
             name: "{changed_symbol.name}"
-            file_path: "{changed_symbol.file_path}"
+            file_path: "{changed_symbol.filePath}"
         actions:
           - action: set
             target: symbol_context_reports
