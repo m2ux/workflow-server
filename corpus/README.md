@@ -20,7 +20,7 @@ How to add one is in [`docs/README.md`](../docs/README.md#adding-a-workflow).
 
 ## support
 
-[`support/`](support/README.md) holds the libraries: `git`, `github`, `atlassian` and `gitnexus`. Each is a namespace of shared operations belonging to no single product, reached by its own directory name — `support/` appears in no reference. A library declares no `workflow.yaml`, so discovery offers none of them to an operator.
+[`support/`](support/README.md) holds the libraries. Each is a namespace of shared operations belonging to no single product, reached by its own directory name — `support/` appears in no reference. A library declares no `workflow.yaml`, so discovery offers none of them to an operator.
 
 ## specimens
 

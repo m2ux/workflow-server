@@ -43,7 +43,7 @@ A specimen is a worked example of a form. An author copies from it when creating
 
 ### support
 
-A library is a namespace of shared operations that declares no workflow: `git`, `github`, `atlassian` and `gitnexus` each hold one. They sit at `corpus/support/` because they belong to no single product and to every one that reaches them. `support/` is a grouping folder and appears in no reference — each library is reached by its own directory name, `git::commit-regular-files`. Contents: [`corpus/support/README.md`](corpus/support/README.md).
+A library is a namespace of shared operations that declares no workflow. Libraries sit at `corpus/support/` because each belongs to no single product and to every one that reaches it. `support/` is a grouping folder and appears in no reference — a library is reached by its own directory name, `git::commit-regular-files`. Contents: [`corpus/support/README.md`](corpus/support/README.md).
 
 ### ledgers
 
