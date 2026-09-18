@@ -191,7 +191,7 @@ function blockChars(key: string, value: unknown): number {
 }
 
 const OPERATION_REFS_NOTE =
-  'Ids under `operation_refs` are operations of your role this response carried no body for, because carrying them would have put it past what one tool result may hold. Their rules are in the `rules` list above, so the contract you are held to is complete — what is deferred is the procedure. Fetch one with get_technique { session_index, technique_id } when you reach the step that applies it.';
+  'Ids under `operation_refs` are operations of your role this response carried no body for, because carrying them would have put it past what one tool result may hold. Their rules are in the `rules` list above, so the contract you are held to is complete — what is deferred is the procedure. Fetch one with get_technique { session_index, technique_id } when you reach the step that applies it. A fetched operation may still arrive whole with your next activity, once there is room for it: that call composes a procedure for you to apply now, and a delivery carries your contract as it stands, so the two are recorded apart. Read the copy you hold.';
 
 /**
  * Hold a role's operations bundle to what one response may carry, in place.
