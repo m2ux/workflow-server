@@ -58,7 +58,7 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 // is their single source of truth), so guard and server cannot drift apart on what counts as an
 // identifier, an optional input, or an ambient id.
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
-import { assertScanned, citePath, corpusWorkflows, definitionsUnder, ledgerPath, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, citePath, corpusNamespaces, definitionsUnder, ledgerPath, resolveWorkflowsRoot, namespaceSubdir, defaultCorpusDest } from './workflows-root.js';
 import { indexCorpus, workflowIdFromCorpusPath, type CorpusIndex } from '../src/loaders/corpus-index.js';
 // The reference rule itself, shared with the server, so guard and loader read a `::` path the same way.
 import { isBareName, parseTechniqueRef, TechniqueRefError, type TechniqueRef } from '../src/loaders/technique-ref.js';
@@ -152,7 +152,7 @@ const allDeclaredInputSites = new Map<string, Set<string>>();
 const declaredOutputSites: Array<{ rel: string; id: string; hasArtifact: boolean }> = [];
 
 function buildRegistry(wf: string): void {
-  const tdir = workflowSubdir(INDEX, wf, 'techniques');
+  const tdir = namespaceSubdir(INDEX, wf, 'techniques');
   if (!tdir || !existsSync(tdir)) return;
   const reg: Reg = { ops: new Map(), groups: new Map() };
   const declared = new Set<string>();
@@ -228,7 +228,7 @@ function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry
   // against the binding workflow and then meta. A group base answers only a single-segment
   // reference — a deeper path names a file inside one.
   const key = parsed.segments.join('::');
-  const candidates = parsed.namespace ? [parsed.namespace] : wf !== META ? [wf, META] : [META];
+  const candidates = parsed.namespace ? [namespaceId(parsed.namespace)] : wf !== META ? [wf, META] : [META];
   for (const c of candidates) {
     const r = registry.get(c); if (!r) continue;
     const entry = r.ops.get(key) ?? (parsed.segments.length === 1 ? r.groups.get(key) : undefined);
@@ -289,7 +289,7 @@ const fanParameterByActivity = new Map<string, Map<string, string>>();
 const fanContainerMembers = new Map<string, Set<string>>();
 
 function collectWorkflowVars(wf: string): void {
-  const wt = workflowSubdir(INDEX, wf, 'workflow.yaml');
+  const wt = namespaceSubdir(INDEX, wf, 'workflow.yaml');
   if (!wt || !existsSync(wt)) return;
   try {
     const p = parseDefinition(readFileSync(wt, 'utf-8')) as {
@@ -569,7 +569,7 @@ function collectArtifactTemplateTokens(rel: string, raw: string): void {
  * routine input as unproduced, which is why both halves are one change.
  */
 function scanRoutines(wf: string): void {
-  const dir = workflowSubdir(INDEX, wf, 'routines');
+  const dir = namespaceSubdir(INDEX, wf, 'routines');
   if (!dir || !existsSync(dir)) return;
   for (const entry of readdirSync(dir)) {
     if (!entry.endsWith('.yaml')) continue;
@@ -608,6 +608,18 @@ function activityFiles(dir: string): string[] {
   return definitionsUnder(dir).map(({ path }) => path);
 }
 
+/**
+ * Namespace path → directory name.
+ *
+ * Everything this guard keys on is a directory name, because that is what a citation carries and
+ * what `workflowIdFromCorpusPath` reads off a file. A parsed reference carries the path instead —
+ * the spelling that resolves whatever else the corpus holds — so a reference is put through this on
+ * the way in. The two strings are one for a namespace at the corpus root, which is most of them.
+ */
+let namespaceIdByPath = new Map<string, string>();
+
+const namespaceId = (ref: string): string => namespaceIdByPath.get(ref) ?? ref;
+
 let allWf = new Set<string>();
 let crossWorkflowConsumers = new Map<string, Set<string>>();
 let dispatchedWorkflows = new Map<string, Set<string>>();
@@ -616,8 +628,9 @@ function ensureIndexed(): void {
   if (indexed) return;
   indexed = true;
   INDEX = indexCorpus(ROOT);
-  workflows = corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
-  assertScanned(workflows.length, 'workflows with a techniques/ folder', ROOT);
+  namespaceIdByPath = new Map(corpusNamespaces(ROOT, INDEX).map(({ path, id }) => [path, id]));
+  workflows = corpusNamespaces(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
+  assertScanned(workflows.length, 'namespaces with a techniques/ folder', ROOT);
   for (const wf of workflows) buildRegistry(wf);
 
   for (const wf of workflows) {
@@ -632,20 +645,27 @@ function ensureIndexed(): void {
         }
       }
     };
-    const techniques = workflowSubdir(INDEX, wf, 'techniques');
+    const techniques = namespaceSubdir(INDEX, wf, 'techniques');
     if (techniques) walk(techniques);
   }
 
-  allWf = new Set([...workflows, ...corpusWorkflows(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'activities'))).map(({ id }) => id)]);
+  // Activities are a workflow's own, so the second half enumerates only namespaces holding a
+  // definition — a library has no graph for an activity to take a place in.
+  allWf = new Set([
+    ...workflows,
+    ...corpusNamespaces(ROOT, INDEX)
+      .filter(({ manifest, dir }) => manifest !== undefined && existsSync(join(dir, 'activities')))
+      .map(({ id }) => id),
+  ]);
   for (const wf of allWf) {
     collectWorkflowVars(wf);
     // workflow.yaml is a reader too: its `rules` and `description` prose interpolates declared ids
     // (`When {headless_mode} is true, a checkpoint declaring both resolves to its defaultOption`), and
     // that is the value's one authoritative consumer. Scanning only activities left those reads
     // invisible, so the id they name read as dead.
-    const wfYaml = workflowSubdir(INDEX, wf, 'workflow.yaml');
+    const wfYaml = namespaceSubdir(INDEX, wf, 'workflow.yaml');
     if (wfYaml && existsSync(wfYaml)) collectReads(wf, cite(wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
-    const adir = workflowSubdir(INDEX, wf, 'activities');
+    const adir = namespaceSubdir(INDEX, wf, 'activities');
     if (!adir || !existsSync(adir)) continue;
     for (const path of activityFiles(adir)) {
       const rel = cite(path); const raw = readFileSync(path, 'utf-8');

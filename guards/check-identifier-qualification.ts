@@ -28,7 +28,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EXEMPT_DATA_ID_SET as EXEMPT, isSingleWord } from '../src/schema/identifiers.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -66,7 +66,7 @@ function scanTechniqueDir(dir: string, root: string, hits: Hit[]): number {
 export function collectHits(root: string = DEFAULT_ROOT): Hit[] {
   const hits: Hit[] = [];
   let scanned = 0;
-  for (const { dir } of corpusWorkflows(root)) {
+  for (const { dir } of corpusNamespaces(root)) {
     scanned += scanTechniqueDir(join(dir, 'techniques'), root, hits);
   }
   assertScanned(scanned, 'technique files', root);

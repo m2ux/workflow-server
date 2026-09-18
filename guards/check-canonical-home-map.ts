@@ -27,7 +27,7 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { type CorpusIndex, type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, defaultCorpusDest, definitionsUnder, ledgerPath, workflowSubdir } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, defaultCorpusDest, definitionsUnder, ledgerPath, workflowSubdir } from './workflows-root.js';
 import { requireRootOrExit, runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -83,7 +83,7 @@ function walk(dir: string | null, out: string[] = []): string[] {
 /** Every map the corpus binds as a `canonical_home_map` input, deduplicated by ref. */
 function boundMaps(root: string, index: CorpusIndex): MapRef[] {
   const byRef = new Map<string, MapRef>();
-  for (const { dir } of corpusWorkflows(root, index)) {
+  for (const { dir } of corpusNamespaces(root, index)) {
     const activities = join(dir, 'activities');
     if (!existsSync(activities) || !statSync(activities).isDirectory()) continue;
     for (const { path } of definitionsUnder(activities)) {
