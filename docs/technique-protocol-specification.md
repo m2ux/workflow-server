@@ -343,7 +343,7 @@ never in curly braces. Curly braces are reserved for the designator namespace (`
 `{output_id}.field`, `{$local}`); a brace-wrapped argument list (`::op {arg: value}`) collides with
 that namespace and cannot be told apart from a designator. Inside the parens, an argument value that
 is itself a variable or input keeps its designator brace (`::context(name: {$symbol})`); a literal
-value stays bare (`::diagram-source-select(diagram_type: 'package')`); the argument keys are the
+value stays bare (`::detect-changes(diff_scope: 'compare')`); the argument keys are the
 operation's own parameter names and stay bare. The distinction parallels §4.1: `()` carries the call
 shape, `{}` carries the data reference — parentheses call, braces name.
 
