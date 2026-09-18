@@ -1,0 +1,56 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-graph-conformance
+version: 1.0.0
+title: GitNexus Graph Conformance Workflow
+description: >-
+  Refer to every gitnexus run that reads a graph rather than a diff. One of them refers to another
+  run, so the walk also evidences a reference composing — the inner body splices inside the outer,
+  its identifiers carrying both prefixes, and neither run's internals reach the bag.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - nesting
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_path
+    type: string
+    description: Filesystem path of the tree a rebuild walks and keys its index under.
+    defaultValue: "."
+  - name: tree_path
+    type: string
+    description: Filesystem path of the tree whose answers are wanted, which names the graph to address.
+    defaultValue: "."
+  - name: group_name
+    type: string
+    description: Name of the configured repository group the refresh reads.
+    defaultValue: ""
+  - name: search_query
+    type: string
+    description: The area's concept, as the keywords a ranking matches.
+    defaultValue: ""
+  - name: symptom_text
+    type: string
+    description: The error text or observed behaviour, as the keywords a ranking matches.
+    defaultValue: ""
+  - name: suspect_symbol
+    type: string
+    description: The symbol a symptom points at.
+    defaultValue: ""
+  - name: restructure_target
+    type: string
+    description: The symbol being extracted, split or moved.
+    defaultValue: ""
+initialActivity: refresh-graphs
+graph:
+  refresh-graphs:
+    refreshed: read-the-area
+  read-the-area:
+    read: trace-and-draw
+  trace-and-draw:
+    drawn: report-conformance
+  report-conformance:
+    reported: __terminal__

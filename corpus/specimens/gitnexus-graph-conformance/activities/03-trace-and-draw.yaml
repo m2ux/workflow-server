@@ -1,0 +1,61 @@
+id: trace-and-draw
+version: 1.0.0
+name: Trace And Draw
+description: Refer to the run that follows a symptom, and twice to the run whose body branches on the diagram it sources.
+variables:
+  reads:
+    - suspect_symbol
+    - symptom_text
+  writes:
+    - name: symptom_query_report
+      type: object
+      description: The execution flows the symptom's text ranked into.
+    - name: suspect_context_report
+      type: object
+      description: The suspect symbol's callers, callees and flow membership.
+    - name: suspect_flow_traces
+      type: array
+      description: The ordered step trace of each execution flow the suspect participates in.
+      defaultValue: []
+    - name: call_chains
+      type: array
+      description: Every chain of calls reaching the suspect within two hops.
+      defaultValue: []
+    - name: package_diagram_source
+      type: array
+      description: The functional areas the change reaches, each with its members.
+      defaultValue: []
+    - name: sequence_diagram_source
+      type: array
+      description: The ordered step trace of each execution flow the change runs through.
+      defaultValue: []
+required: true
+steps:
+  - kind: routine
+    id: trace-symptom
+    routine: gitnexus::symptom-trace
+    outputs:
+      query_report: symptom_query_report
+      context_report: suspect_context_report
+      suspect_flow_traces: suspect_flow_traces
+      call_chains: call_chains
+  - kind: routine
+    id: source-package-diagram
+    routine: gitnexus::diagram-source-select
+    with:
+      diagram_type: package
+    outputs:
+      diagram_source: package_diagram_source
+  - kind: routine
+    id: source-sequence-diagram
+    routine: gitnexus::diagram-source-select
+    with:
+      diagram_type: sequence
+    outputs:
+      diagram_source: sequence_diagram_source
+exits:
+  - id: drawn
+    isDefault: true
+outcome:
+  - A run whose outputs are four distinct products landed each under the name this activity binds it to, so none collides with the area run's outputs of the same shape
+  - One run referred to twice in one activity produced two answers, each body prefixed from its own reference id, and the argument each site bound selected which half of the body ran

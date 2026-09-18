@@ -1,0 +1,34 @@
+id: scan-surface
+version: 1.0.0
+name: Scan Surface
+description: Refer to the two runs that narrow a whole-graph answer to the change.
+variables:
+  reads:
+    - changed_files
+  writes:
+    - name: orphan_candidates
+      type: array
+      description: Symbols in the changed files that nothing references.
+      defaultValue: []
+    - name: public_api_symbols
+      type: array
+      description: The exported symbols present in the diff, each with the file and kind the graph records.
+      defaultValue: []
+required: true
+steps:
+  - kind: routine
+    id: scan-orphans
+    routine: gitnexus::orphan-scan
+    outputs:
+      orphan_candidates: orphan_candidates
+  - kind: routine
+    id: enumerate-api
+    routine: gitnexus::public-api-enum
+    outputs:
+      public_api_symbols: public_api_symbols
+exits:
+  - id: scanned
+    isDefault: true
+outcome:
+  - A run carrying a literal graph query landed the set its narrowing kept
+  - A run composing a query from one operation's answer and running it through another landed the exported surface

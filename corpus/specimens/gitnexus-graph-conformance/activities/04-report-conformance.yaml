@@ -1,0 +1,33 @@
+id: report-conformance
+version: 1.0.0
+name: Report Conformance
+description: State what each graph-reading run produced, and which graph it came from.
+variables:
+  reads:
+    - call_chains
+    - context_report
+    - flow_traces
+    - group_freshness_report
+    - impact_report
+    - index_stale
+    - index_stats
+    - package_diagram_source
+    - query_report
+    - repo_name
+    - sequence_diagram_source
+    - stats
+    - suspect_context_report
+    - suspect_flow_traces
+    - symbol_contexts
+    - symptom_query_report
+    - contract_registry_stats
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-graph-conformance
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Every run this walk referred to is named with what it landed and the graph it answered from
