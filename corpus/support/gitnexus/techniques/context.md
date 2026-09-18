@@ -27,6 +27,18 @@ the symbol to inspect
 
 incoming calls (callers), outgoing calls (callees), process membership with step positions
 
+#### incoming
+
+The references reaching the symbol, grouped by the kind of edge each carries.
+
+#### outgoing
+
+The references the symbol makes, grouped the same way.
+
+#### processes
+
+The execution flows the symbol participates in, each carrying its `name` and the symbol's `step_index` within it.
+
 ## Protocol
 
 1. Call `gitnexus_context { name, file_path, uid: symbol_uid, repo: repo_name }` to assemble the `{context_report}` — incoming calls, outgoing calls, and process membership.

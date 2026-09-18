@@ -1,0 +1,46 @@
+id: pre-edit-impact-gate
+version: 1.0.0
+name: Pre-Edit Impact Gate
+description: >-
+  Measure what a symbol's change would break before any edit lands, and stop for a decision where
+  the measurement rates it high or critical.
+
+inputs:
+  - id: target
+    description: The symbol about to be edited, whose dependents the measurement reaches.
+
+outputs:
+  - id: impact_report
+    type: object
+    description: What depends on the symbol, at depth 1/2/3, with the execution flows reached and a risk level.
+  - id: edit_approved
+    type: boolean
+    description: Whether the measured blast radius was accepted at the gate. True where the rating was low enough that no gate was presented.
+
+steps:
+  - kind: technique
+    id: measure
+    technique:
+      name: gitnexus::impact
+      inputs:
+        target: target
+        direction: upstream
+      outputs:
+        impact_report: impact_report
+  - kind: checkpoint
+    id: accept-blast-radius
+    when: impact_report.risk == "HIGH" || impact_report.risk == "CRITICAL"
+    message: "Changing {target} is rated {impact_report.risk}. {impact_report.summary.direct} callers reach it directly and {impact_report.summary.processes_affected} execution flows run through it."
+    options:
+      - id: proceed
+        label: Proceed with the edit
+        description: The measured blast radius is understood and the edit goes ahead against it.
+        effect:
+          setVariable:
+            edit_approved: true
+      - id: hold
+        label: Hold the edit
+        description: The blast radius is narrowed, or the change discussed, before any edit lands.
+        effect:
+          setVariable:
+            edit_approved: false

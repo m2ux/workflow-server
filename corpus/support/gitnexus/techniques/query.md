@@ -27,6 +27,18 @@ a concept, symptom, or error text (e.g. `'payment validation error'`)
 
 execution flows (processes) grouped, with member symbols and file locations
 
+#### processes
+
+The execution flows the concept ranked into, each carrying its `name` and relevance.
+
+#### process_symbols
+
+The symbols those flows run, each carrying its `name`, the `filePath` it sits in, and the `module` it belongs to.
+
+#### definitions
+
+The types and interfaces the concept reached that sit in no flow.
+
 ## Protocol
 
 1. Call `gitnexus_query { query: search_query, limit, max_symbols, repo: repo_name }` to produce the `{query_report}` of grouped execution flows.

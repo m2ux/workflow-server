@@ -1,0 +1,61 @@
+id: change-risk-assessment
+version: 1.0.0
+name: Change Risk Assessment
+description: >-
+  Measure what reaches a symbol, what the diff moved, and how much of the traced whole both touch,
+  then settle the one rating a reviewer acts on.
+
+inputs:
+  - id: target
+    description: The symbol the change centres on, whose dependents the measurement reaches.
+  - id: diff_scope
+    description: Which diff the changed-symbol set is taken from — the working tree, the index, both, or a comparison against another ref.
+    default: all
+
+outputs:
+  - id: change_risk_verdict
+    type: object
+    description: One rating for the change, the counts it rests on, and the flows a reviewer exercises to cover it.
+
+internals:
+  - id: impact_report
+    description: What reaches the target, which the verdict weighs against the diff's own rating.
+  - id: change_report
+    description: What the diff moved, which the verdict weighs against the target's blast radius.
+  - id: process_inventory
+    description: Every flow the graph traced, against which the two reports' flows are read as a share.
+
+steps:
+  - kind: technique
+    id: measure-target
+    technique:
+      name: gitnexus::impact
+      inputs:
+        target: target
+        direction: upstream
+      outputs:
+        impact_report: impact_report
+  - kind: technique
+    id: read-flow-inventory
+    technique:
+      name: gitnexus::read-processes
+      outputs:
+        process_inventory: process_inventory
+  - kind: technique
+    id: measure-diff
+    technique:
+      name: gitnexus::detect-changes
+      inputs:
+        diff_scope: diff_scope
+      outputs:
+        change_report: change_report
+  - kind: technique
+    id: weigh
+    technique:
+      name: gitnexus::weigh-change-risk
+      inputs:
+        impact_report: impact_report
+        change_report: change_report
+        process_inventory: process_inventory
+      outputs:
+        change_risk_verdict: change_risk_verdict

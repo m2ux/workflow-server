@@ -175,6 +175,13 @@
     },
     {
       "check": "dead-output",
+      "site": "gitnexus/techniques/weigh-change-risk.md",
+      "detail": "output 'change_risk_verdict' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
       "site": "gitnexus/techniques/group-sync.md",
       "detail": "output 'contract_registry_stats' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",

@@ -39,6 +39,22 @@ the symbol name to analyse
 
 d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); affected execution flows; risk level (LOW / MEDIUM / HIGH / CRITICAL); and whether the rating rests on graph edges or on a hand-derived caller set.
 
+#### risk
+
+`LOW`, `MEDIUM`, `HIGH` or `CRITICAL`.
+
+#### summary
+
+The counts the rating rests on: `direct` callers, `processes_affected`, `modules_affected`.
+
+#### byDepth
+
+The affected symbols keyed by traversal depth, each carrying the edge it was reached by and the confidence that edge holds.
+
+#### affected_processes
+
+The execution flows reached, each naming the step the break lands on.
+
 ## Protocol
 
 ### 1. Invoke
