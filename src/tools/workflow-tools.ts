@@ -198,11 +198,11 @@ const OPERATION_REFS_NOTE =
 /**
  * Hold a role's operations bundle to what one response may carry, in place.
  *
- * A harness caps a tool result, and both role-facing deliveries sit on a path their role cannot
- * skip — `get_workflow` opens every orchestrator, `get_activity` is how a worker receives its work
- * — so a bundle past that cap is a call that cannot be read at all rather than one that merely
- * costs too much. What gives is the operation BODIES, taken in list order and stopped at the first
- * that would overflow — the same stop-and-break `get_activity` applies to its eager step
+ * Both role-facing deliveries sit on a path their role cannot skip — `get_workflow` opens every
+ * orchestrator, `get_activity` is how a worker receives its work — so what rides here is charged to
+ * a context for the whole session that follows, and a procedure the role never reaches is a charge
+ * it never had to pay. What gives is the operation BODIES, taken in list order and stopped at the
+ * first that would overflow — the same stop-and-break `get_activity` applies to its eager step
  * techniques, and for the same reason: a contiguous prefix is what a reader can rely on.
  *
  * The `rules` list is never bounded. Those rules are the contract the role is held to from its
@@ -1106,7 +1106,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
         opsBundle['bundle_note'] = `${MARKER_PREAMBLE} ${IN_RESPONSE_MARKER_NOTE}`;
       }
-      // The bound is on the response, because the response is what a harness refuses — and a harness
+      // The bound is on the response, because the response is what a role pays for — and a client
       // weighs the whole tool result, so what rides beside the text answers to it too. That share is
       // reserved at its widest: every operation deferred is the longest `operation_refs` this
       // response can carry, and nothing else in it varies with what the budget decides.
@@ -1148,9 +1148,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // A response whose rules and definition alone exceed the bound has nothing left to give: every
       // operation body is already an id, every variable is down to its declaration, and what remains
       // is the contract and the workflow, which the orchestrator cannot drive without. It goes out
-      // over the bound rather than not at all, and says so here, because a harness refusing it is the
-      // failure this bound exists to prevent and a silent overflow is that failure arriving
-      // unexplained.
+      // over the bound and says so here, because an orchestrator paying more for its opening than the
+      // limit allows for is a workflow that has outgrown a single delivery, and a silent overflow is
+      // that fact arriving unexplained. Whether going over is the right end to the shed, against the
+      // round trip a client charges for an oversized result, is #836.
       if (opsText.length + summaryText.length + SEPARATOR.length + metaChars > responseBound) {
         logWarn('Workflow response over its bound with every operation body deferred', {
           session_index, workflow: workflow_id,
@@ -2128,11 +2129,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
       const responseFloor = fixed.chars + '\n\n'.length + metaFloor;
 
-      // Hold the whole response to what one tool result may carry. A harness caps that, `get_activity`
-      // is the call a dispatched worker makes to receive its work, and the activity and the rules
-      // have already taken their share — so what gives is operation BODIES, in list order, stopped at
-      // the first that would overflow. Their rules ride the response whatever this defers, and each
-      // body it defers is served by `get_technique { technique_id }`.
+      // Hold the whole response to what one tool result may carry. `get_activity` is the call a
+      // dispatched worker makes to receive its work, and the activity and the rules have already
+      // taken their share — so what gives is operation BODIES, in list order, stopped at the first
+      // that would overflow. Their rules ride the response whatever this defers, and each body it
+      // defers is served by `get_technique { technique_id }`.
       const deferredOperations = boundOperationsBundle(bundleData, responseBound - responseFloor);
       for (const ref of deferredOperations) operationDeliveries.delete(ref);
       for (const own of operationDeliveries.values()) Object.assign(newDeliveries, own);
@@ -2686,10 +2687,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // A response whose contract and activity alone exceed the bound has nothing left to defer:
       // every procedure is already an id, and what remains is the rules and the definition, which
-      // the worker cannot do the activity without. It goes out over the bound rather than not at
-      // all, and says so here, because a harness refusing it is the failure this bound exists to
-      // prevent and a silent overflow is that failure arriving unexplained. An activity that
-      // reaches this is one whose definition has outgrown a single delivery.
+      // the worker cannot do the activity without. It goes out over the bound and says so here,
+      // because an activity that reaches this is one whose definition has outgrown a single
+      // delivery, and a silent overflow is that fact arriving unexplained. Whether going over is the
+      // right end to the shed, against the round trip a client charges for an oversized result,
+      // is #836.
       if (resultChars > responseBound) {
         logWarn('Activity response over its bound with every procedure deferred', {
           session_index, activity: activity_id, agentId: scope,

@@ -10,10 +10,11 @@ import { createHarness, type Harness } from './e2e/harness.js';
 import { sessionOps, type SessionOps } from './session-ops.js';
 
 /**
- * A harness caps what a tool result may carry, and both role-facing deliveries sit on a path their
- * role cannot skip: `get_workflow` opens every orchestrator, and `get_activity` is the call a
- * dispatched worker makes to receive its work. These cases hold each response to the bound, and
- * hold open the fetch paths that make what a bound leaves out reachable.
+ * Both role-facing deliveries sit on a path their role cannot skip: `get_workflow` opens every
+ * orchestrator, and `get_activity` is the call a dispatched worker makes to receive its work. What
+ * either carries is charged to that role's context for the session that follows, so each is held to
+ * what one tool result may carry. These cases hold each response to that bound, and hold open the
+ * fetch paths that make what a bound leaves out reachable.
  */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
