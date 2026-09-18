@@ -89,10 +89,12 @@ export function collectDuplicateViolations(root: string = ROOT): DuplicateViolat
     const wfYamlPath = join(dir, 'workflow.yaml');
     const wfRel = relative(root, wfYamlPath);
     let doc: Record<string, unknown> | null = null;
-    try { doc = parseDefinition(readFileSync(wfYamlPath, 'utf-8')) as Record<string, unknown> | null; } catch { continue; }
-    if (!doc) continue;
+    try { doc = parseDefinition(readFileSync(wfYamlPath, 'utf-8')) as Record<string, unknown> | null; } catch { doc = null; }
 
-    const rules = (doc['rules'] ?? {}) as Record<string, unknown>;
+    // Only the rules block needs a definition. A library declares none and still holds routines,
+    // which is a place a body can be written twice — so an unreadable definition skips what it
+    // governs rather than the namespace that holds it.
+    const rules = (doc?.['rules'] ?? {}) as Record<string, unknown>;
     for (const partition of ['workflow', 'activity', 'universal']) {
       const entries = rules[partition];
       if (!Array.isArray(entries)) continue;
