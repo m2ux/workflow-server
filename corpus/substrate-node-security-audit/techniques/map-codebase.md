@@ -69,7 +69,7 @@ forward and backward traces for priority-1 paths
 
 - Read the project manifest at `{workspace_root}` and enumerate every crate, module, or package under the `{in_scope}` paths, skipping anything listed in `{out_of_scope}`. List each component explicitly by name — do not summarize or group.
 
-> When `{gitnexus_available}`, cross-check the manifest enumeration against the graph's community/cluster inventory via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[read-cluster](/gitnexus/techniques/read-cluster.md) and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) — these surface functional areas and dependency structure the manifest layout alone misses. The manifest enumeration remains authoritative for component identity.
+> When `{gitnexus_available}`, cross-check the manifest enumeration against the graph's community/cluster inventory via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[read-clusters](/gitnexus/techniques/read-clusters.md) and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) — these surface functional areas and dependency structure the manifest layout alone misses. The manifest enumeration remains authoritative for component identity.
 
 ### 2. Classify Components
 
