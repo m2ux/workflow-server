@@ -677,12 +677,14 @@ function ensureIndexed(): void {
   // its routines. A namespace carries a definition here only where the corpus can start it, so a
   // library's techniques are measured above while nothing reads a graph no name reaches.
   const graphed = new Set(corpusNamespaces(ROOT, INDEX).filter((n) => n.manifest !== undefined).map(({ ref }) => ref));
+  // A run is read because a `routines/` directory holds it, and for no other reason. A library
+  // declares runs and may declare neither activities nor techniques, so every membership the sweep
+  // below tests for is one a library can fail while still holding the runs where its own operations
+  // are composed — and an unscanned run reports every output it consumes as one nothing consumes.
+  for (const { ref, dir } of corpusNamespaces(ROOT, INDEX)) {
+    if (existsSync(join(dir, 'routines'))) scanRoutines(ref);
+  }
   for (const wf of allWf) {
-    // A run is read whether or not a name can start the namespace holding it. A library declares
-    // runs and no activities, so its `routines/` sits outside the graph half below — and a run
-    // there is where the library's own operations are composed, so leaving it unscanned reports
-    // every output those runs consume as one nothing consumes.
-    scanRoutines(wf);
     if (!graphed.has(wf)) continue;
     collectWorkflowVars(wf);
     // workflow.yaml is a reader too: its `rules` and `description` prose interpolates declared ids
