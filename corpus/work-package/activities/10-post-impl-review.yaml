@@ -110,7 +110,7 @@ steps:
   - kind: technique
     id: gitnexus-detect-changes-preflight
     technique:
-      name: gitnexus-operations::detect-changes
+      name: gitnexus::detect-changes
       inputs:
         repo_name: component_name
     when: gitnexus_indexed == true

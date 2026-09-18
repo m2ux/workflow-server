@@ -21,7 +21,7 @@ The public/exported APIs in the diff, each carrying inline documentation (doc co
 
 ## Protocol
 
-1. Apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[public-api-enum](/meta/techniques/gitnexus-operations/public-api-enum.md) to enumerate exactly the public/exported APIs in the diff that need doc comments.
+1. Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[public-api-enum](/gitnexus/techniques/public-api-enum.md) to enumerate exactly the public/exported APIs in the diff that need doc comments.
 2. Identify public APIs in changed code.
 3. Verify each has inline documentation (doc comments).
 4. Add missing doc comments where absent.

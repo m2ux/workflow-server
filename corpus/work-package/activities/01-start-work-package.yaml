@@ -377,7 +377,7 @@ steps:
   - kind: technique
     id: analyze-repo-with-gitnexus
     technique:
-      name: gitnexus-operations::analyze
+      name: gitnexus::analyze
       inputs:
         repo_path: component_git_dir
     actions:

@@ -43,9 +43,9 @@ Repository-relative paths this task wrote, as the set a commit stages.
 
 ### 2. Pre Edit Impact Check
 
-- Apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](/meta/techniques/gitnexus-operations/impact.md)(target: `{target_symbol}`, direction: `upstream`) before any edit
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(target: `{target_symbol}`, direction: `upstream`) before any edit
 - Read the resulting `impact_report`; where it reports HIGH or CRITICAL risk, record that level and the symbols it names in `{task_implementation}` before editing
-- Apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](/meta/techniques/gitnexus-operations/context.md)(name: `{target_symbol}`) to understand callers/callees of the symbol
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(name: `{target_symbol}`) to understand callers/callees of the symbol
 
 ### 3. Write Code
 
@@ -61,7 +61,7 @@ Repository-relative paths this task wrote, as the set a commit stages.
 
 ### 5. Post Edit Verification
 
-- Apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[detect-changes](/meta/techniques/gitnexus-operations/detect-changes.md) before commit to confirm the changes affect only the expected symbols and execution flows
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[detect-changes](/gitnexus/techniques/detect-changes.md) before commit to confirm the changes affect only the expected symbols and execution flows
 - Record the `{task_implementation}` for this task, capturing a brief summary of the approach taken
 - Emit `{changed_paths}` as the repository-relative paths this task wrote
 

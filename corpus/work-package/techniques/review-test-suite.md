@@ -54,7 +54,7 @@ Method [record](../resources/test-suite-review.md#method-record-template) of how
 ### 2. Diff Aware Coverage Map
 
 - Coverage assessment must be diff-aware — scope evaluation to the changed-symbol set rather than absolute project coverage
-- Apply [gitnexus-operations](/meta/techniques/gitnexus-operations/TECHNIQUE.md)::[diff-coverage-map](/meta/techniques/gitnexus-operations/diff-coverage-map.md): it enumerates the changed-symbol set and, for each changed symbol, finds existing test callers (incoming references from test files)
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[diff-coverage-map](/gitnexus/techniques/diff-coverage-map.md): it enumerates the changed-symbol set and, for each changed symbol, finds existing test callers (incoming references from test files)
 - Treat its `coverage_gaps` (symbols with no test callers) as coverage gaps and `update_candidates` (symbols with stale test callers) as update candidates
 
 ### 3. Run Tests

@@ -91,7 +91,7 @@ Each activity step binds exactly one operation via `step.technique`. The operati
 | [`audit-finalize`](./techniques/audit-finalize/TECHNIQUE.md) | Assemble prism's contract artifacts into the three deliverables and cross-validate them |
 | [`deliver-audit`](./techniques/deliver-audit.md) | Present the deliverables with metrics, the core finding, top remediations, and an artifact index |
 
-Two capabilities are drawn from other workflows rather than authored here: [`gitnexus-operations::analyze`](/meta/techniques/gitnexus-operations/analyze.md) indexes the target during scope-definition, and [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) triggers the prism child workflow during execute-analysis.
+Two capabilities are drawn from elsewhere in the corpus rather than authored here: [`gitnexus::analyze`](/gitnexus/techniques/analyze.md) indexes the target during scope-definition, and [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) triggers the prism child workflow during execute-analysis.
 
 **Detailed documentation:** See [techniques/README.md](./techniques/README.md) for the full library index with per-operation breakdowns.
 

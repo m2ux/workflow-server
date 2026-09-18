@@ -30,7 +30,7 @@ steps:
   - kind: technique
     id: index-codebase
     technique:
-      name: gitnexus-operations::analyze
+      name: gitnexus::analyze
       inputs:
         repo_path: target_path
   - kind: technique

@@ -14,7 +14,7 @@ tags:
 rules:
   workflow:
     - The audit prompt template defines the checklist; the workflow defines the execution phases.
-    - "Structural codebase analysis — symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, and blast radius — routes through the gitnexus-operations meta group when gitnexus_available is true (indexed during scope-setup); grep and full-file reads are the fallback when the index is absent or stale. grep stays the instrument for pattern-presence lead generation and full-file reading for pattern-absence findings; the graph replaces manual enumeration and relational tracing, never code comprehension."
+    - "Structural codebase analysis — symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, and blast radius — routes through the gitnexus operations when gitnexus_available is true (indexed during scope-setup); grep and full-file reads are the fallback when the index is absent or stale. grep stays the instrument for pattern-presence lead generation and full-file reading for pattern-absence findings; the graph replaces manual enumeration and relational tracing, never code comprehension."
     - A reference report is never loaded or discussed before the gap-analysis phase; its path is recorded at scope-setup and loading is deferred.
     - Per-function toolkit findings have low single-pass detection rates; enable ensemble_enabled=true for reliable detection.
     - "Every assigned primary agent (A1-A7, B, D1, D2) is dispatched in a single simultaneous batch, and reconnaissance data never substitutes for a §3-applying sub-agent."
