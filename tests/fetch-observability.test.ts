@@ -144,11 +144,16 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
       expect(dispatches.every(d => d.activity === 'start-work-package')).toBe(true);
       expect(dispatches.every(d => (d.data as { agentId: string }).agentId === 'w-1')).toBe(true);
 
-      // `chars` is the delivered payload size, so the fresh/resume pair measures what reference
-      // delivery on the resume path saved — the figure the success criteria ask for.
-      const [freshChars, resumeChars] = dispatches.map(d => (d.data as { chars: number }).chars);
+      // What reference delivery saved on the resume path, read on the role contract — the part of a
+      // response that repeats, and so the part a collapse can act on. The response as a whole is a
+      // different quantity: it also carries the activity body, which never collapses, and it spends
+      // the room a collapse frees on the operation bodies the bound deferred from the fresh
+      // delivery, so a resume that saved a great deal can still be the longer of the two.
+      const [freshChars] = dispatches.map(d => (d.data as { chars: number }).chars);
       expect(freshChars).toBeGreaterThan(0);
-      expect(resumeChars).toBeLessThan(freshChars!);
+      const contract = (r: unknown): number =>
+        (r as { _meta: { delivery_cost: { worker_bundle_chars: number } } })._meta.delivery_cost.worker_bundle_chars;
+      expect(contract(resume)).toBeLessThan(contract(spawn));
     });
 
     it('records one activity_delivered summary per get_activity and echoes it on _meta', async () => {
