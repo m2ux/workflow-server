@@ -21,9 +21,16 @@ describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', (
 
   const WORKER = 'worker-start-work-package';
 
+  /** The role contract's share of a delivery — the part a second arrival repeats. */
+  const contractChars = (result: unknown): number =>
+    (result as { _meta?: { delivery_cost?: { worker_bundle_chars?: number } } })
+      ._meta?.delivery_cost?.worker_bundle_chars ?? 0;
+
   async function walkToGateAndBack(agentIdOnResume: string): Promise<{
     firstChars: number;
+    firstContractChars: number;
     resumedText: string;
+    resumedContractChars: number;
     history: HistoryEntry[];
   }> {
     const { client } = h;
@@ -90,17 +97,22 @@ describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', (
 
     return {
       firstChars: rawText(dispatched).length,
+      firstContractChars: contractChars(dispatched),
       resumedText: rawText(reRequest),
+      resumedContractChars: contractChars(reRequest),
       history: state.history,
     };
   }
 
   it('answers the resumed worker with markers for what it already holds', async () => {
-    const { firstChars, resumedText, history } = await walkToGateAndBack(WORKER);
+    const { firstContractChars, resumedText, resumedContractChars, history } = await walkToGateAndBack(WORKER);
 
     // Markers, not a second copy: the payload collapses and the bytes never cross the wire again.
+    // Read on the role contract, which is the part a second arrival repeats — the response also
+    // carries the activity body, which never collapses, and spends the room a collapse frees on the
+    // procedures the response bound deferred from the first delivery.
     expect(resumedText).toContain('delivery: unchanged');
-    expect(resumedText.length).toBeLessThan(firstChars / 2);
+    expect(resumedContractChars).toBeLessThan(firstContractChars / 2);
 
     // The server met this context before the gate, so its return is a resume.
     const dispatches = history.filter(e => e.type === 'activity_dispatched');

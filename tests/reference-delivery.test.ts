@@ -39,6 +39,20 @@ function isUnchangedMarker(value: unknown): value is UnchangedMarker {
     && typeof (value as Record<string, unknown>)['content_hash'] === 'string';
 }
 
+/**
+ * The operations a delivery carried a body for, keyed as the bundle keys them.
+ *
+ * A response is held to what one tool result may carry, so a bundle names operations it carried no
+ * body for under `operation_refs` and serves them by id instead. Reference delivery is about what a
+ * context has been sent: an operation it holds comes back as a marker, and one the bound deferred
+ * arrives in full at the delivery that has room for it. A case asserting "everything collapses"
+ * therefore asks it of what was delivered, which is what this reads off the first response.
+ */
+function deliveredInFull(bundle: Record<string, unknown>): string[] {
+  const techniques = (bundle['techniques'] ?? {}) as Record<string, unknown>;
+  return Object.entries(techniques).filter(([, value]) => !isUnchangedMarker(value)).map(([key]) => key);
+}
+
 /** Split a get_activity response into its parsed bundle (before ---) and body text (after). */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function splitActivityResponse(result: any): { bundle: Record<string, unknown>; bodyText: string } {
@@ -174,14 +188,14 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
-      await getActivity(idx);
+      const carried = deliveredInFull(splitActivityResponse(await getActivity(idx)).bundle);
 
       // Same agent_id, no context_mode declared: the orchestrator holds one identity for as long as
       // a worker carries its batch, so a second delivery under it is that same context arriving again.
       const second = splitActivityResponse(await getActivity(idx));
       const techniques = second.bundle['techniques'] as Record<string, unknown>;
-      for (const [key, value] of Object.entries(techniques)) {
-        expect(isUnchangedMarker(value), `expected a marker for ${key}`).toBe(true);
+      for (const key of carried) {
+        expect(isUnchangedMarker(techniques[key]), `expected a marker for ${key}`).toBe(true);
       }
       expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
       expect(second.bundle['bundle_note']).toBeDefined();
@@ -226,10 +240,13 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
       const second = splitActivityResponse(await getActivity(idx));
       const secondTechniques = second.bundle['techniques'] as Record<string, unknown>;
-      expect(Object.keys(secondTechniques)).toEqual(Object.keys(firstTechniques));
-      // Byte-identical refetch: every technique collapses to a marker.
-      for (const [key, value] of Object.entries(secondTechniques)) {
-        expect(isUnchangedMarker(value), `expected marker for ${key}`).toBe(true);
+      // Byte-identical refetch: every technique this context holds collapses to a marker, and the
+      // room that frees carries the operations the bound deferred from the first delivery.
+      for (const key of deliveredInFull(first.bundle)) {
+        expect(isUnchangedMarker(secondTechniques[key]), `expected marker for ${key}`).toBe(true);
+      }
+      for (const key of deliveredInFull(second.bundle)) {
+        expect(Object.keys(firstTechniques), `${key} was delivered twice in full`).not.toContain(key);
       }
       expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
       // The activity body itself is still delivered. (`work-package` declares no rules buckets of
@@ -245,13 +262,18 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       // on — not the bytes the response happened to emit, since a first delivery leaves out the
       // contract blocks an earlier sibling in the same response already carried. So the identity to
       // assert is stability and distinctness: one hash per technique, the same on every later call.
-      const hashes = Object.values(secondTechniques).map((v) => (v as UnchangedMarker).content_hash);
-      expect(new Set(hashes).size).toBe(hashes.length);
+      // Read on the third call, by which point the room the collapses freed has carried whatever
+      // the first delivery's bound deferred — so the whole contract is content this context holds.
       const third = splitActivityResponse(await getActivity(idx));
-      for (const [key, value] of Object.entries(third.bundle['techniques'] as Record<string, unknown>)) {
+      const thirdTechniques = third.bundle['techniques'] as Record<string, unknown>;
+      for (const [key, value] of Object.entries(thirdTechniques)) {
         expect(isUnchangedMarker(value), `expected a marker for ${key}`).toBe(true);
-        expect((value as UnchangedMarker).content_hash)
-          .toBe((secondTechniques[key] as UnchangedMarker).content_hash);
+      }
+      const hashes = Object.values(thirdTechniques).map((v) => (v as UnchangedMarker).content_hash);
+      expect(new Set(hashes).size).toBe(hashes.length);
+      for (const [key, value] of Object.entries(secondTechniques)) {
+        if (!isUnchangedMarker(value)) continue;
+        expect((thirdTechniques[key] as UnchangedMarker).content_hash).toBe(value.content_hash);
       }
     });
 
@@ -404,8 +426,8 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const referenced = splitActivityResponse(await getActivity(idx, { bundle: 'reference' }));
       expect(referenced.bundle['bundle_mode']).toBe('reference');
       const techniques = referenced.bundle['techniques'] as Record<string, unknown>;
-      for (const [key, value] of Object.entries(techniques)) {
-        expect(isUnchangedMarker(value), `expected marker for ${key}`).toBe(true);
+      for (const key of deliveredInFull(first.bundle)) {
+        expect(isUnchangedMarker(techniques[key]), `expected marker for ${key}`).toBe(true);
       }
       expect(isUnchangedMarker(referenced.bundle['rules'])).toBe(true);
 
@@ -648,7 +670,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
       // Full-mode delivery records to the ledger.
-      await getActivity(idx);
+      const carried = deliveredInFull(splitActivityResponse(await getActivity(idx)).bundle);
 
       const resumed = await startSession({
         agent_id: 'solo',
@@ -659,8 +681,9 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
       const afterUpgrade = splitActivityResponse(await getActivity(idx));
       expect(afterUpgrade.bundle['bundle_mode']).toBe('reference');
-      for (const [key, value] of Object.entries(afterUpgrade.bundle['techniques'] as Record<string, unknown>)) {
-        expect(isUnchangedMarker(value), `expected marker for ${key}`).toBe(true);
+      const upgraded = afterUpgrade.bundle['techniques'] as Record<string, unknown>;
+      for (const key of carried) {
+        expect(isUnchangedMarker(upgraded[key]), `expected marker for ${key}`).toBe(true);
       }
     });
   });
@@ -687,8 +710,9 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const first = splitActivityResponse(await getActivity(childIdx));
       expect(first.bundle['bundle_mode']).toBe('reference');
       const second = splitActivityResponse(await getActivity(childIdx));
-      for (const [key, value] of Object.entries(second.bundle['techniques'] as Record<string, unknown>)) {
-        expect(isUnchangedMarker(value), `expected marker for ${key}`).toBe(true);
+      const secondTechniques = second.bundle['techniques'] as Record<string, unknown>;
+      for (const key of deliveredInFull(first.bundle)) {
+        expect(isUnchangedMarker(secondTechniques[key]), `expected marker for ${key}`).toBe(true);
       }
 
       // The ledger belongs to the embedded child state, keyed by the child's
@@ -724,6 +748,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
         });
         const call1 = await client2.callTool({ name: 'get_activity', arguments: { session_index: idx, context_tokens: 200_000 } });
         expect(call1.isError).toBeFalsy();
+        const carried = deliveredInFull(splitActivityResponse(call1).bundle);
 
         // Mutate the workflow-inherited technique between calls. Discovery reports where the meta
         // workflow sits, so a grouping folder around it moves the file this reads rather than
@@ -746,7 +771,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
         const techniques2 = call2.bundle['techniques'] as Record<string, unknown>;
         expect(isUnchangedMarker(techniques2['variable-binding'])).toBe(false);
         expect(JSON.stringify(techniques2['variable-binding'])).toContain('MUTATED');
-        const otherKeys = Object.keys(techniques2).filter(k => k !== 'variable-binding');
+        const otherKeys = carried.filter(k => k !== 'variable-binding');
         expect(otherKeys.length).toBeGreaterThan(0);
         for (const key of otherKeys) {
           expect(isUnchangedMarker(techniques2[key]), `expected marker for ${key}`).toBe(true);
@@ -925,9 +950,11 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      // Entry activity: no transition prerequisites, and it eager-bundles several
-      // technique steps that share the work-package contract.
+      // An activity that eager-bundles several technique steps sharing the work-package contract.
+      // Not the entry activity: its definition and role contract fill a response on their own, so
+      // the bound leaves its first delivery no room for a step map to dedup across.
       await mcp.enter(idx, 'start-work-package');
+      await mcp.enter(idx, 'requirements-elicitation');
 
       const { bundle } = splitActivityResponse(await getActivity(idx));
       expect(bundle['bundle_mode']).toBe('reference');
@@ -1286,10 +1313,13 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
         expect(isUnchangedMarker(value), `fresh spawn must deliver ${key} in full`).toBe(false);
       }
 
-      // Same worker resumed under the same id: it holds those payloads, so they collapse.
+      // Same worker resumed under the same id: it holds those payloads, so they collapse. What the
+      // bound deferred from the spawn is what the freed room carries, so the reading is over what
+      // the spawn actually delivered.
       const resumed = splitActivityResponse(await getActivity(idx, { agent_id: 'w-1', bundle: 'reference' }));
-      for (const [key, value] of Object.entries(resumed.bundle['techniques'] as Record<string, unknown>)) {
-        expect(isUnchangedMarker(value), `resumed worker must reference ${key}`).toBe(true);
+      const resumedTechniques = resumed.bundle['techniques'] as Record<string, unknown>;
+      for (const key of deliveredInFull(spawn.bundle)) {
+        expect(isUnchangedMarker(resumedTechniques[key]), `resumed worker must reference ${key}`).toBe(true);
       }
       expect(isUnchangedMarker(resumed.bundle['rules'])).toBe(true);
     });

@@ -6,7 +6,7 @@ import {
   DEFAULT_BUNDLE_CHARS_PER_TOKEN,
   DEFAULT_BATCH_HEADROOM_FRACTION,
   DEFAULT_BATCH_MAX_ACTIVITIES,
-  DEFAULT_MAX_WORKFLOW_RESPONSE_CHARS,
+  DEFAULT_MAX_RESPONSE_CHARS,
   presentPathToAgent,
 } from '../config.js';
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, baseId, fanGroups, instanceIndex, INSTANCE_SEPARATOR, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
@@ -152,29 +152,62 @@ const PRIOR_CALL_MARKER_NOTE =
 /** What divides an operations bundle from the definition it was assembled for, in every response. */
 const SEPARATOR = '\n\n---\n\n';
 
+/**
+ * What the notes explaining a delivery cost the response that carries them.
+ *
+ * A note is written after the budget has decided what the delivery holds, so the budget charges for
+ * it in advance — at the longest shape it takes, and in full even where it collapses to a marker, so
+ * the figure is a ceiling in every mode rather than one that holds only for a fresh context. Derived
+ * from the note constants themselves, so editing one moves the charge with it.
+ *
+ * Two figures, because the two ride on different conditions. The marker notes explain a bundle,
+ * which every delivery has. The step-map notes explain a step map and the resources its entries
+ * link, which a delivery carrying no inlined step never assembles — so they are charged to the
+ * first entry of that map rather than reserved against a response that will never hold one.
+ */
+const MARKER_NOTES_CHARS = stringifyForResponse({
+  bundle_mode: 'reference',
+  bundle_note: `${MARKER_PREAMBLE} ${IN_RESPONSE_MARKER_NOTE} ${PRIOR_CALL_MARKER_NOTE}`,
+}).length;
+
+const STEP_MAP_NOTES_CHARS = stringifyForResponse({
+  step_techniques_note: STEP_TECHNIQUES_NOTE,
+  resources_note: RESOURCES_BUNDLED_NOTE,
+}).length;
+
 const OPERATION_REFS_NOTE =
   'Ids under `operation_refs` are operations of your role this response carried no body for, because carrying them would have put it past what one tool result may hold. Their rules are in the `rules` list above, so the contract you are held to is complete — what is deferred is the procedure. Fetch one with get_technique { session_index, technique_id } when you reach the step that applies it.';
 
 /**
- * Hold an orchestrator operations bundle to what one response may carry, in place.
+ * Hold a role's operations bundle to what one response may carry, in place.
  *
- * A harness caps a tool result, and `get_workflow` sits on the mandatory startup path, so a bundle
- * past that cap is a call that cannot be read at all rather than one that merely costs too much.
- * What gives is the operation BODIES, taken in document order and stopped at the first that would
- * overflow — the same stop-and-break `get_activity` applies to its eager step techniques, and for
- * the same reason: a contiguous prefix is what a reader can rely on.
+ * A harness caps a tool result, and both role-facing deliveries sit on a path their role cannot
+ * skip — `get_workflow` opens every orchestrator, `get_activity` is how a worker receives its work
+ * — so a bundle past that cap is a call that cannot be read at all rather than one that merely
+ * costs too much. What gives is the operation BODIES, taken in list order and stopped at the first
+ * that would overflow — the same stop-and-break `get_activity` applies to its eager step
+ * techniques, and for the same reason: a contiguous prefix is what a reader can rely on.
  *
- * The `rules` list is never bounded. Those rules are the contract an orchestrator is held to from
- * its first call, while a procedure it has not reached yet is one it can fetch by id when it does.
+ * The `rules` list is never bounded. Those rules are the contract the role is held to from its
+ * first call, while a procedure it has not reached yet is one it can fetch by id when it does.
+ *
+ * `spent` is what the rest of the response has already taken, so the bound is on the whole tool
+ * result rather than on the bundle alone. The bundle is measured as it will ride: an entry a
+ * caller has already collapsed to a marker is priced at the marker, that being what it sends.
  *
  * Returns the refs left out, for the caller to record. An empty list is a bundle that fitted whole.
  */
-function boundOperationsBundle(bundle: Record<string, unknown>, maxChars: number): string[] {
+function boundOperationsBundle(
+  bundle: Record<string, unknown>,
+  maxChars: number,
+  opts: { spent?: number } = {},
+): string[] {
   const operations = bundle['techniques'] as Record<string, unknown> | undefined;
   if (!operations) return [];
-  // The floor is everything the bound cannot move: the rules, the notes, the unresolved list.
+  // The floor is everything the bound cannot move: the rules, the notes, the unresolved list, and
+  // whatever share of the response the caller has already committed.
   const { techniques: _bounded, ...fixed } = bundle;
-  let spent = stringifyForResponse(fixed).length;
+  let spent = stringifyForResponse(fixed).length + (opts.spent ?? 0);
   const kept: Record<string, unknown> = {};
   const deferred: string[] = [];
   for (const [ref, body] of Object.entries(operations)) {
@@ -194,7 +227,8 @@ function boundOperationsBundle(bundle: Record<string, unknown>, maxChars: number
   // could push past is not one.
   const keptRefs = Object.keys(kept);
   const assembled = (): number =>
-    stringifyForResponse({ ...fixed, techniques: kept, operation_refs: deferred, operations_note: OPERATION_REFS_NOTE }).length;
+    stringifyForResponse({ ...fixed, techniques: kept, operation_refs: deferred, operations_note: OPERATION_REFS_NOTE }).length
+    + (opts.spent ?? 0);
   while (keptRefs.length > 0 && assembled() > maxChars) {
     const giving = keptRefs.pop()!;
     delete kept[giving];
@@ -248,6 +282,129 @@ function rulesNotStatedInResponse(
     remaining[name] = body;
   }
   return Object.keys(remaining).length > 0 ? remaining : undefined;
+}
+
+/**
+ * The parts of an activity delivery a bound cannot move, and what they cost it.
+ *
+ * The activity is what the call is for and the rules are the contract the worker is held to, so a
+ * response carries both whole or carries nothing worth reading. Assembled before the procedures
+ * that ride on top of them, because what those may spend is what these leave.
+ */
+interface FixedResponseParts {
+  /** Session index, artifact prefix, fan instance and exit destinations, as delivered. */
+  header: string;
+  /** The workflow's activity-level and universal rules, or a marker for a context holding them. */
+  activityRulesBlock: string;
+  enforcementBlock: string;
+  enforcementNotes: Record<string, string>;
+  /** The activity definition with its synthesized artifact contract. */
+  body: string;
+  artifacts: Array<{ id: string; name: string; audience?: 'human' | 'agent' }>;
+  artifactPrefix: string | undefined;
+  /** Destination per exit id, as the graph names it: an activity, a terminal, a list, or a fan. */
+  exitDestinations: Record<string, unknown>;
+  inheritedRules: string[];
+  /** What the whole of the above costs the response, its separator and its bundle notes included. */
+  chars: number;
+}
+
+async function fixedResponseParts(args: {
+  activity: Activity | undefined;
+  workflow: Workflow | undefined;
+  activityId: string;
+  sessionIndex: string;
+  fanInstance: unknown;
+  workflowDir: string;
+  workflowId: string;
+  activityBody: string;
+  state: SessionFile;
+  newDeliveries: Record<string, string>;
+  scope: string;
+  mayReferBack: boolean;
+}): Promise<FixedResponseParts> {
+  const { activity, workflow, activityId, state, newDeliveries, scope } = args;
+
+  // artifactPrefix is server-computed from the activity filename and is NOT in
+  // the raw activity definition, so surface it in the header (and _meta) — the worker
+  // needs it to name artifacts as {artifactPrefix}-{bare_filename}.
+  const artifactPrefix = (activity as { artifactPrefix?: string } | undefined)?.artifactPrefix;
+
+  // Where each of this activity's exits leads. The exits ride the activity body; their
+  // destinations live in the workflow graph, which a worker never receives — `get_workflow` is
+  // an orchestrator tool. So the routing a worker is asked to report is unresolvable from the
+  // body alone, and this block is what closes that. Destination only, keyed by exit id: the
+  // selection predicates are already in the body, and a second copy of them would drift.
+  const exitDestinations = workflow
+    ? Object.fromEntries(getExitBindings(workflow, activityId).map((b) => [b.exit, b.to]))
+    : {};
+  const headerLines = [`session_index: ${args.sessionIndex}`];
+  if (artifactPrefix) headerLines.push(`artifact_prefix: ${artifactPrefix}`);
+  if (args.fanInstance) {
+    headerLines.push(stringifyForResponse({ fan_instance: args.fanInstance }).trimEnd());
+  }
+  if (Object.keys(exitDestinations).length) {
+    headerLines.push(stringifyForResponse({ exit_destinations: exitDestinations }).trimEnd());
+  }
+  const header = headerLines.join('\n');
+
+  // The activity's artifact contract is SYNTHESIZED from the `## Outputs` of the techniques its
+  // steps bind (activities no longer declare `artifacts[]` — the technique outputs own artifact
+  // identity, AP-43/65). Append the composed block to the activity body so the worker reads an
+  // explicit contract that can never drift from the steps.
+  const artifacts = await composeActivityArtifacts(
+    activity as Parameters<typeof composeActivityArtifacts>[0], args.workflowDir, args.workflowId, activityId,
+  );
+  const body = artifacts.length
+    ? `${args.activityBody}\n${stringifyForResponse({ artifacts })}`
+    : args.activityBody;
+
+  // Payload-borne enforcement hints (#189 C7, R7): the enforcement model (schemas/README) lives
+  // in docs that never ride the wire, so a payload-only reader still infers the SERVER executes
+  // inert fields (guessing it applies `action: set`, unsure who owns auto-advance). Annotate, at
+  // delivery time, only the constructs this activity actually contains — an activity without
+  // them adds nothing. Delivery-side only; no schema change.
+  const enforcementNotes: Record<string, string> = {};
+  if (activity) {
+    const flatSteps = flattenActivitySteps(activity);
+    if (flatSteps.some((s) => (s.kind === 'technique' || s.kind === 'action') && (s.actions?.length ?? 0) > 0)) {
+      enforcementNotes['actions'] =
+        'Action verbs (a kind:action step, or an `actions:` list on a step) are AGENT-executed: you carry them out. The server records the step but applies no action verb and sets no session variable from one.';
+    }
+    if (flatSteps.some((s) => s.kind === 'checkpoint' && s.autoAdvanceMs !== undefined)) {
+      enforcementNotes['auto_advance'] =
+        "A checkpoint declaring defaultOption and autoAdvanceMs is soft. Its auto-advance is SERVER-timed: the server enforces the full autoAdvanceMs timer when you call respond_checkpoint { auto_advance: true }, then applies its defaultOption. Yield the gate and stop — resolving it is not the worker's to do.";
+    }
+  }
+  const enforcementBlock = Object.keys(enforcementNotes).length
+    ? `${stringifyForResponse({ enforcement_notes: enforcementNotes })}\n\n`
+    : '';
+
+  // Worker-facing rules inherited by EVERY activity, injected into every get_activity so a
+  // worker dispatched for a single activity always receives them: the workflow's `rules.activity`
+  // plus the dual-audience `rules.universal`. (`rules.workflow` are orchestrator-only.)
+  const wfRules = (workflow as { rules?: { activity?: string[]; universal?: string[] } } | undefined)?.rules;
+  const inheritedRules = [...(wfRules?.activity ?? []), ...(wfRules?.universal ?? [])];
+  let activityRulesBlock = '';
+  if (inheritedRules.length) {
+    const inheritedRulesHash = contentHash(stringifyForResponse(inheritedRules));
+    const inheritedRulesKey = `activity_rules:${inheritedRulesHash}`;
+    if (args.mayReferBack && deliveredHash(state, inheritedRulesKey, scope) === inheritedRulesHash) {
+      activityRulesBlock = `${stringifyForResponse({ activity_rules: unchangedMarker(inheritedRulesHash) })}\n\n`;
+    } else {
+      newDeliveries[inheritedRulesKey] = inheritedRulesHash;
+      activityRulesBlock = `${stringifyForResponse({ activity_rules: inheritedRules })}\n\n`;
+    }
+  }
+
+  return {
+    header, activityRulesBlock, enforcementBlock, enforcementNotes, body, artifacts, artifactPrefix,
+    exitDestinations, inheritedRules,
+    // The response is the bundle, the separator, then these — and the notes that explain how to
+    // read any bundle, charged here because nothing after this point can refuse them.
+    chars: header.length + '\n\n'.length + activityRulesBlock.length + enforcementBlock.length
+      + body.length + SEPARATOR.length + MARKER_NOTES_CHARS,
+  };
 }
 
 /**
@@ -836,7 +993,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
       // What is left for the bundle once the metadata and the separator have their share. The bound
       // is on the response, because the response is what a harness refuses.
-      const responseBound = config.maxWorkflowResponseChars ?? DEFAULT_MAX_WORKFLOW_RESPONSE_CHARS;
+      const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
       const deferredOps = boundOperationsBundle(
         opsBundle, responseBound - stringifyForResponse(summaryData).length - SEPARATOR.length,
       );
@@ -895,7 +1052,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         delivery: opsBlock === opsText ? 'full' : 'unchanged',
         resolved_techniques: orchestratorTechniques.length,
         bundle_chars: opsText.length,
-        max_response_chars: config.maxWorkflowResponseChars ?? DEFAULT_MAX_WORKFLOW_RESPONSE_CHARS,
+        max_response_chars: config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS,
         deferred_operations: deferredOps.length,
         response_chars: preamble.length + stringifyForResponse(summaryData).length,
       });
@@ -1565,7 +1722,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). ' +
+  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies) alongside a bound on what one tool result may carry — whichever binds first. The activity and your role\'s rules always ride; what a bound leaves out is procedure, and every piece of it is fetchable: operations under `operation_refs` with get_technique { technique_id }, a step\'s own technique with get_technique { step_id }, a resource under `resource_refs` with get_resource. ' +
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
@@ -1682,6 +1839,30 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
       const ownTechRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
       const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
+
+      // What this response carries whatever a bound does, assembled before anything the bound can
+      // move. The activity is what the call is for and the rules are the contract the worker is
+      // held to, so neither gives way; everything below is priced against what they leave.
+      const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
+      const fixed = await fixedResponseParts({
+        activity, workflow: result.success ? result.value : undefined, activityId: activity_id,
+        sessionIndex: session_index, fanInstance, workflowDir: config.workflowDir, workflowId: workflow_id,
+        activityBody, state, newDeliveries, scope, mayReferBack,
+      });
+      // The handover reading rides the same tool result as the delivery it reports on, so what the
+      // bound leaves for content is what remains after it. Reserved at the widest it can render:
+      // its fields are fixed and only their digits vary, and one delivery cannot add more than one
+      // whole response to the tally it reports.
+      const standBeforeDelivery = batchState(state, scope, bound);
+      const responseFloor = fixed.chars + '\n\n'.length + stringifyForResponse({
+        batch: batchReading(
+          {
+            activities: [...standBeforeDelivery.activities, activity_id],
+            chars: standBeforeDelivery.chars + responseBound, mayContinue: false, bounded: true,
+          },
+          bound, false,
+        ),
+      }).length;
       // A gate is reachable from a gate step, and routines are materialised by the load, so the
       // question is answered over the steps the run declares. A workflow holding none takes
       // neither protocol — and a worker that raises a decision its activity never declared fetches
@@ -1716,35 +1897,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // it to this list rather than restating it — see `statedRules` and its use below.
       const responseRules = statedRules(bundleData['rules']);
 
-      // Per-technique dedup: each composed technique in the bundle is hashed individually, so an
-      // activity that introduces one new technique still receives that one in full while the
-      // inherited rest collapse to markers.
-      const bundleTechniques = bundleData['techniques'] as Record<string, unknown> | undefined;
-      if (bundleTechniques) {
-        for (const [key, body] of Object.entries(bundleTechniques)) {
-          const hash = contentHash(stringifyForResponse(body));
-          const ledgerKey = `bundle:${key}`;
-          if (mayReferBack && deliveredHash(state, ledgerKey, scope) === hash) {
-            bundleTechniques[key] = unchangedMarker(hash);
-            continue;
-          }
-          newDeliveries[ledgerKey] = hash;
-          // Several of these bodies inherit the same contract blocks from one ancestor group, so
-          // the second copy onward collapses against the first. The pass is response-local, which
-          // is what makes the marker readable: the copy it points at is in this same payload. The
-          // ledger key above stays keyed on the FULL body, so what a later call compares against
-          // does not depend on which entry happened to carry a shared block this time.
-          if (body && typeof body === 'object') {
-            bundleTechniques[key] = dedupTechniqueBlocks(
-              body as Record<string, unknown>, state, newDeliveries, scope, false,
-            );
-          }
-        }
-      }
       // The rules bundle varies with the activity's own techniques, and activities alternate
       // between rule sets across a walk — so rules entries are keyed by CONTENT (set semantics,
       // `bundle:rules:<hash>`): any rule set this session+agent has ever received collapses,
-      // not just the most recently delivered one.
+      // not just the most recently delivered one. Collapsed before the bound reads the bundle, so
+      // a repeat delivery is priced at the marker it sends rather than at the list it stands for.
       if (bundleData['rules'] !== undefined) {
         const rulesHash = contentHash(stringifyForResponse(bundleData['rules']));
         const rulesKey = `bundle:rules:${rulesHash}`;
@@ -1755,14 +1912,62 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
+      // Per-technique dedup: each composed technique in the bundle is hashed individually, so an
+      // activity that introduces one new technique still receives that one in full while the
+      // inherited rest collapse to markers.
+      //
+      // Each entry's ledger writes are held aside until the bound below has said which entries the
+      // response carries. A body left out with its delivery already recorded would collapse a later
+      // call to a marker for bytes this worker never received — and because what the bound leaves
+      // out is a contiguous tail, an entry that survives it can only ever point at another that did.
+      const bundleTechniques = bundleData['techniques'] as Record<string, unknown> | undefined;
+      const operationDeliveries = new Map<string, Record<string, string>>();
+      if (bundleTechniques) {
+        const responseLocal: Record<string, string> = {};
+        for (const [key, body] of Object.entries(bundleTechniques)) {
+          const hash = contentHash(stringifyForResponse(body));
+          const ledgerKey = `bundle:${key}`;
+          if (mayReferBack && deliveredHash(state, ledgerKey, scope) === hash) {
+            bundleTechniques[key] = unchangedMarker(hash);
+            continue;
+          }
+          const own: Record<string, string> = { [ledgerKey]: hash };
+          // Several of these bodies inherit the same contract blocks from one ancestor group, so
+          // the second copy onward collapses against the first. The pass is response-local, which
+          // is what makes the marker readable: the copy it points at is in this same payload. The
+          // ledger key above stays keyed on the FULL body, so what a later call compares against
+          // does not depend on which entry happened to carry a shared block this time.
+          if (body && typeof body === 'object') {
+            const shared = { ...responseLocal };
+            bundleTechniques[key] = dedupTechniqueBlocks(
+              body as Record<string, unknown>, state, shared, scope, false,
+            );
+            for (const [blockKey, blockHash] of Object.entries(shared)) {
+              if (responseLocal[blockKey] !== blockHash) own[blockKey] = blockHash;
+            }
+            Object.assign(responseLocal, shared);
+          }
+          operationDeliveries.set(key, own);
+        }
+      }
+
+      // Hold the whole response to what one tool result may carry. A harness caps that, `get_activity`
+      // is the call a dispatched worker makes to receive its work, and the activity and the rules
+      // have already taken their share — so what gives is operation BODIES, in list order, stopped at
+      // the first that would overflow. Their rules ride the response whatever this defers, and each
+      // body it defers is served by `get_technique { technique_id }`.
+      const deferredOperations = boundOperationsBundle(bundleData, responseBound, { spent: responseFloor });
+      for (const ref of deferredOperations) operationDeliveries.delete(ref);
+      for (const own of operationDeliveries.values()) Object.assign(newDeliveries, own);
+
       // What the worker bundle costs this response, markers included: it opens the eager tally below.
       const workerBundleChars = stringifyForResponse(bundleData).length;
 
       // Automatic, per-agent context-derived step-technique bundling (#189 C1c): every activity
       // eagerly inlines its small, ungated step-bound techniques — no per-activity opt-in. The
-      // eager-delivery budget is a CUMULATIVE per-activity character budget derived from the
-      // worker's declared `context_tokens` (availability headroom × a token→char factor, both
-      // server config): ungated technique steps are inlined in DOCUMENT ORDER until adding the
+      // eager-delivery budget is a CUMULATIVE per-activity character budget, the lesser of the
+      // worker's declared window and what one tool result may carry (see `eagerBudgetChars`):
+      // ungated technique steps are inlined in DOCUMENT ORDER until adding the
       // next would overflow the budget; the remainder stay lazy via get_technique. A step gated
       // by `when`/`condition` (on itself or an enclosing loop) may never execute and stays lazy
       // regardless of size. A per-activity `bundleTechniques.maxChars` is retained as an explicit
@@ -1790,11 +1995,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // size cap. Absent config means no per-technique cap (only the cumulative budget applies).
       const optedOut = bundleConfig?.maxChars === 0;
       const perTechniqueCap = bundleConfig && bundleConfig.maxChars > 0 ? bundleConfig.maxChars : Infinity;
-      // Cumulative eager-delivery budget in characters, derived from the caller's own window.
-      // Headroom fraction and chars-per-token are server config with in-code fallbacks.
+      // Cumulative eager-delivery budget in characters, the lesser of two limits that ask different
+      // questions. The window budget asks how much of its own context a worker may spend on inlined
+      // content, derived from the caller's declared window (headroom fraction and chars-per-token
+      // are server config with in-code fallbacks). The response bound asks what one tool result may
+      // hold at all, and is what the harness enforces: a delivery past it is refused whole, so a
+      // window that admits more than the response can carry is a budget that never binds in time.
+      // What the bound leaves out stays fetchable — a step by `get_technique { step_id }`, a
+      // resource by `get_resource` — which is what makes leaving it out safe rather than merely
+      // cheap.
       const headroomFraction = config.bundleHeadroomFraction ?? DEFAULT_BUNDLE_HEADROOM_FRACTION;
       const charsPerToken = config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN;
-      const eagerBudgetChars = context_tokens * headroomFraction * charsPerToken;
+      const eagerBudgetChars = Math.min(
+        context_tokens * headroomFraction * charsPerToken,
+        responseBound - responseFloor,
+      );
       // Provenance resolve work, done once for the whole delivery. The producer scan reads every
       // bound op in the workflow to learn its declared outputs, and its answer does not vary with
       // the step being decorated — only the step's document-order position does. One index therefore
@@ -1891,17 +2106,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // ▼ STEP arrival marker: each entry is a discrete, self-describing unit that substitutes
           // for the intentional get_technique { step_id } call inlining removes (#189 C1c(C)1).
           const stepMarker = `▼ STEP ${step.id!} · technique ${techniqueId}`;
+          // What this entry adds to the response beyond itself: the notes that explain a step map
+          // and its resources, which only the first entry brings into being.
+          const mapNotesCost = Object.keys(bundledStepTechniques).length === 0 ? STEP_MAP_NOTES_CHARS : 0;
           if (alreadyDelivered) {
             // A reference marker is near-zero cost — it does not draw down the eager budget.
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...unchangedMarker(hash) };
+            spentChars += mapNotesCost;
           } else {
             // Full content draws down the cumulative budget. Inline ungated step techniques in
             // document order and STOP at the first one that would overflow the remaining budget
             // (stop-and-break) — the remainder stay lazy. This preserves the contiguous
             // document-order prefix the spec and docs promise, rather than skipping a large
             // technique to squeeze in a later smaller one.
-            if (spentChars + text.length > eagerBudgetChars) break;
-            spentChars += text.length;
+            if (spentChars + text.length + mapNotesCost > eagerBudgetChars) break;
+            spentChars += text.length + mapNotesCost;
             newDeliveries[ledgerKey] = hash;
             // The arrival marker leads the block; the composed technique fields follow at the same
             // level, so a bundled entry reads like a get_technique fetch with a step header, less
@@ -2057,8 +2276,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // The note names whichever referents this response can actually produce. A second composed
       // technique anywhere in the payload is what makes an in-response marker possible: the shared
       // block pass runs across the operations bundle and the step map alike, so either one holding
-      // two entries is enough.
-      const composedInResponse = bundledSteps.length + Object.keys(bundleTechniques ?? {}).length;
+      // two entries is enough. Counted over the operations the bound admitted, an entry left out
+      // being one no marker in this response can point at.
+      const carriedOperations = (bundleData['techniques'] ?? {}) as Record<string, unknown>;
+      const composedInResponse = bundledSteps.length + Object.keys(carriedOperations).length;
       const markerNotes = [
         ...(composedInResponse > 1 ? [IN_RESPONSE_MARKER_NOTE] : []),
         ...(mayReferBack ? [PRIOR_CALL_MARKER_NOTE] : []),
@@ -2071,83 +2292,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             ...bundleData,
           }
         : bundleData;
-      const opsSection = stringifyForResponse(opsData) + '\n\n---\n\n';
-
-      // artifactPrefix is server-computed from the activity filename and is NOT in
-      // the raw activity definition, so surface it in the header (and _meta) — the worker
-      // needs it to name artifacts as {artifactPrefix}-{bare_filename}.
-      const artifactPrefix = (activity as { artifactPrefix?: string } | undefined)?.artifactPrefix;
-
-      // Where each of this activity's exits leads. The exits ride the activity body; their
-      // destinations live in the workflow graph, which a worker never receives — `get_workflow` is
-      // an orchestrator tool. So the routing a worker is asked to report is unresolvable from the
-      // body alone, and this block is what closes that. Destination only, keyed by exit id: the
-      // selection predicates are already in the body, and a second copy of them would drift.
-      const exitDestinationsByExit = result.success
-        ? Object.fromEntries(getExitBindings(result.value, activity_id).map((b) => [b.exit, b.to]))
-        : {};
-      const headerLines = [`session_index: ${session_index}`];
-      if (artifactPrefix) headerLines.push(`artifact_prefix: ${artifactPrefix}`);
-      if (fanInstance) {
-        headerLines.push(stringifyForResponse({ fan_instance: fanInstance }).trimEnd());
-      }
-      if (Object.keys(exitDestinationsByExit).length) {
-        headerLines.push(stringifyForResponse({ exit_destinations: exitDestinationsByExit }).trimEnd());
-      }
-      const header = headerLines.join('\n');
-
-      // The activity's artifact contract is SYNTHESIZED from the `## Outputs` of the techniques its
-      // steps bind (activities no longer declare `artifacts[]` — the technique outputs own artifact
-      // identity, AP-43/65). Append the composed block to the activity body so the worker reads an
-      // explicit contract that can never drift from the steps.
-      const composedArtifacts = await composeActivityArtifacts(
-        activity as Parameters<typeof composeActivityArtifacts>[0], config.workflowDir, workflow_id, activity_id,
-      );
-      const activityBodyWithArtifacts = composedArtifacts.length
-        ? `${activityBody}\n${stringifyForResponse({ artifacts: composedArtifacts })}`
-        : activityBody;
-
-      // Payload-borne enforcement hints (#189 C7, R7): the enforcement model (schemas/README) lives
-      // in docs that never ride the wire, so a payload-only reader still infers the SERVER executes
-      // inert fields (guessing it applies `action: set`, unsure who owns auto-advance). Annotate, at
-      // delivery time, only the constructs this activity actually contains — an activity without
-      // them adds nothing. Delivery-side only; no schema change.
-      const enforcementNotes: Record<string, string> = {};
-      if (activity) {
-        const flatSteps = flattenActivitySteps(activity);
-        if (flatSteps.some((s) => (s.kind === 'technique' || s.kind === 'action') && (s.actions?.length ?? 0) > 0)) {
-          enforcementNotes['actions'] =
-            'Action verbs (a kind:action step, or an `actions:` list on a step) are AGENT-executed: you carry them out. The server records the step but applies no action verb and sets no session variable from one.';
-        }
-        if (flatSteps.some((s) => s.kind === 'checkpoint' && s.autoAdvanceMs !== undefined)) {
-          enforcementNotes['auto_advance'] =
-            "A checkpoint declaring defaultOption and autoAdvanceMs is soft. Its auto-advance is SERVER-timed: the server enforces the full autoAdvanceMs timer when you call respond_checkpoint { auto_advance: true }, then applies its defaultOption. Yield the gate and stop — resolving it is not the worker's to do.";
-        }
-      }
-      const enforcementBlock = Object.keys(enforcementNotes).length
-        ? `${stringifyForResponse({ enforcement_notes: enforcementNotes })}\n\n`
-        : '';
-
-      // Worker-facing rules inherited by EVERY activity, injected into every get_activity so a
-      // worker dispatched for a single activity always receives them: the workflow's `rules.activity`
-      // plus the dual-audience `rules.universal`. (`rules.workflow` are orchestrator-only.)
-      const wfRules = result.success ? (result.value as { rules?: { activity?: string[]; universal?: string[] } }).rules : undefined;
-      const inheritedRules = [...(wfRules?.activity ?? []), ...(wfRules?.universal ?? [])];
-      let activityRulesBlock = '';
-      if (inheritedRules.length) {
-        const inheritedRulesHash = contentHash(stringifyForResponse(inheritedRules));
-        const inheritedRulesKey = `activity_rules:${inheritedRulesHash}`;
-        if (mayReferBack && deliveredHash(state, inheritedRulesKey, scope) === inheritedRulesHash) {
-          activityRulesBlock = `${stringifyForResponse({ activity_rules: unchangedMarker(inheritedRulesHash) })}\n\n`;
-        } else {
-          newDeliveries[inheritedRulesKey] = inheritedRulesHash;
-          activityRulesBlock = `${stringifyForResponse({ activity_rules: inheritedRules })}\n\n`;
-        }
-      }
+      const opsSection = stringifyForResponse(opsData) + SEPARATOR;
 
       // Assembled before the save so the dispatch event can record what this dispatch actually
       // cost — `chars` on an activity's fresh and resume events is the before/after measurement.
-      const responseText = `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${activityBodyWithArtifacts}`;
+      const responseText = `${opsSection}${fixed.header}\n\n${fixed.activityRulesBlock}${fixed.enforcementBlock}${fixed.body}`;
 
       // Persist against a FRESH load, not the snapshot captured before composition. The store
       // refuses a write built on a superseded read, and composition awaits dozens of FS reads:
@@ -2166,6 +2315,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         bundled_steps: bundledSteps.length,
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
+        // The two figures that say which limit shaped this delivery: what one tool result may
+        // carry, and how much of it the activity and the contract had already taken. A budget at or
+        // below zero is an activity whose definition and rules fill a response on their own.
+        response_bound_chars: responseBound,
+        fixed_chars: responseFloor,
+        // Operations of the worker's role contract this response carries no body for. Their ids are
+        // under `operation_refs` in the payload; `get_technique { technique_id }` serves each.
+        deferred_operations: deferredOperations.length,
         // The role contract's share of this response — the part that does not vary with the
         // activity. Read against the response length it rides in, it is the fixed and variable
         // split of a delivery, which is the reading the cost gate prices a change by. On the
@@ -2264,12 +2421,32 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         response_chars: responseText.length + batchBlock.length,
       });
 
+      // A response whose contract and activity alone exceed the bound has nothing left to defer:
+      // every procedure is already an id, and what remains is the rules and the definition, which
+      // the worker cannot do the activity without. It goes out over the bound rather than not at
+      // all, and says so here, because a harness refusing it is the failure this bound exists to
+      // prevent and a silent overflow is that failure arriving unexplained. An activity that
+      // reaches this is one whose definition has outgrown a single delivery.
+      if (responseText.length + batchBlock.length > responseBound) {
+        logWarn('Activity response over its bound with every procedure deferred', {
+          session_index, activity: activity_id, agentId: scope,
+          bound: responseBound,
+          fixed_chars: responseFloor,
+          body_chars: fixed.body.length,
+          response_chars: responseText.length + batchBlock.length,
+          deferred_operations: deferredOperations.length,
+        });
+      }
+
       return {
         content: [{ type: 'text' as const, text: responseText + batchBlock }],
         _meta: {
-          session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
+          session_index, validation, artifact_prefix: fixed.artifactPrefix, artifacts: fixed.artifacts, activity_rules: fixed.inheritedRules,
           dispatch, batch, delivery_cost: deliveryCost,
-          ...(Object.keys(exitDestinationsByExit).length > 0 ? { exit_destinations: exitDestinationsByExit } : {}),
+          // Which operations of the role contract carry no body here, so a caller asserts the bound
+          // without parsing the bundle for an absence.
+          ...(deferredOperations.length > 0 ? { operation_refs: deferredOperations } : {}),
+          ...(Object.keys(fixed.exitDestinations).length > 0 ? { exit_destinations: fixed.exitDestinations } : {}),
           ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
           // Why each gated technique step stayed lazy. On the response and not only the log because a
           // caller cannot assert what it has to scrape stderr to read, and `unbound` is the reading
@@ -2279,7 +2456,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
           ...(bundledResourceDeliveries.length > 0 ? { bundled_resources: bundledResourceDeliveries.map(r => r.resourceId) } : {}),
           ...(resourceRefIds.length > 0 ? { resource_refs: resourceRefIds } : {}),
-          ...(Object.keys(enforcementNotes).length > 0 ? { enforcement_notes: enforcementNotes } : {}),
+          ...(Object.keys(fixed.enforcementNotes).length > 0 ? { enforcement_notes: fixed.enforcementNotes } : {}),
         },
       };
     }), traceOpts));

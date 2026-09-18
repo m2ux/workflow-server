@@ -23,12 +23,15 @@ describe.skipIf(!liveCorpusRoot())('batch duration smoke (#407)', () => {
     expect(batched.dispatches).toBe(1);
 
     // Content collapses against what the one context already holds. The floor sits close under the
-    // measured 16.6%, so a regression that quietly halves the saving fails here.
+    // measured 12.2%, so a regression that quietly halves the saving fails here.
     //
     // What a batch saves is bounded by how much repetition a fresh delivery carries, so removing
     // repetition from every delivery lowers this ratio while lowering both arms — 18.7% over
     // 275,698 characters became 16.6% over 254,613 when the shared contract blocks stopped arriving
-    // once per technique (#801). A floor read as an ambition would have refused that.
+    // once per technique (#801), and 15.7% over 250,174 became 12.2% over 165,540 when a delivery
+    // was held to what one tool result may carry (#812). A floor read as an ambition would have
+    // refused both: the second lowered the ratio by removing a third of the characters the ratio is
+    // taken over, which is the change working rather than a regression.
     //
     // The saving is composition-sensitive, which is why the floor is stated against a measurement
     // rather than an ambition. Collapse works item by item on what a held context already has, so
@@ -38,6 +41,6 @@ describe.skipIf(!liveCorpusRoot())('batch duration smoke (#407)', () => {
     // 24,142 characters of this run's collapse, because a bundle that grew is a bundle that no longer
     // matches. Both halves are real; the tension between them is #603.
     const charSavingPct = ((perActivity.deliveredChars - batched.deliveredChars) / perActivity.deliveredChars) * 100;
-    expect(charSavingPct).toBeGreaterThan(15);
+    expect(charSavingPct).toBeGreaterThan(11);
   }, 120_000);
 });
