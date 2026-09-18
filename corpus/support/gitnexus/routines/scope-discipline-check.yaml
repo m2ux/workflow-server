@@ -10,7 +10,7 @@ inputs:
     description: Which diff the affected flows are taken from — the working tree, the index, both, or a comparison against another ref.
     default: all
   - id: requirements_scope
-    description: the processes / functional areas the work package is meant to touch
+    description: The execution flows and functional areas the change is meant to touch.
 
 outputs:
   - id: scope_findings

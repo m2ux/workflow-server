@@ -74,7 +74,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 ### 4. Create Index
 
 - Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one `### [Block N — file:line]` subsection per block, each title linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
-- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(name: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
+- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
 - Write index to the `{change_block_index}` under `{planning_folder_path}`
 
 ### 5. Collect Flagged

@@ -15,7 +15,7 @@ changed symbols, changed files, affected execution flows, risk level
 
 ### requirements_scope
 
-the processes / functional areas the work package is meant to touch
+The execution flows and functional areas the change is meant to touch.
 
 ## Outputs
 

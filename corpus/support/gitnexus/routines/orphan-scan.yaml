@@ -7,7 +7,7 @@ description: >-
 
 inputs:
   - id: changed_files
-    description: the set of files changed by the work package
+    description: The files the change under review touches.
 
 outputs:
   - id: orphan_candidates

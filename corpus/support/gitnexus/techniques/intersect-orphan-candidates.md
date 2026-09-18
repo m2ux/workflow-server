@@ -15,7 +15,7 @@ Symbols the graph holds no incoming reference to, each with the file it sits in.
 
 ### changed_files
 
-the set of files changed by the work package
+The files the change under review touches.
 
 ## Outputs
 

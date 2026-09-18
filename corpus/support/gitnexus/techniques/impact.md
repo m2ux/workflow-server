@@ -15,7 +15,7 @@ the symbol name to analyse
 
 ### direction
 
-`'upstream'` (dependents — what breaks if target changes; the work-package default) or `'downstream'` (dependencies)
+`'upstream'` (dependents — what breaks if `{target}` changes) or `'downstream'` (what `{target}` itself depends on)
 
 ### max_depth
 
