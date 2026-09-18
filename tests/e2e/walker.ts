@@ -184,6 +184,8 @@ export interface GateRefetch {
   /** The server's own fresh/resume discriminator for that arrival. */
   dispatch: string;
   chars: number;
+  /** The role contract's share of that response — what a re-request repeats, and so what collapses. */
+  contractChars: number;
 }
 
 export interface WalkOptions {
@@ -359,7 +361,7 @@ async function getActivity(
   /** The frontier entry this call is served for, where several are in flight. */
   activityId?: string,
 ): Promise<{
-  def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number;
+  def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number; contractChars: number;
   dispatch?: string | undefined; lazyGates?: GateUnansweredCounts | undefined;
 }> {
   const res = await client.callTool({
@@ -385,7 +387,11 @@ async function getActivity(
   const bundledSteps = ((res._meta as { bundled_steps?: string[] } | undefined)?.bundled_steps) ?? [];
   // Why the server left each gated technique step lazy. Absent when every gate had an answer.
   const lazyGates = (res._meta as { lazy_gates?: GateUnansweredCounts } | undefined)?.lazy_gates;
-  return { def, unresolved, bundledSteps, chars, dispatch, lazyGates };
+  // The role contract's share of this response — the part every delivery to one context repeats,
+  // and so the part a reference delivery collapses. The rest varies with the activity.
+  const contractChars = (res._meta as { delivery_cost?: { worker_bundle_chars?: number } } | undefined)
+    ?.delivery_cost?.worker_bundle_chars ?? 0;
+  return { def, unresolved, bundledSteps, chars, contractChars, dispatch, lazyGates };
 }
 
 async function transition(
@@ -556,6 +562,7 @@ async function executeActivitySteps(
         agentId: worker.agentId,
         dispatch: again.dispatch ?? 'unrecorded',
         chars: again.chars,
+        contractChars: again.contractChars,
       });
     }
   };

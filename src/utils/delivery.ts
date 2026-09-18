@@ -34,8 +34,11 @@ import { stringifyForResponse } from './serialization.js';
  * `<hash>`-suffixed keys are content-keyed — the key IS the content hash, so a
  * changed payload gets a different key and delivers in full; no invalidation logic.
  *
- * Full content is always recoverable: `get_activity { bundle: 'full' }`,
- * `get_technique { full: true }`, `get_resource { full: true }`.
+ * Every marked item is recoverable one at a time — `get_technique { full: true }`,
+ * `get_resource { full: true }` — which is the route a context that lost content takes.
+ * `get_activity { bundle: 'full' }` suppresses the markers for a whole delivery, and that delivery
+ * is held to what one tool result may carry like any other, so it re-sends what a response can
+ * carry rather than everything the session has sent.
  *
  * A response-local marker points at an earlier entry of the same response and needs no ledger; see
  * docs/resource-resolution-model.md § Reference Delivery.

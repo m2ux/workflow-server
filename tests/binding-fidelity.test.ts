@@ -85,14 +85,23 @@ describe('dead-output scoping', () => {
     expect(consumerReaches('codebase-wiki/techniques/query.md', 'prism/techniques/plan-analysis.md')).toBe(false);
   });
 
-  it('scopes a nested citation to the workflow, not the grouping folder', () => {
+  it('reads a key as the namespace it names, however the tree above that namespace is arranged', () => {
+    // A key carries the reference that reaches a namespace, so a workflow below a grouping folder
+    // is named without it and a library whose name a second directory claims is named by its path.
+    // The rule reads back what the citation wrote, or a consumer matches nothing across files.
     expect(consumerReaches(
-      'security/audits/prism/techniques/plan-analysis.md',
-      'security/audits/prism/techniques/present-result.md',
+      'prism/techniques/plan-analysis.md',
+      'prism/techniques/generate-report.md',
+    )).toBe(true);
+    // Two libraries of one name are two namespaces, and a finding in one is not a finding in the
+    // other — the whole point of keying a colliding pair on the path.
+    expect(consumerReaches(
+      'left/twin/techniques/op.md',
+      'left/twin/techniques/other.md',
     )).toBe(true);
     expect(consumerReaches(
-      'security/audits/prism/techniques/plan-analysis.md',
-      'security/wiki/codebase-wiki/techniques/query.md',
+      'left/twin/techniques/op.md',
+      'right/twin/techniques/op.md',
     )).toBe(false);
   });
 });

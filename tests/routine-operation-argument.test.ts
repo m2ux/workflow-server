@@ -206,8 +206,90 @@ describe('a parameter standing to the right of a comparison', () => {
       .toThrow(/carries a quote/);
   });
 
-  it('still rewrites the left side, which is a bag path', () => {
-    expect(gateAfter('unit_pipeline_mode == completion', 'full-prism')).toBe('full-prism == completion');
+  it('settles the comparison where the parameter heads it, the left side taking no value', () => {
+    expect(gateAfter('unit_pipeline_mode == completion', 'full-prism')).toBe('false');
+  });
+});
+
+describe('a parameter standing to the left of a comparison', () => {
+  const gated = (when: string, inputs = [{ id: 'unit_pipeline_mode', description: 'Which pipeline a unit belongs to.' }]): Routine => routine({
+    id: 'gated-pass',
+    inputs,
+    steps: [{ kind: 'action', id: 'note', when, actions: [{ action: 'message', message: 'noted' }] }] as Step[],
+  });
+
+  const gateAfter = (when: string, argument?: string | number | boolean): string => {
+    const host = activity([
+      {
+        kind: 'routine', id: 'pass', routine: 'gated-pass',
+        ...(argument === undefined ? {} : { with: { unit_pipeline_mode: argument } }),
+      },
+    ] as Step[]);
+    materializeActivityRoutines(host, lookupFrom([gated(when)]), 'wf');
+    return host.steps![0]!.when!;
+  };
+
+  it('folds to the verdict the dialect gives the two literals', () => {
+    expect(gateAfter('unit_pipeline_mode == "behavioral"', 'behavioral')).toBe('true');
+    expect(gateAfter('unit_pipeline_mode == "behavioral"', 'full-prism')).toBe('false');
+    expect(gateAfter('unit_pipeline_mode != "behavioral"', 'full-prism')).toBe('true');
+  });
+
+  it('reads a bare right operand as the characters it spells, as the dialect does', () => {
+    expect(gateAfter('unit_pipeline_mode == behavioral', 'behavioral')).toBe('true');
+  });
+
+  it('folds a boolean and a number against the dialect\'s own coercion', () => {
+    expect(gateAfter('unit_pipeline_mode == true', true)).toBe('true');
+    expect(gateAfter('unit_pipeline_mode > 2', 3)).toBe('true');
+    expect(gateAfter('unit_pipeline_mode > 2', 1)).toBe('false');
+  });
+
+  it('folds one operand of a compound gate and leaves the host\'s own paths standing', () => {
+    expect(gateAfter('unit_pipeline_mode == "behavioral" && review_passed == true', 'behavioral'))
+      .toBe('true && review_passed == true');
+    expect(gateAfter('!(unit_pipeline_mode == "behavioral") || review_passed', 'full-prism'))
+      .toBe('!(false) || review_passed');
+  });
+
+  it('folds both sides where the site bound each of them', () => {
+    const host = activity([
+      {
+        kind: 'routine', id: 'pass', routine: 'gated-pass',
+        with: { unit_pipeline_mode: 'behavioral', compared_mode: 'behavioral' },
+      },
+    ] as Step[]);
+    materializeActivityRoutines(host, lookupFrom([gated('unit_pipeline_mode == compared_mode', [
+      { id: 'unit_pipeline_mode', description: 'Which pipeline a unit belongs to.' },
+      { id: 'compared_mode', description: 'The pipeline it is held against.' },
+    ])]), 'wf');
+    expect(host.steps![0]!.when!).toBe('true');
+  });
+
+  it('keeps the bag path where the parameter stands alone, which the dialect reads as truthiness', () => {
+    expect(gateAfter('unit_pipeline_mode', 'behavioral')).toBe('behavioral');
+    expect(gateAfter('!unit_pipeline_mode', 'behavioral')).toBe('!behavioral');
+  });
+
+  it('keeps the bag path where the site bound a name, whose comparison the host settles', () => {
+    expect(gateAfter('unit_pipeline_mode == "behavioral"', '{chosen_mode}'))
+      .toBe('chosen_mode == "behavioral"');
+  });
+
+  it('keeps the bag path where the site bound nothing, the name taking the host\'s value', () => {
+    expect(gateAfter('unit_pipeline_mode == "behavioral"')).toBe('unit_pipeline_mode == "behavioral"');
+  });
+
+  it('keeps the bag path where the parameter heads a dotted address', () => {
+    expect(gateAfter('unit_pipeline_mode.tail == "behavioral"', 'behavioral'))
+      .toBe('behavioral.tail == "behavioral"');
+  });
+
+  it('refuses an operand the dialect cannot read beside a parameter bound to a literal', () => {
+    expect(() => gateAfter('unit_pipeline_mode == ?', 'behavioral'))
+      .toThrow(/not a value the dialect reads/);
+    expect(() => gateAfter('unit_pipeline_mode == 5abc', 'behavioral'))
+      .toThrow(/not a value the dialect reads/);
   });
 });
 

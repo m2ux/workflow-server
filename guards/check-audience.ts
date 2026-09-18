@@ -101,7 +101,7 @@ async function loadWorkflowTechniques(techniquesDir: string): Promise<Array<{ id
 export async function collectAudienceViolations(root: string = DEFAULT_ROOT): Promise<AudienceViolation[]> {
   const out: AudienceViolation[] = [];
   let scanned = 0;
-  for (const { id: workflow, dir } of corpusNamespaces(root)) {
+  for (const { ref: workflow, dir } of corpusNamespaces(root)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const { id, technique } of await loadWorkflowTechniques(techniquesDir)) {

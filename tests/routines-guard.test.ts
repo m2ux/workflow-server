@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { writeLoadableWorkflowFixture, writeRoutineFixture } from './corpus-fixture.js';
 import { collectRoutineFindings } from '../guards/check-routines.js';
 import { consumerReaches } from '../guards/check-binding-fidelity.js';
-import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
+import { namespaceRefFromCitePath } from '../src/loaders/corpus-index.js';
 import type { Finding } from '../guards/guard-protocol.js';
 
 /**
@@ -583,7 +583,7 @@ steps:
  * A routine file is addressable by its path, which is what lets a guard reason about it.
  *
  * `routines/` sits beside `activities/` and `techniques/` as a directory a workflow owns, and the
- * resolver that names the owning workflow from a corpus path is the one place that set is spelled.
+ * resolver that names the owning namespace from a site key is the one place that set is spelled.
  * Left out of it, a routine path resolves to no workflow at all — and every rule phrased as "the
  * consumer has to reach the file it closes a finding on" then refuses a routine silently, because
  * a missing workflow fails that test the same way an unrelated one does.
@@ -593,9 +593,9 @@ steps:
  */
 describe('a routine path names the workflow that owns it', () => {
   it('resolves the owning workflow, as an activity or technique path does', () => {
-    expect(workflowIdFromCorpusPath('work-package/routines/converge-assumptions.yaml')).toBe('work-package');
-    expect(workflowIdFromCorpusPath('work-package/activities/04-research.yaml')).toBe('work-package');
-    expect(workflowIdFromCorpusPath('work-package/techniques/analyse-challenge/combine.md')).toBe('work-package');
+    expect(namespaceRefFromCitePath('work-package/routines/converge-assumptions.yaml')).toBe('work-package');
+    expect(namespaceRefFromCitePath('work-package/activities/04-research.yaml')).toBe('work-package');
+    expect(namespaceRefFromCitePath('work-package/techniques/analyse-challenge/combine.md')).toBe('work-package');
   });
 });
 
