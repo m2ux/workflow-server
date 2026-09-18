@@ -1038,7 +1038,7 @@ function collectPathViolations(): Violation[] {
   for (const { rel, wf, activityId, path } of sites) {
     const [head, member] = path.split('.');
     if (!head || !member || /^\d+$/.test(member)) continue;
-    const key = `${rel} ${path}`;
+    const key = `${rel} ${path}`;
     if (seen.has(key)) continue;
     seen.add(key);
     for (const producer of producers.get(head) ?? []) {
