@@ -50,6 +50,12 @@
  *   to only by other routines has no referring activity file and the rule returns nothing, which is
  *   a guard with no verdict rather than a wrong one.
  *
+ *   A library namespace is a home of its own, on the terms the shared home is one. It declares no
+ *   workflow, so no activity of its own ever reaches a routine and the owner computation can only
+ *   send the file somewhere else. What earns it is the body: a run composing that library's
+ *   operations sits beside them, and one binding none of them is governed by the owner rule like
+ *   any other.
+ *
  * Findings are guard findings rather than load failures, which is the recorded decision: the
  * contract derivation stays a guard's business, so a routine contradicting its signature fails a
  * guard run and a workflow carrying it still loads.
@@ -63,7 +69,7 @@ import { parseDefinition } from '../src/utils/serialization.js';
 import type { Activity, Step } from '../src/schema/activity.schema.js';
 import type { Routine } from '../src/schema/routine.schema.js';
 import { isOperationInput, operationInputs, routineScope } from '../src/schema/routine.schema.js';
-import { indexCorpus } from '../src/loaders/corpus-index.js';
+import { type CorpusIndex, type NamespaceLocation, indexCorpus } from '../src/loaders/corpus-index.js';
 import {
   META_WORKFLOW_ID, type OperationMap, bodyWithOperations, collectRoutineRefs, collectRoutineSteps, parseRoutineRef,
 } from '../src/loaders/routine-resolver.js';
@@ -375,6 +381,40 @@ function siteOperations(
   return operations;
 }
 
+/**
+ * The namespace declaring a routine, where that namespace declares no workflow.
+ *
+ * A library is a home references reach and no activity sits in, which is what separates it from a
+ * workflow: the owner computation reads activity files, and a library has none to read.
+ */
+function libraryNamespace(index: CorpusIndex, namespaceId: string): NamespaceLocation | undefined {
+  const location = index.namespacesByName.get(namespaceId);
+  if (!location) return undefined;
+  // A library carries the field holding null rather than not carrying it, so a reader testing for
+  // the field alone would read every library as declaring a workflow.
+  const manifest = (location as { manifest?: string | null }).manifest ?? undefined;
+  return manifest === undefined ? location : undefined;
+}
+
+/**
+ * Whether a routine's body binds an operation the namespace holding it offers.
+ *
+ * A reference names its namespace by that directory's name or by the path from the corpus root
+ * reaching it, so both spellings answer. Every segment before the last belongs to the namespace,
+ * and a reference carrying none names no namespace at all: it resolves in the host workflow once
+ * the run is spliced, which is a relation to the host rather than to the library.
+ */
+function bindsNamespaceOperation(namespace: NamespaceLocation, routine: Routine): boolean {
+  const spellings = new Set([namespace.id, namespace.path]);
+  const binds = (steps: readonly Step[]): boolean => steps.some((step) => {
+    if (step.kind === 'loop') return binds(step.steps as Step[]);
+    if (step.kind !== 'technique') return false;
+    const segments = (typeof step.technique === 'string' ? step.technique : step.technique.name).split('::');
+    return segments.slice(0, -1).some((_, take) => spellings.has(segments.slice(0, take + 1).join('/')));
+  });
+  return binds(routine.steps as Step[]);
+}
+
 export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   const index = indexCorpus(root);
   const corpus = corpusWorkflows(root, index);
@@ -507,13 +547,16 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
       }
       const owners = owningWorkflows(key);
       if (owners.size === 0) continue; // referred to only through a cycle the load already refuses
+      const library = libraryNamespace(index, workflowId);
+      if (library && bindsNamespaceOperation(library, routine)) continue;
       const home = owners.size === 1 ? [...owners][0]! : META_WORKFLOW_ID;
       if (home === workflowId) continue;
       findings.push({
         check: 'routine-misplaced', site,
         detail: `computed home is '${home}' and the file sits in '${workflowId}' — its referrers are `
           + `${[...owners].sort().map((owner) => `'${owner}'`).join(', ')}, so `
-          + (owners.size === 1 ? 'the one workflow that owns them is its home' : 'the shared home is its home'),
+          + (owners.size === 1 ? 'the one workflow that owns them is its home' : 'the shared home is its home')
+          + (library ? `; '${workflowId}' is a library, which is a home for a run that binds its operations, and this body binds none` : ''),
       });
     }
   }
@@ -523,7 +566,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   await runGuard('routines', () => requireWorkflowsRoot(defaultCorpusDest(join(DIR, '..'))), collectRoutineFindings, {
-    okMessage: 'every routine\'s signature matches its body, every routine is referenced, and every routine sits in its computed home',
-    remedy: 'declare what the body reads, remove what it does not, or move the file to the home its referrers compute',
+    okMessage: 'every routine\'s signature matches its body, every routine is referenced, and every routine sits in a home that answers for it',
+    remedy: 'declare what the body reads, remove what it does not, or move the file to the home its referrers compute — or to the library whose operations it binds',
   });
 }

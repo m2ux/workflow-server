@@ -165,7 +165,7 @@ export type LoopStep = z.infer<typeof LoopStepSchema>;
 export const RoutineStepSchema = z.object({
   kind: z.literal('routine').describe('Step-kind discriminator.'),
   id: z.string().describe('Identifier for this step within the activity, and the prefix every identifier in the materialised body carries.'),
-  routine: z.string().describe('Routine reference: `[workflow::]name`. A qualified name resolves in that workflow only; a bare name resolves against the referring activity\'s source workflow and then meta. A second separator fails the load — a routine name carries no group grammar.'),
+  routine: z.string().describe('Routine reference: `[namespace::]name`, the namespace spelled by its directory name or by the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity\'s source workflow and then meta. The last segment is the routine and every segment before it belongs to the namespace — a routine name carries no group grammar.'),
   with: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Arguments: routine input id → the value it takes here. A braced value is a reference to a host variable and a bare value is a literal. A declared input left unbound takes the host\'s value under the input\'s own id, or the input\'s declared default.'),
   outputs: z.record(z.string()).optional().describe('Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and its declaration says whether that is allowed.'),
   ...stepCommonFields,
