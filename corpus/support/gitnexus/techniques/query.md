@@ -15,11 +15,11 @@ a concept, symptom, or error text (e.g. `'payment validation error'`)
 
 ### limit
 
-*(optional)* How many execution flows the answer carries. Five where no value is given.
+*(optional)* How many execution flows the answer carries.
 
 ### max_symbols
 
-*(optional)* How many symbols each returned flow carries. Ten where no value is given.
+*(optional)* How many symbols each returned flow carries.
 
 ## Outputs
 

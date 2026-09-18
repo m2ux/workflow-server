@@ -19,19 +19,19 @@ the symbol name to analyse
 
 ### max_depth
 
-*(optional)* How many edges out from `{target}` the traversal reaches. Three where no depth is given.
+*(optional)* How many edges out from `{target}` the traversal reaches.
 
 ### min_confidence
 
-*(optional)* The confidence an edge carries to be counted, such as `0.8` to keep only the edges the parser resolved exactly. Zero point seven where no floor is given.
+*(optional)* The confidence an edge carries to be counted, such as `0.8` to keep only the edges the parser resolved exactly.
 
 ### relation_types
 
-*(optional)* The edge kinds the traversal walks, from `CALLS`, `IMPORTS`, `EXTENDS`, `IMPLEMENTS`, `HAS_METHOD`, `HAS_PROPERTY`, `METHOD_OVERRIDES`, `METHOD_IMPLEMENTS` and `ACCESSES`. The usage-based four — `CALLS`, `IMPORTS`, `EXTENDS`, `IMPLEMENTS` — where no set is given.
+*(optional)* The edge kinds the traversal walks, named from the set the graph schema declares.
 
 ### include_tests
 
-*(optional)* Whether the answer carries the test files that reach `{target}`. False where no value is given.
+*(optional)* Whether the answer carries the test files that reach `{target}`.
 
 ## Outputs
 

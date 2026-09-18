@@ -23,7 +23,7 @@ a concept, symptom, or error text (e.g. `'ledger state commitment'`)
 
 ### limit
 
-*(optional)* How many merged results the answer carries. Five where no value is given.
+*(optional)* How many merged results the answer carries.
 
 ## Outputs
 
