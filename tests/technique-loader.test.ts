@@ -801,6 +801,78 @@ describe('technique-loader', () => {
   /* audience attribute (#224 V4): loader parse + projection carry-through      */
   /* ------------------------------------------------------------------------ */
 
+  /**
+   * A component holding a list states the fields one entry carries, in the same structured place a
+   * component is stated. Without it the fields live only in the sentence describing the list, and a
+   * step reading one off an item is making a claim nothing can settle.
+   */
+  describe('component entry fields', () => {
+    let tempDir: string;
+    const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];
+
+    beforeEach(async () => {
+      tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-entry-')));
+      writeWorkflowFixture(tempDir, 'meta');
+    });
+    afterEach(async () => {
+      await rm(tempDir, { recursive: true, force: true });
+    });
+
+    async function writeTechnique(componentBody: string[]): Promise<void> {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'rank.md'),
+        [...FM, '## Capability', '', 'Cap.', '',
+         '## Outputs', '', '### query_report', '', 'What the concept reached.', '',
+         ...componentBody, ''].join('\n'),
+        'utf-8',
+      );
+    }
+
+    type Outputs = Array<{ id: string; components?: Record<string, unknown> }>;
+
+    it('reads a component\'s `#####` sub-sections as the fields one entry carries', async () => {
+      await writeTechnique([
+        '#### processes', '', 'The flows the concept ranked into.', '',
+        '##### summary', '', 'The name that identifies the flow end to end.', '',
+        '##### priority', '', 'Its relevance.',
+      ]);
+      const result = await readTechnique('rank', tempDir);
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      const component = (result.value.outputs as Outputs | undefined)?.[0]?.components?.['processes'];
+      expect(component).toEqual({
+        description: 'The flows the concept ranked into.',
+        entry: {
+          summary: 'The name that identifies the flow end to end.',
+          priority: 'Its relevance.',
+        },
+      });
+    });
+
+    /** Most components are their description and nothing more, and stay a plain string. */
+    it('keeps a component with no entry fields as its description', async () => {
+      await writeTechnique(['#### definitions', '', 'The symbols it reached outside any flow.']);
+      const result = await readTechnique('rank', tempDir);
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      const component = (result.value.outputs as Outputs | undefined)?.[0]?.components?.['definitions'];
+      expect(component).toBe('The symbols it reached outside any flow.');
+    });
+
+    it('validates against the technique schema either way', async () => {
+      await writeTechnique([
+        '#### processes', '', 'The flows.', '', '##### summary', '', 'Its name.', '',
+        '#### definitions', '', 'The rest.',
+      ]);
+      const result = await readTechnique('rank', tempDir);
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(safeValidateTechnique(result.value).success).toBe(true);
+    });
+  });
+
   describe('audience attribute', () => {
     let tempDir: string;
     const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];

@@ -47,10 +47,29 @@
       },
       "description": "Named rules: each key is a rule name or group. Values can be a single rule string or an array of related rules. Note: workflow/activity schemas use a different format (string array of ordered imperative directives)."
     },
+    "componentEntry": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string", "description": "What the component is — the prose above its first ##### sub-section." },
+        "entry": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Named fields one entry of this component carries (authored as ##### sub-sections under the component). Each key is a field id, value its description."
+        }
+      },
+      "required": [ "entry" ],
+      "additionalProperties": false,
+      "description": "A component that holds a list, stating the fields one entry of it carries. A description says what the list is; only these fields say what is addressable inside one entry, so a step reading a field off an item has something to be checked against."
+    },
     "outputComponentsDefinition": {
       "type": "object",
-      "additionalProperties": { "type": "string" },
-      "description": "Named output components: each key is a component id, value is the spec or description for that component (mirrors inputs structure)"
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "description": "The spec or description for that component." },
+          { "$ref": "#/definitions/componentEntry" }
+        ]
+      },
+      "description": "Named output components: each key is a component id, value is the spec or description for that component, or — where the component holds a list — the fields one entry of it carries (mirrors inputs structure)"
     },
     "outputArtifact": {
       "type": "object",

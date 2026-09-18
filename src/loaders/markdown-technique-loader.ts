@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
 import { logWarn } from '../logging.js';
-import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
+import type { Technique, ProtocolBlock, OutputComponentsDefinition } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
 import { type CorpusSource, namespaceSubdir } from './corpus-index.js';
 
@@ -35,7 +35,7 @@ interface FrontmatterParse {
 
 /** A single section parsed from a markdown body. */
 interface Section {
-  level: 2 | 3 | 4;
+  level: 2 | 3 | 4 | 5;
   title: string;
   body: string;
 }
@@ -123,7 +123,7 @@ function stripYamlScalar(raw: string): unknown {
  * heading at the same level (or document end). Body retains its inline
  * sub-headings; nested-section parsing happens on demand.
  */
-function splitSections(body: string, level: 2 | 3 | 4): Section[] {
+function splitSections(body: string, level: 2 | 3 | 4 | 5): Section[] {
   const prefix = '#'.repeat(level);
   const sections: Section[] = [];
   const lines = body.split(/\r?\n/);
@@ -157,7 +157,7 @@ function splitSections(body: string, level: 2 | 3 | 4): Section[] {
   return sections;
 }
 
-function isDeeperHeading(line: string, level: 2 | 3 | 4): boolean {
+function isDeeperHeading(line: string, level: 2 | 3 | 4 | 5): boolean {
   // A line like "### " when level == 2 is deeper, so we should not treat it as a level-2 heading.
   // Returns true when the line has MORE '#' than `level`.
   const match = line.match(/^(#+)\s/);
@@ -249,11 +249,11 @@ interface IndexParse {
   id: string;
   version: string;
   capability: string;
-  inputs: Array<{ id: string; description?: string; required?: boolean; components?: Record<string, string>; default?: string }> | undefined;
+  inputs: Array<{ id: string; description?: string; required?: boolean; components?: OutputComponentsDefinition; default?: string }> | undefined;
   protocol: ProtocolBlock[] | undefined;
   // `audience` is carried as an unrefined string so a mistyped value reaches OutputItemDefinitionSchema's
   // `human`/`agent` enum and is rejected loudly at load, rather than being narrowed away here.
-  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; audience?: string; components?: Record<string, string> }> | undefined;
+  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; audience?: string; components?: OutputComponentsDefinition }> | undefined;
   rules: Record<string, string | string[]> | undefined;
 }
 
@@ -312,24 +312,34 @@ type ReservedKey = 'artifact' | 'default' | 'audience';
 function parseEntrySubsections(
   body: string,
   reserved: readonly ReservedKey[],
-): { description?: string; components?: Record<string, string>; reserved: Partial<Record<ReservedKey, string>> } {
+): { description?: string; components?: OutputComponentsDefinition; reserved: Partial<Record<ReservedKey, string>> } {
   const subs = splitSections(body, 4);
   // Lead description is everything before the first `#### ` heading.
   const firstHeading = body.search(/^####\s/m);
   const lead = firstHeading === -1 ? body : body.slice(0, firstHeading);
   const description = bodyParagraphs(lead) || undefined;
-  const out: { description?: string; components?: Record<string, string>; reserved: Partial<Record<ReservedKey, string>> } = { reserved: {} };
+  const out: { description?: string; components?: OutputComponentsDefinition; reserved: Partial<Record<ReservedKey, string>> } = { reserved: {} };
   if (description) out.description = description;
-  const components: Record<string, string> = {};
+  const components: OutputComponentsDefinition = {};
   for (const s of subs) {
-    const value = bodyParagraphs(s.body);
     const key = reserved.find((r) => r === s.title.toLowerCase());
     if (key) {
       // Strip surrounding inline-code backticks from a filename/default/enum literal.
-      out.reserved[key] = value.replace(/^`+|`+$/g, '').trim();
-    } else {
-      components[s.title] = value;
+      out.reserved[key] = bodyParagraphs(s.body).replace(/^`+|`+$/g, '').trim();
+      continue;
     }
+    // A component holding a list names the fields one entry carries in `#####` sub-sections of its
+    // own. With none it is its description and nothing more, which is what most components are.
+    const fields = splitSections(s.body, 5);
+    if (fields.length === 0) {
+      components[s.title] = bodyParagraphs(s.body);
+      continue;
+    }
+    const firstField = s.body.search(/^#####\s/m);
+    const componentLead = bodyParagraphs(firstField === -1 ? s.body : s.body.slice(0, firstField));
+    const entry: Record<string, string> = {};
+    for (const field of fields) entry[field.title] = bodyParagraphs(field.body);
+    components[s.title] = componentLead ? { description: componentLead, entry } : { entry };
   }
   if (Object.keys(components).length > 0) out.components = components;
   return out;
@@ -342,7 +352,7 @@ function parseInputsSection(section: Section | undefined): IndexParse['inputs'] 
   const result: NonNullable<IndexParse['inputs']> = [];
   for (const item of items) {
     const { description, components, reserved } = parseEntrySubsections(item.body, ['default']);
-    const entry: { id: string; description?: string; components?: Record<string, string>; default?: string } = { id: item.title };
+    const entry: { id: string; description?: string; components?: OutputComponentsDefinition; default?: string } = { id: item.title };
     // A leading "(optional)" stays in the description prose — optionality is conveyed at the
     // point of use, not synthesized into a flag (the retired `required` field was never enforced).
     if (description) entry.description = description;
@@ -405,7 +415,7 @@ function parseOutputsSection(section: Section | undefined): IndexParse['outputs'
       description?: string;
       artifact?: { name: string };
       audience?: string;
-      components?: Record<string, string>;
+      components?: OutputComponentsDefinition;
     } = { id: item.title };
     if (description) out.description = description;
     if (components) out.components = components;

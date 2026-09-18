@@ -31,6 +31,15 @@
  *       context. One finding per (binding workflow, op, input) — the same unsupplied input bound
  *       at N steps is one seam defect, and the baseline stays stable when steps move.
  *
+ *   (5) entry-field-undeclared — a loop iterates a component holding a list and a read off its item
+ *       names a field that component declares for an entry. This is (4) one level further down:
+ *       (4) settles a read into a value against the members its producer declares and stops at the
+ *       list, where the entry inside it is what the read is actually about. The item name is
+ *       introduced by the loop and appears in no operation's signature, so resolution runs
+ *       item → the collection the loop iterates → the producing output → the component, and
+ *       compares against the fields that component declares. Only a component declaring entry
+ *       fields is measured, for the reason (4) only measures an output declaring components.
+ *
  * Reference-resolution (every `step.technique` resolves through the loader) is covered by
  * guards/check-all-refs.ts for `techniques[]` lists; step bindings are covered here by the
  * binding-resolution check.
@@ -88,10 +97,23 @@ type InputMeta = { hasDefault: boolean; optional: boolean };
  * whose shape the contract does not state, so a reader reaching into it is reaching past what was
  * declared rather than contradicting it.
  */
-type OutputMeta = { hasArtifact: boolean; components: Set<string> };
+type OutputMeta = {
+  hasArtifact: boolean;
+  components: Set<string>;
+  /** Component id → the fields one ENTRY of it declares, for a component holding a list. */
+  entryFields: Map<string, Set<string>>;
+};
 type DetailedSig = { inputs: Map<string, InputMeta>; outputs: Map<string, OutputMeta> };
 type Sig = { inputs: Set<string>; outputs: Set<string> };
 type OpEntry = { own: DetailedSig; composed: Sig };
+
+/**
+ * `####` sub-sections of an output that are entry metadata rather than members of the value: the
+ * filename it persists under and the reader it is written for. Mirrors the markdown loader's
+ * reserved set, so a read into an output is measured against the same notion of a component the
+ * loader builds.
+ */
+const RESERVED_OUTPUT_SUBSECTIONS: ReadonlySet<string> = new Set(['artifact', 'audience']);
 
 function emptyDetailed(): DetailedSig { return { inputs: new Map(), outputs: new Map() }; }
 function toSig(d: DetailedSig): Sig { return { inputs: new Set(d.inputs.keys()), outputs: new Set(d.outputs.keys()) }; }
@@ -111,6 +133,8 @@ function fileSigDetailed(p: string): DetailedSig {
   const det = emptyDetailed();
   let section: 'inputs' | 'outputs' | null = null;
   let entry: string | null = null;
+  /** The `####` component the `#####` fields below it belong to. */
+  let component: string | null = null;
   let awaitingProse = false;
   for (const line of readFileSync(p, 'utf-8').split('\n')) {
     const h2 = /^##\s+(.+?)\s*$/.exec(line);
@@ -118,15 +142,17 @@ function fileSigDetailed(p: string): DetailedSig {
       const title = h2[1]!.trim();
       section = title === 'Inputs' ? 'inputs' : title === 'Outputs' ? 'outputs' : null;
       entry = null;
+      component = null;
       continue;
     }
     if (!section) continue;
     const h3 = /^###\s+(\S+)\s*$/.exec(line);
     if (h3) {
       entry = h3[1]!.trim();
+      component = null;
       awaitingProse = true;
       if (section === 'inputs') det.inputs.set(entry, { hasDefault: false, optional: false });
-      else det.outputs.set(entry, { hasArtifact: false, components: new Set() });
+      else det.outputs.set(entry, { hasArtifact: false, components: new Set(), entryFields: new Map() });
       continue;
     }
     if (!entry) continue;
@@ -134,11 +160,27 @@ function fileSigDetailed(p: string): DetailedSig {
     if (h4) {
       awaitingProse = false;
       const sub = h4[1]!.trim();
+      component = null;
       if (section === 'inputs' && sub === 'default') det.inputs.get(entry)!.hasDefault = true;
-      if (section === 'outputs' && sub === 'artifact') det.outputs.get(entry)!.hasArtifact = true;
-      // `artifact` names a file the technique writes rather than a member of the value, so it is
-      // not a path a reader can address into.
-      if (section === 'outputs' && sub !== 'artifact') det.outputs.get(entry)!.components.add(sub);
+      if (section === 'outputs' && RESERVED_OUTPUT_SUBSECTIONS.has(sub)) {
+        if (sub === 'artifact') det.outputs.get(entry)!.hasArtifact = true;
+        continue;
+      }
+      // Entry metadata names a file the technique writes or the reader it is for, rather than a
+      // member of the value, so neither is a path a reader can address into. The reserved set is
+      // the loader's, so guard and loader cannot disagree on what a component is.
+      if (section === 'outputs') {
+        component = sub;
+        det.outputs.get(entry)!.components.add(sub);
+      }
+      continue;
+    }
+    // A component holding a list names the fields one entry of it carries one level further down.
+    const h5 = /^#####\s+(\S+)\s*$/.exec(line);
+    if (h5 && section === 'outputs' && component !== null) {
+      const fields = det.outputs.get(entry)!.entryFields;
+      if (!fields.has(component)) fields.set(component, new Set());
+      fields.get(component)!.add(h5[1]!.trim());
       continue;
     }
     if (awaitingProse && line.trim().length > 0) {
@@ -402,6 +444,14 @@ const steps: Step[] = [];
  */
 const pathConsumes: Array<{ rel: string; wf: string; activityId: string; path: string }> = [];
 /**
+ * What each `forEach` loop's item variable stands for: the collection it iterates, as written.
+ *
+ * A read off the item — `{process.summary}` under a loop over `{query_report.processes}` — is a
+ * claim about one ENTRY of that collection. Resolving it needs the loop, because the item name is
+ * introduced by the loop and names nothing the producing operation declares.
+ */
+const loopItems: Array<{ rel: string; wf: string; activityId: string; item: string; over: string }> = [];
+/**
  * Bag names read by an EXPRESSION rather than a `{token}` or a structured `variable:` key — a step's
  * `when` string and a `validate` action's `target`. Both are consumption sites, and neither was
  * visible to the read scan, so an output whose only consumer was a `when` gate or a validate gate
@@ -502,6 +552,12 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
   if (typeof o.over === 'string') {
     expressionConsumes.push({ rel, wf, stepId: here, name: o.over.split('.')[0]! });
     if (o.over.includes('.')) pathConsumes.push({ rel, wf, activityId, path: o.over });
+    // What the item variable stands for. A read off the item is a claim about one ENTRY of the
+    // collection, which is a different claim from one about the collection itself — so the two are
+    // kept apart and the item is resolved back through here.
+    if (typeof o.variable === 'string') {
+      loopItems.push({ rel, wf, activityId, item: o.variable, over: o.over });
+    }
   }
   for (const v of Object.values(o)) walkSteps(wf, rel, v, activityId, here);
 }
@@ -986,6 +1042,8 @@ export function collectViolations(): Violation[] {
   }
   // (4) output-path-undeclared — a read addressing into a value names a member its producer declares
   v.push(...collectPathViolations());
+  // (5) entry-field-undeclared — a read off a loop item names a field its component declares
+  v.push(...collectEntryFieldViolations());
   return v;
 }
 
@@ -1053,6 +1111,63 @@ function collectPathViolations(): Violation[] {
           + `— it states ${[...declared].map((c) => `'${c}'`).join(', ')}`,
       });
       break;
+    }
+  }
+  return v;
+}
+
+/**
+ * A read off a loop's item whose first segment names no field the iterated component declares.
+ *
+ * `collectPathViolations` settles a read into a value against the members its producer declares, and
+ * stops there. Where the member is a list, the entry inside it is one level further down: a loop
+ * introduces an item name the producing operation never mentions, and a read off that item is a
+ * claim about one entry of the collection. Resolution runs the same route as the level above —
+ * item → the collection the loop iterates → the producing operation's output → the component — and
+ * applies the same comparison to the fields that component declares for an entry.
+ *
+ * Only a component that declares entry fields is measured, for the reason the level above declares
+ * components: one stating nothing about its entries is reached past rather than contradicted.
+ */
+function collectEntryFieldViolations(): Violation[] {
+  const v: Violation[] = [];
+  const producers = producersByBagName();
+  const seen = new Set<string>();
+
+  for (const loop of loopItems) {
+    // The collection as the loop names it: `query_report.processes` is an output and the component
+    // inside it; a bare `open_assumptions` names a whole value with no component to reach into.
+    const [collectionHead, component] = loop.over.split('.');
+    if (!collectionHead || !component) continue;
+
+    const fieldsByProducer = (producers.get(collectionHead) ?? [])
+      .filter((producer) => producer.wf === loop.wf || producer.activityId === loop.activityId)
+      .map((producer) => ({
+        producer,
+        fields: resolve(producer.ref, producer.wf, producer.activityId)
+          ?.entry.own.outputs.get(producer.outputId)?.entryFields.get(component),
+      }))
+      .filter((candidate): candidate is { producer: typeof candidate.producer; fields: Set<string> } =>
+        candidate.fields !== undefined && candidate.fields.size > 0);
+    if (fieldsByProducer.length === 0) continue;
+
+    for (const read of reads) {
+      if (read.wf !== loop.wf || read.rel !== loop.rel) continue;
+      const [head, field] = read.full.split('.');
+      if (head !== loop.item || !field || /^\d+$/.test(field)) continue;
+      const key = `${loop.rel} ${loop.over} ${read.full}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      for (const { producer, fields } of fieldsByProducer) {
+        if (fields.has(field)) break;
+        v.push({
+          check: 'entry-field-undeclared', site: `${loop.rel}[${loop.activityId}]`,
+          detail: `iterates '${loop.over}' as '${loop.item}' and reads '${read.full}', and '${producer.ref}' `
+            + `declares no '${field}' on one entry of its '${component}' component — it states `
+            + `${[...fields].map((f) => `'${f}'`).join(', ')}`,
+        });
+        break;
+      }
     }
   }
   return v;

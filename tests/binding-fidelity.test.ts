@@ -315,3 +315,97 @@ steps:
     expect(await pathViolationsIn(runReading('change_report.symbols'), bare)).toEqual([]);
   });
 });
+
+/**
+ * entry-field-undeclared: a read off a loop's item, held against the fields the iterated component
+ * declares for one entry.
+ *
+ * This is the level `output-path-undeclared` stops at. That check settles a read into a value
+ * against the members its producer declares; where the member is a list, what one entry carries sat
+ * in the sentence describing it and nothing could read it back. The defect it exists for ran to
+ * completion reporting success: a run asked for a trace once per flow, addressed each request by an
+ * empty string, received nothing every time, and finished normally.
+ */
+describe('binding fidelity — entry-field-undeclared', () => {
+  const WITH_ENTRY_FIELDS = [
+    '---', 'metadata:', '  version: 1.0.0', '---', '',
+    '## Capability', '', 'Rank the flows a concept lands in.', '',
+    '## Outputs', '',
+    '### query_report', '', 'What the concept reached.', '',
+    '#### processes', '', 'The execution flows the concept ranked into.', '',
+    '##### summary', '', 'The name that identifies the flow end to end.', '',
+    '##### priority', '', 'Its relevance.', '',
+    '#### definitions', '', 'The symbols it reached outside any flow.', '',
+    '## Protocol', '', '1. Report the ranking as {query_report}.', '',
+  ].join('\n');
+
+  const runIterating = (over: string, read: string): string => [
+    'id: shared-run', 'version: 1.0.0', 'name: shared-run',
+    'internals:',
+    '  - id: query_report', '    description: what the concept reached',
+    '  - id: ranked_flow', '    description: the flow the pass holds',
+    'steps:',
+    '  - kind: technique', '    id: rank', '    technique:', '      name: meta::rank',
+    '      outputs:', '        query_report: query_report',
+    '  - kind: loop', '    id: flow-cycle', '    name: Flow Cycle', '    loopType: forEach',
+    '    variable: ranked_flow', `    over: ${over}`, '    maxIterations: 10',
+    '    steps:',
+    '      - kind: action', '        id: note', '        actions:',
+    '          - action: log', `            message: "held {${read}}"`, '',
+  ].join('\n');
+
+  async function entryViolationsIn(routine: string, technique = WITH_ENTRY_FIELDS): Promise<string[]> {
+    const root = mkdtempSync(join(tmpdir(), 'wf-entry-'));
+    for (const [rel, files] of Object.entries({
+      'meta/techniques': { 'rank.md': technique },
+      'lib/routines': { 'shared-run.yaml': routine },
+    })) {
+      for (const [name, content] of Object.entries(files)) {
+        const file = join(root, rel, name);
+        mkdirSync(join(file, '..'), { recursive: true });
+        writeFileSync(file, content);
+      }
+    }
+    const previous = process.env.WORKFLOWS_DIR;
+    process.env.WORKFLOWS_DIR = root;
+    try {
+      vi.resetModules();
+      const guard = await import('../guards/check-binding-fidelity.js');
+      return guard.collectViolations()
+        .filter((v) => v.check === 'entry-field-undeclared')
+        .map((v) => v.detail);
+    } finally {
+      if (previous === undefined) delete process.env.WORKFLOWS_DIR; else process.env.WORKFLOWS_DIR = previous;
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  /** The defect that shipped: a flow named by a field the ranked answer does not carry. */
+  it('reports a field one entry of the iterated component does not carry', async () => {
+    const found = await entryViolationsIn(runIterating('query_report.processes', 'ranked_flow.name'));
+    expect(found).toHaveLength(1);
+    expect(found[0]).toContain("no 'name'");
+    expect(found[0]).toContain("'summary'");
+  });
+
+  it('passes a field the entry declares', async () => {
+    expect(await entryViolationsIn(runIterating('query_report.processes', 'ranked_flow.summary'))).toEqual([]);
+  });
+
+  /**
+   * A component stating nothing about its entries is reached past rather than contradicted — the
+   * carve-out `output-path-undeclared` makes one level up, for the same reason.
+   */
+  it('passes a read off an item whose component declares no entry fields', async () => {
+    expect(await entryViolationsIn(runIterating('query_report.definitions', 'ranked_flow.name'))).toEqual([]);
+  });
+
+  it('passes an index, which addresses a position rather than a field', async () => {
+    expect(await entryViolationsIn(runIterating('query_report.processes', 'ranked_flow.0'))).toEqual([]);
+  });
+
+  /** A loop over a whole value has no component to reach into, so there is nothing to measure. */
+  it('passes a loop iterating a value with no component named', async () => {
+    expect(await entryViolationsIn(runIterating('query_report', 'ranked_flow.name'))).toEqual([]);
+  });
+});

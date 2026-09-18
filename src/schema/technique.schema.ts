@@ -1,11 +1,43 @@
 import { z } from 'zod';
 import { SemanticVersionSchema } from './common.js';
 
+/**
+ * A component that holds a list, stating the fields one entry of it carries.
+ *
+ * A component's description says what the list is; it cannot say what is addressable inside one
+ * entry in a form anything can read back. A step iterating the list and reading a field off an item
+ * is making a claim about that entry, and `entry` is where the claim is settled — authored as
+ * `#####` sub-sections beneath the component, the same way a component is authored beneath an
+ * output.
+ */
+export const ComponentEntrySchema = z.object({
+  description: z.string().optional().describe('What the component is — the prose above its first `#####` sub-section.'),
+  entry: z.record(z.string()).describe('Named fields one entry of this component carries (authored as `#####` sub-sections under the component). Each key is a field id, value its description.'),
+});
+export type ComponentEntry = z.infer<typeof ComponentEntrySchema>;
+
+export const OutputComponentsDefinitionSchema = z.record(z.union([
+  z.string().describe('The spec or description for that component.'),
+  ComponentEntrySchema,
+])).describe('Named output components: each key is a component id, value is the spec or description for that component, or — where the component holds a list — the fields one entry of it carries');
+export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefinitionSchema>;
+
+/** The fields one entry of a component carries, empty where the component declares none. */
+export function componentEntryFields(component: OutputComponentsDefinition[string] | undefined): string[] {
+  return typeof component === 'object' && component !== null ? Object.keys(component.entry) : [];
+}
+
+/** What a component says it is, whichever form it takes. */
+export function componentDescription(component: OutputComponentsDefinition[string] | undefined): string | undefined {
+  if (typeof component === 'string') return component;
+  return component?.description;
+}
+
 export const InputItemDefinitionSchema = z.object({
   id: z.string().describe('Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining techniques.'),
   description: z.string().optional().describe('Human-readable description of this input. Optional inputs say so in prose (a leading "(optional)"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag.'),
   default: z.unknown().optional().describe('Default value when not supplied'),
-  components: z.record(z.string()).optional().describe('Named sub-members of a composite input (authored as `####` sub-sections under the input). Mirrors output components.'),
+  components: OutputComponentsDefinitionSchema.optional().describe('Named sub-members of a composite input (authored as `####` sub-sections under the input). Mirrors output components.'),
   source: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: where this input\'s value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default) or UNRESOLVED. Never authored in technique files.'),
 });
 export type InputItemDefinition = z.infer<typeof InputItemDefinitionSchema>;
@@ -39,9 +71,6 @@ export const RulesDefinitionSchema = z.record(z.union([
   z.array(z.string()).describe('Array of related rules grouped under this key.'),
 ]));
 export type RulesDefinition = z.infer<typeof RulesDefinitionSchema>;
-
-export const OutputComponentsDefinitionSchema = z.record(z.string()).describe('Named output components: each key is a component id, value is the spec or description for that component');
-export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefinitionSchema>;
 
 /**
  * An artifact name is a filename: one path segment ending in an extension, where a `{token}`
