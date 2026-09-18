@@ -60,6 +60,7 @@ These end the [runs](../routines/README.md) — a routine carries no prose, so t
 | [`compose-visibility-filter`](compose-visibility-filter.md) | The query keeping a changed set's exported surface |
 | [`intersect-orphan-candidates`](intersect-orphan-candidates.md) | Which unreferenced symbols this work introduced or touched |
 | [`select-affected-clusters`](select-affected-clusters.md) | Which functional areas a change reaches |
+| [`select-stale-members`](select-stale-members.md) | Which members of a group a rebuild reaches, and the tree each one walks |
 | [`weigh-change-risk`](weigh-change-risk.md) | The one rating a reviewer acts on |
 
 ---

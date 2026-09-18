@@ -13,7 +13,7 @@ A run lands here rather than in a workflow because its body composes this namesp
 | Routine | Runs |
 |---------|------|
 | [`diff-coverage-map`](diff-coverage-map.yaml) | The changed symbols, each one's callers, then which of them a test reaches |
-| [`public-api-enum`](public-api-enum.yaml) | The changed symbols, a visibility filter over them, then the exported surface |
+| [`public-api-enum`](public-api-enum.yaml) | The changed symbols, the query that filters them to the visible ones, then the exported surface that query returns |
 | [`scope-discipline-check`](scope-discipline-check.yaml) | The flows the diff reaches, held against the flows the work was for |
 | [`orphan-scan`](orphan-scan.yaml) | Every unreferenced function and method, narrowed to the files this work changed |
 | [`package-diagram-source`](package-diagram-source.yaml) | The change's bound, then the members of each functional area it touches |
@@ -33,7 +33,7 @@ A run lands here rather than in a workflow because its body composes this namesp
 | Routine | Runs |
 |---------|------|
 | [`index-refresh`](index-refresh.yaml) | Read the staleness, rebuild where it is behind, read again |
-| [`group-refresh`](group-refresh.yaml) | Read which members are behind, rebuild each, then rebuild the contract registry |
+| [`group-refresh`](group-refresh.yaml) | Read how each member stands, pair the ones behind with the tree each sits in, rebuild those, then rebuild the contract registry |
 
 ## Stopping for a decision
 

@@ -19,7 +19,7 @@ changed symbols, changed files, affected execution flows, risk level
 
 ### process_inventory
 
-Every execution flow the graph traced through the tree, each with its name and how many steps it runs.
+The twenty longest execution flows the graph traced, ranked by step count, each with its name, its type and how many steps it runs — a sample of the graph's flows rather than their total.
 
 ## Outputs
 
@@ -35,7 +35,8 @@ One rating for the change, the counts it rests on, and the flows a reviewer is a
 
 ### 2. Bound Against The Whole
 
-- Read the flows both reports name as a share of `{process_inventory}`: a change touching most of what the graph traced is a different fact from one touching five flows of three hundred, and the share is what distinguishes them.
+- Read the flows both reports name as a share of the graph's flow total, which `stats.processes` in `gitnexus://repo/{repo_name}/context` carries: a change touching most of what the graph traced is a different fact from one touching five flows of three hundred, and the share is what distinguishes them.
+  > `{process_inventory}` is the twenty longest flows and not the population, so a share taken against its length divides by the sample and overstates every reading. What the inventory is for is which of the flows reached are the long ones — a change landing in those is a different fact again from one landing in twenty short ones.
 
 ### 3. State The Verdict
 

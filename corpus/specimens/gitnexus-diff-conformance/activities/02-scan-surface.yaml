@@ -9,11 +9,9 @@ variables:
     - name: orphan_candidates
       type: array
       description: Symbols in the changed files that nothing references.
-      defaultValue: []
     - name: public_api_symbols
       type: array
       description: The exported symbols present in the diff, each with the file and kind the graph records.
-      defaultValue: []
 required: true
 steps:
   - kind: routine

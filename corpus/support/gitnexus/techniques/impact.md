@@ -37,7 +37,7 @@ the symbol name to analyse
 
 ### impact_report
 
-d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); affected execution flows; risk level (LOW / MEDIUM / HIGH / CRITICAL); and whether the rating rests on graph edges or on a hand-derived caller set.
+d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); the entry points whose flows the change reaches, each with the number of flows from it; risk level (LOW / MEDIUM / HIGH / CRITICAL); and whether the rating rests on graph edges or on a hand-derived caller set.
 
 #### risk
 
@@ -45,15 +45,15 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 
 #### summary
 
-The counts the rating rests on: `direct` callers, `processes_affected`, `modules_affected`.
+The counts the rating rests on: `direct` callers, `processes_affected` — the entry points reached, not the flows behind them — and `modules_affected`, the functional areas hit.
 
 #### byDepth
 
-The affected symbols keyed by traversal depth, each carrying the edge it was reached by and the confidence that edge holds.
+The affected nodes keyed by traversal depth as the strings `"1"`, `"2"` and `"3"`, present as far as the traversal reaches. Each entry carries its `depth`, `id`, `name`, `filePath`, the `relationType` it was reached by and the `confidence` that edge holds. Function and file nodes both appear, the `id` prefix naming which.
 
 #### affected_processes
 
-The execution flows reached, each naming the step the break lands on.
+The entry points whose flows the change reaches. Each names the entry-point symbol — its `name`, its `type`, and the `filePath` separating entries that share a name — and carries `affected_process_count`, the flows from that entry point the change reaches. The flow total is the sum of those counts rather than the length of this list.
 
 ## Protocol
 

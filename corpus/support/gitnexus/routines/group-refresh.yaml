@@ -18,6 +18,10 @@ outputs:
     description: What the rebuilt registry holds — the contracts extracted per member, and how many cross-link to another member.
 
 internals:
+  - id: graph_inventory
+    description: Every indexed graph with the tree it was built from, which is where a member's tree is named.
+  - id: stale_members
+    description: The members a rebuild reaches, as a list, each with the tree that rebuild walks.
   - id: stale_member
     description: The member the run holds, whose own tree the rebuild in that pass walks.
 
@@ -30,12 +34,27 @@ steps:
         group_name: group_name
       outputs:
         group_freshness_report: group_freshness_report
+  - kind: technique
+    id: read-inventory
+    technique:
+      name: gitnexus::resolve-graph
+      outputs:
+        graph_inventory: graph_inventory
+  - kind: technique
+    id: select-stale
+    technique:
+      name: gitnexus::select-stale-members
+      inputs:
+        group_freshness_report: group_freshness_report
+        graph_inventory: graph_inventory
+      outputs:
+        stale_members: stale_members
   - kind: loop
     id: member-cycle
     name: Member Cycle
     loopType: forEach
     variable: stale_member
-    over: group_freshness_report.stale_members
+    over: stale_members
     maxIterations: 100
     steps:
       - kind: technique

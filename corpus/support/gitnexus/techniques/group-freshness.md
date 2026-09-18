@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 ## Capability
@@ -17,11 +17,15 @@ Name of a configured repository group.
 
 ### group_freshness_report
 
-Per member: whether its index is behind the member's HEAD and by how many commits, whether the group's contract registry is behind, and whether the member has no index at all.
+The group's name, when its contract registry last synced, and one freshness entry per member.
 
-#### stale_members
+#### repos
 
-The members whose graph is behind their code or absent altogether, each with the tree a rebuild walks.
+The members, keyed by the name the registry gives each rather than listed, every entry carrying whether its index sits behind the member's HEAD (`indexStale`) and by how many commits (`commitsBehind`), whether the contracts extracted for it sit behind (`contractsStale`), and whether it has no index at all (`missing`). A member with no index carries no commit count. A step iterating this field as a list iterates nothing, the entries being keys.
+
+#### missingRepos
+
+A member list the response carries alongside the entries, and which stands empty while an entry marks a member `missing` — so the entries are what a reader takes that answer from.
 
 ## Protocol
 
@@ -30,3 +34,4 @@ The members whose graph is behind their code or absent altogether, each with the
    > - A member reported as missing has no index. A group-wide search answers from the members that have one and reports nothing about the absence, so a result set that omits that component reads exactly like one where the component held no match.
    > - A member reported as behind answers from the commit it was indexed at. Its commits-behind count is the age of its evidence, and a member hundreds of commits behind is answering about a different codebase.
    > - A contract registry reported as behind describes cross-member links drawn before the members last moved. The `group-refresh` run is this report with the per-member rebuild and the registry rebuild attached.
+3. Take a member's tree from [resolve-graph](./resolve-graph.md) where a rebuild needs one. This report addresses members by registry name and names no tree, so a rebuild addressed from here alone walks from nowhere — and a member marked `missing` has no graph and so no tree in that inventory either.

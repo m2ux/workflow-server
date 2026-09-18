@@ -12,12 +12,12 @@ variables:
     - name: repo_name
       type: string
       description: The graph every answer in this run came from.
-    - name: index_stats
+    - name: nested_index_stats
       type: object
-      description: Symbol, relationship and process counts the graph holds, as the nested refresh read them.
-    - name: index_stale
+      description: File, symbol and process counts the graph holds, as the refresh nested inside the area run read them.
+    - name: nested_index_stale
       type: boolean
-      description: Whether the graph is behind the tree it was built from.
+      description: Whether the graph is behind its tree, as the nested refresh read it — held against the direct read the first activity took.
       defaultValue: false
     - name: query_report
       type: object
@@ -43,8 +43,8 @@ steps:
     routine: gitnexus::area-comprehension
     outputs:
       repo_name: repo_name
-      index_stats: index_stats
-      index_stale: index_stale
+      index_stats: nested_index_stats
+      index_stale: nested_index_stale
       query_report: query_report
       symbol_contexts: symbol_contexts
       flow_traces: flow_traces

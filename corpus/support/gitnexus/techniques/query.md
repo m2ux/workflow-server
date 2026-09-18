@@ -25,24 +25,24 @@ a concept, symptom, or error text (e.g. `'payment validation error'`)
 
 ### query_report
 
-execution flows (processes) grouped, with member symbols and file locations
+Three sibling lists — the execution flows the concept ranked into, the symbols those flows run, and the definitions it reached outside any flow. A concept ranking into no flow leaves the first two empty and still fills the third.
 
 #### processes
 
-The execution flows the concept ranked into, each carrying its `name` and relevance.
+The execution flows the concept ranked into, each carrying the `summary` that names it end to end, its `priority` as relevance, its `id`, and the `process_type`, `symbol_count` and `step_count` describing its shape. The `summary` is the identifier [read-process](./read-process.md) takes.
 
 #### process_symbols
 
-The symbols those flows run, each carrying its `name`, the `filePath` it sits in, and the `module` it belongs to.
+The symbols those flows run, one flat list joined to its flow by `process_id` and ordered within it by `step_index`. Each carries its `id`, `name`, the `filePath` and `startLine`/`endLine` it sits at, and the `module` it belongs to where the graph holds one.
 
 #### definitions
 
-The types and interfaces the concept reached that sit in no flow.
+The files and symbols the concept reached that sit in no flow — files, interfaces, functions, classes, methods, properties and constants alike, the kind naming the first segment of each `id`. Each carries its `id`, `name` and `filePath`.
 
 ## Protocol
 
 1. Call `gitnexus_query { query: search_query, limit, max_symbols, repo: repo_name }` to produce the `{query_report}` of grouped execution flows.
    > - If the index is out of date, run `npx gitnexus analyze`, then retry.
-   > - If the concept did not match any indexed flows, broaden the query terms; fall back to grep for pure text patterns.
+   > - If the concept ranked into no flow, read the definitions for the files it reached before broadening the query terms; an empty flow list arrives with those still populated, so it is not an empty answer. Fall back to grep for pure text patterns.
    > - The answer stops at `{limit}` flows and `{max_symbols}` symbols each, and says neither that it stopped nor what it left behind — so raise both where the question is how many rather than which, and report the bounds the answer was taken at.
 2. Use the processes in the `{query_report}` to orient before deep-diving with [context](./context.md) on specific symbols.

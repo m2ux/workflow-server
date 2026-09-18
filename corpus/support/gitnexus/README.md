@@ -10,7 +10,7 @@ This is a **library namespace**, not a workflow. It declares no `workflow.yaml` 
 
 | Folder | Holds | Grain |
 |--------|-------|-------|
-| [`techniques/`](techniques/README.md) | One operation per GitNexus endpoint, plus the judgements the runs end on | A tool call or a resource read |
+| [`techniques/`](techniques/README.md) | One operation per GitNexus endpoint, plus the judgements the runs end on | One answer: a tool call, a resource read, or a reading of what those returned |
 | [`routines/`](routines/README.md) | Named runs of those operations | A sequence, an iteration, a branch, a gate |
 
 **The split is what the construct can hold.** A technique is a short produce path over one endpoint with the prose that reads its answer; it carries no loop, no branch and no user decision. A run that walks a collection, selects between two paths, or stops for a person is a routine, where the schema holds each of those as structure the step manifest and the coverage walk can see.
@@ -33,5 +33,4 @@ A call site inside a macro body has no edge, because the text that makes the cal
 
 ## Related
 
-- [`concept-rag`](/meta/resources/workflow-canonical.md) — the other tool-dedicated namespace, for prose rather than code
 - [Workflow Canonical](/meta/resources/workflow-canonical.md#tools) — why a complex tool earns a namespace of its own

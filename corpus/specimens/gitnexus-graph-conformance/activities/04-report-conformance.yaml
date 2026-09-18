@@ -10,7 +10,8 @@ variables:
     - group_freshness_report
     - impact_report
     - index_stale
-    - index_stats
+    - nested_index_stale
+    - nested_index_stats
     - package_diagram_source
     - query_report
     - repo_name
