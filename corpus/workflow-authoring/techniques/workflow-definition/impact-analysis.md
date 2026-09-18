@@ -76,7 +76,7 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 ### 8. Compose the Impact Report
 
 - Assemble `{impact_analysis}` from the classification, the integrity verdicts and the removals inventory, at the shape [Template](../../resources/impact-analysis.md#template) declares
-- Link the change brief for purpose and the baseline for inventory rather than restating either
+- Link `{change_brief}` for purpose and `{structural_inventory}` for the baseline rather than restating either
 
 ## Rules
 

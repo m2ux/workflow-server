@@ -17,7 +17,6 @@
         "checkpoint:impact-analysis:impact-and-preservation-confirmed=revise-impact",
         "checkpoint:implement:symbol-provenance-confirmed=confirmed",
         "checkpoint:implement:symbol-provenance-confirmed=uncertain",
-        "checkpoint:intake-and-context:design-intent-batch=cancel-as-create",
         "checkpoint:intake-and-context:design-intent-batch=confirm-create",
         "checkpoint:intake-and-context:design-intent-batch=confirm-intent",
         "checkpoint:intake-and-context:design-intent-batch=confirm-update",

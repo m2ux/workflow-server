@@ -7,6 +7,12 @@ metadata:
 
 The confirmed manifest checked in both directions against what the run actually changed.
 
+## Inputs
+
+### scope_manifest
+
+The confirmed file manifest for this run — one entry per file, each with its path, its action and a one-line statement of the change.
+
 ## Outputs
 
 ### total_count
