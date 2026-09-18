@@ -75,7 +75,7 @@ The lean-coding capability is owned by standalone top-level techniques, each inh
 | `harvest-debt` | Harvest ponytail markers into a debt ledger |
 | `report-gain` | Append an honesty-bounded gain scoreboard to the ledger |
 
-`scope-intake` also reaches the cross-workflow [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) `query` / `context` operations for flow tracing when the codebase is indexed.
+`scope-intake` also reaches the shared [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) `query` / `context` operations for flow tracing when the codebase is indexed.
 
 **Detailed documentation:** See [techniques/README.md](techniques/README.md) and [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md).
 
