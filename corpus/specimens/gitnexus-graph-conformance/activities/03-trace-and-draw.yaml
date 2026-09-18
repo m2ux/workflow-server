@@ -1,7 +1,7 @@
 id: trace-and-draw
 version: 1.0.0
 name: Trace And Draw
-description: Refer to the run that follows a symptom, and twice to the run whose body branches on the diagram it sources.
+description: Refer to the run that follows a symptom, and to each of the two runs that source a diagram.
 variables:
   reads:
     - suspect_symbol
@@ -41,16 +41,12 @@ steps:
       call_chains: call_chains
   - kind: routine
     id: source-package-diagram
-    routine: gitnexus::diagram-source-select
-    with:
-      diagram_type: package
+    routine: gitnexus::package-diagram-source
     outputs:
       diagram_source: package_diagram_source
   - kind: routine
     id: source-sequence-diagram
-    routine: gitnexus::diagram-source-select
-    with:
-      diagram_type: sequence
+    routine: gitnexus::sequence-diagram-source
     outputs:
       diagram_source: sequence_diagram_source
 exits:
@@ -58,4 +54,4 @@ exits:
     isDefault: true
 outcome:
   - A run whose outputs are four distinct products landed each under the name this activity binds it to, so none collides with the area run's outputs of the same shape
-  - One run referred to twice in one activity produced two answers, each body prefixed from its own reference id, and the argument each site bound selected which half of the body ran
+  - Two runs sharing a head produced two answers in one activity, each body prefixed from its own reference id, so the internals of one are unreachable from the other

@@ -244,16 +244,12 @@ steps:
     when: is_review_mode != true
   - kind: routine
     id: source-package-diagram
-    routine: gitnexus::diagram-source-select
-    with:
-      diagram_type: package
+    routine: gitnexus::package-diagram-source
     outputs:
       diagram_source: package_diagram_source
   - kind: routine
     id: source-sequence-diagrams
-    routine: gitnexus::diagram-source-select
-    with:
-      diagram_type: sequence
+    routine: gitnexus::sequence-diagram-source
     outputs:
       diagram_source: sequence_diagram_source
   - kind: technique

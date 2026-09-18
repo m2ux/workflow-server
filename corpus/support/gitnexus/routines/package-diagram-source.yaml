@@ -1,0 +1,62 @@
+id: package-diagram-source
+version: 1.0.0
+name: Package Diagram Source
+description: >-
+  Bound a package diagram to what a change reaches — the functional areas its flows and files run
+  through — and read the members of each.
+
+outputs:
+  - id: diagram_source
+    type: array
+    description: The functional areas the change reaches, each with its members, which the package diagram is drawn from.
+
+internals:
+  - id: change_report
+    description: The affected-flow and changed-file set that bounds the selection.
+  - id: cluster_inventory
+    description: Every functional area the graph holds, read once and narrowed to the affected ones.
+  - id: affected_clusters
+    description: The functional areas the change reaches, which the run walks.
+  - id: affected_cluster
+    description: The functional area the run holds, whose members it reads.
+
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: gitnexus::detect-changes
+      outputs:
+        change_report: change_report
+  - kind: technique
+    id: read-inventory
+    technique:
+      name: gitnexus::read-clusters
+      outputs:
+        cluster_inventory: cluster_inventory
+  - kind: technique
+    id: select-clusters
+    technique:
+      name: gitnexus::select-affected-clusters
+      inputs:
+        cluster_inventory: cluster_inventory
+        change_report: change_report
+      outputs:
+        affected_clusters: affected_clusters
+  - kind: loop
+    id: cluster-cycle
+    name: Cluster Cycle
+    loopType: forEach
+    variable: affected_cluster
+    over: affected_clusters
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: read-members
+        technique:
+          name: gitnexus::read-cluster
+          inputs:
+            cluster_name: "{affected_cluster.name}"
+        actions:
+          - action: set
+            target: diagram_source
+            description: This area's members, appended to the structure the diagram is drawn from.

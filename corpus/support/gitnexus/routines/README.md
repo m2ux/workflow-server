@@ -16,7 +16,8 @@ A run lands here rather than in a workflow because its body composes this namesp
 | [`public-api-enum`](public-api-enum.yaml) | The changed symbols, a visibility filter over them, then the exported surface |
 | [`scope-discipline-check`](scope-discipline-check.yaml) | The flows the diff reaches, held against the flows the work was for |
 | [`orphan-scan`](orphan-scan.yaml) | Every unreferenced function and method, narrowed to the files this work changed |
-| [`diagram-source-select`](diagram-source-select.yaml) | The change's bound, then the areas it touches or the flows it runs through |
+| [`package-diagram-source`](package-diagram-source.yaml) | The change's bound, then the members of each functional area it touches |
+| [`sequence-diagram-source`](sequence-diagram-source.yaml) | The change's bound, then the ordered trace of each flow it runs through |
 | [`change-risk-assessment`](change-risk-assessment.yaml) | The symbol's blast radius, the diff's own rating, and both as a share of the traced whole |
 
 ## Over a codebase

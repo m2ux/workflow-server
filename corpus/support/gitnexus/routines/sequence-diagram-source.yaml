@@ -1,0 +1,43 @@
+id: sequence-diagram-source
+version: 1.0.0
+name: Sequence Diagram Source
+description: >-
+  Bound a sequence diagram to what a change reaches — the execution flows it runs through — and read
+  the ordered step trace of each.
+
+outputs:
+  - id: diagram_source
+    type: array
+    description: The ordered step trace of each execution flow the change runs through, which the sequence diagram is drawn from.
+
+internals:
+  - id: change_report
+    description: The affected-flow set that bounds the selection.
+  - id: affected_process
+    description: The execution flow the run holds, whose ordered trace it reads.
+
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: gitnexus::detect-changes
+      outputs:
+        change_report: change_report
+  - kind: loop
+    id: process-cycle
+    name: Process Cycle
+    loopType: forEach
+    variable: affected_process
+    over: change_report.affected_processes
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: read-trace
+        technique:
+          name: gitnexus::read-process
+          inputs:
+            process_name: "{affected_process.name}"
+        actions:
+          - action: set
+            target: diagram_source
+            description: This flow's ordered step trace, appended to the structure the diagram is drawn from.
