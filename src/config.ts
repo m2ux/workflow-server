@@ -133,13 +133,17 @@ export interface ServerConfig {
    * procedure bodies until the next would overflow and leaves the rest fetchable by id.
    *
    * What each carries whatever the bound says is what its role cannot drive without — the role's
-   * rules, the workflow's roster and graph for an orchestrator, the activity it was dispatched for
-   * for a worker. Where that alone exceeds the bound the response goes out over it with no
-   * procedure aboard and the server logs that it did, which is the state a definition outgrowing a
-   * delivery arrives in rather than a limit doing its work.
+   * rules, the workflow's roster, graph and declared namespace for an orchestrator, the activity it
+   * was dispatched for for a worker. An orchestrator's definition gives way one step further than a
+   * worker's: with every operation body already an id, the prose explaining a variable gives way in
+   * turn, first for the names activities produce for each other and then for all of them, so the
+   * namespace survives whole while what explains it does not. Where what is left still exceeds the
+   * bound the response goes out over it with no procedure aboard and the server logs that it did,
+   * which is the state a definition outgrowing a delivery arrives in rather than a limit doing its
+   * work.
    *
-   * The bound governs the response text. A tool result also carries protocol metadata beside it,
-   * measured at one to two thousand characters, which rides outside this figure.
+   * The figure covers the whole tool result: the response text, and the protocol metadata a harness
+   * weighs beside it.
    *
    * Default 60000 (see DEFAULT_MAX_RESPONSE_CHARS). Env override: `MAX_RESPONSE_CHARS`.
    */
@@ -204,10 +208,11 @@ export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;
  * that figure at a conservative 2.4 characters per token, which leaves the margin a corpus needs to
  * grow into. Raise it for a harness that admits more; lower it for one that admits less.
  *
- * One figure for both role-facing deliveries, because one harness refuses both. It is a different
- * question from the eager-bundling budget above: that one asks how much of its own window a worker
- * may spend on inlined content, this one what a tool result may hold at all, and a delivery is held
- * to whichever binds first.
+ * One figure for both role-facing deliveries, because one harness refuses both, and it is measured
+ * over the whole tool result — the text and the protocol metadata beside it — because that is what
+ * the harness weighs. It is a different question from the eager-bundling budget above: that one
+ * asks how much of its own window a worker may spend on inlined content, this one what a tool
+ * result may hold at all, and a delivery is held to whichever binds first.
  */
 export const DEFAULT_MAX_RESPONSE_CHARS = 60_000;
 

@@ -101,9 +101,19 @@ The server resolves an activity's declared references and bundles them into the 
 
 The response is the union of the workflow's declared technique references and the core orchestrator technique references the server auto-includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`): the engine traversal, state-persistence, sub-agent dispatch, and orchestrator-discipline references every orchestrator needs. Duplicates are deduplicated.
 
-The assembled bundle is then held to what one tool result may carry (`MAX_RESPONSE_CHARS`, default 60,000 — the same bound a worker's delivery answers to, because one harness refuses both). Operation bodies ride the response in list order and stop at the first that would overflow; the remainder are named under `operation_refs`, with `operations_note` saying how to get them. The role's `rules` list is never bounded — those rules are the contract an orchestrator is held to from its first call, while a procedure it has not reached yet is one it fetches with `get_technique { technique_id }` when it does.
+The assembled bundle is then held to what one tool result may carry (`MAX_RESPONSE_CHARS`, default 60,000 — the same bound a worker's delivery answers to, because one harness refuses both, and measured over the whole result: the response text and the protocol metadata a harness weighs beside it). Operation bodies ride the response in list order and stop at the first that would overflow; the remainder are named under `operation_refs`, with `operations_note` saying how to get them. The role's `rules` list is never bounded — those rules are the contract an orchestrator is held to from its first call, while a procedure it has not reached yet is one it fetches with `get_technique { technique_id }` when it does.
 
-The workflow metadata below the separator is not bounded either: the roster, the graph and the variables are what an orchestrator drives the run from. On the two largest workflows that metadata alone runs to thirty thousand characters, so their startup response goes out over the bound with every operation body already deferred, and the server logs that it did. Trimming what a response says about a workflow's variables is the lever that would bring them back inside it.
+The workflow metadata below the separator answers to the same bound, after the bundle and never instead of it. Procedure gives way first. Where every operation body is already an id and the response is still over, what gives way next is the prose explaining a variable — in two stages, so the least is given that makes the response fit:
+
+| Stage | What the declarations carry |
+|-------|------------------------------|
+| full | Every declaration with the prose explaining it. |
+| policy | Prose for the variables the workflow file itself declares. |
+| declarations | Names, types, value sets and starting values, and no prose. |
+
+A workflow-file declaration is policy for the whole run — the mode it operates in, the paths it works against — so the orchestrator is who decides on it. Every other name is one activity's product and another's input, declared in the file of the activity that writes it, which arrives whole with the `get_activity` that dispatches a worker there. So the prose that gives way first is the prose that reaches its reader by another route.
+
+What no stage reaches is the roster, the graph and the declared namespace: an orchestrator recognises a name a worker reports and reads a value out of the bag by it, so a declaration the response dropped is a run it cannot follow. A response that sheds carries `variables_note`, naming what it left out and where that is. Where even the last stage leaves the response over the bound it goes out over it with no procedure aboard, and the server logs that it did.
 
 ### The worker bundle
 
@@ -266,7 +276,7 @@ response bound   MAX_RESPONSE_CHARS − what the response already owes
 
 `headroomFraction` (default 0.80) and `charsPerToken` (default 4) are server config, overridable with `BUNDLE_HEADROOM_FRACTION` and `BUNDLE_CHARS_PER_TOKEN`.
 
-The window budget asks how much of its own context a worker may spend on inlined content. The response bound asks what one tool result may hold at all, and is the limit a harness enforces. What the response already owes is the part no bound can move: the activity definition with its artifact contract, the workflow's inherited `activity_rules`, the header, the batch reading and the notes that say how to read a bundle.
+The window budget asks how much of its own context a worker may spend on inlined content. The response bound asks what one tool result may hold at all, and is the limit a harness enforces. What the response already owes is the part no bound can move: the activity definition with its artifact contract, the workflow's inherited `activity_rules`, the header, the batch reading, the notes that say how to read a bundle, and the protocol metadata beside the text.
 
 They also count differently, which is why they are two tallies rather than one figure. An unchanged-reference marker adds nothing to the window tally — the context it goes to holds that content already — but it adds its own bytes to the response tally, because a harness weighs what it is sent and cannot know what the reader holds. Each entry is priced at the size it is written in, nested under the map it rides in.
 
@@ -278,7 +288,7 @@ What is left is spent in priority order, each stage stopping at the first entry 
 | 2 | step technique bodies, in document order | `get_technique { step_id }` at the step |
 | 3 | eagerly bundled resource bodies | `resource_refs`, fetched with `get_resource` |
 
-The bound governs the response text; the protocol metadata a tool result carries beside it, one to two thousand characters, rides outside the figure.
+The bound governs the whole tool result. A harness weighs the protocol metadata beside the text — one to two thousand characters of artifact contract, exit destinations, gate readings and the delivery cost — so the response owes that too. What its shape settles before the budget runs is reserved at its widest; the ids of what a delivery defers or bundles are charged as the response commits to them, so a reservation never stands in for something the delivery turns out not to carry.
 
 The role's `rules` list is never bounded — a bound moves procedures and never boundaries. A body a bound leaves out is recorded as delivered to nobody: a ledger entry for it would collapse a later delivery to a marker for bytes the worker never received. That is also why a second delivery to the same context can carry what the first deferred — the contract it holds collapses to markers, and the room that frees goes to the procedures still owed.
 

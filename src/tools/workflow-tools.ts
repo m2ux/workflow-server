@@ -996,7 +996,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. The response is held to what one tool result may carry: operation bodies give way first, to ids under `operation_refs` served by get_technique { technique_id }, and then the prose describing a variable gives way, which `variables_note` reports. Every variable the run carries is declared here whatever it sheds; a description it leaves out is in the file of the activity that writes that variable, and arrives with the get_activity that dispatches a worker there.',
     {
       ...sessionIndexParam,
     },
