@@ -68,6 +68,15 @@ describe('what the guards enumerate', () => {
     expect(probe?.dir).toBe(join(root, 'support', 'shared-probe'));
   });
 
+  it('cites a file in a library by the namespace, as it cites one in a workflow', () => {
+    // A finding quotes the string a reference into the file would carry. Naming the path from the
+    // corpus root instead would key a library's findings on grouping folders — `support/` here —
+    // that appear nowhere else in a ledger.
+    const file = join(root, 'support', 'shared-probe', 'techniques', 'measure.md');
+    writeFileSync(file, '# Measure\n');
+    expect(citePath(root, file)).toBe('shared-probe/techniques/measure.md');
+  });
+
   it('agrees with a citation about which string names a workflow below the corpus root', () => {
     // A guard keyed on one of the two names and citing the other matches nothing across files, and
     // the silence reads as a value that nothing consumes rather than as a lookup that missed. The

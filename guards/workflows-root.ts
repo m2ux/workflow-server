@@ -16,7 +16,7 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 import { defaultCorpusDest, REFERENCE_CORPUS_ADD } from '../src/corpus-dest.js';
-import { type CorpusIndex, indexCorpus, namespaceLocation, workflowLocation, workflowOwning } from '../src/loaders/corpus-index.js';
+import { type CorpusIndex, indexCorpus, namespaceLocation, namespaceOwning, workflowLocation } from '../src/loaders/corpus-index.js';
 
 export { defaultCorpusDest, isPrimaryCheckout, primaryCheckoutRoot, REFERENCE_CORPUS_ADD, REFERENCE_CORPUS_REL } from '../src/corpus-dest.js';
 
@@ -121,14 +121,19 @@ function posixRel(from: string, to: string): string {
 }
 
 /**
- * The site key a ledger matches: `<workflow-id>/<path-inside-that-workflow>`.
+ * The site key a ledger matches: `<namespace-name>/<path-inside-that-namespace>`.
  *
- * Grouping folders (`corpus/`, and any future nest) name nothing in a finding. The same resource
- * cited from a flat tree and from `corpus/<id>/` is one site, so a ledger written against the
- * workflow id keeps matching when the tree is nested.
+ * Grouping folders (`corpus/`, `support/`, and any future nest) name nothing in a finding. The same
+ * resource cited from a flat tree and from `corpus/<name>/` is one site, so a ledger written against
+ * the namespace name keeps matching when the tree is nested.
+ *
+ * A library is named the same way a workflow is: a reference reaches both by the directory's name,
+ * so a finding about a file in either quotes the string a reader would search for. Falling back to
+ * the path from the corpus root would key a library's findings on grouping folders the rest of the
+ * ledger never mentions.
  */
 export function citePath(root: string, file: string, index: CorpusIndex = indexCorpus(root)): string {
-  const location = workflowOwning(index, resolve(file));
+  const location = namespaceOwning(index, resolve(file));
   if (!location) return posixRel(root, file);
   const inner = posixRel(location.dir, file);
   if (!inner || inner === '.') return location.id;
