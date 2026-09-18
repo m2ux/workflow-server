@@ -51,7 +51,7 @@ The close-out record: what the run delivered, links to where its decisions live,
 
 ### 1. State What Was Delivered
 
-- Name the activities, techniques, resources, variables and rules the run produced or changed, concretely — on an update run framed as added, modified or removed against the prior version
+- Name the activities, techniques, resources, variables and rules the run produced or changed, concretely — where `{operation_type}` is `update`, framed as added, modified or removed against the prior version
 
 ### 2. Point at Where the Decisions Live
 

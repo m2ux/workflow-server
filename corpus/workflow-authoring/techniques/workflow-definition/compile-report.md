@@ -11,7 +11,7 @@ The run's findings register, rolled up from every target swept.
 
 ### register_sections
 
-The per-target sections gathered across the sweep, each carrying a target id with its findings, its coverage divergences and its validation result.
+The per-target sections gathered across the sweep, each carrying a target id with its findings, its coverage divergences, its validation result, and its change-surface membership as touched whole files, I/O-contract closure and consumers.
 
 ### verified_findings
 
@@ -53,7 +53,7 @@ The register body: the severity summary, the change-surface membership table (to
 
 - Fold `{register_sections}` into one findings section per target, taking each row's severity, entry, location, evidence, origin and known marking from `{verified_findings}` where an entry was re-derived
 - Count the severity summary from the surviving entries, with entries keyed in `{known_finding_keys}` counted under Known rather than Open
-- Emit the header change-surface counts and the **Change surface** table (path × how it joined: touched whole file, I/O-contract closure, or consumer) from each target's `{changed_files}` / `{touched_files}` / `{consumer_surface}` — never a hunk list
+- Emit the header change-surface counts and the **Change surface** table (path × how it joined: touched whole file, I/O-contract closure, or consumer) from the membership each section of `{register_sections}` carries — never a hunk list
 
 ### 2. Record the Divergences and the Exclusions
 

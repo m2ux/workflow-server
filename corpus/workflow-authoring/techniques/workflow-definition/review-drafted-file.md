@@ -39,7 +39,7 @@ The removals inventory carrying a row for every observed reduction, each stating
 
 ### 1. Compare Against Committed Content
 
-- When `{operation_type}` is `update`, diff `{yaml_file}` against the committed content at the same path and take the material it drops as the run's observed reduction
+- When `{operation_type}` is `update`, diff `{yaml_file}` against the committed content at the path `{current_file}` names and take the material it drops as the run's observed reduction
 - Read the removals inventory at `{impact_analysis_path}` and set `{has_unflagged_removals}` true for any observed reduction the inventory does not name
 - When `{operation_type}` is `create` there is no committed content and no inventory, so nothing is compared and `{has_unflagged_removals}` is false
 
@@ -53,4 +53,8 @@ The removals inventory carrying a row for every observed reduction, each stating
 
 ### a-removal-is-inventoried-or-restored
 
-A reduction the inventory does not name leaves this operation with a row composed for it. It reaches the file when the operator keeps the draft, and is discarded when the operator restores the content — so the inventory ends the run naming every removal the run actually made. Content no finding and no manifest entry calls for is preserved, not removed quietly.
+Every reduction the inventory does not name leaves this operation with a row composed for it, so the inventory can end the run naming every removal the run actually made.
+
+### unasked-content-is-preserved
+
+Content no finding and no manifest entry calls for survives the draft.

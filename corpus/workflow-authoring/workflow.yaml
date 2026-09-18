@@ -12,9 +12,6 @@ tags:
   - design-principles
   - elicitation
   - conventions
-rules:
-  activity:
-    - "A definition is authored against the schema its kind selects, and a construct the schema offers is used in preference to prose that describes it."
 techniques:
   activity:
     - variable-binding

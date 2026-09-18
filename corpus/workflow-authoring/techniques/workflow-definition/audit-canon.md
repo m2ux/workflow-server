@@ -19,7 +19,7 @@ The change surface: whole files that differ from the base ref, plus every activi
 
 ### touched_files
 
-*(optional)* The subset of the change surface whose path bytes differ from `{base_ref}`. When present, distinguishes git-touched paths from I/O-contract closure for attribution. When absent, treat every path in `{changed_files}` as touched for origin purposes only when the path's bytes differ from `{base_ref}`.
+*(optional)* The subset of the change surface whose path bytes differ from `{base_ref}`, each entry a whole file. Absent on a run that did not separate git-touched paths from I/O-contract closure.
 
 ### base_ref
 
@@ -43,7 +43,7 @@ The sibling workflows whose established conventions the target is compared again
 
 ### prose_field_inventory
 
-*(optional)* The inventory of definition-prose fields on `{changed_files}` that Description Hygiene and bound-step criteria reach. Required before Description Hygiene may be marked `walked` when `{changed_files}` includes activity YAML, technique markdown, or other definition prose. Absent only when no such file is in the change set.
+*(optional)* The inventory of definition-prose fields on `{changed_files}` that Description Hygiene and bound-step criteria reach, one row per field. Absent when `{changed_files}` holds no activity YAML, technique markdown or other definition prose.
 
 ## Outputs
 
@@ -53,28 +53,15 @@ One entry per violation: the criteria entry by its kebab-case name, the file and
 
 ### coverage_ledger
 
-One row per enumeration unit walked, each carrying the unit's home, the unit's anchor, one of three statuses, and — when status is `walked` and the unit reaches any file in `{changed_files}` — a non-empty `evidence` list. `walked` means the unit's criteria were applied to every file in scope **and** each change-surface file the unit reaches has at least one evidence row naming the field (or construct locus) inspected and a short quote or path:line — evidence spans the **whole file**, not the diff hunk. `not-applicable` carries the reason the unit does not reach this surface and is an evidenced negative, not a skip. `blocked` carries what prevented the walk and is the only status representing missing coverage. A unit may not be recorded as `walked` with an empty `evidence` list when it intersects `{changed_files}`.
+One row per enumeration unit, each carrying the unit's home, the unit's anchor, one of three statuses, and an `evidence` list of `(file, field-or-locus, entry-or-clean, quote-or-path)` rows. `walked` is a unit whose criteria were applied to every file in scope, with evidence spanning each whole change-surface file it reaches. `not-applicable` carries the reason the unit does not reach this surface, and is an evidenced negative. `blocked` carries what prevented the walk, and is the one status that represents missing coverage.
 
 ## Protocol
 
 ### 1. Enumerate the Criteria Units
 
-- Take one enumeration unit per `##` section of each of [Design Principles](/workflow-design/resources/design-principles.md), [Schema Construct Inventory](/workflow-design/resources/schema-construct-inventory.md) and [Convention Conformance](/workflow-design/resources/convention-conformance.md)
-- Take the anti-pattern units from the sections below, which are that home in full. Enumerate this list rather than matching section titles by pattern: entries sit outside the family sections, and a pattern match drops them with no error, no warning and no coverage signal.
-  - [Creation Rules](/workflow-design/resources/anti-patterns.md#creation-rules)
-  - [Structural Anti-Patterns](/workflow-design/resources/anti-patterns.md#structural-anti-patterns)
-  - [Interaction Anti-Patterns](/workflow-design/resources/anti-patterns.md#interaction-anti-patterns)
-  - [Schema Expressiveness Anti-Patterns](/workflow-design/resources/anti-patterns.md#schema-expressiveness-anti-patterns)
-  - [Rule Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#rule-hygiene-anti-patterns)
-  - [Description Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns)
-  - [Coupling Anti-Patterns](/workflow-design/resources/anti-patterns.md#coupling-anti-patterns)
-  - [Tool-Technique-Doc Consistency Anti-Patterns](/workflow-design/resources/anti-patterns.md#tool-technique-doc-consistency-anti-patterns)
-  - [Execution Anti-Patterns](/workflow-design/resources/anti-patterns.md#execution-anti-patterns)
-  - [Output Economy Anti-Patterns](/workflow-design/resources/anti-patterns.md#output-economy-anti-patterns)
-  - [Canon Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#canon-hygiene-anti-patterns)
-  - [Technique Protocol Anti-Patterns](/workflow-design/resources/anti-patterns.md#technique-protocol-anti-patterns)
-  - [Authoring Guidance (MR)](/workflow-design/resources/anti-patterns.md#authoring-guidance-mr)
-- Where the corpus is indexed, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[heading-search](/gitnexus/techniques/heading-search.md) on each unit's title and read its `{heading_matches}` for the heading that home now carries. An anchor whose heading has been renamed fetches nothing, and a unit fetched as nothing is walked as nothing while the ledger records it walked
+- Take one enumeration unit per `##` section of each of [Design Principles](/workflow-design/resources/design-principles.md), [Schema Construct Inventory](/workflow-design/resources/schema-construct-inventory.md), [Convention Conformance](/workflow-design/resources/convention-conformance.md) and [Anti-Patterns](/workflow-design/resources/anti-patterns.md), reading each home's `##` headings from that home at the commit under audit
+- Read each anti-pattern family to its end: its entries are the `###` subsections beneath it, and the last family absorbs entries appended after it was named, so its title does not bound its contents
+- Where a unit's anchor fetches nothing and the corpus is indexed, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[heading-search](/gitnexus/techniques/heading-search.md) with the unit's title as its *heading_pattern*, and read `{heading_matches}` for the heading that home now carries. A unit fetched as nothing is walked as nothing while the ledger records it walked
 - Do not restate, summarize or number the entries a unit contains; follow each entry as written, and cite entries by their kebab-case name
 
 ### 2. Walk Every Unit Against the Surface
@@ -97,6 +84,10 @@ One row per enumeration unit walked, each carrying the unit's home, the unit's a
 
 ## Rules
 
+### absence-in-a-payload-is-a-defect
+
+An unexplained absence in a delivered payload reads as a reference defect rather than as an empty result, because an unresolvable resource is skipped at delivery with no warning.
+
 ### structural-evidence-first
 
 A finding names the structural evidence its entry's Detect keys on — the field, shape or phrase that entry itself names — and inferred intent is never that evidence. Where an entry keys on the harness tool surface or on an authoritative bootstrap resource, the evidence is that surface read directly, not the authored claim about it. A finding that cannot point at the construct is not a finding.
@@ -111,4 +102,4 @@ The change surface is never "the lines the diff shows". Every touched path is a 
 
 ### guards-are-not-canon-coverage
 
-A clean definition-guard suite is not evidence that any canon enumeration unit was walked. Guard results land only under schema-validation; they never set a coverage_ledger row to `walked`.
+A clean definition-guard suite is not evidence that any canon enumeration unit was walked, and it leaves the open finding count where the walk put it. Guard results land only under schema-validation; they never set a coverage_ledger row to `walked`. A mechanical net reaches the subset of Detect its pattern matches — Description Hygiene and every other unit is walked on its own terms whatever the net reports.

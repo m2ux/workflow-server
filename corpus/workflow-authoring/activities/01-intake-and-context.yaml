@@ -123,7 +123,7 @@ steps:
             review_scope_confirmed: true
       - id: confirm-create
         label: Create a new workflow
-        description: Correct classification to create mode.
+        description: The target is authored from nothing, whatever the request looked like.
         effect:
           setVariable:
             operation_type: create
@@ -131,7 +131,7 @@ steps:
             intent_needs_confirmation: false
       - id: confirm-update
         label: Update an existing workflow
-        description: Correct classification to update mode.
+        description: The target already exists and the request changes it.
         effect:
           setVariable:
             operation_type: update
@@ -139,18 +139,10 @@ steps:
             intent_needs_confirmation: false
       - id: wrong-review-target
         label: Wrong review target set
-        description: Rejects the review target set; supply a corrected `target_workflow_ids` list.
+        description: The named targets are not the ones to audit.
         effect:
           setVariable:
             review_scope_confirmed: false
-      - id: cancel-as-create
-        label: Cancel update — create new instead
-        description: Abandon the update path; flip mode to create.
-        effect:
-          setVariable:
-            operation_type: create
-            operation_type_ambiguous: false
-            intent_needs_confirmation: false
   - kind: action
     id: announce-wrong-target
     when: operation_type == 'review' && review_scope_confirmed != true
@@ -218,16 +210,6 @@ steps:
         effect:
           setVariable:
             judgements_disposition: carried-open
-  - kind: technique
-    id: record-judgement-outcomes
-    technique:
-      name: work-package::manage-artifacts::write-artifact
-      inputs:
-        bare_filename: change-brief.md
-        artifact_content: change_brief
-      outputs:
-        written_artifact: change_brief_path
-    when: open_judgements_count > 0
   - kind: checkpoint
     id: impact-approved
     condition:
