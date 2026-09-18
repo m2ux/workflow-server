@@ -517,7 +517,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: "every routine's declared signature matches its own body, every routine is referenced somewhere in the corpus, and every routine sits in the home its referrers compute or in a library whose operations it binds",
+    proves: "every routine's declared signature matches its own body, and every routine sits in the home its referrers compute or in a library whose operations it binds",
     form: 'materialised',
   },
   {
