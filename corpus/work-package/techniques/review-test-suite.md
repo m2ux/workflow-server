@@ -17,6 +17,14 @@ List of files changed in the work package (from `git diff`)
 
 *(optional)* The triage of prior PR feedback, one entry per thread, each carrying the disposition and class of the original.
 
+### coverage_gaps
+
+*(optional)* Changed symbols no test file calls.
+
+### update_candidates
+
+*(optional)* Changed symbols a test file calls against a signature or behaviour the change moved.
+
 ## Outputs
 
 ### test_suite_review_report
@@ -54,8 +62,8 @@ Method [record](../resources/test-suite-review.md#method-record-template) of how
 ### 2. Diff Aware Coverage Map
 
 - Coverage assessment must be diff-aware — scope evaluation to the changed-symbol set rather than absolute project coverage
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[diff-coverage-map](/gitnexus/techniques/diff-coverage-map.md): it enumerates the changed-symbol set and, for each changed symbol, finds existing test callers (incoming references from test files)
-- Treat its `coverage_gaps` (symbols with no test callers) as coverage gaps and `update_candidates` (symbols with stale test callers) as update candidates
+- Take `{coverage_gaps}` as the changed symbols this review reports untested, and `{update_candidates}` as the tests it reports out of step with what the change made
+  > Where neither arrives, the graph answered nothing about this diff — say so and assess coverage from the test files the `{changed_files}` set names, rather than reporting no gaps.
 
 ### 3. Run Tests
 

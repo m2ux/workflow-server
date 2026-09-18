@@ -23,6 +23,22 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: scope_findings
+      type: array
+      description: Affected execution flows falling outside the requirements, each with the changed symbol that reaches it.
+      defaultValue: []
+    - name: orphan_candidates
+      type: array
+      description: Symbols in the changed files that nothing references — over-engineering and dead-code candidates.
+      defaultValue: []
+    - name: package_diagram_source
+      type: array
+      description: The functional areas the change reaches, each with its members, which the package diagram is drawn from.
+      defaultValue: []
+    - name: sequence_diagram_source
+      type: array
+      description: The ordered step trace of each execution flow the change runs through, which the sequence diagrams are drawn from.
+      defaultValue: []
     - name: base_branch
       type: string
       description: The branch the pull request targets, as the platform reports it.
@@ -131,6 +147,18 @@ steps:
       type: simple
       variable: pr_number
       operator: exists
+  - kind: routine
+    id: check-scope-discipline
+    routine: gitnexus::scope-discipline-check
+    with:
+      requirements_scope: "{requirements}"
+    outputs:
+      scope_findings: scope_findings
+  - kind: routine
+    id: scan-orphans
+    routine: gitnexus::orphan-scan
+    outputs:
+      orphan_candidates: orphan_candidates
   - kind: technique
     id: review-strategy
     technique: review-scope
@@ -214,6 +242,20 @@ steps:
     id: apply-cleanup
     technique: apply-cleanup
     when: is_review_mode != true
+  - kind: routine
+    id: source-package-diagram
+    routine: gitnexus::diagram-source-select
+    with:
+      diagram_type: package
+    outputs:
+      diagram_source: package_diagram_source
+  - kind: routine
+    id: source-sequence-diagrams
+    routine: gitnexus::diagram-source-select
+    with:
+      diagram_type: sequence
+    outputs:
+      diagram_source: sequence_diagram_source
   - kind: technique
     id: create-architecture-summary
     technique: summarize-architecture

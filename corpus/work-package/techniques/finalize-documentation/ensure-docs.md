@@ -9,6 +9,10 @@ Ensure public/exported APIs in the diff carry inline documentation.
 
 ## Inputs
 
+### public_api_symbols
+
+*(optional)* The exported symbols present in the diff, each with the file and kind the graph records.
+
 ### changed_files
 
 The diff's changed files, scoping which public/exported APIs are enumerated for doc-comment coverage.
@@ -21,7 +25,8 @@ The public/exported APIs in the diff, each carrying inline documentation (doc co
 
 ## Protocol
 
-1. Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[public-api-enum](/gitnexus/techniques/public-api-enum.md) to enumerate exactly the public/exported APIs in the diff that need doc comments.
+1. Take `{public_api_symbols}` as the exported surface in the diff that needs doc comments.
+   > Where it does not arrive, read the changed files for exported declarations instead, and say that the work list was derived by reading rather than from the graph.
 2. Identify public APIs in changed code.
 3. Verify each has inline documentation (doc comments).
 4. Add missing doc comments where absent.

@@ -9,6 +9,14 @@ Scope-discipline and artifact-hygiene findings across the feature-branch diff fo
 
 ## Inputs
 
+### orphan_candidates
+
+*(optional)* Symbols in the changed files that nothing references — over-engineering and dead-code candidates for user decision.
+
+### scope_findings
+
+*(optional)* Affected flows falling outside the intended scope, each with the changed symbol that reaches it.
+
 ### pr_number
 
 *(optional)* PR identifier for the PR under review. Absent when no PR exists (stealth mode).
@@ -58,11 +66,13 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 
 ### 3. Scope Discipline Check
 
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[scope-discipline-check](/gitnexus/techniques/scope-discipline-check.md)(requirements-scope: `{requirements}`); flag any affected process outside the requirements as scope creep for user decision.
+- Flag every entry of `{scope_findings}` — an execution flow the change reaches from outside `{requirements}` — as scope creep for user decision.
+  > Where it does not arrive, compare the changed files against the requirements by reading, and say the comparison was made that way.
 
 ### 4. Orphan Check
 
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[orphan-scan](/gitnexus/techniques/orphan-scan.md)(changed_files: `{changed_files}`) to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
+- Surface every entry of `{orphan_candidates}` — a symbol this work introduced or touched that nothing references — as an over-engineering candidate.
+  > An entry point, an export a consumer outside the tree calls and a symbol a macro body reaches each read as unreferenced, so confirm the symbol has no caller before recording it.
 - Where the leanness audit ran, over-engineering is its finding and its designator: cite the entry rather than restating the defect, and record only what this pass reached beyond it. That audit judges proportionality against the review taxonomy and this pass judges scope against the requirements, so a defect both reach is one defect seen from two angles rather than two findings.
 
 ### 5. Identify Artifacts

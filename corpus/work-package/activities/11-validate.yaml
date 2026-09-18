@@ -21,6 +21,14 @@ variables:
     - target_repo
     - test_status
   writes:
+    - name: coverage_gaps
+      type: array
+      description: Changed symbols no test file calls.
+      defaultValue: []
+    - name: update_candidates
+      type: array
+      description: Changed symbols a test file calls against a signature or behaviour the change moved.
+      defaultValue: []
     - name: classified_findings
       type: array
       description: "The input findings, each carrying its assigned severity, its `action_tier`, and its `impact_axis` where one applies."
@@ -70,6 +78,13 @@ steps:
       inputs:
         findings_to_classify: "{validation_results.failed_checks}"
     when: is_review_mode == true && project_type == 'rust-substrate' && run_local_validation == true
+  - kind: routine
+    id: map-diff-coverage
+    routine: gitnexus::diff-coverage-map
+    when: is_review_mode == true
+    outputs:
+      coverage_gaps: coverage_gaps
+      update_candidates: update_candidates
   - kind: technique
     id: assess-test-coverage
     technique: review-test-suite

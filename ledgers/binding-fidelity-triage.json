@@ -2,6 +2,7 @@
   "note": "One-time triage of the binding-fidelity findings the retired baseline had suppressed (issue #327 R3). Every finding carries a verdict and a named rationale, so \"harmless\" and \"live bug\" are no longer the same silence. harmless = correct by design, suppressed. fix-later = real debt, suppressed but counted. live-bug = REPORTED, so the guard stays red until it is fixed. A finding absent from this file is untriaged and reported; an entry that matches nothing is stale and reported. There is no regenerate flag — an entry is a human judgement, which is exactly what the baseline never required. The triage also found and FIXED three live defects, so they appear here as history rather than as entries: work-package auto-created GitHub/Jira issues in a headless review run (two review-reachable checkpoints with a create default); substrate-node-security-audit required user_request without declaring it; and the stealth push path computed push_remote_verified and commits_signed without gating on either. The file carries one entry per emitted violation, so a designator read twice on one line has two entries with the same normalised key; the matcher keys on check, site without its trailing line number, and detail, and resolves both to the same verdict. What the key does not compare is the rationale name and the line number, so every rationale here is cited by at least one entry, and a line number is corrected when the site it names moves. Four reason classes have closed since the triage and are recorded here rather than kept as unused keys: a brace belonging to an external tool's own syntax rather than the designator namespace; a value no operation declares, which the executing agent improvised at the point of use; a declared output with no destination, whose design-time home is output-without-destination in workflow-design/resources/anti-patterns.md; and a finding a test pinned as its fixture for the UNRESOLVED provenance annotation. A fifth closed with #561: a component verdict declared as a product of its own while the artifact was what carried it, which the operation now records in its report instead of declaring.",
   "corpusSha": "7062aa0a1c4206620ca6b30551103cd043bb29ea",
   "rationales": {
+    "routine-internal-consumer": "The output's only consumer is a name a routine declares `internal`, so the read sits inside the routine's own scope and the sweep for a consumer outside the declaring technique's file cannot reach it. The value is consumed — the routine's loop iterates it — and an internal is precisely a name that never leaves the run, so no reader outside can ever exist. Widening the sweep to count a routine-internal read would close this class; until then each instance is judged here.",
     "shared-op-return-contract": "A shared library operation declares what it returns — one under meta/, or one a workflow publishes for reuse in its own README and workflow description. Library ops are bound ad hoc by any workflow, so having no consumer inside the corpus is the expected state of a library, not a broken seam; the caller that binds the op consumes the value in its own context. This is the first do-not-flag carve-out of `output-without-destination`.",
     "shared-op-caller-argument": "A shared meta operation input that the binding step supplies as a deviation when it needs a non-default value. No workflow-level producer is expected: callers that need it bind it, and callers that do not take the op default path.",
     "pattern-library-seed": "A borrowable pattern activity binds an op whose input the BORROWING workflow seeds — the contract documented in meta/activities/patterns/README.md. Producers resolve per-workflow, so the library home can never show one.",
@@ -167,57 +168,29 @@
     },
     {
       "check": "dead-output",
-      "site": "gitnexus/techniques/complexity-signal.md",
-      "detail": "output 'complexity_signal' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "site": "gitnexus/techniques/select-affected-clusters.md",
+      "detail": "output 'affected_clusters' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "routine-internal-consumer"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/group-sync.md",
+      "detail": "output 'contract_registry_stats' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "gitnexus/techniques/cypher.md",
-      "detail": "output 'result_rows' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "site": "gitnexus/techniques/read-cluster.md",
+      "detail": "output 'cluster_members' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "gitnexus/techniques/detect-changes.md",
-      "detail": "output 'change_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/diagram-source-select.md",
-      "detail": "output 'diagram_source' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/diff-coverage-map.md",
-      "detail": "output 'coverage_gaps' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/diff-coverage-map.md",
-      "detail": "output 'update_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/orphan-scan.md",
-      "detail": "output 'orphan_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/public-api-enum.md",
-      "detail": "output 'public_api_symbols' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "site": "gitnexus/techniques/read-process.md",
+      "detail": "output 'process_trace' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
@@ -225,20 +198,6 @@
       "check": "dead-output",
       "site": "gitnexus/techniques/rename.md",
       "detail": "output 'changes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/reversibility-signal.md",
-      "detail": "output 'reversibility_class' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/scope-discipline-check.md",
-      "detail": "output 'scope_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
@@ -342,13 +301,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "prism-audit :: gitnexus::analyze",
-      "detail": "own input 'force_rebuild' has no producer in workflow 'prism-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
       "site": "prism-audit :: meta::workflow-engine::handle-sub-workflow",
       "detail": "own input 'parent_session_index' has no producer in workflow 'prism-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
@@ -391,13 +343,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "substrate-node-security-audit :: gitnexus::analyze",
-      "detail": "own input 'force_rebuild' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
       "site": "substrate-node-security-audit :: scan-storage-lifecycle",
       "detail": "own input 'scan_scope' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
@@ -421,20 +366,6 @@
       "check": "orphan-input",
       "site": "work-package :: meta::github-cli-protocol::comment-issue",
       "detail": "own input 'body' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: gitnexus::analyze",
-      "detail": "own input 'force_rebuild' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: gitnexus::detect-changes",
-      "detail": "own input 'diff_scope' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
