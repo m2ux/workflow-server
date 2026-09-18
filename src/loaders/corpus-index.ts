@@ -321,6 +321,11 @@ export function indexCorpus(root: string): CorpusIndex {
  * namespace and a `support/techniques/gitnexus/` directory both exist. Longest-prefix resolution
  * would silently pick one and leave the other unreachable under any spelling, so the collision is
  * found while the corpus is walked and the reference is refused when it is made.
+ *
+ * A collision is per kind, and both sides have to hold it. A namespace offering only `resources/`
+ * beside an ancestor's `techniques/<its name>/` answers a resource reference and a technique
+ * reference respectively, and neither reference has two readings — so measuring the ancestor alone
+ * would refuse references that name exactly one file.
  */
 function detectShadows(claims: readonly Claim[], namespaces: ReadonlyMap<string, NamespaceLocation>): NamespaceShadow[] {
   const shadowed: NamespaceShadow[] = [];
@@ -332,6 +337,7 @@ function detectShadows(claims: readonly Claim[], namespaces: ReadonlyMap<string,
       if (!shorter) continue;
       const remainder = segments.slice(take);
       for (const kind of LIBRARY_DIR_NAMES) {
+        if (!isDirectory(join(claim.dir, kind))) continue;
         const nested = join(shorter.dir, kind, ...remainder);
         if (isDirectory(nested)) shadowed.push({ ref: claim.path, kind, namespace: claim.dir, nested });
       }

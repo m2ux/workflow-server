@@ -241,6 +241,20 @@ describe('corpus discovery', () => {
       expect(splitNamespaceRef(root, ['group', 'operation'])).toBeNull();
     });
 
+    it('leaves a run alone where only one side holds the kind', () => {
+      // `support/gitnexus` offers resources and the ancestor offers `techniques/gitnexus/`. A
+      // resource reference answers to the first and a technique reference to the second, so neither
+      // carries two readings and refusing either would refuse a reference naming one file.
+      const mixed = mkdtempSync(join(tmpdir(), 'corpus-mixed-'));
+      mkdirSync(join(mixed, 'support', 'gitnexus', 'resources'), { recursive: true });
+      mkdirSync(join(mixed, 'support', 'techniques', 'gitnexus'), { recursive: true });
+      const index = indexCorpus(mixed);
+      expect(index.shadowed).toEqual([]);
+      expect(splitNamespaceRef(index, ['support', 'gitnexus', 'index-reading']))
+        .toMatchObject({ form: 'namespace', rest: ['index-reading'] });
+      rmSync(mixed, { recursive: true, force: true });
+    });
+
     it('refuses a run two directories answer, naming both', () => {
       // `support/gitnexus/techniques/analyze.md` and `support/techniques/gitnexus/analyze.md` are
       // both addressed by `support::gitnexus::analyze`. Picking one would leave the other
