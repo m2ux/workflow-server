@@ -195,46 +195,146 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery fits what a tool result ma
     // A ledger entry for a deferred body would collapse a later delivery to a marker for bytes this
     // worker never received — the one failure a bound must not introduce. The second delivery is
     // where that would show: it carries what the first left out, in full.
-    const second = await client.callTool({
-      name: 'get_activity',
-      arguments: { session_index: sessionIndex, context_tokens: 200_000, agent_id: 'w-1', bundle: 'reference' },
-    });
-    expect(second.isError).toBeFalsy();
-    const secondText = responseText(second);
-    const secondBundle = parse(secondText.slice(0, secondText.indexOf('\n\n---\n\n'))) as Record<string, unknown>;
-    const techniques = (secondBundle['techniques'] ?? {}) as Record<string, Record<string, unknown>>;
-    for (const ref of meta.operation_refs ?? []) {
-      expect(techniques[ref], `${ref} was deferred and never served`).toBeDefined();
-      expect(techniques[ref]!['delivery'], `${ref} came back as a marker it was never sent`).not.toBe('unchanged');
+    //
+    // Its own session and its own scope, because what this asserts is about one context's whole
+    // history: a case reading a session another case has walked on is a case whose meaning moves
+    // when the file is reordered.
+    const own = await createHarness();
+    const ownMcp = sessionOps(own, 'work-package');
+    try {
+      const idx = await ownMcp.start('2026-09-18-deferred-ledger', 'orchestrator');
+      await ownMcp.enter(idx, 'start-work-package');
+      const first = await own.client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
+      });
+      expect(first.isError).toBeFalsy();
+      const deferred = ((first._meta as typeof meta).operation_refs ?? []);
+      expect(deferred.length, 'this activity is the one whose contract the bound has to cut').toBeGreaterThan(0);
+
+      const second = await own.client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1', bundle: 'reference' },
+      });
+      expect(second.isError).toBeFalsy();
+      const secondText = responseText(second);
+      const secondBundle = parse(secondText.slice(0, secondText.indexOf('\n\n---\n\n'))) as Record<string, unknown>;
+      const techniques = (secondBundle['techniques'] ?? {}) as Record<string, Record<string, unknown>>;
+      for (const ref of deferred) {
+        expect(techniques[ref], `${ref} was deferred and never served`).toBeDefined();
+        expect(techniques[ref]!['delivery'], `${ref} came back as a marker it was never sent`).not.toBe('unchanged');
+      }
+      expect(secondText.length).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+    } finally {
+      await own.close();
     }
-    expect(secondText.length).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
   });
 
-  // Last, because it walks the session on to another activity: a marker draws down no window
-  // budget — the worker holds the content — but it is still bytes on the wire, and a response is
-  // weighed by a harness that cannot know what the worker holds. An activity whose step map has
-  // already been delivered is where the two readings part company.
+  // A marker draws down no window budget — the worker holds the content — but it is still bytes on
+  // the wire, and a response is weighed by a harness that cannot know what the worker holds. An
+  // activity whose step map has already been delivered is where the two readings part company.
   it('counts what a collapsed entry costs the response, though it costs the context nothing', async () => {
-    await mcp.enter(sessionIndex, 'requirements-elicitation');
-    const first = await client.callTool({
-      name: 'get_activity',
-      arguments: { session_index: sessionIndex, context_tokens: 200_000, agent_id: 'w-2' },
-    });
-    expect(first.isError).toBeFalsy();
-    expect((first._meta as typeof meta & { bundled_steps?: string[] }).bundled_steps?.length ?? 0)
-      .toBeGreaterThan(0);
+    const own = await createHarness();
+    const ownMcp = sessionOps(own, 'work-package');
+    try {
+      const idx = await ownMcp.start('2026-09-18-collapsed-entry-cost', 'orchestrator');
+      await ownMcp.enter(idx, 'start-work-package');
+      // An activity that inlines steps, so the repeat has a step map to collapse.
+      await ownMcp.enter(idx, 'requirements-elicitation');
+      const first = await own.client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-2' },
+      });
+      expect(first.isError).toBeFalsy();
+      expect((first._meta as typeof meta & { bundled_steps?: string[] }).bundled_steps?.length ?? 0)
+        .toBeGreaterThan(0);
 
-    const repeat = await client.callTool({
-      name: 'get_activity',
-      arguments: { session_index: sessionIndex, context_tokens: 200_000, agent_id: 'w-2', bundle: 'reference' },
-    });
-    expect(repeat.isError).toBeFalsy();
-    const repeatCost = (repeat._meta as typeof meta).delivery_cost;
-    const repeatText = responseText(repeat);
-    expect(repeatText).toContain('delivery: unchanged');
-    expect(repeatText.length).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
-    // The response tally covers the collapsed entries; the window tally does not have to.
-    expect(repeatCost.response_spent_chars).toBeGreaterThanOrEqual(repeatText.length);
-    expect(repeatCost.response_spent_chars).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+      const repeat = await own.client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-2', bundle: 'reference' },
+      });
+      expect(repeat.isError).toBeFalsy();
+      const repeatCost = (repeat._meta as typeof meta).delivery_cost;
+      const repeatText = responseText(repeat);
+      expect(repeatText).toContain('delivery: unchanged');
+      expect(repeatText.length).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+      // The response tally covers the collapsed entries; the window tally does not have to.
+      expect(repeatCost.response_spent_chars).toBeGreaterThanOrEqual(repeatText.length);
+      expect(repeatCost.response_spent_chars).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+    } finally {
+      await own.close();
+    }
   });
+});
+
+/**
+ * The bound as a property rather than as a corpus reading.
+ *
+ * At the configured default the corpus fits, so a case that only measures today's deliveries would
+ * pass against a server that had no bound at all. These drive the server at bounds tight enough
+ * that the arithmetic has nowhere to hide, over both delivery modes and three windows, and hold it
+ * to the claim the design makes:
+ *
+ *   a delivery is at or under the bound, OR it carries no procedure at all — no inlined step, no
+ *   bundled resource — because the activity and the rules it must carry fill the response on their
+ *   own;
+ *
+ *   and the tally the delivery reports never understates what went over the wire, which is what
+ *   makes the first claim checkable from the outside.
+ */
+describe.skipIf(!liveCorpusRoot())('the bound holds wherever it is set', () => {
+  const RUN = ['start-work-package', 'design-philosophy', 'requirements-elicitation'];
+
+  for (const bound of [40_000, 24_000]) {
+    for (const contextTokens of [200_000, 8_000]) {
+      it(`holds a run of three at ${bound} characters, ${contextTokens} declared tokens`, async () => {
+        const harness = await createHarness({ maxResponseChars: bound });
+        const mcp = sessionOps(harness, 'work-package');
+        let checked = 0;
+        try {
+          const idx = await mcp.start(`2026-09-18-bound-${bound}-${contextTokens}`, 'orchestrator');
+          run: for (const activityId of RUN) {
+            await mcp.enter(idx, activityId);
+            // One scope for the run, so the second and third deliveries collapse what it holds and
+            // spend the room that frees — the state where an unaccounted marker would show.
+            for (const mode of [undefined, 'reference'] as const) {
+              const taken = await harness.client.callTool({
+                name: 'get_activity',
+                arguments: {
+                  session_index: idx, context_tokens: contextTokens, agent_id: 'bound-w',
+                  ...(mode ? { bundle: mode } : {}),
+                },
+              });
+              // A small declared window is a small BATCH budget too, and a scope past it is refused
+              // its next activity. That is the batch bound doing its own job; the run ends there.
+              if (taken.isError) {
+                expect(JSON.stringify(taken.content)).toContain('Batch full');
+                break run;
+              }
+              const body = responseText(taken);
+              const meta = taken._meta as {
+                delivery_cost: { response_spent_chars: number };
+                bundled_steps?: string[]; bundled_resources?: string[];
+              };
+              const where = `${activityId} ${mode ?? 'full'}`;
+              expect(meta.delivery_cost.response_spent_chars,
+                `${where}: the tally understates the wire`).toBeGreaterThanOrEqual(body.length);
+              if (body.length > bound) {
+                expect(meta.bundled_steps ?? [],
+                  `${where}: over the bound with a step inlined`).toHaveLength(0);
+                expect(meta.bundled_resources ?? [],
+                  `${where}: over the bound with a resource bundled`).toHaveLength(0);
+              }
+              checked += 1;
+            }
+          }
+        } finally {
+          await harness.close();
+        }
+        // A run the batch bound ended at its first activity still proves something, but a run that
+        // checked nothing at all proves nothing — and would pass in silence.
+        expect(checked, 'no delivery was checked').toBeGreaterThan(0);
+      }, 120_000);
+    }
+  }
 });

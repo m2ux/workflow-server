@@ -249,7 +249,7 @@ Hashing the content is what keeps this from going stale: a block annotated with 
 
 ## Hybrid technique bundling
 
-`get_activity` inlines the composed content of an activity's small step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens`.
+`get_activity` inlines the composed content of an activity's small step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens` together with what one tool result may carry, whichever the delivery reaches first.
 
 ### The budgets
 

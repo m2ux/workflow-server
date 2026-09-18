@@ -132,10 +132,10 @@ const yieldVariablesChangedSchema = z.record(z.unknown()).optional().describe(
  * every delivery. Editing one is a new key and a full delivery, which is the intent.
  */
 const STEP_TECHNIQUES_NOTE =
-  'Each step_techniques entry is a discrete ▼ STEP block carrying the composed technique a get_technique { step_id } fetch returns, with the rules this response states once under its own `rules` list left to that list. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
+  'Each step_techniques entry is a discrete ▼ STEP block carrying the composed technique a get_technique { step_id } fetch returns, with the rules this response states once under its own `rules` list left to that list. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past what this response may carry — the eager-delivery budget derived from your window, what one tool result may hold, or a per-activity size cap) still require get_technique { step_id } before execution.';
 
 const RESOURCES_BUNDLED_NOTE =
-  'Bodies for technique-linked resources from eagerly bundled steps under `resources`, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers. Ids under `resource_refs` were NOT bundled (oversized, or past the eager-delivery budget) — call get_resource for those, or with full: true after summarization.';
+  'Bodies for technique-linked resources from eagerly bundled steps under `resources`, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers. Ids under `resource_refs` were NOT bundled (oversized, or past what this response may carry — the eager-delivery budget derived from your window, or what one tool result may hold) — call get_resource for those, or with full: true after summarization.';
 
 const RESOURCE_REFS_NOTE =
   'Ids of the technique-linked resources for the eagerly bundled steps, under `resource_refs` (exact resource_id, including #section). No bodies are bundled in this mode — call get_resource for the ids you actually need to read.';
@@ -173,7 +173,11 @@ const MARKER_NOTES_CHARS = stringifyForResponse({
 const STEP_MAP_NOTES_CHARS = stringifyForResponse({
   step_techniques_note: STEP_TECHNIQUES_NOTE,
   resources_note: RESOURCES_BUNDLED_NOTE,
-}).length;
+}).length
+  // The key line of each map an inlined step brings into being. `blockChars` prices an entry net of
+  // the key it rides under, which is what a map's second entry costs; its first entry costs the key
+  // as well, and all three maps exist only where a step map does.
+  + 'step_techniques:\n'.length + 'resources:\n'.length + 'resource_refs:\n'.length;
 
 /**
  * What a block costs the response, as the response writes it.
@@ -202,23 +206,19 @@ const OPERATION_REFS_NOTE =
  * The `rules` list is never bounded. Those rules are the contract the role is held to from its
  * first call, while a procedure it has not reached yet is one it can fetch by id when it does.
  *
- * `spent` is what the rest of the response has already taken, so the bound is on the whole tool
- * result rather than on the bundle alone. The bundle is measured as it will ride: an entry a
- * caller has already collapsed to a marker is priced at the marker, that being what it sends.
+ * `maxChars` is what the bundle may take, which is the bound on the whole tool result less whatever
+ * the rest of the response has already committed — the caller knows that, and subtracting it there
+ * keeps one number in this arithmetic. The bundle is measured as it will ride: an entry a caller
+ * has already collapsed to a marker is priced at the marker, that being what it sends.
  *
  * Returns the refs left out, for the caller to record. An empty list is a bundle that fitted whole.
  */
-function boundOperationsBundle(
-  bundle: Record<string, unknown>,
-  maxChars: number,
-  opts: { spent?: number } = {},
-): string[] {
+function boundOperationsBundle(bundle: Record<string, unknown>, maxChars: number): string[] {
   const operations = bundle['techniques'] as Record<string, unknown> | undefined;
   if (!operations) return [];
-  // The floor is everything the bound cannot move: the rules, the notes, the unresolved list, and
-  // whatever share of the response the caller has already committed.
+  // The floor is everything the bound cannot move: the rules, the notes, the unresolved list.
   const { techniques: _bounded, ...fixed } = bundle;
-  let spent = stringifyForResponse(fixed).length + (opts.spent ?? 0);
+  let spent = stringifyForResponse(fixed).length;
   const kept: Record<string, unknown> = {};
   const deferred: string[] = [];
   for (const [ref, body] of Object.entries(operations)) {
@@ -232,19 +232,22 @@ function boundOperationsBundle(
     spent += cost;
     kept[ref] = body;
   }
-  if (deferred.length === 0) return [];
-  // Naming what was deferred costs characters of its own, and they land inside the same bound. So
-  // the last body gives way until the assembled bundle fits — a bound that the block announcing it
-  // could push past is not one.
+  // The fill prices each body on its own, and a body rides nested under `techniques`, one indent
+  // deeper than that. Naming what was deferred costs characters of its own, and they land inside the
+  // same bound. So the last body gives way until the bundle AS ASSEMBLED fits — a bound that the
+  // block announcing it, or the indentation it is written at, could push past is not one.
   const keptRefs = Object.keys(kept);
-  const assembled = (): number =>
-    stringifyForResponse({ ...fixed, techniques: kept, operation_refs: deferred, operations_note: OPERATION_REFS_NOTE }).length
-    + (opts.spent ?? 0);
+  const assembled = (): number => stringifyForResponse({
+    ...fixed,
+    ...(keptRefs.length > 0 ? { techniques: kept } : {}),
+    ...(deferred.length > 0 ? { operation_refs: deferred, operations_note: OPERATION_REFS_NOTE } : {}),
+  }).length;
   while (keptRefs.length > 0 && assembled() > maxChars) {
     const giving = keptRefs.pop()!;
     delete kept[giving];
     deferred.unshift(giving);
   }
+  if (deferred.length === 0) return [];
   // An empty map is not a map of nothing, it is the absence of one: where the floor leaves room for
   // no body at all, `operation_refs` is the whole account and a `techniques: {}` beside it says the
   // same thing a second way.
@@ -1967,7 +1970,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // have already taken their share — so what gives is operation BODIES, in list order, stopped at
       // the first that would overflow. Their rules ride the response whatever this defers, and each
       // body it defers is served by `get_technique { technique_id }`.
-      const deferredOperations = boundOperationsBundle(bundleData, responseBound, { spent: responseFloor });
+      const deferredOperations = boundOperationsBundle(bundleData, responseBound - responseFloor);
       for (const ref of deferredOperations) operationDeliveries.delete(ref);
       for (const own of operationDeliveries.values()) Object.assign(newDeliveries, own);
 
@@ -2444,9 +2447,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // What this delivery cost to build and to send, on one line. `resolved_techniques` is the
       // distinct bound ops the producer scan read for the whole request and `provenance_passes` the
       // steps decorated from that one scan, so the two together say whether resolve work is being
-      // repeated. `spent_chars` against `eager_budget_chars` is what the bundle drew down; the
-      // response length is what actually went over the wire, which is larger by the activity body
-      // and smaller than the sum of everything named where content collapsed to markers.
+      // repeated. `spent_chars` against `eager_budget_chars` is what the bundle drew from the
+      // worker's window, and `response_spent_chars` against `response_bound_chars` what it drew
+      // from the response; the response length is what actually went over the wire, at or under
+      // that second tally because a marker costs the wire less than the content it stands for.
       logInfo('Activity delivery cost', {
         session_index, activity: activity_id, agentId: scope, delivery: referenceMode ? 'reference' : 'full',
         ...deliveryCost,

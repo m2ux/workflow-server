@@ -50,7 +50,12 @@ function isUnchangedMarker(value: unknown): value is UnchangedMarker {
  */
 function deliveredInFull(bundle: Record<string, unknown>): string[] {
   const techniques = (bundle['techniques'] ?? {}) as Record<string, unknown>;
-  return Object.entries(techniques).filter(([, value]) => !isUnchangedMarker(value)).map(([key]) => key);
+  const carried = Object.entries(techniques).filter(([, value]) => !isUnchangedMarker(value)).map(([key]) => key);
+  // Each call site drives a loop over this list, so an empty one is a case that asserts about no
+  // entries and passes for it. Every delivery a caller reads here carries at least one body — a
+  // fresh context takes the contract in full, and a repeat takes what the bound deferred from it.
+  expect(carried.length, 'the delivery this reads carried no operation body at all').toBeGreaterThan(0);
+  return carried;
 }
 
 /** Split a get_activity response into its parsed bundle (before ---) and body text (after). */
