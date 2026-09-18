@@ -7,6 +7,7 @@ import {
   indexCorpus,
   namespaceLocation,
   namespaceSubdir,
+  namespaceRefFromCitePath,
   splitNamespaceRef,
   workflowIdFromCorpusPath,
   workflowLocation,
@@ -140,6 +141,18 @@ describe('corpus discovery', () => {
     expect(workflowIdFromCorpusPath('security/audits/prism/workflow.yaml')).toBe('prism');
     expect(workflowIdFromCorpusPath('security/audits/prism/activities/patterns/01-pass.yaml')).toBe('prism');
     expect(workflowIdFromCorpusPath('LICENSE')).toBeNull();
+  });
+
+  it('reads back everything a site key carries ahead of the construct directory', () => {
+    // A key is written by `citePath`, which names a namespace by the reference that reaches it: the
+    // directory name, and the path where two directories claim that name. So the ref is whatever
+    // precedes the construct directory, one segment or several, and the two functions agree on which
+    // string names a directory.
+    expect(namespaceRefFromCitePath('prism/techniques/plan-analysis.md')).toBe('prism');
+    expect(namespaceRefFromCitePath('prism/workflow.yaml')).toBe('prism');
+    expect(namespaceRefFromCitePath('prism/activities/00-select-mode.yaml')).toBe('prism');
+    expect(namespaceRefFromCitePath('left/twin/techniques/op.md')).toBe('left/twin');
+    expect(namespaceRefFromCitePath('LICENSE')).toBeNull();
   });
 
   it('lists every workflow in a still-flat tree that has no named kind roots', () => {

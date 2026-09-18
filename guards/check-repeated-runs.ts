@@ -204,8 +204,9 @@ function indexWindows(root: string): { windows: Map<string, WindowIndex>; files:
     }
     if (!isRecord(doc) || !Array.isArray(doc.steps)) continue;
     files++;
-    // `citePath` keys the site on the workflow id rather than the path, so a grouping folder names
-    // nothing in a finding and a ledger entry survives the tree being nested.
+    // `citePath` keys the site on the reference that reaches the workflow rather than on the path
+    // from the corpus root, so a grouping folder names nothing in a finding and a ledger entry
+    // survives the tree being nested.
     const label = citePath(root, path, index);
     for (const { steps, depth } of sequences(doc.steps)) {
       const signs = steps.map(stepSignature);

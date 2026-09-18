@@ -239,7 +239,7 @@ export async function collectUnmappedArtifacts(
   const sharedResources = readResources(index, SHARED_WORKFLOW);
   let scanned = 0;
 
-  for (const { id: workflow, dir } of corpusNamespaces(root, index)) {
+  for (const { ref: workflow, dir } of corpusNamespaces(root, index)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     const resources = readResources(index, workflow);

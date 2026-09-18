@@ -85,15 +85,17 @@ export function collectDuplicateViolations(root: string = ROOT): DuplicateViolat
   const inlineRuleSites = new Map<string, Array<{ file: string; wf: string; text: string }>>();
   const inlineCheckpointSites = new Map<string, Array<{ file: string; stepId: string }>>();
 
-  for (const { id: wf, dir } of corpusNamespaces(root, index)) {
-    const wfYamlPath = join(dir, 'workflow.yaml');
-    const wfRel = relative(root, wfYamlPath);
+  for (const { ref: wf, dir, manifest } of corpusNamespaces(root, index)) {
+    // Rules and activities belong to a graph, and a namespace carries a definition here only where
+    // the corpus can start that graph. A library declares none and still holds routines, which is a
+    // place a body can be written twice — so the definition half skips what it governs rather than
+    // the namespace that holds it.
+    const wfRel = manifest === undefined ? '' : relative(root, manifest);
     let doc: Record<string, unknown> | null = null;
-    try { doc = parseDefinition(readFileSync(wfYamlPath, 'utf-8')) as Record<string, unknown> | null; } catch { doc = null; }
+    if (manifest !== undefined) {
+      try { doc = parseDefinition(readFileSync(manifest, 'utf-8')) as Record<string, unknown> | null; } catch { doc = null; }
+    }
 
-    // Only the rules block needs a definition. A library declares none and still holds routines,
-    // which is a place a body can be written twice — so an unreadable definition skips what it
-    // governs rather than the namespace that holds it.
     const rules = (doc?.['rules'] ?? {}) as Record<string, unknown>;
     for (const partition of ['workflow', 'activity', 'universal']) {
       const entries = rules[partition];
@@ -108,7 +110,7 @@ export function collectDuplicateViolations(root: string = ROOT): DuplicateViolat
     }
 
     const adir = join(dir, 'activities');
-    const activityFiles = existsSync(adir) ? definitionsUnder(adir) : [];
+    const activityFiles = manifest !== undefined && existsSync(adir) ? definitionsUnder(adir) : [];
     for (const { path } of activityFiles) {
       const rel = relative(root, path);
       let adoc: unknown;

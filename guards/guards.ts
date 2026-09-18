@@ -221,6 +221,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'none',
   },
   {
+    id: 'namespace-collision',
+    script: 'guards/check-namespace-collision.ts',
+    npmScript: 'check:namespace-collision',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every directory name reaches the one directory that carries it, so no reference spelling a name resolves to nothing',
+    form: 'none',
+  },
+  {
     id: 'checkpoint-presentation',
     script: 'guards/check-checkpoint-presentation.ts',
     npmScript: 'check:checkpoint-presentation',
