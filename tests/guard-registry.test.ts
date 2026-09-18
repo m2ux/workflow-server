@@ -138,10 +138,9 @@ describe('guard registry', () => {
       'guards/check-session-contract.ts':
         'asks whether a run stayed inside its contracts, so it needs a session and has no corpus-wide form',
       'guards/check-corpus-links.ts':
-        'reads the corpus and holds at 522 findings, every one a link written before a workflow could '
-        + 'be organised into a folder and an absolute form existed to name one; enrolling it enforces '
-        + 'on definitions written against the old layout, so it runs by path until the corpus is '
-        + 'rewritten to the anchored form',
+        'reads the corpus and holds at 7 findings — 6 links still counting directories out of their '
+        + 'namespace, all in READMEs, and 1 naming a file the corpus does not hold; enrolling it is '
+        + 'the last step of the rewrite to the anchored form, in the commit that makes it pass',
       'guards/check-message-binding.ts':
         'reads the corpus and holds at 107 findings the engine could not have avoided until '
         + 'yield_checkpoint could publish a gate activity\'s own outputs; enrolling it enforces on '
