@@ -195,3 +195,123 @@ steps:
     expect(dead.filter((d) => d.includes('probe_verdict'))).toEqual([]);
   });
 });
+
+/**
+ * A read that addresses into a value, held against the members its producer declares.
+ *
+ * The resolution rules answer for a path's head and discard the tail, so a tail naming a member no
+ * contract declares is a well-formed read of nothing: the loop iterates zero times, the step it
+ * guards is skipped, and the walk reports success. Three of those shipped in one change, so what
+ * makes this checkable is the `####` components an output declares — a statement of shape the
+ * reader's claim can be held against.
+ */
+describe('a path names a member its producer declares', () => {
+  const WITH_COMPONENTS = `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Report what the diff reached.
+
+## Outputs
+
+### change_report
+
+What the diff reached.
+
+#### changed_symbols
+
+The symbols the diff's hunks land in.
+
+#### summary
+
+The counts those add up to.
+
+## Protocol
+
+1. Report the diff as \`{change_report}\`.
+`;
+
+  const runReading = (path: string): string => `id: shared-run
+version: 1.0.0
+name: shared-run
+internals:
+  - id: change_report
+    description: what the diff reached
+  - id: changed_symbol
+    description: the symbol the pass holds
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: meta::detect
+      outputs:
+        change_report: change_report
+  - kind: loop
+    id: symbol-cycle
+    name: Symbol Cycle
+    loopType: forEach
+    variable: changed_symbol
+    over: ${path}
+    maxIterations: 10
+    steps:
+      - kind: action
+        id: note
+        actions:
+          - action: log
+            message: "held {changed_symbol}"
+`;
+
+  async function pathViolationsIn(routine: string, technique = WITH_COMPONENTS): Promise<string[]> {
+    const root = mkdtempSync(join(tmpdir(), 'wf-path-'));
+    for (const [rel, files] of Object.entries({
+      'meta/techniques': { 'detect.md': technique },
+      'lib/routines': { 'shared-run.yaml': routine },
+    })) {
+      for (const [name, content] of Object.entries(files)) {
+        const file = join(root, rel, name);
+        mkdirSync(join(file, '..'), { recursive: true });
+        writeFileSync(file, content);
+      }
+    }
+    const previous = process.env.WORKFLOWS_DIR;
+    process.env.WORKFLOWS_DIR = root;
+    try {
+      vi.resetModules();
+      const guard = await import('../guards/check-binding-fidelity.js');
+      return guard.collectViolations()
+        .filter((v) => v.check === 'output-path-undeclared')
+        .map((v) => v.detail);
+    } finally {
+      if (previous === undefined) delete process.env.WORKFLOWS_DIR; else process.env.WORKFLOWS_DIR = previous;
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  it('reports a member the declaring output does not state', async () => {
+    const found = await pathViolationsIn(runReading('change_report.symbols'));
+    expect(found).toHaveLength(1);
+    expect(found[0]).toContain("no 'symbols'");
+    expect(found[0]).toContain("'changed_symbols'");
+  });
+
+  it('passes a member the output declares', async () => {
+    expect(await pathViolationsIn(runReading('change_report.changed_symbols'))).toEqual([]);
+  });
+
+  it('passes an index, which addresses a position rather than a member', async () => {
+    expect(await pathViolationsIn(runReading('change_report.0'))).toEqual([]);
+  });
+
+  /**
+   * An output declaring no components states nothing about its shape, so a reader addressing into it
+   * reaches past the contract rather than contradicting it. Reporting those would report every
+   * under-declared output in the corpus, which is a different finding and a far larger one.
+   */
+  it('passes any member where the output declares no components at all', async () => {
+    const bare = WITH_COMPONENTS.replace(/#### changed_symbols[\s\S]*?## Protocol/, '## Protocol');
+    expect(await pathViolationsIn(runReading('change_report.symbols'), bare)).toEqual([]);
+  });
+});
