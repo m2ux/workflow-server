@@ -1,17 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
 Enumerate exactly the public/exported APIs in the diff that need doc comments — avoids guessing which changed symbols are exported.
-
-## Inputs
-
-### diff
-
-The working-tree / branch diff under review — source for obtaining the changed-symbol set.
 
 ## Outputs
 

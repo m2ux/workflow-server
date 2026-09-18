@@ -216,13 +216,6 @@
     },
     {
       "check": "dead-output",
-      "site": "gitnexus/techniques/public-api-enum.md",
-      "detail": "output 'public_api_symbols' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "gitnexus/techniques/rename.md",
       "detail": "output 'changes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",

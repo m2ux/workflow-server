@@ -1,11 +1,10 @@
 id: complete
-version: 1.13.0
+version: 1.14.0
 name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
   reads:
     - branch_name
-    - changed_files
     - component_git_dir
     - component_name
     - component_path
@@ -126,6 +125,13 @@ steps:
   - kind: technique
     id: render-token-usage
     technique: finalize-documentation::render-token-usage
+  - kind: technique
+    id: enumerate-public-apis
+    technique:
+      name: gitnexus::public-api-enum
+      inputs:
+        repo_name: component_name
+    when: is_review_mode != true
   - kind: technique
     id: ensure-docs
     technique: finalize-documentation::ensure-docs

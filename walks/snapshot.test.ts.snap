@@ -694,6 +694,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "collect-deferred-items",
         "create-complete-doc",
         "render-token-usage",
+        "enumerate-public-apis",
         "ensure-docs",
         "read-session",
         "conduct-retrospective",
@@ -1339,6 +1340,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "collect-deferred-items",
         "create-complete-doc",
         "render-token-usage",
+        "enumerate-public-apis",
         "ensure-docs",
         "read-session",
         "conduct-retrospective",
@@ -2048,6 +2050,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "collect-deferred-items",
         "create-complete-doc",
         "render-token-usage",
+        "enumerate-public-apis",
         "ensure-docs",
         "read-session",
         "conduct-retrospective",
@@ -2682,6 +2685,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "collect-deferred-items",
         "create-complete-doc",
         "render-token-usage",
+        "enumerate-public-apis",
         "ensure-docs",
         "read-session",
         "conduct-retrospective",
@@ -3712,6 +3716,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "collect-deferred-items",
         "create-complete-doc",
         "render-token-usage",
+        "enumerate-public-apis",
         "ensure-docs",
         "read-session",
         "conduct-retrospective",
@@ -3730,8 +3735,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredTotal": 305,
-  "executedTotal": 170,
+  "declaredTotal": 306,
+  "executedTotal": 171,
   "perActivity": [
     {
       "activity": "assumptions-review",
@@ -3745,8 +3750,8 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "complete",
-      "declared": 20,
-      "executed": 15,
+      "declared": 21,
+      "executed": 16,
     },
     {
       "activity": "design-philosophy",

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -9,9 +9,9 @@ Ensure public/exported APIs in the diff carry inline documentation.
 
 ## Inputs
 
-### changed_files
+### public_api_symbols
 
-The diff's changed files, scoping which public/exported APIs are enumerated for doc-comment coverage.
+The exported symbols in the diff that require documentation — the doc-comment work list.
 
 ## Outputs
 
@@ -21,8 +21,6 @@ The public/exported APIs in the diff, each carrying inline documentation (doc co
 
 ## Protocol
 
-1. Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[public-api-enum](/gitnexus/techniques/public-api-enum.md) to enumerate exactly the public/exported APIs in the diff that need doc comments.
-2. Identify public APIs in changed code.
-3. Verify each has inline documentation (doc comments).
-4. Add missing doc comments where absent.
-5. Verify the documentation builds — on Rust/Substrate through [cargo](/cargo/techniques/TECHNIQUE.md)::[doc](/cargo/techniques/doc.md)(*scope*=`--workspace --no-deps`), on other project types through that project's equivalent doc command.
+1. Verify each symbol of `{public_api_symbols}` carries inline documentation (doc comments).
+2. Add the missing doc comments where absent, and emit the covered set as `{documented_apis}`.
+3. Verify the documentation builds — on Rust/Substrate through [cargo](/cargo/techniques/TECHNIQUE.md)::[doc](/cargo/techniques/doc.md)(*scope*=`--workspace --no-deps`), on other project types through that project's equivalent doc command.
