@@ -1,0 +1,20 @@
+id: reach-by-name
+version: 1.0.0
+name: Reach By Name
+description: Bind an operation of the shared library by the library's directory name.
+variables:
+  reads:
+    - component_path
+required: true
+steps:
+  - kind: technique
+    id: measure-under-the-bare-name
+    technique:
+      name: shared-probe::measure-entries
+      inputs:
+        probe_target: "."
+exits:
+  - id: reached
+    isDefault: true
+outcome:
+  - The directory name of a library holding no definition delivered its operation, so a shared library is addressable without being a product

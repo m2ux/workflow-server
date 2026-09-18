@@ -1,0 +1,20 @@
+id: reach-by-path
+version: 1.0.0
+name: Reach By Path
+description: Bind the same library by the path from the corpus root that reaches it.
+variables:
+  reads:
+    - component_path
+required: true
+steps:
+  - kind: technique
+    id: measure-under-the-path
+    technique:
+      name: specimens::shared-probe::measure-entries
+      inputs:
+        probe_target: "."
+exits:
+  - id: reached
+    isDefault: true
+outcome:
+  - The path from the corpus root delivered the operation the directory name did, so the two spellings are two names for one library
