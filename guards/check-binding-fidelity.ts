@@ -84,11 +84,11 @@ let indexed = false;
 /* ----------------------------- signature parsing ----------------------------- */
 type InputMeta = { hasDefault: boolean; optional: boolean };
 /**
- * `components` holds the `####` sub-sections an output declares, keyed by name, with the prose each
- * carries. An output declaring none is one whose shape the contract does not state, so a reader
- * reaching into it is reaching past what was declared rather than contradicting it.
+ * `components` names the `####` sub-sections an output declares. An output declaring none is one
+ * whose shape the contract does not state, so a reader reaching into it is reaching past what was
+ * declared rather than contradicting it.
  */
-type OutputMeta = { hasArtifact: boolean; components: Map<string, string> };
+type OutputMeta = { hasArtifact: boolean; components: Set<string> };
 type DetailedSig = { inputs: Map<string, InputMeta>; outputs: Map<string, OutputMeta> };
 type Sig = { inputs: Set<string>; outputs: Set<string> };
 type OpEntry = { own: DetailedSig; composed: Sig };
@@ -111,7 +111,6 @@ function fileSigDetailed(p: string): DetailedSig {
   const det = emptyDetailed();
   let section: 'inputs' | 'outputs' | null = null;
   let entry: string | null = null;
-  let component: string | null = null;
   let awaitingProse = false;
   for (const line of readFileSync(p, 'utf-8').split('\n')) {
     const h2 = /^##\s+(.+?)\s*$/.exec(line);
@@ -127,8 +126,7 @@ function fileSigDetailed(p: string): DetailedSig {
       entry = h3[1]!.trim();
       awaitingProse = true;
       if (section === 'inputs') det.inputs.set(entry, { hasDefault: false, optional: false });
-      else det.outputs.set(entry, { hasArtifact: false, components: new Map() });
-      component = null;
+      else det.outputs.set(entry, { hasArtifact: false, components: new Set() });
       continue;
     }
     if (!entry) continue;
@@ -140,13 +138,8 @@ function fileSigDetailed(p: string): DetailedSig {
       if (section === 'outputs' && sub === 'artifact') det.outputs.get(entry)!.hasArtifact = true;
       // `artifact` names a file the technique writes rather than a member of the value, so it is
       // not a path a reader can address into.
-      component = section === 'outputs' && sub !== 'artifact' ? sub : null;
-      if (component) det.outputs.get(entry)!.components.set(component, '');
+      if (section === 'outputs' && sub !== 'artifact') det.outputs.get(entry)!.components.add(sub);
       continue;
-    }
-    if (component && line.trim().length > 0) {
-      const held = det.outputs.get(entry)!.components.get(component) ?? '';
-      det.outputs.get(entry)!.components.set(component, `${held} ${line.trim()}`.trim());
     }
     if (awaitingProse && line.trim().length > 0) {
       awaitingProse = false;
@@ -1057,7 +1050,7 @@ function collectPathViolations(): Violation[] {
       v.push({
         check: 'output-path-undeclared', site: `${rel}[${activityId}]`,
         detail: `reads '${path}', and '${producer.ref}' declares no '${member}' on its '${producer.outputId}' output `
-          + `— it states ${[...declared.keys()].map((c) => `'${c}'`).join(', ')}`,
+          + `— it states ${[...declared].map((c) => `'${c}'`).join(', ')}`,
       });
       break;
     }
