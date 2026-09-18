@@ -251,9 +251,9 @@ Hashing the content is what keeps this from going stale: a block annotated with 
 
 `get_activity` inlines the composed content of an activity's small step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens`.
 
-### The budget
+### The budgets
 
-One cumulative character budget per activity, the lesser of two limits that ask different questions:
+Two limits, asking different questions, and a delivery stops at whichever it reaches first:
 
 ```
 window budget    context_tokens × headroomFraction × charsPerToken
@@ -262,7 +262,9 @@ response bound   MAX_RESPONSE_CHARS − what the response already owes
 
 `headroomFraction` (default 0.80) and `charsPerToken` (default 4) are server config, overridable with `BUNDLE_HEADROOM_FRACTION` and `BUNDLE_CHARS_PER_TOKEN`.
 
-The window budget asks how much of its own context a worker may spend on inlined content. The response bound asks what one tool result may hold at all, and is the limit a harness enforces — so a delivery is held to whichever binds first. What the response already owes is the part no bound can move: the activity definition with its artifact contract, the workflow's inherited `activity_rules`, the header, the batch reading and the notes that say how to read a bundle.
+The window budget asks how much of its own context a worker may spend on inlined content. The response bound asks what one tool result may hold at all, and is the limit a harness enforces. What the response already owes is the part no bound can move: the activity definition with its artifact contract, the workflow's inherited `activity_rules`, the header, the batch reading and the notes that say how to read a bundle.
+
+They also count differently, which is why they are two tallies rather than one figure. An unchanged-reference marker adds nothing to the window tally — the context it goes to holds that content already — but it adds its own bytes to the response tally, because a harness weighs what it is sent and cannot know what the reader holds. Each entry is priced at the size it is written in, nested under the map it rides in.
 
 What is left is spent in priority order, each stage stopping at the first entry that would overflow what remains:
 
@@ -272,9 +274,9 @@ What is left is spent in priority order, each stage stopping at the first entry 
 | 2 | step technique bodies, in document order | `get_technique { step_id }` at the step |
 | 3 | eagerly bundled resource bodies | `resource_refs`, fetched with `get_resource` |
 
-The role's `rules` list is never bounded — a bound moves procedures and never boundaries — and unchanged-reference markers cost almost nothing, so they never draw the budget down. A body the bound leaves out is recorded as delivered to nobody: a ledger entry for it would collapse a later delivery to a marker for bytes the worker never received. That is also why a second delivery to the same context can carry what the first deferred — the contract it holds collapses to markers, and the room that frees goes to the procedures still owed.
+The role's `rules` list is never bounded — a bound moves procedures and never boundaries. A body a bound leaves out is recorded as delivered to nobody: a ledger entry for it would collapse a later delivery to a marker for bytes the worker never received. That is also why a second delivery to the same context can carry what the first deferred — the contract it holds collapses to markers, and the room that frees goes to the procedures still owed.
 
-`spent_chars` on the delivery cost line is that whole tally, against `eager_budget_chars` (the budget in force), `response_bound_chars` (what one tool result may carry) and `fixed_chars` (what the response owed before it spent anything); `worker_bundle_chars` reports the invariant part on its own, and `deferred_operations` counts the contract bodies served by id instead. The same figures ride on `_meta.delivery_cost` and as one `activity_delivered` history event, so a caller reads them from the response or the session rather than from the log.
+`spent_chars` on the delivery cost line is the window tally, against `eager_budget_chars`; `response_spent_chars` is the response tally, against `response_bound_chars` (what one tool result may carry) and `fixed_chars` (what the response owed before the bundle spent anything). `worker_bundle_chars` reports the invariant part on its own, and `deferred_operations` counts the contract bodies served by id instead. The same figures ride on `_meta.delivery_cost` and as one `activity_delivered` history event, so a caller reads them from the response or the session rather than from the log.
 
 An activity whose definition and rules fill a response on their own leaves nothing for either stage. The delivery still goes out — a worker cannot do an activity it was not sent — and the server logs that it went out over the bound, which is the signal that the definition has outgrown a single delivery.
 

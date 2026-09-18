@@ -175,6 +175,17 @@ const STEP_MAP_NOTES_CHARS = stringifyForResponse({
   resources_note: RESOURCES_BUNDLED_NOTE,
 }).length;
 
+/**
+ * What a block costs the response, as the response writes it.
+ *
+ * A block is rendered nested under the key it rides, so measuring it on its own understates it by
+ * the indentation of every line. Rendering it under that key and subtracting the key line — which
+ * the response has already paid for, or will pay for once — is the cost it actually adds.
+ */
+function blockChars(key: string, value: unknown): number {
+  return stringifyForResponse({ [key]: value }).length - `${key}:\n`.length;
+}
+
 const OPERATION_REFS_NOTE =
   'Ids under `operation_refs` are operations of your role this response carried no body for, because carrying them would have put it past what one tool result may hold. Their rules are in the `rules` list above, so the contract you are held to is complete — what is deferred is the procedure. Fetch one with get_technique { session_index, technique_id } when you reach the step that applies it.';
 
@@ -1995,31 +2006,30 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // size cap. Absent config means no per-technique cap (only the cumulative budget applies).
       const optedOut = bundleConfig?.maxChars === 0;
       const perTechniqueCap = bundleConfig && bundleConfig.maxChars > 0 ? bundleConfig.maxChars : Infinity;
-      // Cumulative eager-delivery budget in characters, the lesser of two limits that ask different
-      // questions. The window budget asks how much of its own context a worker may spend on inlined
-      // content, derived from the caller's declared window (headroom fraction and chars-per-token
-      // are server config with in-code fallbacks). The response bound asks what one tool result may
-      // hold at all, and is what the harness enforces: a delivery past it is refused whole, so a
-      // window that admits more than the response can carry is a budget that never binds in time.
-      // What the bound leaves out stays fetchable — a step by `get_technique { step_id }`, a
-      // resource by `get_resource` — which is what makes leaving it out safe rather than merely
-      // cheap.
+      // Cumulative eager-delivery budget in characters, derived from the caller's own window.
+      // Headroom fraction and chars-per-token are server config with in-code fallbacks. It asks how
+      // much of its own context a worker may spend on inlined content, which the response bound
+      // above does not answer: that one asks what a tool result may hold at all, and is what the
+      // harness enforces. A delivery is held to both, and stops at whichever it reaches first.
+      // What either leaves out stays fetchable — a step by `get_technique { step_id }`, a resource
+      // by `get_resource` — which is what makes leaving it out safe rather than merely cheap.
       const headroomFraction = config.bundleHeadroomFraction ?? DEFAULT_BUNDLE_HEADROOM_FRACTION;
       const charsPerToken = config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN;
-      const eagerBudgetChars = Math.min(
-        context_tokens * headroomFraction * charsPerToken,
-        responseBound - responseFloor,
-      );
+      const eagerBudgetChars = context_tokens * headroomFraction * charsPerToken;
       // Provenance resolve work, done once for the whole delivery. The producer scan reads every
       // bound op in the workflow to learn its declared outputs, and its answer does not vary with
       // the step being decorated — only the step's document-order position does. One index therefore
       // serves every inlined step, so a delivery resolves each unique technique once however many
       // steps it carries.
       let producerIndex: Awaited<ReturnType<typeof buildProducerIndex>> | undefined;
-      // Running total of full-content characters committed to the eager bundle. An unchanged-reference
-      // marker costs effectively nothing, so it never draws down the budget; only full-content
-      // entries do. Held here so the delivery's cost line can report it against the budget.
+      // Two running totals, because the two budgets are about different things and count
+      // differently. `spentChars` is what the eager bundle costs the worker's CONTEXT, so an
+      // unchanged-reference marker adds nothing to it: that content is already there. `responseChars`
+      // is what the bundle costs the RESPONSE, so every entry counts, marker or not, at the size it
+      // is written in — the harness weighs bytes and cannot know the worker holds the content.
+      // Held here so the delivery's cost line can report each against its budget.
       let spentChars = workerBundleChars;
+      let responseChars = responseFloor + workerBundleChars;
       /**
        * Technique steps left for get_technique, by the answer their gate gave. The unanswered ones
        * are counted by reason, because they mean different things: `pending` is this activity's own
@@ -2107,25 +2117,40 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // for the intentional get_technique { step_id } call inlining removes (#189 C1c(C)1).
           const stepMarker = `▼ STEP ${step.id!} · technique ${techniqueId}`;
           // What this entry adds to the response beyond itself: the notes that explain a step map
-          // and its resources, which only the first entry brings into being.
-          const mapNotesCost = Object.keys(bundledStepTechniques).length === 0 ? STEP_MAP_NOTES_CHARS : 0;
+          // and its resources, which only the first entry brings into being, and the ids of the
+          // resources it links — which ride the response whether or not their bodies do.
+          // Qualified against the workflow the TECHNIQUE file was found in, not the activity's: a
+          // bare link in a meta technique names a resource under meta/resources/ whoever binds it.
+          const links = [...new Set(extractResourceIds(text)
+            .map((rawId) => qualifyResourceId(rawId, techniqueWorkflowId, workflow_id)))]
+            .filter((rid) => !linkedResourceIds.has(rid));
+          const mapNotesCost = (Object.keys(bundledStepTechniques).length === 0 ? STEP_MAP_NOTES_CHARS : 0)
+            + (links.length > 0 ? blockChars('resource_refs', links) : 0);
           if (alreadyDelivered) {
-            // A reference marker is near-zero cost — it does not draw down the eager budget.
-            bundledStepTechniques[step.id!] = { marker: stepMarker, ...unchangedMarker(hash) };
-            spentChars += mapNotesCost;
+            // A reference marker draws down no window budget — this context holds the content
+            // already — but it does cost the response the bytes it is written in.
+            const entry = { marker: stepMarker, ...unchangedMarker(hash) };
+            const entryChars = blockChars('step_techniques', { [step.id!]: entry }) + mapNotesCost;
+            if (responseChars + entryChars > responseBound) break;
+            responseChars += entryChars;
+            bundledStepTechniques[step.id!] = entry;
           } else {
-            // Full content draws down the cumulative budget. Inline ungated step techniques in
+            // Full content draws down both. Inline ungated step techniques in
             // document order and STOP at the first one that would overflow the remaining budget
             // (stop-and-break) — the remainder stay lazy. This preserves the contiguous
             // document-order prefix the spec and docs promise, rather than skipping a large
             // technique to squeeze in a later smaller one.
-            if (spentChars + text.length + mapNotesCost > eagerBudgetChars) break;
-            spentChars += text.length + mapNotesCost;
-            newDeliveries[ledgerKey] = hash;
+            if (spentChars + text.length > eagerBudgetChars) break;
             // The arrival marker leads the block; the composed technique fields follow at the same
             // level, so a bundled entry reads like a get_technique fetch with a step header, less
             // the rules this response states in its own list. Shared contract blocks collapse in
             // every mode; reference mode widens the pass to what this context received earlier.
+            //
+            // Built against a copy of the ledger, because what the entry costs the response is
+            // what it is written as, and it is written by the same pass that records it. An entry
+            // the bound turns away has to leave the ledger as it found it — a delivery recorded for
+            // content that never shipped would collapse a later call to a marker for bytes this
+            // worker never received.
             const composed = projectTechnique(technique);
             const composedRules = composed['rules'] as Record<string, string | string[]> | undefined;
             if (composedRules !== undefined) {
@@ -2133,19 +2158,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               if (remaining === undefined) delete composed['rules'];
               else composed['rules'] = remaining;
             }
+            const entryDeliveries = { ...newDeliveries };
             const projected = dedupTechniqueBlocks(
-              composed, state, newDeliveries, scope, referenceMode,
+              composed, state, entryDeliveries, scope, referenceMode,
             );
-            bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
+            const entry = { marker: stepMarker, ...projected };
+            const entryChars = blockChars('step_techniques', { [step.id!]: entry }) + mapNotesCost;
+            if (responseChars + entryChars > responseBound) break;
+            responseChars += entryChars;
+            spentChars += text.length;
+            Object.assign(newDeliveries, entryDeliveries);
+            newDeliveries[ledgerKey] = hash;
+            bundledStepTechniques[step.id!] = entry;
           }
-          // Collect linked resource ids from the full composed technique text even when this
-          // delivery collapses to an unchanged-marker (markers omit link text). Only for steps
-          // actually included in the bundle (after the budget break above).
-          // Qualified against the workflow the TECHNIQUE file was found in, not the activity's: a
-          // bare link in a meta technique names a resource under meta/resources/ whoever binds it.
-          for (const rawId of extractResourceIds(text)) {
-            linkedResourceIds.add(qualifyResourceId(rawId, techniqueWorkflowId, workflow_id));
-          }
+          // Linked resource ids join the response for a step the bundle actually carries — read off
+          // the full composed text even where this delivery collapses to an unchanged-marker, since
+          // a marker omits the link text. Their cost was charged with the entry above.
+          for (const rid of links) linkedResourceIds.add(rid);
           bundledSteps.push({
             stepId: step.id!, techniqueId,
             chars: text.length, delivery: alreadyDelivered ? 'unchanged' : 'full',
@@ -2198,12 +2227,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               const { hash, content, id, version } = loaded.value;
               const ledgerKey = `resource:${resourceId}`;
               if (deliveredHash(state, ledgerKey, scope) === hash || newDeliveries[ledgerKey] === hash) {
-                // A reference marker is near-zero cost — like a collapsed technique it does not
-                // draw down the eager budget, so it never displaces a body that still needs sending.
-                bundledResources[resourceId] = {
-                  resource_id: resourceId,
-                  ...unchangedMarker(hash),
-                };
+                // A reference marker draws down no window budget — like a collapsed technique it
+                // never displaces a body that still needs sending — and costs the response only the
+                // bytes it is written in.
+                const marker = { resource_id: resourceId, ...unchangedMarker(hash) };
+                const markerChars = blockChars('resources', { [resourceId]: marker });
+                if (responseChars + markerChars > responseBound) {
+                  resourceRefIds.push(...orderedIds.slice(i).filter((rid) => !coveredByItsFile(rid)));
+                  break;
+                }
+                responseChars += markerChars;
+                bundledResources[resourceId] = marker;
                 bundledResourceDeliveries.push({ resourceId, chars: content.length, delivery: 'unchanged' });
                 // The marker means this context already holds the body, sections included.
                 if (!resourceId.includes('#')) deliveredWhole.add(resourceId);
@@ -2217,21 +2251,25 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                 continue;
               }
               // #323 T2: resource bodies draw down the SAME cumulative `spentChars` counter as
-              // techniques, so `context_tokens` actually bounds the eager bundle. Stop at the
-              // first body that would overflow (mirroring the technique loop's stop-and-break);
-              // it and every id after it stay fetchable via get_resource.
-              if (spentChars + content.length > eagerBudgetChars) {
-                resourceRefIds.push(...orderedIds.slice(i).filter((rid) => !coveredByItsFile(rid)));
-                break;
-              }
-              spentChars += content.length;
-              newDeliveries[ledgerKey] = hash;
-              bundledResources[resourceId] = {
+              // techniques, so `context_tokens` actually bounds the eager bundle, and the same
+              // response tally, so the bound does too. Stop at the first body that would overflow
+              // either (mirroring the technique loop's stop-and-break); it and every id after it
+              // stay fetchable via get_resource.
+              const body = {
                 resource_id: resourceId,
                 ...(id ? { id } : {}),
                 ...(version ? { version } : {}),
                 content,
               };
+              const bodyChars = blockChars('resources', { [resourceId]: body });
+              if (spentChars + content.length > eagerBudgetChars || responseChars + bodyChars > responseBound) {
+                resourceRefIds.push(...orderedIds.slice(i).filter((rid) => !coveredByItsFile(rid)));
+                break;
+              }
+              spentChars += content.length;
+              responseChars += bodyChars;
+              newDeliveries[ledgerKey] = hash;
+              bundledResources[resourceId] = body;
               bundledResourceDeliveries.push({ resourceId, chars: content.length, delivery: 'full' });
               if (!resourceId.includes('#')) deliveredWhole.add(resourceId);
             }
@@ -2315,9 +2353,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         bundled_steps: bundledSteps.length,
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
-        // The two figures that say which limit shaped this delivery: what one tool result may
-        // carry, and how much of it the activity and the contract had already taken. A budget at or
-        // below zero is an activity whose definition and rules fill a response on their own.
+        // The response side of the same accounting, against which `spent_chars` reads the window
+        // side: what the delivery is written in, what one tool result may carry, and how much of
+        // that the activity and the contract had taken before the bundle spent anything. The two
+        // sides differ by what a marker costs — nothing to a context that holds the content, its
+        // own bytes to the response — so both are reported rather than reconciled.
+        response_spent_chars: responseChars,
         response_bound_chars: responseBound,
         fixed_chars: responseFloor,
         // Operations of the worker's role contract this response carries no body for. Their ids are

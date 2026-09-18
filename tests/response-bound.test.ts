@@ -127,8 +127,9 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery fits what a tool result ma
   let bundle: Record<string, unknown>;
   let meta: {
     delivery_cost: {
-      spent_chars: number; eager_budget_chars: number; response_bound_chars: number;
-      fixed_chars: number; deferred_operations: number; worker_bundle_chars: number;
+      spent_chars: number; eager_budget_chars: number; response_spent_chars: number;
+      response_bound_chars: number; fixed_chars: number; deferred_operations: number;
+      worker_bundle_chars: number;
     };
     operation_refs?: string[];
   };
@@ -154,10 +155,13 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery fits what a tool result ma
   it('holds the whole response inside the bound, batch reading included', () => {
     expect(text.length).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
     // Against the window budget alone this delivery runs to 113,000 characters, so a response that
-    // merely fits is not evidence: the bound has to be what stopped it.
-    expect(meta.delivery_cost.eager_budget_chars)
-      .toBe(meta.delivery_cost.response_bound_chars - meta.delivery_cost.fixed_chars);
-    expect(meta.delivery_cost.spent_chars).toBeLessThanOrEqual(meta.delivery_cost.eager_budget_chars);
+    // merely fits is not evidence: the bound has to be what stopped it, and the window has to have
+    // had room to spare when it did.
+    expect(meta.delivery_cost.spent_chars).toBeLessThan(meta.delivery_cost.eager_budget_chars / 2);
+    expect(meta.delivery_cost.response_bound_chars).toBe(DEFAULT_MAX_RESPONSE_CHARS);
+    expect(meta.delivery_cost.response_spent_chars).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+    // The response tally is what the delivery is written in, so it accounts for the whole of it.
+    expect(meta.delivery_cost.response_spent_chars).toBeGreaterThanOrEqual(text.length);
   });
 
   it('carries the activity and the rules whole, and defers procedure', () => {
@@ -204,5 +208,33 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery fits what a tool result ma
       expect(techniques[ref]!['delivery'], `${ref} came back as a marker it was never sent`).not.toBe('unchanged');
     }
     expect(secondText.length).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+  });
+
+  // Last, because it walks the session on to another activity: a marker draws down no window
+  // budget — the worker holds the content — but it is still bytes on the wire, and a response is
+  // weighed by a harness that cannot know what the worker holds. An activity whose step map has
+  // already been delivered is where the two readings part company.
+  it('counts what a collapsed entry costs the response, though it costs the context nothing', async () => {
+    await mcp.enter(sessionIndex, 'requirements-elicitation');
+    const first = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: 200_000, agent_id: 'w-2' },
+    });
+    expect(first.isError).toBeFalsy();
+    expect((first._meta as typeof meta & { bundled_steps?: string[] }).bundled_steps?.length ?? 0)
+      .toBeGreaterThan(0);
+
+    const repeat = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: 200_000, agent_id: 'w-2', bundle: 'reference' },
+    });
+    expect(repeat.isError).toBeFalsy();
+    const repeatCost = (repeat._meta as typeof meta).delivery_cost;
+    const repeatText = responseText(repeat);
+    expect(repeatText).toContain('delivery: unchanged');
+    expect(repeatText.length).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+    // The response tally covers the collapsed entries; the window tally does not have to.
+    expect(repeatCost.response_spent_chars).toBeGreaterThanOrEqual(repeatText.length);
+    expect(repeatCost.response_spent_chars).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
   });
 });
