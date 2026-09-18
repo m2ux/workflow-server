@@ -1,5 +1,5 @@
 id: implement
-version: 2.19.0
+version: 2.20.0
 name: Implement Tasks
 description: Execute the implementation plan task by task.
 variables:
@@ -62,9 +62,9 @@ variables:
       type: array
       description: The residual open assumptions awaiting a stakeholder judgement.
     - name: test_status
-      type: string
-      description: Pass/fail summary
-      defaultValue: ""
+      type: object
+      description: The test check's status — its check identifier, whether every test passed, and the per-test failure detail behind that verdict.
+      defaultValue: {}
     - name: uncertain_symbols
       type: string
       description: "Symbols whose provenance could not be confirmed against the codebase or declared dependencies, one per line."
