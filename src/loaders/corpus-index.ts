@@ -453,3 +453,17 @@ export function workflowOwning(source: CorpusSource, path: string): WorkflowLoca
   }
   return null;
 }
+
+/**
+ * The namespace whose directory holds a path, or null for a path under none. A library declares no
+ * definition, so the walk does not stop at one and a namespace can sit inside another's directory:
+ * the deepest match owns the path, which is the one whose name a reference into it carries.
+ */
+export function namespaceOwning(source: CorpusSource, path: string): NamespaceLocation | null {
+  let owner: NamespaceLocation | null = null;
+  for (const location of asIndex(source).namespaces.values()) {
+    if (path !== location.dir && !path.startsWith(location.dir + sep)) continue;
+    if (!owner || location.dir.length > owner.dir.length) owner = location;
+  }
+  return owner ? locationIfMatching(owner) : null;
+}

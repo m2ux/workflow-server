@@ -33,7 +33,7 @@ import { readdirSync, existsSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tryLoadMarkdownTechnique, tryLoadNestedTechnique } from '../src/loaders/markdown-technique-loader.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -101,7 +101,7 @@ async function loadWorkflowTechniques(techniquesDir: string): Promise<Array<{ id
 export async function collectAudienceViolations(root: string = DEFAULT_ROOT): Promise<AudienceViolation[]> {
   const out: AudienceViolation[] = [];
   let scanned = 0;
-  for (const { id: workflow, dir } of corpusWorkflows(root)) {
+  for (const { id: workflow, dir } of corpusNamespaces(root)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const { id, technique } of await loadWorkflowTechniques(techniquesDir)) {

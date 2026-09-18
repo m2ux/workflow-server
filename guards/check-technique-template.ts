@@ -31,7 +31,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { corpusWorkflows, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { corpusNamespaces, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 import { ARTIFACT_NAME_PATTERN } from '../src/schema/technique.schema.js';
 
@@ -198,7 +198,7 @@ function* walkFiles(dir: string): Generator<string> {
 
 export function collectTemplateViolations(root: string = ROOT): TemplateViolation[] {
   const violations: TemplateViolation[] = [];
-  for (const { dir } of corpusWorkflows(root)) {
+  for (const { dir } of corpusNamespaces(root)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const path of walkFiles(techniquesDir)) {

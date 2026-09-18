@@ -37,7 +37,7 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tryLoadMarkdownTechnique, tryLoadNestedTechnique } from '../src/loaders/markdown-technique-loader.js';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, ledgerPath, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, ledgerPath, requireWorkflowsRoot, namespaceSubdir, defaultCorpusDest } from './workflows-root.js';
 import { resolveLink } from './corpus-links.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
@@ -89,7 +89,7 @@ function loadBaseline(path: string): BaselineFile {
  */
 function readResources(source: CorpusSource, workflow: string): Map<string, string> {
   const out = new Map<string, string>();
-  const dir = workflowSubdir(source, workflow, 'resources');
+  const dir = namespaceSubdir(source, workflow, 'resources');
   if (!dir || !existsSync(dir) || !statSync(dir).isDirectory()) return out;
   for (const entry of readdirSync(dir).sort()) {
     if (!entry.endsWith('.md')) continue;
@@ -239,7 +239,7 @@ export async function collectUnmappedArtifacts(
   const sharedResources = readResources(index, SHARED_WORKFLOW);
   let scanned = 0;
 
-  for (const { id: workflow, dir } of corpusWorkflows(root, index)) {
+  for (const { id: workflow, dir } of corpusNamespaces(root, index)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     const resources = readResources(index, workflow);

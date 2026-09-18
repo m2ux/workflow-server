@@ -35,7 +35,7 @@ import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -136,7 +136,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const index = indexCorpus(root);
   const homes = contractHomes(root, index);
 
-  for (const { dir: wfDir } of corpusWorkflows(root, index)) {
+  for (const { dir: wfDir } of corpusNamespaces(root, index)) {
     const wfFile = join(wfDir, 'workflow.yaml');
     if (existsSync(wfFile)) {
       const def = parse(readFileSync(wfFile, 'utf-8')) as Record<string, unknown> | null;

@@ -16,12 +16,12 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 import { defaultCorpusDest, REFERENCE_CORPUS_ADD } from '../src/corpus-dest.js';
-import { type CorpusIndex, indexCorpus, workflowLocation, workflowOwning } from '../src/loaders/corpus-index.js';
+import { type CorpusIndex, indexCorpus, namespaceLocation, namespaceOwning, workflowLocation } from '../src/loaders/corpus-index.js';
 
 export { defaultCorpusDest, isPrimaryCheckout, primaryCheckoutRoot, REFERENCE_CORPUS_ADD, REFERENCE_CORPUS_REL } from '../src/corpus-dest.js';
 
 /** A directory a workflow owns, wherever the workflow sits — `null` for an id the corpus lacks. */
-export { workflowSubdir } from '../src/loaders/corpus-index.js';
+export { workflowSubdir, namespaceSubdir } from '../src/loaders/corpus-index.js';
 
 /** Where a resolved root came from, so a failure names the knob that selected it. */
 export type RootOrigin = '--root' | 'WORKFLOWS_DIR' | 'default';
@@ -58,8 +58,12 @@ export interface CorpusWorkflow {
 /**
  * Every workflow in a corpus, ordered by id. Guards enumerate through this rather than reading the
  * root directly: discovery is the server's rule (a directory holding a `workflow.yaml`, at any
- * depth, outside the reserved `activities`/`resources`/`techniques` names), so a workflow the
- * server runs is a workflow the guards measure.
+ * depth, outside the reserved `activities`/`resources`/`routines`/`techniques` names), so a workflow
+ * the server runs is a workflow the guards measure.
+ *
+ * This is the enumeration for anything measured about a runnable product — its graph, its
+ * activities, its definition. A guard sweeping a library of techniques, resources or routines wants
+ * `corpusNamespaces`, which reaches the libraries no workflow declares as well.
  */
 export function corpusWorkflows(root: string, index: CorpusIndex = indexCorpus(root)): CorpusWorkflow[] {
   return [...index.workflows.values()]
@@ -67,19 +71,69 @@ export function corpusWorkflows(root: string, index: CorpusIndex = indexCorpus(r
     .map(({ id, dir, manifest }) => ({ id, dir, manifest, rel: relative(root, dir) }));
 }
 
+/**
+ * A namespace in the corpus, as a guard needs it. A workflow is one of these too, and carries its
+ * `manifest`; a library that declares no workflow carries none.
+ */
+export interface CorpusNamespace {
+  /** The directory name — the reference a corpus holding one namespace of this name uses. */
+  id: string;
+  /** The slash-joined path from the corpus root — the reference that names this one and no other. */
+  path: string;
+  dir: string;
+  rel: string;
+  /** The definition file, absent for a library that declares no workflow. */
+  manifest?: string;
+}
+
+/**
+ * Every namespace a reference can reach by name, ordered by path — the libraries no workflow
+ * declares among them.
+ *
+ * A guard measuring techniques, resources or routines enumerates through this, because a library is
+ * addressable whether or not a definition sits beside it, and one the guards cannot see is one whose
+ * contents nothing measures. A guard measuring a product's graph or activities keeps to
+ * `corpusWorkflows`: an activity belongs to a workflow, so a namespace holding no definition has
+ * nothing for it to read.
+ *
+ * A directory the corpus refuses to answer for is left out, on the same terms `corpusWorkflows`
+ * leaves one out: a definition declaring an id other than its directory's name, and a name two
+ * directories claim, each resolve to nothing. Measuring one would hold a corpus to rules about a
+ * directory the server declines to serve, and `indexCorpus` reports both as the ambiguity they are.
+ */
+export function corpusNamespaces(root: string, index: CorpusIndex = indexCorpus(root)): CorpusNamespace[] {
+  return [...index.namespaces.values()].filter((location) => namespaceLocation(index, location.id)).map((location) => {
+    // A library carries the field holding null rather than not carrying it, so a reader testing for
+    // the field alone would read every library as declaring a definition.
+    const manifest = (location as { manifest?: string | null }).manifest ?? undefined;
+    return {
+      id: location.id,
+      path: location.path,
+      dir: location.dir,
+      rel: relative(root, location.dir),
+      ...(manifest === undefined ? {} : { manifest }),
+    };
+  });
+}
+
 function posixRel(from: string, to: string): string {
   return relative(from, to).split(sep).join('/');
 }
 
 /**
- * The site key a ledger matches: `<workflow-id>/<path-inside-that-workflow>`.
+ * The site key a ledger matches: `<namespace-name>/<path-inside-that-namespace>`.
  *
- * Grouping folders (`corpus/`, and any future nest) name nothing in a finding. The same resource
- * cited from a flat tree and from `corpus/<id>/` is one site, so a ledger written against the
- * workflow id keeps matching when the tree is nested.
+ * Grouping folders (`corpus/`, `support/`, and any future nest) name nothing in a finding. The same
+ * resource cited from a flat tree and from `corpus/<name>/` is one site, so a ledger written against
+ * the namespace name keeps matching when the tree is nested.
+ *
+ * A library is named the same way a workflow is: a reference reaches both by the directory's name,
+ * so a finding about a file in either quotes the string a reader would search for. Falling back to
+ * the path from the corpus root would key a library's findings on grouping folders the rest of the
+ * ledger never mentions.
  */
 export function citePath(root: string, file: string, index: CorpusIndex = indexCorpus(root)): string {
-  const location = workflowOwning(index, resolve(file));
+  const location = namespaceOwning(index, resolve(file));
   if (!location) return posixRel(root, file);
   const inner = posixRel(location.dir, file);
   if (!inner || inner === '.') return location.id;
