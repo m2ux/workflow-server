@@ -28,14 +28,16 @@
  *   a declaration naming one holds at the site that supplied it and nowhere else.
  *
  * A routine whose body binds an operation by argument names a parameter where an operation reference
- * belongs, so it has no signature of its own and the signature rules run ONCE PER REFERENCE SITE,
- * against the operation that site supplies. A routine binding no operation by argument keeps the
- * once-per-routine path, which needs no site and holds wherever the file sits.
+ * belongs, so it has no signature of its own and the rules are derived against whatever stands in
+ * that position: once per reference site, against the operation that site supplies; or, where no
+ * site refers to it at all, once against the operation its own declaration defaults to. A routine
+ * binding no operation by argument keeps the once-per-routine path, which needs neither.
  *
  * - `routine-signature-unheld` — a routine whose body binds an operation by argument and for which
- *   nothing is derived: no site supplies an operation this can read, or no site exists at all. Every
- *   site is skipped, so no signature rule can fire; saying so is what keeps a routine nothing checked
- *   from reading as a routine nothing found fault with.
+ *   nothing is derived: sites refer to it and not one supplies an operation this can read, or no site
+ *   and no declared default puts an operation in the parameter's place. Every reading is skipped, so
+ *   no signature rule can fire; saying so is what keeps a routine nothing checked from reading as a
+ *   routine nothing found fault with.
  *
  * The placement rule, which is corpus-wide by construction. A routine is an artifact offered to
  * whatever binds it, on the terms the techniques beside it are offered, so a caller may arrive from
@@ -50,9 +52,10 @@
  *
  *   A library namespace is a home of its own, on the terms the shared home is one. It declares no
  *   workflow, so no activity of its own ever reaches a routine and the owner computation can only
- *   send the file somewhere else. What earns it is the body: a run composing that library's
- *   operations sits beside them, and one binding none of them is governed by the owner rule like
- *   any other.
+ *   send the file somewhere else. What earns it is the body, read as authored and again with each
+ *   operation a declared default or a reference site can put in a parameter's place: a run composing
+ *   that library's operations sits beside them, and one binding none of them under any of those
+ *   readings is governed by the owner rule like any other.
  *
  * Findings are guard findings rather than load failures, which is the recorded decision: the
  * contract derivation stays a guard's business, so a routine contradicting its signature fails a
@@ -428,7 +431,11 @@ function bindsNamespaceOperation(
     return namesNamespace(typeof step.technique === 'string' ? step.technique : step.technique.name);
   });
   const parameters = operationInputs(routine);
+  // The body as authored is always one of the readings. A parameter id names no namespace, so it
+  // grants nothing on its own — and where no argument and no default stand in its place, the steps
+  // spelling the library outright are the only reading there is.
   const candidates = [
+    new Map<string, string>(),
     siteOperations(routine, parameters, undefined),
     ...sites.map((reference) => siteOperations(routine, parameters, reference.args)),
   ];
@@ -519,10 +526,11 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
         continue;
       }
-      // A declaration supplying its own operation holds the signature without a site: the default
-      // is the operation the body binds wherever a site says nothing, so the body it derives is the
-      // one every such site runs. A library's runs reach this path, having callers or none.
-      const fromDefaults = siteOperations(routine, parameters, undefined);
+      // A declaration supplying its own operation holds the signature where NO site refers to it:
+      // the default is then the only operation that ever stands in the parameter's place. Where
+      // sites exist and none is readable, nothing was derived and that is what the finding below
+      // says — grading the declaration against its default there would report on a body no site runs.
+      const fromDefaults = sites.length === 0 ? siteOperations(routine, parameters, undefined) : undefined;
       if (fromDefaults) {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, [
           { operations: fromDefaults, site: `${declaration} at its declared defaults` },

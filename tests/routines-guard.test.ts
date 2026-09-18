@@ -989,10 +989,140 @@ steps:
   });
 
   /**
+   * A parameter carries no namespace of its own, so a run whose every operation arrives that way
+   * names its library through what a site binds into it. Read from the authored steps alone the
+   * body names nothing, and the file is sent to the workflow that refers to it.
+   */
+  it('accepts a library-homed routine whose operation arrives from a site argument', async () => {
+    const findings = await findingsFor({
+      activities: {
+        wf: {
+          host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: lib::shared-run\n    with:\n      probe_operation: lib::probe\n',
+        },
+      },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  /**
+   * A run the authored steps name the library in is homed there whatever stands in its operation
+   * positions. A reading that only ever substitutes would have no body to inspect where a parameter
+   * has neither an argument nor a default, and would send the file away from the library it spells.
+   */
+  it('accepts a library-homed routine naming the library outright, its other operation unbound', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: libraryReferrer } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: named
+    technique: lib::probe
+  - kind: technique
+    id: parameterised
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    expect(findings.find((f) => f.check === 'routine-misplaced')).toBeUndefined();
+  });
+
+  /**
+   * Where sites exist and none supplies an operation this can read, nothing is derived and the
+   * unheld finding says so. Grading the declaration against its own default there would report on a
+   * body no reference site runs, and would retire the one verdict that says nothing was checked.
+   */
+  it('reports unheld where a site overrides the default with something unreadable', async () => {
+    const findings = await findingsFor({
+      activities: {
+        wf: {
+          host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: lib::shared-run\n    with:\n      probe_operation: "{chosen_operation}"\n',
+        },
+      },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    default: lib::probe
+    description: the measurement each pass applies
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    const finding = findings.find((f) => f.check === 'routine-signature-unheld');
+    expect(finding).toBeDefined();
+    expect(finding!.detail).toContain('1 site(s) refer to');
+  });
+
+  /**
    * A declaration supplying its own operation holds its signature without a site, the default being
    * the operation every site that says nothing runs. Reporting it unheld states that nothing could
-   * be derived, which the default falsifies.
+   * be derived, which the default falsifies — and what is derived is graded, so a body contradicting
+   * the declaration is reported rather than passed over.
    */
+  it('grades a caller-less routine against the body its declared default derives', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
+      techniques: { lib: { probe } },
+      routines: {
+        lib: {
+          'shared-run': `id: shared-run
+version: 1.0.0
+name: shared-run
+inputs:
+  - id: probe_operation
+    kind: technique
+    default: lib::probe
+    description: the measurement each pass applies
+  - id: unread_input
+    description: a value no step of this body reads
+steps:
+  - kind: technique
+    id: probe
+    technique: probe_operation
+`,
+        },
+      },
+    });
+    expect(findings.find((f) => f.check === 'routine-input-unread')).toBeDefined();
+    expect(findings.find((f) => f.check === 'routine-signature-unheld')).toBeUndefined();
+  });
+
   it('holds the signature of a caller-less routine whose operation carries a default', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
