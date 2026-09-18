@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { parse } from 'yaml';
 import { DEFAULT_MAX_RESPONSE_CHARS } from '../src/config.js';
+import { DELIVERY_COST_FIELDS } from '../src/tools/workflow-tools.js';
 import { contentHash } from '../src/utils/delivery.js';
 import { stringifyForResponse } from '../src/utils/serialization.js';
 import { liveCorpusRoot } from './corpus-root.js';
@@ -37,6 +38,8 @@ describe.skipIf(!liveCorpusRoot())('the startup response fits what a tool result
   let sessionIndex: string;
   let ops: Record<string, unknown>;
   let workflowText: string;
+  /** The text and the metadata beside it — what a harness actually weighs. */
+  let wholeResult: number;
 
   beforeAll(async () => {
     harness = await createHarness();
@@ -51,24 +54,53 @@ describe.skipIf(!liveCorpusRoot())('the startup response fits what a tool result
     const result = await client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } });
     expect(result.isError).toBeFalsy();
     workflowText = responseText(result);
+    wholeResult = workflowText.length + JSON.stringify(result._meta ?? {}).length;
     ops = splitWorkflowResponse(workflowText).ops;
   });
 
   afterAll(async () => { await harness.close(); });
 
   /**
-   * The bound governs the operations bundle, and the workflow metadata after the separator rides on
-   * top of it. That metadata is what an orchestrator drives the run from — the roster, the graph,
-   * the variables — so nothing sheds it, and on the two largest workflows it runs to thirty
-   * thousand characters on its own. The claim that holds on both role paths is therefore the same
-   * one: a response is inside the bound, or it carries no procedure at all.
+   * Both halves of the response answer to the bound. Procedure gives way first; where every
+   * operation body is already an id and the response is still over, the prose explaining a variable
+   * gives way next. What no shed reaches is the roster, the graph and the declared namespace, which
+   * is what an orchestrator drives the run from — so the claim that holds on both role paths is the
+   * same one: a response is inside the bound, or it carries no procedure at all.
    */
-  it('holds the operations bundle inside the bound, and carries no procedure when it cannot', () => {
+  it('holds the whole result inside the bound, and carries no procedure when it cannot', () => {
     const bundleChars = workflowText.indexOf('\n\n---\n\n');
     expect(bundleChars).toBeGreaterThan(0);
     expect(bundleChars).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
-    if (workflowText.length > DEFAULT_MAX_RESPONSE_CHARS) {
+    // A harness weighs the metadata beside the text, so the reading that matters is the two
+    // together. `work-package` is the corpus's widest startup response.
+    expect(wholeResult).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+    if (wholeResult > DEFAULT_MAX_RESPONSE_CHARS) {
       expect(ops['techniques'], 'over the bound with an operation body aboard').toBeUndefined();
+    }
+  });
+
+  /**
+   * The roster survives every shed. An orchestrator recognises a name a worker reports and reads a
+   * value out of the bag by it, so a declaration the response dropped is a run it cannot follow —
+   * where the prose explaining one is a thing it does not act on.
+   */
+  it('states every variable the run carries, whatever fidelity it shed to', () => {
+    const summary = splitWorkflowResponse(workflowText).summary;
+    const declared = (summary['variables'] ?? []) as Array<Record<string, unknown>>;
+    expect(declared.length).toBeGreaterThan(0);
+    for (const variable of declared) {
+      expect(variable['name'], `a declaration arrived with no name: ${JSON.stringify(variable)}`).toBeTruthy();
+      expect(variable['type'], `${String(variable['name'])} arrived with no type`).toBeTruthy();
+    }
+    // Shed or not, the response says which it is: prose for every variable and no note, or a note
+    // naming what it left out and where that is.
+    const note = summary['variables_note'];
+    const described = declared.filter(v => v['description'] !== undefined).length;
+    if (note === undefined) {
+      expect(described, 'prose is missing with no note to say so').toBe(declared.length);
+    } else {
+      expect(described).toBeLessThan(declared.length);
+      expect(String(note)).toContain('get_activity');
     }
   });
 
@@ -138,6 +170,8 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery fits what a tool result ma
     };
     operation_refs?: string[];
   };
+  /** The metadata as the result carries it, for measuring what rides beside the text. */
+  let rawMeta: unknown;
 
   beforeAll(async () => {
     harness = await createHarness();
@@ -153,12 +187,16 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery fits what a tool result ma
     text = responseText(result);
     bundle = parse(text.slice(0, text.indexOf('\n\n---\n\n'))) as Record<string, unknown>;
     meta = result._meta as typeof meta;
+    rawMeta = result._meta ?? {};
   });
 
   afterAll(async () => { await harness.close(); });
 
-  it('holds the whole response inside the bound, batch reading included', () => {
-    expect(text.length).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
+  it('holds the whole result inside the bound, batch reading and metadata included', () => {
+    // A harness weighs the tool result, which is the text and the protocol metadata beside it, so
+    // that pair is the reading the bound has to hold.
+    const wire = text.length + JSON.stringify(rawMeta).length;
+    expect(wire).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
     // Against the window budget alone this delivery runs to 113,000 characters, so a response that
     // merely fits is not evidence: the bound has to be what stopped it, and the window has to have
     // had room to spare when it did.
@@ -166,7 +204,16 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery fits what a tool result ma
     expect(meta.delivery_cost.response_bound_chars).toBe(DEFAULT_MAX_RESPONSE_CHARS);
     expect(meta.delivery_cost.response_spent_chars).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
     // The response tally is what the delivery is written in, so it accounts for the whole of it.
-    expect(meta.delivery_cost.response_spent_chars).toBeGreaterThanOrEqual(text.length);
+    expect(meta.delivery_cost.response_spent_chars).toBeGreaterThanOrEqual(wire);
+  });
+
+  /**
+   * The bound reserves room for `delivery_cost` before its figures are known, from a list of the
+   * fields it reports. A field added to the reading and not to that list is room the reservation
+   * never took, so the two are held together here rather than by a comment asking for it.
+   */
+  it('reserves room for every field the delivery cost reports', () => {
+    expect(Object.keys(meta.delivery_cost).sort()).toEqual([...DELIVERY_COST_FIELDS].sort());
   });
 
   it('carries the activity and the rules whole, and defers procedure', () => {
@@ -375,6 +422,127 @@ describe.skipIf(!liveCorpusRoot())('a marker points only at content the worker w
   }, 120_000);
 });
 
+/**
+ * What a workflow says about itself, held to the bound (#830).
+ *
+ * At the configured default only the two largest workflows reach the shed, so a case reading
+ * today's corpus would pass against a server that sheds nothing. These drive the startup path at
+ * bounds tight enough to force each stage in turn and hold it to what the design claims: the roster
+ * is whole at every fidelity, the prose is what gives way, and a response that sheds says so.
+ */
+describe.skipIf(!liveCorpusRoot())('a workflow definition gives way in a stated order', () => {
+  /**
+   * Wide enough to fit whole, then the served bound, then tight enough to reach each stage below
+   * it, then tighter than any of them. `work-package` is the corpus's widest definition and is
+   * already past the served bound, so a sweep that started there would never see the first stage.
+   */
+  const BOUNDS = [80_000, 60_000, 56_000, 52_000, 48_000, 44_000, 30_000];
+
+  interface Reading {
+    bound: number;
+    whole: number;
+    /** Every variable the response declared, at whatever fidelity it shed to. */
+    declared: Array<Record<string, unknown>>;
+    described: number;
+    note: unknown;
+    carriesOperationBody: boolean;
+    summary: Record<string, unknown>;
+  }
+  const readings: Reading[] = [];
+
+  beforeAll(async () => {
+    for (const bound of BOUNDS) {
+      const harness = await createHarness({ maxResponseChars: bound });
+      const mcp = sessionOps(harness, 'work-package');
+      try {
+        const idx = await mcp.start(`2026-09-18-definition-${bound}`, 'orchestrator');
+        const result = await harness.client.callTool({
+          name: 'get_workflow', arguments: { session_index: idx },
+        });
+        expect(result.isError).toBeFalsy();
+        const text = responseText(result);
+        const { ops: bundle, summary } = splitWorkflowResponse(text);
+        const declared = (summary['variables'] ?? []) as Array<Record<string, unknown>>;
+        readings.push({
+          bound,
+          whole: text.length + JSON.stringify(result._meta ?? {}).length,
+          declared,
+          described: declared.filter(v => v['description'] !== undefined).length,
+          note: summary['variables_note'],
+          carriesOperationBody: bundle['techniques'] !== undefined,
+          summary,
+        });
+      } finally {
+        await harness.close();
+      }
+    }
+  }, 300_000);
+
+  /**
+   * The roster is what an orchestrator drives the run from: it recognises a name a worker reports
+   * and reads a value out of the bag by it. A declaration the response dropped is a run it cannot
+   * follow, where the prose explaining one is a thing it does not act on — so no bound reaches
+   * these, however tight.
+   */
+  it('states the same roster at every bound', () => {
+    const widest = readings[0]!;
+    expect(widest.declared.length).toBeGreaterThan(0);
+    for (const r of readings) {
+      expect(r.declared.length, `${r.bound}: the declarations gave way`).toBe(widest.declared.length);
+      expect(r.declared.every(v => v['name'] !== undefined && v['type'] !== undefined),
+        `${r.bound}: a declaration arrived without its name or its type`).toBe(true);
+      expect(r.summary['initialActivity'], `${r.bound}: no initial activity`).toBeTruthy();
+      expect(Object.keys((r.summary['graph'] ?? {}) as object).length, `${r.bound}: no graph`).toBeGreaterThan(0);
+      expect((r.summary['activities'] as unknown[]).length, `${r.bound}: no roster`).toBeGreaterThan(0);
+    }
+  });
+
+  /**
+   * The stages run widest-first and stop at the first that fits, so tightening the bound never
+   * returns prose a wider one had already shed. Read across the sweep rather than at one bound,
+   * because a single reading cannot tell a stage order from a coincidence.
+   */
+  it('sheds prose monotonically as the bound tightens, down to none', () => {
+    const trail = readings.map(r => `${r.bound}:${r.described}`).join(' → ');
+    for (let i = 1; i < readings.length; i += 1) {
+      expect(readings[i]!.described, `prose came back as the bound tightened: ${trail}`)
+        .toBeLessThanOrEqual(readings[i - 1]!.described);
+    }
+    // Every stage is exercised, or the sweep proves only that nothing changed: prose for all of
+    // them where there is room, none of them where there is none, and the middle stage in between.
+    expect(readings[0]!.described, `the widest bound shed prose it had room for: ${trail}`)
+      .toBe(readings[0]!.declared.length);
+    expect(readings[readings.length - 1]!.described, `no bound reached the last stage: ${trail}`).toBe(0);
+    expect(readings.some(r => r.described > 0 && r.described < r.declared.length),
+      `no bound reached the middle stage: ${trail}`).toBe(true);
+  });
+
+  /** A response that shed says so, and says where the prose it left out can be read. */
+  it('names what it shed, and where that is', () => {
+    for (const r of readings) {
+      if (r.described === r.declared.length) {
+        expect(r.note, `${r.bound}: a note with nothing to explain`).toBeUndefined();
+        continue;
+      }
+      expect(String(r.note), `${r.bound}: prose shed with no note to say so`).toContain('get_activity');
+    }
+  });
+
+  /**
+   * Over the bound is the terminal stage, and it is reached only with nothing left to give. An
+   * orchestrator that gets one is reading a workflow whose definition has outgrown a single
+   * delivery, which is a different fact from a delivery that merely chose badly.
+   */
+  it('reaches past the bound only with every stage spent', () => {
+    const over = readings.filter(r => r.whole > r.bound);
+    expect(over.length, 'no bound was tight enough to reach the terminal stage').toBeGreaterThan(0);
+    for (const r of over) {
+      expect(r.carriesOperationBody, `${r.bound}: over the bound with an operation body aboard`).toBe(false);
+      expect(r.described, `${r.bound}: over the bound with prose still aboard`).toBe(0);
+    }
+  });
+});
+
 describe.skipIf(!liveCorpusRoot())('the bound holds wherever it is set', () => {
   const RUN = ['start-work-package', 'design-philosophy', 'requirements-elicitation'];
 
@@ -410,9 +578,12 @@ describe.skipIf(!liveCorpusRoot())('the bound holds wherever it is set', () => {
                 bundled_steps?: string[]; bundled_resources?: string[];
               };
               const where = `${activityId} ${mode ?? 'full'}`;
+              // A harness weighs the metadata beside the text, so the wire is the two together and
+              // a tally that covered only the text would claim a bound it does not hold.
+              const wire = body.length + JSON.stringify(taken._meta ?? {}).length;
               expect(meta.delivery_cost.response_spent_chars,
-                `${where}: the tally understates the wire`).toBeGreaterThanOrEqual(body.length);
-              if (body.length > bound) {
+                `${where}: the tally understates the wire`).toBeGreaterThanOrEqual(wire);
+              if (wire > bound) {
                 // No procedure at all, which is all three stages: the contract's operation bodies
                 // give way first, so a response over the bound carrying one of those is the stage
                 // this reads least and the one whose arithmetic is easiest to get wrong.
