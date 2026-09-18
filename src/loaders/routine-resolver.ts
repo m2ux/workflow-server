@@ -24,15 +24,17 @@
  *                   operation parameter with no argument, or one bound to something that is not a
  *                   literal reference
  *   the body        a parameter standing where the `when` dialect takes a value; a substitution
- *                   carrying a quote into that position; a loop iterating or binding its item to a
+ *                   carrying a quote into that position; an operand the dialect cannot read beside a
+ *                   parameter the site bound to a literal; a loop iterating or binding its item to a
  *                   dropped output; an action targeting one
  *   the result      two reference steps whose materialised ids collide; a reference block the step
  *                   schema does not admit, which reaches the splice through the raw text path
  *
- * Each of those is authorable, so each has a case that provokes it. One refusal is not: a step
- * reaching materialisation with no resolved id, which `populateStepIds` fills when a file is read.
- * No definition can produce it, so it has no fixture and is a defect report rather than an
- * authoring error.
+ * Each of those is authorable, so each has a case that provokes it. Two refusals are not: a step
+ * reaching materialisation with no resolved id, which `populateStepIds` fills when a file is read,
+ * and a folded comparison the dialect cannot read, whose operands `foldableComparison` matches
+ * against the shapes the dialect admits. No definition can produce either, so neither has a fixture
+ * and both are defect reports rather than authoring errors.
  *
  * The core is synchronous and pure over a `RoutineLookup`, so the async loaders and the synchronous
  * guard scripts share one resolution semantics.
@@ -46,6 +48,7 @@ import {
 } from '../schema/activity.schema.js';
 import type { Condition } from '../schema/condition.schema.js';
 import { type Routine, isOperationInput, routineScope } from '../schema/routine.schema.js';
+import { evaluateWhenExpression, parseWhen } from '../schema/when-expression.js';
 import { parseDefinition, stringifyForResponse } from '../utils/serialization.js';
 import { META_WORKFLOW_ID } from './corpus-index.js';
 
@@ -182,6 +185,15 @@ function renameHead(reference: string, map: SubstitutionMap): string | undefined
 const TOKEN_RE = /\{([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*)\}/g;
 const LEADING_IDENTIFIER_RE = /^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*/;
 const COMPARISON_TAIL_RE = /(?:==|!=|>=|<=|>|<)\s*$/;
+const COMPARISON_HEAD_RE = /^\s*(==|!=|>=|<=|>|<)\s*/;
+/**
+ * One whole right-hand operand, in the shapes the dialect's tokenizer admits there. The operand ends
+ * where a token does, so text the dialect would read as a second token leaves no operand to fold
+ * rather than a prefix of one.
+ */
+const VALUE_HEAD_RE = /^(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|-?\d+|[A-Za-z_][A-Za-z0-9_.]*)(?=\s|\)|&|\||$)/;
+/** Stands for the folded left operand while the dialect decides the comparison. Never emitted. */
+const FOLD_OPERAND = 'routine_fold_operand';
 
 /**
  * Rewrite every `{token}` in a string in ONE pass, so a binding mapping `a → b` and `b → c` renames
@@ -227,9 +239,85 @@ function comparisonValue(
 }
 
 /**
+ * The verdict a comparison carries once its left operand is a literal.
+ *
+ * The dialect compares a bag path against a value, so a literal standing left of the operator has no
+ * position to be substituted into. Both operands are known here, which makes the comparison decidable
+ * where it stands: it folds to `true` or `false`, which the dialect takes as a primary and composes
+ * under `!`, `&&`, `||` and parens like any other.
+ *
+ * The verdict is the dialect's own — the operands are handed to the evaluator against a bag holding
+ * the left one, so quoting, bare-word coercion and the numeric ordering rules are read from the
+ * grammar rather than restated here.
+ *
+ * The operator and the operand are both matched against the shapes the dialect admits, so the probe
+ * is well formed by construction and a parse failure is a defect report rather than an authoring
+ * error. It is checked because the evaluator answers `false` for an expression it cannot read, which
+ * is indistinguishable from a comparison that is genuinely false.
+ */
+function foldComparison(
+  left: string | number | boolean,
+  operator: string,
+  right: string,
+  expression: string,
+  context: string,
+): string {
+  const probe = `${FOLD_OPERAND} ${operator} ${right}`;
+  const parsed = parseWhen(probe);
+  if (!parsed.ok) {
+    throw new RoutineResolutionError(
+      `${context}: folding '${expression}' composed the probe '${probe}', which the dialect cannot read — `
+      + `${parsed.error}. The operand shapes and the fold disagree, which is a defect in this resolver.`,
+    );
+  }
+  return String(evaluateWhenExpression(probe, { [FOLD_OPERAND]: left }));
+}
+
+/**
+ * The comparison a literal-bound parameter heads, where it heads one.
+ *
+ * Reads the operator and the operand behind an identifier the walk is standing on, and answers with
+ * both sides resolved. Three shapes decline, each because the identifier is a bag path there and a
+ * value would be wrong:
+ *
+ *   - a parameter bound to a NAME, whose comparison the host's bag settles at run time;
+ *   - a DOTTED path, which addresses a field of a value the site did not supply;
+ *   - a parameter standing alone, which the dialect reads as truthiness against the bag — the shape a
+ *     `validate` action's target takes.
+ */
+function foldableComparison(
+  expression: string,
+  index: number,
+  identifier: string,
+  map: SubstitutionMap,
+  context: string,
+): { left: string | number | boolean; operator: string; right: string; end: number } | undefined {
+  if (identifier.includes('.')) return undefined;
+  const substitution = map.get(identifier);
+  if (substitution?.kind !== 'literal') return undefined;
+  const rest = expression.slice(index + identifier.length);
+  const operator = COMPARISON_HEAD_RE.exec(rest);
+  if (!operator) return undefined;
+  const operand = VALUE_HEAD_RE.exec(rest.slice(operator[0].length))?.[0];
+  if (operand === undefined) {
+    throw new RoutineResolutionError(
+      `${context}: '${identifier}' heads a comparison in '${expression}' and the site bound it to a literal, `
+      + 'so the comparison is settled here — but what stands right of the operator is not a value the dialect reads.',
+    );
+  }
+  const bound = map.get(operand);
+  return {
+    left: substitution.value,
+    operator: operator[1]!,
+    right: bound ? comparisonValue(bound, operand, expression, context) : operand,
+    end: index + identifier.length + operator[0].length + operand.length,
+  };
+}
+
+/**
  * Rewrite the names a `when` expression carries, in one pass.
  *
- * An expression names its variables bare, so the rewrite has to tell a bag path from the two things
+ * An expression names its variables bare, so the rewrite has to tell a bag path from the three things
  * that look exactly like one:
  *
  *   - A right-hand operand. `analysis_type == completion` compares against the characters
@@ -237,6 +325,10 @@ function comparisonValue(
  *     written — UNLESS the routine declares that exact name, in which case it is the parameter
  *     standing in the value's place and the site's literal replaces it. A routine declares every name
  *     in its own scope, which is what makes the two distinguishable at all.
+ *   - A left-hand operand the site bound to a literal. The dialect's comparison reads its left side as
+ *     a bag path, so a value has no position there and the comparison is settled here instead, by
+ *     `foldableComparison` and `foldComparison`. A parameter bound to a name keeps the bag path, and
+ *     so does one standing alone, which the dialect reads as truthiness.
  *   - The contents of a quoted string. `chosen_mode == "current_assumption"` compares against the
  *     characters `current_assumption`, and renaming them would change what the gate tests — silently,
  *     because the result is still a well-formed expression.
@@ -268,9 +360,16 @@ function substituteExpression(expression: string, map: SubstitutionMap, context:
     if (COMPARISON_TAIL_RE.test(out)) {
       const substitution = map.get(identifier);
       out += substitution ? comparisonValue(substitution, identifier, expression, context) : identifier;
-    } else {
-      out += renameHead(identifier, map) ?? identifier;
+      index += identifier.length;
+      continue;
     }
+    const fold = foldableComparison(expression, index, identifier, map, context);
+    if (fold) {
+      out += foldComparison(fold.left, fold.operator, fold.right, expression, context);
+      index = fold.end;
+      continue;
+    }
+    out += renameHead(identifier, map) ?? identifier;
     index += identifier.length;
   }
   return out;
