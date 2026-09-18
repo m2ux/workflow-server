@@ -934,13 +934,13 @@ An activity carries prose rules: instead of pure mechanics.
 
 "Reusable primitive trapped in a client workflow" / "cross-consumer capability buried under one activity name"
 
-Technique folder/name disagrees with shape-origin (reuse boundary vs activity seam).
+Technique folder/name disagrees with shape-origin (reuse boundary, activity seam, or shared namespace).
 
 **Detect:** A technique's directory or name encodes the wrong locus for its shape-origin: a reusable harness/capability primitive lives under a client workflow; a cross-activity intrinsic capability is named for one activity; or an activity-seam-only set is named as if it were a standalone capability. Also flag a group folder whose ops are the workflow's entire operation set (`<group>::` only restates the workflow). Discriminator is shape-origin, not consumer count.
 
 **Do not flag:** Activity-named group used only to organize seam-driven ops (protocols inside stay stage-agnostic — `technique-stage-agnostic`); multiple distinct capability groups composed by one activity; inventing a group for a hypothetical second cluster (YAGNI).
 
-**Fix:** Reusable primitive → meta, capability-named; intrinsic/cross-consumer → workflow root (or meta if cross-workflow), capability-named; activity-seam 1:1 → activity-named group. Use a group folder only to bound a subset against other top-level techniques; otherwise standalone `techniques/<op>.md` with shared contract in workflow-root `TECHNIQUE.md`.
+**Fix:** Place the group at its reuse boundary: an activity-seam 1:1 set → activity-named group; a set one workflow's activities share → that workflow's root, capability-named; a set many workflows share → a namespace of its own, capability-named. A shared namespace driving a system outside the server is a library; one describing how a run itself proceeds belongs to the workflow whose subject that is. Use a group folder only to bound a subset against other top-level techniques; otherwise standalone `techniques/<op>.md` with shared contract in the namespace-root `TECHNIQUE.md`.
 
 ## Tool-Technique-Doc Consistency Anti-Patterns
 
