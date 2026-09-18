@@ -401,16 +401,39 @@ function libraryNamespace(index: CorpusIndex, namespaceId: string): NamespaceLoc
  * reaching it, so both spellings answer. Every segment before the last belongs to the namespace,
  * and a reference carrying none names no namespace at all: it resolves in the host workflow once
  * the run is spliced, which is a relation to the host rather than to the library.
+ *
+ * A run composes a library two ways, and both count. It binds an operation the library declares, and
+ * it refers to another of the library's runs — a reference whose own body is the library's
+ * operations, spliced where it stands.
+ *
+ * A parameter standing in an operation's place carries no reference of its own, so the body is read
+ * once per operation the declaration or a site can put there: the declared defaults, and each site's
+ * arguments. A run whose every operation arrives that way names the library through what is bound
+ * into it rather than in its own steps, and one spelling naming the library is enough.
  */
-function bindsNamespaceOperation(namespace: NamespaceLocation, routine: Routine): boolean {
+function bindsNamespaceOperation(
+  namespace: NamespaceLocation,
+  routine: Routine,
+  sites: readonly Reference[],
+): boolean {
   const spellings = new Set([namespace.id, namespace.path]);
+  const namesNamespace = (reference: string): boolean => {
+    const segments = reference.split('::');
+    return segments.slice(0, -1).some((_, take) => spellings.has(segments.slice(0, take + 1).join('/')));
+  };
   const binds = (steps: readonly Step[]): boolean => steps.some((step) => {
     if (step.kind === 'loop') return binds(step.steps as Step[]);
+    if (step.kind === 'routine') return namesNamespace(step.routine);
     if (step.kind !== 'technique') return false;
-    const segments = (typeof step.technique === 'string' ? step.technique : step.technique.name).split('::');
-    return segments.slice(0, -1).some((_, take) => spellings.has(segments.slice(0, take + 1).join('/')));
+    return namesNamespace(typeof step.technique === 'string' ? step.technique : step.technique.name);
   });
-  return binds(routine.steps as Step[]);
+  const parameters = operationInputs(routine);
+  const candidates = [
+    siteOperations(routine, parameters, undefined),
+    ...sites.map((reference) => siteOperations(routine, parameters, reference.args)),
+  ];
+  return candidates.some((operations) =>
+    operations !== undefined && binds(bodyWithOperations(routine.steps, operations) as Step[]));
 }
 
 export async function collectRoutineFindings(root: string): Promise<Finding[]> {
@@ -496,6 +519,16 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
         continue;
       }
+      // A declaration supplying its own operation holds the signature without a site: the default
+      // is the operation the body binds wherever a site says nothing, so the body it derives is the
+      // one every such site runs. A library's runs reach this path, having callers or none.
+      const fromDefaults = siteOperations(routine, parameters, undefined);
+      if (fromDefaults) {
+        findings.push(...await checkSignature(root, workflowId, routine, lookup, [
+          { operations: fromDefaults, site: `${declaration} at its declared defaults` },
+        ]));
+        continue;
+      }
       // Nothing was derived, so no signature rule could fire. Saying so is the difference between a
       // guard with no verdict and a guard reporting that a routine is sound. Two ways to arrive
       // here: sites exist and not one supplies an operation this can read, or no site exists at all.
@@ -540,8 +573,8 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
       const site = `${workflowId}/routines/${routine.id}.yaml`;
       const library = libraryNamespace(index, workflowId);
       const owners = owningWorkflows(key);
-      if (owners.size === 0) continue; // referred to only through a cycle the load already refuses
-      if (library && bindsNamespaceOperation(library, routine)) continue;
+      if (library && bindsNamespaceOperation(library, routine, sitesByRoutine.get(key) ?? [])) continue;
+      if (owners.size === 0) continue; // no referrer, or a cycle the load already refuses: no home to compute
       const home = owners.size === 1 ? [...owners][0]! : META_WORKFLOW_ID;
       if (home === workflowId) continue;
       findings.push({

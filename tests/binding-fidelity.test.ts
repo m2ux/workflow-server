@@ -1,4 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../guards/check-binding-fidelity.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
@@ -103,5 +106,92 @@ describe('dead-output scoping', () => {
       'left/twin/techniques/op.md',
       'right/twin/techniques/op.md',
     )).toBe(false);
+  });
+});
+
+/**
+ * A library's runs, read from a tree built for the purpose.
+ *
+ * A run is where a library's operations are composed, so a value consumed only there is consumed
+ * nowhere the sweep looks unless the sweep opens `routines/`. The membership tests that select a
+ * namespace for the graph half — a `techniques/` directory, a definition with `activities/` beside
+ * it — are each one a library can fail while holding runs, so the scan is driven by the directory
+ * that holds them and this measures that it is.
+ */
+describe('a library\'s routines are read', () => {
+  const OUTPUT_DECLARED = `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Probe the target.
+
+## Outputs
+
+### probe_verdict
+
+What the probe made of the target.
+
+## Protocol
+
+1. Probe the target and record it as \`{probe_verdict}\`.
+`;
+
+  const RUN_CONSUMING_IT = `id: shared-run
+version: 1.0.0
+name: shared-run
+outputs:
+  - id: run_verdict
+    description: What the probe made of the target, under the name this run lands it by.
+steps:
+  - kind: technique
+    id: probe
+    technique:
+      name: meta::probe
+      outputs:
+        probe_verdict: run_verdict
+`;
+
+  /** Build a corpus whose only consumer of meta's output is a run in a library, and sweep it. */
+  async function deadOutputsIn(tree: Record<string, Record<string, string>>): Promise<string[]> {
+    const root = mkdtempSync(join(tmpdir(), 'wf-bf-'));
+    for (const [rel, files] of Object.entries(tree)) {
+      for (const [name, content] of Object.entries(files)) {
+        const file = join(root, rel, name);
+        mkdirSync(join(file, '..'), { recursive: true });
+        writeFileSync(file, content);
+      }
+    }
+    const previous = process.env.WORKFLOWS_DIR;
+    process.env.WORKFLOWS_DIR = root;
+    try {
+      vi.resetModules();
+      const guard = await import('../guards/check-binding-fidelity.js');
+      return guard.collectViolations()
+        .filter((v) => v.check === 'dead-output')
+        .map((v) => `${v.site}: ${v.detail}`);
+    } finally {
+      if (previous === undefined) delete process.env.WORKFLOWS_DIR; else process.env.WORKFLOWS_DIR = previous;
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  it('credits a value a library\'s run consumes, the library holding techniques beside it', async () => {
+    const dead = await deadOutputsIn({
+      'meta/techniques': { 'probe.md': OUTPUT_DECLARED },
+      'lib/techniques': { 'other.md': OUTPUT_DECLARED.split('probe_verdict').join('other_verdict') },
+      'lib/routines': { 'shared-run.yaml': RUN_CONSUMING_IT },
+    });
+    expect(dead.filter((d) => d.includes('probe_verdict'))).toEqual([]);
+  });
+
+  it('credits it where the library holds runs and nothing else', async () => {
+    const dead = await deadOutputsIn({
+      'meta/techniques': { 'probe.md': OUTPUT_DECLARED },
+      'lib/routines': { 'shared-run.yaml': RUN_CONSUMING_IT },
+    });
+    expect(dead.filter((d) => d.includes('probe_verdict'))).toEqual([]);
   });
 });
