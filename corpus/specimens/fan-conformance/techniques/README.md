@@ -22,7 +22,7 @@ One branch technique commits. It writes its note inside the checkout its activit
 
 ---
 
-## Cross-workflow techniques
+## Shared operations bound by this workflow
 
 Operations a shared namespace holds are referenced by qualified id from this workflow. [`orchestration-patterns::gather-results`](/meta/techniques/orchestration-patterns/gather-results.md) reconciles a container against the collection that produced it; [`git::create-worktree`](/git/techniques/create-worktree.md), [`git::commit-regular-files`](/git/techniques/commit-regular-files.md) and [`git::merge-branches`](/git/techniques/merge-branches.md) give an isolated writer its checkout, its commit, and the merge at the convergence.
 

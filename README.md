@@ -6,13 +6,13 @@ Authoring procedure — adding a workflow, resource or technique, and how defini
 
 ## Named roots
 
-Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names. A `workflow.yaml` at any depth under `corpus/` is a workflow; grouping folders organise the tree and name nothing. A workflow's id is the directory that holds its `workflow.yaml`.
+Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names.
 
-A directory under `corpus/` that holds `techniques/`, `resources/` or `routines/` is a **namespace**, and references reach it by its directory name. One that also holds a `workflow.yaml` is a workflow — a product an operator starts. One that does not is a **library**: shared operations any workflow binds, with no graph of its own.
+A directory at any depth under `corpus/` that holds `techniques/`, `resources/` or `routines/` is a **namespace**, and every reference reaches it by that directory's name. One that also holds a `workflow.yaml` is a **workflow** — a product an operator starts. One that does not is a **library**: shared operations any workflow binds, with no graph of its own. Grouping folders hold namespaces and name nothing themselves.
 
 ```
 <branch root>
-├── corpus/                         # product workflows — corpus/README.md
+├── corpus/                         # workflows and libraries — corpus/README.md
 │   ├── README.md
 │   ├── {workflow-id}/
 │   │   ├── README.md
@@ -35,7 +35,7 @@ A directory under `corpus/` that holds `techniques/`, `resources/` or `routines/
 
 ### corpus
 
-The workflows an operator starts live here: each is a directory that holds a `workflow.yaml`, and that directory's name is the id every reference uses. Grouping folders under this root organise the tree and name nothing of their own. Discovery enters this folder when it is pointed at the branch root. Contents: [`corpus/README.md`](corpus/README.md).
+Every definition lives here — the workflows an operator starts, and the libraries they bind. A directory's name is the id every reference uses, and a `workflow.yaml` beside it is what makes that directory a product rather than a library. Grouping folders under this root organise the tree and name nothing of their own. Discovery enters this folder when it is pointed at the branch root. Contents: [`corpus/README.md`](corpus/README.md).
 
 ### specimens
 

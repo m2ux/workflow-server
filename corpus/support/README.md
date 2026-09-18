@@ -6,7 +6,7 @@ A **library** is a namespace of shared operations that declares no workflow of i
 
 | Library | Capability |
 |---------|------------|
-| [`git`](git/techniques/TECHNIQUE.md) | Host-repository derivation from git, worktrees, conventional commits, regular-versus-submodule commit workflows, branch push and merge |
+| [`git`](git/techniques/TECHNIQUE.md) | Host-repository derivation from git, planning-folder path lifecycle, worktrees, conventional commits, regular-versus-submodule commit workflows, branch push and merge, three-dot change surface |
 | [`github`](github/techniques/TECHNIQUE.md) | GitHub pull-request and issue tasks; sole home of REST `gh api` recipes |
 | [`atlassian`](atlassian/techniques/TECHNIQUE.md) | Jira and Confluence operations via the Atlassian MCP server |
 | [`gitnexus`](gitnexus/techniques/TECHNIQUE.md) | Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, graph operations |

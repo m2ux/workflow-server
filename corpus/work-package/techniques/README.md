@@ -10,6 +10,6 @@ The cross-cutting meta strategy techniques [`variable-binding`](/meta/techniques
 
 ---
 
-## Cross-workflow techniques
+## Shared operations bound by this workflow
 
 Operations a shared namespace holds — `meta` (`workflow-engine`), `git`, `github`, `atlassian` and `gitnexus` — are referenced by qualified id from this workflow.

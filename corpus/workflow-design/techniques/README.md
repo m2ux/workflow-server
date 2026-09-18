@@ -25,9 +25,9 @@ For the full technique-to-activity table with capability summaries, see the [wor
 | **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `publish-workflow-pr` (title/body); activity binds `git::push-branch`, `github::create-pr`, `github::mark-ready` |
 | **Completion** | `create-completion-doc`, `conduct-retrospective` |
 
-## Cross-workflow techniques bound by this workflow
+## Shared operations bound by this workflow
 
-These operations are referenced cross-workflow (resolved directly from the named workflow, no copy):
+These operations are referenced by qualified id and resolved directly from the namespace that holds them, with no copy:
 
 | Reference | Used for |
 |-----------|----------|
