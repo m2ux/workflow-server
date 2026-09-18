@@ -91,5 +91,9 @@ describe.skipIf(!liveCorpusRoot())('worker identity survives every gate of a ref
     // eslint-disable-next-line no-console
     console.log(`[identity-walk] ${result.gateRefetches.length} gates; role-contract saving ${(saved * 100).toFixed(1)}% (${delivered} of ${wouldHaveBeen} chars)`);
     expect(saved).toBeGreaterThan(0.25);
-  }, 120_000);
+    // The budget is generous because this walk pays what a bounded delivery costs a run: a step
+    // the response could not carry is a step the worker fetches when it reaches it, and this robot
+    // makes every one of those fetches over fifteen activities and nineteen gates. Measured at
+    // 24 seconds against an unbounded delivery and 71 against this one, on a developer machine.
+  }, 300_000);
 });
