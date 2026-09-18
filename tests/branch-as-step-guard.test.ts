@@ -86,7 +86,7 @@ describe('branch-as-step guard', () => {
 
   /**
    * A Protocol takes either shape, and the flat numbered sequence is the majority of the corpus —
-   * every `atlassian-operations`, `cargo-operations`, `gitnexus-operations` and
+   * every `atlassian`, `cargo-operations`, `gitnexus` and
    * `knowledge-base-search` op is written that way. A caveat is reached under both.
    */
   it('flags a caveat under a flat numbered protocol', () => {

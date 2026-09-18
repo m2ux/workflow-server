@@ -540,15 +540,15 @@ describe('fan load rules', () => {
         activity('research-pass', {
           exits: exits('researched'),
           variables: { reads: ['research_topic'] },
-          steps: [{ kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' }],
+          steps: [{ kind: 'technique', id: 'commit', technique: 'git::commit-regular-files' }],
         }),
         instanceFanFixture.activities[2]!,
       ],
     });
-    expect(rendered(errors)).toContain("binds 'version-control::commit-regular-files'");
+    expect(rendered(errors)).toContain("binds 'git::commit-regular-files'");
     // The refusal names the binding that would admit it, so the author is not left to infer that
     // the shared tree is the whole of the reason.
-    expect(rendered(errors)).toContain("bind 'version-control::create-worktree' in this activity");
+    expect(rendered(errors)).toContain("bind 'git::create-worktree' in this activity");
   });
 
   // L14 reads the branch's own bindings: an activity that materialises a checkout of its own
@@ -562,14 +562,14 @@ describe('fan load rules', () => {
           exits: exits('researched'),
           variables: { reads: ['research_topic'] },
           steps: [
-            { kind: 'technique', id: 'worktree', technique: 'version-control::create-worktree' },
-            { kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' },
+            { kind: 'technique', id: 'worktree', technique: 'git::create-worktree' },
+            { kind: 'technique', id: 'commit', technique: 'git::commit-regular-files' },
           ],
         }),
         instanceFanFixture.activities[2]!,
       ],
     });
-    expect(rendered(errors)).not.toContain("binds 'version-control::commit-regular-files'");
+    expect(rendered(errors)).not.toContain("binds 'git::commit-regular-files'");
   });
 
   it('L14 admits the branch that took a checkout and refuses the sibling that did not', async () => {
@@ -594,20 +594,20 @@ describe('fan load rules', () => {
           exits: exits('researched'),
           variables: { reads: ['research_topic'] },
           steps: [
-            { kind: 'technique', id: 'worktree', technique: 'version-control::create-worktree' },
-            { kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' },
+            { kind: 'technique', id: 'worktree', technique: 'git::create-worktree' },
+            { kind: 'technique', id: 'commit', technique: 'git::commit-regular-files' },
           ],
         }),
         activity('summarise-pass', {
           exits: exits('summarised'),
-          steps: [{ kind: 'technique', id: 'commit', technique: 'version-control::commit-regular-files' }],
+          steps: [{ kind: 'technique', id: 'commit', technique: 'git::commit-regular-files' }],
         }),
         instanceFanFixture.activities[2]!,
       ],
     });
     expect(rendered(errors)).not.toContain("Activity 'research-pass' is fanned by");
     expect(rendered(errors)).toContain(
-      "Activity 'summarise-pass' is fanned by 'scope-research.scoped' and binds 'version-control::commit-regular-files'.",
+      "Activity 'summarise-pass' is fanned by 'scope-research.scoped' and binds 'git::commit-regular-files'.",
     );
   });
 
@@ -623,7 +623,7 @@ describe('fan load rules', () => {
           exits: exits('researched'),
           variables: { reads: ['research_topic'] },
           steps: [
-            { kind: 'technique', id: 'worktree', technique: 'version-control::create-worktree' },
+            { kind: 'technique', id: 'worktree', technique: 'git::create-worktree' },
             { kind: 'technique', id: 'persist', technique: 'workflow-engine::commit-and-persist' },
           ],
         }),

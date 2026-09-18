@@ -73,7 +73,7 @@ describe('inherits', () => {
   });
 
   it('is false for a container the citer does not sit beneath', () => {
-    expect(inherits('/corpus/meta/techniques/version-control/commit-paths.md', CONTAINER)).toBe(false);
+    expect(inherits('/corpus/meta/techniques/git/commit-paths.md', CONTAINER)).toBe(false);
   });
 });
 

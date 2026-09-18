@@ -632,7 +632,7 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
  * planning folder, and the child-workflow dispatch records one activity id where a fan holds
  * several in flight.
  *
- * The version-control group is the conditional case and is handled at the rule rather than here.
+ * The git group is the conditional case and is handled at the rule rather than here.
  * It is refused where a fan's branches share one working tree and one git index — a commit derives
  * its paths from that tree's status, so no instance could stage or attribute its own change — and
  * permitted where the fanned activity binds the operation that gives each instance a checkout of
@@ -649,8 +649,8 @@ const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map(
   ],
 ]);
 
-/** The version-control group stages and commits, so none of its operations is executable in a branch. */
-const CHECKOUT_GROUP_PREFIX = 'version-control::';
+/** The git group stages and commits, so none of its operations is executable in a branch. */
+const CHECKOUT_GROUP_PREFIX = 'git::';
 
 /**
  * The operation that gives a branch a checkout of its own, and so the evidence that lifts the
@@ -658,7 +658,7 @@ const CHECKOUT_GROUP_PREFIX = 'version-control::';
  * named from the instance index the delivery carries — and commits into that rather than into the
  * tree its siblings are writing.
  */
-const WORKTREE_OPERATION = 'version-control::create-worktree';
+const WORKTREE_OPERATION = 'git::create-worktree';
 
 /** The operation a technique step binds, whether the step names it plainly or deviates from it. */
 function boundOperation(step: Step): string | undefined {

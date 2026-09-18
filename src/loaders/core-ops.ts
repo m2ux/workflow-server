@@ -79,8 +79,8 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   'workflow-engine::sync-progress-status',
   // State persistence: commit-and-persist invokes these inline (same inline-ref caveat), so bundle
   // them so the orchestrator gets the submodule/regular-file commit protocols.
-  'version-control::commit-regular-files',
-  'version-control::commit-submodule',
+  'git::commit-regular-files',
+  'git::commit-submodule',
   // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
   // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
   // writing rules are not an orchestrator's to honour. The bodies are a capability line apiece;

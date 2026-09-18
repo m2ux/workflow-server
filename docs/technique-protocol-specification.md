@@ -170,10 +170,10 @@ ancestor, and the producing technique additionally declares it as an output.
   translation.
 - A **name** — a technique, operation, or resource identity, and the file / hyperlink / `::` target
   that addresses it — is a slug, never an evaluated variable, and is **`kebab-case`**
-  (`create-issue`, `gitnexus-operations`, `resolve-cloud-id.md`). **Rule names are names too**: a rule
+  (`create-issue`, `gitnexus`, `resolve-cloud-id.md`). **Rule names are names too**: a rule
   is never an evaluated variable; it is cited by its dotted symbol address `[workflow.]technique.rule-name`
   (§4.1), sitting beside the kebab technique name, so a rule name is `kebab-case` and the citation reads
-  uniformly (`gitnexus-operations.index-freshness-first`).
+  uniformly (`gitnexus.index-freshness-first`).
 
 The split is the classical one: evaluated identifiers are snake (a `-` is the subtraction operator),
 surface/slug tokens are kebab. Here it is also a binding requirement — a kebab symbol id would not
@@ -319,13 +319,13 @@ parsed reference up with the current-workflow-first precedence of §2.
 ### 4.1 Executable references (`::`) vs symbol references (`.`)
 
 A `::` path is an **executable reference** — it names a technique or operation to apply/invoke
-("apply `cargo-operations::fmt-fix`", "go through `gitnexus-operations::context`"). The
+("apply `cargo-operations::fmt-fix`", "go through `gitnexus::context`"). The
 rule-resolution and group-expansion forms above are the bundle layer: how an activity's technique
 list pulls rule entries into delivery.
 
 A `.` path is a **symbol reference** — it names an addressable symbol (a rule) by walking its
 ancestry, without invoking anything: `[<workflow>.]<technique>.<rule-name>` (e.g.
-`meta.gitnexus-operations.index-freshness-first`). A protocol step that cites or relies on a rule
+`meta.cargo-operations.resource-budget`). A protocol step that cites or relies on a rule
 uses the dotted symbol address — never prose ("per the index-freshness rule") and never the `::`
 executable form. The workflow segment is implicit for a same-workflow reference; when the rule is in
 the citing technique's own ancestry (its own rule, or one it inherits from a containing group or the

@@ -50,7 +50,7 @@ function rootWith(body: string, pad = true): string {
   // An operation inside a group, keyed on its own filename. Its Inputs and Protocol headings must NOT
   // become rule names — without the `## Rules` gating every I/O id and step name in the corpus would.
   write(
-    'meta/techniques/version-control/resolve-host-repo.md',
+    'meta/techniques/git/resolve-host-repo.md',
     '## Inputs\n\n### repo-url\n\n## Protocol\n\n### derive-the-remote\n\n'
       + '## Rules\n\n### prose-sources-are-fallback-only\n\nGit is the source.\n',
   );
@@ -70,7 +70,7 @@ const prose = (text: string): string => `# Bootstrap\n\n${text}\n`;
 
 describe('bootstrap self-containment guard', () => {
   it('refuses a link into the corpus in every spelling markdown allows', () => {
-    const target = '../techniques/version-control/resolve-host-repo.md';
+    const target = '../techniques/git/resolve-host-repo.md';
     // A plain destination, a destination wearing the title CommonMark permits after it, an angle-bracket
     // destination, and a reference definition — which carries the destination away from its use site.
     expect(checks(prose(`Apply [rhr](${target}).`))).toEqual(['corpus-link']);
@@ -86,7 +86,7 @@ describe('bootstrap self-containment guard', () => {
   });
 
   it('reads an HTML destination however the attribute is written', () => {
-    const target = '../techniques/version-control/resolve-host-repo.md';
+    const target = '../techniques/git/resolve-host-repo.md';
     // Unquoted values are legal and every renderer follows them, so demanding quotes is a way through.
     expect(checks(prose(`Apply <a href=${target}>rhr</a>.`))).toEqual(['corpus-link']);
     // An attribute ahead of the destination, uppercase, a tab separator, spaces around the equals.
@@ -106,7 +106,7 @@ describe('bootstrap self-containment guard', () => {
 
   it('refuses a rule address however far its ancestry is spelled out', () => {
     // Each of the four ways the corpus keys a rule, and the full ancestry form as well — a single
-    // leftmost match would consume `meta.version-control` and never test the pair that matters.
+    // leftmost match would consume `meta.git` and never test the pair that matters.
     expect(checks(prose('Apply `resolve-host-repo.prose-sources-are-fallback-only`.'))).toEqual(['dotted-rule']);
     expect(checks(prose('Apply `meta.resolve-host-repo.prose-sources-are-fallback-only`.'))).toEqual(['dotted-rule']);
     expect(checks(prose('Apply `harness-compat.foreground-always`.'))).toEqual(['dotted-rule']);
@@ -132,7 +132,7 @@ describe('bootstrap self-containment guard', () => {
       'The server writes `plan.json`, `session.json` and `context.yaml`; see `AGENTS.md`.',
       'Accept `git@host:owner/repo.git` and `https://host/owner/repo.git`, dropping `.git`.',
       'Ask us at [support](mailto:x@y.example) or [call](tel:+15550100), or nowhere at [x]().',
-      '`version-control::resolve-host-repo` is where this lives once you have the bundle.',
+      '`git::resolve-host-repo` is where this lives once you have the bundle.',
       'See [step 3](#bootstrap-protocol) and [the site](https://example.com/docs/query.html).',
       'Bind `repo-url` before you start, and note `not-a-real-rule` is not one.',
       'A rule this technique does not declare: `resolve-host-repo.not-a-real-rule`.',
@@ -143,12 +143,12 @@ describe('bootstrap self-containment guard', () => {
   it('reports an unclosed fence rather than letting it hide the links below', () => {
     // Parity tracking would leave every later line looking fenced, taking the link check out of service
     // on a green verdict. Both the imbalance and the link it would have hidden are reported.
-    const body = '# B\n\n```json\n{ "a": 1 }\n\nApply [x](../techniques/version-control/resolve-host-repo.md).\n';
+    const body = '# B\n\n```json\n{ "a": 1 }\n\nApply [x](../techniques/git/resolve-host-repo.md).\n';
     expect(checks(body).sort()).toEqual(['corpus-link', 'unbalanced-fence']);
   });
 
   it('treats a fenced link as illustration, including a fence nested in a wider one', () => {
-    const target = '../techniques/version-control/resolve-host-repo.md';
+    const target = '../techniques/git/resolve-host-repo.md';
     expect(checks(`# B\n\n\`\`\`\nApply [x](${target}).\n\`\`\`\n`)).toEqual([]);
     // A close has to match its opener's length, so the inner 3-backtick example does not end the
     // 4-backtick wrapper. Counting markers instead inverts the phase and reports the illustration.
@@ -162,16 +162,16 @@ describe('bootstrap self-containment guard', () => {
     // twice; and a link inside a code span is being shown, not offered.
     expect(checks(prose('See [rhr](../t/resolve-host-repo.prose-sources-are-fallback-only).')))
       .toEqual(['corpus-link']);
-    expect(checks(prose('Write it as `[rhr](../techniques/version-control/resolve-host-repo.md)`.')))
+    expect(checks(prose('Write it as `[rhr](../techniques/git/resolve-host-repo.md)`.')))
       .toEqual([]);
     // Both faults on one line still report separately.
-    expect(checks(prose('See [rhr](../techniques/version-control/resolve-host-repo.md) '
+    expect(checks(prose('See [rhr](../techniques/git/resolve-host-repo.md) '
       + 'and apply `resolve-host-repo.prose-sources-are-fallback-only`.')))
       .toEqual(['corpus-link', 'dotted-rule']);
   });
 
   it('closes a fence at any indent, so a block cannot run past its real end', () => {
-    const target = '../techniques/version-control/resolve-host-repo.md';
+    const target = '../techniques/git/resolve-host-repo.md';
     // The closer sits three spaces inside the list item's content column, which CommonMark accepts. An
     // opener-only match cannot see it, pairs this opener with the NEXT block's opener, and swallows the
     // prose between them — with the marker count still even, so nothing reports. The link below the
@@ -205,7 +205,7 @@ describe('bootstrap self-containment guard', () => {
     // The fail-safe is to discard the fenced set entirely, not merely to stop adding to it. Keeping the
     // spans an earlier block closed leaves that block's contents suppressed while the file's fence state
     // is already known to be unreliable — so a link shown there stays hidden on a reported failure.
-    const target = '../techniques/version-control/resolve-host-repo.md';
+    const target = '../techniques/git/resolve-host-repo.md';
     const body = '# B\n\n```\nApply [inside](' + target + ').\n```\n\n```json\nApply [after]('
       + target + ').\n';
     expect(checks(body).sort()).toEqual(['corpus-link', 'corpus-link', 'unbalanced-fence']);
@@ -214,7 +214,7 @@ describe('bootstrap self-containment guard', () => {
   it('reads a CRLF file the same as an LF one', () => {
     // A carriage return left on each line stops any line looking like a fence, which would take the
     // fence matcher — and with it the unclosed-fence fail-safe — out of service on a CRLF checkout.
-    const target = '../techniques/version-control/resolve-host-repo.md';
+    const target = '../techniques/git/resolve-host-repo.md';
     const fenced = `# Bootstrap\n\n\`\`\`\nApply [x](${target}).\n\`\`\`\n`;
     expect(checks(fenced)).toEqual([]);
     expect(checks(fenced.replace(/\n/g, '\r\n'))).toEqual([]);

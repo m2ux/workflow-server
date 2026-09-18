@@ -68,8 +68,8 @@ const DISCLOSURE_REFS: RegExp[] = [
   /^(work-package::)?update-pr::(create-pr|mark-ready|post-review-comment|render)$/,
   /^create-issue$/,
   /^(work-package::)?create-issue$/,
-  /^github-cli-protocol::(comment-issue|assign-issue|create-issue|create-pr)$/,
-  /^atlassian-operations::(comment-jira-issue|edit-jira-issue|transition-jira-issue|create-jira-issue)$/,
+  /^github::(comment-issue|assign-issue|create-issue|create-pr)$/,
+  /^atlassian::(comment-jira-issue|edit-jira-issue|transition-jira-issue|create-jira-issue)$/,
   /^respond-to-pr-review$/,
   /^(work-package::)?respond-to-pr-review$/,
 ];
