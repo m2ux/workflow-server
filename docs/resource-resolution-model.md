@@ -29,7 +29,7 @@ The `tools` map keys an MCP server name (e.g. `workflow-server`, `atlassian`, `g
 Activities and workflows compose behaviour by listing technique references. A reference is a `::`-delimited path:
 
 ```
-[workflow::]technique[::nested…]
+[namespace::]technique[::nested…]
 ```
 
 ```yaml
@@ -38,10 +38,21 @@ techniques:
   supporting:
     - workflow-engine::evaluate-transition
     - agent-conduct::checkpoint-discipline
-    - meta::agent-conduct::file-sensitivity     # workflow-prefixed
+    - meta::agent-conduct::file-sensitivity      # namespace-prefixed
+    - support::gitnexus::analyze                 # a namespace named by its path
 ```
 
-A same-workflow reference omits the workflow segment; the current workflow is filled in at resolution. Include a leading workflow segment only to reach another workflow — a leading segment is read as a workflow when the corpus declares one of that name and at least one segment follows it, and as the first folder of a path inside the referring workflow otherwise. A `workflow/technique` slash form spells the same prefix.
+A same-namespace reference omits the prefix; the current workflow is filled in at resolution. Include a leading prefix only to reach another namespace — the longest leading run that names one is the prefix, and everything after it is a path inside that namespace's `techniques/`. A `namespace/technique` slash form spells a single-segment prefix.
+
+### What a namespace is
+
+A namespace is a directory offering artifacts to references. It earns that by holding a `techniques/`, `resources/` or `routines/` directory, or by holding a `workflow.yaml` — and a directory holding a definition is a **workflow** as well, the thing an operator can run. The two are usually one directory: a workflow keeping its own library beside its definition is addressable with nothing done to it.
+
+`activities/` earns nothing. An activity declares exits, and the destinations those exits lead to live in a definition's `graph`, so an activity in a directory holding no definition could never be routed. Activities belong to workflows; the three library kinds are what a namespace offers.
+
+A namespace answers to two names: its directory name, and the slash-joined path from the corpus root that reaches it. The name is what a reference ordinarily carries, so a folder can be re-grouped without rewriting what points at it; the path is what a reference carries where a name is claimed twice, or where an author would rather be explicit. `support/gitnexus/techniques/analyze.md` answers to `gitnexus::analyze` and to `support::gitnexus::analyze` alike.
+
+Two consequences are worth stating. A namespace holding no definition never reaches `list_workflows`, because the listing reads definitions rather than a list of names to exclude — so a shared library sits in the corpus without appearing as a product. And where a namespace at `a/b` and a directory `a/techniques/b/` both exist, one reference names two files: `indexCorpus` reports the collision and the reference is refused naming both, rather than one reading being picked and the other left unreachable.
 
 A reference addresses one of two things:
 
@@ -62,7 +73,7 @@ The inline form points at the same technique body. Agents read the technique fro
 
 Each reference resolves as follows:
 
-1. **Locate the technique.** If the reference carries a workflow segment, load from that workflow's `techniques/` folder and nowhere else — a prefix says where the technique lives, so a fallback would deliver a different file under the same reference. Otherwise resolve **current-workflow-first, then the `meta` shared layer** — the current workflow's technique shadows a same-named `meta` one.
+1. **Locate the technique.** If the reference carries a namespace prefix, load from that namespace's `techniques/` folder and nowhere else — a prefix says where the technique lives, so a fallback would deliver a different file under the same reference. Otherwise resolve **current-workflow-first, then the `meta` shared layer** — the current workflow's technique shadows a same-named `meta` one.
 2. **Whole-technique reference** (no nested segment) — deliver the technique's own body (capability, flow, inputs, protocol, outputs) and auto-include its rules.
 3. **Nested reference** — try a `{group}/{sub}.md` nested technique first (current-workflow-first, then `meta`); deliver its body and auto-include its rules.
 4. **Rule reference** — if no nested technique matches, match the trailing segment against the technique's rules. A direct name match resolves to that rule. A group prefix `{group}` expands to every `{group}-*` rule.
@@ -146,7 +157,7 @@ get_resource({ session_index, resource_id: "meta/activity-worker-prompt" })
 The server resolves the reference:
 
 * **Bare slugs** (e.g. `"review-mode"`) resolve within the session's workflow.
-* **Prefixed references** (e.g. `"meta/activity-worker-prompt"`) resolve from the named workflow.
+* **Prefixed references** (e.g. `"meta/activity-worker-prompt"`) resolve from the named namespace. The prefix is the longest leading run of segments naming one, so `"support/gitnexus/index-reading"` reads the namespace `support/gitnexus` and the slug `index-reading`.
 
 An optional `#section` anchor (a GitHub-style heading slug) narrows the result to that section and its body — used to fetch just the template a technique references without the whole file. The content is loaded from the named workflow's own `resources/{slug}.md` and returned alongside the resource `id` and `version`.
 

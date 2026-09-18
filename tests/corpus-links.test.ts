@@ -27,6 +27,8 @@ describe('corpus links', () => {
     write('group/beta/resources/register.md', '# Register\n');
     write('alpha/workflow.yaml', 'id: alpha\nversion: 1.0.0\ntitle: Alpha\n');
     write('alpha/README.md', '# Alpha\n');
+    // A library under a grouping folder, declaring no workflow of its own.
+    write('support/gitnexus/techniques/analyze.md', '# Analyze\n');
   });
 
   afterAll(() => {
@@ -52,6 +54,13 @@ describe('corpus links', () => {
     it('resolves a relative link against the file holding it', () => {
       const link = resolveLink(root, join(BETA_DIR(), 'techniques', 'a.md'), '../resources/register.md');
       expect(link.path).toBe(join(BETA_DIR(), 'resources', 'register.md'));
+    });
+
+    it('resolves a namespace that declares no workflow, by name and by path alike', () => {
+      const from = join(root, 'alpha', 'README.md');
+      const analyze = join(root, 'support', 'gitnexus', 'techniques', 'analyze.md');
+      expect(resolveLink(root, from, '/gitnexus/techniques/analyze.md').path).toBe(analyze);
+      expect(resolveLink(root, from, '/support/gitnexus/techniques/analyze.md').path).toBe(analyze);
     });
 
     it('names no corpus file for a URL or an in-page anchor', () => {

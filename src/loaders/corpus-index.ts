@@ -1,45 +1,68 @@
 import { type Dirent, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { join, sep } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import { logWarn } from '../logging.js';
 import { parseDefinition } from '../utils/serialization.js';
 
 /**
- * Where the workflows in a corpus live.
+ * Where the artifacts in a corpus live.
  *
- * A workflow is a directory holding a `workflow.yaml`, at any depth beneath the corpus root. The
- * directory's name is the workflow's id — the name every reference uses, so an id stays stable
- * however the tree around it is arranged. Grouping folders carry no definition of their own and
- * exist purely to organise: `security/audits/prism/workflow.yaml` is the workflow `prism`.
+ * A directory offering artifacts to references is a NAMESPACE. It earns that by holding a
+ * `techniques/`, `resources/` or `routines/` directory, or by holding a `workflow.yaml` — and a
+ * directory holding a definition is additionally a WORKFLOW, the thing an operator can run. The two
+ * are one directory whenever a workflow keeps its own library beside its definition, which is the
+ * ordinary case: a workflow needs nothing done to it to be addressable.
  *
- * The walk never descends into three reserved directory names — `activities`, `resources` and
- * `techniques` — at any depth. Those hold a workflow's own files, in volume and several levels
- * deep, and never hold a workflow, so skipping them keeps the walk proportional to the shape of the
- * corpus rather than to everything in it. It also stops at a directory that has a definition, so a
- * workflow owns everything beneath it and no workflow contains another.
+ * `activities/` earns nothing. An activity declares exits, and the destinations those exits lead to
+ * live in a definition's `graph`, so an activity in a directory holding no definition could never be
+ * routed anywhere. Activities belong to workflows; the three library kinds are what a namespace
+ * offers.
+ *
+ * A namespace is named by its directory name, and by the slash-joined path from the corpus root that
+ * reaches it. The name is what a reference ordinarily carries, so an id stays stable however the tree
+ * around it is arranged and a folder can be re-grouped without rewriting what points at it; the path
+ * is what a reference carries where a name is claimed twice, or where an author would rather say
+ * exactly which one they mean. `support/gitnexus/techniques/analyze.md` answers to `gitnexus` and to
+ * `support/gitnexus` alike.
+ *
+ * The walk never descends into the four reserved directory names — `activities`, `resources`,
+ * `routines` and `techniques` — at any depth. Those hold a namespace's own files, in volume and
+ * several levels deep, and never hold a workflow, so skipping them keeps the walk proportional to the
+ * shape of the corpus rather than to everything in it. It also stops at a directory that has a
+ * definition, so a workflow owns everything beneath it and no workflow contains another.
  *
  * When the pointed tree holds a `corpus/` grouping — a directory of that name that is not itself a
- * workflow — the walk starts there, and the grouping's siblings are outside the corpus whatever
- * they are called. That is the whole rule: the products are named, rather than the folders that are
- * not products, so a tree that grows another kind of folder needs no list amending and no folder
+ * workflow — the walk starts there, and the grouping's siblings are outside the corpus whatever they
+ * are called. That is the whole rule: the products are named, rather than the folders that are not
+ * products, so a tree that grows another kind of folder needs no list amending and no folder
  * disappears for being named like one. A still-flat tree has no such grouping, so the pointed
- * directory is the walk root and everything under it is searched. A `workflow.yaml` at any depth
- * under the walk is a workflow; grouping folders organise the tree and name nothing.
+ * directory is the walk root and everything under it is searched. Grouping folders organise the tree
+ * and name nothing: `support/` in `support/gitnexus/techniques/` holds no library of its own, so no
+ * reference ever carries it alone.
  *
- * The directory name and the `id` the definition declares are one identity. A directory whose file
- * names something else does not resolve, under either name, and `list_workflows` reports the pair.
- * Two directories of the same name are the same class of failure. Identity is applied when an id
- * is resolved, so the walk itself is the directory reads of discovery and does not parse a
- * definition to answer "where does this id live".
+ * A workflow directory and the `id` its definition declares are one identity. A directory whose file
+ * names something else does not resolve, under either name, and `list_workflows` reports the pair. A
+ * namespace declaring nothing is identified by its directory name alone, there being no second name
+ * for it to disagree with. Two directories claiming one name are the same class of failure as a
+ * mismatch: neither answers to the name, and each stays reachable by its path.
  *
  * Each resolution walks the corpus unless the caller already holds an index. Stopping at every
  * workflow keeps the walk to roughly the directory reads a single definition load already performs,
- * and it makes the answer the corpus on disk right now — a definition added, moved or checked out
- * at another commit under a running server resolves on the next call, with no cache to invalidate.
- * A caller resolving many ids at once walks once with `indexCorpus` and passes the result.
+ * and it makes the answer the corpus on disk right now — a definition added, moved or checked out at
+ * another commit under a running server resolves on the next call, with no cache to invalidate. A
+ * caller resolving many ids at once walks once with `indexCorpus` and passes the result.
  */
 
-/** Directory names holding a workflow's own files, which the walk never enters and never searches. */
+/** Directory names holding a namespace's own files, which the walk never enters and never searches. */
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques', 'routines']);
+
+/**
+ * The library directories whose presence makes a directory a namespace, and the kinds a reference
+ * addresses within one. `activities` is absent by the rule above: it is a workflow's own.
+ */
+export const LIBRARY_DIR_NAMES = ['techniques', 'resources', 'routines'] as const;
+
+/** A library kind, which is also the directory name holding artifacts of that kind. */
+export type LibraryKind = typeof LIBRARY_DIR_NAMES[number];
 
 /** The meta workflow: the fallback namespace a bare technique or routine reference resolves in. */
 export const META_WORKFLOW_ID = 'meta';
@@ -52,11 +75,14 @@ const DEFINITION_EXTENSIONS = ['yaml', 'yml'] as const;
 
 const DEFINITION_FILENAMES = new Set(DEFINITION_EXTENSIONS.map((ext) => `workflow.${ext}`));
 
+/** The separator between the segments of a namespace path, on every platform. */
+const PATH_SEPARATOR = '/';
+
 /**
- * The workflow a corpus-relative path belongs to.
+ * The namespace a corpus-relative path belongs to.
  *
- * The directory that holds the construct — `activities`, `resources`, `techniques`, or the
- * definition file — is the workflow. Grouping folders above that directory organise the corpus
+ * The directory that holds the construct — `activities`, `resources`, `routines`, `techniques`, or
+ * the definition file — is the namespace. Grouping folders above that directory organise the corpus
  * and name nothing, so `security/audits/prism/techniques/plan.md` is `prism`.
  */
 export function workflowIdFromCorpusPath(rel: string): string | null {
@@ -66,11 +92,18 @@ export function workflowIdFromCorpusPath(rel: string): string | null {
   return parts[at - 1]!;
 }
 
-/** A workflow's home: the directory that holds it, and its definition file. */
-export interface WorkflowLocation {
+/** A namespace's home: the directory that holds it, under both names it answers to. */
+export interface NamespaceLocation {
+  /** The directory name — the reference a corpus holding one namespace of this name uses. */
   id: string;
-  /** The directory holding the definition — the root of `activities/`, `resources/`, `techniques/`. */
+  /** The slash-joined path from the corpus root — the reference that names this one and no other. */
+  path: string;
+  /** The directory itself — the root of `techniques/`, `resources/`, `routines/`. */
   dir: string;
+}
+
+/** A workflow's home: a namespace that also declares a definition, and the definition file. */
+export interface WorkflowLocation extends NamespaceLocation {
   /** The definition file itself. */
   manifest: string;
 }
@@ -85,12 +118,37 @@ export interface IdentityMismatch {
   manifest: string;
 }
 
+/**
+ * A reference two directories both answer: a namespace at a path, and a directory of the same path
+ * inside a shorter namespace's library folder.
+ *
+ * `support/gitnexus/techniques/analyze.md` and `support/techniques/gitnexus/analyze.md` are both
+ * addressed by `support::gitnexus::analyze`. Neither reading is more right than the other, so the
+ * reference resolves to neither and names both.
+ */
+export interface NamespaceShadow {
+  /** The namespace path both readings answer to. */
+  ref: string;
+  /** The library kind the collision is in. */
+  kind: LibraryKind;
+  /** The namespace directory reached by reading the whole path as a namespace. */
+  namespace: string;
+  /** The directory inside the shorter namespace's library folder reached by the other reading. */
+  nested: string;
+}
+
 export interface CorpusIndex {
   /** Workflow id → location, ordered by id. An id two directories claim is absent; see `ambiguous`.
    *  A directory whose definition declares another name is present here and refused at resolve. */
   workflows: ReadonlyMap<string, WorkflowLocation>;
-  /** Ids claimed by more than one directory, with every directory claiming them. */
+  /** Namespace path → location, ordered by path. Every workflow is here under its own path. */
+  namespaces: ReadonlyMap<string, NamespaceLocation>;
+  /** Namespace name → location. A name two directories claim is absent; each stays reachable by path. */
+  namespacesByName: ReadonlyMap<string, NamespaceLocation>;
+  /** Names claimed by more than one directory, with every directory claiming them. */
   ambiguous: ReadonlyArray<{ id: string; dirs: string[] }>;
+  /** Paths a namespace and a shorter namespace's library folder both answer to. */
+  shadowed: ReadonlyArray<NamespaceShadow>;
 }
 
 /** A corpus walk, or the root to walk. Lookups accept either so a request walks once. */
@@ -102,6 +160,7 @@ function isCorpusIndex(value: unknown): value is CorpusIndex {
     typeof value === 'object'
     && value !== null
     && (value as CorpusIndex).workflows instanceof Map
+    && (value as CorpusIndex).namespaces instanceof Map
     && Array.isArray((value as CorpusIndex).ambiguous)
   );
 }
@@ -122,6 +181,20 @@ function definitionIn(dir: string): string | null {
   return null;
 }
 
+/** Whether a directory offers artifacts of any library kind. */
+function holdsLibrary(dir: string): boolean {
+  return LIBRARY_DIR_NAMES.some((kind) => isDirectory(join(dir, kind)));
+}
+
+/** Whether a path names a directory, false for anything else and for anything unreadable. */
+function isDirectory(path: string): boolean {
+  try {
+    return statSync(path).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Where the walk of a pointed tree starts.
  *
@@ -131,13 +204,14 @@ function definitionIn(dir: string): string | null {
  */
 function productRoot(root: string): string {
   const grouped = join(root, PRODUCT_GROUPING);
-  try {
-    if (!statSync(grouped).isDirectory()) return root;
-  } catch {
-    return root;
-  }
+  if (!isDirectory(grouped)) return root;
   if (definitionIn(grouped)) return root;
   return grouped;
+}
+
+/** A path relative to the corpus root, slash-joined so a reference reads the same on any platform. */
+function corpusPath(base: string, dir: string): string {
+  return relative(base, dir).split(sep).join(PATH_SEPARATOR);
 }
 
 /** The `id` a definition declares, or undefined where the file is unreadable or names no string id. */
@@ -154,12 +228,24 @@ function declaredId(manifest: string): string | undefined {
   return undefined;
 }
 
+/** One directory the walk found, before the maps that index it by each name it answers to. */
+interface Claim extends NamespaceLocation {
+  manifest: string | null;
+}
+
+/** Whether a claim declares a definition, which is what makes its namespace a workflow. */
+function isWorkflowClaim(claim: Claim): claim is Claim & { manifest: string } {
+  return claim.manifest !== null;
+}
+
 /**
- * Walk a corpus root and collect every workflow directory beneath it.
+ * Walk a corpus root and collect every namespace beneath it, workflows among them.
  *
- * Two directories of the same name at different points in the tree claim one id. Neither resolves:
- * either choice would be arbitrary, and a workflow reached by an id that means two things is worse
- * than one that fails to load. The ambiguity is reported instead, and `list_workflows` surfaces it.
+ * Two directories of the same name at different points in the tree claim one name. Neither resolves
+ * under it: either choice would be arbitrary, and a namespace reached by a name that means two
+ * things is worse than one that fails to load. The ambiguity is reported instead, `list_workflows`
+ * surfaces it, and each directory stays reachable by its path — which is the name that never
+ * collides.
  *
  * A directory whose definition declares a different id is the same class of failure: references
  * reach it by the directory and `list_workflows` publishes the declaration, so the two names have
@@ -167,7 +253,8 @@ function declaredId(manifest: string): string | undefined {
  * `identityMismatches` is what the listing and the identity guard read.
  */
 export function indexCorpus(root: string): CorpusIndex {
-  const claims = new Map<string, WorkflowLocation[]>();
+  const base = productRoot(root);
+  const claims: Claim[] = [];
 
   const visit = (dir: string): void => {
     let entries: Dirent[];
@@ -186,38 +273,89 @@ export function indexCorpus(root: string): CorpusIndex {
       ) continue;
       const path = join(dir, entry.name);
       const manifest = definitionIn(path);
-      if (manifest) {
-        const claimed = claims.get(entry.name);
-        if (claimed) claimed.push({ id: entry.name, dir: path, manifest });
-        else claims.set(entry.name, [{ id: entry.name, dir: path, manifest }]);
-        continue;
+      if (manifest !== null || holdsLibrary(path)) {
+        claims.push({ id: entry.name, path: corpusPath(base, path), dir: path, manifest });
       }
+      // A workflow owns everything beneath it, so the walk stops where a definition is. A namespace
+      // declaring none is an ordinary folder to keep descending through: the library directories it
+      // holds are skipped above, and a workflow may still sit beside them.
+      if (manifest) continue;
       visit(path);
     }
   };
-  visit(productRoot(root));
+  visit(base);
+
+  const byName = new Map<string, Claim[]>();
+  for (const claim of claims) {
+    const claimed = byName.get(claim.id);
+    if (claimed) claimed.push(claim);
+    else byName.set(claim.id, [claim]);
+  }
 
   const workflows = new Map<string, WorkflowLocation>();
+  const namespacesByName = new Map<string, NamespaceLocation>();
   const ambiguous: Array<{ id: string; dirs: string[] }> = [];
-  for (const id of [...claims.keys()].sort()) {
-    const locations = claims.get(id)!;
-    if (locations.length !== 1) {
-      ambiguous.push({ id, dirs: locations.map((l) => l.dir).sort() });
+  for (const id of [...byName.keys()].sort()) {
+    const claimants = byName.get(id)!;
+    if (claimants.length !== 1) {
+      ambiguous.push({ id, dirs: claimants.map((claim) => claim.dir).sort() });
       continue;
     }
-    workflows.set(id, locations[0]!);
+    const only = claimants[0]!;
+    namespacesByName.set(id, only);
+    if (isWorkflowClaim(only)) workflows.set(id, only);
   }
-  return { workflows, ambiguous };
+
+  const namespaces = new Map<string, NamespaceLocation>();
+  for (const claim of [...claims].sort((a, b) => a.path.localeCompare(b.path))) {
+    namespaces.set(claim.path, claim);
+  }
+
+  return { workflows, namespaces, namespacesByName, ambiguous, shadowed: detectShadows(claims, namespaces) };
+}
+
+/**
+ * Paths a namespace and a shorter namespace's library folder both answer to.
+ *
+ * Read `support::gitnexus::analyze` two ways and it names two files whenever a `support/gitnexus`
+ * namespace and a `support/techniques/gitnexus/` directory both exist. Longest-prefix resolution
+ * would silently pick one and leave the other unreachable under any spelling, so the collision is
+ * found while the corpus is walked and the reference is refused when it is made.
+ *
+ * A collision is per kind, and both sides have to hold it. A namespace offering only `resources/`
+ * beside an ancestor's `techniques/<its name>/` answers a resource reference and a technique
+ * reference respectively, and neither reference has two readings — so measuring the ancestor alone
+ * would refuse references that name exactly one file.
+ */
+function detectShadows(claims: readonly Claim[], namespaces: ReadonlyMap<string, NamespaceLocation>): NamespaceShadow[] {
+  const shadowed: NamespaceShadow[] = [];
+  for (const claim of claims) {
+    const segments = claim.path.split(PATH_SEPARATOR);
+    if (segments.length < 2) continue;
+    for (let take = 1; take < segments.length; take++) {
+      const shorter = namespaces.get(segments.slice(0, take).join(PATH_SEPARATOR));
+      if (!shorter) continue;
+      const remainder = segments.slice(take);
+      for (const kind of LIBRARY_DIR_NAMES) {
+        if (!isDirectory(join(claim.dir, kind))) continue;
+        const nested = join(shorter.dir, kind, ...remainder);
+        if (isDirectory(nested)) shadowed.push({ ref: claim.path, kind, namespace: claim.dir, nested });
+      }
+    }
+  }
+  return shadowed;
 }
 
 /** Identity of one location, cached on the object so a shared index parses each file once. */
 type LocationIdentity = { ok: true } | { ok: false; declared: string };
-const identityByLocation = new WeakMap<WorkflowLocation, LocationIdentity>();
+const identityByLocation = new WeakMap<NamespaceLocation, LocationIdentity>();
 
-function identityOf(location: WorkflowLocation): LocationIdentity {
+function identityOf(location: NamespaceLocation): LocationIdentity {
   const cached = identityByLocation.get(location);
   if (cached) return cached;
-  const declared = declaredId(location.manifest);
+  // A namespace declaring nothing has one name and cannot disagree with itself.
+  const manifest = (location as WorkflowLocation).manifest;
+  const declared = manifest === undefined ? undefined : declaredId(manifest);
   const identity: LocationIdentity = (declared === undefined || declared === location.id)
     ? { ok: true }
     : { ok: false, declared };
@@ -225,7 +363,7 @@ function identityOf(location: WorkflowLocation): LocationIdentity {
   return identity;
 }
 
-function locationIfMatching(location: WorkflowLocation): WorkflowLocation | null {
+function locationIfMatching<T extends NamespaceLocation>(location: T): T | null {
   return identityOf(location).ok ? location : null;
 }
 
@@ -250,10 +388,59 @@ export function workflowLocation(source: CorpusSource, workflowId: string): Work
   return location ? locationIfMatching(location) : null;
 }
 
+/**
+ * A namespace's home within a corpus, addressed by its name or by its path.
+ *
+ * A reference carrying no separator is a name, and falls through to the path of the same spelling so
+ * a top-level namespace stays reachable when a deeper directory claims its name. A reference
+ * carrying one is a path, which names one directory whatever else the corpus holds.
+ */
+export function namespaceLocation(source: CorpusSource, ref: string): NamespaceLocation | null {
+  const index = asIndex(source);
+  const location = ref.includes(PATH_SEPARATOR)
+    ? index.namespaces.get(ref) ?? null
+    : index.namespacesByName.get(ref) ?? index.namespaces.get(ref) ?? null;
+  return location ? locationIfMatching(location) : null;
+}
+
+/** A directory a namespace owns, or null where the corpus holds no such namespace. */
+export function namespaceSubdir(source: CorpusSource, ref: string, name: string): string | null {
+  const location = namespaceLocation(source, ref);
+  return location ? join(location.dir, name) : null;
+}
+
 /** A directory a workflow owns, or null where the corpus holds no such workflow. */
 export function workflowSubdir(source: CorpusSource, workflowId: string, name: string): string | null {
   const location = workflowLocation(source, workflowId);
   return location ? join(location.dir, name) : null;
+}
+
+/** What a reference's leading segments named, or why they named nothing usable. */
+export type NamespaceSplit =
+  | { form: 'namespace'; namespace: NamespaceLocation; rest: string[] }
+  | { form: 'shadowed'; ref: string; shadows: NamespaceShadow[] };
+
+/**
+ * Split a reference into the namespace its leading segments name and the path left over.
+ *
+ * The longest leading run that names a namespace wins, so a reference reaching into a nested
+ * namespace is read as that namespace rather than as a deep path inside a shallower one. At least
+ * one segment is always left over: a reference naming only a namespace addresses no artifact.
+ *
+ * Returns null where no leading run names a namespace, which is the ordinary case for a reference
+ * resolved against the workflow making it.
+ */
+export function splitNamespaceRef(source: CorpusSource, segments: readonly string[]): NamespaceSplit | null {
+  const index = asIndex(source);
+  for (let take = segments.length - 1; take >= 1; take--) {
+    const ref = segments.slice(0, take).join(PATH_SEPARATOR);
+    const location = namespaceLocation(index, ref);
+    if (!location) continue;
+    const shadows = index.shadowed.filter((shadow) => shadow.ref === location.path);
+    if (shadows.length > 0) return { form: 'shadowed', ref, shadows };
+    return { form: 'namespace', namespace: location, rest: [...segments.slice(take)] };
+  }
+  return null;
 }
 
 /**

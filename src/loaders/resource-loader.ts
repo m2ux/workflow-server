@@ -5,7 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
 import { logInfo, logError } from '../logging.js';
 import type { Resource } from '../schema/resource.schema.js';
-import { type CorpusSource, indexCorpus, workflowSubdir } from './corpus-index.js';
+import { type CorpusSource, indexCorpus, namespaceSubdir } from './corpus-index.js';
 
 export { ResourceNotFoundError } from '../errors.js';
 export type { Resource };
@@ -27,10 +27,10 @@ function extractFrontmatterScalar(content: string, key: string): string | undefi
 }
 
 /**
- * Resolve the resource directory for a workflow.
+ * Resolve the resource directory for a namespace, addressed by name or by path.
  */
 function getResourceDir(source: CorpusSource, workflowId: string): string | null {
-  const resourceDir = workflowSubdir(source, workflowId, 'resources');
+  const resourceDir = namespaceSubdir(source, workflowId, 'resources');
   if (resourceDir && existsSync(resourceDir)) return resourceDir;
   return null;
 }

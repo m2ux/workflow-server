@@ -100,14 +100,14 @@ function resolveKey(
   fromWorkflowId: string,
   declared: Map<string, ReadonlyMap<string, Routine>>,
 ): { workflowId: string; name: string } | undefined {
-  let parsed: { workflowId?: string; name: string };
+  let parsed: { namespace?: string; name: string };
   try {
     parsed = parseRoutineRef(ref, 'placement');
   } catch {
     return undefined; // malformed: the load reports it, with the site
   }
-  const candidates = parsed.workflowId
-    ? [parsed.workflowId]
+  const candidates = parsed.namespace
+    ? [parsed.namespace]
     : fromWorkflowId === META_WORKFLOW_ID ? [META_WORKFLOW_ID] : [fromWorkflowId, META_WORKFLOW_ID];
   for (const workflowId of candidates) {
     if (declared.get(workflowId)?.has(parsed.name)) return { workflowId, name: parsed.name };

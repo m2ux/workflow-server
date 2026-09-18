@@ -15,7 +15,7 @@ import { join } from 'node:path';
 import { type Activity, populateStepIds } from '../schema/activity.schema.js';
 import { type Routine, safeValidateRoutine } from '../schema/routine.schema.js';
 import { parseDefinition } from '../utils/serialization.js';
-import { type CorpusIndex, indexCorpus, workflowLocation } from './corpus-index.js';
+import { type CorpusIndex, indexCorpus, namespaceLocation } from './corpus-index.js';
 import {
   META_WORKFLOW_ID,
   type RoutineLookup,
@@ -45,7 +45,7 @@ export async function readWorkflowRoutines(
   index: CorpusIndex = indexCorpus(workflowDir),
 ): Promise<ReadonlyMap<string, Routine>> {
   const routines = new Map<string, Routine>();
-  const dir = workflowLocation(index, workflowId)?.dir;
+  const dir = namespaceLocation(index, workflowId)?.dir;
   if (!dir) return routines;
   const routinesPath = join(dir, ROUTINES_DIR);
   if (!existsSync(routinesPath)) return routines;
@@ -88,8 +88,8 @@ export async function buildRoutineLookup(
   const pending = new Set<string>([META_WORKFLOW_ID, ...scopeWorkflowIds]);
   const noteRef = (ref: string): void => {
     try {
-      const { workflowId } = parseRoutineRef(ref, 'Routine lookup');
-      if (workflowId && !loaded.has(workflowId)) pending.add(workflowId);
+      const { namespace } = parseRoutineRef(ref, 'Routine lookup');
+      if (namespace && !loaded.has(namespace)) pending.add(namespace);
     } catch {
       // Malformed: surfaces as a resolution error at materialisation, where the site is known.
     }
@@ -128,7 +128,9 @@ export async function readCorpusRoutines(
 ): Promise<{ byWorkflow: Map<string, ReadonlyMap<string, Routine>>; errors: Array<{ workflowId: string; error: string }> }> {
   const byWorkflow = new Map<string, ReadonlyMap<string, Routine>>();
   const errors: Array<{ workflowId: string; error: string }> = [];
-  await Promise.all([...index.workflows.keys()].map(async (id) => {
+  // Keyed by name, which is the spelling a caller enumerating the corpus holds. A namespace whose
+  // name two directories claim is absent here for the same reason it is absent from resolution.
+  await Promise.all([...index.namespacesByName.keys()].map(async (id) => {
     try {
       const routines = await readWorkflowRoutines(workflowDir, id, index);
       if (routines.size > 0) byWorkflow.set(id, routines);

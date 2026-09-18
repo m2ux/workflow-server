@@ -6,7 +6,7 @@ import { TechniqueNotFoundError } from '../errors.js';
 import { logWarn } from '../logging.js';
 import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
-import { type CorpusSource, workflowSubdir } from './corpus-index.js';
+import { type CorpusSource, namespaceSubdir } from './corpus-index.js';
 
 /**
  * Markdown technique loader.
@@ -541,10 +541,10 @@ export async function tryLoadNestedTechnique(techniquesDir: string | null, group
 /* -------------------------------------------------------------------------- */
 
 /**
- * Return the techniques directory for a workflow, or null where the corpus holds no such workflow.
- * Hides the `techniques` path segment so callers in technique-loader.ts pass a workflowDir +
- * workflowId pair and stay out of the corpus layout.
+ * Return the techniques directory for a namespace, addressed by name or by path, or null where the
+ * corpus holds no such namespace. Hides the `techniques` path segment so callers in
+ * technique-loader.ts pass a corpus + namespace pair and stay out of the corpus layout.
  */
-export function getWorkflowTechniquesDir(source: CorpusSource, workflowId: string): string | null {
-  return workflowSubdir(source, workflowId, 'techniques');
+export function getNamespaceTechniquesDir(source: CorpusSource, namespace: string): string | null {
+  return namespaceSubdir(source, namespace, 'techniques');
 }

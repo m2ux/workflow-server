@@ -2,12 +2,22 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { identityMismatches, indexCorpus, workflowIdFromCorpusPath, workflowLocation, workflowSubdir } from '../src/loaders/corpus-index.js';
+import {
+  identityMismatches,
+  indexCorpus,
+  namespaceLocation,
+  namespaceSubdir,
+  splitNamespaceRef,
+  workflowIdFromCorpusPath,
+  workflowLocation,
+  workflowSubdir,
+} from '../src/loaders/corpus-index.js';
 
 /**
- * Corpus discovery: a workflow is a directory holding a `workflow.yaml`, at any depth beneath the
- * root, and its directory name is its id. The grouping folders above it organise the corpus and
- * name nothing.
+ * Corpus discovery: a namespace is a directory holding a library of techniques, resources or
+ * routines, or holding a `workflow.yaml` — and one holding a definition is a workflow as well. A
+ * namespace answers to its directory name and to the path that reaches it; the grouping folders
+ * above it organise the corpus and name nothing.
  */
 describe('corpus discovery', () => {
   let root: string;
@@ -56,8 +66,32 @@ describe('corpus discovery', () => {
     expect(indexCorpus(root).workflows.has('group')).toBe(false);
   });
 
-  it('leaves a folder of techniques no workflow declares undiscovered', () => {
+  it('holds a folder of techniques no workflow declares as a namespace, and not as a workflow', () => {
+    // What keeps such a folder out of the operator's catalogue is that it declares no definition,
+    // rather than a list of names the listing excludes.
+    expect(namespaceLocation(root, 'lib')?.dir).toBe(join(root, 'lib'));
     expect(workflowLocation(root, 'lib')).toBeNull();
+    expect(indexCorpus(root).workflows.has('lib')).toBe(false);
+  });
+
+  it('holds a workflow as a namespace too, whether or not it carries a library yet', () => {
+    // `flat` keeps techniques beside its definition and `yml-defined` keeps none: both answer to
+    // their name, so a workflow needs nothing done to it to be addressable.
+    expect(namespaceLocation(root, 'flat')?.dir).toBe(join(root, 'flat'));
+    expect(namespaceLocation(root, 'yml-defined')?.dir).toBe(join(root, 'yml-defined'));
+  });
+
+  it('names a namespace by its path as well as by its directory name', () => {
+    expect(namespaceLocation(root, 'security/audits/deep')?.dir).toBe(join(root, 'security', 'audits', 'deep'));
+    expect(namespaceLocation(root, 'deep')?.dir).toBe(join(root, 'security', 'audits', 'deep'));
+    // The grouping folders above it hold no library of their own, so neither answers to anything.
+    expect(namespaceLocation(root, 'security')).toBeNull();
+    expect(namespaceLocation(root, 'security/audits')).toBeNull();
+  });
+
+  it('resolves a namespace subdirectory from wherever the namespace sits', () => {
+    expect(namespaceSubdir(root, 'lib', 'techniques')).toBe(join(root, 'lib', 'techniques'));
+    expect(namespaceSubdir(root, 'no-such-namespace', 'techniques')).toBeNull();
   });
 
   it('skips dotfolders', () => {
@@ -187,6 +221,58 @@ describe('corpus discovery', () => {
     writeFileSync(join(deep, 'workflow.yaml'), 'id: gamma\nversion: 1.0.0\ntitle: t\n');
     expect([...indexCorpus(nested).workflows.keys()]).toEqual(['beta', 'gamma', 'walks']);
     rmSync(nested, { recursive: true, force: true });
+  });
+
+  describe('splitting a reference into a namespace and the path within it', () => {
+    it('takes the longest leading run that names a namespace', () => {
+      const nested = mkdtempSync(join(tmpdir(), 'corpus-split-'));
+      mkdirSync(join(nested, 'support', 'gitnexus', 'techniques'), { recursive: true });
+      const split = splitNamespaceRef(nested, ['support', 'gitnexus', 'analyze']);
+      expect(split).toMatchObject({ form: 'namespace', rest: ['analyze'] });
+      expect(split?.form === 'namespace' && split.namespace.path).toBe('support/gitnexus');
+      rmSync(nested, { recursive: true, force: true });
+    });
+
+    it('leaves at least one segment over, so a reference naming only a namespace splits to nothing', () => {
+      expect(splitNamespaceRef(root, ['lib'])).toBeNull();
+    });
+
+    it('names no namespace when no leading run spells one', () => {
+      expect(splitNamespaceRef(root, ['group', 'operation'])).toBeNull();
+    });
+
+    it('leaves a run alone where only one side holds the kind', () => {
+      // `support/gitnexus` offers resources and the ancestor offers `techniques/gitnexus/`. A
+      // resource reference answers to the first and a technique reference to the second, so neither
+      // carries two readings and refusing either would refuse a reference naming one file.
+      const mixed = mkdtempSync(join(tmpdir(), 'corpus-mixed-'));
+      mkdirSync(join(mixed, 'support', 'gitnexus', 'resources'), { recursive: true });
+      mkdirSync(join(mixed, 'support', 'techniques', 'gitnexus'), { recursive: true });
+      const index = indexCorpus(mixed);
+      expect(index.shadowed).toEqual([]);
+      expect(splitNamespaceRef(index, ['support', 'gitnexus', 'index-reading']))
+        .toMatchObject({ form: 'namespace', rest: ['index-reading'] });
+      rmSync(mixed, { recursive: true, force: true });
+    });
+
+    it('refuses a run two directories answer, naming both', () => {
+      // `support/gitnexus/techniques/analyze.md` and `support/techniques/gitnexus/analyze.md` are
+      // both addressed by `support::gitnexus::analyze`. Picking one would leave the other
+      // unreachable under any spelling, so the reference resolves to neither.
+      const contested = mkdtempSync(join(tmpdir(), 'corpus-shadow-'));
+      mkdirSync(join(contested, 'support', 'gitnexus', 'techniques'), { recursive: true });
+      mkdirSync(join(contested, 'support', 'techniques', 'gitnexus'), { recursive: true });
+      const index = indexCorpus(contested);
+      expect(index.shadowed).toEqual([{
+        ref: 'support/gitnexus',
+        kind: 'techniques',
+        namespace: join(contested, 'support', 'gitnexus'),
+        nested: join(contested, 'support', 'techniques', 'gitnexus'),
+      }]);
+      expect(splitNamespaceRef(index, ['support', 'gitnexus', 'analyze']))
+        .toMatchObject({ form: 'shadowed', ref: 'support/gitnexus' });
+      rmSync(contested, { recursive: true, force: true });
+    });
   });
 
   it('resolves an id claimed by two directories to neither, and reports the claimants', () => {

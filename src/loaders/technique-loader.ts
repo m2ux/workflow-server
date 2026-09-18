@@ -7,7 +7,7 @@ import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
   tryLoadMarkdownTechnique,
   tryLoadNestedTechnique,
-  getWorkflowTechniquesDir,
+  getNamespaceTechniquesDir,
   MarkdownTechniqueParseError,
 } from './markdown-technique-loader.js';
 import { type CorpusIndex, indexCorpus } from './corpus-index.js';
@@ -69,16 +69,16 @@ export function projectTechniqueToYaml(technique: Technique): string {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Load the technique one reference's segments address inside one workflow, or null where that
- * workflow holds none.
+ * Load the technique one reference's segments address inside one namespace, or null where that
+ * namespace holds none.
  *
  * A single segment is a standalone `<id>.md` or a grouped `<id>/TECHNIQUE.md` index; deeper
  * segments walk group folders to a `<…>/<op>.md` leaf. A malformed technique FILE is logged and
  * read as "not found", so the Result-typed contract above is not broken by a synchronous throw deep
- * in the markdown parser, and a candidate workflow's bad file does not stop the next candidate.
+ * in the markdown parser, and a candidate namespace's bad file does not stop the next candidate.
  */
 async function tryLoadInWorkflow(source: CorpusIndex, workflowId: string, segments: string[]): Promise<Technique | null> {
-  const dir = getWorkflowTechniquesDir(source, workflowId);
+  const dir = getNamespaceTechniquesDir(source, workflowId);
   try {
     return segments.length === 1
       ? await tryLoadMarkdownTechnique(dir, segments[0]!)
@@ -113,15 +113,15 @@ function parseRef(ref: string, index: CorpusIndex): Result<TechniqueRef, Techniq
 }
 
 /**
- * The workflows a reference resolves in, in order.
+ * The namespaces a reference resolves in, in order.
  *
- * A qualified reference resolves in the workflow it names and nowhere else — a prefix says where the
- * technique lives, so a fallback would deliver a different file under the same reference. A bare one
- * resolves against the referring workflow and then `meta`, the shared layer a workflow's own
+ * A qualified reference resolves in the namespace it names and nowhere else — a prefix says where
+ * the technique lives, so a fallback would deliver a different file under the same reference. A bare
+ * one resolves against the referring workflow and then `meta`, the shared layer a workflow's own
  * technique shadows. A caller naming no referring workflow has only the shared layer to read.
  */
 function candidateWorkflows(ref: TechniqueRef, workflowId: string | undefined): string[] {
-  if (ref.workflowId) return [ref.workflowId];
+  if (ref.namespace) return [ref.namespace];
   return workflowId && workflowId !== META_WORKFLOW_ID ? [workflowId, META_WORKFLOW_ID] : [META_WORKFLOW_ID];
 }
 
@@ -233,27 +233,27 @@ export async function resolveTechniques(
     // Whole-technique reference (no sub-technique segment): deliver the technique's
     // own protocol, capability and interface (standalone OR grouped parent) and
     // auto-include its rules. A technique IS deliverable — not just its subs. The
-    // parent workflow is implicit (current-first) unless the path names one.
+    // parent namespace is implicit (current-first) unless the path names one.
     if (subName === undefined) {
-      const tRes = await readTechniqueRef(path, index, path.workflowId ?? currentWorkflow);
+      const tRes = await readTechniqueRef(path, index, path.namespace ?? currentWorkflow);
       if (tRes.success) {
-        const wholeDir = getWorkflowTechniquesDir(index, tRes.value.sourceWorkflowId);
+        const wholeDir = getNamespaceTechniquesDir(index, tRes.value.sourceWorkflowId);
         const body = await composeLoaded(tRes.value.technique, [technique0], wholeDir);
-        results.push({ source: technique0, workflow: path.workflowId, name: '', type: 'technique', body: projectTechniqueBody(body), ref });
-        touchedSkills.set(skillKey(path.workflowId, technique0), { workflow: path.workflowId, technique: technique0, cached: tRes.value.technique });
+        results.push({ source: technique0, workflow: path.namespace, name: '', type: 'technique', body: projectTechniqueBody(body), ref });
+        touchedSkills.set(skillKey(path.namespace, technique0), { workflow: path.namespace, technique: technique0, cached: tRes.value.technique });
       } else {
-        results.push({ source: technique0, workflow: path.workflowId, name: '', type: 'not-found', body: null, ref });
+        results.push({ source: technique0, workflow: path.namespace, name: '', type: 'not-found', body: null, ref });
       }
       continue;
     }
 
     // Nested reference — resolved below as a `<group>/<op>.md` technique file, else a rule.
-    const parsed = { workflow: path.workflowId, technique: technique0, name: subName };
+    const parsed = { workflow: path.namespace, technique: technique0, name: subName };
 
     const techRef = techniqueRef(parsed.workflow, [parsed.technique]);
 
-    // 1. Nested technique: a `<group>/<op>.md` file. A `workflow::technique::op` prefix targets
-    //    that workflow exactly. For an UNPREFIXED ref, the convention is "the current workflow's
+    // 1. Nested technique: a `<group>/<op>.md` file. A `namespace::technique::op` prefix targets
+    //    that namespace exactly. For an UNPREFIXED ref, the convention is "the current workflow's
     //    own technique" — so try the current workflow FIRST (its technique shadows a same-named
     //    meta one), then fall back to meta. A nested technique is just a technique.
     //    `undefined` in the candidate list means "meta (bare ref)".
@@ -261,13 +261,13 @@ export async function resolveTechniques(
       ? [parsed.workflow]
       : (currentWorkflow && currentWorkflow !== META_WORKFLOW_ID ? [currentWorkflow, undefined] : [undefined]);
     let nested: Technique | null = null;
-    let opWorkflow = parsed.workflow; // workflow where the nested technique was found
+    let opWorkflow = parsed.workflow; // namespace where the nested technique was found
     for (const wf of candidates) {
       const t = await tryLoadInWorkflow(index, wf ?? META_WORKFLOW_ID, path.segments);
       if (t) { nested = t; opWorkflow = wf; break; }
     }
     if (nested) {
-      const nestedDir = getWorkflowTechniquesDir(index, opWorkflow ?? META_WORKFLOW_ID);
+      const nestedDir = getNamespaceTechniquesDir(index, opWorkflow ?? META_WORKFLOW_ID);
       const body = await composeLoaded(nested, path.segments, nestedDir);
       results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'technique', body: projectTechniqueBody(body), ref });
       touchedSkills.set(skillKey(opWorkflow, `${parsed.technique}::${parsed.name}`), { workflow: opWorkflow, technique: `${parsed.technique}::${parsed.name}`, cached: nested });
@@ -435,7 +435,7 @@ async function wrapProtocolWithAncestors(
 
 /** Load the executing workflow's root index (`techniques/TECHNIQUE.md`) for its contract, or null. */
 async function loadWorkflowRoot(source: CorpusIndex, workflowId: string): Promise<Technique | null> {
-  return tryLoadMarkdownTechnique(getWorkflowTechniquesDir(source, workflowId), ROOT_INDEX_ID);
+  return tryLoadMarkdownTechnique(getNamespaceTechniquesDir(source, workflowId), ROOT_INDEX_ID);
 }
 
 /**
@@ -562,13 +562,13 @@ export async function composeTechniqueWithSource(
   const base = await readTechniqueRef(ref.value, index, workflowId);
   if (!base.success) return base;
 
-  // The contract comes from the workflow the file was FOUND in, whether the reference named it,
-  // fell back to the shared layer, or resolved locally: the ancestors walk that workflow's
+  // The contract comes from the namespace the file was FOUND in, whether the reference named it,
+  // fell back to the shared layer, or resolved locally: the ancestors walk that namespace's
   // `techniques/` along the reference's own path, so a technique fetched across a boundary carries
   // the shared contract written above it rather than one belonging to whoever asked. Same rule as
   // the bundle path (`resolveTechniques`), which composes each op against its own home.
   return ok({
-    technique: await composeLoaded(base.value.technique, ref.value.segments, getWorkflowTechniquesDir(index, base.value.sourceWorkflowId)),
+    technique: await composeLoaded(base.value.technique, ref.value.segments, getNamespaceTechniquesDir(index, base.value.sourceWorkflowId)),
     sourceWorkflowId: base.value.sourceWorkflowId,
   });
 }
