@@ -25,7 +25,7 @@ steps:
   - kind: technique
     id: merge-the-branches
     technique:
-      name: version-control::merge-branches
+      name: git::merge-branches
       inputs:
         branches_to_merge: note_probe_outputs
 exits:

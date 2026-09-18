@@ -70,7 +70,7 @@ steps:
   - kind: technique
     id: ensure-worktree
     technique:
-      name: version-control::create-worktree
+      name: git::create-worktree
       inputs:
         branch_name: workflow_branch
         create_branch: true

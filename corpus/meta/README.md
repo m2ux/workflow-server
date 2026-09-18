@@ -77,14 +77,11 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | [`orchestrator-conduct`](techniques/orchestrator-conduct.md) | The boundaries only an orchestrator can honour — single source of truth for domain-work delegation, agent-tree depth, dispatch on resume, commit scope, automatic transitions and ad-hoc interaction |
 | [`worker-conduct`](techniques/worker-conduct.md) | The boundaries only a dispatched worker can honour — how it writes the artifacts its activity declares, and what it reports having written |
 | [`verify-artifact-conforms`](techniques/verify-artifact-conforms.md) | Artifact-conformance pass any workflow binds: each artifact measured against the guide its filename maps to, the caller's canonical-home map, and the [Artifact Writing Register](resources/writing-register.md), corrected in place |
-| [`version-control`](techniques/version-control/TECHNIQUE.md) | Host-repository derivation from git, planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
-| [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks; sole home of REST `gh api` recipes |
 | [`knowledge-base-search`](techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
-| [`atlassian-operations`](techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
 | [`cargo-operations`](techniques/cargo-operations/TECHNIQUE.md) | Resource-constrained cargo subcommands (build, check, clippy, test, fmt, doc, preflight) with an inline resource budget |
 | [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
 
-> Cross-cutting rules live in `agent-conduct` (any agent), `orchestrator-conduct` (an orchestrator's alone) and `worker-conduct` (a dispatched worker's alone), and capability techniques (`workflow-engine`, `version-control`, etc.) reference them as their single source of truth. A bundle addresses the rule families its role owns, so a rule reaches the agent that can act on it.
+> Cross-cutting rules live in `agent-conduct` (any agent), `orchestrator-conduct` (an orchestrator's alone) and `worker-conduct` (a dispatched worker's alone), and capability techniques (`workflow-engine`, `cargo-operations`, etc.) reference them as their single source of truth. A bundle addresses the rule families its role owns, so a rule reaches the agent that can act on it.
 
 ---
 
@@ -137,12 +134,9 @@ corpus/meta/
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
 │   │   └── {op}.md                          #   one file per operation (start-session, create-session, dispatch-activity, ...)
-│   ├── version-control/
+│   ├── knowledge-base-search/
 │   │   ├── TECHNIQUE.md
 │   │   └── {op}.md
-│   ├── github-cli-protocol/
-│   ├── knowledge-base-search/
-│   ├── atlassian-operations/
 │   ├── cargo-operations/
 │   └── harness-compat/
 └── resources/

@@ -1,10 +1,9 @@
 id: scope-and-draft
-version: 1.15.0
+version: 1.16.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
 variables:
   reads:
-    - host_repo_path
     - impact_analysis_path
     - operation_type
     - pattern_adoption
@@ -115,7 +114,7 @@ techniques:
 steps:
   - kind: technique
     id: derive-workflows-target-path
-    technique: version-control::derive-workflows-target-path
+    technique: git::derive-workflows-target-path
     when: operation_type != 'review'
   - kind: technique
     id: ensure-workflow-worktree

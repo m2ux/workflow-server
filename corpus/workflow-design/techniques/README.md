@@ -22,7 +22,7 @@ For the full technique-to-activity table with capability summaries, see the [wor
 | **Scope & draft** | `prepare-workflow-branch` (ensure worktree), `scope-definition`, `assemble-file-approach`, `review-drafted-file`, `yaml-authoring`, `review-draft-yaml` (planning-artifact conformance binds meta [`verify-artifact-conforms`](/meta/techniques/verify-artifact-conforms.md)) |
 | **Quality audits** | `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `verify-high-findings`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `apply-audit-fixes`, `scope-audit` |
 | **Reporting** | `compile-report`, `summarize-findings` (compliance / post-update snapshots bind `work-package::manage-artifacts::write-artifact`) |
-| **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `publish-workflow-pr` (title/body); activity binds `version-control::push-branch`, `github-cli-protocol::create-pr`, `github-cli-protocol::mark-ready` |
+| **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `publish-workflow-pr` (title/body); activity binds `git::push-branch`, `github::create-pr`, `github::mark-ready` |
 | **Completion** | `create-completion-doc`, `conduct-retrospective` |
 
 ## Cross-workflow techniques bound by this workflow
@@ -36,5 +36,5 @@ These operations are referenced cross-workflow (resolved directly from the named
 | [`work-package::manage-git`](/work-package/techniques/manage-git/TECHNIQUE.md) | `create-worktree` (via prepare-workflow-branch ensure), `remove-worktree` (optional retrospective teardown) |
 | [`work-package::stakeholder-overview`](/work-package/techniques/stakeholder-overview.md) | Plain-language Problem Overview (intake) and Solution Overview (scope-and-draft) sections of the planning README |
 | [`work-package::review-assumptions`](/work-package/techniques/review-assumptions/TECHNIQUE.md) | `collect`, `interview`, `record` for the design-assumption lifecycle |
-| [`meta::version-control`](/meta/techniques/version-control/TECHNIQUE.md) | `commit-regular-files`, `push-branch` |
-| [`meta::github-cli-protocol`](/meta/techniques/github-cli-protocol/TECHNIQUE.md) | `create-pr`, `mark-ready`, `update-pr-description` (bound from validate-and-commit) |
+| [`git`](/git/techniques/TECHNIQUE.md) | `commit-regular-files`, `push-branch` |
+| [`github`](/github/techniques/TECHNIQUE.md) | `create-pr`, `mark-ready`, `update-pr-description` (bound from validate-and-commit) |

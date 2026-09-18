@@ -34,9 +34,9 @@ Whether the changes are significant enough to require substantial rework
 ### 1. Fetch Comments
 
 - Take the response shape from [Response Format Template](../resources/pr-review-response.md#response-format-template) and the document shape from [Review Document Template](../resources/pr-review-response.md#review-document-template); the rules below govern response content
-- Apply [list-pr-review-comments](/meta/techniques/github-cli-protocol/list-pr-review-comments.md)(*repo_path*=`{component_git_dir}`); set `{review_comments}` from `{pr_review_comments}`.
+- Apply [list-pr-review-comments](/github/techniques/list-pr-review-comments.md)(*repo_path*=`{component_git_dir}`); set `{review_comments}` from `{pr_review_comments}`.
   > If no review comments are found, verify the PR has been reviewed and check comment visibility before proceeding.
-- Apply [list-pr-reviews](/meta/techniques/github-cli-protocol/list-pr-reviews.md)(*repo_path*=`{component_git_dir}`). Filter to unresolved comments from the latest review round (avoid re-answering resolved threads): derive `{$latest_review_date}` from `{pr_reviews}`, then keep only comments from reviewers (not the PR author) whose `` `updated_at` `` is at or after `{$latest_review_date}`. Project each surviving comment to its `.id`, `.body`, `` `html_url` `` (as `url`), `.path`, and `.line`.
+- Apply [list-pr-reviews](/github/techniques/list-pr-reviews.md)(*repo_path*=`{component_git_dir}`). Filter to unresolved comments from the latest review round (avoid re-answering resolved threads): derive `{$latest_review_date}` from `{pr_reviews}`, then keep only comments from reviewers (not the PR author) whose `` `updated_at` `` is at or after `{$latest_review_date}`. Project each surviving comment to its `.id`, `.body`, `` `html_url` `` (as `url`), `.path`, and `.line`.
 - Identify question-type comments from the filtered set (bodies matching what/how/why/which).
 - Before proceeding: total comment count confirmed; unresolved comments filtered to the latest review round; question-type comments identified; comments saved for analysis
 
@@ -60,13 +60,13 @@ Whether the changes are significant enough to require substantial rework
 
 - Draft each response per the [response format template](../resources/pr-review-response.md#response-format-template) and the response-crafting rules below
 - Emit drafted PR responses as bindable output
-- Apply [comment-issue](/meta/techniques/github-cli-protocol/comment-issue.md)(*repo_path*=`{component_git_dir}`, *issue_number*=`{pr_number}`) once per drafted response, posting it verbatim
+- Apply [comment-issue](/github/techniques/comment-issue.md)(*repo_path*=`{component_git_dir}`, *issue_number*=`{pr_number}`) once per drafted response, posting it verbatim
 - If disagreeing with a reviewer, explain reasoning explicitly
 
 ### 5. Update Pr
 
-- Apply [push-branch](/meta/techniques/version-control/push-branch.md)(*repo_path*=`{target_path}`, *branch*=`{branch_name}`) to advance the PR branch with the fix commits
-- Apply [comment-issue](/meta/techniques/github-cli-protocol/comment-issue.md)(*repo_path*=`{component_git_dir}`, *issue_number*=`{pr_number}`) with the closing summary of every change made
+- Apply [push-branch](/git/techniques/push-branch.md)(*repo_path*=`{target_path}`, *branch*=`{branch_name}`) to advance the PR branch with the fix commits
+- Apply [comment-issue](/github/techniques/comment-issue.md)(*repo_path*=`{component_git_dir}`, *issue_number*=`{pr_number}`) with the closing summary of every change made
 
 ### 6. Assess Outcome
 

@@ -130,7 +130,7 @@ Four properties are reached only in the first destination, and each is there for
 
 ## Isolated Branches
 
-Branches of a fan share one working tree and one git index, and a commit derives its paths from that tree's status — so no instance could stage or attribute its own change, and the load refuses a fanned activity that commits. The exception is evidence rather than assertion: an activity that materialises its own checkout binds [`version-control::create-worktree`](/meta/techniques/version-control/create-worktree.md), the load looks for that binding, and finding it admits the commit operations. The claim and the thing claimed are one artifact, so there is nothing to declare and nothing to take on trust.
+Branches of a fan share one working tree and one git index, and a commit derives its paths from that tree's status — so no instance could stage or attribute its own change, and the load refuses a fanned activity that commits. The exception is evidence rather than assertion: an activity that materialises its own checkout binds [`git::create-worktree`](/git/techniques/create-worktree.md), the load looks for that binding, and finding it admits the commit operations. The claim and the thing claimed are one artifact, so there is nothing to declare and nothing to take on trust.
 
 What a split working tree does not split is the session record and the planning folder. Those are shared however the checkouts are arranged, which is why persisting the session stays at the activity the fan converges on.
 

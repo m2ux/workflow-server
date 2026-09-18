@@ -31,13 +31,13 @@ Activity that just completed — or, where a fan converges, the branches it reti
 
 ### 3. Commit Source Changes
 
-- If `{host_repo_path}/{component_path}` has uncommitted changes (`git status --porcelain` non-empty), apply [version-control](../version-control/TECHNIQUE.md)::[commit-submodule](../version-control/commit-submodule.md)(*paths*=changed files, *submodule_message*=`'<type>(<workflow-id>): <activity-id> source changes'` with the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, *parent_branch*=current parent branch). Skip when the working tree is clean.
+- If `{host_repo_path}/{component_path}` has uncommitted changes (`git status --porcelain` non-empty), apply [git](/git/techniques/TECHNIQUE.md)::[commit-submodule](/git/techniques/commit-submodule.md)(*paths*=changed files, *submodule_message*=`'<type>(<workflow-id>): <activity-id> source changes'` with the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, *parent_branch*=current parent branch). Skip when the working tree is clean.
 
 ### 4. Push Engineering Artifacts
 
-- Commit ALL changes under `.engineering/artifacts/` within `{planning_folder_path}`, including `README.md`, `session.json` and `.session-token`, with *message*=`docs(<workflow-id>): <activity-id> artifacts`. The primitive follows the layout, classified by `version-control.infrastructure-submodule-paths`. This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this operation returns: Engineering links and resume assume the remote holds the commit, so a local-only README or artifact update does not satisfy this step.  
-  > - When `.engineering` is a checkout of its own, apply [commit-submodule](../version-control/commit-submodule.md)(*submodule_path*=`.engineering`) — its own branch and remote carry the artifacts.
-  > - Otherwise apply [commit-regular-files](../version-control/commit-regular-files.md) — the artifacts are ordinary files of the host checkout.
+- Commit ALL changes under `.engineering/artifacts/` within `{planning_folder_path}`, including `README.md`, `session.json` and `.session-token`, with *message*=`docs(<workflow-id>): <activity-id> artifacts`. The primitive follows the layout, classified by `git.infrastructure-submodule-paths`. This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this operation returns: Engineering links and resume assume the remote holds the commit, so a local-only README or artifact update does not satisfy this step.  
+  > - When `.engineering` is a checkout of its own, apply [commit-submodule](/git/techniques/commit-submodule.md)(*submodule_path*=`.engineering`) — its own branch and remote carry the artifacts.
+  > - Otherwise apply [commit-regular-files](/git/techniques/commit-regular-files.md) — the artifacts are ordinary files of the host checkout.
   > - Where the host branch accepts changes only through pull requests, the parent's submodule-pointer bump lands in a PR; a direct push to that branch is refused, and the engineering push above already satisfies this step without it.
 
 ### 5. Confirm Remote State
@@ -54,7 +54,7 @@ Activity that just completed — or, where a fan converges, the branches it reti
 After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities.
 
 - Skip the engineering commit only where the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows its intended post-activity status on the remote — complete, or cancelled/N/A where `{mark_progress_na}` applied, per [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary).
-- Scope: this orchestrator post-activity hook only. Ad-hoc commits outside it are `version-control.explicit-commit`; the meta workflow's own setup sequence has its own cadence, `setup-sequence-persists-once`.
+- Scope: this orchestrator post-activity hook only. Ad-hoc commits outside it are `git.explicit-commit`; the meta workflow's own setup sequence has its own cadence, `setup-sequence-persists-once`.
 
 ### setup-sequence-persists-once
 

@@ -22,7 +22,7 @@ steps:
   - kind: technique
     id: take-a-checkout-of-this-instance-s-own
     technique:
-      name: version-control::create-worktree
+      name: git::create-worktree
       inputs:
         branch_name: note_target
         component_git_dir: component_path
@@ -33,7 +33,7 @@ steps:
   - kind: technique
     id: commit-the-note
     technique:
-      name: version-control::commit-regular-files
+      name: git::commit-regular-files
       inputs:
         branch: note_target
         commit_message: note_message

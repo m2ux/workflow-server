@@ -13,7 +13,7 @@
   "entries": [
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/get-confluence-page.md",
+      "site": "atlassian/techniques/get-confluence-page.md",
       "detail": "output 'page_body' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
@@ -27,77 +27,77 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/list-confluence-page-descendants.md",
+      "site": "atlassian/techniques/list-confluence-page-descendants.md",
       "detail": "output 'child_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/list-confluence-pages-in-space.md",
+      "site": "atlassian/techniques/list-confluence-pages-in-space.md",
       "detail": "output 'space_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/list-confluence-spaces.md",
+      "site": "atlassian/techniques/list-confluence-spaces.md",
       "detail": "output 'accessible_spaces' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/list-jira-issue-fields.md",
+      "site": "atlassian/techniques/list-jira-issue-fields.md",
       "detail": "output 'issue_type_fields' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/list-jira-issue-types.md",
+      "site": "atlassian/techniques/list-jira-issue-types.md",
       "detail": "output 'project_issue_types' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/list-jira-projects.md",
+      "site": "atlassian/techniques/list-jira-projects.md",
       "detail": "output 'visible_projects' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/list-jira-transitions.md",
+      "site": "atlassian/techniques/list-jira-transitions.md",
       "detail": "output 'available_transitions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/search-confluence.md",
+      "site": "atlassian/techniques/search-confluence.md",
       "detail": "output 'confluence_results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/search-jira-issues.md",
+      "site": "atlassian/techniques/search-jira-issues.md",
       "detail": "output 'matching_issues' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/github-cli-protocol/list-issues.md",
+      "site": "github/techniques/list-issues.md",
       "detail": "output 'issue_records' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/github-cli-protocol/list-prs.md",
+      "site": "github/techniques/list-prs.md",
       "detail": "output 'pull_requests' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
@@ -125,7 +125,7 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/atlassian-operations/create-jira-issue.md",
+      "site": "atlassian/techniques/create-jira-issue.md",
       "detail": "output 'issueKey' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
@@ -272,7 +272,7 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/version-control/identify-path-type.md",
+      "site": "git/techniques/identify-path-type.md",
       "detail": "output 'kind' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
@@ -412,14 +412,14 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: meta::atlassian-operations::transition-jira-issue",
+      "site": "work-package :: atlassian::transition-jira-issue",
       "detail": "own input 'status_transition' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: meta::github-cli-protocol::comment-issue",
+      "site": "work-package :: github::comment-issue",
       "detail": "own input 'body' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
@@ -440,21 +440,21 @@
     },
     {
       "check": "orphan-input",
-      "site": "workflow-design :: meta::version-control::commit-regular-files",
+      "site": "workflow-design :: git::commit-regular-files",
       "detail": "own input 'branch' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
-      "site": "workflow-design :: meta::version-control::commit-regular-files",
+      "site": "workflow-design :: git::commit-regular-files",
       "detail": "own input 'commit_message' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
-      "site": "workflow-design :: meta::version-control::commit-regular-files",
+      "site": "workflow-design :: git::commit-regular-files",
       "detail": "own input 'paths' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"

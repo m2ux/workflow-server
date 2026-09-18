@@ -81,7 +81,7 @@
     {
       "site": "work-package/activities/01-start-work-package.yaml + work-package/activities/12-strategic-review.yaml",
       "run": [
-        "T:github-cli-protocol::view-pr(repo_path)",
+        "T:github::view-pr(repo_path)",
         "T:update-pr::verify-body(rendered_pr_body)"
       ],
       "verdict": "unassigned",
@@ -159,11 +159,11 @@
     {
       "site": "workflow-design/activities/09-validate-and-commit.yaml + workflow-design/activities/10-post-update-review.yaml",
       "run": [
-        "T:version-control::commit-regular-files()",
+        "T:git::commit-regular-files()",
         "T:commit-verification()",
-        "T:version-control::push-branch(branch,remote_name,repo_path)",
+        "T:git::push-branch(branch,remote_name,repo_path)",
         "T:publish-workflow-pr()",
-        "T:github-cli-protocol::create-pr(as_draft,base_branch,body,branch_name,repo_path,title)"
+        "T:github::create-pr(as_draft,base_branch,body,branch_name,repo_path,title)"
       ],
       "verdict": "unassigned",
       "rationale": "commit-and-publish-run"

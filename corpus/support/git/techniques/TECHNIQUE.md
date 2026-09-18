@@ -11,7 +11,7 @@ Git operations for planning folders and artifacts — parent repos, submodules, 
 
 ### planning_folder_path
 
-*(optional)* Path to the session's planning folder, as the server returned it. Operations that derive a path from where the session keeps its artifacts take it from here; the rest of the namespace needs none.
+Path to the session's planning folder, as the server returned it. Operations that derive a path from where the session keeps its artifacts take it from here; not every operation needs one.
 
 ## Rules
 
