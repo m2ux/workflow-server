@@ -821,4 +821,49 @@ steps:
     expect(finding!.site).toBe('meta/routines/inner-run.yaml');
     expect(finding!.detail).toContain("computed home is 'wf'");
   });
+
+  /**
+   * A library declares no workflow, so it holds no activity file and the owner computation can only
+   * name somewhere else. Left at that, a run composing a library's operations could never sit beside
+   * them — which is the arrangement the resolver's `namespace::name` form exists for.
+   */
+  const probe = `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Probe the target.
+
+## Protocol
+
+### 1. Probe
+
+- Probe the target.
+`;
+
+  const libraryReferrer = 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: lib::shared-run\n';
+
+  it('accepts a library-homed routine whose body binds that library\'s operations', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: libraryReferrer } },
+      techniques: { lib: { probe } },
+      routines: { lib: { 'shared-run': body('shared-run', '  - kind: technique\n    id: probe\n    technique: lib::probe\n') } },
+    });
+    expect(checks(findings)).toEqual([]);
+  });
+
+  it('reports a library-homed routine that binds none of that library\'s operations', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: libraryReferrer } },
+      techniques: { lib: { probe } },
+      routines: { lib: { 'shared-run': body('shared-run', action) } },
+    });
+    const finding = findings.find((f) => f.check === 'routine-misplaced');
+    expect(finding).toBeDefined();
+    expect(finding!.site).toBe('lib/routines/shared-run.yaml');
+    expect(finding!.detail).toContain("computed home is 'wf'");
+    expect(finding!.detail).toContain('this body binds none');
+  });
 });
