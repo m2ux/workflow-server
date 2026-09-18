@@ -1,0 +1,30 @@
+id: reach-by-path
+version: 1.0.0
+name: Reach By Path
+description: Bind the same library by the path from the corpus root that reaches it.
+variables:
+  reads:
+    - component_path
+  writes:
+    - name: path_form_home
+      type: string
+      description: The library the path reference was delivered from, as the delivery reported it.
+    - name: path_form_count
+      type: number
+      description: What the operation counted under the path spelling.
+required: true
+steps:
+  - kind: technique
+    id: measure-under-the-path
+    technique:
+      name: specimens::shared-probe::measure-entries
+      inputs:
+        probe_target: "."
+      outputs:
+        probe_home: path_form_home
+        entry_count: path_form_count
+exits:
+  - id: reached
+    isDefault: true
+outcome:
+  - The path from the corpus root delivered the same operation the directory name did, each site recording the library it was served from, so the two spellings are answerable against one another
