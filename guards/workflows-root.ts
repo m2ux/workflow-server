@@ -45,7 +45,7 @@ export function resolveWorkflowsRootWithOrigin(
 /**
  * A workflow in the corpus, as a guard needs it: `id` names it in a finding, `dir` is where its
  * files are read from, and `rel` is its path from the corpus root (grouping folders appear here).
- * Ledger site keys use `citePath`, which names the workflow by id.
+ * Ledger site keys use `citePath`, which names the workflow by the reference that reaches it.
  */
 export interface CorpusWorkflow {
   id: string;
@@ -76,8 +76,9 @@ export function corpusWorkflows(root: string, index: CorpusIndex = indexCorpus(r
  * `manifest`; a library that declares no workflow carries none.
  */
 export interface CorpusNamespace {
-  /** The directory name — the reference a corpus holding one namespace of this name uses. */
-  id: string;
+  /** The reference that reaches it: the directory name, and the path where the name is claimed
+   *  twice. Findings key on this, and `citePath` writes the same string. */
+  ref: string;
   /** The slash-joined path from the corpus root — the reference that names this one and no other. */
   path: string;
   dir: string;
@@ -87,8 +88,8 @@ export interface CorpusNamespace {
 }
 
 /**
- * Every namespace a reference can reach by name, ordered by path — the libraries no workflow
- * declares among them.
+ * Every namespace a reference can reach, ordered by path — the libraries no workflow declares among
+ * them.
  *
  * A guard measuring techniques, resources or routines enumerates through this, because a library is
  * addressable whether or not a definition sits beside it, and one the guards cannot see is one whose
@@ -96,18 +97,27 @@ export interface CorpusNamespace {
  * `corpusWorkflows`: an activity belongs to a workflow, so a namespace holding no definition has
  * nothing for it to read.
  *
- * A directory the corpus refuses to answer for is left out, on the same terms `corpusWorkflows`
- * leaves one out: a definition declaring an id other than its directory's name, and a name two
- * directories claim, each resolve to nothing. Measuring one would hold a corpus to rules about a
- * directory the server declines to serve, and `indexCorpus` reports both as the ambiguity they are.
+ * The question asked of each candidate is whether the directory resolves, under either name it
+ * answers to — not whether its name does. A library whose name two directories claim stays fully
+ * live: every reference into one is a technique, resource or routine reference, and all three take
+ * the path spelling, so an activity can bind an operation in either and the server will deliver it.
+ * Dropping the pair would leave everything inside both folders unmeasured, and a sweep that reaches
+ * nothing reports the same success as one that reached everything. `corpusWorkflows` is right to
+ * keep asking about the name: a workflow is started by name and has no second spelling, so one whose
+ * name is claimed twice cannot be run at all.
+ *
+ * A directory the corpus refuses to answer for under any spelling is left out, on the same terms
+ * `corpusWorkflows` leaves one out: a definition declaring an id other than its directory's name
+ * resolves to nothing by path as by name, and measuring it would hold a corpus to rules about a
+ * directory the server declines to serve.
  */
 export function corpusNamespaces(root: string, index: CorpusIndex = indexCorpus(root)): CorpusNamespace[] {
-  return [...index.namespaces.values()].filter((location) => namespaceLocation(index, location.id)).map((location) => {
+  return [...index.namespaces.values()].filter((location) => namespaceLocation(index, location.path)).map((location) => {
     // A library carries the field holding null rather than not carrying it, so a reader testing for
     // the field alone would read every library as declaring a definition.
     const manifest = (location as { manifest?: string | null }).manifest ?? undefined;
     return {
-      id: location.id,
+      ref: location.ref,
       path: location.path,
       dir: location.dir,
       rel: relative(root, location.dir),
@@ -121,23 +131,29 @@ function posixRel(from: string, to: string): string {
 }
 
 /**
- * The site key a ledger matches: `<namespace-name>/<path-inside-that-namespace>`.
+ * The site key a ledger matches: `<namespace ref>/<path-inside-that-namespace>`.
  *
  * Grouping folders (`corpus/`, `support/`, and any future nest) name nothing in a finding. The same
  * resource cited from a flat tree and from `corpus/<name>/` is one site, so a ledger written against
  * the namespace name keeps matching when the tree is nested.
  *
  * A library is named the same way a workflow is: a reference reaches both by the directory's name,
- * so a finding about a file in either quotes the string a reader would search for. Falling back to
- * the path from the corpus root would key a library's findings on grouping folders the rest of the
- * ledger never mentions.
+ * so a finding about a file in either quotes the string a reader would search for. The key falls
+ * back to the path exactly where the name does not reach the directory — the same "name, and path
+ * only where needed" rule references follow. Two directories of one name would otherwise produce one
+ * key for two files, and a triage record accepting a finding in one would silence the same finding
+ * in the other.
+ *
+ * `namespaceRefFromCitePath` reads the ref back off a key, and the two have to agree on which string
+ * names a directory: a guard keyed on one spelling while citing the other matches nothing across
+ * files.
  */
 export function citePath(root: string, file: string, index: CorpusIndex = indexCorpus(root)): string {
   const location = namespaceOwning(index, resolve(file));
   if (!location) return posixRel(root, file);
   const inner = posixRel(location.dir, file);
-  if (!inner || inner === '.') return location.id;
-  return `${location.id}/${inner}`;
+  if (!inner || inner === '.') return location.ref;
+  return `${location.ref}/${inner}`;
 }
 
 export class UnreachableCorpusError extends Error {}

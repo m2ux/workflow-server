@@ -85,7 +85,7 @@ export function collectDuplicateViolations(root: string = ROOT): DuplicateViolat
   const inlineRuleSites = new Map<string, Array<{ file: string; wf: string; text: string }>>();
   const inlineCheckpointSites = new Map<string, Array<{ file: string; stepId: string }>>();
 
-  for (const { id: wf, dir } of corpusNamespaces(root, index)) {
+  for (const { ref: wf, dir } of corpusNamespaces(root, index)) {
     const wfYamlPath = join(dir, 'workflow.yaml');
     const wfRel = relative(root, wfYamlPath);
     let doc: Record<string, unknown> | null = null;

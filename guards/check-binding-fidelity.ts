@@ -59,7 +59,7 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 // identifier, an optional input, or an ambient id.
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { assertScanned, citePath, corpusNamespaces, definitionsUnder, ledgerPath, resolveWorkflowsRoot, namespaceSubdir, defaultCorpusDest } from './workflows-root.js';
-import { indexCorpus, workflowIdFromCorpusPath, type CorpusIndex } from '../src/loaders/corpus-index.js';
+import { indexCorpus, namespaceRefFromCitePath, type CorpusIndex } from '../src/loaders/corpus-index.js';
 // The reference rule itself, shared with the server, so guard and loader read a `::` path the same way.
 import { isBareName, parseTechniqueRef, TechniqueRefError, type TechniqueRef } from '../src/loaders/technique-ref.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
@@ -228,7 +228,7 @@ function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry
   // against the binding workflow and then meta. A group base answers only a single-segment
   // reference — a deeper path names a file inside one.
   const key = parsed.segments.join('::');
-  const candidates = parsed.namespace ? [namespaceId(parsed.namespace)] : wf !== META ? [wf, META] : [META];
+  const candidates = parsed.namespace ? [namespaceRef(parsed.namespace)] : wf !== META ? [wf, META] : [META];
   for (const c of candidates) {
     const r = registry.get(c); if (!r) continue;
     const entry = r.ops.get(key) ?? (parsed.segments.length === 1 ? r.groups.get(key) : undefined);
@@ -609,16 +609,16 @@ function activityFiles(dir: string): string[] {
 }
 
 /**
- * Namespace path → directory name.
+ * Namespace path → the reference that reaches it.
  *
- * Everything this guard keys on is a directory name, because that is what a citation carries and
- * what `workflowIdFromCorpusPath` reads off a file. A parsed reference carries the path instead —
- * the spelling that resolves whatever else the corpus holds — so a reference is put through this on
- * the way in. The two strings are one for a namespace at the corpus root, which is most of them.
+ * Everything this guard keys on is the string a citation carries and `namespaceRefFromCitePath`
+ * reads back off one — the directory name, or the path where two directories claim that name. A
+ * parsed reference always carries the path, so a reference is put through this on the way in. The
+ * two strings are one for a namespace at the corpus root, which is most of them.
  */
-let namespaceIdByPath = new Map<string, string>();
+let namespaceRefByPath = new Map<string, string>();
 
-const namespaceId = (ref: string): string => namespaceIdByPath.get(ref) ?? ref;
+const namespaceRef = (path: string): string => namespaceRefByPath.get(path) ?? path;
 
 /**
  * The namespaces whose declarations are in every workflow's reach.
@@ -643,9 +643,9 @@ function ensureIndexed(): void {
   if (indexed) return;
   indexed = true;
   INDEX = indexCorpus(ROOT);
-  namespaceIdByPath = new Map(corpusNamespaces(ROOT, INDEX).map(({ path, id }) => [path, id]));
-  sharedNamespaces = new Set([META, ...corpusNamespaces(ROOT, INDEX).filter((n) => !n.manifest).map(({ id }) => id)]);
-  workflows = corpusNamespaces(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
+  namespaceRefByPath = new Map(corpusNamespaces(ROOT, INDEX).map(({ path, ref }) => [path, ref]));
+  sharedNamespaces = new Set([META, ...corpusNamespaces(ROOT, INDEX).filter((n) => !n.manifest).map(({ ref }) => ref)]);
+  workflows = corpusNamespaces(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ ref }) => ref);
   assertScanned(workflows.length, 'namespaces with a techniques/ folder', ROOT);
   for (const wf of workflows) buildRegistry(wf);
 
@@ -671,7 +671,7 @@ function ensureIndexed(): void {
     ...workflows,
     ...corpusNamespaces(ROOT, INDEX)
       .filter(({ manifest, dir }) => manifest !== undefined && existsSync(join(dir, 'activities')))
-      .map(({ id }) => id),
+      .map(({ ref }) => ref),
   ]);
   for (const wf of allWf) {
     collectWorkflowVars(wf);
@@ -814,8 +814,8 @@ function collectConsumedSites(): Map<string, Set<string>> {
  * which reads like progress, and forced real debt out of the ledger.
  */
 function consumerReaches(consumerRel: string, declaringRel: string): boolean {
-  const consumerWf = workflowIdFromCorpusPath(consumerRel);
-  const declaringWf = workflowIdFromCorpusPath(declaringRel);
+  const consumerWf = namespaceRefFromCitePath(consumerRel);
+  const declaringWf = namespaceRefFromCitePath(declaringRel);
   if (!consumerWf || !declaringWf) return false;
   if (consumerWf === declaringWf) return true;
   if (isShared(declaringWf)) return true;

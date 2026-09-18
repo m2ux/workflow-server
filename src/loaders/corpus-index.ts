@@ -43,7 +43,8 @@ import { parseDefinition } from '../utils/serialization.js';
  * names something else does not resolve, under either name, and `list_workflows` reports the pair. A
  * namespace declaring nothing is identified by its directory name alone, there being no second name
  * for it to disagree with. Two directories claiming one name are the same class of failure as a
- * mismatch: neither answers to the name, and each stays reachable by its path.
+ * mismatch: neither answers to the name, and each stays reachable by its path — which is then the
+ * one reference that reaches it, and so the one a finding about it quotes.
  *
  * Each resolution walks the corpus unless the caller already holds an index. Stopping at every
  * workflow keeps the walk to roughly the directory reads a single definition load already performs,
@@ -79,17 +80,42 @@ const DEFINITION_FILENAMES = new Set(DEFINITION_EXTENSIONS.map((ext) => `workflo
 const PATH_SEPARATOR = '/';
 
 /**
- * The namespace a corpus-relative path belongs to.
- *
- * The directory that holds the construct — `activities`, `resources`, `routines`, `techniques`, or
- * the definition file — is the namespace. Grouping folders above that directory organise the corpus
- * and name nothing, so `security/audits/prism/techniques/plan.md` is `prism`.
+ * What a path carries ahead of the construct directory — `activities`, `resources`, `routines`,
+ * `techniques`, or the definition file. Null where nothing precedes one, the path naming no
+ * construct in a namespace.
  */
-export function workflowIdFromCorpusPath(rel: string): string | null {
+function segmentsBeforeConstruct(rel: string): string[] | null {
   const parts = rel.split(/[/\\]/).filter((part) => part.length > 0 && part !== '.');
   const at = parts.findIndex((part) => RESERVED_DIR_NAMES.has(part) || DEFINITION_FILENAMES.has(part));
-  if (at <= 0) return null;
-  return parts[at - 1]!;
+  return at <= 0 ? null : parts.slice(0, at);
+}
+
+/**
+ * The namespace a corpus-relative path belongs to, by directory name.
+ *
+ * The directory that holds the construct is the namespace. Grouping folders above that directory
+ * organise the corpus and name nothing, so `security/audits/prism/techniques/plan.md` is `prism`.
+ * A caller wanting the string a finding quotes wants `namespaceRefFromCitePath`; this answers which
+ * product a file on disk was authored under, which is a question about the tree rather than about a
+ * reference into it.
+ */
+export function workflowIdFromCorpusPath(rel: string): string | null {
+  const segments = segmentsBeforeConstruct(rel);
+  return segments ? segments[segments.length - 1]! : null;
+}
+
+/**
+ * The namespace a site key names: everything ahead of the construct directory.
+ *
+ * A site key is `<namespace ref>/<path inside it>`, which the guards' `citePath` writes and this
+ * reads back, so `prism/techniques/plan.md` is `prism` and `left/twin/techniques/op.md` is
+ * `left/twin`. The two functions are one grammar: a guard keyed on one spelling while citing the
+ * other matches nothing across files, and that silence reads as a value nothing consumes rather
+ * than as a lookup that missed.
+ */
+export function namespaceRefFromCitePath(key: string): string | null {
+  const segments = segmentsBeforeConstruct(key);
+  return segments ? segments.join(PATH_SEPARATOR) : null;
 }
 
 /** A namespace's home: the directory that holds it, under both names it answers to. */
@@ -98,6 +124,12 @@ export interface NamespaceLocation {
   id: string;
   /** The slash-joined path from the corpus root — the reference that names this one and no other. */
   path: string;
+  /**
+   * The reference that reaches this directory: its name, and its path where two directories claim
+   * that name. A finding quotes this, and a guard keys on it, so both name one directory whatever
+   * else the corpus holds.
+   */
+  ref: string;
   /** The directory itself — the root of `techniques/`, `resources/`, `routines/`. */
   dir: string;
 }
@@ -233,6 +265,9 @@ interface Claim extends NamespaceLocation {
   manifest: string | null;
 }
 
+/** A claim as the walk finds it: which of its two names reaches it is known once all are in. */
+type WalkedClaim = Omit<Claim, 'ref'>;
+
 /** Whether a claim declares a definition, which is what makes its namespace a workflow. */
 function isWorkflowClaim(claim: Claim): claim is Claim & { manifest: string } {
   return claim.manifest !== null;
@@ -254,7 +289,7 @@ function isWorkflowClaim(claim: Claim): claim is Claim & { manifest: string } {
  */
 export function indexCorpus(root: string): CorpusIndex {
   const base = productRoot(root);
-  const claims: Claim[] = [];
+  const walked: WalkedClaim[] = [];
 
   const visit = (dir: string): void => {
     let entries: Dirent[];
@@ -274,7 +309,7 @@ export function indexCorpus(root: string): CorpusIndex {
       const path = join(dir, entry.name);
       const manifest = definitionIn(path);
       if (manifest !== null || holdsLibrary(path)) {
-        claims.push({ id: entry.name, path: corpusPath(base, path), dir: path, manifest });
+        walked.push({ id: entry.name, path: corpusPath(base, path), dir: path, manifest });
       }
       // A workflow owns everything beneath it, so the walk stops where a definition is. A namespace
       // declaring none is an ordinary folder to keep descending through: the library directories it
@@ -285,13 +320,14 @@ export function indexCorpus(root: string): CorpusIndex {
   };
   visit(base);
 
-  const byName = new Map<string, Claim[]>();
-  for (const claim of claims) {
+  const byName = new Map<string, WalkedClaim[]>();
+  for (const claim of walked) {
     const claimed = byName.get(claim.id);
     if (claimed) claimed.push(claim);
     else byName.set(claim.id, [claim]);
   }
 
+  const claims: Claim[] = [];
   const workflows = new Map<string, WorkflowLocation>();
   const namespacesByName = new Map<string, NamespaceLocation>();
   const ambiguous: Array<{ id: string; dirs: string[] }> = [];
@@ -299,9 +335,13 @@ export function indexCorpus(root: string): CorpusIndex {
     const claimants = byName.get(id)!;
     if (claimants.length !== 1) {
       ambiguous.push({ id, dirs: claimants.map((claim) => claim.dir).sort() });
+      // The name reaches none of them, so each answers to its path — the reference that names it
+      // alone, and the one a finding about it has to quote.
+      for (const claim of claimants) claims.push({ ...claim, ref: claim.path });
       continue;
     }
-    const only = claimants[0]!;
+    const only: Claim = { ...claimants[0]!, ref: id };
+    claims.push(only);
     namespacesByName.set(id, only);
     if (isWorkflowClaim(only)) workflows.set(id, only);
   }
