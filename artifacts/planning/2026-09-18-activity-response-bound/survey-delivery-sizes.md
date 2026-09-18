@@ -1,9 +1,9 @@
 # Activity delivery sizes, before and after the response bound (#812)
 
 Every activity of every workflow the corpus reaches by a straight walk, delivered once to a fresh
-worker identity declaring a 200,000-token window (full delivery, no reference collapse). 115 of the
-corpus's 146 activities are reachable that way; the rest sit behind a transition the sweep does not
-satisfy and are not measured here.
+worker identity declaring a 200,000-token window (full delivery), then asked for again by the same
+identity under reference delivery. 115 of the corpus's 146 activities are reachable that way; the
+rest sit behind a transition the sweep does not satisfy and are not measured here.
 
 Corpus at `5fa925ae`. Server before: `main` at `7c6288af`. Server after: `fix/812-activity-response-bound`.
 
@@ -14,10 +14,15 @@ Corpus at `5fa925ae`. Server before: `main` at `7c6288af`. Server after: `fix/81
 | Activities measured | 115 | 115 |
 | Responses past 60,000 characters | 38 | 0 |
 | Largest response | 113,032 | 59,411 |
-| Total delivered characters | 6,528,790 | 5,481,355 |
-| Step techniques inlined | 469 | 211 |
-| Activities inlining no step | 8 | 13 |
+| Total delivered characters | 6,528,790 | 5,574,882 |
+| Step techniques inlined | 469 | 247 |
+| Activities inlining no step | 8 | 12 |
 | Activities deferring a contract operation body | 0 | 1 |
+
+The largest re-request under reference delivery is 58,761 characters, and no re-request exceeds the
+bound either. On every one of the 230 deliveries the sweep made, the server's own response tally is
+at or above what actually went over the wire — so the figure the bound is applied to never
+understates the response it is bounding.
 
 ## What the parts cost, before any bound
 
@@ -35,52 +40,47 @@ which is what settles that both procedure sets have to be boundable.
 
 ## Per-activity change
 
-Only the 43 activities whose inlined step count changed. Unchanged rows are omitted.
+Only the 38 activities whose inlined step count changed. Unchanged rows are omitted.
 
 | Activity | Steps before → after | Characters before → after |
 |---|---|---|
-| plain-language/evaluate | 4 → 2 | 60,703 → 55,597 |
-| plain-language/intake-and-profile | 3 → 2 | 59,213 → 55,141 |
+| plain-language/evaluate | 4 → 3 | 60,703 → 57,511 |
 | prism/generate-report | 2 → 1 | 60,190 → 52,378 |
-| prism-audit/audit-finalize | 6 → 5 | 53,852 → 52,863 |
-| prism-audit/execute-analysis | 4 → 1 | 60,577 → 52,213 |
-| prism-audit/prompt-generation | 7 → 5 | 55,167 → 51,361 |
-| prism-evaluate/consolidate-report | 5 → 4 | 51,533 → 50,295 |
-| prism-evaluate/execute-analysis | 4 → 1 | 61,545 → 53,221 |
-| prism-evaluate/resolution-dialogue | 4 → 3 | 55,297 → 53,783 |
+| prism-audit/execute-analysis | 4 → 3 | 60,577 → 58,623 |
+| prism-evaluate/execute-analysis | 4 → 2 | 61,545 → 55,715 |
 | remediate-vuln/assumptions-review | 7 → 1 | 80,439 → 54,673 |
 | remediate-vuln/codebase-comprehension | 8 → 1 | 89,807 → 56,423 |
-| remediate-vuln/complete | 9 → 3 | 79,531 → 53,255 |
-| remediate-vuln/design-philosophy | 9 → 2 | 89,995 → 57,154 |
+| remediate-vuln/complete | 9 → 5 | 79,531 → 58,861 |
+| remediate-vuln/design-philosophy | 9 → 3 | 89,995 → 59,166 |
 | remediate-vuln/implement | 10 → 1 | 96,250 → 55,872 |
-| remediate-vuln/implementation-analysis | 8 → 2 | 81,491 → 56,201 |
-| remediate-vuln/plan-prepare | 10 → 2 | 90,074 → 56,092 |
+| remediate-vuln/implementation-analysis | 8 → 3 | 81,491 → 58,461 |
+| remediate-vuln/plan-prepare | 10 → 3 | 90,074 → 58,542 |
 | remediate-vuln/post-impl-review | 10 → 0 | 93,917 → 50,938 |
-| remediate-vuln/requirements-elicitation | 10 → 4 | 75,559 → 52,737 |
+| remediate-vuln/requirements-elicitation | 10 → 5 | 75,559 → 54,963 |
 | remediate-vuln/research | 10 → 2 | 92,141 → 57,346 |
-| remediate-vuln/start | 9 → 4 | 68,115 → 54,749 |
+| remediate-vuln/start | 9 → 7 | 68,115 → 59,299 |
 | remediate-vuln/strategic-review | 12 → 2 | 100,565 → 55,356 |
 | remediate-vuln/submit-for-review | 4 → 1 | 68,178 → 57,972 |
-| substrate-node-security-audit/reconnaissance | 9 → 5 | 62,480 → 53,727 |
+| substrate-node-security-audit/reconnaissance | 9 → 7 | 62,480 → 59,098 |
 | work-package/assumptions-review | 7 → 1 | 78,263 → 53,871 |
 | work-package/codebase-comprehension | 8 → 1 | 88,051 → 55,670 |
-| work-package/complete | 9 → 3 | 77,475 → 52,239 |
-| work-package/design-philosophy | 9 → 2 | 87,561 → 56,255 |
+| work-package/complete | 9 → 6 | 77,475 → 59,191 |
+| work-package/design-philosophy | 9 → 3 | 87,561 → 58,193 |
 | work-package/implement | 10 → 1 | 93,001 → 55,074 |
-| work-package/implementation-analysis | 8 → 2 | 79,292 → 55,043 |
+| work-package/implementation-analysis | 8 → 3 | 79,292 → 57,290 |
 | work-package/plan-prepare | 11 → 3 | 93,039 → 57,046 |
 | work-package/post-impl-review | 10 → 0 | 91,585 → 50,820 |
-| work-package/requirements-elicitation | 10 → 4 | 73,614 → 51,710 |
+| work-package/requirements-elicitation | 10 → 6 | 73,614 → 58,756 |
 | work-package/research | 10 → 2 | 89,212 → 56,202 |
 | work-package/start-work-package | 11 → 0 | 113,032 → 59,179 |
 | work-package/strategic-review | 11 → 1 | 95,851 → 54,309 |
 | work-package/submit-for-review | 9 → 1 | 89,800 → 57,145 |
-| workflow-authoring/quality-review | 7 → 3 | 69,027 → 49,535 |
-| workflow-authoring/validate-and-commit | 3 → 1 | 68,596 → 52,715 |
+| workflow-authoring/quality-review | 7 → 5 | 69,027 → 56,244 |
+| workflow-authoring/validate-and-commit | 3 → 2 | 68,596 → 57,626 |
 | workflow-design/intake-and-context | 3 → 1 | 71,470 → 55,913 |
-| workflow-design/post-update-review | 18 → 2 | 83,676 → 52,227 |
-| workflow-design/quality-review | 7 → 0 | 71,423 → 49,981 |
-| workflow-design/requirements-refinement | 7 → 1 | 83,902 → 52,388 |
+| workflow-design/post-update-review | 18 → 5 | 83,676 → 59,093 |
+| workflow-design/quality-review | 7 → 1 | 71,423 → 58,045 |
+| workflow-design/requirements-refinement | 7 → 2 | 83,902 → 54,270 |
 | workflow-design/scope-and-draft | 9 → 0 | 99,026 → 59,411 |
 
 ## Which order to give way in
@@ -103,6 +103,11 @@ technique is the variable share and never collapses. And a step the bound leaves
 better-travelled deferral path — a worker fetches it at the step it reaches, which is what a step
 past the budget has always done.
 
+The simulation priced each entry at its own serialization; the engine prices it at the size it is
+written in, nested under the map it rides and with its shared blocks already collapsed. So the
+engine inlines somewhat more than this table projects — 247 steps against the 314 projected here is
+the difference between simulating 146 activities and walking the 115 a straight walk reaches.
+
 ## Second delivery to the same context
 
 `work-package/start-work-package`, delivered twice to one worker identity, the second call asking for
@@ -120,10 +125,27 @@ delivery deferred and three step techniques it had no room for. Across the ninet
 a full `work-package` walk, the contract's share of a re-request is 97.3% smaller than its share of
 the dispatch that preceded it.
 
+## What a batch now saves
+
+`npm run bench:batch` over the three-activity analysis run, at a 200,000-token window.
+
+| Reading | Before | After |
+|---|---|---|
+| One worker per activity | 250,174 | 167,787 |
+| One worker for the run | 210,976 | 157,645 |
+| Character saving | 15.7% | 6.0% |
+
+The ratio compresses for two reasons, neither a regression. A bound puts both arms under one ceiling,
+so deliveries that differed by the contract they repeated now differ by much less. And the benchmark
+counts activity payloads only: what a collapse frees inside a bounded response is spent on step
+techniques that would otherwise be fetched lazily, so characters leave the figure it reads and
+reappear as round trips it never counted.
+
 ## How to reproduce
 
 The sweep is a throwaway script driving the real server over the in-memory transport: for each
 workflow, one session, then `next_activity` and `get_activity` per activity under a fresh `agent_id`
-declaring 200,000 tokens, recording the response length and `_meta.delivery_cost`. The batch figures
-come from `npm run bench:batch`, and the fixture cost gate from the `bench:token` invocation
-`verify.yml` runs.
+declaring 200,000 tokens, then the same call again under `bundle: "reference"`, recording each
+response length against `_meta.delivery_cost`. The batch figures come from `npm run bench:batch`, and
+the fixture cost gate from the `bench:token` invocation `verify.yml` runs, which reports −0.7%
+against its baseline.
