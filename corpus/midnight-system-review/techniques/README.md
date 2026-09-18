@@ -25,7 +25,7 @@ The technique library for the midnight-system-review workflow. Each operation is
 |-----------|----------|
 | `meta::variable-binding` | Workflow-level binding strategy for every bound step |
 | `meta::scatter-gather` | The sequential per-area scatter/gather contract on `evidence-probes` |
-| `meta::github-cli-protocol` (`view-pr`, `list-pr-files`) | PR head/base metadata and authored file list when `has_pr_surface` |
-| `meta::version-control::three-dot-name-status` | Local three-dot name-status surface when not a PR |
+| `github` (`view-pr`, `list-pr-files`) | PR head/base metadata and authored file list when `has_pr_surface` |
+| `git::three-dot-name-status` | Local three-dot name-status surface when not a PR |
 | `gitnexus` (`query`, `context`, `impact`, `detect-changes`) | Code-graph probes when `gitnexus_available` is true |
 | `work-package::update-pr::post-review-comment` | Posts `review_summary` to PR `pr_number` verbatim with the explicit `review_type` |

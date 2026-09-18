@@ -42,7 +42,7 @@ The gathered collection is in work-unit order — under a graph fan the slot is 
 
 ### a-branch-that-commits-takes-a-checkout-of-its-own
 
-A graph fan's branches share one working tree, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the fanned activity binds [create-worktree](./version-control/create-worktree.md) as its own step, and the load admits the version-control operations for it on that evidence — the wiring is the claim, so there is nothing to declare and nothing to take on trust.
+A graph fan's branches share one working tree, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the fanned activity binds [create-worktree](/git/techniques/create-worktree.md) as its own step, and the load admits the git operations for it on that evidence — the wiring is the claim, so there is nothing to declare and nothing to take on trust.
 
 > Reach for it only where per-unit attribution is the point: it costs a checkout per branch and makes the convergence responsible for a reconciliation that can conflict.
 

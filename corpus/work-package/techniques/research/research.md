@@ -26,7 +26,7 @@ Best practices, documentation, and resources gathered from web research, each ca
 
 ### 2. Search Knowledge Base
 
-- Apply [knowledge-base-search](/meta/techniques/knowledge-base-search/TECHNIQUE.md)::[load-domain-index](/meta/techniques/knowledge-base-search/load-domain-index.md) and match the research goal to an entry of the index it returns
+- Apply [concept-rag](/concept-rag/techniques/TECHNIQUE.md)::[load-domain-index](/concept-rag/techniques/load-domain-index.md) and match the research goal to an entry of the index it returns
 - Identify key concepts, patterns, and specific guidance from results
 - Map findings to work package requirements
 - If the knowledge base has no relevant content, rely on web research and note the gap in findings

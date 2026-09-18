@@ -6,7 +6,7 @@
 
 ## Overview
 
-The meta workflow is the structural home for the orchestration logic that used to live in technique prose. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique operation via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
+The meta workflow is the structural home for the session's orchestration logic. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique operation via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
 
 **Key characteristics:**
 
@@ -50,19 +50,14 @@ Meta is the user-facing orchestrator; the client session is a child `start_sessi
 
 ## Techniques and the cross-workflow shared layer
 
-The `meta/techniques/` and `meta/resources/` folders carry double duty. They
-are the local content for the meta workflow itself AND the cross-workflow
-shared layer — when any workflow asks for a technique that has no
-workflow-local definition, the loader resolves it from `meta/techniques/`.
-The ontology and section conventions every technique follows are defined in
-[`meta/resources/workflow-canonical.md`](./resources/workflow-canonical.md).
+The [`meta/techniques/`](techniques/) and [`meta/resources/`](resources/)
+folders carry double duty. They are the local content for the meta workflow
+itself AND the cross-workflow shared layer every other workflow reaches.
 
-Markdown techniques live under [`meta/techniques/`](techniques/). A standalone
-technique is a single `<slug>.md` file; a grouped technique is a `<group>/`
-folder containing `TECHNIQUE.md` (the index/base contract) plus one `<op>.md`
-per operation, each addressed `<group>::<op>`. The
-[`meta/techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) root base contract
-is inherited by every meta technique.
+The on-disk layout a technique takes, how a base contract reaches the
+operations beneath it, the cross-reference format, and the section
+conventions every technique follows are defined in
+[`meta/resources/workflow-canonical.md`](./resources/workflow-canonical.md).
 
 ---
 
@@ -77,14 +72,9 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | [`orchestrator-conduct`](techniques/orchestrator-conduct.md) | The boundaries only an orchestrator can honour — single source of truth for domain-work delegation, agent-tree depth, dispatch on resume, commit scope, automatic transitions and ad-hoc interaction |
 | [`worker-conduct`](techniques/worker-conduct.md) | The boundaries only a dispatched worker can honour — how it writes the artifacts its activity declares, and what it reports having written |
 | [`verify-artifact-conforms`](techniques/verify-artifact-conforms.md) | Artifact-conformance pass any workflow binds: each artifact measured against the guide its filename maps to, the caller's canonical-home map, and the [Artifact Writing Register](resources/writing-register.md), corrected in place |
-| [`version-control`](techniques/version-control/TECHNIQUE.md) | Host-repository derivation from git, planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
-| [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks; sole home of REST `gh api` recipes |
-| [`knowledge-base-search`](techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
-| [`atlassian-operations`](techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
-| [`cargo-operations`](techniques/cargo-operations/TECHNIQUE.md) | Resource-constrained cargo subcommands (build, check, clippy, test, fmt, doc, preflight) with an inline resource budget |
 | [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
 
-> Cross-cutting rules live in `agent-conduct` (any agent), `orchestrator-conduct` (an orchestrator's alone) and `worker-conduct` (a dispatched worker's alone), and capability techniques (`workflow-engine`, `version-control`, etc.) reference them as their single source of truth. A bundle addresses the rule families its role owns, so a rule reaches the agent that can act on it.
+> Cross-cutting rules live in `agent-conduct` (any agent), `orchestrator-conduct` (an orchestrator's alone) and `worker-conduct` (a dispatched worker's alone), and capability techniques (`workflow-engine`, `harness-compat`, etc.) reference them as their single source of truth. A bundle addresses the rule families its role owns, so a rule reaches the agent that can act on it.
 
 ---
 
@@ -127,7 +117,7 @@ corpus/meta/
 │   ├── activity-loop.yaml                   # Walk a session one activity at a time, until none follows
 │   └── dispatch-round.yaml                  # Compose, dispatch and gather one round of worker briefs
 ├── techniques/
-│   ├── TECHNIQUE.md                         # Root base contract (inherited by every meta technique)
+│   ├── TECHNIQUE.md                         # Root base contract
 │   ├── agent-conduct.md                     # Cross-cutting rules any agent can act on (single source of truth)
 │   ├── orchestrator-conduct.md              # The boundaries only an orchestrator can honour
 │   ├── worker-conduct.md                    # The boundaries only a dispatched worker can honour
@@ -137,14 +127,9 @@ corpus/meta/
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
 │   │   └── {op}.md                          #   one file per operation (start-session, create-session, dispatch-activity, ...)
-│   ├── version-control/
-│   │   ├── TECHNIQUE.md
-│   │   └── {op}.md
-│   ├── github-cli-protocol/
-│   ├── knowledge-base-search/
-│   ├── atlassian-operations/
-│   ├── cargo-operations/
-│   └── harness-compat/
+│   ├── harness-compat/                      # Harness-independent agent dispatch
+│   ├── orchestration-patterns/              # Atomic dispatch/gather/synthesise ops for pattern activities
+│   └── fan/                                 # Contract and rules for carrying a graph fan
 └── resources/
     ├── README.md                            # Resource index
     ├── bootstrap-protocol.md                # Pre-session stub (discover)

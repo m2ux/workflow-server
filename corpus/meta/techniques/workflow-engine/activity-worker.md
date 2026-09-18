@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.8.1
 ---
 
 ## Capability
@@ -39,8 +39,8 @@ Worker agent identity for this dispatch.
 
 ### 2. Load resources
 
-- Load resources per [resource-loading-via-tool](./TECHNIQUE.md#resource-loading-via-tool)
-- Use [force-full-after-summarization](./TECHNIQUE.md#force-full-after-summarization) when this context no longer holds prior deliveries
+- Load resources per `resource-loading-via-tool`
+- Use `force-full-after-summarization` when this context no longer holds prior deliveries
 
 ### 3. Take the walk position
 
@@ -78,7 +78,7 @@ Return each activity's `activity_complete` envelope as it finishes per [finalize
 
 ### agent-id-on-delivery-calls
 
-Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch holds no prior deliveries and takes full delivery; every call after it under that same identity carries `bundle: "reference"`, whether it resumes the activity this context holds or takes the next activity of its batch, so content this context already holds arrives as unchanged markers.
+Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on (`agent-id-scopes-delivery`). A first dispatch holds no prior deliveries and takes full delivery; every call after it under that same identity carries `bundle: "reference"`, whether it resumes the activity this context holds or takes the next activity of its batch, so content this context already holds arrives as unchanged markers.
 
 ### outlive-dispatched-children
 
@@ -94,7 +94,7 @@ Before executing any step, confirm the activity `id` returned by the `get_activi
 
 ### progressive-step-technique-load
 
-A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle; re-fetching it pays the round trip for content the response already delivered ([fetch-costs-what-it-delivers](./TECHNIQUE.md#fetch-costs-what-it-delivers)).
+A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle; re-fetching it pays the round trip for content the response already delivered (`fetch-costs-what-it-delivers`).
 
 ### batch-ends-where-the-server-says
 

@@ -32,9 +32,9 @@ A Jira issue raised for the work package in its project, typed for the kind of c
 ### 2. Resolve the Project
 
 - Take `{jira_project}` as the project the issue is created in
-  > Where it is unset, apply [list-jira-projects](/meta/techniques/atlassian-operations/list-jira-projects.md) and take the project from the returned set.
+  > Where it is unset, apply [list-jira-projects](/atlassian/techniques/list-jira-projects.md) and take the project from the returned set.
 
 ### 3. Create and Verify
 
-- Resolve the types the project admits through [list-jira-issue-types](/meta/techniques/atlassian-operations/list-jira-issue-types.md), then apply [atlassian-operations](/meta/techniques/atlassian-operations/TECHNIQUE.md)::[create-jira-issue](/meta/techniques/atlassian-operations/create-jira-issue.md) with the drafted summary, description and mapped type; capture `{issue_number}` and `{issue_url}` from the resulting issue
+- Resolve the types the project admits through [list-jira-issue-types](/atlassian/techniques/list-jira-issue-types.md), then apply [atlassian](/atlassian/techniques/TECHNIQUE.md)::[create-jira-issue](/atlassian/techniques/create-jira-issue.md) with the drafted summary, description and mapped type; capture `{issue_number}` and `{issue_url}` from the resulting issue
   > Where the op fails on auth, permissions or an invalid request, verify the cloud id and project access and check the issue type and its required fields before retrying.

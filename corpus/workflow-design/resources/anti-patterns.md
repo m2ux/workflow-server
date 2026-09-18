@@ -599,7 +599,7 @@ An I/O id or description names a specific caller.
 
 **Detect:** An input/output entry names or links a workflow-internal producer/consumer — another technique ("from [analyze-failure]", "produced by build-function-registry"), activity ("from the elicitation activity"), step, checkpoint, loop, or workflow/activity file. Describe what the value IS (meaning, shape, allowed values), never its position in a particular workflow.
 
-**Do not flag:** Protocol/Capability utilisation ("use technique X", "go through cargo-operations::fmt-fix"); intrinsic/external origin ("git diff output", "the user's request", "provided by the server"); I/O links to a resource/template section (shape of the value).
+**Do not flag:** Protocol/Capability utilisation ("use technique X", "go through cargo::fmt-fix"); intrinsic/external origin ("git diff output", "the user's request", "provided by the server"); I/O links to a resource/template section (shape of the value).
 
 **Fix:** Rewrite the entry generically; drop workflow-internal source/destination naming. See [Maximize Schema Expressiveness](./design-principles.md#5-maximize-schema-expressiveness) (portable I/O).
 
@@ -731,7 +731,7 @@ A rule is cited in prose instead of its dotted symbol address.
 
 **Detect:** A protocol step cites/relies on a rule as prose ("per the X rule", "following the X rule"), with `::` (invokes a technique, does not name a rule), or as a markdown hyperlink to the rule's heading anchor. The hyperlink is the spelling that survives a walk looking only for prose: it resolves, so the anchor guard passes it, and it still sends a reader to a container whose rules the loader already merged into the file they are reading. Also: prose citation of a rule that is not declared anywhere (dangling).
 
-**Do not flag:** Correct dotted ancestry address — `[<namespace>.]<technique>.<rule-name>` (e.g. `meta.cargo-operations.resource-budget`). Shorten to what the reader's own position already supplies: a rule inherited from self, group, or namespace root is its bare name, because nothing else could be meant; a rule outside that ancestry is `<owner>.<rule-name>`, the declaring technique and the rule, with a container named by its folder rather than by the `TECHNIQUE.md` every folder spells alike. A namespace's own root index is named by the namespace, the folder holding its library — `gitnexus.index-freshness-first`. Rule slugs are distinctive across the corpus, so the owner is what disambiguates and the namespace is carried only where two of them hold the same technique id. A hyperlink from a surface that runs no Protocol — a resource or a README — which names a rule to send a reader to it rather than to honour it. A technique citing any rule takes the dotted address at the length its ancestry allows, whether or not the rule is one it inherits. Test: ask whether the citing file is a technique; if it is, the form is dotted.
+**Do not flag:** Correct dotted ancestry address — `[<namespace>.]<technique>.<rule-name>` (e.g. `work-package.validate-build.no-cargo-here`). Shorten to what the reader's own position already supplies: a rule inherited from self, group, or namespace root is its bare name, because nothing else could be meant; a rule outside that ancestry is `<owner>.<rule-name>`, the declaring technique and the rule, with a container named by its folder rather than by the `TECHNIQUE.md` every folder spells alike. A namespace's own root index is named by the namespace, the folder holding its library — `gitnexus.index-freshness-first`. Rule slugs are distinctive across the corpus, so the owner is what disambiguates and the namespace is carried only where two of them hold the same technique id. A hyperlink from a surface that runs no Protocol — a resource or a README — which names a rule to send a reader to it rather than to honour it. A technique citing any rule takes the dotted address at the length its ancestry allows, whether or not the rule is one it inherits. Test: ask whether the citing file is a technique; if it is, the form is dotted.
 
 **Fix:** Replace prose, `::`, or an anchor hyperlink with the dotted symbol address (shortened per ancestry) — a rule inherited from self, group, or workflow root is its bare name. For dangling citations, point at the real inline content — never invent a rule. Mnemonic: `::` invokes, `.` names, and a link navigates to something the reader has not got.
 
@@ -934,13 +934,13 @@ An activity carries prose rules: instead of pure mechanics.
 
 "Reusable primitive trapped in a client workflow" / "cross-consumer capability buried under one activity name"
 
-Technique folder/name disagrees with shape-origin (reuse boundary vs activity seam).
+Technique folder/name disagrees with shape-origin (reuse boundary, activity seam, or shared namespace).
 
 **Detect:** A technique's directory or name encodes the wrong locus for its shape-origin: a reusable harness/capability primitive lives under a client workflow; a cross-activity intrinsic capability is named for one activity; or an activity-seam-only set is named as if it were a standalone capability. Also flag a group folder whose ops are the workflow's entire operation set (`<group>::` only restates the workflow). Discriminator is shape-origin, not consumer count.
 
 **Do not flag:** Activity-named group used only to organize seam-driven ops (protocols inside stay stage-agnostic — `technique-stage-agnostic`); multiple distinct capability groups composed by one activity; inventing a group for a hypothetical second cluster (YAGNI).
 
-**Fix:** Reusable primitive → meta, capability-named; intrinsic/cross-consumer → workflow root (or meta if cross-workflow), capability-named; activity-seam 1:1 → activity-named group. Use a group folder only to bound a subset against other top-level techniques; otherwise standalone `techniques/<op>.md` with shared contract in workflow-root `TECHNIQUE.md`.
+**Fix:** Place the group at its reuse boundary: an activity-seam 1:1 set → activity-named group; a set one workflow's activities share → that workflow's root, capability-named; a set many workflows share → a namespace of its own, capability-named. A shared namespace driving a system outside the server is a library; one describing how a run itself proceeds belongs to the workflow whose subject that is. Use a group folder only to bound a subset against other top-level techniques; otherwise standalone `techniques/<op>.md` with shared contract in the namespace-root `TECHNIQUE.md`.
 
 ## Tool-Technique-Doc Consistency Anti-Patterns
 
@@ -1432,15 +1432,15 @@ Capability or Protocol produces a value that is not declared on Outputs.
 
 ### AP-110. duplicate-shared-capability
 
-"`publish-workflow-pr` re-teaches `gh pr create` / `gh pr ready` / `git push` already covered by meta ops"
+"`publish-workflow-pr` re-teaches `gh pr create` / `gh pr ready` / `git push` already covered by the `github` and `git` namespaces"
 
-A workflow-local technique re-implements a capability a meta or shared-workflow technique already offers.
+A workflow-local technique re-implements a capability a shared namespace already offers.
 
-**Detect:** A non-meta technique's Protocol embeds a harness recipe (git push, `gh pr create`, `gh pr ready`, commit/stage, issue mutate, …) for a capability that already exists as a meta or cross-workflow shared op. Also flag local re-teaching of concurrent `Task` / spawn-concurrent / dispatch-then-merge pipelines when [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) or a borrowable [`meta/activities/patterns/`](/meta/activities/patterns/README.md) activity already covers the shape. Test: the local novelty is only parameters or caller-specific composition (title/body/path wiring, domain roster, calibration); the verb/recipe is already owned elsewhere. Near-misses count — an existing shared op that almost fits but lacks an input, optional flag, or output still owns the capability.
+**Detect:** A workflow's own technique embeds a harness recipe (git push, `gh pr create`, `gh pr ready`, commit/stage, issue mutate, …) in its Protocol for a capability a shared namespace already holds an operation for. Also flag local re-teaching of concurrent `Task` / spawn-concurrent / dispatch-then-merge pipelines when [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) or a borrowable [`meta/activities/patterns/`](/meta/activities/patterns/README.md) activity already covers the shape. Test: the local novelty is only parameters or caller-specific composition (title/body/path wiring, domain roster, calibration); the verb/recipe is already owned elsewhere. Near-misses count — an existing shared op that almost fits but lacks an input, optional flag, or output still owns the capability.
 
-**Do not flag:** Parameterization or minor refactor of the shared/meta op itself to accommodate a new caller's diversity (new optional inputs, defaults, outputs, or small protocol branches) while preserving existing callers; adding a new shared op when no shared capability exists yet; a local technique that only assembles caller-specific values (title/body/path wiring, domain roster assignment, severity calibration) while the activity binds the shared op as its own step; session-level `dispatch-activity` (graph orchestrator/worker — different layer from mid-phase fan-out).
+**Do not flag:** Parameterization or minor refactor of the shared op itself to accommodate a new caller's diversity (new optional inputs, defaults, outputs, or small protocol branches) while preserving existing callers; adding a new shared op when no shared capability exists yet; a local technique that only assembles caller-specific values (title/body/path wiring, domain roster assignment, severity calibration) while the activity binds the shared op as its own step; session-level `dispatch-activity` (graph orchestrator/worker — different layer from mid-phase fan-out).
 
-**Fix:** Delete the local harness recipe; bind the shared/meta op from the activity (or borrow an activity that already binds it); keep only caller-specific value assembly in a local technique if needed (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). Remediation order under [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities).
+**Fix:** Delete the local harness recipe; bind the shared op from the activity (or borrow an activity that already binds it); keep only caller-specific value assembly in a local technique if needed (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). Remediation order under [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities).
 
 ### AP-111. contract-not-procedure
 
@@ -1594,7 +1594,7 @@ A worker/orchestrator spawn stub or agent-entry technique restates delivery, bin
 
 **Detect:** Capability is a comma/em-dash inventory of child techniques, protocol facets, or folder ops (often with hyperlinks to each) rather than a short insight into what the contract/group contributes. Test: if the sentence must be edited whenever a nested op is added/renamed/removed, and a reader could get the same list from the folder or index, flag it.
 
-**Do not flag:** A one- or two-clause purpose statement that names the domain without listing children (`harness-compat`, `cargo-operations`); leaf Capability that names the single product (`procedure-in-capability` for HOW); container contribution statements for shared I/O/rules (`platform-semantics-in-capability`); README orientation that points at an index table without restating every op (`readme-orients-not-transcribes`).
+**Do not flag:** A one- or two-clause purpose statement that names the domain without listing children (`harness-compat`, `cargo`); leaf Capability that names the single product (`procedure-in-capability` for HOW); container contribution statements for shared I/O/rules (`platform-semantics-in-capability`); README orientation that points at an index table without restating every op (`readme-orients-not-transcribes`).
 
 **Fix:** Rewrite Capability as a succinct overview of the shared domain. Leave the op catalogue to the folder / techniques index / YAML binds. See [State Contract Contribution](./design-principles.md#27-state-contract-contribution); also `platform-semantics-in-capability`, `procedure-in-capability`.
 

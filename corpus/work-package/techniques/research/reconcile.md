@@ -40,7 +40,7 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 
 ### 2. Targeted Research
 
-- For each reconcilable candidate, research that candidate alone: apply [knowledge-base-search](/meta/techniques/knowledge-base-search/TECHNIQUE.md)::[load-domain-index](/meta/techniques/knowledge-base-search/load-domain-index.md) and match the candidate to an entry of the index it returns for institutional knowledge, and search the web for current external knowledge where the gap needs it
+- For each reconcilable candidate, research that candidate alone: apply [concept-rag](/concept-rag/techniques/TECHNIQUE.md)::[load-domain-index](/concept-rag/techniques/load-domain-index.md) and match the candidate to an entry of the index it returns for institutional knowledge, and search the web for current external knowledge where the gap needs it
 - Validate every web finding on the group's `research.source-validation` axes before it informs a resolution
 - Determine the outcome: Resolved (research answers the candidate, with citations), Partially Resolved (research narrows it but leaves residual uncertainty), or — when targeted research surfaces that the answer is not published knowledge after all — reclassify the candidate as irreconcilable with its handoff target
 

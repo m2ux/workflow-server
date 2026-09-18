@@ -45,7 +45,7 @@ True when the worktree at `{target_path}` on `{workflow_branch}` was created or 
 
 ### 2. Ensure Worktree
 
-- Compose [create-worktree](/meta/techniques/version-control/create-worktree.md) with:
+- Compose [create-worktree](/git/techniques/create-worktree.md) with:
   - `{target_path}` as declared
   - `branch_name` = `{$branch_name}`
   - `create_branch` = true

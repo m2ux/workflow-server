@@ -130,7 +130,7 @@ steps:
   - kind: technique
     id: read-live-pr-body
     technique:
-      name: github-cli-protocol::view-pr
+      name: github::view-pr
       inputs:
         repo_path: component_git_dir
     condition:

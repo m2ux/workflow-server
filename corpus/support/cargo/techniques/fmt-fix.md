@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -15,4 +15,6 @@ The source files under `{build_scope}` rewritten in place to match the rustfmt c
 
 ## Protocol
 
-1. `nice -n 19 cargo fmt {build_scope}`
+### 1. Apply Formatting
+
+- `nice -n 19 cargo fmt {build_scope}`

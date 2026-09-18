@@ -1,11 +1,17 @@
 ---
 metadata:
-  version: 5.7.0
+  version: 5.8.0
 ---
 
 ## Capability
 
-Version-control operations for planning folders and artifacts — parent repos, submodules, and branch push. Owns the host-versus-component distinction: host path and `owner/repo` come from git; a repository name in request prose identifies a component only.
+Git operations for planning folders and artifacts — parent repos, submodules, and branch push. Owns the host-versus-component distinction: host path and `owner/repo` come from git; a repository name in request prose identifies a component only.
+
+## Inputs
+
+### planning_folder_path
+
+Path to the session's planning folder, as the server returned it. Operations that derive a path from where the session keeps its artifacts take it from here; not every operation needs one.
 
 ## Rules
 

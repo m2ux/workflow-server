@@ -1,10 +1,9 @@
 id: intake-and-context
-version: 1.7.0
+version: 1.8.0
 name: Intake and Context
 description: "Classify the request as create, update or review, name the target, derive the edit-surface path, and produce the change brief and the change constraints the rest of the run draws on."
 variables:
   reads:
-    - host_repo_path
     - pr_number
     - update_seeded_from_review
   writes:
@@ -95,7 +94,7 @@ steps:
         message: Absolute planning folder this session writes its artifacts into, as reported in the server session summary.
   - kind: technique
     id: derive-target-path
-    technique: version-control::derive-workflows-target-path
+    technique: git::derive-workflows-target-path
   - kind: technique
     id: classify-intake
     technique: workflow-definition::intake-classification

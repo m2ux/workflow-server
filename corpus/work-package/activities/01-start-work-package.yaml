@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.26.0
+version: 3.27.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -7,8 +7,6 @@ variables:
     - base_branch
     - branch_name
     - component_git_dir
-    - component_path
-    - host_repo_path
     - issue_request
     - issue_title
     - issue_type
@@ -343,14 +341,14 @@ steps:
     when: is_review_mode == true
   - kind: technique
     id: derive-host-repo
-    technique: version-control::resolve-host-repo
+    technique: git::resolve-host-repo
   - kind: technique
     id: resolve-repo-root
     technique: repo-root-resolution
   - kind: technique
     id: read-reviewed-pr-body
     technique:
-      name: github-cli-protocol::view-pr
+      name: github::view-pr
       inputs:
         repo_path: component_git_dir
     when: is_review_mode == true
@@ -480,7 +478,7 @@ steps:
   - kind: technique
     id: verify-jira-issue
     technique:
-      name: atlassian-operations::get-jira-issue
+      name: atlassian::get-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
     when: issue_platform == 'jira'
@@ -491,14 +489,14 @@ steps:
   - kind: technique
     id: verify-github-issue
     technique:
-      name: github-cli-protocol::view-issue
+      name: github::view-issue
       inputs:
         repo_path: component_git_dir
     when: issue_platform == 'github'
   - kind: technique
     id: search-github-issue
     technique:
-      name: github-cli-protocol::list-issues
+      name: github::list-issues
       inputs:
         repo_path: component_git_dir
         search_text: "{jira_issue_key}"
@@ -662,12 +660,12 @@ steps:
     when: needs_issue_creation == true && issue_platform == 'jira'
   - kind: technique
     id: lookup-current-user
-    technique: atlassian-operations::user-info
+    technique: atlassian::user-info
     when: issue_platform == 'jira' && issue_skipped != true
   - kind: technique
     id: assign-issue-jira
     technique:
-      name: atlassian-operations::edit-jira-issue
+      name: atlassian::edit-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
         fields: "{ assignee: { accountId: {accountId} } }"
@@ -675,14 +673,14 @@ steps:
   - kind: technique
     id: transition-issue-jira
     technique:
-      name: atlassian-operations::transition-jira-issue
+      name: atlassian::transition-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
     when: issue_skipped != true && issue_platform == 'jira'
   - kind: technique
     id: assign-issue-github
     technique:
-      name: github-cli-protocol::assign-issue
+      name: github::assign-issue
       inputs:
         repo_path: component_git_dir
         assignee: "@me"
@@ -715,12 +713,12 @@ steps:
         issue_title: "{issue_title}"
   - kind: technique
     id: create-component-worktree
-    technique: version-control::create-worktree
+    technique: git::create-worktree
     when: is_review_mode != true
   - kind: technique
     id: create-review-worktree
     technique:
-      name: version-control::create-worktree
+      name: git::create-worktree
       inputs:
         create_branch: false
     when: is_review_mode == true
@@ -734,7 +732,7 @@ steps:
   - kind: technique
     id: check-pr
     technique:
-      name: github-cli-protocol::list-prs
+      name: github::list-prs
       inputs:
         repo_path: component_git_dir
     when: is_review_mode != true
@@ -834,7 +832,7 @@ steps:
   - kind: technique
     id: link-pr-to-ticket-jira
     technique:
-      name: atlassian-operations::comment-jira-issue
+      name: atlassian::comment-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
         commentBody: "Pull Request: {pr_url}"
@@ -859,7 +857,7 @@ steps:
   - kind: technique
     id: link-pr-to-ticket-github
     technique:
-      name: github-cli-protocol::view-issue
+      name: github::view-issue
       inputs:
         repo_path: component_git_dir
     condition:

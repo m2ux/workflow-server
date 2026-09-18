@@ -224,7 +224,7 @@ steps:
   - kind: technique
     id: stage-and-commit
     technique:
-      name: version-control::commit-regular-files
+      name: git::commit-regular-files
       inputs:
         branch: workflow_branch
         paths: paths
@@ -237,7 +237,7 @@ steps:
   - kind: technique
     id: push-branch
     technique:
-      name: version-control::push-branch
+      name: git::push-branch
       inputs:
         repo_path: target_path
         branch: workflow_branch
@@ -246,7 +246,7 @@ steps:
   - kind: technique
     id: open-pr
     technique:
-      name: github-cli-protocol::create-pr
+      name: github::create-pr
       inputs:
         repo_path: target_path
         branch_name: workflow_branch

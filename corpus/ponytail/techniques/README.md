@@ -29,7 +29,7 @@ Each technique is a standalone top-level file and is bound **bare** â€” `<op>` â
 
 ## Cross-Workflow Techniques
 
-These meta techniques are inherited or bound cross-workflow, not authored here:
+These techniques are inherited or bound from a shared namespace, not authored here:
 
 | Reference | Used for |
 |-----------|----------|

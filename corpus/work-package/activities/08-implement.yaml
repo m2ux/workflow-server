@@ -1,12 +1,11 @@
 id: implement
-version: 2.18.0
+version: 2.20.0
 name: Implement Tasks
 description: Execute the implementation plan task by task.
 variables:
   reads:
     - branch_name
     - component_git_dir
-    - component_path
     - has_uncertain_symbols
     - host_repo_path
     - implementation_plan
@@ -63,9 +62,9 @@ variables:
       type: array
       description: The residual open assumptions awaiting a stakeholder judgement.
     - name: test_status
-      type: string
-      description: Pass/fail summary
-      defaultValue: ""
+      type: object
+      description: "The test check's status — `{ check_id, passed, diagnostics }`."
+      defaultValue: {}
     - name: uncertain_symbols
       type: string
       description: "Symbols whose provenance could not be confirmed against the codebase or declared dependencies, one per line."
@@ -87,7 +86,7 @@ steps:
       - kind: technique
         id: run-tests
         technique:
-          name: cargo-operations::test
+          name: cargo::test
           inputs:
             build_scope: -p {current_task.crate}
         when: project_type == 'rust-substrate'
