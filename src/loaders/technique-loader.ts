@@ -237,7 +237,7 @@ export async function resolveTechniques(
     if (subName === undefined) {
       const tRes = await readTechniqueRef(path, index, path.workflowId ?? currentWorkflow);
       if (tRes.success) {
-        const wholeDir = getWorkflowTechniquesDir(index, path.workflowId ?? currentWorkflow ?? META_WORKFLOW_ID);
+        const wholeDir = getWorkflowTechniquesDir(index, tRes.value.sourceWorkflowId);
         const body = await composeLoaded(tRes.value.technique, [technique0], wholeDir);
         results.push({ source: technique0, workflow: path.workflowId, name: '', type: 'technique', body: projectTechniqueBody(body), ref });
         touchedSkills.set(skillKey(path.workflowId, technique0), { workflow: path.workflowId, technique: technique0, cached: tRes.value.technique });
@@ -534,7 +534,7 @@ async function composeLoaded(
 }
 
 /**
- * Load and compose a technique with the full ancestor-chain contract from its executing workflow.
+ * Load and compose a technique with the full ancestor-chain contract of the workflow holding it.
  *
  * Takes a reference in any form the rule admits — a bare name, a `group::op` path, a workflow
  * prefix in either spelling. Composition is delegated to `composeLoaded`, the single implementation
@@ -562,12 +562,13 @@ export async function composeTechniqueWithSource(
   const base = await readTechniqueRef(ref.value, index, workflowId);
   if (!base.success) return base;
 
-  // The contract comes from the EXECUTING workflow: a technique borrowed across workflows is
-  // composed with the root and group contracts of the workflow whose activity binds it, so the
-  // ancestors walk that workflow's `techniques/` along the reference's own path — the workflow
-  // prefix names where the file was read, not where the contract lives.
+  // The contract comes from the workflow the file was FOUND in, whether the reference named it,
+  // fell back to the shared layer, or resolved locally: the ancestors walk that workflow's
+  // `techniques/` along the reference's own path, so a technique fetched across a boundary carries
+  // the shared contract written above it rather than one belonging to whoever asked. Same rule as
+  // the bundle path (`resolveTechniques`), which composes each op against its own home.
   return ok({
-    technique: await composeLoaded(base.value.technique, ref.value.segments, getWorkflowTechniquesDir(index, workflowId)),
+    technique: await composeLoaded(base.value.technique, ref.value.segments, getWorkflowTechniquesDir(index, base.value.sourceWorkflowId)),
     sourceWorkflowId: base.value.sourceWorkflowId,
   });
 }

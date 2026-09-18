@@ -712,6 +712,89 @@ describe('technique-loader', () => {
         expect(result.value.rules?.['meta-only']).toBeUndefined(); // meta root must NOT bleed in
       }
     });
+
+    /**
+     * A technique fetched across a workflow boundary carries the shared contract written above
+     * it — the root and group `TECHNIQUE.md` of the workflow holding the file — whichever
+     * workflow asked for it. Both ways of reaching another workflow's technique are covered: a
+     * `workflow::` prefix, and a bare reference falling back to the shared `meta` layer.
+     */
+    const writeCrossWorkflowFixture = async (): Promise<void> => {
+      const metaDir = join(tempDir, 'meta', 'techniques', 'grp');
+      await mkdir(metaDir, { recursive: true });
+      await writeFile(
+        join(tempDir, 'meta', 'techniques', 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Meta root.', '',
+         '## Inputs', '', '### meta-root-input', '', 'Meta root contract.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(metaDir, 'TECHNIQUE.md'),
+        [...FM('grp'), '## Capability', '', 'Meta group.', '',
+         '## Inputs', '', '### grp-input', '', 'Group contract.', '',
+         '## Rules', '', '### grp-rule', '', 'Group constraint.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(metaDir, 'op.md'),
+        [...FM('op'), '## Capability', '', 'Shared op.', '',
+         '## Inputs', '', '### own-input', '', 'Op-local input.', '',
+         '## Protocol', '', '1. Operate', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(tempDir, 'wp', 'techniques', 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Caller root.', '',
+         '## Inputs', '', '### caller-input', '', 'Caller contract.', '',
+         '## Rules', '', '### caller-rule', '', 'Caller constraint.', ''].join('\n'),
+        'utf-8',
+      );
+    };
+
+    it('composeTechnique composes a prefixed cross-workflow technique against its own workflow', async () => {
+      await mkdir(join(tempDir, 'wp', 'techniques'), { recursive: true });
+      await writeCrossWorkflowFixture();
+
+      const result = await composeTechnique('meta::grp::op', tempDir, 'wp');
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(result.value.inputs?.map(i => i.id)).toEqual(['own-input']);
+      // The contract above the file, not the one above the caller.
+      expect(result.value.inherited_inputs?.items.map(i => i.id)).toEqual(['meta-root-input', 'grp-input']);
+      expect(result.value.rules?.['grp-rule']).toBeDefined();
+      expect(result.value.rules?.['caller-rule']).toBeUndefined();
+
+      // Fetched from the workflow that holds it, the same technique reads the same way.
+      const fromHome = await composeTechnique('meta::grp::op', tempDir, 'meta');
+      expect(fromHome.success).toBe(true);
+      if (fromHome.success) expect(fromHome.value).toEqual(result.value);
+    });
+
+    it('composeTechnique composes a meta-fallback technique against the meta contract', async () => {
+      await mkdir(join(tempDir, 'wp', 'techniques'), { recursive: true });
+      await writeCrossWorkflowFixture();
+
+      // `wp` holds no `grp`, so the bare reference resolves through the shared meta layer.
+      const result = await composeTechnique('grp::op', tempDir, 'wp');
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(result.value.inherited_inputs?.items.map(i => i.id)).toEqual(['meta-root-input', 'grp-input']);
+      expect(result.value.rules?.['caller-rule']).toBeUndefined();
+    });
+
+    it('resolveTechniques composes a whole technique against the workflow holding it', async () => {
+      await mkdir(join(tempDir, 'wp', 'techniques'), { recursive: true });
+      await writeCrossWorkflowFixture();
+
+      // The group itself, delivered whole: a bare reference the caller's workflow cannot answer,
+      // and a prefixed one. Both read the meta contract, as the get_technique path does.
+      for (const ref of ['grp', 'meta::grp']) {
+        const resolved = await resolveTechniques([ref], tempDir, 'wp');
+        const grp = resolved.find(r => r.type === 'technique');
+        const body = grp!.body as { inherited_inputs?: { items: Array<{ id: string }> } };
+        expect(body.inherited_inputs?.items.map(i => i.id)).toEqual(['meta-root-input']);
+      }
+    });
   });
 
   /* ------------------------------------------------------------------------ */
