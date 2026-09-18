@@ -2,9 +2,6 @@ id: reach-by-path
 version: 1.0.0
 name: Reach By Path
 description: Bind the same library by the path from the corpus root that reaches it.
-variables:
-  reads:
-    - component_path
 required: true
 steps:
   - kind: technique

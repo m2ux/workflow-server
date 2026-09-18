@@ -30,6 +30,10 @@
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it."
     },
     {
+      "id": "namespace-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it."
+    },
+    {
       "id": "substrate-node-security-audit",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it."
     },
