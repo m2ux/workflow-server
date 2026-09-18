@@ -103,6 +103,8 @@ The response is the union of the workflow's declared technique references and th
 
 The assembled bundle is then held to what one tool result may carry (`MAX_RESPONSE_CHARS`, default 60,000 — the same bound a worker's delivery answers to, because one harness refuses both). Operation bodies ride the response in list order and stop at the first that would overflow; the remainder are named under `operation_refs`, with `operations_note` saying how to get them. The role's `rules` list is never bounded — those rules are the contract an orchestrator is held to from its first call, while a procedure it has not reached yet is one it fetches with `get_technique { technique_id }` when it does.
 
+The workflow metadata below the separator is not bounded either: the roster, the graph and the variables are what an orchestrator drives the run from. On the two largest workflows that metadata alone runs to thirty thousand characters, so their startup response goes out over the bound with every operation body already deferred, and the server logs that it did. Trimming what a response says about a workflow's variables is the lever that would bring them back inside it.
+
 ### The worker bundle
 
 The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the worker role itself, finalize-activity, and the conduct every worker is held to. The role is in that set because every worker stub names it and only the meta workflow declares it, so a client worker would otherwise be told to apply a technique its bundle never carried.
@@ -275,6 +277,8 @@ What is left is spent in priority order, each stage stopping at the first entry 
 | 1 | the role contract's operation bodies, in list order | `operation_refs`, fetched with `get_technique { technique_id }` |
 | 2 | step technique bodies, in document order | `get_technique { step_id }` at the step |
 | 3 | eagerly bundled resource bodies | `resource_refs`, fetched with `get_resource` |
+
+The bound governs the response text; the protocol metadata a tool result carries beside it, one to two thousand characters, rides outside the figure.
 
 The role's `rules` list is never bounded — a bound moves procedures and never boundaries. A body a bound leaves out is recorded as delivered to nobody: a ledger entry for it would collapse a later delivery to a marker for bytes the worker never received. That is also why a second delivery to the same context can carry what the first deferred — the contract it holds collapses to markers, and the room that frees goes to the procedures still owed.
 

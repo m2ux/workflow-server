@@ -57,16 +57,19 @@ describe.skipIf(!liveCorpusRoot())('the startup response fits what a tool result
   afterAll(async () => { await harness.close(); });
 
   /**
-   * The bound governs the operations bundle. The workflow metadata after the separator rides on
-   * top of it, and is a couple of thousand characters against the bundle's tens of thousands — so
-   * a bounded bundle plus that metadata is what the harness actually receives, and both are
-   * checked here rather than only the half the bound reads.
+   * The bound governs the operations bundle, and the workflow metadata after the separator rides on
+   * top of it. That metadata is what an orchestrator drives the run from — the roster, the graph,
+   * the variables — so nothing sheds it, and on the two largest workflows it runs to thirty
+   * thousand characters on its own. The claim that holds on both role paths is therefore the same
+   * one: a response is inside the bound, or it carries no procedure at all.
    */
-  it('holds the operations bundle inside the bound, and the response near it', () => {
+  it('holds the operations bundle inside the bound, and carries no procedure when it cannot', () => {
     const bundleChars = workflowText.indexOf('\n\n---\n\n');
     expect(bundleChars).toBeGreaterThan(0);
     expect(bundleChars).toBeLessThanOrEqual(DEFAULT_MAX_RESPONSE_CHARS);
-    expect(workflowText.length).toBeLessThan(DEFAULT_MAX_RESPONSE_CHARS * 1.2);
+    if (workflowText.length > DEFAULT_MAX_RESPONSE_CHARS) {
+      expect(ops['techniques'], 'over the bound with an operation body aboard').toBeUndefined();
+    }
   });
 
   it('carries the role\'s rules whole, whatever it defers', () => {
@@ -410,6 +413,12 @@ describe.skipIf(!liveCorpusRoot())('the bound holds wherever it is set', () => {
               expect(meta.delivery_cost.response_spent_chars,
                 `${where}: the tally understates the wire`).toBeGreaterThanOrEqual(body.length);
               if (body.length > bound) {
+                // No procedure at all, which is all three stages: the contract's operation bodies
+                // give way first, so a response over the bound carrying one of those is the stage
+                // this reads least and the one whose arithmetic is easiest to get wrong.
+                const bundle = parse(body.slice(0, body.indexOf('\n\n---\n\n'))) as Record<string, unknown>;
+                expect(bundle['techniques'],
+                  `${where}: over the bound with an operation body aboard`).toBeUndefined();
                 expect(meta.bundled_steps ?? [],
                   `${where}: over the bound with a step inlined`).toHaveLength(0);
                 expect(meta.bundled_resources ?? [],

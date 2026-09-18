@@ -127,13 +127,21 @@ export interface ServerConfig {
    */
   fanMaxBranches?: number;
   /**
-   * Characters one response may carry. A harness caps what a tool result may return, so this is
-   * the limit both role-facing deliveries are held to: `get_workflow`, the call that opens every
+   * Characters one response may carry. A harness caps what a tool result may return, so this is the
+   * limit both role-facing deliveries answer to: `get_workflow`, the call that opens every
    * orchestrator, and `get_activity`, the call a worker makes to receive its work. Each admits
-   * procedure bodies until the next would overflow and leaves the rest fetchable by id, while the
-   * contract — the role's rules, and for a worker the activity it was dispatched for — always
-   * rides whole. Default 60000 (see DEFAULT_MAX_RESPONSE_CHARS). Env override:
-   * `MAX_RESPONSE_CHARS`.
+   * procedure bodies until the next would overflow and leaves the rest fetchable by id.
+   *
+   * What each carries whatever the bound says is what its role cannot drive without — the role's
+   * rules, the workflow's roster and graph for an orchestrator, the activity it was dispatched for
+   * for a worker. Where that alone exceeds the bound the response goes out over it with no
+   * procedure aboard and the server logs that it did, which is the state a definition outgrowing a
+   * delivery arrives in rather than a limit doing its work.
+   *
+   * The bound governs the response text. A tool result also carries protocol metadata beside it,
+   * measured at one to two thousand characters, which rides outside this figure.
+   *
+   * Default 60000 (see DEFAULT_MAX_RESPONSE_CHARS). Env override: `MAX_RESPONSE_CHARS`.
    */
   maxResponseChars?: number;
   /** In-process trace store for execution tracing. Created by createServer(). */
