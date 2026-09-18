@@ -49,7 +49,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { type CorpusSource, asIndex, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, stripDestinations, toLines } from './markdown-refs.js';
 
@@ -93,8 +93,13 @@ interface Declared {
  *
  * Rule names are the `### ` headings under a technique's `## Rules`, which is how the corpus addresses
  * them everywhere else. A `TECHNIQUE.md` declares the rules of the thing it sits in — the group for one
- * nested a level down, the workflow for one directly under `techniques/` — and is keyed on that name,
+ * nested a level down, the namespace for one directly under `techniques/` — and is keyed on that name,
  * since keying it on the literal string `TECHNIQUE` produces a left half no reference ever writes.
+ *
+ * The catalogue is built over every namespace, libraries included. A rule a library declares is
+ * addressable from the bootstrap text exactly as any other is, so one missing from the catalogue is a
+ * citation this guard reads as naming nothing and passes — silence where the whole point is to catch
+ * a reader being sent somewhere they cannot go.
  */
 function declaredRules(root: string, source: CorpusSource = root): Declared {
   const pairs = new Set<string>();
@@ -107,7 +112,7 @@ function declaredRules(root: string, source: CorpusSource = root): Declared {
       if (heading) { pairs.add(`${owner}.${heading[1]}`); names.add(heading[1]!); }
     }
   };
-  for (const { id: workflow, dir } of corpusWorkflows(root, asIndex(source))) {
+  for (const { id: namespace, dir } of corpusNamespaces(root, asIndex(source))) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const entry of readdirSync(techniquesDir, { withFileTypes: true })) {
@@ -118,8 +123,8 @@ function declaredRules(root: string, source: CorpusSource = root): Declared {
           addFile(join(entryPath, op), op === 'TECHNIQUE.md' ? entry.name : op.slice(0, -3));
         }
       } else if (entry.name === 'TECHNIQUE.md') {
-        // Directly under `techniques/`, so these are the workflow's own rules.
-        addFile(entryPath, workflow);
+        // Directly under `techniques/`, so these are the namespace's own rules.
+        addFile(entryPath, namespace);
       } else if (entry.name.endsWith('.md')) {
         addFile(entryPath, entry.name.slice(0, -3));
       }

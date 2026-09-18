@@ -243,4 +243,31 @@ describe('bootstrap self-containment guard', () => {
     // One more line and it is a procedure.
     expect(collectFindings(rootWith(`${short}\nLine ${MIN_PROSE_LINES}.`, false))).toEqual([]);
   });
+
+  /**
+   * A library declares no workflow, and its rules are addressable from this text exactly as any
+   * other rule is. Catalogued from workflows alone they are absent, so a citation of one reads as
+   * naming nothing and passes — the guard reporting clean on the very thing it exists to catch.
+   */
+  it('knows a rule a library declares, and reports the text that sends a reader to it', () => {
+    const root = mkdtempSync(join(tmpdir(), 'bootstrap-guard-lib-'));
+    roots.push(root);
+    const write = (relative: string, text: string): void => {
+      const path = join(root, ...relative.split('/'));
+      mkdirSync(join(path, '..'), { recursive: true });
+      writeFileSync(path, text);
+    };
+    const filler = Array.from({ length: MIN_PROSE_LINES }, (_, i) => `Step ${i + 1} of the procedure.`);
+    write(
+      'meta/resources/bootstrap-protocol.md',
+      ['# Bootstrap', '', 'Apply `git.explicit-commit` before you start.', ...filler].join('\n'),
+    );
+    write(
+      'support/git/techniques/TECHNIQUE.md',
+      '## Rules\n\n### explicit-commit\n\nNever commit unless asked.\n',
+    );
+    declareFixtureWorkflows(join(root, 'meta'));
+    writeFileSync(join(root, 'meta', 'workflow.yaml'), 'id: meta\nversion: 1.0.0\ntitle: Meta\n');
+    expect(collectFindings(root).map((f) => f.check)).toEqual(['dotted-rule']);
+  });
 });
