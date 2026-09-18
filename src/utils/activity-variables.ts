@@ -232,6 +232,23 @@ export interface DerivedContract {
    */
   artifactNames: Set<string>;
   /**
+   * What a bound operation lands in the bag, under the id it declares or the step binding's remap
+   * target, before the namespace narrows it.
+   *
+   * `writes` cannot answer for these. It admits a name only once the namespace holds it, and the
+   * namespace is assembled from the declarations — so an operation output the activity omits from
+   * `variables.writes` is absent from both sides at once, and the omission reads exactly like an
+   * operation that lands nothing. This set is derived from the technique file instead, which states
+   * the outputs whether or not any contract mentions them.
+   */
+  operationWrites: Set<string>;
+  /**
+   * The subset of {@link operationWrites} whose producing output states the members it carries, so
+   * the value is a structure by the operation's own account. A declaration calling one of these a
+   * scalar and the operation publishing it are describing one value in two incompatible ways.
+   */
+  structuredWrites: Set<string>;
+  /**
    * The unbraced binding values the namespace settled as LITERALS rather than renames.
    *
    * `mentions` carries them too, because a checker asking "does anything else consult this name"
@@ -368,6 +385,11 @@ interface OpSignature {
   inputs: Array<{ id: string; suppliable: boolean }>;
   outputs: string[];
   /**
+   * Outputs that state their own shape, by declaring the members the value carries. An output
+   * declaring none says nothing about its shape, so it contradicts no declaration a reader makes.
+   */
+  structuredOutputs: string[];
+  /**
    * Outputs the operation persists as an artifact. The server consumes these when it synthesizes
    * the activity's artifact contract, so a value with no other reader still has one.
    */
@@ -378,7 +400,7 @@ interface OpSignature {
   proseReads: string[];
 }
 
-const EMPTY_SIGNATURE: OpSignature = { inputs: [], outputs: [], artifactOutputs: [], artifactNames: [], proseReads: [] };
+const EMPTY_SIGNATURE: OpSignature = { inputs: [], outputs: [], structuredOutputs: [], artifactOutputs: [], artifactNames: [], proseReads: [] };
 
 /**
  * Read a bound operation's signature as the step receives it: composed with its container
@@ -421,6 +443,9 @@ async function readSignature(
         suppliable: input.default !== undefined || OPTIONAL_INPUT_RE.test(input.description?.trim() ?? ''),
       })),
       outputs: [...outputIds],
+      structuredOutputs: outputs
+        .filter((output) => Object.keys(output.components ?? {}).length > 0)
+        .map((output) => output.id),
       artifactOutputs: outputs.filter((output) => output.artifact !== undefined).map((output) => output.id),
       artifactNames: outputs
         .map((output) => output.artifact?.name)
@@ -499,6 +524,10 @@ export async function deriveActivityContract(args: {
   const artifactNames = new Set<string>();
   /** Unbraced binding values the namespace settled as literals — mentioned, and read by nothing. */
   const literalValues = new Set<string>();
+  /** What a bound operation lands in the bag, taken from its file rather than from a declaration. */
+  const operationWrites = new Set<string>();
+  /** Those of them whose producing output declares the members it carries. */
+  const structuredWrites = new Set<string>();
 
   const consumes = new Set<string>();
   const read = (reference: string): void => {
@@ -575,11 +604,14 @@ export async function deriveActivityContract(args: {
         signature.proseReads.forEach(read);
         const remapped = new Set(Object.keys(binding?.outputs ?? {}));
         const persisted = new Set(signature.artifactOutputs);
+        const structured = new Set(signature.structuredOutputs);
         // The artifact write and the persisted production take the branch key too, or the
         // artifact-write exemption stops applying and every artifact-valued branch output becomes
         // an unread write.
         const landed = (outputId: string, target: string): void => {
           write(target);
+          operationWrites.add(target);
+          if (structured.has(outputId)) structuredWrites.add(target);
           if (persisted.has(outputId)) {
             const landing = key === undefined ? target : `${key}.${target}`;
             persistedProductions.add(landing);
@@ -617,7 +649,9 @@ export async function deriveActivityContract(args: {
         if (input.default !== undefined) consume(input.id);
         else read(input.id);
       }
-      for (const target of Object.values(step.outputs ?? {})) write(target);
+      // A routine's bound outputs land the same way a technique's do: the site names where each
+      // goes, so the target is what reaches the bag.
+      for (const target of Object.values(step.outputs ?? {})) { write(target); operationWrites.add(target); }
     }
 
     if (step.kind === 'checkpoint') {
@@ -661,7 +695,8 @@ export async function deriveActivityContract(args: {
 
   return {
     reads, writes, internalReads, artifactWrites, produces, mentions, persistedProductions,
-    routingReads, consumes, pathReads, memberWrites, artifactNames, literalValues,
+    routingReads, consumes, pathReads, memberWrites, artifactNames, operationWrites, structuredWrites,
+    literalValues,
   };
 }
 

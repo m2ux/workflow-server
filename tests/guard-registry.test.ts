@@ -146,6 +146,17 @@ describe('guard registry', () => {
         'reads the corpus and holds at 107 findings the engine could not have avoided until '
         + 'yield_checkpoint could publish a gate activity\'s own outputs; enrolling it enforces on '
         + 'definitions written before the remedy existed, so it runs by path until those are triaged',
+      'guards/check-operation-contract.ts':
+        'reads the corpus and holds at 153 findings — 12 variables declared a scalar against an '
+        + 'operation publishing members, and 141 operation writes a later step takes up and no '
+        + 'contract declares; the 12 read as defects and the 141 are what activity-variables calls '
+        + 'the technique layer\'s own wiring, so which convention gives way is a decision about the '
+        + 'corpus, and it runs by path until that is taken',
+      'guards/check-protocol-shape.ts':
+        'reads the corpus and holds at 95 findings, every one a technique indexing its protocol '
+        + 'phases as a flat numbered list where the catalogue names the heading as the form; '
+        + 'converting them is a corpus-wide change the measurement is meant to precede, so it runs '
+        + 'by path until those are converted or recorded as accepted debt',
     };
 
     const onDisk = readdirSync(join(REPO, 'guards'))
