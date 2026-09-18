@@ -112,7 +112,7 @@ function declaredRules(root: string, source: CorpusSource = root): Declared {
       if (heading) { pairs.add(`${owner}.${heading[1]}`); names.add(heading[1]!); }
     }
   };
-  for (const { id: namespace, dir } of corpusNamespaces(root, asIndex(source))) {
+  for (const { ref: namespace, dir } of corpusNamespaces(root, asIndex(source))) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const entry of readdirSync(techniquesDir, { withFileTypes: true })) {
