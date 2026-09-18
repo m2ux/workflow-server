@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Identify the root cause of a single failed validation check.
 
 ### check_id
 
-Identifier of the failed check (one of: `run-tests`, `verify-build`, `check-format`, `check-lint`)
+Identifier of the failed check, as the operation that ran it publishes the value.
 
 ### failure_diagnostics
 

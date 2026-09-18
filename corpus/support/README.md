@@ -15,6 +15,6 @@ A **library** is a namespace of shared operations that declares no workflow of i
 
 ## A library directory
 
-`<namespace>/techniques/TECHNIQUE.md` is the namespace root index. Its Inputs and Rules merge into every operation beneath it, so a shared input is declared once and a rule the whole library is held to lives in one place. Each `<op>.md` beside it is one operation, addressed `<namespace>::<op>`.
+`<namespace>/techniques/TECHNIQUE.md` is the namespace root index, holding the inputs a library's operations share and the rules the whole library is held to. Each `<op>.md` beside it is one operation, addressed `<namespace>::<op>`. How a base contract reaches the operations beneath it is defined in [workflow-canonical](/meta/resources/workflow-canonical.md#base-contract-inheritance).
 
 A library declares no `workflow.yaml`, so discovery offers none of these to an operator and no coverage walk enters one. What measures them is the reference guards — an operation nothing binds, an input nothing produces, a rule cited in prose — and the drift walk over every workflow that binds them.
