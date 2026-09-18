@@ -335,8 +335,9 @@ export function indexCorpus(root: string): CorpusIndex {
     const claimants = byName.get(id)!;
     if (claimants.length !== 1) {
       ambiguous.push({ id, dirs: claimants.map((claim) => claim.dir).sort() });
-      // The name reaches none of them, so each answers to its path — the reference that names it
-      // alone, and the one a finding about it has to quote.
+      // The name no longer tells them apart, so each answers to its path — the reference that names
+      // it alone, and the one a finding about it has to quote. For a claimant at the corpus root the
+      // two spellings are one string, `namespaceLocation` falling a bare name through to the path.
       for (const claim of claimants) claims.push({ ...claim, ref: claim.path });
       continue;
     }
