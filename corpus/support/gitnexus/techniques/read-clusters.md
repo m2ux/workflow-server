@@ -16,5 +16,5 @@ The graph's functional areas above a size floor, each with its name, symbol coun
 ## Protocol
 
 1. Read the MCP resource `gitnexus://repo/{repo_name}/clusters` and record it as `{cluster_inventory}`.
-   > The inventory holds the areas of five symbols or more, and reports no notice where it leaves one out. A smaller area stays readable by name at `gitnexus://repo/{repo_name}/cluster/{name}`, so absence from the inventory bounds an area's size rather than saying it does not exist.
+   > Two cuts apply and neither is announced: the inventory drops an area below five symbols, and shows at most twenty. On a `workflow-server` graph holding twenty areas it returns sixteen, the smallest of them five symbols. An area absent from it is therefore smaller than the smallest shown rather than absent from the graph, and stays readable by name at `gitnexus://repo/{repo_name}/cluster/{name}`. Where the inventory returns twenty entries, read it as a graph whose area count it does not report.
 2. Read an area's cohesion score as the symbol-weighted mean over the communities its label aggregates, so a mid-range score on a large area spans a wide range rather than describing one evenly-knit group. A low score marks membership worth checking against the code before a diagram rests on it.

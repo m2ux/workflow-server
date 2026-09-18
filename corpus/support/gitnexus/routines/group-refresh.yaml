@@ -12,10 +12,22 @@ inputs:
 outputs:
   - id: group_freshness_report
     type: object
-    description: Per member, whether its index is behind the member's HEAD and by how many commits, whether the group's contract registry is behind, and whether the member has no index at all.
+    description: The group's name, when its contract registry last synced, and one freshness entry per member, keyed by the name the registry gives it.
   - id: contract_registry_stats
     type: object
     description: What the rebuilt registry holds — the contracts extracted per member, and how many cross-link to another member.
+  - id: member_rebuild_stats
+    type: object
+    optional: true
+    description: The counts the graph of the member rebuilt last holds afterwards. Held here so a rebuild's answer does not land under the name a direct index read writes.
+  - id: repo_name
+    type: string
+    optional: true
+    description: The graph the inventory read resolved, which this run takes no answer from.
+  - id: unrebuildable_members
+    type: array
+    optional: true
+    description: The members this run leaves behind — stale, and with no graph to name the tree a rebuild would walk.
 
 internals:
   - id: graph_inventory
@@ -40,6 +52,7 @@ steps:
       name: gitnexus::resolve-graph
       outputs:
         graph_inventory: graph_inventory
+        repo_name: repo_name
   - kind: technique
     id: select-stale
     technique:
@@ -49,6 +62,7 @@ steps:
         graph_inventory: graph_inventory
       outputs:
         stale_members: stale_members
+        unrebuildable_members: unrebuildable_members
   - kind: loop
     id: member-cycle
     name: Member Cycle
@@ -63,6 +77,8 @@ steps:
           name: gitnexus::analyze
           inputs:
             repo_path: "{stale_member.tree_path}"
+          outputs:
+            stats: member_rebuild_stats
   - kind: technique
     id: sync-registry
     technique:

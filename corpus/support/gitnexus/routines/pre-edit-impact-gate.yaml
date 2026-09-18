@@ -30,7 +30,7 @@ steps:
   - kind: checkpoint
     id: accept-blast-radius
     when: impact_report.risk == "HIGH" || impact_report.risk == "CRITICAL"
-    message: "Changing {target} is rated {impact_report.risk}. {impact_report.summary.direct} callers reach it directly and {impact_report.summary.processes_affected} execution flows run through it."
+    message: "Changing {target} is rated {impact_report.risk}. {impact_report.summary.direct} callers reach it directly, and the flows it runs through start from {impact_report.summary.processes_affected} entry points."
     options:
       - id: proceed
         label: Proceed with the edit

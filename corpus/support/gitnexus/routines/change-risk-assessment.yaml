@@ -23,7 +23,7 @@ internals:
   - id: change_report
     description: What the diff moved, which the verdict weighs against the target's blast radius.
   - id: process_inventory
-    description: Every flow the graph traced, against which the two reports' flows are read as a share.
+    description: The twenty longest flows the graph traced, which say which of the flows reached are the long ones. The share of the whole comes from the graph's flow total instead.
 
 steps:
   - kind: technique
