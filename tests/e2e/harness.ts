@@ -30,6 +30,11 @@ export interface HarnessOptions {
   /** Multi-root layouts: where checkouts live, and the install root the server binds against. */
   engineeringDir?: string;
   installDir?: string;
+  /**
+   * Characters one response may carry. A case that wants the bound to BIND sets it low: at the
+   * default the corpus fits, so a bound-shaped assertion would pass on a server that had none.
+   */
+  maxResponseChars?: number;
 }
 
 /** Create a connected client + server pair backed by a workspace (fresh temp by default). */
@@ -41,6 +46,7 @@ export async function createHarness(opts: HarnessOptions = {}): Promise<Harness>
     workflowDir: opts.workflowDir ?? corpusRoot(),
     ...(opts.engineeringDir ? { engineeringDir: opts.engineeringDir } : {}),
     ...(opts.installDir ? { installDir: opts.installDir } : {}),
+    ...(opts.maxResponseChars !== undefined ? { maxResponseChars: opts.maxResponseChars } : {}),
     schemasDir: resolve(import.meta.dirname, '../../schemas'),
     workspaceDir,
     serverName: 'e2e-workflow-server',

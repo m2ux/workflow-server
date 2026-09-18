@@ -154,7 +154,10 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
     it('records one activity_delivered summary per get_activity and echoes it on _meta', async () => {
       const slug = '2026-09-12-delivery-cost';
       const idx = await session.start(slug, 'orchestrator');
+      // An activity whose delivery inlines steps: the entry activity's own definition and role
+      // contract fill a response on their own, so the bound leaves its first delivery none.
       await session.enter(idx, 'start-work-package');
+      await session.enter(idx, 'requirements-elicitation');
 
       const result = await client.callTool({
         name: 'get_activity',
@@ -178,7 +181,7 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
 
       const summaries = session.history(slug).filter(h => h.type === 'activity_delivered');
       expect(summaries).toHaveLength(1);
-      expect(summaries[0]!.activity).toBe('start-work-package');
+      expect(summaries[0]!.activity).toBe('requirements-elicitation');
       const data = summaries[0]!.data as {
         agentId: string;
         delivery: string;
@@ -280,7 +283,9 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
     it('counts a dispatch per bundled activity delivery alongside its per-step magnitudes', async () => {
       const slug = '2026-07-30-bundled-magnitude';
       const idx = await session.start(slug, 'orchestrator');
+      // An activity whose first delivery inlines steps, so the second has some to collapse.
       await session.enter(idx, 'start-work-package');
+      await session.enter(idx, 'requirements-elicitation');
 
       await client.callTool({
         name: 'get_activity',

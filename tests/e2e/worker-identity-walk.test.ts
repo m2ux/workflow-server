@@ -68,25 +68,37 @@ describe.skipIf(!liveCorpusRoot())('worker identity survives every gate of a ref
     const kinds = new Set(result.gateRefetches.map(r => r.dispatch));
     expect([...kinds]).toEqual(['resume']);
 
-    // 4. The collapse is real, not nominal: after the first gate of an activity the payload the
-    //    resumed worker receives is a fraction of what its dispatch delivered.
-    const firstDelivery = new Map<string, number>();
-    for (const e of history.history.filter(h => h.type === 'activity_dispatched')) {
+    // 4. The collapse is real, not nominal: after the first gate of an activity, the part of the
+    //    response that repeats arrives as markers rather than as itself. That part is the role
+    //    contract, which every delivery to one context carries. The whole response is not the
+    //    reading — it also carries the activity body, which never collapses, and the room a collapse
+    //    frees carries the procedures the response bound deferred from the dispatch.
+    const firstContract = new Map<string, number>();
+    for (const e of history.history.filter(h => h.type === 'activity_delivered')) {
       const key = e.activity ?? '(none)';
-      const chars = (e.data as { chars?: number }).chars;
-      if (chars !== undefined && !firstDelivery.has(key)) firstDelivery.set(key, chars);
+      const chars = (e.data as { worker_bundle_chars?: number }).worker_bundle_chars;
+      if (chars !== undefined && !firstContract.has(key)) firstContract.set(key, chars);
     }
     let delivered = 0, wouldHaveBeen = 0;
     for (const r of result.gateRefetches) {
-      const full = firstDelivery.get(r.activityId);
+      const full = firstContract.get(r.activityId);
       if (full === undefined) continue;
-      expect(r.chars, `${r.activityId}/${r.checkpointId} did not collapse at all`).toBeLessThan(full);
-      delivered += r.chars;
+      expect(r.contractChars, `${r.activityId}/${r.checkpointId} did not collapse at all`).toBeLessThan(full);
+      delivered += r.contractChars;
       wouldHaveBeen += full;
     }
     const saved = 1 - delivered / wouldHaveBeen;
     // eslint-disable-next-line no-console
-    console.log(`[identity-walk] ${result.gateRefetches.length} gates; re-request saving ${(saved * 100).toFixed(1)}% (${delivered} of ${wouldHaveBeen} chars)`);
-    expect(saved).toBeGreaterThan(0.25);
-  }, 120_000);
+    console.log(`[identity-walk] ${result.gateRefetches.length} gates; role-contract saving ${(saved * 100).toFixed(1)}% (${delivered} of ${wouldHaveBeen} chars)`);
+    // The contract is the part a re-request repeats in full or not at all, so a collapse that works
+    // saves nearly all of it: 97.2% measured, 17,171 characters of 623,966. The floor sits close
+    // under that, because a floor calibrated for some other quantity — the whole response, where an
+    // activity body it can never collapse sets a ceiling on the ratio — would pass a contract that
+    // had stopped collapsing for half the walk.
+    expect(saved).toBeGreaterThan(0.9);
+    // The budget is generous because this walk pays what a bounded delivery costs a run: a step
+    // the response could not carry is a step the worker fetches when it reaches it, and this robot
+    // makes every one of those fetches over fifteen activities and nineteen gates. Measured at
+    // 24 seconds against an unbounded delivery and 71 against this one, on a developer machine.
+  }, 300_000);
 });

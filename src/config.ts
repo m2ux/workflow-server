@@ -127,15 +127,23 @@ export interface ServerConfig {
    */
   fanMaxBranches?: number;
   /**
-   * Characters one `get_workflow` response may carry. A harness caps what a tool result may
-   * return, and the orchestrator's operations bundle is the one delivery with nothing bounding
-   * it — so it grew past that cap and the call on the mandatory startup path stopped being
-   * readable at all. The bound admits operation bodies in document order and leaves the rest
-   * fetchable by id, while the role's rules always ride whole: the contract is what the
-   * orchestrator is held to, and a procedure it has not reached yet is not. Default 60000 (see
-   * DEFAULT_MAX_WORKFLOW_RESPONSE_CHARS). Env override: `MAX_WORKFLOW_RESPONSE_CHARS`.
+   * Characters one response may carry. A harness caps what a tool result may return, so this is the
+   * limit both role-facing deliveries answer to: `get_workflow`, the call that opens every
+   * orchestrator, and `get_activity`, the call a worker makes to receive its work. Each admits
+   * procedure bodies until the next would overflow and leaves the rest fetchable by id.
+   *
+   * What each carries whatever the bound says is what its role cannot drive without — the role's
+   * rules, the workflow's roster and graph for an orchestrator, the activity it was dispatched for
+   * for a worker. Where that alone exceeds the bound the response goes out over it with no
+   * procedure aboard and the server logs that it did, which is the state a definition outgrowing a
+   * delivery arrives in rather than a limit doing its work.
+   *
+   * The bound governs the response text. A tool result also carries protocol metadata beside it,
+   * measured at one to two thousand characters, which rides outside this figure.
+   *
+   * Default 60000 (see DEFAULT_MAX_RESPONSE_CHARS). Env override: `MAX_RESPONSE_CHARS`.
    */
-  maxWorkflowResponseChars?: number;
+  maxResponseChars?: number;
   /** In-process trace store for execution tracing. Created by createServer(). */
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
@@ -189,14 +197,19 @@ export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.35;
 export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;
 
 /**
- * Characters one `get_workflow` response may carry.
+ * Characters one response may carry.
  *
  * The limit this respects belongs to the harness, not to the server, and is stated in tokens: the
  * client this was measured against refuses a tool result past 25,000 of them. 60,000 characters is
  * that figure at a conservative 2.4 characters per token, which leaves the margin a corpus needs to
  * grow into. Raise it for a harness that admits more; lower it for one that admits less.
+ *
+ * One figure for both role-facing deliveries, because one harness refuses both. It is a different
+ * question from the eager-bundling budget above: that one asks how much of its own window a worker
+ * may spend on inlined content, this one what a tool result may hold at all, and a delivery is held
+ * to whichever binds first.
  */
-export const DEFAULT_MAX_WORKFLOW_RESPONSE_CHARS = 60_000;
+export const DEFAULT_MAX_RESPONSE_CHARS = 60_000;
 
 /**
  * Fan width policy. A destination opens at most this many branches once every member is flattened
@@ -665,7 +678,7 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     batchHeadroomFraction: envNumberInRange('BATCH_HEADROOM_FRACTION', DEFAULT_BATCH_HEADROOM_FRACTION, 0, 1),
     batchMaxActivities: envNumberInRange('BATCH_MAX_ACTIVITIES', DEFAULT_BATCH_MAX_ACTIVITIES, 1, 100),
     fanMaxBranches: envNumberInRange('FAN_MAX_BRANCHES', DEFAULT_FAN_MAX_BRANCHES, 2, 100),
-    maxWorkflowResponseChars: envNumberOrDefault('MAX_WORKFLOW_RESPONSE_CHARS', DEFAULT_MAX_WORKFLOW_RESPONSE_CHARS),
+    maxResponseChars: envNumberOrDefault('MAX_RESPONSE_CHARS', DEFAULT_MAX_RESPONSE_CHARS),
     transport: resolveTransport(argv),
     port: resolvePort(argv),
     host: resolveHost(argv),

@@ -23,12 +23,20 @@ describe.skipIf(!liveCorpusRoot())('batch duration smoke (#407)', () => {
     expect(batched.dispatches).toBe(1);
 
     // Content collapses against what the one context already holds. The floor sits close under the
-    // measured 16.6%, so a regression that quietly halves the saving fails here.
+    // measured 5.9%, so a regression that quietly halves the saving fails here.
     //
     // What a batch saves is bounded by how much repetition a fresh delivery carries, so removing
     // repetition from every delivery lowers this ratio while lowering both arms — 18.7% over
     // 275,698 characters became 16.6% over 254,613 when the shared contract blocks stopped arriving
-    // once per technique (#801). A floor read as an ambition would have refused that.
+    // once per technique (#801), and 15.7% over 250,174 became 5.9% over 168,030 when a delivery
+    // was held to what one tool result may carry (#812). A floor read as an ambition would have
+    // refused both.
+    //
+    // The second compresses this ratio twice over, and neither is a regression. A bound puts both
+    // arms under one ceiling, so deliveries that differed by the contract they repeated now differ
+    // by much less. And this pass measures eager payloads only: what a collapse frees inside a
+    // bounded response is spent on step techniques that would otherwise be fetched lazily, so
+    // characters leave the figure this reads and reappear in round trips it never counts.
     //
     // The saving is composition-sensitive, which is why the floor is stated against a measurement
     // rather than an ambition. Collapse works item by item on what a held context already has, so
@@ -38,6 +46,6 @@ describe.skipIf(!liveCorpusRoot())('batch duration smoke (#407)', () => {
     // 24,142 characters of this run's collapse, because a bundle that grew is a bundle that no longer
     // matches. Both halves are real; the tension between them is #603.
     const charSavingPct = ((perActivity.deliveredChars - batched.deliveredChars) / perActivity.deliveredChars) * 100;
-    expect(charSavingPct).toBeGreaterThan(15);
+    expect(charSavingPct).toBeGreaterThan(5);
   }, 120_000);
 });
