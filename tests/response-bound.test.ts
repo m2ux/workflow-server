@@ -2,6 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { parse } from 'yaml';
 import { DEFAULT_MAX_RESPONSE_CHARS } from '../src/config.js';
+import { contentHash } from '../src/utils/delivery.js';
+import { stringifyForResponse } from '../src/utils/serialization.js';
 import { liveCorpusRoot } from './corpus-root.js';
 import { createHarness, type Harness } from './e2e/harness.js';
 import { sessionOps, type SessionOps } from './session-ops.js';
@@ -282,6 +284,94 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery fits what a tool result ma
  *   and the tally the delivery reports never understates what went over the wire, which is what
  *   makes the first claim checkable from the outside.
  */
+/**
+ * Every block marker a delivery writes points at bytes the worker received.
+ *
+ * A bundled step entry is built by the same pass that records what it delivered, so an entry the
+ * bound turns away must leave the ledger as it found it. If it does not, a later delivery collapses
+ * a shared block to a marker the worker cannot read: it names content that was composed for an
+ * entry which never shipped.
+ *
+ * Both halves of a marker hash the same way — `contentHash` over the field rendered under its own
+ * name — so a reader can recompute, from the full copies it was sent, the hash every marker should
+ * be pointing at. That is what this walks.
+ */
+describe.skipIf(!liveCorpusRoot())('a marker points only at content the worker was sent', () => {
+  const BLOCK_SHAPED = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value);
+
+  /**
+   * An inherited block is delivered either whole or as a `note` and `items` staged separately,
+   * and its whole-block hash is taken over the block before any of that splitting. So a marker for
+   * one names a rendering no response need have emitted as a unit, and the reader resolves it from
+   * the halves instead. That convention predates the bound and is measurable without it (#829);
+   * this case is about what the bound does, so it reads the fields that are staged and rendered
+   * under the same rule.
+   */
+  const SPLIT_BLOCKS = ['inherited_inputs', 'inherited_outputs'];
+
+  /** Walk one step-technique entry, collecting the hashes it references and the ones it renders. */
+  function readEntry(entry: Record<string, unknown>, referenced: Set<string>, rendered: Set<string>): void {
+    for (const [field, value] of Object.entries(entry)) {
+      if (field === 'marker') continue;
+      if (BLOCK_SHAPED(value) && value['delivery'] === 'unchanged') {
+        if (!SPLIT_BLOCKS.includes(field)) referenced.add(String(value['content_hash']));
+        continue;
+      }
+      rendered.add(contentHash(stringifyForResponse({ [field]: value })));
+      // An inherited block splits into `note` and `items`, each staged under its own hash.
+      if (BLOCK_SHAPED(value)) readEntry(value, referenced, rendered);
+    }
+  }
+
+  it('holds for a step map the bound cut, delivered twice to one worker', async () => {
+    // Tight enough that the step loop turns entries away, which is the state the hold-aside is for.
+    const harness = await createHarness({ maxResponseChars: 44_000 });
+    const mcp = sessionOps(harness, 'work-package');
+    const referenced = new Set<string>();
+    const rendered = new Set<string>();
+    try {
+      const idx = await mcp.start('2026-09-18-marker-provenance', 'orchestrator');
+      await mcp.enter(idx, 'start-work-package');
+      await mcp.enter(idx, 'requirements-elicitation');
+      let sawEntries = 0;
+      for (const mode of [undefined, 'reference'] as const) {
+        const taken = await harness.client.callTool({
+          name: 'get_activity',
+          arguments: {
+            session_index: idx, context_tokens: 200_000, agent_id: 'marker-w',
+            ...(mode ? { bundle: mode } : {}),
+          },
+        });
+        expect(taken.isError).toBeFalsy();
+        const body = responseText(taken);
+        const parsed = parse(body.slice(0, body.indexOf('\n\n---\n\n'))) as Record<string, unknown>;
+        // The shared-block pass runs across the operations bundle and the step map alike, and a
+        // step's marker may name a block an operation rendered in this same response — so both maps
+        // are read, and only the step map is counted as coverage.
+        const steps = (parsed['step_techniques'] ?? {}) as Record<string, Record<string, unknown>>;
+        const operations = (parsed['techniques'] ?? {}) as Record<string, Record<string, unknown>>;
+        for (const [map, entries] of [['operations', operations], ['steps', steps]] as const) {
+          for (const entry of Object.values(entries)) {
+            // A whole-entry marker names the technique's own composed text, which is hashed by a
+            // different rule and settled by the ledger case above; the blocks inside are this one's.
+            if (!BLOCK_SHAPED(entry) || entry['delivery'] === 'unchanged') continue;
+            if (map === 'steps') sawEntries += 1;
+            readEntry(entry, referenced, rendered);
+          }
+        }
+      }
+      expect(sawEntries, 'no step entry was delivered, so nothing was checked').toBeGreaterThan(0);
+      expect(referenced.size, 'no block collapsed, so the invariant was not exercised').toBeGreaterThan(0);
+      for (const hash of referenced) {
+        expect(rendered.has(hash), `marker ${hash} names content this worker was never sent`).toBe(true);
+      }
+    } finally {
+      await harness.close();
+    }
+  }, 120_000);
+});
+
 describe.skipIf(!liveCorpusRoot())('the bound holds wherever it is set', () => {
   const RUN = ['start-work-package', 'design-philosophy', 'requirements-elicitation'];
 

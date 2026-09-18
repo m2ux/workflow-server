@@ -235,7 +235,9 @@ Hashing the content is what keeps this from going stale: a block annotated with 
 
 ### Forcing full delivery
 
-`get_activity { bundle: "full" }`, `get_technique { full: true }` and `get_resource { full: true }` each force the full payload, every block included. Reach for them when the calling context no longer holds the earlier payload — after it was summarized away, for instance.
+`get_technique { full: true }` and `get_resource { full: true }` each force the full payload of the item asked for, every block included. Reach for them when the calling context no longer holds the earlier payload — after it was summarized away, for instance.
+
+`get_activity { bundle: "full" }` does the same for a whole delivery, and is held to what one tool result may carry like every other delivery: it suppresses the markers, not the bound. So a context that lost a payload gets back what a response can carry, and asks for the rest one item at a time — which is what the per-item forms above are for.
 
 ### What gets measured
 
@@ -278,7 +280,7 @@ The role's `rules` list is never bounded — a bound moves procedures and never 
 
 `spent_chars` on the delivery cost line is the window tally, against `eager_budget_chars`; `response_spent_chars` is the response tally, against `response_bound_chars` (what one tool result may carry) and `fixed_chars` (what the response owed before the bundle spent anything). `worker_bundle_chars` reports the invariant part on its own, and `deferred_operations` counts the contract bodies served by id instead. The same figures ride on `_meta.delivery_cost` and as one `activity_delivered` history event, so a caller reads them from the response or the session rather than from the log.
 
-An activity whose definition and rules fill a response on their own leaves nothing for either stage. The delivery still goes out — a worker cannot do an activity it was not sent — and the server logs that it went out over the bound, which is the signal that the definition has outgrown a single delivery.
+An activity whose definition and rules fill a response on their own leaves nothing for any of the three stages. The delivery still goes out — a worker cannot do an activity it was not sent — and the server logs that it went out over the bound, which is the signal that the definition has outgrown a single delivery.
 
 ### Which steps get inlined
 
@@ -318,7 +320,7 @@ Once the step techniques are chosen, `get_activity` collects the unique `resourc
 
 **Under full delivery** — the default a dispatched worker's first activity takes — no bodies are sent. That call lands in a context with nothing to collapse against, so an inlined body would ship in full again in every activity that links it: measured at +24.5% on `get_activity` ([#322](https://github.com/m2ux/workflow-server/issues/322)). The ids arrive under `resource_refs` instead, and the worker fetches the ones it reads via `get_resource`. No `resource:<id>` key is written, since nothing could ever read it. The later activities of a batch ask for reference delivery instead, having a ledger to collapse against.
 
-**Sent in neither mode:** a single oversized resource (per-resource cap 80 000 chars by default), and anything past the cumulative budget. Their ids join `resource_refs`, so nothing linked ever becomes unreachable.
+**Sent in neither mode:** a single oversized resource (per-resource cap 80 000 chars by default), and anything past either budget — the worker's window or what one tool result may carry. Their ids join `resource_refs`, so nothing linked ever becomes unreachable.
 
 ### What the response looks like
 
@@ -334,7 +336,7 @@ That emitted line carries the intentional act, and it **is** the stepwise observ
 
 ### Ledger interplay
 
-Bundled entries share the `technique:<resolvedId>` key with `get_technique`. So in a persistent-context session a bundled delivery collapses a later step-bound refetch to an unchanged reference; and a reference-mode re-delivery of the activity collapses already-delivered bundled entries to markers, with the `▼ STEP` marker riding along. `bundle: "full"` re-delivers everything.
+Bundled entries share the `technique:<resolvedId>` key with `get_technique`. So in a persistent-context session a bundled delivery collapses a later step-bound refetch to an unchanged reference; and a reference-mode re-delivery of the activity collapses already-delivered bundled entries to markers, with the `▼ STEP` marker riding along. `bundle: "full"` re-delivers what a response can carry, and `get_technique { step_id, full: true }` reaches any one entry it could not.
 
 ### Fidelity
 

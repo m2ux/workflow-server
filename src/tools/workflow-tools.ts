@@ -147,7 +147,7 @@ const IN_RESPONSE_MARKER_NOTE =
   'A marker may point at a byte-identical copy EARLIER IN THIS RESPONSE — a sibling entry under `techniques` or `step_techniques`, or one shared inherited_inputs/inherited_outputs/rules block several of this response\'s techniques inherit from the same ancestor group. Find that copy by its content_hash and read it there.';
 
 const PRIOR_CALL_MARKER_NOTE =
-  'A marker may point at content already in your context from an earlier call to this session — reuse it from there, the notes on this response included. Re-fetch one technique with get_technique { step_id, full: true }, or the whole payload with get_activity { bundle: "full" }.';
+  'A marker may point at content already in your context from an earlier call to this session — reuse it from there, the notes on this response included. To get a marked item back in full, fetch it: get_technique { step_id, full: true } for a step\'s technique, get_technique { technique_id, full: true } for an operation of your contract, get_resource { full: true } for a resource. get_activity { bundle: "full" } re-sends what a response can carry rather than everything this session has sent you, so a context that lost several items asks for each one it needs.';
 
 /** What divides an operations bundle from the definition it was assembled for, in every response. */
 const SEPARATOR = '\n\n---\n\n';
@@ -1979,8 +1979,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // Automatic, per-agent context-derived step-technique bundling (#189 C1c): every activity
       // eagerly inlines its small, ungated step-bound techniques — no per-activity opt-in. The
-      // eager-delivery budget is a CUMULATIVE per-activity character budget, the lesser of the
-      // worker's declared window and what one tool result may carry (see `eagerBudgetChars`):
+      // eager-delivery budget is CUMULATIVE per activity and kept as two tallies, one against the
+      // worker's declared window and one against what a tool result may carry — a delivery stops at
+      // whichever it reaches first (see `spentChars` and `responseChars` below):
       // ungated technique steps are inlined in DOCUMENT ORDER until adding the
       // next would overflow the budget; the remainder stay lazy via get_technique. A step gated
       // by `when`/`condition` (on itself or an enclosing loop) may never execute and stays lazy
@@ -2302,8 +2303,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           if (bundledResourceDeliveries.length > 0) bundleData['resources'] = bundledResources;
           if (resourceRefIds.length > 0) bundleData['resource_refs'] = resourceRefIds;
           if (linkedIds.length > 0) {
+            // Which note explains this response is a question about the SHAPE it took, and the
+            // shape is chosen by the delivery mode: full delivery lists ids, reference delivery
+            // carries bodies. A reference delivery whose bodies all gave way to the bound is still
+            // the bodies shape with nothing in it, and saying "no bodies are bundled in this mode"
+            // would name the mode for an absence the bound caused.
             bundleData['resources_note'] = stageNote('resources',
-              bundledResourceDeliveries.length > 0 ? RESOURCES_BUNDLED_NOTE : RESOURCE_REFS_NOTE,
+              referenceMode ? RESOURCES_BUNDLED_NOTE : RESOURCE_REFS_NOTE,
               state, newDeliveries, scope, mayReferBack);
           }
         }

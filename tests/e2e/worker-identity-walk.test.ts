@@ -90,7 +90,12 @@ describe.skipIf(!liveCorpusRoot())('worker identity survives every gate of a ref
     const saved = 1 - delivered / wouldHaveBeen;
     // eslint-disable-next-line no-console
     console.log(`[identity-walk] ${result.gateRefetches.length} gates; role-contract saving ${(saved * 100).toFixed(1)}% (${delivered} of ${wouldHaveBeen} chars)`);
-    expect(saved).toBeGreaterThan(0.25);
+    // The contract is the part a re-request repeats in full or not at all, so a collapse that works
+    // saves nearly all of it: 97.3% measured, 17,008 characters of 623,896. The floor sits close
+    // under that, because a floor calibrated for some other quantity — the whole response, where an
+    // activity body it can never collapse sets a ceiling on the ratio — would pass a contract that
+    // had stopped collapsing for half the walk.
+    expect(saved).toBeGreaterThan(0.9);
     // The budget is generous because this walk pays what a bounded delivery costs a run: a step
     // the response could not carry is a step the worker fetches when it reaches it, and this robot
     // makes every one of those fetches over fifteen activities and nineteen gates. Measured at
