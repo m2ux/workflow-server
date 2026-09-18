@@ -1,12 +1,11 @@
 id: implement
-version: 2.18.0
+version: 2.19.0
 name: Implement Tasks
 description: Execute the implementation plan task by task.
 variables:
   reads:
     - branch_name
     - component_git_dir
-    - component_path
     - has_uncertain_symbols
     - host_repo_path
     - implementation_plan
@@ -87,7 +86,7 @@ steps:
       - kind: technique
         id: run-tests
         technique:
-          name: cargo-operations::test
+          name: cargo::test
           inputs:
             build_scope: -p {current_task.crate}
         when: project_type == 'rust-substrate'

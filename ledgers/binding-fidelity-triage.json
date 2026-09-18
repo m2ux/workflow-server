@@ -139,28 +139,28 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/cargo-operations/build-dev.md",
+      "site": "cargo/techniques/build-dev.md",
       "detail": "output 'build_artifacts' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/cargo-operations/build-release.md",
+      "site": "cargo/techniques/build-release.md",
       "detail": "output 'release_artifacts' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/cargo-operations/doc.md",
+      "site": "cargo/techniques/doc.md",
       "detail": "output 'doc_artifacts' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/cargo-operations/fmt-fix.md",
+      "site": "cargo/techniques/fmt-fix.md",
       "detail": "output 'formatted_sources' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
@@ -251,7 +251,7 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/knowledge-base-search/load-domain-index.md",
+      "site": "concept-rag/techniques/load-domain-index.md",
       "detail": "output 'domain_index' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"

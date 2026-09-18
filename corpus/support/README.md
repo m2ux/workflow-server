@@ -10,6 +10,8 @@ A **library** is a namespace of shared operations that declares no workflow of i
 | [`github`](github/techniques/TECHNIQUE.md) | GitHub pull-request and issue tasks; sole home of REST `gh api` recipes |
 | [`atlassian`](atlassian/techniques/TECHNIQUE.md) | Jira and Confluence operations via the Atlassian MCP server |
 | [`gitnexus`](gitnexus/techniques/TECHNIQUE.md) | Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, graph operations |
+| [`cargo`](cargo/techniques/TECHNIQUE.md) | Cargo subcommands, each carrying the resource budget that holds a compile inside its host |
+| [`concept-rag`](concept-rag/techniques/TECHNIQUE.md) | Knowledge-base search over pre-indexed domain maps, via the concept-rag MCP server |
 
 ## A library directory
 

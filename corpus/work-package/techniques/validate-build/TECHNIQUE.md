@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.1.1
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Triage validation failures and aggregate cross-check results.
 
 ### no-cargo-here
 
-This technique MUST NOT invoke cargo, describe cargo invocations, or duplicate cargo command-line text. Cargo execution belongs entirely to [cargo-operations](/meta/techniques/cargo-operations/TECHNIQUE.md). validate-build operates on the OUTPUTS of cargo-operations operations.
+This technique MUST NOT invoke cargo, describe cargo invocations, or duplicate cargo command-line text. Cargo execution belongs entirely to the [cargo](/cargo/techniques/TECHNIQUE.md) library. validate-build operates on the OUTPUTS of its operations.
 
 ### failure-cause-not-test-design
 

@@ -1,11 +1,21 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
 
 The unmet system dependencies a workspace's cargo build would need — `protoc`, openssl headers, `pkg-config` and their like — as a structured environment finding.
+
+## Inputs
+
+### host_repo_path
+
+Absolute path of the outermost git host for the workspace checkout — the outermost superproject when the component is a submodule, the checkout itself otherwise.
+
+### component_path
+
+Path of the component being worked on, relative to `{host_repo_path}` — `.` for a regular repo. The two together locate the component directory.
 
 ## Outputs
 
