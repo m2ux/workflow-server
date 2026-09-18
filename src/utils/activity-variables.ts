@@ -55,6 +55,10 @@ interface DeclarationSite {
 
 const WORKFLOW_SOURCE = 'workflow.yaml';
 
+/** The site a fan's branch container is contributed under: the graph, not any one activity. */
+const FAN_SOURCE_PREFIX = 'graph fan over ';
+const fanSource = (activityId: string): string => `${FAN_SOURCE_PREFIX}${activityId}`;
+
 /** Whether two declarations of one name agree on the facts that make them the same variable. */
 /**
  * What two declarations of one name disagree about, or null when they agree. Silence is no
@@ -158,7 +162,7 @@ export function mergeActivityVariables(
       type: 'array',
       description: `Each branch of the fan that runs '${activity.id}' lands its whole reported map in a slot of its own, in collection order — one slot per branch, each carrying its unit's id and that branch's values. A slot no branch filled carries no result. Read it whole and hand it to a gather; a bare member addresses nothing.`,
       required: false,
-    }, `graph fan over ${activity.id}`);
+    }, fanSource(activity.id));
   }
 
   return {
@@ -169,17 +173,27 @@ export function mergeActivityVariables(
 }
 
 /**
- * The run's policy variables, out of a merge's source map: the names the workflow file declares.
+ * The variables the run's own shape declares, out of a merge's source map: those the workflow file
+ * states, and the branch container each fan in the graph opens.
  *
- * A file-declared variable is settled for the whole run — the mode it operates in, the paths it
- * works against — so the orchestrator is who reads it and who decides on it. Every other name is one
- * activity's product and another activity's input, explained in the file of the activity that writes
- * it and delivered whole to the worker dispatched there.
+ * Both are the orchestrator's to read. A file-declared variable is settled for the whole run — the
+ * mode it operates in, the paths it works against. A branch container is what a completed fan lands
+ * its results in, and the orchestrator is who gathers it. Every other name is one activity's product
+ * and another activity's input, explained in the file of the activity that writes it and delivered
+ * whole to the worker dispatched there.
+ *
+ * That difference is what makes the set worth having: a description this set does not hold is one a
+ * reader can still reach. A branch container's description is composed here rather than authored
+ * anywhere, so grouping it with an activity's products would put it beyond reach of the delivery
+ * that is supposed to carry it.
  */
 export function policyVariables(sources: ReadonlyMap<string, readonly string[]>): Set<string> {
   const names = new Set<string>();
   for (const [name, declaredBy] of sources) {
-    if (declaredBy.includes(WORKFLOW_SOURCE)) names.add(name);
+    const runShaped = declaredBy.some(
+      (source) => source === WORKFLOW_SOURCE || source.startsWith(FAN_SOURCE_PREFIX),
+    );
+    if (runShaped) names.add(name);
   }
   return names;
 }

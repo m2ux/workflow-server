@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { resolve } from 'node:path';
 import { collectFindings } from '../guards/check-activity-variables.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
-import { containerMember, readCarriesIndex, mergeActivityVariables } from '../src/utils/activity-variables.js';
+import { containerMember, readCarriesIndex, mergeActivityVariables, policyVariables } from '../src/utils/activity-variables.js';
 import type { Finding } from '../guards/guard-protocol.js';
 
 /**
@@ -90,6 +90,31 @@ describe('the container declaration', () => {
     expect(member?.values).toEqual(['narrow', 'wide']);
     expect(member?.defaultValue).toBe('narrow');
     expect(merged.contradictions).toEqual([]);
+  });
+
+  /**
+   * A startup response holds its variable prose to what one tool result may carry, and what it keeps
+   * at the first stage is what the run's own shape declares. A container belongs there.
+   *
+   * Its description says how a completed fan lands its results and how to read them, and the
+   * orchestrator is who gathers that. It is also composed by the merge rather than authored in any
+   * file — so where a shed description of an activity's product is still readable in that activity's
+   * definition, a shed container description is readable nowhere at all.
+   */
+  it('counts the container among what the run shape declares, not an activity', () => {
+    const merged = mergeActivityVariables(
+      [{ name: 'run_mode', type: 'string', description: 'policy', required: false }],
+      [{
+        id: 'probe-unit',
+        variables: {
+          writes: [{ name: 'probe_findings', type: 'object', description: 'findings', required: false }],
+        },
+      }],
+      new Set(['probe-unit']),
+    );
+    const shape = policyVariables(merged.sources);
+    expect([...shape].sort()).toEqual(['probe_unit_outputs', 'run_mode']);
+    expect(shape.has('probe_findings'), 'an activity product is not run shape').toBe(false);
   });
 });
 
