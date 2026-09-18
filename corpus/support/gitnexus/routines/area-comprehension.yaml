@@ -37,7 +37,7 @@ internals:
   - id: area_symbol
     description: The symbol the run holds, whose connections the pass reads.
   - id: area_process
-    description: The execution flow the run holds, whose ordered trace the pass reads.
+    description: The execution flow the run holds, whose ordered trace the pass reads. A flow from a ranked answer is named by its summary.
 
 steps:
   - kind: technique
@@ -96,7 +96,7 @@ steps:
         technique:
           name: gitnexus::read-process
           inputs:
-            process_name: "{area_process.name}"
+            process_name: "{area_process.summary}"
         actions:
           - action: set
             target: flow_traces
