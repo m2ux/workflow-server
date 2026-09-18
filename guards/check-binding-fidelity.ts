@@ -686,6 +686,11 @@ function ensureIndexed(): void {
     // invisible, so the id they name read as dead.
     const wfYaml = namespaceSubdir(INDEX, wf, 'workflow.yaml');
     if (wfYaml && existsSync(wfYaml)) collectReads(wf, cite(wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
+    // Routines are read before the activities, because a library declares runs and no activities at
+    // all — its `routines/` is reached only by a scan that does not depend on an `activities/`
+    // beside it. A run there is where a library's own operations are composed, so leaving it
+    // unscanned reports every output those runs consume as one nothing consumes.
+    scanRoutines(wf);
     const adir = namespaceSubdir(INDEX, wf, 'activities');
     if (!adir || !existsSync(adir)) continue;
     for (const path of activityFiles(adir)) {
@@ -697,7 +702,6 @@ function ensureIndexed(): void {
         walkSteps(wf, rel, dec, activityId);
       } catch { /* validate-workflow-yaml's job */ }
     }
-    scanRoutines(wf);
   }
 
   const reach = new Map<string, Set<string>>();
@@ -934,6 +938,10 @@ export function collectViolations(): Violation[] {
   // nothing produces was accepted and could never fire (#341 R1, the #324 A2 class).
   for (const e of expressionConsumes) {
     if (PLACEHOLDER.has(e.name)) continue;
+    // A file's own declared names satisfy a gate in it, on the terms they satisfy a `{token}` read
+    // above: a routine's signature IS the scope its body reads, so a gate naming a declared input
+    // resolves inside the file and never against the workflow the run is spliced into.
+    if (fileLocals.get(e.rel)?.has(e.name)) continue;
     const wf = e.wf;
     if (scopeOf(wf).has(e.name)) continue;
     v.push({
