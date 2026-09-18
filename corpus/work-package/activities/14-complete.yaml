@@ -51,6 +51,12 @@ variables:
       type: array
       description: Register rows whose Follow-up cell holds no issue link, each carrying its ID, item and rationale.
       defaultValue: []
+    - name: documented_apis
+      type: array
+      description: The public/exported APIs in the diff, each carrying inline documentation.
+    - name: public_api_symbols
+      type: array
+      description: The exported symbols in the diff that require documentation — the doc-comment work list.
     - name: publishable_files
       type: array
       description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
