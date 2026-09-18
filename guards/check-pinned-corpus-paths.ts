@@ -43,6 +43,26 @@ const PINNED = /['"`]([a-z0-9][a-z0-9-]*)\/(techniques|activities|resources)\/([
 /** Calls that author a path into a temp tree rather than read one from the corpus. */
 const AUTHORING_CALL = /\b(write|writeFile|writeFileSync|mkdir|mkdirSync|outputFile)\s*\(/;
 
+/** The same call with nothing after its open paren — the opening line of one that wraps. */
+const AUTHORING_CALL_OPENS = /\b(write|writeFile|writeFileSync|mkdir|mkdirSync|outputFile)\s*\($/;
+
+/**
+ * True when the literal is an argument of an authoring call. A call long enough to wrap puts its
+ * path on a line of its own, so the call name sits above rather than beside the literal — the walk
+ * back over blank and comment lines finds it there, and a fixture write is read as a fixture write
+ * whatever its layout. Only a line that ends at the open paren qualifies, so a literal several
+ * arguments into an unrelated call does not borrow the exemption.
+ */
+export function authorsIntoFixture(lines: string[], lineNo: number): boolean {
+  if (AUTHORING_CALL.test(lines[lineNo]!)) return true;
+  for (let above = lineNo - 1; above >= 0; above -= 1) {
+    const text = lines[above]!.trim();
+    if (text === '' || text.startsWith('//') || text.startsWith('*') || text.startsWith('/*')) continue;
+    return AUTHORING_CALL_OPENS.test(text);
+  }
+  return false;
+}
+
 /**
  * True when the match sits in a comment. An example in prose illustrates a shape — a loader comment
  * showing what a cross-workflow reference looks like means the same thing whichever activity it
@@ -103,7 +123,7 @@ export function collect(root: string): PinnedPathTally {
           illustrative += 1;
           continue;
         }
-        if (AUTHORING_CALL.test(line)) {
+        if (authorsIntoFixture(lines, lineNo)) {
           authored += 1;
           continue;
         }
