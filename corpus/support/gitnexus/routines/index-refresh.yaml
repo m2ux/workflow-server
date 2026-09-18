@@ -12,7 +12,7 @@ inputs:
 outputs:
   - id: stats
     type: object
-    description: Symbol, relationship and process counts the graph holds.
+    description: File, symbol and process counts the graph holds.
   - id: index_stale
     type: boolean
     description: Whether the graph is behind the tree it was built from.

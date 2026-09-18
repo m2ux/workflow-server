@@ -19,7 +19,7 @@ outputs:
     description: The graph every answer in this run came from, which a report naming those answers names too.
   - id: index_stats
     type: object
-    description: Symbol, relationship and process counts the graph holds.
+    description: File, symbol and process counts the graph holds.
   - id: index_stale
     type: boolean
     description: Whether the graph is still behind the tree after the rebuild, which is the age every answer below carries.
