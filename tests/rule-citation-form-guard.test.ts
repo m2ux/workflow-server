@@ -123,13 +123,15 @@ describe('checkCitation', () => {
   });
 
   /**
-   * The merge puts a container's rules in the hands of whoever the delivery reaches, so a bare name
-   * resolves for an agent. A person opening the file gets a slug and nothing to follow, and the
-   * container is the one target a relative link can always name — so the link is left to the author.
+   * The loader merges a container's rules into every file beneath it, so the reader is holding the
+   * rule's text when they meet the citation. A link there navigates to what they already have, which
+   * is the spelling `dotted-rule-address` keys on — the ancestry names the owner, leaving the slug.
    */
-  it('reports nothing when the rule merges in from a container above', () => {
+  it('asks for the bare name when the rule merges in from a container above', () => {
     const f = checkCitation({ line: 12, text: 'x', anchor: 'agent-id-scopes-delivery', targetAbs: CONTAINER }, OP, site);
-    expect(f).toBeNull();
+    expect(f!.check).toBe('inherited-rule');
+    expect(f!.detail).toContain('bare name');
+    expect(f!.detail).toContain('agent-id-scopes-delivery');
   });
 
   it('asks for the dotted address when the rule belongs to a technique the citer does not inherit', () => {
