@@ -19,7 +19,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -62,7 +62,7 @@ function walk(dir: string, out: string[] = []): string[] {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const { dir } of corpusWorkflows(root)) {
+  for (const { dir } of corpusNamespaces(root)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     const rootIds = declaredIds(join(techniquesDir, 'TECHNIQUE.md'));

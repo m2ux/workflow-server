@@ -22,7 +22,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { corpusWorkflows, defaultCorpusDest, definitionsUnder, resolveWorkflowsRoot } from './workflows-root.js';
+import { corpusNamespaces, defaultCorpusDest, definitionsUnder, resolveWorkflowsRoot } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -85,7 +85,7 @@ export function collectDuplicateViolations(root: string = ROOT): DuplicateViolat
   const inlineRuleSites = new Map<string, Array<{ file: string; wf: string; text: string }>>();
   const inlineCheckpointSites = new Map<string, Array<{ file: string; stepId: string }>>();
 
-  for (const { id: wf, dir } of corpusWorkflows(root, index)) {
+  for (const { id: wf, dir } of corpusNamespaces(root, index)) {
     const wfYamlPath = join(dir, 'workflow.yaml');
     const wfRel = relative(root, wfYamlPath);
     let doc: Record<string, unknown> | null = null;
