@@ -104,3 +104,30 @@ same name under different parents — which is the case the dual naming was desi
 
 **Key every site on the path.** Uniform and collision-free, but it rewrites every existing ledger
 entry and reintroduces grouping folders into findings, which the name-keyed form exists to keep out.
+
+## What the implementation found
+
+**A fourth consumer, wanting the opposite contract.** `scripts/coverage-scope.ts` reads
+`workflowIdFromCorpusPath` over paths that `git diff --name-status` reported, and matches the answer
+against the ids a walk roster names. It wants the directory name and nothing above it —
+`corpus/specimens/fan-conformance/workflow.yaml` has to answer `fan-conformance`, or the change
+scopes to no walked workflow. It also runs over paths for files a change deleted, so resolving
+through the index is not open to it.
+
+So the two questions are separate rather than one function renamed. Which product authored a file on
+disk is a question about the tree, and keeps `workflowIdFromCorpusPath`. Which namespace a site key
+names is a question about a reference, and is `namespaceRefFromCitePath` — the inverse of the
+guards' `citePath`, returning everything the key carries ahead of the construct directory. Both split
+the path the same way and differ only in how much of the head they return.
+
+**The choice of reference belongs to the index.** `NamespaceLocation` carries `ref` — the directory
+name, and the path where two directories claim that name. `citePath` writes it, `corpusNamespaces`
+publishes it in place of the raw directory name, and every guard keying on a namespace keys on the
+same string. Leaving each caller to decide is what would let the citation and the registry drift
+apart again.
+
+**The collision report does not gate serving.** `check-namespace-collision` reads the `ambiguous`
+list and names every directory claiming each name, for workflows as well as libraries — the workflow
+case had no reader either. It is registered with `gatesServing: false`, because a library with a
+colliding name serves every path reference made to it, and the sidecar preflight holds an experiment
+corpus to the serving set. Gating there would refuse the layout the non-goal protects.
