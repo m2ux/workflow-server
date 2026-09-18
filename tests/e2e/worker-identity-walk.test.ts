@@ -91,7 +91,7 @@ describe.skipIf(!liveCorpusRoot())('worker identity survives every gate of a ref
     // eslint-disable-next-line no-console
     console.log(`[identity-walk] ${result.gateRefetches.length} gates; role-contract saving ${(saved * 100).toFixed(1)}% (${delivered} of ${wouldHaveBeen} chars)`);
     // The contract is the part a re-request repeats in full or not at all, so a collapse that works
-    // saves nearly all of it: 97.3% measured, 17,008 characters of 623,896. The floor sits close
+    // saves nearly all of it: 97.2% measured, 17,171 characters of 623,966. The floor sits close
     // under that, because a floor calibrated for some other quantity — the whole response, where an
     // activity body it can never collapse sets a ceiling on the ratio — would pass a contract that
     // had stopped collapsing for half the walk.

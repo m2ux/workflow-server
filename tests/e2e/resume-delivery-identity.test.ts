@@ -111,8 +111,8 @@ describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', (
     // Read on the role contract, which is the part a second arrival repeats — the response also
     // carries the activity body, which never collapses, and spends the room a collapse frees on the
     // procedures the response bound deferred from the first delivery.
-    // Measured at 4,018 characters against 29,182, so the ceiling sits close over that rather than
-    // at a half a contract could breach while having stopped collapsing most of itself.
+    // Measured at a seventh of the dispatch's contract, so the ceiling sits close over that rather
+    // than at a half a contract could breach while having stopped collapsing most of itself.
     expect(resumedText).toContain('delivery: unchanged');
     expect(resumedContractChars).toBeLessThan(firstContractChars / 5);
 
