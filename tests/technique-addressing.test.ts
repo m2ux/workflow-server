@@ -13,10 +13,10 @@ const WF_DIR = LIVE_CORPUS ?? '';
 
 describe.skipIf(!LIVE_CORPUS)('technique addressing (:: path)', () => {
   it('resolves an implicit same-workflow sub-technique', async () => {
-    const r = (await resolveTechniques(['cargo-operations::run-suite'], WF_DIR, 'work-package'))[0]!;
+    const r = (await resolveTechniques(['validate-build::analyze-failure'], WF_DIR, 'work-package'))[0]!;
     expect(r.type).toBe('technique');
-    expect(r.source).toBe('cargo-operations');
-    expect(r.name).toBe('run-suite');
+    expect(r.source).toBe('validate-build');
+    expect(r.name).toBe('analyze-failure');
   });
 
   it('resolves the full canonical path workflow::technique::sub', async () => {
