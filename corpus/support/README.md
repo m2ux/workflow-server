@@ -1,6 +1,6 @@
 # Support libraries
 
-A **library** is a namespace of shared operations that declares no workflow of its own. It belongs to no single product and to every product that reaches it, so it sits here rather than inside one workflow's technique folder.
+A **library** is a namespace of shared operations that declares no workflow of its own. It belongs to no single product and to every product that reaches it, which is what puts it here at the corpus root.
 
 `support/` is a grouping folder: it appears in no reference. Each library is reached by its own directory name — `git::commit-regular-files` in a step binding, [`/git/techniques/commit-regular-files.md`](git/techniques/commit-regular-files.md) in a prose link, and `git.explicit-commit` for a rule the library's root index declares. Moving a library to another parent changes none of those.
 
