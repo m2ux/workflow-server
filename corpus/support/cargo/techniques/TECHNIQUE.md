@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.1
+  version: 1.6.0
 ---
 
 ## Capability
@@ -35,9 +35,13 @@ The command prefix a compiling cargo invocation carries, composed per resource-b
 
 ## Rules
 
+### invocation-through-an-operation
+
+Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols.
+
 ### resource-budget
 
-Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. Every compiling invocation carries `{build_budget}`, whose caps hold a compile inside a 32 GiB host. That figure is the floor these operations are tuned against: raise the caps through the environment on a host above it, and narrow `{build_scope}` to one crate on a host below it.
+Every compiling invocation carries `{build_budget}`, whose caps hold a compile inside a 32 GiB host. That figure is the floor these operations are tuned against: raise the caps through the environment on a host above it, and narrow `{build_scope}` to one crate on a host below it.
 
 `{build_budget}` is the environment caps followed by the nice level — `CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19` — and two operations extend it for what they compile:
 
