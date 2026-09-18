@@ -620,6 +620,21 @@ let namespaceIdByPath = new Map<string, string>();
 
 const namespaceId = (ref: string): string => namespaceIdByPath.get(ref) ?? ref;
 
+/**
+ * The namespaces whose declarations are in every workflow's reach.
+ *
+ * A namespace that declares no workflow is a library: nothing starts it, and every operation it
+ * holds is there to be applied from somewhere else. Its declared ids are therefore readable from any
+ * workflow that applies one, and its outputs are consumed from outside by design — which is exactly
+ * the standing `meta` has, and the reason `meta` was named here before there was a second one.
+ *
+ * This does not widen what an unqualified reference resolves to. `meta` alone is the fallback for a
+ * bare name, so a step binding `analyze` reaches meta's and not a library's.
+ */
+let sharedNamespaces = new Set<string>([META]);
+
+const isShared = (wf: string): boolean => sharedNamespaces.has(wf);
+
 let allWf = new Set<string>();
 let crossWorkflowConsumers = new Map<string, Set<string>>();
 let dispatchedWorkflows = new Map<string, Set<string>>();
@@ -629,6 +644,7 @@ function ensureIndexed(): void {
   indexed = true;
   INDEX = indexCorpus(ROOT);
   namespaceIdByPath = new Map(corpusNamespaces(ROOT, INDEX).map(({ path, id }) => [path, id]));
+  sharedNamespaces = new Set([META, ...corpusNamespaces(ROOT, INDEX).filter((n) => !n.manifest).map(({ id }) => id)]);
   workflows = corpusNamespaces(ROOT, INDEX).filter(({ dir }) => existsSync(join(dir, 'techniques'))).map(({ id }) => id);
   assertScanned(workflows.length, 'namespaces with a techniques/ folder', ROOT);
   for (const wf of workflows) buildRegistry(wf);
@@ -735,7 +751,7 @@ function producersOf(wf: string): Set<string> {
 }
 
 /** Read-resolution scope of a workflow: everything its files may legitimately reference — its own
- *  declared ids, meta's (the shared layer), the composed signatures of ops its steps bind
+ *  declared ids, every shared library's, the composed signatures of ops its steps bind
  *  cross-workflow, its produced names, and ambients. */
 const scopeCache = new Map<string, Set<string>>();
 function scopeOf(wf: string): Set<string> {
@@ -743,7 +759,7 @@ function scopeOf(wf: string): Set<string> {
   if (hit) return hit;
   const s = new Set<string>([
     ...(declaredByWf.get(wf) ?? []),
-    ...(wf !== META ? declaredByWf.get(META) ?? [] : []),
+    ...[...sharedNamespaces].filter((shared) => shared !== wf).flatMap((shared) => [...(declaredByWf.get(shared) ?? [])]),
     ...producersOf(wf),
   ]);
   for (const st of steps) {
@@ -802,7 +818,7 @@ function consumerReaches(consumerRel: string, declaringRel: string): boolean {
   const declaringWf = workflowIdFromCorpusPath(declaringRel);
   if (!consumerWf || !declaringWf) return false;
   if (consumerWf === declaringWf) return true;
-  if (declaringWf === META) return true;
+  if (isShared(declaringWf)) return true;
   if (crossWorkflowConsumers.get(declaringWf)?.has(consumerWf)) return true;
   if (dispatchedWorkflows.get(declaringWf)?.has(consumerWf)) return true;
   // The BORROW direction. `midnight-system-review` binds `work-package::post-review-comment`, whose
