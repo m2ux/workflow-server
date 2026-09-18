@@ -67,7 +67,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: 'step bindings resolve, args conform, reads have producers, outputs have consumers',
+    proves: 'step bindings resolve, args conform, reads have producers, outputs have consumers, and a read into a value names a member its producer declares',
     form: 'authored',
   },
   {
