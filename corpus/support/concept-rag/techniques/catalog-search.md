@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -21,4 +21,6 @@ Full source path the document name resolved to.
 
 ## Protocol
 
-1. Call `catalog_search { name: document_name }`; return the resolved path as `{source_path}`.
+### 1. Resolve Document Path
+
+- Call `catalog_search { name: document_name }`; return the resolved path as `{source_path}`.

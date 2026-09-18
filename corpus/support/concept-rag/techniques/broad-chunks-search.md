@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -21,5 +21,7 @@ Passages matching the concept across documents, one entry per match.
 
 ## Protocol
 
-1. Call `broad_chunks_search { concept: concept_term }`; return the matches as `{chunk_matches}`.
-   > If the local index has no mapping for the search term, retry broad-chunks-search with the natural term and note the gap for future index updates.
+### 1. Search Across Documents
+
+- Call `broad_chunks_search { concept: concept_term }`; return the matches as `{chunk_matches}`.
+  > If the local index has no mapping for the search term, retry broad-chunks-search with the natural term and note the gap for future index updates.

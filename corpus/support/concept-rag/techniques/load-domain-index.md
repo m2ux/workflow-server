@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -21,6 +21,11 @@ Parsed source registry, concept lookup table, and topic clusters
 
 ## Protocol
 
-1. Locate `{domain_name}-knowledge-index.md` under `.engineering/resources/`.
-   > If no knowledge-index file is found there for the requested `{domain_name}`, fall back to standard concept-rag search: apply [catalog-search](./catalog-search.md) then [chunks-search](./chunks-search.md).
-2. Read the file and parse its source registry, concept table, and topic clusters into the `{domain_index}`.
+### 1. Locate Index File
+
+- Locate `{domain_name}-knowledge-index.md` under `.engineering/resources/`.
+  > If no knowledge-index file is found there for the requested `{domain_name}`, fall back to standard concept-rag search: apply [catalog-search](./catalog-search.md) then [chunks-search](./chunks-search.md).
+
+### 2. Parse Domain Index
+
+- Read the file and parse its source registry, concept table, and topic clusters into the `{domain_index}`.

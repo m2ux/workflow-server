@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.0.2
 ---
 
 ## Capability
@@ -23,6 +23,8 @@ One-line statement of the root cause the fix strategy addresses, so the edit tar
 
 ## Protocol
 
-1. Execute the fix per `{fix_strategy}` for the `{root_cause}` behind the check identified by `{check_id}`: source edits go through harness Edit/Write; formatting fixes go through [cargo](/cargo/techniques/TECHNIQUE.md)::[fmt-fix](/cargo/techniques/fmt-fix.md); dependency or environment fixes are left unapplied and recorded as such.
-   > - A fix that requires user input or external action is left unapplied; the suite re-run that follows is what reports whether the check now passes.
-   > - Where a check keeps failing across successive analyze/fix iterations, end the cycle and leave the latest analysis as the recorded outcome rather than looping indefinitely.
+### 1. Execute Fix
+
+- Execute the fix per `{fix_strategy}` for the `{root_cause}` behind the check identified by `{check_id}`: source edits go through harness Edit/Write; formatting fixes go through [cargo](/cargo/techniques/TECHNIQUE.md)::[fmt-fix](/cargo/techniques/fmt-fix.md); dependency or environment fixes are left unapplied and recorded as such.
+  > - A fix that requires user input or external action is left unapplied; the suite re-run that follows is what reports whether the check now passes.
+  > - Where a check keeps failing across successive analyze/fix iterations, end the cycle and leave the latest analysis as the recorded outcome rather than looping indefinitely.

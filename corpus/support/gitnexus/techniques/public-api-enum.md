@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
@@ -15,7 +15,15 @@ the exported symbols present in the diff that require documentation
 
 ## Protocol
 
-1. Apply [detect-changes](./detect-changes.md) against `{repo_name}` to obtain the changed-symbol set.
-   > If the index is out of date, run `npx gitnexus analyze` and then retry.
-2. Apply [cypher](./cypher.md) against `{repo_name}` with a visibility filter to keep only public/exported symbols from that set.
-3. Return the filtered set as `{public_api_symbols}` — the doc-comment work list.
+### 1. Obtain Changed Symbols
+
+- Apply [detect-changes](./detect-changes.md) against `{repo_name}` to obtain the changed-symbol set.
+  > If the index is out of date, run `npx gitnexus analyze` and then retry.
+
+### 2. Filter To Public
+
+- Apply [cypher](./cypher.md) against `{repo_name}` with a visibility filter to keep only public/exported symbols from that set.
+
+### 3. Return Work List
+
+- Return the filtered set as `{public_api_symbols}` — the doc-comment work list.

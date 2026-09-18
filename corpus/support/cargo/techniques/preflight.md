@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.7.1
 ---
 
 ## Capability
@@ -25,9 +25,17 @@ Array of `{name, install_hint}` for any unmet prerequisite. Empty array when all
 
 ## Protocol
 
-1. Inspect `{host_repo_path}/{component_path}` for build-script signals indicating system-dependency requirements. Common: `protoc` (`libp2p` / `litep2p` crates), `libssl-dev` / openssl headers (`openssl-sys`), `pkg-config`. Walk `Cargo.toml` and any `build.rs` files for these crates.
-2. For each candidate, probe via `which <name>` and (where applicable) `pkg-config --exists <name>`. Collect any unresolved entries with a one-line `install_hint` (e.g., `apt-get install -y protobuf-compiler` for `protoc`).
-3. Return `{missing_prerequisites}`.
+### 1. Inspect Build Signals
+
+- Inspect `{host_repo_path}/{component_path}` for build-script signals indicating system-dependency requirements. Common: `protoc` (`libp2p` / `litep2p` crates), `libssl-dev` / openssl headers (`openssl-sys`), `pkg-config`. Walk `Cargo.toml` and any `build.rs` files for these crates.
+
+### 2. Probe Candidates
+
+- For each candidate, probe via `which <name>` and (where applicable) `pkg-config --exists <name>`. Collect any unresolved entries with a one-line `install_hint` (e.g., `apt-get install -y protobuf-compiler` for `protoc`).
+
+### 3. Return Missing Prerequisites
+
+- Return `{missing_prerequisites}`.
 
 ## Rules
 
