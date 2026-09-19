@@ -27,6 +27,21 @@ A run lands here rather than in a workflow because its body composes this namesp
 | [`area-comprehension`](area-comprehension.yaml) | Name the graph, bring it current, find the area's flows, read each symbol and each trace |
 | [`symptom-trace`](symptom-trace.yaml) | Rank the symptom, read the suspect, trace its flows, and follow the chains that reach it |
 | [`restructure-surface`](restructure-surface.yaml) | What the symbol reaches, and what reaches it |
+| [`api-surface-review`](api-surface-review.yaml) | Name the graph, map the routes it serves, and hold each response against the keys its consumers read |
+| [`tool-surface`](tool-surface.yaml) | Name the graph, then map the MCP and RPC tools the tree declares |
+
+## Over a documentation tree
+
+| Routine | Runs |
+|---------|------|
+| [`doc-heading-lookup`](doc-heading-lookup.yaml) | Name the graph, then find the sections whose heading text matches |
+| [`doc-reference-surface`](doc-reference-surface.yaml) | Name the graph, then enumerate what links to each file of a set |
+
+## Over a repository group
+
+| Routine | Runs |
+|---------|------|
+| [`group-concept-search`](group-concept-search.yaml) | Read which groups are configured, then rank one group's members against a concept |
 
 ## Over an index
 
@@ -34,7 +49,7 @@ A run lands here rather than in a workflow because its body composes this namesp
 |---------|------|
 | [`graph-for-tree`](graph-for-tree.yaml) | Name the graph covering a tree, build one where the inventory covers it with none, name it again |
 | [`index-refresh`](index-refresh.yaml) | Read the staleness, rebuild where it is behind, read again |
-| [`group-refresh`](group-refresh.yaml) | Read how each member stands, pair the ones behind with the tree each sits in, rebuild those, then rebuild the contract registry |
+| [`group-refresh`](group-refresh.yaml) | Read how each member stands, pair the ones behind with the tree each sits in, rebuild those, rebuild the contract registry, then read what it holds |
 
 ## Stopping for a decision
 
@@ -43,6 +58,7 @@ A technique is session-blind, so a run that puts something in front of a person 
 | Routine | Gates on |
 |---------|----------|
 | [`pre-edit-impact-gate`](pre-edit-impact-gate.yaml) | A measured blast radius, where the rating is high or critical, before an edit lands |
+| [`api-change-gate`](api-change-gate.yaml) | A route's measured consumer surface, where a consumer reads a key the response omits, before the change lands |
 | [`guarded-rename`](guarded-rename.yaml) | The previewed edit list, before the rename writes it |
 
 ---

@@ -1,9 +1,10 @@
 id: group-refresh
-version: 1.0.0
+version: 1.1.0
 name: Group Refresh
 description: >-
   Read how far every member of a repository group has fallen behind its code, rebuild each member
-  the report names, and rebuild the contract registry those members' moves left behind.
+  the report names, rebuild the contract registry those members' moves left behind, and read what
+  the rebuilt registry holds.
 
 inputs:
   - id: group_name
@@ -28,6 +29,10 @@ outputs:
     type: array
     optional: true
     description: The members this run leaves behind — stale, and with no graph to name the tree a rebuild would walk.
+  - id: contract_report
+    type: object
+    optional: true
+    description: Each contract the rebuilt registry holds with the member publishing it, its kind, and the member it cross-links to.
 
 internals:
   - id: graph_inventory
@@ -87,3 +92,11 @@ steps:
         group_name: group_name
       outputs:
         contract_registry_stats: contract_registry_stats
+  - kind: technique
+    id: read-registry
+    technique:
+      name: gitnexus::group-contracts
+      inputs:
+        group_name: group_name
+      outputs:
+        contract_report: contract_report

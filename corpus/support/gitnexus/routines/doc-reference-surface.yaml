@@ -1,0 +1,52 @@
+id: doc-reference-surface
+version: 1.0.0
+name: Doc Reference Surface
+description: >-
+  Name the graph covering a documentation tree, building one where the inventory covers it with
+  none, then enumerate for each file of a set the files whose links resolve to it.
+
+inputs:
+  - id: tree_path
+    description: Filesystem path of the documentation tree the links are read from.
+  - id: target_files
+    description: The files whose referencers are wanted, each spelled as the index records it.
+
+outputs:
+  - id: referencing_files
+    type: array
+    description: Per target file, the paths of the files holding a link that resolves to it.
+  - id: repo_name
+    type: string
+    optional: true
+    description: The graph each read addressed, which a report naming these referencers names too.
+
+internals:
+  - id: target_file
+    description: The file the run holds, whose referencers that pass enumerates.
+
+steps:
+  - kind: routine
+    id: name-graph
+    routine: gitnexus::graph-for-tree
+    with:
+      tree_path: "{tree_path}"
+    outputs:
+      repo_name: repo_name
+  - kind: loop
+    id: file-cycle
+    name: File Cycle
+    loopType: forEach
+    variable: target_file
+    over: target_files
+    maxIterations: 200
+    steps:
+      - kind: technique
+        id: read-referencers
+        technique:
+          name: gitnexus::reference-lookup
+          inputs:
+            target_file_path: "{target_file}"
+        actions:
+          - action: set
+            target: referencing_files
+            description: The files linking to this target, appended to the referencers the run holds.

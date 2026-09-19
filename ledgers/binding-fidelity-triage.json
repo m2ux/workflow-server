@@ -160,20 +160,6 @@
     },
     {
       "check": "dead-output",
-      "site": "gitnexus/techniques/api-impact.md",
-      "detail": "output 'api_impact_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/group-contracts.md",
-      "detail": "output 'contract_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "gitnexus/techniques/read-cluster.md",
       "detail": "output 'cluster_members' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
@@ -183,27 +169,6 @@
       "check": "dead-output",
       "site": "gitnexus/techniques/read-process.md",
       "detail": "output 'process_trace' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/route-map.md",
-      "detail": "output 'route_inventory' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/shape-check.md",
-      "detail": "output 'shape_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
-      "site": "gitnexus/techniques/tool-map.md",
-      "detail": "output 'tool_inventory' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },
