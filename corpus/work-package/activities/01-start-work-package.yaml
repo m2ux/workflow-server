@@ -382,7 +382,8 @@ steps:
     actions:
       - action: set
         target: gitnexus_indexed
-        description: true when the run left a current graph over the component tree, false otherwise
+        value: true
+        description: Reaching this action implies the run left a current graph over the component tree (a failed rebuild fails its step); the variable's defaultValue false covers the un-run or failed path.
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy

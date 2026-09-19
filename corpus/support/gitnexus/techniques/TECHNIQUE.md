@@ -36,7 +36,7 @@ Execution flows and relationships among code symbols are what the graph holds, a
 
 For a markdown tree the graph holds each heading and each link between files, and no prose. So a question about which sentence states a claim stays a grep question, and a ranked search answers such a question with unrelated code matches rather than with nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
 
-### detect-changes-after-edit
+### a-change-is-scoped-by-what-it-moved
 
 A rename or a batch of edits is scoped by what it actually moved, not by what it set out to move. The symbols and execution flows a diff lands on are read from the graph before the change is reported as contained, and the run that writes such a change reads them after it.
 
