@@ -39,8 +39,8 @@ HTML URL of the issue.
 
 ### 2. Create Issue
 
-1. Write `{body}` to a temp file, so a body carrying quotes, backticks or newlines reaches the API as written.
-2. `gh api repos/{owner}/{repo}/issues -f title="{title}" -F body=@<file>`, adding one `-f "labels[]=<name>"` per name in `{labels}` when it is set.
+1. Write `{title}` and `{body}` to temp files, per `github.authored-prose-by-file`.
+2. `gh api repos/{owner}/{repo}/issues -F title=@<title-file> -F body=@<body-file>`, adding one `-f "labels[]=<name>"` per name in `{labels}` when it is set. A label is an enum the caller picks from, so it is placed inline.
 3. Set `{issue_number}` from `.number` and `{issue_url}` from `.html_url`.
 
 ### 3. Confirm It Persisted

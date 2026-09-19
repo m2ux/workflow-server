@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,4 +22,5 @@ New PR title.
 ### 1. Patch Title
 
 1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
-2. `gh api repos/{owner}/{repo}/pulls/{pr_number} -X PATCH -f title="{title}"`.
+2. Write `{title}` to a temp file, per `github.authored-prose-by-file`.
+3. `gh api repos/{owner}/{repo}/pulls/{pr_number} -X PATCH -F title=@<file>`.
