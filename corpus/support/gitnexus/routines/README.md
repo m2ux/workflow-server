@@ -32,6 +32,7 @@ A run lands here rather than in a workflow because its body composes this namesp
 
 | Routine | Runs |
 |---------|------|
+| [`graph-for-tree`](graph-for-tree.yaml) | Name the graph covering a tree, build one where the inventory covers it with none, name it again |
 | [`index-refresh`](index-refresh.yaml) | Read the staleness, rebuild where it is behind, read again |
 | [`group-refresh`](group-refresh.yaml) | Read how each member stands, pair the ones behind with the tree each sits in, rebuild those, then rebuild the contract registry |
 
