@@ -20,17 +20,26 @@
  * That one reads as harmless and is not: its `../..` count is the namespace's depth from the root, so
  * it breaks the moment it is organised into a folder, having never needed to leave.
  *
+ * The other half is whether a link that names its namespace correctly lands on anything. A namespace
+ * that resolves and a file inside it that does not is a reference nothing checks: the anchor guard
+ * checks anchors, the pinned-path guard checks TypeScript, and a link from one corpus file to
+ * another falls between them. What an agent does with a reference to a file that is not there is
+ * undefined, and where the target is an operation the likely outcome is that it improvises the call
+ * the library exists to stop anyone improvising.
+ *
  * Links that reach out of the corpus entirely — into the server repo's `docs/` or `schemas/` — are a
- * separate problem and are not reported here.
+ * separate problem and are not reported here. So is a dangling RELATIVE link: the corpus holds 116,
+ * almost all of them template placeholders naming files a planning folder holds once a run writes
+ * them, which is a population to triage rather than a defect to report.
  *
  * This guard runs by path rather than from the registry, which `tests/guard-registry.test.ts`
- * records the reason for: it holds at 522 findings against definitions written before an absolute
- * form existed, and a sweep that is red for work already scheduled teaches everyone to ignore it.
- * Enrolling it is the last step of the corpus rewrite, in the commit that makes it pass.
+ * records the reason for. It was written against a corpus holding 522 links in the pre-namespace
+ * form; that rewrite has since landed and 6 remain, all in READMEs. Enrolling it is the last step,
+ * in the commit that makes it pass.
  *
  * Run: npx tsx guards/check-corpus-links.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { assertScanned, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
@@ -41,6 +50,12 @@ import { indexCorpus, namespaceOwning } from '../src/loaders/corpus-index.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+
+/** The file a link names, with the in-page anchor dropped — `foo.md#section` is a link to `foo.md`. */
+function withoutAnchor(path: string): string {
+  const hash = path.indexOf('#');
+  return hash === -1 ? path : path.slice(0, hash);
+}
 
 function* markdownFiles(dir: string): Generator<string> {
   for (const entry of readdirSync(dir)) {
@@ -75,14 +90,29 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
         const site = `${relative(root, file)}:${index + 1}`;
 
         if (link.form === 'workflow') {
-          if (link.path !== null) continue;
-          findings.push({
-            check: 'unknown-workflow',
-            site,
-            detail: `'${destination}' names workflow '${link.workflow}', which the corpus does not hold — `
-              + 'the leading segment of an absolute link is a workflow id, so name one that exists or '
-              + 'point the link somewhere else',
-          });
+          if (link.path === null) {
+            findings.push({
+              check: 'unknown-workflow',
+              site,
+              detail: `'${destination}' names workflow '${link.workflow}', which the corpus does not hold — `
+                + 'the leading segment of an absolute link is a workflow id, so name one that exists or '
+                + 'point the link somewhere else',
+            });
+            continue;
+          }
+          // The namespace resolves and the file inside it does not. A technique applying an operation
+          // by a link is the one place this is silent and costly: what an agent does with a reference
+          // to a file that is not there is undefined, and the likely outcome is that it improvises the
+          // call the library exists to stop anyone improvising.
+          if (!existsSync(withoutAnchor(link.path))) {
+            findings.push({
+              check: 'dangling-target',
+              site,
+              detail: `'${destination}' names '${link.workflow}', which the corpus holds, and no file at `
+                + `'${relative(root, withoutAnchor(link.path))}' — a reference to a file that is not there `
+                + 'leaves whoever follows it to invent what it would have said',
+            });
+          }
           continue;
         }
         if (link.form === 'external' || link.path === null) continue;

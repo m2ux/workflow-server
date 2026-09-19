@@ -314,4 +314,194 @@ steps:
     const bare = WITH_COMPONENTS.replace(/#### changed_symbols[\s\S]*?## Protocol/, '## Protocol');
     expect(await pathViolationsIn(runReading('change_report.symbols'), bare)).toEqual([]);
   });
+
+  /**
+   * `artifact` and `audience` are entry metadata — the file the technique writes, and the reader it
+   * is written for. Neither is a member of the value, so an output carrying only those declares
+   * nothing about its shape and contradicts no read. Counting one as a component would make an
+   * output measured by the presence of a delivery field, and every read into it reportable.
+   */
+  it('passes a read into an output whose only sub-sections are entry metadata', async () => {
+    const metadataOnly = WITH_COMPONENTS.replace(
+      /#### changed_symbols[\s\S]*?## Protocol/,
+      '#### audience\n\n`agent`\n\n#### artifact\n\n`change-report.md`\n\n## Protocol',
+    );
+    expect(await pathViolationsIn(runReading('change_report.symbols'), metadataOnly)).toEqual([]);
+  });
+});
+
+/**
+ * entry-field-undeclared: a read off a loop's item, held against the fields the iterated component
+ * declares for one entry.
+ *
+ * This is the level `output-path-undeclared` stops at. That check settles a read into a value
+ * against the members its producer declares; where the member is a list, what one entry carries sat
+ * in the sentence describing it and nothing could read it back. The defect it exists for ran to
+ * completion reporting success: a run asked for a trace once per flow, addressed each request by an
+ * empty string, received nothing every time, and finished normally.
+ */
+describe('binding fidelity — entry-field-undeclared', () => {
+  const WITH_ENTRY_FIELDS = [
+    '---', 'metadata:', '  version: 1.0.0', '---', '',
+    '## Capability', '', 'Rank the flows a concept lands in.', '',
+    '## Outputs', '',
+    '### query_report', '', 'What the concept reached.', '',
+    '#### processes', '', 'The execution flows the concept ranked into.', '',
+    '##### summary', '', 'The name that identifies the flow end to end.', '',
+    '##### priority', '', 'Its relevance.', '',
+    '#### definitions', '', 'The symbols it reached outside any flow.', '',
+    '## Protocol', '', '1. Report the ranking as {query_report}.', '',
+  ].join('\n');
+
+  const runIterating = (over: string, read: string): string => [
+    'id: shared-run', 'version: 1.0.0', 'name: shared-run',
+    'internals:',
+    '  - id: query_report', '    description: what the concept reached',
+    '  - id: ranked_flow', '    description: the flow the pass holds',
+    'steps:',
+    '  - kind: technique', '    id: rank', '    technique:', '      name: meta::rank',
+    '      outputs:', '        query_report: query_report',
+    '  - kind: loop', '    id: flow-cycle', '    name: Flow Cycle', '    loopType: forEach',
+    '    variable: ranked_flow', `    over: ${over}`, '    maxIterations: 10',
+    '    steps:',
+    '      - kind: action', '        id: note', '        actions:',
+    '          - action: log', `            message: "held {${read}}"`, '',
+  ].join('\n');
+
+  async function entryViolationsIn(routine: string, technique = WITH_ENTRY_FIELDS): Promise<string[]> {
+    const root = mkdtempSync(join(tmpdir(), 'wf-entry-'));
+    for (const [rel, files] of Object.entries({
+      'meta/techniques': { 'rank.md': technique },
+      'lib/routines': { 'shared-run.yaml': routine },
+    })) {
+      for (const [name, content] of Object.entries(files)) {
+        const file = join(root, rel, name);
+        mkdirSync(join(file, '..'), { recursive: true });
+        writeFileSync(file, content);
+      }
+    }
+    const previous = process.env.WORKFLOWS_DIR;
+    process.env.WORKFLOWS_DIR = root;
+    try {
+      vi.resetModules();
+      const guard = await import('../guards/check-binding-fidelity.js');
+      return guard.collectViolations()
+        .filter((v) => v.check === 'entry-field-undeclared')
+        .map((v) => v.detail);
+    } finally {
+      if (previous === undefined) delete process.env.WORKFLOWS_DIR; else process.env.WORKFLOWS_DIR = previous;
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  /** The defect that shipped: a flow named by a field the ranked answer does not carry. */
+  it('reports a field one entry of the iterated component does not carry', async () => {
+    const found = await entryViolationsIn(runIterating('query_report.processes', 'ranked_flow.name'));
+    expect(found).toHaveLength(1);
+    expect(found[0]).toContain("no 'name'");
+    expect(found[0]).toContain("'summary'");
+  });
+
+  it('passes a field the entry declares', async () => {
+    expect(await entryViolationsIn(runIterating('query_report.processes', 'ranked_flow.summary'))).toEqual([]);
+  });
+
+  /**
+   * A component stating nothing about its entries is reached past rather than contradicted — the
+   * carve-out `output-path-undeclared` makes one level up, for the same reason.
+   */
+  it('passes a read off an item whose component declares no entry fields', async () => {
+    expect(await entryViolationsIn(runIterating('query_report.definitions', 'ranked_flow.name'))).toEqual([]);
+  });
+
+  it('passes an index, which addresses a position rather than a field', async () => {
+    expect(await entryViolationsIn(runIterating('query_report.processes', 'ranked_flow.0'))).toEqual([]);
+  });
+
+  /** An output declaring nothing about its own entries is reached past rather than contradicted. */
+  it('passes a loop over a whole value whose output declares no entry of its own', async () => {
+    expect(await entryViolationsIn(runIterating('query_report', 'ranked_flow.name'))).toEqual([]);
+  });
+
+  /**
+   * The other shape an entry arrives in: the output IS the list, so there is no part to hang the
+   * declaration on and it sits in the output's reserved `entry` block instead. Nine loops in the
+   * corpus read a field this way, and until the block existed none of them was checkable.
+   */
+  const LIST_OUTPUT = [
+    '---', 'metadata:', '  version: 1.0.0', '---', '',
+    '## Capability', '', 'Read the area inventory.', '',
+    '## Outputs', '',
+    '### query_report', '', 'The graph\'s functional areas.', '',
+    '#### entry', '',
+    '##### name', '', 'What the area is called.', '',
+    '##### symbols', '', 'How many symbols it holds.', '',
+    '## Protocol', '', '1. Read the inventory as {query_report}.', '',
+  ].join('\n');
+
+  it('reports a field one entry of a list-shaped output does not carry', async () => {
+    const found = await entryViolationsIn(runIterating('query_report', 'ranked_flow.cohesion'), LIST_OUTPUT);
+    expect(found).toHaveLength(1);
+    expect(found[0]).toContain("no 'cohesion'");
+    expect(found[0]).toContain('the list it is');
+    expect(found[0]).toContain("'name'");
+  });
+
+  it('passes a field a list-shaped output declares', async () => {
+    expect(await entryViolationsIn(runIterating('query_report', 'ranked_flow.symbols'), LIST_OUTPUT)).toEqual([]);
+  });
+
+  /**
+   * An item name means nothing outside the loop that introduces it. Reads were matched by the file
+   * both sat in, so two loops in one file reusing a name had each one's reads measured against both
+   * collections. The fields now come from each loop's own steps.
+   */
+  it('measures a read against the loop that introduces its item, not the file', async () => {
+    const twoLoops = `id: shared-run
+version: 1.0.0
+name: shared-run
+internals:
+  - id: query_report
+    description: what the concept reached
+  - id: ranked_flow
+    description: the flow the pass holds
+steps:
+  - kind: technique
+    id: rank
+    technique:
+      name: meta::rank
+      outputs:
+        query_report: query_report
+  - kind: loop
+    id: component-cycle
+    name: Component Cycle
+    loopType: forEach
+    variable: ranked_flow
+    over: query_report.processes
+    maxIterations: 10
+    steps:
+      - kind: action
+        id: note-summary
+        actions:
+          - action: log
+            message: "held {ranked_flow.summary}"
+  - kind: loop
+    id: whole-cycle
+    name: Whole Cycle
+    loopType: forEach
+    variable: ranked_flow
+    over: query_report.definitions
+    maxIterations: 10
+    steps:
+      - kind: action
+        id: note-priority
+        actions:
+          - action: log
+            message: "held {ranked_flow.priority}"
+`;
+    // `summary` is declared on `processes` and `priority` is not declared on `definitions`, which
+    // declares no entry fields at all — so the first loop passes and the second is unmeasured.
+    // Matched by file, the first loop would also have been charged the second loop's `priority`.
+    expect(await entryViolationsIn(twoLoops)).toEqual([]);
+  });
 });

@@ -17,6 +17,11 @@
  * a branch. Flagging indentation alone produced 75 findings over the corpus, nearly all of them that
  * carve-out.
  *
+ * The condition is read wherever the sentence puts it. Written at the front it is a keyword, and
+ * {@link QUALIFIER} matches it; folded into the subject as a relative clause it opens with an
+ * article, and {@link SUBJECT_CONDITION} matches that. Both spell one qualification, so a guard
+ * reading only the opening word measures a habit of phrasing rather than the shape it is after.
+ *
  * Mutually exclusive branches written as *top-level* peer bullets are the same defect, and are
  * deliberately not covered: separating them from a phase that legitimately handles several cases in
  * sequence needs judgement this guard cannot supply, and a guard that needs a large triage list on
@@ -46,6 +51,23 @@ const INDENTED_BULLET = /^\s+- \S/;
  */
 const QUALIFIER =
   /^\s+- (?:\*\*)?(?:If\b|When\b|Where\b|Unless\b|Otherwise\b|On failure\b|Fall(?:ing)? back\b|Never\b|Do not\b|Don't\b|Avoid\b|Skip\b(?!.*\bstep\b.*:)|For a\b|For the\b|At `?(?:lite|full|ultra)\b)/i;
+
+/**
+ * The same qualification with its condition moved off the front of the sentence and into the
+ * subject: "a fix that requires user input is left unapplied" names the case it covers as surely as
+ * "if a fix requires user input", and opens with an article, so {@link QUALIFIER} passes it over.
+ *
+ * Two things identify it together, and neither alone would. The relative pronoun sits inside the
+ * opening noun phrase, ahead of the sentence's own verb — that is the position a condition occupies
+ * when it restricts a subject rather than describing one. And the clause's verb is negative, modal
+ * or failure-bearing, which is what makes the restriction a case the instruction does not cover.
+ *
+ * The modality test is what keeps the AP-59 Do-not-flag: "a guard that proves every reference
+ * resolves" carries a relative clause in the same position and restricts nothing, so position alone
+ * would report the enumerations this guard exists to leave standing.
+ */
+const SUBJECT_CONDITION =
+  /^\s+- (?:\*\*)?(?:A|An|The|Any|Each|Every|No|One|Anything|Something)\b[^.]{0,48}?\b(?:that|which|whose)\s+(?:cannot|can't|could\s+not|couldn't|does\s+not|doesn't|do\s+not|don't|did\s+not|didn't|is\s+not|isn't|are\s+not|aren't|was\s+not|wasn't|will\s+not|won't|must\s+not|mustn't|never|fails?|failed|requires?|needs?|lacks?|misses?|omits?|has\s+no|have\s+no|carries\s+no|names?\s+no|returns?\s+no|resolves?\s+to\s+nothing|must)\b/i;
 
 /**
  * An arm of a mutually-exclusive selection written as a sub-bullet chain. A complete `If` / `Else if`
@@ -130,7 +152,8 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       const rel = relative(root, path);
       for (const phase of protocolPhases(readFileSync(path, 'utf-8'))) {
         for (const [i, b] of phase.bullets.entries()) {
-          if (!INDENTED_BULLET.test(b.text) || !QUALIFIER.test(b.text)) continue;
+          if (!INDENTED_BULLET.test(b.text)) continue;
+          if (!QUALIFIER.test(b.text) && !SUBJECT_CONDITION.test(b.text)) continue;
           if (inLadder(phase.bullets, i)) continue;
           findings.push({
             check: 'qualifier-as-sub-bullet',

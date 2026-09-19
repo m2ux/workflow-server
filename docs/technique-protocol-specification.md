@@ -66,6 +66,11 @@ metadata:
 <description>
 #### <member>        (optional: a component of this output)
 <member description>
+##### <field>        (optional: a field one entry of this member carries)
+<field description>
+#### entry           (optional: this output IS a list; its ##### are one entry's fields)
+##### <field>        (a field one entry of this output carries)
+<field description>
 #### artifact        (optional: the persistence filename)
 `<filename-or-{token}-template>`
 #### audience        (optional: the intended reader — human | agent)
@@ -93,6 +98,15 @@ sub-section members. The section headers are exactly the plural `## Inputs` and 
 loader rejects the singular `## Input` / `## Output` (and `## Output(s)`) variants with a parse error.
 
 - `#### <member>` is a named component of the entry (`components[member]`).
+- `##### <field>` (Outputs) is a field one ENTRY of that component carries, where the component holds
+  a list (`components[member].entry[field]`). A component with fields becomes an object carrying its
+  description and them; one without stays the description string. This is what makes a read off a
+  loop's item checkable: the item name is introduced by the loop and appears in no signature, so
+  without the declaration a step reading `{item.summary}` is making a claim nothing can settle.
+- `#### entry` (Outputs) is reserved, for an output that IS a list rather than a value with parts.
+  Its `#####` children are the fields one entry carries (`entry[field]`), and its presence is how an
+  output states that it is a list. Reserving the name is what keeps `####` meaning one thing: a part
+  of the value everywhere else, never a field of each entry depending on the output's shape.
 - `#### artifact` (Outputs) is the persistence filename — a literal (`code-review.md`) or a
   `{token}`-template the worker interpolates at runtime (`{package_name}-plan.md`, the token being a snake_case symbol).
   One filename per output: one path segment ending in an extension, with `{token}` placeholders standing where
@@ -457,7 +471,9 @@ A delivered technique body (`projectTechniqueBody`) carries `capability`, `input
 
 The engine binds by name: workflow state variables (a worker sets them from a technique's result) and
 the entry ids a consumer references. The `####` components of an entry document its shape for the
-reader; a consumer references an entry by its id.
+reader, and the `#####` fields beneath a component document what one entry of it carries; a consumer
+references an entry by its id. Both levels are what a read addressing into a value is held against —
+`binding-fidelity` reports a member no component declares, and a field no component's entry declares.
 
 ### 7.5 Step manifest
 

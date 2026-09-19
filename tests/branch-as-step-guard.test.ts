@@ -61,6 +61,42 @@ describe('branch-as-step guard', () => {
     )).toEqual([]);
   });
 
+  /**
+   * The audit instance: a caveat whose condition sits in the subject rather than at the front of
+   * the sentence. It opens with an article, so the keyword test passes it over while it qualifies
+   * the instruction above it exactly as an `If` would.
+   */
+  it('flags a caveat whose condition sits in the subject', () => {
+    const findings = findingsFor(
+      `${header}### 1. Apply the Fixes\n\n- Apply each fix in the list.\n`
+      + '  - A fix that requires user input is left unapplied.\n',
+    );
+    expect(findings.map(f => f.check)).toEqual(['qualifier-as-sub-bullet']);
+  });
+
+  it('flags the negative and failure spellings of the same clause', () => {
+    const findings = findingsFor(
+      `${header}### 1. Resolve Each Reference\n\n- Resolve every reference the file carries.\n`
+      + '  - A reference that cannot be resolved is reported rather than followed.\n'
+      + '  - Any lookup which fails leaves the entry as authored.\n'
+      + '  - An entry that has no target is counted and skipped.\n',
+    );
+    expect(findings).toHaveLength(3);
+  });
+
+  /**
+   * Position alone does not make a condition. A relative clause sitting in the same place can
+   * describe its subject instead of restricting it, which is the enumeration AP-59 keeps — so the
+   * clause's verb has to carry the modality for the sub-bullet to be a branch.
+   */
+  it('passes a descriptive relative clause in the same position', () => {
+    expect(findingsFor(
+      `${header}### 1. Run the Guards\n\n- Run each guard and record what it proves.\n`
+      + '  - A guard that proves every reference resolves\n'
+      + '  - A guard which reads the corpus as authored\n',
+    )).toEqual([]);
+  });
+
   it('passes a genuine enumeration, which is the AP-59 carve-out', () => {
     expect(findingsFor(
       `${header}### 1. Run the Guards\n\n- Run each guard and record what it proves.\n`

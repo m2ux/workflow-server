@@ -114,6 +114,37 @@ describe('corpus links', () => {
       }
     });
 
+    /**
+     * The half the anchored form does not settle: the namespace resolves and the file does not.
+     * Nothing else in the suite reads a link from one corpus file to another — the anchor guard
+     * checks anchors and the pinned-path guard checks TypeScript — which is why an operation
+     * referenced by a name no file answers to survived being applied on every run.
+     */
+    it('reports a link naming a namespace the corpus holds and a file it does not', () => {
+      expect(checksFor('alpha/techniques/a.md', '[x](/beta/techniques/no-such-op.md)\n'))
+        .toEqual(['dangling-target']);
+    });
+
+    it('passes a link naming a file the namespace holds', () => {
+      expect(checksFor('alpha/techniques/a.md', '[x](/beta/techniques/conduct.md)\n')).toEqual([]);
+    });
+
+    /** An anchor names a section of the file, so the target is the file without it. */
+    it('resolves an anchored link against the file rather than the whole destination', () => {
+      expect(checksFor('alpha/techniques/a.md', '[x](/beta/techniques/conduct.md#a-section)\n')).toEqual([]);
+      expect(checksFor('alpha/techniques/a.md', '[x](/beta/techniques/absent.md#a-section)\n'))
+        .toEqual(['dangling-target']);
+    });
+
+    /**
+     * A dangling RELATIVE link is a different population — 116 in the corpus, almost all template
+     * placeholders naming files a planning folder holds once a run writes them — so it is left to a
+     * triage rather than reported alongside a reference that was simply never written.
+     */
+    it('leaves a dangling relative link alone', () => {
+      expect(checksFor('group/beta/techniques/a.md', '[x](./no-such-sibling.md)\n')).toEqual([]);
+    });
+
     it('refuses an absolute link naming no workflow', () => {
       expect(checksFor('alpha/techniques/a.md', '[x](/no-such-workflow/x.md)\n')).toEqual(['unknown-workflow']);
     });
