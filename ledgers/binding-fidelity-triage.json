@@ -370,7 +370,7 @@
     },
     {
       "check": "read-resolution",
-      "site": "substrate-node-security-audit/workflow.yaml:51",
+      "site": "substrate-node-security-audit/workflow.yaml:55",
       "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"

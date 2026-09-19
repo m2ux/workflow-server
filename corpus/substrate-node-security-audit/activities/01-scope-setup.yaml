@@ -10,6 +10,10 @@ variables:
     - user_request
     - workspace_root
   writes:
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph covering the audited submodule, which every graph read addresses. Empty where no graph covers it.
+      defaultValue: ""
     - name: file_inventory
       type: string
       description: Inventory of source files in scope, recorded at scope setup.
@@ -38,6 +42,14 @@ steps:
     routine: gitnexus::index-refresh
     with:
       repo_path: "{target_submodule}"
+  - kind: technique
+    id: name-graph
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: target_submodule
+      outputs:
+        repo_name: repo_name
   - kind: action
     id: record-graph-availability
     actions:
