@@ -418,8 +418,90 @@ describe('binding fidelity — entry-field-undeclared', () => {
     expect(await entryViolationsIn(runIterating('query_report.processes', 'ranked_flow.0'))).toEqual([]);
   });
 
-  /** A loop over a whole value has no component to reach into, so there is nothing to measure. */
-  it('passes a loop iterating a value with no component named', async () => {
+  /** An output declaring nothing about its own entries is reached past rather than contradicted. */
+  it('passes a loop over a whole value whose output declares no entry of its own', async () => {
     expect(await entryViolationsIn(runIterating('query_report', 'ranked_flow.name'))).toEqual([]);
+  });
+
+  /**
+   * The other shape an entry arrives in: the output IS the list, so there is no part to hang the
+   * declaration on and it sits in the output's reserved `entry` block instead. Nine loops in the
+   * corpus read a field this way, and until the block existed none of them was checkable.
+   */
+  const LIST_OUTPUT = [
+    '---', 'metadata:', '  version: 1.0.0', '---', '',
+    '## Capability', '', 'Read the area inventory.', '',
+    '## Outputs', '',
+    '### query_report', '', 'The graph\'s functional areas.', '',
+    '#### entry', '',
+    '##### name', '', 'What the area is called.', '',
+    '##### symbols', '', 'How many symbols it holds.', '',
+    '## Protocol', '', '1. Read the inventory as {query_report}.', '',
+  ].join('\n');
+
+  it('reports a field one entry of a list-shaped output does not carry', async () => {
+    const found = await entryViolationsIn(runIterating('query_report', 'ranked_flow.cohesion'), LIST_OUTPUT);
+    expect(found).toHaveLength(1);
+    expect(found[0]).toContain("no 'cohesion'");
+    expect(found[0]).toContain('the list it is');
+    expect(found[0]).toContain("'name'");
+  });
+
+  it('passes a field a list-shaped output declares', async () => {
+    expect(await entryViolationsIn(runIterating('query_report', 'ranked_flow.symbols'), LIST_OUTPUT)).toEqual([]);
+  });
+
+  /**
+   * An item name means nothing outside the loop that introduces it. Reads were matched by the file
+   * both sat in, so two loops in one file reusing a name had each one's reads measured against both
+   * collections. The fields now come from each loop's own steps.
+   */
+  it('measures a read against the loop that introduces its item, not the file', async () => {
+    const twoLoops = `id: shared-run
+version: 1.0.0
+name: shared-run
+internals:
+  - id: query_report
+    description: what the concept reached
+  - id: ranked_flow
+    description: the flow the pass holds
+steps:
+  - kind: technique
+    id: rank
+    technique:
+      name: meta::rank
+      outputs:
+        query_report: query_report
+  - kind: loop
+    id: component-cycle
+    name: Component Cycle
+    loopType: forEach
+    variable: ranked_flow
+    over: query_report.processes
+    maxIterations: 10
+    steps:
+      - kind: action
+        id: note-summary
+        actions:
+          - action: log
+            message: "held {ranked_flow.summary}"
+  - kind: loop
+    id: whole-cycle
+    name: Whole Cycle
+    loopType: forEach
+    variable: ranked_flow
+    over: query_report.definitions
+    maxIterations: 10
+    steps:
+      - kind: action
+        id: note-priority
+        actions:
+          - action: log
+            message: "held {ranked_flow.priority}"
+`;
+    // `summary` is declared on `processes` and `priority` is not declared on `definitions`, which
+    // declares no entry fields at all — so the first loop passes and the second is unmeasured.
+    // Matched by file, the first loop would also have been charged the second loop's `priority`.
+    expect(await entryViolationsIn(twoLoops)).toEqual([]);
   });
 });

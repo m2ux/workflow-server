@@ -253,7 +253,7 @@ interface IndexParse {
   protocol: ProtocolBlock[] | undefined;
   // `audience` is carried as an unrefined string so a mistyped value reaches OutputItemDefinitionSchema's
   // `human`/`agent` enum and is rejected loudly at load, rather than being narrowed away here.
-  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; audience?: string; components?: OutputComponentsDefinition }> | undefined;
+  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; audience?: string; components?: OutputComponentsDefinition; entry?: Record<string, string> }> | undefined;
   rules: Record<string, string | string[]> | undefined;
 }
 
@@ -302,6 +302,21 @@ function parseTechniqueIndex(raw: string, sourcePath: string, id: string): Index
 type ReservedKey = 'artifact' | 'default' | 'audience';
 
 /**
+ * The reserved output sub-section naming what one entry carries, for an output that IS a list.
+ * Unlike the keys above it holds no prose of its own — its `#####` children are the fields.
+ */
+const ENTRY_SECTION = 'entry';
+
+/** What one `### <id>` entry of an Inputs/Outputs section parses to. */
+interface EntrySubsections {
+  description?: string;
+  components?: OutputComponentsDefinition;
+  /** Fields one entry carries, present only where the output declared itself a list. */
+  entry?: Record<string, string>;
+  reserved: Partial<Record<ReservedKey, string>>;
+}
+
+/**
  * Split an Inputs/Output entry body into its lead description and `####` sub-sections.
  * Each sub-section names a component member of the entry; a sub-section whose title matches one of
  * the `reserved` keys (case-insensitive) is pulled out as entry metadata instead of a component —
@@ -312,16 +327,26 @@ type ReservedKey = 'artifact' | 'default' | 'audience';
 function parseEntrySubsections(
   body: string,
   reserved: readonly ReservedKey[],
-): { description?: string; components?: OutputComponentsDefinition; reserved: Partial<Record<ReservedKey, string>> } {
+  /** Reserved sub-sections whose `#####` CHILDREN are the value, not their prose. Outputs only. */
+  listEntry = false,
+): EntrySubsections {
   const subs = splitSections(body, 4);
   // Lead description is everything before the first `#### ` heading.
   const firstHeading = body.search(/^####\s/m);
   const lead = firstHeading === -1 ? body : body.slice(0, firstHeading);
   const description = bodyParagraphs(lead) || undefined;
-  const out: { description?: string; components?: OutputComponentsDefinition; reserved: Partial<Record<ReservedKey, string>> } = { reserved: {} };
+  const out: EntrySubsections = { reserved: {} };
   if (description) out.description = description;
   const components: OutputComponentsDefinition = {};
   for (const s of subs) {
+    // An output that IS a list names the fields one entry carries here. Reserved, so `####` keeps
+    // meaning "a part of this value" everywhere else and one spelling never means two things.
+    if (listEntry && s.title.toLowerCase() === ENTRY_SECTION) {
+      const fields: Record<string, string> = {};
+      for (const field of splitSections(s.body, 5)) fields[field.title] = bodyParagraphs(field.body);
+      if (Object.keys(fields).length > 0) out.entry = fields;
+      continue;
+    }
     const key = reserved.find((r) => r === s.title.toLowerCase());
     if (key) {
       // Strip surrounding inline-code backticks from a filename/default/enum literal.
@@ -409,16 +434,18 @@ function parseOutputsSection(section: Section | undefined): IndexParse['outputs'
   if (items.length === 0) return undefined;
   const result: NonNullable<IndexParse['outputs']> = [];
   for (const item of items) {
-    const { description, components, reserved } = parseEntrySubsections(item.body, ['artifact', 'audience']);
+    const { description, components, entry, reserved } = parseEntrySubsections(item.body, ['artifact', 'audience'], true);
     const out: {
       id: string;
       description?: string;
       artifact?: { name: string };
       audience?: string;
       components?: OutputComponentsDefinition;
+      entry?: Record<string, string>;
     } = { id: item.title };
     if (description) out.description = description;
     if (components) out.components = components;
+    if (entry) out.entry = entry;
     if (reserved.artifact !== undefined) out.artifact = { name: reserved.artifact };
     // Pass the authored value through verbatim; the `human`/`agent` enum on OutputItemDefinitionSchema
     // is the single validator, so a mistyped audience fails loudly at load (technique dropped with a

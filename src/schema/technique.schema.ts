@@ -85,6 +85,7 @@ export const OutputItemDefinitionSchema = z.object({
   id: z.string().describe('Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename.'),
   description: z.string().optional().describe('Human-readable description of this output'),
   components: OutputComponentsDefinitionSchema.optional(),
+  entry: z.record(z.string()).optional().describe('Named fields one entry carries, for an output that IS a list rather than a value with parts (authored as a reserved `#### entry` sub-section whose `#####` children are the fields). Its presence is how an output states that it is a list; `components` names the parts of an output that is not.'),
   artifact: OutputArtifactSchema.optional().describe('Optional. When populated, specifies the artifact name to create when persisting this output.'),
   audience: z.enum(['human', 'agent']).optional().describe('Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the `artifactPrefix` rule.'),
   destination: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique files.'),

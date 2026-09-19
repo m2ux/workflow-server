@@ -102,6 +102,8 @@ type OutputMeta = {
   components: Set<string>;
   /** Component id → the fields one ENTRY of it declares, for a component holding a list. */
   entryFields: Map<string, Set<string>>;
+  /** The fields one entry declares where the OUTPUT is itself a list — its `#### entry` block. */
+  ownEntryFields: Set<string>;
 };
 type DetailedSig = { inputs: Map<string, InputMeta>; outputs: Map<string, OutputMeta> };
 type Sig = { inputs: Set<string>; outputs: Set<string> };
@@ -113,7 +115,13 @@ type OpEntry = { own: DetailedSig; composed: Sig };
  * reserved set, so a read into an output is measured against the same notion of a component the
  * loader builds.
  */
-const RESERVED_OUTPUT_SUBSECTIONS: ReadonlySet<string> = new Set(['artifact', 'audience']);
+const RESERVED_OUTPUT_SUBSECTIONS: ReadonlySet<string> = new Set(['artifact', 'audience', 'entry']);
+
+/**
+ * The reserved sub-section an output that IS a list declares its entry's fields under. Its presence
+ * is how an output says it is a list, which is what keeps `####` meaning one thing everywhere else.
+ */
+const ENTRY_SUBSECTION = 'entry';
 
 function emptyDetailed(): DetailedSig { return { inputs: new Map(), outputs: new Map() }; }
 function toSig(d: DetailedSig): Sig { return { inputs: new Set(d.inputs.keys()), outputs: new Set(d.outputs.keys()) }; }
@@ -152,7 +160,7 @@ function fileSigDetailed(p: string): DetailedSig {
       component = null;
       awaitingProse = true;
       if (section === 'inputs') det.inputs.set(entry, { hasDefault: false, optional: false });
-      else det.outputs.set(entry, { hasArtifact: false, components: new Set(), entryFields: new Map() });
+      else det.outputs.set(entry, { hasArtifact: false, components: new Set(), entryFields: new Map(), ownEntryFields: new Set() });
       continue;
     }
     if (!entry) continue;
@@ -164,6 +172,9 @@ function fileSigDetailed(p: string): DetailedSig {
       if (section === 'inputs' && sub === 'default') det.inputs.get(entry)!.hasDefault = true;
       if (section === 'outputs' && RESERVED_OUTPUT_SUBSECTIONS.has(sub)) {
         if (sub === 'artifact') det.outputs.get(entry)!.hasArtifact = true;
+        // `entry` holds no prose of its own; the `#####` lines below it are what it declares, and
+        // `component` carries it so those lines land in the output's own entry set.
+        component = sub === ENTRY_SUBSECTION ? ENTRY_SUBSECTION : null;
         continue;
       }
       // Entry metadata names a file the technique writes or the reader it is for, rather than a
@@ -178,9 +189,13 @@ function fileSigDetailed(p: string): DetailedSig {
     // A component holding a list names the fields one entry of it carries one level further down.
     const h5 = /^#####\s+(\S+)\s*$/.exec(line);
     if (h5 && section === 'outputs' && component !== null) {
-      const fields = det.outputs.get(entry)!.entryFields;
-      if (!fields.has(component)) fields.set(component, new Set());
-      fields.get(component)!.add(h5[1]!.trim());
+      const meta = det.outputs.get(entry)!;
+      if (component === ENTRY_SUBSECTION) {
+        meta.ownEntryFields.add(h5[1]!.trim());
+      } else {
+        if (!meta.entryFields.has(component)) meta.entryFields.set(component, new Set());
+        meta.entryFields.get(component)!.add(h5[1]!.trim());
+      }
       continue;
     }
     if (awaitingProse && line.trim().length > 0) {
@@ -450,7 +465,11 @@ const pathConsumes: Array<{ rel: string; wf: string; activityId: string; path: s
  * claim about one ENTRY of that collection. Resolving it needs the loop, because the item name is
  * introduced by the loop and names nothing the producing operation declares.
  */
-const loopItems: Array<{ rel: string; wf: string; activityId: string; item: string; over: string }> = [];
+const loopItems: Array<{
+  rel: string; wf: string; activityId: string; item: string; over: string;
+  /** The item's fields THIS loop reads, taken from its own steps rather than from the file. */
+  fields: Set<string>;
+}> = [];
 /**
  * Bag names read by an EXPRESSION rather than a `{token}` or a structured `variable:` key — a step's
  * `when` string and a `validate` action's `target`. Both are consumption sites, and neither was
@@ -552,11 +571,20 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
   if (typeof o.over === 'string') {
     expressionConsumes.push({ rel, wf, stepId: here, name: o.over.split('.')[0]! });
     if (o.over.includes('.')) pathConsumes.push({ rel, wf, activityId, path: o.over });
-    // What the item variable stands for. A read off the item is a claim about one ENTRY of the
-    // collection, which is a different claim from one about the collection itself — so the two are
-    // kept apart and the item is resolved back through here.
+    // What the item variable stands for, and which of its fields this loop reads. A read off the
+    // item is a claim about one ENTRY of the collection, which is a different claim from one about
+    // the collection itself — so the two are kept apart and the item is resolved back through here.
+    //
+    // The fields come from the loop's OWN subtree rather than from the file's reads, because the
+    // item name is introduced by this loop and means nothing outside it: two loops in one file
+    // reusing a name would otherwise have each one's reads measured against both collections.
     if (typeof o.variable === 'string') {
-      loopItems.push({ rel, wf, activityId, item: o.variable, over: o.over });
+      const item = o.variable;
+      const fields = new Set<string>();
+      for (const [, field] of JSON.stringify(o.steps ?? []).matchAll(
+        new RegExp(`\\{${item}\\.([A-Za-z0-9_]+)`, 'g'),
+      )) fields.add(field!);
+      loopItems.push({ rel, wf, activityId, item, over: o.over, fields });
     }
   }
   for (const v of Object.values(o)) walkSteps(wf, rel, v, activityId, here);
@@ -1135,27 +1163,32 @@ function collectEntryFieldViolations(): Violation[] {
   const seen = new Set<string>();
 
   for (const loop of loopItems) {
-    // The collection as the loop names it: `query_report.processes` is an output and the component
-    // inside it; a bare `open_assumptions` names a whole value with no component to reach into.
+    if (loop.fields.size === 0) continue;
+    // Two shapes reach an entry. `query_report.processes` names a value and the part of it that
+    // holds the list, so the declaration sits on the part. A bare `stale_members` names a value
+    // that IS the list, so it sits on the output's own `entry` block. The head is what resolves to
+    // a producer either way; the tail decides which declaration answers.
     const [collectionHead, component] = loop.over.split('.');
-    if (!collectionHead || !component) continue;
+    if (!collectionHead) continue;
+    const held = component === undefined ? 'the list it is' : `its '${component}' component`;
 
     const fieldsByProducer = (producers.get(collectionHead) ?? [])
       .filter((producer) => producer.wf === loop.wf || producer.activityId === loop.activityId)
-      .map((producer) => ({
-        producer,
-        fields: resolve(producer.ref, producer.wf, producer.activityId)
-          ?.entry.own.outputs.get(producer.outputId)?.entryFields.get(component),
-      }))
+      .map((producer) => {
+        const output = resolve(producer.ref, producer.wf, producer.activityId)
+          ?.entry.own.outputs.get(producer.outputId);
+        return {
+          producer,
+          fields: component === undefined ? output?.ownEntryFields : output?.entryFields.get(component),
+        };
+      })
       .filter((candidate): candidate is { producer: typeof candidate.producer; fields: Set<string> } =>
         candidate.fields !== undefined && candidate.fields.size > 0);
     if (fieldsByProducer.length === 0) continue;
 
-    for (const read of reads) {
-      if (read.wf !== loop.wf || read.rel !== loop.rel) continue;
-      const [head, field] = read.full.split('.');
-      if (head !== loop.item || !field || /^\d+$/.test(field)) continue;
-      const key = `${loop.rel} ${loop.over} ${read.full}`;
+    for (const field of loop.fields) {
+      if (/^\d+$/.test(field)) continue;
+      const key = `${loop.rel} ${loop.over} ${loop.item}.${field}`;
       if (seen.has(key)) continue;
       seen.add(key);
       // Every producer landing under this name is consulted, the way the level above consults them:
@@ -1166,8 +1199,8 @@ function collectEntryFieldViolations(): Violation[] {
         if (fields.has(field)) continue;
         v.push({
           check: 'entry-field-undeclared', site: `${loop.rel}[${loop.activityId}]`,
-          detail: `iterates '${loop.over}' as '${loop.item}' and reads '${read.full}', and '${producer.ref}' `
-            + `declares no '${field}' on one entry of its '${component}' component — it states `
+          detail: `iterates '${loop.over}' as '${loop.item}' and reads '${loop.item}.${field}', and `
+            + `'${producer.ref}' declares no '${field}' on one entry of ${held} — it states `
             + `${[...fields].map((f) => `'${f}'`).join(', ')}`,
         });
         break;

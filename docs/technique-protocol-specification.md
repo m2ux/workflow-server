@@ -68,6 +68,9 @@ metadata:
 <member description>
 ##### <field>        (optional: a field one entry of this member carries)
 <field description>
+#### entry           (optional: this output IS a list; its ##### are one entry's fields)
+##### <field>        (a field one entry of this output carries)
+<field description>
 #### artifact        (optional: the persistence filename)
 `<filename-or-{token}-template>`
 #### audience        (optional: the intended reader — human | agent)
@@ -100,6 +103,10 @@ loader rejects the singular `## Input` / `## Output` (and `## Output(s)`) varian
   description and them; one without stays the description string. This is what makes a read off a
   loop's item checkable: the item name is introduced by the loop and appears in no signature, so
   without the declaration a step reading `{item.summary}` is making a claim nothing can settle.
+- `#### entry` (Outputs) is reserved, for an output that IS a list rather than a value with parts.
+  Its `#####` children are the fields one entry carries (`entry[field]`), and its presence is how an
+  output states that it is a list. Reserving the name is what keeps `####` meaning one thing: a part
+  of the value everywhere else, never a field of each entry depending on the output's shape.
 - `#### artifact` (Outputs) is the persistence filename — a literal (`code-review.md`) or a
   `{token}`-template the worker interpolates at runtime (`{package_name}-plan.md`, the token being a snake_case symbol).
   One filename per output: one path segment ending in an extension, with `{token}` placeholders standing where

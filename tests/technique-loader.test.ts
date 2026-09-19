@@ -861,6 +861,29 @@ describe('technique-loader', () => {
       expect(component).toBe('The symbols it reached outside any flow.');
     });
 
+    /**
+     * An output that IS a list has no part to hang the declaration on, so it uses the reserved
+     * `entry` block. Reserved is what keeps one spelling from meaning two things: a `####` is a
+     * part of the value everywhere else, and its presence here is how the output says it is a list.
+     */
+    it('reads a reserved `#### entry` block as the fields of a list-shaped output', async () => {
+      await writeTechnique([
+        '#### entry', '',
+        '##### name', '', 'What the area is called.', '',
+        '##### symbols', '', 'How many symbols it holds.',
+      ]);
+      const result = await readTechnique('rank', tempDir);
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      const output = (result.value.outputs as Array<{ entry?: unknown; components?: unknown }> | undefined)?.[0];
+      expect(output?.entry).toEqual({
+        name: 'What the area is called.',
+        symbols: 'How many symbols it holds.',
+      });
+      // Reserved, so it is not also read as a part of the value.
+      expect(output?.components).toBeUndefined();
+    });
+
     it('validates against the technique schema either way', async () => {
       await writeTechnique([
         '#### processes', '', 'The flows.', '', '##### summary', '', 'Its name.', '',
