@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -37,7 +37,23 @@ The references the symbol makes, grouped the same way.
 
 #### processes
 
-The execution flows the symbol participates in, each carrying its `name` and the symbol's `step_index` within it.
+The execution flows the symbol participates in. A flow is named by its `name` here, where a ranked query names the same kind of value by its `summary`.
+
+##### id
+
+The flow's graph identifier.
+
+##### name
+
+What names the flow end to end.
+
+##### step_index
+
+The symbol's position within the flow.
+
+##### step_count
+
+How many steps the flow runs.
 
 ## Protocol
 

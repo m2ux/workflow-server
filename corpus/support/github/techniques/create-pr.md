@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
@@ -52,5 +52,6 @@ URL of the pull request.
 
 ### 3. Create Pull
 
-1. `gh api repos/{owner}/{repo}/pulls -f title="{title}" -f head="{branch_name}" -f base="{base_branch}" -f body="{body}" -F draft={as_draft}`.
-2. Set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`.
+1. Write `{title}` and `{body}` to temp files, per `github.authored-prose-by-file`.
+2. `gh api repos/{owner}/{repo}/pulls -F title=@<title-file> -F body=@<body-file> -f head="{branch_name}" -f base="{base_branch}" -F draft={as_draft}`.
+3. Set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`.

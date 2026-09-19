@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -21,7 +21,21 @@ changed symbols, changed files, affected execution flows, risk level
 
 ### affected_clusters
 
-The functional areas this change reaches, each named as the cluster resource addresses it.
+The functional areas this change reaches, each entry as the area inventory carries it.
+
+#### entry
+
+##### name
+
+What the area is called, and the identifier `gitnexus://repo/{repo_name}/cluster/{name}` takes.
+
+##### symbols
+
+How many symbols the area holds.
+
+##### cohesion
+
+Its cohesion as a percentage.
 
 ## Protocol
 

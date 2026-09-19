@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -29,11 +29,47 @@ changed symbols, changed files, affected execution flows, risk level
 
 #### changed_symbols
 
-The indexed symbols the diff's hunks land in, each carrying its `name`, the `filePath` it sits in, and the `change_type` the hunk made.
+The indexed symbols the diff's hunks land in.
+
+##### id
+
+The symbol's graph identifier, its kind naming the first segment.
+
+##### name
+
+The symbol's name.
+
+##### filePath
+
+The file it sits in.
+
+##### change_type
+
+What the hunk did to it.
 
 #### affected_processes
 
-The execution flows those symbols participate in, each carrying its `name` and the steps the change lands on.
+The execution flows those symbols participate in. A flow is named by its `name` here, as a symbol's context names it, and not by the `summary` a ranked query uses.
+
+##### id
+
+The flow's graph identifier.
+
+##### name
+
+What names the flow end to end.
+
+##### process_type
+
+`intra_community` or `cross_community`.
+
+##### step_count
+
+How many steps the flow runs.
+
+##### changed_steps
+
+Where the change lands in the flow — each entry naming the `symbol` and its `step`.
 
 #### summary
 
