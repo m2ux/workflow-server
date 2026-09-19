@@ -954,7 +954,7 @@ export { consumerReaches };
 /* --------------------------------- checks --------------------------------- */
 export interface Violation {
   check: 'arg-conformance' | 'read-resolution' | 'binding-resolution' | 'dead-output' | 'orphan-input'
-  | 'output-path-undeclared';
+  | 'output-path-undeclared' | 'entry-field-undeclared';
   site: string;
   detail: string;
 }
