@@ -19,6 +19,7 @@ Operative checklist for comparing drafted content to reference workflows of simi
 | Routing patterns | Activity-level `exits[]` with `id` / `when` / `isDefault` / `immediate`, bound in the workflow's `graph`, as used by siblings |
 | Checkpoint structure | Inline `kind: checkpoint` steps with `message`, `options`, effects — same shapes as references |
 | Technique structure | Capability / Protocol / Inputs / Outputs / Rules sections; binding via `step.technique` |
+| Routine structure | `routines/<name>.yaml`; the filename is the identity; `steps[]` as the ordinary kind-tagged list |
 
 For each divergence: decide whether it is justified (document why) or should be brought into conformance. Where drafted content uses different naming or structural patterns than existing workflows, align with the established conventions unless the user has approved an exception (`no-invented-naming`).
 
