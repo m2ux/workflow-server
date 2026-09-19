@@ -1,5 +1,5 @@
 id: scope-definition
-version: 1.5.0
+version: 1.6.0
 name: Define Audit Scope
 description: Collect the audit target, description, and output path.
 variables:
@@ -27,12 +27,11 @@ steps:
   - kind: technique
     id: validate-target
     technique: validate-target
-  - kind: technique
+  - kind: routine
     id: index-codebase
-    technique:
-      name: gitnexus::analyze
-      inputs:
-        repo_path: target_path
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{target_path}"
   - kind: technique
     id: summarize-scope
     technique: summarize-scope

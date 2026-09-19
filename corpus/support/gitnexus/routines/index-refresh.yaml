@@ -1,5 +1,5 @@
 id: index-refresh
-version: 1.0.0
+version: 1.1.0
 name: Index Refresh
 description: >-
   Read what a graph holds and how far behind its tree it has fallen, rebuild that tree where the
@@ -12,9 +12,11 @@ inputs:
 outputs:
   - id: stats
     type: object
+    optional: true
     description: File, symbol and process counts the graph holds.
   - id: index_stale
     type: boolean
+    optional: true
     description: Whether the graph is behind the tree it was built from.
 
 steps:
