@@ -314,6 +314,20 @@ steps:
     const bare = WITH_COMPONENTS.replace(/#### changed_symbols[\s\S]*?## Protocol/, '## Protocol');
     expect(await pathViolationsIn(runReading('change_report.symbols'), bare)).toEqual([]);
   });
+
+  /**
+   * `artifact` and `audience` are entry metadata — the file the technique writes, and the reader it
+   * is written for. Neither is a member of the value, so an output carrying only those declares
+   * nothing about its shape and contradicts no read. Counting one as a component would make an
+   * output measured by the presence of a delivery field, and every read into it reportable.
+   */
+  it('passes a read into an output whose only sub-sections are entry metadata', async () => {
+    const metadataOnly = WITH_COMPONENTS.replace(
+      /#### changed_symbols[\s\S]*?## Protocol/,
+      '#### audience\n\n`agent`\n\n#### artifact\n\n`change-report.md`\n\n## Protocol',
+    );
+    expect(await pathViolationsIn(runReading('change_report.symbols'), metadataOnly)).toEqual([]);
+  });
 });
 
 /**
