@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -21,7 +21,8 @@ Paths of the files holding a link that resolves to `{target_file_path}`.
 
 ## Protocol
 
-1. Apply [cypher](./cypher.md) against `{repo_name}` with `MATCH (a:File)-[r:CodeRelation {type: 'IMPORTS'}]->(b:File {filePath: '{target_file_path}'}) WHERE r.reason = 'markdown-link' RETURN a.filePath` to produce the `{referencing_files}`.
+1. Call `gitnexus_cypher { query: "MATCH (a:File)-[r:CodeRelation {type: 'IMPORTS'}]->(b:File {filePath: '{target_file_path}'}) WHERE r.reason = 'markdown-link' RETURN a.filePath", repo: repo_name }` and record the rows it returns as the `{referencing_files}`.
+   > - If the index is out of date, run `npx gitnexus analyze`, then retry.
    > - Where the result is empty, confirm the path spelling against the index before reading the emptiness as no referencers — a path that does not match any file yields the same empty set as a file nothing links to.
 2. Take the result as the set of files that would need reading if `{target_file_path}` changed meaning.
 
