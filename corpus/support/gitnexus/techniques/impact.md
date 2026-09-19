@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -60,7 +60,6 @@ The entry points whose flows the change reaches. Each names the entry-point symb
 ### 1. Invoke
 
 - Call `gitnexus_impact { target, direction, maxDepth: max_depth, minConfidence: min_confidence, relationTypes: relation_types, includeTests: include_tests, repo: repo_name }`.
-- If the call reports the index is out of date, run `npx gitnexus analyze` in terminal, then retry.
 - If `{target}` does not resolve in the graph, verify the symbol name; if it is new or unindexed, fall back to grep for callers.
 
 ### 2. Interpret Results

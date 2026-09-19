@@ -10,12 +10,15 @@ A run lands here rather than in a workflow because its body composes this namesp
 
 ## Over a diff
 
+[`narrow-to-changed`](narrow-to-changed.yaml) takes a caller-supplied `MATCH`, writes the change's files into it, and runs it. [`orphan-scan`](orphan-scan.yaml) supplies the unreferenced `MATCH` so a work package never authors Cypher. [`public-api-enum`](public-api-enum.yaml) is the same shape over the visibility filter.
+
 | Routine | Runs |
 |---------|------|
 | [`diff-coverage-map`](diff-coverage-map.yaml) | The changed symbols, each one's callers, then which of them a test reaches |
 | [`public-api-enum`](public-api-enum.yaml) | The changed symbols, the query that filters them to the visible ones, then the exported surface that query returns |
 | [`scope-discipline-check`](scope-discipline-check.yaml) | The flows the diff reaches, held against the flows the work was for |
-| [`orphan-scan`](orphan-scan.yaml) | Every unreferenced function and method, narrowed to the files this work changed |
+| [`narrow-to-changed`](narrow-to-changed.yaml) | A caller-supplied `MATCH`, with the change's files inlined as a path predicate, then run |
+| [`orphan-scan`](orphan-scan.yaml) | Every unreferenced function and method, via `narrow-to-changed` |
 | [`package-diagram-source`](package-diagram-source.yaml) | The change's bound, then the members of each functional area it touches |
 | [`sequence-diagram-source`](sequence-diagram-source.yaml) | The change's bound, then the ordered trace of each flow it runs through |
 | [`change-risk-assessment`](change-risk-assessment.yaml) | The symbol's blast radius, the diff's own rating, and both as a share of the traced whole |
