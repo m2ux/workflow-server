@@ -10,10 +10,12 @@ This is a **library namespace**, not a workflow. It declares no `workflow.yaml` 
 
 | Folder | Holds | Grain |
 |--------|-------|-------|
-| [`techniques/`](techniques/README.md) | One operation per GitNexus endpoint, plus the judgements the runs end on | One answer: a tool call, a resource read, or a reading of what those returned |
+| [`techniques/`](techniques/README.md) | One operation per GitNexus endpoint, the query compositions a run executes, and the judgements the runs end on | One answer: a tool call, a resource read, a composed query, or a reading of what those returned |
 | [`routines/`](routines/README.md) | Named runs of those operations | A sequence, an iteration, a branch, a gate |
 
 **The split is what the construct can hold.** A technique is a short produce path over one endpoint with the prose that reads its answer; it carries no loop, no branch and no user decision. A run that walks a collection, selects between two paths, or stops for a person is a routine, where the schema holds each of those as structure the step manifest and the coverage walk can see.
+
+A restriction the graph already holds is written into the query it runs. [`constrain-to-changed-files`](techniques/constrain-to-changed-files.md) puts the change's files into a `MATCH`; [`compose-visibility-filter`](techniques/compose-visibility-filter.md) keeps a changed set's exported surface. [`narrow-to-changed`](routines/narrow-to-changed.yaml) executes the first of those; [`orphan-scan`](routines/orphan-scan.yaml) is the domain preset that supplies the unreferenced `MATCH` so a work package never authors Cypher. [`public-api-enum`](routines/public-api-enum.yaml) is the same shape over the visibility filter.
 
 ---
 

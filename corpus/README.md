@@ -12,8 +12,9 @@ Each product workflow is a directory of its own, typically carrying:
 
 - `workflow.yaml` — the definition: id, initial activity, transitions
 - `README.md` — what that workflow does
-- `activities/` — the steps of the graph
-- `techniques/` — how those steps act
+- `activities/` — the stages of the graph
+- `techniques/` — judgement on live feedback those stages bind
+- `routines/` — accepted, codified runs those stages share
 - `resources/` — documents a technique names
 
 How to add one is in [`docs/README.md`](../docs/README.md#adding-a-workflow).

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Map a git diff to the changed-symbol set and the execution flows it affects. The canonical pre-commit and diff-driven-review entry point.
+Map a git diff to the changed-symbol set and the execution flows it affects.
 
 ## Inputs
 
@@ -41,7 +41,5 @@ The counts — changed symbols, affected flows, changed files — and the `risk_
 
 ## Protocol
 
-1. Call `gitnexus_detect_changes { scope: diff_scope, base_ref, repo: repo_name }` to produce the `{change_report}` (changed symbols, changed files, affected flows, risk level). If the index is out of date, run `npx gitnexus analyze`, then retry.
+1. Call `gitnexus_detect_changes { scope: diff_scope, base_ref, repo: repo_name }` to produce the `{change_report}` (changed symbols, changed files, affected flows, risk level).
    > A `'compare'` scope with no `{base_ref}` measures against nothing and answers about nothing, so the two travel together.
-2. Pre-commit: confirm the changes affect only the expected symbols and flows.
-3. Diff-driven review: use the changed-symbol set as the basis for coverage, scope, and severity work.
