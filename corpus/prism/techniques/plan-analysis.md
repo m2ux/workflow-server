@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -105,7 +105,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 - For scope 'codebase' or 'document-set': list files and directories at the top level
 - If the target directory contains no analyzable files, report the empty directory and check that the path is correct and contains source files or documents.
 - Identify module boundaries from directory layout, build system (workspaces, packages), and naming conventions
-- When the target codebase is indexed (check via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md)): use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) to discover functional areas and community clusters — these are better module boundaries than directory layout alone. If the codebase is not indexed, fall back to directory-based module detection and role-based risk classification, and note in the plan that fan-in analysis was not available.
+- Where `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*repo_name*: `{repo_name}`) to discover functional areas and community clusters — these are better module boundaries than directory layout alone. If the codebase is not indexed, fall back to directory-based module detection and role-based risk classification, and note in the plan that fan-in analysis was not available.
 - Record per-module: path, file count, estimated lines, primary language or content type
 
 ### 5. Classify Units
@@ -113,7 +113,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 - Categorise each module by role: api-surface, auth-security, state-persistence, business-logic, integration-external, utilities, configuration, types-definitions
 - Assess risk based on role and content signals: auth/crypto/permissions/session → high. state/database/persistence → high. API surface/public interfaces → medium. business logic/domain rules → medium. utilities/helpers → low. config/constants/types → low.
 - If the scope is codebase but no analytical goal was provided, risk cannot be classified meaningfully — ask the caller for an analytical goal. Without one, default to 'bug detection', which maps all modules to L12.
-- When the target codebase is indexed: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) to check how many callers each module has — high fan-in modules are higher risk regardless of role
+- Where `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*repo_name*: `{repo_name}`) to check how many callers each module has — high fan-in modules are higher risk regardless of role
 - If the analytical goal targets a specific concern (e.g., 'security'), elevate all modules touching that concern to high risk
 - Record per-module: role, risk (high/medium/low), classification rationale
 

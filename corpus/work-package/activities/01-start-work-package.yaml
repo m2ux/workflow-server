@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.27.0
+version: 3.28.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -372,16 +372,18 @@ steps:
       - action: validate
         target: signing.configured == true
         message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing).
-  - kind: technique
+  - kind: routine
     id: analyze-repo-with-gitnexus
-    technique:
-      name: gitnexus::analyze
-      inputs:
-        repo_path: component_git_dir
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{component_git_dir}"
+  - kind: action
+    id: record-gitnexus-index
     actions:
       - action: set
         target: gitnexus_indexed
-        description: true when indexing the component tree succeeds, false otherwise
+        value: true
+        description: Reaching this action implies the run left a current graph over the component tree (a failed rebuild fails its step); the variable's defaultValue false covers the un-run or failed path.
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy

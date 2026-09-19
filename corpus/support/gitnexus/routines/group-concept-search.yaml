@@ -1,0 +1,38 @@
+id: group-concept-search
+version: 1.0.0
+name: Group Concept Search
+description: >-
+  Read the inventory naming the repository groups configured over the indexed graphs, then rank one
+  group's members against a concept and merge what they return into a single ranking.
+
+inputs:
+  - id: group_name
+    description: Name of the configured repository group the ranking is drawn from.
+  - id: search_query
+    description: The concept, symptom or error text the ranking matches, as keywords.
+
+outputs:
+  - id: group_query_report
+    type: object
+    description: Execution flows drawn from the group's members and merged into one ranking, each carrying the member it came from.
+  - id: graph_inventory
+    type: object
+    optional: true
+    description: Every indexed graph with the tree it was built from, and the repository groups configured over them, which is where a group name that resolves to nothing is settled.
+
+steps:
+  - kind: technique
+    id: read-inventory
+    technique:
+      name: gitnexus::resolve-graph
+      outputs:
+        graph_inventory: graph_inventory
+  - kind: technique
+    id: rank-members
+    technique:
+      name: gitnexus::group-search
+      inputs:
+        group_name: group_name
+        search_query: search_query
+      outputs:
+        group_query_report: group_query_report

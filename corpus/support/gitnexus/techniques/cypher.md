@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -25,4 +25,3 @@ the query result rows
 2. Call `gitnexus_cypher { query: cypher_query, repo: repo_name }`; the matching `{result_rows}` come back as the result set.
    > - If the index is out of date, run `npx gitnexus analyze`, then retry.
    > - If the query references labels or edges not present in the schema, re-read `gitnexus://repo/{repo_name}/schema` and correct the query.
-3. Reserve this for custom call-chain traces, ordering/error-path assertions, and visibility filters; prefer [impact](./impact.md) / [context](./context.md) / [query](./query.md) when they suffice.

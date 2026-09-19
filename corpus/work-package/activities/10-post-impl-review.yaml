@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.0.0
+version: 2.1.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -14,7 +14,6 @@ variables:
     - component_name
     - component_path
     - host_repo_path
-    - gitnexus_indexed
     - is_review_mode
     - issue_title
     - planning_folder_path
@@ -115,13 +114,6 @@ steps:
     actions:
       - action: log
         message: Starting post-implementation review
-  - kind: technique
-    id: gitnexus-detect-changes-preflight
-    technique:
-      name: gitnexus::detect-changes
-      inputs:
-        repo_name: component_name
-    when: gitnexus_indexed == true
   - kind: technique
     id: manual-diff-review
     technique: review-diff

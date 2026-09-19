@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -46,7 +46,7 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 
 ### 2. Check Gitnexus
 
-- Honor the bound `{gitnexus_indexed}` flag — it records whether the codebase under work has a usable index; re-probe only where it is unset, through the operation `gitnexus.index-freshness-first` names
+- Honor the bound `{gitnexus_indexed}` flag — it records whether the codebase under work has a usable index
 - If `{gitnexus_indexed}` is true: structural analysis throughout this technique goes through the gitnexus operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here, the default over grep
 - Only when `{gitnexus_indexed}` is false (the codebase is genuinely not indexed or stale): fall back to grep/read/glob for all exploration steps
 

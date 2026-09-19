@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -77,10 +77,10 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ### 4. Augment With Graph
 
-- After lens execution, check GitNexus availability via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md). If unavailable, skip graph augmentation.
-- `{error_resilience_analysis}`: Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function.
-- `{evolution_analysis}`: Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: each coupling point, *direction*: `upstream`) on the coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
-- `{api_surface_analysis}`: Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md) to enumerate exported/public symbols with caller counts (`MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC`). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph.
+- After lens execution, an empty `{repo_name}` is a target no graph covers: skip graph augmentation. Otherwise apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md)(*repo_name*: `{repo_name}`) and read how far the graph trails its tree as the age every augmentation below carries.
+- `{error_resilience_analysis}`: Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*repo_name*: `{repo_name}`) on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function.
+- `{evolution_analysis}`: Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: each coupling point, *direction*: `upstream`, *repo_name*: `{repo_name}`) on the coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
+- `{api_surface_analysis}`: Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md)(*repo_name*: `{repo_name}`) to enumerate exported/public symbols with caller counts (`MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC`). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph.
 - `{cost_analysis}`: No graph augmentation — optimization analysis concerns algorithmic complexity, not graph structure.
 - GitNexus data is appended as a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data provides supplementary measurement that the synthesis pass can reference.
 

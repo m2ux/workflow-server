@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -96,9 +96,9 @@ Full filesystem path to `DEFINITIVE-FINDINGS.md`
 
 ### 4. Enrich Blast Radius
 
-- Check GitNexus availability via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md). If the target codebase is not indexed, skip blast radius enrichment.
-- For each finding that references a specific symbol (function, class, module), take the symbol the finding references as `{$finding_symbol}` and use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: `{finding_symbol}`, *direction*: `upstream`) to compute the measured blast radius: direct callers (d=1), likely affected (d=2), affected execution flows, and affected modules.
-- Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) on the finding's primary symbol to determine which execution flows it participates in — this adds process context to the finding location.
+- An empty `{repo_name}` is a target no graph covers: skip blast radius enrichment. Otherwise apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md)(*repo_name*: `{repo_name}`) and read how far the graph trails its tree as the age every measurement below carries.
+- For each finding that references a specific symbol (function, class, module), take the symbol the finding references as `{$finding_symbol}` and use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: `{finding_symbol}`, *direction*: `upstream`, *repo_name*: `{repo_name}`) to compute the measured blast radius: direct callers (d=1), likely affected (d=2), affected execution flows, and affected modules.
+- Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*repo_name*: `{repo_name}`) on the finding's primary symbol to determine which execution flows it participates in — this adds process context to the finding location.
 - Record enrichment data per finding: `{ direct_callers, affected_processes, affected_modules, process_names }`. Findings without identifiable symbols are not enriched.  
   > Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol.
 

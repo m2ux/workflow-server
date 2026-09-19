@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -28,6 +28,14 @@ The code or text to analyze — a file path or inline content.
 #### default
 
 `.`
+
+### repo_name
+
+*(optional)* Name of the indexed graph covering the target, which every graph read addresses. Empty where no graph covers the target, which is the condition a graph read falls back from.
+
+#### default
+
+`""`
 
 ## Rules
 

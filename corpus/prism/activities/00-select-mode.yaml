@@ -1,11 +1,15 @@
 id: select-mode
-version: 2.3.0
+version: 2.4.0
 name: Plan Analysis
 description: Select an analysis mode for the user's request.
 variables:
   reads:
     - target
   writes:
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph covering the target, which every graph read addresses. Empty where no graph covers it.
+      defaultValue: ""
     - name: analysis_units
       type: array
       description: Ordered list of analysis units (for multi-unit scopes)
@@ -24,6 +28,14 @@ variables:
         - smart
         - adaptive
 steps:
+  - kind: technique
+    id: name-graph
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: target
+      outputs:
+        repo_name: repo_name
   - kind: technique
     id: plan
     technique: plan-analysis

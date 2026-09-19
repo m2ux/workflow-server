@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ Three sibling lists — the execution flows the concept ranked into, the symbols
 
 #### processes
 
-The execution flows the concept ranked into, each carrying the `summary` that names it end to end, its `priority` as relevance, its `id`, and the `process_type`, `symbol_count` and `step_count` describing its shape. The `summary` is the identifier [read-process](./read-process.md) takes.
+The execution flows the concept ranked into, each carrying the `summary` that names it end to end, its `priority` as relevance, its `id`, and the `process_type`, `symbol_count` and `step_count` describing its shape. The `summary` is the identifier a flow's ordered trace is addressed by.
 
 #### process_symbols
 
@@ -45,4 +45,4 @@ The files and symbols the concept reached that sit in no flow — files, interfa
    > - If the index is out of date, run `npx gitnexus analyze`, then retry.
    > - If the concept ranked into no flow, read the definitions for the files it reached before broadening the query terms; an empty flow list arrives with those still populated, so it is not an empty answer. Fall back to grep for pure text patterns.
    > - The answer stops at `{limit}` flows and `{max_symbols}` symbols each, and says neither that it stopped nor what it left behind — so raise both where the question is how many rather than which, and report the bounds the answer was taken at.
-2. Use the processes in the `{query_report}` to orient before deep-diving with [context](./context.md) on specific symbols.
+2. Read the ranked flows as where the concept lives rather than as the answer about it: the flows orient, and the symbols each one names are where a deeper read is addressed.

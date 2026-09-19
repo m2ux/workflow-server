@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -62,9 +62,9 @@ The property that persists through every improvement
 
 ### 3. Gather Structural Context
 
-- Check GitNexus availability via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md). If the target codebase is not indexed, skip this step entirely and proceed to execute-lens.
-- Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) with queries derived from the target code's primary concerns (e.g., the module name, key function names, or `{analysis_focus}` if provided) to discover execution flows through the target — this identifies which call chains the code participates in and which are most relevant.
-- Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) on the primary entry points and exported symbols of the target to obtain caller/callee maps — the lens can then make blast-radius claims backed by actual graph data rather than inference.
+- An empty `{repo_name}` is a target no graph covers: skip this step entirely and proceed to execute-lens. Otherwise apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md)(*repo_name*: `{repo_name}`) and read how far the graph trails its tree as the age every reading below carries.
+- Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*repo_name*: `{repo_name}`) with queries derived from the target code's primary concerns (e.g., the module name, key function names, or `{analysis_focus}` if provided) to discover execution flows through the target — this identifies which call chains the code participates in and which are most relevant.
+- Use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*repo_name*: `{repo_name}`) on the primary entry points and exported symbols of the target to obtain caller/callee maps — the lens can then make blast-radius claims backed by actual graph data rather than inference.
 - Record the structural context (execution flows, caller counts, callee maps) as a preamble section that the lens operations can reference when making claims about impact, coupling, or dead code.
 - If any GitNexus call fails, log the failure and continue without structural context — the lens operates independently.  
   > Structural context from GitNexus is supplementary evidence, not a replacement for the lens operations. The L12 chain executes completely regardless of whether graph data is available. Graph data strengthens blast-radius claims and call-chain evidence but does not alter the analytical method.

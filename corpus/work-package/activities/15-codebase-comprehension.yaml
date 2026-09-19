@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.13.0
+version: 1.14.0
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 variables:
@@ -55,6 +55,12 @@ steps:
       - action: set
         target: comprehension_dir
         value: "{host_repo_path}/.engineering/artifacts/comprehension"
+  - kind: routine
+    id: refresh-index
+    when: "!gitnexus_indexed"
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{component_git_dir}"
   - kind: technique
     id: build-comprehension
     technique:

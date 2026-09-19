@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -30,7 +30,7 @@ True when a runnable midnight-node binary is locatable; gates runtime and SCALE-
 ### 1. Probe Toolchains
 
 - Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[resolve-graph](/gitnexus/techniques/resolve-graph.md)(*tree_path*: `{target_repo_path}`) and take its `{repo_name}` as this workflow's `{repo_name}`. Where the checkout sits inside a larger indexed tree, its `{graph_inventory}` names both graphs and the checkout's own is the one to carry — a containing tree's answers span components outside the review.
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md) against that `{repo_name}` and read its `{stats}` for the commit the graph was built at; emit `{gitnexus_available}` true only where `{repo_name}` is non-empty and that commit is current for the review surface. A stale index answers in the same shape as a fresh one, per `index-freshness-first`.
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md) against that `{repo_name}` and read its `{index_stale}`; emit `{gitnexus_available}` true only where `{repo_name}` is non-empty and that reading reports the graph current. The commit the graph was built at is in the `{graph_inventory}` the step above produced. A stale index answers in the same shape as a fresh one, per `index-freshness-first`.
 - Probe cargo with a cheap metadata invocation against the target workspace; emit `{cargo_available}` true only on success.
 - Locate a midnight-node binary (target build output or an installed release) and confirm it answers a version query; emit `{node_binary_available}` true only on success.
 - A failed or absent probe emits its gate false — unavailability is data for routing, never an error that stops intake.
