@@ -38,6 +38,10 @@ variables:
   - name: target_description
     type: string
     description: Short description of what is being analysed, standing as the target path when absent.
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph covering the target, which every graph read addresses. Empty where the target is not a tree any graph covers, which is the condition the graph reads fall back from.
+    defaultValue: ""
 initialActivity: select-mode
 graph:
   select-mode:

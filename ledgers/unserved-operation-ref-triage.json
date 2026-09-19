@@ -272,12 +272,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/prism/techniques/plan-analysis.md:108",
-      "op": "verify-index",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/prism/techniques/plan-analysis.md:116",
       "op": "context",
       "verdict": "fix-later",
@@ -298,12 +292,6 @@
     {
       "site": "corpus/prism/techniques/single-lens-analysis.md:54",
       "op": "query",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/prism/techniques/single-lens-analysis.md:54",
-      "op": "verify-index",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },

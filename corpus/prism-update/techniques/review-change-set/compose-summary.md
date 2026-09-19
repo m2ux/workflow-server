@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ A categorized change table — one row per entry under each of the new, modified
 ### 2. Record What Each Rename And Deletion Breaks
 
 - Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[resolve-graph](/gitnexus/techniques/resolve-graph.md)(*tree_path*: the tree holding `{resource_path}`) and take its `{repo_name}` as the graph addressed below.
-  > An empty `{repo_name}` leaves this step to the stale-name grep the verify activity runs, and the row records the column as `unmeasured` rather than empty.
+  > An empty `{repo_name}` is a tree no graph covers, and the row records the column as `unmeasured` rather than empty — an unmeasured reference set and one measured as empty are different answers.
 - For each entry in `{change_set}.renamed` and `{change_set}.deleted`, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[reference-lookup](/gitnexus/techniques/reference-lookup.md)(*target_file_path*: the entry's `resource_file`, *repo_name*: `{repo_name}`) and record its `{referencing_files}` against that entry's row in `{change_summary}`.
   > - The lookup runs here, while every `resource_file` still stands at the path the index records. Once the rename and the removal are applied the old paths are gone, and the same lookup answers about a file that is absent.
   > - A file naming a resource in prose without linking to it carries no edge, per `links-are-the-only-references`, so a short list bounds the links rather than the references.
