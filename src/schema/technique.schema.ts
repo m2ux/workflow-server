@@ -92,7 +92,17 @@ export const OutputItemDefinitionSchema = z.object({
 });
 export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 
-export const OutputsDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
+export const OutputsDefinitionSchema = z.array(
+  // An output is a value with parts or a list of entries, never both: `components` names the parts,
+  // `entry` names what one element carries, and an output declaring each is describing two different
+  // shapes of one value. Refused at load — the technique is dropped with a logged warning, the same
+  // treatment a mistyped `audience` gets — because a reader addressing into it would be answered by
+  // whichever declaration the access happened to select.
+  OutputItemDefinitionSchema.refine(
+    (output) => output.entry === undefined || output.components === undefined,
+    { message: 'an output declares `components` (its parts) or `entry` (what one element carries), never both' },
+  ),
+).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputsDefinition = z.infer<typeof OutputsDefinitionSchema>;
 
 // Delivery-only blocks, populated by the server at composition time: entries whose winning

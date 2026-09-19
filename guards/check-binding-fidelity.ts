@@ -581,7 +581,10 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
     if (typeof o.variable === 'string') {
       const item = o.variable;
       const fields = new Set<string>();
-      for (const [, field] of JSON.stringify(o.steps ?? []).matchAll(
+      // The whole loop, not just its steps: a break condition or a continuation test reads the item
+      // as surely as a step does, and they sit beside `steps` rather than inside it. `over` and
+      // `variable` carry the bare name without a dot, so neither matches.
+      for (const [, field] of JSON.stringify(o).matchAll(
         new RegExp(`\\{${item}\\.([A-Za-z0-9_]+)`, 'g'),
       )) fields.add(field!);
       loopItems.push({ rel, wf, activityId, item, over: o.over, fields });

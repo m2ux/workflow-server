@@ -98,7 +98,8 @@
       },
       "required": [ "id" ],
       "additionalProperties": false,
-      "description": "Single output entry: id (required, generic hyphen-delimited), optional description, components, and artifact (for persistence)"
+      "not": { "required": [ "components", "entry" ] },
+      "description": "Single output entry: id (required, generic hyphen-delimited), optional description, components, and artifact (for persistence). An output is a value with parts or a list of entries, never both, so components and entry are mutually exclusive."
     },
     "outputsDefinition": {
       "type": "array",

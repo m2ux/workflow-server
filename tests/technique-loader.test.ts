@@ -884,6 +884,20 @@ describe('technique-loader', () => {
       expect(output?.components).toBeUndefined();
     });
 
+    /**
+     * An output is a value with parts or a list of entries, never both. Declaring each describes
+     * two shapes of one value, and a reader addressing into it would be answered by whichever
+     * declaration the access selected.
+     */
+    it('refuses an output declaring both its parts and its entry', async () => {
+      await writeTechnique([
+        '#### processes', '', 'The flows.', '',
+        '#### entry', '', '##### name', '', 'Its name.',
+      ]);
+      const result = await readTechnique('rank', tempDir);
+      expect(result.success).toBe(false);
+    });
+
     it('validates against the technique schema either way', async () => {
       await writeTechnique([
         '#### processes', '', 'The flows.', '', '##### summary', '', 'Its name.', '',
