@@ -43,7 +43,6 @@ import {
 } from '../utils/gate-liveness.js';
 import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
-import { policyVariables } from '../utils/activity-variables.js';
 import type { VariableDefinition } from '../schema/variable.schema.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, stageNote, unchangedMarker } from '../utils/delivery.js';
@@ -287,68 +286,21 @@ export const DELIVERY_COST_FIELDS = [
 ] as const;
 
 /**
- * What an operations bundle costs with no body aboard: its rules, its notes, and the id of every
- * operation it names. This is the part of the bundle no bound moves, so it is what the rest of the
- * response has to fit around, and what a definition too large for the room left is measured against.
- */
-function operationsFloor(bundle: Record<string, unknown>): number {
-  const { techniques, ...fixed } = bundle;
-  const refs = Object.keys((techniques ?? {}) as Record<string, unknown>);
-  return stringifyForResponse({
-    ...fixed,
-    ...(refs.length > 0 ? { operation_refs: refs, operations_note: OPERATION_REFS_NOTE } : {}),
-  }).length;
-}
-
-/**
- * How much of its variable declarations a startup response carries. Widest first: the first
- * fidelity that fits is the one sent.
+ * The variable roster a startup response carries: every name the run holds, with its type, its
+ * value set and its starting value.
  *
- * Every fidelity states the whole roster — each name a run carries, with its type, its value set and
- * its starting value. That roster is what an orchestrator drives a run against, so no bound takes a
- * declaration away. What gives way is the prose explaining one.
- *
- * `policy` keeps the prose for the variables the workflow file declares, because those are settled
- * for the whole run and the orchestrator is who decides on them. A name an activity declares is that
- * activity's product, described in the activity's own file, which arrives whole with the
- * `get_activity` that dispatches a worker there.
+ * The prose explaining what a variable is FOR is not here, and not because a limit reached it. An
+ * orchestrator drives a run by name — it recognises a name a worker reports back, reads a value out
+ * of the session by it, and hands values on unread. What each one means is the business of the
+ * activity that produces it and the activity that consumes it, and it reaches both of those in
+ * their own definitions. So the prose is freight on this response at any size, and a roster is what
+ * the response owes.
  */
-const VARIABLE_FIDELITIES = ['full', 'policy', 'declarations'] as const;
-type VariableFidelity = typeof VARIABLE_FIDELITIES[number];
-
-/** The declarations as a response writes them at one fidelity. */
-function variablesAt(
-  fidelity: VariableFidelity,
-  variables: readonly VariableDefinition[],
-  policy: ReadonlySet<string>,
-): VariableDefinition[] {
-  if (fidelity === 'full') return [...variables];
+function variableRoster(variables: readonly VariableDefinition[]): VariableDefinition[] {
   return variables.map((variable) => {
-    if (fidelity === 'policy' && policy.has(variable.name)) return variable;
     const { description: _prose, ...declaration } = variable;
     return declaration;
   });
-}
-
-/**
- * What a response says about the prose it left out, and where the prose is.
- *
- * Chosen by what the declarations actually carry rather than by the stage that produced them: a
- * workflow whose own file declares no variable has nothing for the `policy` stage to keep, so the
- * stage that describes some and the stage that describes none come out as the same response, and a
- * note naming the first would describe prose the reader cannot find.
- */
-function variablesNote(describedAny: boolean): string {
-  const where = 'A variable an activity writes is described in that activity\'s own file, which '
-    + 'arrives whole with the get_activity that dispatches a worker to it.';
-  return describedAny
-    ? 'Every declaration this run carries is above, with its type, its value set and its starting '
-      + 'value. Descriptions ride for the variables this workflow\'s own file declares — the policy '
-      + 'the run operates under — because stating all of them would put this response past what one '
-      + `tool result may hold. ${where}`
-    : 'Every declaration this run carries is above, with its type, its value set and its starting '
-      + 'value, and none carries a description: stating them would put this response past what one '
-      + `tool result may hold. ${where}`;
 }
 
 /**
@@ -1003,7 +955,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. The response is held to what one tool result may carry: operation bodies give way first, to ids under `operation_refs` served by get_technique { technique_id }, and then the prose describing a variable gives way, which `variables_note` reports. Every variable the run carries is declared here whatever it sheds; a description it leaves out is in the file of the activity that writes that variable, and arrives with the get_activity that dispatches a worker there.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. The response is held to what one tool result may carry, and procedure is what gives way: an operation whose body is not here is named under `operation_refs` and served by get_technique { technique_id }. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
     {
       ...sessionIndexParam,
     },
@@ -1016,22 +968,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const result = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      const { workflow: wf, activityLoadErrors, variableSources } = result.value;
+      const { workflow: wf, activityLoadErrors } = result.value;
 
       const view = sessionView(state);
       const validation = buildValidation(
         validateWorkflowVersion(view, wf),
       );
 
-      // The workflow metadata this response carries below the separator, at each fidelity its
-      // variable declarations may ride at. What the orchestrator drives the run from — the roster,
-      // the graph, the rules, the declared namespace — is here at every fidelity; only the prose
-      // explaining a variable gives way, and only where the response would otherwise not fit.
+      // The workflow metadata this response carries below the separator: what an orchestrator drives
+      // a run from — the rules, the variable roster, the graph and the activities. Every part of it
+      // rides whole, whatever the response comes to. What the orchestrator does not act on is not
+      // here at all, which is a question about what the payload owes rather than about its size.
       // get_workflow returns lightweight metadata for the orchestrator: the technique bundle (above
       // the separator) plus rules, variables, initialActivity, and activity stubs. Per-activity step
       // detail and the worker-facing rules.activity / techniques.activity are delivered via get_activity.
-      const policy = policyVariables(variableSources);
-      const summaryAt = (fidelity: VariableFidelity): Record<string, unknown> => ({
+      const summaryData: Record<string, unknown> = {
         id: wf.id,
         version: wf.version,
         title: wf.title,
@@ -1041,14 +992,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           const orch = [...(r?.workflow ?? []), ...(r?.universal ?? [])];
           return orch.length ? orch : undefined;
         })(),
-        ...(wf.variables === undefined ? {} : ((): Record<string, unknown> => {
-          const declared = variablesAt(fidelity, wf.variables!, policy);
-          const describedAny = declared.some((v) => v.description !== undefined);
-          return {
-            variables: declared,
-            ...(fidelity === 'full' ? {} : { variables_note: variablesNote(describedAny) }),
-          };
-        })()),
+        ...(wf.variables === undefined ? {} : { variables: variableRoster(wf.variables) }),
         initialActivity: wf.initialActivity,
         // The workflow's shape, in one place: for each activity, where each of its exits leads.
         // Report the exit on next_activity and the target is this map's answer, not a guess.
@@ -1065,7 +1009,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // The orchestrator binds `planning_folder_path` from here and never
         // recomposes it relative to CWD or a target worktree.
         planning_folder_path: presentPlanningPath(loaded.folderAbsPath) ?? loaded.folderAbsPath,
-      });
+      };
+      const summaryText = stringifyForResponse(summaryData);
 
       // Bundle the workflow's orchestrator-level technique refs (`techniques.workflow`) and the core
       // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
@@ -1126,32 +1071,25 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...(operationRefs.length > 0 ? { operation_refs: operationRefs } : {}),
       });
 
-      // Two things this response cannot be read without: the rules of the orchestrator's operations,
-      // and what the workflow is. Procedure gives way first — a body deferred is one the orchestrator
-      // fetches by id when it reaches the step that applies it. Where every body is already an id and
-      // the response is still over, what gives way next is the prose explaining a variable. The floor
-      // the fidelity is chosen against is the bundle carrying no body at all, so a definition never
-      // sheds to make room for a procedure: it sheds only where the room does not exist.
-      const floor = operationsFloor(opsBundle) + SEPARATOR.length + metaChars;
-      let variableFidelity: VariableFidelity = VARIABLE_FIDELITIES[0];
-      let summaryText = '';
-      for (const fidelity of VARIABLE_FIDELITIES) {
-        variableFidelity = fidelity;
-        summaryText = stringifyForResponse(summaryAt(fidelity));
-        if (floor + summaryText.length <= responseBound) break;
-      }
-
+      // What is left for the bundle once the definition and the separator have their share. Procedure
+      // is the only thing that gives way here, and a body deferred is one the orchestrator fetches by
+      // id when it reaches the step that applies it — so what this decides is when a procedure
+      // arrives, never whether it can be had.
       const deferredOps = boundOperationsBundle(
         opsBundle, responseBound - summaryText.length - SEPARATOR.length - metaChars,
       );
       const opsText = stringifyForResponse(opsBundle);
-      // A response whose rules and definition alone exceed the bound has nothing left to give: every
-      // operation body is already an id, every variable is down to its declaration, and what remains
-      // is the contract and the workflow, which the orchestrator cannot drive without. It goes out
-      // over the bound and says so here, because an orchestrator paying more for its opening than the
-      // limit allows for is a workflow that has outgrown a single delivery, and a silent overflow is
-      // that fact arriving unexplained. Whether going over is the right end to the shed, against the
-      // round trip a client charges for an oversized result, is #836.
+      // A response whose rules and definition alone exceed the bound has every operation body
+      // already an id, and what remains is the contract and the workflow, which the orchestrator
+      // cannot drive without. It goes out over the bound and says so here.
+      //
+      // Nothing further gives way, because nothing further can give way without cost: the roster,
+      // the graph and the activities are how a run is driven, and dropping one would buy room by
+      // discarding what the response exists to carry. A definition that fills an opening call on its
+      // own is a workflow that has outgrown one orchestrator, and the answer to that is to divide it
+      // — the corpus has sub-workflows and fans for exactly this — not to send a thinner account of
+      // it. This line is what makes that visible. #836 carries the question of what, if anything,
+      // should happen here beyond reporting it.
       if (opsText.length + summaryText.length + SEPARATOR.length + metaChars > responseBound) {
         logWarn('Workflow response over its bound with every operation body deferred', {
           session_index, workflow: workflow_id,
@@ -1161,7 +1099,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // Two different things, so two names rather than one word doing both jobs.
           definition_chars: summaryText.length,
           protocol_metadata_chars: metaChars,
-          variable_fidelity: variableFidelity,
           deferred_operations: deferredOps.length,
         });
       }
@@ -1207,12 +1144,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         bundle_chars: opsText.length,
         max_response_chars: responseBound,
         deferred_operations: deferredOps.length,
-        // At which fidelity the workflow's variable declarations rode, so a run that read no prose
-        // says so on the same channel that says what procedure it read.
-        variable_fidelity: variableFidelity,
+        // What the workflow's own account of itself came to, beside what the contract came to, so a
+        // definition growing past what one delivery carries is readable before it gets there.
+        definition_chars: summaryText.length,
         protocol_metadata_chars: metaChars,
         // The whole tool result, the metadata beside the text included, because that is what a
-        // harness weighs and what the bound above is set against.
+        // client weighs and what the bound above is set against.
         response_chars: preamble.length + summaryText.length + metaChars,
       });
 

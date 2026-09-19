@@ -103,17 +103,13 @@ The response is the union of the workflow's declared technique references and th
 
 The assembled bundle is then held to what one tool result may carry (`MAX_RESPONSE_CHARS`, default 60,000 — the same bound a worker's delivery answers to, because both open a role's work, and measured over the whole result: the response text and the protocol metadata a client weighs beside it). Operation bodies ride the response in list order and stop at the first that would overflow; the remainder are named under `operation_refs`, with `operations_note` saying how to get them. The role's `rules` list is never bounded — those rules are the contract an orchestrator is held to from its first call, while a procedure it has not reached yet is one it fetches with `get_technique { technique_id }` when it does.
 
-The workflow metadata below the separator answers to the same bound, after the bundle and never instead of it. Procedure gives way first. Where every operation body is already an id and the response is still over, what gives way next is the prose explaining a variable — in two stages, so the least is given that makes the response fit:
+The workflow metadata below the separator rides whole, at any bound. Procedure is the only thing on this response that gives way, and giving way defers it rather than discards it: a deferred body is fetched by id when the orchestrator reaches the step that applies it.
 
-| Stage | What the declarations carry |
-|-------|------------------------------|
-| full | Every declaration with the prose explaining it. |
-| policy | Prose for the variables the workflow file itself declares. |
-| declarations | Names, types, value sets and starting values, and no prose. |
+What the metadata carries is what an orchestrator drives a run from — the rules, the variable roster, the graph, the activities. The roster is every name the run holds with its type, its value set and its starting value, because the orchestrator recognises a name a worker reports back and reads a value out of the session by it.
 
-A workflow-file declaration is policy for the whole run — the mode it operates in, the paths it works against — so the orchestrator is who decides on it. Every other name is one activity's product and another's input, declared in the file of the activity that writes it, which arrives whole with the `get_activity` that dispatches a worker there. So the prose that gives way first is the prose that reaches its reader by another route.
+What it does not carry is the prose explaining what each variable is FOR. That absence is the contract rather than a limit reaching it: nothing the orchestrator decides turns on that prose, and the activity that produces a value and the activity that consumes it each carry it in their own definition, delivered whole to the worker dispatched there. Freight on this response at any size.
 
-What no stage reaches is the roster, the graph and the declared namespace: an orchestrator recognises a name a worker reports and reads a value out of the bag by it, so a declaration the response dropped is a run it cannot follow. A response that sheds carries `variables_note`, naming what it left out and where that is. Where even the last stage leaves the response over the bound it goes out over it with no procedure aboard, and the server logs that it did.
+Where the rules and the definition together still exceed the bound, the response goes out over it and the server logs that it did. Nothing further gives way, because nothing further can give way without discarding what the response exists to carry. A definition that fills an opening call on its own is a workflow that has outgrown one orchestrator, and the answer is to divide it — sub-workflows and fans are in the corpus for exactly this — rather than to send a thinner account of it.
 
 ### The worker bundle
 

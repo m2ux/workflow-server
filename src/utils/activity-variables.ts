@@ -168,22 +168,6 @@ export function mergeActivityVariables(
   };
 }
 
-/**
- * The run's policy variables, out of a merge's source map: the names the workflow file declares.
- *
- * A file-declared variable is settled for the whole run — the mode it operates in, the paths it
- * works against — so the orchestrator is who reads it and who decides on it. Every other name is one
- * activity's product and another activity's input, explained in the file of the activity that writes
- * it and delivered whole to the worker dispatched there.
- */
-export function policyVariables(sources: ReadonlyMap<string, readonly string[]>): Set<string> {
-  const names = new Set<string>();
-  for (const [name, declaredBy] of sources) {
-    if (declaredBy.includes(WORKFLOW_SOURCE)) names.add(name);
-  }
-  return names;
-}
-
 /* --------------------------------- derivation --------------------------------- */
 
 /** What an activity reads from and writes to the session bag, computed from its steps. */

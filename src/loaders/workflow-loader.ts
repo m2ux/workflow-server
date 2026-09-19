@@ -58,15 +58,6 @@ export interface WorkflowWithDiagnostics {
    * only where a routine is used.
    */
   authoredActivities: Map<string, Activity>;
-  /**
-   * Variable name → the sites that declare it, in contribution order.
-   *
-   * The merge flattens the workflow file's own declarations and its activities' write declarations
-   * into one namespace, which is what a session runs against. This is the provenance that flattening
-   * settles, kept because two declarations of one name answer to different readers: a name the file
-   * declares is policy for the whole run, and a name an activity declares is that activity's product.
-   */
-  variableSources: Map<string, string[]>;
 }
 
 const formatZodIssues = (issues: Array<{ path: PropertyKey[]; message: string }>): string =>
@@ -345,10 +336,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     if (bindingErrors.length > 0) return err(new WorkflowValidationError(workflowId, bindingErrors));
 
     logInfo('Workflow loaded', { workflowId, version: workflow.version, activityCount: workflow.activities?.length ?? 0 });
-    return ok({
-      workflow, activityLoadErrors, activitySourceWorkflow, authoredActivities,
-      variableSources: merged.sources,
-    });
+    return ok({ workflow, activityLoadErrors, activitySourceWorkflow, authoredActivities });
   } catch (error) {
     logError('Failed to load workflow', error instanceof Error ? error : undefined, { workflowId });
     return err(new WorkflowValidationError(workflowId, [error instanceof Error ? error.message : 'Unknown error']));

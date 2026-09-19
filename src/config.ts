@@ -138,17 +138,19 @@ export interface ServerConfig {
    * some write it to a file and hand back a path — and the server neither sees which client it is
    * speaking to nor depends on knowing, both outcomes costing the run.
    *
-   * What each carries whatever the bound says is what its role cannot drive without — the role's
-   * rules, the workflow's roster, graph and declared namespace for an orchestrator, the activity it
-   * was dispatched for for a worker. An orchestrator's definition gives way one step further than a
-   * worker's: with every operation body already an id, the prose explaining a variable gives way in
-   * turn, first for the names activities produce for each other and then for all of them, so the
-   * namespace survives whole while what explains it does not. Where what is left still exceeds the
-   * bound the response goes out over it with no procedure aboard and the server logs that it did,
-   * which is the state a definition outgrowing a delivery arrives in rather than a limit doing its
-   * work.
+   * What gives way is procedure, and only procedure. A body left out is named and served by id when
+   * the role reaches the step that applies it, so the limit decides WHEN a procedure arrives and
+   * never whether it can be had. What each response carries whatever the limit says is what its role
+   * cannot drive without — the role's rules, the workflow's roster, graph and activities for an
+   * orchestrator, the activity it was dispatched for for a worker.
    *
-   * The figure covers the whole tool result: the response text, and the protocol metadata a harness
+   * Where that alone exceeds the limit the response goes out over it and the server logs that it
+   * did. Nothing further gives way, because nothing further can give way without discarding what the
+   * response exists to carry. A definition that fills a delivery on its own has outgrown one context,
+   * and the answer to that is to divide the work — the corpus has sub-workflows and fans for exactly
+   * this — rather than to send a thinner account of it.
+   *
+   * The figure covers the whole tool result: the response text, and the protocol metadata a client
    * weighs beside it.
    *
    * Default 60000 (see DEFAULT_MAX_RESPONSE_CHARS). Env override: `MAX_RESPONSE_CHARS`.
