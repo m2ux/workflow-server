@@ -127,19 +127,31 @@ export interface ServerConfig {
    */
   fanMaxBranches?: number;
   /**
-   * Characters one response may carry. A harness caps what a tool result may return, so this is the
-   * limit both role-facing deliveries answer to: `get_workflow`, the call that opens every
-   * orchestrator, and `get_activity`, the call a worker makes to receive its work. Each admits
-   * procedure bodies until the next would overflow and leaves the rest fetchable by id.
+   * Characters one response may carry — the limit both role-facing deliveries answer to:
+   * `get_workflow`, the call that opens every orchestrator, and `get_activity`, the call a worker
+   * makes to receive its work. Each admits procedure bodies until the next would overflow and leaves
+   * the rest fetchable by id.
    *
-   * What each carries whatever the bound says is what its role cannot drive without — the role's
-   * rules, the workflow's roster and graph for an orchestrator, the activity it was dispatched for
-   * for a worker. Where that alone exceeds the bound the response goes out over it with no
-   * procedure aboard and the server logs that it did, which is the state a definition outgrowing a
-   * delivery arrives in rather than a limit doing its work.
+   * A response is the opening of a role's work, and every character sits in that role's context for
+   * the rest of the session, before it has read a line of code or written anything. That is what the
+   * limit is against. What a client does with a larger result is its own business — some refuse it,
+   * some write it to a file and hand back a path — and the server neither sees which client it is
+   * speaking to nor depends on knowing, both outcomes costing the run.
    *
-   * The bound governs the response text. A tool result also carries protocol metadata beside it,
-   * measured at one to two thousand characters, which rides outside this figure.
+   * What gives way is procedure, and only procedure. A body left out is named and served by id when
+   * the role reaches the step that applies it, so the limit decides WHEN a procedure arrives and
+   * never whether it can be had. What each response carries whatever the limit says is what its role
+   * cannot drive without — the role's rules, the workflow's roster, graph and activities for an
+   * orchestrator, the activity it was dispatched for for a worker.
+   *
+   * Where that alone exceeds the limit the response goes out over it and the server logs that it
+   * did. Nothing further gives way, because nothing further can give way without discarding what the
+   * response exists to carry. A definition that fills a delivery on its own has outgrown one context,
+   * and the answer to that is to divide the work — the corpus has sub-workflows and fans for exactly
+   * this — rather than to send a thinner account of it.
+   *
+   * The figure covers the whole tool result: the response text, and the protocol metadata a client
+   * weighs beside it.
    *
    * Default 60000 (see DEFAULT_MAX_RESPONSE_CHARS). Env override: `MAX_RESPONSE_CHARS`.
    */
@@ -199,15 +211,23 @@ export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;
 /**
  * Characters one response may carry.
  *
- * The limit this respects belongs to the harness, not to the server, and is stated in tokens: the
- * client this was measured against refuses a tool result past 25,000 of them. 60,000 characters is
- * that figure at a conservative 2.4 characters per token, which leaves the margin a corpus needs to
- * grow into. Raise it for a harness that admits more; lower it for one that admits less.
+ * What a role's context can afford to spend on being handed its work. A worker delivery measured
+ * before this limit existed ran to 106,671 characters — roughly 44,000 tokens, a fifth of a
+ * 200,000-token window, gone before the worker read a line of code. The figure is calibrated
+ * against the point a client stops putting a result in front of the agent whole, stated in tokens:
+ * the one these figures were taken from carries 25,000. 60,000 characters is that at a conservative
+ * 2.4 characters per token, which leaves the margin a corpus needs to grow into.
  *
- * One figure for both role-facing deliveries, because one harness refuses both. It is a different
- * question from the eager-bundling budget above: that one asks how much of its own window a worker
- * may spend on inlined content, this one what a tool result may hold at all, and a delivery is held
- * to whichever binds first.
+ * Calibrated against, rather than derived from. A client past its own figure pages the result to a
+ * file or declines it, and either way the run pays; but no client is what makes an oversized
+ * delivery a bad trade, and a revision of this number is argued from what a role's context can
+ * afford rather than from a client's ceiling.
+ *
+ * One figure for both role-facing deliveries, because both open a role's work, and it is measured
+ * over the whole tool result — the text and the protocol metadata beside it — because that is what
+ * a client weighs. It is a different question from the eager-bundling budget above: that one asks
+ * how much of its own window a worker may spend on inlined content, this one what one handover may
+ * cost at all, and a delivery is held to whichever binds first.
  */
 export const DEFAULT_MAX_RESPONSE_CHARS = 60_000;
 

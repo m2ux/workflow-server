@@ -43,6 +43,7 @@ import {
 } from '../utils/gate-liveness.js';
 import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
+import type { VariableDefinition } from '../schema/variable.schema.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, stageNote, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, fanIdentityRefusal, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
@@ -196,11 +197,11 @@ const OPERATION_REFS_NOTE =
 /**
  * Hold a role's operations bundle to what one response may carry, in place.
  *
- * A harness caps a tool result, and both role-facing deliveries sit on a path their role cannot
- * skip — `get_workflow` opens every orchestrator, `get_activity` is how a worker receives its work
- * — so a bundle past that cap is a call that cannot be read at all rather than one that merely
- * costs too much. What gives is the operation BODIES, taken in list order and stopped at the first
- * that would overflow — the same stop-and-break `get_activity` applies to its eager step
+ * Both role-facing deliveries sit on a path their role cannot skip — `get_workflow` opens every
+ * orchestrator, `get_activity` is how a worker receives its work — so what rides here is charged to
+ * a context for the whole session that follows, and a procedure the role never reaches is a charge
+ * it never had to pay. What gives is the operation BODIES, taken in list order and stopped at the
+ * first that would overflow — the same stop-and-break `get_activity` applies to its eager step
  * techniques, and for the same reason: a contiguous prefix is what a reader can rely on.
  *
  * The `rules` list is never bounded. Those rules are the contract the role is held to from its
@@ -256,6 +257,50 @@ function boundOperationsBundle(bundle: Record<string, unknown>, maxChars: number
   bundle['operation_refs'] = deferred;
   bundle['operations_note'] = OPERATION_REFS_NOTE;
   return deferred;
+}
+
+/**
+ * What the protocol metadata beside a response costs the tool result that carries both.
+ *
+ * A harness weighs the whole result, so the bound answers for this as well as for the text. Measured
+ * as JSON because that is the form `_meta` goes over the wire in, where the response text is YAML.
+ */
+function metadataChars(meta: Record<string, unknown>): number {
+  return JSON.stringify(meta).length;
+}
+
+/** What one id costs a metadata list that names it: the id, its quotes, and its separator. */
+function metaListEntryChars(id: string): number {
+  return id.length + '"",'.length;
+}
+
+/**
+ * The fields `delivery_cost` reports. The reading is assembled where its figures are known, and the
+ * response bound reserves room for it before they are, so the shape has one home and a case holds
+ * the two together.
+ */
+export const DELIVERY_COST_FIELDS = [
+  'resolved_techniques', 'provenance_passes', 'bundled_steps', 'spent_chars', 'eager_budget_chars',
+  'response_spent_chars', 'response_bound_chars', 'fixed_chars', 'deferred_operations',
+  'worker_bundle_chars',
+] as const;
+
+/**
+ * The variable roster a startup response carries: every name the run holds, with its type, its
+ * value set and its starting value.
+ *
+ * The prose explaining what a variable is FOR is not here, and not because a limit reached it. An
+ * orchestrator drives a run by name — it recognises a name a worker reports back, reads a value out
+ * of the session by it, and hands values on unread. What each one means is the business of the
+ * activity that produces it and the activity that consumes it, and it reaches both of those in
+ * their own definitions. So the prose is freight on this response at any size, and a roster is what
+ * the response owes.
+ */
+function variableRoster(variables: readonly VariableDefinition[]): VariableDefinition[] {
+  return variables.map((variable) => {
+    const { description: _prose, ...declaration } = variable;
+    return declaration;
+  });
 }
 
 /**
@@ -910,7 +955,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. The response is held to what one tool result may carry, and procedure is what gives way: an operation whose body is not here is named under `operation_refs` and served by get_technique { technique_id }. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
     {
       ...sessionIndexParam,
     },
@@ -930,14 +975,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(view, wf),
       );
 
-      // The workflow metadata this response carries below the separator. Assembled ahead of the
-      // operations bundle because the bound the bundle is held to is a bound on the RESPONSE, and
-      // the metadata is the part of it that cannot give way: an orchestrator that cannot read the
-      // roster and the graph has nothing to drive.
+      // The workflow metadata this response carries below the separator: what an orchestrator drives
+      // a run from — the rules, the variable roster, the graph and the activities. Every part of it
+      // rides whole, whatever the response comes to. What the orchestrator does not act on is not
+      // here at all, which is a question about what the payload owes rather than about its size.
       // get_workflow returns lightweight metadata for the orchestrator: the technique bundle (above
       // the separator) plus rules, variables, initialActivity, and activity stubs. Per-activity step
       // detail and the worker-facing rules.activity / techniques.activity are delivered via get_activity.
-      const summaryData = {
+      const summaryData: Record<string, unknown> = {
         id: wf.id,
         version: wf.version,
         title: wf.title,
@@ -947,7 +992,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           const orch = [...(r?.workflow ?? []), ...(r?.universal ?? [])];
           return orch.length ? orch : undefined;
         })(),
-        variables: wf.variables,
+        ...(wf.variables === undefined ? {} : { variables: variableRoster(wf.variables) }),
         initialActivity: wf.initialActivity,
         // The workflow's shape, in one place: for each activity, where each of its exits leads.
         // Report the exit on next_activity and the target is this map's answer, not a guess.
@@ -965,6 +1010,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // recomposes it relative to CWD or a target worktree.
         planning_folder_path: presentPlanningPath(loaded.folderAbsPath) ?? loaded.folderAbsPath,
       };
+      const summaryText = stringifyForResponse(summaryData);
 
       // Bundle the workflow's orchestrator-level technique refs (`techniques.workflow`) and the core
       // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
@@ -1005,24 +1051,54 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
         opsBundle['bundle_note'] = `${MARKER_PREAMBLE} ${IN_RESPONSE_MARKER_NOTE}`;
       }
-      // What is left for the bundle once the metadata and the separator have their share. The bound
-      // is on the response, because the response is what a harness refuses.
+      // The bound is on the response, because the response is what a role pays for — and a client
+      // weighs the whole tool result, so what rides beside the text answers to it too. That share is
+      // reserved at its widest: every operation deferred is the longest `operation_refs` this
+      // response can carry, and nothing else in it varies with what the budget decides.
+      //
+      // Reserved rather than charged, which is the reverse of the worker path, because the two have
+      // different room to correct in. A worker delivery spends on step techniques AFTER its bundle is
+      // bounded, so the exact list is known before the rest of the budget goes and charging it costs
+      // nothing. Here the bundle is the last thing spent, so there is nothing after it to charge
+      // against. What is left is a circle — a longer ref list leaves less room, which defers another
+      // body, which lengthens the list — and reserving the widest is that circle's settled point,
+      // reached without a second pass. It gives away at most the ids of the bodies that did ride,
+      // and only where the bundle had room to spare.
       const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
+      const operationRefs = Object.keys((opsBundle['techniques'] ?? {}) as Record<string, unknown>);
+      const metaChars = metadataChars({
+        session_index, validation,
+        ...(operationRefs.length > 0 ? { operation_refs: operationRefs } : {}),
+      });
+
+      // What is left for the bundle once the definition and the separator have their share. Procedure
+      // is the only thing that gives way here, and a body deferred is one the orchestrator fetches by
+      // id when it reaches the step that applies it — so what this decides is when a procedure
+      // arrives, never whether it can be had.
       const deferredOps = boundOperationsBundle(
-        opsBundle, responseBound - stringifyForResponse(summaryData).length - SEPARATOR.length,
+        opsBundle, responseBound - summaryText.length - SEPARATOR.length - metaChars,
       );
       const opsText = stringifyForResponse(opsBundle);
-      // A response whose rules and metadata alone exceed the bound has nothing left to defer: every
-      // operation body is already an id, and what remains is the contract and the definition, which
-      // the orchestrator cannot drive without. It goes out over the bound rather than not at all,
-      // and says so here, because a harness refusing it is the failure this bound exists to prevent
-      // and a silent overflow is that failure arriving unexplained.
-      if (opsText.length + stringifyForResponse(summaryData).length + SEPARATOR.length > responseBound) {
+      // A response whose rules and definition alone exceed the bound has every operation body
+      // already an id, and what remains is the contract and the workflow, which the orchestrator
+      // cannot drive without. It goes out over the bound and says so here.
+      //
+      // Nothing further gives way, because nothing further can give way without cost: the roster,
+      // the graph and the activities are how a run is driven, and dropping one would buy room by
+      // discarding what the response exists to carry. A definition that fills an opening call on its
+      // own is a workflow that has outgrown one orchestrator, and the answer to that is to divide it
+      // — the corpus has sub-workflows and fans for exactly this — not to send a thinner account of
+      // it. This line is what makes that visible. #836 carries the question of what, if anything,
+      // should happen here beyond reporting it.
+      if (opsText.length + summaryText.length + SEPARATOR.length + metaChars > responseBound) {
         logWarn('Workflow response over its bound with every operation body deferred', {
           session_index, workflow: workflow_id,
           bound: responseBound,
           rules_and_notes_chars: opsText.length,
-          metadata_chars: stringifyForResponse(summaryData).length,
+          // The workflow definition below the separator, and the protocol metadata beside the text.
+          // Two different things, so two names rather than one word doing both jobs.
+          definition_chars: summaryText.length,
+          protocol_metadata_chars: metaChars,
           deferred_operations: deferredOps.length,
         });
       }
@@ -1066,13 +1142,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         delivery: opsBlock === opsText ? 'full' : 'unchanged',
         resolved_techniques: orchestratorTechniques.length,
         bundle_chars: opsText.length,
-        max_response_chars: config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS,
+        max_response_chars: responseBound,
         deferred_operations: deferredOps.length,
-        response_chars: preamble.length + stringifyForResponse(summaryData).length,
+        // What the workflow's own account of itself came to, beside what the contract came to, so a
+        // definition growing past what one delivery carries is readable before it gets there.
+        definition_chars: summaryText.length,
+        protocol_metadata_chars: metaChars,
+        // The whole tool result, the metadata beside the text included, because that is what a
+        // client weighs and what the bound above is set against.
+        response_chars: preamble.length + summaryText.length + metaChars,
       });
 
       return {
-        content: [{ type: 'text' as const, text: preamble + stringifyForResponse(summaryData) }],
+        content: [{ type: 'text' as const, text: preamble + summaryText }],
         _meta: {
           session_index,
           validation,
@@ -1868,15 +1950,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // its fields are fixed and only their digits vary, and one delivery cannot add more than one
       // whole response to the tally it reports.
       const standBeforeDelivery = batchState(state, scope, bound);
-      const responseFloor = fixed.chars + '\n\n'.length + stringifyForResponse({
-        batch: batchReading(
-          {
-            activities: [...standBeforeDelivery.activities, activity_id],
-            chars: standBeforeDelivery.chars + responseBound, mayContinue: false, bounded: true,
-          },
-          bound, false,
-        ),
-      }).length;
+      const batchAtWidest = batchReading(
+        {
+          activities: [...standBeforeDelivery.activities, activity_id],
+          chars: standBeforeDelivery.chars + responseBound, mayContinue: false, bounded: true,
+        },
+        bound, false,
+      );
+      const batchWidest = stringifyForResponse({ batch: batchAtWidest }).length;
       // A gate is reachable from a gate step, and routines are materialised by the load, so the
       // question is answered over the steps the run declares. A workflow holding none takes
       // neither protocol — and a worker that raises a decision its activity never declared fetches
@@ -1965,11 +2046,31 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Hold the whole response to what one tool result may carry. A harness caps that, `get_activity`
-      // is the call a dispatched worker makes to receive its work, and the activity and the rules
-      // have already taken their share — so what gives is operation BODIES, in list order, stopped at
-      // the first that would overflow. Their rules ride the response whatever this defers, and each
-      // body it defers is served by `get_technique { technique_id }`.
+      // What rides beside the response text. A harness weighs the whole tool result, so the bound
+      // answers for this as well. The parts whose shape is settled before the budget runs are
+      // reserved here at the widest each renders, their lists down to the key they ride under; the
+      // entries of those lists are charged where the response commits to them, so a reservation
+      // never stands in for something this delivery turns out not to carry. A composition warning
+      // is charged the same way, at the site that raises it: its text exists only once it is
+      // raised, which is after this floor is settled.
+      const metaFloor = batchWidest + metadataChars({
+        session_index, validation: buildValidation(), dispatch: 'resume',
+        artifact_prefix: fixed.artifactPrefix, artifacts: fixed.artifacts,
+        activity_rules: fixed.inheritedRules, exit_destinations: fixed.exitDestinations,
+        enforcement_notes: fixed.enforcementNotes,
+        ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
+        batch: batchAtWidest,
+        delivery_cost: Object.fromEntries(DELIVERY_COST_FIELDS.map((f) => [f, responseBound])),
+        lazy_gates: { pending: 0, unbound: 0, unparsed: 0 } satisfies GateUnansweredCounts,
+        operation_refs: [], bundled_steps: [], bundled_resources: [], resource_refs: [],
+      });
+      const responseFloor = fixed.chars + '\n\n'.length + metaFloor;
+
+      // Hold the whole response to what one tool result may carry. `get_activity` is the call a
+      // dispatched worker makes to receive its work, and the activity and the rules have already
+      // taken their share — so what gives is operation BODIES, in list order, stopped at the first
+      // that would overflow. Their rules ride the response whatever this defers, and each body it
+      // defers is served by `get_technique { technique_id }`.
       const deferredOperations = boundOperationsBundle(bundleData, responseBound - responseFloor);
       for (const ref of deferredOperations) operationDeliveries.delete(ref);
       for (const own of operationDeliveries.values()) Object.assign(newDeliveries, own);
@@ -2033,7 +2134,24 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // is written in — the harness weighs bytes and cannot know the worker holds the content.
       // Held here so the delivery's cost line can report each against its budget.
       let spentChars = workerBundleChars;
-      let responseChars = responseFloor + workerBundleChars;
+      // The response side opens with the bundle and with the ids the metadata names it deferring —
+      // known exactly once the bound has said which bodies ride, so they are charged rather than
+      // reserved. Deferring one frees far more than naming it costs, so a bundle that gave way
+      // leaves this tally with more room than it started with, never less.
+      let responseChars = responseFloor + workerBundleChars
+        + deferredOperations.reduce((chars, ref) => chars + metaListEntryChars(ref), 0);
+      /**
+       * Raise a composition warning, and charge the result for carrying it.
+       *
+       * A warning rides the delivery's validation block, which a harness weighs with everything
+       * else. Its text exists only once the warning is raised, which is after the floor is settled —
+       * so it is charged here, where the response commits to it, and every entry admitted after it
+       * is decided against a tally that already accounts for it.
+       */
+      const raiseWarning = (warning: string): void => {
+        bundlingWarnings.push(warning);
+        responseChars += metaListEntryChars(warning);
+      };
       /**
        * Technique steps left for get_technique, by the answer their gate gave. The unanswered ones
        * are counted by reason, because they mean different things: `pending` is this activity's own
@@ -2129,7 +2247,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             .map((rawId) => qualifyResourceId(rawId, techniqueWorkflowId, workflow_id)))]
             .filter((rid) => !linkedResourceIds.has(rid));
           const mapNotesCost = (Object.keys(bundledStepTechniques).length === 0 ? STEP_MAP_NOTES_CHARS : 0)
-            + (links.length > 0 ? blockChars('resource_refs', links) : 0);
+            + (links.length > 0 ? blockChars('resource_refs', links) : 0)
+            // And what it costs the metadata beside the text: its own id in the bundled list, each
+            // resource it links in one of the two resource lists, and any provenance warning
+            // decorating it raised, which rides the delivery's validation block. Charged here so the
+            // bound decides on an entry with everything that entry brings with it — and so an entry
+            // the bound turns away brings none of it, the break below leaving all three unpushed.
+            + metaListEntryChars(step.id!)
+            + links.reduce((chars, rid) => chars + metaListEntryChars(rid), 0)
+            + provenanceWarnings.reduce((chars, warning) => chars + metaListEntryChars(warning), 0);
           if (alreadyDelivered) {
             // A reference marker draws down no window budget — this context holds the content
             // already — but it does cost the response the bytes it is written in.
@@ -2223,7 +2349,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               );
               if (!loaded.success) {
                 // Warn and continue — unresolvable refs must not abort get_activity (SC-13).
-                bundlingWarnings.push(
+                raiseWarning(
                   `Unresolvable resource ref '${resourceId}' linked from bundled step techniques: ${loaded.error.message}`,
                 );
                 continue;
@@ -2290,7 +2416,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                 config.workflowDir, workflow_id, resourceId, session_index,
               );
               if (!loaded.success) {
-                bundlingWarnings.push(
+                raiseWarning(
                   `Unresolvable resource ref '${resourceId}' linked from bundled step techniques: ${loaded.error.message}`,
                 );
               }
@@ -2450,6 +2576,29 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // the number it reports.
       const batchBlock = `\n\n${stringifyForResponse({ batch })}`;
 
+      // The protocol metadata this result carries beside its text. Assembled before the figures
+      // below because a harness weighs the whole result, so what it came to is part of what this
+      // delivery cost and part of what the bound is measured against.
+      const _meta = {
+        session_index, validation, artifact_prefix: fixed.artifactPrefix, artifacts: fixed.artifacts, activity_rules: fixed.inheritedRules,
+        dispatch, batch, delivery_cost: deliveryCost,
+        // Which operations of the role contract carry no body here, so a caller asserts the bound
+        // without parsing the bundle for an absence.
+        ...(deferredOperations.length > 0 ? { operation_refs: deferredOperations } : {}),
+        ...(Object.keys(fixed.exitDestinations).length > 0 ? { exit_destinations: fixed.exitDestinations } : {}),
+        ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
+        // Why each gated technique step stayed lazy. On the response and not only the log because a
+        // caller cannot assert what it has to scrape stderr to read, and `unbound` is the reading
+        // worth asserting on: nothing the run has done so far binds that gate (#472).
+        ...(lazyUnanswered.unbound + lazyUnanswered.pending + lazyUnanswered.unparsed > 0
+          ? { lazy_gates: { ...lazyUnanswered } } : {}),
+        ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
+        ...(bundledResourceDeliveries.length > 0 ? { bundled_resources: bundledResourceDeliveries.map(r => r.resourceId) } : {}),
+        ...(resourceRefIds.length > 0 ? { resource_refs: resourceRefIds } : {}),
+        ...(Object.keys(fixed.enforcementNotes).length > 0 ? { enforcement_notes: fixed.enforcementNotes } : {}),
+      };
+      const resultChars = responseText.length + batchBlock.length + metadataChars(_meta);
+
       // What this delivery cost to build and to send, on one line. `resolved_techniques` is the
       // distinct bound ops the producer scan read for the whole request and `provenance_passes` the
       // steps decorated from that one scan, so the two together say whether resolve work is being
@@ -2466,49 +2615,34 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         lazy_gate_unbound: lazyUnanswered.unbound,
         lazy_gate_unparsed: lazyUnanswered.unparsed,
         lazy_gate_false: lazyFalseGates,
-        // The wire length, batch block included. The block is outside the delivery ledger
-        // — it reports on the handover rather than being part of it — but it does go over
-        // the wire, and this figure is the one that claims to say what did.
-        response_chars: responseText.length + batchBlock.length,
+        // The wire length: the batch block and the protocol metadata included. The block is outside
+        // the delivery ledger — it reports on the handover rather than being part of it — and the
+        // metadata rides beside the text rather than in it, but a harness weighs both, and this
+        // figure is the one that claims to say what went over the wire.
+        response_chars: resultChars,
       });
 
       // A response whose contract and activity alone exceed the bound has nothing left to defer:
       // every procedure is already an id, and what remains is the rules and the definition, which
-      // the worker cannot do the activity without. It goes out over the bound rather than not at
-      // all, and says so here, because a harness refusing it is the failure this bound exists to
-      // prevent and a silent overflow is that failure arriving unexplained. An activity that
-      // reaches this is one whose definition has outgrown a single delivery.
-      if (responseText.length + batchBlock.length > responseBound) {
+      // the worker cannot do the activity without. It goes out over the bound and says so here,
+      // because an activity that reaches this is one whose definition has outgrown a single
+      // delivery, and a silent overflow is that fact arriving unexplained. Whether going over is the
+      // right end to the shed, against the round trip a client charges for an oversized result,
+      // is #836.
+      if (resultChars > responseBound) {
         logWarn('Activity response over its bound with every procedure deferred', {
           session_index, activity: activity_id, agentId: scope,
           bound: responseBound,
           fixed_chars: responseFloor,
           body_chars: fixed.body.length,
-          response_chars: responseText.length + batchBlock.length,
+          response_chars: resultChars,
           deferred_operations: deferredOperations.length,
         });
       }
 
       return {
         content: [{ type: 'text' as const, text: responseText + batchBlock }],
-        _meta: {
-          session_index, validation, artifact_prefix: fixed.artifactPrefix, artifacts: fixed.artifacts, activity_rules: fixed.inheritedRules,
-          dispatch, batch, delivery_cost: deliveryCost,
-          // Which operations of the role contract carry no body here, so a caller asserts the bound
-          // without parsing the bundle for an absence.
-          ...(deferredOperations.length > 0 ? { operation_refs: deferredOperations } : {}),
-          ...(Object.keys(fixed.exitDestinations).length > 0 ? { exit_destinations: fixed.exitDestinations } : {}),
-          ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
-          // Why each gated technique step stayed lazy. On the response and not only the log because a
-          // caller cannot assert what it has to scrape stderr to read, and `unbound` is the reading
-          // worth asserting on: nothing the run has done so far binds that gate (#472).
-          ...(lazyUnanswered.unbound + lazyUnanswered.pending + lazyUnanswered.unparsed > 0
-            ? { lazy_gates: { ...lazyUnanswered } } : {}),
-          ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
-          ...(bundledResourceDeliveries.length > 0 ? { bundled_resources: bundledResourceDeliveries.map(r => r.resourceId) } : {}),
-          ...(resourceRefIds.length > 0 ? { resource_refs: resourceRefIds } : {}),
-          ...(Object.keys(fixed.enforcementNotes).length > 0 ? { enforcement_notes: fixed.enforcementNotes } : {}),
-        },
+        _meta,
       };
     }), traceOpts));
 
