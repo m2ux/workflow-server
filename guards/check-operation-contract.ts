@@ -28,9 +28,9 @@
  *
  * `check-activity-variables` is a hard-zero guard: every family it carries named a definition defect
  * and each was fixed. These two do not land on zero. Measured over the corpus at the commit this was
- * written against, `declared-type-mismatch` holds at 12 and `underived-operation-write` at 141.
+ * written against, `declared-type-mismatch` holds at 12 and `underived-operation-write` at 117.
  *
- * The 12 read as defects. The 141 do not, or not obviously: most are an operation output a later
+ * The 12 read as defects. The 117 do not, or not obviously: most are an operation output a later
  * step of the same activity consumes and nothing outside ever sees, which `activity-variables` calls
  * the technique layer's own wiring and deliberately leaves to the binding-fidelity guard. So the
  * convention and the corpus disagree, and which gives way is a decision about the corpus rather than
@@ -70,7 +70,16 @@ export async function collectFindings(root: string): Promise<Finding[]> {
 
   for (const workflowId of workflows) {
     const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
-    if (!loaded.success) continue;
+    if (!loaded.success) {
+      // A workflow the loader refuses is ground this guard did not read. Skipping it quietly would
+      // shrink the measurement and still report clean, which is the one answer a measurement must
+      // never give.
+      findings.push({
+        check: 'workflow-load', site: `${workflowId}/workflow.yaml`,
+        detail: loaded.error.message,
+      });
+      continue;
+    }
     const { workflow, activitySourceWorkflow, authoredActivities } = loaded.value;
 
     // The namespace the contract guard derives against, rebuilt here so both programs narrow one
@@ -109,8 +118,10 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       for (const name of derived.operationWrites) {
         if (declaredWrites.has(name)) continue;
         // A production nothing goes on to consume dies with its step: a utility operation's
-        // confirmation value owes the contract nothing. A handoff is the case — something reads it.
-        if (!derived.mentions.has(name)) continue;
+        // confirmation value owes the contract nothing. A handoff is the case — a LATER step reads
+        // it. Order is what makes it one: a name consulted before anything produced it is a
+        // different defect, and calling that a handoff would describe a flow that does not happen.
+        if (!derived.consultedAfterProduction.has(name)) continue;
         // The server consumes a persisted output when it synthesizes the artifact contract, so the
         // value reaches a reader whatever the contract says.
         if (derived.persistedProductions.has(name)) continue;

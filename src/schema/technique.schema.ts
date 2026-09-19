@@ -22,17 +22,6 @@ export const OutputComponentsDefinitionSchema = z.record(z.union([
 ])).describe('Named output components: each key is a component id, value is the spec or description for that component, or — where the component holds a list — the fields one entry of it carries');
 export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefinitionSchema>;
 
-/** The fields one entry of a component carries, empty where the component declares none. */
-export function componentEntryFields(component: OutputComponentsDefinition[string] | undefined): string[] {
-  return typeof component === 'object' && component !== null ? Object.keys(component.entry) : [];
-}
-
-/** What a component says it is, whichever form it takes. */
-export function componentDescription(component: OutputComponentsDefinition[string] | undefined): string | undefined {
-  if (typeof component === 'string') return component;
-  return component?.description;
-}
-
 export const InputItemDefinitionSchema = z.object({
   id: z.string().describe('Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining techniques.'),
   description: z.string().optional().describe('Human-readable description of this input. Optional inputs say so in prose (a leading "(optional)"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag.'),

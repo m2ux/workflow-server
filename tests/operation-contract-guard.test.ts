@@ -23,6 +23,8 @@ describe('operation-contract guard', () => {
     writes: string;
     /** What the follow-on step feeds `consume`'s declared input, making the value handed on. */
     handOn?: string;
+    /** Put the consuming step BEFORE the producing one, so the read cannot be a handoff. */
+    consumeFirst?: boolean;
   }
 
   /**
@@ -31,7 +33,7 @@ describe('operation-contract guard', () => {
    * the signature and is walked by nothing — so a fixture binding one would leave the value
    * unmentioned, and every handoff case would pass for the wrong reason.
    */
-  async function findingsFor({ outputs, writes, handOn }: Case): Promise<Awaited<ReturnType<typeof collectFindings>>> {
+  async function findingsFor({ outputs, writes, handOn, consumeFirst = false }: Case): Promise<Awaited<ReturnType<typeof collectFindings>>> {
     const root = mkdtempSync(join(tmpdir(), 'wf-opcontract-'));
     try {
       writeLoadableWorkflowFixture(root, 'wf', ['act']);
@@ -49,14 +51,15 @@ describe('operation-contract guard', () => {
         'utf-8',
       );
       mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
-      const second = handOn === undefined
+      const produce = '  - kind: technique\n    technique: op\n';
+      const consume = handOn === undefined
         ? ''
         : '  - kind: technique\n    technique:\n      name: consume\n      inputs:\n'
           + `        seed_value: "{${handOn}}"\n`;
       writeFileSync(
         join(root, 'wf', 'activities', '01-act.yaml'),
         `id: act\nversion: 1.0.0\nname: Act\ndescription: Acts.\nvariables:\n  reads: []\n  writes:\n${writes}`
-        + `steps:\n  - kind: technique\n    technique: op\n${second}`,
+        + `steps:\n${consumeFirst ? consume + produce : produce + consume}`,
         'utf-8',
       );
       return await collectFindings(root);
@@ -117,6 +120,21 @@ describe('operation-contract guard', () => {
       outputs: '### symbol_work_list\n\nThe symbols to document.\n',
       writes: '    - name: symbol_work_list\n      type: array\n      description: The symbols to document.\n',
       handOn: 'symbol_work_list',
+    });
+    expect(findings.filter((f) => f.check === 'underived-operation-write')).toEqual([]);
+  });
+
+  /**
+   * A read that happens BEFORE the operation lands the value is not the handoff this family is
+   * about — whatever it consults came from somewhere else, and calling it a handoff would describe
+   * a flow that does not happen. Ordering accounts for 24 of the 141 the un-ordered reading gave.
+   */
+  it('passes a read of the same name that precedes the operation landing it', async () => {
+    const findings = await findingsFor({
+      outputs: '### symbol_work_list\n\nThe symbols to document.\n',
+      writes: '    - name: other_value\n      type: string\n      description: Something else.\n',
+      handOn: 'symbol_work_list',
+      consumeFirst: true,
     });
     expect(findings.filter((f) => f.check === 'underived-operation-write')).toEqual([]);
   });

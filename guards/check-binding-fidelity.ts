@@ -1158,8 +1158,12 @@ function collectEntryFieldViolations(): Violation[] {
       const key = `${loop.rel} ${loop.over} ${read.full}`;
       if (seen.has(key)) continue;
       seen.add(key);
+      // Every producer landing under this name is consulted, the way the level above consults them:
+      // where two operations land one bag name and disagree about an entry's fields, a read
+      // satisfied by one and not the other is a disagreement worth reporting, not one to resolve by
+      // taking whichever was walked first.
       for (const { producer, fields } of fieldsByProducer) {
-        if (fields.has(field)) break;
+        if (fields.has(field)) continue;
         v.push({
           check: 'entry-field-undeclared', site: `${loop.rel}[${loop.activityId}]`,
           detail: `iterates '${loop.over}' as '${loop.item}' and reads '${read.full}', and '${producer.ref}' `

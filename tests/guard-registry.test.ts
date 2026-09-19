@@ -146,9 +146,9 @@ describe('guard registry', () => {
         + 'yield_checkpoint could publish a gate activity\'s own outputs; enrolling it enforces on '
         + 'definitions written before the remedy existed, so it runs by path until those are triaged',
       'guards/check-operation-contract.ts':
-        'reads the corpus and holds at 153 findings — 12 variables declared a scalar against an '
-        + 'operation publishing members, and 141 operation writes a later step takes up and no '
-        + 'contract declares; the 12 read as defects and the 141 are what activity-variables calls '
+        'reads the corpus and holds at 129 findings — 12 variables declared a scalar against an '
+        + 'operation publishing members, and 117 operation writes a later step takes up and no '
+        + 'contract declares; the 12 read as defects and the 117 are what activity-variables calls '
         + 'the technique layer\'s own wiring, so which convention gives way is a decision about the '
         + 'corpus, and it runs by path until that is taken',
       'guards/check-protocol-shape.ts':

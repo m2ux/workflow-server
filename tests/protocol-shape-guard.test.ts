@@ -105,13 +105,17 @@ describe('protocol-shape guard', () => {
   });
 
   /**
-   * The population this guard exists to make visible. It is asserted rather than described, so the
-   * number moves in a commit that says it moved — the whole argument for measuring before deciding
-   * whether the remainder is converted or recorded as accepted debt.
+   * The population this guard exists to make visible, held to a ceiling rather than to a figure.
+   *
+   * Definitions and code sit on different branches, so an exact count makes a corpus commit that
+   * adds one flat-list technique turn the SERVER suite red — a failure the author of that commit
+   * cannot see coming and did not cause. A ceiling still reports the direction that matters: the
+   * population converging, or a definition added in the shape the catalogue rules out. Lower it
+   * when a conversion lands, which is the commit that can prove the new number.
    */
-  it.skipIf(!liveCorpusRoot())('holds the corpus at its measured population', () => {
+  it.skipIf(!liveCorpusRoot())('holds the corpus within its measured population', () => {
     const findings = collectFindings(liveCorpusRoot()!);
-    expect(findings).toHaveLength(95);
+    expect(findings.length).toBeLessThanOrEqual(95);
     expect(findings.filter((f) => f.check === 'protocol-shape-mixed')).toEqual([]);
   });
 });
