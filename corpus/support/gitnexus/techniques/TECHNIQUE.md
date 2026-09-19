@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.7.0
+  version: 3.8.0
 ---
 
 ## Capability
@@ -42,9 +42,9 @@ Always apply [detect-changes](./detect-changes.md) after applying a rename or ba
 
 ### index-freshness-first
 
-Apply [verify-index](./verify-index.md) at the start of any GitNexus session, and again before any operation whose answer turns on the current tree — [impact](./impact.md), [detect-changes](./detect-changes.md), [context](./context.md), [query](./query.md). A stale index answers in the same shape as a fresh one and says nothing about its own age, so an unverified answer is indistinguishable from a correct one. The `index-refresh` run is that check with its remedy attached: it reads the index, rebuilds the tree the read reports behind, and reads again — a rebuild that succeeds while the second read still reports staleness is the server holding the graph it loaded, and every answer stays old until it reloads.
+A stale index answers in the same shape as a fresh one and says nothing about its own age, so an answer whose freshness nothing established reads exactly like a correct one. Every answer taken from a graph therefore carries the age of that graph, and an answer turning on the current tree is taken against a reading of how far the graph trails it.
 
-[group-freshness](./group-freshness.md) is the same check for an answer drawn from a whole repository group, and it reads one failure more than age — which it states.
+The `index-refresh` run is that reading with its remedy attached: it reads the index, rebuilds the tree the read reports behind, and reads again — a rebuild that succeeds while the second read still reports staleness is the server holding the graph it loaded, and every answer stays old until it reloads. `group-refresh` is the same run over a whole repository group, whose reading reports one failure more than age: a member carrying no graph at all, about which a group-wide answer says nothing.
 
 ### edges-the-parser-cannot-see
 
