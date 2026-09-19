@@ -64,6 +64,7 @@
     "check:inventory": "tsx guards/check-inventory-schema-agreement.ts",
     "check:guard-roster": "tsx guards/check-guard-roster.ts",
     "check:routine-prose": "tsx guards/check-routine-signature-prose.ts",
+    "check:unserved-refs": "tsx guards/check-unserved-operation-refs.ts",
     "check:refs": "tsx guards/check-all-refs.ts",
     "check:activities": "tsx guards/validate-activities.ts",
     "check:workflow-yaml": "tsx guards/validate-workflow-yaml.ts",

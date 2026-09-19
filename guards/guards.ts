@@ -560,6 +560,16 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no routine signature teaches a reference site what to bind, which the declaration and the schema already settle',
     form: 'none',
   },
+  {
+    id: 'unserved-operation-refs',
+    script: 'guards/check-unserved-operation-refs.ts',
+    npmScript: 'check:unserved-refs',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every reference a technique makes to another operation is classified, an operation being served only where a role contract names it',
+    form: 'none',
+  },
 ];
 
 export const CORPUS_GUARDS = GUARDS.filter((g) => g.scope === 'corpus');
