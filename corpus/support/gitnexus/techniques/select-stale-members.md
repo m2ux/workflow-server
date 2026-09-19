@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -21,7 +21,21 @@ Every indexed graph with the tree it was built from, which is where a member's t
 
 ### stale_members
 
-The members a rebuild reaches, as a list, each carrying the `name` the report keys it by, the `commits_behind` its evidence is aged by, and the `tree_path` the rebuild walks.
+The members a rebuild reaches, as a list, ordered by `commits_behind` with the furthest first.
+
+#### entry
+
+##### name
+
+What the freshness report keys the member by.
+
+##### commits_behind
+
+How far the member's evidence has aged.
+
+##### tree_path
+
+The tree the rebuild walks, taken from the graph inventory.
 
 ### unrebuildable_members
 
