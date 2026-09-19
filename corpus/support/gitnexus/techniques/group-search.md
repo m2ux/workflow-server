@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -34,7 +34,6 @@ Execution flows drawn from the group's members and merged into one ranking, each
 ## Protocol
 
 1. Call `gitnexus_group_query { name: group_name, query: search_query, subgroup: subgroup_prefix, limit }` to produce the `{group_query_report}`.
-   > - Where `{group_name}` does not resolve, apply [resolve-graph](./resolve-graph.md) and read the configured groups from `{graph_inventory}`.
    > - Where nothing matches across the group, broaden the terms; fall back to grep for pure text patterns.
 2. Read a result's rank as agreement across the group rather than strength within one member: the ranking fuses each member's ranking rather than comparing scores between them, so position says which members surfaced a flow and not how strongly any one of them did.
-3. Take the member each result came from as the graph to address for a follow-up — apply [query](./query.md) or [context](./context.md) with that member's name as `{repo_name}` to go deeper in one component.
+3. Take the member each result came from as the graph a follow-up addresses: a read that goes deeper inside one component carries that member's name as its `{repo_name}`.
