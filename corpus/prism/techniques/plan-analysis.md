@@ -71,6 +71,10 @@ Total sub-agent dispatches (multi-unit scopes only)
 
 Units below budget threshold with justification (multi-unit scopes only)
 
+### analysis_plan_path
+
+Full filesystem path to `analysis-plan.md`
+
 ### analysis_units
 
 Machine-readable ordered array of analysis unit objects, each specifying a target, mode, and lens selection to execute
@@ -148,7 +152,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 ### 10. Format Plan
 
 - Produce `{analysis_plan}` as structured output and expose `{analysis_units}` as the ordered execution collection
-- If `{output_path}` is provided, write `{analysis_plan}` into `{output_path}` per [analysis-plan](../resources/analysis-plan.md#template) and its [Rules](../resources/analysis-plan.md#rules)
+- If `{output_path}` is provided, write `{analysis_plan}` into `{output_path}` per [analysis-plan](../resources/analysis-plan.md#template) and its [Rules](../resources/analysis-plan.md#rules), capturing its full filesystem path as `{analysis_plan_path}`
 - A single-unit `{analysis_units}` array runs one analysis pass; a multi-unit array runs one pass per unit in order
 
 ## Rules

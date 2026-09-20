@@ -699,7 +699,7 @@ steps:
     actions:
       - action: message
         message: |-
-          **Problem Overview** — plain-language summary for stakeholder reference
+          [Problem Overview]({planning_folder_path}/README.md#problem-overview) — plain-language summary for stakeholder reference
 
           {stakeholder_overview}
   - kind: technique
