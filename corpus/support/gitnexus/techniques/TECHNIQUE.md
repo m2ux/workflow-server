@@ -17,7 +17,7 @@ Codebase intelligence via the GitNexus knowledge graph — indexing, structural 
 
 ### address-a-named-graph
 
-Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`. Where more than one graph is indexed, an unnamed call fails and lists what is available — so the name costs a turn when it is left out and nothing when it is supplied. The name comes from the inventory of indexed graphs, which also carries the tree each was built from and the repository groups configured over them; the runs of this namespace resolve it before the operation that needs it.
+Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`. Where more than one graph is indexed, an unnamed call fails and lists what is available. The name comes from the inventory of indexed graphs, which also carries the tree each was built from and the repository groups configured over them.
 
 A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape. Record which graph an answer came from wherever the answer is reported.
 
@@ -44,7 +44,7 @@ A rename or a batch of edits is scoped by what it actually moved, not by what it
 
 A stale index answers in the same shape as a fresh one and says nothing about its own age, so an answer whose freshness nothing established reads exactly like a correct one. Every answer taken from a graph therefore carries the age of that graph, and an answer turning on the current tree is taken against a reading of how far the graph trails it.
 
-The `index-refresh` run is that reading with its remedy attached: it reads the index, rebuilds the tree the read reports behind, and reads again — a rebuild that succeeds while the second read still reports staleness is the server holding the graph it loaded, and every answer stays old until it reloads. `group-refresh` is the same run over a whole repository group, whose reading reports one failure more than age: a member carrying no graph at all, about which a group-wide answer says nothing.
+A rebuild that succeeds while a later read still reports staleness is the server holding the graph it loaded, and every answer stays old until it reloads. Over a whole repository group the reading reports one failure more than age: a member carrying no graph at all, about which a group-wide answer says nothing.
 
 ### edges-the-parser-cannot-see
 

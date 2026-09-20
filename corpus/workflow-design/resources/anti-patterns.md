@@ -285,7 +285,7 @@ Required inputs are named in description instead of `inputs[]`.
 
 A bound step still carries description/name prose.
 
-**Detect:** A `kind: technique` or `kind: action` step that binds an op still carries `description` or `name`. Bound steps allow only `kind`, `id`, `technique` (string or `{ name, inputs, outputs }`), plus structural `actions` / `when` / `required: false`. WHAT/HOW live in the bound op's `## Capability` / `## Protocol`. Unbound procedure-in-description is `procedure-in-protocol`; once bound, description is removed entirely.
+**Detect:** A `kind: technique` or `kind: action` step that binds an op still carries `description` or `name`. Bound steps allow only `kind`, `id`, `technique` (string or `{ name, inputs, outputs }`), plus structural `actions` / `when` / `condition` / `required: false`. WHAT/HOW live in the bound op's `## Capability` / `## Protocol`. Unbound procedure-in-description is `procedure-in-protocol`; once bound, description is removed entirely.
 
 **Do not flag:** `kind: loop` may have `name` plus loop fields and nested `steps[]`. `kind: checkpoint` uses inline `message`/`options` and a stable `id` (not `name`/`description`). Checkpoints/loops are inline in `steps[]` — never `step.checkpoint` or separate `checkpoints[]`/`loops[]` arrays.
 
@@ -1486,7 +1486,7 @@ A technique's Protocol invokes other techniques to do work — sequencing siblin
 
 **Detect:** Technique Capability or Protocol applies, invokes, or runs another technique/operation for work via Protocol `Apply [technique]` / `::` op invocation (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. Test: if moving each invoked op to its own `steps[]` entry at the binding site (keeping any local value-assembly technique separate) preserves behavior, flag it.
 
-**Do not flag:** A reference that invokes nothing — documentation, a canonical form, a rule naming an instrument (`unreachable-operation-reference`, which owns every non-invoking spelling); citing resources (including creation-guide Templates); loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` and routine technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`).
+**Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`); citing resources (including creation-guide Templates); loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` and routine technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`).
 
 **Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own step of the run that needs both, in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
 
@@ -2038,11 +2038,11 @@ A Protocol phase is an entry in a flat numbered list, so it has a number and no 
 
 ### AP-157. unreachable-operation-reference
 
-"Apply [verify-index](./verify-index.md) at the start of any session" / "The `summary` is the identifier [read-process](./read-process.md) takes"
+"never [continue-agent](../harness-compat/continue-agent.md) on a prior worker" in a rule / "the commit it was built at sits in the inventory [resolve-graph](./resolve-graph.md) reads" as a Protocol aside
 
 A technique names another operation without invoking it, sending its reader somewhere that reader cannot go.
 
-**Detect:** A technique file names another technique/operation — in Capability, Protocol, or `## Rules` — by markdown link to a technique file or by `::` address, where no work is invoked: a rule naming the instrument for a question, a Protocol aside citing where a fact lives, a documentation or canonical-form reference. An operation is served only where a role's contract names it, so the reference resolves for nobody holding this file, and the path beside it points into a checkout of the definitions its reader does not have. Test: ask what the reader does with the name. Where the answer needs a file the delivery did not carry, flag it — a rule naming an operation is as unfollowable as a phase applying one.
+**Detect:** A technique file names another technique/operation — in Capability, Protocol, or `## Rules` — by markdown link to a technique file or by `::` address, where no work is invoked: a rule naming the instrument for a question or forbidding one, a Protocol aside citing where a fact lives, a documentation or canonical-form reference. Test: ask what the reader does with the name. Where the answer needs a file the delivery did not carry, flag it — a rule naming an operation is as unfollowable as a phase applying one.
 
 **Do not flag:** A reference that invokes work (`pass-orchestration-in-technique`, which owns the sequencing smell). A technique reference in an I/O contract (`technique-ref-in-io-contract`). READMEs and other orientation surfaces that run no protocol — they address an author rather than a reader mid-run. Resource citations, which travel with the technique citing them. A bare operation *id string* where the slot's value IS an operation id, carrying no navigable link. A raw tool name a remedy step must run unaided (`canonical-technique-reference`).
 
