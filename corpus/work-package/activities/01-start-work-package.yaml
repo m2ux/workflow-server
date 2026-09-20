@@ -482,7 +482,7 @@ steps:
     actions:
       - action: validate
         target: cloudId != null
-        message: Atlassian cloudId is not resolved, so no Jira operation can run.
+        message: Atlassian cloudId is not resolved, so no Jira operation can run. Resolve the cloudId for the site and re-run.
   - kind: technique
     id: verify-github-issue
     technique:

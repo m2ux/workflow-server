@@ -94,6 +94,7 @@ steps:
       variable: needs_comprehension
       operator: ==
       value: true
+    maxIterations: 10
     steps:
       - kind: technique
         id: deep-dive

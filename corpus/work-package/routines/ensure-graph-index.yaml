@@ -26,4 +26,4 @@ steps:
       - action: set
         target: gitnexus_indexed
         value: true
-        description: Reaching this action implies the run left a current graph over the tree; the variable's defaultValue false covers the un-run or failed path.
+        description: Whether a current graph covers the component tree.

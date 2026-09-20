@@ -1,7 +1,7 @@
 id: prism
 version: 3.1.0
 title: Structural Analysis Prism Workflow
-description: Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence. For security audit use cases, use the prism-audit workflow which triggers prism and adds audit-specific post-processing.
+description: Apply cognitive lenses to code or text through isolated sub-agent passes, each running in a fresh context window so the passes stay analytically independent.
 author: m2ux
 tags:
   - analysis

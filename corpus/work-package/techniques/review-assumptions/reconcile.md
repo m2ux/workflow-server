@@ -77,7 +77,7 @@ When emitting the converged result, include the classification rationale for eac
 
 ### handoff-to-residue
 
-After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assumptions}` from the irreducible open set.
+What the residual decision receives, and where each element comes from.
 
 | Element | Source |
 |---------|--------|

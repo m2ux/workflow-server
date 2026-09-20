@@ -167,7 +167,7 @@ When no goal or depth is specified, default to [L12](../resources/l12.md).
 
 ### budget-drives-depth
 
-For multi-unit scopes, the budget determines per-unit depth. The caller should not need to specify pipeline-mode for each module — the plan derives it from risk and budget.
+For a multi-unit scope, the plan derives each unit's depth from its risk and the budget, rather than taking a pipeline mode per module from the caller.
 
 ### skip-is-explicit
 
