@@ -11,18 +11,19 @@ RUN npm run build
 FROM node:20-bookworm-slim@sha256:3d0f05455dea2c82e2f76e7e2543964c30f6b7d673fc1a83286736d44fe4c41c
 WORKDIR /app
 
+# Local git only: `start_session` reads toplevel and origin from the bound checkout.
+# `--no-install-recommends` keeps openssh-client out; remote git stays on the host.
+# Before COPY dist/schemas so a source-only rebuild keeps this layer.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends git \
+  && rm -rf /var/lib/apt/lists/*
+ENV GIT_TERMINAL_PROMPT=0
+
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 COPY --from=build /app/dist ./dist
 COPY schemas ./schemas
-
-# Local git only: `start_session` reads toplevel and origin from the bound checkout.
-# `--no-install-recommends` keeps openssh-client out; remote git stays on the host.
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends git \
-  && rm -rf /var/lib/apt/lists/*
-ENV GIT_TERMINAL_PROMPT=0
 
 # Defaults match scripts/start.sh + docker-compose.yml (install layout).
 # Prefer start.sh/compose for binds; these ENV values keep bare `docker run` sane.
