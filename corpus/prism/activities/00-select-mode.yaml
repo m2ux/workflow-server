@@ -8,7 +8,7 @@ variables:
   writes:
     - name: repo_name
       type: string
-      description: Name of the indexed graph covering the target, which every graph read addresses. Empty where no graph covers it.
+      description: Name of the indexed graph covering the target. Empty where no graph covers it.
       defaultValue: ""
     - name: analysis_units
       type: array

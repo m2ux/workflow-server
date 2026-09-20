@@ -56,7 +56,7 @@ steps:
       - action: set
         target: gitnexus_available
         value: true
-        description: Reaching this action implies the run left a current graph behind (a failed rebuild fails its step); the variable's defaultValue false covers the un-run or failed path. Gates the graph-based structural analysis in reconnaissance, function-registry, and the static-analysis structural checks.
+        description: Whether a usable graph covers the audited submodule.
   - kind: action
     id: announce-completion
     actions:
