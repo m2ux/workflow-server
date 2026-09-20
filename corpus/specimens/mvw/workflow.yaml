@@ -1,0 +1,20 @@
+$schema: ../../../schemas/workflow.schema.json
+id: mvw
+version: 1.0.0
+title: Minimum Viable Workflow
+description: >-
+  Open one session, dispatch one activity, run one routine of one technique, and
+  stop. The live sidecar's first walk: a miss here is a miss on the instance,
+  not on a change surface.
+author: m2ux
+tags:
+  - specimen
+  - mvw
+techniques:
+  activity:
+    - variable-binding
+    - note-ran
+initialActivity: dispatch
+graph:
+  dispatch:
+    dispatched: __terminal__
