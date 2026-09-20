@@ -15,7 +15,7 @@ The audit's working folder — where every sub-agent and orchestrator step reads
 
 ### repo_name
 
-*(optional)* Name of the indexed graph covering the audited submodule, which every graph read addresses. Empty where no graph covers it, which is the same condition as `{gitnexus_available}` being false.
+*(optional)* Name of the indexed graph covering the audited submodule, which every graph read addresses. Empty where no graph covers it.
 
 #### default
 

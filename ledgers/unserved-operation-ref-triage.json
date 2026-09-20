@@ -914,24 +914,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/prism/techniques/TECHNIQUE.md:44",
-      "op": "continue-agent",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/prism/techniques/TECHNIQUE.md:44",
-      "op": "harness-compat",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/prism/techniques/TECHNIQUE.md:44",
-      "op": "spawn-agent",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/specimens/fan-conformance/techniques/report-conformance.md:82",
       "op": "a-conflict-is-reported-not-absorbed",
       "verdict": "fix-later",
@@ -1606,12 +1588,6 @@
     {
       "site": "corpus/work-package/techniques/manage-git/detect-merge-strategy.md:18",
       "op": "view-repo",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/manage-git/verify-feature-branch.md:26",
-      "op": "create-worktree",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },

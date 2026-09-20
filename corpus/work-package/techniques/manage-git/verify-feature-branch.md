@@ -23,4 +23,4 @@ Boolean — true when the worktree is on a feature branch, false when on `main`/
 
 ### resume-preexisted-worktree
 
-`{on_feature_branch}` is read off the live checkout at `{target_path}`, whether that worktree was created this run or reused from an earlier one. A [create-worktree](/git/techniques/create-worktree.md) invariant is not a substitute for the reading.
+`{on_feature_branch}` is read off the live checkout at `{target_path}`, whether that worktree was created this run or reused from an earlier one. Nothing an earlier step guaranteed about the checkout substitutes for that reading.
