@@ -45,7 +45,7 @@ import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import type { VariableDefinition } from '../schema/variable.schema.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, stageNote, unchangedMarker } from '../utils/delivery.js';
+import { contentHash, deliveredHash, deliveryScope, recordDeliveries, stageNote, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, fanIdentityRefusal, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { batchBound, batchReading, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
@@ -133,19 +133,16 @@ const yieldVariablesChangedSchema = z.record(z.unknown()).optional().describe(
  * every delivery. Editing one is a new key and a full delivery, which is the intent.
  */
 const STEP_TECHNIQUES_NOTE =
-  'Each step_techniques entry is a discrete ▼ STEP block carrying the composed technique a get_technique { step_id } fetch returns, with the rules this response states once under its own `rules` list left to that list. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past what this response may carry — the eager-delivery budget derived from your window, what one tool result may hold, or a per-activity size cap) still require get_technique { step_id } before execution.';
+  'Each step_techniques entry is a discrete ▼ STEP block carrying the composed technique a get_technique { step_id } fetch returns, entire. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past the eager-delivery budget derived from your window or a per-activity size cap) still require get_technique { step_id } before execution.';
 
 const RESOURCES_BUNDLED_NOTE =
-  'Bodies for technique-linked resources from eagerly bundled steps under `resources`, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers. Ids under `resource_refs` were NOT bundled (oversized, or past what this response may carry — the eager-delivery budget derived from your window, or what one tool result may hold) — call get_resource for those, or with full: true after summarization.';
+  'Bodies for technique-linked resources from eagerly bundled steps under `resources`, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers. Ids under `resource_refs` were NOT bundled (oversized, or past the eager-delivery budget derived from your window) — call get_resource for those, or with full: true after summarization.';
 
 const RESOURCE_REFS_NOTE =
   'Ids of the technique-linked resources for the eagerly bundled steps, under `resource_refs` (exact resource_id, including #section). No bodies are bundled in this mode — call get_resource for the ids you actually need to read.';
 
 const MARKER_PREAMBLE =
-  'Entries marked { delivery: "unchanged", content_hash } are content you already hold.';
-
-const IN_RESPONSE_MARKER_NOTE =
-  'A marker may point at a byte-identical copy EARLIER IN THIS RESPONSE — a sibling entry under `techniques` or `step_techniques`, or one shared inherited_inputs/inherited_outputs/rules block several of this response\'s techniques inherit from the same ancestor group. Find that copy by its content_hash and read it there.';
+  'Entries marked { delivery: "unchanged", content_hash } are content you already hold. A marker always stands for a WHOLE item — one operation, one rules list, one note, one resource — so nothing you are handed is a body with a piece missing.';
 
 const PRIOR_CALL_MARKER_NOTE =
   'A marker may point at content already in your context from an earlier call to this session — reuse it from there, the notes on this response included. To get a marked item back in full, fetch it: get_technique { step_id, full: true } for a step\'s technique, get_technique { technique_id, full: true } for an operation of your contract, get_resource { full: true } for a resource. get_activity { bundle: "full" } re-sends what a response can carry rather than everything this session has sent you, so a context that lost several items asks for each one it needs.';
@@ -154,135 +151,22 @@ const PRIOR_CALL_MARKER_NOTE =
 const SEPARATOR = '\n\n---\n\n';
 
 /**
- * What the notes explaining a delivery cost the response that carries them.
- *
- * A note is written after the budget has decided what the delivery holds, so the budget charges for
- * it in advance — at the longest shape it takes, and in full even where it collapses to a marker, so
- * the figure is a ceiling in every mode rather than one that holds only for a fresh context. Derived
- * from the note constants themselves, so editing one moves the charge with it.
- *
- * Two figures, because the two ride on different conditions. The marker notes explain a bundle,
- * which every delivery has. The step-map notes explain a step map and the resources its entries
- * link, which a delivery carrying no inlined step never assembles — so they are charged to the
- * first entry of that map rather than reserved against a response that will never hold one.
- */
-const MARKER_NOTES_CHARS = stringifyForResponse({
-  bundle_mode: 'reference',
-  bundle_note: `${MARKER_PREAMBLE} ${IN_RESPONSE_MARKER_NOTE} ${PRIOR_CALL_MARKER_NOTE}`,
-}).length;
-
-const STEP_MAP_NOTES_CHARS = stringifyForResponse({
-  step_techniques_note: STEP_TECHNIQUES_NOTE,
-  resources_note: RESOURCES_BUNDLED_NOTE,
-}).length
-  // The key line of each map an inlined step brings into being. `blockChars` prices an entry net of
-  // the key it rides under, which is what a map's second entry costs; its first entry costs the key
-  // as well, and all three maps exist only where a step map does.
-  + 'step_techniques:\n'.length + 'resources:\n'.length + 'resource_refs:\n'.length;
-
-/**
- * What a block costs the response, as the response writes it.
- *
- * A block is rendered nested under the key it rides, so measuring it on its own understates it by
- * the indentation of every line. Rendering it under that key and subtracting the key line — which
- * the response has already paid for, or will pay for once — is the cost it actually adds.
- */
-function blockChars(key: string, value: unknown): number {
-  return stringifyForResponse({ [key]: value }).length - `${key}:\n`.length;
-}
-
-const OPERATION_REFS_NOTE =
-  'Ids under `operation_refs` are operations of your role this response carried no body for, because carrying them would have put it past what one tool result may hold. Their rules are in the `rules` list above, so the contract you are held to is complete — what is deferred is the procedure. Fetch one with get_technique { session_index, technique_id } when you reach the step that applies it. A fetched operation may still arrive whole with your next activity, once there is room for it: that call composes a procedure for you to apply now, and a delivery carries your contract as it stands, so the two are recorded apart. Read the copy you hold.';
-
-/**
- * Hold a role's operations bundle to what one response may carry, in place.
- *
- * Both role-facing deliveries sit on a path their role cannot skip — `get_workflow` opens every
- * orchestrator, `get_activity` is how a worker receives its work — so what rides here is charged to
- * a context for the whole session that follows, and a procedure the role never reaches is a charge
- * it never had to pay. What gives is the operation BODIES, taken in list order and stopped at the
- * first that would overflow — the same stop-and-break `get_activity` applies to its eager step
- * techniques, and for the same reason: a contiguous prefix is what a reader can rely on.
- *
- * The `rules` list is never bounded. Those rules are the contract the role is held to from its
- * first call, while a procedure it has not reached yet is one it can fetch by id when it does.
- *
- * `maxChars` is what the bundle may take, which is the bound on the whole tool result less whatever
- * the rest of the response has already committed — the caller knows that, and subtracting it there
- * keeps one number in this arithmetic. The bundle is measured as it will ride: an entry a caller
- * has already collapsed to a marker is priced at the marker, that being what it sends.
- *
- * Returns the refs left out, for the caller to record. An empty list is a bundle that fitted whole.
- */
-function boundOperationsBundle(bundle: Record<string, unknown>, maxChars: number): string[] {
-  const operations = bundle['techniques'] as Record<string, unknown> | undefined;
-  if (!operations) return [];
-  // The floor is everything the bound cannot move: the rules, the notes, the unresolved list.
-  const { techniques: _bounded, ...fixed } = bundle;
-  let spent = stringifyForResponse(fixed).length;
-  const kept: Record<string, unknown> = {};
-  const deferred: string[] = [];
-  for (const [ref, body] of Object.entries(operations)) {
-    const cost = stringifyForResponse({ [ref]: body }).length;
-    // Stop at the first overflow rather than skipping it for a smaller one behind it: a reader
-    // holding a contiguous prefix knows where its bodies end, which a gapped set does not say.
-    if (deferred.length > 0 || spent + cost > maxChars) {
-      deferred.push(ref);
-      continue;
-    }
-    spent += cost;
-    kept[ref] = body;
-  }
-  // The fill prices each body on its own, and a body rides nested under `techniques`, one indent
-  // deeper than that. Naming what was deferred costs characters of its own, and they land inside the
-  // same bound. So the last body gives way until the bundle AS ASSEMBLED fits — a bound that the
-  // block announcing it, or the indentation it is written at, could push past is not one.
-  const keptRefs = Object.keys(kept);
-  const assembled = (): number => stringifyForResponse({
-    ...fixed,
-    ...(keptRefs.length > 0 ? { techniques: kept } : {}),
-    ...(deferred.length > 0 ? { operation_refs: deferred, operations_note: OPERATION_REFS_NOTE } : {}),
-  }).length;
-  while (keptRefs.length > 0 && assembled() > maxChars) {
-    const giving = keptRefs.pop()!;
-    delete kept[giving];
-    deferred.unshift(giving);
-  }
-  if (deferred.length === 0) return [];
-  // An empty map is not a map of nothing, it is the absence of one: where the floor leaves room for
-  // no body at all, `operation_refs` is the whole account and a `techniques: {}` beside it says the
-  // same thing a second way.
-  if (Object.keys(kept).length > 0) bundle['techniques'] = kept;
-  else delete bundle['techniques'];
-  bundle['operation_refs'] = deferred;
-  bundle['operations_note'] = OPERATION_REFS_NOTE;
-  return deferred;
-}
-
-/**
  * What the protocol metadata beside a response costs the tool result that carries both.
  *
- * A harness weighs the whole result, so the bound answers for this as well as for the text. Measured
- * as JSON because that is the form `_meta` goes over the wire in, where the response text is YAML.
+ * A harness weighs the whole result, so what this delivery came to answers for this as well as for
+ * the text. Measured as JSON because that is the form `_meta` goes over the wire in, where the
+ * response text is YAML.
  */
 function metadataChars(meta: Record<string, unknown>): number {
   return JSON.stringify(meta).length;
 }
 
-/** What one id costs a metadata list that names it: the id, its quotes, and its separator. */
-function metaListEntryChars(id: string): number {
-  return id.length + '"",'.length;
-}
-
 /**
- * The fields `delivery_cost` reports. The reading is assembled where its figures are known, and the
- * response bound reserves room for it before they are, so the shape has one home and a case holds
- * the two together.
+ * The fields `delivery_cost` reports, in the order the reading states them.
  */
 export const DELIVERY_COST_FIELDS = [
   'resolved_techniques', 'provenance_passes', 'bundled_steps', 'spent_chars', 'eager_budget_chars',
-  'response_spent_chars', 'response_bound_chars', 'fixed_chars', 'deferred_operations',
-  'worker_bundle_chars',
+  'response_spent_chars', 'response_bound_chars', 'fixed_chars', 'worker_bundle_chars',
 ] as const;
 
 /**
@@ -304,51 +188,12 @@ function variableRoster(variables: readonly VariableDefinition[]): VariableDefin
 }
 
 /**
- * Every rule a technique bundle states in its own `rules` list, keyed by name and text.
- *
- * `formatTechniqueBundle` flattens a rule whose body is several lines into one entry per line, so
- * membership is tested line by line and a partially-stated rule is not mistaken for a stated one.
- * The two halves join on a NUL, which no rule name or rule text holds, so no pair of entries can
- * collide by one name ending where the next one's text begins.
- */
-function statedRules(rules: unknown): Set<string> {
-  const stated = new Set<string>();
-  if (!Array.isArray(rules)) return stated;
-  for (const entry of rules) {
-    if (Array.isArray(entry) && entry.length === 2) stated.add(`${String(entry[0])}\0${String(entry[1])}`);
-  }
-  return stated;
-}
-
-/**
- * One composed technique's rules, less the ones the response states in its own `rules` list.
- *
- * A technique inherits its ancestor group's rules, and the bundle hoists that same group's rules
- * into the response's rules list, so an activity's own operations arrive holding rules the payload
- * already carries. The list is the response's one home for a rule; an entry keeps only what the
- * list does not state, and an entry left with nothing keeps no rules block at all.
- *
- * Returns `undefined` where nothing remains, which the caller reads as "drop the block".
- */
-function rulesNotStatedInResponse(
-  rules: Record<string, string | string[]>,
-  stated: Set<string>,
-): Record<string, string | string[]> | undefined {
-  const remaining: Record<string, string | string[]> = {};
-  for (const [name, body] of Object.entries(rules)) {
-    const lines = Array.isArray(body) ? body : [body];
-    if (lines.every((line) => stated.has(`${name}\0${String(line)}`))) continue;
-    remaining[name] = body;
-  }
-  return Object.keys(remaining).length > 0 ? remaining : undefined;
-}
-
-/**
- * The parts of an activity delivery a bound cannot move, and what they cost it.
+ * The parts of an activity delivery that do not vary with what the bundle carries, and what they
+ * cost it.
  *
  * The activity is what the call is for and the rules are the contract the worker is held to, so a
- * response carries both whole or carries nothing worth reading. Assembled before the procedures
- * that ride on top of them, because what those may spend is what these leave.
+ * response carries both whole or carries nothing worth reading. Measured on their own so the cost
+ * reading can report the fixed and the variable share of a delivery apart.
  */
 interface FixedResponseParts {
   /** Session index, artifact prefix, fan instance and exit destinations, as delivered. */
@@ -364,7 +209,7 @@ interface FixedResponseParts {
   /** Destination per exit id, as the graph names it: an activity, a terminal, a list, or a fan. */
   exitDestinations: Record<string, unknown>;
   inheritedRules: string[];
-  /** What the whole of the above costs the response, its separator and its bundle notes included. */
+  /** What the whole of the above costs the response, its separator included. */
   chars: number;
 }
 
@@ -459,10 +304,9 @@ async function fixedResponseParts(args: {
   return {
     header, activityRulesBlock, enforcementBlock, enforcementNotes, body, artifacts, artifactPrefix,
     exitDestinations, inheritedRules,
-    // The response is the bundle, the separator, then these — and the notes that explain how to
-    // read any bundle, charged here because nothing after this point can refuse them.
+    // The response is the bundle, the separator, then these.
     chars: header.length + '\n\n'.length + activityRulesBlock.length + enforcementBlock.length
-      + body.length + SEPARATOR.length + MARKER_NOTES_CHARS,
+      + body.length + SEPARATOR.length,
   };
 }
 
@@ -955,7 +799,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. The response is held to what one tool result may carry, and procedure is what gives way: an operation whose body is not here is named under `operation_refs` and served by get_technique { technique_id }. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every operation of your contract arrives with its body, and the workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
     {
       ...sessionIndexParam,
     },
@@ -1035,71 +879,27 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ]));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
       const opsBundle = formatTechniqueBundle(resolvedOrchestrator);
-      // The contract blocks these operations share arrive once. Most of them inherit the same
-      // inputs from the meta root, so the second copy onward collapses against the first. The pass
-      // is response-local — a throwaway accumulator, no ledger read and no ledger write — because
-      // the copy a marker points at is in this same payload and nowhere else. What this call
-      // records is the bundle as a whole, below.
-      const orchestratorOps = opsBundle['techniques'] as Record<string, unknown> | undefined;
-      if (orchestratorOps && Object.keys(orchestratorOps).length > 1) {
-        const responseLocal: Record<string, string> = {};
-        for (const [key, body] of Object.entries(orchestratorOps)) {
-          if (!body || typeof body !== 'object') continue;
-          orchestratorOps[key] = dedupTechniqueBlocks(
-            body as Record<string, unknown>, state, responseLocal, state.agentId, false,
-          );
-        }
-        opsBundle['bundle_note'] = `${MARKER_PREAMBLE} ${IN_RESPONSE_MARKER_NOTE}`;
-      }
-      // The bound is on the response, because the response is what a role pays for — and a client
-      // weighs the whole tool result, so what rides beside the text answers to it too. That share is
-      // reserved at its widest: every operation deferred is the longest `operation_refs` this
-      // response can carry, and nothing else in it varies with what the budget decides.
-      //
-      // Reserved rather than charged, which is the reverse of the worker path, because the two have
-      // different room to correct in. A worker delivery spends on step techniques AFTER its bundle is
-      // bounded, so the exact list is known before the rest of the budget goes and charging it costs
-      // nothing. Here the bundle is the last thing spent, so there is nothing after it to charge
-      // against. What is left is a circle — a longer ref list leaves less room, which defers another
-      // body, which lengthens the list — and reserving the widest is that circle's settled point,
-      // reached without a second pass. It gives away at most the ids of the bodies that did ride,
-      // and only where the bundle had room to spare.
-      const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
-      const operationRefs = Object.keys((opsBundle['techniques'] ?? {}) as Record<string, unknown>);
-      const metaChars = metadataChars({
-        session_index, validation,
-        ...(operationRefs.length > 0 ? { operation_refs: operationRefs } : {}),
-      });
-
-      // What is left for the bundle once the definition and the separator have their share. Procedure
-      // is the only thing that gives way here, and a body deferred is one the orchestrator fetches by
-      // id when it reaches the step that applies it — so what this decides is when a procedure
-      // arrives, never whether it can be had.
-      const deferredOps = boundOperationsBundle(
-        opsBundle, responseBound - summaryText.length - SEPARATOR.length - metaChars,
-      );
       const opsText = stringifyForResponse(opsBundle);
-      // A response whose rules and definition alone exceed the bound has every operation body
-      // already an id, and what remains is the contract and the workflow, which the orchestrator
-      // cannot drive without. It goes out over the bound and says so here.
-      //
-      // Nothing further gives way, because nothing further can give way without cost: the roster,
-      // the graph and the activities are how a run is driven, and dropping one would buy room by
-      // discarding what the response exists to carry. A definition that fills an opening call on its
-      // own is a workflow that has outgrown one orchestrator, and the answer to that is to divide it
-      // — the corpus has sub-workflows and fans for exactly this — not to send a thinner account of
-      // it. This line is what makes that visible. #836 carries the question of what, if anything,
-      // should happen here beyond reporting it.
+      // The bound is on the whole tool result, because that is what a client weighs — the text and
+      // the protocol metadata riding beside it alike.
+      const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
+      const metaChars = metadataChars({ session_index, validation });
+      // An opening call past what one tool result may hold goes out whole and says so here. Nothing
+      // in it can give way without cost: the contract is what an orchestrator is held to, the
+      // procedures are what it acts by, and the roster, the graph and the activities are how a run
+      // is driven. A workflow whose opening call has outgrown one delivery is one that wants
+      // dividing — the corpus has sub-workflows and fans for exactly this — and this line is what
+      // makes that visible. #836 carries the question of what, if anything, should happen here
+      // beyond reporting it.
       if (opsText.length + summaryText.length + SEPARATOR.length + metaChars > responseBound) {
-        logWarn('Workflow response over its bound with every operation body deferred', {
+        logWarn('Workflow response over what one tool result may carry', {
           session_index, workflow: workflow_id,
           bound: responseBound,
-          rules_and_notes_chars: opsText.length,
+          contract_chars: opsText.length,
           // The workflow definition below the separator, and the protocol metadata beside the text.
           // Two different things, so two names rather than one word doing both jobs.
           definition_chars: summaryText.length,
           protocol_metadata_chars: metaChars,
-          deferred_operations: deferredOps.length,
         });
       }
 
@@ -1143,7 +943,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         resolved_techniques: orchestratorTechniques.length,
         bundle_chars: opsText.length,
         max_response_chars: responseBound,
-        deferred_operations: deferredOps.length,
         // What the workflow's own account of itself came to, beside what the contract came to, so a
         // definition growing past what one delivery carries is readable before it gets there.
         definition_chars: summaryText.length,
@@ -1155,13 +954,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: preamble + summaryText }],
-        _meta: {
-          session_index,
-          validation,
-          // Which operations of the role contract carry no body here, so a caller asserts the
-          // bound without parsing the bundle for an absence.
-          ...(deferredOps.length > 0 ? { operation_refs: deferredOps } : {}),
-        },
+        _meta: { session_index, validation },
       };
     }), traceOpts));
 
@@ -1818,7 +1611,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies) alongside a bound on what one tool result may carry — whichever binds first. The activity and your role\'s rules always ride; what a bound leaves out is procedure, and every piece of it is fetchable: operations under `operation_refs` with get_technique { technique_id }, a step\'s own technique with get_technique { step_id }, a resource under `resource_refs` with get_resource. ' +
+  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). Your activity, your role\'s rules and the operations of your contract all ride whole. What the eager budget leaves out is fetchable: a step\'s own technique with get_technique { step_id }, a resource under `resource_refs` with get_resource. ' +
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
@@ -1936,28 +1729,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const ownTechRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
       const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
 
-      // What this response carries whatever a bound does, assembled before anything the bound can
-      // move. The activity is what the call is for and the rules are the contract the worker is
-      // held to, so neither gives way; everything below is priced against what they leave.
+      // The part of this response that does not vary with what the bundle carries: the activity the
+      // call is for, and the rules the worker is held to.
       const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
       const fixed = await fixedResponseParts({
         activity, workflow: result.success ? result.value : undefined, activityId: activity_id,
         sessionIndex: session_index, fanInstance, workflowDir: config.workflowDir, workflowId: workflow_id,
         activityBody, state, newDeliveries, scope, mayReferBack,
       });
-      // The handover reading rides the same tool result as the delivery it reports on, so what the
-      // bound leaves for content is what remains after it. Reserved at the widest it can render:
-      // its fields are fixed and only their digits vary, and one delivery cannot add more than one
-      // whole response to the tally it reports.
-      const standBeforeDelivery = batchState(state, scope, bound);
-      const batchAtWidest = batchReading(
-        {
-          activities: [...standBeforeDelivery.activities, activity_id],
-          chars: standBeforeDelivery.chars + responseBound, mayContinue: false, bounded: true,
-        },
-        bound, false,
-      );
-      const batchWidest = stringifyForResponse({ batch: batchAtWidest }).length;
       // A gate is reachable from a gate step, and routines are materialised by the load, so the
       // question is answered over the steps the run declares. A workflow holding none takes
       // neither protocol — and a worker that raises a decision its activity never declared fetches
@@ -1987,11 +1766,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         graphFans ? resolvedWorker : resolvedWorker.filter((e) => !FAN_ONLY_RULES.includes(e.ref)),
       );
 
-      // The rules this response states in its own `rules` list, read before that list can collapse
-      // to a marker. A bundled step technique inheriting one of them from an ancestor group leaves
-      // it to this list rather than restating it — see `statedRules` and its use below.
-      const responseRules = statedRules(bundleData['rules']);
-
       // The rules bundle varies with the activity's own techniques, and activities alternate
       // between rule sets across a walk — so rules entries are keyed by CONTENT (set semantics,
       // `bundle:rules:<hash>`): any rule set this session+agent has ever received collapses,
@@ -2007,18 +1781,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Per-technique dedup: each composed technique in the bundle is hashed individually, so an
-      // activity that introduces one new technique still receives that one in full while the
-      // inherited rest collapse to markers.
-      //
-      // Each entry's ledger writes are held aside until the bound below has said which entries the
-      // response carries. A body left out with its delivery already recorded would collapse a later
-      // call to a marker for bytes this worker never received — and because what the bound leaves
-      // out is a contiguous tail, an entry that survives it can only ever point at another that did.
+      // Per-operation collapse: each composed technique in the bundle is hashed WHOLE, so an
+      // activity that introduces one new operation receives that one entire while the rest this
+      // context already holds collapse to markers naming the whole of themselves.
       const bundleTechniques = bundleData['techniques'] as Record<string, unknown> | undefined;
-      const operationDeliveries = new Map<string, Record<string, string>>();
       if (bundleTechniques) {
-        const responseLocal: Record<string, string> = {};
         for (const [key, body] of Object.entries(bundleTechniques)) {
           const hash = contentHash(stringifyForResponse(body));
           const ledgerKey = `bundle:${key}`;
@@ -2026,63 +1793,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             bundleTechniques[key] = unchangedMarker(hash);
             continue;
           }
-          const own: Record<string, string> = { [ledgerKey]: hash };
-          // Several of these bodies inherit the same contract blocks from one ancestor group, so
-          // the second copy onward collapses against the first. The pass is response-local, which
-          // is what makes the marker readable: the copy it points at is in this same payload. The
-          // ledger key above stays keyed on the FULL body, so what a later call compares against
-          // does not depend on which entry happened to carry a shared block this time.
-          if (body && typeof body === 'object') {
-            const shared = { ...responseLocal };
-            bundleTechniques[key] = dedupTechniqueBlocks(
-              body as Record<string, unknown>, state, shared, scope, false,
-            );
-            for (const [blockKey, blockHash] of Object.entries(shared)) {
-              if (responseLocal[blockKey] !== blockHash) own[blockKey] = blockHash;
-            }
-            Object.assign(responseLocal, shared);
-          }
-          operationDeliveries.set(key, own);
+          newDeliveries[ledgerKey] = hash;
         }
       }
-
-      // What rides beside the response text. A harness weighs the whole tool result, so the bound
-      // answers for this as well. The parts whose shape is settled before the budget runs are
-      // reserved here at the widest each renders, their lists down to the key they ride under; the
-      // entries of those lists are charged where the response commits to them, so a reservation
-      // never stands in for something this delivery turns out not to carry. A composition warning
-      // is charged the same way, at the site that raises it: its text exists only once it is
-      // raised, which is after this floor is settled.
-      const metaFloor = batchWidest + metadataChars({
-        session_index, validation: buildValidation(), dispatch: 'resume',
-        artifact_prefix: fixed.artifactPrefix, artifacts: fixed.artifacts,
-        activity_rules: fixed.inheritedRules, exit_destinations: fixed.exitDestinations,
-        enforcement_notes: fixed.enforcementNotes,
-        ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
-        batch: batchAtWidest,
-        delivery_cost: Object.fromEntries(DELIVERY_COST_FIELDS.map((f) => [f, responseBound])),
-        lazy_gates: { pending: 0, unbound: 0, unparsed: 0 } satisfies GateUnansweredCounts,
-        operation_refs: [], bundled_steps: [], bundled_resources: [], resource_refs: [],
-      });
-      const responseFloor = fixed.chars + '\n\n'.length + metaFloor;
-
-      // Hold the whole response to what one tool result may carry. `get_activity` is the call a
-      // dispatched worker makes to receive its work, and the activity and the rules have already
-      // taken their share — so what gives is operation BODIES, in list order, stopped at the first
-      // that would overflow. Their rules ride the response whatever this defers, and each body it
-      // defers is served by `get_technique { technique_id }`.
-      const deferredOperations = boundOperationsBundle(bundleData, responseBound - responseFloor);
-      for (const ref of deferredOperations) operationDeliveries.delete(ref);
-      for (const own of operationDeliveries.values()) Object.assign(newDeliveries, own);
 
       // What the worker bundle costs this response, markers included: it opens the eager tally below.
       const workerBundleChars = stringifyForResponse(bundleData).length;
 
       // Automatic, per-agent context-derived step-technique bundling (#189 C1c): every activity
       // eagerly inlines its small, ungated step-bound techniques — no per-activity opt-in. The
-      // eager-delivery budget is CUMULATIVE per activity and kept as two tallies, one against the
-      // worker's declared window and one against what a tool result may carry — a delivery stops at
-      // whichever it reaches first (see `spentChars` and `responseChars` below):
+      // eager-delivery budget is CUMULATIVE per activity and measured against the worker's declared
+      // window (see `spentChars` below):
       // ungated technique steps are inlined in DOCUMENT ORDER until adding the
       // next would overflow the budget; the remainder stay lazy via get_technique. A step gated
       // by `when`/`condition` (on itself or an enclosing loop) may never execute and stays lazy
@@ -2113,11 +1834,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const perTechniqueCap = bundleConfig && bundleConfig.maxChars > 0 ? bundleConfig.maxChars : Infinity;
       // Cumulative eager-delivery budget in characters, derived from the caller's own window.
       // Headroom fraction and chars-per-token are server config with in-code fallbacks. It asks how
-      // much of its own context a worker may spend on inlined content, which the response bound
-      // above does not answer: that one asks what a tool result may hold at all, and is what the
-      // harness enforces. A delivery is held to both, and stops at whichever it reaches first.
-      // What either leaves out stays fetchable — a step by `get_technique { step_id }`, a resource
-      // by `get_resource` — which is what makes leaving it out safe rather than merely cheap.
+      // much of its own context a worker may spend on content it did not ask for — a step whose
+      // gate may still turn out false, a resource its technique merely links. What it leaves out
+      // stays fetchable — a step by `get_technique { step_id }`, a resource by `get_resource` —
+      // which is what makes leaving it out safe rather than merely cheap.
       const headroomFraction = config.bundleHeadroomFraction ?? DEFAULT_BUNDLE_HEADROOM_FRACTION;
       const charsPerToken = config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN;
       const eagerBudgetChars = context_tokens * headroomFraction * charsPerToken;
@@ -2127,31 +1847,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // serves every inlined step, so a delivery resolves each unique technique once however many
       // steps it carries.
       let producerIndex: Awaited<ReturnType<typeof buildProducerIndex>> | undefined;
-      // Two running totals, because the two budgets are about different things and count
-      // differently. `spentChars` is what the eager bundle costs the worker's CONTEXT, so an
-      // unchanged-reference marker adds nothing to it: that content is already there. `responseChars`
-      // is what the bundle costs the RESPONSE, so every entry counts, marker or not, at the size it
-      // is written in — the harness weighs bytes and cannot know the worker holds the content.
-      // Held here so the delivery's cost line can report each against its budget.
+      // What the eager bundle costs the worker's CONTEXT. An unchanged-reference marker adds
+      // nothing to it: that content is already there. Held here so the delivery's cost line can
+      // report it against its budget.
       let spentChars = workerBundleChars;
-      // The response side opens with the bundle and with the ids the metadata names it deferring —
-      // known exactly once the bound has said which bodies ride, so they are charged rather than
-      // reserved. Deferring one frees far more than naming it costs, so a bundle that gave way
-      // leaves this tally with more room than it started with, never less.
-      let responseChars = responseFloor + workerBundleChars
-        + deferredOperations.reduce((chars, ref) => chars + metaListEntryChars(ref), 0);
-      /**
-       * Raise a composition warning, and charge the result for carrying it.
-       *
-       * A warning rides the delivery's validation block, which a harness weighs with everything
-       * else. Its text exists only once the warning is raised, which is after the floor is settled —
-       * so it is charged here, where the response commits to it, and every entry admitted after it
-       * is decided against a tally that already accounts for it.
-       */
-      const raiseWarning = (warning: string): void => {
-        bundlingWarnings.push(warning);
-        responseChars += metaListEntryChars(warning);
-      };
       /**
        * Technique steps left for get_technique, by the answer their gate gave. The unanswered ones
        * are counted by reason, because they mean different things: `pending` is this activity's own
@@ -2230,80 +1929,43 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           if (text.length > perTechniqueCap) continue;
           const ledgerKey = `technique:${techniqueId}`;
           const hash = contentHash(text);
-          // The ledger half needs a context that retains prior payloads; the response-local half is
-          // readable by any recipient, the copy being in this same response.
+          // Two steps of one activity may bind the same technique, so a delivery can reach a body
+          // it has already written; the ledger half needs a context that retains prior payloads.
           const heldByContext = referenceMode && deliveredHash(state, ledgerKey, scope) === hash;
           const earlierInResponse = newDeliveries[ledgerKey] === hash;
           const alreadyDelivered = heldByContext || earlierInResponse;
           // ▼ STEP arrival marker: each entry is a discrete, self-describing unit that substitutes
           // for the intentional get_technique { step_id } call inlining removes (#189 C1c(C)1).
           const stepMarker = `▼ STEP ${step.id!} · technique ${techniqueId}`;
-          // What this entry adds to the response beyond itself: the notes that explain a step map
-          // and its resources, which only the first entry brings into being, and the ids of the
-          // resources it links — which ride the response whether or not their bodies do.
+          // The resources this entry links, whose bodies the pass after this one delivers.
           // Qualified against the workflow the TECHNIQUE file was found in, not the activity's: a
           // bare link in a meta technique names a resource under meta/resources/ whoever binds it.
           const links = [...new Set(extractResourceIds(text)
             .map((rawId) => qualifyResourceId(rawId, techniqueWorkflowId, workflow_id)))]
             .filter((rid) => !linkedResourceIds.has(rid));
-          const mapNotesCost = (Object.keys(bundledStepTechniques).length === 0 ? STEP_MAP_NOTES_CHARS : 0)
-            + (links.length > 0 ? blockChars('resource_refs', links) : 0)
-            // And what it costs the metadata beside the text: its own id in the bundled list, each
-            // resource it links in one of the two resource lists, and any provenance warning
-            // decorating it raised, which rides the delivery's validation block. Charged here so the
-            // bound decides on an entry with everything that entry brings with it — and so an entry
-            // the bound turns away brings none of it, the break below leaving all three unpushed.
-            + metaListEntryChars(step.id!)
-            + links.reduce((chars, rid) => chars + metaListEntryChars(rid), 0)
-            + provenanceWarnings.reduce((chars, warning) => chars + metaListEntryChars(warning), 0);
           if (alreadyDelivered) {
             // A reference marker draws down no window budget — this context holds the content
-            // already — but it does cost the response the bytes it is written in.
-            const entry = { marker: stepMarker, ...unchangedMarker(hash) };
-            const entryChars = blockChars('step_techniques', { [step.id!]: entry }) + mapNotesCost;
-            if (responseChars + entryChars > responseBound) break;
-            responseChars += entryChars;
-            bundledStepTechniques[step.id!] = entry;
+            // already.
+            bundledStepTechniques[step.id!] = { marker: stepMarker, ...unchangedMarker(hash) };
           } else {
-            // Full content draws down both. Inline ungated step techniques in
-            // document order and STOP at the first one that would overflow the remaining budget
+            // Full content draws the window budget down. Inline ungated step techniques in
+            // document order and STOP at the first one that would overflow what remains
             // (stop-and-break) — the remainder stay lazy. This preserves the contiguous
             // document-order prefix the spec and docs promise, rather than skipping a large
             // technique to squeeze in a later smaller one.
             if (spentChars + text.length > eagerBudgetChars) break;
             // The arrival marker leads the block; the composed technique fields follow at the same
-            // level, so a bundled entry reads like a get_technique fetch with a step header, less
-            // the rules this response states in its own list. Shared contract blocks collapse in
-            // every mode; reference mode widens the pass to what this context received earlier.
-            //
-            // Built against a copy of the ledger, because what the entry costs the response is
-            // what it is written as, and it is written by the same pass that records it. An entry
-            // the bound turns away has to leave the ledger as it found it — a delivery recorded for
-            // content that never shipped would collapse a later call to a marker for bytes this
-            // worker never received.
-            const composed = projectTechnique(technique);
-            const composedRules = composed['rules'] as Record<string, string | string[]> | undefined;
-            if (composedRules !== undefined) {
-              const remaining = rulesNotStatedInResponse(composedRules, responseRules);
-              if (remaining === undefined) delete composed['rules'];
-              else composed['rules'] = remaining;
-            }
-            const entryDeliveries = { ...newDeliveries };
-            const projected = dedupTechniqueBlocks(
-              composed, state, entryDeliveries, scope, referenceMode,
-            );
-            const entry = { marker: stepMarker, ...projected };
-            const entryChars = blockChars('step_techniques', { [step.id!]: entry }) + mapNotesCost;
-            if (responseChars + entryChars > responseBound) break;
-            responseChars += entryChars;
+            // level, so a bundled entry IS the get_technique fetch with a step header — the
+            // capability, the interface, the procedure and the rules, exactly as the file defines
+            // them.
+            const entry = { marker: stepMarker, ...projectTechnique(technique) };
             spentChars += text.length;
-            Object.assign(newDeliveries, entryDeliveries);
             newDeliveries[ledgerKey] = hash;
             bundledStepTechniques[step.id!] = entry;
           }
           // Linked resource ids join the response for a step the bundle actually carries — read off
           // the full composed text even where this delivery collapses to an unchanged-marker, since
-          // a marker omits the link text. Their cost was charged with the entry above.
+          // a marker omits the link text.
           for (const rid of links) linkedResourceIds.add(rid);
           bundledSteps.push({
             stepId: step.id!, techniqueId,
@@ -2349,7 +2011,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               );
               if (!loaded.success) {
                 // Warn and continue — unresolvable refs must not abort get_activity (SC-13).
-                raiseWarning(
+                bundlingWarnings.push(
                   `Unresolvable resource ref '${resourceId}' linked from bundled step techniques: ${loaded.error.message}`,
                 );
                 continue;
@@ -2358,16 +2020,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               const ledgerKey = `resource:${resourceId}`;
               if (deliveredHash(state, ledgerKey, scope) === hash || newDeliveries[ledgerKey] === hash) {
                 // A reference marker draws down no window budget — like a collapsed technique it
-                // never displaces a body that still needs sending — and costs the response only the
-                // bytes it is written in.
-                const marker = { resource_id: resourceId, ...unchangedMarker(hash) };
-                const markerChars = blockChars('resources', { [resourceId]: marker });
-                if (responseChars + markerChars > responseBound) {
-                  resourceRefIds.push(...orderedIds.slice(i).filter((rid) => !coveredByItsFile(rid)));
-                  break;
-                }
-                responseChars += markerChars;
-                bundledResources[resourceId] = marker;
+                // never displaces a body that still needs sending.
+                bundledResources[resourceId] = { resource_id: resourceId, ...unchangedMarker(hash) };
                 bundledResourceDeliveries.push({ resourceId, chars: content.length, delivery: 'unchanged' });
                 // The marker means this context already holds the body, sections included.
                 if (!resourceId.includes('#')) deliveredWhole.add(resourceId);
@@ -2381,23 +2035,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                 continue;
               }
               // #323 T2: resource bodies draw down the SAME cumulative `spentChars` counter as
-              // techniques, so `context_tokens` actually bounds the eager bundle, and the same
-              // response tally, so the bound does too. Stop at the first body that would overflow
-              // either (mirroring the technique loop's stop-and-break); it and every id after it
-              // stay fetchable via get_resource.
+              // techniques, so `context_tokens` actually bounds the eager bundle. Stop at the first
+              // body that would overflow it (mirroring the technique loop's stop-and-break); it and
+              // every id after it stay fetchable via get_resource.
+              if (spentChars + content.length > eagerBudgetChars) {
+                resourceRefIds.push(...orderedIds.slice(i).filter((rid) => !coveredByItsFile(rid)));
+                break;
+              }
               const body = {
                 resource_id: resourceId,
                 ...(id ? { id } : {}),
                 ...(version ? { version } : {}),
                 content,
               };
-              const bodyChars = blockChars('resources', { [resourceId]: body });
-              if (spentChars + content.length > eagerBudgetChars || responseChars + bodyChars > responseBound) {
-                resourceRefIds.push(...orderedIds.slice(i).filter((rid) => !coveredByItsFile(rid)));
-                break;
-              }
               spentChars += content.length;
-              responseChars += bodyChars;
               newDeliveries[ledgerKey] = hash;
               bundledResources[resourceId] = body;
               bundledResourceDeliveries.push({ resourceId, chars: content.length, delivery: 'full' });
@@ -2416,7 +2067,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                 config.workflowDir, workflow_id, resourceId, session_index,
               );
               if (!loaded.success) {
-                raiseWarning(
+                bundlingWarnings.push(
                   `Unresolvable resource ref '${resourceId}' linked from bundled step techniques: ${loaded.error.message}`,
                 );
               }
@@ -2431,9 +2082,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           if (linkedIds.length > 0) {
             // Which note explains this response is a question about the SHAPE it took, and the
             // shape is chosen by the delivery mode: full delivery lists ids, reference delivery
-            // carries bodies. A reference delivery whose bodies all gave way to the bound is still
-            // the bodies shape with nothing in it, and saying "no bodies are bundled in this mode"
-            // would name the mode for an absence the bound caused.
+            // carries bodies.
             bundleData['resources_note'] = stageNote('resources',
               referenceMode ? RESOURCES_BUNDLED_NOTE : RESOURCE_REFS_NOTE,
               state, newDeliveries, scope, mayReferBack);
@@ -2446,21 +2095,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...bundlingWarnings,
       );
 
-      // The note names whichever referents this response can actually produce. A second composed
-      // technique anywhere in the payload is what makes an in-response marker possible: the shared
-      // block pass runs across the operations bundle and the step map alike, so either one holding
-      // two entries is enough. Counted over the operations the bound admitted, an entry left out
-      // being one no marker in this response can point at.
-      const carriedOperations = (bundleData['techniques'] ?? {}) as Record<string, unknown>;
-      const composedInResponse = bundledSteps.length + Object.keys(carriedOperations).length;
-      const markerNotes = [
-        ...(composedInResponse > 1 ? [IN_RESPONSE_MARKER_NOTE] : []),
-        ...(mayReferBack ? [PRIOR_CALL_MARKER_NOTE] : []),
-      ];
-      const opsData = markerNotes.length
+      // Every marker this response can carry points at an earlier CALL, so the note rides a
+      // delivery whose context retains what it was sent and no other. A context holding nothing
+      // earlier receives no marker, and a note about how to read one would explain a shape that
+      // response does not take.
+      const opsData = mayReferBack
         ? {
             ...(referenceMode ? { bundle_mode: 'reference' } : {}),
-            bundle_note: stageNote('bundle', `${MARKER_PREAMBLE} ${markerNotes.join(' ')}`,
+            bundle_note: stageNote('bundle', `${MARKER_PREAMBLE} ${PRIOR_CALL_MARKER_NOTE}`,
               state, newDeliveries, scope, mayReferBack),
             ...bundleData,
           }
@@ -2489,16 +2131,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
         // The response side of the same accounting, against which `spent_chars` reads the window
-        // side: what the delivery is written in, what one tool result may carry, and how much of
-        // that the activity and the contract had taken before the bundle spent anything. The two
-        // sides differ by what a marker costs — nothing to a context that holds the content, its
-        // own bytes to the response — so both are reported rather than reconciled.
-        response_spent_chars: responseChars,
+        // side: what the delivery text came to, what one tool result may carry, and how much of
+        // that the activity and the rules took. The two sides differ by what a marker costs —
+        // nothing to a context that holds the content, its own bytes to the response — so both are
+        // reported rather than reconciled.
+        response_spent_chars: responseText.length,
         response_bound_chars: responseBound,
-        fixed_chars: responseFloor,
-        // Operations of the worker's role contract this response carries no body for. Their ids are
-        // under `operation_refs` in the payload; `get_technique { technique_id }` serves each.
-        deferred_operations: deferredOperations.length,
+        fixed_chars: fixed.chars,
         // The role contract's share of this response — the part that does not vary with the
         // activity. Read against the response length it rides in, it is the fixed and variable
         // split of a delivery, which is the reading the cost gate prices a change by. On the
@@ -2578,13 +2217,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // The protocol metadata this result carries beside its text. Assembled before the figures
       // below because a harness weighs the whole result, so what it came to is part of what this
-      // delivery cost and part of what the bound is measured against.
+      // delivery cost and part of what the limit is measured against.
       const _meta = {
         session_index, validation, artifact_prefix: fixed.artifactPrefix, artifacts: fixed.artifacts, activity_rules: fixed.inheritedRules,
         dispatch, batch, delivery_cost: deliveryCost,
-        // Which operations of the role contract carry no body here, so a caller asserts the bound
-        // without parsing the bundle for an absence.
-        ...(deferredOperations.length > 0 ? { operation_refs: deferredOperations } : {}),
         ...(Object.keys(fixed.exitDestinations).length > 0 ? { exit_destinations: fixed.exitDestinations } : {}),
         ...(fanInstance !== undefined ? { fan_instance: fanInstance } : {}),
         // Why each gated technique step stayed lazy. On the response and not only the log because a
@@ -2603,9 +2239,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // distinct bound ops the producer scan read for the whole request and `provenance_passes` the
       // steps decorated from that one scan, so the two together say whether resolve work is being
       // repeated. `spent_chars` against `eager_budget_chars` is what the bundle drew from the
-      // worker's window, and `response_spent_chars` against `response_bound_chars` what it drew
-      // from the response; the response length is what actually went over the wire, at or under
-      // that second tally because a marker costs the wire less than the content it stands for.
+      // worker's window, and `response_spent_chars` against `response_bound_chars` is the delivery
+      // text against what one tool result may carry.
       logInfo('Activity delivery cost', {
         session_index, activity: activity_id, agentId: scope, delivery: referenceMode ? 'reference' : 'full',
         ...deliveryCost,
@@ -2622,21 +2257,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         response_chars: resultChars,
       });
 
-      // A response whose contract and activity alone exceed the bound has nothing left to defer:
-      // every procedure is already an id, and what remains is the rules and the definition, which
-      // the worker cannot do the activity without. It goes out over the bound and says so here,
-      // because an activity that reaches this is one whose definition has outgrown a single
-      // delivery, and a silent overflow is that fact arriving unexplained. Whether going over is the
-      // right end to the shed, against the round trip a client charges for an oversized result,
-      // is #836.
+      // A delivery past what one tool result may hold goes out whole and says so here. Everything
+      // in it is something the worker needs to do the activity — the definition, the rules it is
+      // held to, the procedures its steps apply — so an activity that reaches this is one whose
+      // work has outgrown a single delivery, and dividing it is the answer. A silent overflow is
+      // that fact arriving unexplained. Whether a client's round trip for an oversized result is
+      // the better end is #836.
       if (resultChars > responseBound) {
-        logWarn('Activity response over its bound with every procedure deferred', {
+        logWarn('Activity response over what one tool result may carry', {
           session_index, activity: activity_id, agentId: scope,
           bound: responseBound,
-          fixed_chars: responseFloor,
+          fixed_chars: fixed.chars,
           body_chars: fixed.body.length,
           response_chars: resultChars,
-          deferred_operations: deferredOperations.length,
         });
       }
 

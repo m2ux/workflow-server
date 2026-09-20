@@ -1061,18 +1061,12 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const preamble = text.substring(0, sepIdx);
       const decoded = parse(preamble) as Record<string, unknown>;
       // All techniques — standalone and nested — live in the single `techniques` bucket, nested ones
-      // keyed by their `<technique>::<name>` path. There is no separate sub-technique bucket. The
-      // response bound decides how many of them arrive as a body and how many as an id under
-      // `operation_refs`, so every operation is accounted for across the two and the assertion is
-      // that neither bucket is a list.
+      // keyed by their `<technique>::<name>` path. There is no separate sub-technique bucket, and
+      // the bucket is a map keyed by ref rather than a list.
       const carried = decoded['techniques'];
-      const deferred = decoded['operation_refs'];
-      expect(carried ?? deferred).toBeDefined();
-      if (carried !== undefined) {
-        expect(typeof carried).toBe('object');
-        expect(Array.isArray(carried)).toBe(false);
-      }
-      if (deferred !== undefined) expect(Array.isArray(deferred)).toBe(true);
+      expect(carried).toBeDefined();
+      expect(typeof carried).toBe('object');
+      expect(Array.isArray(carried)).toBe(false);
     });
 
     it('returns lightweight metadata: rules, variables, and activity stubs without step detail', async () => {
@@ -1107,12 +1101,8 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const body = parseWorkflowResponse(result);
 
       // work-package declares `variable-binding` at techniques.activity (worker-inherited). It is NOT
-      // an orchestrator technique, so it appears in neither half of the orchestrator's account of its
-      // operations — the bodies it carried, and the ids the response bound left for a fetch.
-      const accounted = [
-        ...Object.keys((preamble['techniques'] ?? {}) as Record<string, unknown>),
-        ...((preamble['operation_refs'] ?? []) as string[]),
-      ];
+      // an orchestrator technique, so it is absent from the orchestrator's account of its operations.
+      const accounted = Object.keys((preamble['techniques'] ?? {}) as Record<string, unknown>);
       expect(accounted.length).toBeGreaterThan(0);
       expect(accounted).not.toContain('variable-binding');
 
@@ -1312,13 +1302,14 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const { resolve } = await import('node:path');
       const schema = readFileSync(resolve(import.meta.dirname, '../src/schema/session.schema.ts'), 'utf8');
       const delivery = readFileSync(resolve(import.meta.dirname, '../src/utils/delivery.ts'), 'utf8');
-      expect(schema).toMatch(/technique:provenance_note/);
-      expect(schema).toMatch(/inherited_\*\.note\|items/);
-      expect(schema).toMatch(/bundle:/);
-      expect(schema).toMatch(/resource:/);
-      expect(delivery).toMatch(/technique:provenance_note/);
-      expect(delivery).toMatch(/inherited_inputs\.note/);
-      expect(delivery).toMatch(/DEDUP_BLOCKS.*provenance_note|provenance_note.*DEDUP_BLOCKS/s);
+      for (const source of [schema, delivery]) {
+        expect(source).toMatch(/bundle:/);
+        expect(source).toMatch(/technique:/);
+        expect(source).toMatch(/note:/);
+        expect(source).toMatch(/resource:/);
+        // Every key names a whole item, so no key names a field of a technique body.
+        expect(source).not.toMatch(/technique:(inherited_inputs|inherited_outputs|rules|provenance_note)[.:]/);
+      }
     });
   });
 

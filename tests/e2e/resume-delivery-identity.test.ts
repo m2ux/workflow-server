@@ -26,18 +26,11 @@ describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', (
     (result as { _meta?: { delivery_cost?: { worker_bundle_chars?: number } } })
       ._meta?.delivery_cost?.worker_bundle_chars ?? 0;
 
-  /** Operations of the contract a delivery carried no body for. */
-  const deferredOperations = (result: unknown): number =>
-    (result as { _meta?: { delivery_cost?: { deferred_operations?: number } } })
-      ._meta?.delivery_cost?.deferred_operations ?? 0;
-
   async function walkToGateAndBack(agentIdOnResume: string): Promise<{
     firstChars: number;
     firstContractChars: number;
-    firstDeferred: number;
     resumedText: string;
     resumedContractChars: number;
-    resumedDeferred: number;
     history: HistoryEntry[];
   }> {
     const { client } = h;
@@ -105,17 +98,15 @@ describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', (
     return {
       firstChars: rawText(dispatched).length,
       firstContractChars: contractChars(dispatched),
-      firstDeferred: deferredOperations(dispatched),
       resumedText: rawText(reRequest),
       resumedContractChars: contractChars(reRequest),
-      resumedDeferred: deferredOperations(reRequest),
       history: state.history,
     };
   }
 
   it('answers the resumed worker with markers for what it already holds', async () => {
     const {
-      firstContractChars, firstDeferred, resumedText, resumedContractChars, resumedDeferred, history,
+      firstContractChars, resumedText, resumedContractChars, history,
     } = await walkToGateAndBack(WORKER);
 
     // Markers, not a second copy: the payload collapses and the bytes never cross the wire again.
@@ -123,14 +114,9 @@ describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', (
     // carries the activity body, which never collapses.
     expect(resumedText).toContain('delivery: unchanged');
 
-    // What the collapse frees, the response spends on the operations the bound deferred from the
-    // dispatch. So the contract share falls while the procedure aboard rises, and the two readings
-    // together are what says a collapse happened rather than a smaller payload having been built.
-    // Measured at 36% of the dispatch's contract with every deferred operation recovered; the
-    // ceiling sits at a half, above the reading and below a contract that had stopped collapsing.
+    // The dispatch carried the whole contract, so the resume carries a marker for every operation
+    // of it and the contract share falls to a fraction of what it was.
     expect(resumedContractChars).toBeLessThan(firstContractChars / 2);
-    expect(resumedDeferred, 'the room a collapse freed carried no deferred procedure')
-      .toBeLessThan(firstDeferred);
 
     // The server met this context before the gate, so its return is a resume.
     const dispatches = history.filter(e => e.type === 'activity_dispatched');

@@ -48,14 +48,8 @@ export const FAN_DISPATCH_TECHNIQUES: readonly string[] = [
  * Technique refs every orchestrator needs at the workflow level. Returned by `get_workflow`
  * alongside the workflow's declared technique refs.
  *
- * **The order is the priority order.** `get_workflow` holds its response to what one tool result
- * may carry, and what gives is operation bodies from the end of this list. So the operations every
- * dispatch applies lead, then the ones a run applies at its own boundaries, then the ones a
- * particular run may never reach at all. A ref moved later is a ref more likely to arrive as an id
- * the orchestrator has to fetch before it can act.
- *
- * Every entry's rules ride the response whatever the bound does, so moving a ref late defers a
- * procedure and never a boundary.
+ * The order is the reading order: the operations every dispatch applies lead, then the ones a run
+ * applies at its own boundaries, then the ones a particular run may never reach at all.
  */
 export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // Every dispatch. compose-prompt and spawn-agent are invoked inline by dispatch-activity's body,
@@ -67,9 +61,7 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   'harness-compat::continue-agent',
   // The kind → file map spawn-agent and continue-agent apply mid-Protocol. All four harness files
   // ship because nothing binds `{harness_kind}` server-side; the orchestrator selects its own
-  // through the map, which stays the single authoritative table. Its own harness is the one it
-  // needs at the first dispatch — the other three are here for the map to resolve into and are the
-  // cheapest thing in the list to defer.
+  // through the map, which stays the single authoritative table.
   'harness-compat::resolve-harness-operation',
   'harness-compat::claude-code',
   // Every activity boundary.
@@ -84,7 +76,7 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
   // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
   // writing rules are not an orchestrator's to honour. The bodies are a capability line apiece;
-  // what binds is their rules, which no bound touches.
+  // what binds is their rules.
   'agent-conduct',
   'orchestrator-conduct',
   // What a particular run may never reach: a child workflow it never launches, and the three

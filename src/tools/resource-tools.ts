@@ -60,7 +60,7 @@ import { buildValidation, validateWorkflowVersion } from '../utils/validation.js
 import { stringifyForResponse } from '../utils/serialization.js';
 import { tryEagerClientDispatch, type EagerClient, type EagerOpenResult, type OpeningBagFacts } from '../utils/eager-client.js';
 import { resolveOpeningIntent, type OpeningIntent } from '../utils/opening-intent.js';
-import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { contentHash, deliveredHash, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { hasDispatch, recordDispatch } from '../utils/dispatch.js';
 import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
 import { appendStepStartedIfAbsent } from '../utils/step-events.js';
@@ -825,7 +825,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
       ...agentIdParam,
       technique_id: z.string().optional().describe(
-        'Optional. An operation of your role\'s contract, by the id it is keyed under — one of the `operation_refs` a response listed without a body, or a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared). Only operations this session\'s roles name are servable; anything else is refused. Not for a step\'s own technique, which `step_id` addresses.',
+        'Optional. An operation of your role\'s contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only operations this session\'s roles name are servable; anything else is refused. Not for a step\'s own technique, which `step_id` addresses.',
       ),
       step_id: z.string().optional().describe('Optional. Step id whose bound technique to load; omit for the activity/workflow first technique.'),
       activity_id: z.string().optional().describe('Optional. The activity you were dispatched for. A step id resolves against the session\'s CURRENT activity, so passing this turns a pointer that has moved on into an error instead of a technique from the wrong activity.'),
@@ -866,8 +866,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // An operation of the role contract, addressed by the id the bundle keys it under. The
         // admissible set is derived from the definitions this session is already walking, so an id
         // names an operation of its own contract or nothing at all — this is not a way to read an
-        // arbitrary file. A run reaches here for what a bounded `get_workflow` deferred, and for a
-        // protocol a role needs that its activity never declared.
+        // arbitrary file. A run reaches here for a protocol a role needs that its activity never
+        // declared, and for one a context that lost its delivery is asking back.
         const servedActivityDef = servedFor ? getActivity(wfResult.value, servedFor) : undefined;
         const admissible = contractOperations({
           workflowTechniques: (wfResult.value as { techniques?: { workflow?: string[] } }).techniques?.workflow,
@@ -1041,27 +1041,20 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         };
       }
 
-      // Full-delivery branch. Under reference delivery, collapse any shared contract/rules
-      // block already delivered by a sibling technique to a marker while the core stays full;
-      // block hashes are recorded alongside the whole-technique key.
-      let body = text;
-      const blockDeliveries: Record<string, string> = {};
-      if (referenceMode) {
-        const deduped = dedupTechniqueBlocks(ordered, state, blockDeliveries, scope);
-        body = stringifyForResponse(deduped);
-      }
+      // Full-delivery branch. The technique is the unit this call serves, so it goes out entire —
+      // capability, interface, procedure and rules, as the file defines them. What collapses is the
+      // whole of it, on the branch above, against the `technique:<id>` key recorded here.
+      const body = text;
       const next = advanceSession(state, (draft) => {
         draft.currentTechnique = techniqueId as string;
-        recordDeliveries(draft, scope, { [ledgerKey]: hash, ...blockDeliveries });
+        recordDeliveries(draft, scope, { [ledgerKey]: hash });
         recordFirstArrival(draft);
         recordFetch(draft, 'full');
       });
       await saveSessionForTool(loaded, next);
 
       // What this fetch cost to build and to send. `resolved_techniques` is the distinct bound ops the
-      // producer scan read to decorate one step, which is the resolve work a lazy fetch pays; the two
-      // character figures are the composed technique and what the response carried after any shared
-      // block collapsed.
+      // producer scan read to decorate one step, which is the resolve work a lazy fetch pays.
       logInfo('Technique delivery cost', {
         session_index, technique: techniqueId, agentId: scope, delivery: 'full',
         resolved_techniques: resolvedTechniques, composed_chars: text.length, response_chars: body.length,

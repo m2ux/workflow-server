@@ -186,8 +186,7 @@ const SessionFileBaseSchema = z.object({
    * key → hash of the content most recently delivered in full. Content keys
    * are namespaced by channel — see `src/utils/delivery.ts` for the full list
    * (`bundle:…`, `bundle:rules:…`, `activity_rules:…`, `technique:…`,
-   * `technique:<block>:…`, `technique:provenance_note:…`,
-   * `technique:inherited_*.note|items:…`, `workflow_bundle:…`, `resource:…`).
+   * `note:…`, `workflow_bundle:…`, `resource:…`). Each names a whole item.
    * Always recorded so a per-call reference opt-in can follow full deliveries;
    * consulted only when reference delivery is active (session
    * `contextMode: 'persistent'` or a per-call opt-in).

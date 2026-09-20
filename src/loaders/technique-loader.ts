@@ -184,10 +184,14 @@ export interface ResolvedTechnique {
 }
 
 /**
- * The deliverable body of a technique reference (protocol + interface). One projection for ALL
- * techniques — standalone or nested. A nested technique ("sub-technique" informally) is just a
- * technique; its rules surface as `rule` entries via the auto-include pass, exactly like a
- * standalone technique's, rather than being inlined here.
+ * The deliverable body of a technique reference. One projection for ALL techniques — standalone or
+ * nested. A nested technique ("sub-technique" informally) is just a technique.
+ *
+ * A body states the capability, the interface, the procedure AND the rules the technique is held
+ * to, because those together are what an agent needs to perform the operation. The bundle's `rules`
+ * list states the same rules a second time, flattened and addressable across the whole role
+ * contract — so the two are complementary rather than redundant: one is the role's whole contract,
+ * the other is one operation delivered entire.
  */
 function projectTechniqueBody(t: Technique): Record<string, unknown> {
   const body: Record<string, unknown> = {};
@@ -197,6 +201,7 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   if (t.protocol) body['protocol'] = t.protocol;
   if (t.outputs) body['outputs'] = t.outputs;
   if (t.inherited_outputs) body['inherited_outputs'] = t.inherited_outputs;
+  if (t.rules) body['rules'] = t.rules;
   return body;
 }
 
