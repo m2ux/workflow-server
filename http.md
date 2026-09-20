@@ -50,7 +50,7 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
 
 `scripts/reload-exp-sidecar.sh` stops one named container, compiles the engine checkout on the host, and starts it again on the same host port and corpus with that `dist` (and the engine `schemas`) bound read-only. The process is still `node dist/index.js` on the image's production `node_modules`. The image itself rebuilds when `package.json`, `package-lock.json` or the Dockerfile drifted, or when `--rebuild-image` is passed. When the engine checkout's `start.sh` does not accept `--dist-dir`, the copy next to this reload script is used so the bind still lands. It refuses the install container name `workflow-server` and host port 3000.
 
-`--name` is the only required flag. Host port, corpus, engine checkout and projects root each default to what the named container records, running or exited, so reloading the pairing under test is `--name` alone and a sidecar a reboot left stopped reloads on the port it had; each is required when no container of that name exists. `--image` defaults to `workflow-server:local` (pass a distinct tag per experiment). `--build` defaults to the engine checkout the named container records; when none exists it is the checkout that contains the script. Pass a directory when naming a pairing whose engine lives in another worktree.
+`--name` is the only required flag. Host port, corpus, engine checkout, image and projects root each default to what the named container records, running or exited, so reloading the pairing under test is `--name` alone and a sidecar a reboot left stopped reloads on the port it had; each is required when no container of that name exists. `--image` defaults to the image the named container records; when none exists it is `workflow-server:local`. `--build` defaults to the engine checkout the named container records; when none exists it is the checkout that contains the script. Pass a directory when naming a pairing whose engine lives in another worktree.
 
 ```bash
 # First reload of a new experiment: name the pairing.
@@ -62,12 +62,12 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
   --host-port=32772
 
 # Every reload after it: compile the same pairing on the host.
-./scripts/reload-exp-sidecar.sh --name=workflow-server-exp --image=workflow-server:exp-ttd
+./scripts/reload-exp-sidecar.sh --name=workflow-server-exp
 ```
 
-`--no-build` reuses `--image` and does not compile on the host. `--rebuild-image` rebuilds the image, skips host compile, and serves the image-baked `dist`. Point the experiment MCP server at the printed URL. Leave `workflow-server` on :3000. A recreate drops in-memory MCP sessions; the next walk calls `discover` on the sidecar again.
+`--no-build` reuses the image the named container records and does not compile on the host. `--rebuild-image` rebuilds the image, skips host compile, and serves the image-baked `dist`. Point the experiment MCP server at the printed URL. Leave `workflow-server` on :3000. A recreate drops in-memory MCP sessions; the next walk calls `discover` on the sidecar again.
 
-**Before the swap.** The corpus is held to the guards that decide whether a server can serve it — the definitions load, resolve and parse (`guards/check-all.ts --serving-only`, under a second) — and host `tsc` runs, before anything is stopped. A corpus that fails the guards, or a compile that fails, refuses and leaves the container exactly as it found it, because an agent walking them meets the same failure several minutes in. `--no-preflight` skips the corpus check.
+**Before the swap.** The corpus is held to the guards that decide whether a server can serve it — the definitions load, resolve and parse (`guards/check-all.ts --serving-only`, under a second) — before anything is stopped. A corpus that fails the guards refuses and leaves the container as it found it, because an agent walking them meets the same failure several minutes in. Host `tsc` runs next; a failed compile refuses without stopping the container. `--no-preflight` skips the corpus check.
 
 The convention guards are not part of this, and that is the point: they measure the corpus this repository ships, so a corpus written to exercise one construct fails them for holding no bootstrap protocol and no harness map — true of every such corpus, and silent on whether it serves. Run `npx tsx guards/check-all.ts --root DIR --corpus-only` when the full picture is what you want. The outgoing container's log is written to `$INSTALL/logs` (or `--log-dir`) before it is removed — that file holds the JSON audit line the server writes per tool call, which is the record of the run being compared against. A reload that never reaches ready prints the probe's own payload, so the check holding it back is named rather than guessed at.
 

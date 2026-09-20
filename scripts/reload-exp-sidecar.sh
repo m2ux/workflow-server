@@ -8,9 +8,9 @@
 # engine checkout. Refuses the install instance name `workflow-server` and host
 # port 3000.
 #
-# Host port, corpus and engine checkout default to what the named container
-# records, running or exited, so a reload of the pairing under test is
-# `--name` alone.
+# Host port, corpus, engine checkout, image and projects root default to
+# what the named container records, running or exited, so a reload of the
+# pairing under test is `--name` alone.
 set -euo pipefail
 
 INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
@@ -27,9 +27,9 @@ install matches the lockfile, and starts it again on the same host port and
 corpus with a dist bind of that compile and a schemas bind of the engine
 checkout. The image rebuilds when package.json, package-lock.json or the
 Dockerfile drifted (lockfile-triggered image rebuild), or when --rebuild-image
-is passed. Host port, corpus and engine checkout default to what the named
-container records. Refuses the install instance name workflow-server and host
-port 3000.
+is passed. Host port, corpus, engine checkout, image and projects root
+default to what the named container records. Refuses the install instance
+name workflow-server and host port 3000.
 
   scripts/reload-exp-sidecar.sh --name=NAME [options]
   scripts/reload-exp-sidecar.sh --name=NAME --workflows-dir=CORPUS [options]
@@ -46,7 +46,9 @@ Options:
                            root. Planning lands at DIR/<repo>/.engineering/
                            artifacts/planning, so a root of its own keeps an
                            experiment's walks out of the live planning tree.
-  --image=IMAGE            Image tag (default: workflow-server:local).
+  --image=IMAGE            Image tag. Defaults to the image the named
+                           container records, running or exited, else
+                           workflow-server:local.
   --build[=DIR]            Engine checkout. Defaults to the engine the named
                            container records, running or exited, else this
                            repo root. DIR is a worktree for a branch that is
@@ -66,10 +68,10 @@ Options:
                            call for the run being replaced.
   --rebuild-image          Rebuild the image even when inputs-sha matches.
                            Skips host compile and serves the image-baked dist.
-  --no-build               Reuse --image; do not compile on the host and do
-                           not rebuild the image. Recreates the container.
-                           Dist and schemas binds are inherited from the
-                           named container when it has them.
+  --no-build               Do not compile on the host and do not rebuild the
+                           image. Recreates the container. Image, dist and
+                           schemas binds are inherited from the named
+                           container when it has them.
   --no-preflight           Skip the corpus check. It runs the guards that
                            decide whether a server can serve the definitions —
                            they load, resolve and parse — and not those that
@@ -96,7 +98,7 @@ Example — name a pairing once, then reload it by name:
     --workflows-dir=.worktrees/feat/time-to-dispatch-meta \\
     --host-port=32772
 
-  scripts/reload-exp-sidecar.sh --name=workflow-server-exp --image=workflow-server:exp-ttd
+  scripts/reload-exp-sidecar.sh --name=workflow-server-exp
 EOF
 }
 
@@ -112,7 +114,7 @@ CONTAINER_PORT="${PORT:-3000}"
 IMAGE_INPUTS_LABEL="workflow-server.inputs-sha"
 
 NAME="${EXP_NAME:-}"
-IMAGE="${EXP_IMAGE:-workflow-server:local}"
+IMAGE="${EXP_IMAGE:-}"
 CORPUS="${EXP_CORPUS:-}"
 ENGINE="${EXP_ENGINE:-}"
 PROJECTS="${EXP_PROJECTS_ROOT:-}"
@@ -337,8 +339,9 @@ container_label() {
 [[ -n "$NAME" ]] || die "pass --name (see --help)"
 [[ "$NAME" != "workflow-server" ]] || die "refusing to operate on the install container name"
 
-# Engine defaults to what the named container already records, so a later compile of the pairing
-# under test is `--name` alone and uses the engine that container already records.
+# Pairing fields the named container records, all inherited when the flag is omitted:
+# engine.dir, image, host port, corpus bind, projects root. A default must not run
+# before that lookup.
 if [[ -z "$ENGINE" ]] && command -v docker >/dev/null 2>&1; then
   ENGINE="$(container_label "$NAME" "workflow-server.engine.dir")"
 fi
@@ -347,6 +350,13 @@ if [[ -z "$ENGINE" ]]; then
 else
   [[ -d "$ENGINE" ]] || die "engine checkout is not a directory: ${ENGINE}"
   ENGINE="$(cd "$ENGINE" && pwd)"
+fi
+
+if [[ -z "$IMAGE" ]] && command -v docker >/dev/null 2>&1; then
+  IMAGE="$(container_label "$NAME" "workflow-server.image")"
+fi
+if [[ -z "$IMAGE" ]]; then
+  IMAGE="workflow-server:local"
 fi
 
 # Port and corpus both default to what the named container already carries, so reloading a sidecar

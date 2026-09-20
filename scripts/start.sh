@@ -189,7 +189,7 @@ EXAMPLES
   ./scripts/stop.sh --name=workflow-server-trial
 
   # Reload a named experiment sidecar on the same host port:
-  ./scripts/reload-exp-sidecar.sh --name=NAME --image=IMAGE --workflows-dir=CORPUS
+  ./scripts/reload-exp-sidecar.sh --name=NAME
 
   # Product checkouts: manage under \$HOST_PROJECTS_ROOT/<repo>/ yourself.
   # Pass repo: owner/repo on start_session.

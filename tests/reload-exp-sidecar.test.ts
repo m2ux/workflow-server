@@ -75,12 +75,12 @@ describe('reload-exp-sidecar.sh', () => {
     expect(flowed).toContain('compiles the engine checkout on the host');
     expect(flowed).toContain('dist bind');
     expect(flowed).toContain('lockfile-triggered image rebuild');
-    expect(flowed).toContain('do not compile on the host');
+    expect(flowed).toContain('Do not compile on the host');
     expect(flowed).toContain("this script's start.sh is used so a host compile still binds");
     expect(flowed).toContain('Skips host compile and serves the image-baked dist');
   });
 
-  it('usage asks only for --name, the corpus, port and engine defaulting to the container record', () => {
+  it('usage asks only for --name, pairing fields defaulting to the container record', () => {
     const out = run(['--help']);
     expect(out.stdout).toMatch(/Required:\s*\n\s*--name=NAME[^\n]*\n\s*\n/);
     // The record outlives the container running, so the help must not promise a running one. Read
@@ -89,6 +89,11 @@ describe('reload-exp-sidecar.sh', () => {
     expect(flowed).toContain('Defaults to the corpus the named container binds, running or exited');
     expect(flowed).toContain('Defaults to the binding the named container records, running or exited');
     expect(flowed).toContain('Defaults to the engine the named container records, running or exited');
+    expect(flowed).toContain('Defaults to the image the named container records, running or exited');
+    // Later-cycle example is --name alone. The first-pairing block still names --image.
+    expect(out.stdout).toMatch(
+      /^  scripts\/reload-exp-sidecar\.sh --name=workflow-server-exp\s*$/m,
+    );
   });
 
   it('inherits the engine checkout from the named container when --build is omitted', () => {
@@ -146,6 +151,88 @@ exit 1
       expect(`${result.stderr}${result.stdout}`).not.toMatch(/engine-from-label/);
     } finally {
       rmSync(bin, { recursive: true, force: true });
+    }
+  });
+
+  it('inherits the image from the named container when --image is omitted', () => {
+    const bin = mkdtempSync(join(tmpdir(), 'reload-fake-docker-'));
+    const docker = join(bin, 'docker');
+    const corpus = withCorpus();
+    writeFileSync(
+      docker,
+      `#!/usr/bin/env bash
+if [[ "\${1:-}" == inspect ]]; then
+  for arg in "$@"; do
+    if [[ "$arg" == *'workflow-server.image'* ]]; then
+      echo workflow-server:exp-from-label
+      exit 0
+    fi
+  done
+fi
+exit 1
+`,
+    );
+    chmodSync(docker, 0o755);
+    try {
+      const result = run(
+        [
+          '--name=reload-exp-sidecar-image-inherit',
+          '--host-port=32773',
+          `--workflows-dir=${corpus}`,
+          '--no-build',
+          '--no-preflight',
+        ],
+        { PATH: `${bin}:${process.env.PATH ?? ''}` },
+      );
+      expect(`${result.stderr}${result.stdout}`).toMatch(
+        /image\s+:\s+workflow-server:exp-from-label/,
+      );
+    } finally {
+      rmSync(bin, { recursive: true, force: true });
+      rmSync(corpus, { recursive: true, force: true });
+    }
+  });
+
+  it('keeps an explicit --image over the container image record', () => {
+    const bin = mkdtempSync(join(tmpdir(), 'reload-fake-docker-'));
+    const docker = join(bin, 'docker');
+    const corpus = withCorpus();
+    writeFileSync(
+      docker,
+      `#!/usr/bin/env bash
+if [[ "\${1:-}" == inspect ]]; then
+  for arg in "$@"; do
+    if [[ "$arg" == *'workflow-server.image'* ]]; then
+      echo workflow-server:exp-from-label
+      exit 0
+    fi
+  done
+fi
+exit 1
+`,
+    );
+    chmodSync(docker, 0o755);
+    try {
+      const result = run(
+        [
+          '--name=reload-exp-sidecar-image-explicit',
+          '--image=workflow-server:explicit-tag',
+          '--host-port=32773',
+          `--workflows-dir=${corpus}`,
+          '--no-build',
+          '--no-preflight',
+        ],
+        { PATH: `${bin}:${process.env.PATH ?? ''}` },
+      );
+      expect(`${result.stderr}${result.stdout}`).toMatch(
+        /image\s+:\s+workflow-server:explicit-tag/,
+      );
+      expect(`${result.stderr}${result.stdout}`).not.toMatch(
+        /image\s+:\s+workflow-server:exp-from-label/,
+      );
+    } finally {
+      rmSync(bin, { recursive: true, force: true });
+      rmSync(corpus, { recursive: true, force: true });
     }
   });
 
