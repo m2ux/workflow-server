@@ -2,7 +2,7 @@
 name: server-in-the-loop
 description: >-
   Runs a workflow-server experiment sidecar as server-in-the-loop validation:
-  rebuild and cycle a live HTTP instance on port 32772, author specimen
+  reload and cycle a live HTTP instance on port 32772, author specimen
   workflows, and walk them against codebase and corpus changes. The first live
   walk is always a minimum viable workflow (MVW): one orchestrator, one
   activity, one routine, one technique. Use after unit, e2e and guard tests on
@@ -24,7 +24,7 @@ This skill locates the pairing, the MCP namespace, and the loop. Bootstrap steps
 2. Agent adds or changes the feature.
 3. Agent authors or reuses the MVW (`corpus/specimens/mvw/`) and, separately, a specimen that exercises the change surface.
 4. Agent runs unit, e2e, and guard tests.
-5. Agent asks whether to run a sidecar loop (it is costly). On yes: spin up or reload the sidecar.
+5. Agent asks whether to run a sidecar loop. The walk (MVW, then specimen) is the cost; an engine reload is host `tsc` plus a container recreate. On yes: spin up or reload the sidecar.
 6. First live walk: the MVW. A miss here is scored against "the instance can dispatch one activity"; iterate the engine and stay on the MVW. Do not walk the change-surface specimen yet.
 7. Once the MVW holds, walk the change-surface specimen. Score that walk against the claims of the change under test. A miss against those claims iterates the design and repeats from step 2, still opening each sidecar cycle with the MVW. An outcome the change does not speak to is recorded, not treated as a verdict on the change.
 
@@ -53,19 +53,21 @@ Three checkouts, three jobs:
 
 | Bind | Tree | Role |
 |------|------|------|
-| `--build` | Engine worktree of the code under test | Image the sidecar runs |
+| `--build` | Engine worktree of the code under test | Host `tsc` plus the image when lockfile or Dockerfile drifted |
 | `--workflows-dir` | Dedicated corpus worktree | Definitions the sidecar serves |
 | `working_directory` | Stable clone under the isolated projects root | Repo binding and planning |
 
 `--workflows-dir` is a checkout that contains `corpus/` — typically `.worktrees/<branch>` of the primary server checkout. The script accepts any such directory. **Never bind the shared `.worktrees/workflows` dest** — that checkout stays on the integration branch for other agents.
 
-`--build` and `--workflows-dir` are resolved from the current working directory unless they are absolute. Run the script from the primary checkout, or pass absolute paths.
+`--build` and `--workflows-dir` are resolved from the current working directory unless they are absolute.
 
-`--build` defaults to the checkout that contains `reload-exp-sidecar.sh`. When the engine changed, run the script from that engine worktree (or pass `--build` at that path) so the launcher and the image stay one pair. When only the corpus bind must move, `--no-build` reuses the image. Definition edits on a corpus tree the sidecar already mounts resolve on the next tool call; that tree is not cached at boot.
+Run the reload script from a checkout whose `http.md` describes host compile (section **Reload an experiment sidecar on a stable port**). Pass `--build` as the **absolute** path of the engine worktree under test. That engine tree is the source being compiled; it is not the script that must run. An older `reload-exp-sidecar.sh` in that worktree docker-builds every cycle.
+
+`--build` names the engine checkout. Host compile and a recreate are the engine cycle; the image rebuilds when the lockfile or Dockerfile drifted. The engine worktree's `node_modules` must match its lockfile (provision that worktree, or `npm ci` there) or the cycle falls back to an image rebuild. When only the corpus bind must move, `--no-build` reuses the image and does not compile. Definition edits on a corpus tree the sidecar already mounts resolve on the next tool call; that tree is not cached at boot.
 
 Pick a distinct `--image` tag per experiment (for example `workflow-server:exp-<slug>`). The script's own default is `workflow-server:local` and is **not** read back from the container.
 
-The first reload of a new pairing names `--name`, `--image`, `--build`, `--workflows-dir`, `--host-port=32772`, and `--projects-root`. Later reloads inherit port, corpus, and projects root from that container (running or exited). They still need `--image` whenever the tag is not `workflow-server:local`. `--build` stays on unless `--no-build`: an engine cycle rebuilds; a corpus-only cycle passes `--no-build` so the image is reused.
+The first reload of a new pairing names `--name`, `--image`, `--build`, `--workflows-dir`, `--host-port=32772`, and `--projects-root`. Later engine cycles inherit port, corpus, and projects root. They still need `--image` whenever the tag is not `workflow-server:local`. A corpus-only cycle passes `--no-build`. Confirm the log: `compile  : host tsc` and no `Building … from`. `Building` means the image was rebuilt (lockfile or Dockerfile drift, missing image, or `node_modules` not matching the engine lockfile).
 
 Open `http.md` in the server checkout, section **Reload an experiment sidecar on a stable port**, and the script's own `--help`, for the flag surface. Leave preflight on: it runs serving guards before anything is stopped, and a refusal leaves the sidecar as it was.
 
@@ -120,6 +122,12 @@ That is the reload preflight. Full corpus picture: the same command with `--corp
   --projects-root="${XDG_DATA_HOME:-$HOME/.local/share}/workflow-server/exp-projects"
 ```
 
+Run that from the checkout that has host compile, with `--build` pointing at the engine worktree. Later engine cycles:
+
+```bash
+./scripts/reload-exp-sidecar.sh --name=workflow-server-exp --image=workflow-server:exp-<slug>
+```
+
 4. Confirm identity on the endpoint itself:
 
 ```bash
@@ -134,7 +142,7 @@ The payload is `{ status, checks, corpus }`. Walk only on HTTP 200 with `status:
 docker inspect workflow-server-exp --format '{{json .Config.Labels}}'
 ```
 
-`workflow-server.corpus.pin` is the commit (suffix `-dirty` when that tree has uncommitted edits). A build also stamps `workflow-server.engine.pin`; a `--no-build` reload leaves the engine unclaimed. The install container on `:3000` stays up.
+`workflow-server.corpus.pin` is the commit (suffix `-dirty` when that tree has uncommitted edits). An engine cycle stamps `workflow-server.engine.pin`; a `--no-build` reload leaves the engine unclaimed. The install container on `:3000` stays up.
 
 MCP HTTP sessions live in the container's memory. A reload drops them. Call `discover` on the sidecar again before the next walk.
 
@@ -160,7 +168,7 @@ The change-surface specimen is scored against the attendant design changes, not 
 
 An outcome outside the change surface (pre-existing behaviour, a specimen gap, a stop the change never promised to prevent) is evidence about the walk, not a verdict on the change. Name which, then either widen the specimen or leave it out of the loop.
 
-Every sidecar cycle after a reload opens with the MVW again, then the specimen. Re-run unit, e2e, and guards after a design edit. Reload when the image must rebuild or `--workflows-dir` must point at a different tree. Definition edits on the tree already mounted resolve on the next tool call.
+Every sidecar cycle after a reload opens with the MVW again, then the specimen. Re-run unit, e2e, and guards after a design edit. Reload from the host-compile checkout when the engine must recompile, or when `--workflows-dir` must point at a different tree. Definition edits on the tree already mounted resolve on the next tool call.
 
 Stop with `--name=workflow-server-exp` on any `stop.sh`. Omitting `--name` defaults to `workflow-server` and removes the install instance:
 
