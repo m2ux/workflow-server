@@ -43,6 +43,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
 - **Quick start, schema, API:** [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md)
 - **IDE/MCP setup:** [docs/ide-setup.md](docs/ide-setup.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)
+- **Server-in-the-loop (live sidecar walks):** [.cursor/skills/server-in-the-loop/SKILL.md](.cursor/skills/server-in-the-loop/SKILL.md)
 - **Work in `.engineering/` (artifacts, planning):** [.engineering/AGENTS.md](.engineering/AGENTS.md)
 
 <!-- gitnexus:start -->
