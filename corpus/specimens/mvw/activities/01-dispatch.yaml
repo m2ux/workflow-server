@@ -1,7 +1,7 @@
 id: dispatch
 version: 1.0.0
 name: Dispatch
-description: Dispatch once through the record-dispatch run.
+description: Dispatch once.
 required: true
 variables:
   writes:
@@ -16,4 +16,4 @@ exits:
   - id: dispatched
     isDefault: true
 outcome:
-  - The dispatch has executed once and `{dispatch_recorded}` is true
+  - The dispatch has executed ({dispatch_recorded})

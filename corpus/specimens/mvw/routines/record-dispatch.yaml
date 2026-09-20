@@ -1,7 +1,7 @@
 id: record-dispatch
 version: 1.0.0
 name: Record Dispatch
-description: Record that one activity dispatched, and nothing else.
+description: Record that one activity dispatched.
 outputs:
   - id: dispatch_recorded
     type: boolean
