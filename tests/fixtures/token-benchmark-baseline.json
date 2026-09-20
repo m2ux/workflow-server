@@ -1,7 +1,7 @@
 {
   "workflowId": "delivery-fixture",
   "label": "baseline",
-  "description": "Two-activity walk of the delivery-cost fixture corpus, one activity at each end of the size scale against a meta namespace derived from core-ops.ts (tests/token-bench-corpus.ts, built by --fixture-corpus). Engine CI gates delivery against this; a work-package character-count belongs on the corpus tree under walks/. `activityDeliveries` splits each delivery into the role contract and the body that varies with the activity, so a change that moves one share is not mistaken for one that moves the other.",
+  "description": "Two-activity walk of the delivery-cost fixture corpus, one activity at each end of the size scale against a meta namespace derived from core-ops.ts (tests/token-bench-corpus.ts, built by --fixture-corpus). Engine CI gates delivery against this; a work-package character-count belongs on the corpus tree under walks/. `activityDeliveries` splits each delivery into the role contract and the body that varies with the activity, so a change that moves one share is not mistaken for one that moves the other. What the walk buys for its characters is a whole contract: every operation of a role arrives with its body and the rules it is held to, each rule stated once, so an agent acts from what it was handed rather than fetching the rest by id (#847).",
   "contextMode": "fresh",
   "agentId": "bench-solo",
   "path": ["minimal", "large"],
@@ -15,9 +15,9 @@
   },
   "chars": {
     "start_session": 598,
-    "get_workflow": 17431,
+    "get_workflow": 35515,
     "next_activity": 251,
-    "get_activity": 15971,
+    "get_activity": 24765,
     "get_resource": 864
   },
   "history": {
@@ -25,18 +25,18 @@
     "technique_fetched": 0,
     "resource_fetched": 0
   },
-  "deliveredContentKeys": 22,
+  "deliveredContentKeys": 11,
   "resourceLedgerKeys": 0,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 15971,
-  "getWorkflowChars": 17431,
+  "getActivityChars": 24765,
+  "getWorkflowChars": 35515,
   "getResourceChars": 864,
   "getTechniqueChars": 0,
   "activityDeliveries": [
-    { "activity": "minimal", "chars": 8716, "roleContract": 4945, "activityBody": 3771 },
-    { "activity": "large", "chars": 7255, "roleContract": 419, "activityBody": 6836 }
+    { "activity": "minimal", "chars": 11690, "roleContract": 8362, "activityBody": 3328 },
+    { "activity": "large", "chars": 13075, "roleContract": 1048, "activityBody": 12027 }
   ],
-  "roleContractChars": 5364,
-  "activityBodyChars": 10607
+  "roleContractChars": 9410,
+  "activityBodyChars": 15355
 }
