@@ -374,16 +374,11 @@ steps:
         message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing).
   - kind: routine
     id: analyze-repo-with-gitnexus
-    routine: gitnexus::index-refresh
+    routine: ensure-graph-index
     with:
       repo_path: "{component_git_dir}"
-  - kind: action
-    id: record-gitnexus-index
-    actions:
-      - action: set
-        target: gitnexus_indexed
-        value: true
-        description: Reaching this action implies the run left a current graph over the component tree (a failed rebuild fails its step); the variable's defaultValue false covers the un-run or failed path.
+    outputs:
+      gitnexus_indexed: gitnexus_indexed
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy
