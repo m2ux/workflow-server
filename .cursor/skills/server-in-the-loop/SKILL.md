@@ -67,7 +67,7 @@ Run the reload script from a checkout whose `http.md` describes host compile (se
 
 Pick a distinct `--image` tag per experiment (for example `workflow-server:exp-<slug>`). The script's own default is `workflow-server:local` and is **not** read back from the container.
 
-The first reload of a new pairing names `--name`, `--image`, `--build`, `--workflows-dir`, `--host-port=32772`, and `--projects-root`. Later engine cycles inherit port, corpus, and projects root. They still need `--image` whenever the tag is not `workflow-server:local`. A corpus-only cycle passes `--no-build`. Confirm the log: `compile  : host tsc` and no `Building … from`. `Building` means the image was rebuilt (lockfile or Dockerfile drift, missing image, or `node_modules` not matching the engine lockfile).
+The first reload of a new pairing names `--name`, `--image`, `--build`, `--workflows-dir`, `--host-port=32772`, and `--projects-root`. Later engine cycles inherit the engine checkout, port, corpus, and projects root. They still need `--image` whenever the tag is not `workflow-server:local`. A corpus-only cycle passes `--no-build`. Confirm the log: `compile  : host tsc` and no `Building … from`. `Building` means the image was rebuilt (lockfile or Dockerfile drift, missing image, or `node_modules` not matching the engine lockfile).
 
 Open `http.md` in the server checkout, section **Reload an experiment sidecar on a stable port**, and the script's own `--help`, for the flag surface. Leave preflight on: it runs serving guards before anything is stopped, and a refusal leaves the sidecar as it was.
 
