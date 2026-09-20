@@ -3,7 +3,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, rmSync } from 'node:fs';
+import { chmodSync, mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
@@ -80,7 +80,7 @@ describe('reload-exp-sidecar.sh', () => {
     expect(flowed).toContain('Skips host compile and serves the image-baked dist');
   });
 
-  it('usage asks only for --name, the corpus and port defaulting to the container record', () => {
+  it('usage asks only for --name, the corpus, port and engine defaulting to the container record', () => {
     const out = run(['--help']);
     expect(out.stdout).toMatch(/Required:\s*\n\s*--name=NAME[^\n]*\n\s*\n/);
     // The record outlives the container running, so the help must not promise a running one. Read
@@ -88,6 +88,65 @@ describe('reload-exp-sidecar.sh', () => {
     const flowed = out.stdout.replace(/\s+/g, ' ');
     expect(flowed).toContain('Defaults to the corpus the named container binds, running or exited');
     expect(flowed).toContain('Defaults to the binding the named container records, running or exited');
+    expect(flowed).toContain('Defaults to the engine the named container records, running or exited');
+  });
+
+  it('inherits the engine checkout from the named container when --build is omitted', () => {
+    const bin = mkdtempSync(join(tmpdir(), 'reload-fake-docker-'));
+    const docker = join(bin, 'docker');
+    writeFileSync(
+      docker,
+      `#!/usr/bin/env bash
+for arg in "$@"; do
+  if [[ "$arg" == *engine.dir* ]]; then
+    echo /no/such/engine-from-label
+    exit 0
+  fi
+done
+exit 1
+`,
+    );
+    chmodSync(docker, 0o755);
+    try {
+      const result = run(['--name=workflow-server-exp', '--host-port=32772'], {
+        PATH: `${bin}:${process.env.PATH ?? ''}`,
+      });
+      expect(result.status).not.toBe(0);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/engine checkout is not a directory/);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/engine-from-label/);
+    } finally {
+      rmSync(bin, { recursive: true, force: true });
+    }
+  });
+
+  it('keeps an explicit --build over the container engine record', () => {
+    const bin = mkdtempSync(join(tmpdir(), 'reload-fake-docker-'));
+    const docker = join(bin, 'docker');
+    writeFileSync(
+      docker,
+      `#!/usr/bin/env bash
+for arg in "$@"; do
+  if [[ "$arg" == *engine.dir* ]]; then
+    echo /no/such/engine-from-label
+    exit 0
+  fi
+done
+exit 1
+`,
+    );
+    chmodSync(docker, 0o755);
+    try {
+      const result = run(
+        ['--name=workflow-server-exp', '--build=/no/such/explicit-engine', '--host-port=32772'],
+        { PATH: `${bin}:${process.env.PATH ?? ''}` },
+      );
+      expect(result.status).not.toBe(0);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/engine checkout is not a directory/);
+      expect(`${result.stderr}${result.stdout}`).toMatch(/explicit-engine/);
+      expect(`${result.stderr}${result.stdout}`).not.toMatch(/engine-from-label/);
+    } finally {
+      rmSync(bin, { recursive: true, force: true });
+    }
   });
 
   it('refuses --no-build together with --rebuild-image', () => {

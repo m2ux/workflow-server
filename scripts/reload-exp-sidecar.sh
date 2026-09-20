@@ -8,8 +8,9 @@
 # engine checkout. Refuses the install instance name `workflow-server` and host
 # port 3000.
 #
-# Host port and corpus default to what the named container records, running or
-# exited, so a reload of the pairing under test is `--name` alone.
+# Host port, corpus and engine checkout default to what the named container
+# records, running or exited, so a reload of the pairing under test is
+# `--name` alone.
 set -euo pipefail
 
 INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
@@ -26,7 +27,9 @@ install matches the lockfile, and starts it again on the same host port and
 corpus with a dist bind of that compile and a schemas bind of the engine
 checkout. The image rebuilds when package.json, package-lock.json or the
 Dockerfile drifted (lockfile-triggered image rebuild), or when --rebuild-image
-is passed. Refuses the install instance name workflow-server and host port 3000.
+is passed. Host port, corpus and engine checkout default to what the named
+container records. Refuses the install instance name workflow-server and host
+port 3000.
 
   scripts/reload-exp-sidecar.sh --name=NAME [options]
   scripts/reload-exp-sidecar.sh --name=NAME --workflows-dir=CORPUS [options]
@@ -44,15 +47,16 @@ Options:
                            artifacts/planning, so a root of its own keeps an
                            experiment's walks out of the live planning tree.
   --image=IMAGE            Image tag (default: workflow-server:local).
-  --build[=DIR]            Engine checkout (default: this repo root). DIR is a
-                           worktree for a branch that is not this checkout.
-                           Host compile and image rebuilds use this tree; its
-                           start.sh/stop.sh run the container, so a branch
-                           changing the server and the launcher together is
-                           exercised as a pair; --no-build uses the installed
-                           copies. When that start.sh does not accept
-                           --dist-dir, this script's start.sh is used so a
-                           host compile still binds.
+  --build[=DIR]            Engine checkout. Defaults to the engine the named
+                           container records, running or exited, else this
+                           repo root. DIR is a worktree for a branch that is
+                           not this checkout. Host compile and image rebuilds
+                           use this tree; its start.sh/stop.sh run the
+                           container, so a branch changing the server and the
+                           launcher together is exercised as a pair; --no-build
+                           uses the installed copies. When that start.sh does
+                           not accept --dist-dir, this script's start.sh is
+                           used so a host compile still binds.
   --host-port=N            Host port. Defaults to the binding the named
                            container records, running or exited. Required when
                            none exists.
@@ -317,9 +321,27 @@ container_host_port() {
     2>/dev/null || true
 }
 
+# The value of a Config.Labels key on the named container, empty when the container does not
+# exist or the key is unset. The record survives a stop.
+container_label() {
+  local container="$1" key="$2" value
+  value="$(docker inspect "$container" \
+    --format "{{index .Config.Labels \"${key}\"}}" \
+    2>/dev/null || true)"
+  if [[ -z "$value" || "$value" == "<no value>" ]]; then
+    return 0
+  fi
+  printf '%s\n' "$value"
+}
+
 [[ -n "$NAME" ]] || die "pass --name (see --help)"
 [[ "$NAME" != "workflow-server" ]] || die "refusing to operate on the install container name"
 
+# Engine defaults to what the named container already records, so a later compile of the pairing
+# under test is `--name` alone and uses the engine that container already records.
+if [[ -z "$ENGINE" ]] && command -v docker >/dev/null 2>&1; then
+  ENGINE="$(container_label "$NAME" "workflow-server.engine.dir")"
+fi
 if [[ -z "$ENGINE" ]]; then
   ENGINE="$(cd "${SCRIPT_DIR}/.." && pwd)"
 else
@@ -489,20 +511,12 @@ fi
 
 pick_start_for_dist_bind
 
-# An engine pin is taken only where it is claimed — a --no-build run reuses an image built
-# elsewhere, and pinning the checkout this run happens to sit in would name a tree that compiled
-# nothing.
-ENGINE_PIN=""
-if [[ "$BUILD" -eq 1 ]]; then
-  ENGINE_PIN="$(git_pin "$ENGINE")"
-fi
+ENGINE_PIN="$(git_pin "$ENGINE")"
 CORPUS_PIN="$(git_pin "$CORPUS")"
 
 echo "Reloading ${NAME} on 127.0.0.1:${PORT}"
-# The engine line is printed on the terms the labels are stamped on: an engine cycle claims the
-# checkout it compiled from, a reused image names the tag and leaves the checkout unclaimed.
+echo "  engine   : ${ENGINE} @ ${ENGINE_PIN}"
 if [[ "$BUILD" -eq 1 ]]; then
-  echo "  engine   : ${ENGINE} @ ${ENGINE_PIN}"
   if [[ "$HOST_COMPILE" -eq 1 ]]; then
     echo "  compile  : host tsc"
   else
@@ -514,7 +528,6 @@ if [[ "$BUILD" -eq 1 ]]; then
     echo "  image    : reuse ${IMAGE}"
   fi
 else
-  echo "  engine   : whatever built ${IMAGE}"
   echo "  image    : ${IMAGE}"
 fi
 echo "  corpus   : ${CORPUS} @ ${CORPUS_PIN}"
@@ -554,19 +567,17 @@ if [[ -n "$BIND_SCHEMAS" ]]; then
 fi
 
 # Provenance the container carries itself, so a walk record cites one `docker inspect` rather than
-# a pin typed from memory. The engine pair is present when this reload compiled that checkout; a
-# reused image was built from a checkout this run knows nothing about, and stays unclaimed.
+# a pin typed from memory. Engine dir is recorded on every reload so a later cycle, including one
+# that skipped compile, still knows which checkout to compile.
 LABEL_ARGS=(
   --label "workflow-server.image=${IMAGE}"
   --label "workflow-server.corpus.dir=${CORPUS}"
   --label "workflow-server.corpus.pin=${CORPUS_PIN}"
+  --label "workflow-server.engine.dir=${ENGINE}"
+  --label "workflow-server.engine.pin=${ENGINE_PIN}"
 )
 if [[ -n "$PROJECTS" ]]; then
   LABEL_ARGS+=(--label "workflow-server.projects.dir=${PROJECTS}")
-fi
-if [[ "$BUILD" -eq 1 ]]; then
-  LABEL_ARGS+=(--label "workflow-server.engine.dir=${ENGINE}")
-  LABEL_ARGS+=(--label "workflow-server.engine.pin=${ENGINE_PIN}")
 fi
 
 "$START" "${START_ARGS[@]}" -- "${LABEL_ARGS[@]}"
