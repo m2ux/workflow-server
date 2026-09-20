@@ -43,7 +43,7 @@
  * Run: npx tsx guards/check-unserved-operation-refs.ts [--root <workflows-dir>] [--json]
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { assertScanned, corpusNamespaces, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
@@ -74,27 +74,39 @@ export interface TriageEntry {
 }
 
 /**
- * Whether a link target names a technique file rather than a resource. A path under `resources/`
- * is a resource citation, which resolves: a resource travels with the technique that cites it.
+ * Whether a link target names a technique file rather than a resource.
+ *
+ * The question is where the target LANDS, so a relative one is resolved against the directory of
+ * the file citing it. Every scanned file already sits under a `techniques/` directory, so a sibling
+ * `./op.md` and a cousin `../group/op.md` both land under one — and a path test applied to the
+ * unresolved text answers for neither, because such a text carries a slash and does not carry
+ * `techniques/`. Resolving first is what makes the two spellings one question.
+ *
+ * A target under `resources/` is a resource citation, which resolves: a resource travels with the
+ * technique that cites it.
  */
-function namesTechnique(target: string): boolean {
-  const path = target.split('#')[0] ?? '';
-  if (!path.endsWith('.md')) return false;
-  if (path.includes('://')) return false;
-  if (path.includes('/resources/') || path.startsWith('resources/')) return false;
-  if (path.endsWith('README.md')) return false;
-  return path.includes('techniques/') || !path.includes('/');
+function namesTechnique(target: string, fromDir: string): boolean {
+  const text = target.split('#')[0] ?? '';
+  if (!text.endsWith('.md')) return false;
+  if (text.includes('://')) return false;
+  if (text.endsWith('README.md')) return false;
+  // A workflow-anchored target (`/ns/techniques/op.md`) is already absolute within the corpus;
+  // anything else is relative to the citing file.
+  const landed = text.startsWith('/') ? text : resolve(fromDir, text);
+  if (landed.includes('/resources/')) return false;
+  return landed.includes('/techniques/') || landed.includes('techniques/');
 }
 
 /** Record every technique link in one technique file, wherever in it they sit. */
 function scanFile(path: string, rel: string, refs: Ref[]): void {
+  const fromDir = dirname(path);
   let section = 'frontmatter';
   readFileSync(path, 'utf-8').split('\n').forEach((line, i) => {
     const head = H2.exec(line);
     if (head) { section = head[1]!.trim(); return; }
     for (const match of line.matchAll(LINK)) {
       const [, label, target] = match;
-      if (namesTechnique(target!)) refs.push({ site: `${rel}:${i + 1}`, op: label!, section });
+      if (namesTechnique(target!, fromDir)) refs.push({ site: `${rel}:${i + 1}`, op: label!, section });
     }
   });
 }
