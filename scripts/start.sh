@@ -34,6 +34,7 @@ DEFAULT_WORKTREE_TARGET="${DEFAULT_CONTAINER_INSTALL}/worktrees"
 DEFAULT_PROJECTS_TARGET="${DEFAULT_CONTAINER_INSTALL}/projects"
 DEFAULT_WORKFLOWS_TARGET="/app/workflows"
 DEFAULT_SCHEMAS_TARGET="/app/schemas"
+DEFAULT_DIST_TARGET="/app/dist"
 DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
@@ -89,6 +90,7 @@ HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
 HOST_PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
 HOST_WORKFLOWS_DIR="${HOST_WORKFLOWS_DIR:-${WORKFLOW_DIR:-}}"
 HOST_SCHEMAS_DIR="${HOST_SCHEMAS_DIR:-${SCHEMAS_DIR:-}}"
+HOST_DIST_DIR=""
 WORKTREE_SET=0
 PROJECTS_SET=0
 WORKFLOWS_SET=0
@@ -102,6 +104,7 @@ CONTAINER_ENGINEERING_ROOT="${CONTAINER_ENGINEERING_ROOT:-$CONTAINER_PROJECTS_RO
 CONTAINER_STATE_DIR="${CONTAINER_STATE_DIR:-${CONTAINER_INSTALL_DIR}/state}"
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-$DEFAULT_WORKFLOWS_TARGET}"
 CONTAINER_SCHEMAS_DIR="${CONTAINER_SCHEMAS_DIR:-$DEFAULT_SCHEMAS_TARGET}"
+CONTAINER_DIST_DIR="${CONTAINER_DIST_DIR:-$DEFAULT_DIST_TARGET}"
 
 PLANNING_SLUG="${PLANNING_SLUG:-}"
 TRANSPORT="${TRANSPORT:-$DEFAULT_TRANSPORT}"
@@ -151,6 +154,9 @@ OPTIONS (optional overrides — prefer re-running install to change paths)
   --worktree-root=PATH      Optional separate feature-tree root (RW)
   --workflows-dir=PATH      One-off host corpus directory (RO)
   --schemas-dir=PATH        Host schemas directory (RO); optional
+  --dist-dir=PATH           Host compiled output (RO bind onto /app/dist); optional.
+                            Default off — the image's dist is what runs. An
+                            experiment sidecar compiles on the host and passes this.
   --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG}; with --build, workflow-server:local)
   --tag=TAG                 Tag for default repo (default: ${DEFAULT_TAG})
   --build[=DIR]             Build from DIR (Dockerfile required). DIR defaults to the current directory. Skips pull.
@@ -182,7 +188,7 @@ EXAMPLES
   ./scripts/start.sh -d --build --name=workflow-server-trial --host-port=0 --no-update-workflows
   ./scripts/stop.sh --name=workflow-server-trial
 
-  # Rebuild a named experiment sidecar on the same host port:
+  # Reload a named experiment sidecar on the same host port:
   ./scripts/reload-exp-sidecar.sh --name=NAME --image=IMAGE --workflows-dir=CORPUS
 
   # Product checkouts: manage under \$HOST_PROJECTS_ROOT/<repo>/ yourself.
@@ -277,6 +283,8 @@ while [[ $# -gt 0 ]]; do
     --workflows-dir) HOST_WORKFLOWS_DIR="${2:?}"; WORKFLOWS_SET=1; shift 2 ;;
     --schemas-dir=*) HOST_SCHEMAS_DIR="${1#*=}"; SCHEMAS_SET=1; shift ;;
     --schemas-dir) HOST_SCHEMAS_DIR="${2:?}"; SCHEMAS_SET=1; shift 2 ;;
+    --dist-dir=*) HOST_DIST_DIR="${1#*=}"; shift ;;
+    --dist-dir) HOST_DIST_DIR="${2:?}"; shift 2 ;;
     --image=*) IMAGE_REF="${1#*=}"; shift ;;
     --image) IMAGE_REF="${2:?}"; shift 2 ;;
     --tag=*) TAG="${1#*=}"; shift ;;
@@ -432,6 +440,9 @@ HOST_WORKFLOWS_DIR="$(abs_dir "$HOST_WORKFLOWS_DIR")"
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   HOST_SCHEMAS_DIR="$(abs_dir "$HOST_SCHEMAS_DIR")"
 fi
+if [[ -n "$HOST_DIST_DIR" ]]; then
+  HOST_DIST_DIR="$(abs_dir "$HOST_DIST_DIR")"
+fi
 
 if [[ "$UPDATE_WORKFLOWS" -eq 1 ]]; then
   update_workflows
@@ -550,6 +561,9 @@ fi
 DOCKER_RUN+=(-v "${HOST_WORKFLOWS_DIR}:${CONTAINER_WORKFLOW_DIR}:ro")
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   DOCKER_RUN+=(-v "${HOST_SCHEMAS_DIR}:${CONTAINER_SCHEMAS_DIR}:ro")
+fi
+if [[ -n "$HOST_DIST_DIR" ]]; then
+  DOCKER_RUN+=(-v "${HOST_DIST_DIR}:${CONTAINER_DIST_DIR}:ro")
 fi
 # Persist signing key across container recreate (install dir, not worktree root).
 DOCKER_RUN+=(-v "${HOST_STATE_DIR}:${CONTAINER_STATE_DIR}")

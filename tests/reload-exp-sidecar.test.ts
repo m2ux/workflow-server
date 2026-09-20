@@ -58,6 +58,7 @@ describe('reload-exp-sidecar.sh', () => {
     expect(out.stdout).toContain('--image=IMAGE');
     expect(out.stdout).toContain('--host-port=N');
     expect(out.stdout).toContain('--no-build');
+    expect(out.stdout).toContain('--rebuild-image');
     expect(out.stdout).toContain('workflow-server');
     expect(out.stdout).toContain('3000');
   });
@@ -70,6 +71,11 @@ describe('reload-exp-sidecar.sh', () => {
     // The check exists to answer whether a server can serve the corpus, not whether the corpus is
     // the one this repo ships — the help has to say which, or the escape reads as the normal path.
     expect(out.stdout.replace(/\s+/g, ' ')).toContain('load, resolve and parse');
+    const flowed = out.stdout.replace(/\s+/g, ' ');
+    expect(flowed).toContain('compiles the engine checkout on the host');
+    expect(flowed).toContain('dist bind');
+    expect(flowed).toContain('lockfile-triggered image rebuild');
+    expect(flowed).toContain('do not compile on the host');
   });
 
   it('usage asks only for --name, the corpus and port defaulting to the container record', () => {
@@ -80,6 +86,17 @@ describe('reload-exp-sidecar.sh', () => {
     const flowed = out.stdout.replace(/\s+/g, ' ');
     expect(flowed).toContain('Defaults to the corpus the named container binds, running or exited');
     expect(flowed).toContain('Defaults to the binding the named container records, running or exited');
+  });
+
+  it('refuses --no-build together with --rebuild-image', () => {
+    const result = run([
+      '--name=workflow-server-exp',
+      '--host-port=32772',
+      '--no-build',
+      '--rebuild-image',
+    ]);
+    expect(result.status).not.toBe(0);
+    expect(`${result.stderr}${result.stdout}`).toMatch(/cannot be combined/);
   });
 
   it('refuses a missing --name', () => {
@@ -182,7 +199,12 @@ describe('reload-exp-sidecar.sh', () => {
 
   // Each pairs the new flag with a refusal that fires before the flag is acted on, so the parse is
   // proved without a container being stopped or started.
-  it.each(['--no-preflight', '--log-dir=/tmp/reload-exp-sidecar-logs', '--projects-root=/tmp'])(
+  it.each([
+    '--no-preflight',
+    '--log-dir=/tmp/reload-exp-sidecar-logs',
+    '--projects-root=/tmp',
+    '--rebuild-image',
+  ])(
     'parses %s',
     (flag) => {
       const result = run([flag, '--name=workflow-server', '--host-port=32772']);

@@ -12,6 +12,7 @@ node_modules/
 
 # Build output
 dist/
+*.tsbuildinfo
 
 # Cached merge-base guard results, keyed by (base commit, base corpus commit) — check:delta
 .guard-cache/

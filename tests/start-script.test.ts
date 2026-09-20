@@ -30,6 +30,7 @@ describe('start.sh isolated instance flags', () => {
   it('usage names --build, ephemeral --host-port=0, and a distinct --name', () => {
     const out = help(START);
     expect(out).toContain('--build[=DIR]');
+    expect(out).toContain('--dist-dir=PATH');
     expect(out).toContain('--host-port=0');
     expect(out).toContain('workflow-server-trial');
     expect(out).toContain('workflow-server:local');
