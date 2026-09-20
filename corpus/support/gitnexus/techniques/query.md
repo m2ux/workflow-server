@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -42,7 +42,5 @@ The files and symbols the concept reached that sit in no flow — files, interfa
 ## Protocol
 
 1. Call `gitnexus_query { query: search_query, limit, max_symbols, repo: repo_name }` to produce the `{query_report}` of grouped execution flows.
-   > - If the index is out of date, run `npx gitnexus analyze`, then retry.
    > - If the concept ranked into no flow, read the definitions for the files it reached before broadening the query terms; an empty flow list arrives with those still populated, so it is not an empty answer. Fall back to grep for pure text patterns.
    > - The answer stops at `{limit}` flows and `{max_symbols}` symbols each, and says neither that it stopped nor what it left behind — so raise both where the question is how many rather than which, and report the bounds the answer was taken at.
-2. Read the ranked flows as where the concept lives rather than as the answer about it: the flows orient, and the symbols each one names are where a deeper read is addressed.

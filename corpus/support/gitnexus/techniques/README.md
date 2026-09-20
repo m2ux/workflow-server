@@ -49,6 +49,15 @@ Each operation here is one capability a step binds, or a technique's Protocol na
 | [`group-contracts`](group-contracts.md) | What each member publishes, and what joins a publisher to a consumer |
 | [`group-sync`](group-sync.md) | Rebuilds the contract registry |
 
+## Composing a query
+
+A restriction the graph already holds — the files a change touched, the names a diff moved that a consumer can see — is written into a `MATCH` and executed. These operations produce that query string; the [run](../routines/README.md) that follows is what executes it.
+
+| Technique | Composes |
+|-----------|----------|
+| [`compose-visibility-filter`](compose-visibility-filter.md) | The query keeping a changed set's exported surface |
+| [`constrain-to-changed-files`](constrain-to-changed-files.md) | The query keeping a `MATCH` to the files this work changed |
+
 ## Settling a judgement
 
 These end the [runs](../routines/README.md) — a routine carries no prose, so the reading each run closes on has its home here.
@@ -57,8 +66,6 @@ These end the [runs](../routines/README.md) — a routine carries no prose, so t
 |-----------|---------|
 | [`classify-test-coverage`](classify-test-coverage.md) | Which changed symbols no test reaches, and whose tests the change outran |
 | [`compare-affected-scope`](compare-affected-scope.md) | Which reached flows fall outside what the work was for |
-| [`compose-visibility-filter`](compose-visibility-filter.md) | The query keeping a changed set's exported surface |
-| [`intersect-orphan-candidates`](intersect-orphan-candidates.md) | Which unreferenced symbols this work introduced or touched |
 | [`select-affected-clusters`](select-affected-clusters.md) | Which functional areas a change reaches |
 | [`select-stale-members`](select-stale-members.md) | Which members of a group a rebuild reaches, and the tree each one walks |
 | [`weigh-change-risk`](weigh-change-risk.md) | The one rating a reviewer acts on |

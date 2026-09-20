@@ -2,7 +2,7 @@
 
 This orphan branch holds the workflow definitions the MCP Workflow Server loads, and the artifacts that belong to those definitions: judgements about them, recorded walks of them, and the documentation of how this tree is arranged.
 
-Authoring procedure — adding a workflow, resource or technique, and how definition files link — lives in [`docs/`](docs/README.md). What each folder at this root is *for*, and what it holds, is in that folder's own README.
+Authoring procedure — adding a workflow, resource, technique or routine, and how definition files link — lives in [`docs/`](docs/README.md). What each folder at this root is *for*, and what it holds, is in that folder's own README.
 
 ## Named roots
 
@@ -19,12 +19,14 @@ A directory at any depth under `corpus/` that holds `techniques/`, `resources/` 
 │   │   ├── workflow.yaml
 │   │   ├── activities/
 │   │   ├── techniques/
+│   │   ├── routines/
 │   │   └── resources/
 │   ├── specimens/                  # worked examples of a form — specimens/README.md
 │   │   └── {specimen-id}/
 │   └── support/                    # libraries every workflow binds — support/README.md
 │       └── {namespace}/
-│           └── techniques/
+│           ├── techniques/
+│           └── routines/
 ├── ledgers/                        # debt ledgers — ledgers/README.md
 ├── walks/                          # recorded walks — walks/README.md
 ├── docs/                           # how to add to this tree — docs/README.md
@@ -55,7 +57,7 @@ A coverage walk records what it saw: snapshots of delivery, a stamp of which cor
 
 ### docs
 
-Documentation of this tree's layout — how the named roots are arranged, how to add a workflow, resource or technique — lives here. Contents: [`docs/README.md`](docs/README.md).
+Documentation of this tree's layout — how the named roots are arranged, how to add a workflow, resource, technique or routine — lives here. Contents: [`docs/README.md`](docs/README.md).
 
 ## Precedence: workflow-local → `meta`
 
