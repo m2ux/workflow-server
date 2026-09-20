@@ -65,9 +65,9 @@ Run the reload script from a checkout whose `http.md` describes host compile (se
 
 `--build` names the engine checkout. Host compile and a recreate are the engine cycle; the image rebuilds when the lockfile or Dockerfile drifted. The engine worktree's `node_modules` must match its lockfile (provision that worktree, or `npm ci` there) or the cycle falls back to an image rebuild. When only the corpus bind must move, `--no-build` reuses the image and does not compile. Definition edits on a corpus tree the sidecar already mounts resolve on the next tool call; that tree is not cached at boot.
 
-Pick a distinct `--image` tag per experiment (for example `workflow-server:exp-<slug>`). The script's own default is `workflow-server:local` and is **not** read back from the container.
+Pick a distinct `--image` tag when naming a pairing (for example `workflow-server:exp-<slug>`). Later cycles inherit it. `workflow-server:local` is the fallback when no container records a tag.
 
-The first reload of a new pairing names `--name`, `--image`, `--build`, `--workflows-dir`, `--host-port=32772`, and `--projects-root`. Later engine cycles inherit the engine checkout, port, corpus, and projects root. They still need `--image` whenever the tag is not `workflow-server:local`. A corpus-only cycle passes `--no-build`. Confirm the log: `compile  : host tsc` and no `Building … from`. `Building` means the image was rebuilt (lockfile or Dockerfile drift, missing image, or `node_modules` not matching the engine lockfile).
+The first reload of a new pairing names `--name`, `--image`, `--build`, `--workflows-dir`, `--host-port=32772`, and `--projects-root`. Later cycles inherit image, engine checkout, port, corpus, and projects root: `--name` alone. A corpus-only cycle passes `--no-build`. Confirm the log: `compile  : host tsc` and no `Building … from`. `Building` means the image was rebuilt (lockfile or Dockerfile drift, missing image, or `node_modules` not matching the engine lockfile).
 
 Open `http.md` in the server checkout, section **Reload an experiment sidecar on a stable port**, and the script's own `--help`, for the flag surface. Leave preflight on: it runs serving guards before anything is stopped, and a refusal leaves the sidecar as it was.
 
@@ -122,10 +122,10 @@ That is the reload preflight. Full corpus picture: the same command with `--corp
   --projects-root="${XDG_DATA_HOME:-$HOME/.local/share}/workflow-server/exp-projects"
 ```
 
-Run that from the checkout that has host compile, with `--build` pointing at the engine worktree. Later engine cycles:
+Run that from the checkout that has host compile, with `--build` pointing at the engine worktree. Later cycles:
 
 ```bash
-./scripts/reload-exp-sidecar.sh --name=workflow-server-exp --image=workflow-server:exp-<slug>
+./scripts/reload-exp-sidecar.sh --name=workflow-server-exp
 ```
 
 4. Confirm identity on the endpoint itself:
@@ -142,7 +142,7 @@ The payload is `{ status, checks, corpus }`. Walk only on HTTP 200 with `status:
 docker inspect workflow-server-exp --format '{{json .Config.Labels}}'
 ```
 
-`workflow-server.corpus.pin` is the commit (suffix `-dirty` when that tree has uncommitted edits). An engine cycle stamps `workflow-server.engine.pin`; a `--no-build` reload leaves the engine unclaimed. The install container on `:3000` stays up.
+`workflow-server.corpus.pin` is the commit (suffix `-dirty` when that tree has uncommitted edits). Each reload stamps `workflow-server.engine.dir` and `workflow-server.engine.pin`. The install container on `:3000` stays up.
 
 MCP HTTP sessions live in the container's memory. A reload drops them. Call `discover` on the sidecar again before the next walk.
 
