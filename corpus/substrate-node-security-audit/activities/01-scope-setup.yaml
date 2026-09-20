@@ -5,6 +5,7 @@ description: Set up the audit scope and planning folder.
 variables:
   reads:
     - audit_prompt_template
+    - gitnexus_available
     - planning_folder_path
     - target_submodule
     - user_request

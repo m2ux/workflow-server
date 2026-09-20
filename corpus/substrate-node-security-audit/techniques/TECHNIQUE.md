@@ -20,3 +20,7 @@ The audit's working folder — where every sub-agent and orchestrator step reads
 #### default
 
 `""`
+
+### gitnexus_available
+
+Whether a usable graph covers the audited submodule, which selects between the graph operations and the grep and full-read fallback for every structural question.

@@ -6,6 +6,7 @@ variables:
   reads:
     - dispatch_results
     - file_inventory
+    - gitnexus_available
     - planning_folder_path
   writes:
     - name: decomposition_results

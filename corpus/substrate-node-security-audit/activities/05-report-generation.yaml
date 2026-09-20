@@ -9,6 +9,7 @@ variables:
     - dispatch_results
     - domain_map
     - ensemble_enabled
+    - gitnexus_available
     - has_reference_report
     - merge_complete
     - planning_folder_path

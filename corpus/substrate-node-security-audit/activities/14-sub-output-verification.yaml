@@ -4,6 +4,7 @@ name: "Sub-Agent: Output Verification"
 description: Mechanically validate primary-agent output completeness.
 variables:
   reads:
+    - gitnexus_available
     - planning_folder_path
   writes:
     - name: verification_report
