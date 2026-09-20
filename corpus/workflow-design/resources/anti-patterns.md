@@ -707,7 +707,7 @@ A raw harness tool name is used where a wrapping op exists.
 
 **Detect:** Protocol names a raw harness/MCP tool for a capability that another technique wraps. Must use the canonical hyperlink (`[op](path)` or `[group](path)::[op](path)`), resolved by the server to `::`. Raw names couple to a harness and bypass the navigable reference model (also `consistent-tool-names`).
 
-**Do not flag:** The operation that wraps the primitive — naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it — a retry after a rebuild, a reinstall, a re-read: a protocol reaches no operation its reader was not delivered, so a recovery the step must perform unaided names the tool.
+**Do not flag:** The operation that wraps the primitive — naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it, which the step must perform unaided (`unreachable-operation-reference`).
 
 **Fix:** Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments.
 
@@ -743,7 +743,7 @@ A protocol reference has no resolvable target.
 
 **Detect:** A protocol phrase refers to a declared I/O, rule, technique/op, or resource but does not use that kind's resolvable form (`{id}`, dotted rule symbol, canonical `::`/hyperlink, or resource hyperlink). Apply sibling form rules on the same walk (`brace-declared-ids`, `brace-output-references`, `canonical-artifact-ids`, `dotted-rule-address`, `canonical-technique-reference`, `bind-protocol-locals`) — do not re-teach them here.
 
-**Do not flag:** Ordinary domain prose naming no formal artifact; anaphora for a noun already linked once in the same step.
+**Do not flag:** Ordinary domain prose naming no formal artifact; anaphora for a noun already linked once in the same step. A reference to another technique/operation, whose disposal is the reference's removal rather than its spelling — `pass-orchestration-in-technique` where it invokes work, `unreachable-operation-reference` where it does not. Those two take precedence: anchoring a reference the reader cannot resolve buys a well-formed dead end.
 
 **Fix:** Anchor the reference with the matching form, or reword. A reference with no real target is dangling — fix the target or drop it; never invent a link.
 
@@ -1482,13 +1482,13 @@ A technique performs or prescribes human/session interaction.
 
 "`run-audit-passes`: Apply audit-expressiveness…" / "`publish-workflow-pr`: Apply push-branch, then create-pr…"
 
-A technique names another technique — sequencing operations the binding site should carry as consecutive steps, or sending its reader to a file that reader was never delivered.
+A technique's Protocol invokes other techniques to do work — sequencing sibling or shared operations the binding site should carry as consecutive steps.
 
-**Detect:** Technique Capability, Protocol, or Rules applies, invokes, runs, or hyperlinks another technique/operation via `Apply [technique]`, a `::` op invocation, or a bare link to a technique file (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. A reference counts whether or not it invokes, and wherever in the file it sits — an operation is served only where a role's contract names it, so a reader holding this technique can neither fetch the reference nor resolve its path, and a rule that names one is as unfollowable as a phase that applies one. Test: if moving each named op to its own `steps[]` entry at the binding site (keeping any local value-assembly technique separate) preserves behavior, flag it; a reference naming no work flags too, and its remedy is to state the fact plainly.
+**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique/operation for work via Protocol `Apply [technique]` / `::` op invocation (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. Test: if moving each invoked op to its own `steps[]` entry at the binding site (keeping any local value-assembly technique separate) preserves behavior, flag it.
 
-**Do not flag:** READMEs and other orientation surfaces that run no protocol — they address an author rather than a reader mid-run; citing resources (including creation-guide Templates), which travel with the technique that cites them; loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` and routine technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`); a technique reference in an I/O contract (`technique-ref-in-io-contract`).
+**Do not flag:** A reference that invokes nothing — documentation, a canonical form, a rule naming an instrument (`unreachable-operation-reference`, which owns every non-invoking spelling); citing resources (including creation-guide Templates); loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` and routine technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`).
 
-**Fix:** Delete the façade or strip Apply/`::` work invokes; bind each operation as its own step of the run that needs both, in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. Where a reference only carried a fact, state the fact without naming the op. A constraint governing the choice *between* operations belongs to the container technique that holds them, phrased so it needs no reference — a leaf naming a sibling has taken on a parent's job. See [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
+**Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own step of the run that needs both, in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
 
 ### AP-115. platform-semantics-in-capability
 
@@ -2035,3 +2035,15 @@ A Protocol phase is an entry in a flat numbered list, so it has a number and no 
 **Do not flag:** Bullets, notes, and sub-bullets under a phase — a phase's body is a list and only the phase itself is a section. A `## Rules` entry, which is already its own sub-section. Ordered sub-steps inside one phase's body, which elaborate that phase rather than indexing the sequence.
 
 **Fix:** Give each phase a `### N. Title` heading naming its outcome, and move its work to bullets beneath. A bold label already present is the title — lift it into the heading rather than writing a second name. A phase whose outcome cannot be named is not one, and its disposal is `rule-as-protocol-step` or `constraint-as-blockquote` rather than a heading. What a heading is made of — its length, and that it names rather than repeats its bullet — is [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome).
+
+### AP-157. unreachable-operation-reference
+
+"Apply [verify-index](./verify-index.md) at the start of any session" / "The `summary` is the identifier [read-process](./read-process.md) takes"
+
+A technique names another operation without invoking it, sending its reader somewhere that reader cannot go.
+
+**Detect:** A technique file names another technique/operation — in Capability, Protocol, or `## Rules` — by markdown link to a technique file or by `::` address, where no work is invoked: a rule naming the instrument for a question, a Protocol aside citing where a fact lives, a documentation or canonical-form reference. An operation is served only where a role's contract names it, so the reference resolves for nobody holding this file, and the path beside it points into a checkout of the definitions its reader does not have. Test: ask what the reader does with the name. Where the answer needs a file the delivery did not carry, flag it — a rule naming an operation is as unfollowable as a phase applying one.
+
+**Do not flag:** A reference that invokes work (`pass-orchestration-in-technique`, which owns the sequencing smell). A technique reference in an I/O contract (`technique-ref-in-io-contract`). READMEs and other orientation surfaces that run no protocol — they address an author rather than a reader mid-run. Resource citations, which travel with the technique citing them. A bare operation *id string* where the slot's value IS an operation id, carrying no navigable link. A raw tool name a remedy step must run unaided (`canonical-technique-reference`).
+
+**Fix:** State the fact the reference stood for, without naming the operation. Where it carried a standing choice of instrument, move it to the container technique that holds both operations, phrased so it needs no reference — every operation it governs already sits beneath it. Where it carried sequencing, the run binding both operations owns it. See [A Technique Names Only What Its Reader Holds](./design-principles.md#36-a-technique-names-only-what-its-reader-holds); also `pass-orchestration-in-technique`, `anchored-protocol-references`.
