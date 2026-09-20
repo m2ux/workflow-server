@@ -270,7 +270,10 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   }
 
   for (const file of readdirSync(groupDir(index)).sort()) {
-    if (!file.endsWith('.md') || file === 'TECHNIQUE.md') continue;
+    // The group's own contract and its orientation index are not operations, so neither is held
+    // to resolving as one. Every construct folder carries a README, so reading one as an unmapped
+    // adapter makes that convention unsatisfiable in this folder alone.
+    if (!file.endsWith('.md') || file === 'TECHNIQUE.md' || file === 'README.md') continue;
     if (seenFiles.has(file) || GENERIC_OPS.has(file.replace(/\.md$/, ''))) continue;
     findings.push({
       check: 'adapter-unmapped',
