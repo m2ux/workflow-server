@@ -169,3 +169,9 @@ The test a change runs against itself: name every file a later extension of this
 ## 35. Prefer Removing the Thing That Needs a Prohibition
 
 Prose warning against a path — *do not also use X*, *never combine this with Y* — usually means two constructs now do one job. Retire one and the warning has nothing left to say, along with the validation and carve-outs that existed only to police the overlap. Where both paths must survive, the prohibition names the home that owns the surviving behaviour rather than restating it.
+
+## 36. A Technique Names Only What Its Reader Holds
+
+A technique arrives on its own: its own text, its inherited rules, and nothing else. An operation is served only where a role's contract names it, so a technique whose prose names another operation addresses something its reader cannot fetch, and the path beside the name points into a checkout of the definitions the reader does not have. The reference is a dead end whether it invokes anything or not — a phase that applies a sibling is unperformable, a rule that names one is unfollowable, an input description that cites one is uninterpretable.
+
+So a technique carries the fact it needs or states it plainly, and composition belongs to the run or activity binding both operations as steps. A constraint governing the choice *between* two operations belongs to the container that holds them, phrased so it needs no reference — every operation it governs already sits beneath it. This is the reachability half of [Bind Sibling Operations as Steps](#25-bind-sibling-operations-as-steps), which governs where multi-technique *work* lives; a reference that performs no work is still unreachable, and that is what this covers.

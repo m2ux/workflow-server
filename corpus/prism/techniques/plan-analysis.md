@@ -71,6 +71,10 @@ Total sub-agent dispatches (multi-unit scopes only)
 
 Units below budget threshold with justification (multi-unit scopes only)
 
+### analysis_plan_path
+
+Full filesystem path to `analysis-plan.md`
+
 ### analysis_units
 
 Machine-readable ordered array of analysis unit objects, each specifying a target, mode, and lens selection to execute
@@ -105,7 +109,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 - For scope 'codebase' or 'document-set': list files and directories at the top level
 - If the target directory contains no analyzable files, report the empty directory and check that the path is correct and contains source files or documents.
 - Identify module boundaries from directory layout, build system (workspaces, packages), and naming conventions
-- Where `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*repo_name*: `{repo_name}`) to discover functional areas and community clusters — these are better module boundaries than directory layout alone. If the codebase is not indexed, fall back to directory-based module detection and role-based risk classification, and note in the plan that fan-in analysis was not available.
+- Where `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*search_query*: the target's module and subsystem names as keywords, *repo_name*: `{repo_name}`) to discover functional areas and community clusters — these are better module boundaries than directory layout alone. If the codebase is not indexed, fall back to directory-based module detection and role-based risk classification, and note in the plan that fan-in analysis was not available.
 - Record per-module: path, file count, estimated lines, primary language or content type
 
 ### 5. Classify Units
@@ -113,7 +117,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 - Categorise each module by role: api-surface, auth-security, state-persistence, business-logic, integration-external, utilities, configuration, types-definitions
 - Assess risk based on role and content signals: auth/crypto/permissions/session → high. state/database/persistence → high. API surface/public interfaces → medium. business logic/domain rules → medium. utilities/helpers → low. config/constants/types → low.
 - If the scope is codebase but no analytical goal was provided, risk cannot be classified meaningfully — ask the caller for an analytical goal. Without one, default to 'bug detection', which maps all modules to L12.
-- Where `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*repo_name*: `{repo_name}`) to check how many callers each module has — high fan-in modules are higher risk regardless of role
+- Where `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: each module's entry symbol, *repo_name*: `{repo_name}`) to check how many callers it has — high fan-in modules are higher risk regardless of role
 - If the analytical goal targets a specific concern (e.g., 'security'), elevate all modules touching that concern to high risk
 - Record per-module: role, risk (high/medium/low), classification rationale
 
@@ -148,18 +152,18 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 ### 10. Format Plan
 
 - Produce `{analysis_plan}` as structured output and expose `{analysis_units}` as the ordered execution collection
-- If `{output_path}` is provided, write `{analysis_plan}` into `{output_path}` per [analysis-plan](../resources/analysis-plan.md#template) and its [Rules](../resources/analysis-plan.md#rules)
+- If `{output_path}` is provided, write `{analysis_plan}` into `{output_path}` per [analysis-plan](../resources/analysis-plan.md#template) and its [Rules](../resources/analysis-plan.md#rules), capturing its full filesystem path as `{analysis_plan_path}`
 - A single-unit `{analysis_units}` array runs one analysis pass; a multi-unit array runs one pass per unit in order
 
 ## Rules
 
 ### goal-mapping-matrix
 
-Bug detection → L12 (00) or deep-scan (12). Code review → L12 (00) + contract (11). Design review → claim (07) + rejected-paths (09). Comprehension → pedagogy (06) + rejected-paths (09). Pre-commit validation → L12 pipeline (00-02). Planning review → L12 (00). Maintainability → degradation (10) + contract (11). Assumption validation → claim (07) + scarcity (08). Security review → sdl-trust (13) + security-v1 (37). Strategy evaluation → claim (07) + scarcity (08). Implication exploration → claim (07) + rejected-paths (09). General exploration → L12 (00). Error handling → error-resilience (19). Performance → optimize (20). API quality → api-surface (22). Evolution/coupling → evolution (21) or sdl-coupling (14). Trust boundaries → sdl-trust (13). Abstraction quality → sdl-abstraction (15). Structural defects → deep-scan (12) or fix-cascade (16). Identity/naming → identity (17). Dead code → reachability (30). State machine → state-audit (32). Contract fidelity → fidelity (31). Error+cost hybrid → evidence-cost (29). Comprehensive behavioral → behavioral pipeline (19-23). Pattern transfer → pedagogy (06). Hidden assumptions → claim (07). [scarcity](../resources/scarcity.md) → scarcity (08). Rejected alternatives → rejected-paths (09). Decay/degradation → degradation (10). Interface contracts → contract (11). Quick structural scan → l12-universal (18, Sonnet-only). Quick error resilience → error-resilience-compact (27). Ultra-brief error resilience → error-resilience-70w (28). Code archaeology → archaeology (33). Registration gaps → audit-code (34). Change resilience → cultivation (35). Temporal fragility → sdl-simulation (36) or simulation (38). Security audit → security-v1 (37). Testability → testability-v1 (39). Confabulation detection → knowledge-audit (40). Knowledge gaps → knowledge-boundary (41). Epistemic typing → knowledge-typed (42). Self-correcting analysis → l12g (43). Maximum-trust analysis → oracle (44). README rewriting → writer (45) — the critique/synthesis passes (46-47) form a cross-workflow-only 3-pass pipeline, not a prism mode (see resources/README). Analysis strategy → strategist (48). Architecture exploration → architect (51). Catalog blindspots → blindspot (52). Code generation → codegen (53). Counterfactual analysis → counterfactual (54). Interaction emergence → emergence (55). Conservation law falsification → falsify (56). Creative synthesis → genesis (57). Decision history → history (58). Knowledge prerequisites → prereq (59). Significance evaluation → significance (60). Claim verification → verify-claims (61). Grid/ARC puzzle solving → arc-code (50).
+A stated goal selects its lens from the [goal-to-lens table](../resources/lens-selection.md#goal-to-lens). A goal the table does not carry takes the default in `single-lens-default`.
 
 ### code-vs-general
 
-L12 pipeline (00-02) works for ALL target types. Code → resources 00-02 + 06-48 + 50-61. General (text, queries, concepts) → resources 00-02 + 06-10 + 15 (sdl-abstraction) + 18 (l12-universal, Sonnet-only) + 24-26 (neutral variants) + 33 (archaeology) + 35 (cultivation) + 38 (simulation) + 40-44 (knowledge/epistemic) + 51 (architect) + 52 (blindspot) + 54 (counterfactual) + 56 (falsify) + 57 (genesis) + 59 (prereq) + 60 (significance). Contract (11), SDL lenses (12-14, 16-17, 36), security-v1 (37), testability-v1 (39), behavioral pipeline (19-23), arc-code (50), codegen (53), emergence (55), history (58), and verify-claims (61) are code-only.
+What a target admits is settled by its type, per [Code and general targets](../resources/lens-selection.md#code-and-general-targets). A lens that table marks code-only is never planned for a general target.
 
 ### single-lens-default
 
@@ -167,7 +171,7 @@ When no goal or depth is specified, default to [L12](../resources/l12.md).
 
 ### budget-drives-depth
 
-For multi-unit scopes, the budget determines per-unit depth. The caller should not need to specify pipeline-mode for each module — the plan derives it from risk and budget.
+For a multi-unit scope, the plan derives each unit's depth from its risk and the budget, rather than taking a pipeline mode per module from the caller.
 
 ### skip-is-explicit
 
@@ -175,7 +179,7 @@ When budget excludes low-risk modules, list them in skipped_units with justifica
 
 ### model-sensitivity
 
-Behavioral lenses (19-22) produce higher quality on Sonnet (+0.5-1.3 over Haiku). Structural/SDL lenses (00, 12-17) are model-independent. l12-universal (18) is Sonnet-only — Haiku fails below this compression floor. Deep-scan (12) and fix-cascade (16) produce best results on Opus. Oracle (44), l12g (43), knowledge lenses (40-42), and archaeology (33) are Sonnet-recommended. SDL-simulation (36), security-v1 (37), testability-v1 (39), and audit-code (34) are Haiku-optimized. Arc-code (50) is Haiku-optimized. Architect (51), blindspot (52), counterfactual (54), emergence (55), genesis (57), history (58), significance (60), and verify-claims (61) are Sonnet-recommended. Codegen (53) is Sonnet-recommended. Falsify (56) is Sonnet-recommended (unscored). Prereq (59) is Sonnet-recommended. Note model preferences when recommending lenses.
+A lens recommendation names the model that lens is sensitive to, per [Model sensitivity](../resources/lens-selection.md#model-sensitivity).
 
 ### behavioral-is-code-only
 

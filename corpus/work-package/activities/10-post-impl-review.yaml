@@ -139,7 +139,7 @@ steps:
     technique: manage-registers::append-follow-up
   - kind: checkpoint
     id: rationale-attestation
-    message: "The agent's rationale paragraph for each change block, which your confirmation attests the provenance of."
+    message: "Block rationale in the [change-block index]({change_block_index}), which your confirmation attests the provenance of."
     options:
       - id: rationale-accurate
         label: Rationale accurate as written

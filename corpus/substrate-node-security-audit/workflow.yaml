@@ -45,7 +45,7 @@ variables:
     required: true
   - name: repo_name
     type: string
-    description: Name of the indexed graph covering the audited submodule, which every graph read addresses. Empty where no graph covers it, which is the same condition as gitnexus_available being false.
+    description: Name of the indexed graph covering the audited submodule. Empty where no graph covers it.
     defaultValue: ""
   - name: in_scope
     type: string

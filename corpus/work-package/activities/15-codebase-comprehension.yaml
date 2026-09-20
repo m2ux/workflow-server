@@ -19,6 +19,10 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: gitnexus_indexed
+      type: boolean
+      description: Whether the component under work has a usable GitNexus index.
+      defaultValue: false
     - name: comprehension_artifact
       type: string
       description: The comprehension corpus artifact for the current codebase area, carrying what is settled about it.
@@ -58,9 +62,11 @@ steps:
   - kind: routine
     id: refresh-index
     when: "!gitnexus_indexed"
-    routine: gitnexus::index-refresh
+    routine: ensure-graph-index
     with:
       repo_path: "{component_git_dir}"
+    outputs:
+      gitnexus_indexed: gitnexus_indexed
   - kind: technique
     id: build-comprehension
     technique:
@@ -88,6 +94,7 @@ steps:
       variable: needs_comprehension
       operator: ==
       value: true
+    maxIterations: 10
     steps:
       - kind: technique
         id: deep-dive

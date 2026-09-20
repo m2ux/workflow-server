@@ -104,8 +104,8 @@ All findings with lens attribution and convergent/unique classification
 
 ### code-only-lenses
 
-The following lenses are code-specific — do not apply to non-code input: contract (11), SDL lenses except sdl-abstraction (12-14, 16-17), behavioral lenses (19-22), hybrid/specialized (29-32), arc-code (50), codegen (53), emergence (55), history (58), verify-claims (61). sdl-abstraction (15) works on both code and reasoning.
+A lens the [Code and general targets](../resources/lens-selection.md#code-and-general-targets) table marks code-only is never assembled into a portfolio over a non-code target.
 
 ### model-sensitivity
 
-Behavioral lenses (19-22) produce higher quality on Sonnet (+0.5-1.3 over Haiku). SDL and structural lenses are model-independent.
+A lens recommendation names the model that lens is sensitive to, per [Model sensitivity](../resources/lens-selection.md#model-sensitivity).

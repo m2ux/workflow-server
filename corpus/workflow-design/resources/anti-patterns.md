@@ -285,7 +285,7 @@ Required inputs are named in description instead of `inputs[]`.
 
 A bound step still carries description/name prose.
 
-**Detect:** A `kind: technique` or `kind: action` step that binds an op still carries `description` or `name`. Bound steps allow only `kind`, `id`, `technique` (string or `{ name, inputs, outputs }`), plus structural `actions` / `when` / `required: false`. WHAT/HOW live in the bound op's `## Capability` / `## Protocol`. Unbound procedure-in-description is `procedure-in-protocol`; once bound, description is removed entirely.
+**Detect:** A `kind: technique` or `kind: action` step that binds an op still carries `description` or `name`. Bound steps allow only `kind`, `id`, `technique` (string or `{ name, inputs, outputs }`), plus structural `actions` / `when` / `condition` / `required: false`. WHAT/HOW live in the bound op's `## Capability` / `## Protocol`. Unbound procedure-in-description is `procedure-in-protocol`; once bound, description is removed entirely.
 
 **Do not flag:** `kind: loop` may have `name` plus loop fields and nested `steps[]`. `kind: checkpoint` uses inline `message`/`options` and a stable `id` (not `name`/`description`). Checkpoints/loops are inline in `steps[]` — never `step.checkpoint` or separate `checkpoints[]`/`loops[]` arrays.
 
@@ -707,7 +707,7 @@ A raw harness tool name is used where a wrapping op exists.
 
 **Detect:** Protocol names a raw harness/MCP tool for a capability that another technique wraps. Must use the canonical hyperlink (`[op](path)` or `[group](path)::[op](path)`), resolved by the server to `::`. Raw names couple to a harness and bypass the navigable reference model (also `consistent-tool-names`).
 
-**Do not flag:** The operation that wraps the primitive — naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it — a retry after a rebuild, a reinstall, a re-read: a protocol reaches no operation its reader was not delivered, so a recovery the step must perform unaided names the tool.
+**Do not flag:** The operation that wraps the primitive — naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it, which the step must perform unaided (`unreachable-operation-reference`).
 
 **Fix:** Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments.
 
@@ -743,7 +743,7 @@ A protocol reference has no resolvable target.
 
 **Detect:** A protocol phrase refers to a declared I/O, rule, technique/op, or resource but does not use that kind's resolvable form (`{id}`, dotted rule symbol, canonical `::`/hyperlink, or resource hyperlink). Apply sibling form rules on the same walk (`brace-declared-ids`, `brace-output-references`, `canonical-artifact-ids`, `dotted-rule-address`, `canonical-technique-reference`, `bind-protocol-locals`) — do not re-teach them here.
 
-**Do not flag:** Ordinary domain prose naming no formal artifact; anaphora for a noun already linked once in the same step.
+**Do not flag:** Ordinary domain prose naming no formal artifact; anaphora for a noun already linked once in the same step. A reference to another technique/operation, whose disposal is the reference's removal rather than its spelling — `pass-orchestration-in-technique` where it invokes work, `unreachable-operation-reference` where it does not. Those two take precedence: anchoring a reference the reader cannot resolve buys a well-formed dead end.
 
 **Fix:** Anchor the reference with the matching form, or reword. A reference with no real target is dangling — fix the target or drop it; never invent a link.
 
@@ -1482,13 +1482,13 @@ A technique performs or prescribes human/session interaction.
 
 "`run-audit-passes`: Apply audit-expressiveness…" / "`publish-workflow-pr`: Apply push-branch, then create-pr…"
 
-A technique names another technique — sequencing operations the binding site should carry as consecutive steps, or sending its reader to a file that reader was never delivered.
+A technique's Protocol invokes other techniques to do work — sequencing sibling or shared operations the binding site should carry as consecutive steps.
 
-**Detect:** Technique Capability, Protocol, or Rules applies, invokes, runs, or hyperlinks another technique/operation via `Apply [technique]`, a `::` op invocation, or a bare link to a technique file (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. A reference counts whether or not it invokes, and wherever in the file it sits — an operation is served only where a role's contract names it, so a reader holding this technique can neither fetch the reference nor resolve its path, and a rule that names one is as unfollowable as a phase that applies one. Test: if moving each named op to its own `steps[]` entry at the binding site (keeping any local value-assembly technique separate) preserves behavior, flag it; a reference naming no work flags too, and its remedy is to state the fact plainly.
+**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique/operation for work via Protocol `Apply [technique]` / `::` op invocation (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. Test: if moving each invoked op to its own `steps[]` entry at the binding site (keeping any local value-assembly technique separate) preserves behavior, flag it.
 
-**Do not flag:** READMEs and other orientation surfaces that run no protocol — they address an author rather than a reader mid-run; citing resources (including creation-guide Templates), which travel with the technique that cites them; loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` and routine technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`); a technique reference in an I/O contract (`technique-ref-in-io-contract`).
+**Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`); citing resources (including creation-guide Templates); loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` and routine technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`).
 
-**Fix:** Delete the façade or strip Apply/`::` work invokes; bind each operation as its own step of the run that needs both, in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. Where a reference only carried a fact, state the fact without naming the op. A constraint governing the choice *between* operations belongs to the container technique that holds them, phrased so it needs no reference — a leaf naming a sibling has taken on a parent's job. See [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
+**Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own step of the run that needs both, in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
 
 ### AP-115. platform-semantics-in-capability
 
@@ -2035,3 +2035,51 @@ A Protocol phase is an entry in a flat numbered list, so it has a number and no 
 **Do not flag:** Bullets, notes, and sub-bullets under a phase — a phase's body is a list and only the phase itself is a section. A `## Rules` entry, which is already its own sub-section. Ordered sub-steps inside one phase's body, which elaborate that phase rather than indexing the sequence.
 
 **Fix:** Give each phase a `### N. Title` heading naming its outcome, and move its work to bullets beneath. A bold label already present is the title — lift it into the heading rather than writing a second name. A phase whose outcome cannot be named is not one, and its disposal is `rule-as-protocol-step` or `constraint-as-blockquote` rather than a heading. What a heading is made of — its length, and that it names rather than repeats its bullet — is [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome).
+
+### AP-157. unreachable-operation-reference
+
+"never [continue-agent](../harness-compat/continue-agent.md) on a prior worker" in a rule / "the commit it was built at sits in the inventory [resolve-graph](./resolve-graph.md) reads" as a Protocol aside
+
+A technique names another operation without invoking it, sending its reader somewhere that reader cannot go.
+
+**Detect:** A technique file names another technique/operation — in Capability, Protocol, or `## Rules` — by markdown link to a technique file or by `::` address, where no work is invoked: a rule naming the instrument for a question or forbidding one, a Protocol aside citing where a fact lives, a documentation or canonical-form reference. Test: ask what the reader does with the name. Where the answer needs a file the delivery did not carry, flag it — a rule naming an operation is as unfollowable as a phase applying one.
+
+**Do not flag:** A reference that invokes work (`pass-orchestration-in-technique`, which owns the sequencing smell). A technique reference in an I/O contract (`technique-ref-in-io-contract`). READMEs and other orientation surfaces that run no protocol — they address an author rather than a reader mid-run. Resource citations, which travel with the technique citing them. A bare operation *id string* where the slot's value IS an operation id, carrying no navigable link. A raw tool name a remedy step must run unaided (`canonical-technique-reference`).
+
+**Fix:** State the fact the reference stood for, without naming the operation. Where it carried a standing choice of instrument, move it to the container technique that holds both operations, phrased so it needs no reference — every operation it governs already sits beneath it. Where it carried sequencing, the run binding both operations owns it. See [A Technique Names Only What Its Reader Holds](./design-principles.md#36-a-technique-names-only-what-its-reader-holds); also `pass-orchestration-in-technique`, `anchored-protocol-references`.
+
+### AP-158. produce-path-without-a-reading
+
+"1. Call `<tool> { … }` and record the `{report}`." as the whole Protocol
+
+A technique's Protocol is the tool's own call and nothing else, so the operation contributes no reading the raw response does not already give.
+
+**Detect:** A technique `## Protocol` whose phases reduce to invoking one tool, or reading one resource, and recording the response under a declared id — with no phase that interprets, bounds or qualifies the answer: no statement of what the response omits or caps, no derivation, no verdict, no recovery for an answer that is not what was expected. Test: ask what a reader gains from the technique that the tool's own schema does not give. Where the answer is only a variable name, flag it.
+
+**Do not flag:** An operation whose reading lives in a declared Output description or a `## Rules` entry rather than a Protocol phase — the reading has a home, just not that one. A wrapper whose contribution is the argument shape it fixes for one named question, where the fixed arguments are the reading. A compose step that assembles a value another step consumes. A Protocol carrying the tool's argument structure instead, which is `tool-contract-restated-in-protocol` — the opposite pole.
+
+**Fix:** Add the phase that reads the answer — what it caps, what it omits, what an empty result means, what the recovery is. Where no such reading exists, retire the operation and bind the tool at the run that needed it. See [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities).
+
+### AP-159. construct-folder-without-a-readme
+
+"`<workflow>/techniques/<group>/` holding four technique files and no `README.md`"
+
+A construct subfolder carries definitions and no README, so nothing orients a reader who arrives at the folder rather than at one of its files.
+
+**Detect:** A folder holding construct files — a workflow's `activities/`, `techniques/`, `resources/`, `routines/`, or a group folder beneath one — with no `README.md` beside them. Test: list the folder; where it holds a definition and carries no README, flag it. A completeness verdict over READMEs names the enumeration it walked, so a sweep that reports none missing states the folder list it measured.
+
+**Do not flag:** A folder holding only a README. A specimen, fixture or conformance tree whose purpose is to exercise one construct rather than to be navigated. A folder whose parent README already enumerates its contents at file grain, where a second index would be `readme-orients-not-transcribes`.
+
+**Fix:** Add a README orienting on the folder's purpose, what its members have in common, and where a reader goes next. Orientation, not transcription — the index points at the files and does not restate them. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
+
+### AP-160. relocation-without-a-preserved-outcome
+
+"a re-probe duty moved out of a technique's prose into a gated activity step, with nothing writing the flag its consumers read"
+
+A duty moves to another home and neither home names the outcome the move had to keep, so the behaviour is gone while every file still reads correctly on its own.
+
+**Detect:** Over a change surface: a gate, an exit, a bound operation or a rule that the base ref carried at a site is absent there, and an equivalent construct appears elsewhere in the surface. Flag where neither the site that lost it nor the site that gained it states the outcome, option, input or audience the move preserves, and the check that confirms it. Test: name what the move had to keep and where that is now recorded — where the answer exists only in the reviewer's head, the preservation was never written down. A relocation reads clean file by file, so a per-file walk never reaches it.
+
+**Do not flag:** A removal the change states as a removal, with the behaviour retired deliberately. A relocation whose receiving site declares the same output, gate or artifact the losing site did — the declaration is the preservation. Surviving prose still asserting the old behaviour, which is `stale-restatement-after-change` and is the opposite residue.
+
+**Fix:** State, at the receiving site, the outcome that still has to hold and the check confirming it — a declared output the consumers read, a gate on the same variable, an artifact at the same path. Where the move genuinely retires the behaviour, say so where the behaviour was. See [Non-Destructive Updates](./design-principles.md#10-non-destructive-updates).

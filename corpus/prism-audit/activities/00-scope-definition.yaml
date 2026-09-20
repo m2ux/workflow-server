@@ -38,13 +38,13 @@ steps:
   - kind: checkpoint
     id: confirm-scope
     message: |-
-      The audit scope and configuration, for confirmation before prompt generation:
+      The audit scope and configuration, for confirmation:
 
       {scope_summary}
     options:
       - id: accept
         label: Proceed
-        description: Begin analysing the codebase and generating the audit prompt
+        description: The target, description and output path are confirmed as they stand
       - id: adjust
         label: Adjust scope
         description: Modify the target, description, or output path before proceeding
