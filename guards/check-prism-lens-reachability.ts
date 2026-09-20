@@ -10,7 +10,7 @@
  * Two hard-zero checks (no baseline — every violation must be fixed):
  *
  *   coverage       Every lens resource under prism/resources/ is either routable (its slug is named
- *                  as a `slug (NN)` goal target in plan-analysis's goal-mapping-matrix or in the
+ *                  as a `slug (NN)` goal target in the lens-selection resource's goal table or in the
  *                  portfolio-analysis lens catalog), an inner pipeline pass, or a document template
  *                  declaring `type: template` in its own frontmatter. A lens that is none of those is
  *                  an orphan. Template-ness is a property of the resource, so it is read from the file
@@ -33,7 +33,7 @@ import { workflowLocation } from '../src/loaders/corpus-index.js';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
-function prismPaths(): { prism: string; resources: string; plan: string; portfolio: string } {
+function prismPaths(): { prism: string; resources: string; selection: string; portfolio: string } {
   const corpus = requireRootOrExit('prism-lens-reachability', DEFAULT_ROOT);
   const prism = workflowLocation(corpus, 'prism')?.dir;
   if (!prism) {
@@ -42,7 +42,10 @@ function prismPaths(): { prism: string; resources: string; plan: string; portfol
   return {
     prism,
     resources: join(prism, 'resources'),
-    plan: join(prism, 'techniques', 'plan-analysis.md'),
+    // The goal-to-lens routing data is reference material with three consuming techniques, so it
+    // lives in `resources/` and the techniques cite it. Reading it here rather than in the
+    // technique that once held it keeps the check on the data rather than on its first home.
+    selection: join(prism, 'resources', 'lens-selection.md'),
     portfolio: join(prism, 'techniques', 'portfolio-analysis.md'),
   };
 }
@@ -107,7 +110,7 @@ function slugIndexPairs(text: string): Array<{ slug: string; index: string }> {
 }
 
 export function collectLensReachabilityViolations(): LensReachabilityViolation[] {
-  const { resources, plan, portfolio } = prismPaths();
+  const { resources, selection, portfolio } = prismPaths();
   const out: LensReachabilityViolation[] = [];
 
   const lensSlugs = readdirSync(resources)
@@ -115,9 +118,9 @@ export function collectLensReachabilityViolations(): LensReachabilityViolation[]
     .map((f) => f.slice(0, -3).toLowerCase())
     .sort();
 
-  const planText = readFileSync(plan, 'utf-8');
+  const selectionText = readFileSync(selection, 'utf-8');
   const portfolioText = readFileSync(portfolio, 'utf-8');
-  const routingText = (planText + '\n' + portfolioText).toLowerCase();
+  const routingText = (selectionText + '\n' + portfolioText).toLowerCase();
   const catalog = indexToSlug(readFileSync(join(resources, 'README.md'), 'utf-8'));
 
   // coverage — every lens file is routable or explicitly pipeline-internal.
@@ -129,7 +132,7 @@ export function collectLensReachabilityViolations(): LensReachabilityViolation[]
     out.push({
       check: 'coverage',
       site: `prism/resources/${slug}.md`,
-      detail: `lens has no goal route (no \`${slug} (NN)\` target in plan-analysis goal-mapping-matrix or portfolio catalog) and is not tagged pipeline-internal — it is unreachable through any prism mode`,
+      detail: `lens has no goal route (no \`${slug} (NN)\` target in the lens-selection goal table or portfolio catalog) and is not tagged pipeline-internal — it is unreachable through any prism mode`,
     });
   }
 
@@ -137,7 +140,7 @@ export function collectLensReachabilityViolations(): LensReachabilityViolation[]
   // portfolio catalog) resolves to a file whose index agrees with the resources/README catalog. This
   // catches the stale-name class of drift (`optim`/`rec`/`ident`) a rename leaves behind.
   const sources: Array<{ site: string; text: string }> = [
-    { site: 'prism/techniques/plan-analysis.md', text: planText },
+    { site: 'prism/resources/lens-selection.md', text: selectionText },
     { site: 'prism/techniques/portfolio-analysis.md', text: portfolioText },
   ];
   const seen = new Set<string>();
