@@ -76,6 +76,8 @@ describe('reload-exp-sidecar.sh', () => {
     expect(flowed).toContain('dist bind');
     expect(flowed).toContain('lockfile-triggered image rebuild');
     expect(flowed).toContain('do not compile on the host');
+    expect(flowed).toContain("this script's start.sh is used so a host compile still binds");
+    expect(flowed).toContain('Skips host compile and serves the image-baked dist');
   });
 
   it('usage asks only for --name, the corpus and port defaulting to the container record', () => {

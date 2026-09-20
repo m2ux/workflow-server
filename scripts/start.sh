@@ -442,6 +442,7 @@ if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
 fi
 if [[ -n "$HOST_DIST_DIR" ]]; then
   HOST_DIST_DIR="$(abs_dir "$HOST_DIST_DIR")"
+  [[ -f "${HOST_DIST_DIR}/index.js" ]] || die "dist-dir has no index.js: ${HOST_DIST_DIR}"
 fi
 
 if [[ "$UPDATE_WORKFLOWS" -eq 1 ]]; then

@@ -50,7 +50,9 @@ Options:
                            start.sh/stop.sh run the container, so a branch
                            changing the server and the launcher together is
                            exercised as a pair; --no-build uses the installed
-                           copies.
+                           copies. When that start.sh does not accept
+                           --dist-dir, this script's start.sh is used so a
+                           host compile still binds.
   --host-port=N            Host port. Defaults to the binding the named
                            container records, running or exited. Required when
                            none exists.
@@ -59,6 +61,7 @@ Options:
                            holding the audit line the server writes per tool
                            call for the run being replaced.
   --rebuild-image          Rebuild the image even when inputs-sha matches.
+                           Skips host compile and serves the image-baked dist.
   --no-build               Reuse --image; do not compile on the host and do
                            not rebuild the image. Recreates the container.
                            Dist and schemas binds are inherited from the
@@ -240,15 +243,44 @@ host_lockfile_matches_install() {
   cmp -s "$lock" "${install_root}/package-lock.json"
 }
 
+accepts_dist_dir() {
+  local script="$1"
+  [[ -n "$script" && -x "$script" ]] && grep -q -- '--dist-dir' "$script"
+}
+
+# A dist bind needs a launcher that accepts --dist-dir. The engine checkout under test
+# often predates the flag. This reload script's sibling start.sh is the copy that added it.
+pick_start_for_dist_bind() {
+  [[ -n "$BIND_DIST" ]] || return 0
+  if accepts_dist_dir "$START"; then
+    return 0
+  fi
+  local sibling="${SCRIPT_DIR}/start.sh"
+  if accepts_dist_dir "$sibling"; then
+    START="$sibling"
+    return 0
+  fi
+  echo "warning: start.sh does not accept --dist-dir; serving the image-baked dist" >&2
+  BIND_DIST=""
+}
+
+require_dist_index() {
+  local dir="$1"
+  [[ -n "$dir" && -f "${dir}/index.js" ]] || return 1
+  return 0
+}
+
 compile_engine() {
   local engine="$1"
   echo "Compiling ${engine}"
+  # Wipe dist so incremental tsc cannot leave a deleted module on the bind.
+  rm -rf "${engine}/dist"
   if ! (cd "$engine" && npm run build); then
     die "host compile failed at ${engine}.
-  Nothing has been stopped. Fix the TypeScript, or pass --rebuild-image to
-  compile inside Docker (slower) once the image inputs match."
+  Nothing has been stopped. Fix the TypeScript. To skip host compile and bake
+  dist into the image, pass --rebuild-image."
   fi
-  [[ -f "${engine}/dist/index.js" ]] \
+  require_dist_index "${engine}/dist" \
     || die "host compile at ${engine} produced no dist/index.js.
   Nothing has been stopped."
 }
@@ -423,7 +455,10 @@ if [[ "$BUILD" -eq 1 ]]; then
     NEED_IMAGE=1
   fi
 
-  if host_lockfile_matches_install "$ENGINE"; then
+  if [[ "$REBUILD_IMAGE" -eq 1 ]]; then
+    NEED_IMAGE=1
+    echo "note: --rebuild-image skips host compile; serving the image-baked dist" >&2
+  elif host_lockfile_matches_install "$ENGINE"; then
     HOST_COMPILE=1
     BIND_DIST="${ENGINE}/dist"
   else
@@ -446,7 +481,13 @@ if [[ "$BUILD" -eq 1 ]]; then
 else
   BIND_DIST="$(container_bind_source "$NAME" "$CONTAINER_DIST_DIR")"
   BIND_SCHEMAS="$(container_bind_source "$NAME" "$CONTAINER_SCHEMAS_DIR")"
+  if [[ -n "$BIND_DIST" ]] && ! require_dist_index "$BIND_DIST"; then
+    echo "warning: inherited dist bind ${BIND_DIST} has no index.js; serving the image-baked dist" >&2
+    BIND_DIST=""
+  fi
 fi
+
+pick_start_for_dist_bind
 
 # An engine pin is taken only where it is claimed — a --no-build run reuses an image built
 # elsewhere, and pinning the checkout this run happens to sit in would name a tree that compiled
@@ -483,16 +524,6 @@ echo "  launcher : ${START}"
 if [[ -n "$PROJECTS" ]]; then
   echo "  projects : ${PROJECTS}"
 fi
-# --dist-dir lives on this checkout's start.sh. A --no-build run prefers the installed
-# launcher, which may predate the flag; switch to the engine copy when a dist bind is set.
-if [[ -n "$BIND_DIST" ]] && ! grep -q -- '--dist-dir' "$START" 2>/dev/null; then
-  START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${ENGINE}/scripts/start.sh" "$START")"
-  if ! grep -q -- '--dist-dir' "$START" 2>/dev/null; then
-    echo "warning: start.sh does not accept --dist-dir; serving the image-baked dist" >&2
-    BIND_DIST=""
-  fi
-fi
-
 if [[ -n "$BIND_DIST" ]]; then
   echo "  dist     : ${BIND_DIST}"
 fi
