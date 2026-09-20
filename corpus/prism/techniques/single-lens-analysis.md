@@ -51,7 +51,7 @@ The lens's findings, in the structure the lens defines
 
 ### 3. Gather Structural Context
 
-- When the lens makes claims about impact, coupling, reachability, or dead code and `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*repo_name*: `{repo_name}`) and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*repo_name*: `{repo_name}`) on the target's entry points to obtain execution flows and caller/callee maps as supplementary evidence. An empty `{repo_name}` is a target no graph covers, and this step is skipped.
+- When the lens makes claims about impact, coupling, reachability, or dead code and `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*search_query*: the lens claim's subject as keywords, *repo_name*: `{repo_name}`) and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: each of the target's entry points, *repo_name*: `{repo_name}`) to obtain execution flows and caller/callee maps as supplementary evidence. An empty `{repo_name}` is a target no graph covers, and this step is skipped.
 - Structural context is supplementary evidence, not a replacement for the lens operations. The lens chain executes completely regardless of whether graph data is available.
 
 ### 4. Execute Lens
