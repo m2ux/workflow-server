@@ -57,6 +57,31 @@ function operationBodies(bundle: Record<string, unknown>): Array<[string, Record
   return out;
 }
 
+/**
+ * A response has two homes for a rule: the bodies of the operations it governs, and the role's own
+ * `rules` list, for a rule that governs no one operation.
+ *
+ * `bodies` reads every rule line the first home holds. `list` reads the lines the second holds that
+ * a body ALREADY states -- the overlap between the two, which is empty when each rule has one home.
+ *
+ * A name and its text join on a vertical bar, which no rule name holds, so no pair of lines can
+ * collide by one name ending where the next one's text begins.
+ */
+function ruleLines(bundle: Record<string, unknown>, where: 'list' | 'bodies'): string[] {
+  const key = (name: string, line: unknown): string => `${name}|${String(line)}`;
+  const stated = new Set<string>();
+  for (const [, body] of operationBodies(bundle)) {
+    const rules = body['rules'];
+    if (!RECORD_SHAPED(rules)) continue;
+    for (const [name, value] of Object.entries(rules as Record<string, string | string[]>)) {
+      for (const line of Array.isArray(value) ? value : [value]) stated.add(key(name, line));
+    }
+  }
+  if (where === 'bodies') return [...stated];
+  const list = (bundle['rules'] ?? []) as Array<[string, string]>;
+  return list.filter(([name, line]) => stated.has(key(name, line))).map(([name]) => name);
+}
+
 describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrator contract whole', () => {
   let harness: Harness;
   let client: Client;
@@ -94,16 +119,23 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
   });
 
   it('carries the rules of each operation in the body that states them', () => {
-    // The `rules` list below is the contract flattened and addressable across the whole role. An
-    // operation body states its own rules as well: an agent reading one operation reads the whole of
-    // that operation, without going elsewhere in the payload for a piece of it.
+    // An agent reading one operation reads the whole of that operation — what it is for, what it
+    // takes, what to do, and the boundaries it is held to — without going elsewhere in the payload
+    // for a piece of it.
     const withRules = operationBodies(ops).filter(([, body]) => body['rules'] !== undefined);
     expect(withRules.length, 'no operation body carried the rules it is held to').toBeGreaterThan(0);
   });
 
-  it('carries the role\'s rules list whole', () => {
+  it('carries the role\'s own rules, and states no rule twice', () => {
+    // A rule has one home, and which home is decided by what it governs. A rule an operation
+    // declares or inherits rides that operation's body; `rules` carries what governs the agent
+    // rather than any one operation. Reading both and finding a line in each would be a reader
+    // asked to hold the same boundary twice over, from two places that can drift apart.
     expect(Array.isArray(ops['rules'])).toBe(true);
-    expect((ops['rules'] as unknown[]).length).toBeGreaterThan(0);
+    const list = ops['rules'] as Array<[string, string]>;
+    expect(list.length).toBeGreaterThan(0);
+    expect(ruleLines(ops, 'list'), 'the list restates a rule an operation body already carries')
+      .toEqual([]);
   });
 
   /**
@@ -204,8 +236,13 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery carries the worker contrac
     const body = parse(text.slice(text.indexOf('\n\n---\n\n') + 7)) as Record<string, unknown>;
     expect(body['id']).toBe('start-work-package');
     expect(body['steps']).toBeDefined();
-    expect(Array.isArray(bundle['rules'])).toBe(true);
-    expect((bundle['rules'] as unknown[]).length).toBeGreaterThan(0);
+    // Every rule this worker is held to rides the body of the operation or step it governs, so on
+    // this activity the role's own list is empty and absent rather than empty and present. A rule
+    // governing no one operation would put it back.
+    expect(ruleLines(bundle, 'list'), 'the list restates a rule an operation body already carries')
+      .toEqual([]);
+    expect(ruleLines(bundle, 'bodies').length, 'the worker was handed no rules at all')
+      .toBeGreaterThan(0);
     expect(Object.keys((bundle['techniques'] ?? {}) as Record<string, unknown>).length).toBeGreaterThan(0);
     expect(bundle['operation_refs'], 'the payload named an operation it carried no body for').toBeUndefined();
     expect(bundle['operations_note']).toBeUndefined();

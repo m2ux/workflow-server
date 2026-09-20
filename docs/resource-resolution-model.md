@@ -101,7 +101,11 @@ The server resolves an activity's declared references and bundles them into the 
 
 The response is the union of the workflow's declared technique references and the core orchestrator technique references the server auto-includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`): the engine traversal, state-persistence, sub-agent dispatch, and orchestrator-discipline references every orchestrator needs. Duplicates are deduplicated.
 
-Every operation in that union arrives with its body: its capability, its interface, its procedure and the rules it is held to. The role's `rules` list states the same rules a second time, flattened and addressable across the whole contract, so the two are complementary — one is the contract entire, the other is one operation delivered entire.
+Every operation in that union arrives with its body: its capability, its interface, its procedure and the rules it is held to.
+
+**A rule has one home, and which home is decided by what it governs.** A rule a technique declares, or inherits from its ancestor group, governs that operation — so it rides the body that states it, where a reader meets it beside the procedure it constrains. The response's `rules` list carries what is left: the role's own rules, declared standalone and referenced by the workflow, which govern the agent rather than any one operation. The two sets are disjoint. No rule is read twice, and an activity whose every rule belongs to an operation sends no list at all.
+
+The body is the home that gives way last, because it is the richer one: it says WHICH operation a rule binds, which a flat list cannot.
 
 The assembled result is measured against what one tool result may carry (`MAX_RESPONSE_CHARS`, default 60,000 — the same figure a worker's delivery is measured against, because both open a role's work, and taken over the whole result: the response text and the protocol metadata a client weighs beside it). The limit reports; it decides nothing. A result past it goes out whole and the server logs that it did.
 

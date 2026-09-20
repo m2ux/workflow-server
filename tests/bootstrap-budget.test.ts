@@ -42,15 +42,16 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
  * response for a workflow whose graph actually fans, so an orchestrator driving one that does not
  * pays nothing for a procedure it can never reach. Meta's own graph fans nowhere.
  *
- * 210,000 since an orchestrator receives its whole contract with its work (#847). The figure it
+ * 172,000 since an orchestrator receives its whole contract with its work (#847). The figure it
  * replaces was not what an orchestrator read: it measured a bundle that carried one operation body
  * and named the other eighteen as ids, each of them a fetch before the orchestrator could act, and
  * each of the bodies it did carry stripped of the rules that operation is held to. What this counts
- * now is every operation entire. The number is the cost of a contract delivered rather than a
- * contract promised, and trimming it means having fewer or smaller operations in the baseline —
- * see the sizing question in #836.
+ * now is every operation entire, and each rule stated once — in the body of the operation it
+ * governs, or in the role's own `rules` list where it governs no one operation. Trimming it means
+ * having fewer or smaller operations in the baseline, or collapsing the copies composition makes
+ * of one ancestor group's contract; see the sizing question in #836.
  */
-const BUDGET = 210_000;
+const BUDGET = 172_000;
 
 describe.skipIf(!liveCorpusRoot())('bootstrap-time fixed content', () => {
   it('stays inside the budget this suite sets', async () => {

@@ -46,6 +46,18 @@ function isUnchangedMarker(value: unknown): value is UnchangedMarker {
  * marker, and everything else arrives entire. A case asserting "everything collapses" therefore
  * asks it of what was delivered, which is what this reads off the first response.
  */
+/**
+ * Whether a delivery carried the role's own rules in full.
+ *
+ * A rule has one home, decided by what it governs: a rule an operation declares or inherits rides
+ * that operation's body, and the `rules` list carries only what governs no one operation. So the
+ * list is absent on an activity whose every rule belongs to an operation, present where one does
+ * not, and a marker where this context already holds it. Full delivery is the third of those.
+ */
+function rulesDeliveredInFull(bundle: Record<string, unknown>): boolean {
+  return Array.isArray(bundle['rules']);
+}
+
 function deliveredInFull(bundle: Record<string, unknown>): string[] {
   const techniques = (bundle['techniques'] ?? {}) as Record<string, unknown>;
   const carried = Object.entries(techniques).filter(([, value]) => !isUnchangedMarker(value)).map(([key]) => key);
@@ -200,7 +212,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const key of carried) {
         expect(isUnchangedMarker(techniques[key]), `expected a marker for ${key}`).toBe(true);
       }
-      expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
+      expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
       expect(second.bundle['bundle_note']).toBeDefined();
       // The activity body is never collapsed, whatever the identity holds.
       expect(second.bodyText.length).toBeGreaterThan(0);
@@ -239,7 +251,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const value of Object.values(firstTechniques)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
-      expect(Array.isArray(first.bundle['rules'])).toBe(true);
+      expect(Object.keys(firstTechniques).length, 'the first delivery carried no operation').toBeGreaterThan(0);
 
       const second = splitActivityResponse(await getActivity(idx));
       const secondTechniques = second.bundle['techniques'] as Record<string, unknown>;
@@ -251,7 +263,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const [key, value] of Object.entries(secondTechniques)) {
         expect(isUnchangedMarker(value), `${key} was delivered twice in full`).toBe(true);
       }
-      expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
+      expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
       // The activity body itself is still delivered. (`work-package` declares no rules buckets of
       // its own — its conduct comes from the conduct home and its one activity-scoped rule set sits
       // on the activity that owns it — so no inherited `activity_rules` block reaches this worker.
@@ -349,7 +361,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const value of Object.values(techniques)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
-      expect(Array.isArray(forced.bundle['rules'])).toBe(true);
+      expect(deliveredInFull(forced.bundle).length, 'bundle: full carried no operation in full').toBeGreaterThan(0);
     });
 
     it('persists contextMode and the delivery ledger in session.json', async () => {
@@ -364,16 +376,19 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'intake-and-scope');
-      await getActivity(idx);
+      const delivered = splitActivityResponse(await getActivity(idx));
 
       const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
       expect(onDisk.contextMode).toBe('persistent');
       expect(onDisk.deliveredContent?.solo).toBeDefined();
       const keys = Object.keys(onDisk.deliveredContent.solo as Record<string, string>);
       expect(keys.some(k => k.startsWith('bundle:'))).toBe(true);
-      // Rules entries are content-keyed (set semantics) so alternating rule
-      // sets across activities still collapse.
-      expect(keys.some(k => /^bundle:rules:[0-9a-f]{16}$/.test(k))).toBe(true);
+      // A rule rides the body of the operation it governs, and the role's own `rules` list carries
+      // what governs no one operation. The list is content-keyed (set semantics) so alternating
+      // rule sets across activities still collapse — and an activity whose every rule has an
+      // operation home sends no list, and records no key for one.
+      expect(keys.some(k => /^bundle:rules:[0-9a-f]{16}$/.test(k)))
+        .toBe(Array.isArray(delivered.bundle['rules']));
       expect(keys.some(k => /^activity_rules:[0-9a-f]{16}$/.test(k))).toBe(true);
     });
 
@@ -429,7 +444,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const key of deliveredInFull(first.bundle)) {
         expect(isUnchangedMarker(techniques[key]), `expected marker for ${key}`).toBe(true);
       }
-      expect(isUnchangedMarker(referenced.bundle['rules'])).toBe(true);
+      expect(rulesDeliveredInFull(referenced.bundle), 'the role rules arrived in full a second time').toBe(false);
 
       // Omitting the opt-in drops `bundle_mode`, and `bundle: "full"` is what re-delivers the
       // bundle this identity has already been sent.
@@ -1151,7 +1166,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const key of deliveredInFull(spawn.bundle)) {
         expect(isUnchangedMarker(resumedTechniques[key]), `resumed worker must reference ${key}`).toBe(true);
       }
-      expect(isUnchangedMarker(resumed.bundle['rules'])).toBe(true);
+      expect(rulesDeliveredInFull(resumed.bundle), 'the role rules arrived in full a second time').toBe(false);
     });
 
     it('never hands one worker the markers of another worker on the same session', async () => {
@@ -1168,7 +1183,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const [key, value] of Object.entries(workerB.bundle['techniques'] as Record<string, unknown>)) {
         expect(isUnchangedMarker(value), `worker-b must receive ${key} in full`).toBe(false);
       }
-      expect(isUnchangedMarker(workerB.bundle['rules'])).toBe(false);
+      expect(deliveredInFull(workerB.bundle).length, 'the second worker was handed a marker').toBeGreaterThan(0);
     });
 
     it('scopes get_technique and get_resource on the same identity', async () => {
