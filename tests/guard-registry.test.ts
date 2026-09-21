@@ -69,10 +69,18 @@ describe('guard registry', () => {
     expect(CORPUS_GUARDS.length).toBeGreaterThan(0);
     expect(CORPUS_GUARDS.every((g) => g.scope === 'corpus')).toBe(true);
     // The site guards read `site/`, the encoding guard reads this repo's own sources, the lockfile
-    // guard reads its lockfile, and the schema guard reads `schemas/` against the Zod sources it is
-    // generated from — none reads the corpus, so a delta run must not aim them at a corpus root.
+    // guard reads its lockfile, the schema guard reads `schemas/` against the Zod sources it is
+    // generated from, and the agent-homes guard reads this repo's instruction files — none reads
+    // the corpus, so a delta run must not aim them at a corpus root.
     expect(GUARDS.filter((g) => g.scope === 'repo').map((g) => g.id).sort())
-      .toEqual(['generated-schemas', 'lockfile-denylist', 'site-links', 'source-encoding', 'svg-layout']);
+      .toEqual([
+        'agent-instruction-homes',
+        'generated-schemas',
+        'lockfile-denylist',
+        'site-links',
+        'source-encoding',
+        'svg-layout',
+      ]);
   });
 
   /**
