@@ -48,9 +48,9 @@ export const ProtocolBlockSchema = z.object({
 });
 export type ProtocolBlock = z.infer<typeof ProtocolBlockSchema>;
 
-/** Protocol: a single ordered list of step blocks (no "phase" construct). Blocks are positional;
- *  an ancestor's Initial blocks are placed before, and its Final blocks after, a nested technique's
- *  own blocks, and the server renumbers the combined sequence for display. */
+/** Protocol: a single ordered list of step blocks (no "phase" construct). Blocks are positional, in
+ *  authored order. A technique's protocol is its own — a container contract contributes inputs,
+ *  outputs and rules to its descendants, never steps. */
 export const ProtocolDefinitionSchema = z.array(ProtocolBlockSchema);
 export type ProtocolDefinition = z.infer<typeof ProtocolDefinitionSchema>;
 

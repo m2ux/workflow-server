@@ -35,7 +35,7 @@
     "protocolDefinition": {
       "type": "array",
       "items": { "$ref": "#/definitions/protocolBlock" },
-      "description": "Protocol: a single ordered list of step blocks (no phase construct). An ancestor's Initial blocks are placed before, and its Final blocks after, a nested technique's own blocks; the server renumbers the combined sequence for display."
+      "description": "Protocol: a single ordered list of step blocks (no phase construct), in authored order. A technique's protocol is its own — a container contract contributes inputs, outputs and rules to its descendants, never steps."
     },
     "rulesDefinition": {
       "type": "object",

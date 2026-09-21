@@ -418,7 +418,7 @@ describe('technique-loader', () => {
       expect(op.protocol).toEqual([{ steps: ['Stage files', 'Commit'] }]);
     });
 
-    it('composeTechnique wraps the technique with the root Initial/Final; other root blocks are root-only', async () => {
+    it('composeTechnique inherits the root rules and leaves the protocol as authored', async () => {
       const dir = join(tempDir, 'wp', 'techniques');
       await mkdir(dir, { recursive: true });
       await writeFile(
@@ -440,12 +440,13 @@ describe('technique-loader', () => {
       if (result.success) {
         expect(result.value.rules?.['no-skip']).toBeDefined(); // inherited from root
         expect(result.value.rules?.['own-rule']).toBeDefined(); // technique-local
-        // root.Initial, then own, then root.Final — the root-only "Setup" block is NOT included.
-        expect(result.value.protocol?.flatMap((b) => b.steps)).toEqual(['root-init', 'Do the work', 'root-final']);
+        // A container contributes a contract, never steps — none of the root's three blocks
+        // reaches the descendant, whatever each is titled.
+        expect(result.value.protocol?.flatMap((b) => b.steps)).toEqual(['Do the work']);
       }
     });
 
-    it('resolveTechniques recursively wraps an op with the Initial/Final of every ancestor (root + group)', async () => {
+    it('resolveTechniques leaves a nested op its own protocol across the whole ancestor chain', async () => {
       const dir = join(tempDir, 'wp', 'techniques');
       await mkdir(join(dir, 'grp'), { recursive: true });
       await writeFile(
@@ -468,14 +469,13 @@ describe('technique-loader', () => {
       const resolved = await resolveTechniques(['grp::op'], tempDir, 'wp');
       const op = resolved.find((r) => r.type === 'technique' && r.name === 'op');
       const steps = (op!.body as { protocol?: Array<{ steps: string[] }> }).protocol!.flatMap((b) => b.steps);
-      // root.Initial, grp.Initial, op's own, grp.Final, root.Final. grp's "Setup" is excluded.
-      expect(steps).toEqual(['root-init', 'grp-init', 'op-work', 'grp-final', 'root-final']);
+      expect(steps).toEqual(['op-work']);
 
-      // The group referenced DIRECTLY delivers its FULL own protocol (incl. Setup), wrapped only by the root.
+      // A container referenced directly delivers its own protocol in full, and only its own.
       const direct = await resolveTechniques(['grp'], tempDir, 'wp');
       const grp = direct.find((r) => r.type === 'technique' && r.source === 'grp');
       const grpSteps = (grp!.body as { protocol?: Array<{ steps: string[] }> }).protocol!.flatMap((b) => b.steps);
-      expect(grpSteps).toEqual(['root-init', 'grp-init', 'grp-setup', 'grp-final', 'root-final']);
+      expect(grpSteps).toEqual(['grp-init', 'grp-setup', 'grp-final']);
     });
 
     it('composeTechnique merges inputs and output from the full ancestor chain', async () => {
@@ -643,9 +643,9 @@ describe('technique-loader', () => {
       const result = await composeTechnique('grp::op', tempDir, 'wp');
       expect(result.success).toBe(true);
       if (result.success) {
-        // Protocol: full ancestor chain Initial/Final wrap.
+        // Protocol: the op's own, whatever its ancestors author.
         const steps = result.value.protocol?.flatMap(b => b.steps);
-        expect(steps).toEqual(['root-init', 'grp-init', 'Do the op', 'grp-final', 'root-final']);
+        expect(steps).toEqual(['Do the op']);
         // Rules: all three levels merged; technique-local wins on name conflict.
         expect(result.value.rules?.['root-rule']).toBeDefined();
         expect(result.value.rules?.['group-rule']).toBeDefined();

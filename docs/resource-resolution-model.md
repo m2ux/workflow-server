@@ -99,9 +99,9 @@ The result of resolving a list of references is a bundle grouped into three buck
 
 Empty buckets are omitted. The lookup is structural and requires no session token; most clients receive it indirectly through the bundles that `get_workflow` and `get_activity` produce, which [the delivery model](delivery-model.md#what-a-role-receives) describes.
 
-## How an ancestor's protocol wraps a descendant's
+## What an ancestor contributes to a descendant
 
-When a technique is delivered, an ancestor container's `Initial` and `Final` protocol blocks wrap the descendant's protocol recursively. Every ancestor along the path — the workflow-root `TECHNIQUE.md` and each containing group's `TECHNIQUE.md` — contributes its `Initial` blocks (before) and `Final` blocks (after) the technique's own protocol. The server renumbers the combined sequence for display. Any other ancestor block is parent-only: it appears solely when that ancestor is referenced directly.
+An ancestor container contributes a contract, never a procedure. Every ancestor along the path — the workflow-root `TECHNIQUE.md` and each containing group's `TECHNIQUE.md` — merges its inputs, outputs and rules into the descendant, the descendant's own entry winning on a shared id or name. A technique's protocol is delivered as authored; the steps a shared stage owns belong to the activity or routine that binds both operations, not to the folder that holds them.
 
 ## The shared meta layer
 
