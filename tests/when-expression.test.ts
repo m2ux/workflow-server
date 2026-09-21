@@ -188,4 +188,113 @@ describe('when-expression', () => {
       expect(evaluateWhenExpression(expr, { a: true, b: true, c: 'y' })).toBe(false);
     });
   });
+
+  /**
+   * The dialect has two homes: this evaluator, and the `gate-evaluation` rule of the
+   * `workflow-engine::step-control` technique, which is what an agent is actually delivered — the
+   * evaluator never rides the wire. A rule that has drifted from the evaluator misinstructs every
+   * worker and orchestrator while every other test here still passes, so each case below states a
+   * sentence of the rule and asserts the evaluator agrees with it.
+   *
+   * Editing the evaluator's behaviour means editing that rule in the same change. The corpus is a
+   * separate branch, so these skip where it is not checked out.
+   */
+  describe('the delivered rule and this evaluator agree', () => {
+    const RULE_HOME = 'meta/techniques/workflow-engine/step-control.md';
+
+    /**
+     * The rule text, or null where no corpus is checked out.
+     *
+     * A corpus that IS checked out and does not carry the rule throws rather than returning null:
+     * a renamed heading or a moved file would otherwise take every case below into the skip branch,
+     * and a drift check that answers "nothing to compare" to the edit most likely to cause drift is
+     * worth less than no check at all.
+     */
+    async function gateEvaluationRule(): Promise<string | null> {
+      const { liveCorpusRoot } = await import('./corpus-root.js');
+      const { readFileSync, existsSync } = await import('node:fs');
+      const { join } = await import('node:path');
+      const root = liveCorpusRoot();
+      if (root === null) return null;
+      const path = join(root, RULE_HOME);
+      if (!existsSync(path)) {
+        throw new Error(`${RULE_HOME} is absent from the corpus at ${root} — the delivered home of the when dialect`);
+      }
+      const body = readFileSync(path, 'utf8');
+      const start = body.indexOf('### gate-evaluation');
+      if (start === -1) {
+        throw new Error(`${RULE_HOME} carries no 'gate-evaluation' rule — rename it here too, or this check stops comparing`);
+      }
+      const next = body.indexOf('\n### ', start + 1);
+      return next === -1 ? body.slice(start) : body.slice(start, next);
+    }
+
+    it('states every operator the parser accepts, in its roster sentence', async () => {
+      const rule = await gateEvaluationRule();
+      if (rule === null) return;
+      // Read the roster sentence alone. Searching the whole rule would pass on an operator that
+      // survives only in a later bullet, which is the drop most likely to happen in an edit.
+      const from = rule.indexOf('Operators are');
+      expect(from, `${RULE_HOME} states no operator roster`).toBeGreaterThan(-1);
+      const rest = rule.slice(from);
+      const end = rest.indexOf('. ');
+      const roster = end === -1 ? rest : rest.slice(0, end);
+      // Naming an operator the evaluator rejects is the same defect as omitting one it accepts:
+      // both send an author to a form that does not behave as the rule says it does.
+      for (const op of ['==', '!=', '>=', '<=', '>', '<', '!', '&&', '||']) {
+        expect(roster, `the operator roster in ${RULE_HOME} omits ${op}`).toContain(op);
+      }
+      expect(parseWhen('a == 1 && !b || c >= 2').ok).toBe(true);
+    });
+
+    it('is right that an unquoted word right of a comparison is a string literal', async () => {
+      const rule = await gateEvaluationRule();
+      if (rule === null) return;
+      expect(rule).toContain('string literal');
+      // The corpus reads `a == b` as a test against the text `b`, never against the variable.
+      expect(evaluateWhenExpression('a == b', { a: 'b', b: 'something-else' })).toBe(true);
+      expect(evaluateWhenExpression('a == b', { a: 'something-else', b: 'something-else' })).toBe(false);
+    });
+
+    it('is right that a comparison binds tighter than the negation in front of it', async () => {
+      const rule = await gateEvaluationRule();
+      if (rule === null) return;
+      expect(rule, 'the rule states no binding order for `!` against a comparison').toContain('!(a == b)');
+      // `a` is empty, so the two readings disagree and the result names which one runs: `!(a == b)`
+      // negates a false comparison and holds, where `(!a) == b` would test true against the text `b`
+      // and fail. The grammar puts a comparison at primary, inside unary, so the negation takes it
+      // whole — and a negated left side is not expressible without parentheses of its own.
+      expect(evaluateWhenExpression('!a == b', { a: '', b: 'unused' })).toBe(true);
+      expect(evaluateWhenExpression('!a == b', { a: 'b', b: 'unused' })).toBe(false);
+    });
+
+    it('is right that comparison is identity, with no coercion', async () => {
+      const rule = await gateEvaluationRule();
+      if (rule === null) return;
+      expect(evaluateWhenExpression('a == 5', { a: '5' })).toBe(false);
+      expect(evaluateWhenExpression('a == 5', { a: 5 })).toBe(true);
+    });
+
+    it('is right that a bare name reads as truthiness and a missing path is falsy', async () => {
+      const rule = await gateEvaluationRule();
+      if (rule === null) return;
+      expect(evaluateWhenExpression('a', { a: 'set' })).toBe(true);
+      expect(evaluateWhenExpression('a', { a: '' })).toBe(false);
+      expect(evaluateWhenExpression('a.b.c', { a: 1 })).toBe(false);
+      expect(evaluateWhenExpression('a.b', { a: { b: true } })).toBe(true);
+    });
+
+    it('is right that ordering is false when either side is not a finite number', async () => {
+      const rule = await gateEvaluationRule();
+      if (rule === null) return;
+      expect(evaluateWhenExpression('a > 1', { a: 'x' })).toBe(false);
+      expect(evaluateWhenExpression('a > 1', { a: 2 })).toBe(true);
+    });
+
+    it('is right that an unparseable expression is false', async () => {
+      const rule = await gateEvaluationRule();
+      if (rule === null) return;
+      expect(evaluateWhenExpression('a ===', { a: true })).toBe(false);
+    });
+  });
 });
