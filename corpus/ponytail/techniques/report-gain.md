@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Summarises what the pass can honestly claim, into the ledger's gain field.
 
 ### debt_ledger
 
-The harvested debt ledger whose `gain` field this operation fills.
+The harvested debt ledger — the per-file marker entries, the counts that total them, and the `gain` field.
 
 ## Outputs
 

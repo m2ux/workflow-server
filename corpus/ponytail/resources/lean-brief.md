@@ -1,6 +1,6 @@
 ---
 name: lean-brief
-description: Creation guide for bare filename `lean-brief.md` — the entry brief recording the task, target, chosen intensity and scope, the traced end-to-end flow, the reachable rungs, and the safety-floor obligations in play.
+description: Creation guide for bare filename `lean-brief.md` — the entry brief recording the task, the target, the traced end-to-end flow, the reachable rungs, and the safety-floor obligations in play.
 ---
 
 # Lean Brief Guide
@@ -12,7 +12,7 @@ Creation guide for bare filename `lean-brief.md`. Written before any code change
 ```markdown
 # Lean Brief — {task in a few words}
 
-**Target:** `{path}` · **Intensity:** {chosen} · **Scope:** {chosen}
+**Target:** `{path}`
 
 **Problem:** {the one sentence the change must solve.}
 

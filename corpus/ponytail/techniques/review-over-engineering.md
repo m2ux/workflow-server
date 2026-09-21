@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -37,7 +37,7 @@ The tagged findings for the change, each under a stable `LC-{n}` designator so a
 
 ### 2. Record one line per finding
 
-- Write each finding as a single line in `{review_findings}`, under its own designator per [Finding Format](../resources/review-taxonomy.md#finding-format).
+- Write each finding as a single line in `{review_findings}` in `{artifact_dir}`, under its own designator per [Finding Format](../resources/review-taxonomy.md#finding-format).
 
 ### 3. Score the net
 

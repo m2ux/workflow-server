@@ -1,10 +1,9 @@
 id: apply-ladder
-version: 2.1.0
+version: 2.2.0
 name: Apply Ladder
 description: Produce the minimal solution by climbing the rungs, marking deliberate simplifications and leaving one runnable check, then confirm it clears the safety floor.
 variables:
   reads:
-    - artifact_dir
     - safety_floor_cleared
     - task_description
   writes:

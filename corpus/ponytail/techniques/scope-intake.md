@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Establishes what the pass is working on, the lens it runs under, and the traced end-to-end flow the change touches.
+Establishes what the pass is working on and the traced end-to-end flow the change touches.
 
 ## Outputs
 
 ### lean_brief
 
-A concise brief recording the task, the target, the chosen intensity and scope, and the traced end-to-end flow — the entry path, the data it carries, and the exit/error paths the change touches. Names the rungs that look reachable and the safety-floor obligations that apply, so the climb starts from understanding rather than assumption.
+A concise brief recording the task, the target, and the traced end-to-end flow — the entry path, the data it carries, and the exit/error paths the change touches. Names the rungs that look reachable and the safety-floor obligations that apply, so the climb starts from understanding rather than assumption.
 
 #### artifact
 
@@ -25,7 +25,7 @@ A concise brief recording the task, the target, the chosen intensity and scope, 
 
 ### 1. Capture the task
 
-- Record `{task_description}` and `{target_path}` verbatim, and the chosen `{lazy_intensity}` and `{pass_scope}`.
+- Record `{task_description}` and `{target_path}` verbatim.
 - State in one sentence the problem the change must solve.  
   > Where it cannot yet be stated, the ladder places clarifying it on the safety floor, and the brief records it as the open item.
 

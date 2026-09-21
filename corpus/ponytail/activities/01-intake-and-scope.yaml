@@ -1,10 +1,9 @@
 id: intake-and-scope
-version: 1.2.0
+version: 1.3.0
 name: Intake and Scope
-description: Capture the task and target, set intensity and scope, and trace the real end-to-end flow the change touches before the ladder is climbed.
+description: Capture the task and target, trace the real end-to-end flow the change touches, and set the intensity and scope of the lazy lens before the ladder is climbed.
 variables:
   reads:
-    - artifact_dir
     - target_path
     - task_description
   writes:

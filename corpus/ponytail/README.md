@@ -19,12 +19,9 @@ The lazy lens has two dials. **Intensity** (`lite` / `full` / `ultra`) sets how 
 
 ---
 
-## Adaptation notes (skill → workflow)
+## Upstream
 
-This workflow distills the **[Ponytail](https://github.com/DietrichGebert/ponytail)** project by Dietrich Gebert — an always-on "lazy senior developer" skill set — into the workflow-server model.
-
-- **Invoked for a piece of work.** Intensity is selected once at intake and held for the pass.
-- **Governs what is built.** The lens shapes the code and the artifacts the pass writes, not conversational style.
+The discipline this workflow encodes comes from the **[Ponytail](https://github.com/DietrichGebert/ponytail)** project by Dietrich Gebert — an always-on "lazy senior developer" skill set.
 
 ---
 
@@ -35,7 +32,7 @@ graph TD
     Start([Start]) --> IS["intake-and-scope"]
     IS --> AL["apply-ladder"]
     AL --> SF{"safety floor cleared?"}
-    SF -->|"no"| AL
+    SF -->|"no"| Done
     SF -->|"yes"| OER["over-engineering-review"]
     OER --> GATE{"lazy_intensity == ultra<br/>OR pass_scope == repo?"}
     GATE -->|"yes"| RA["repo-audit"]
@@ -50,11 +47,11 @@ graph TD
 
 | # | Activity | Description |
 |---|----------|-------------|
-| 01 | **Intake and Scope** (`intake-and-scope`) | Capture the task and target, set intensity and scope, and trace the real end-to-end flow before climbing |
+| 01 | **Intake and Scope** (`intake-and-scope`) | Capture the task and target, trace the real end-to-end flow, and set the intensity and scope of the lazy lens before climbing |
 | 02 | **Apply Ladder** (`apply-ladder`) | Climb to the minimal solution, mark deliberate simplifications, leave one runnable check, and clear the safety floor |
 | 03 | **Over-Engineering Review** (`over-engineering-review`) | Tag the change's over-engineering one line per finding, closing with a net line-count scoreboard |
 | 04 | **Repo Audit** (`repo-audit`) | Hunt repo-wide over-engineering biggest-cut-first (gated; `required: false`) |
-| 05 | **Harvest Debt and Report** (`harvest-debt-and-report`) | Harvest ponytail markers into a debt ledger and append an honest gain scoreboard |
+| 05 | **Harvest Debt and Report** (`harvest-debt-and-report`) | Harvest ponytail markers into a debt ledger and fill its honest gain figure |
 
 **Detailed documentation:** See [activities/README.md](activities/README.md) and the per-activity YAML definitions.
 
@@ -62,7 +59,7 @@ graph TD
 
 ## Techniques
 
-The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity. Every step binds one of the workflow's standalone techniques.
+The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity.
 
 The lean-coding capability is owned by standalone top-level techniques, each inheriting the workflow-root [`techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) base contract and bound bare as `<op>`.
 
@@ -73,9 +70,7 @@ The lean-coding capability is owned by standalone top-level techniques, each inh
 | `review-over-engineering` | Tag a change's over-engineering with a net-lines scoreboard |
 | `audit-repo` | Hunt repo-wide over-engineering biggest-cut-first |
 | `harvest-debt` | Harvest ponytail markers into a debt ledger |
-| `report-gain` | Append an honesty-bounded gain scoreboard to the ledger |
-
-`scope-intake` also reaches the shared [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) `query` / `context` operations for flow tracing when the codebase is indexed.
+| `report-gain` | Fill the ledger's gain field with an honesty-bounded scoreboard |
 
 **Detailed documentation:** See [techniques/README.md](techniques/README.md) and [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md).
 
@@ -104,7 +99,7 @@ corpus/ponytail/
 ├── README.md                                  # This file
 ├── activities/
 │   ├── README.md                              # Activities orientation map
-│   ├── 01-intake-and-scope.yaml               # Capture, set lens, trace; intensity-and-scope-confirmed checkpoint
+│   ├── 01-intake-and-scope.yaml               # Capture and trace; intensity-and-scope-confirmed checkpoint sets the lens
 │   ├── 02-apply-ladder.yaml                   # Climb the rungs; safety-floor-cleared hard checkpoint
 │   ├── 03-over-engineering-review.yaml        # Diff-scoped tagged review; gated transition to repo-audit
 │   ├── 04-repo-audit.yaml                     # Repo-wide audit (required: false, gated-in)

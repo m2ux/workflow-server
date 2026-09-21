@@ -10,7 +10,7 @@ This file is an orientation map. The authoritative definition of each activity �
 
 ### 01. Intake and Scope
 
-Capture the task and target, fix the intensity and scope of the lazy lens, and trace the real end-to-end flow the change touches, so the rung is chosen against the actual problem rather than a guess. A hard `intensity-and-scope-confirmed` checkpoint settles the lens — intensity (`lite` / `full` / `ultra`) and scope (`change` / `repo`) — before any climbing begins. **Value:** the change is understood and the lens calibrated before a single simplification is made.
+Capture the task and target and trace the real end-to-end flow the change touches, so the rung is chosen against the actual problem rather than a guess. A hard `intensity-and-scope-confirmed` checkpoint then settles the lens — intensity (`lite` / `full` / `ultra`) and scope (`change` / `repo`) — before any climbing begins. **Value:** the change is understood and the lens calibrated before a single simplification is made.
 
 Definition: [`01-intake-and-scope.yaml`](01-intake-and-scope.yaml). Leads to [Apply Ladder](#02-apply-ladder).
 
@@ -42,6 +42,6 @@ Definition: [`04-repo-audit.yaml`](04-repo-audit.yaml). Leads to [Harvest Debt a
 
 ### 05. Harvest Debt and Report
 
-Harvest every ponytail marker across the target into a debt ledger — one row per marker recording where it is, what was simplified, the ceiling, and the upgrade trigger — flagging any marker with no trigger. When markers exist, an honesty-bounded gain scoreboard is appended to the foot of the ledger; when none exist, the report tail is skipped. **Value:** every deliberate simplification is recorded as trackable debt with its upgrade trigger, and the honest gain is shown.
+Harvest every ponytail marker across the target into a debt ledger — one row per marker recording where it is, what was simplified, the ceiling, and the upgrade trigger — flagging any marker with no trigger. When markers exist, the ledger's gain field carries an honesty-bounded scoreboard; when none exist, the report tail is skipped. **Value:** every deliberate simplification is recorded as trackable debt with its upgrade trigger, and the honest gain is shown.
 
 Definition: [`05-harvest-debt-and-report.yaml`](05-harvest-debt-and-report.yaml). Terminal activity.

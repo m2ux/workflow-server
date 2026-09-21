@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 ## Capability
@@ -21,6 +21,14 @@ Path to the code or repo under the lazy lens.
 
 `.`
 
+### artifact_dir
+
+Directory the pass writes its artifacts into.
+
+#### default
+
+`.ponytail`
+
 ### lazy_intensity
 
 Strictness of the lazy lens: `lite`, `full`, or `ultra`.
@@ -39,9 +47,13 @@ Breadth of the pass — `change` (diff-scoped) or `repo` (whole-tree).
 
 ## Rules
 
-### output-discipline
+### trailing-prose-is-capped
 
-Lead with the code; follow it with at most three lines of prose (what was skipped, and the trigger that would justify adding it). Produce no unrequested explanation, summary, or documentation. If the explanation runs longer than the code, delete the explanation — every paragraph defending a simplification is complexity smuggled back in as prose. Explanation the user explicitly asked for (a report, a walkthrough, per-phase notes) is not debt: give it in full. The rule targets only *unrequested* prose, not requested artifacts.
+The code leads, and the lines that follow it name what was skipped and the trigger that would justify adding it — at most three of them, and never longer than the code they follow. A paragraph defending a simplification is complexity smuggled back in as prose.
+
+### no-unrequested-prose
+
+Produce no unrequested explanation, summary, or documentation. Explanation the user asked for — a report, a walkthrough, per-phase notes — is a requested artifact and is given in full.
 
 ### boring-over-clever
 
