@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readTechnique, projectTechnique, projectTechniqueToYaml, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
+import { readTechnique, projectTechnique, projectTechniqueToYaml, composeTechnique, composeTechniqueWithSource, projectTechniqueWire, resolveTechniques, formatTechniqueBundle } from '../src/loaders/technique-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -563,7 +563,7 @@ describe('technique-loader', () => {
       }
     });
 
-    it('resolveTechniques delivers group-contract inputs under inherited_inputs in the op body', async () => {
+    it('resolveTechniques names the group scope instead of copying its inputs into the op body', async () => {
       const dir = join(tempDir, 'wp', 'techniques');
       await mkdir(join(dir, 'grp'), { recursive: true });
       await writeFile(
@@ -597,10 +597,13 @@ describe('technique-loader', () => {
       const body = op!.body as {
         inputs?: Array<{ id: string }>;
         inherited_inputs?: { note: string; items: Array<{ id: string }> };
+        inherits?: string[];
       };
       expect(body.inputs?.map((i) => i.id)).toEqual(['own-input']);
-      expect(body.inherited_inputs?.items.map((i) => i.id)).toEqual(['grp-shared']);
-      expect(body.inherited_inputs?.note).toMatch(/workflow or group contract/);
+      expect(body.inherited_inputs).toBeUndefined();
+      expect(body.inherits).toEqual(['grp']);
+      expect(op!.scopes?.map((s) => s.id)).toEqual(['grp']);
+      expect(op!.scopes?.[0]?.inputs?.map((i) => i.id)).toEqual(['grp-shared']);
     });
 
     it('composeTechnique with :: path resolves and fully composes a nested op', async () => {
@@ -791,9 +794,114 @@ describe('technique-loader', () => {
       for (const ref of ['grp', 'meta::grp']) {
         const resolved = await resolveTechniques([ref], tempDir, 'wp');
         const grp = resolved.find(r => r.type === 'technique');
-        const body = grp!.body as { inherited_inputs?: { items: Array<{ id: string }> } };
-        expect(body.inherited_inputs?.items.map(i => i.id)).toEqual(['meta-root-input']);
+        const body = grp!.body as { inherits?: string[]; inherited_inputs?: { items: Array<{ id: string }> } };
+        expect(body.inherited_inputs).toBeUndefined();
+        expect(body.inherits).toEqual(['meta']);
       }
+    });
+
+    it('formatTechniqueBundle delivers each inherited contract once and names it from every op', async () => {
+      const dir = join(tempDir, 'wp', 'techniques', 'grp');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(tempDir, 'wp', 'techniques', 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root.', '',
+         '## Rules', '', '### root-rule', '', 'Root constraint.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [
+          ...FM('grp'),
+          '## Capability', '', 'Group.', '',
+          '## Inputs', '',
+          '### grp-shared', '', 'Shared across the group.', '',
+          '## Rules', '', '### group-rule', '', 'Group constraint.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      for (const op of ['a', 'b']) {
+        await writeFile(
+          join(dir, `${op}.md`),
+          [
+            ...FM(op),
+            '## Capability', '', 'An op.', '',
+            '## Inputs', '',
+            '### own-input', '', 'Op-local input.', '',
+            '## Rules', '', '### op-rule', '', 'Op constraint.', '',
+            '## Protocol', '', '1. Work', '',
+          ].join('\n'),
+          'utf-8',
+        );
+      }
+      const resolved = await resolveTechniques(['grp::a', 'grp::b'], tempDir, 'wp');
+      const bundle = formatTechniqueBundle(resolved);
+      const techniques = bundle['techniques'] as Record<string, { inherits?: string[]; rules?: Record<string, string>; inherited_inputs?: unknown }>;
+      const contracts = bundle['contracts'] as Record<string, { note: string; rules?: Record<string, string>; inputs?: Array<{ id: string }> }>;
+      expect(Object.keys(contracts).sort()).toEqual(['grp', 'wp']);
+      expect(contracts['grp']?.inputs?.map((i) => i.id)).toEqual(['grp-shared']);
+      expect(contracts['grp']?.rules?.['group-rule']).toBeDefined();
+      expect(contracts['wp']?.rules?.['root-rule']).toBeDefined();
+      expect(contracts['grp']?.note).toMatch(/workflow or group contract/);
+      expect(techniques['wp/grp::a']?.inherits).toEqual(['wp', 'grp']);
+      expect(techniques['wp/grp::b']?.inherits).toEqual(['wp', 'grp']);
+      expect(techniques['wp/grp::a']?.rules).toEqual({ 'op-rule': 'Op constraint.' });
+      expect(techniques['wp/grp::a']?.inherited_inputs).toBeUndefined();
+      expect(techniques['wp/grp::b']?.inherited_inputs).toBeUndefined();
+    });
+
+    it('projectTechniqueWire keeps own rules and names scopes, without inherited copies', async () => {
+      const dir = join(tempDir, 'wp', 'techniques', 'grp');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(tempDir, 'wp', 'techniques', 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root.', '', '## Rules', '', '### root-rule', '', 'Root constraint.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [...FM('grp'), '## Capability', '', 'Group.', '', '## Rules', '', '### group-rule', '', 'Group constraint.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'a.md'),
+        [...FM('a'), '## Capability', '', 'An op.', '', '## Rules', '', '### op-rule', '', 'Op constraint.', '', '## Protocol', '', '1. Work', ''].join('\n'),
+        'utf-8',
+      );
+      const loaded = await composeTechniqueWithSource('grp::a', tempDir, 'wp');
+      expect(loaded.success).toBe(true);
+      if (!loaded.success) return;
+      const wire = projectTechniqueWire(loaded.value.technique, loaded.value.scopes, loaded.value.ownRuleKeys);
+      expect(wire['inherits']).toEqual(['wp', 'grp']);
+      expect(wire['rules']).toEqual({ 'op-rule': 'Op constraint.' });
+      expect(wire['inherited_inputs']).toBeUndefined();
+      expect(wire['inherited_outputs']).toBeUndefined();
+    });
+
+    it('a group named for its workflow still delivers both contracts', async () => {
+      const dir = join(tempDir, 'wp', 'techniques', 'wp');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(tempDir, 'wp', 'techniques', 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root.', '', '## Rules', '', '### root-rule', '', 'Root constraint.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [...FM('wp'), '## Capability', '', 'Group.', '', '## Rules', '', '### group-rule', '', 'Group constraint.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'a.md'),
+        [...FM('a'), '## Capability', '', 'An op.', '', '## Protocol', '', '1. Work', ''].join('\n'),
+        'utf-8',
+      );
+      const resolved = await resolveTechniques(['wp::wp::a'], tempDir, 'wp');
+      const bundle = formatTechniqueBundle(resolved);
+      const contracts = bundle['contracts'] as Record<string, unknown>;
+      const techniques = bundle['techniques'] as Record<string, { inherits?: string[] }>;
+      expect(Object.keys(contracts).sort()).toEqual(['wp', 'wp/wp']);
+      expect(techniques['wp/wp::a']?.inherits).toEqual(['wp', 'wp/wp']);
     });
   });
 
