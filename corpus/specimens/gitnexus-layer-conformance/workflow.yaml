@@ -1,0 +1,41 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-layer-conformance
+version: 1.0.0
+title: GitNexus Layer Conformance Workflow
+description: >-
+  Bind the four gitnexus operations that answer a question of their own — the shortest path between
+  two symbols, the import cycles a graph holds, the taint findings a file records, and the predicates
+  gating a function — as this workflow's own steps. Two of the four read a graph layer a build
+  records only when asked, so what the walk evidences is that a library operation bound directly
+  from an activity lands its declared answer in the bag whether the layer was there or not, an
+  absent layer arriving as a note inside a well-formed answer.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - technique
+  - library
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: from_symbol
+    type: string
+    description: The symbol a traced path starts at.
+    defaultValue: ""
+  - name: to_symbol
+    type: string
+    description: The symbol a traced path ends at.
+    defaultValue: ""
+  - name: dependence_target
+    type: string
+    description: The file or function whose taint findings and gating predicates are read.
+    defaultValue: ""
+initialActivity: trace-and-check
+graph:
+  trace-and-check:
+    traced: read-the-layer
+  read-the-layer:
+    read: report-conformance
+  report-conformance:
+    reported: __terminal__

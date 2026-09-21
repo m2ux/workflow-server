@@ -1,0 +1,25 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-taint-conformance
+version: 1.0.0
+title: GitNexus Taint Conformance Workflow
+description: >-
+  Refer to the gitnexus run that reads a diff's taint findings out of the graph and separates the
+  flows the change opened from the ones it inherited. The run answers from a graph layer a build
+  records only when asked, so what the walk evidences is that a per-symbol iteration over an
+  optional layer lands its partition in the referring workflow's bag either way — two lists where
+  the layer was there, and one flag saying they settle nothing where it was not.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - taint
+techniques:
+  activity:
+    - variable-binding
+initialActivity: pass-taint
+graph:
+  pass-taint:
+    passed: report-conformance
+  report-conformance:
+    reported: __terminal__

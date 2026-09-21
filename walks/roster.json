@@ -54,6 +54,14 @@
       "reason": "Declares no checkpoint of its own; its two gates arrive from the gitnexus runs it refers to, spliced in at load. Those four options are reachable and no other workflow refers to those runs, so they are measured nowhere — the one entry here that records outstanding coverage rather than its absence."
     },
     {
+      "id": "gitnexus-taint-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is that a library run iterating an optional graph layer lands its partition and the flag saying whether the layer was there, which the reference guards and the all-workflows drift walk measure."
+    },
+    {
+      "id": "gitnexus-layer-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is that a library operation bound directly as an activity step lands its declared answer whether or not the graph holds the layer it reads, which the reference guards and the all-workflows drift walk measure."
+    },
+    {
       "id": "contract-composition",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that a worker delivery names a group contract once and each operation inherits it, which serving guards and a sidecar change-surface walk measure."
     }

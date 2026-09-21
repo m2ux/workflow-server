@@ -1,0 +1,30 @@
+id: pass-taint
+version: 1.0.0
+name: Pass Taint
+description: Refer to the run that reads each changed symbol's taint findings and partitions them against the diff.
+variables:
+  writes:
+    - name: introduced_flows
+      type: array
+      description: Findings with a hop on a symbol the change moved, each naming that symbol.
+    - name: inherited_flows
+      type: array
+      description: Findings anchored at a changed symbol whose every hop sits outside the change.
+    - name: taint_unmeasured
+      type: boolean
+      description: Whether the graph carried no taint layer, so the partition settles nothing.
+required: true
+steps:
+  - kind: routine
+    id: pass-findings
+    routine: gitnexus::diff-taint-pass
+    outputs:
+      introduced_flows: introduced_flows
+      inherited_flows: inherited_flows
+      taint_unmeasured: taint_unmeasured
+exits:
+  - id: passed
+    isDefault: true
+outcome:
+  - A run iterating the changed symbols and reading an optional graph layer at each materialised into this activity and landed its partition
+  - The flag saying whether the layer was there landed beside the partition, so two empty lists read as unmeasured rather than as clean where the layer was absent

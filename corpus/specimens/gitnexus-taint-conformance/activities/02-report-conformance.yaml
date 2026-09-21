@@ -1,0 +1,19 @@
+id: report-conformance
+version: 1.0.0
+name: Report Conformance
+description: State what the referred run landed, and whether the layer it read was there.
+variables:
+  reads:
+    - inherited_flows
+    - introduced_flows
+    - taint_unmeasured
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-taint-conformance
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - The run this walk referred to is named with what it landed, and the report says whether its two lists are a measurement or the shape an absent layer leaves behind
