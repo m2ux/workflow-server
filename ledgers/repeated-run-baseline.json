@@ -183,7 +183,7 @@
         "T:commit-verification()",
         "T:git::push-branch(branch,remote_name,repo_path)",
         "T:publish-workflow-pr()",
-        "T:github::create-pr(as_draft,base_branch,body,branch_name,repo_path,title)"
+        "T:github::create-pr(as_draft,base_branch,branch_name,repo_path)"
       ],
       "verdict": "unassigned",
       "rationale": "commit-and-publish-run"
