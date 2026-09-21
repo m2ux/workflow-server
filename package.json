@@ -14,6 +14,7 @@
     "check:site": "tsx guards/check-site-links.ts",
     "check:svg": "tsx guards/check-svg-layout.ts",
     "check:encoding": "tsx guards/check-source-encoding.ts",
+    "check:agent-homes": "tsx guards/check-agent-instruction-homes.ts",
     "check:pinned-paths": "tsx guards/check-pinned-corpus-paths.ts",
     "check:lockfile": "tsx guards/check-lockfile-denylist.ts",
     "start": "node dist/index.js",
