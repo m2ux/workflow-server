@@ -23,7 +23,7 @@ A full-intensity, whole-tree ponytail pass over workflow-server, driving the tre
 | 1 | Intake and Scope | Capture task and trace flow | 15-30m | ✅ |
 | 2 | Apply Ladder | Climb rungs to a minimal solution | 30-60m | ✅ |
 | 3 | Over-Engineering Review | Review remaining complexity | 20-40m | ✅ |
-| 4 | Repo Audit | Whole-tree over-engineering audit | 30-60m | ⬚ |
+| 4 | Repo Audit | Whole-tree over-engineering audit | 30-60m | 🟡 |
 | 5 | Harvest Debt and Report | Ledger remaining debt and report | 15-30m | ⬚ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
