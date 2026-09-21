@@ -68,6 +68,13 @@ function deliveredInFull(bundle: Record<string, unknown>): string[] {
   return carried;
 }
 
+function deliveredContracts(bundle: Record<string, unknown>): string[] {
+  const contracts = (bundle['contracts'] ?? {}) as Record<string, unknown>;
+  const carried = Object.entries(contracts).filter(([, value]) => !isUnchangedMarker(value)).map(([key]) => key);
+  expect(carried.length, 'the delivery this reads carried no inherited contract at all').toBeGreaterThan(0);
+  return carried;
+}
+
 /** Split a get_activity response into its parsed bundle (before ---) and body text (after). */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function splitActivityResponse(result: any): { bundle: Record<string, unknown>; bodyText: string } {
@@ -203,14 +210,20 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
-      const carried = deliveredInFull(splitActivityResponse(await getActivity(idx)).bundle);
+      const first = splitActivityResponse(await getActivity(idx)).bundle;
+      const carried = deliveredInFull(first);
+      const carriedContracts = deliveredContracts(first);
 
       // Same agent_id, no context_mode declared: the orchestrator holds one identity for as long as
       // a worker carries its batch, so a second delivery under it is that same context arriving again.
       const second = splitActivityResponse(await getActivity(idx));
       const techniques = second.bundle['techniques'] as Record<string, unknown>;
+      const contracts = second.bundle['contracts'] as Record<string, unknown>;
       for (const key of carried) {
         expect(isUnchangedMarker(techniques[key]), `expected a marker for ${key}`).toBe(true);
+      }
+      for (const key of carriedContracts) {
+        expect(isUnchangedMarker(contracts[key]), `expected a marker for contract ${key}`).toBe(true);
       }
       expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
       expect(second.bundle['bundle_note']).toBeDefined();
@@ -226,6 +239,9 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
       const replacement = splitActivityResponse(await getActivity(idx, { agent_id: 'w2' }));
       for (const value of Object.values(replacement.bundle['techniques'] as Record<string, unknown>)) {
+        expect(isUnchangedMarker(value)).toBe(false);
+      }
+      for (const value of Object.values(replacement.bundle['contracts'] as Record<string, unknown>)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
     });
@@ -247,21 +263,33 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(first.bundle['bundle_mode']).toBe('reference');
       expect(first.bundle['bundle_note']).toBeDefined();
       const firstTechniques = first.bundle['techniques'] as Record<string, unknown>;
+      const firstContracts = first.bundle['contracts'] as Record<string, unknown>;
       // First delivery is full content — nothing has been delivered yet.
       for (const value of Object.values(firstTechniques)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
+      for (const value of Object.values(firstContracts)) {
+        expect(isUnchangedMarker(value)).toBe(false);
+      }
       expect(Object.keys(firstTechniques).length, 'the first delivery carried no operation').toBeGreaterThan(0);
+      expect(Object.keys(firstContracts).length, 'the first delivery carried no inherited contract').toBeGreaterThan(0);
 
       const second = splitActivityResponse(await getActivity(idx));
       const secondTechniques = second.bundle['techniques'] as Record<string, unknown>;
+      const secondContracts = second.bundle['contracts'] as Record<string, unknown>;
       // Byte-identical refetch: the first delivery carried the whole contract, so every entry of it
       // collapses to a marker and the second carries no body at all.
       for (const key of deliveredInFull(first.bundle)) {
         expect(isUnchangedMarker(secondTechniques[key]), `expected marker for ${key}`).toBe(true);
       }
+      for (const key of deliveredContracts(first.bundle)) {
+        expect(isUnchangedMarker(secondContracts[key]), `expected marker for contract ${key}`).toBe(true);
+      }
       for (const [key, value] of Object.entries(secondTechniques)) {
         expect(isUnchangedMarker(value), `${key} was delivered twice in full`).toBe(true);
+      }
+      for (const [key, value] of Object.entries(secondContracts)) {
+        expect(isUnchangedMarker(value), `contract ${key} was delivered twice in full`).toBe(true);
       }
       expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
       // The activity body itself is still delivered. (`work-package` declares no rules buckets of

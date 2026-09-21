@@ -24,7 +24,7 @@ import {
   isFan,
 } from '../schema/workflow.schema.js';
 import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
-import { resolveTechniques, formatTechniqueBundle, dropRulesStatedBy, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
+import { resolveTechniques, formatTechniqueBundle, dropRulesStatedBy, composeActivityTechnique, projectTechniqueWire, putInheritContracts } from '../loaders/technique-loader.js';
 import { isBareName, SEGMENT_SEPARATOR } from '../loaders/technique-ref.js';
 import {
   CORE_ORCHESTRATOR_TECHNIQUES,
@@ -143,7 +143,7 @@ const RESOURCE_REFS_NOTE =
   'Ids of the technique-linked resources for the eagerly bundled steps, under `resource_refs` (exact resource_id, including #section). No bodies are bundled in this mode — call get_resource for the ids you actually need to read.';
 
 const MARKER_PREAMBLE =
-  'Entries marked { delivery: "unchanged", content_hash } are content you already hold. A marker always stands for a WHOLE item — one operation, one rules list, one note, one resource — so nothing you are handed is a body with a piece missing.';
+  'Entries marked { delivery: "unchanged", content_hash } are content you already hold. A marker always stands for a WHOLE item — one operation, one inherited contract, one rules list, one note, one resource — so nothing you are handed is a body with a piece missing.';
 
 const PRIOR_CALL_MARKER_NOTE =
   'A marker may point at content already in your context from an earlier call to this session — reuse it from there, the notes on this response included. To get a marked item back in full, fetch it: get_technique { step_id, full: true } for a step\'s technique, get_technique { technique_id, full: true } for an operation of your contract, get_resource { full: true } for a resource. get_activity { bundle: "full" } re-sends what a response can carry rather than everything this session has sent you, so a context that lost several items asks for each one it needs.';
@@ -800,7 +800,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every operation of your contract arrives with its body, the rules it is held to included; the `rules` list beside them carries your role\'s own rules, which govern no one operation. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every operation of your contract arrives with its body; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one operation. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
     {
       ...sessionIndexParam,
     },
@@ -1632,7 +1632,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). Your activity and the operations of your contract ride whole, each stating the rules it is held to; the `rules` list beside them carries your role\'s own rules, which govern no one operation. What the eager budget leaves out is fetchable: a step\'s own technique with get_technique { step_id }, a resource under `resource_refs` with get_resource. ' +
+  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). Your activity and the operations of your contract ride whole; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one operation. What the eager budget leaves out is fetchable: a step\'s own technique with get_technique { step_id }, a resource under `resource_refs` with get_resource. ' +
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
@@ -1795,9 +1795,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         withheldRules.length > 0 ? resolvedWorker.filter((e) => !withheldRules.includes(e.ref)) : resolvedWorker,
       );
 
-      // Per-operation collapse: each composed technique in the bundle is hashed WHOLE, so an
-      // activity that introduces one new operation receives that one entire while the rest this
-      // context already holds collapse to markers naming the whole of themselves.
+      // Per-entry collapse: each composed technique and each inherited contract is hashed WHOLE, so
+      // an activity that introduces one new operation or one new scope receives that one entire
+      // while the rest this context already holds collapse to markers naming the whole of themselves.
       const bundleTechniques = bundleData['techniques'] as Record<string, unknown> | undefined;
       if (bundleTechniques) {
         for (const [key, body] of Object.entries(bundleTechniques)) {
@@ -1810,6 +1810,29 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           newDeliveries[ledgerKey] = hash;
         }
       }
+      const bundleContracts = (bundleData['contracts'] as Record<string, unknown> | undefined) ?? {};
+      const contractsForRules: Record<string, unknown> = { ...bundleContracts };
+      const collapseContracts = (): void => {
+        if (Object.keys(bundleContracts).length === 0) {
+          delete bundleData['contracts'];
+          return;
+        }
+        bundleData['contracts'] = bundleContracts;
+        for (const [key, body] of Object.entries(bundleContracts)) {
+          if (
+            body !== null && typeof body === 'object' && !Array.isArray(body)
+            && (body as Record<string, unknown>)['delivery'] === 'unchanged'
+          ) continue;
+          const hash = contentHash(stringifyForResponse(body));
+          const ledgerKey = `bundle:contract:${key}`;
+          if (mayReferBack && deliveredHash(state, ledgerKey, scope) === hash) {
+            bundleContracts[key] = unchangedMarker(hash);
+            continue;
+          }
+          if (newDeliveries[ledgerKey] === undefined) newDeliveries[ledgerKey] = hash;
+        }
+      };
+      collapseContracts();
 
       // What the worker bundle costs this response, markers included: it opens the eager tally
       // below. Read before the role's rules give way to the step map, so the tally the eager budget
@@ -1933,7 +1956,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // An unresolvable ref is the binding guard's business; delivery skips it (the step's
           // own get_technique fetch will surface the error to the worker).
           if (!composedStep.success) continue;
-          const { techniqueId, sourceWorkflowId: techniqueWorkflowId } = composedStep.value;
+          const { techniqueId, sourceWorkflowId: techniqueWorkflowId, scopes, ownRuleKeys } = composedStep.value;
           let technique = composedStep.value.technique;
           let provenanceWarnings: string[] = [];
           const ctx = producerIndex
@@ -1945,10 +1968,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             technique = decorated.technique;
             provenanceWarnings = decorated.warnings;
           }
+          putInheritContracts(bundleContracts, scopes);
+          putInheritContracts(contractsForRules, scopes);
+          const wire = projectTechniqueWire(technique, scopes, ownRuleKeys);
           // Budget accounting measures the TECHNIQUE BODY only (including its resource link refs,
           // but NOT the resolved content of those resources). Resource bodies are eager-bundled
           // separately as a sibling `resources` map (deduped across steps) after the technique loop.
-          const text = projectTechniqueToYaml(technique);
+          const text = stringifyForResponse(wire);
           // Per-technique size cap: an oversized single technique is skipped outright.
           if (text.length > perTechniqueCap) continue;
           const ledgerKey = `technique:${techniqueId}`;
@@ -1982,7 +2008,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             // level, so a bundled entry IS the get_technique fetch with a step header — the
             // capability, the interface, the procedure and the rules, exactly as the file defines
             // them.
-            const entry = { marker: stepMarker, ...projectTechnique(technique) };
+            const entry = { marker: stepMarker, ...wire };
             spentChars += text.length;
             newDeliveries[ledgerKey] = hash;
             bundledStepTechniques[step.id!] = entry;
@@ -1992,7 +2018,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // this context holds that body with its rules — so reading the marker instead would put
           // those rules back in the list for a reader that already has them, and would make the
           // list's content turn on whether an entry collapsed.
-          inlinedTechniques[step.id!] = projectTechnique(technique);
+          inlinedTechniques[step.id!] = wire;
           // Linked resource ids join the response for a step the bundle actually carries — read off
           // the full composed text even where this delivery collapses to an unchanged-marker, since
           // a marker omits the link text.
@@ -2120,11 +2146,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
+      collapseContracts();
+
       // An inlined step's technique states the rules it is held to, so the role's list gives those
       // up too — the same rule, one home, decided by what it governs. Read here because the step
       // map is composed after the bundle, so this is the first point at which every body the
       // response carries is known.
-      dropRulesStatedBy(bundleData, inlinedTechniques);
+      dropRulesStatedBy(bundleData, inlinedTechniques, contractsForRules);
 
       // The rules list varies with the activity's own techniques, and activities alternate between
       // rule sets across a walk — so it is keyed by CONTENT (set semantics, `bundle:rules:<hash>`):

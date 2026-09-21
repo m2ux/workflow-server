@@ -70,12 +70,17 @@ function operationBodies(bundle: Record<string, unknown>): Array<[string, Record
 function ruleLines(bundle: Record<string, unknown>, where: 'list' | 'bodies'): string[] {
   const key = (name: string, line: unknown): string => `${name}|${String(line)}`;
   const stated = new Set<string>();
-  for (const [, body] of operationBodies(bundle)) {
-    const rules = body['rules'];
-    if (!RECORD_SHAPED(rules)) continue;
+  const takeRules = (rules: unknown): void => {
+    if (!RECORD_SHAPED(rules)) return;
     for (const [name, value] of Object.entries(rules as Record<string, string | string[]>)) {
       for (const line of Array.isArray(value) ? value : [value]) stated.add(key(name, line));
     }
+  };
+  for (const [, body] of operationBodies(bundle)) {
+    takeRules(body['rules']);
+  }
+  for (const block of Object.values((bundle['contracts'] ?? {}) as Record<string, unknown>)) {
+    if (RECORD_SHAPED(block)) takeRules(block['rules']);
   }
   if (where === 'bodies') return [...stated];
   const list = (bundle['rules'] ?? []) as Array<[string, string]>;
@@ -118,23 +123,31 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
     expect(ops['operations_note']).toBeUndefined();
   });
 
-  it('carries the rules of each operation in the body that states them', () => {
-    // An agent reading one operation reads the whole of that operation — what it is for, what it
-    // takes, what to do, and the boundaries it is held to — without going elsewhere in the payload
-    // for a piece of it.
-    const withRules = operationBodies(ops).filter(([, body]) => body['rules'] !== undefined);
-    expect(withRules.length, 'no operation body carried the rules it is held to').toBeGreaterThan(0);
+  it('carries the rules of each operation, on the body or on a contract it names', () => {
+    // An agent reading one operation reads the rules it is held to in the same response: the
+    // rules the technique declares ride its body, and the rules a scope shares arrive once
+    // under `contracts`, named from `inherits`.
+    const contracts = (ops['contracts'] ?? {}) as Record<string, { rules?: Record<string, unknown> }>;
+    const held = operationBodies(ops).filter(([, body]) => {
+      if (body['rules'] !== undefined) return true;
+      const names = body['inherits'];
+      if (!Array.isArray(names)) return false;
+      return names.some((id) => RECORD_SHAPED(contracts[String(id)]) && contracts[String(id)]!['rules'] !== undefined);
+    });
+    expect(held.length, 'no operation arrived with the rules it is held to').toBeGreaterThan(0);
+    expect(Object.keys(contracts).length, 'inherited rules had no contract to ride').toBeGreaterThan(0);
   });
 
   it('carries the role\'s own rules, and states no rule twice', () => {
     // A rule has one home, and which home is decided by what it governs. A rule an operation
-    // declares or inherits rides that operation's body; `rules` carries what governs the agent
-    // rather than any one operation. Reading both and finding a line in each would be a reader
-    // asked to hold the same boundary twice over, from two places that can drift apart.
+    // declares rides that operation's body; a rule a scope shares rides that scope's contract;
+    // `rules` carries what governs the agent rather than any one operation. Reading both and
+    // finding a line in each would be a reader asked to hold the same boundary twice over,
+    // from two places that can drift apart.
     expect(Array.isArray(ops['rules'])).toBe(true);
     const list = ops['rules'] as Array<[string, string]>;
     expect(list.length).toBeGreaterThan(0);
-    expect(ruleLines(ops, 'list'), 'the list restates a rule an operation body already carries')
+    expect(ruleLines(ops, 'list'), 'the list restates a rule a body or contract already carries')
       .toEqual([]);
   });
 
@@ -264,6 +277,23 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery carries the worker contrac
     expect(inlined.length).toBeGreaterThanOrEqual(11);
     // The window had room to spare, so the map is what the activity declares rather than what fitted.
     expect(meta.delivery_cost.spent_chars).toBeLessThan(meta.delivery_cost.eager_budget_chars);
+  });
+
+  it('inlined steps name inherited contracts instead of copying them', () => {
+    const contracts = (bundle['contracts'] ?? {}) as Record<string, unknown>;
+    const steps = Object.values((bundle['step_techniques'] ?? {}) as Record<string, unknown>);
+    const named = steps.filter((step) => RECORD_SHAPED(step) && !isMarker(step) && Array.isArray(step['inherits']));
+    expect(named.length, 'no inlined step named a contract').toBeGreaterThan(0);
+    for (const step of steps) {
+      if (!RECORD_SHAPED(step) || isMarker(step)) continue;
+      expect(step['inherited_inputs'], 'an inlined step copied inherited inputs').toBeUndefined();
+      expect(step['inherited_outputs'], 'an inlined step copied inherited outputs').toBeUndefined();
+      const names = step['inherits'];
+      if (!Array.isArray(names)) continue;
+      for (const id of names) {
+        expect(RECORD_SHAPED(contracts[String(id)]), `contract '${String(id)}' was named and absent`).toBe(true);
+      }
+    }
   });
 
   it('reports what the delivery came to against what one tool result may carry', () => {
