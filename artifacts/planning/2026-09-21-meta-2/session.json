@@ -56,10 +56,19 @@
       },
       "timestamp": "2026-09-21T12:08:46.721Z",
       "type": "workflow_triggered"
+    },
+    {
+      "data": {
+        "sessionIndex": "KPTFVH",
+        "workflowId": "ponytail"
+      },
+      "timestamp": "2026-09-21T12:34:12.692Z",
+      "type": "workflow_returned"
     }
   ],
   "triggeredWorkflows": [
     {
+      "completedAt": "2026-09-21T12:34:12.692Z",
       "sessionIndex": "KPTFVH",
       "state": {
         "agentId": "orchestrator",
@@ -87,9 +96,11 @@
         "completedActivities": [
           "intake-and-scope",
           "apply-ladder",
-          "over-engineering-review"
+          "over-engineering-review",
+          "repo-audit",
+          "harvest-debt-and-report"
         ],
-        "currentTechnique": "workflow-engine::finalize-activity",
+        "currentTechnique": "report-gain",
         "declaredArtifacts": [
           {
             "id": "lean_brief",
@@ -105,6 +116,16 @@
             "id": "review_findings",
             "name": "review-findings.md",
             "path": ".ponytail/review-findings.md"
+          },
+          {
+            "id": "audit_findings",
+            "name": "audit-findings.md",
+            "path": ".ponytail/audit-findings.md"
+          },
+          {
+            "id": "debt_ledger",
+            "name": "debt-ledger.json",
+            "path": ".ponytail/debt-ledger.json"
           }
         ],
         "deliveredContent": {
@@ -157,19 +178,30 @@
             "bundle:workflow-engine::resume-from-checkpoint": "8cabd8478fa3548f",
             "bundle:workflow-engine::step-control": "5df3ab0653fbc7f5",
             "bundle:workflow-engine::yield-checkpoint": "38df4d29f1a1a6b9",
+            "note:bundle:48e6b4af0628b9e8": "48e6b4af0628b9e8",
             "note:resources:0eff389311365362": "0eff389311365362",
+            "note:resources:b2ed3bbf8437c4cb": "b2ed3bbf8437c4cb",
             "note:step_techniques:4c0412456dc5f607": "4c0412456dc5f607",
             "resource:audit-findings": "470a45499161093d",
+            "resource:debt-ledger#rules": "1e25fec749f5949d",
+            "resource:debt-ledger#template": "5dd77e4e2c72464d",
+            "resource:honesty-boundary": "33df32873a736e76",
+            "resource:lean-brief": "fde75d6720812888",
+            "resource:lean-change": "47ab0a3c3a465ed0",
             "resource:meta/writing-register": "a1175b8fa07be630",
+            "resource:ponytail-marker-convention#convention": "1895752d74dc4b50",
+            "resource:ponytail-marker-convention#no-trigger": "3f67bffb758fc587",
+            "resource:ponytail/README": "d27a53ce8d7455e5",
             "resource:review-taxonomy": "5f5a44724929b710",
-            "technique:audit-repo": "41fe3b6933f64d89"
+            "technique:audit-repo": "41fe3b6933f64d89",
+            "technique:harvest-debt": "eaa093b1a6658530",
+            "technique:report-gain": "435ef4786cbe6b5b",
+            "technique:verify-artifact-conforms": "c8743e98ec4bfa8a"
           }
         },
         "executionPath": "agent",
-        "exit": "repo-wide",
-        "frontier": [
-          "repo-audit"
-        ],
+        "exit": "workflow_complete",
+        "frontier": [],
         "history": [
           {
             "timestamp": "2026-09-21T12:08:46.721Z",
@@ -1078,20 +1110,359 @@
             },
             "timestamp": "2026-09-21T12:27:16.974Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "repo-audit",
+            "timestamp": "2026-09-21T12:31:51.720Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "name": "audit_findings",
+              "source": "variables_changed",
+              "value": ".ponytail/audit-findings.md"
+            },
+            "timestamp": "2026-09-21T12:31:51.720Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "stepId": "audit-repo"
+            },
+            "timestamp": "2026-09-21T12:31:51.720Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "timestamp": "2026-09-21T12:31:51.720Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-09-21T12:31:51.720Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 23212,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 4187,
+              "delivery": "full",
+              "stepId": "harvest-markers",
+              "techniqueId": "harvest-debt"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "stepId": "harvest-markers"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 8703,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "bundled": true,
+              "chars": 1907,
+              "delivery": "unchanged",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "bundled": true,
+              "chars": 1388,
+              "delivery": "full",
+              "resourceId": "ponytail-marker-convention#convention"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "bundled": true,
+              "chars": 1880,
+              "delivery": "full",
+              "resourceId": "debt-ledger#template"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "bundled": true,
+              "chars": 1042,
+              "delivery": "full",
+              "resourceId": "debt-ledger#rules"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "bundled": true,
+              "chars": 580,
+              "delivery": "full",
+              "resourceId": "ponytail-marker-convention#no-trigger"
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "bundled_steps": 2,
+              "delivery": "reference",
+              "eager_budget_chars": 640000,
+              "fixed_chars": 1644,
+              "provenance_passes": 2,
+              "resolved_techniques": 7,
+              "response_bound_chars": 60000,
+              "response_spent_chars": 23212,
+              "spent_chars": 19866,
+              "worker_bundle_chars": 2086
+            },
+            "timestamp": "2026-09-21T12:32:10.029Z",
+            "type": "activity_delivered"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 2057,
+              "delivery": "full",
+              "resourceId": "ponytail/README"
+            },
+            "timestamp": "2026-09-21T12:32:30.519Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 1633,
+              "delivery": "full",
+              "resourceId": "lean-brief"
+            },
+            "timestamp": "2026-09-21T12:32:55.828Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 3675,
+              "delivery": "full",
+              "stepId": "report-gain",
+              "techniqueId": "report-gain"
+            },
+            "timestamp": "2026-09-21T12:33:05.446Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "stepId": "report-gain"
+            },
+            "timestamp": "2026-09-21T12:33:05.446Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 1540,
+              "delivery": "full",
+              "resourceId": "lean-change"
+            },
+            "timestamp": "2026-09-21T12:33:18.617Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 2102,
+              "delivery": "full",
+              "resourceId": "honesty-boundary"
+            },
+            "timestamp": "2026-09-21T12:33:35.766Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "name": "artifact_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": true,
+                "unmeasured": [],
+                "violations": []
+              }
+            },
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "name": "debt_ledger",
+              "source": "variables_changed",
+              "value": ".ponytail/debt-ledger.json"
+            },
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "name": "gain_scoreboard",
+              "source": "variables_changed",
+              "value": {
+                "benchmark_medians": {
+                  "cost": "23–53% of the no-skill baseline (down 47–77%)",
+                  "lines_of_code": "6–20% of the no-skill baseline (down 80–94%)",
+                  "speed": "3–6× faster"
+                },
+                "ledger_rows": 4
+              }
+            },
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "name": "has_debt_markers",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "stepId": "harvest-markers"
+            },
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "stepId": "report-gain"
+            },
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "__terminal__",
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-09-21T12:34:12.692Z",
+            "type": "workflow_completed"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 27,
+        "seq": 35,
         "sessionIndex": "KPTFVH",
         "startedAt": "2026-09-21T12:08:46.721Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1789993636,
+        "ts": 1789994052,
         "variables": {
+          "artifact_conformance": {
+            "conforms": true,
+            "unmeasured": [],
+            "violations": []
+          },
           "artifact_dir": ".ponytail",
+          "audit_findings": ".ponytail/audit-findings.md",
           "component_path": ".",
-          "has_debt_markers": false,
+          "debt_ledger": ".ponytail/debt-ledger.json",
+          "gain_scoreboard": {
+            "benchmark_medians": {
+              "cost": "23–53% of the no-skill baseline (down 47–77%)",
+              "lines_of_code": "6–20% of the no-skill baseline (down 80–94%)",
+              "speed": "3–6× faster"
+            },
+            "ledger_rows": 4
+          },
+          "has_debt_markers": true,
           "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
           "is_monorepo": false,
           "lazy_intensity": "full",
@@ -1108,7 +1479,7 @@
         "workflowId": "ponytail",
         "workflowVersion": "2.1.0"
       },
-      "status": "running",
+      "status": "completed",
       "triggeredAt": "2026-09-21T12:08:46.721Z",
       "triggeredFrom": {
         "activityId": "start_session"
