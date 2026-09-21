@@ -116,7 +116,7 @@ Techniques are session-blind: take inputs, process over tools and resources, and
 
 ## 25. Bind Sibling Operations as Steps
 
-All multi-technique work lives in activity `steps[]` (and checkpoints/loops). Bind each already-defined sibling or shared operation as its own activity step. A technique owns one capability's produce path — its Protocol does not `Apply` sibling or meta ops for work. Loader ancestor wrap (`Initial`/`Final`) and container I/O merge are platform composition, not technique→technique work calls.
+All multi-technique work lives in activity `steps[]` (and checkpoints/loops). Bind each already-defined sibling or shared operation as its own activity step. A technique owns one capability's produce path — its Protocol does not `Apply` sibling or meta ops for work. Container I/O and rule merge is platform composition, not a technique→technique work call.
 
 ## 26. Atomic Techniques; Compose at Activities
 
@@ -128,7 +128,7 @@ Techniques stay small: a short produce path over tools and resources, without co
 
 ## 27. State Contract Contribution
 
-Capability on a container `TECHNIQUE.md` (workflow-root or group) names what shared Inputs, Outputs, Rules, or domain invariants the contract contributes. Loader composition — inheritance merge, `Initial`/`Final` wrap, renumbering, folder-implied membership — lives in workflow-canonical and the schema construct inventory, not in the contract's Capability.
+Capability on a container `TECHNIQUE.md` (workflow-root or group) names what shared Inputs, Outputs, Rules, or domain invariants the contract contributes. A container contributes a contract, never a procedure — its Protocol, where it has one, is its own and reaches no descendant, and the steps a shared stage owns belong to the activity or routine that binds both operations. Loader composition — inheritance merge, folder-implied membership — lives in workflow-canonical and the schema construct inventory, not in the contract's Capability.
 
 ## 28. Creation Guide for Generated Documents
 

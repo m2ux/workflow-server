@@ -68,8 +68,10 @@ list). Its sections are inherited by every technique in the workflow:
 
 - **Inputs / Outputs / Rules** — merged in (union; a technique-local entry
   with the same id/name overrides the inherited one).
-- **Protocol** — the root's steps combine with the technique's own, and the server
-  **renumbers** the combined sequence.
+
+A container contributes a **contract, never a procedure**. `## Protocol` does not
+inherit: a technique's steps are its own, and the steps a shared stage owns belong to
+the activity or routine that binds both operations.
 
 Inheritance is **recursive** down the nesting chain: workflow root `TECHNIQUE.md` →
 container `<group>/TECHNIQUE.md` → nested technique (`<sub>.md`) or standalone. Each
