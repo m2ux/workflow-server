@@ -64,6 +64,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "apply-ladder-safety-floor-cleared#1": {
+            "effects": {
+              "variablesSet": {
+                "safety_floor_cleared": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-09-21T12:24:39.000Z"
+          },
           "intake-and-scope-intensity-and-scope-confirmed": {
             "effects": {
               "variablesSet": {
@@ -75,8 +84,17 @@
             "respondedAt": "2026-09-21T12:14:22.000Z"
           }
         },
-        "completedActivities": [],
+        "completedActivities": [
+          "intake-and-scope"
+        ],
         "currentTechnique": "workflow-engine::finalize-activity",
+        "declaredArtifacts": [
+          {
+            "id": "lean_brief",
+            "name": "lean-brief.md",
+            "path": ".ponytail/lean-brief.md"
+          }
+        ],
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme": "8c08b6ac160afbeb",
@@ -100,19 +118,23 @@
             "resource:lean-brief": "fde75d6720812888",
             "resource:lean-brief#rules": "20868f372bd832f0",
             "resource:lean-brief#template": "86a791347a4f6039",
+            "resource:lean-change#rules": "c1418097c03c528b",
+            "resource:lean-change#template": "6cfe6a167a0aba03",
             "resource:meta/writing-register": "a1175b8fa07be630",
+            "resource:ponytail-marker-convention#convention": "1895752d74dc4b50",
             "resource:the-ladder": "95845f58c0753f47",
             "resource:the-ladder#rungs": "26eb5247390b6c23",
             "resource:the-ladder#safety-floor": "3e53db8cff9f6680",
             "resource:the-ladder#understand-first": "54682ceec535b727",
+            "technique:apply-ladder": "230c9864589bc72c",
             "technique:scope-intake": "bacd7f92fdf6a03d",
             "technique:workflow-engine::evaluate-transition": "a70a5c163bc23939"
           }
         },
         "executionPath": "agent",
-        "exit": "",
+        "exit": "done",
         "frontier": [
-          "intake-and-scope"
+          "apply-ladder"
         ],
         "history": [
           {
@@ -430,16 +452,336 @@
             },
             "timestamp": "2026-09-21T12:16:03.373Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "task_description",
+              "source": "variables_changed",
+              "value": "start a ponytail workflow to analyse the workflow-server code"
+            },
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "lean_brief",
+              "source": "variables_changed",
+              "value": ".ponytail/lean-brief.md"
+            },
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "lazy_intensity",
+              "source": "variables_changed",
+              "value": "full"
+            },
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "pass_scope",
+              "source": "variables_changed",
+              "value": "repo"
+            },
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "stepId": "capture-and-trace"
+            },
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "stepId": "intensity-and-scope-confirmed"
+            },
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "apply-ladder",
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-09-21T12:17:26.813Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "chars": 11914,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "chars": 5079,
+              "delivery": "full",
+              "stepId": "climb-ladder",
+              "techniqueId": "apply-ladder"
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "stepId": "climb-ladder"
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 1576,
+              "delivery": "unchanged",
+              "resourceId": "the-ladder#rungs"
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 1671,
+              "delivery": "unchanged",
+              "resourceId": "the-ladder#safety-floor"
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 1388,
+              "delivery": "full",
+              "resourceId": "ponytail-marker-convention#convention"
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 355,
+              "delivery": "full",
+              "resourceId": "lean-change#template"
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 844,
+              "delivery": "full",
+              "resourceId": "lean-change#rules"
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled_steps": 1,
+              "delivery": "reference",
+              "eager_budget_chars": 819200,
+              "fixed_chars": 2186,
+              "provenance_passes": 1,
+              "resolved_techniques": 7,
+              "response_bound_chars": 60000,
+              "response_spent_chars": 11914,
+              "spent_chars": 9752,
+              "worker_bundle_chars": 2086
+            },
+            "timestamp": "2026-09-21T12:17:41.255Z",
+            "type": "activity_delivered"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "name": "lean_change",
+              "source": "yield_checkpoint",
+              "value": ".ponytail/lean-change.md"
+            },
+            "timestamp": "2026-09-21T12:18:39.279Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "apply-ladder",
+            "checkpoint": "safety-floor-cleared#1",
+            "timestamp": "2026-09-21T12:18:39.279Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "apply-ladder",
+            "checkpoint": "safety-floor-cleared#1",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-09-21T12:24:39.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "name": "safety_floor_cleared",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-09-21T12:24:39.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "chars": 3942,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-21T12:24:54.150Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "chars": 5079,
+              "delivery": "unchanged",
+              "stepId": "climb-ladder",
+              "techniqueId": "apply-ladder"
+            },
+            "timestamp": "2026-09-21T12:24:54.150Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 1576,
+              "delivery": "unchanged",
+              "resourceId": "the-ladder#rungs"
+            },
+            "timestamp": "2026-09-21T12:24:54.150Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 1671,
+              "delivery": "unchanged",
+              "resourceId": "the-ladder#safety-floor"
+            },
+            "timestamp": "2026-09-21T12:24:54.150Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 1388,
+              "delivery": "unchanged",
+              "resourceId": "ponytail-marker-convention#convention"
+            },
+            "timestamp": "2026-09-21T12:24:54.150Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 355,
+              "delivery": "unchanged",
+              "resourceId": "lean-change#template"
+            },
+            "timestamp": "2026-09-21T12:24:54.150Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 844,
+              "delivery": "unchanged",
+              "resourceId": "lean-change#rules"
+            },
+            "timestamp": "2026-09-21T12:24:54.150Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled_steps": 1,
+              "delivery": "reference",
+              "eager_budget_chars": 819200,
+              "fixed_chars": 2186,
+              "provenance_passes": 1,
+              "resolved_techniques": 7,
+              "response_bound_chars": 60000,
+              "response_spent_chars": 3942,
+              "spent_chars": 2086,
+              "worker_bundle_chars": 2086
+            },
+            "timestamp": "2026-09-21T12:24:54.150Z",
+            "type": "activity_delivered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 14,
+        "seq": 20,
         "sessionIndex": "KPTFVH",
         "startedAt": "2026-09-21T12:08:46.721Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1789992963,
+        "ts": 1789993494,
         "variables": {
           "artifact_dir": ".ponytail",
           "component_path": ".",
@@ -448,8 +790,9 @@
           "is_monorepo": false,
           "lazy_intensity": "full",
           "lean_brief": ".ponytail/lean-brief.md",
+          "lean_change": ".ponytail/lean-change.md",
           "pass_scope": "repo",
-          "safety_floor_cleared": false,
+          "safety_floor_cleared": true,
           "target_path": ".",
           "target_repo": "m2ux/workflow-server",
           "task_description": "start a ponytail workflow to analyse the workflow-server code",
