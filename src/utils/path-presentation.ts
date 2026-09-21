@@ -1,4 +1,5 @@
-import { basename, resolve, sep } from 'node:path';
+import { resolve, sep } from 'node:path';
+import { isPathInsideRoot } from '../worktree-validator.js';
 
 /**
  * Optional prefix map from paths the server process sees (container or local)
@@ -41,11 +42,7 @@ function normalizeRoot(root: string): string {
 
 /** True when `path` is `root` or a path strictly under `root`. */
 export function isPathUnderRoot(path: string, root: string): boolean {
-  const p = resolve(path);
-  const r = normalizeRoot(root);
-  if (p === r) return true;
-  const prefix = r.endsWith(sep) ? r : r + sep;
-  return p.startsWith(prefix);
+  return isPathInsideRoot(normalizeRoot(root), resolve(path));
 }
 
 /**
@@ -235,9 +232,4 @@ export function buildPathPresentationMap(opts: {
     map.hostWorktreeRoot = hostWt;
   }
   return map;
-}
-
-/** @internal test helper — last path segment of a repo id. */
-export function checkoutBasenameFromRepo(repo: string): string {
-  return basename(repo.replace(/\/+$/, ''));
 }
