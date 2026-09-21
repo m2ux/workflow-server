@@ -31,6 +31,7 @@ import {
   CORE_WORKER_TECHNIQUES,
   FAN_DISPATCH_TECHNIQUES,
   FAN_ONLY_RULES,
+  LOOP_ONLY_RULES,
   ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
   WORKER_CHECKPOINT_TECHNIQUES,
 } from '../loaders/core-ops.js';
@@ -1758,12 +1759,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ]));
       const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
       // Where the graph fans nothing, the rules about how a branch lands its outputs describe a
-      // position no activity of this run occupies. Read over the whole graph rather than over this
-      // activity's own position in it, for the reason the gate reading is: a rules list that
-      // differed between activities would deliver whole at each change.
+      // position no activity of this run occupies; where no activity holds a loop, the loop
+      // controls describe a step kind none of them is. Both are read over the whole graph rather
+      // than over this activity's own position in it, for the reason the gate reading is: a rules
+      // list that differed between activities would deliver whole at each change.
       const graphFans = result.success && fanGroups(result.value).length > 0;
+      const runDeclaresLoop = result.success && (result.value.activities ?? []).some(
+        (a) => flattenActivitySteps(a).some((s) => s.kind === 'loop'),
+      );
+      const withheldRules = [
+        ...(graphFans ? [] : FAN_ONLY_RULES),
+        ...(runDeclaresLoop ? [] : LOOP_ONLY_RULES),
+      ];
       const bundleData = formatTechniqueBundle(
-        graphFans ? resolvedWorker : resolvedWorker.filter((e) => !FAN_ONLY_RULES.includes(e.ref)),
+        withheldRules.length > 0 ? resolvedWorker.filter((e) => !withheldRules.includes(e.ref)) : resolvedWorker,
       );
 
       // Per-operation collapse: each composed technique in the bundle is hashed WHOLE, so an
