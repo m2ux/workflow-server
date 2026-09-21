@@ -1,0 +1,43 @@
+id: api-surface-review
+version: 1.0.0
+name: API Surface Review
+description: >-
+  Name the graph covering a tree, building one where the inventory covers it with none, map the API
+  routes the tree serves, and hold each route's response shape against the keys its consumers read.
+
+inputs:
+  - id: tree_path
+    description: Filesystem path of the tree whose API surface is read.
+
+outputs:
+  - id: route_inventory
+    type: object
+    description: Each route with the file handling it, the middleware chain wrapping that handler, and the components and hooks that fetch it.
+  - id: shape_report
+    type: object
+    description: Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree.
+  - id: repo_name
+    type: string
+    optional: true
+    description: The graph both reads addressed, which a report naming either of them names too.
+
+steps:
+  - kind: routine
+    id: name-graph
+    routine: gitnexus::graph-for-tree
+    with:
+      tree_path: "{tree_path}"
+    outputs:
+      repo_name: repo_name
+  - kind: technique
+    id: map-routes
+    technique:
+      name: gitnexus::route-map
+      outputs:
+        route_inventory: route_inventory
+  - kind: technique
+    id: check-shapes
+    technique:
+      name: gitnexus::shape-check
+      outputs:
+        shape_report: shape_report

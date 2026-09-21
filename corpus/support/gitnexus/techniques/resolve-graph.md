@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -36,4 +36,4 @@ Every indexed graph with the tree it was built from, when it was built and the c
 - Where `{tree_path}` is given, match it against the tree path each graph was built from, and take the matching graph's name as `{repo_name}`.
   > - A graph built from a tree that contains `{tree_path}` covers the content as part of a larger tree. Its name is the address that reaches the content, and every answer it gives spans the whole containing tree.
   > - Where a component's own graph and a containing tree's graph both cover `{tree_path}`, choose on the scope of the question: the component's own graph for a question inside it, the containing tree's for a question that crosses component boundaries.
-  > - Where no graph covers `{tree_path}`, `{repo_name}` is empty — apply [analyze](./analyze.md) on the tree to build one.
+  > - Where no graph covers `{tree_path}`, `{repo_name}` is empty: the tree carries no index, and no name reaches its content until one is built.

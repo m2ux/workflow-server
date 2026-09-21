@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.0.0
+version: 2.1.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -14,7 +14,6 @@ variables:
     - component_name
     - component_path
     - host_repo_path
-    - gitnexus_indexed
     - is_review_mode
     - issue_title
     - planning_folder_path
@@ -116,13 +115,6 @@ steps:
       - action: log
         message: Starting post-implementation review
   - kind: technique
-    id: gitnexus-detect-changes-preflight
-    technique:
-      name: gitnexus::detect-changes
-      inputs:
-        repo_name: component_name
-    when: gitnexus_indexed == true
-  - kind: technique
     id: manual-diff-review
     technique: review-diff
   - kind: checkpoint
@@ -147,7 +139,7 @@ steps:
     technique: manage-registers::append-follow-up
   - kind: checkpoint
     id: rationale-attestation
-    message: "The agent's rationale paragraph for each change block, which your confirmation attests the provenance of."
+    message: "Block rationale in the [change-block index]({change_block_index}), which your confirmation attests the provenance of."
     options:
       - id: rationale-accurate
         label: Rationale accurate as written

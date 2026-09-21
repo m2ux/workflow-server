@@ -4,6 +4,7 @@ name: Gap Analysis
 description: Compare the AI audit report against a professional reference.
 variables:
   reads:
+    - gitnexus_available
     - planning_folder_path
     - reference_report
 required: false

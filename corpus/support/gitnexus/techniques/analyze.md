@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -40,10 +40,9 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
   > - If `npx gitnexus` resolves to no binary (the gitnexus package is not installed), install it via `npm install -g gitnexus` (or the project-local equivalent), then retry.
   > - If the analyze CLI returns non-zero — typically a parser error inside the target codebase or an unsupported language — read the stderr; if it identifies a single offending file, exclude or fix it. For corrupted index state, retry with `force_rebuild=true`.
 
-### 3. Signal and Verify
+### 3. Signal
 
 - On success, `touch {repo_path}/.git/.workflow-gitnexus-refresh` so subsequent invocations see the freshness signal. Release the lock. On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds.
-- After exit, optionally apply [verify-index](./verify-index.md) to confirm freshness — useful when chained immediately into a downstream comprehension or impact step.
 
 ## Rules
 
@@ -55,4 +54,4 @@ A completed rebuild writes the graph to disk; a server already holding the previ
 
 Index each tree whose answers a caller will ask for by name. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
 
-A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and [group-freshness](./group-freshness.md) reports a member that has none. Where a component is indexed both on its own and as part of a containing tree, both names resolve and answer at different scope — `address-a-named-graph` governs which to address.
+A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and a group's freshness report marks a member with no graph as `missing`. Where a component is indexed both on its own and as part of a containing tree, both names resolve and answer at different scope — `address-a-named-graph` governs which to address.

@@ -34,6 +34,10 @@
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it."
     },
     {
+      "id": "mvw",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that a live instance can dispatch one activity through one routine and one technique, which serving guards and a sidecar MVW walk measure."
+    },
+    {
       "id": "namespace-conformance",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is the delivery — each activity binds the same library operation under a different spelling of its namespace — so the reference guards and the all-workflows drift walk are what measure it."
     },

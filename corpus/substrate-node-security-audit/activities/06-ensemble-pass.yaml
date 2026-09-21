@@ -4,6 +4,7 @@ name: Ensemble Pass
 description: Optional second-model audit run with merged findings.
 variables:
   reads:
+    - gitnexus_available
     - has_reference_report
     - planning_folder_path
     - target_commit

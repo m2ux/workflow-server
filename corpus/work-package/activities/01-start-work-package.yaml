@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.27.0
+version: 3.28.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -372,16 +372,13 @@ steps:
       - action: validate
         target: signing.configured == true
         message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing).
-  - kind: technique
+  - kind: routine
     id: analyze-repo-with-gitnexus
-    technique:
-      name: gitnexus::analyze
-      inputs:
-        repo_path: component_git_dir
-    actions:
-      - action: set
-        target: gitnexus_indexed
-        description: true when indexing the component tree succeeds, false otherwise
+    routine: ensure-graph-index
+    with:
+      repo_path: "{component_git_dir}"
+    outputs:
+      gitnexus_indexed: gitnexus_indexed
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy
@@ -485,7 +482,7 @@ steps:
     actions:
       - action: validate
         target: cloudId != null
-        message: Atlassian cloudId is not resolved, so no Jira operation can run.
+        message: Atlassian cloudId is not resolved, so no Jira operation can run. Resolve the cloudId for the site and re-run.
   - kind: technique
     id: verify-github-issue
     technique:
@@ -702,7 +699,7 @@ steps:
     actions:
       - action: message
         message: |-
-          **Problem Overview** — plain-language summary for stakeholder reference
+          [Problem Overview]({planning_folder_path}/README.md#problem-overview) — plain-language summary for stakeholder reference
 
           {stakeholder_overview}
   - kind: technique

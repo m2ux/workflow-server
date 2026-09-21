@@ -1,0 +1,47 @@
+id: graph-for-tree
+version: 1.0.0
+name: Graph For Tree
+description: >-
+  Name the graph covering a tree, build one where the inventory covers that tree with none, and name
+  it again so every answer taken afterwards is addressed at a graph that exists.
+
+inputs:
+  - id: tree_path
+    description: Filesystem path of the tree whose answers are wanted, and which a build walks where no graph covers it.
+
+outputs:
+  - id: repo_name
+    type: string
+    description: The name the operations downstream address as their graph.
+  - id: index_stats
+    type: object
+    optional: true
+    description: The symbol, relationship and process counts a build reports for the graph it wrote.
+
+steps:
+  - kind: technique
+    id: resolve
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: tree_path
+      outputs:
+        repo_name: repo_name
+  - kind: technique
+    id: build
+    when: "!repo_name"
+    technique:
+      name: gitnexus::analyze
+      inputs:
+        repo_path: tree_path
+      outputs:
+        stats: index_stats
+  - kind: technique
+    id: name-built-graph
+    when: "!repo_name"
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: tree_path
+      outputs:
+        repo_name: repo_name

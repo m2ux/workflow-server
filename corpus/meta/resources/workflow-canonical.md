@@ -1,11 +1,11 @@
 ---
 name: workflow-canonical
 description: >
-  Canonical ontology for workflow techniques. Defines how techniques (including
-  nested techniques), resources, roles, and tools are laid out on disk, how a
-  technique's base contract is inherited, and how cross-references resolve. A
-  governed file's `metadata.ontology: workflow-canonical` resolves here. Load
-  once per session before interpreting such files.
+  Canonical ontology for workflow techniques, routines, resources, roles, and
+  tools. Defines how those constructs are laid out on disk, how a technique's
+  base contract is inherited, and how cross-references resolve. A governed
+  file's `metadata.ontology: workflow-canonical` resolves here. Load once per
+  session before interpreting such files.
 metadata:
   ontology: workflow-canonical
 ---
@@ -18,14 +18,15 @@ interpreted according to this document.
 ## On-disk layout
 
 There is **one kind of technique**. A technique can contain nested techniques in its
-folder. A workflow's content lives under `techniques/` and `resources/` in three
-shapes:
+folder. A workflow's content lives under `techniques/`, `resources/` and `routines/`
+in these shapes:
 
 | Shape | Path | Frontmatter | Notes |
 |-------|------|-------------|-------|
 | **Standalone technique** | `techniques/<id>.md` | yes (`metadata.version`) | A single technique. |
 | **Container technique** | `techniques/<group>/TECHNIQUE.md` + `techniques/<group>/<sub>.md` | yes (each file carries `metadata.version`) | The folder is a namespace; `TECHNIQUE.md` is the container technique; each `<sub>.md` is a nested technique. |
 | **Resource** | `resources/<slug>.md` | yes | Freeform reference material. |
+| **Routine** | `routines/<name>.yaml` | YAML `id` / `version` | A named run of steps. The filename is the identity every reference resolves. Grain between technique and routine: [Atomic Techniques; Compose at Activities](/workflow-design/resources/design-principles.md#26-atomic-techniques-compose-at-activities). |
 
 Each workflow also has a **root base contract** at `techniques/TECHNIQUE.md` —
 isomorphic to a technique, carrying no technique list (the technique set is implied
@@ -96,7 +97,9 @@ An external primitive: a binary, an MCP server, a CLI command, an API. Tools hav
 - **Inline** — simple tools (`git`, `cargo`, Claude Code primitives) appear as bare
   command strings in protocol step text.
 - **Tool-dedicated namespace** — complex tools (`gitnexus`, `concept-rag`) warrant a
-  container technique whose nested `<sub>.md` files each describe one API endpoint.
+  namespace whose operations each name one capability over the tool: which calls this
+  job makes, in what order, and how to read the answer. The tool's own schema owns the
+  rest of the parameter space ([Atomic Techniques; Compose at Activities](/workflow-design/resources/design-principles.md#26-atomic-techniques-compose-at-activities)).
 
 ## Cross-reference format
 

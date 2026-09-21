@@ -1,11 +1,19 @@
 id: select-mode
-version: 2.3.0
+version: 2.4.0
 name: Plan Analysis
 description: Select an analysis mode for the user's request.
 variables:
   reads:
     - target
   writes:
+    - name: analysis_plan_path
+      type: string
+      description: Full filesystem path to the analysis plan this run wrote.
+      defaultValue: ""
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph covering the target. Empty where no graph covers it.
+      defaultValue: ""
     - name: analysis_units
       type: array
       description: Ordered list of analysis units (for multi-unit scopes)
@@ -25,6 +33,14 @@ variables:
         - adaptive
 steps:
   - kind: technique
+    id: name-graph
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: target
+      outputs:
+        repo_name: repo_name
+  - kind: technique
     id: plan
     technique: plan-analysis
   - kind: action
@@ -41,7 +57,7 @@ steps:
         description: Ordered execution units.
   - kind: checkpoint
     id: confirm-mode
-    message: Recommended analysis configuration for {target}.
+    message: "[Recommended analysis configuration]({analysis_plan_path}) for {target}."
     condition:
       type: simple
       variable: pipeline_mode

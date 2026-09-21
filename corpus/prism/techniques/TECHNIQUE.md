@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,6 +29,14 @@ The code or text to analyze — a file path or inline content.
 
 `.`
 
+### repo_name
+
+*(optional)* Name of the indexed graph covering the target, which every graph read addresses. Empty where no graph covers the target, which is the condition a graph read falls back from.
+
+#### default
+
+`""`
+
 ## Rules
 
 ### complete-execution
@@ -41,7 +49,7 @@ All findings cite specific code or text: file paths, function names, line ranges
 
 ### isolated-context
 
-Each analytical pass is dispatched to a fresh sub-agent via [harness-compat](/meta/techniques/harness-compat/TECHNIQUE.md)::[spawn-agent](/meta/techniques/harness-compat/spawn-agent.md); never [continue-agent](/meta/techniques/harness-compat/continue-agent.md) on a prior worker. A worker receives only the textual content provided in its prompt — never the generation history of a prior pass.
+Each analytical pass runs in a context that has never seen a prior pass, and no pass is continued on the worker that produced the one before it. A worker receives only the textual content its prompt carries — never the generation history of a prior pass. Which dispatch instrument delivers that isolation is the binding activity's to choose.
 
 ### artifact-mediated
 

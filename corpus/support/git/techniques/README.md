@@ -1,0 +1,19 @@
+# Git Techniques
+
+> Part of [support](../../README.md)
+
+Git operations for planning folders and artifacts — parent repos, submodules, and branch push.
+
+The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+
+| Technique | Contributes |
+|---|---|
+| [`commit-regular-files`](commit-regular-files.md) | Stage, commit, and push files in a regular (non-submodule) directory of the parent repo |
+| [`commit-submodule`](commit-submodule.md) | Commit and push inside a submodule and sync the parent's submodule pointer |
+| [`create-worktree`](create-worktree.md) | Working directory materialised as a git worktree of the component, on either a feature branch created fresh or an existing branch checked out |
+| [`derive-workflows-target-path`](derive-workflows-target-path.md) | Where a session editing the shared workflows library reads, edits and commits, derived from the planning folder that session already has |
+| [`identify-path-type`](identify-path-type.md) | Determine whether a path is a regular directory or a git submodule before committing |
+| [`merge-branches`](merge-branches.md) | Bring the branches an isolated fan committed back onto one branch, in a stated order, reporting what merged cleanly and what did not |
+| [`push-branch`](push-branch.md) | Push a local branch to its remote without staging or committing |
+| [`resolve-host-repo`](resolve-host-repo.md) | Outermost git host repository for a workspace path, derived from git rather than from prose |
+| [`three-dot-name-status`](three-dot-name-status.md) | Three-dot merge-base change surface for a working tree: name-status and per-file line counts against a base ref |

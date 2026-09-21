@@ -1,0 +1,29 @@
+id: ensure-graph-index
+version: 1.0.0
+name: Ensure Graph Index
+description: >-
+  Bring the component tree's graph current, and record that a usable index now covers it so the
+  operations gated on that flag take the graph rather than the grep fallback.
+
+inputs:
+  - id: repo_path
+    description: Filesystem path of the component tree a rebuild walks and keys its index under.
+
+outputs:
+  - id: gitnexus_indexed
+    type: boolean
+    description: Whether a current graph covers the component tree.
+
+steps:
+  - kind: routine
+    id: refresh
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{repo_path}"
+  - kind: action
+    id: record
+    actions:
+      - action: set
+        target: gitnexus_indexed
+        value: true
+        description: Whether a current graph covers the component tree.

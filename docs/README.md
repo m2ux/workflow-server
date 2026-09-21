@@ -1,10 +1,10 @@
 # Authoring on this branch
 
-This folder holds documentation that belongs to this tree's layout: how the named roots are arranged, and how to add a workflow, resource or technique. What each named root is *for*, and what it holds, is in that folder's own README; the [branch README](../README.md#named-roots) maps them.
+This folder holds documentation that belongs to this tree's layout: how the named roots are arranged, and how to add a workflow, resource, technique or routine. What each named root is *for*, and what it holds, is in that folder's own README; the [branch README](../README.md#named-roots) maps them.
 
 ## Contents
 
-- this file — adding a workflow, resource or technique, and how definition files link
+- this file — adding a workflow, resource, technique or routine, and how definition files link
 
 ## Discovery
 
@@ -12,9 +12,9 @@ Discovery enters `corpus/` and skips `ledgers/`, `walks/` and `docs/` at the bra
 
 ## Adding a workflow
 
-Create a directory named for the workflow's id with a `workflow.yaml` in it, under `corpus/`. Grouping folders carry no definition and exist to organise the corpus, so `corpus/group/kind/example/workflow.yaml` is the workflow `example` and is referenced by that name alone. Discovery skips `ledgers/`, `walks/` and `docs/` at the branch root, and three folder names at every depth — `activities`, `resources` and `techniques`. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
+Create a directory named for the workflow's id with a `workflow.yaml` in it, under `corpus/`. Grouping folders carry no definition and exist to organise the corpus, so `corpus/group/kind/example/workflow.yaml` is the workflow `example` and is referenced by that name alone. Discovery skips `ledgers/`, `walks/` and `docs/` at the branch root, and four folder names at every depth — `activities`, `resources`, `techniques` and `routines`. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
 
-1. Create `corpus/{workflow-id}/` with `workflow.yaml`, `README.md`, and `activities/`, `resources/`, `techniques/` as needed.
+1. Create `corpus/{workflow-id}/` with `workflow.yaml`, `README.md`, and `activities/`, `resources/`, `techniques/`, `routines/` as needed.
 2. Prefix activity files `{NN}-{id}.yaml`. Connect them with `transitions`; set the workflow's `initialActivity`.
 3. Commit on this branch.
 
@@ -49,3 +49,11 @@ The file contract — anatomy, addressing, composition, delivery — is the tech
 - **`## Rules`** — the constraints the technique enforces.
 
 Techniques are addressed by `::`-delimited paths — `[workflow::]technique[::nested…]` — and a reference within a single workflow omits the workflow segment. The slash form `{workflow}/{technique}` normalises to the same thing. Resolution reads the workflow from the session, looks in that workflow's own directory first, and falls back to the shared `meta` layer.
+
+The grain of the work — judgement on live feedback versus accepted, codified application — is [Atomic Techniques; Compose at Activities](/workflow-design/resources/design-principles.md#26-atomic-techniques-compose-at-activities). This section is the file contract.
+
+## Adding a routine
+
+A routine is a kebab-named YAML file under a namespace's `routines/` directory, and that filename is the id every `kind: routine` step resolves. Nothing registers it: the server discovers routines by reading the directory. A step in another namespace reaches it as `{namespace}::<name>`.
+
+The file carries `id` (matching the filename), `version`, `name`, `description`, optional `inputs` / `outputs` / `internals`, and `steps[]` as the ordinary kind-tagged list. It declares no `exits`, no `outcome`, no `rules` and no activity-wide `techniques`. How those fields map, and when a path lives here rather than as a technique, is the [schema construct inventory](/workflow-design/resources/schema-construct-inventory.md#routine-level-constructs-routineschemajson) and [Atomic Techniques; Compose at Activities](/workflow-design/resources/design-principles.md#26-atomic-techniques-compose-at-activities).

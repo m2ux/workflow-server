@@ -43,6 +43,10 @@ variables:
     type: string
     description: Path to the submodule being audited (e.g., midnight-node)
     required: true
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph covering the audited submodule. Empty where no graph covers it.
+    defaultValue: ""
   - name: in_scope
     type: string
     description: Space-separated list of crate/module paths to audit (e.g., 'node/ pallets/ primitives/ runtime/ ledger/ util/ res/ metadata/')

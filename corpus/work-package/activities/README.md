@@ -286,8 +286,7 @@ Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> preflight["GitNexus detect-changes preflight"]
-    preflight --> manualDiff["Manual diff review"]
+    entryNode(["Entry"]) --> manualDiff["Manual diff review"]
     manualDiff --> cpFileIndex{"file-index-table checkpoint"}
     cpFileIndex --> cpRationale{"rationale-attestation checkpoint"}
     cpRationale --> interviewLoop{"Next flagged block?"}

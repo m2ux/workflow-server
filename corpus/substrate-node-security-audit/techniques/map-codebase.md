@@ -69,7 +69,7 @@ forward and backward traces for priority-1 paths
 
 - Read the project manifest at `{workspace_root}` and enumerate every crate, module, or package under the `{in_scope}` paths, skipping anything listed in `{out_of_scope}`. List each component explicitly by name — do not summarize or group.
 
-> When `{gitnexus_available}`, cross-check the manifest enumeration against the graph's community/cluster inventory via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[read-clusters](/gitnexus/techniques/read-clusters.md) and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) — these surface functional areas and dependency structure the manifest layout alone misses. The manifest enumeration remains authoritative for component identity.
+> When `{gitnexus_available}`, cross-check the manifest enumeration against the graph's community/cluster inventory via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[read-clusters](/gitnexus/techniques/read-clusters.md)(*repo_name*: `{repo_name}`) and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*search_query*: each component name from the manifest enumeration, as keywords, *repo_name*: `{repo_name}`) — these surface functional areas and dependency structure the manifest layout alone misses. The manifest enumeration remains authoritative for component identity.
 
 ### 2. Classify Components
 
@@ -79,13 +79,13 @@ forward and backward traces for priority-1 paths
 
 - Enumerate every point where data enters the system from external sources or crosses an architectural boundary. Standard boundary types: RPC, inherent data, configuration files, databases, file system, native/Wasm interface, network protocol.
 
-> When `{gitnexus_available}`, derive trust boundaries from cross-community call edges via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md) (read the graph schema first), and rank each boundary component by fan-in via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) — high-fan-in boundaries have a larger blast radius and are elevated in priority.
+> When `{gitnexus_available}`, derive trust boundaries from cross-community call edges via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md)(*cypher_query*: a match over cross-community `CALLS` edges, composed against the schema read first, *repo_name*: `{repo_name}`), and rank each boundary component by fan-in via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: each boundary component's entry symbol, *repo_name*: `{repo_name}`) — high-fan-in boundaries have a larger blast radius and are elevated in priority.
 
 ### 4. Identify Critical Paths
 
 - Map the paths through the codebase that are consensus-critical: block production, block verification, inherent data creation and validation, genesis initialization, state transitions.
 
-> When `{gitnexus_available}`, source candidate consensus-critical flows from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) (execution flows by concept) and read their ordered step traces via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[read-process](/gitnexus/techniques/read-process.md), rather than hand-tracing call sequences.
+> When `{gitnexus_available}`, source candidate consensus-critical flows from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*search_query*: the consensus-critical concepts as keywords — block production, verification, inherent data, genesis, state transition, *repo_name*: `{repo_name}`) and read their ordered step traces via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[read-process](/gitnexus/techniques/read-process.md)(*process_name*: each flow's `summary` from that answer, *repo_name*: `{repo_name}`), rather than hand-tracing call sequences.
 
 ### 5. Enumerate Hooks
 
@@ -95,7 +95,7 @@ forward and backward traces for priority-1 paths
 
 - Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system, recording these traces alongside the boundary and critical-path findings to assemble `{reconnaissance_data}`, with the classified components assembled as `{crate_map}`. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
 
-> When `{gitnexus_available}`, seed forward/backward traces from the call graph via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) (callers/callees of a symbol) and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md) (custom chains), so a trace follows the resolved graph rather than a manual read of each hop. Reading the function bodies at each candidate point remains the comprehension step.
+> When `{gitnexus_available}`, seed forward/backward traces from the call graph via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: the symbol each trace starts from, *repo_name*: `{repo_name}`) for its callers and callees, and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md)(*cypher_query*: a match spelling the custom chain being traced, *repo_name*: `{repo_name}`), so a trace follows the resolved graph rather than a manual read of each hop. Reading the function bodies at each candidate point remains the comprehension step.
 
 ### 7. Identify Safety Overrides
 

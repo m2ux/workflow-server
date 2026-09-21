@@ -5,6 +5,7 @@ description: Run codebase reconnaissance and security decomposition.
 variables:
   reads:
     - agent_roster
+    - gitnexus_available
     - planning_folder_path
   writes:
     - name: agent_roster

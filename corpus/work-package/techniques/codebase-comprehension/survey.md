@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -44,13 +44,7 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 - Summarize relevant artifacts with coverage scope and last-updated date
 - If no comprehension artifacts exist yet for this codebase, proceed with fresh analysis — this is the first comprehension pass
 
-### 2. Check Gitnexus
-
-- Honor the bound `{gitnexus_indexed}` flag — it records whether the codebase under work has a usable index; re-probe only where it is unset, through the operation `gitnexus.index-freshness-first` names
-- If `{gitnexus_indexed}` is true: structural analysis throughout this technique goes through the gitnexus operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here, the default over grep
-- Only when `{gitnexus_indexed}` is false (the codebase is genuinely not indexed or stale): fall back to grep/read/glob for all exploration steps
-
-### 3. Architecture Survey
+### 2. Architecture Survey
 
 - Top-down survey: start with the `{target_path}` project root structure, build system, and entry points
 - Confirm the `{project_type}` from the build system and language conventions encountered, and use it to shape which abstractions and patterns to look for in later steps
@@ -63,26 +57,32 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 - Form architecture hypotheses and verify by sampling implementation files
 - If the codebase is too large for exhaustive analysis, focus on areas relevant to the problem statement and note the unexplored areas for future passes
 
-### 4. Abstractions Analysis
+### 3. Abstractions Analysis
 
 - Identify core types, traits/interfaces, and data structures that form the domain model
 - Document type hierarchies, trait bounds, and generic constraints
 - Map error handling strategy: error types, Result patterns, error propagation
 - Document state management approach: where state lives, how it flows, mutation patterns
 
-### 5. Design Rationale
+### 4. Design Rationale
 
 - For each significant design choice, infer the likely rationale from context clues: comments, naming, structure, constraints
 - Identify trade-offs: what does this design optimize for? what does it sacrifice?
 - Identify what each choice constrains: which later changes it rules out, and which it makes cheap
 - State each rationale as a property of the design, under the heading that marks the whole section as read out of the code rather than stated by its authors; where the source documents a reason outright, say so in the entry
 
-### 6. Domain Mapping
+### 5. Domain Mapping
 
 - Map technical modules to domain concepts: what real-world problem does each subsystem solve?
 - Build a glossary of domain-specific terms found in code, comments, and documentation
 - Connect domain concepts to the problem statement to highlight relevant areas
 
-### 7. Assemble Survey
+### 6. Assemble Survey
 
 - Fold the architecture overview, key abstractions, design rationale, and domain glossary into `{comprehension_survey}`, in the section order the [Corpus Artifact Template](../../resources/codebase-comprehension.md#corpus-artifact-template) defines
+
+## Rules
+
+### graph-first-where-indexed
+
+Where `{gitnexus_indexed}` records a usable index, every structural question here is answered from the graph rather than by grep — enumeration, call relationships, reachability and dependency mapping are what the graph holds. Where it records none, grep, read and glob are the whole instrument for those same questions, and the survey says which of the two answered.

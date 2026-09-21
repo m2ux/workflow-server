@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.7.0
+  version: 3.9.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Codebase intelligence via the GitNexus knowledge graph — indexing, structural 
 
 ### address-a-named-graph
 
-Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`. Where more than one graph is indexed, an unnamed call fails and lists what is available — so the name costs a turn when it is left out and nothing when it is supplied. Apply [resolve-graph](./resolve-graph.md) for that name, for the graphs a sibling component is reachable under, and for the repository groups configured over them.
+Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`. Where more than one graph is indexed, an unnamed call fails and lists what is available. The name comes from the inventory of indexed graphs, which also carries the tree each was built from and the repository groups configured over them.
 
 A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape. Record which graph an answer came from wherever the answer is reported.
 
@@ -32,19 +32,19 @@ Grep and a direct read are the whole instrument for both, as they are for prose 
 
 ### query-not-grep
 
-Apply [query](./query.md) / [context](./context.md) for execution flows and relationships among code symbols — that is what the graph holds, and what those two return.
+Execution flows and relationships among code symbols are what the graph holds, and what the operations here return — a question about either is theirs rather than grep's.
 
-For a markdown tree the graph holds each heading and each link between files, which [heading-search](./heading-search.md) and [reference-lookup](./reference-lookup.md) read. It holds no prose, so a question about which sentence states a claim stays a grep question — and [query](./query.md) answers such a question with unrelated code matches rather than with nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
+For a markdown tree the graph holds each heading and each link between files, and no prose. So a question about which sentence states a claim stays a grep question, and a ranked search answers such a question with unrelated code matches rather than with nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
 
-### detect-changes-after-edit
+### a-change-is-scoped-by-what-it-moved
 
-Always apply [detect-changes](./detect-changes.md) after applying a rename or batch edits to verify only expected files were affected.
+A rename or a batch of edits is scoped by what it actually moved, not by what it set out to move. The symbols and execution flows a diff lands on are read from the graph before the change is reported as contained, and the run that writes such a change reads them after it.
 
 ### index-freshness-first
 
-Apply [verify-index](./verify-index.md) at the start of any GitNexus session, and again before any operation whose answer turns on the current tree — [impact](./impact.md), [detect-changes](./detect-changes.md), [context](./context.md), [query](./query.md). A stale index answers in the same shape as a fresh one and says nothing about its own age, so an unverified answer is indistinguishable from a correct one. The `index-refresh` run is that check with its remedy attached: it reads the index, rebuilds the tree the read reports behind, and reads again — a rebuild that succeeds while the second read still reports staleness is the server holding the graph it loaded, and every answer stays old until it reloads.
+A stale index answers in the same shape as a fresh one and says nothing about its own age, so an answer whose freshness nothing established reads exactly like a correct one. Every answer taken from a graph therefore carries the age of that graph, and an answer turning on the current tree is taken against a reading of how far the graph trails it.
 
-[group-freshness](./group-freshness.md) is the same check for an answer drawn from a whole repository group, and it reads one failure more than age — which it states.
+A rebuild that succeeds while a later read still reports staleness is the server holding the graph it loaded, and every answer stays old until it reloads. Over a whole repository group the reading reports one failure more than age: a member carrying no graph at all, about which a group-wide answer says nothing.
 
 ### edges-the-parser-cannot-see
 
@@ -55,9 +55,13 @@ The graph holds the call sites the parser reads in source. Two kinds of dependen
 
 An operation's answer is therefore evidence of what the graph holds, never of what depends on the symbol. Where the changed symbol is reached through either route, a `LOW` risk level or an empty caller set is absence of evidence, and the enumeration is re-derived by hand — grep for the symbol, and for the macro names that generate its callers. Say which of the two was done when reporting a blast radius, so a reader can tell a measured answer from an unmeasured one.
 
+### a-named-operation-answers-first
+
+The raw graph query answers what no named operation reaches: custom call-chain traces, ordering and error-path assertions, and visibility filters. What depends on a symbol, what one symbol connects to, and which execution flows a concept lands in are each the subject of an operation here, whose declared output states what its answer means. A hand-written query returns rows and states nothing, so every reading such a contract carries is the author's to supply and to get right.
+
 ### keyword-shaped-queries
 
-Phrase [query](./query.md) as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings. Embeddings are built only where the index was asked for them, which is why a repository commonly reports none; and headings and files are never embedded at any setting, so no setting gives semantic search over prose. Keyword-shaped input is the phrasing that works either way.
+Phrase a ranked search as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings. Embeddings are built only where the index was asked for them, which is why a repository commonly reports none; and headings and files are never embedded at any setting, so no setting gives semantic search over prose. Keyword-shaped input is the phrasing that works either way.
 
 ### must-use-operations
 

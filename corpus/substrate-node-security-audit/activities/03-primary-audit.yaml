@@ -6,6 +6,7 @@ variables:
   reads:
     - agent_roster
     - crate_review_roster
+    - gitnexus_available
     - planning_folder_path
     - sub_crate_review_outputs
     - sub_static_analysis_outputs

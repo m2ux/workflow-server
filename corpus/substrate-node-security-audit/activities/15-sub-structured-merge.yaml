@@ -4,6 +4,7 @@ name: "Sub-Agent: Structured Merge"
 description: Structured merge, deduplication, and severity scoring of agent findings.
 variables:
   reads:
+    - gitnexus_available
     - planning_folder_path
   writes:
     - name: reconciliation_table

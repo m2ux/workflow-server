@@ -10,30 +10,49 @@ A run lands here rather than in a workflow because its body composes this namesp
 
 ## Over a diff
 
-| Routine | Runs |
-|---------|------|
-| [`diff-coverage-map`](diff-coverage-map.yaml) | The changed symbols, each one's callers, then which of them a test reaches |
-| [`public-api-enum`](public-api-enum.yaml) | The changed symbols, the query that filters them to the visible ones, then the exported surface that query returns |
-| [`scope-discipline-check`](scope-discipline-check.yaml) | The flows the diff reaches, held against the flows the work was for |
-| [`orphan-scan`](orphan-scan.yaml) | Every unreferenced function and method, narrowed to the files this work changed |
-| [`package-diagram-source`](package-diagram-source.yaml) | The change's bound, then the members of each functional area it touches |
-| [`sequence-diagram-source`](sequence-diagram-source.yaml) | The change's bound, then the ordered trace of each flow it runs through |
-| [`change-risk-assessment`](change-risk-assessment.yaml) | The symbol's blast radius, the diff's own rating, and both as a share of the traced whole |
+[`narrow-to-changed`](narrow-to-changed.yaml) takes a caller-supplied `MATCH`, writes the change's files into it, and runs it. [`orphan-scan`](orphan-scan.yaml) supplies the unreferenced `MATCH` so a work package never authors Cypher. [`public-api-enum`](public-api-enum.yaml) is the same shape over the visibility filter.
+
+| Routine | Reached for |
+|---------|-------------|
+| [`diff-coverage-map`](diff-coverage-map.yaml) | Which changed symbols no test reaches, and whose tests the change outran |
+| [`public-api-enum`](public-api-enum.yaml) | The exported surface a diff moved |
+| [`scope-discipline-check`](scope-discipline-check.yaml) | Whether the diff stayed inside what the work was for |
+| [`narrow-to-changed`](narrow-to-changed.yaml) | A caller's own graph query, bounded to the files this change touched |
+| [`orphan-scan`](orphan-scan.yaml) | Which unreferenced symbols this work introduced or touched |
+| [`package-diagram-source`](package-diagram-source.yaml) | The functional areas a change reaches, with their members |
+| [`sequence-diagram-source`](sequence-diagram-source.yaml) | The ordered traces of the flows a change runs through |
+| [`change-risk-assessment`](change-risk-assessment.yaml) | The one rating a reviewer acts on, against the traced whole |
 
 ## Over a codebase
 
-| Routine | Runs |
-|---------|------|
-| [`area-comprehension`](area-comprehension.yaml) | Name the graph, bring it current, find the area's flows, read each symbol and each trace |
-| [`symptom-trace`](symptom-trace.yaml) | Rank the symptom, read the suspect, trace its flows, and follow the chains that reach it |
-| [`restructure-surface`](restructure-surface.yaml) | What the symbol reaches, and what reaches it |
+| Routine | Reached for |
+|---------|-------------|
+| [`area-comprehension`](area-comprehension.yaml) | What an area is made of, read from a graph current with its tree |
+| [`symptom-trace`](symptom-trace.yaml) | Where a symptom lives, and what reaches it |
+| [`restructure-surface`](restructure-surface.yaml) | Everything a symbol touches, in both directions |
+| [`api-surface-review`](api-surface-review.yaml) | The routes a tree serves, and where their consumers disagree with them |
+| [`tool-surface`](tool-surface.yaml) | The MCP and RPC tools a tree declares, and where each is handled |
+
+## Over a documentation tree
+
+| Routine | Reached for |
+|---------|-------------|
+| [`doc-heading-lookup`](doc-heading-lookup.yaml) | Where a heading lives in a documentation tree |
+| [`doc-reference-surface`](doc-reference-surface.yaml) | What needs reading if each file of a set changes meaning |
+
+## Over a repository group
+
+| Routine | Reached for |
+|---------|-------------|
+| [`group-concept-search`](group-concept-search.yaml) | Which members of a group implement a concept |
 
 ## Over an index
 
-| Routine | Runs |
-|---------|------|
-| [`index-refresh`](index-refresh.yaml) | Read the staleness, rebuild where it is behind, read again |
-| [`group-refresh`](group-refresh.yaml) | Read how each member stands, pair the ones behind with the tree each sits in, rebuild those, then rebuild the contract registry |
+| Routine | Reached for |
+|---------|-------------|
+| [`graph-for-tree`](graph-for-tree.yaml) | The name of a tree's graph, built where the tree has none |
+| [`index-refresh`](index-refresh.yaml) | A graph current with the tree it was built from |
+| [`group-refresh`](group-refresh.yaml) | A group current with its members, its contract registry included |
 
 ## Stopping for a decision
 
@@ -42,6 +61,7 @@ A technique is session-blind, so a run that puts something in front of a person 
 | Routine | Gates on |
 |---------|----------|
 | [`pre-edit-impact-gate`](pre-edit-impact-gate.yaml) | A measured blast radius, where the rating is high or critical, before an edit lands |
+| [`api-change-gate`](api-change-gate.yaml) | A route's measured consumer surface, where a consumer reads a key the response omits, before the change lands |
 | [`guarded-rename`](guarded-rename.yaml) | The previewed edit list, before the rename writes it |
 
 ---

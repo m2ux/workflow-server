@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.13.0
+version: 1.14.0
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 variables:
@@ -19,6 +19,10 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: gitnexus_indexed
+      type: boolean
+      description: Whether the component under work has a usable GitNexus index.
+      defaultValue: false
     - name: comprehension_artifact
       type: string
       description: The comprehension corpus artifact for the current codebase area, carrying what is settled about it.
@@ -55,6 +59,14 @@ steps:
       - action: set
         target: comprehension_dir
         value: "{host_repo_path}/.engineering/artifacts/comprehension"
+  - kind: routine
+    id: refresh-index
+    when: "!gitnexus_indexed"
+    routine: ensure-graph-index
+    with:
+      repo_path: "{component_git_dir}"
+    outputs:
+      gitnexus_indexed: gitnexus_indexed
   - kind: technique
     id: build-comprehension
     technique:
@@ -82,6 +94,7 @@ steps:
       variable: needs_comprehension
       operator: ==
       value: true
+    maxIterations: 10
     steps:
       - kind: technique
         id: deep-dive

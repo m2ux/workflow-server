@@ -1,0 +1,17 @@
+$schema: ../../../schemas/workflow.schema.json
+id: mvw
+version: 1.0.0
+title: Minimum Viable Workflow
+description: >-
+  The live sidecar's first walk: evidence that this instance can dispatch.
+author: m2ux
+tags:
+  - specimen
+  - mvw
+techniques:
+  activity:
+    - variable-binding
+initialActivity: dispatch
+graph:
+  dispatch:
+    dispatched: __terminal__

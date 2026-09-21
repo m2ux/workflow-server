@@ -53,10 +53,10 @@ Storage lifecycle pairing table with optional invariant comparison.
 
 - For each insert site in `{mutation_sites}`, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each map in `{storage_maps}` with inserts, check if declared capacity constants are enforced at the insertion point. Record each map's results as a row in the `{storage_lifecycle}` pairing table.
 
-> When `{gitnexus_available}`, resolve which functions call `insert`/`remove` for each map via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) (callers of the mutation site) or a [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md) chain, rather than pairing sites by manual read — the graph makes the insert↔remove caller pairing exact.
+> When `{gitnexus_available}`, resolve which functions call `insert`/`remove` for each map via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: each mutation site's enclosing function, *repo_name*: `{repo_name}`) for its callers, or a [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md)(*cypher_query*: a match pairing the map's insert and remove call sites, *repo_name*: `{repo_name}`) chain, rather than pairing sites by manual read — the graph makes the insert↔remove caller pairing exact.
 
 ### 4. Verify Invariants
 
 - If `{verify_invariants}` is true: for pairs of functions that operate on the same storage (e.g., `handle_create` and `handle_redemption_create`), verify they maintain the same invariants — if one inserts, the other should too under the same conditions.
 
-> When `{gitnexus_available}`, enumerate the function set operating on a given map from the graph via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md) so no operating function is missed from the cross-function comparison; the invariant judgement itself is made by reading the paired bodies.
+> When `{gitnexus_available}`, enumerate the function set operating on a given map from the graph via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md)(*cypher_query*: a match over the functions referencing that map, *repo_name*: `{repo_name}`) so no operating function is missed from the cross-function comparison; the invariant judgement itself is made by reading the paired bodies.

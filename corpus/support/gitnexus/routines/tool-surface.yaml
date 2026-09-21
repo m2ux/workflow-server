@@ -1,0 +1,34 @@
+id: tool-surface
+version: 1.0.0
+name: Tool Surface
+description: >-
+  Name the graph covering a tree, building one where the inventory covers it with none, then map
+  the MCP and RPC tools the tree declares and where each is handled.
+
+inputs:
+  - id: tree_path
+    description: Filesystem path of the tree whose tool declarations are read.
+
+outputs:
+  - id: tool_inventory
+    type: object
+    description: Each declared tool with the file handling it and the description it registers.
+  - id: repo_name
+    type: string
+    optional: true
+    description: The graph the read addressed, which a report naming this inventory names too.
+
+steps:
+  - kind: routine
+    id: name-graph
+    routine: gitnexus::graph-for-tree
+    with:
+      tree_path: "{tree_path}"
+    outputs:
+      repo_name: repo_name
+  - kind: technique
+    id: map-tools
+    technique:
+      name: gitnexus::tool-map
+      outputs:
+        tool_inventory: tool_inventory
