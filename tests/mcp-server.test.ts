@@ -2558,62 +2558,6 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     });
   });
 
-  describe('start_session migration auto-trigger', () => {
-    it('auto-migrates a planning folder containing legacy workflow-state.json + .session-token on first call', async () => {
-      const slug = 'migration-auto';
-      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
-      const { mkdirSync, copyFileSync, existsSync } = await import('node:fs');
-      mkdirSync(folderPath, { recursive: true });
-      // Drop legacy artefacts in the folder before calling start_session.
-      const fixtureDir = resolve(import.meta.dirname, 'fixtures/legacy-session');
-      copyFileSync(join(fixtureDir, 'workflow-state.json'), join(folderPath, 'workflow-state.json'));
-      copyFileSync(join(fixtureDir, '.session-token'), join(folderPath, '.session-token'));
-
-      // Use a non-meta workflow_id so the session resolves to the workspace
-      // folder above (meta sessions are tmp-rooted and bypass workspace).
-      const result = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result) as WorkflowView;
-      // The migrated workflow_id wins over the default 'meta'.
-      expect(response.workflow.id).toBe('work-package');
-      expect(response.migrated).toBe(true);
-      expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
-
-      // Legacy artefacts have been cleaned up; new shape is in place.
-      expect(existsSync(join(folderPath, 'workflow-state.json'))).toBe(false);
-      expect(existsSync(join(folderPath, 'session.json'))).toBe(true);
-      expect(existsSync(join(folderPath, '.session-token'))).toBe(true);
-    });
-
-    it('a second call against the same migrated folder reuses session.json without re-migrating', async () => {
-      const slug = 'migration-resume';
-      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
-      const { mkdirSync, copyFileSync } = await import('node:fs');
-      mkdirSync(folderPath, { recursive: true });
-      const fixtureDir = resolve(import.meta.dirname, 'fixtures/legacy-session');
-      copyFileSync(join(fixtureDir, 'workflow-state.json'), join(folderPath, 'workflow-state.json'));
-      copyFileSync(join(fixtureDir, '.session-token'), join(folderPath, '.session-token'));
-
-      const first = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
-      });
-      const firstResponse = parseToolResponse(first);
-
-      const second = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
-      });
-      const secondResponse = parseToolResponse(second);
-      expect(secondResponse.session_index).toBe(firstResponse.session_index);
-      // The second call must NOT report a migration — session.json is already present.
-      expect(secondResponse.migrated).toBeUndefined();
-    });
-  });
-
   describe('removed legacy surface', () => {
     it('start_session rejects the deleted parent_session_index parameter (replaced by parent_planning_slug)', async () => {
       const result = await client.callTool({

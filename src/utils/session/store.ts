@@ -415,7 +415,7 @@ async function persistSessionFile(
 /**
  * Write `state` to a planning folder unconditionally, replacing whatever the
  * folder holds. For a session file no read stands behind: a fresh session, a
- * migrated legacy folder, a promoted transient parent.
+ * promoted transient parent.
  *
  * A write that carries forward state read from disk goes through
  * `replaceSessionFile` instead, so a concurrent write is refused rather than
