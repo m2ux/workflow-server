@@ -85,7 +85,8 @@
           }
         },
         "completedActivities": [
-          "intake-and-scope"
+          "intake-and-scope",
+          "apply-ladder"
         ],
         "currentTechnique": "workflow-engine::finalize-activity",
         "declaredArtifacts": [
@@ -93,6 +94,11 @@
             "id": "lean_brief",
             "name": "lean-brief.md",
             "path": ".ponytail/lean-brief.md"
+          },
+          {
+            "id": "lean_change",
+            "name": "lean-change.md",
+            "path": ".ponytail/lean-change.md"
           }
         ],
         "deliveredContent": {
@@ -122,19 +128,24 @@
             "resource:lean-change#template": "6cfe6a167a0aba03",
             "resource:meta/writing-register": "a1175b8fa07be630",
             "resource:ponytail-marker-convention#convention": "1895752d74dc4b50",
+            "resource:review-taxonomy#comment-proportionality": "40470748b9de591c",
+            "resource:review-taxonomy#finding-format": "6caa5cfc5846b306",
+            "resource:review-taxonomy#scoreboard": "4c3c4aec19fd6e24",
+            "resource:review-taxonomy#tags": "0b32034e1fd52bfe",
             "resource:the-ladder": "95845f58c0753f47",
             "resource:the-ladder#rungs": "26eb5247390b6c23",
             "resource:the-ladder#safety-floor": "3e53db8cff9f6680",
             "resource:the-ladder#understand-first": "54682ceec535b727",
             "technique:apply-ladder": "230c9864589bc72c",
+            "technique:review-over-engineering": "613a86e699e275ad",
             "technique:scope-intake": "bacd7f92fdf6a03d",
             "technique:workflow-engine::evaluate-transition": "a70a5c163bc23939"
           }
         },
         "executionPath": "agent",
-        "exit": "done",
+        "exit": "safety-floor-cleared",
         "frontier": [
-          "apply-ladder"
+          "over-engineering-review"
         ],
         "history": [
           {
@@ -772,16 +783,169 @@
             },
             "timestamp": "2026-09-21T12:24:54.150Z",
             "type": "activity_delivered"
+          },
+          {
+            "activity": "apply-ladder",
+            "timestamp": "2026-09-21T12:25:24.914Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "name": "lean_change",
+              "source": "variables_changed",
+              "value": ".ponytail/lean-change.md"
+            },
+            "timestamp": "2026-09-21T12:25:24.914Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "name": "safety_floor_cleared",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-09-21T12:25:24.914Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "stepId": "climb-ladder"
+            },
+            "timestamp": "2026-09-21T12:25:24.914Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "stepId": "safety-floor-cleared"
+            },
+            "timestamp": "2026-09-21T12:25:24.914Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "over-engineering-review",
+            "timestamp": "2026-09-21T12:25:24.914Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-09-21T12:25:24.914Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "chars": 11405,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-09-21T12:25:41.971Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "chars": 4722,
+              "delivery": "full",
+              "stepId": "review-change",
+              "techniqueId": "review-over-engineering"
+            },
+            "timestamp": "2026-09-21T12:25:41.971Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "stepId": "review-change"
+            },
+            "timestamp": "2026-09-21T12:25:41.971Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 2402,
+              "delivery": "full",
+              "resourceId": "review-taxonomy#tags"
+            },
+            "timestamp": "2026-09-21T12:25:41.971Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 282,
+              "delivery": "full",
+              "resourceId": "review-taxonomy#comment-proportionality"
+            },
+            "timestamp": "2026-09-21T12:25:41.971Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 631,
+              "delivery": "full",
+              "resourceId": "review-taxonomy#finding-format"
+            },
+            "timestamp": "2026-09-21T12:25:41.971Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled": true,
+              "chars": 453,
+              "delivery": "full",
+              "resourceId": "review-taxonomy#scoreboard"
+            },
+            "timestamp": "2026-09-21T12:25:41.971Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "bundled_steps": 1,
+              "delivery": "reference",
+              "eager_budget_chars": 819200,
+              "fixed_chars": 886,
+              "provenance_passes": 1,
+              "resolved_techniques": 7,
+              "response_bound_chars": 60000,
+              "response_spent_chars": 11405,
+              "spent_chars": 10576,
+              "worker_bundle_chars": 2086
+            },
+            "timestamp": "2026-09-21T12:25:41.971Z",
+            "type": "activity_delivered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 20,
+        "seq": 22,
         "sessionIndex": "KPTFVH",
         "startedAt": "2026-09-21T12:08:46.721Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1789993494,
+        "ts": 1789993541,
         "variables": {
           "artifact_dir": ".ponytail",
           "component_path": ".",
