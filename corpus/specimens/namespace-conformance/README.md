@@ -4,7 +4,7 @@ A worked example of a library that offers operations without being a workflow, a
 
 ## The form
 
-[`specimens/shared-probe/`](../shared-probe/techniques/TECHNIQUE.md) holds a `techniques/` folder and no `workflow.yaml`. That makes it a namespace — a place references can point at — and not a workflow, so it offers `measure-entries` to any site that wants it while staying out of the catalogue an operator picks from. A folder needs nothing else to be addressable: the library it holds is what names it.
+[`specimens/shared-probe/`](/shared-probe/techniques/TECHNIQUE.md) holds a `techniques/` folder and no `workflow.yaml`. That makes it a namespace — a place references can point at — and not a workflow, so it offers `measure-entries` to any site that wants it while staying out of the catalogue an operator picks from. A folder needs nothing else to be addressable: the library it holds is what names it.
 
 A namespace answers to two names. `shared-probe` is its directory name, which is what a reference ordinarily carries, so the folder can be re-grouped without rewriting what points at it. `specimens/shared-probe` is the path from the corpus root, which names this one and no other, and is what a reference carries where a name is claimed twice or where an author would rather be explicit. Written as a technique reference the path spells with the same separator as the rest: `specimens::shared-probe::measure-entries`.
 

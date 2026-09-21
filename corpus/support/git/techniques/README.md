@@ -1,7 +1,5 @@
 # Git Techniques
 
-> Part of [support](../../README.md)
-
 Git operations for planning folders and artifacts — parent repos, submodules, and branch push.
 
 The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.

@@ -1,7 +1,5 @@
 # Concept Rag Techniques
 
-> Part of [support](../../README.md)
-
 Operations for targeted concept-rag searches via pre-indexed domain maps.
 
 The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
