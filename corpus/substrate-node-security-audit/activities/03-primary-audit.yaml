@@ -93,7 +93,6 @@ steps:
     technique:
       name: orchestration-patterns::gather-results
       inputs:
-        dispatched_results: dispatched_results
         expected_ids: worker_briefs
   - kind: technique
     id: preserve-verification-report
