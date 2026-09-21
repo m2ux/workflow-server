@@ -21,4 +21,4 @@ Identifier of the pair these operations belong to.
 
 ### pair-together
 
-Both operations of this group are held to this rule.
+Both operations of this pair execute in the same activity.

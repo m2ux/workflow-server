@@ -23,4 +23,4 @@ True once this operation has executed.
 
 ### alpha-own
 
-This operation records the first note and nothing else.
+The first note is this operation's output, not the pair's.

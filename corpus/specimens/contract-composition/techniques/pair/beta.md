@@ -23,4 +23,4 @@ True once this operation has executed.
 
 ### beta-own
 
-This operation records the second note and nothing else.
+The second note is this operation's output, not the pair's.
