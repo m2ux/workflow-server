@@ -910,7 +910,7 @@ The design does not cover the technique primitive, and it does not need to: tech
 * **`## Protocol`** — the ordered procedure, written either as `### N. Title` blocks or as a flat list. Failure handling is described inline in the protocol step that triggers it.
 * **`## Rules`** — named behavioural invariants, pulled into the bundle when the technique is referenced.
 
-A technique addresses another by its `::` path: a same-workflow path is implicit, an unqualified path resolves current-workflow-first then `meta`, and slashes are normalized. When a descendant technique is resolved, the server wraps its protocol in each ancestor's `Initial` and `Final` blocks, recursing through the chain, and renumbers the combined protocol. Resolved references are returned in the bundle buckets `techniques`, `rules`, and `unresolved`.
+A technique addresses another by its `::` path: a same-workflow path is implicit, an unqualified path resolves current-workflow-first then `meta`, and slashes are normalized. When a descendant technique is resolved, the server merges each ancestor container's inputs, outputs and rules into it and delivers its protocol as authored. Resolved references are returned in the bundle buckets `techniques`, `rules`, and `unresolved`.
 
 See [Technique and resource resolution](resource-resolution-model.md) for resolution semantics.
 

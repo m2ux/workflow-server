@@ -18,7 +18,7 @@ the `Goal → Workflow → Activities → Techniques → Tools` model — an act
 technique tells the agent how.
 
 A technique can contain other techniques, nested within its folder. A nested technique is a
-technique; it sits deeper in the containment tree and takes contract from its ancestors (§5, §6).
+technique; it sits deeper in the containment tree and takes contract from its ancestors (§5).
 
 ---
 
@@ -228,8 +228,8 @@ settles which words and in what order. See AP-60.
   `steps`, and the ordinal prefix is dropped from the title.
 - A flat numbered or bulleted body is one untitled block.
 
-Titled blocks group a protocol's phases; a flat list suits an atomic procedure. The titles `Initial`
-and `Final` position an ancestor's content around its descendants (§6).
+Titled blocks group a protocol's phases; a flat list suits an atomic procedure. Every block belongs
+to the technique that authors it — a title carries no composition meaning.
 
 A step is an imperative action the agent performs. A standing prohibition, invariant, or precondition
 is not a step: a constraint that governs the technique (or several steps) is a rule (§3.4); a
@@ -391,13 +391,15 @@ precedence by id or name.
 Both delivery paths (`get_technique` and the `get_activity` / `get_workflow` bundle) use the same
 `composeLoaded` implementation:
 
-- **Inputs / Output**: merged from every ancestor container outward to the executing workflow root;
+- **Inputs / Outputs**: merged from every ancestor container outward to the executing workflow root;
   the technique-local entry overrides any ancestor entry of the same id.
 - **Rules**: merged from every ancestor container; the technique-local entry overrides any ancestor
   entry of the same name. On the bundle path rules are additionally emitted as separate `rule`
-  entries (§7.2) so they can be addressed and selectively included.
-- **Protocol**: wrapped with every ancestor's `Initial` and `Final` blocks via
-  `wrapProtocolWithAncestors` (the full ancestor chain, not the root only — see §6).
+  entries (§6.2) so they can be addressed and selectively included.
+
+A container contributes a contract, never a procedure. Protocol does not inherit: a technique's
+`## Protocol` is delivered as authored, and the steps a shared stage owns belong to the activity or
+routine that binds both operations rather than to the folder that holds them.
 
 Ancestry follows the executing workflow: the containers considered are the executing workflow's root
 `TECHNIQUE.md` and each containing group's `TECHNIQUE.md` along the technique's path. Containers
@@ -406,52 +408,14 @@ session — are not included; only the executing workflow's containers apply.
 
 ---
 
-## 6. Protocol composition — Initial/Final wrapping
+## 6. Delivery
 
-When a technique is delivered, the `## Protocol` blocks titled `Initial` and `Final` on each ancestor
-container wrap the technique's own protocol:
+### 6.1 Body
 
-```
-ancestorRoot.Initial
-  …
-  immediateParent.Initial
-    <the technique's own protocol, in authored order>
-  immediateParent.Final
-  …
-ancestorRoot.Final
-```
+A delivered technique body (`projectTechniqueBody`) carries `capability`, `inputs?`, `protocol?` as
+authored, and `outputs?`. A technique's rules are delivered as `rule` entries (§6.2).
 
-- `Initial` and `Final` flow into descendants. An ancestor's other protocol blocks belong to that
-  ancestor and appear when the ancestor is delivered directly.
-- The wrap applies across the full ancestor chain: the workflow root is outermost, the immediate
-  parent innermost.
-- A technique delivered directly carries its own protocol in full — `Initial`, `Final`, and any other
-  blocks in authored order — itself wrapped by its ancestors' `Initial`/`Final`.
-- The server renumbers the combined sequence; the authored array order is the order.
-
-Example — delivering `work-package::validate-build::analyze-failure`:
-
-```
-work-package root TECHNIQUE.md  → Initial blocks
-validate-build TECHNIQUE.md     → Initial blocks
-analyze-failure.md              → its own protocol
-validate-build TECHNIQUE.md     → Final blocks
-work-package root TECHNIQUE.md  → Final blocks
-```
-
-`wrapProtocolWithAncestors` applies the full chain on the bundle path; `composeTechnique` applies it
-on the `get_technique` path, where the workflow root is the ancestor.
-
----
-
-## 7. Delivery
-
-### 7.1 Body
-
-A delivered technique body (`projectTechniqueBody`) carries `capability`, `inputs?`, `protocol?`
-(wrapped per §6), and `outputs?`. A technique's rules are delivered as `rule` entries (§7.2).
-
-### 7.2 Bundle
+### 6.2 Bundle
 
 `formatTechniqueBundle` produces:
 
@@ -461,13 +425,13 @@ A delivered technique body (`projectTechniqueBody`) carries `capability`, `input
 | `rules` | `[name, text]` pairs: a technique's rules plus its inherited and group rules. |
 | `unresolved` | References that did not resolve (a non-empty list is a definition defect). |
 
-### 7.3 Activity bundling
+### 6.3 Activity bundling
 
 `get_activity` and `get_workflow` deliver an activity's `techniques[]` through this bundle;
 `get_technique` delivers a single technique via
 `composeTechnique`.
 
-### 7.4 Binding
+### 6.4 Binding
 
 The engine binds by name: workflow state variables (a worker sets them from a technique's result) and
 the entry ids a consumer references. The `####` components of an entry document its shape for the
@@ -475,7 +439,7 @@ reader, and the `#####` fields beneath a component document what one entry of it
 references an entry by its id. Both levels are what a read addressing into a value is held against —
 `binding-fidelity` reports a member no component declares, and a field no component's entry declares.
 
-### 7.5 Step manifest
+### 6.5 Step manifest
 
 A worker reports what a step produced through the `step_manifest` entry `output` field passed to
 `next_activity` (one entry per completed step, keyed by `step_id`). The encoding scales with the
@@ -488,11 +452,11 @@ step's declared outputs:
 
 An output lands in the session bag under its declared id, unless the step binding remaps it — in
 which case the step-bound `get_technique` delivery annotates that output with a `destination:` line
-naming the bag variable it lands under (§7.1 delivers `destination:` only on remapped outputs).
+naming the bag variable it lands under (§6.1 delivers `destination:` only on remapped outputs).
 
 ---
 
-## 8. Authoring rules
+## 7. Authoring rules
 
 A technique's interface stays workflow-agnostic; the full set lives in
 [`workflow-design/resources/anti-patterns.md`](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) (on the `workflows` branch).
@@ -518,7 +482,7 @@ The protocol-relevant rules:
 
 ---
 
-## 9. Validation
+## 8. Validation
 
 The server validates every parsed technique against `TechniqueSchema` (zod) before delivery; on
 failure it logs a warning and treats the technique as unloadable. A technique declares
