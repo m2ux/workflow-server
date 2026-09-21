@@ -100,6 +100,8 @@ File grain (schema inventory, then `docs/README.md` on the corpus tree): `workfl
 
 A second workflow, authored to walk the change surface on the live sidecar — the same path unit, e2e, and guard tests cannot see. Reuse an existing specimen only when it already covers that surface; a new change surface gets a new specimen. Walk it only after the MVW has held on this instance.
 
+A specimen carries **representative positive and negative cases, and weighs them equally**. A positive case walks a path the change claims to hold; a negative case walks a path the change claims to refuse, reject, or leave untouched, and expects that refusal. Representative means each case has the shape of real traffic on that surface, not an edge chosen because it was easy to author. A specimen with only positive cases proves the change can succeed and says nothing about what it must reject, so half the claim stays unwalked.
+
 Layout, identity, and linking: `docs/README.md` on that corpus tree. Definition quality: the `workflow-canon` skill. Serving check before a walk, from an **engine** checkout (`npx tsx` must resolve there; a corpus worktree has no `package.json`):
 
 ```bash
@@ -177,6 +179,8 @@ Score each walk against what that walk was for.
 The MVW claims only that this instance can open a session and dispatch one activity through one routine and one technique. A miss there is a miss on the engine or the pairing. Stay on the MVW: reload, re-walk, do not start the change-surface specimen. That is the cheap cycle while the server is broken.
 
 The change-surface specimen is scored against the attendant design changes, not against an absolute idea of a clean session. A miss is a path those changes claimed would hold and the walk did not. A walk that stops, errors, or differs from a prior run is a miss only where those claims reach. It is still a miss in the ordinary sense when the change claimed the instance would serve that path at all.
+
+Positive and negative cases score alike. A negative case that passes where the change claimed a refusal is a miss of the same weight as a positive case that stops.
 
 An outcome outside the change surface (pre-existing behaviour, a specimen gap, a stop the change never promised to prevent) is evidence about the walk, not a verdict on the change. Name which, then either widen the specimen or leave it out of the loop.
 
