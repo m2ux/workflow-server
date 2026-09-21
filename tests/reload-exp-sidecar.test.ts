@@ -3,7 +3,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import { chmodSync, mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
@@ -48,6 +48,12 @@ const canReachPreflight = onPath('docker') && onPath('curl');
 describe('reload-exp-sidecar.sh', () => {
   it('parses as bash', () => {
     execFileSync('bash', ['-n', SCRIPT]);
+  });
+
+  it('wipes dist and the incremental tsc cache before host compile', () => {
+    const src = readFileSync(SCRIPT, 'utf8');
+    expect(src).toMatch(/rm -rf "\$\{engine\}\/dist"/);
+    expect(src).toMatch(/rm -f "\$\{engine\}\/tsconfig\.tsbuildinfo"/);
   });
 
   it('usage names the required flags and the install-instance refusal', () => {
