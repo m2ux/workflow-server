@@ -1,7 +1,5 @@
 # Github Techniques
 
-> Part of [support](../../README.md)
-
 GitHub PR and issue tasks.
 
 The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
@@ -11,6 +9,7 @@ The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`add-labels`](add-labels.md) | Add labels to an issue or PR via REST |
 | [`assign-issue`](assign-issue.md) | Assign a user to a GitHub issue via REST |
 | [`comment-issue`](comment-issue.md) | Post a markdown comment to a GitHub issue via REST |
+| [`create-issue`](create-issue.md) | Raise an issue with a title, body and labels via REST, answering with its number and URL |
 | [`create-pr`](create-pr.md) | Open a draft or ready pull request for a feature branch, or refresh the body of the existing open PR for that branch |
 | [`list-issue-comments`](list-issue-comments.md) | List top-level comments on an issue or pull request via REST (issues comments endpoint) |
 | [`list-issues`](list-issues.md) | List issues via REST search or listing |
