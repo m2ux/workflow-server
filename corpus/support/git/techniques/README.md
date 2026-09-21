@@ -12,6 +12,7 @@ The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`derive-workflows-target-path`](derive-workflows-target-path.md) | Where a session editing the shared workflows library reads, edits and commits, derived from the planning folder that session already has |
 | [`identify-path-type`](identify-path-type.md) | Determine whether a path is a regular directory or a git submodule before committing |
 | [`merge-branches`](merge-branches.md) | Bring the branches an isolated fan committed back onto one branch, in a stated order, reporting what merged cleanly and what did not |
+| [`pin-revision`](pin-revision.md) | Checkout brought to a named revision — a commit, a tag, or a branch — detached at the commit that name resolves to, answering the commit landed or the refusal that left it as it stood |
 | [`push-branch`](push-branch.md) | Push a local branch to its remote without staging or committing |
 | [`resolve-host-repo`](resolve-host-repo.md) | Outermost git host repository for a workspace path, derived from git rather than from prose |
 | [`three-dot-name-status`](three-dot-name-status.md) | Three-dot merge-base change surface for a working tree: name-status and per-file line counts against a base ref |

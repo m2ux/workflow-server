@@ -1,0 +1,56 @@
+id: ready-checkouts
+version: 1.0.0
+name: Ready Checkouts
+description: >-
+  Bring every checkout a roster names to its stated revision, one pin per entry, and answer with the
+  commit each landed at or the refusal that left it as it stood.
+
+inputs:
+  - id: checkout_pins
+    description: The roster this run walks — one entry per checkout, each carrying the working tree to pin and the revision to land it at.
+  - id: planning_folder_path
+    description: The session's planning folder, which every operation of the git library carries as a shared input.
+
+outputs:
+  - id: checkout_readiness
+    type: array
+    description: One entry per roster entry, in roster order — the working tree, the revision named, and either the commit landed with the form the name resolved as, or the refusal that left the checkout as it stood.
+
+internals:
+  - id: checkout_pin
+    description: The roster entry the run holds, whose working tree the pin in that pass brings to its revision.
+
+steps:
+  - kind: loop
+    id: pin-cycle
+    name: Pin Cycle
+    loopType: forEach
+    variable: checkout_pin
+    over: checkout_pins
+    maxIterations: 20
+    steps:
+      - kind: technique
+        id: pin
+        technique:
+          name: git::pin-revision
+          inputs:
+            repo_path: "{checkout_pin.repo_path}"
+            revision_name: "{checkout_pin.revision_name}"
+      - kind: action
+        id: announce-landing
+        when: "!pin_refusal"
+        actions:
+          - action: message
+            message: "{checkout_pin.repo_path} stands at {pinned_commit}, {checkout_pin.revision_name} resolved as a {revision_kind}."
+      - kind: action
+        id: announce-refusal
+        when: pin_refusal
+        actions:
+          - action: message
+            message: "{checkout_pin.repo_path} stays where it stood: {pin_refusal}"
+      - kind: action
+        id: record-readiness
+        actions:
+          - action: set
+            target: checkout_readiness
+            description: This checkout's landing — the working tree and revision from the entry, then the commit and the form it resolved as, or the refusal — appended to the run's ordered list.
