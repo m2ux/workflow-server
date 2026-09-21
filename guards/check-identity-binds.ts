@@ -11,8 +11,10 @@
  *
  * ---
  *
- * Three populations spell the same thing and mean something else, so the shape alone cannot decide.
- * Each is excluded here, and the exclusions are what make the rest reportable.
+ * The subject is the `inputs` and `outputs` maps on a `kind: technique` step of an ACTIVITY, and
+ * the bounds are as much of the check as the rule is. Three things spell a same-name pair the same
+ * way and mean something else; a check that took the shape at face value would advise a strip that
+ * silently changes what a run binds.
  *
  *   A ROUTINE BODY is rewritten at each reference site, and substitution walks the binding maps a
  *   step carries. A body that omits `diff_scope: diff_scope` spells that name nowhere, so a site
@@ -22,7 +24,9 @@
  *
  *   A ROUTINE STEP'S OUTPUTS have no same-name default at all: an unbound output fails the load, or
  *   is dropped where the declaration marks it optional. `repo_name: repo_name` there is the binding
- *   rather than a restatement of one. Only `kind: technique` steps are read.
+ *   rather than a restatement of one. That map is `step.outputs` on a `kind: routine` step, which
+ *   is a different field from the `step.technique.outputs` read here — so the two are separated by
+ *   what the check addresses rather than by a test, and folding them together is the mistake.
  *
  *   AN OPTIONAL OR DEFAULTED INPUT is not a value the workflow must supply, which is why the
  *   contract derivation counts no read for one. A same-name bind on an optional input is the
@@ -47,6 +51,9 @@ import { requireRootOrExit, runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+
+/** The group and namespace contract file, which declares what every operation under it inherits. */
+const CONTAINER = 'TECHNIQUE.md';
 
 /** One operation file: where it sits, and the inputs it does not require. */
 interface Operation {
@@ -78,23 +85,40 @@ function optionalInputs(text: string): Set<string> {
   return out;
 }
 
-/** Every operation in the corpus, keyed by the file's basename — the leaf a reference names. */
+/**
+ * Every operation in the corpus, keyed by the file's basename — the leaf a reference names.
+ *
+ * What a step binds is the COMPOSED contract: an operation inherits the inputs its group and
+ * namespace containers declare, and a container marks its own optional. `repo_path` is optional on
+ * the GitHub container and appears in no leaf, so reading the leaf alone would call a same-name
+ * bind on it a restatement and advise a strip that breaks the read contract. Container markings are
+ * therefore collected on the way down and merged into every operation beneath them.
+ *
+ * A container is not itself an operation, so it is read for what it declares and not indexed as a
+ * reference target.
+ */
 function operationsByLeaf(root: string): Map<string, Operation[]> {
   const out = new Map<string, Operation[]>();
-  const visit = (dir: string): void => {
-    for (const name of readdirSync(dir).sort()) {
+  const visit = (dir: string, inherited: ReadonlySet<string>): void => {
+    const names = readdirSync(dir).sort();
+    let scope = inherited;
+    if (names.includes(CONTAINER)) {
+      scope = new Set([...inherited, ...optionalInputs(readFileSync(join(dir, CONTAINER), 'utf-8'))]);
+    }
+    for (const name of names) {
       const path = join(dir, name);
-      if (statSync(path).isDirectory()) { visit(path); continue; }
-      if (!name.endsWith('.md') || name === 'README.md') continue;
+      if (statSync(path).isDirectory()) { visit(path, scope); continue; }
+      if (!name.endsWith('.md') || name === 'README.md' || name === CONTAINER) continue;
       const leaf = basename(name, '.md');
-      const entry = { rel: relative(root, path), optional: optionalInputs(readFileSync(path, 'utf-8')) };
+      const optional = new Set([...scope, ...optionalInputs(readFileSync(path, 'utf-8'))]);
       const bucket = out.get(leaf);
+      const entry = { rel: relative(root, path), optional };
       if (bucket) bucket.push(entry); else out.set(leaf, [entry]);
     }
   };
   for (const { dir } of corpusNamespaces(root)) {
     const techniques = join(dir, 'techniques');
-    if (existsSync(techniques)) visit(techniques);
+    if (existsSync(techniques)) visit(techniques, new Set());
   }
   return out;
 }
