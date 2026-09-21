@@ -2,6 +2,10 @@
 
 Instructions for AI coding agents working in this repository (Workflow Orchestration MCP Server).
 
+## Workspace Insructions
+
+This project is part of a workspace. Be sure to follow the instructions in the `CLAUDE.md` file located in the workspace first and foremost.
+
 ## Project overview
 
 This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, Node.js 18+). Agents discover, navigate, and execute structured workflows via a **Goal → Workflow → Activities → Techniques → Tools** model. Workflow data lives in a `workflows` worktree (orphan branch); engineering artifacts live in `.engineering/`. See [README.md](README.md) for overview and [docs/ide-setup.md](docs/ide-setup.md) for rule setup.
@@ -20,46 +24,59 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - **Work a branch in its own worktree.** The checkout at `.worktrees/workflows` stays on the `workflows` branch, and a feature branch lives under `.worktrees/<branch>`. Switching the shared dest moves the corpus under anything reading it — a guard sweep, a coverage walk, another agent — and the result is wrong in a way that reads as a defect in the change.
 - **Worktree setup:** `npm run worktree:provision` — on the primary checkout, adds `.worktrees/workflows` and makes `node_modules` resolvable. A nested engine worktree reads that dest.
 - **A worktree is named for the branch it holds.** `.worktrees/workflow/353-context-scoped-delivery` holds `workflow/353-context-scoped-delivery` — the branch name in full, slashes and all, as nested directories. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`. Rename one by removing and re-adding it: `git worktree remove --force`, then `git worktree add` at the new path, then provision again. `git worktree move` and plain `git worktree remove` both refuse a worktree whose submodules are checked out, which provisioning is what does — so the point where a rename becomes worth making is past the point where they work.
-- **Workflow data:** `git worktree add .worktrees/workflows workflows` (see [README.md](README.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)). Product definitions live under `corpus/`; specimen workflows live under `corpus/specimens/`. Ledgers, walk artifacts and authoring docs each have a named root (`ledgers/`, `walks/`, `docs/`). The workflow id is the directory name. Check programs live under `guards/`; generate, provision and benches stay in `scripts/`. Layout authoring lives on the `workflows` branch under `docs/`. The technique file contract lives in [`docs/technique-protocol-specification.md`](docs/technique-protocol-specification.md) on this tree.
+- **Workflow data:** `git worktree add .worktrees/workflows workflows` (see [README.md](README.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)). Product definitions live under `corpus/`; specimen workflows live under `corpus/specimens/`. Ledgers, walk artifacts and authoring docs each have a named root (`ledgers/`, `walks/`, `docs/`). The workflow id is the directory name. Check programs live under `guards/`; generate, provision and benches stay in `scripts/`. Layout authoring lives on the `workflows` branch under `docs/`. The technique file contract lives in [docs/technique-protocol-specification.md](docs/technique-protocol-specification.md) on this tree.
+
+
 
 ## Boundaries
 
 - Do **not** modify server source (`src/`, `schemas/`) or workflow YAML files unless the user explicitly asks.
 - When following workflows, respect workflow fidelity as defined in YAML files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match returns `client`; call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that origin. Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
 
+
+
 ## Branches and pull requests
 
-- **A pull request lands on `main` or on `workflows`.** Code and definitions sit on separate long-lived branches, so a base is a choice rather than a default, and one aimed anywhere else is a stack: it merges, it reads as delivered, and the change reaches neither branch until the base lands too. Check the base before merging, and re-target a stacked request the moment its base merges.
+- **A pull request lands on** `main` **or on** `workflows`**.** Code and definitions sit on separate long-lived branches, so a base is a choice rather than a default, and one aimed anywhere else is a stack: it merges, it reads as delivered, and the change reaches neither branch until the base lands too. Check the base before merging, and re-target a stacked request the moment its base merges.
 - **A branch is absorbed when its content is on the target, not when its commits are.** The same change reaching the target by another route leaves the branch reading as unmerged work. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.
+
+
 
 ## Testing
 
 - After code or schema changes, run `npm run typecheck` and `npm test` before committing. Both pass with no `workflows/` directory: live-corpus tests skip when the root is missing or empty. That skip is a local convenience only — `verify.yml` checks out the definitions and runs them, so a test that passes by skipping here is measured there.
 - After workflow-corpus changes, run `npm run check:all`. To see only what your change added, run `npm run check:delta`. Corpus debt is triaged per finding in `ledgers/binding-fidelity-triage.json` of the pointed tree — classify a new finding there (`harmless` / `fix-later` / `live-bug`) rather than suppressing it; there is no re-snapshot command.
-- **Definition changes land on the `workflows` branch**, and take the artifacts that describe them in the same commit. Walk baselines under `walks/` record the path a definition takes, and a triage entry records a judgement about prose the definition holds; both are read against the tree they sit in, so a commit that changes a definition and leaves either behind ships a tree that disagrees with itself. A closed binding finding is the case to watch: delete the entry and the finding is untriaged, keep it and it matches nothing, so the entry moves with the change that settled it.
+- **Definition changes land on the** `workflows` **branch**, and take the artifacts that describe them in the same commit. Walk baselines under `walks/` record the path a definition takes, and a triage entry records a judgement about prose the definition holds; both are read against the tree they sit in, so a commit that changes a definition and leaves either behind ships a tree that disagrees with itself. A closed binding finding is the case to watch: delete the entry and the finding is untriaged, keep it and it matches nothing, so the entry moves with the change that settled it.
 - **Engine CI prices a fixture walk.** Delivery cost is a property of a walk rather than of any one file, so no guard reads it: `verify.yml` walks `delivery-fixture` and compares the total against `tests/fixtures/token-benchmark-baseline.json`, failing past 1%. Run it the way that job does — `npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=tests/fixtures/token-benchmark-baseline.json`. `--fixture-corpus` builds the corpus that walk needs into a temp root: the client workflow is authored under `tests/fixtures/token-bench/`, and the `meta` namespace beside it is derived from the lists `src/loaders/core-ops.ts` names, so a ref added there reaches the gate with no fixture to edit.
+
+
 
 ## Where to look
 
 - **Quick start, schema, API:** [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md)
 - **IDE/MCP setup:** [docs/ide-setup.md](docs/ide-setup.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)
 - **Server-in-the-loop (live sidecar walks):** [.cursor/skills/server-in-the-loop/SKILL.md](.cursor/skills/server-in-the-loop/SKILL.md)
-- **Work in `.engineering/` (artifacts, planning):** [.engineering/AGENTS.md](.engineering/AGENTS.md)
+- **Work in** `.engineering/` **(artifacts, planning):** [.engineering/AGENTS.md](.engineering/AGENTS.md)
 
-<!-- gitnexus:start -->
+
+
 # GitNexus — Code Intelligence
 
 This project is indexed by GitNexus as **workflow-server** (15467 symbols, 21142 relationships, 300 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
+
+
 ## Always Do
 
 - **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
-- **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
+- **MUST run** `gitnexus_detect_changes()` **before committing** to verify your changes only affect expected symbols and execution flows.
 - **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
 - When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
 - When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
+
+
 
 ## Never Do
 
@@ -68,24 +85,33 @@ This project is indexed by GitNexus as **workflow-server** (15467 symbols, 21142
 - NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
 - NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
 
+
+
 ## Resources
 
-| Resource | Use for |
-|----------|---------|
-| `gitnexus://repo/workflow-server/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/workflow-server/clusters` | All functional areas |
-| `gitnexus://repo/workflow-server/processes` | All execution flows |
-| `gitnexus://repo/workflow-server/process/{name}` | Step-by-step execution trace |
+
+| Resource                                         | Use for                                  |
+| ------------------------------------------------ | ---------------------------------------- |
+| `gitnexus://repo/workflow-server/context`        | Codebase overview, check index freshness |
+| `gitnexus://repo/workflow-server/clusters`       | All functional areas                     |
+| `gitnexus://repo/workflow-server/processes`      | All execution flows                      |
+| `gitnexus://repo/workflow-server/process/{name}` | Step-by-step execution trace             |
+
+
+
 
 ## CLI
 
-| Task | Read this skill file |
-|------|---------------------|
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
-| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
-| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
-| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
-| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
+
+| Task                                         | Read this skill file                                        |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md`       |
+| Blast radius / "What breaks if I change X?"  | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?"             | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md`       |
+| Rename / extract / split / refactor          | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md`     |
+| Tools, resources, schema reference           | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md`           |
+| Index, status, clean, wiki CLI commands      | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md`             |
+
+
 
 <!-- gitnexus:end -->
