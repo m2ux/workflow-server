@@ -14,7 +14,9 @@ description: >-
 
 # Server in the Loop
 
-A live HTTP sidecar walks real workflow traffic to exercise and validate **codebase changes, corpus changes, or both**. Specimen workflows are the usual vehicle. The first live walk is always a **minimum viable workflow (MVW)** — one orchestrator, one activity, one routine, one technique — so a broken engine is visible before anyone authors a change-surface specimen, and so a broken instance can be cycled without paying for that larger walk.
+A live sidecar walks real workflow traffic to exercise and validate **codebase changes, corpus changes, or both**. Specimen workflows are the usual vehicle. The first live walk is always a **minimum viable workflow (MVW)** — one orchestrator, one activity, one routine, one technique — so a broken engine is visible before anyone authors a change-surface specimen, and so a broken instance can be cycled without paying for that larger walk.
+
+HTTP is the transport the container listens on; it is not the interface a walk uses. **The walk is driven entirely through the sidecar's MCP tools** — see **Reach the instance through MCP**.
 
 This skill locates the pairing, the MCP namespace, and the loop. Bootstrap steps come from `discover` on the sidecar; reload flags live in `http.md` and `scripts/reload-exp-sidecar.sh` of the server checkout. Cite those. Do not copy them here.
 
@@ -128,13 +130,15 @@ Run that from the checkout that has host compile, with `--build` pointing at the
 ./scripts/reload-exp-sidecar.sh --name=workflow-server-exp
 ```
 
-4. Confirm identity on the endpoint itself:
+4. Confirm the instance is serving. `/ready` is a container readiness probe with no MCP method behind it, so this one check is a shell call:
 
 ```bash
 curl -fsS http://127.0.0.1:32772/ready
 ```
 
 The payload is `{ status, checks, corpus }`. Walk only on HTTP 200 with `status: "ready"`, `checks.sessionKeyWritable: true`, and `checks.corpusServes: true`. `corpus.hostDir` is the dedicated corpus worktree on the host; `corpus.dir` is the container mount. `/ready` does not carry a pin.
+
+This and the `docker inspect` below are the ONLY two shell touches of a live instance. Everything after them is MCP — see **Reach the instance through MCP**.
 
 5. Cite the pin from labels, not from `/ready`:
 
@@ -145,6 +149,14 @@ docker inspect workflow-server-exp --format '{{json .Config.Labels}}'
 `workflow-server.corpus.pin` is the commit (suffix `-dirty` when that tree has uncommitted edits). Each reload stamps `workflow-server.engine.dir` and `workflow-server.engine.pin`. The install container on `:3000` stays up.
 
 MCP HTTP sessions live in the container's memory. A reload drops them. Call `discover` on the sidecar again before the next walk.
+
+## Reach the instance through MCP
+
+**Every call that reads or drives the server is an MCP tool call on the `workflow-server-exp` namespace.** The URL in the pairing table addresses that namespace; it is not an endpoint to drive by hand. A walk conducted over `curl` proves the container answers HTTP and proves nothing about what an agent receives, which is the only thing a sidecar walk is for — session binding, delivery ledger, unchanged-markers and batch accounting all live in the MCP layer and none of them is exercised by a shell request.
+
+Two calls sit outside MCP because no MCP method covers them: `/ready`, which answers before a session exists, and `docker inspect` for the pins, which are container labels. Nothing else. `health_check` is an MCP tool and is the right call for server status once the namespace is reachable.
+
+**When the tools are missing or a call fails at the socket, the MCP client is disconnected — reconnect it.** `The socket connection was closed unexpectedly`, or the `workflow-server-exp` tools absent from the namespace, is a client-side condition: the container was stopped or replaced under a live client, or the client came up before the instance did. The remedy is `/mcp reconnect all` (the user runs it), after confirming the container is up via step 4. It is never a reason to reach for `curl`, and a walk retried over HTTP after an MCP failure is not the walk this skill asks for — report the disconnect and wait.
 
 ## Walk the MVW, then the specimen
 
