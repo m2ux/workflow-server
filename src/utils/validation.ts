@@ -239,10 +239,11 @@ export function validateTechniqueFetches(
 }
 
 /**
- * The exit an orchestrator reports for the activity it is leaving names an outcome the workflow
- * binds; the requested target is that binding, or the report and the move disagree. Naming the
- * outcome is checkable in a way naming a condition never was — the binding is a fact in the
- * workflow file rather than a string to be matched against rendered prose.
+ * The exit an orchestrator reports for the activity it is leaving names an outcome that activity
+ * declares and the graph binds. Naming the outcome is checkable in a way naming a condition never
+ * was — the binding is a fact in the workflow file rather than a string to be matched against
+ * rendered prose. Where the exit names such an outcome the destination follows from the graph, so
+ * what is left to check is that the outcome exists.
  */
 export function validateReportedExit(view: SessionView, workflow: Workflow, activityId: Destination, reportedExit: string | undefined): string | null {
   if (!view.act || reportedExit === undefined || reportedExit === '') return null;
@@ -252,17 +253,8 @@ export function validateReportedExit(view: SessionView, workflow: Workflow, acti
   const bindings = getExitBindings(workflow, view.act);
   if (bindings.length === 0) return null;
 
-  const binding = bindings.find(b => b.exit === reportedExit);
-  if (!binding) {
+  if (!bindings.some(b => b.exit === reportedExit)) {
     return `Activity '${view.act}' has no exit '${reportedExit}'. Its exits are: [${bindings.map(b => b.exit).join(', ')}]`;
-  }
-  // The requested destination satisfies the binding when the activities it opens are the ones the
-  // binding opens. Off a plain destination that is one id against one id; on a fan enter it is
-  // set-wise, because the call names the destination exactly as the graph names it.
-  const bound = destinationTargets(binding.to);
-  const agrees = bound.length === requested.length && requested.every((target) => bound.includes(target));
-  if (!agrees) {
-    return `Exit '${reportedExit}' of '${view.act}' is bound to '${bound.join(', ')}' but '${requested.join(', ')}' was requested.`;
   }
   return null;
 }

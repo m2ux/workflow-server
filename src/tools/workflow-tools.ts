@@ -1185,12 +1185,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       activity_id: DestinationSchema.describe(
-        'Where the run goes next: an activity id, `__terminal__`, or — where the graph fans the exit taken — the destination exactly as the graph names it, which for one activity run over a collection is that object. Returning a branch of a running fan, this is the activity the fan converges on: the server enters it once, when the last branch returns.',
+        'Where the run goes next, read from the graph where the graph states it: naming `from_activity` and `exit` together settles the destination, including its shape, so an exit the graph fans opens one branch per element of the collection it names whatever this field holds. What this field decides is the walk\'s opening, where nothing is retired yet — the `initialActivity` from get_workflow — and any exit the graph leaves unbound, as an activity id or `__terminal__`.',
       ),
       from_activity: z.string().optional().describe(
         'The activity this call is exiting — the one `exit`, `step_manifest`, `variables_changed` and `artifacts_produced` belong to, instance-qualified (`challenge-pass#1`) where the graph runs that activity once per element of a collection. Required whenever anything is in flight, which is every call but a session\'s first, so a call always names the activity it is returning rather than leaving the server to infer it. Omitted only on that first call, when the frontier is empty.',
       ),
-      exit: z.string().optional().describe('Optional. Name of the exit the previous activity took. Checked against the workflow graph: an exit bound to a destination other than `activity_id` warns. Required off an activity whose exit the graph fans, to say which destination it takes.'),
+      exit: z.string().optional().describe('Optional. Name of the exit the previous activity took. Together with `from_activity` it settles where the run goes, since the graph binds each exit to its destination; an exit the activity does not declare warns. Required off an activity whose exit the graph fans, to say which of its destinations is taken.'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
       variables_changed: variablesChangedSchema,
@@ -1214,19 +1214,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
-      const destination = activity_id as Destination;
-      const targets = destinationTargets(destination);
-
+      // A held checkpoint answers before anything else the call says is read, so the reason a
+      // transition is refused is the checkpoint rather than whatever the call named.
       if (state.activeCheckpoint) {
         throw new Error(
-          `Cannot transition to '${targets.join(', ')}': Active checkpoint '${state.activeCheckpoint.checkpointId}' ` +
+          `Cannot transition to '${destinationTargets(activity_id as Destination).join(', ')}': ` +
+          `Active checkpoint '${state.activeCheckpoint.checkpointId}' ` +
           `on activity '${state.activeCheckpoint.activityId}'. The orchestrator must resolve it by calling respond_checkpoint.`
         );
-      }
-      const isTerminal = destination === TERMINAL_SENTINEL;
-      for (const target of targets) {
-        if (target === TERMINAL_SENTINEL) continue;
-        if (!getActivity(result.value, target)) throw new Error(`Activity not found: ${target}`);
       }
 
       // Step 1 of the resolution rule: the retiring activity is the one the call NAMES, when the
@@ -1234,6 +1229,28 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // second advance off an already-retired activity would otherwise resolve against whatever the
       // frontier then held and record it complete before its first step.
       const retiring = resolveRetiringActivity(state, from_activity);
+
+      // The graph is the single home for the routing, so a call that names the activity it retires
+      // and the exit that activity took has said everything the destination follows from, and the
+      // destination it enters is the one the graph binds there. `activity_id` carries the walk's
+      // opening, where nothing is retired yet, and any exit the graph leaves unbound.
+      //
+      // The shape of a destination is part of what the graph states: an exit bound to a fan opens
+      // one branch per element of the collection it names. Reading the destination off the caller
+      // instead makes a fan indistinguishable from a plain destination to that fan's activity —
+      // both name one activity — so a bare id would open a single branch where the graph declares
+      // the collection's width, and the run would converge and terminate a fan short.
+      const boundDestination = (retiring !== undefined && exit !== undefined)
+        ? getExitBindings(result.value, retiring).find((b) => b.exit === exit)?.to
+        : undefined;
+      const destination = (boundDestination ?? activity_id) as Destination;
+      const targets = destinationTargets(destination);
+
+      const isTerminal = destination === TERMINAL_SENTINEL;
+      for (const target of targets) {
+        if (target === TERMINAL_SENTINEL) continue;
+        if (!getActivity(result.value, target)) throw new Error(`Activity not found: ${target}`);
+      }
 
       // T2: an exit that fans has to be named, or the server cannot tell which destination is taken.
       if (retiring !== undefined && exit === undefined) {

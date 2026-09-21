@@ -36,7 +36,7 @@ afterAll(() => {
 
 const on = (activity: string): SessionView => ({ wf: 'fixture', act: activity, v: '1.0.0' });
 
-describe('the reported-exit check — silent without the base lookup', () => {
+describe('the reported-exit check — the outcome exists, and the base lookup finds it', () => {
   it('reports a fan instance whose reported exit the activity does not declare', () => {
     // Proved live: an instance-qualified id resolves to its base definition, so the check finds
     // the bindings and reports. Unresolved it would find none and return null — disabled, not wrong.
@@ -45,26 +45,19 @@ describe('the reported-exit check — silent without the base lookup', () => {
     expect(finding).toContain('probed');
   });
 
-  it('reports a fan instance returning to a destination its exit is not bound to', () => {
-    const finding = validateReportedExit(on('probe-unit#1'), instanceFan, 'scope-sweep', 'probed');
-    expect(finding).toContain("is bound to 'combine-probes' but 'scope-sweep' was requested");
-  });
-
-  it('is silent when a fan instance returns to the destination its exit names', () => {
+  it('is silent when a fan instance returns on an exit its activity declares', () => {
     expect(validateReportedExit(on('probe-unit#2'), instanceFan, 'combine-probes', 'probed')).toBeNull();
   });
 
-  it('compares set-wise on a fan enter, so the destination as the graph names it satisfies it', () => {
+  it('is silent on a fan enter, whatever the caller names beside the exit', () => {
+    // The destination follows from the exit, so what this field holds is not what the check is
+    // about — the branches the graph opens are the graph's to state.
     expect(validateReportedExit(on('plan-prepare'), listFan, ['survey-pass', 'dependency-review'], 'done'))
       .toBeNull();
-    // Order is not part of the agreement; membership is.
     expect(validateReportedExit(on('plan-prepare'), listFan, ['dependency-review', 'survey-pass'], 'done'))
       .toBeNull();
-  });
-
-  it('reports a fan enter that opens a branch the binding does not', () => {
-    const finding = validateReportedExit(on('plan-prepare'), listFan, ['survey-pass', 'combine-findings'], 'done');
-    expect(finding).toContain("is bound to 'survey-pass, dependency-review'");
+    expect(validateReportedExit(on('plan-prepare'), listFan, ['survey-pass', 'combine-findings'], 'done'))
+      .toBeNull();
   });
 });
 

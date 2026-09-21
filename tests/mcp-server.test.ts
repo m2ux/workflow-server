@@ -893,7 +893,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(validation.warnings.filter((w: string) => w.includes('exit'))).toHaveLength(0);
     });
 
-    it('should warn when the reported exit is bound elsewhere', async () => {
+    it('enters the destination the graph binds to the exit, whatever activity_id names', async () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
       const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
 
@@ -907,10 +907,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         },
       });
       expect(result.isError).toBeFalsy();
+      // `skip-optional-activities` binds to `plan-prepare`, and the graph is where the routing
+      // lives, so that is the activity the run enters and the one the response names.
+      const data = JSON.parse(rawText(result)) as { activity_id: string };
+      expect(data.activity_id).toBe('plan-prepare');
       const meta = result._meta as Record<string, unknown>;
       const validation = meta['validation'] as { status: string; warnings: string[] };
-      expect(validation.status).toBe('warning');
-      expect(validation.warnings.some((w: string) => w.includes("is bound to 'plan-prepare'"))).toBe(true);
+      expect(validation.warnings.some((w: string) => w.includes('is bound to'))).toBe(false);
     });
 
     it('should warn when the activity declares no such exit', async () => {
@@ -950,23 +953,6 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(validation.warnings.filter((w: string) => w.includes('exit'))).toHaveLength(0);
     });
 
-    it('a mismatched exit should not block execution', async () => {
-      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
-      const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
-
-      const result = await client.callTool({
-        name: 'next_activity',
-        arguments: {
-          session_index: tokenAtComprehension,
-          from_activity: 'codebase-comprehension',
-          activity_id: 'requirements-elicitation',
-          exit: 'skip-optional-activities',
-        },
-      });
-      expect(result.isError).toBeFalsy();
-      const nextAct = parseToolResponse(result);
-      expect(nextAct.activity_id).toBe('requirements-elicitation');
-    });
   });
 
   // ============== Step Manifest ==============
