@@ -184,10 +184,12 @@ export interface ResolvedTechnique {
 }
 
 /**
- * The deliverable body of a technique reference (protocol + interface). One projection for ALL
- * techniques — standalone or nested. A nested technique ("sub-technique" informally) is just a
- * technique; its rules surface as `rule` entries via the auto-include pass, exactly like a
- * standalone technique's, rather than being inlined here.
+ * The deliverable body of a technique reference. One projection for ALL techniques — standalone or
+ * nested. A nested technique ("sub-technique" informally) is just a technique.
+ *
+ * A body states the capability, the interface, the procedure AND the rules the technique is held
+ * to, because those together are what an agent needs to perform the operation. The bundle's `rules`
+ * list carries what is left — see `dropRulesStatedBy` for which rule takes which home.
  */
 function projectTechniqueBody(t: Technique): Record<string, unknown> {
   const body: Record<string, unknown> = {};
@@ -197,6 +199,7 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   if (t.protocol) body['protocol'] = t.protocol;
   if (t.outputs) body['outputs'] = t.outputs;
   if (t.inherited_outputs) body['inherited_outputs'] = t.inherited_outputs;
+  if (t.rules) body['rules'] = t.rules;
   return body;
 }
 
@@ -604,12 +607,65 @@ export async function composeActivityTechnique(
 }
 
 /**
+ * Every rule line a bundle's operation bodies state, keyed by name and text.
+ *
+ * A body's `rules` is a map from name to one line or several; the list is one entry per line. Both
+ * halves join on a NUL, which no rule name or rule text holds, so no pair can collide by one name
+ * ending where the next one's text begins.
+ */
+function rulesStatedByOperations(bodies: Record<string, unknown>): Set<string> {
+  const stated = new Set<string>();
+  for (const body of Object.values(bodies)) {
+    if (!body || typeof body !== 'object') continue;
+    const rules = (body as Record<string, unknown>)['rules'];
+    if (!rules || typeof rules !== 'object' || Array.isArray(rules)) continue;
+    for (const [name, value] of Object.entries(rules as Record<string, string | string[]>)) {
+      for (const line of Array.isArray(value) ? value : [value]) stated.add(`${name}\0${String(line)}`);
+    }
+  }
+  return stated;
+}
+
+/**
+ * Give the role's `rules` list up to the bodies, for every rule a body already states.
+ *
+ * Which home a rule takes is decided by what it governs. A rule a technique declares, or inherits
+ * from its ancestor group, governs that operation and rides the body that states it — where a
+ * reader meets it beside the procedure it constrains. The list keeps what is left: rules that
+ * govern the agent rather than any one operation. The list gives way rather than the body because
+ * the body is the richer home — it says WHICH operation the rule binds, which the flat list cannot.
+ *
+ * A body a delivery collapsed to a marker states nothing here, so a rule it holds stays in the
+ * list. That is a rule delivered twice to a context that already had it, which costs a repeat
+ * delivery a few characters and costs a reader nothing.
+ *
+ * Empties the list rather than leaving it empty: a `rules` key with nothing under it reads as a
+ * role with no rules of its own, which is the same thing said twice.
+ */
+export function dropRulesStatedBy(bundle: Record<string, unknown>, bodies: Record<string, unknown>): void {
+  const list = bundle['rules'];
+  if (!Array.isArray(list)) return;
+  const stated = rulesStatedByOperations(bodies);
+  const kept = (list as Array<[string, string]>)
+    .filter(([name, line]) => !stated.has(`${name}\0${String(line)}`));
+  if (kept.length > 0) bundle['rules'] = kept;
+  else delete bundle['rules'];
+}
+
+/**
  * Shape a resolved-operations array for tool-response output.
  * Bundle shape is wire-stable — no markdown-migration-driven changes.
+ *
+ * A rule has one home in the response, and which home is decided by what the rule governs. A rule
+ * a technique declares, or inherits from its ancestor group, governs that operation and rides the
+ * body that states it — where a reader meets it alongside the procedure it constrains. `rules`
+ * carries what is left: the role's own rules, declared standalone and referenced by the workflow,
+ * which govern the agent rather than any one operation. The two sets are disjoint, so no rule is
+ * read twice and none is anywhere but where it belongs.
  */
 export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<string, unknown> {
   const techniques: Record<string, unknown> = {};
-  const rules: Array<[string, string]> = [];
+  const roleRules: Array<[string, string]> = [];
   const unresolved: string[] = [];
 
   for (const entry of resolved) {
@@ -621,7 +677,7 @@ export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<str
     } else if (entry.type === 'rule') {
       const lines = Array.isArray(entry.body) ? entry.body : [entry.body];
       for (const line of lines) {
-        rules.push([entry.name, String(line)]);
+        roleRules.push([entry.name, String(line)]);
       }
     } else {
       unresolved.push(entry.ref);
@@ -630,7 +686,8 @@ export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<str
 
   const out: Record<string, unknown> = {};
   if (Object.keys(techniques).length > 0) out['techniques'] = techniques;
-  if (rules.length > 0) out['rules'] = rules;
+  if (roleRules.length > 0) out['rules'] = roleRules;
   if (unresolved.length > 0) out['unresolved'] = unresolved;
+  dropRulesStatedBy(out, techniques);
   return out;
 }

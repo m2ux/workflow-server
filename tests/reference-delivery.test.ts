@@ -42,18 +42,28 @@ function isUnchangedMarker(value: unknown): value is UnchangedMarker {
 /**
  * The operations a delivery carried a body for, keyed as the bundle keys them.
  *
- * A response is held to what one tool result may carry, so a bundle names operations it carried no
- * body for under `operation_refs` and serves them by id instead. Reference delivery is about what a
- * context has been sent: an operation it holds comes back as a marker, and one the bound deferred
- * arrives in full at the delivery that has room for it. A case asserting "everything collapses"
- * therefore asks it of what was delivered, which is what this reads off the first response.
+ * Reference delivery is about what a context has been sent: an operation it holds comes back as a
+ * marker, and everything else arrives entire. A case asserting "everything collapses" therefore
+ * asks it of what was delivered, which is what this reads off the first response.
  */
+/**
+ * Whether a delivery carried the role's own rules in full.
+ *
+ * A rule has one home, decided by what it governs: a rule an operation declares or inherits rides
+ * that operation's body, and the `rules` list carries only what governs no one operation. So the
+ * list is absent on an activity whose every rule belongs to an operation, present where one does
+ * not, and a marker where this context already holds it. Full delivery is the third of those.
+ */
+function rulesDeliveredInFull(bundle: Record<string, unknown>): boolean {
+  return Array.isArray(bundle['rules']);
+}
+
 function deliveredInFull(bundle: Record<string, unknown>): string[] {
   const techniques = (bundle['techniques'] ?? {}) as Record<string, unknown>;
   const carried = Object.entries(techniques).filter(([, value]) => !isUnchangedMarker(value)).map(([key]) => key);
   // Each call site drives a loop over this list, so an empty one is a case that asserts about no
-  // entries and passes for it. Every delivery a caller reads here carries at least one body — a
-  // fresh context takes the contract in full, and a repeat takes what the bound deferred from it.
+  // entries and passes for it. A fresh context takes the whole contract, so every delivery a caller
+  // reads here carries at least one body.
   expect(carried.length, 'the delivery this reads carried no operation body at all').toBeGreaterThan(0);
   return carried;
 }
@@ -202,7 +212,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const key of carried) {
         expect(isUnchangedMarker(techniques[key]), `expected a marker for ${key}`).toBe(true);
       }
-      expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
+      expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
       expect(second.bundle['bundle_note']).toBeDefined();
       // The activity body is never collapsed, whatever the identity holds.
       expect(second.bodyText.length).toBeGreaterThan(0);
@@ -241,19 +251,19 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const value of Object.values(firstTechniques)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
-      expect(Array.isArray(first.bundle['rules'])).toBe(true);
+      expect(Object.keys(firstTechniques).length, 'the first delivery carried no operation').toBeGreaterThan(0);
 
       const second = splitActivityResponse(await getActivity(idx));
       const secondTechniques = second.bundle['techniques'] as Record<string, unknown>;
-      // Byte-identical refetch: every technique this context holds collapses to a marker, and the
-      // room that frees carries the operations the bound deferred from the first delivery.
+      // Byte-identical refetch: the first delivery carried the whole contract, so every entry of it
+      // collapses to a marker and the second carries no body at all.
       for (const key of deliveredInFull(first.bundle)) {
         expect(isUnchangedMarker(secondTechniques[key]), `expected marker for ${key}`).toBe(true);
       }
-      for (const key of deliveredInFull(second.bundle)) {
-        expect(Object.keys(firstTechniques), `${key} was delivered twice in full`).not.toContain(key);
+      for (const [key, value] of Object.entries(secondTechniques)) {
+        expect(isUnchangedMarker(value), `${key} was delivered twice in full`).toBe(true);
       }
-      expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
+      expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
       // The activity body itself is still delivered. (`work-package` declares no rules buckets of
       // its own — its conduct comes from the conduct home and its one activity-scoped rule set sits
       // on the activity that owns it — so no inherited `activity_rules` block reaches this worker.
@@ -264,11 +274,8 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(secondBody['steps']).toBeDefined();
 
       // A marker identifies the technique's own composed content, which is what the ledger is keyed
-      // on — not the bytes the response happened to emit, since a first delivery leaves out the
-      // contract blocks an earlier sibling in the same response already carried. So the identity to
-      // assert is stability and distinctness: one hash per technique, the same on every later call.
-      // Read on the third call, by which point the room the collapses freed has carried whatever
-      // the first delivery's bound deferred — so the whole contract is content this context holds.
+      // on. So the identity to assert is stability and distinctness: one hash per technique, the
+      // same on every later call.
       const third = splitActivityResponse(await getActivity(idx));
       const thirdTechniques = third.bundle['techniques'] as Record<string, unknown>;
       for (const [key, value] of Object.entries(thirdTechniques)) {
@@ -354,7 +361,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const value of Object.values(techniques)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
-      expect(Array.isArray(forced.bundle['rules'])).toBe(true);
+      expect(deliveredInFull(forced.bundle).length, 'bundle: full carried no operation in full').toBeGreaterThan(0);
     });
 
     it('persists contextMode and the delivery ledger in session.json', async () => {
@@ -369,16 +376,19 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'intake-and-scope');
-      await getActivity(idx);
+      const delivered = splitActivityResponse(await getActivity(idx));
 
       const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
       expect(onDisk.contextMode).toBe('persistent');
       expect(onDisk.deliveredContent?.solo).toBeDefined();
       const keys = Object.keys(onDisk.deliveredContent.solo as Record<string, string>);
       expect(keys.some(k => k.startsWith('bundle:'))).toBe(true);
-      // Rules entries are content-keyed (set semantics) so alternating rule
-      // sets across activities still collapse.
-      expect(keys.some(k => /^bundle:rules:[0-9a-f]{16}$/.test(k))).toBe(true);
+      // A rule rides the body of the operation it governs, and the role's own `rules` list carries
+      // what governs no one operation. The list is content-keyed (set semantics) so alternating
+      // rule sets across activities still collapse — and an activity whose every rule has an
+      // operation home sends no list, and records no key for one.
+      expect(keys.some(k => /^bundle:rules:[0-9a-f]{16}$/.test(k)))
+        .toBe(Array.isArray(delivered.bundle['rules']));
       expect(keys.some(k => /^activity_rules:[0-9a-f]{16}$/.test(k))).toBe(true);
     });
 
@@ -434,7 +444,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const key of deliveredInFull(first.bundle)) {
         expect(isUnchangedMarker(techniques[key]), `expected marker for ${key}`).toBe(true);
       }
-      expect(isUnchangedMarker(referenced.bundle['rules'])).toBe(true);
+      expect(rulesDeliveredInFull(referenced.bundle), 'the role rules arrived in full a second time').toBe(false);
 
       // Omitting the opt-in drops `bundle_mode`, and `bundle: "full"` is what re-delivers the
       // bundle this identity has already been sent.
@@ -796,12 +806,11 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
   });
 
-  // Block-level delivery ledger. Finer-grained than the whole-technique dedup above:
-  // a NOT-yet-seen technique whose shared contract/rules blocks were already delivered
-  // (by a sibling technique or an earlier fetch) returns those blocks as markers while
-  // its technique-specific core stays full — the case whole-payload hashing cannot catch,
-  // since the core always changes the whole hash.
-  describe('block-level delivery ledger', () => {
+  // A composed technique is one item, delivered entire. Every block it declares — the
+  // contract it inherits from its ancestor group, the rules it is held to — rides the body
+  // that states it, in every delivery mode, however many siblings of the same group were
+  // delivered before it. What collapses is the whole technique, on the branch above.
+  describe('a composed technique arrives entire', () => {
     // Parse a get_technique response body into its technique record (drops the
     // `session_index:` header line before the first blank line).
     function parseTechniqueBody(result: { content: Array<{ text: string }> }): Record<string, unknown> {
@@ -809,49 +818,22 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       return parse(text.substring(text.indexOf('\n\n') + 2)) as Record<string, unknown>;
     }
 
-    // Two distinct technique-bound steps within an activity, discovered on a THROWAWAY
-    // fresh session so the probe's get_activity does not pollute the test session's
-    // ledger (eager bundling records whole-technique keys in every mode). These tests
-    // then fetch these steps directly via get_technique, never calling get_activity, so a
-    // block-marker (not a whole-technique marker) is exercised on the second fetch.
-    async function findTwoTechniqueStepIds(activityId: string): Promise<[string, string]> {
-      const probe = await startSession({ workflow_id: 'work-package', agent_id: 'probe' });
-      const probeIdx = probe['session_index'] as string;
-      await mcp.enter(probeIdx, activityId);
-      const parsed = splitActivityResponse(await getActivity(probeIdx, { bundle: 'full' }));
-      const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
-      const flat: Array<{ id?: string; technique?: unknown }> = [];
-      const walk = (steps?: Array<{ id?: string; technique?: unknown; steps?: unknown }>): void => {
-        for (const s of steps ?? []) {
-          if (Array.isArray((s as { steps?: unknown }).steps)) walk((s as { steps?: Array<{ id?: string; technique?: unknown }> }).steps);
-          else if (typeof s.technique === 'string' && s.id) flat.push(s);
-        }
-      };
-      walk(body.steps as never);
-      const ids = flat.map(s => s.id!).filter((v, i, a) => a.indexOf(v) === i);
-      expect(ids.length, 'expected at least two technique-bound steps').toBeGreaterThanOrEqual(2);
-      return [ids[0]!, ids[1]!];
-    }
+    const SHARED_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules'] as const;
 
-    it('collapses already-delivered contract/rules blocks to markers while the core stays full', async () => {
+    it('carries a sibling technique\'s shared blocks whole, under reference delivery', async () => {
       const session = await startSession({
         workflow_id: 'work-package',
         agent_id: 'solo',
-        planning_folder: planningFolder('2026-07-12-block-dedup-cross-technique'),
+        planning_folder: planningFolder('2026-07-12-technique-arrives-entire'),
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      // Two operations of the same group, so the contracts the loader merges into both are
-      // identical and a collapse is possible at all. Across groups the inherited blocks differ by
-      // construction, and nothing delivered twice would be there to collapse. The pair also has to
-      // inherit the same set: where one leaf overrides a container declaration and the other does
-      // not, their inherited blocks differ and neither can collapse.
+      // Two operations of the same group, so the contract the loader merges into both is
+      // identical — the state the fragmenting pass used to collapse.
       const stepA = 'evaluate-open-assumptions';
       const stepB = 'update-assumptions-log';
       await mcp.enter(idx, 'assumptions-review');
 
-      // Technique A (persistent, no prior get_activity) delivers in full and establishes
-      // the shared contract blocks in the ledger.
       const first = await client.callTool({
         name: 'get_technique',
         arguments: { session_index: idx, step_id: stepA },
@@ -859,73 +841,27 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(first.isError).toBeFalsy();
       const bodyA = parseTechniqueBody(first as never);
       expect(bodyA['capability']).toBeDefined();
-      // At least one shared block is present and delivered full (an object, not a marker).
-      const sharedBlocks = ['inherited_inputs', 'inherited_outputs', 'rules'] as const;
-      const presentInA = sharedBlocks.filter(b => bodyA[b] !== undefined);
+      const presentInA = SHARED_BLOCKS.filter(b => bodyA[b] !== undefined);
       expect(presentInA.length, 'technique A should carry at least one shared block').toBeGreaterThan(0);
       for (const b of presentInA) expect(isUnchangedMarker(bodyA[b])).toBe(false);
 
-      // Technique B (not yet seen): its OWN core is delivered full, but any shared block
-      // whose content matches one already delivered by A collapses to a marker.
+      // B is a different technique, so it arrives in full — and "in full" is every block it
+      // declares, including the ones A has already put in this context.
       const second = await client.callTool({
         name: 'get_technique',
         arguments: { session_index: idx, step_id: stepB },
       });
       expect(second.isError).toBeFalsy();
       const bodyB = parseTechniqueBody(second as never);
-      // B is not the same technique as A — its core (capability) is delivered full.
       expect(bodyB['capability']).toBeDefined();
-      // The inherited contract is shared across a workflow's techniques, so at least one
-      // block collapses to a marker whose hash matches A's block projection.
-      const { stringify } = await import('yaml');
-      const collapsed = sharedBlocks.filter(b => isUnchangedMarker(bodyB[b]));
-      expect(collapsed.length, 'expected at least one shared block to collapse for technique B').toBeGreaterThan(0);
-      for (const b of collapsed) {
-        const marker = bodyB[b] as UnchangedMarker;
-        expect(marker.content_hash).toBe(contentHash(stringify({ [b]: bodyA[b] }, { lineWidth: 0 })));
+      for (const b of SHARED_BLOCKS) {
+        if (bodyB[b] === undefined) continue;
+        expect(isUnchangedMarker(bodyB[b]), `${b} arrived as a marker naming a piece of a body`).toBe(false);
       }
     });
 
-    it('full: true re-delivers every block full even when block-delivered', async () => {
-      const session = await startSession({
-        workflow_id: 'work-package',
-        agent_id: 'solo',
-        planning_folder: planningFolder('2026-07-12-block-dedup-full-escape'),
-        context_mode: 'persistent',
-      });
-      const idx = session['session_index'] as string;
-      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await mcp.enter(idx, 'implement');
-
-      await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
-      // B under reference delivery would collapse shared blocks; full: true forces full.
-      const forced = await client.callTool({
-        name: 'get_technique',
-        arguments: { session_index: idx, step_id: stepB, full: true },
-      });
-      expect(forced.isError).toBeFalsy();
-      const body = parseTechniqueBody(forced as never);
-      for (const b of ['inherited_inputs', 'inherited_outputs', 'rules'] as const) {
-        if (body[b] !== undefined) expect(isUnchangedMarker(body[b]), `expected full ${b} under full:true`).toBe(false);
-      }
-    });
-
-    it('fresh mode never markers blocks', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
-      const idx = session['session_index'] as string;
-      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await mcp.enter(idx, 'implement');
-
-      await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
-      const second = await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepB } });
-      const body = parseTechniqueBody(second as never);
-      for (const b of ['inherited_inputs', 'inherited_outputs', 'rules'] as const) {
-        if (body[b] !== undefined) expect(isUnchangedMarker(body[b]), `fresh mode must not marker ${b}`).toBe(false);
-      }
-    });
-
-    it('records block hashes under the technique:<block>:<hash> channel', async () => {
-      const slug = '2026-07-12-block-dedup-ledger-keys';
+    it('records no block key on the delivery ledger', async () => {
+      const slug = '2026-07-12-no-block-ledger-keys';
       const session = await startSession({
         workflow_id: 'work-package',
         agent_id: 'solo',
@@ -933,114 +869,19 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      const [stepA] = await findTwoTechniqueStepIds('implement');
-      await mcp.enter(idx, 'implement');
-      await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
+      await mcp.enter(idx, 'assumptions-review');
+      await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: 'evaluate-open-assumptions' },
+      });
 
       const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
       const keys = Object.keys(onDisk.deliveredContent.solo as Record<string, string>);
-      expect(keys.some(k => /^technique:(inherited_inputs|inherited_outputs|rules):[0-9a-f]{16}$/.test(k))).toBe(true);
-    });
-
-    // The eager-bundle path is the second call site of dedupTechniqueBlocks (the cases above
-    // exercise get_technique). Within a single persistent get_activity, the bundled step
-    // techniques are projected in document order, so a later step whose shared contract/rules
-    // block matches one an earlier bundled step already delivered collapses to a marker while
-    // its own core stays full — all in one response.
-    it('collapses shared blocks inside get_activity eager step_techniques entries', async () => {
-      const session = await startSession({
-        workflow_id: 'work-package',
-        agent_id: 'solo',
-        planning_folder: planningFolder('2026-07-12-block-dedup-eager-bundle'),
-        context_mode: 'persistent',
-      });
-      const idx = session['session_index'] as string;
-      // An activity that eager-bundles several technique steps sharing the work-package contract.
-      // Not the entry activity: its definition and role contract fill a response on their own, so
-      // the bound leaves its first delivery no room for a step map to dedup across.
-      await mcp.enter(idx, 'start-work-package');
-      await mcp.enter(idx, 'requirements-elicitation');
-
-      const { bundle } = splitActivityResponse(await getActivity(idx));
-      expect(bundle['bundle_mode']).toBe('reference');
-      const stq = bundle['step_techniques'] as Record<string, Record<string, unknown>>;
-      expect(stq, 'expected an eager step_techniques bundle').toBeDefined();
-      expect(Object.keys(stq).length, 'need >=2 bundled steps to dedup across siblings').toBeGreaterThanOrEqual(2);
-
-      const sharedBlocks = ['inherited_inputs', 'inherited_outputs', 'rules'] as const;
-      let fullBlockSeen = false;
-      let markerBlockSeen = false;
-      for (const entry of Object.values(stq)) {
-        // A whole-technique unchanged marker carries no block fields; skip it — we assert on
-        // otherwise-full entries whose individual blocks may be markered.
-        if (isUnchangedMarker(entry)) continue;
-        expect(entry['capability'], 'a full entry keeps its technique-specific core').toBeDefined();
-        for (const b of sharedBlocks) {
-          if (entry[b] === undefined) continue;
-          if (isUnchangedMarker(entry[b])) markerBlockSeen = true;
-          else fullBlockSeen = true;
-        }
-      }
-      // The first bundled occurrence of each shared block is delivered full; a later sibling
-      // sharing that block collapses it to a marker.
-      expect(fullBlockSeen, 'at least one shared block delivered full').toBe(true);
-      expect(markerBlockSeen, 'at least one sibling shared block collapsed to a marker').toBe(true);
-    });
-
-    it('PR366-TC-08: provenance_note collapses to marker on second sibling technique', async () => {
-      const session = await startSession({
-        workflow_id: 'work-package',
-        agent_id: 'solo',
-        planning_folder: planningFolder('2026-07-31-block-dedup-provenance-note'),
-        context_mode: 'persistent',
-      });
-      const idx = session['session_index'] as string;
-      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await mcp.enter(idx, 'implement');
-      const first = await client.callTool({
-        name: 'get_technique',
-        arguments: { session_index: idx, step_id: stepA },
-      });
-      expect(first.isError).toBeFalsy();
-      const bodyA = parseTechniqueBody(first as never);
-      if (bodyA['provenance_note'] === undefined) return; // corpus without provenance is out of scope
-      expect(isUnchangedMarker(bodyA['provenance_note'])).toBe(false);
-      const second = await client.callTool({
-        name: 'get_technique',
-        arguments: { session_index: idx, step_id: stepB },
-      });
-      expect(second.isError).toBeFalsy();
-      const bodyB = parseTechniqueBody(second as never);
-      if (bodyB['provenance_note'] !== undefined) {
-        expect(isUnchangedMarker(bodyB['provenance_note'])).toBe(true);
-      }
-    });
-
-    it('PR366-TC-09: inherited note may marker while items stay full when items differ', async () => {
-      const session = await startSession({
-        workflow_id: 'work-package',
-        agent_id: 'solo',
-        planning_folder: planningFolder('2026-07-31-block-dedup-split-note-items'),
-        context_mode: 'persistent',
-      });
-      const idx = session['session_index'] as string;
-      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await mcp.enter(idx, 'implement');
-      await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
-      const second = await client.callTool({
-        name: 'get_technique',
-        arguments: { session_index: idx, step_id: stepB },
-      });
-      expect(second.isError).toBeFalsy();
-      const bodyB = parseTechniqueBody(second as never);
-      const inh = bodyB['inherited_inputs'];
-      if (inh && typeof inh === 'object' && !isUnchangedMarker(inh)) {
-        const rec = inh as Record<string, unknown>;
-        // When note collapsed and items differ, items remain a full array/object.
-        if (rec['note'] !== undefined && isUnchangedMarker(rec['note'])) {
-          expect(rec['items']).toBeDefined();
-          expect(isUnchangedMarker(rec['items'])).toBe(false);
-        }
+      expect(keys.length, 'nothing was recorded, so the claim was not exercised').toBeGreaterThan(0);
+      // Every key names a whole item. A key naming a field of a body is what this refuses.
+      for (const key of keys) {
+        expect(key, `${key} names a piece of a technique rather than a whole item`)
+          .not.toMatch(/^technique:(inherited_inputs|inherited_outputs|rules|provenance_note)[.:]/);
       }
     });
   });
@@ -1072,12 +913,11 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(first.isError).toBeFalsy();
       const firstSplit = splitWorkflowResponse(first as never);
       // First call: ops bundle delivered full, not a marker. What proves "full" is the role's rules
-      // and an account of every operation — whether an operation arrives as a body or as an id under
-      // `operation_refs` is the response bound's business, and varies with the size of the workflow.
+      // and a body for every operation.
       expect(isUnchangedMarker(parse(firstSplit.opsBlock))).toBe(false);
       const firstBundle = parse(firstSplit.opsBlock) as Record<string, unknown>;
       expect(Array.isArray(firstBundle['rules'])).toBe(true);
-      expect(firstSplit.opsBlock).toMatch(/capability:|operation_refs:/);
+      expect(firstSplit.opsBlock).toMatch(/capability:/);
 
       const second = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
       expect(second.isError).toBeFalsy();
@@ -1326,7 +1166,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const key of deliveredInFull(spawn.bundle)) {
         expect(isUnchangedMarker(resumedTechniques[key]), `resumed worker must reference ${key}`).toBe(true);
       }
-      expect(isUnchangedMarker(resumed.bundle['rules'])).toBe(true);
+      expect(rulesDeliveredInFull(resumed.bundle), 'the role rules arrived in full a second time').toBe(false);
     });
 
     it('never hands one worker the markers of another worker on the same session', async () => {
@@ -1343,7 +1183,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const [key, value] of Object.entries(workerB.bundle['techniques'] as Record<string, unknown>)) {
         expect(isUnchangedMarker(value), `worker-b must receive ${key} in full`).toBe(false);
       }
-      expect(isUnchangedMarker(workerB.bundle['rules'])).toBe(false);
+      expect(deliveredInFull(workerB.bundle).length, 'the second worker was handed a marker').toBeGreaterThan(0);
     });
 
     it('scopes get_technique and get_resource on the same identity', async () => {

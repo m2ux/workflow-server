@@ -247,11 +247,11 @@ describe('batched dispatch (#407)', () => {
       arguments: { session_index: sessionIndex, context_tokens: 2_000_000, agent_id: scope },
     });
     if (isError(first)) throw new Error(`get_activity ${RUN[0]} failed: ${rawText(first)}`);
-    // Some of this collapses already: a technique two steps of one activity bind is deduped within
-    // the single delivery. That intra-activity reuse is the floor the second delivery is read
-    // against, so it is counted rather than assumed absent.
+    // Nothing collapses into an empty context: it holds nothing a marker could name, so every body
+    // arrives entire. That zero is the floor the second delivery is read against, counted rather
+    // than assumed — a non-zero here would be two steps of this activity binding one technique.
     const reusedByFirst = rawText(first).split('delivery: unchanged').length - 1;
-    expect(reusedByFirst).toBeGreaterThan(0);
+    expect(reusedByFirst, 'an empty context was handed a marker').toBe(0);
 
     // The worker reaches a gate and stops.
     const yielded = await client.callTool({

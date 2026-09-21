@@ -101,15 +101,21 @@ The server resolves an activity's declared references and bundles them into the 
 
 The response is the union of the workflow's declared technique references and the core orchestrator technique references the server auto-includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`): the engine traversal, state-persistence, sub-agent dispatch, and orchestrator-discipline references every orchestrator needs. Duplicates are deduplicated.
 
-The assembled bundle is then held to what one tool result may carry (`MAX_RESPONSE_CHARS`, default 60,000 — the same bound a worker's delivery answers to, because both open a role's work, and measured over the whole result: the response text and the protocol metadata a client weighs beside it). Operation bodies ride the response in list order and stop at the first that would overflow; the remainder are named under `operation_refs`, with `operations_note` saying how to get them. The role's `rules` list is never bounded — those rules are the contract an orchestrator is held to from its first call, while a procedure it has not reached yet is one it fetches with `get_technique { technique_id }` when it does.
+Every operation in that union arrives with its body: its capability, its interface, its procedure and the rules it is held to.
 
-The workflow metadata below the separator rides whole, at any bound. Procedure is the only thing on this response that gives way, and giving way defers it rather than discards it: a deferred body is fetched by id when the orchestrator reaches the step that applies it.
+**A rule has one home, and which home is decided by what it governs.** A rule a technique declares, or inherits from its ancestor group, governs that operation — so it rides the body that states it, where a reader meets it beside the procedure it constrains. The response's `rules` list carries what is left: the role's own rules, declared standalone and referenced by the workflow, which govern the agent rather than any one operation. The two sets are disjoint. No rule is read twice, and an activity whose every rule belongs to an operation sends no list at all.
+
+The body is the home that gives way last, because it is the richer one: it says WHICH operation a rule binds, which a flat list cannot.
+
+The assembled result is measured against what one tool result may carry (`MAX_RESPONSE_CHARS`, default 60,000 — the same figure a worker's delivery is measured against, because both open a role's work, and taken over the whole result: the response text and the protocol metadata a client weighs beside it). The limit reports; it decides nothing. A result past it goes out whole and the server logs that it did.
+
+The workflow metadata below the separator rides whole too.
 
 What the metadata carries is what an orchestrator drives a run from — the rules, the variable roster, the graph, the activities. The roster is every name the run holds with its type, its value set and its starting value, because the orchestrator recognises a name a worker reports back and reads a value out of the session by it.
 
 What it does not carry is the prose explaining what each variable is FOR. That absence is the contract rather than a limit reaching it: nothing the orchestrator decides turns on that prose, and the activity that produces a value and the activity that consumes it each carry it in their own definition, delivered whole to the worker dispatched there. Freight on this response at any size.
 
-Where the rules and the definition together still exceed the bound, the response goes out over it and the server logs that it did. Nothing further gives way, because nothing further can give way without discarding what the response exists to carry. A definition that fills an opening call on its own is a workflow that has outgrown one orchestrator, and the answer is to divide it — sub-workflows and fans are in the corpus for exactly this — rather than to send a thinner account of it.
+Where the contract and the definition together exceed the limit, the response goes out over it and the server logs that it did. Nothing gives way, because nothing can give way without discarding what the response exists to carry. A call too big to hand over in one piece is a workflow that has outgrown one orchestrator, and the answer is to divide it — sub-workflows and fans are in the corpus for exactly this — rather than to send a thinner account of it.
 
 ### The worker bundle
 
@@ -189,10 +195,9 @@ Reference delivery belongs to the **agent context**, not to the session:
 
 A marker is only ever valid for the context that received the bytes it stands for.
 
-Two things establish that a context holds a payload, and they are independent:
+What establishes that a context holds a payload is **its own ledger**. A scope the server has already delivered an activity to is that same context arriving again — the orchestrator mints one `agent_id` per dispatch and reuses it verbatim for as long as that worker carries its batch. So the **invariant blocks** (the worker technique bundle, its `rules`, and the inherited `activity_rules`) collapse for a returning identity in *every* delivery mode, not only under `persistent`. A replacement worker arrives under a new `agent_id`, reads an empty ledger, and takes them in full.
 
-- **Its own ledger.** A scope the server has already delivered an activity to is that same context arriving again — the orchestrator mints one `agent_id` per dispatch and reuses it verbatim for as long as that worker carries its batch. So the **invariant blocks** (the worker technique bundle, its `rules`, and the inherited `activity_rules`) collapse for a returning identity in *every* delivery mode, not only under `persistent`. A replacement worker arrives under a new `agent_id`, reads an empty ledger, and takes them in full.
-- **The response itself.** A marker may instead point at a byte-identical copy earlier in the *same* response. That needs no ledger and no mode: the copy travels in the payload the marker travels in, so any recipient that can read the marker can read the copy. See [Blocks inside a technique](#blocks-inside-a-technique).
+**A marker stands for a whole item** — one composed technique, one rules list, one note, one resource. No marker names a field of a body, because a body missing one of its fields is a fragment, and a reader holding a fragment has no call that returns the part it lacks.
 
 Resuming with `context_mode: "fresh"` drops that scope's ledger entries, because the caller is stating this identity retains nothing it was sent. The next delivery to it is therefore full. `bundle: "full"` does the same for one call without touching the ledger.
 
@@ -216,7 +221,7 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 
 ### What collapses, call by call
 
-- **`get_activity`** — under reference delivery the response carries `bundle_mode: reference`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules` and `activity_rules` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity body itself is always delivered. In the default mode the invariant blocks still collapse for a returning identity, and shared blocks still collapse within the response — so a `bundle_note` accompanies any response that carries a marker, in either mode, naming which referents that response can produce.
+- **`get_activity`** — under reference delivery the response carries `bundle_mode: reference`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules` and `activity_rules` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity body itself is always delivered. In the default mode the invariant blocks still collapse for a returning identity, so a `bundle_note` accompanies any response that can carry a marker, in either mode.
 - **`get_technique`** — a byte-identical refetch returns `delivery: unchanged` and a `content_hash` instead of the composed technique. Step-bound provenance annotations (`source:` / `destination:`) are part of that content. They are fixed for a given corpus and step, so refetching the same step collapses; fetching the same operation from a *different* step re-delivers in full rather than handing back a stale reference.
 - **`get_resource`** — a byte-identical refetch of the same `resource_id` returns `delivery: unchanged` and a `content_hash` instead of the body. The key is the caller's exact `resource_id`, anchor included, so `pr-description` and `pr-description#templates` occupy independent slots.
 - **`get_workflow`** — under `context_mode: "persistent"` the orchestrator ops bundle (everything above the `---` separator) is keyed under `workflow_bundle:<hash>`. On a resume where the agent already holds it, the whole bundle collapses to a single marker, while the workflow summary below the separator stays full.
@@ -225,27 +230,19 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 
 `get_technique` and `get_resource` collapse under either `bundle: "reference"` or a session-wide `context_mode: "persistent"`. Fresh and default sessions always receive full bodies.
 
-### Blocks inside a technique
+### What composition repeats
 
-Collapsing can go finer than a whole technique. Techniques sharing a workflow contract share blocks: the contract-inherited `inherited_inputs` and `inherited_outputs`, and the merged `rules`. Each is hashed on its own, under `technique:<block>:<hash>`.
+Composition merges each ancestor group's contract into every technique that group covers, so a response bundling ten techniques of one group carries that group's inherited inputs, inherited outputs and rules ten times. Each of those copies is delivered, because each belongs to the body it rides in: a technique arrives as its file defines it, and an agent reading one operation reads the whole of that operation without looking elsewhere in the payload for a piece of it.
 
-So when a technique is new to the context but one of its shared blocks already arrived with a sibling technique, that block becomes a marker in place while the technique-specific core arrives in full. This happens on the `get_technique` full-delivery path, inside each eagerly inlined `get_activity` `step_techniques` entry, and across the operations bundle of both `get_activity` and `get_workflow`, where most entries inherit one meta contract.
+Two steps bound to the same technique in one activity are the one case that collapses inside a response: the second entry is a marker naming the same whole technique the first delivered.
 
-Across an operations bundle the pass is response-local and the per-entry ledger key stays hashed on the technique's **full** composed body, not on the bytes the response emitted. Those two go together: what a later call compares against must not depend on which entry happened to carry a shared block this time, or a technique would re-deliver whenever the bundle around it changed. A collapsed entry is therefore found by its key — the same `techniques.<ref>` slot it occupied before — and its `content_hash` identifies the technique's content rather than the emitted form.
-
-One rule arrives once per response too. A technique inherits its ancestor group's rules, and the bundle hoists that same group's rules into the response's own `rules` list, so an inlined step would otherwise restate what the payload already carries: an entry keeps only the rules that list does not state, and an entry left with nothing carries no `rules` block at all.
-
-Inside one `get_activity` response this pass runs **in every delivery mode**, because composition merges each ancestor group's rules into every technique that group covers: a response bundling ten techniques of one group would otherwise carry that group's rules ten times. The marker points at the sibling entry in the same payload, so it is readable by a worker holding nothing from before. Widening it to the ledger — collapsing against what arrived on an *earlier call* — is what reference delivery adds.
-
-Two steps bound to the same technique in one activity collapse the same way: the second entry is a marker naming the first.
-
-Hashing the content is what keeps this from going stale: a block annotated with binding-seam provenance hashes differently, so it correctly arrives in full.
+Hashing the content is what keeps a marker from going stale: a technique annotated with binding-seam provenance hashes differently, so it correctly arrives in full.
 
 ### Forcing full delivery
 
-`get_technique { full: true }` and `get_resource { full: true }` each force the full payload of the item asked for, every block included. Reach for them when the calling context no longer holds the earlier payload — after it was summarized away, for instance.
+`get_technique { full: true }` and `get_resource { full: true }` each force the full payload of the item asked for. Reach for them when the calling context no longer holds the earlier payload — after it was summarized away, for instance.
 
-`get_activity { bundle: "full" }` does the same for a whole delivery, and is held to what one tool result may carry like every other delivery: it suppresses the markers, not the bound. So a context that lost a payload gets back what a response can carry, and asks for the rest one item at a time — which is what the per-item forms above are for.
+`get_activity { bundle: "full" }` does the same for a whole delivery: a context that lost a payload gets everything that delivery would have sent it.
 
 ### What gets measured
 
@@ -259,38 +256,36 @@ Hashing the content is what keeps this from going stale: a block annotated with 
 
 ## Hybrid technique bundling
 
-`get_activity` inlines the composed content of an activity's small step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens` together with what one tool result may carry, whichever the delivery reaches first.
+`get_activity` inlines the composed content of an activity's small step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens`.
 
-### The budgets
-
-Two limits, asking different questions, and a delivery stops at whichever it reaches first:
+### The window budget
 
 ```
 window budget    context_tokens × headroomFraction × charsPerToken
-response bound   MAX_RESPONSE_CHARS − what the response already owes
 ```
 
 `headroomFraction` (default 0.80) and `charsPerToken` (default 4) are server config, overridable with `BUNDLE_HEADROOM_FRACTION` and `BUNDLE_CHARS_PER_TOKEN`.
 
-The window budget asks how much of its own context a worker may spend on inlined content. The response bound asks what one handover may cost at all — the opening of a role's work, charged to that role's context for the session that follows. What the response already owes is the part no bound can move: the activity definition with its artifact contract, the workflow's inherited `activity_rules`, the header, the batch reading, the notes that say how to read a bundle, and the protocol metadata beside the text.
+The budget asks how much of its own context a worker may spend on content it did not ask for: a step whose gate may still turn out false, a resource its technique merely links. What the activity walks unconditionally — the definition, the role's `rules`, the operations of its contract — rides whatever the budget says, because it is not speculative.
 
-They also count differently, which is why they are two tallies rather than one figure. An unchanged-reference marker adds nothing to the window tally — the context it goes to holds that content already — but it adds its own bytes to the response tally, because a harness weighs what it is sent and cannot know what the reader holds. Each entry is priced at the size it is written in, nested under the map it rides in.
+An unchanged-reference marker draws the budget down by nothing: the context it goes to holds that content already.
 
-What is left is spent in priority order, each stage stopping at the first entry that would overflow what remains:
+What the budget is spent on, each stage stopping at the first entry that would overflow what remains:
 
-| Priority | Content | Deferred to |
+| Order | Content | Left to |
 |---|---|---|
-| 1 | the role contract's operation bodies, in list order | `operation_refs`, fetched with `get_technique { technique_id }` |
-| 2 | step technique bodies, in document order | `get_technique { step_id }` at the step |
-| 3 | eagerly bundled resource bodies | `resource_refs`, fetched with `get_resource` |
+| 1 | step technique bodies, in document order | `get_technique { step_id }` at the step |
+| 2 | eagerly bundled resource bodies | `resource_refs`, fetched with `get_resource` |
 
-The bound governs the whole tool result. A harness weighs the protocol metadata beside the text — one to two thousand characters of artifact contract, exit destinations, gate readings and the delivery cost — so the response owes that too. What its shape settles before the budget runs is reserved at its widest; the ids of what a delivery defers or bundles are charged as the response commits to them, so a reservation never stands in for something the delivery turns out not to carry.
+A body the budget leaves out is recorded as delivered to nobody: a ledger entry for it would collapse a later delivery to a marker for bytes the worker never received.
 
-The role's `rules` list is never bounded — a bound moves procedures and never boundaries. A body a bound leaves out is recorded as delivered to nobody: a ledger entry for it would collapse a later delivery to a marker for bytes the worker never received. That is also why a second delivery to the same context can carry what the first deferred — the contract it holds collapses to markers, and the room that frees goes to the procedures still owed.
+### What one tool result may carry
 
-`spent_chars` on the delivery cost line is the window tally, against `eager_budget_chars`; `response_spent_chars` is the response tally, against `response_bound_chars` (what one tool result may carry) and `fixed_chars` (what the response owed before the bundle spent anything). `worker_bundle_chars` reports the invariant part on its own, and `deferred_operations` counts the contract bodies served by id instead. The same figures ride on `_meta.delivery_cost` and as one `activity_delivered` history event, so a caller reads them from the response or the session rather than from the log.
+`MAX_RESPONSE_CHARS` (default 60,000) is measured over the whole result — the response text and the protocol metadata a client weighs beside it, one to two thousand characters of artifact contract, exit destinations, gate readings and delivery cost. It decides nothing about what a delivery holds. A delivery past it goes out whole, and the server logs that it did.
 
-An activity whose definition and rules fill a response on their own leaves nothing for any of the three stages. The delivery still goes out — a worker cannot do an activity it was not sent — and the server logs that it went out over the bound, which is the signal that the definition has outgrown a single delivery.
+That log line is the signal that an activity's work has outgrown a single handover, and dividing the activity is the answer to it. What the largest deliveries cost a client that caps a tool result — a round trip that pages the result to a file against the fetches a shed would have required — is [#836](https://github.com/m2ux/workflow-server/issues/836).
+
+`spent_chars` on the delivery cost line is the window tally, against `eager_budget_chars`; `response_spent_chars` is what the delivery text came to, against `response_bound_chars` (what one tool result may carry) and `fixed_chars` (the part that does not vary with the bundle — the definition, the rules, the header). `worker_bundle_chars` reports the role contract's share on its own. The same figures ride on `_meta.delivery_cost` and as one `activity_delivered` history event, so a caller reads them from the response or the session rather than from the log.
 
 ### Which steps get inlined
 
@@ -330,7 +325,7 @@ Once the step techniques are chosen, `get_activity` collects the unique `resourc
 
 **Under full delivery** — the default a dispatched worker's first activity takes — no bodies are sent. That call lands in a context with nothing to collapse against, so an inlined body would ship in full again in every activity that links it: measured at +24.5% on `get_activity` ([#322](https://github.com/m2ux/workflow-server/issues/322)). The ids arrive under `resource_refs` instead, and the worker fetches the ones it reads via `get_resource`. No `resource:<id>` key is written, since nothing could ever read it. The later activities of a batch ask for reference delivery instead, having a ledger to collapse against.
 
-**Sent in neither mode:** a single oversized resource (per-resource cap 80 000 chars by default), and anything past either budget — the worker's window or what one tool result may carry. Their ids join `resource_refs`, so nothing linked ever becomes unreachable.
+**Sent in neither mode:** a single oversized resource (per-resource cap 80 000 chars by default), and anything past the worker's window budget. Their ids join `resource_refs`, so nothing linked ever becomes unreachable.
 
 ### What the response looks like
 
@@ -346,7 +341,7 @@ That emitted line carries the intentional act, and it **is** the stepwise observ
 
 ### Ledger interplay
 
-Bundled entries share the `technique:<resolvedId>` key with `get_technique`. So in a persistent-context session a bundled delivery collapses a later step-bound refetch to an unchanged reference; and a reference-mode re-delivery of the activity collapses already-delivered bundled entries to markers, with the `▼ STEP` marker riding along. `bundle: "full"` re-delivers what a response can carry, and `get_technique { step_id, full: true }` reaches any one entry it could not.
+Bundled entries share the `technique:<resolvedId>` key with `get_technique`. So in a persistent-context session a bundled delivery collapses a later step-bound refetch to an unchanged reference; and a reference-mode re-delivery of the activity collapses already-delivered bundled entries to markers, with the `▼ STEP` marker riding along. `bundle: "full"` re-delivers them all, and `get_technique { step_id, full: true }` reaches any one of them.
 
 ### Fidelity
 

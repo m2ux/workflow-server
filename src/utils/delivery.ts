@@ -14,17 +14,18 @@ import { stringifyForResponse } from './serialization.js';
  * This is the one canonical unchanged-marker shape, emitted identically by
  * the `get_activity` bundle path, `get_technique`, and `get_resource`.
  *
+ * **A marker stands for a WHOLE item.** Every key below names something a response either carries
+ * entire or replaces entire — one composed technique, one rules list, one note, one resource. No
+ * key names a field of a body, because a body delivered without one of its fields is a fragment,
+ * and a reader holding a fragment has no call that returns the part it lacks: the field is not a
+ * thing with an identity, only a component of an operation that was delivered anyway.
+ *
  * Content keys are namespaced by delivery channel so the composition paths
  * never cross-reference each other's payloads:
  *   - `bundle:<technique-ref>`   — one composed technique in the `get_activity` bundle
  *   - `bundle:rules:<hash>`      — the `get_activity` rules bundle
  *   - `activity_rules:<hash>`    — the inherited worker rules block
  *   - `technique:<id>`           — a full `get_technique` composed payload
- *   - `technique:<block>:<hash>` — one shared block (`inherited_inputs` /
- *     `inherited_outputs` / `rules`) of a composed technique
- *   - `technique:provenance_note:<hash>` — the step-bound provenance preamble
- *   - `technique:inherited_inputs.note:<hash>` / `…items:<hash>` (and the same
- *     for `inherited_outputs`) — invariant note vs items of an inherited block
  *   - `workflow_bundle:<hash>`   — the `get_workflow` orchestrator ops bundle
  *   - `note:<id>:<hash>`         — one delivery note (`bundle`, `step_techniques`,
  *     `resources`), the invariant prose explaining how to read the response
@@ -36,12 +37,10 @@ import { stringifyForResponse } from './serialization.js';
  *
  * Every marked item is recoverable one at a time — `get_technique { full: true }`,
  * `get_resource { full: true }` — which is the route a context that lost content takes.
- * `get_activity { bundle: 'full' }` suppresses the markers for a whole delivery, and that delivery
- * is held to what one tool result may carry like any other, so it re-sends what a response can
- * carry rather than everything the session has sent.
+ * `get_activity { bundle: 'full' }` suppresses the markers for a whole delivery, so a context that
+ * lost several items takes them all back on one call.
  *
- * A response-local marker points at an earlier entry of the same response and needs no ledger; see
- * docs/resource-resolution-model.md § Reference Delivery.
+ * See docs/resource-resolution-model.md § Reference Delivery.
  */
 
 /** Hash used for delivery-ledger comparison: sha256, truncated for payload brevity. */
@@ -119,106 +118,4 @@ export function stageNote(
   if (held && deliveredHash(state, key, scope) === hash) return unchangedMarker(hash);
   newDeliveries[key] = hash;
   return text;
-}
-
-/**
- * Projected-technique keys eligible for whole-block dedup — the contract-inherited
- * blocks and the step-bound provenance preamble shared across a workflow's techniques.
- * These mirror `projectTechnique`'s key strings, so renaming those keys must update this list.
- * Inherited `note` / `items` are also hashed separately (see `dedupTechniqueBlocks`).
- */
-export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules', 'provenance_note'] as const;
-
-/** Inherited blocks whose `note` is content-keyed separately from `items`. */
-const INHERITED_SPLIT_BLOCKS = ['inherited_inputs', 'inherited_outputs'] as const;
-
-/**
- * Content-key a field: collapse to an unchanged-marker when already delivered,
- * otherwise stage the hash. When `assignFull` is true, also write the full value
- * on first delivery (top-level blocks); nested note/items keep the spread value.
- * `ledgerLookup` false restricts the comparison to this response's own entries.
- */
-function stageField(
-  out: Record<string, unknown>,
-  field: string,
-  value: unknown,
-  state: SessionFile,
-  newDeliveries: Record<string, string>,
-  scope: string,
-  keyPrefix: string,
-  assignFull = false,
-  ledgerLookup = true,
-): void {
-  const hash = contentHash(stringifyForResponse({ [field]: value }));
-  const key = `${keyPrefix}:${hash}`;
-  const heldByContext = ledgerLookup && deliveredHash(state, key, scope) === hash;
-  if (heldByContext || newDeliveries[key] === hash) {
-    out[field] = unchangedMarker(hash);
-  } else {
-    newDeliveries[key] = hash;
-    if (assignFull) out[field] = value;
-  }
-}
-
-/**
- * Replace already-delivered shared blocks of a projected technique record with
- * unchanged-markers. For `inherited_inputs` / `inherited_outputs`, the invariant
- * `note` and the `items` list are hashed separately so a shared preamble collapses
- * across techniques whose own-input sets differ. `provenance_note` and `rules` are
- * whole-value candidates. Returns a shallow copy (input not mutated); newly-delivered
- * hashes are staged into `newDeliveries` for the caller to commit.
- *
- * @param projected   `projectTechnique` output.
- * @param state       session, for the delivery-ledger lookup.
- * @param newDeliveries accumulator of block-hashes to record.
- * @param scope       delivery scope to look up (default: the session's agent).
- * @param ledgerLookup whether the caller's context retains what it was sent. False keeps the pass
- *   response-local — a block collapses only against an earlier entry of the same response.
- */
-export function dedupTechniqueBlocks(
-  projected: Record<string, unknown>,
-  state: SessionFile,
-  newDeliveries: Record<string, string>,
-  scope: string = state.agentId,
-  ledgerLookup = true,
-): Record<string, unknown> {
-  const out = { ...projected };
-
-  if (out['provenance_note'] !== undefined) {
-    stageField(out, 'provenance_note', out['provenance_note'], state, newDeliveries, scope, 'technique:provenance_note', true, ledgerLookup);
-  }
-
-  for (const block of INHERITED_SPLIT_BLOCKS) {
-    const value = out[block];
-    if (value === undefined) continue;
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
-      const rec = value as Record<string, unknown>;
-      const next: Record<string, unknown> = { ...rec };
-      if (rec['note'] !== undefined) {
-        stageField(next, 'note', rec['note'], state, newDeliveries, scope, `technique:${block}.note`, false, ledgerLookup);
-      }
-      if (rec['items'] !== undefined) {
-        stageField(next, 'items', rec['items'], state, newDeliveries, scope, `technique:${block}.items`, false, ledgerLookup);
-      }
-      // Whole-block key still recorded when both halves are full (first delivery), so a
-      // reader that only understands whole-block markers keeps working.
-      const wholeHash = contentHash(stringifyForResponse({ [block]: value }));
-      const wholeKey = `technique:${block}:${wholeHash}`;
-      const wholeHeld = ledgerLookup && deliveredHash(state, wholeKey, scope) === wholeHash;
-      if (wholeHeld || newDeliveries[wholeKey] === wholeHash) {
-        out[block] = unchangedMarker(wholeHash);
-      } else {
-        newDeliveries[wholeKey] = wholeHash;
-        out[block] = next;
-      }
-    } else {
-      stageField(out, block, value, state, newDeliveries, scope, `technique:${block}`, true, ledgerLookup);
-    }
-  }
-
-  if (out['rules'] !== undefined) {
-    stageField(out, 'rules', out['rules'], state, newDeliveries, scope, 'technique:rules', true, ledgerLookup);
-  }
-
-  return out;
 }
