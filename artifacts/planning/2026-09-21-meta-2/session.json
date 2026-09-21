@@ -86,7 +86,8 @@
         },
         "completedActivities": [
           "intake-and-scope",
-          "apply-ladder"
+          "apply-ladder",
+          "over-engineering-review"
         ],
         "currentTechnique": "workflow-engine::finalize-activity",
         "declaredArtifacts": [
@@ -99,6 +100,11 @@
             "id": "lean_change",
             "name": "lean-change.md",
             "path": ".ponytail/lean-change.md"
+          },
+          {
+            "id": "review_findings",
+            "name": "review-findings.md",
+            "path": ".ponytail/review-findings.md"
           }
         ],
         "deliveredContent": {
@@ -140,12 +146,29 @@
             "technique:review-over-engineering": "613a86e699e275ad",
             "technique:scope-intake": "bacd7f92fdf6a03d",
             "technique:workflow-engine::evaluate-transition": "a70a5c163bc23939"
+          },
+          "worker-repo-audit": {
+            "activity_rules:4c5e1c1bbff0d1d7": "4c5e1c1bbff0d1d7",
+            "bundle:agent-conduct": "d6f57fec94430a87",
+            "bundle:variable-binding": "83d87dca7060a57e",
+            "bundle:worker-conduct": "16d771188f70b5cd",
+            "bundle:workflow-engine::activity-worker": "789ee808b5a73b83",
+            "bundle:workflow-engine::finalize-activity": "02008140fc231571",
+            "bundle:workflow-engine::resume-from-checkpoint": "8cabd8478fa3548f",
+            "bundle:workflow-engine::step-control": "5df3ab0653fbc7f5",
+            "bundle:workflow-engine::yield-checkpoint": "38df4d29f1a1a6b9",
+            "note:resources:0eff389311365362": "0eff389311365362",
+            "note:step_techniques:4c0412456dc5f607": "4c0412456dc5f607",
+            "resource:audit-findings": "470a45499161093d",
+            "resource:meta/writing-register": "a1175b8fa07be630",
+            "resource:review-taxonomy": "5f5a44724929b710",
+            "technique:audit-repo": "41fe3b6933f64d89"
           }
         },
         "executionPath": "agent",
-        "exit": "safety-floor-cleared",
+        "exit": "repo-wide",
         "frontier": [
-          "over-engineering-review"
+          "repo-audit"
         ],
         "history": [
           {
@@ -936,16 +959,135 @@
             },
             "timestamp": "2026-09-21T12:25:41.971Z",
             "type": "activity_delivered"
+          },
+          {
+            "activity": "over-engineering-review",
+            "timestamp": "2026-09-21T12:26:29.961Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "name": "review_findings",
+              "source": "variables_changed",
+              "value": ".ponytail/review-findings.md"
+            },
+            "timestamp": "2026-09-21T12:26:29.961Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "worker-intake-and-scope",
+              "stepId": "review-change"
+            },
+            "timestamp": "2026-09-21T12:26:29.961Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "repo-audit",
+            "timestamp": "2026-09-21T12:26:29.961Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-09-21T12:26:29.961Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 63693,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-09-21T12:26:53.250Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 4074,
+              "delivery": "full",
+              "stepId": "audit-repo",
+              "techniqueId": "audit-repo"
+            },
+            "timestamp": "2026-09-21T12:26:53.250Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "stepId": "audit-repo"
+            },
+            "timestamp": "2026-09-21T12:26:53.250Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "bundled_steps": 1,
+              "delivery": "full",
+              "eager_budget_chars": 640000,
+              "fixed_chars": 875,
+              "provenance_passes": 1,
+              "resolved_techniques": 7,
+              "response_bound_chars": 60000,
+              "response_spent_chars": 63693,
+              "spent_chars": 62418,
+              "worker_bundle_chars": 58344
+            },
+            "timestamp": "2026-09-21T12:26:53.250Z",
+            "type": "activity_delivered"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 3710,
+              "delivery": "full",
+              "resourceId": "review-taxonomy"
+            },
+            "timestamp": "2026-09-21T12:27:16.322Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 1906,
+              "delivery": "full",
+              "resourceId": "audit-findings"
+            },
+            "timestamp": "2026-09-21T12:27:16.717Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "worker-repo-audit",
+              "chars": 1986,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-09-21T12:27:16.974Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 22,
+        "seq": 27,
         "sessionIndex": "KPTFVH",
         "startedAt": "2026-09-21T12:08:46.721Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1789993541,
+        "ts": 1789993636,
         "variables": {
           "artifact_dir": ".ponytail",
           "component_path": ".",
@@ -956,6 +1098,7 @@
           "lean_brief": ".ponytail/lean-brief.md",
           "lean_change": ".ponytail/lean-change.md",
           "pass_scope": "repo",
+          "review_findings": ".ponytail/review-findings.md",
           "safety_floor_cleared": true,
           "target_path": ".",
           "target_repo": "m2ux/workflow-server",
