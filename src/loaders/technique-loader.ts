@@ -2,7 +2,7 @@ import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
+import type { Technique } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
   tryLoadMarkdownTechnique,
@@ -382,58 +382,11 @@ function mergeById<T extends { id: string }>(parent: T[] | undefined, child: T[]
   return arr.length ? arr : undefined;
 }
 
-/** Union two name-keyed records (rules/errors); child entries override parent entries by key. */
+/** Union two name-keyed records (rules); child entries override parent entries by key. */
 function mergeKeyed<T>(parent: Record<string, T> | undefined, child: Record<string, T> | undefined): Record<string, T> | undefined {
   if (!parent && !child) return undefined;
   const out: Record<string, T> = { ...(parent ?? {}), ...(child ?? {}) };
   return Object.keys(out).length ? out : undefined;
-}
-
-/** Protocol blocks whose (ordinal-stripped) title names a thematic wrapper, case-insensitive. */
-function blocksTitled(protocol: ProtocolBlock[] | undefined, title: string): ProtocolBlock[] {
-  const want = title.toLowerCase();
-  return (protocol ?? []).filter((b) => (b.title ?? '').trim().toLowerCase() === want);
-}
-
-/**
- * Wrap a technique's own protocol with the `Initial`/`Final` blocks of each ANCESTOR container,
- * recursively from the workflow root inward. Every ancestor — the workflow-root `TECHNIQUE.md`
- * and each containing group's `TECHNIQUE.md` along the path — contributes ONLY its `Initial`
- * blocks (prepended) and `Final` blocks (appended). Any OTHER ancestor block is parent-only: it
- * is excluded here and appears solely when that ancestor is referenced directly. Order:
- * root.Initial … innermostParent.Initial, own protocol, innermostParent.Final … root.Final.
- *
- * `pathSegments` is the technique's location under `techniquesDir`; the LAST segment is the
- * technique itself (never an ancestor). e.g. ['validate-build','analyze-failure'] or ['classify-problem'].
- */
-async function wrapProtocolWithAncestors(
-  techniquesDir: string | null,
-  pathSegments: string[],
-  ownProtocol: ProtocolBlock[] | undefined,
-): Promise<ProtocolBlock[] | undefined> {
-  const ancestorProtocols: Array<ProtocolBlock[] | undefined> = [];
-  const loadAncestor = async (id: string): Promise<void> => {
-    try {
-      const t = await tryLoadMarkdownTechnique(techniquesDir, id);
-      if (t) ancestorProtocols.push(t.protocol);
-    } catch (error) {
-      if (!(error instanceof MarkdownTechniqueParseError)) throw error;
-      logWarn('Skipping malformed ancestor technique while composing protocol', { id, error: error.message });
-    }
-  };
-  // Workflow root index — ancestor of every technique except itself.
-  if (!(pathSegments.length === 1 && pathSegments[0] === ROOT_INDEX_ID)) {
-    await loadAncestor(ROOT_INDEX_ID);
-  }
-  // Each containing group along the path (every prefix except the technique itself).
-  for (let i = 0; i < pathSegments.length - 1; i++) {
-    await loadAncestor(pathSegments.slice(0, i + 1).join('/'));
-  }
-
-  const initials = ancestorProtocols.flatMap((p) => blocksTitled(p, 'Initial'));
-  const finals = [...ancestorProtocols].reverse().flatMap((p) => blocksTitled(p, 'Final'));
-  const composed = [...initials, ...(ownProtocol ?? []), ...finals];
-  return composed.length > 0 ? composed : undefined;
 }
 
 /** Load the executing workflow's root index (`techniques/TECHNIQUE.md`) for its contract, or null. */
@@ -452,8 +405,9 @@ async function loadWorkflowRoot(source: CorpusIndex, workflowId: string): Promis
  *   - Partitions the merged inputs/outputs by winning-definition provenance: the technique's
  *     own entries stay under `inputs`/`outputs`; ancestor-contract entries are delivered under
  *     `inherited_inputs`/`inherited_outputs` with a scope note (B2, #166).
- *   - Wraps the protocol with every ancestor's `Initial`/`Final` blocks via
- *     `wrapProtocolWithAncestors` (same full-chain order as the bundle path).
+ *
+ * A container contributes a contract, never a procedure: the technique's own protocol is what it
+ * carries, whatever ancestors it composes against.
  *
  * Used by both `composeTechnique` (get_technique path) and `resolveTechniques` (bundle path)
  * so the two delivery paths share a single composition implementation.
@@ -495,8 +449,6 @@ async function composeLoaded(
     rules = mergeKeyed(anc.rules, rules);
   }
 
-  const protocol = await wrapProtocolWithAncestors(techniquesDir, pathSegments, technique.protocol);
-
   // Partition the merged interface by winning-definition provenance (B2, #166): entries the
   // technique declares itself (including overrides of an ancestor id) stay under
   // `inputs`/`outputs`; entries whose winning definition came from an ancestor contract are
@@ -523,7 +475,6 @@ async function composeLoaded(
   if (ownOutputs.length) composed['outputs'] = ownOutputs; else delete composed['outputs'];
   if (inheritedOutputs.length && !bindsNothing) composed['inherited_outputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedOutputs };
   if (rules) composed['rules'] = rules; else delete composed['rules'];
-  if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 
   const result = safeValidateTechnique(composed);
   if (!result.success) {
@@ -541,8 +492,8 @@ async function composeLoaded(
  *
  * Takes a reference in any form the rule admits — a bare name, a `group::op` path, a workflow
  * prefix in either spelling. Composition is delegated to `composeLoaded`, the single implementation
- * shared with the bundle path (`resolveTechniques`), so both produce identical inputs/outputs,
- * rules and protocol (full Initial/Final wrap across the ancestor chain).
+ * shared with the bundle path (`resolveTechniques`), so both produce identical inputs, outputs and
+ * rules.
  */
 export async function composeTechnique(
   techniqueId: string,

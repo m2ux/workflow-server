@@ -212,7 +212,7 @@
     <li><code>get_workflow</code> — orchestrator bundle: workflow-declared refs plus core orchestrator techniques (engine traversal, checkpoints, dispatch, discipline)</li>
     <li><code>get_activity</code> — worker bundle: activity refs, inherited <code>techniques.activity</code> from the workflow, plus core worker techniques (yield/resume, finalize, conduct rules)</li>
   </ul>
-  <p class="prose">Each bundle groups resolved content into three buckets. When a single technique is delivered, ancestor <code>Initial</code> / <code>Final</code> protocol blocks wrap the technique body recursively and the server renumbers the combined sequence. In persistent-context mode, reference-not-repeat delivery replaces already-delivered content with <code>{ delivery: "unchanged", content_hash }</code> markers; fetch recording warns when a manifested step was never loaded.</p>
+  <p class="prose">Each bundle groups resolved content into three buckets. When a single technique is delivered, each ancestor container merges its inputs, outputs and rules into it and its protocol arrives as authored. In persistent-context mode, reference-not-repeat delivery replaces already-delivered content with <code>{ delivery: "unchanged", content_hash }</code> markers; fetch recording warns when a manifested step was never loaded.</p>
 
   <h3 id="bundling">Eager step-technique bundling</h3>
   <p class="prose">The lazy per-step model above is complemented by automatic eager bundling on every <code>get_activity</code> call. The worker passes <code>context_tokens</code> — its context window size in tokens — and the server derives a cumulative per-activity character budget:</p>

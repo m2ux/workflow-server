@@ -368,7 +368,7 @@
   </figure>
 
   <h3 id="techniques-not-skills">Compared to agent skills</h3>
-  <p class="prose">Skills suit opt-in guidance: a short description and instructions the model loads when a request seems to match. Orchestrated workflows need a contract the server can schema-check, merge with ancestor protocols, and deliver step by step. Bulky templates and API guides stay in <code>resources/</code> and load via <code>get_resource</code> only when a running technique links to them — the <strong>protocol</strong> states what to execute; reference material is separate (<a href="#resources">Resources</a>).</p>
+  <p class="prose">Skills suit opt-in guidance: a short description and instructions the model loads when a request seems to match. Orchestrated workflows need a contract the server can schema-check, merge with ancestor contracts, and deliver step by step. Bulky templates and API guides stay in <code>resources/</code> and load via <code>get_resource</code> only when a running technique links to them — the <strong>protocol</strong> states what to execute; reference material is separate (<a href="#resources">Resources</a>).</p>
 
   <h2 id="resources">Resources</h2>
   <p class="prose">A <strong>resource</strong> is long-form reference material — templates, checklists, tables — stored as markdown under <code>resources/</code>. Techniques link to resources instead of inlining them; the agent calls <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only when a running technique needs the linked material.</p>
