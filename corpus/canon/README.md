@@ -4,7 +4,7 @@ The criteria a workflow definition is authored toward and audited against. The c
 
 `canon` declares no `workflow.yaml`, so discovery offers it to no operator and no coverage walk enters it.
 
-| File in `resources/` | Holds |
+| Resource | Content |
 |------|-------|
 | `design-principles.md` | The *prefer / before / only after* stance an author writes toward. Broader than any one defect, and carrying no Detect triad |
 | `anti-patterns.md` | Specific smells, each as **Detect / Do not flag / Fix**, grouped into families by `##` section |
