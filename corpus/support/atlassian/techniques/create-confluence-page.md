@@ -27,4 +27,6 @@ Optional parent page ID.
 
 ## Protocol
 
-1. Call `createConfluencePage { cloudId, spaceId, body, contentFormat: 'markdown', title?, parentId? }`.
+### 1. Create the Page
+
+- Call `createConfluencePage { cloudId, spaceId, body, contentFormat: 'markdown', title?, parentId? }`.

@@ -39,6 +39,8 @@ Its cohesion as a percentage.
 
 ## Protocol
 
-1. Take the affected execution flows from `{change_report}`, and the file each changed symbol sits in.
-2. Keep every area of `{cluster_inventory}` holding one of those files, or a symbol on one of those flows, and record them as `{affected_clusters}`.
+### 1. Keep the Areas the Change Reaches
+
+- Take the affected execution flows from `{change_report}`, and the file each changed symbol sits in.
+- Keep every area of `{cluster_inventory}` holding one of those files, or a symbol on one of those flows, and record them as `{affected_clusters}`.
    > An area a changed symbol calls into is reached without holding a changed file. Where the flows name a symbol outside every kept area, keep that symbol's area too, so the bound follows the change rather than the file list.

@@ -19,4 +19,6 @@ Markdown body
 
 ## Protocol
 
-1. Call `createConfluenceFooterComment { cloudId, pageId, body }`.
+### 1. Post the Footer Comment
+
+- Call `createConfluenceFooterComment { cloudId, pageId, body }`.

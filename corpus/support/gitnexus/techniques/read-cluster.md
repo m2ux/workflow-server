@@ -21,4 +21,6 @@ The area's members, each with the file it sits in, alongside the area's cohesion
 
 ## Protocol
 
-1. Read the MCP resource `gitnexus://repo/{repo_name}/cluster/{cluster_name}` and record the `{cluster_members}` it lists.
+### 1. Read the Area's Members
+
+- Read the MCP resource `gitnexus://repo/{repo_name}/cluster/{cluster_name}` and record the `{cluster_members}` it lists.

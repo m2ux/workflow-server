@@ -21,4 +21,6 @@ The page's content as Markdown.
 
 ## Protocol
 
-1. Call `getConfluencePage { cloudId, pageId, contentFormat: 'markdown' }`; return the page content as `{page_body}`.
+### 1. Read the Page
+
+- Call `getConfluencePage { cloudId, pageId, contentFormat: 'markdown' }`; return the page content as `{page_body}`.

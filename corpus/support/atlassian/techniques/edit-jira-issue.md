@@ -19,4 +19,6 @@ Object of field updates
 
 ## Protocol
 
-1. Call `editJiraIssue { cloudId, issueIdOrKey, fields }`.
+### 1. Apply the Field Edits
+
+- Call `editJiraIssue { cloudId, issueIdOrKey, fields }`.

@@ -25,4 +25,6 @@ Pages in the space, one entry per page.
 
 ## Protocol
 
-1. Call `getPagesInConfluenceSpace { cloudId, spaceId, title? }`; return the listing as `{space_pages}`.
+### 1. List the Space's Pages
+
+- Call `getPagesInConfluenceSpace { cloudId, spaceId, title? }`; return the listing as `{space_pages}`.

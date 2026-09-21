@@ -1,7 +1,5 @@
 # Cargo Techniques
 
-> Part of [support](../../README.md)
-
 Resource-constrained operations for cargo subcommands.
 
 The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.

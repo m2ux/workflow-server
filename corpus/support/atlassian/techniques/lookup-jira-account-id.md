@@ -21,4 +21,6 @@ Account ID the name or email resolved to.
 
 ## Protocol
 
-1. Call `lookupJiraAccountId { cloudId, searchString }`; return the resolved `{accountId}`.
+### 1. Resolve the Account Id
+
+- Call `lookupJiraAccountId { cloudId, searchString }`; return the resolved `{accountId}`.

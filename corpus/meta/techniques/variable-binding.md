@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -9,17 +9,28 @@ Maps a step's bound operation onto the workflow variable bag by the operation's 
 
 ## Protocol
 
-1. Resolve the contract. Load the composed `inputs[]`/`outputs[]` of the bound operation (the `::`-path signature merged with ancestor `TECHNIQUE.md` declarations — `get_technique` returns it fully composed).
-2. Bind each declared input id `I` into the concrete input map, in this precedence:
+### 1. Resolve the Contract
+
+- Resolve the contract. Load the composed `inputs[]`/`outputs[]` of the bound operation (the `::`-path signature merged with ancestor `TECHNIQUE.md` declarations — `get_technique` returns it fully composed).
+
+### 2. Bind the Inputs
+
+- Bind each declared input id `I` into the concrete input map, in this precedence:
    1. If `I` appears in `step.technique.inputs`, resolve its source-expression (literal / rename / template, per the deviation forms below) and bind that value.
    2. Else if this activity runs as one instance of a graph fan and `I` is that fan's per-instance parameter, bind the value the block on this delivery carries. The projection is server-computed and reaches this context alone; the shared bag holds the collection, not this instance's element.
    3. Else if the variable bag holds a variable named `I`, bind its value — the implicit same-name bind, which carries zero per-step data.
    4. Else if the input declares a `default`, use it.
    5. Else the input is unsatisfied — surface it as a binding gap (the call-site must supply it via a `step.technique.inputs` deviation, or the signature must declare a `default`).
-3. Resolve a string deviation by the disambiguation rule: a string that matches the bag-name grammar (`^[a-z_][a-z0-9_]*(\.[a-z0-9_]+)*$`) AND resolves in the variable bag is a rename reference (bind the named variable's value); otherwise it is a literal; a string containing `{…}` is always a template (interpolate `{path}` against the bag, walking dotted paths into nested objects, then substitute and bind the result).
-4. Invoke the bound operation with the concrete input map.
-5. Land outputs. For each declared output id `O`, take the produced value and commit it to the variable bag under `O` (or under the remapped bag name when `step.technique.outputs` maps `O` to a different name). Nested-object outputs land whole, so a dotted-path read downstream resolves against the landed object.
-6. Read downstream by name or path. A later `when`/`condition`/`transition` reads `{O}` or `{O}.field.subfield` directly; the structured-condition evaluator walks the dotted path, so no flattening step is needed.
+- Resolve a string deviation by the disambiguation rule: a string that matches the bag-name grammar (`^[a-z_][a-z0-9_]*(\.[a-z0-9_]+)*$`) AND resolves in the variable bag is a rename reference (bind the named variable's value); otherwise it is a literal; a string containing `{…}` is always a template (interpolate `{path}` against the bag, walking dotted paths into nested objects, then substitute and bind the result).
+
+### 3. Invoke the Operation
+
+- Invoke the bound operation with the concrete input map.
+
+### 4. Land the Outputs
+
+- Land outputs. For each declared output id `O`, take the produced value and commit it to the variable bag under `O` (or under the remapped bag name when `step.technique.outputs` maps `O` to a different name). Nested-object outputs land whole, so a dotted-path read downstream resolves against the landed object.
+- Read downstream by name or path. A later `when`/`condition`/`transition` reads `{O}` or `{O}.field.subfield` directly; the structured-condition evaluator walks the dotted path, so no flattening step is needed.
 
 ## Rules
 
@@ -30,6 +41,16 @@ A step's consumed and produced data is exactly the bound operation's composed `i
 ### binding-carries-only-deviations
 
 The structured `step.technique` object carries ONLY what differs from the defaults; a step with no deviation uses the bare-string form (`technique: group::operation`) instead. `inputs` lists ONLY inputs whose value differs from same-name binding or a declared `default` — an input equal to its default, or already in the bag under its own id, is omitted. The three input-deviation forms are: a literal (`inputs: { scope: '--workspace' }`), a rename naming another bag variable (`inputs: { check_id: failed_check_id }`), and a `{var}` template including dotted projection (`inputs: { scope: '-p {current_task.crate}' }`). `outputs` lists ONLY outputs whose landed bag name differs from the output's own id (`outputs: { session_index: client_session_index }`); an output that lands under its own name is omitted.
+
+### an-argument-position-sets-its-own-default
+
+Three positions in the language take an argument, and a bare word means something different in each. This rule scopes itself to the first; the other two are named so a reader who meets them knows they are reading a different position rather than a contradiction.
+
+- **A step input deviation** — `step.technique.inputs` — is what `binding-carries-only-deviations` governs: a bare word that matches the bag-name grammar and resolves in the bag is a reference, and anything else is a literal.
+- **A routine argument** — a reference step's `.with` — reads the opposite way: a braced word is a reference to a host variable and a bare word is always a literal, because a routine is expanded before any bag exists to resolve a name against.
+- **A harness invocation** — an adapter's call template — reads a braced word as a reference and an angle-bracketed word as a value the invoking agent supplies from what it can see of its own host.
+
+The two readings that could meet — a step's and a routine's — do not, and what keeps them apart is load-bearing rather than incidental. Expansion resolves a routine argument and emits the resolved reference as a bare name, so a braced reference in a routine file reaches a step as the bare form this rule reads as a reference — the meaning the author wrote survives the position change. An expander that emitted the braces instead would deliver a template, and one that stopped resolving before emitting would deliver a literal; both would be wrong, and neither would be visible at the step.
 
 ### outputs-by-name-and-path
 

@@ -49,8 +49,6 @@ steps:
       name: gitnexus::resolve-graph
       inputs:
         tree_path: target_submodule
-      outputs:
-        repo_name: repo_name
   - kind: action
     id: record-graph-availability
     actions:

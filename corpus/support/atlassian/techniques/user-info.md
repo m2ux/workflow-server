@@ -15,4 +15,6 @@ Current user's account ID
 
 ## Protocol
 
-1. Call `atlassianUserInfo` and read the current user's `{accountId}` from the response.
+### 1. Read the Current User
+
+- Call `atlassianUserInfo` and read the current user's `{accountId}` from the response.

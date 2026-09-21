@@ -243,8 +243,6 @@ steps:
         repo_path: target_path
         branch_name: workflow_branch
         base_branch: workflows
-        title: title
-        body: body
         as_draft: false
     when: needs_recommit == true
   - kind: action

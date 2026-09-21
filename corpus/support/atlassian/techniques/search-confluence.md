@@ -25,4 +25,6 @@ Content matching the query, one entry per result.
 
 ## Protocol
 
-1. Call `searchConfluenceUsingCql { cloudId, cql, limit?, cursor? }`; return the matches as `{confluence_results}`.
+### 1. Run the Search
+
+- Call `searchConfluenceUsingCql { cloudId, cql, limit?, cursor? }`; return the matches as `{confluence_results}`.

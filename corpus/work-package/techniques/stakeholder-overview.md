@@ -25,10 +25,18 @@ The two-paragraph plain-language overview written under `{readme_section_heading
 
 ## Protocol
 
-1. Synthesize a plain-language overview from `{source_material}`.
-2. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders; do not use jargon without explanation.
-3. Frame the first paragraph as the situation or what the work does, and the second paragraph as the consequences or guarantees — what matters and why — tailoring the framing to `{readme_section_heading}` and `{source_material}`.
-4. Write it into `{planning_folder_path}/README.md` by replacing the placeholder text under the `{readme_section_heading}` section, and emit `{stakeholder_overview}` as the bindable overview text.
+### 1. Synthesise the Overview
+
+- Synthesize a plain-language overview from `{source_material}`.
+
+### 2. Shape the Two Paragraphs
+
+- Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders; do not use jargon without explanation.
+- Frame the first paragraph as the situation or what the work does, and the second paragraph as the consequences or guarantees — what matters and why — tailoring the framing to `{readme_section_heading}` and `{source_material}`.
+
+### 3. Write It Into the README
+
+- Write it into `{planning_folder_path}/README.md` by replacing the placeholder text under the `{readme_section_heading}` section, and emit `{stakeholder_overview}` as the bindable overview text.
 
 ## Rules
 

@@ -15,4 +15,6 @@ Spaces the current user can reach, one entry per space.
 
 ## Protocol
 
-1. Call `getConfluenceSpaces { cloudId, ...filters }`; return the listing as `{accessible_spaces}`.
+### 1. List the Accessible Spaces
+
+- Call `getConfluenceSpaces { cloudId, ...filters }`; return the listing as `{accessible_spaces}`.

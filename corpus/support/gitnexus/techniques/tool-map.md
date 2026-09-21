@@ -21,6 +21,14 @@ Each declared tool with the file handling it and the description it registers.
 
 ## Protocol
 
-1. Call `gitnexus_tool_map { tool: tool_name, repo: repo_name }` and record the `{tool_inventory}`.
-2. Take the registered description as the contract a caller reads, and hold a change to the handler against it: a handler that stops doing what its description says leaves every caller acting on the description.
-3. Read an empty inventory as a tree whose tool registrations the walk did not recognise rather than as a tree defining none — a registration built by a helper the parser reads as an ordinary call leaves no tool node.
+### 1. Take the Tool Inventory
+
+- Call `gitnexus_tool_map { tool: tool_name, repo: repo_name }` and record the `{tool_inventory}`.
+
+### 2. Hold a Handler to Its Description
+
+- Take the registered description as the contract a caller reads, and hold a change to the handler against it: a handler that stops doing what its description says leaves every caller acting on the description.
+
+### 3. Read an Empty Inventory
+
+- Read an empty inventory as a tree whose tool registrations the walk did not recognise rather than as a tree defining none — a registration built by a helper the parser reads as an ordinary call leaves no tool node.

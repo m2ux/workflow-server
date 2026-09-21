@@ -15,4 +15,6 @@ Projects the current user can see, each with its issue types.
 
 ## Protocol
 
-1. Call `getVisibleJiraProjects { cloudId, searchString? }`; return the listing as `{visible_projects}`.
+### 1. List the Visible Projects
+
+- Call `getVisibleJiraProjects { cloudId, searchString? }`; return the listing as `{visible_projects}`.

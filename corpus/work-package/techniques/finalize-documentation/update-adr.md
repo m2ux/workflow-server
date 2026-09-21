@@ -21,6 +21,14 @@ The work package's [ADR](../../resources/adr.md#template) with status updated to
 
 ## Protocol
 
-1. If the `{adr_document}` exists, update status to Accepted.
-2. Record implementation outcome and any deviations, cross-referencing the merged PR via its `{pr_number}`.
-3. If no ADR was created for this work package, skip ADR finalization and proceed with the other steps.
+### 1. Accept the Decision
+
+- If the `{adr_document}` exists, update status to Accepted.
+
+### 2. Record the Outcome
+
+- Record implementation outcome and any deviations, cross-referencing the merged PR via its `{pr_number}`.
+
+### 3. Skip Where No Decision Was Recorded
+
+- If no ADR was created for this work package, skip ADR finalization and proceed with the other steps.

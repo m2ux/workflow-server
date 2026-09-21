@@ -227,8 +227,6 @@ steps:
       name: git::commit-regular-files
       inputs:
         branch: workflow_branch
-        paths: paths
-        commit_message: commit_message
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: verify-commit
@@ -251,8 +249,6 @@ steps:
         repo_path: target_path
         branch_name: workflow_branch
         base_branch: workflows
-        title: title
-        body: body
         as_draft: false
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique

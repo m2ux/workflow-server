@@ -21,4 +21,6 @@ Issue types the project admits, one entry per type.
 
 ## Protocol
 
-1. Call `getJiraProjectIssueTypesMetadata { cloudId, projectIdOrKey }`; return the listing as `{project_issue_types}`.
+### 1. List the Project's Issue Types
+
+- Call `getJiraProjectIssueTypesMetadata { cloudId, projectIdOrKey }`; return the listing as `{project_issue_types}`.

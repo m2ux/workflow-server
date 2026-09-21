@@ -15,6 +15,8 @@ The directory to count, relative to `{component_path}`.
 
 ## Protocol
 
-1. Count the entries directly inside `{probe_target}` and report the number in the step manifest.
+### 1. Count the Entries
+
+- Count the entries directly inside `{probe_target}` and report the number in the step manifest.
 
 The count lands in the manifest and nowhere else: what a site binding this library evidences is which folder answered its reference, and that is a property of the delivery rather than of any value the operation produces.

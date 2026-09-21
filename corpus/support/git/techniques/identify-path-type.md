@@ -21,4 +21,6 @@ Path to inspect
 
 ## Protocol
 
-1. Run `git ls-tree HEAD {path}` and read the mode prefix, returning `{kind}` as `submodule` when the mode is 160000 or `regular` when it is 040000.
+### 1. Read the Path's Mode
+
+- Run `git ls-tree HEAD {path}` and read the mode prefix, returning `{kind}` as `submodule` when the mode is 160000 or `regular` when it is 040000.

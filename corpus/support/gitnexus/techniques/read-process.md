@@ -21,4 +21,6 @@ The flow's ordered steps, each naming the symbol it runs and the file that symbo
 
 ## Protocol
 
-1. Read the MCP resource `gitnexus://repo/{repo_name}/process/{process_name}` and record the `{process_trace}` it lists.
+### 1. Read the Flow's Trace
+
+- Read the MCP resource `gitnexus://repo/{repo_name}/process/{process_name}` and record the `{process_trace}` it lists.

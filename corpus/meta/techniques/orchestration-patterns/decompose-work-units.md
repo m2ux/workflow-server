@@ -25,6 +25,14 @@ Ordered array of `{ id, brief, tools_hint? }`. `id` is a stable slug; `brief` is
 
 ## Protocol
 
-1. Read `{work_goal}` and `{planning_context}`; decide the minimum set of independent subtasks that cover the goal without overlap.
-2. Emit `{work_units}` in execution preference order. Honour `{effort_cap}` when present.
-3. Each `brief` must be executable without sibling briefs or the parent's chain of thought.
+### 1. Choose the Subtasks
+
+- Read `{work_goal}` and `{planning_context}`; decide the minimum set of independent subtasks that cover the goal without overlap.
+
+### 2. Emit Them in Order
+
+- Emit `{work_units}` in execution preference order. Honour `{effort_cap}` when present.
+
+### 3. Hold Each Brief to Standing Alone
+
+- Each `brief` must be executable without sibling briefs or the parent's chain of thought.

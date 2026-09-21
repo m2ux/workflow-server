@@ -33,6 +33,11 @@ Follow-up research units when `{has_research_gaps}` is true; empty array otherwi
 
 ## Protocol
 
-1. Compare `{combined_synthesis}` (and `{gathered_results}` when present) to `{work_goal}`.
-2. If gaps are material and within `{effort_cap}`, set `{has_research_gaps}` true and emit targeted `{work_units}` briefs.
-3. Otherwise set `{has_research_gaps}` false and `{work_units}` to `[]`.
+### 1. Measure the Synthesis Against the Goal
+
+- Compare `{combined_synthesis}` (and `{gathered_results}` when present) to `{work_goal}`.
+
+### 2. Report the Verdict
+
+- If gaps are material and within `{effort_cap}`, set `{has_research_gaps}` true and emit targeted `{work_units}` briefs.
+- Otherwise set `{has_research_gaps}` false and `{work_units}` to `[]`.

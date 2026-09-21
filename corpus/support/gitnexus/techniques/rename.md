@@ -37,6 +37,11 @@ Per-file edit list, each edit carrying the confidence its provenance earns.
 
 ## Protocol
 
-1. Call `gitnexus_rename { symbol_name, new_name, file_path, dry_run, repo: repo_name }` and record the `{changes}` it returns.
+### 1. Run the Rename
+
+- Call `gitnexus_rename { symbol_name, new_name, file_path, dry_run, repo: repo_name }` and record the `{changes}` it returns.
    > Where several symbols carry `{symbol_name}`, name the file holding the one meant in `{file_path}`; a rename addressed at a name two symbols answer to reaches both.
-2. Read each edit's confidence as its provenance: a `graph` edit follows an edge the parser read, and a `text_search` edit follows a name match, which reaches a string literal and a comment as readily as a reference.
+
+### 2. Read Each Edit's Provenance
+
+- Read each edit's confidence as its provenance: a `graph` edit follows an edge the parser read, and a `text_search` edit follows a name match, which reaches a string literal and a comment as readily as a reference.

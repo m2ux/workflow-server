@@ -41,8 +41,13 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
 
 ## Protocol
 
-1. Skip branch derivation when `{is_review_mode}` is `true` — `{branch_name}` was already captured from the PR reference.
-2. Set `{$branch_type_prefix}` from `{issue_type}`, which is one of the five categories [issue-type-detection](./issue-type-detection.md) settles. The table is total, so no run supplies a prefix of its own:
+### 1. Skip Derivation in Review Mode
+
+- Skip branch derivation when `{is_review_mode}` is `true` — `{branch_name}` was already captured from the PR reference.
+
+### 2. Compose the Branch Name
+
+- Set `{$branch_type_prefix}` from `{issue_type}`, which is one of the five categories [issue-type-detection](./issue-type-detection.md) settles. The table is total, so no run supplies a prefix of its own:
 
    | `{issue_type}` | `{$branch_type_prefix}` | Why |
    |---|---|---|
@@ -53,10 +58,13 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
    | `task` | `chore` | maintenance with no change to capability |
 
    Stop and report when `{issue_type}` is unset: the prefix is part of the branch and pull-request identity and is expensive to change once a pull request is open, so an unsettled category is never this step's to guess.
-3. Slugify `{issue_title}` (lowercase, dashes, max ~40 chars) for the description segment.
-4. Set `{branch_name}` to `{$branch_type_prefix}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
-5. Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.
-6. Take `{$checkout_root}` as the ancestor of `{planning_folder_path}` above `.engineering/artifacts/planning/`, and set `{target_path}` to `{$checkout_root}/.worktrees/{$wp_slug}/` — the gitignored feature-worktree directory nested in the checkout.
+- Slugify `{issue_title}` (lowercase, dashes, max ~40 chars) for the description segment.
+- Set `{branch_name}` to `{$branch_type_prefix}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
+
+### 3. Locate the Worktree
+
+- Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.
+- Take `{$checkout_root}` as the ancestor of `{planning_folder_path}` above `.engineering/artifacts/planning/`, and set `{target_path}` to `{$checkout_root}/.worktrees/{$wp_slug}/` — the gitignored feature-worktree directory nested in the checkout.
 
 ## Rules
 

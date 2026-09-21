@@ -19,4 +19,6 @@ Markdown comment body.
 
 ## Protocol
 
-1. Call `addCommentToJiraIssue { cloudId, issueIdOrKey, commentBody }`.
+### 1. Post the Comment
+
+- Call `addCommentToJiraIssue { cloudId, issueIdOrKey, commentBody }`.

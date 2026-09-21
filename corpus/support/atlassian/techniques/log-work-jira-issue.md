@@ -19,4 +19,6 @@ e.g., `2h`, `30m`.
 
 ## Protocol
 
-1. Call `addWorklogToJiraIssue { cloudId, issueIdOrKey, timeSpent }`.
+### 1. Record the Worklog
+
+- Call `addWorklogToJiraIssue { cloudId, issueIdOrKey, timeSpent }`.

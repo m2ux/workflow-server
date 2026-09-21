@@ -37,8 +37,16 @@ Per-id table: `id`, `dispatched` (boolean), `returned` (boolean), `status` (`ok`
 
 ## Protocol
 
-1. Normalise `{expected_ids}` to an ordered id list (string as-is; object → `.id`).
-2. Index `{dispatched_results}` by `id`.
-3. For each normalised id, append an `items` entry and a manifest row: present non-empty → `ok`; present empty → `empty`; absent → `missing` with `result: null`.
-4. Set `{gathered_results.completeness}` to `complete` only when every row is `ok`.
-5. Do not merge item payloads into parent bag scalars — combination is [synthesise-results](./synthesise-results.md)'s job.
+### 1. Index Both Sides
+
+- Normalise `{expected_ids}` to an ordered id list (string as-is; object → `.id`).
+- Index `{dispatched_results}` by `id`.
+
+### 2. Build the Items and the Manifest
+
+- For each normalised id, append an `items` entry and a manifest row: present non-empty → `ok`; present empty → `empty`; absent → `missing` with `result: null`.
+
+### 3. Report Completeness
+
+- Set `{gathered_results.completeness}` to `complete` only when every row is `ok`.
+- Do not merge item payloads into parent bag scalars — combination is [synthesise-results](./synthesise-results.md)'s job.

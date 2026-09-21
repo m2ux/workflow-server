@@ -29,7 +29,15 @@ The selected lane as a one-element ordered array of `{ id, brief, tools_hint? }`
 
 ## Protocol
 
-1. Match `{work_goal}` to the best lane in `{lane_roster}` by declared scope.
-2. Set `{lane_id}` to that lane's `id` and record `{classification_rationale}`.
-3. If no lane fits, set `{lane_id}` to the roster entry marked default when present; otherwise set `{lane_id}` to `escalate` and state why in `{classification_rationale}`.
-4. Emit `{work_units}` holding the selected (or escalate) lane as its one entry.
+### 1. Match the Goal to a Lane
+
+- Match `{work_goal}` to the best lane in `{lane_roster}` by declared scope.
+- Set `{lane_id}` to that lane's `id` and record `{classification_rationale}`.
+
+### 2. Fall Back Where None Fits
+
+- If no lane fits, set `{lane_id}` to the roster entry marked default when present; otherwise set `{lane_id}` to `escalate` and state why in `{classification_rationale}`.
+
+### 3. Emit the Selected Lane
+
+- Emit `{work_units}` holding the selected (or escalate) lane as its one entry.

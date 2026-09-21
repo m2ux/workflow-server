@@ -33,9 +33,17 @@ Basename of the innermost toplevel when the ascent crossed a non-infrastructure 
 
 ## Protocol
 
-1. Resolve the innermost toplevel: `git -C {workspace_path} rev-parse --show-toplevel`. When the command fails, the workspace is not a git repo — leave every output unset and stop, so the caller takes its documented fallback.
-2. Ascend while the current toplevel's parent directory is itself a git repository whose `.gitmodules` declares the current toplevel's basename as a submodule `path`. Each successful test moves the current toplevel to that parent; the outermost superproject wins. Record each boundary crossed, and whether it was an infrastructure submodule — apply git.infrastructure-submodule-paths. Emit `{host_repo_path}` and `{component_hint}` per their Output criteria.
-3. Read `git -C {host_repo_path} remote get-url origin` and emit `{target_repo}`, accepting both the SSH form (`git@host:owner/repo.git`) and the HTTPS form (`https://host/owner/repo.git`) and dropping any trailing `.git`. When the host has no origin remote, leave `{target_repo}` unset and stop — the fallback case again.
+### 1. Resolve the Innermost Toplevel
+
+- Resolve the innermost toplevel: `git -C {workspace_path} rev-parse --show-toplevel`. When the command fails, the workspace is not a git repo — leave every output unset and stop, so the caller takes its documented fallback.
+
+### 2. Ascend to the Outermost Superproject
+
+- Ascend while the current toplevel's parent directory is itself a git repository whose `.gitmodules` declares the current toplevel's basename as a submodule `path`. Each successful test moves the current toplevel to that parent; the outermost superproject wins. Record each boundary crossed, and whether it was an infrastructure submodule — apply git.infrastructure-submodule-paths. Emit `{host_repo_path}` and `{component_hint}` per their Output criteria.
+
+### 3. Read the Origin Remote
+
+- Read `git -C {host_repo_path} remote get-url origin` and emit `{target_repo}`, accepting both the SSH form (`git@host:owner/repo.git`) and the HTTPS form (`https://host/owner/repo.git`) and dropping any trailing `.git`. When the host has no origin remote, leave `{target_repo}` unset and stop — the fallback case again.
 
 ## Rules
 
