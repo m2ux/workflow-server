@@ -10,10 +10,10 @@
  *                               and they are about one value, so one of them is wrong. Only an
  *                               output DECLARING its members is measured: one declaring none states
  *                               nothing about its shape and contradicts no declaration.
- *   underived-operation-write — a bound operation lands a value in the bag that a later step takes
- *                               up, and the contract does not declare the write. The construct
- *                               inventory states that an activity's writes carry its operations'
- *                               outputs; this is what holds content to it.
+ *   underived-operation-write — a bound operation lands a value this activity's ROUTING tests, and
+ *                               the contract does not declare the write. A value that chooses an
+ *                               exit outlives the activity that produced it, so a reader of the
+ *                               contract cannot see what decided where the run went.
  *
  * Both families are invisible to the contract guard for the same reason, and it is worth naming
  * because it is not an oversight. That guard narrows every derived name to the workflow's declared
@@ -27,19 +27,18 @@
  * NOT IN THE GUARD REGISTRY, and `tests/guard-registry.test.ts` records the reason.
  *
  * `check-activity-variables` is a hard-zero guard: every family it carries named a definition defect
- * and each was fixed. These two do not land on zero. Measured over the corpus at the commit this was
- * written against, `declared-type-mismatch` holds at 12 and `underived-operation-write` at 117.
+ * and each was fixed. `declared-type-mismatch` holds at 12, so this one does not land on zero yet.
  *
- * The 12 read as defects. The 117 do not, or not obviously: most are an operation output a later
- * step of the same activity consumes and nothing outside ever sees, which `activity-variables` calls
- * the technique layer's own wiring and deliberately leaves to the binding-fidelity guard. So the
- * convention and the corpus disagree, and which gives way is a decision about the corpus rather than
- * about this program. Folding either family into the registry guard would take a green hard-zero
- * sweep red and cost every other family its signal, which is the state `check-corpus-links` is held
- * out of the registry to avoid.
+ * A wider reading of the second family reported 117 further places, every one an operation output a
+ * later step of the same activity consumed and nothing outside ever saw. That is what the
+ * construct inventory now calls the technique layer's own wiring, and `check-binding-fidelity`
+ * answers for it — so the crossing above is the whole subject, and the 117 are not findings this
+ * program withholds but places it has no claim on.
  *
- * What this buys before that decision is the number. Run it, and the population is a figure that
- * moves rather than one nobody has.
+ * The 12 are defects, each a contract and an operation describing one value incompatibly. They are
+ * a corpus fix rather than a question, and enrolling before they land would take a green hard-zero
+ * sweep red and cost every other family its signal — the state `check-corpus-links` was held out of
+ * the registry to avoid. Enrolling is the last step, in the commit that makes it pass.
  *
  * Run: npx tsx guards/check-operation-contract.ts [--root <workflows-dir>] [--json]
  */
@@ -117,18 +116,18 @@ export async function collectFindings(root: string): Promise<Finding[]> {
 
       for (const name of derived.operationWrites) {
         if (declaredWrites.has(name)) continue;
-        // A production nothing goes on to consume dies with its step: a utility operation's
-        // confirmation value owes the contract nothing. A handoff is the case — a LATER step reads
-        // it. Order is what makes it one: a name consulted before anything produced it is a
-        // different defect, and calling that a handoff would describe a flow that does not happen.
-        if (!derived.consultedAfterProduction.has(name)) continue;
+        // A contract states what crosses the activity's boundary. An activity's routing is the
+        // crossing this program can see from inside one: a transition or decision branch testing
+        // the value chooses where the run goes next, so the value outlives the activity that
+        // produced it and a reader of the contract cannot see what decided the exit.
+        if (!derived.routingConsults.has(name)) continue;
         // The server consumes a persisted output when it synthesizes the artifact contract, so the
         // value reaches a reader whatever the contract says.
         if (derived.persistedProductions.has(name)) continue;
         findings.push({
           check: 'underived-operation-write', site,
-          detail: `binds an operation landing '${name}', which a later step takes up, and declares no `
-            + 'write of it — the handoff runs and nothing in the contract shows it',
+          detail: `binds an operation landing '${name}', which this activity's routing tests, and `
+            + 'declares no write of it — the value chooses an exit and nothing in the contract shows it',
         });
       }
     }

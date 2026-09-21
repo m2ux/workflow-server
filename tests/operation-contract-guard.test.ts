@@ -25,6 +25,8 @@ describe('operation-contract guard', () => {
     handOn?: string;
     /** Put the consuming step BEFORE the producing one, so the read cannot be a handoff. */
     consumeFirst?: boolean;
+    /** A value the activity's own exit condition tests, which is what carries it past the boundary. */
+    routeOn?: string;
   }
 
   /**
@@ -33,10 +35,20 @@ describe('operation-contract guard', () => {
    * the signature and is walked by nothing — so a fixture binding one would leave the value
    * unmentioned, and every handoff case would pass for the wrong reason.
    */
-  async function findingsFor({ outputs, writes, handOn, consumeFirst = false }: Case): Promise<Awaited<ReturnType<typeof collectFindings>>> {
+  async function findingsFor({ outputs, writes, handOn, consumeFirst = false, routeOn }: Case): Promise<Awaited<ReturnType<typeof collectFindings>>> {
     const root = mkdtempSync(join(tmpdir(), 'wf-opcontract-'));
     try {
       writeLoadableWorkflowFixture(root, 'wf', ['act']);
+      // An activity declaring exits needs the graph to name a destination for each, or the
+      // workflow does not load and the guard reports that instead of what the case is about.
+      if (routeOn !== undefined) {
+        writeFileSync(
+          join(root, 'wf', 'workflow.yaml'),
+          'id: wf\nversion: 1.0.0\ntitle: wf\ninitialActivity: act\ngraph:\n  act:\n'
+          + '    went-on: __terminal__\n    did-not: __terminal__\n',
+          'utf-8',
+        );
+      }
       mkdirSync(join(root, 'wf', 'techniques'), { recursive: true });
       writeFileSync(
         join(root, 'wf', 'techniques', 'op.md'),
@@ -56,9 +68,15 @@ describe('operation-contract guard', () => {
         ? ''
         : '  - kind: technique\n    technique:\n      name: consume\n      inputs:\n'
           + `        seed_value: "{${handOn}}"\n`;
+      // An exit carrying a `when` is activity-level routing, read at the boundary after every step.
+      const exits = routeOn === undefined
+        ? ''
+        : `exits:\n  - id: went-on\n    label: It went on.\n    when: "${routeOn} == yes"\n`
+          + '  - id: did-not\n    label: It did not.\n    isDefault: true\n';
       writeFileSync(
         join(root, 'wf', 'activities', '01-act.yaml'),
         `id: act\nversion: 1.0.0\nname: Act\ndescription: Acts.\nvariables:\n  reads: []\n  writes:\n${writes}`
+        + exits
         + `steps:\n${consumeFirst ? consume + produce : produce + consume}`,
         'utf-8',
       );
@@ -103,14 +121,15 @@ describe('operation-contract guard', () => {
   });
 
   /**
-   * The other audit instance: an operation lands a value, a later step takes it up, and the contract
-   * shows neither. The handoff runs; a reader of the contract cannot see it.
+   * The other audit instance: an operation lands a value, the activity's own exit condition tests
+   * it, and the contract declares no write of it. The value chooses where the run goes next, so it
+   * outlives the activity, and a reader of the contract cannot see what decided the exit.
    */
-  it('reports an operation write a later step consumes and the contract omits', async () => {
+  it('reports an operation write the activity routes on and the contract omits', async () => {
     const findings = await findingsFor({
       outputs: '### symbol_work_list\n\nThe symbols to document.\n',
       writes: '    - name: other_value\n      type: string\n      description: Something else.\n',
-      handOn: 'symbol_work_list',
+      routeOn: 'symbol_work_list',
     });
     expect(findings.map((f) => f.check)).toContain('underived-operation-write');
   });
@@ -119,22 +138,23 @@ describe('operation-contract guard', () => {
     const findings = await findingsFor({
       outputs: '### symbol_work_list\n\nThe symbols to document.\n',
       writes: '    - name: symbol_work_list\n      type: array\n      description: The symbols to document.\n',
-      handOn: 'symbol_work_list',
+      routeOn: 'symbol_work_list',
     });
     expect(findings.filter((f) => f.check === 'underived-operation-write')).toEqual([]);
   });
 
   /**
-   * A read that happens BEFORE the operation lands the value is not the handoff this family is
-   * about — whatever it consults came from somewhere else, and calling it a handoff would describe
-   * a flow that does not happen. Ordering accounts for 24 of the 141 the un-ordered reading gave.
+   * A handoff between two steps of one activity crosses no boundary: the value is produced and
+   * consumed inside the activity and nothing outside can reach it. The construct inventory calls
+   * that the technique layer's own wiring, and `check-binding-fidelity` answers for it. A wider
+   * reading reported 117 of these, which is what made the family read as a convention question
+   * rather than a defect family.
    */
-  it('passes a read of the same name that precedes the operation landing it', async () => {
+  it('passes an operation write only a later step of the same activity consumes', async () => {
     const findings = await findingsFor({
       outputs: '### symbol_work_list\n\nThe symbols to document.\n',
       writes: '    - name: other_value\n      type: string\n      description: Something else.\n',
       handOn: 'symbol_work_list',
-      consumeFirst: true,
     });
     expect(findings.filter((f) => f.check === 'underived-operation-write')).toEqual([]);
   });

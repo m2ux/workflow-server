@@ -252,6 +252,16 @@ export interface DerivedContract {
    */
   consultedAfterProduction: Set<string>;
   /**
+   * Names the activity's own exit conditions test, before the namespace narrows them.
+   *
+   * {@link routingReads} answers this inside the declared namespace, which is the reading a
+   * contract checker wants. A value an operation lands and no declaration mentions is exactly the
+   * case that namespace does not hold, so asking whether such a value chooses an exit needs the
+   * un-narrowed set — the same reason {@link operationWrites} and {@link consultedAfterProduction}
+   * carry one.
+   */
+  routingConsults: Set<string>;
+  /**
    * The subset of {@link operationWrites} whose producing output states the members it carries, so
    * the value is a structure by the operation's own account. A declaration calling one of these a
    * scalar and the operation publishing it are describing one value in two incompatible ways.
@@ -692,7 +702,9 @@ export async function deriveActivityContract(args: {
 
   // Activity-level routing is read at the boundary, after every step has run.
   const routingReads = new Set<string>();
+  const routingConsults = new Set<string>();
   const routingRead = (name: string): void => {
+    routingConsults.add(name);
     if (!namespace.has(name)) return;
     routingReads.add(name);
     read(name);
@@ -707,7 +719,7 @@ export async function deriveActivityContract(args: {
 
   return {
     reads, writes, internalReads, artifactWrites, produces, mentions, persistedProductions,
-    routingReads, consumes, pathReads, memberWrites, artifactNames, operationWrites, structuredWrites,
+    routingReads, routingConsults, consumes, pathReads, memberWrites, artifactNames, operationWrites, structuredWrites,
     consultedAfterProduction, literalValues,
   };
 }
