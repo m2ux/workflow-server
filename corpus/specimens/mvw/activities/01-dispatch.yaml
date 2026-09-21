@@ -12,6 +12,8 @@ steps:
   - kind: routine
     id: recording
     routine: record-dispatch
+    outputs:
+      dispatch_recorded: dispatch_recorded
 exits:
   - id: dispatched
     isDefault: true
