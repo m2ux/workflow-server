@@ -1,4 +1,4 @@
-# Artifact and Workspace Isolation
+# Artifact and workspace isolation
 
 An agent working a task produces two unrelated kinds of output: changes to the user's code, and the plans, reviews and session state it accumulates while working out what those changes should be. Committed together, the second buries the first — a reviewer reads past planning notes to reach the diff, and the product's history carries the process that produced it. So the two live in separate trees and are committed separately, and an agent stays inside whichever one its current work belongs to.
 
@@ -13,14 +13,14 @@ An agent working a task produces two unrelated kinds of output: changes to the u
 
 ## The planning folder
 
-A session opens a planning folder under the engineering root, and that folder is where everything the run thinks lives.
+A session opens a planning folder under the engineering root, and that folder is where everything the run thinks lives. Which root that is follows from how the server was bound at startup:
 
-| Mode | Planning folder |
-|------|-----------------|
-| Repo or engineering checkout | `<engineering>/artifacts/planning/<slug>/` |
-| Legacy single-root workspace | `<workspace>/.engineering/artifacts/planning/<slug>/` |
+| Binding | Engineering root | Planning folder |
+|---------|------------------|-----------------|
+| `--repo=owner/repo`, or an explicit engineering directory | `$HOST_PROJECTS_ROOT/<repo>/.engineering` | `<engineering>/artifacts/planning/<slug>/` |
+| `--workspace=PATH` (legacy single root) | the workspace path itself | `<workspace>/.engineering/artifacts/planning/<slug>/` |
 
-`PLANNING_SLUG` overrides the relative segment.
+`PLANNING_SLUG` overrides the relative segment. The flags themselves are in [the configuration reference](configuration.md#root-binding).
 
 The folder holds a `README.md`, which is the index a person opens to see what the work is and where it stands; `session.json`, the session and variable state, which the server manages and validates and whose history array is the mechanical record of what the agents did; `.session-token`, the seal binding that state to the engineering root; and the artifacts each activity produces.
 
@@ -32,7 +32,7 @@ The planning `README.md` carries a Progress table, and its Status cells are the 
 
 ## How artifacts are named
 
-Each activity carries a two-digit prefix, which the server infers from the activity's own filename — an activity defined in `02-design-philosophy.yaml` carries the prefix `02`. A worker producing an artifact prepends that prefix to the filename, so a code review from that activity lands as `02-design-philosophy.md`. Ordering artifacts by name then orders them by the activity that wrote them, and two activities cannot collide over one filename.
+Each activity carries a two-digit prefix, which the server infers from the activity's own filename — an activity defined in `02-analyse-sources.yaml` carries the prefix `02`. A worker producing an artifact prepends that prefix to the filename, so an analysis from that activity lands as `02-analyse-sources.md`. Ordering artifacts by name then orders them by the activity that wrote them, and two activities cannot collide over one filename.
 
 Each activity also exposes the artifacts it is expected to produce. The server computes that list from the outputs of the techniques the activity's steps bind, and each entry carries the producing output's id and filename; activities do not author the list themselves.
 
@@ -42,6 +42,6 @@ Artifacts are written strictly into the planning folder, which is what keeps pla
 
 Engineering content is version-controlled independently of the domain commits. The layouts a product repository can choose between — a same-repo orphan branch, a shared engineering monorepo, or plain in-branch files — are covered in [engineering-storage.md](engineering-storage.md). Workflow definitions live on their own separate branch.
 
-When the orchestrator reaches the point after an activity where its artifacts are committed, it works in the engineering checkout rather than in the app checkout: it stages and commits the planning files under that tree, pushes the engineering remote, and then, where the app repository tracks engineering as a submodule, returns to the app checkout and commits the updated pointer.
+At the point after an activity where its artifacts are committed, the orchestrator works in the engineering checkout rather than the app checkout. It stages and commits the planning files under that tree, then pushes the engineering remote. Where the app repository tracks engineering as a submodule, it then returns to the app checkout and commits the updated pointer.
 
 That sequence is what keeps orchestration state version-controlled independently of the user's own commits in the feature worktree.

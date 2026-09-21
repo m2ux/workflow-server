@@ -74,8 +74,8 @@ The catalog is fetched by section in every mode, for the reason SKILL.md § Home
 - **On disk** — `grep -n "^## "` to get the section line numbers, then Read the one range you need.
   For a single entry, `grep -n "^### "` and read that block.
 - **In an active workflow session** — `get_resource` with a cross-workflow ref and anchor:
-  `workflow-design/anti-patterns#coupling-anti-patterns`, `workflow-design/design-principles`,
-  `workflow-design/schema-construct-inventory`, `workflow-design/convention-conformance`.
+  `canon/anti-patterns#coupling-anti-patterns`, `canon/design-principles`,
+  `canon/schema-construct-inventory`, `canon/convention-conformance`.
 
 Do not summarise a section into working notes and then audit against the notes. Detect wording
 carries the carve-outs; a paraphrase loses them and manufactures false positives.

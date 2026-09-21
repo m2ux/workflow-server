@@ -1,4 +1,4 @@
-# Checkpoint Model
+# Checkpoint model
 
 A workflow sometimes has to stop and ask. Which directory to target, whether a pull request is ready, which of two readings of a request was meant — none of these can be settled from state, and a wrong guess produces work nobody wanted. A **checkpoint** is a declared pause for exactly that question: a gate written into an activity's steps that holds the run until someone answers.
 
@@ -11,7 +11,7 @@ The agent that reaches the gate is not the agent that can ask. Work is [dispatch
 On reaching a `kind: checkpoint` step, the worker stops its domain work and calls the server:
 
 ```javascript
-yield_checkpoint({ session_index, checkpoint_id: "verify-issue" })
+yield_checkpoint({ session_index, checkpoint_id: "confirm-target" })
 ```
 
 The server records the pause in the session's `activeCheckpoint` field, stamps it with the time, and answers with a status the worker branches on:
@@ -80,25 +80,25 @@ A checkpoint is a step in an activity's `steps` list, tagged with its kind:
 ```yaml
 steps:
   - kind: checkpoint
-    id: verify-issue
-    message: "Please confirm the issue details are correct."
+    id: confirm-target
+    message: "Please confirm the detected target is correct."
     condition:
       type: simple
-      variable: has_issue
+      variable: target_detected
       operator: exists
     options:
       - id: proceed
         label: "Proceed"
-        description: "Issue details are correct, continue with implementation."
+        description: "The target is correct; continue."
         effect:
           setVariable:
-            issue_verified: true
+            target_confirmed: true
       - id: edit
-        label: "Edit Issue"
-        description: "Issue needs correction before proceeding."
+        label: "Choose another"
+        description: "Select a different target before proceeding."
         effect:
           setVariable:
-            issue_verified: false
+            target_confirmed: false
 ```
 
 | Field | Role |
@@ -116,12 +116,16 @@ A checkpoint used at several sites is a routine: the gate is declared once under
 
 ## Where a checkpoint belongs
 
+### A gate that comes too late changes nothing
+
 A checkpoint's position in the step list decides whether its answer can steer anything. Every step
-gated on a variable the checkpoint decides has to run after it: a gate reading an unbound variable is
+gated on a variable the checkpoint decides has to run after it. A gate reading an unbound variable is
 false, so the step is skipped, and the answer arrives with nothing left to apply it to. The run
 completes, having asked a question that changed nothing.
 
-`check:decision-order` holds the line mechanically — it reports a checkpoint whose decision a step
+### The five exemptions
+
+`check:decision-order` holds the line mechanically, reporting a checkpoint whose decision a step
 before it is already gated on. Five cases are exempt, because in each the earlier read has an answer
 or loses nothing by not firing:
 
@@ -133,20 +137,21 @@ or loses nothing by not firing:
 | The deciding option carries an `exit` | Leaving the activity sends the run back through the earlier step on its next visit, which then reads what the option wrote |
 | The two gates demand incompatible values of one variable | No single run reaches both steps, so the earlier one was never waiting on this decision |
 
-The last two carve out the corpus's standard way of settling a value: a technique derives it, an
-announcement reports it when the derivation was confident, a checkpoint decides it when the derivation
-was ambiguous, and the announcement and the checkpoint carry opposite gates on the ambiguity flag. On
-the corpus the guard was written against, the rule without its exemptions reports 14 pairs and 12 of
-them are that shape or one of the other four; every exemption is load-bearing, and removing any single
-one puts a working pattern back on the report.
+The last two carve out the standard way of settling a value. A technique derives it. An announcement
+reports it when the derivation was confident, and a checkpoint decides it when the derivation was
+ambiguous, the two carrying opposite gates on the ambiguity flag. Without the exemptions that shape
+reports as a defect, which is why each one is load-bearing: removing any of them puts a working
+pattern back on the report.
 
 Requirements come from conjuncts only. An `or` proves nothing about which branch a run took, so a
 gate built from one contributes no exclusion — the guard reports rather than assumes.
 
-Positioning interacts with the entry rule: `check:checkpoint-entry` refuses a checkpoint as an
-activity's first step, because that dispatch pays full delivery and yields before doing any work. A
-decision that has to precede all of an activity's work belongs at the preceding activity's tail or as
-the orchestrator's precondition on dispatching at all.
+### Never the first step
+
+`check:checkpoint-entry` refuses a checkpoint as an activity's first step, because that dispatch pays
+full delivery and then yields before doing any work. A decision that has to precede all of an
+activity's work belongs at the preceding activity's tail, or as the orchestrator's precondition on
+dispatching at all.
 
 ## What the design buys
 

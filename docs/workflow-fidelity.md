@@ -1,21 +1,12 @@
-# Workflow Fidelity Enforcement
+# Workflow fidelity enforcement
 
-How the workflow server ensures agents follow workflows correctly.
+An agent's claim to have followed a workflow has to be checkable. Two things make it hard. As a conversation grows, the earliest instructions — the workflow definition among them — fall out of the model's effective attention, so steps get skipped and transitions go wrong. And with nothing checking, an agent can take a shortcut, skip a gate, or report state it never reached.
 
-## The problem
+Seven layers answer that, each working at a different grain. Two are hard gates that refuse the call. The other five record a warning and move on, so a drifting agent is visible rather than stopped — which lets an agent correct itself, and leaves every warning in the trace for review afterwards.
 
-AI agents executing multi-step workflows face two reliability challenges:
+## The shape of a transition
 
-1. **Context degradation** — as conversations grow, earlier instructions (including workflow definitions) fall out of the model's effective attention window, leading to skipped steps, wrong transitions, and hallucinated procedures
-2. **Behavioral drift** — without enforcement, agents may take shortcuts, skip checkpoints, or fabricate state rather than following the defined execution path
-
-The workflow server addresses these through seven layers of enforcement, each operating at a different granularity. Two are hard gates that refuse the call; the other five record warnings and evidence, so a drifting agent is visible rather than stopped.
-
-## Enforcement layers
-
-### The shape of a transition
-
-Most enforcement happens where one activity hands over to the next, so that moment is worth seeing whole. The labels `L1` to `L7` in the diagram are the seven layers, which the sections below then take in turn: the seal over session state, the checkpoint gate, the cross-activity check, the reported exit, the step manifest, the activity manifest, and the trace.
+Most enforcement happens where one activity hands over to the next, so that moment is worth seeing whole. The labels `L1` to `L7` are the seven layers, taken in turn below.
 
 ```mermaid
 flowchart TD
@@ -35,30 +26,29 @@ flowchart TD
     actCheck --> tracePackage["L7: trace token packaged for A"]
 ```
 
-Double-bordered nodes are hard gates: they refuse the call until satisfied. Dashed arrows are advisory checks that add a warning to `_meta.validation` and let the call through. Every call verifies the session seal (L1) and records a trace event (L7); annotating those on each edge would only clutter the picture.
+Double-bordered nodes are hard gates; they refuse the call until satisfied. Dashed arrows are advisory checks that add a warning to `_meta.validation` and let the call through. Every call verifies the seal (L1) and records a trace event (L7), so those are left off the edges.
 
-### Layer 1: session integrity
+## Layer 1: session integrity
 
-Session state is not something an agent carries. Agents hold a six-character `session_index`, derived deterministically from the planning slug, and the server keeps the state itself on disk beside the planning folder. So what has to be protected is the file, not a credential in a prompt.
+Session state is not something an agent carries. An agent holds a six-character `session_index`; the server keeps the state on disk beside the planning folder. So what needs protecting is the file, not a credential in a prompt.
 
-Each session folder holds two files. `session.json` is plaintext and schema-validated. `.session-token` beside it is a sealed envelope binding those exact bytes to the engineering root and to a server-held signing key, using HMAC-SHA256. The server verifies the seal on every read and raises `SEAL_MISMATCH` when the two disagree.
+`session.json` is plaintext and schema-validated. `.session-token` beside it is a sealed envelope, binding those exact bytes to the engineering root and to a server-held signing key using a keyed hash (HMAC-SHA256). The server verifies the seal on every read and raises `SEAL_MISMATCH` when the two disagree. The file layout itself is in [the state management model](state-management-model.md#persistence).
 
-The signing key lives in a file named `secret`. The server looks for its directory in `WORKFLOW_SERVER_KEY_DIR` first, then `WORKFLOW_SERVER_STATE_DIR`, falling back to `~/.workflow-server`. Docker's `start.sh` sets the key directory explicitly, because non-root containers often run with `HOME=/` and the key would otherwise land somewhere unwritable.
+Where the signing key lives, and how the server finds it, is in [the configuration reference](configuration.md#signing-key).
 
-**What it enforces:**
-- State edited outside the server is detected on the next read rather than silently trusted
-- A session index is a lookup key, not a bearer credential — the seal, not the index, attests that the state is the server's own
-- Rotating or losing the signing key invalidates existing seals, which surfaces as `SEAL_MISMATCH` rather than as quiet acceptance
+What the seal buys:
 
-Because the state lives in the file rather than in an agent's context, a server restart is transparent. There is no adoption, re-signing or recovery step for an agent to perform.
+- State edited outside the server is caught on the next read rather than trusted.
+- A session index is a lookup key, not a bearer credential. The seal attests that the state is the server's own; the index attests nothing.
+- Rotating or losing the signing key invalidates existing seals. That surfaces as `SEAL_MISMATCH` rather than as quiet acceptance.
 
-The file layout itself — what the state file carries, where the planning folder sits under the engineering root, and how a resume call works — is described once in [the state management model](state-management-model.md#persistence).
+## Layer 2: the checkpoint gate
 
-### Layer 2: checkpoint gate
+When a worker yields a checkpoint, the server records it in the session's `activeCheckpoint` field.
 
-When a worker yields a checkpoint, the server records it in the session's `activeCheckpoint` field. Eight operations then refuse until it is cleared, in two groups.
+### What refuses while a gate is open
 
-Three guard the run's own progress, each with its own inline check:
+Some operations guard the run's own progress, each with its own inline check:
 
 | Operation | Why it refuses |
 |-----------|----------------|
@@ -66,201 +56,160 @@ Three guard the run's own progress, each with its own inline check:
 | `yield_checkpoint` | A second pause on top of an outstanding one cannot be unwound |
 | `resume_checkpoint` | A worker must not continue before the answer exists |
 
-Five more are content delivery, and refuse through the shared `assertNoActiveCheckpoint` helper, which states one blanket reason for all of them — every tool is gated until the checkpoint is resolved, and the orchestrator clears it with `respond_checkpoint`:
+Others deliver content — `get_workflow`, `get_activity`, `get_technique`, `get_resource` and `get_trace` — and refuse through the shared `assertNoActiveCheckpoint` helper, which gives one blanket reason for all of them.
 
-| Operation |
-|-----------|
-| `get_workflow` |
-| `get_activity` |
-| `get_technique` |
-| `get_resource` |
-| `get_trace` |
+### What stays open, and why
 
-Six authenticated operations do **not** gate. Two are the resolution mechanism itself and must stay open: `present_checkpoint` loads the checkpoint definition while it is active, and `respond_checkpoint` clears it. Two are diagnostics, open so an orchestrator can examine a run that has stopped: `inspect_session` and `get_workflow_status`. The remaining two are `record_usage`, which accounts for work already done, and `dispatch_child`, which starts a child workflow — so a run holding an unanswered question can still open one.
+| Operation | Why it must not gate |
+|-----------|----------------------|
+| `present_checkpoint`, `respond_checkpoint` | They are the resolution mechanism |
+| `inspect_session`, `get_workflow_status` | Diagnostics, so an orchestrator can examine a run that has stopped |
+| `record_usage` | It accounts for work already done |
+| `dispatch_child` | A run holding an unanswered question can still open a child workflow |
 
-**Resolution via `respond_checkpoint`** takes exactly one of three modes:
+### What the gate enforces
 
-| Mode | When to use | Timing enforcement |
-|------|-------------|-------------------|
-| `option_id` | The user selected an option | At least three seconds since the pause was recorded |
-| `auto_advance` | The checkpoint declares `defaultOption` and `autoAdvanceMs`, and the timer elapsed | The full `autoAdvanceMs` since the pause was recorded |
-| `condition_not_met` | The checkpoint's condition is false, as the agent evaluated it | None, but the checkpoint must carry a structured `condition`; a `when` gate does not qualify |
+- An agent cannot advance past an unresolved checkpoint. `next_activity` throws while `activeCheckpoint` is set.
+- An agent cannot forge a response. `option_id` is validated against the checkpoint definition.
+- An agent cannot resolve instantly. Both timers run from the recorded pause, so answering faster than a person could read is refused. This closes the cheapest way to fake a gate: calling `respond_checkpoint` straight after `yield_checkpoint` without showing anyone anything. Real worker execution takes minutes, so the check never fires on a legitimate run.
+- An agent cannot dismiss an unconditional checkpoint. `condition_not_met` is rejected without a `condition` field.
 
-**What it enforces:**
-- Agents cannot advance past an unresolved checkpoint — `next_activity` throws while `activeCheckpoint` is set
-- Agents cannot forge a response — `option_id` is validated against the checkpoint definition
-- Agents cannot resolve instantly — both timers run from the recorded pause time, so answering faster than a person could read is refused
-- Agents cannot dismiss an unconditional checkpoint — `condition_not_met` is rejected without a `condition` field
+The three resolution modes and the timers each one waits out are specified in [the checkpoint model](checkpoint-model.md#three-ways-to-resolve-one).
 
-**Anti-gaming:** the timers close off the cheapest way to fake a checkpoint, which is calling `respond_checkpoint` straight after `yield_checkpoint` without showing anyone anything. Real worker execution takes minutes, so the check never fires on a legitimate run. What it cannot do is prove a person saw the question; that limit is recorded below.
+## Layer 3: cross-activity validation
 
-### Layer 3: cross-activity validation
-
-When an agent makes a tool call, the server compares the position it recorded on the previous call against what this call claims. Warnings are returned in `_meta.validation`.
-
-**Checks performed:**
+On every tool call the server compares the position it recorded last time against what this call claims. A disagreement produces a warning in `_meta.validation`:
 
 | Check | What it detects |
-|-------|----------------|
-| Workflow consistency | Agent switched workflows mid-session without starting a new session |
-| Activity transition | Agent jumped to an activity the workflow graph binds no exit of the previous one to |
-| Technique association | Agent loaded a technique not declared by the current activity |
-| Version drift | Workflow definition changed on disk since the session started |
+|-------|-----------------|
+| Workflow consistency | The agent switched workflows mid-session without starting a new one |
+| Activity transition | The agent jumped to an activity the graph binds no exit of the previous one to |
+| Technique association | The agent loaded a technique the current activity does not declare |
+| Version drift | The workflow definition changed on disk since the session started |
 
-**Design principle:** Warnings don't block execution — the tool still returns its result. This allows agents to self-correct rather than being hard-blocked, while making violations visible. All validation warnings are captured in the execution trace (Layer 7).
+## Layer 4: the reported exit
 
-### Layer 4: reported exit tracking
+On `next_activity` an agent may name the outcome the activity it is leaving reached, as the `exit` parameter. The server checks that the activity declares an exit by that name, and that the graph binds that exit to the requested target. The exit is then recorded in the sealed state and in the trace, so the agent cannot revise it afterwards.
 
-When calling `next_activity`, agents can include an `exit` parameter — the name of the outcome the activity being left reached, from that activity's `exits`.
+What this cannot check is whether the exit's predicate is actually true. Exits are often selected by a user's answer at a checkpoint, and those answers are logged, so a later review can cross-reference reported exits against checkpoint responses.
 
-**What it enforces:**
-- The activity declares an exit by that name
-- The workflow graph binds that exit to the requested target activity
-- The exit is recorded in the sealed session state and in the trace, so the agent cannot revise it afterwards
+## Layer 5: the step manifest
 
-**What it cannot verify in real-time:** Whether the exit's predicate is actually true in the agent's state. Exits are often selected by user choices at checkpoints, which are logged, so post-hoc review can cross-reference reported exits against checkpoint responses and trace data.
-
-### Layer 5: step completion manifest
-
-When transitioning between activities via `next_activity`, agents include a `step_manifest` parameter — a structured summary of each step completed in the previous activity.
+On `next_activity` an agent passes a `step_manifest`: one entry per step completed in the activity being left.
 
 ```json
 {
   "step_manifest": [
     { "step_id": "resolve-target", "output": "Target verified at /path" },
-    { "step_id": "initialize-target", "output": "Checked out main" },
-    { "step_id": "detect-project-type", "output": "project_type=other" }
+    { "step_id": "prepare-target", "output": "Checked out main" },
+    { "step_id": "detect-layout", "output": "needs_migration=false" }
   ]
 }
 ```
 
-**What it enforces (advisory — every check warns rather than blocks):**
-- Every ungated top-level step is present (missing steps produce a warning)
-- Top-level steps appear in declaration order (out-of-order steps produce a warning; the check is a relative-order comparison, so omitted gated steps do not shift it)
-- Each step has a non-empty output description (empty outputs produce a warning)
-- Step ids not defined in the activity produce a warning
+### The checks
 
-**Gated and loop-body steps:** a step gated by `when` or `condition`, or a loop carrying a `continueWhile` continuation test, may be omitted from the manifest — the agent evaluated the gate and skipped the step. Those three fields are the ones the validator reads: a loop's continuation test decides whether its body runs at all, so a loop carrying one is gated on the same terms as a conditional step. `step.required` is a worker hint the validator does not consult.
+Each warns rather than blocks:
 
-**What a loop body owes the manifest:** one entry per body step per iteration, under the step's declared id each time — three passes of a two-step body are six entries, in the order they ran. The manifest reports what the activity did, and a body run three times reported once says it ran once. No loop-body id is ever required, the iteration count being agent-determined and possibly zero, and the server holds no count of its own to check a report against: the agent runs the loop. What the validator does check is that every id names a step of the activity, so a repeated id is read as a repeated run rather than as a duplicate. The order check is a subsequence comparison over top-level ids alone, so body entries interleaved between them shift nothing.
+| Check | Warns when |
+|-------|-----------|
+| Presence | An ungated top-level step is missing |
+| Order | Top-level steps are out of declaration order — a relative comparison, so omitted gated steps do not shift it |
+| Output | A step carries an empty output description |
+| Identity | A step id names no step of the activity |
 
-**Technique-fetch fidelity:** the server records every `get_technique` fetch as a `technique_fetched` event in the session history (resolved technique id, bound `step_id` when supplied, agent — recorded on both delivery paths, so an unchanged-reference answer in persistent context mode still counts), and every inline step-technique delivery from a bundling activity's `get_activity` as a `technique_bundled` event. `get_resource` fetches are recorded as `resource_fetched` events for observability only. All three delivery events carry the payload magnitude — `chars` (the full payload size, on both delivery paths) and `delivery: "full" | "unchanged"` — so delivered and saved characters are summable from the history rather than estimated ([Reference delivery](resource-resolution-model.md#reference-delivery)). Each `get_activity` also records one `activity_delivered` event naming what that call resolved and spent — unique techniques, provenance passes, bundled steps, characters against the eager budget — and echoes the same figures on `_meta.delivery_cost`. When validating a `step_manifest`, a manifested technique step with no delivery recorded during the current activity visit warns — the step was reported complete but its composed technique content was never loaded, the silent-degradation signature. A step is covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique operation, or by an inline bundle delivery, and a loop-back revisit needs its own fetches. Advisory, like the rest of the layer. Inline delivery mechanics: [Hybrid technique bundling](resource-resolution-model.md#hybrid-technique-bundling).
+### Steps that may be left out
 
-### Layer 6: activity manifest
+A step gated by `when` or `condition`, and a loop carrying a `continueWhile` continuation test, may be omitted: the agent evaluated the gate and skipped the step. A loop's continuation test decides whether its body runs at all, which is why a loop carrying one is gated on the same terms as a conditional step.
 
-When transitioning between activities via `next_activity`, agents can include an `activity_manifest` — a structured summary of activities completed so far in the workflow.
+Those three fields are the only ones the validator reads. `step.required` is a hint for the worker, not a check.
+
+### What a loop body owes the manifest
+
+One entry per body step per iteration, under the step's declared id each time — three passes of a two-step body are six entries, in the order they ran. A body run three times and reported once says it ran once.
+
+No loop-body id is ever required: the iteration count is the agent's, possibly zero, and the server holds no count of its own to check against. What the validator does check is that every id names a step of the activity, so a repeated id reads as a repeated run rather than a duplicate. The order check is a subsequence comparison over top-level ids alone, so body entries interleaved between them shift nothing.
+
+### Technique-fetch fidelity
+
+The server records every delivery of technique or resource content into the session history:
+
+| Event | Recorded on |
+|-------|-------------|
+| `technique_fetched` | a `get_technique` call, with the resolved id, the bound `step_id` where supplied, and the agent |
+| `technique_bundled` | each step technique inlined by `get_activity` |
+| `resource_fetched` | a `get_resource` call — observability only |
+| `activity_delivered` | each `get_activity`, naming what that call resolved and spent |
+
+All three delivery events carry `chars`, the full payload size on either path, and `delivery: "full" | "unchanged"` — so characters delivered and characters saved are both summable from the history rather than estimated. An unchanged-reference answer under persistent context mode still counts as a delivery.
+
+Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique operation, or by an inline bundle delivery. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery-model.md#reference-delivery) and [hybrid technique bundling](delivery-model.md#eager-technique-bundling).
+
+## Layer 6: the activity manifest
+
+An agent may also pass an `activity_manifest` on `next_activity`: a summary of the activities completed so far.
 
 ```json
 {
   "activity_manifest": [
-    { "activity_id": "start-work-package", "outcome": "completed", "exit": "done" },
-    { "activity_id": "codebase-comprehension", "outcome": "completed", "exit": "skip-optional-activities" },
-    { "activity_id": "plan-prepare", "outcome": "revised", "exit": "done" }
+    { "activity_id": "detect-layout", "outcome": "completed", "exit": "standard" },
+    { "activity_id": "analyse-sources", "outcome": "completed", "exit": "skip-optional" },
+    { "activity_id": "draft-plan", "outcome": "revised", "exit": "done" }
   ]
 }
 ```
 
-**What it enforces (advisory):**
-- Activity IDs reference activities that exist in the workflow definition
-- Outcomes are non-empty
-- The claimed exit is one that activity declares
+Each check warns: that every activity id exists in the workflow, that outcomes are non-empty, and that each claimed exit is one that activity declares.
 
-**Design principle:** Activity manifest validation is advisory — it produces warnings, not rejections. This matches the design principle of Layer 3. The manifest provides a workflow-level audit trail that complements the step-level detail of Layer 5, particularly in orchestrator/worker patterns where the orchestrator tracks the workflow journey and the worker tracks step execution.
+Where Layer 5 records step-level detail, this records the workflow-level journey. The split matters in the orchestrator and worker pattern, where the orchestrator tracks the journey and the worker tracks the steps.
 
-### Layer 7: execution trace
+## Layer 7: the execution trace
 
-The server automatically captures a mechanical trace of every tool call in a session. Trace data is packaged as HMAC-signed trace tokens — opaque, compact references that the agent accumulates and can resolve via `get_trace`.
+### What each event carries
 
-**What it captures automatically (via `withAuditLog`):**
+The server captures a mechanical trace of every tool call through `withAuditLog`:
 
 | Field | Description |
 |-------|-------------|
 | `name` | Tool name |
 | `ts` | Timestamp (Unix seconds) |
-| `ms` | Duration (milliseconds) |
-| `s` | Status (`ok` or `error`) |
-| `wf`, `act`, `aid` | Workflow, activity, and agent id the call was made under |
-| `err` | Error message (on failure) |
+| `ms` | Duration in milliseconds |
+| `s` | Status, `ok` or `error` |
+| `wf`, `act`, `aid` | Workflow, activity and agent id the call was made under |
+| `err` | Error message, on failure |
 | `vw` | Validation warnings from `_meta.validation` |
 
-**How trace tokens work:**
+### How a trace token travels
 
-1. The server accumulates trace events in an in-memory `TraceStore` during the session
-2. When `next_activity` is called (activity transition), the server packages all events since the last transition into an HMAC-signed trace token and returns it in `_meta.trace_token`
-3. The agent accumulates these opaque tokens without parsing them
-4. At any point, `get_trace` resolves the accumulated tokens into full event data, or returns the in-memory trace if no tokens are provided
+Events accumulate in an in-memory `TraceStore`. On each `next_activity` the server packages everything since the last transition into a trace token, signed with the same key that seals session state, and returns it in `_meta.trace_token`.
 
-**What it enables:**
-- **Post-execution audit** — the complete tool call sequence with timing, errors, and validation warnings
-- **Failure diagnosis** — the last call before silence identifies where an agent got stuck
-- **Multi-agent attribution** — the `aid` field distinguishes orchestrator from worker calls
-- **Parent-child correlation** — a launched workflow's events carry its own `sid`, and the session file records which session launched it
-- **Validation warning history** — every warning issued during the session is recorded, not just the most recent
+The agent accumulates these tokens as opaque strings without parsing them, which keeps the mechanical trace out of its reasoning context. `get_trace` resolves accumulated tokens into full event data, or returns the in-memory trace when given none.
 
-**Two-layer trace architecture:** The server captures the mechanical trace (tool calls, timing, validation) automatically. Agents write a complementary semantic trace (step outputs, checkpoint responses, decision branches, variable changes) to the planning folder per workflow technique instructions. Together they provide complete execution visibility.
+A token is self-contained rather than a pointer into server memory, so it stays a valid attestation across a restart. Field names are compressed, which is what keeps an accumulating set of tokens small enough to carry without thinking about it.
 
-**Trace token properties:**
-- Self-contained — full event data is embedded, not just references to in-memory state
-- HMAC-signed — tamper-evident, using the same key that seals session state
-- Compact — compressed field names minimize context window impact
-- Degradation-resilient — tokens remain valid attestations even if the server restarts
+What the trace makes possible after the fact:
 
-## Context pressure mitigation
+- **Audit** — the complete call sequence, with timing and errors.
+- **Failure diagnosis** — the last call before silence says where an agent got stuck.
+- **Attribution** — the `aid` field tells orchestrator calls from worker calls.
+- **Warning history** — every warning the session issued, not only the most recent.
+- **Parent and child correlation** — a launched workflow's events carry their own `sid`, and the session file records which session launched it.
 
-Beyond enforcement, the server reduces the context burden on agents:
+Agents write a second, semantic trace — step outputs, checkpoint responses, decision branches, variable changes — into the planning folder, per the workflow's own technique instructions. The server's mechanical trace and that semantic one together give complete visibility.
 
-### Lightweight workflow metadata
+## What this cannot prove
 
-`get_workflow` returns lightweight metadata (~2KB) rather than the full workflow definition (~13KB): the orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. Step detail and the worker-facing `rules.activity` / `techniques.activity` reach workers through `get_activity`. The response is preceded by the technique bundle (the workflow's `techniques.workflow` plus the core orchestrator techniques), so the orchestrator receives its execution surface in a single round-trip.
+Every layer above detects rather than prevents, and the limits are worth stating plainly.
 
-### Exits in activity definitions, destinations in the workflow
-
-`get_activity` returns the complete activity definition including its `exits` — the outcomes it can
-reach and the predicate selecting each. The agent matches those predicates against its state
-variables to name the outcome:
-
-```json
-{
-  "exits": [
-    { "id": "needs-elicitation", "when": "needs_elicitation == true" },
-    { "id": "comprehension-complete", "isDefault": true }
-  ]
-}
-```
-
-Where each one leads is the workflow's, held as `graph`. Each audience receives the half of the
-routing it acts on: `get_workflow` returns the whole graph to the orchestrator, and `get_activity`
-returns the current activity's row of it to the worker as `exit_destinations` — the destination each
-declared exit leads to, exactly as the graph names it: an activity id, `__terminal__`, a list of
-members, or one activity together with the collection it runs over. A worker selects its exit from
-the predicates above and reports that destination unread, so the routing it reports is resolved
-from what it was delivered rather than from a tool its role does not hold. A checkpoint option may
-name an exit too, and `present_checkpoint` resolves it through the same graph so the orchestrator can
-state each option's consequence before the user chooses.
-
-### Technique and resource loading
-
-`get_workflow` and `get_activity` pre-resolve the activity's `techniques[]` references and return them as the bundled technique set in the response preamble — agents read technique bodies (capability, flow, inputs, protocol, outputs) directly from the bundle rather than chasing per-step loads. `get_technique` loads a single fully composed technique on demand — the workflow's first declared technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when a technique references reference material that wasn't bundled.
-
-### Self-describing bootstrap
-
-The `discover` tool returns the complete bootstrap procedure and available workflows. Agents learn how to use the server from the server itself, reducing reliance on IDE-side configuration that may go stale.
-
-### Trace token efficiency
-
-Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-activity session produces ~3KB of accumulated tokens. The agent stores tokens as opaque strings without parsing, keeping the mechanical trace out of the reasoning context until explicitly resolved via `get_trace`.
-
-## Limitations
-
-- **Step execution is not provable** — the manifest validates that the agent *reported* each step, not that it *performed* the work. The output descriptions are agent-generated. However, the mechanical trace independently confirms which tool calls were made, providing corroborating evidence.
-- **Condition truth is not verified** — the server checks that a claimed condition maps to the target activity, but cannot verify whether the condition is actually true in the agent's state. Post-hoc audit via checkpoint logs and trace data can cross-reference claimed conditions against observed behavior.
-- **Checkpoint user presence is not provable** — the checkpoint gate ensures the agent *calls* `respond_checkpoint` with a valid option, but cannot prove a human saw the checkpoint. The timing enforcement raises the bar (instant auto-resolve is rejected), and the trace records all checkpoint interactions for audit. However, an agent could wait the minimum time and then submit a fabricated response. This is an inherent limitation of agent-mediated systems where the agent controls the communication channel.
-- **Conditional checkpoint dismissal relies on agent honesty** — when an agent calls `respond_checkpoint` with `condition_not_met`, the server validates that the checkpoint has a `condition` field but cannot verify the condition is actually false. The trace records the dismissal for post-hoc audit.
-- **A repeated call is not distinguished from a fresh one** — the server holds the session state, so a call is checked against the position it recorded rather than against anything the agent presents. What it cannot tell is whether an agent is re-issuing a call it already made in the same session. The trace records both, so a repeat is visible after the fact.
-- **Warnings are advisory** — a confused agent may ignore validation warnings. The enforcement is detection-oriented, not prevention-oriented. Validation warnings are captured in the execution trace, making ignored warnings visible in post-hoc review.
-- **In-memory trace lifespan** — the `TraceStore` lives in server memory. On server restart, accumulated events are lost. Trace tokens issued before the restart remain valid as self-contained attestations (event data is embedded), but ad-hoc `get_trace` queries without tokens return empty results for prior sessions.
-- **Semantic trace is agent-dependent** — the agent-written semantic trace (step outputs, checkpoint responses, variable changes) relies on agent discipline. The server cannot verify that the agent wrote it or that it is complete.
+- **Step execution is not provable.** The manifest shows that an agent *reported* each step, not that it did the work, and the output descriptions are the agent's own. The mechanical trace independently confirms which tool calls were made, which corroborates but does not settle it.
+- **Condition truth is not verified.** The server checks that a claimed exit maps to the target activity. Whether the predicate holds in the agent's state is beyond it.
+- **Checkpoint user presence is not provable.** The gate ensures the agent calls `respond_checkpoint` with a valid option. It cannot show a person saw the question. The timers raise the bar by rejecting an instant resolve, but an agent could wait the minimum and submit a fabricated answer. This is inherent wherever the agent controls the channel to the user.
+- **Conditional dismissal relies on honesty.** On `condition_not_met` the server validates that the checkpoint carries a `condition`, not that the condition is false. The dismissal is recorded for later audit.
+- **A repeated call is not distinguished from a fresh one.** A call is checked against the position the server recorded, so it cannot tell that an agent is re-issuing a call it already made. The trace records both, so a repeat is visible afterwards.
+- **Warnings are advisory.** A confused agent may ignore them. They are captured in the trace, so ignored warnings show up in review.
+- **The in-memory trace does not survive a restart.** Tokens issued before it remain valid, since the event data is embedded in them, but a `get_trace` with no tokens returns nothing for prior sessions.
+- **The semantic trace depends on the agent.** The server cannot verify that the agent wrote it, or that it is complete.
 
 ## Where else to look
 
-The tools these layers sit behind are catalogued in the [API reference](api-reference.md), with the [generated wire descriptions](../site/api/tools.html) giving each parameter schema. Getting an agent talking to the server in the first place is [IDE setup](ide-setup.md).
+The tools these layers sit behind are catalogued in the [API reference](api-reference.md), with the [generated wire descriptions](../site/api/tools.html) giving each parameter schema. How instructions reach an agent without swamping its context is [resource resolution](resource-resolution-model.md). Getting an agent talking to the server in the first place is [IDE setup](ide-setup.md).

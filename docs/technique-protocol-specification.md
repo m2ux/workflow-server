@@ -1,12 +1,24 @@
-# Technique Protocol Specification
+# Technique protocol specification
 
 ## Before the formal rules
 
-This page is for workflow authors and contributors who write or change technique markdown. A technique is a reusable capability file — what it does, what it needs, the ordered steps to follow, and any rules that hold across them — which an activity step names so that the agent knows how to act. That chain is the product model in full: a user's goal becomes a workflow, a workflow is a sequence of activities, an activity's steps name techniques, and a technique reaches for tools.
+### Who this is for
 
-Writing one takes three things. Put the file under a workflow's `techniques/` directory, in one of the shapes §2 sets out. Give it a clear capability statement, inputs and outputs where they earn their place, and an ordered protocol. Then reference it from an activity step, and the server loads and composes it as the run reaches that step.
+Workflow authors and contributors who write or change technique markdown.
 
-Everything from §1 onward is the normative contract — addressing, composition and delivery — and it is written to be precise rather than brisk. The identifiers in it are the contract, so they appear exactly as the loader expects them. The schema those rules are checked against is [`technique.schema.json`](../schemas/technique.schema.json), which is maintained by hand alongside [its Zod source](../src/schema/technique.schema.ts) — the loader validates against the Zod source, and the JSON file is the editor-facing mirror of it — and the code that reads a technique off disk is split between [the markdown loader](../src/loaders/markdown-technique-loader.ts) and [the resolver](../src/loaders/technique-loader.ts). For a short catalogue of the MCP tools involved, see the [API reference](api-reference.md).
+A technique is a reusable capability file — what it does, what it needs, the ordered steps to follow, and any rules that hold across them — which an activity step names so that the agent knows how to act. That chain is the product model in full: a user's goal becomes a workflow, a workflow is a sequence of activities, an activity's steps name techniques, and a technique reaches for tools.
+
+### Writing one
+
+Put the file under a workflow's `techniques/` directory, in one of the shapes §2 sets out. Give it a clear capability statement, inputs and outputs where they earn their place, and an ordered protocol. Then reference it from an activity step, and the server loads and composes it as the run reaches that step.
+
+### How to read the rest
+
+Everything from §1 onward is the normative contract — addressing, composition and delivery — and it is written to be precise rather than brisk. The identifiers in it are the contract, so they appear exactly as the loader expects them.
+
+### Where the implementation lives
+
+The loader validates against [the Zod source](../src/schema/technique.schema.ts), and [`technique.schema.json`](../schemas/technique.schema.json) is its hand-maintained, editor-facing mirror. Reading a technique off disk is split between [the markdown loader](../src/loaders/markdown-technique-loader.ts) and [the resolver](../src/loaders/technique-loader.ts). For a short catalogue of the tools involved, see the [API reference](api-reference.md).
 
 ---
 
@@ -151,74 +163,18 @@ declaration states the reader of the artifact as it exists, and the absent case 
 while the format is in transit. The registers waiting are listed in the conversion issue, and
 `check-audience` deliberately does not require presence, so the wait is not a standing failure.
 
-#### The symbol model
+#### Symbols and naming
 
-A technique has one namespace of **mutable symbols**. Direction is **structural — carried by the
-section a symbol is declared under, never by its spelling**:
+A technique has one namespace of **mutable symbols**, and direction is structural rather than
+spelled: an Input is populated on entry, an Output is exposed on completion, and a protocol variable
+(§3.3) is neither. A symbol may be declared in **both** Inputs and Outputs — the idempotent
+receive-or-compute-then-expose case — which is what lets a value one technique produces be hoisted to
+a common ancestor (§5) as a shared input, with the producing technique additionally declaring it as
+an output.
 
-- An **input** (`## Inputs`) is a symbol *populated on entry* — by the caller, or by an upstream
-  technique's output bound to it. Optional inputs may be absent and fall back to `#### default`.
-- An **output** (`## Outputs`) is a symbol *exposed at the technique's surface on completion*.
-- A **protocol variable** (`{$name}`, §3.3) is a symbol created and used within one protocol run,
-  neither received nor exposed.
-
-A symbol may be declared in **both** Inputs and Output. This is not a contradiction: it means the
-symbol arrives populated **if** the caller provides it, may be mutated or freshly computed during the
-protocol, and its final value is exposed on completion. An idempotent resolver (receive-or-compute,
-then expose) is the canonical case, and it is exactly why a value that one technique produces and
-others consume can still be hoisted to a common ancestor (§5): declare it as a shared input on the
-ancestor, and the producing technique additionally declares it as an output.
-
-**Symbol ids are `snake_case`; names are `kebab-case`.** The two namespaces are distinct:
-
-- A **symbol** — an input, output, or protocol variable — becomes a **runtime variable**. The engine
-  stores variables in a name-keyed bag and resolves references by **exact string match**
-  (`getVariableValue`); the agent sets a variable under the name the prose dictates, and activity
-  gates and exit predicates read it by that same name. So a symbol id must be the *same string* as the
-  variable it binds to. Activities, conditions, and session state are authored in `snake_case`
-  (`target_path`, `is_review_mode`, `planning_folder_path`), so **symbol ids are `snake_case`** — and
-  protocol variables follow suit (`{$resolved_content}`). Case carries no meaning beyond this; it does
-  **not** distinguish input from output (direction is structural). An id that mirrors an external tool
-  / MCP / CLI parameter takes that **tool's exact spelling** — usually already snake (`session_index`,
-  `repo_path`), occasionally camelCase (Atlassian's `cloudId`) — so it binds natively with no
-  translation.
-- A **name** — a technique, operation, or resource identity, and the file / hyperlink / `::` target
-  that addresses it — is a slug, never an evaluated variable, and is **`kebab-case`**
-  (`create-issue`, `gitnexus`, `resolve-cloud-id.md`). **Rule names are names too**: a rule
-  is never an evaluated variable; it is cited by its dotted symbol address `[workflow.]technique.rule-name`
-  (§4.1), sitting beside the kebab technique name, so a rule name is `kebab-case` and the citation reads
-  uniformly (`gitnexus.index-freshness-first`).
-
-The split is the classical one: evaluated identifiers are snake (a `-` is the subtraction operator),
-surface/slug tokens are kebab. Here it is also a binding requirement — a kebab symbol id would not
-match the snake variable the engine looks up.
-
-#### Naming structure
-
-Beyond case (above), a symbol id's **grammatical shape encodes its kind**, so a reader infers from the
-shape alone whether a value is a flag, a scalar, a collection, or a map:
-
-- A **boolean** is an **affirmative predicate** — the statement that holds when the value is `true`
-  (`squash_merge_supported`, `index_fresh`, `pr_merged`), so a condition reads as an assertion. An
-  `is_`/`has_`/`can_`/`should_` prefix is **value-gated**, added only where it sharpens the predicate,
-  not mandatory: a bare affirmative noun phrase or a past-participle result flag (`worktree_created`,
-  `review_passed`, the `*_confirmed` cluster) already states the condition that holds and is conformant
-  as written. A negated stem (`not_ready`), a generic-noun id that buries the predicate (`…_flag`,
-  `…_status`, `…_check`), or an ambiguous noun is non-conformant.
-- A **collection** iterated as a whole is a **plural item noun** (`tasks`, `failures`,
-  `open_assumptions`) with no `_list`/`_array`/`_collection`/`_set` representation suffix; a value
-  addressed **by key** is **singular** and names the mapping (`domain_to_range`). Shape, not the
-  underlying container type, decides.
-- An **I/O id** is a **qualified noun phrase, head noun last** — adjectival/role qualifiers precede the
-  head, and the rightmost token is the thing the value IS (`reconciled_assumptions`, `lint_diagnostics`).
-  One concept carries one name corpus-wide (hoist to the common ancestor per §5 rather than letting
-  per-technique synonyms drift). The representation is never part of the id (`assumptions-log`, not
-  `assumptions-log-path`) and direction is never encoded in the id (it is structural). A legitimate
-  **kind suffix** that IS the concept — `_mode`, `_type` for an enum/mode discriminator — is a head
-  noun and stays.
-
-This is the structural complement to the case rule: case settles which alphabet an id uses, structure
-settles which words and in what order. See AP-60.
+How an id is spelled, why a symbol id is `snake_case` where a name is `kebab-case`, and how an id's
+grammatical shape encodes its kind are in [identifier conventions](identifier-conventions.md). Those
+rules bind here and corpus-wide; `check:technique-template` enforces them on this file shape.
 
 ### 3.3 Protocol
 
@@ -242,28 +198,37 @@ line as a new step and flattens the caveat into a disconnected peer step (AP-56)
 substance is "never X" or "always Y" with no action of its own is mis-modelled and belongs in a rule
 or a note. (A genuine enumeration or sequential sub-step legitimately stays a sub-bullet.)
 
-**Protocol variables (declare-once).** A step may bind an intermediate value for later steps to read.
-The binding is written with the dollar sigil — `{$name}` (snake_case — a protocol variable is a symbol,
-§3.2) — and marks the single point where the value is produced; **every later reference drops the `$`
-and reads it as `{name}`**, identical in form to an interface designator. The `$` is therefore the act
-of declaration (as `let` is in a programming language), not a per-occurrence marker: write `{$name}`
-once, `{name}` thereafter. A protocol variable is scoped to a single protocol run — one step creates
-it, later steps consume it — and is *not* part of the technique's interface: it is neither an Input (a
-value the technique receives from its caller) nor an Output (a value the technique returns), is not
-delivered in the bundle, and is not `::`-addressable. Use it for technique-internal data — a captured
-artifact path, an assembled context block, a parsed intermediate. A step creates one with an explicit
-verb ("Capture `{$structural_path}` from the worker's response"; "Build `{$verified_knowledge}` from
-`{gap_data}`") and later steps reference it bare (`{structural_path}`). The sigil itself marks the
-binding, so the prose need not — and should not — narrate it: name the value in place as an appositive
-("the component git directory `{$component_git_dir}`") or let it fall out of the producing verb, rather
-than restating the mechanism with "bind it to …". The binding must textually
-precede every read; when a value is produced in mutually-exclusive branches, EACH producing branch
-carries the sigil (`{$name}`) — it is bound on exactly one path at runtime — and reads after the
-branches rejoin stay `{name}`. The classification test: a value the technique computes itself is a
-protocol variable, never an Input; a value a caller consumes is an Output, never a protocol variable.
-Two defects follow from the declare-once form: a `{name}` read that is neither a declared input/output
-nor bound by any `{$name}` is an **unbound local** (consume with no produce); a `{$name}` binding never
-read as `{name}` is a **dead binding** (produce with no consume) — the resolvability audit flags both.
+**Protocol variables, declared once.** A step may bind an intermediate value for later steps to read.
+The binding carries the dollar sigil — `{$name}`, snake_case, a protocol variable being a symbol
+(§3.2) — and marks the single point where the value is produced. **Every later reference drops the `$`
+and reads it as `{name}`**, identical in form to an interface designator.
+
+The `$` is the act of declaration, as `let` is in a programming language, not a per-occurrence marker.
+Write `{$name}` once and `{name}` thereafter.
+
+A protocol variable is scoped to one protocol run: one step creates it, later steps consume it. It is
+*not* part of the technique's interface. It is neither an Input, a value the technique receives from
+its caller, nor an Output, a value the technique returns. It is not delivered in the bundle and is not
+`::`-addressable. Use it for technique-internal data — a captured artifact path, an assembled context
+block, a parsed intermediate.
+
+A step creates one with an explicit verb: "Capture `{$structural_path}` from the worker's response",
+or "Build `{$verified_knowledge}` from `{gap_data}`". Later steps reference it bare
+(`{structural_path}`). The sigil already marks the binding, so the prose should not narrate it: name
+the value in place as an appositive — "the component git directory `{$component_git_dir}`" — or let it
+fall out of the producing verb, rather than restating the mechanism with "bind it to …".
+
+The binding must textually precede every read. Where a value is produced in mutually exclusive
+branches, each producing branch carries the sigil, since it is bound on exactly one path at runtime;
+reads after the branches rejoin stay `{name}`.
+
+The classification test: a value the technique computes itself is a protocol variable, never an Input.
+A value a caller consumes is an Output, never a protocol variable.
+
+Two defects follow from the declare-once form, and the resolvability audit flags both. A `{name}` read
+that is neither a declared input or output nor bound by any `{$name}` is an **unbound local** — consume
+with no produce. A `{$name}` binding never read as `{name}` is a **dead binding** — produce with no
+consume.
 
 Rendering note: every reference is written in backticks (§4) — `` `{id}` ``, `` `{$name}` ``,
 `` `{name}` `` — so a protocol variable's `$` always sits inside a code span and is math-exempt; the
@@ -285,20 +250,15 @@ that covers everything it governs:
   each sibling.
 - A constraint that governs only one child belongs on that child, not on the container.
 
-A `<rule-name>` is a **positive declarative assertion of the invariant it guards** — it names the
-state that must hold, not a negation or a process narration (`assumptions-resolved-before-review`, not
-`do-not-review-unresolved`; a grouped-key + qualifier slug stays positive, `commit.signed` not
-`commit.not-unsigned`). The positive form is preferred only where it reads at least as clearly; a
-negation that carries irreplaceable clarity (`no-cargo-here`, `do-not-mask-flaky`, `never-resume`) is
-the right name and stays. Rule names are `kebab-case` (§3.2 — a rule is a name, never an evaluated
-variable). See AP-60.
+A `<rule-name>` is `kebab-case`, and states the invariant it guards as a positive assertion — see
+[identifier conventions](identifier-conventions.md#rule-names-state-the-invariant).
 
 ### 3.5 Error handling
 
 An error arises from a specific step's action, so its handling lives in that step: the step states the
-failure condition and the recovery inline ("if `cargo check` fails — type errors — surface the
-diagnostics and retry"). A recovery that applies another technique names it inline, as any protocol
-technique reference ("apply `cargo::fmt-fix`").
+failure condition and the recovery inline ("if the type check fails, surface the diagnostics and
+retry"). A recovery that applies another technique names it inline, as any protocol technique
+reference ("apply `lint::autofix`").
 
 ---
 
@@ -333,13 +293,13 @@ parsed reference up with the current-workflow-first precedence of §2.
 ### 4.1 Executable references (`::`) vs symbol references (`.`)
 
 A `::` path is an **executable reference** — it names a technique or operation to apply/invoke
-("apply `cargo::fmt-fix`", "go through `gitnexus::context`"). The
+("apply `lint::autofix`", "go through `index::context`"). The
 rule-resolution and group-expansion forms above are the bundle layer: how an activity's technique
 list pulls rule entries into delivery.
 
 A `.` path is a **symbol reference** — it names an addressable symbol (a rule) by walking its
 ancestry, without invoking anything: `[<workflow>.]<technique>.<rule-name>` (e.g.
-`work-package.validate-build.no-cargo-here`). A protocol step that cites or relies on a rule
+`build.validate.no-network-here`). A protocol step that cites or relies on a rule
 uses the dotted symbol address — never prose ("per the index-freshness rule") and never the `::`
 executable form. The workflow segment is implicit for a same-workflow reference; when the rule is in
 the citing technique's own ancestry (its own rule, or one it inherits from a containing group or the
@@ -365,13 +325,13 @@ shape, `{}` carries the data reference — parentheses call, braces name.
 ### 4.3 Backticking
 
 Every LITERAL CODE-LIKE TOKEN in rendered prose is written in backticks, so code reads as code and
-never as a prose word. Five kinds: a **designator** (`` `{id}` `` / `` `{id}.field` ``, `` `{$name}` ``
+never as a prose word. The kinds: a **designator** (`` `{id}` `` / `` `{id}.field` ``, `` `{$name}` ``
 / `` `{name}` ``); a **symbol (rule) address** (`` `technique.rule-name` ``); a **CLI/shell command**
 (`` `git -C {repo_root} remote get-url origin` ``, `` `gh pr ready` ``); an **MCP tool call**
-(`` `get_workflow('work-package')` ``) or **resource URI** (`` `concept-rag://activities` ``); and a
+(`` `get_workflow('<workflow_id>')` ``) or **resource URI** (`` `concept-rag://activities` ``); and a
 **literal path or filename** (`` `/tmp/pr-body.md` ``, `` `START-HERE.md` ``). A token already inside a
 larger code span is not wrapped again (no nesting). A token that CONTAINS a designator is ONE span with
-the braces inside it — `` `git -C {repo_root} remote get-url origin` ``, `` `portfolio-{lens_name}.md` ``
+the braces inside it — `` `git -C {repo_root} remote get-url origin` ``, `` `report-{section_name}.md` ``
 — never split into adjacent spans and never with a designator's backticks butting a literal with no
 separator (CommonMark mis-parses adjacent code spans). Markdown hyperlinks (`[text](path)`) and the
 `::` / `.` link targets of an executable or symbol reference carry their own markup — they are not
@@ -388,16 +348,20 @@ A container `TECHNIQUE.md` — a group's or the workflow root's — defines Inpu
 shared by the techniques it contains. Keyed sections union, with the technique-local entry taking
 precedence by id or name.
 
+### What merges, and how
+
 Both delivery paths (`get_technique` and the `get_activity` / `get_workflow` bundle) use the same
 `composeLoaded` implementation:
 
-- **Inputs / Output**: merged from every ancestor container outward to the executing workflow root;
+- **Inputs and Outputs**: merged from every ancestor container outward to the executing workflow root;
   the technique-local entry overrides any ancestor entry of the same id.
 - **Rules**: merged from every ancestor container; the technique-local entry overrides any ancestor
   entry of the same name. On the bundle path rules are additionally emitted as separate `rule`
   entries (§7.2) so they can be addressed and selectively included.
 - **Protocol**: wrapped with every ancestor's `Initial` and `Final` blocks via
   `wrapProtocolWithAncestors` (the full ancestor chain, not the root only — see §6).
+
+### Whose ancestors count
 
 Ancestry follows the executing workflow: the containers considered are the executing workflow's root
 `TECHNIQUE.md` and each containing group's `TECHNIQUE.md` along the technique's path. Containers
@@ -429,14 +393,14 @@ ancestorRoot.Final
   blocks in authored order — itself wrapped by its ancestors' `Initial`/`Final`.
 - The server renumbers the combined sequence; the authored array order is the order.
 
-Example — delivering `work-package::validate-build::analyze-failure`:
+Example — delivering `build::validate::analyse-failure`:
 
 ```
-work-package root TECHNIQUE.md  → Initial blocks
-validate-build TECHNIQUE.md     → Initial blocks
-analyze-failure.md              → its own protocol
-validate-build TECHNIQUE.md     → Final blocks
-work-package root TECHNIQUE.md  → Final blocks
+workflow root TECHNIQUE.md → Initial blocks
+validate group TECHNIQUE.md → Initial blocks
+analyse-failure.md         → its own protocol
+validate group TECHNIQUE.md → Final blocks
+workflow root TECHNIQUE.md → Final blocks
 ```
 
 `wrapProtocolWithAncestors` applies the full chain on the bundle path; `composeTechnique` applies it
@@ -457,7 +421,7 @@ A delivered technique body (`projectTechniqueBody`) carries `capability`, `input
 
 | Key | Contents |
 |-----|----------|
-| `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `validate-build::analyze-failure`), a standalone by its id. |
+| `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `validate::analyse-failure`), a standalone by its id. |
 | `rules` | `[name, text]` pairs: a technique's rules plus its inherited and group rules. |
 | `unresolved` | References that did not resolve (a non-empty list is a definition defect). |
 
@@ -481,7 +445,7 @@ A worker reports what a step produced through the `step_manifest` entry `output`
 `next_activity` (one entry per completed step, keyed by `step_id`). The encoding scales with the
 step's declared outputs:
 
-- **One output** — a short summary string (e.g. `"is_review_mode=false"`).
+- **One output** — a short summary string (e.g. `"needs_migration=false"`).
 - **More than one output** — a JSON object keyed by output id (e.g.
   `{"repo_root": "lib/x", "component_name": "x"}`). This is the canonical multi-output form; a
   step-bound technique's `provenance_note` cites it at point of use.
@@ -495,12 +459,12 @@ naming the bag variable it lands under (§7.1 delivers `destination:` only on re
 ## 8. Authoring rules
 
 A technique's interface stays workflow-agnostic; the full set lives in
-[`workflow-design/resources/anti-patterns.md`](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) (on the `workflows` branch).
+[`workflow-design/resources/anti-patterns.md`](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) (on the `workflows` branch).
 The protocol-relevant rules:
 
 - An input or output describes what a value is — its meaning, shape, allowed values. A technique names
   another technique only in `## Protocol` or `## Capability`, as utilisation ("use
-  `cargo::fmt-fix`").
+  `lint::autofix`").
 - A protocol references data by its Input/Output id. An artifact filename lives in the `#### artifact`
   declaration (literal or `{token}`-template), one filename per output.
 - A capability or description states what a construct is; the sequence of steps and phases lives in
@@ -511,10 +475,8 @@ The protocol-relevant rules:
   smallest container that covers what it governs (§3.4): inline in a step if step-specific, on the
   common container if shared by siblings, on the child if it governs only that child.
 - A resource describes what it is; it does not name the techniques that use it.
-- An identifier's grammatical shape encodes its kind (§3.2): a boolean is an affirmative predicate
-  (prefix value-gated), a collection is a plural item noun and a key-addressed map is singular, an I/O
-  id is a qualified noun phrase with the head noun last, and a rule name is a positive declarative
-  assertion of the invariant it guards (§3.4). See AP-60.
+- An identifier's alphabet and grammatical shape both carry meaning — see
+  [identifier conventions](identifier-conventions.md).
 
 ---
 
@@ -529,6 +491,6 @@ definition defect, which the definition-lint gate enforces.
 The file shape of §3 is normative, and the `check:technique-template` guard
 (`guards/check-technique-template.ts`, run by `check:all`) enforces it corpus-wide: frontmatter
 carries `metadata.version` and nothing else; no H1 title; the H2 sections are the canonical five in
-canonical order (Outputs precede Protocol); entry ids are `snake_case` (a tool-parameter mirror
-keeps the tool's spelling, §3.2); rule names are `kebab-case`; every `{$name}` binding is
+canonical order (Outputs precede Protocol); entry ids are `snake_case`, a tool-parameter mirror
+keeping the tool's spelling; rule names are `kebab-case`; every `{$name}` binding is
 `snake_case`. `README.md` navigation docs inside `techniques/` are exempt.
