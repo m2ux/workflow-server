@@ -1244,6 +1244,12 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
+      "site": "corpus/support/github/techniques/create-issue.md:38",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "operation-reference-predating-the-guard"
+    },
+    {
       "site": "corpus/support/github/techniques/create-pr.md:46",
       "op": "resolve-repo-coordinates",
       "verdict": "fix-later",

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -11,7 +11,21 @@ Read the longest execution flows a graph holds — the call chains the parser tr
 
 ### process_inventory
 
-The twenty longest execution flows the graph traced, ranked by step count, each with its name, its type — `intra_community` or `cross_community` — and how many steps it runs. A sample of the graph's flows rather than their total.
+The twenty longest execution flows the graph traced, ranked by step count. A sample of the graph's flows rather than their total.
+
+#### entry
+
+##### name
+
+What names the flow end to end, and the identifier `gitnexus://repo/{repo_name}/process/{name}` takes.
+
+##### type
+
+`intra_community` or `cross_community`.
+
+##### steps
+
+How many steps the flow runs.
 
 ## Protocol
 

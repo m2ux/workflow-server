@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Pull request number.
 
 ### body
 
-Review body markdown. Multi-line bodies may be supplied from a file via `-F body=@<file>`.
+Review body markdown.
 
 ### review_event
 
@@ -50,6 +50,6 @@ The body the API holds for `{review_id}` as it stood before this call's write. U
 
 ### 2. Post or Replace the Review
 
-- Send the body and emit `{review_posted}` true with `{posted_review_id}` naming the review the API accepted.
-  > - Without `{review_id}`: `gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews -F body=@<file-or-body> -f event={review_event}` (use `-f body="{body}"` when the body is a single-line string).
-  > - With `{review_id}`: `gh api --method PUT repos/{owner}/{repo}/pulls/{pr_number}/reviews/{review_id} -F body=@<file-or-body>`, which keeps the review's id, state and comment thread. A second POST leaves two verdicts on one pull request.
+- Write `{body}` to a temp file, per `github.authored-prose-by-file`, then send it and emit `{review_posted}` true with `{posted_review_id}` naming the review the API accepted.
+  > - Without `{review_id}`: `gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews -F body=@<file> -f event={review_event}`.
+  > - With `{review_id}`: `gh api --method PUT repos/{owner}/{repo}/pulls/{pr_number}/reviews/{review_id} -F body=@<file>`, which keeps the review's id, state and comment thread. A second POST leaves two verdicts on one pull request.

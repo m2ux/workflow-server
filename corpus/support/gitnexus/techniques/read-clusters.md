@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -11,7 +11,21 @@ Read the functional-area inventory a graph holds — the areas clearing a size f
 
 ### cluster_inventory
 
-The graph's functional areas above a size floor, each with its name, symbol count and cohesion score, ordered by symbol count descending. An area is a label several of the graph's communities aggregate under: its symbol count sums them, and its cohesion is their symbol-weighted mean.
+The graph's functional areas above a size floor, ordered by symbol count descending. An area is a label several of the graph's communities aggregate under: its symbol count sums them, and its cohesion is their symbol-weighted mean.
+
+#### entry
+
+##### name
+
+What the area is called, and the identifier `gitnexus://repo/{repo_name}/cluster/{name}` takes.
+
+##### symbols
+
+How many symbols the area holds, summed over the communities its label aggregates.
+
+##### cohesion
+
+Its cohesion as a percentage, the symbol-weighted mean over those communities.
 
 ## Protocol
 
