@@ -6,6 +6,7 @@ import {
   ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
   WORKER_CHECKPOINT_TECHNIQUES,
   FAN_ONLY_RULES,
+  LOOP_ONLY_RULES,
   contractOperations,
 } from '../src/loaders/core-ops.js';
 import { liveCorpusRoot } from './corpus-root.js';
@@ -105,6 +106,34 @@ describe('the fan-only rules', () => {
     for (const ref of FAN_ONLY_RULES) {
       expect(refs, `${ref} is not a rule any worker bundle carries`).toContain(ref);
     }
+  });
+});
+
+describe('the loop-only rules', () => {
+  /**
+   * A grouped technique resolves its rules under `<group>::<operation>::<rule>`, which is a
+   * segment longer than the standalone form beside it in `FAN_ONLY_RULES`. A ref written to the
+   * shorter spelling filters nothing and reports nothing, so the loop controls would ride to every
+   * worker whose run holds no loop — the cost this cut exists to avoid.
+   */
+  it('names the refs a worker bundle resolves those rules under', async () => {
+    const { resolveTechniques } = await import('../src/loaders/technique-loader.js');
+    const { liveCorpusRoot } = await import('./corpus-root.js');
+    const root = liveCorpusRoot();
+    if (!root) return;
+    const resolved = await resolveTechniques([...CORE_WORKER_TECHNIQUES], root, 'meta');
+    const refs = resolved.filter((e) => e.type === 'rule').map((e) => e.ref);
+    for (const ref of LOOP_ONLY_RULES) {
+      expect(refs, `${ref} is not a rule any worker bundle carries`).toContain(ref);
+    }
+  });
+
+  /**
+   * The gate and condition rules are owed to every worker, so only the loop half is cut. A future
+   * edit that adds a sibling to the list is asked to say why it is not universal.
+   */
+  it('cuts only the loop half of step-control', () => {
+    expect(LOOP_ONLY_RULES).toEqual(['workflow-engine::step-control::loop-control']);
   });
 });
 

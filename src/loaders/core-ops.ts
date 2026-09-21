@@ -99,6 +99,15 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // Step execution surface. The checkpoint pair is in WORKER_CHECKPOINT_TECHNIQUES, added by
   // `get_activity` where the activity holds a gate.
   'workflow-engine::finalize-activity',
+  // The language every step is read in: what a gate expression means, and how many times a loop
+  // body runs. A worker evaluates both — the server evaluates no gate — so the semantics ride with
+  // the role that applies them. `loop-control` is in LOOP_ONLY_RULES, held back from a run whose
+  // activities hold no loop.
+  'workflow-engine::step-control',
+  // How a step's bound operation meets the variable bag: the input precedence, and whether a
+  // string names a variable or is one. Engine mechanics rather than a workflow's choice, on the
+  // same terms as conduct below.
+  'variable-binding',
   // Conduct: the boundaries every agent is held to, then the worker's specialisation of them.
   // `orchestrator-conduct` is absent — a worker cannot dispatch, advance an activity or resolve a
   // gate, so those boundaries reach an agent with no way to honour or breach them.
@@ -137,6 +146,24 @@ export const ORCHESTRATOR_CHECKPOINT_TECHNIQUES: readonly string[] = [
  */
 export const FAN_ONLY_RULES: readonly string[] = [
   'variable-binding::a-branch-lands-under-its-own-derived-key',
+];
+
+/**
+ * Rules that govern an activity only where one of its steps is a loop, by the ref the bundle
+ * resolves them under.
+ *
+ * Held back on the same terms as `FAN_ONLY_RULES`: the gate and condition rules beside this one in
+ * `step-control` are owed to every worker, and the loop half describes a step kind most activities
+ * never hold. The cut is read over the whole run, as the gate and fan readings are, so the rules
+ * list a worker receives does not differ between the activities of one walk.
+ *
+ * Worker-side alone, because `step-control` reaches the worker list and no other. An orchestrator
+ * evaluates the `when` on an activity's exits with no delivered definition of that dialect; #868
+ * settles which construct carries it there, the whole technique being too large for the fixed
+ * block an orchestrator reads before its first decision.
+ */
+export const LOOP_ONLY_RULES: readonly string[] = [
+  'workflow-engine::step-control::loop-control',
 ];
 
 /**
