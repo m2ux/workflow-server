@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -30,6 +30,16 @@ A step's consumed and produced data is exactly the bound operation's composed `i
 ### binding-carries-only-deviations
 
 The structured `step.technique` object carries ONLY what differs from the defaults; a step with no deviation uses the bare-string form (`technique: group::operation`) instead. `inputs` lists ONLY inputs whose value differs from same-name binding or a declared `default` — an input equal to its default, or already in the bag under its own id, is omitted. The three input-deviation forms are: a literal (`inputs: { scope: '--workspace' }`), a rename naming another bag variable (`inputs: { check_id: failed_check_id }`), and a `{var}` template including dotted projection (`inputs: { scope: '-p {current_task.crate}' }`). `outputs` lists ONLY outputs whose landed bag name differs from the output's own id (`outputs: { session_index: client_session_index }`); an output that lands under its own name is omitted.
+
+### an-argument-position-sets-its-own-default
+
+Three positions in the language take an argument, and a bare word means something different in each. This rule scopes itself to the first; the other two are named so a reader who meets them knows they are reading a different position rather than a contradiction.
+
+- **A step input deviation** — `step.technique.inputs` — is what the rule above governs: a bare word that matches the bag-name grammar and resolves in the bag is a reference, and anything else is a literal.
+- **A routine argument** — a reference step's `.with` — reads the opposite way: a braced word is a reference to a host variable and a bare word is always a literal, because a routine is expanded before any bag exists to resolve a name against.
+- **A harness invocation** — an adapter's call template — reads a braced word as a reference and an angle-bracketed word as a value the invoking agent supplies from what it can see of its own host.
+
+The two readings that could meet do not, and what keeps them apart is load-bearing rather than incidental. Expansion resolves a routine argument and emits the resolved reference as a bare name, so a braced reference in a routine file reaches a step as the bare form this rule reads as a reference — the meaning the author wrote survives the position change. An expander that emitted the braces instead would deliver a template, and one that stopped resolving before emitting would deliver a literal; both would be wrong, and neither would be visible at the step.
 
 ### outputs-by-name-and-path
 

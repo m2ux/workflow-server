@@ -34,7 +34,7 @@ Orchestrator agent identity for this session.
 
 ### 3. Walk the workflow to its end
 
-- Open with that activity and take one at a time under the `activity-loop` run at [`meta/routines/activity-loop.yaml`](/meta/routines/activity-loop.yaml), whose steps decide every branch of a turn — which operation enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released
+- Open with that activity and take one at a time under the `activity-loop` run, whose steps decide every branch of a turn — which operation enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this operation; no route hands over the file that declares it, and opening one directly is outside this role (`orchestrator-conduct`)
   > - Every entry is a worker dispatch — never execute steps inline (`orchestrator-conduct.no-inline-on-resume`, `orchestrator-conduct.no-domain-work`).
   > - Where a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable.
 
