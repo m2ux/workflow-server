@@ -1,26 +1,32 @@
 id: group-radius
-version: 1.0.0
+version: 1.1.0
 name: Group Radius
 description: >-
-  Bring a repository group current, take a concern's radius in its home graph, name the symbols by
-  which another member could reach it, probe every other member for those names, and settle for each
-  member whether the concern reaches it and by which instrument.
+  Bring a repository group current, take a concern's radius in its home graph, name the symbols and
+  packages by which another member could reach it, read the registry's links and probe every other
+  member's graph and tree for those names, and settle for each member whether the concern reaches
+  it and by which instruments.
 
 inputs:
   - id: group_name
     description: Name of the configured repository group the reach is measured across.
   - id: concern_symbol
     description: The symbol the concern was raised against, in its home graph.
+  - id: concern_file
+    description: The file in the home tree that defines the concern, which separates it from others of the same name. Empty where the name is defined once, and the name alone then resolves it.
   - id: home_repo
     description: The graph name of the member the concern was raised in.
 
 outputs:
   - id: group_reach_report
     type: array
-    description: One entry per member, naming the graph it answers for, whether the concern reaches it, and the instrument that settled it.
+    description: One entry per member, naming the graph it answers for, whether the concern reaches it, and the instruments that answered.
   - id: boundary_symbols
     type: array
     description: The names another member could hold a reference to, each with its kind and its home file.
+  - id: boundary_packages
+    type: array
+    description: The names under which another member consumes the home tree as a library, each with where the name was read.
   - id: group_query_report
     type: object
     description: Execution flows drawn from the group's members for the concern, each carrying the member it came from.
@@ -35,6 +41,8 @@ outputs:
     description: What the rebuilt contract registry holds — the contracts extracted per member, and how many cross-link to another member.
 
 internals:
+  - id: contract_report
+    description: Each contract the rebuilt registry holds with the member publishing it, its kind, and the member it cross-links to.
   - id: group_members
     description: The group's members with the graph name, the tree and the home mark each carries.
   - id: home_context_report
@@ -61,6 +69,7 @@ steps:
     outputs:
       group_freshness_report: group_freshness_report
       contract_registry_stats: contract_registry_stats
+      contract_report: contract_report
   - kind: technique
     id: list-members
     technique:
@@ -76,6 +85,7 @@ steps:
       name: gitnexus::context
       inputs:
         name: concern_symbol
+        file_path: concern_file
         repo_name: home_repo
       outputs:
         context_report: home_context_report
@@ -115,8 +125,11 @@ steps:
         impact_report: home_impact_report
         route_inventory: route_inventory
         tool_inventory: tool_inventory
+        group_members: group_members
+        contract_report: contract_report
       outputs:
         boundary_symbols: boundary_symbols
+        boundary_packages: boundary_packages
   - kind: technique
     id: search-group
     technique:
@@ -168,6 +181,8 @@ steps:
       inputs:
         group_members: group_members
         boundary_symbols: boundary_symbols
+        boundary_packages: boundary_packages
+        contract_report: contract_report
         member_probes: member_probes
         group_query_report: group_query_report
         home_repo: home_repo

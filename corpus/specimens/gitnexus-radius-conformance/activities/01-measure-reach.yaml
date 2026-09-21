@@ -4,16 +4,20 @@ name: Measure Reach
 description: Refer to the run that measures a concern's reach across every member of a repository group.
 variables:
   reads:
+    - concern_file
     - concern_symbol
     - group_name
     - home_repo
   writes:
     - name: group_reach_report
       type: array
-      description: One entry per member, naming the graph it answers for, whether the concern reaches it, and the instrument that settled it.
+      description: One entry per member, naming the graph it answers for, whether the concern reaches it, and the instruments that answered.
     - name: boundary_symbols
       type: array
       description: The names another member could hold a reference to, each with its kind and its home file.
+    - name: boundary_packages
+      type: array
+      description: The names under which another member consumes the home tree as a library, each with where the name was read.
     - name: group_query_report
       type: object
       description: Execution flows drawn from the group's members for the concern, each carrying the member it came from.
@@ -34,6 +38,7 @@ steps:
     outputs:
       group_reach_report: group_reach_report
       boundary_symbols: boundary_symbols
+      boundary_packages: boundary_packages
       group_query_report: group_query_report
       group_freshness_report: group_freshness_report
       home_impact_report: home_impact_report
@@ -42,4 +47,4 @@ exits:
   - id: measured
     isDefault: true
 outcome:
-  - Every member of the group has an entry naming its graph and the instrument that settled the concern's reach into it, so the report can hold the members side by side
+  - Every member of the group has an entry naming its graph and the instruments that answered for the concern's reach into it, so the report can hold the members side by side

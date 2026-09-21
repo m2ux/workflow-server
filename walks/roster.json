@@ -147,7 +147,7 @@
     },
     {
       "id": "gitnexus-radius-conformance",
-      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that the gitnexus library's reach run answers for every member of a group, each answer naming its graph and the instrument that settled it, which the reference guards and a sidecar change-surface walk measure."
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that the gitnexus library's reach run answers for every member of a group, each answer naming its graph and the instruments that answered, which the reference guards and a sidecar change-surface walk measure."
     }
   ]
 }

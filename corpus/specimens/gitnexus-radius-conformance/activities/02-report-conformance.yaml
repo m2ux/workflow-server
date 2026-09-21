@@ -1,9 +1,10 @@
 id: report-conformance
 version: 1.0.0
 name: Report Conformance
-description: Write what the run settled for each member, and which instrument settled it.
+description: Write what the run settled for each member, and which instruments answered.
 variables:
   reads:
+    - boundary_packages
     - boundary_symbols
     - concern_symbol
     - contract_registry_stats
@@ -26,4 +27,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - The report holds one row per member with the graph it answered from and the instrument that answered, and names the member whose reach the graph could not see
+  - The report holds one row per member with the graph it answered from and the instruments that answered, and names the members whose reach the graph could not see

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Settle, for every member of a repository group, whether a concern reaches it — by the edges its graph holds, by a derivation the graph cannot hold, or not at all — and say which instrument answered for each.
+Settle, for every member of a repository group, whether a concern reaches it — by a link the group's registry holds, by the edges the member's own graph holds, by a derivation neither can hold, or not at all — and say which instruments answered for each.
 
 ## Inputs
 
@@ -16,6 +16,14 @@ The group's members, each with its graph name, its tree, and whether it is the c
 ### boundary_symbols
 
 The names a member could hold a reference to, each with its kind.
+
+### boundary_packages
+
+The names under which a member consumes the home tree as a library.
+
+### contract_report
+
+Each contract the group's registry holds with the member publishing it, its kind, and the member it cross-links to.
 
 ### member_probes
 
@@ -43,15 +51,15 @@ The member's graph name.
 
 ##### reach
 
-`home` for the member the concern was raised in; `graph` where a probe found a dependent through the member's edges; `hand-derived` where the graph held no edge and a search of the member's tree found the name; `none` where neither did; `unanswerable` where the member has no graph and no tree to search.
+`home` for the member the concern was raised in; `linked` where the registry holds a cross-link from the member to the home; `graph` where a probe found a dependent through the member's own edges; `hand-derived` where a search of the member's tree found a boundary name or a package name; `none` where none of these did; `unanswerable` where the member has no graph and no tree to search.
 
-##### instrument
+##### instruments
 
-`graph` where the reach rests on the member's edges; `grep` where it rests on a search of the tree; both where the search confirmed an empty graph answer; empty where nothing could be asked.
+The instruments that answered for the member, in the order asked: `registry`, `graph`, `grep`. Each is listed whether its answer was full or empty, so a reader can tell an empty answer from a question never put; empty where nothing could be asked.
 
 ##### evidence
 
-The dependents the probes found, or the files the search found, or the statement that both were empty.
+The contracts the registry links the member by, the dependents the probes found with the file each hangs off, and the files the search found — or the statement that each was empty.
 
 ##### surfaced_by_search
 
@@ -61,17 +69,26 @@ True where `{group_query_report}` carries a flow from this member.
 
 ### 1. Mark the Home
 
-- Take the entry of `{group_members}` whose name is `{home_repo}` and record it with reach `home`, instrument `graph`, and its own radius as evidence.
+- Take the entry of `{group_members}` whose name is `{home_repo}` and record it with reach `home`, instruments `graph`, and its own radius as evidence.
 
-### 2. Read Each Member's Probes
+### 2. Read the Registry for Each Member
 
-- For every other member, read its entries of `{member_probes}`. Where any probe carries a depth-1 dependent, record reach `graph`, instrument `graph`, and those dependents as evidence.
+- For every other member, take the cross-links in `{contract_report}` that run from the member to the home and record their contract ids as evidence under `registry`. A member with none is recorded with `registry` answering empty.
 
-### 3. Derive by Hand Where the Graph Is Silent
+### 3. Read Each Member's Probes
 
-- For a member whose probes all came back empty, the empty answer is absence of evidence rather than evidence of absence — `gitnexus.edges-the-parser-cannot-see`. Search the member's tree for each name in `{boundary_symbols}` (`grep -rln`, leaving out the tree's `.git` and dependency folders), and record the files found as evidence with instrument `grep`: reach `hand-derived` where a file names the symbol, `none` where no file does. The instrument is recorded either way, so a reader can tell a searched member from one nobody looked at.
-  > A member with an empty tree has nothing to search: record reach `unanswerable` with an empty instrument, and name it so the run's caller knows a member went unmeasured.
+- Read the member's entries of `{member_probes}` and record under `graph` each depth-1 dependent found, with the file the probed name is defined in. That file is in the member's own tree — the graph holds no node for a name the tree imports, per `edges-the-parser-cannot-see` — so what the probe found is a definition of the boundary name inside the member, and the file is what lets a reader tell a mirror of the home's symbol from a homonym.
 
-### 4. Note the Search
+### 4. Search Each Member's Tree
 
-- For every member, set `surfaced_by_search` from whether `{group_query_report}` carries a flow from it. A member the ranking surfaced and the probes missed is the reader's first candidate for a reach the graph cannot see.
+- Search the member's tree for each name in `{boundary_symbols}` and each name in `{boundary_packages}` (`grep -rln`, leaving out the tree's `.git` and dependency folders) and record the files found under `grep`, package hits and symbol hits told apart. The search runs for every member with a tree, linked or not, so every row carries what the tree holds.
+  > A member with an empty tree has nothing to search: record reach `unanswerable` with no instruments, and name it so the run's caller knows a member went unmeasured.
+
+### 5. Settle the Reach
+
+- Set the member's reach to the first that holds: `linked` where the registry answered, `graph` where a probe found a dependent, `hand-derived` where the search found a file, `none` otherwise. The instruments asked stay listed whichever settled it.
+
+### 6. Note the Search
+
+- For every member, set `surfaced_by_search` from whether `{group_query_report}` carries a flow from it. A member the ranking surfaced and no instrument reached is the reader's first candidate for a coupling nothing here declares.
+- A member whose registry answer was empty and whose tree search found a package name is a coupling the group's links do not declare: name it in the evidence, so the links can be completed and the registry answers for it next time.

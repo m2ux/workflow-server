@@ -5,9 +5,9 @@ title: GitNexus Radius Conformance Workflow
 description: >-
   Refer to the run that measures a concern's reach across a repository group, and report what it
   settled for each member — the graph each answer came from, whether the concern reaches it, and
-  whether the member's edges or a search of its tree said so. The concern is whatever symbol the
-  session names, so what the run evidences is the shape of the answer rather than anything about the
-  code it was asked about.
+  whether the group's registry, the member's edges or a search of its tree said so. The concern is
+  whatever symbol the session names, so what the run evidences is the shape of the answer rather
+  than anything about the code it was asked about.
 author: m2ux
 tags:
   - gitnexus
@@ -28,6 +28,10 @@ variables:
   - name: concern_symbol
     type: string
     description: The symbol the concern was raised against, in its home graph.
+    defaultValue: ""
+  - name: concern_file
+    type: string
+    description: The file in the home tree that defines the concern, separating it from others of the same name. Empty where the name alone resolves it.
     defaultValue: ""
   - name: home_repo
     type: string
