@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.1
+  version: 1.9.0
 ---
 
 ## Capability
@@ -53,7 +53,7 @@ Worker agent identity for this dispatch.
 - Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
 - For `kind: technique` steps, load the bound operation on reach per `progressive-step-technique-load`
 - Apply each bound operation via [variable-binding](../variable-binding.md)
-- Honor `when:` gates against the variable bag, evaluating each expression as the activity schema's `when` field defines it; an expression that does not parse does not run its step
+- Honor `when:` gates against the variable bag per `gate-evaluation`, and a loop's controls per `loop-control`
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
 
 ### 5. Finalize the activity
