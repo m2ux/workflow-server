@@ -15,10 +15,17 @@
  * reader needs or states the fact plainly; composition belongs to the routine or activity that
  * binds both operations as steps.
  *
- * Two spellings count, because the corpus writes the same reference both ways:
+ * Three spellings count, because the corpus writes the reference each way:
  *
  *   sibling          [op](./op.md), [op](../group/op.md) — a path to a technique file
  *   cross-namespace  [ns](/ns/techniques/TECHNIQUE.md)::[op](/ns/techniques/op.md)
+ *   definition file  [run](/ns/routines/run.yaml) — a routine or activity the reader cannot open
+ *
+ * The third is the same dead end reached through a different extension. No route hands over a
+ * definition file, and a role's own conduct forbids it opening one, so a link to `routines/x.yaml`
+ * resolves for nobody — while naming a real path, which is what makes it worth reporting: an agent
+ * working in a checkout that holds the file may simply go and read it, and what it finds there is
+ * written in a dialect whose defaults differ from the one it holds the rules for.
  *
  * A link whose path lands under `resources/` is a resource citation and is passed over — a resource
  * is delivered alongside the technique that cites it, so that reference does resolve. READMEs are
@@ -74,26 +81,32 @@ export interface TriageEntry {
 }
 
 /**
- * Whether a link target names a technique file rather than a resource.
+ * Whether a link target names something the corpus holds and no route serves.
  *
  * The question is where the target LANDS, so a relative one is resolved against the directory of
  * the file citing it. Every scanned file already sits under a `techniques/` directory, so a sibling
  * `./op.md` and a cousin `../group/op.md` both land under one — and a path test applied to the
  * unresolved text answers for neither, because such a text carries a slash and does not carry
- * `techniques/`. Resolving first is what makes the two spellings one question.
+ * `techniques/`. Resolving first is what makes the spellings one question.
  *
  * A target under `resources/` is a resource citation, which resolves: a resource travels with the
  * technique that cites it.
+ *
+ * A definition file is the other unserved target. It is reached by extension rather than by
+ * directory, because a routine and an activity sit in folders of their own and neither is anything
+ * a reader can fetch.
  */
 function namesTechnique(target: string, fromDir: string): boolean {
   const text = target.split('#')[0] ?? '';
-  if (!text.endsWith('.md')) return false;
   if (text.includes('://')) return false;
   if (text.endsWith('README.md')) return false;
+  const isDefinition = text.endsWith('.yaml') || text.endsWith('.yml');
+  if (!text.endsWith('.md') && !isDefinition) return false;
   // A workflow-anchored target (`/ns/techniques/op.md`) is already absolute within the corpus;
   // anything else is relative to the citing file.
   const landed = text.startsWith('/') ? text : resolve(fromDir, text);
   if (landed.includes('/resources/')) return false;
+  if (isDefinition) return true;
   return landed.includes('/techniques/') || landed.includes('techniques/');
 }
 

@@ -32,10 +32,9 @@
  * almost all of them template placeholders naming files a planning folder holds once a run writes
  * them, which is a population to triage rather than a defect to report.
  *
- * This guard runs by path rather than from the registry, which `tests/guard-registry.test.ts`
- * records the reason for. It was written against a corpus holding 522 links in the pre-namespace
- * form; that rewrite has since landed and 6 remain, all in READMEs. Enrolling it is the last step,
- * in the commit that makes it pass.
+ * It was written against a corpus holding 522 links in the pre-namespace form. That rewrite landed,
+ * and the last six — library indexes naming the folder that groups them, which is a folder the
+ * corpus states appears in no reference and so has no anchored form — went with #827.
  *
  * Run: npx tsx guards/check-corpus-links.ts [--root <workflows-dir>] [--json]
  */
