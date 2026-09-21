@@ -521,6 +521,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'none',
   },
   {
+    id: 'agent-instruction-homes',
+    script: 'guards/check-agent-instruction-homes.ts',
+    npmScript: 'check:agent-homes',
+    scope: 'repo',
+    gatesServing: false,
+    json: true,
+    proves: 'no agent instruction file restates guidance authored in another home',
+    form: 'none',
+  },
+  {
     id: 'pinned-corpus-paths',
     script: 'guards/check-pinned-corpus-paths.ts',
     npmScript: 'check:pinned-paths',
