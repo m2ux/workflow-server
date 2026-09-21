@@ -279,8 +279,10 @@ require_dist_index() {
 compile_engine() {
   local engine="$1"
   echo "Compiling ${engine}"
-  # Wipe dist so incremental tsc cannot leave a deleted module on the bind.
+  # Wipe dist and the incremental cache that records the last emit. The cache
+  # sits next to tsconfig, and tsc then writes index.js onto the bind.
   rm -rf "${engine}/dist"
+  rm -f "${engine}/tsconfig.tsbuildinfo"
   if ! (cd "$engine" && npm run build); then
     die "host compile failed at ${engine}.
   Nothing has been stopped. Fix the TypeScript. To skip host compile and bake
