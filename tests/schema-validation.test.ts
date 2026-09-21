@@ -452,4 +452,51 @@ describe('schema-validation', () => {
       expect(result.success).toBe(false);
     });
   });
+
+  // A key the schema does not name is a key the server would drop, and a dropped rule or technique
+  // reference is one no role ever receives while the load reports success. The published JSON
+  // schema closes each of these objects; so does the schema the server loads with.
+  describe('a workflow key the schema does not name', () => {
+    const workflowWith = (extra: Record<string, unknown>) => ({
+      id: 'test-workflow',
+      version: '1.0.0',
+      title: 'Test Workflow',
+      initialActivity: 'activity-1',
+      activities: [{ id: 'activity-1', version: '1.0.0', name: 'Activity One', techniques: ['some-technique'] }],
+      ...extra,
+    });
+
+    it('is refused where a rules audience is misspelled', () => {
+      // `universal` is the dual-audience bucket; `both` names nothing.
+      const result = safeValidateWorkflow(workflowWith({ rules: { both: ['a rule no audience claims'] } }));
+      expect(result.success).toBe(false);
+    });
+
+    it('is refused even beside a bucket the schema does name', () => {
+      const result = safeValidateWorkflow(
+        workflowWith({ rules: { workflow: ['an orchestrator rule'], both: ['a rule no audience claims'] } }),
+      );
+      expect(result.success).toBe(false);
+    });
+
+    it('is refused where a techniques audience is misspelled', () => {
+      const result = safeValidateWorkflow(workflowWith({ techniques: { worker: ['variable-binding'] } }));
+      expect(result.success).toBe(false);
+    });
+
+    it('is refused at the top level', () => {
+      const result = safeValidateWorkflow(workflowWith({ ruels: { workflow: ['a rule behind a typo'] } }));
+      expect(result.success).toBe(false);
+    });
+
+    it('admits every audience the schema does name', () => {
+      const result = safeValidateWorkflow(
+        workflowWith({
+          rules: { workflow: ['orchestrator'], activity: ['worker'], universal: ['both roles'] },
+          techniques: { workflow: ['dispatch'], activity: ['variable-binding'] },
+        }),
+      );
+      expect(result.success).toBe(true);
+    });
+  });
 });
