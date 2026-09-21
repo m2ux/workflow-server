@@ -1,0 +1,25 @@
+$schema: ../../../schemas/workflow.schema.json
+id: contract-composition
+version: 1.0.0
+title: Contract Composition
+description: >-
+  Two operations under one group contract, so a worker delivery names that
+  contract once and each operation inherits it.
+author: m2ux
+tags:
+  - specimen
+  - contract-composition
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: first_noted
+    type: boolean
+    required: false
+  - name: second_noted
+    type: boolean
+    required: false
+initialActivity: pair
+graph:
+  pair:
+    paired: __terminal__
