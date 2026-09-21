@@ -96,7 +96,7 @@ Review mode audits one or more existing workflows (`target_workflow_ids`, with e
 
 ## Design Principles
 
-Positive design-time framing — see [design-principles](./resources/design-principles.md). Stance only; Detect stays in the anti-pattern catalog. Structural gates live in activity YAML.
+Positive design-time framing — see [design-principles](/canon/resources/design-principles.md). Stance only; Detect stays in the anti-pattern catalog. Structural gates live in activity YAML.
 
 ---
 
@@ -149,9 +149,9 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 | Order | Resource | Purpose |
 |---|----------|---------|
-| 00 | [Design Principles](./resources/design-principles.md) | Positive framing principles (stance only) |
-| 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
-| 02 | [Anti-Patterns](./resources/anti-patterns.md) | Prohibited-pattern catalog (AP-XX + name) by category |
+| 00 | [Design Principles](/canon/resources/design-principles.md) | Positive framing principles (stance only) |
+| 01 | [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
+| 02 | [Anti-Patterns](/canon/resources/anti-patterns.md) | Prohibited-pattern catalog (AP-XX + name) by category |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update change-request category vocabulary |
 | 04 | [Compliance Report](./resources/compliance-report.md) | Creation guide: compliance / post-update review |
 | 05 | [README Seed](./resources/readme-seed.md) | Progress inventory + mode map for planning-folder README |
@@ -159,7 +159,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | 07 | [Design Assumptions](./resources/design-assumptions.md) | Creation guide: `assumptions-log.md` |
 | 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | Audit vs open resolvability + while-loop / Gate 2 handoff |
 | 09 | [Elicitation Guide](./resources/elicitation-guide.md) | Mode dimension sets + per-dimension question bank |
-| 10 | [Convention Conformance](./resources/convention-conformance.md) | Reference conventions vs sibling workflows |
+| 10 | [Convention Conformance](/canon/resources/convention-conformance.md) | Reference conventions vs sibling workflows |
 | 11–21 | [Artifact creation guides](./resources/README.md#planning-artifact-to-guide-map) | Template + Rules for every planning artifact |
 
 ---

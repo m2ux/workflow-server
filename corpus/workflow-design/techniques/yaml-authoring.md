@@ -36,12 +36,12 @@ The set of files drafted for this workflow so far, extended with the one just wr
 ### 3. Plan Content
 
 - Identify which schema fields will be used by consulting the JSON schema definition (`schemas/{schema_type}.schema.json`)
-- Map content to fields using formal constructs from [schema-construct-inventory](../resources/schema-construct-inventory.md); cross-check required vs optional properties for the `{schema_type}`
+- Map content to fields using formal constructs from [schema-construct-inventory](/canon/resources/schema-construct-inventory.md); cross-check required vs optional properties for the `{schema_type}`
 
 ### 4. Draft Content
 
 - Write the file per Rules below (block arrays/mappings, scalar quoting, multi-line scalars, field ordering, version format), adding it to `{drafted_files}`
-- Description hygiene for prose fields: [Document in Positive Present](../resources/design-principles.md#17-document-in-positive-present) and Description Hygiene anti-patterns — do not bury procedure in `description` / `outcome` / `message` / option text
+- Description hygiene for prose fields: [Document in Positive Present](/canon/resources/design-principles.md#17-document-in-positive-present) and Description Hygiene anti-patterns — do not bury procedure in `description` / `outcome` / `message` / option text
 
 ### 5. Validate Against Schema
 
@@ -77,11 +77,11 @@ Use a YAML block scalar (`|` to preserve newlines, `>` to fold) for multi-line t
 
 ### version-format
 
-Semantic versioning X.Y.Z — see also [convention-conformance](../resources/convention-conformance.md) for cross-workflow norms.
+Semantic versioning X.Y.Z — see also [convention-conformance](/canon/resources/convention-conformance.md) for cross-workflow norms.
 
 ### field-ordering
 
-Follow field ordering from existing files of the same type ([convention-conformance](../resources/convention-conformance.md)).
+Follow field ordering from existing files of the same type ([convention-conformance](/canon/resources/convention-conformance.md)).
 
 ### schema-reference
 

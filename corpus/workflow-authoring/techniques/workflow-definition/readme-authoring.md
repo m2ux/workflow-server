@@ -37,7 +37,7 @@ The target workflow's root README: generated whole on a create run, revised in p
 
 - Where `{operation_type}` is `create`, write `{workflow_readme}` whole
 - Where `{operation_type}` is `update`, revise the existing README wherever `{scope_manifest}` changes what it claims — the activity table, the mode table, the file-structure block and the links
-- Take the orientation stance from [11. Complete Documentation Structure](/workflow-design/resources/design-principles.md#11-complete-documentation-structure): the README points at the authoritative definitions and does not transcribe them
+- Take the orientation stance from [11. Complete Documentation Structure](/canon/resources/design-principles.md#11-complete-documentation-structure): the README points at the authoritative definitions and does not transcribe them
 
 ## Rules
 

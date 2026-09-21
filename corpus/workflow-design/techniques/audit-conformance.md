@@ -33,7 +33,7 @@ Absolute path to the persisted findings artifact when `{conformance_finding_coun
 
 ### 1. Load Conventions
 
-- Load [convention-conformance](../resources/convention-conformance.md) — sole source of reference-convention criteria for this pass
+- Load [convention-conformance](/canon/resources/convention-conformance.md) — sole source of reference-convention criteria for this pass
 - Do not restate that checklist here; follow it as written
 
 ### 2. Survey Reference Workflows

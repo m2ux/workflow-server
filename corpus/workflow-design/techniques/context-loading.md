@@ -42,8 +42,8 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 2. Load Design-Time Canon
 
-- Load [anti-patterns](../resources/anti-patterns.md) and [schema-construct-inventory](../resources/schema-construct-inventory.md) once for literacy and later authoring (write-time application is the inherited `apply-anti-patterns-when-authoring` rule — do not restate Detect here)
-- Load [convention-conformance](../resources/convention-conformance.md) as the sibling-workflow naming/structure baseline
+- Load [anti-patterns](/canon/resources/anti-patterns.md) and [schema-construct-inventory](/canon/resources/schema-construct-inventory.md) once for literacy and later authoring (write-time application is the inherited `apply-anti-patterns-when-authoring` rule — do not restate Detect here)
+- Load [convention-conformance](/canon/resources/convention-conformance.md) as the sibling-workflow naming/structure baseline
 
 ### 3. Survey Reference Workflows
 

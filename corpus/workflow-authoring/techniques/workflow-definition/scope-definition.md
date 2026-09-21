@@ -43,7 +43,7 @@ Number of entries in `{scope_manifest}`.
 
 ### 1. Design the Folder Structure
 
-- Design the target's folder layout — the workflow directory with `activities/`, `techniques/` and `resources/` — and the file naming scheme, taking both from [Reference Conventions](/workflow-design/resources/convention-conformance.md#reference-conventions) rather than inventing one
+- Design the target's folder layout — the workflow directory with `activities/`, `techniques/` and `resources/` — and the file naming scheme, taking both from [Reference Conventions](/canon/resources/convention-conformance.md#reference-conventions) rather than inventing one
 
 ### 2. Enumerate the Files
 

@@ -36,7 +36,7 @@ Boolean — true while open audit-resolvable assumptions remain; false once no o
 ### 1. Classify Resolvability
 
 - Read all open assumptions from `{assumptions_log}` — [Design Assumptions Guide](../resources/design-assumptions.md#assumptions-log-template)
-- Classify each with the resolvability vocabulary in [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md) (`audit` vs `open`). Criteria homes for `audit` rows: schema / `schemas/README.md`; [convention-conformance](../resources/convention-conformance.md); [anti-patterns](../resources/anti-patterns.md); [design-principles](../resources/design-principles.md). Do not Apply sibling `audit-*` techniques from this Protocol ([pass-orchestration-in-technique](../resources/anti-patterns.md#ap-114-pass-orchestration-in-technique)).
+- Classify each with the resolvability vocabulary in [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md) (`audit` vs `open`). Criteria homes for `audit` rows: schema / `schemas/README.md`; [convention-conformance](/canon/resources/convention-conformance.md); [anti-patterns](/canon/resources/anti-patterns.md); [design-principles](/canon/resources/design-principles.md). Do not Apply sibling `audit-*` techniques from this Protocol ([pass-orchestration-in-technique](/canon/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique)).
 - Genuine design judgements stay **open**
 - If the log has no open assumptions, set `{has_resolvable_assumptions}` and `{has_open_assumptions}` false and skip further work
 - If every open assumption is a judgement (not audit-resolvable), set `{has_resolvable_assumptions}` false and proceed to Update Open Assumptions

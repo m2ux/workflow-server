@@ -40,14 +40,12 @@ Layout authority lives in the guide, not in the protocol of the operation that p
 
 ## Criteria homes
 
-The audit criteria this workflow applies are not held here. They are consulted where they already live, by cross-workflow reference, so the corpus keeps one physical copy of each:
+The audit criteria this workflow applies are not held here. They live in the [`canon`](/canon/README.md) namespace, and the operations that apply them reference that home:
 
-- [Anti-Patterns](/workflow-design/resources/anti-patterns.md) — specific smell instances, Detect / Do not flag / Fix
-- [Design Principles](/workflow-design/resources/design-principles.md) — prefer / before / only after stance
-- [Schema Construct Inventory](/workflow-design/resources/schema-construct-inventory.md) — prose-to-construct mapping tables
-- [Convention Conformance](/workflow-design/resources/convention-conformance.md) — reference conventions against sibling workflows
-
-Fetch these by section. `anti-patterns.md` alone exceeds the per-resource eager-delivery cap, so a whole-file reference is never bundled.
+- [Anti-Patterns](/canon/resources/anti-patterns.md) — specific smell instances, Detect / Do not flag / Fix
+- [Design Principles](/canon/resources/design-principles.md) — prefer / before / only after stance
+- [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md) — prose-to-construct mapping tables
+- [Convention Conformance](/canon/resources/convention-conformance.md) — reference conventions against sibling workflows
 
 ---
 

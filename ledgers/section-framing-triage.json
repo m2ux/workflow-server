@@ -411,7 +411,7 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "workflow-design/resources/anti-patterns.md",
+      "site": "canon/resources/anti-patterns.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
@@ -431,7 +431,7 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "workflow-design/resources/convention-conformance.md",
+      "site": "canon/resources/convention-conformance.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
@@ -441,7 +441,7 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "workflow-design/resources/design-principles.md",
+      "site": "canon/resources/design-principles.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },

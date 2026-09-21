@@ -29,7 +29,7 @@ Absolute path to the persisted principle-findings artifact.
 
 ### 1. Audit Principle Compliance
 
-- Audit the workflow against each design principle in [design-principles](../resources/design-principles.md) — sole source of principle stance text for this pass
+- Audit the workflow against each design principle in [design-principles](/canon/resources/design-principles.md) — sole source of principle stance text for this pass
 - For each principle, classify as compliant, partially compliant, or violating against that stance; record file, field, and line references into `{principle_findings}`
 - Do not re-derive prohibited-pattern Detect here — catalog and inventory walks own Detect; score only whether the authored content honors the principle's positive stance
 

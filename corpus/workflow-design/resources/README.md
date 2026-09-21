@@ -2,7 +2,9 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Markdown resources for design principles, construct inventories, anti-pattern catalog, mode guidance, elicitation, and **creation guides** for every planning-folder artifact (Template + Rules).
+Mode guidance, elicitation, and **creation guides** for every planning-folder artifact (Template + Rules).
+
+The design canon this workflow audits against — principles, anti-patterns, the construct inventory and conformance — belongs to no single workflow and lives in the [`canon`](/canon/README.md) namespace.
 
 ---
 
@@ -10,9 +12,6 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 
 | Index | Resource | Purpose |
 |-------|----------|---------|
-| `00` | [Design Principles](design-principles.md) | Prefer/before stance that avoids smell families (no Detect triad) |
-| `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
-| `02` | [Anti-Patterns](anti-patterns.md) | Specific smell instances — Detect/Do not flag/Fix |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Change-request category vocabulary for update mode |
 | `04` | [Compliance Report](compliance-report.md) | Creation guide: `compliance-review.md` / `post-update-review.md` |
 | `05` | [README Seed](readme-seed.md) | Work-package-tailored Progress inventory + mode map for planning-folder `README.md` |
@@ -20,7 +19,6 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 | `07` | [Design Assumptions](design-assumptions.md) | Creation guide: `assumptions-log.md` |
 | `08` | [Design Assumption Reconciliation](design-assumption-reconciliation.md) | Audit vs open resolvability vocabulary |
 | `09` | [Elicitation Guide](elicitation-guide.md) | Mode dimension sets + per-dimension capture/question bank |
-| `10` | [Convention Conformance](convention-conformance.md) | Reference conventions vs sibling workflows |
 | `11` | [Structural Inventory](structural-inventory.md) | Creation guide: `structural-inventory.json` |
 | `12` | [Format Conventions](format-conventions.md) | Creation guide: `format-conventions.md` |
 | `13` | [Applicable Constructs](applicable-constructs.md) | Creation guide: `applicable-constructs.md` |
@@ -63,18 +61,6 @@ Each creation guide has a **Template** section and **Rules** for lean, decision-
 
 ## Resource Details
 
-### 00 — Design Principles
-
-*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog. Includes **§1 Workflows Ossify Patterns** (why workflows exist — a durable graph of activities many sessions walk; fitting for a circumstance is that graph; the pattern has two sources, local repeated success and an external source already held as procedure; the same ossification holds between technique and routine at the grain of one application), **§26 Atomic Techniques; Compose at Activities** (the grain between those two is the success of the application; the canon a routine holds is from those same two sources), **§28 Creation Guide for Generated Documents** (every persisted planning artifact maps to a Template+Rules guide), **§29 Cite Resource Policy; Do Not Restate It** (technique Protocol cites resource policy; does not re-author the matrix), **§30 Resources at the Abstract Level; Split for Section Delivery** (resources describe abstract kinds/roles and template skeletons — concrete artifact names and variable bindings live in the technique — multi-part resources split into per-category sections; content a section-scoped reader depends on lives in a section), and **§32 Cite Resources at Section Grain** (citations name the narrowest deliverable section).
-
-### 01 — Schema Construct Inventory
-
-Five mapping tables that translate informal prose patterns into formal schema equivalents (activity, workflow, routine, technique, condition). The grain between technique and routine is the success of the application; the same ossification at the grain of many sessions is a workflow. Both hold canon from local repeated success and from an external source already held as procedure.
-
-### 02 — Anti-Patterns
-
-Specific smell instances — Detect / Do not flag / Fix. Cite by kebab-case smell **name**. Section-delivery family includes `whole-resource-for-one-section` and `framing-outside-any-section`.
-
 ### 03 — Update Mode Guide
 
 Change-request category vocabulary (activity, technique, resource, metadata, structural refactor).
@@ -91,16 +77,8 @@ Resolvability vocabulary (`audit` vs `open`).
 
 Mode dimension sets and per-dimension capture/question bank.
 
-### 10 — Convention Conformance
-
-Reference-convention checklist (naming, field order, structure).
-
 ---
 
-## Cross-Workflow Access
+## Cross-workflow access
 
-Other workflows may consult these by resource id:
-
-- `workflow-design/design-principles`
-- `workflow-design/schema-construct-inventory`
-- `workflow-design/anti-patterns`
+These guides are this workflow's own. The canon every workflow consults is served from the [`canon`](/canon/README.md) namespace as `canon/design-principles`, `canon/anti-patterns`, `canon/schema-construct-inventory` and `canon/convention-conformance`.

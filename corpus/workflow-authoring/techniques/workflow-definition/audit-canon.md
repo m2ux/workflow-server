@@ -59,7 +59,7 @@ One row per enumeration unit, each carrying the unit's home, the unit's anchor, 
 
 ### 1. Enumerate the Criteria Units
 
-- Take one enumeration unit per `##` section of each of [Design Principles](/workflow-design/resources/design-principles.md), [Schema Construct Inventory](/workflow-design/resources/schema-construct-inventory.md), [Convention Conformance](/workflow-design/resources/convention-conformance.md) and [Anti-Patterns](/workflow-design/resources/anti-patterns.md), reading each home's `##` headings from that home at the commit under audit
+- Take one enumeration unit per `##` section of each of [Design Principles](/canon/resources/design-principles.md), [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md), [Convention Conformance](/canon/resources/convention-conformance.md) and [Anti-Patterns](/canon/resources/anti-patterns.md), reading each home's `##` headings from that home at the commit under audit
 - Read each anti-pattern family to its end: its entries are the `###` subsections beneath it, and the last family absorbs entries appended after it was named, so its title does not bound its contents
 - Where a unit's anchor fetches nothing and the corpus is indexed, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[heading-search](/gitnexus/techniques/heading-search.md) with the unit's title as its *heading_pattern*, and read `{heading_matches}` for the heading that home now carries. A unit fetched as nothing is walked as nothing while the ledger records it walked
 - Do not restate, summarize or number the entries a unit contains; follow each entry as written, and cite entries by their kebab-case name
@@ -71,7 +71,7 @@ One row per enumeration unit, each carrying the unit's home, the unit's anchor, 
 - Take Detect from the anti-pattern and construct-inventory homes; take from the principles home only whether the authored content honours a stance, so one violation is not counted twice under two homes
 - Compare against `{reference_workflows}` wherever a unit states its criteria relative to established sibling convention
 - When `{change_constraints}` is present, check each authored identifier against its collision set and each file against its co-change set
-- When walking [Description Hygiene Anti-Patterns](/workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns) or bound-step description criteria, apply Detect to every row of `{prose_field_inventory}` and to the same field classes on the rest of `{surface_files}`. When `{prose_field_inventory}` is required and absent or incomplete for `{changed_files}`, record the unit as `blocked` with that gap — never as `walked`
+- When walking [Description Hygiene Anti-Patterns](/canon/resources/anti-patterns.md#description-hygiene-anti-patterns) or bound-step description criteria, apply Detect to every row of `{prose_field_inventory}` and to the same field classes on the rest of `{surface_files}`. When `{prose_field_inventory}` is required and absent or incomplete for `{changed_files}`, record the unit as `blocked` with that gap — never as `walked`
 - For every unit marked `walked` that reaches `{changed_files}`, attach `evidence` rows: each row is `(file, field-or-locus, entry-or-clean, quote-or-path)`. A clean field still gets a row with disposition `clean`. Evidence covers the whole file the unit reaches on the change surface
 - Record every violation into `{audit_findings}` and every unit's disposition into `{coverage_ledger}`, at the shapes their Output declarations state
 

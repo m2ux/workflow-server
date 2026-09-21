@@ -29,7 +29,7 @@ Absolute path to the persisted anti-pattern-findings artifact.
 
 ### 1. Load Catalog
 
-- Load [anti-patterns](../resources/anti-patterns.md) — sole source of prohibited-pattern detect, exclusion, and fix criteria
+- Load [anti-patterns](/canon/resources/anti-patterns.md) — sole source of prohibited-pattern detect, exclusion, and fix criteria
 - Do not restate, summarize, or number catalog entries in this technique; follow each entry as written
 
 ### 2. Apply Every Entry

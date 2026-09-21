@@ -41,7 +41,7 @@ The authored file at the manifest entry's path, parsing cleanly and conforming t
 
 - Identify which fields the content needs from the JSON schema for that kind
 - When `{selected_findings}` is present, the files to author are the ones those findings cite, and the planned change is exactly what each finding's fix prescribes
-- Map the content onto formal constructs, taking the table for its own level from [Activity-Level Constructs](/workflow-design/resources/schema-construct-inventory.md#activity-level-constructs-activityschemajson), [Workflow-Level Constructs](/workflow-design/resources/schema-construct-inventory.md#workflow-level-constructs-workflowschemajson) or [Technique-Level Constructs](/workflow-design/resources/schema-construct-inventory.md#technique-level-constructs-techniqueschemajson) or [Routine-Level Constructs](/workflow-design/resources/schema-construct-inventory.md#routine-level-constructs-routineschemajson), plus [Condition Constructs](/workflow-design/resources/schema-construct-inventory.md#condition-constructs-conditionschemajson) wherever a gate is authored
+- Map the content onto formal constructs, taking the table for its own level from [Activity-Level Constructs](/canon/resources/schema-construct-inventory.md#activity-level-constructs-activityschemajson), [Workflow-Level Constructs](/canon/resources/schema-construct-inventory.md#workflow-level-constructs-workflowschemajson) or [Technique-Level Constructs](/canon/resources/schema-construct-inventory.md#technique-level-constructs-techniqueschemajson) or [Routine-Level Constructs](/canon/resources/schema-construct-inventory.md#routine-level-constructs-routineschemajson), plus [Condition Constructs](/canon/resources/schema-construct-inventory.md#condition-constructs-conditionschemajson) wherever a gate is authored
 - Cross-check required against optional properties before drafting rather than after validation fails
 
 ### 4. Draft the Content
@@ -78,11 +78,11 @@ Use a block scalar for multi-line text — `|` to preserve newlines, `>` to fold
 
 ### version-format
 
-Versions are semantic X.Y.Z, per [Reference Conventions](/workflow-design/resources/convention-conformance.md#reference-conventions).
+Versions are semantic X.Y.Z, per [Reference Conventions](/canon/resources/convention-conformance.md#reference-conventions).
 
 ### field-ordering
 
-Field order follows existing files of the same kind, per [Reference Conventions](/workflow-design/resources/convention-conformance.md#reference-conventions).
+Field order follows existing files of the same kind, per [Reference Conventions](/canon/resources/convention-conformance.md#reference-conventions).
 
 ### schema-reference
 

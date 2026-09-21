@@ -50,10 +50,10 @@ The file contract — anatomy, addressing, composition, delivery — is the tech
 
 Techniques are addressed by `::`-delimited paths — `[workflow::]technique[::nested…]` — and a reference within a single workflow omits the workflow segment. The slash form `{workflow}/{technique}` normalises to the same thing. Resolution reads the workflow from the session, looks in that workflow's own directory first, and falls back to the shared `meta` layer.
 
-The grain of the work — judgement on live feedback versus accepted, codified application — is [Atomic Techniques; Compose at Activities](/workflow-design/resources/design-principles.md#26-atomic-techniques-compose-at-activities). This section is the file contract.
+The grain of the work — judgement on live feedback versus accepted, codified application — is [Atomic Techniques; Compose at Activities](/canon/resources/design-principles.md#26-atomic-techniques-compose-at-activities). This section is the file contract.
 
 ## Adding a routine
 
 A routine is a kebab-named YAML file under a namespace's `routines/` directory, and that filename is the id every `kind: routine` step resolves. Nothing registers it: the server discovers routines by reading the directory. A step in another namespace reaches it as `{namespace}::<name>`.
 
-The file carries `id` (matching the filename), `version`, `name`, `description`, optional `inputs` / `outputs` / `internals`, and `steps[]` as the ordinary kind-tagged list. It declares no `exits`, no `outcome`, no `rules` and no activity-wide `techniques`. How those fields map, and when a path lives here rather than as a technique, is the [schema construct inventory](/workflow-design/resources/schema-construct-inventory.md#routine-level-constructs-routineschemajson) and [Atomic Techniques; Compose at Activities](/workflow-design/resources/design-principles.md#26-atomic-techniques-compose-at-activities).
+The file carries `id` (matching the filename), `version`, `name`, `description`, optional `inputs` / `outputs` / `internals`, and `steps[]` as the ordinary kind-tagged list. It declares no `exits`, no `outcome`, no `rules` and no activity-wide `techniques`. How those fields map, and when a path lives here rather than as a technique, is the [schema construct inventory](/canon/resources/schema-construct-inventory.md#routine-level-constructs-routineschemajson) and [Atomic Techniques; Compose at Activities](/canon/resources/design-principles.md#26-atomic-techniques-compose-at-activities).

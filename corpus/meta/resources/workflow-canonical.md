@@ -26,7 +26,7 @@ in these shapes:
 | **Standalone technique** | `techniques/<id>.md` | yes (`metadata.version`) | A single technique. |
 | **Container technique** | `techniques/<group>/TECHNIQUE.md` + `techniques/<group>/<sub>.md` | yes (each file carries `metadata.version`) | The folder is a namespace; `TECHNIQUE.md` is the container technique; each `<sub>.md` is a nested technique. |
 | **Resource** | `resources/<slug>.md` | yes | Freeform reference material. |
-| **Routine** | `routines/<name>.yaml` | YAML `id` / `version` | A named run of steps. The filename is the identity every reference resolves. Grain between technique and routine: [Atomic Techniques; Compose at Activities](/workflow-design/resources/design-principles.md#26-atomic-techniques-compose-at-activities). |
+| **Routine** | `routines/<name>.yaml` | YAML `id` / `version` | A named run of steps. The filename is the identity every reference resolves. Grain between technique and routine: [Atomic Techniques; Compose at Activities](/canon/resources/design-principles.md#26-atomic-techniques-compose-at-activities). |
 
 Each workflow also has a **root base contract** at `techniques/TECHNIQUE.md` —
 isomorphic to a technique, carrying no technique list (the technique set is implied
@@ -52,7 +52,7 @@ Failure handling lives **inline in the protocol step that triggers it**.
 
 `## Protocol` is a **single ordered list of steps**, authored as `### N. Title`
 blocks whose headings name each phase's outcome and whose bodies hold that phase's
-steps as a list ([Phase by Sequenced Outcome](/workflow-design/resources/design-principles.md#15-phase-by-sequenced-outcome)).
+steps as a list ([Phase by Sequenced Outcome](/canon/resources/design-principles.md#15-phase-by-sequenced-outcome)).
 The parser also reads a flat numbered or bulleted list, which is what a definition
 written before that form carries. The
 server treats it as one ordered sequence and assigns step numbers at load time.
@@ -101,7 +101,7 @@ An external primitive: a binary, an MCP server, a CLI command, an API. Tools hav
 - **Tool-dedicated namespace** — complex tools (`gitnexus`, `concept-rag`) warrant a
   namespace whose operations each name one capability over the tool: which calls this
   job makes, in what order, and how to read the answer. The tool's own schema owns the
-  rest of the parameter space ([Atomic Techniques; Compose at Activities](/workflow-design/resources/design-principles.md#26-atomic-techniques-compose-at-activities)).
+  rest of the parameter space ([Atomic Techniques; Compose at Activities](/canon/resources/design-principles.md#26-atomic-techniques-compose-at-activities)).
 
 ## Cross-reference format
 

@@ -33,7 +33,7 @@ Absolute path to the persisted findings artifact when `{expressiveness_finding_c
 
 ### 1. Load Inventory
 
-- Load [schema-construct-inventory](../resources/schema-construct-inventory.md) — sole source of informal→formal construct mappings for this pass
+- Load [schema-construct-inventory](/canon/resources/schema-construct-inventory.md) — sole source of informal→formal construct mappings for this pass
 - Do not restate the inventory tables or construct lists here; apply each mapping as written
 
 ### 2. Audit Expressiveness
