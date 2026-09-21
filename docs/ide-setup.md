@@ -1,4 +1,4 @@
-# Workflow Server IDE Setup
+# IDE setup
 
 An agent has to be told three things before it can drive a workflow: where the server is, that it must ask the server how to start rather than assuming, and which repository the session is for. Wiring those by hand across a Cursor workspace, a Claude configuration and a set of rule files is fiddly, and the pieces have to agree with each other. So the repository ships a workspace template that installs all of them together.
 
@@ -6,7 +6,16 @@ An agent has to be told three things before it can drive a workflow: where the s
 
 Deploy [`examples/cursor-workspace/`](../examples/cursor-workspace/) with [`scripts/deploy-cursor-workspace.sh`](../scripts/deploy-cursor-workspace.sh); the template's own [README](../examples/cursor-workspace/README.md) covers its flags. The script installs a live layout under `~/.local/share/cursor/workspaces/<name>/`, writing absolute `$HOME/…` paths into the folder list.
 
-It wires up four things. The MCP servers, with `workflow-server` reaching `http://127.0.0.1:3000/mcp` through `mcp-remote`, alongside `concept-rag`, `atlassian` and `gitnexus`. The always-applied rule that sends an agent to `discover` before it does anything else. The `AGENTS.md` and `CLAUDE.md` files carrying the checkout basename and the `owner/repo` a session binds to. And the four workspace roots: the workspace itself, the project, the planning folder and the work trees. For Claude Code it also installs a workspace-local baseline — the hooks under `scripts/claude/`, and a rendered `.claude/settings.json`.
+### What it wires up
+
+- **The MCP servers** — `workflow-server` reaching `http://127.0.0.1:3000/mcp` through `mcp-remote`, alongside `concept-rag`, `atlassian` and `gitnexus`.
+- **The always-applied rule** that sends an agent to `discover` before it does anything else.
+- **`AGENTS.md` and `CLAUDE.md`**, carrying the checkout basename and the `owner/repo` a session binds to.
+- **The four workspace roots** — the workspace itself, the project, the planning folder and the work trees.
+
+For Claude Code it also installs a workspace-local baseline: the hooks under `scripts/claude/`, and a rendered `.claude/settings.json`.
+
+### Running the deploy
 
 ```bash
 # after install.sh (preferred)

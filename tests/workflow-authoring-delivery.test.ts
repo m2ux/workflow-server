@@ -80,10 +80,10 @@ const ANTI_PATTERN_SECTIONS = [
 
 /** The criteria references `quality-review` must deliver, in the qualified form get_resource takes. */
 const CRITERIA_IDS = [
-  ...ANTI_PATTERN_SECTIONS.map(s => `workflow-design/anti-patterns#${s}`),
-  'workflow-design/design-principles',
-  'workflow-design/schema-construct-inventory',
-  'workflow-design/convention-conformance',
+  ...ANTI_PATTERN_SECTIONS.map(s => `canon/anti-patterns#${s}`),
+  'canon/design-principles',
+  'canon/schema-construct-inventory',
+  'canon/convention-conformance',
 ];
 
 describe.skipIf(!TREE_PRESENT)(`workflow-authoring criteria delivery (workflows root: ${WORKFLOWS_ROOT})`, () => {
@@ -129,7 +129,7 @@ describe.skipIf(!TREE_PRESENT)(`workflow-authoring criteria delivery (workflows 
 
   it('addresses every anti-pattern unit by section, never as a whole file', () => {
     const refs = (meta['resource_refs'] as string[] | undefined) ?? [];
-    const antiPatternRefs = refs.filter(r => r.startsWith('workflow-design/anti-patterns'));
+    const antiPatternRefs = refs.filter(r => r.startsWith('canon/anti-patterns'));
     expect(antiPatternRefs.length).toBeGreaterThan(0);
     expect(antiPatternRefs.filter(r => !r.includes('#'))).toEqual([]);
   });

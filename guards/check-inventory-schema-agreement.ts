@@ -32,7 +32,7 @@ const REPO = join(DIR, '..');
 const DEFAULT_ROOT = defaultCorpusDest(REPO);
 const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
-const INVENTORY = 'corpus/workflow-design/resources/schema-construct-inventory.md';
+const INVENTORY = 'corpus/canon/resources/schema-construct-inventory.md';
 
 /** A section heading naming the schema its rows map onto: `## Activity-Level Constructs (activity.schema.json)`. */
 const SECTION = /^##\s+(.+?)\s+\((\w[\w-]*\.schema\.json)\)\s*$/;

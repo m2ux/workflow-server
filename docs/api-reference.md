@@ -1,86 +1,92 @@
-# API Reference
+# API reference
 
-Catalog of the MCP tool surface and HTTP routes. For call-contract footguns, use the wire descriptions in `src/tools/` (mirrored on the [site tool reference](../site/api/tools.html)). For behavioral depth, follow the links to architecture models.
+A catalog of the tool surface and the HTTP routes: what each one is for, and which document explains how it behaves. Nothing here explains behaviour — that lives in the models, linked in the last column.
+
+For call-contract detail, read the wire descriptions in `src/tools/`, mirrored on the [site tool reference](../site/api/tools.html).
 
 ## HTTP endpoints
 
-When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run start:http`), it exposes these routes. stdio mode does not open an HTTP listener.
+Started with `--transport=http` (or `TRANSPORT=http`, or `npm run start:http`). Under stdio the server opens no HTTP listener.
 
-| Method / path | Purpose |
-|---------------|---------|
-| `GET /health` | Liveness — process is up |
-| `GET /ready` | Readiness — `schemasDir` and `workspaceDir` exist; `engineeringDir` when split from workspace (`--repo` layout); `sessionKeyWritable` (HMAC key directory is usable); and `corpusServes` (the mounted corpus holds at least one workflow) |
-| `POST /mcp` | MCP Streamable HTTP (client → server messages) |
-| `GET /mcp` | MCP Streamable HTTP (server → client stream when the session uses GET) |
-| `DELETE /mcp` | MCP Streamable HTTP (end session) |
+| Method and path | Purpose |
+|-----------------|---------|
+| `GET /health` | Liveness — the process is up |
+| `GET /ready` | Readiness — 503 when any check below is false |
+| `POST /mcp` | Model Context Protocol over Streamable HTTP, client to server |
+| `GET /mcp` | The same, server to client, when the session uses GET |
+| `DELETE /mcp` | End the session |
 
-`/ready` returns 503 when any check is false. A green `/health` alone does **not** mean `start_session` can run — verify `sessionKeyWritable: true` (Docker non-root with `HOME=/` historically failed here; see [http.md](../http.md) and `WORKFLOW_SERVER_KEY_DIR`).
+### Readiness checks
 
-The payload carries a `corpus` object beside `checks`: `dir` is the tree definitions resolve against, `workflows` is what the walk found there, and `ambiguous` lists ids more than one directory claims. The walk reads the corpus as it stands rather than as it stood at boot.
+| Check | True when |
+|-------|-----------|
+| `schemasDir`, `workspaceDir` | Both directories exist |
+| `engineeringDir` | It exists, where the `--repo` layout splits it from the workspace |
+| `sessionKeyWritable` | The signing-key directory is usable |
+| `corpusServes` | The mounted corpus holds at least one workflow |
 
-`hostDir` names the tree behind the mount, and is present when the container was given a corpus bind source (`HOST_WORKFLOWS_DIR`, set by `start.sh` and the compose file). Every container resolves definitions at the same mount point, so `dir` states what a server reads while `hostDir` states which corpus that is — the fact that tells two instances apart. Outside Docker the two coincide and only `dir` appears.
+Reading the payload, telling two instances apart, and what a failing check means are in [http.md](../http.md#3-verify).
 
-Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. Local `mcp-remote` clients may probe OAuth well-known URLs (`/.well-known/oauth-*`) and receive 404s; that is expected without auth and is logged as info, not error. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
+## Tools
 
-## MCP tools
-
-Most tools take a `session_index` from `start_session`. Bootstrap tools do not. Each authenticated response includes `session_index` and advisory `_meta.validation` where applicable.
+Most tools take a `session_index` returned by `start_session`; the bootstrap tools do not. Each authenticated response carries `session_index`, and advisory `_meta.validation` where it applies.
 
 ### Bootstrap
 
-| Tool | Parameters | Returns | Description |
-|------|------------|---------|-------------|
-| `discover` | — | Server info, bootstrap stub | First call: how to start a session. Pass `working_directory` on `start_session`. |
-| `list_workflows` | — | Workflow list (`id`, `title`, `version`, `tags`) | Catalog of available workflows. |
-| `health_check` | — | Status, version, workflow count, uptime | Process health. |
+| Tool | Parameters | Returns | Purpose |
+|------|------------|---------|---------|
+| `discover` | — | Server info and a bootstrap stub | The first call: how to start a session |
+| `list_workflows` | — | `id`, `title`, `version`, `tags` per workflow | The catalog of available workflows |
+| `health_check` | — | Status, version, workflow count, uptime | Process health |
 
 ### Session
 
-| Tool | Parameters | Returns | Description |
-|------|------------|---------|-------------|
-| `start_session` | `agent_id`, `workflow_id?`, `working_directory?`, `planning_folder?`, `repo?`, `context_mode?`, `user_request?`, `target_workflow_id?`, `fresh?` | `session_index`, planning path, workflow info, `execution_path`, optional `repo`, optional `client`, or a `decision` with no session | Open or resume a top-level session (default workflow: `meta`). Pass `working_directory` as the checkout under work; the server derives `owner/repo` from that origin even when the folder is named for a branch. `repo` is optional and must equal the derived origin when present. Named `planning_folder` resumes. A derived dated slug that already holds a session opens the next free numbered folder. A unique catalog match with no resume phrasing also returns `client`. A durable meta start that cannot uniquely open a client returns a `decision` (`workflow-selection`, `resume-session`) with no `session_index`. `user_request` seeds the opening request into the variable bag, and children inherit it. `execution_path` is `agent` when a caller walks the definition and `runner` when the server does. [State](state-management-model.md) · [Reference delivery](resource-resolution-model.md#reference-delivery) |
-| `dispatch_child` | `session_index`, `workflow_id`, `agent_id?`, `planning_slug?`, `repo?`, `context_mode?` | Child `session_index`, `execution_path` | Start a nested workflow under the current session. Uses `session.repo`; optional `repo` binds if missing (must match if set). The child records which path drove it. [Dispatch](dispatch-model.md) |
-| `get_workflow_status` | `session_index` | Status, the activities in flight, completed activities, checkpoint hint | Snapshot of where the session is. One activity is in flight on an ordinary walk; one per branch while a graph fan runs. |
-| `inspect_session` | `session_index`, `view?`, `child_index?`, `variable?`, `agent_id?` | Compact projection | Read-only view of session state, usable while a checkpoint is active. `agent_id` narrows history and usage to one worker context. |
+| Tool | Parameters | Returns | Purpose | Detail |
+|------|------------|---------|---------|--------|
+| `start_session` | `agent_id`, `workflow_id?`, `working_directory?`, `planning_folder?`, `repo?`, `context_mode?`, `user_request?`, `target_workflow_id?`, `fresh?` | `session_index`, planning path, workflow info, `execution_path`; optionally `repo`, `client`, or a `decision` | Open or resume a top-level session | [Opening a session](state-management-model.md#opening-a-session) |
+| `dispatch_child` | `session_index`, `workflow_id`, `agent_id?`, `planning_slug?`, `repo?`, `context_mode?` | Child `session_index`, `execution_path` | Start a nested workflow under this session | [Spawning the orchestrator](dispatch-model.md#spawning-the-orchestrator) |
+| `get_workflow_status` | `session_index` | Status, activities in flight, completed activities, checkpoint hint | A snapshot of where the session is | [Polling](dispatch-model.md#polling-a-dispatched-workflow) |
+| `inspect_session` | `session_index`, `view?`, `child_index?`, `variable?`, `agent_id?` | A compact projection | Read session state, even while a checkpoint is active | [Persistence](state-management-model.md#persistence) |
 
 ### Workflow navigation
 
-Require `session_index`. Workflow identity comes from the session.
+All require `session_index`; workflow identity comes from the session.
 
-| Tool | Parameters | Returns | Description |
-|------|------------|---------|-------------|
-| `get_workflow` | `session_index` | Orchestrator technique bundle + workflow stubs | Orchestrator load: rules, variables, `initialActivity`, activity list. Every operation of the contract arrives with its body, the rules it is held to included; the `rules` list beside them carries the role's own rules, which govern no one operation. The workflow metadata rides whole: rules, the variable roster, the graph and the activities. The prose explaining what each variable is for is not carried at all, at any size, because nothing the orchestrator decides turns on it and the activities that produce and consume a value each carry it. The whole result — text and `_meta` together — is measured against what one tool result may carry (`MAX_RESPONSE_CHARS`) and logged where it exceeds it. [Resolution](resource-resolution-model.md) |
-| `next_activity` | `session_index`, `activity_id`, `from_activity`, `exit?`, manifests? | `activity_id`, `name`; barrier and trace in `_meta` | Retire the activity `from_activity` names and go to `activity_id` — one activity, `__terminal__`, or the destination as the graph names it where the exit fans. One call opens every branch of a fan; its meeting point is entered by the branch return that empties the frontier. [Fidelity](workflow-fidelity.md) |
-| `get_activity` | `session_index`, `context_tokens`, `agent_id?`, `activity_id?`, `bundle?` | Worker bundle + activity body, `exit_destinations`, `fan_instance` where the graph runs it over a collection, `_meta.dispatch` | Worker load for the activity this context was dispatched for, named by `activity_id` where several are in flight. `context_tokens` is required; `agent_id` scopes delivery to this worker context. The activity and the operations of its contract ride whole, each operation stating the rules it is held to; the `rules` list beside them carries the role's own rules, which govern no one operation. `context_tokens` sizes the eager bundle, and what it leaves out is a step technique fetched with `get_technique { step_id }` or a resource body named under `resource_refs`. The whole result — text and `_meta` together — is measured against what one tool result may carry (`MAX_RESPONSE_CHARS`) and logged where it exceeds it. `exit_destinations` names where each declared exit leads, exactly as the graph names it — one activity, a list of members, or one activity together with the collection it runs over — so a worker reports that destination unread. [Bundling](resource-resolution-model.md#hybrid-technique-bundling) · [Reference delivery](resource-resolution-model.md#reference-delivery) |
-| `yield_checkpoint` | `session_index`, `checkpoint_id`, `message?`, `options?` | `yielded` or `replayed` | Pause for a user decision, or replay a prior answer. `message` and `options` raise a decision the activity did not declare, and are refused on one it did. [Checkpoints](checkpoint-model.md) |
-| `resume_checkpoint` | `session_index` | Status | Worker continues after the checkpoint is resolved. |
-| `present_checkpoint` | `session_index` | Message, options, effects | Load the active checkpoint for the user. |
-| `respond_checkpoint` | `session_index`, one of `option_id` / `auto_advance` / `condition_not_met` | Resolution + effects | Clear the active checkpoint. |
+| Tool | Parameters | Returns | Purpose | Detail |
+|------|------------|---------|---------|--------|
+| `get_workflow` | `session_index` | Orchestrator technique bundle and workflow stubs | The orchestrator's load: rules, variables, `initialActivity`, activity list | [Orchestrator bundle](delivery-model.md#the-orchestrator-bundle) |
+| `next_activity` | `session_index`, `activity_id`, `from_activity`, `exit?`, manifests? | `activity_id`, `name`; barrier and trace in `_meta` | Retire one activity and go to the next | [Choosing the next activity](state-management-model.md#choosing-the-next-activity) |
+| `get_activity` | `session_index`, `context_tokens`, `agent_id?`, `activity_id?`, `bundle?` | Worker bundle, activity body, `exit_destinations`, `fan_instance`, `_meta.dispatch` | The worker's load for the activity it was dispatched for | [Worker bundle](delivery-model.md#the-worker-bundle) |
+| `yield_checkpoint` | `session_index`, `checkpoint_id`, `message?`, `options?` | `yielded` or `replayed` | Pause for a user decision, or replay a prior answer | [The worker pauses](checkpoint-model.md#the-worker-pauses) |
+| `resume_checkpoint` | `session_index` | Status | Continue after the checkpoint is resolved | [Resume protocol](checkpoint-model.md#the-resume-protocol) |
+| `present_checkpoint` | `session_index` | Message, options, effects | Load the active checkpoint for the user | [Presenting and resolving](checkpoint-model.md#the-user-facing-agent-presents-and-resolves) |
+| `respond_checkpoint` | `session_index`, one of `option_id` / `auto_advance` / `condition_not_met` | Resolution and effects | Clear the active checkpoint | [Three ways to resolve one](checkpoint-model.md#three-ways-to-resolve-one) |
 
 ### Techniques and resources
 
-| Tool | Parameters | Returns | Description |
-|------|------------|---------|-------------|
-| `get_technique` | `session_index`, `technique_id?`, `step_id?`, `activity_id?`, `agent_id?`, `bundle?`, `full?` | Composed technique (or unchanged marker) | Load one technique on demand. `step_id` names the technique a step binds; `technique_id` names an operation of the caller's role contract — a protocol the caller has reached and was not sent, such as the checkpoint pair on a run that declares no gate, or one whose delivery its context no longer holds. The two are alternatives, and only operations this session's definitions name are servable. Passing `activity_id` fails a step id that resolves against a moved activity pointer, rather than returning a technique from the wrong activity. [Resolution](resource-resolution-model.md) · [Reference delivery](resource-resolution-model.md#reference-delivery) |
-| `get_resource` | `session_index`, `resource_id`, `agent_id?`, `bundle?`, `full?` | Resource body (or unchanged marker) | Load reference material by slug (`workflow/id` or `#section`). |
+| Tool | Parameters | Returns | Purpose | Detail |
+|------|------------|---------|---------|--------|
+| `get_technique` | `session_index`, `technique_id?`, `step_id?`, `activity_id?`, `agent_id?`, `bundle?`, `full?` | A composed technique, or an unchanged marker | Load one technique on demand | [Asking for one by name](delivery-model.md#asking-for-one-by-name) |
+| `get_resource` | `session_index`, `resource_id`, `agent_id?`, `bundle?`, `full?` | A resource body, or an unchanged marker | Load reference material by slug (`workflow/id` or `#section`) | [Loading a resource](resource-resolution-model.md#loading-a-resource-when-it-is-needed) |
 
 ### Trace and accounting
 
-| Tool | Parameters | Returns | Description |
-|------|------------|---------|-------------|
-| `get_trace` | `session_index`, `trace_tokens?` | Trace events | Decode accumulated trace tokens or return the in-memory session trace. [Fidelity](workflow-fidelity.md) |
-| `record_usage` | `session_index`, `activity`, `usage`, `basis`, `agent_id?` | Recorded row | Record the token usage of one completed activity. `basis` says whether the figure is that activity's own spend or a running total for the agent, since the two sum differently. Read it back through `inspect_session` with `view: usage`. |
+| Tool | Parameters | Returns | Purpose | Detail |
+|------|------------|---------|---------|--------|
+| `get_trace` | `session_index`, `trace_tokens?` | Trace events | Decode accumulated trace tokens, or return the in-memory trace | [Execution trace](workflow-fidelity.md#layer-7-the-execution-trace) |
+| `record_usage` | `session_index`, `activity`, `usage`, `basis`, `agent_id?` | The recorded row | Record one completed activity's token usage | [Token usage](delivery-model.md#token-usage-is-reported-not-derived) |
 
 ## Where detail lives
 
 | Topic | Document |
 |-------|----------|
-| Session files, `session_index`, resume | [State management](state-management-model.md) |
-| Yield / present / respond / resume | [Checkpoint model](checkpoint-model.md) |
+| Session files, `session_index`, opening and resume | [State management](state-management-model.md) |
+| Yield, present, respond, resume | [Checkpoint model](checkpoint-model.md) |
+| Bundles, budgets, reference delivery, measurement | [Delivery model](delivery-model.md) |
+| `::` addressing, namespaces, resource lookup | [Resource resolution](resource-resolution-model.md) |
 | Manifests, `_meta.validation`, trace tokens | [Workflow fidelity](workflow-fidelity.md) |
-| Technique bundles, composition, resources | [Resource resolution](resource-resolution-model.md) |
-| Reference delivery and eager step bundling | [Reference delivery](resource-resolution-model.md#reference-delivery) and [hybrid technique bundling](resource-resolution-model.md#hybrid-technique-bundling) |
-| What the server enforces vs agents | [Schema enforcement model](../schemas/README.md#enforcement-model) |
-| Wire descriptions and parameter schemas | [Site API](../site/api/tools.html) (generated from `src/tools/`) |
+| Flags and environment variables | [Configuration](configuration.md) |
+| What the server enforces, and what agents do | [Schema enforcement model](../schemas/README.md#enforcement-model) |
+| Wire descriptions and parameter schemas | [Site API](../site/api/tools.html), generated from `src/tools/` |
 | Technique file shape | [Technique protocol](technique-protocol-specification.md) |
-| Workflow / activity file shapes | [Schema guide](../schemas/README.md) |
+| Workflow and activity file shapes | [Schema guide](../schemas/README.md) |

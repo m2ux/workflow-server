@@ -1,6 +1,8 @@
 # Engineering storage patterns
 
-A repository that runs workflows accumulates engineering content — plans, decision records, session state — and where that content lives is a choice worth making deliberately. What suits a single repository owning its own history is not what suits an organisation running a dozen of them, and neither is what suits an experiment. [`scripts/deploy.sh`](../scripts/deploy.sh), run inside the product checkout under your projects root, sets this up, and the install sequence it belongs to is in [setup.md](../setup.md).
+A repository that runs workflows accumulates engineering content — plans, decision records, session state — and where that content lives is a choice worth making deliberately. What suits a single repository owning its own history is not what suits an organisation running a dozen of them, and neither suits an experiment.
+
+[`scripts/deploy.sh`](../scripts/deploy.sh) sets this up, run inside the product checkout under your projects root. The install sequence it belongs to is in [setup.md](../setup.md).
 
 ## Patterns
 
@@ -33,7 +35,7 @@ Best for multi-app / monorepo orgs that want one engineering remote and clean pr
 
   (URL is yours; not a fixed public repo.)
 
-- The script creates or uses branch `<project-name>` on that remote (basename of the project directory) and wires the app’s `.engineering` submodule to it.
+- The script creates or uses branch `<project-name>` on that remote (basename of the project directory) and wires the app's `.engineering` submodule to it.
 - Sibling apps repeat deploy with the **same** engineering remote; each gets its own branch. History stays out of product default branches.
 - Optional history submodule can use the same project-named branch convention (`--history-repo`, `--skip-history`).
 - After deploy, open/update the `.engineering` submodule in your checkout (`git submodule update --init -- .engineering`), including **external** remotes.

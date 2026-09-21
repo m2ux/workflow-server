@@ -17,16 +17,16 @@ The canon is a set of criteria homes plus a guard suite, on disk across the serv
 
 **Two roots, and the homes are split across them.** Guard programs sit in the server checkout under `guards/`. The criteria homes, the ledgers and the walk artifacts sit in the **corpus tree**: a worktree of the `workflows` branch, at `.worktrees/workflows` of the primary checkout unless `WORKFLOWS_DIR` or `--root` names another. Each path below says which root it is read from.
 
-Confirm the corpus tree holds `corpus/workflow-design/resources/` before reading anything. It is a worktree rather than part of the server checkout, so a fresh clone does not have it until `npm run worktree:provision` adds it; if the canon files are absent, say so rather than auditing from memory.
+Confirm the corpus tree holds `corpus/canon/resources/` before reading anything. It is a worktree rather than part of the server checkout, so a fresh clone does not have it until `npm run worktree:provision` adds it; if the canon files are absent, say so rather than auditing from memory.
 
 **Definitions and code sit on different branches.** A schema-reading guard failing on the corpus branch may be reading a field the code branch has not merged; that clears on the code merge and is not a corpus defect. Establish which before recording one.
 
 | Home | Path | Root | Owns |
 |------|------|------|------|
-| Design Principles | `corpus/workflow-design/resources/design-principles.md` | corpus | *Prefer / before / only after* stance |
-| Anti-Patterns | `corpus/workflow-design/resources/anti-patterns.md` | corpus | Specific smells as **Detect / Do not flag / Fix**. Exceeds the eager-delivery cap — fetch by anchor |
-| Schema Construct Inventory | `corpus/workflow-design/resources/schema-construct-inventory.md` | corpus | Informal-prose → formal-construct mappings |
-| Convention Conformance | `corpus/workflow-design/resources/convention-conformance.md` | corpus | Comparison against sibling workflows |
+| Design Principles | `corpus/canon/resources/design-principles.md` | corpus | *Prefer / before / only after* stance |
+| Anti-Patterns | `corpus/canon/resources/anti-patterns.md` | corpus | Specific smells as **Detect / Do not flag / Fix**. Exceeds the eager-delivery cap — fetch by anchor |
+| Schema Construct Inventory | `corpus/canon/resources/schema-construct-inventory.md` | corpus | Informal-prose → formal-construct mappings |
+| Convention Conformance | `corpus/canon/resources/convention-conformance.md` | corpus | Comparison against sibling workflows |
 | Guard suite | `guards/guards.ts` (registry) | server | Mechanical checks. The registry is the enumeration — never maintain a parallel list |
 
 Anchors on the principles home embed the section ordinal (`#13-separate-contract-from-procedure`), so an anchor breaks when the canon gains a principle ahead of it while the heading survives. Cite by **title**; where an anchor fails to resolve, re-read the heading rather than guessing.
