@@ -4,7 +4,6 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { WorkflowSchema } from '../src/schema/workflow.schema.js';
-import { WorkflowStateSchema } from '../src/schema/state.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
 import { SessionFileSchema } from '../src/schema/session.schema.js';
 import { ActivitySchema } from '../src/schema/activity.schema.js';
@@ -37,7 +36,6 @@ interface GeneratedSchema {
 
 export const GENERATED_SCHEMAS: GeneratedSchema[] = [
   { name: 'workflow', schema: WorkflowSchema, description: 'Workflow definition schema', refStrategy: 'root' },
-  { name: 'state', schema: WorkflowStateSchema, description: 'Workflow state schema', refStrategy: 'none' },
   { name: 'condition', schema: ConditionSchema, description: 'Condition expression schema', refStrategy: 'root' },
   { name: 'session-file', schema: SessionFileSchema, description: 'Server-managed session file (session.json) — canonical session state owned by the workflow server.', refStrategy: 'root' },
   { name: 'activity', schema: ActivitySchema, description: 'Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop | routine).', refStrategy: 'root' },

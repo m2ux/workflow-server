@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { parse as parseYaml } from 'yaml';
 import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
 import { logWarn } from '../logging.js';
@@ -56,60 +57,26 @@ export class MarkdownTechniqueParseError extends Error {
  * Parse a YAML-frontmatter block delimited by `---` lines.
  * Returns `{frontmatter: {}, body: raw}` when no frontmatter is present.
  *
- * Supports the subset of YAML technique frontmatter actually
- * uses: scalar key/value pairs at the top level and nested `metadata:`
- * mapping with scalar children. Anything more complex must extend this
- * parser — the canonical ontology does not allow it today.
+ * Supports the YAML technique frontmatter the ontology allows: scalar
+ * key/value pairs at the top level and a nested `metadata:` mapping
+ * with scalar children.
  */
 function parseFrontmatter(raw: string): FrontmatterParse {
   const match = raw.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n([\s\S]*)$/);
   if (!match) return { frontmatter: {}, body: raw };
-  const yaml = match[1] ?? '';
+  const yamlText = match[1] ?? '';
   const body = match[2] ?? '';
-
-  const result: Record<string, unknown> = {};
-  const lines = yaml.split(/\r?\n/);
-  let currentParent: { key: string; child: Record<string, unknown> } | null = null;
-
-  for (const rawLine of lines) {
-    if (!rawLine.trim() || rawLine.trim().startsWith('#')) continue;
-
-    // Nested key (two-space or four-space indent).
-    const nestedMatch = rawLine.match(/^( {2,})([A-Za-z_][\w-]*)\s*:\s*(.*)$/);
-    if (nestedMatch && currentParent) {
-      const key = nestedMatch[2]!;
-      const value = stripYamlScalar(nestedMatch[3] ?? '');
-      currentParent.child[key] = value;
-      continue;
-    }
-
-    // Top-level key.
-    const topMatch = rawLine.match(/^([A-Za-z_][\w-]*)\s*:\s*(.*)$/);
-    if (topMatch) {
-      const key = topMatch[1]!;
-      const value = (topMatch[2] ?? '').trim();
-      if (!value) {
-        const child: Record<string, unknown> = {};
-        result[key] = child;
-        currentParent = { key, child };
-      } else {
-        result[key] = stripYamlScalar(value);
-        currentParent = null;
-      }
-    }
+  let parsed: unknown;
+  try {
+    parsed = parseYaml(yamlText);
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new MarkdownTechniqueParseError(`Invalid YAML frontmatter: ${reason}`);
   }
-
-  return { frontmatter: result, body };
-}
-
-function stripYamlScalar(raw: string): unknown {
-  let v = raw.trim();
-  if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
-  else if (v.startsWith("'") && v.endsWith("'")) v = v.slice(1, -1);
-  if (v === 'true') return true;
-  if (v === 'false') return false;
-  if (/^-?\d+$/.test(v)) return Number(v);
-  return v;
+  if (parsed == null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return { frontmatter: {}, body };
+  }
+  return { frontmatter: parsed as Record<string, unknown>, body };
 }
 
 /* -------------------------------------------------------------------------- */

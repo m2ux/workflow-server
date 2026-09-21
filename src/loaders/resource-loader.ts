@@ -4,11 +4,9 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
 import { logInfo, logError } from '../logging.js';
-import type { Resource } from '../schema/resource.schema.js';
 import { type CorpusSource, indexCorpus, namespaceSubdir } from './corpus-index.js';
 
 export { ResourceNotFoundError } from '../errors.js';
-export type { Resource };
 
 /**
  * Extract a YAML-frontmatter scalar value (e.g. `name`, `version`) by key.

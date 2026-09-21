@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { readAllSchemas, listSchemaIds } from '../src/loaders/schema-loader.js';
 
 const SCHEMAS_DIR = resolve(import.meta.dirname, '../schemas');
-const IDS = ['workflow', 'activity', 'condition', 'technique', 'state'] as const;
+const IDS = ['workflow', 'activity', 'condition', 'technique', 'session-file'] as const;
 
 describe('schema-loader', () => {
   it('names every schema it can load', () => {

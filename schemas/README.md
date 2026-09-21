@@ -1,18 +1,17 @@
 # Workflow Schema System
 
-This folder contains JSON Schema definitions for the workflow server. These schemas define the structure for workflow definitions, conditional logic, and runtime state tracking.
+This folder contains JSON Schema definitions for the workflow server. These schemas define the structure for workflow definitions, conditional logic, and the on-disk session record.
 
 The server also exposes these schemas as MCP resources under `workflow-server://schemas` (combined) and `workflow-server://schemas/{id}` (per schema), built from the JSON files in this folder.
 
 ## Overview
 
-The workflow server uses six interconnected schemas:
+The workflow server uses five interconnected schemas:
 
 | Schema | Purpose | Use Case |
 |--------|---------|----------|
 | `workflow.schema.json` | Defines workflow structure | Creating new workflows with activities, steps, checkpoints |
 | `condition.schema.json` | Defines conditional expressions | Gating steps and dismissing checkpoints |
-| `state.schema.json` | In-memory runtime execution state schema | Internal workflow-engine progress tracking |
 | `session-file.schema.json` | Persistent server-managed session file (`session.json`) | On-disk session state owned by the workflow server; loaded by `session_index` and sealed by `.session-token` |
 | `technique.schema.json` | Defines agent technique capabilities | Describing tool orchestration patterns and execution guidance |
 | `activity.schema.json` | Defines unified activities | Combining intent matching with workflow execution stages |
@@ -83,10 +82,9 @@ The second diagram shows how the schema files depend on each other:
 - **activity.schema.json** defines unified activities with a single ordered `steps[]` (each step a kind: technique, action, checkpoint, loop, or routine), plus the activity's exits and triggers
 - **technique.schema.json** defines agent capabilities, tool orchestration patterns, and execution protocols
 - **condition.schema.json** provides reusable condition expressions (simple comparisons, AND/OR/NOT combinators)
-- **state.schema.json** describes the in-memory runtime execution state used internally by the workflow engine
-- **session-file.schema.json** describes the persistent server-managed session file (`session.json`) that lives under each planning folder; it captures workflow ID/version, current activity, variables, history, active checkpoint, and (for child workflows) the parent session snapshot. The companion `.session-token` is an HMAC-signed seal binding `session.json` to the workspace + server signing key.
+- **session-file.schema.json** describes the persistent server-managed session file (`session.json`) that lives under each planning folder; it captures workflow ID/version, frontier, variables, history, active checkpoint, and (for child workflows) the parent session snapshot. The companion `.session-token` is an HMAC-signed seal binding `session.json` to the workspace + server signing key.
 
-At design-time, you work with `workflow.schema.json`, `activity.schema.json`, and `technique.schema.json`. At runtime, `state.schema.json` represents the in-memory state used by the engine and `session-file.schema.json` describes the on-disk session file loaded by `session_index`.
+At design-time, you work with `workflow.schema.json`, `activity.schema.json`, and `technique.schema.json`. At runtime, `session-file.schema.json` describes the on-disk session file loaded by `session_index`.
 
 ```mermaid
 flowchart TB
@@ -128,12 +126,11 @@ flowchart TB
         COND --> Not["NOT: condition"]
     end
     
-    subgraph State["state.schema.json"]
-        W -.->|"runtime"| ST[Workflow State]
-        ST --> CA[currentActivity]
-        ST --> CS[completedSteps]
+    subgraph Session["session-file.schema.json"]
+        W -.->|"runtime"| ST[Session File]
+        ST --> CA[frontier]
+        ST --> CS[history]
         ST --> CR[checkpointResponses]
-        ST --> PW[parentWorkflow]
         ST --> TW[triggeredWorkflows]
     end
 ```
@@ -869,154 +866,9 @@ Conditions can be nested for complex logic:
 
 ---
 
-## State Schema
+## Session File Schema
 
-The state schema (`state.schema.json`) tracks runtime execution of a workflow using activity IDs for navigation.
-
-### State Fields
-
-| Field                 | Type                      | Purpose                                                        |
-| --------------------- | ------------------------- | -------------------------------------------------------------- |
-| `workflowId`          | string                    | Workflow being executed                                        |
-| `workflowVersion`     | string                    | Version of workflow                                            |
-| `stateVersion`        | integer                   | State schema version                                           |
-| `currentActivity`     | string                    | Current activity ID                                            |
-| `currentStep`         | integer                   | Current step index within activity (1-based)                   |
-| `completedActivities` | string[]                  | Completed activity IDs                                         |
-| `completedSteps`      | Record<string, integer[]> | Steps completed per activity                                   |
-| `checkpointResponses` | Record<string, Response>  | Checkpoint answers (key: `<activityId>-<checkpoint_id>`, including any `#instance` suffix) |
-| `activeLoops`         | LoopState[]               | Currently executing loops                                      |
-| `variables`           | Record<string, any>       | Runtime variable values                                        |
-| `history`             | HistoryEntry[]            | Execution event log                                            |
-| `status`              | enum                      | "running", "paused", "suspended", "completed", "aborted", "error" |
-| `parentWorkflow`      | ParentWorkflowRef         | Reference to parent workflow (if triggered)                    |
-| `triggeredWorkflows`  | TriggeredWorkflowRef[]    | Child workflows triggered from this one                        |
-| `completedAt`         | datetime                  | When workflow completed (only when status is "completed")      |
-| `lastError`           | object                    | Most recent error (message, code, activity, step, timestamp)   |
-
-### State Structure
-
-```json
-{
-  "workflowId": "my-workflow",
-  "workflowVersion": "1.0.0",
-  "stateVersion": 1,
-  "startedAt": "2026-01-22T10:00:00.000Z",
-  "updatedAt": "2026-01-22T10:05:00.000Z",
-  "currentActivity": "second-activity",
-  "currentStep": 1,
-  "completedActivities": ["first-activity"],
-  "skippedActivities": [],
-  "completedSteps": {
-    "first-activity": [1, 2]
-  },
-  "checkpointResponses": {},
-  "activeLoops": [],
-  "variables": {
-    "user_confirmed": true
-  },
-  "history": [],
-  "status": "running",
-  "parentWorkflow": null,
-  "triggeredWorkflows": []
-}
-```
-
-### Required Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `workflowId` | string | ID of the workflow being executed |
-| `workflowVersion` | string | Version of the workflow |
-| `startedAt` | datetime | When execution started |
-| `updatedAt` | datetime | Last state update |
-| `currentActivity` | string | Currently active activity ID (conditionally required when status is "running", "paused", or "suspended") |
-
-### Status Values
-
-| Status | Description |
-|--------|-------------|
-| `running` | Workflow is actively executing |
-| `paused` | Execution paused (awaiting user input) |
-| `suspended` | Waiting for triggered child workflow to complete |
-| `completed` | Workflow finished successfully |
-| `aborted` | Workflow was cancelled |
-| `error` | Workflow encountered an error |
-
-### Nested Workflow Support
-
-When an activity triggers another workflow, the state tracks the relationship:
-
-**Parent Workflow Reference:**
-```json
-{
-  "parentWorkflow": {
-    "workflowId": "work-packages",
-    "activityId": "implementation",
-    "passedContext": { "current_package": "feature-auth" },
-    "returnTo": { "activityId": "implementation", "stepIndex": 4 }
-  }
-}
-```
-
-**Triggered Workflows:**
-```json
-{
-  "triggeredWorkflows": [
-    {
-      "workflowId": "work-package",
-      "triggeredAt": "2026-01-22T10:00:00.000Z",
-      "triggeredFrom": { "activityId": "implementation", "stepIndex": 2 },
-      "status": "completed",
-      "completedAt": "2026-01-22T11:30:00.000Z"
-    }
-  ]
-}
-```
-
-The launched workflow's own state is embedded under the record's `state`, so what it produced is read from there — its variable bag and its `declaredArtifacts` — or from the artifacts it wrote to the planning folder the launcher gave it.
-
-### History Events
-
-The `history` array tracks all workflow events:
-
-```json
-{
-  "history": [
-    {
-      "timestamp": "2026-01-22T10:00:00.000Z",
-      "type": "workflow_started",
-      "activity": "first-activity"
-    },
-    {
-      "timestamp": "2026-01-22T10:01:00.000Z",
-      "type": "step_completed",
-      "activity": "first-activity",
-      "step": 1
-    },
-    {
-      "timestamp": "2026-01-22T10:02:00.000Z",
-      "type": "workflow_triggered",
-      "activity": "implementation",
-      "data": { "targetWorkflow": "work-package" }
-    }
-  ]
-}
-```
-
-**Event Types:**
-- `workflow_started`, `workflow_completed`, `workflow_aborted`, `workflow_triggered`, `workflow_returned`, `workflow_suspended`
-- `activity_entered`, `activity_exited`, `activity_skipped`
-- `step_started`, `step_completed`
-- `checkpoint_reached`, `checkpoint_response`
-- `decision_reached`, `decision_branch_taken`
-- `loop_started`, `loop_iteration`, `loop_completed`, `loop_break`
-- `variable_set`, `error`
-- `technique_fetched`, `resource_fetched` — content-fetch records appended by `get_technique` / `get_resource` (`data` carries `techniqueId` + optional `stepId`, or `resourceId`, plus `agentId`); `next_activity`'s manifest validation reads `technique_fetched` events for the warn-only technique-fetch fidelity check
-- `technique_bundled` — an inline step-technique delivery appended by `get_activity` for an activity that declares `bundleTechniques` (`data` carries `techniqueId`, `stepId`, `agentId`); counts as coverage for the technique-fetch fidelity check alongside `technique_fetched`
-- `activity_delivered` — one summary of what a `get_activity` resolved and spent (`data` carries `agentId`, `delivery`, `resolved_techniques`, `provenance_passes`, `bundled_steps`, `spent_chars`, `eager_budget_chars`). The same figures ride on `_meta.delivery_cost`. Per-step magnitudes stay on `technique_bundled` / `resource_fetched`; wire size stays on `activity_dispatched`.
-
----
+Runtime session shape is `session-file.schema.json` — the on-disk `session.json` the server seals and loads by `session_index`. History event types and checkpoint-response records are declared in `src/schema/state.schema.ts` and composed into that file schema.
 
 ## Complete Example
 

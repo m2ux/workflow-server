@@ -28,9 +28,6 @@ import {
   replaceSessionFile,
   verifySeal,
   computeSessionIndex,
-  migratePlanningFolder,
-  MigrationError,
-  describeMigrationError,
   createTransientFolder,
   registerTransient,
   lookupTransientBySlug,
@@ -353,30 +350,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         });
       }
 
-      // Detect-and-migrate legacy session-state in the folder before anything
-      // else. Idempotent: short-circuits when `session.json` is already
-      // present. On a successful migration the legacy `workflow-state.json`
-      // is deleted and the new seal replaces the legacy `.session-token`.
-      let migrationResult;
-      try {
-        migrationResult = await migratePlanningFolder(folder);
-      } catch (err) {
-        if (err instanceof MigrationError) {
-          throw new Error(describeMigrationError(err));
-        }
-        throw err;
-      }
-
       // The effective workflow_id resolves in this order:
-      //   1. If session.json exists (either pre-existing or just migrated),
-      //      the workflow_id stored in state wins (caller cannot rebrand a
-      //      live session).
+      //   1. If session.json exists, the workflow_id stored in state wins
+      //      (caller cannot rebrand a live session).
       //   2. Otherwise, fall back to the caller-supplied workflow_id, then
       //      to the default "meta".
       let effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
-      if (migrationResult.migrated && migrationResult.state) {
-        effectiveWorkflowId = migrationResult.state.workflowId;
-      } else if (await sessionFileExists(folder)) {
+      if (await sessionFileExists(folder)) {
         try {
           const { state: rawState } = await verifySeal(folder);
           const peek = safeValidateSessionFile(rawState);
@@ -592,9 +572,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
       if (state.contextMode) response['context_mode'] = state.contextMode;
       response['execution_path'] = resolveExecutionPath(state);
-      if (migrationResult.migrated) {
-        response['migrated'] = true;
-      }
       if (derived?.repo_source) response['repo_source'] = derived.repo_source;
       if (derived?.host_repo) response['host_repo'] = derived.host_repo;
       if (derived?.component_path) response['component_path'] = derived.component_path;
