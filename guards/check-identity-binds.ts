@@ -162,11 +162,16 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const index = indexCorpus(root);
   const byLeaf = operationsByLeaf(root);
   let scanned = 0;
+  // One file sits under two namespaces where one nests inside another, so a path is read once —
+  // otherwise the same pair is reported as many times as there are namespaces reaching it.
+  const seen = new Set<string>();
 
   for (const { dir, ref } of corpusNamespaces(root, index)) {
     const activities = join(dir, 'activities');
     if (!existsSync(activities)) continue;
     for (const { path } of definitionsUnder(activities)) {
+      if (seen.has(path)) continue;
+      seen.add(path);
       scanned++;
       let definition: unknown;
       try { definition = parseDefinition(readFileSync(path, 'utf-8')); } catch { continue; }
