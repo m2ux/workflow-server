@@ -45,12 +45,13 @@ describe('the reported-exit check — silent without the base lookup', () => {
     expect(finding).toContain('probed');
   });
 
-  it('reports a fan instance returning to a destination its exit is not bound to', () => {
+  it('reports a fan instance naming a destination its exit is not bound to', () => {
     const finding = validateReportedExit(on('probe-unit#1'), instanceFan, 'scope-sweep', 'probed');
-    expect(finding).toContain("is bound to 'combine-probes' but 'scope-sweep' was requested");
+    expect(finding).toContain("is bound to 'combine-probes', which is where the run went");
+    expect(finding).toContain("'scope-sweep' was named");
   });
 
-  it('is silent when a fan instance returns to the destination its exit names', () => {
+  it('is silent when a fan instance names the destination its exit is bound to', () => {
     expect(validateReportedExit(on('probe-unit#2'), instanceFan, 'combine-probes', 'probed')).toBeNull();
   });
 
@@ -62,7 +63,7 @@ describe('the reported-exit check — silent without the base lookup', () => {
       .toBeNull();
   });
 
-  it('reports a fan enter that opens a branch the binding does not', () => {
+  it('reports a fan enter naming a branch the binding does not open', () => {
     const finding = validateReportedExit(on('plan-prepare'), listFan, ['survey-pass', 'combine-findings'], 'done');
     expect(finding).toContain("is bound to 'survey-pass, dependency-review'");
   });

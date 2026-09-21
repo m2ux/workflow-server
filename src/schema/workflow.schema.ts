@@ -13,7 +13,7 @@ export { VariableNameSchema, VariableDefinitionSchema, type VariableDefinition }
 export const WorkflowTechniquesSchema = z.object({
   workflow: z.array(z.string()).optional().describe('Orchestrator-level technique references (`::` paths); bundled into get_workflow alongside the core orchestrator techniques.'),
   activity: z.array(z.string()).optional().describe('Technique references inherited by every activity; injected into every get_activity technique bundle.'),
-});
+}).strict();
 export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
 
 // Workflow rules, partitioned by AUDIENCE. `workflow` rules govern orchestration (dispatch,
@@ -30,7 +30,7 @@ export const WorkflowRulesSchema = z.object({
   workflow: z.array(z.string()).optional().describe('Orchestrator-only rules governing workflow execution; surfaced in get_workflow.'),
   activity: z.array(z.string()).optional().describe('Worker-facing rules inherited by every activity; injected into every get_activity response.'),
   universal: z.array(z.string()).optional().describe('Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity.'),
-});
+}).strict();
 export type WorkflowRules = z.infer<typeof WorkflowRulesSchema>;
 
 /**
@@ -169,7 +169,7 @@ export const WorkflowSchema = z.object({
   // but we allow strings in the intermediate raw schema before transformation.
   // However, the final Workflow type expects Activity[] to avoid type errors across the codebase.
   activities: z.array(ActivitySchema).min(1).optional().describe('Activities that comprise this workflow. An activity whose exits the `graph` binds sits in a sequence; one declaring no exits is terminal. Omitted in definition files where activities are separate files.'),
-});
+}).strict();
 export type Workflow = z.infer<typeof WorkflowSchema>;
 
 export function validateWorkflow(data: unknown): Workflow { return WorkflowSchema.parse(data); }
