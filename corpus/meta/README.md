@@ -13,7 +13,7 @@ The meta workflow is the structural home for the session's orchestration logic. 
 - Excluded from `list_workflows` — not a user-facing workflow.
 - Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
-- State persistence is server-managed (no agent-side persist/restore); on-disk shape: [`docs/state_management_model.md`](../../docs/state_management_model.md).
+- State persistence is server-managed (no agent-side persist/restore); on-disk shape: [`docs/state_management_model.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state_management_model.md).
 
 | # | Activity | Role |
 |---|----------|------|
@@ -89,7 +89,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 Agent entry Protocol: [`workflow-engine::activity-worker`](./techniques/workflow-engine/activity-worker.md) and [`workflow-engine::workflow-orchestrator`](./techniques/workflow-engine/workflow-orchestrator.md); agent stubs from [`compose-prompt`](./techniques/workflow-engine/compose-prompt.md).
 
-> The on-disk session-state shape is defined by [`schemas/session-file.schema.json`](../../schemas/session-file.schema.json); see [`docs/state_management_model.md`](../../docs/state_management_model.md) for the persistence model.
+> The on-disk session-state shape is defined by [`schemas/session-file.schema.json`](https://github.com/m2ux/workflow-server/blob/main/schemas/session-file.schema.json); see [`docs/state_management_model.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state_management_model.md) for the persistence model.
 
 ---
 

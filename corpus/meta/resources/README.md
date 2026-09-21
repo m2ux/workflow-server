@@ -29,7 +29,7 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 | `workflow-orchestrator-prompt` | [`workflow-engine::workflow-orchestrator`](../techniques/workflow-engine/workflow-orchestrator.md) (+ [compose-prompt](../techniques/workflow-engine/compose-prompt.md) stub) |
 | GitNexus Reference | Inlined into [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) operations |
 | Atlassian Tools | Inlined into [`atlassian`](/atlassian/techniques/TECHNIQUE.md) operations |
-| Workflow State Format | State persistence is server-managed (no agent-facing schema resource needed). The canonical on-disk shape is defined by [`schemas/session-file.schema.json`](../../../schemas/session-file.schema.json) and is documented in [`docs/state_management_model.md`](../../../docs/state_management_model.md). |
+| Workflow State Format | State persistence is server-managed (no agent-facing schema resource needed). The canonical on-disk shape is defined by [`schemas/session-file.schema.json`](https://github.com/m2ux/workflow-server/blob/main/schemas/session-file.schema.json) and is documented in [`docs/state_management_model.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state_management_model.md). |
 
 ---
 
