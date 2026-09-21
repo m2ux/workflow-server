@@ -877,6 +877,32 @@ describe('technique-loader', () => {
       expect(wire['inherited_inputs']).toBeUndefined();
       expect(wire['inherited_outputs']).toBeUndefined();
     });
+
+    it('a group named for its workflow still delivers both contracts', async () => {
+      const dir = join(tempDir, 'wp', 'techniques', 'wp');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(tempDir, 'wp', 'techniques', 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root.', '', '## Rules', '', '### root-rule', '', 'Root constraint.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [...FM('wp'), '## Capability', '', 'Group.', '', '## Rules', '', '### group-rule', '', 'Group constraint.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'a.md'),
+        [...FM('a'), '## Capability', '', 'An op.', '', '## Protocol', '', '1. Work', ''].join('\n'),
+        'utf-8',
+      );
+      const resolved = await resolveTechniques(['wp::wp::a'], tempDir, 'wp');
+      const bundle = formatTechniqueBundle(resolved);
+      const contracts = bundle['contracts'] as Record<string, unknown>;
+      const techniques = bundle['techniques'] as Record<string, { inherits?: string[] }>;
+      expect(Object.keys(contracts).sort()).toEqual(['wp', 'wp/wp']);
+      expect(techniques['wp/wp::a']?.inherits).toEqual(['wp', 'wp/wp']);
+    });
   });
 
   /* ------------------------------------------------------------------------ */

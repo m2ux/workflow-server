@@ -134,7 +134,7 @@ const yieldVariablesChangedSchema = z.record(z.unknown()).optional().describe(
  * every delivery. Editing one is a new key and a full delivery, which is the intent.
  */
 const STEP_TECHNIQUES_NOTE =
-  'Each step_techniques entry is a discrete ▼ STEP block carrying the composed technique a get_technique { step_id } fetch returns, entire. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past the eager-delivery budget derived from your window or a per-activity size cap) still require get_technique { step_id } before execution.';
+  'Each step_techniques entry is a discrete ▼ STEP block carrying the same operation body a get_technique { step_id } fetch returns: own interface, own rules, and `inherits` naming the scopes whose contracts arrive once on this response under `contracts`. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past the eager-delivery budget derived from your window or a per-activity size cap) still require get_technique { step_id } before execution.';
 
 const RESOURCES_BUNDLED_NOTE =
   'Bodies for technique-linked resources from eagerly bundled steps under `resources`, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers. Ids under `resource_refs` were NOT bundled (oversized, or past the eager-delivery budget derived from your window) — call get_resource for those, or with full: true after summarization.';
@@ -1849,11 +1849,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // regardless of size. A per-activity `bundleTechniques.maxChars` is retained as an explicit
       // per-technique size cap layered on top (skip any single technique larger than it);
       // `maxChars: 0` opts the activity out of eager bundling entirely. Each entry is the step's
-      // full get_technique composition (activity-group resolution, ancestor contract, provenance
-      // decoration) rendered as a discrete ▼ STEP block, so bundled and lazy delivery are
-      // identical by construction. Bundled entries share the `technique:<resolvedId>` delivery-
-      // ledger key with get_technique, so persistent-context refetches of bundled content collapse
-      // to unchanged-references in either direction.
+      // get_technique wire (activity-group resolution, own body, provenance decoration, `inherits`)
+      // rendered as a discrete ▼ STEP block, so bundled and lazy delivery hash the same
+      // `technique:<resolvedId>` key. Inherited contracts ride this response under `contracts`.
       // A gated step joins the bundle when its gate answers true for the whole activity; a false or
       // unanswered gate stays lazy (src/utils/gate-liveness.ts).
       const bundledStepTechniques: Record<string, unknown> = {};
@@ -2004,10 +2002,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             // document-order prefix the spec and docs promise, rather than skipping a large
             // technique to squeeze in a later smaller one.
             if (spentChars + text.length > eagerBudgetChars) break;
-            // The arrival marker leads the block; the composed technique fields follow at the same
-            // level, so a bundled entry IS the get_technique fetch with a step header — the
-            // capability, the interface, the procedure and the rules, exactly as the file defines
-            // them.
+            // The arrival marker leads the block; the wire fields follow at the same level, so a
+            // bundled entry is the get_technique operation body with a step header — own
+            // capability, interface, procedure and rules, plus `inherits`.
             const entry = { marker: stepMarker, ...wire };
             spentChars += text.length;
             newDeliveries[ledgerKey] = hash;

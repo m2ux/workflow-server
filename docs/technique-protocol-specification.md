@@ -356,13 +356,14 @@ precedence by id or name.
 ### What merges, and how
 
 Both delivery paths (`get_technique` and the `get_activity` / `get_workflow` bundle) use the same
-`composeLoaded` implementation:
+`composeLoaded` implementation. In memory the merge is complete. On the wire:
 
 - **Inputs and Outputs**: merged from every ancestor container outward to the executing workflow root;
-  the technique-local entry overrides any ancestor entry of the same id.
+  the technique-local entry overrides any ancestor entry of the same id. Own entries ride the body;
+  ancestor entries ride that ancestor's block under `contracts`.
 - **Rules**: merged from every ancestor container; the technique-local entry overrides any ancestor
-  entry of the same name. On the bundle path rules are additionally emitted as separate `rule`
-  entries (§6.2) so they can be addressed and selectively included.
+  entry of the same name. Own rules ride the body. Shared rules ride `contracts`. Role-level rules
+  that govern no one operation remain `rule` entries in the bundle's `rules` list (§6.2).
 
 A container contributes a contract, never a procedure. Protocol does not inherit: a technique's
 `## Protocol` is delivered as authored, and the steps a shared stage owns belong to the activity or
@@ -381,8 +382,9 @@ session — are not included; only the executing workflow's containers apply.
 
 ### 6.1 Body
 
-A delivered technique body (`projectTechniqueBody`) carries `capability`, `inputs?`, `protocol?` as
-authored, and `outputs?`. A technique's rules are delivered as `rule` entries (§6.2).
+A delivered technique body (`projectTechniqueBody` / `projectTechniqueWire`) carries `capability`,
+`inputs?` as authored on that technique, `protocol?`, `outputs?`, the rules that technique itself
+declares, and `inherits` naming the ancestor scopes whose contracts ride beside it.
 
 ### 6.2 Bundle
 
@@ -390,15 +392,16 @@ authored, and `outputs?`. A technique's rules are delivered as `rule` entries (�
 
 | Key | Contents |
 |-----|----------|
-| `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `validate::analyse-failure`), a standalone by its id. |
-| `rules` | `[name, text]` pairs: a technique's rules plus its inherited and group rules. |
+| `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `validate::analyse-failure`), a standalone by its id. Own rules ride the body; `inherits` names the scopes in `contracts`. |
+| `contracts` | Each ancestor's authored rules and shared inputs/outputs, once per scope id. |
+| `rules` | `[name, text]` pairs: the role's own rules, which govern no one operation. |
 | `unresolved` | References that did not resolve (a non-empty list is a definition defect). |
 
 ### 6.3 Activity bundling
 
 `get_activity` and `get_workflow` deliver an activity's `techniques[]` through this bundle;
-`get_technique` delivers a single technique via
-`composeTechnique`.
+`get_technique` delivers a single technique via `composeTechnique` projected with
+`projectTechniqueWire`, and carries the named `contracts` beside that body.
 
 ### 6.4 Binding
 

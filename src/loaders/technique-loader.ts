@@ -26,11 +26,11 @@ import {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Project an in-memory Technique object into its ordered wire shape.
+ * Project an in-memory Technique object into its ordered merged shape.
  *
- * `projectTechnique` returns the ordered record (embedded as-is inside get_activity's
- * `step_techniques` bundle map); `projectTechniqueToYaml` serialises it for the
- * get_technique raw projection.
+ * This is the composed value: own fields plus inherited blocks. Role-facing delivery and
+ * `get_technique` use `projectTechniqueWire` instead, which keeps own rules on the body and names
+ * ancestor scopes in `inherits`. `projectTechniqueToYaml` serialises this merged record.
  *
  * Field-ordering follows the canonical TechniqueSchema field declaration order — stringifyForResponse serialises
  * object keys in insertion order, so we construct the projection with the fields in the intended sequence
@@ -254,6 +254,22 @@ export function projectTechniqueWire(
     }
   }
   return ordered;
+}
+
+/**
+ * One operation for `get_technique` and for an inlined step: the wire body hashed as
+ * `technique:<id>`, and the ancestor contracts that body names, each hashed as
+ * `bundle:contract:<scopeId>`.
+ */
+export function projectTechniqueFetch(
+  t: Technique,
+  scopes: InheritScope[],
+  ownRuleKeys: Set<string>,
+): { wire: Record<string, unknown>; contracts: Record<string, unknown> } {
+  const wire = projectTechniqueWire(t, scopes, ownRuleKeys);
+  const contracts: Record<string, unknown> = {};
+  putInheritContracts(contracts, scopes);
+  return { wire, contracts };
 }
 
 function projectTechniqueBody(t: Technique, scopes: InheritScope[], ownRuleKeys: Set<string>): Record<string, unknown> {
@@ -484,8 +500,10 @@ async function loadWorkflowRoot(source: CorpusIndex, workflowId: string): Promis
  *     the technique itself wins (outermost-first merge, reversed so each mergeById call
  *     treats the ancestor as "parent" and the accumulated value as "child").
  *   - Partitions the merged inputs/outputs by winning-definition provenance: the technique's
- *     own entries stay under `inputs`/`outputs`; ancestor-contract entries are delivered under
- *     `inherited_inputs`/`inherited_outputs` with a scope note (B2, #166).
+ *     own entries stay under `inputs`/`outputs`; ancestor-contract entries stay on the in-memory
+ *     value under `inherited_inputs`/`inherited_outputs` with a scope note (B2, #166). Role-facing
+ *     wire delivery names those ancestors in `inherits` and carries each block once under
+ *     `contracts`.
  *
  * A container contributes a contract, never a procedure: the technique's own protocol is what it
  * carries, whatever ancestors it composes against.
@@ -534,8 +552,11 @@ async function composeLoaded(
   if (ancestors.length === 0) return emptyComposition(technique);
 
   const scopes: InheritScope[] = [];
+  const takenIds = new Set<string>();
   for (const ancestor of ancestors) {
-    const id = ancestor.loadId === ROOT_INDEX_ID ? rootScopeId : ancestor.loadId;
+    const preferred = ancestor.loadId === ROOT_INDEX_ID ? rootScopeId : ancestor.loadId;
+    const id = takenIds.has(preferred) ? `${rootScopeId}/${ancestor.loadId}` : preferred;
+    takenIds.add(id);
     const scope = authoredScope(id, ancestor.technique);
     if (scope) scopes.push(scope);
   }
@@ -656,7 +677,7 @@ export async function composeTechniqueWithSource(
  * the delivery ledger and fidelity events are keyed by — and the workflow the technique file was
  * found in, which its own bare resource links resolve against. The single resolution implementation
  * behind step-bound get_technique and get_activity's hybrid step-technique bundling, so both
- * deliver identical composition by construction.
+ * compose against the same ancestors and project the same wire.
  */
 export async function composeActivityTechnique(
   ref: string,

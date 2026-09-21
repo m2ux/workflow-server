@@ -296,6 +296,19 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery carries the worker contrac
     }
   });
 
+  it('a step-bound get_technique of an inlined step collapses on the same identity', async () => {
+    const steps = (bundle['step_techniques'] ?? {}) as Record<string, unknown>;
+    const inlined = Object.entries(steps).find(([, step]) => RECORD_SHAPED(step) && !isMarker(step) && Array.isArray(step['inherits']));
+    expect(inlined, 'no inlined step named a contract to refetch').toBeDefined();
+    const [stepId] = inlined!;
+    const fetched = await client.callTool({
+      name: 'get_technique',
+      arguments: { session_index: sessionIndex, step_id: stepId, agent_id: 'w-1', bundle: 'reference' },
+    });
+    expect(fetched.isError ?? false, `fetch failed: ${JSON.stringify(fetched.content)}`).toBe(false);
+    expect((fetched._meta as { delivery?: string }).delivery).toBe('unchanged');
+  });
+
   it('reports what the delivery came to against what one tool result may carry', () => {
     expect(meta.delivery_cost.response_bound_chars).toBe(DEFAULT_MAX_RESPONSE_CHARS);
     // The batch block reports on the handover rather than being part of what was handed over, so
