@@ -1,0 +1,29 @@
+id: report-conformance
+version: 1.0.0
+name: Report Conformance
+description: Write what the run settled for each member, and which instrument settled it.
+variables:
+  reads:
+    - boundary_symbols
+    - concern_symbol
+    - contract_registry_stats
+    - group_freshness_report
+    - group_query_report
+    - group_reach_report
+    - home_impact_report
+    - home_repo
+    - planning_folder_path
+  writes:
+    - name: conformance_report
+      type: string
+      description: The report this run wrote, as the guide shapes it.
+required: true
+steps:
+  - kind: technique
+    id: write-the-report
+    technique: report-radius-conformance
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - The report holds one row per member with the graph it answered from and the instrument that answered, and names the member whose reach the graph could not see

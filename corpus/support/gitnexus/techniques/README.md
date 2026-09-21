@@ -61,6 +61,7 @@ A group is addressed through its members' graphs and two resources of its own. T
 | [`group-search`](group-search.md) | One ranking merged across every member |
 | [`group-contracts`](group-contracts.md) | What each member publishes, and what joins a publisher to a consumer |
 | [`group-sync`](group-sync.md) | Rebuilds the contract registry, and says what it could not read |
+| [`list-group-members`](list-group-members.md) | The group's members as a list a run can walk, each with its graph name, the tree its graph was built from, and whether it is a concern's home |
 
 ## Composing a query
 
@@ -80,6 +81,8 @@ These end the [runs](../routines/README.md) — a routine carries no prose, so t
 | [`attribute-taint-findings`](attribute-taint-findings.md) | Which taint flows a change opened, and which it inherited |
 | [`classify-test-coverage`](classify-test-coverage.md) | Which changed symbols no test reaches, and whose tests the change outran |
 | [`compare-affected-scope`](compare-affected-scope.md) | Which reached flows fall outside what the work was for |
+| [`extract-boundary-symbols`](extract-boundary-symbols.md) | The names by which a concern in one graph can be reached from another |
+| [`judge-group-reach`](judge-group-reach.md) | Whether a concern reaches each member of a group, and which instrument settled it |
 | [`select-affected-clusters`](select-affected-clusters.md) | Which functional areas a change reaches |
 | [`select-stale-members`](select-stale-members.md) | Which members of a group a rebuild reaches, and the tree each one walks |
 | [`weigh-change-risk`](weigh-change-risk.md) | The one rating a reviewer acts on |
