@@ -242,8 +242,11 @@ export function validateTechniqueFetches(
  * The exit an orchestrator reports for the activity it is leaving names an outcome that activity
  * declares and the graph binds. Naming the outcome is checkable in a way naming a condition never
  * was — the binding is a fact in the workflow file rather than a string to be matched against
- * rendered prose. Where the exit names such an outcome the destination follows from the graph, so
- * what is left to check is that the outcome exists.
+ * rendered prose.
+ *
+ * `activityId` is where the caller said the run goes, which the graph's binding decides rather than
+ * follows. The two disagreeing is worth saying: the run is where the workflow put it, and the
+ * caller is somewhere else, which is a reading an orchestrator needs about itself.
  */
 export function validateReportedExit(view: SessionView, workflow: Workflow, activityId: Destination, reportedExit: string | undefined): string | null {
   if (!view.act || reportedExit === undefined || reportedExit === '') return null;
@@ -253,8 +256,17 @@ export function validateReportedExit(view: SessionView, workflow: Workflow, acti
   const bindings = getExitBindings(workflow, view.act);
   if (bindings.length === 0) return null;
 
-  if (!bindings.some(b => b.exit === reportedExit)) {
+  const binding = bindings.find(b => b.exit === reportedExit);
+  if (!binding) {
     return `Activity '${view.act}' has no exit '${reportedExit}'. Its exits are: [${bindings.map(b => b.exit).join(', ')}]`;
+  }
+  // Set-wise, because a destination naming several activities names them in no particular order.
+  // A fan and a plain destination to the fan's activity open the same set, so this agrees on both
+  // — what tells them apart is the shape the graph states, which is what the run entered.
+  const bound = destinationTargets(binding.to);
+  const agrees = bound.length === requested.length && requested.every((target) => bound.includes(target));
+  if (!agrees) {
+    return `Exit '${reportedExit}' of '${view.act}' is bound to '${bound.join(', ')}', which is where the run went; '${requested.join(', ')}' was named.`;
   }
   return null;
 }

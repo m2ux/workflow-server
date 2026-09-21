@@ -1290,7 +1290,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const exitWarning = (exit !== undefined && retiring)
-        ? validateReportedExit(view, result.value, destination, exit)
+        // Against what the CALL named, not the destination derived from it — the derived one agrees
+        // with the binding by construction, and what the orchestrator needs to hear is that where
+        // it said the run goes and where the workflow sends it are two different places.
+        ? validateReportedExit(view, result.value, activity_id as Destination, exit)
         : null;
 
       // Step 5 fires only when the retirement empties the frontier, so the branches a fan opens
