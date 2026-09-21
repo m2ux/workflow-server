@@ -200,7 +200,8 @@ describe('when-expression', () => {
    * separate branch, so these skip where it is not checked out.
    */
   describe('the delivered rule and this evaluator agree', () => {
-    const RULE_HOME = 'meta/techniques/workflow-engine/step-control.md';
+    /** Path within the `meta` namespace, which the corpus index locates wherever it sits. */
+    const RULE_HOME = 'techniques/workflow-engine/step-control.md';
 
     /**
      * The rule text, or null where no corpus is checked out.
@@ -212,12 +213,15 @@ describe('when-expression', () => {
      */
     async function gateEvaluationRule(): Promise<string | null> {
       const { liveCorpusRoot } = await import('./corpus-root.js');
+      const { workflowSubdir } = await import('../src/loaders/corpus-index.js');
       const { readFileSync, existsSync } = await import('node:fs');
-      const { join } = await import('node:path');
       const root = liveCorpusRoot();
       if (root === null) return null;
-      const path = join(root, RULE_HOME);
-      if (!existsSync(path)) {
+      // The corpus root is the checkout holding the corpus, and a namespace sits at whatever depth
+      // that checkout organises it to — so the home is resolved through the index rather than
+      // joined onto the root, which is a path only a flat layout would have.
+      const path = workflowSubdir(root, 'meta', RULE_HOME);
+      if (path === null || !existsSync(path)) {
         throw new Error(`${RULE_HOME} is absent from the corpus at ${root} — the delivered home of the when dialect`);
       }
       const body = readFileSync(path, 'utf8');

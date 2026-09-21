@@ -63,8 +63,12 @@ describe.skipIf(!liveCorpusRoot())('step execution for the workflows the policy 
     expect(result.loadErrors).toEqual([]);
     expect(result.steps.flatMap((s) => s.unresolved)).toEqual([]);
     expect(result.path).toContain('structural-pass');
-    // The analysis-unit loop body opens with the probe, with no resolve-unit-output ahead of it.
+    // The analysis-unit loop body runs, with no resolve-unit-output ahead of it and no
+    // graph-freshness probe — prism declares no variable naming a tree, so there is none to probe.
+    // Every pass step is gated on the unit's own pipeline mode, which a robot walk cannot settle,
+    // so the ungated accumulator is what evidences the body ran.
     expect(executed).not.toContain('resolve-unit-output');
-    expect(executed).toContain('check-gitnexus');
+    expect(executed).not.toContain('check-gitnexus');
+    expect(executed).toContain('report-unit-paths');
   }, 300_000);
 });
