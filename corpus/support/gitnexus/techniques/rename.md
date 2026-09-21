@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -12,6 +12,10 @@ Multi-file rename driven by the call graph, reporting the edit list or writing i
 ### symbol_name
 
 Current symbol name.
+
+### symbol_uid
+
+*(optional)* The symbol identity a prior answer carried, which reaches that symbol and no other.
 
 ### new_name
 
@@ -39,8 +43,8 @@ Per-file edit list, each edit carrying the confidence its provenance earns.
 
 ### 1. Run the Rename
 
-- Call `gitnexus_rename { symbol_name, new_name, file_path, dry_run, repo: repo_name }` and record the `{changes}` it returns.
-   > Where several symbols carry `{symbol_name}`, name the file holding the one meant in `{file_path}`; a rename addressed at a name two symbols answer to reaches both.
+- Call `gitnexus_rename { symbol_name, symbol_uid, new_name, file_path, dry_run, repo: repo_name }` and record the `{changes}` it returns.
+   > Where several symbols carry `{symbol_name}`, the answer is a status of `ambiguous` with ranked candidates rather than an edit list, `totalCandidates` counting them in full. Choose the one meant and call again with its `{symbol_uid}`, or name the file holding it in `{file_path}`.
 
 ### 2. Read Each Edit's Provenance
 

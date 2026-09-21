@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,23 +17,31 @@ Pre-change report for an API route handler — what consumes the route, which re
 
 *(optional)* The handler file the report is addressed at, where the route path is not to hand.
 
+### http_method
+
+*(optional)* The HTTP verb — `GET`, `POST`, `PUT`, `PATCH`, `DELETE` — narrowing a URL or file that serves several verbs to one route.
+
 ## Outputs
 
 ### api_impact_report
 
-The route's consumers, the response keys each reads, the middleware wrapping the handler, the execution flows it opens, and a risk level over the whole.
+The route's consumers, the response keys each reads, the middleware wrapping the handler, the execution flows it opens, and a risk level over the whole. One route is one report; several matching routes arrive as `routes` with their `total`, each carrying its `method` — the verb, `*` for a method-agnostic route, or null for a method-less one — and its `runtimeEvidence`, authoritative only where `confirmed` is true.
 
 #### mismatches
 
 Consumers reading a key the route's response does not carry, each with the confidence the attribution earns.
 
+#### risk
+
+`LOW` for a route with up to three consumers, `MEDIUM` for four to nine or for any mismatch, `HIGH` for ten or more consumers or a mismatch read by four or more.
+
 ## Protocol
 
 ### 1. Take the Impact Report
 
-- Call `gitnexus_api_impact { route: route_path, file: handler_file, repo: repo_name }` and record the `{api_impact_report}`.
+- Call `gitnexus_api_impact { route: route_path, file: handler_file, method: http_method, repo: repo_name }` and record the `{api_impact_report}`.
    > - The call answers for a route or for a file, so one of the two travels with it; naming neither answers about nothing.
-   > - Where the path matches several routes the answer is the set rather than one report, and the route to change is chosen from it before the report is read.
+   > - Where the path matches several routes the answer is the set rather than one report — one URL serving two verbs is two routes — and the route to change is chosen from it, or named by `{http_method}`, before the report is read. A URL that exists with no route for the verb named answers with an error.
 
 ### 2. Read a Mismatch
 
@@ -42,4 +50,4 @@ Consumers reading a key the route's response does not carry, each with the confi
 
 ### 3. Read the Risk Level
 
-- Read the risk level as the consumer count and the mismatches together — a route nothing outside the module fetches is a different change from one a dozen components read.
+- Read `{api_impact_report}.risk` as the consumer count and the mismatches together — a route nothing outside the module fetches is a different change from one a dozen components read.

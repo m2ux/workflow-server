@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.9.0
+  version: 3.10.0
 ---
 
 ## Capability
@@ -42,9 +42,7 @@ A rename or a batch of edits is scoped by what it actually moved, not by what it
 
 ### index-freshness-first
 
-A stale index answers in the same shape as a fresh one and says nothing about its own age, so an answer whose freshness nothing established reads exactly like a correct one. Every answer taken from a graph therefore carries the age of that graph, and an answer turning on the current tree is taken against a reading of how far the graph trails it.
-
-A rebuild that succeeds while a later read still reports staleness is the server holding the graph it loaded, and every answer stays old until it reloads. Over a whole repository group the reading reports one failure more than age: a member carrying no graph at all, about which a group-wide answer says nothing.
+A stale index answers in the same shape as a fresh one, so every answer taken from a graph carries the age of that graph, and an answer turning on the current tree is taken against a reading of how far the graph trails it. The ranked search, the symbol context, the blast radius and the raw query each attach that reading to their answer as a `staleness` mapping: `branch`, `lastCommit` and `indexedAt` name the index that answered, and `status` is its standing against the HEAD of the clone it was built from — `current` is at that HEAD, `behind` carries `commitsBehind`, `diverged` is a recorded commit the clone's history no longer holds, and `unknown` is a tree with no history to measure. A rebuild answers `behind` and `diverged`; `unknown` is unmeasurable rather than stale, and `current` says nothing about the default branch. An answer taken over a whole repository group carries no such mapping, and the group's own status reports per member instead — including one failure more than age: a member carrying no graph at all, about which a group-wide answer says nothing.
 
 ### edges-the-parser-cannot-see
 
@@ -53,11 +51,11 @@ The graph holds the call sites the parser reads in source. Two kinds of dependen
 - **Call sites inside macro bodies.** A caller whose body a macro generates has no `CALLS` edge to what it calls, because the text that calls it exists only after expansion. In a Rust codebase built on declarative and attribute macros — pallet dispatchables, runtime-API declarations, generated trait wrappers — that removes most of the interesting edges.
 - **Type-level references.** Naming a type in a signature, an associated-type binding, or a trait bound is not a call, so it is not an edge at all.
 
-An operation's answer is therefore evidence of what the graph holds, never of what depends on the symbol. Where the changed symbol is reached through either route, a `LOW` risk level or an empty caller set is absence of evidence, and the enumeration is re-derived by hand — grep for the symbol, and for the macro names that generate its callers. Say which of the two was done when reporting a blast radius, so a reader can tell a measured answer from an unmeasured one.
+An operation's answer is therefore evidence of what the graph holds, never of what depends on the symbol. An answer states how far it vouches for itself: `epistemic` is `exact` or `lower-bound`, `causes` counts what the walk provably dropped — call sites whose receiver it could not type, files whose scope extraction failed, dispatch it could not cross, callables named as values rather than called — and a blast radius that resolved no caller is rated `UNKNOWN` rather than `LOW`. A macro-generated call site and a type-level reference leave no trace in any of those: the answer is `exact` and short. Where the changed symbol is reached through either route, the enumeration is re-derived by hand — grep for the symbol, and for the macro names that generate its callers. Say which of the two was done when reporting a blast radius, so a reader can tell a measured answer from an unmeasured one.
 
 ### a-named-operation-answers-first
 
-The raw graph query answers what no named operation reaches: custom call-chain traces, ordering and error-path assertions, and visibility filters. What depends on a symbol, what one symbol connects to, and which execution flows a concept lands in are each the subject of an operation here, whose declared output states what its answer means. A hand-written query returns rows and states nothing, so every reading such a contract carries is the author's to supply and to get right.
+The raw graph query answers what no named operation reaches: custom call-chain traces, ordering and error-path assertions, and visibility filters. What depends on a symbol, what one symbol connects to, how one symbol reaches another, and which execution flows a concept lands in are each the subject of an operation here, whose declared output states what its answer means. A hand-written query returns rows and states nothing, so every reading such a contract carries is the author's to supply and to get right.
 
 ### keyword-shaped-queries
 

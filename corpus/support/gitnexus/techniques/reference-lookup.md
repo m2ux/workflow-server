@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -17,13 +17,13 @@ Path of the file whose referencers are wanted, spelled as the index records it â
 
 ### referencing_files
 
-Paths of the files holding a link that resolves to `{target_file_path}`.
+Paths of the files holding a link that resolves to `{target_file_path}`, as the rows of a table.
 
 ## Protocol
 
 ### 1. Find the Referencing Files
 
-- Call `gitnexus_cypher { query: "MATCH (a:File)-[r:CodeRelation {type: 'IMPORTS'}]->(b:File {filePath: '{target_file_path}'}) WHERE r.reason = 'markdown-link' RETURN a.filePath", repo: repo_name }` and record the rows it returns as the `{referencing_files}`.
+- Call `gitnexus_cypher { statement: "MATCH (a:File)-[r:CodeRelation {type: 'IMPORTS'}]->(b:File {filePath: '{target_file_path}'}) WHERE r.reason = 'markdown-link' RETURN a.filePath", repo: repo_name }` and record the rows it returns as the `{referencing_files}`.
    > Where the result is empty, confirm the path spelling against the index before reading the emptiness as no referencers â€” a path that does not match any file yields the same empty set as a file nothing links to.
 
 ### 2. Read the Set as a Change Surface

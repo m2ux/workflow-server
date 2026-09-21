@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -21,13 +21,14 @@ The name to give the operations in this group as their `{repo_name}`. Empty when
 
 ### graph_inventory
 
-Every indexed graph with the tree it was built from, when it was built and the commit it was built at; and the configured repository groups by name. A group's members arrive only where the enumeration asked for that group.
+Every indexed graph with the tree it was built from, when it was built, the commit it was built at, and its file, symbol and relationship counts; and the configured repository groups by name. A group's members arrive only where the enumeration asked for that group.
 
 ## Protocol
 
 ### 1. Enumerate
 
-- Call `gitnexus_list_repos` for the indexed graphs and `gitnexus_group_list` for the group names, and record the two together as `{graph_inventory}`.
+- Call `gitnexus_list_repos { limit, offset }` for the indexed graphs and `gitnexus_group_list` for the group names, and record the two together as `{graph_inventory}`.
+   > The graphs arrive a page at a time, fifty to a page unless `limit` says otherwise, in a stable order. While the page's `pagination.hasMore` is true, call again with `offset` set to its `pagination.nextOffset`; a graph is absent from the inventory only once the last page has been read.
 - Call `gitnexus_group_list { name }` for each group whose members the question reaches, and record them under that group. Called with no name the operation answers with names alone, so an inventory read for a member is read one group at a time.
   > A group's members are registry names, which address a graph and name no tree. The tree each sits in comes from the indexed-graph half of this inventory, matched on that name.
 

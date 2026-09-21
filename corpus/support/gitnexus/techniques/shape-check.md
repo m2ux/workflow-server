@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Hold each API route's response shape against the keys its consumers read, and re
 
 ### shape_report
 
-Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree.
+Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree; each route carries its `method` — the verb, `*` for a method-agnostic route, or null for a method-less one — and its `runtimeEvidence`, authoritative only where `confirmed` is true.
 
 ## Protocol
 

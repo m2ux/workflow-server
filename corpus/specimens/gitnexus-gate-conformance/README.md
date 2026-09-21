@@ -2,7 +2,7 @@
 
 A specimen of one form: a checkpoint that reaches a user from inside a run declared somewhere else.
 
-A technique is session-blind and carries no checkpoint, so a run that stops for a decision is the one shape only a routine holds. Both runs here take a measurement first and put its result in front of a person before anything irreversible happens — the edit gate reports what a symbol's change would break and stops where the rating is high or critical, and the rename gate shows the edit list before the rename writes it.
+A technique is session-blind and carries no checkpoint, so a run that stops for a decision is the one shape only a routine holds. Both runs here take a measurement first and put its result in front of a person before anything irreversible happens — the edit gate reports what a symbol's change would break and stops where the rating is high or critical, or unknown because the walk resolved no caller, and the rename gate shows the edit list before the rename writes it.
 
 Two properties the walk evidences, neither visible from an activity file alone:
 

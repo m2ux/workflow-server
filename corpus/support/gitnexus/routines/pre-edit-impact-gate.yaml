@@ -1,9 +1,9 @@
 id: pre-edit-impact-gate
-version: 1.0.0
+version: 1.1.0
 name: Pre-Edit Impact Gate
 description: >-
   Measure what a symbol's change would break before any edit lands, and stop for a decision where
-  the measurement rates it high or critical.
+  the measurement rates it high or critical, or resolved no caller to rate it by.
 
 inputs:
   - id: target
@@ -29,8 +29,8 @@ steps:
         impact_report: impact_report
   - kind: checkpoint
     id: accept-blast-radius
-    when: impact_report.risk == "HIGH" || impact_report.risk == "CRITICAL"
-    message: "Changing {target} is rated {impact_report.risk}. {impact_report.summary.direct} callers reach it directly, and the flows it runs through start from {impact_report.summary.processes_affected} entry points."
+    when: impact_report.risk == "HIGH" || impact_report.risk == "CRITICAL" || impact_report.risk == "UNKNOWN"
+    message: "Changing {target} is rated {impact_report.risk}. {impact_report.summary.direct} callers reach it directly, and the flows it runs through start from {impact_report.summary.processes_affected} entry points. An UNKNOWN rating is a walk that resolved no caller: the symbol is unused, or reached only through a reference the graph does not record."
     options:
       - id: proceed
         label: Proceed with the edit
@@ -40,7 +40,7 @@ steps:
             edit_approved: true
       - id: hold
         label: Hold the edit
-        description: The blast radius is narrowed, or the change discussed, before any edit lands.
+        description: The blast radius is narrowed, the callers re-derived by hand, or the change discussed, before any edit lands.
         effect:
           setVariable:
             edit_approved: false

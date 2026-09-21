@@ -15,6 +15,7 @@ A run lands here rather than in a workflow because its body composes this namesp
 | Routine | Reached for |
 |---------|-------------|
 | [`diff-coverage-map`](diff-coverage-map.yaml) | Which changed symbols no test reaches, and whose tests the change outran |
+| [`diff-taint-pass`](diff-taint-pass.yaml) | Which taint flows the diff opened, and which it inherited, from a graph carrying its taint layer |
 | [`public-api-enum`](public-api-enum.yaml) | The exported surface a diff moved |
 | [`scope-discipline-check`](scope-discipline-check.yaml) | Whether the diff stayed inside what the work was for |
 | [`narrow-to-changed`](narrow-to-changed.yaml) | A caller's own graph query, bounded to the files this change touched |
@@ -60,7 +61,7 @@ A technique is session-blind, so a run that puts something in front of a person 
 
 | Routine | Gates on |
 |---------|----------|
-| [`pre-edit-impact-gate`](pre-edit-impact-gate.yaml) | A measured blast radius, where the rating is high or critical, before an edit lands |
+| [`pre-edit-impact-gate`](pre-edit-impact-gate.yaml) | A measured blast radius, where the rating is high, critical or unknown, before an edit lands |
 | [`api-change-gate`](api-change-gate.yaml) | A route's measured consumer surface, where a consumer reads a key the response omits, before the change lands |
 | [`guarded-rename`](guarded-rename.yaml) | The previewed edit list, before the rename writes it |
 

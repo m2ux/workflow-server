@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Read a repository group's contract registry — the contracts each member publishes, and the cross-links joining a publisher to its consumer.
+Read a repository group's contract registry — the contracts each member publishes, the cross-links joining a publisher to its consumer, and how complete the registry is.
 
 ## Inputs
 
@@ -29,19 +29,40 @@ Name of a configured repository group.
 
 ### contract_report
 
-Each contract the registry holds with the member publishing it, its kind, and the member it cross-links to.
+Each contract the registry holds with the member publishing it and its kind, the cross-links joining publishers to consumers, and the provenance that bounds both.
+
+#### contracts
+
+The contracts, each with the `repo` path of the member publishing it, its `type` and its `contractId`.
+
+#### crossLinks
+
+The joins the registry drew, each naming the `from` and `to` member and the `contractId` they share.
+
+#### missingRepos
+
+The members the sync that built the registry found no registry entry for.
+
+#### unreadableRepos
+
+The members that sync could not extract from — absent where the sync never recorded which members it read, empty where it measured none, populated where it names them.
+
+#### suppressedMatchStages
+
+The matching stages that sync was asked to skip, in the same three states; a populated list makes the cross-links a lower bound by request.
 
 ## Protocol
 
 ### 1. Take the Contract Report
 
-- Call `gitnexus_group_contracts { name: group_name, repo: member_path, type: contract_type, unmatchedOnly: unmatched_only }` and record the `{contract_report}`.
-   > `{member_path}` names a member's path inside the group, which is a different address from the graph name every other operation here takes as `{repo_name}`.
+- Read the MCP resource `gitnexus://group/{group_name}/contracts`, carrying `{contract_type}` as its `type` query parameter, `{member_path}` as `repo` and `{unmatched_only}` as `unmatchedOnly`, and record the document as the `{contract_report}`.
+   > - `{member_path}` names a member's path inside the group, which is a different address from the graph name every other operation here takes as `{repo_name}`.
+   > - An error arrives in place of a document where the group has no registry yet, and names the sync that builds one.
 
 ### 2. Read It as of Its Sync
 
-- Read the registry as of the sync that built it: it is extracted from the members' own graphs, so a contract added since a member was last indexed is absent, and one deleted since is present.
+- Read the registry as of the sync that built it: it is extracted from the members' own graphs, so a contract added since a member was last indexed is absent, and one deleted since is present. Where `{contract_report}.unreadableRepos` is absent or populated, the cross-links are a floor rather than the set.
 
 ### 3. Read an Unmatched Contract
 
-- Read an unmatched contract as one whose counterpart the registry did not find — a publisher with no consumer in the group, or a name the match did not reach — rather than as one nothing consumes.
+- Read an unmatched contract as one whose counterpart the registry did not find — a publisher with no consumer in the group, a name the match did not reach, or a member the sync could not read — rather than as one nothing consumes.

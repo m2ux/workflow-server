@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ The group's name, when its contract registry last synced, and one freshness entr
 
 ### graph_inventory
 
-Every indexed graph with the tree it was built from, which is where a member's tree is named.
+Every indexed graph with the tree it was built from, and the group's configuration mapping each member's path to the registry name its graph is addressed by.
 
 ## Outputs
 
@@ -27,7 +27,11 @@ The members a rebuild reaches, as a list, ordered by `commits_behind` with the f
 
 ##### name
 
-What the freshness report keys the member by.
+The registry name the member's graph is addressed by.
+
+##### member_path
+
+The member's path within the group, which the freshness report keys it by.
 
 ##### commits_behind
 
@@ -45,11 +49,11 @@ The members the report marks stale and the inventory names no tree for, by name.
 
 ### 1. Keep the Stale Members
 
-- Walk the keys of `{group_freshness_report}`'s `repos` and keep each member whose entry marks `indexStale` or `missing`. A member marking neither answers from the commit its code stands at, which is where a rebuild would leave it.
+- Walk the keys of `{group_freshness_report}`'s `repos` and keep each member whose entry marks `indexStale`, `missing` or `unresolvable`. A member marking none answers from the commit its code stands at, which is where a rebuild would leave it.
 
 ### 2. Resolve Each Member's Tree
 
-- Take each kept member's tree from `{graph_inventory}`, matching on the name the report keys it by, and record the three together as one entry of `{stale_members}`.
+- Take each kept member's registry name from the group's configuration in `{graph_inventory}`, matching on the path the report keys it by, and its tree from the indexed-graph half of the inventory under that name; record the four together as one entry of `{stale_members}`.
 
 ### 3. Order by Age
 

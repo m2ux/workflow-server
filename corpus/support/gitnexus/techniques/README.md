@@ -13,14 +13,25 @@ Each operation here is one capability a step binds, or a technique's Protocol na
 | Technique | Answers |
 |-----------|---------|
 | [`query`](query.md) | The execution flows a concept, symptom or error text lands in |
-| [`context`](context.md) | One symbol's callers, callees and flow membership |
+| [`context`](context.md) | One symbol's callers, callees and flow membership, and how complete that set is |
 | [`impact`](impact.md) | What depends on a symbol, at depth 1/2/3, with a risk level |
+| [`trace`](trace.md) | The shortest call path from one symbol to another, or where the chain breaks |
 | [`detect-changes`](detect-changes.md) | The symbols a diff moved and the flows they sit on |
+| [`check`](check.md) | The circular file imports a graph holds |
 | [`cypher`](cypher.md) | Whatever the higher-level operations do not reach |
 | [`read-cluster`](read-cluster.md) / [`read-clusters`](read-clusters.md) | One functional area's members; the whole area inventory |
 | [`read-process`](read-process.md) / [`read-processes`](read-processes.md) | One flow's ordered trace; the whole flow inventory |
 | [`heading-search`](heading-search.md) | Sections of a markdown tree, by heading text |
 | [`reference-lookup`](reference-lookup.md) | The files whose links resolve to a given documentation file |
+
+## Reading the program-dependence layer
+
+A graph built with its program-dependence layers answers two questions the call graph cannot. Both answer with a note in place of findings where the graph was built without them.
+
+| Technique | Answers |
+|-----------|---------|
+| [`explain`](explain.md) | The source-to-sink taint flows recorded in a file or a function, and across the calls between functions |
+| [`pdg-query`](pdg-query.md) | Which predicates gate a statement, and where a variable's definitions flow, inside one function |
 
 ## Reading an API surface
 
@@ -37,17 +48,19 @@ Each operation here is one capability a step binds, or a technique's Protocol na
 |-----------|------|
 | [`resolve-graph`](resolve-graph.md) | Names the graph an operation addresses, and what else is indexed |
 | [`verify-index`](verify-index.md) | Reads what a graph holds and how far behind its tree it is |
-| [`analyze`](analyze.md) | Rebuilds a tree's index |
+| [`analyze`](analyze.md) | Rebuilds a tree's index, with or without its program-dependence layers |
 | [`rename`](rename.md) | Reports or writes a graph-driven multi-file rename |
 
 ## Reading a repository group
 
+A group is addressed through its members' graphs and two resources of its own. The ranked search reaches every member at once by addressing `repo` as `@<group>`; the contract registry and the per-member freshness are resources the group publishes.
+
 | Technique | Answers |
 |-----------|---------|
-| [`group-freshness`](group-freshness.md) | Which members can answer at all, and how old each answer is |
+| [`group-freshness`](group-freshness.md) | Which members can answer at all, how old each answer is, and how far the registry can be trusted |
 | [`group-search`](group-search.md) | One ranking merged across every member |
 | [`group-contracts`](group-contracts.md) | What each member publishes, and what joins a publisher to a consumer |
-| [`group-sync`](group-sync.md) | Rebuilds the contract registry |
+| [`group-sync`](group-sync.md) | Rebuilds the contract registry, and says what it could not read |
 
 ## Composing a query
 
@@ -64,6 +77,7 @@ These end the [runs](../routines/README.md) — a routine carries no prose, so t
 
 | Technique | Settles |
 |-----------|---------|
+| [`attribute-taint-findings`](attribute-taint-findings.md) | Which taint flows a change opened, and which it inherited |
 | [`classify-test-coverage`](classify-test-coverage.md) | Which changed symbols no test reaches, and whose tests the change outran |
 | [`compare-affected-scope`](compare-affected-scope.md) | Which reached flows fall outside what the work was for |
 | [`select-affected-clusters`](select-affected-clusters.md) | Which functional areas a change reaches |

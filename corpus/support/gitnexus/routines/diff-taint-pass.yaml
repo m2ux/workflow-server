@@ -1,0 +1,69 @@
+id: diff-taint-pass
+version: 1.0.0
+name: Diff Taint Pass
+description: >-
+  Take the symbols a diff changed, read the taint findings anchored at each out of the graph, and
+  separate the flows the change opened from the ones it inherited.
+
+inputs:
+  - id: diff_scope
+    description: Which diff the changed-symbol set is taken from — the working tree, the index, both, or a comparison against another ref.
+    default: all
+
+outputs:
+  - id: introduced_flows
+    type: array
+    description: Findings with a hop on a symbol the change moved, each naming that symbol.
+  - id: inherited_flows
+    type: array
+    description: Findings anchored at a changed symbol whose every hop sits outside the change.
+  - id: taint_unmeasured
+    type: boolean
+    description: Whether the graph carried no taint layer, so the partition settles nothing.
+
+internals:
+  - id: change_report
+    description: The changed-symbol set the run iterates and partitions against.
+  - id: changed_symbol
+    description: The changed symbol the run holds, whose findings the pass reads.
+  - id: taint_reports
+    description: One taint report per changed symbol, accumulated across the passes and read by the partition.
+
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: gitnexus::detect-changes
+      inputs:
+        diff_scope: diff_scope
+      outputs:
+        change_report: change_report
+  - kind: loop
+    id: symbol-cycle
+    name: Symbol Cycle
+    loopType: forEach
+    variable: changed_symbol
+    over: change_report.changed_symbols
+    maxIterations: 200
+    steps:
+      - kind: technique
+        id: read-findings
+        technique:
+          name: gitnexus::explain
+          inputs:
+            taint_target: "{changed_symbol.filePath}"
+        actions:
+          - action: set
+            target: taint_reports
+            description: This symbol's file's taint findings, appended to the run's ordered list.
+  - kind: technique
+    id: attribute
+    technique:
+      name: gitnexus::attribute-taint-findings
+      inputs:
+        change_report: change_report
+        taint_reports: taint_reports
+      outputs:
+        introduced_flows: introduced_flows
+        inherited_flows: inherited_flows
+        taint_unmeasured: taint_unmeasured

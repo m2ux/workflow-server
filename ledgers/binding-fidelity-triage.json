@@ -160,6 +160,27 @@
     },
     {
       "check": "dead-output",
+      "site": "gitnexus/techniques/check.md",
+      "detail": "output 'cycle_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/explain.md",
+      "detail": "output 'taint_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/pdg-query.md",
+      "detail": "output 'dependence_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
       "site": "gitnexus/techniques/read-cluster.md",
       "detail": "output 'cluster_members' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
@@ -169,6 +190,20 @@
       "check": "dead-output",
       "site": "gitnexus/techniques/read-process.md",
       "detail": "output 'process_trace' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/trace.md",
+      "detail": "output 'trace_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
+      "site": "gitnexus/techniques/verify-index.md",
+      "detail": "output 'index_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "shared-op-return-contract"
     },

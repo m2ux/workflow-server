@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -21,6 +21,14 @@ Filesystem path of the tree to index. GitNexus walks the working tree from here 
 
 `false`
 
+### pdg_layers
+
+*(optional)* Whether the build records the program-dependence layers — control flow, reaching definitions, control dependence and taint — that the taint findings and the dependence query answer from. A graph built without them answers those with a note naming the missing layer.
+
+#### default
+
+`false`
+
 ## Outputs
 
 ### stats
@@ -36,8 +44,9 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ### 2. Run Analyze
 
-- Otherwise run `npx gitnexus analyze` (or `npx gitnexus analyze --force` when `{force_rebuild}` is true) inside `{repo_path}`. The CLI exits non-zero on failure; surface its stderr.  
-  > - If `npx gitnexus` resolves to no binary (the gitnexus package is not installed), install it via `npm install -g gitnexus` (or the project-local equivalent), then retry.
+- Otherwise run `node .gitnexus/run.cjs analyze --index-only` inside `{repo_path}`, adding `--force` when `{force_rebuild}` is true and `--pdg` when `{pdg_layers}` is true. The CLI exits non-zero on failure; surface its stderr.
+  > - `--index-only` writes the graph and nothing else; the agent context files and skills the CLI can drop into the tree are outside this operation.
+  > - The runner at `.gitnexus/run.cjs` is written by a build and ignored by git, so a fresh clone carries none. Where `node` reports it missing, run `npx gitnexus analyze` with the same flags, which regenerates it.
   > - If the analyze CLI returns non-zero — typically a parser error inside the target codebase or an unsupported language — read the stderr; if it identifies a single offending file, exclude or fix it. For corrupted index state, retry with `force_rebuild=true`.
 
 ### 3. Signal
@@ -48,7 +57,7 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ### a-rebuilt-index-reaches-a-reader-on-reload
 
-A completed rebuild writes the graph to disk; a server already holding the previous one keeps answering from it. So a read taken straight after a successful analyze can report the index stale, and every answer drawn from it describes the tree as it was — the rebuild succeeded and the reader has not met it. Reload the MCP server where the read disagrees with the rebuild, and treat the second read rather than the exit status as what says the graph is current.
+A completed rebuild publishes the graph to disk, and a running server reopens a published replacement at its next check, which runs at most once every five seconds. A read taken inside that window still answers from the previous graph and reports it stale, so every answer drawn from it describes the tree as it was — the rebuild succeeded and the reader has not met it. Treat the second read rather than the exit status as what says the graph is current.
 
 ### index-every-addressed-tree
 

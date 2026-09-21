@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Map the API routes a tree serves — which file handles each, what middleware wr
 
 ### route_inventory
 
-Each route with the file handling it, the middleware chain wrapping that handler, and the components and hooks that fetch it.
+Each route with the file handling it, the middleware chain wrapping that handler, the components and hooks that fetch it, its `method` — the verb, `*` for a method-agnostic route, or null for a method-less one — and its `runtimeEvidence`, authoritative only where `confirmed` is true.
 
 ## Protocol
 
