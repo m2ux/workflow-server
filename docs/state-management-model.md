@@ -24,7 +24,9 @@ Including an activity in a workflow's graph contributes its write declarations t
 
 Two declarations of one name that disagree about type, starting value or value set describe two different variables under one name. The workflow does not load, and the disagreement is named.
 
-**Silence is no opinion.** A declaration saying nothing about a starting value agrees with one that names it, and the named value is what the session seeds. So a variable gains its starting value at the one site that owns the policy, without every other site having to repeat it.
+#### Silence is no opinion
+
+A declaration saying nothing about a starting value agrees with one that names it, and the named value is what the session seeds. So a variable gains its starting value at the one site that owns the policy, without every other site having to repeat it.
 
 ### Seeding at session creation
 
@@ -131,6 +133,23 @@ reads the recorded exit and accounts for the steps it skipped.
 
 A workflow varies its path through ordinary state rather than through a mechanism of its own. A boolean set early, by a detection step or by a checkpoint, marks the variant, and exit predicates and step gates branch on it to skip or redirect activities. Because the variable lives in the single bag, the variant persists across activities without anything carrying it. A review mode, an update mode, a dry run — each is built this way rather than by a mode switch the engine knows about.
 
+## Opening a session
+
+`start_session` opens a top-level session, defaulting to the `meta` workflow. Pass `working_directory` as the checkout under work: the server derives `owner/repo` from that checkout's origin, even when the folder is named for a branch, as [IDE setup](ide-setup.md#binding-the-repository) covers. `repo` is optional, and must equal the derived origin when supplied.
+
+A named `planning_folder` resumes an existing session. Where a derived dated slug already holds one, the server opens the next free numbered folder rather than joining it. `user_request` seeds the opening request into the variable bag, and children inherit it.
+
+### What comes back instead of a session
+
+Not every call returns a session index.
+
+| Response | When |
+|----------|------|
+| `client` beside the session | A unique catalog match, with no resume phrasing in the request |
+| A `decision`, and no `session_index` | A durable meta start that cannot uniquely open a client. The decision is `workflow-selection` or `resume-session` |
+
+Every response carries `execution_path`: `agent` where a caller walks the definition, `runner` where the server does.
+
 ## Persistence
 
 ### The two files
@@ -150,7 +169,9 @@ A write also carries the bytes its call read. The state file is replaced only wh
 
 That pairing is ordinary rather than exotic, because a parent and its launched children live in a single file with the child's state inside its parent's. A parent recording a figure while one of its children advances is two writes against the same bytes.
 
-**A refusal is the caller's to retry, and the refusal says so.** The server does not retry on the caller's behalf, because the change a call composed is the caller's, and re-deriving it is a call rather than a write.
+#### A refusal is the caller's to retry
+
+The server does not retry on the caller's behalf, because the change a call composed is the caller's, and re-deriving it is a call rather than a write.
 
 The error text tells the agent to make the same call again, and states that nothing was written. That is the fact deciding whether an agent retries or stalls: it can tell that repeating records once rather than twice. The repeat reads the state as it then stands. An orchestrator keeping one call in flight per session never meets this.
 

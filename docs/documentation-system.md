@@ -6,9 +6,13 @@ How this repository's documentation is organized: what each source is for, who i
 
 Documentation is written twice over, for two different readers, and the division is by what the reader is doing rather than by topic.
 
-**Markdown holds the contract.** [`docs/`](.) carries exact values, field names, ordering rules, edge cases and the commands that exercise them. Its reader is implementing against the server, auditing a run or debugging one, arrives by grep or by a link from code, and reads one section.
+### Markdown holds the contract
 
-**The site holds the orientation.** [`site/`](../site/) is a hand-authored static site — semantic HTML, one shared stylesheet, inline SVG diagrams, no client-side JavaScript. Its reader is forming a mental model of why the problem exists and how the pieces relate, and reads linearly. **Prefer on-site links for reading**; link to markdown on GitHub for editing, or for a document with no HTML page.
+[`docs/`](.) carries exact values, field names, ordering rules, edge cases and the commands that exercise them. Its reader is implementing against the server, auditing a run or debugging one, arrives by grep or by a link from code, and reads one section.
+
+### The site holds the orientation
+
+[`site/`](../site/) is a hand-authored static site — semantic HTML, one shared stylesheet, inline SVG diagrams, no client-side JavaScript. Its reader is forming a mental model of why the problem exists and how the pieces relate, and reads linearly. **Prefer on-site links for reading**; link to markdown on GitHub for editing, or for a document with no HTML page.
 
 ### Which layer a fact belongs to
 
@@ -74,6 +78,8 @@ Workflow definitions live on the `workflows` branch. Authoring docs sit at that 
 - **Filenames are kebab-case, and a rename is exceptional.** Documents are heavily cross-linked from this repository and beyond, so structure changes are expressed through linking and navigation. A rename is warranted only where the name itself is wrong. It moves the file with `git mv` so history follows it, repoints every reference in the repository in the same change, and passes `npm run check:site` and `npm run check:anchors` before it lands. Links reaching the old name from outside the repository stop resolving, and that cost is accepted with the decision rather than softened by a redirect stub.
 - **Titles and section headings are sentence case, and headings carry no numbers.** A reader cites a section by its title, so the anchor stays readable and survives a reordering. Titles spell out "and" rather than using an ampersand. The [technique protocol specification](technique-protocol-specification.md) is the one exception: a numbered clause is how a reader cites a contract term, so its sections keep their numbering.
 - **A document changes for one reason.** Where two kinds of change would touch the same file — retuning a budget and adding a guard, say — they are two documents. The signal that a split is overdue is another page linking into the middle of this one: a section other documents cite by anchor is already being used as an interface of its own.
+- **A sub-heading, never a bold lead-in.** Where a paragraph opens with a bold phrase that names what follows, that phrase is a heading doing the job badly: it does not appear in the document outline, cannot be linked to, and gives a reader scrolling for it nothing to catch. Write it as `###`. Bold stays for a labelled item inside a list, and for emphasis mid-sentence.
+- **Every section is navigable.** A run of paragraphs under one heading is a wall to anyone who arrived looking for one of them. Give each its own sub-heading, or make the set a table or list.
 - **Sentences carry one idea, and paragraphs carry one topic.** A reader arriving at a contract is checking something specific, and a sixty-word sentence with three clauses makes them parse before they can check. Prefer a table where the material is a set of cases, and keep a table cell to a line — a cell that has grown into a paragraph belongs in prose beneath the table.
 - **Spell out a term of art at first use.** Give the full form once, then the short one.
 - **Everything is reachable.** Every HTML page is listed in `SITE_ROUTES` and linked from the generated global navigation. The home page "Where to start" table and section hubs provide additional entry points. No document should depend on full-text search alone.

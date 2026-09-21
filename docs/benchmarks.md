@@ -39,7 +39,9 @@ What the stand-ins say is deliberately not the corpus's own prose. A reading tak
 
 The [Verify](../.github/workflows/verify.yml) workflow runs `--gate` at the 1% default against `delivery-fixture`. No guard can measure this, because delivery cost is a property of a walk rather than of a file.
 
-**A change that adds delivery on that fixture fails the gate, and that is the gate working.** When the increase is wanted:
+#### When the gate fails
+
+When the increase is wanted:
 
 1. Confirm it. A new activity or a widened contract legitimately costs characters.
 2. Re-record the fixture from a `--no-compare` run on the same walk, in the same commit as the change.
@@ -53,7 +55,9 @@ The fixture records a context mode (`contextMode`), and the comparison records w
 
 The reason is that the delta conflates the mode switch with the code change. An earlier gate's own ablation attributed most of its apparent improvement to the mode switch alone, and a real `get_activity` regression on the only mode production uses was invisible to it ([#322](https://github.com/m2ux/workflow-server/issues/322)).
 
-**Every delivery-path change must be gated on a fresh-mode arm.** Run the same `--context-mode=fresh` walk before and after, against the same corpus, and gate on the total-delivery-characters delta. A persistent-mode run is a supplementary measurement of the reference-delivery win, never the gate.
+#### Gate on a fresh-mode arm
+
+Run the same `--context-mode=fresh` walk before and after, against the same corpus, and gate on the total-delivery-characters delta. A persistent-mode run is a supplementary measurement of the reference-delivery win, never the gate.
 
 ```bash
 # Fresh-mode ship gate — the required arm. Fails with exit 3 above the threshold.

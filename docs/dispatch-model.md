@@ -6,11 +6,17 @@ So the work is handed down a chain. Each agent spawns the next for a narrower sc
 
 ## The three roles
 
-**The user-facing agent** is the only one that talks to the person. It finds and selects workflows, opens a session, spawns an orchestrator, and presents every question the run raises. It executes no domain work and tracks no step-level state.
+### The user-facing agent
 
-**The orchestrator** runs in the background and owns one workflow from start to finish. It reads the state variables, decides which activity comes next, dispatches a worker to run it, commits the artifacts that come back, and passes any question upward without trying to answer it.
+is the only one that talks to the person. It finds and selects workflows, opens a session, spawns an orchestrator, and presents every question the run raises. It executes no domain work and tracks no step-level state.
 
-**The worker** runs activities and nothing else. It loads each activity, executes its steps in order, pauses at any gate it reaches, and returns a structured result naming the variables it changed and the artifacts it wrote.
+### The orchestrator
+
+runs in the background and owns one workflow from start to finish. It reads the state variables, decides which activity comes next, dispatches a worker to run it, commits the artifacts that come back, and passes any question upward without trying to answer it.
+
+### The worker
+
+runs activities and nothing else. It loads each activity, executes its steps in order, pauses at any gate it reaches, and returns a structured result naming the variables it changed and the artifacts it wrote.
 
 The boundaries are the point. The user-facing agent never holds step detail, the orchestrator never does domain work, and the worker never talks to the user.
 
@@ -31,6 +37,8 @@ dispatch_child({
   repo: "<owner>/<repo>"
 })
 ```
+
+The repository comes from `session.repo`. An optional `repo` binds it where the parent has none, and must match where the parent already has one. The child records which execution path drove it.
 
 This creates a **child session embedded in the parent's own `session.json`**, at `triggeredWorkflows[N].state`. The session-file schema is recursive, so a child is a sub-object of its parent's file rather than a file of its own. The parent gains a `triggeredWorkflows` entry naming the child's workflow, index and triggering activity, plus a `workflow_triggered` history event.
 
@@ -72,15 +80,25 @@ Why batching is worth doing, how far a run may go, and what refuses it are in [t
 
 A graph destination may name several branches rather than one activity — several different activities, or one activity run once per element of a collection. They run together, one worker to each, all spawned in a single response turn.
 
-**The frontier is the cursor.** The session record holds the activities in flight as a list: one entry on an ordinary walk, one per branch while a fan runs. An entry for one instance of a fanned activity carries its slot — `review-pass#1` — so entries stay distinct strings and a call naming an instance matches exactly one.
+#### The frontier is the cursor
 
-**There are two barrier points and neither is a call.** One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen. Then each branch's return retires that branch and enters the destination if and only if the frontier is then empty, so the only call that can enter the meeting point is the one that empties it. Entering early is unrepresentable rather than refused, and a crashed and resumed orchestrator re-derives the barrier from the session file with no extra state.
+The session record holds the activities in flight as a list: one entry on an ordinary walk, one per branch while a fan runs. An entry for one instance of a fanned activity carries its slot — `review-pass#1` — so entries stay distinct strings and a call naming an instance matches exactly one.
 
-**The per-scope batch bound does not limit a fan's width.** The bound exempts a scope with no activity yet and refuses only an activity a scope already holds, so a fresh branch asking for its first activity is admitted whatever the width. What bounds a fan is its own ceiling: the server's configured `DEFAULT_FAN_MAX_BRANCHES`, or a tighter `maxInstances` the destination declares. Either is measured against the branches it opens once every member is flattened, so a list, an instance fan and a mixture of the two answer to one number.
+#### Two barrier points, neither a call
 
-**Every branch takes full delivery.** Delivery scoping keys on the calling context's identity, which each branch carries, so nothing collapses to a reference marker. A fan pays each branch's payload in full and establishes one harness context per branch where a batch establishes one in total. The meeting point then takes a further fresh context and re-pays whatever the branches collectively held. While several activities are in flight, `get_activity` refuses an omitted identity, one equal to the session agent, and one that already holds a sibling; a resume of the same entry, and a replacement under a fresh identity for that entry, are served.
+One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen. Then each branch's return retires that branch and enters the destination if and only if the frontier is then empty, so the only call that can enter the meeting point is the one that empties it. Entering early is unrepresentable rather than refused, and a crashed and resumed orchestrator re-derives the barrier from the session file with no extra state.
 
-**So a fan is a wall-clock purchase, not an efficiency one.** Several long reasoning passes run inside one response turn instead of several sequential round trips. The wait is free, because a turn does not resume until every tool result returns — nothing polls, times out or is scheduled.
+#### What bounds a fan's width
+
+The bound exempts a scope with no activity yet and refuses only an activity a scope already holds, so a fresh branch asking for its first activity is admitted whatever the width. What bounds a fan is its own ceiling: the server's configured `DEFAULT_FAN_MAX_BRANCHES`, or a tighter `maxInstances` the destination declares. Either is measured against the branches it opens once every member is flattened, so a list, an instance fan and a mixture of the two answer to one number.
+
+#### Every branch takes full delivery
+
+Delivery scoping keys on the calling context's identity, which each branch carries, so nothing collapses to a reference marker. A fan pays each branch's payload in full and establishes one harness context per branch where a batch establishes one in total. The meeting point then takes a further fresh context and re-pays whatever the branches collectively held. While several activities are in flight, `get_activity` refuses an omitted identity, one equal to the session agent, and one that already holds a sibling; a resume of the same entry, and a replacement under a fresh identity for that entry, are served.
+
+#### A fan is a wall-clock purchase
+
+Several long reasoning passes run inside one response turn instead of several sequential round trips. The wait is free, because a turn does not resume until every tool result returns — nothing polls, times out or is scheduled.
 
 It also buys one thing a character count cannot see. The batch budget counts characters delivered, never characters generated, so nothing bounds how much reasoning accumulates inside one worker. A fan converts unbounded growth in one context into several bounded ones.
 

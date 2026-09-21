@@ -23,9 +23,13 @@ In a checkout holding the corpus worktree they are at `.worktrees/workflows/corp
 | A running agent | `get_resource { resource_id: "canon/anti-patterns#some-section" }` |
 | A skill or a person | the paths above |
 
-**Fetch by section.** `anti-patterns.md` exceeds the per-resource eager-delivery cap on its own, so a whole-file reference is never bundled — see [the delivery model](delivery-model.md#resources-bodies-only-under-reference-delivery). Cite the narrowest section carrying what you need.
+### Fetch by section
 
-**Cite a principle by title, not by anchor alone.** Anchors on the principles home embed the section ordinal, so an anchor breaks when the canon gains a principle ahead of it while the heading survives. Where an anchor fails to resolve, re-read the heading rather than guessing at a number.
+`anti-patterns.md` exceeds the per-resource eager-delivery cap on its own, so a whole-file reference is never bundled — see [the delivery model](delivery-model.md#resources-bodies-only-under-reference-delivery). Cite the narrowest section carrying what you need.
+
+### Cite a principle by title
+
+Anchors on the principles home embed the section ordinal, so an anchor breaks when the canon gains a principle ahead of it while the heading survives. Where an anchor fails to resolve, re-read the heading rather than guessing at a number.
 
 ## What lives here instead
 

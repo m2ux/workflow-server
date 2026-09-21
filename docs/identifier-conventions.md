@@ -36,7 +36,9 @@ An id that mirrors an external tool, server or command-line parameter takes that
 
 A name — a technique, operation or resource identity, and the file, hyperlink or `::` target that addresses it — is a slug, never an evaluated variable, and is `kebab-case`: `create-issue`, `resolve-cloud-id.md`.
 
-**Rule names are names too.** A rule is never an evaluated variable. It is cited by its dotted symbol address, `[workflow.]technique.rule-name`, sitting beside the kebab technique name, so a rule name is `kebab-case` and the citation reads uniformly: `index.freshness-checked-first`.
+#### Rule names are names too
+
+A rule is never an evaluated variable. It is cited by its dotted symbol address, `[workflow.]technique.rule-name`, sitting beside the kebab technique name, so a rule name is `kebab-case` and the citation reads uniformly: `index.freshness-checked-first`.
 
 ## Grammatical shape encodes the kind
 

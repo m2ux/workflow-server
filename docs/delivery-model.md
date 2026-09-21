@@ -14,7 +14,9 @@ The response is the union of two sets, deduplicated: the technique references th
 
 Every operation in that union arrives with its body: its capability, its interface, its procedure, and the rules it is held to.
 
-**A rule has one home, decided by what it governs.** A rule a technique declares, or inherits from its ancestor group, governs that operation. So it rides the body that states it, where a reader meets it beside the procedure it constrains. The response's `rules` list carries what is left: the role's own rules, declared standalone and referenced by the workflow, which govern the agent rather than any one operation. The two sets are disjoint, so no rule is read twice, and an activity whose every rule belongs to an operation sends no list at all. The body wins ties, because it can say which operation a rule binds and a flat list cannot.
+#### Where a rule lives
+
+A rule a technique declares, or inherits from its ancestor group, governs that operation. So it rides the body that states it, where a reader meets it beside the procedure it constrains. The response's `rules` list carries what is left: the role's own rules, declared standalone and referenced by the workflow, which govern the agent rather than any one operation. The two sets are disjoint, so no rule is read twice, and an activity whose every rule belongs to an operation sends no list at all. The body wins ties, because it can say which operation a rule binds and a flat list cannot.
 
 Below the separator rides the workflow metadata, whole. It carries what an orchestrator drives a run from: the rules, the variable roster, the graph and the activities. The roster gives every name the run holds with its type, its value set and its starting value, because the orchestrator has to recognise a name a worker reports back and read a value out of the session by it.
 
@@ -37,6 +39,17 @@ Three things are added by the delivery rather than carried in a core list, becau
 Each reading is over the **whole workflow**, not the activity in hand. That is load-bearing rather than approximate. A bundle's rules are keyed as one set, so a technique set that varied activity by activity would re-deliver the entire rules list at every activity whose set differed — which costs several times what the narrower reading saves.
 
 What is held back stays reachable. A worker may raise a decision its activity never declared, and an orchestrator then has to present and resolve it, so both checkpoint pairs are servable by `get_technique { technique_id }` from any session. That is what makes the omission safe rather than merely cheap.
+
+#### Asking for one by name
+
+`get_technique` takes `step_id` or `technique_id`, never both. They answer different questions:
+
+| Parameter | Names |
+|-----------|-------|
+| `step_id` | The technique a step binds |
+| `technique_id` | An operation of the caller's role contract — one it has reached but was not sent, such as the checkpoint pair above, or one whose delivery its context no longer holds |
+
+Only operations this session's definitions name are servable. Passing `activity_id` alongside makes a step id that resolves against a moved activity pointer fail, rather than quietly returning a technique from the wrong activity.
 
 ### What the two core sets contain
 
@@ -78,7 +91,9 @@ This one bounds a **run** of activities. One dispatch may carry several rather t
 
 The run pauses at every activity boundary, because the orchestrator owns the commit that boundary requires, and at every gate, because the orchestrator owns the answer. It **resumes in place** across both, under the identity its dispatch bound, so a pause costs a round trip rather than a respawn. [Dispatch](dispatch-model.md) covers the topology.
 
-**The server bounds the run.** A batch is not declared. It is the run of activities one delivery scope takes delivery of, so the server sees it with no orchestrator cooperation, and a worker that omits a parameter does not escape it. The scope is the caller's `agent_id`, which is not authenticated, so this bounds a cooperating topology rather than an adversarial one. Two limits apply, both read off the session history:
+#### The server bounds the run
+
+A batch is not declared. It is the run of activities one delivery scope takes delivery of, so the server sees it with no orchestrator cooperation, and a worker that omits a parameter does not escape it. The scope is the caller's `agent_id`, which is not authenticated, so this bounds a cooperating topology rather than an adversarial one. Two limits apply, both read off the session history:
 
 | Limit | Derivation | Default |
 |-------|------------|---------|
@@ -89,15 +104,21 @@ The fraction is its own rather than the window budget's, because the two answer 
 
 The activity cap covers what a character count cannot see: the context the harness establishes and the server never delivers, the code the worker reads, the artifacts it drafts, and the degradation that comes with a long walk.
 
-**Which limit binds depends on the workflow and on the declared window, and both cases are wanted.** At a large window the activity cap binds first, because the characters run out later than the count does. A worker declaring a smaller window is bounded proportionally, and below some point the character budget takes over instead.
+#### Which limit binds
+
+At a large window the activity cap binds first, because the characters run out later than the count does. A worker declaring a smaller window is bounded proportionally, and below some point the character budget takes over instead.
 
 Measure rather than assume: `npm run bench:batch` reports the figures for the corpus in front of you. It counts eager activity payloads only and never a lazy fetch, so its number is a floor — what a batch really accumulates includes everything the worker goes back for, and that half is usually larger.
 
 Admission is checked *before* a delivery rather than after, so the admitted activity can carry a batch past the budget by up to one heavy activity. Refusing after composing would pay the composition and still not un-deliver it.
 
-**Revising either value needs evidence a byte count cannot supply.** The cap covers context the server never delivers. So a revision rests on `batch_refused` counts and per-activity usage rows over real runs, not on a benchmark that only sees payloads.
+#### Revising either value
 
-**Both limits count each delivery once.** A dispatch's recorded size is the whole activity response, so anything bundled eagerly is already inside that figure; what counts on top is only what the worker went back for. Counting a bundled entry both ways would overstate every activity that bundles anything, and compound across a run.
+The cap covers context the server never delivers. So a revision rests on `batch_refused` counts and per-activity usage rows over real runs, not on a benchmark that only sees payloads.
+
+#### Counting each delivery once
+
+A dispatch's recorded size is the whole activity response, so anything bundled eagerly is already inside that figure; what counts on top is only what the worker went back for. Counting a bundled entry both ways would overstate every activity that bundles anything, and compound across a run.
 
 `get_activity` reports where a context stands in `_meta.batch` — `activities_delivered`, `max_activities`, `delivered_chars`, `budget_chars`, `may_continue` — so the ordinary end of a batch is the worker stopping. The count is of activities **delivered** to that context. That is the only count the session can answer, a delivery being the sole record that an activity reached a context, and the only one both limits are about, since each protects what a context is holding.
 
@@ -113,11 +134,17 @@ Three carve-outs keep the bound aimed at what it is for:
 - **An activity the context already holds is always served.** That is a worker resuming after a gate and asking for the payload it is sitting on, which is the ordinary shape of any activity carrying a checkpoint.
 - **The session's own agent is unbounded.** A scope equal to `session.agentId` owns the whole walk by construction, which is what `contextMode: "persistent"` describes; its run is the session, not a batch. `agentId` is caller-set — `dispatch_child` defaults it to `"worker"`, and a resume rebinds it to the resuming caller's `agent_id` — so a dispatched worker passing the session's own identity is unbounded, and the exemption can move across a resume. Minting one identity per dispatch, which the corpus already requires, keeps it where it belongs.
 
-**A refusal pins the session to this server version.** The refusal is a history event, and loading a session validates every event against a strict list. An older server meeting an event it does not know fails that validation, which surfaces as `SEAL_MISMATCH` — the error usually read as tampering or a rotated key. Downgrading therefore means stripping those events or retiring the session. Reading an older session on this server is unaffected.
+#### A refusal pins the session version
 
-**A failed resume costs one activity, not the batch.** The worker reports each activity as it completes, so the session cursor tracks the run. A replacement picks up the current activity, takes full delivery, and re-crosses already-answered gates silently: checkpoint responses are keyed `activityId-checkpointId` with no agent component, so `yield_checkpoint` replays them for any worker.
+The refusal is a history event, and loading a session validates every event against a strict list. An older server meeting an event it does not know fails that validation, which surfaces as `SEAL_MISMATCH` — the error usually read as tampering or a rotated key. Downgrading therefore means stripping those events or retiring the session. Reading an older session on this server is unaffected.
 
-**Cost keeps its per-activity resolution.** `record_usage` records one `activity_usage` row per activity a dispatch covered, sharing an `agent_id`, rather than one figure per dispatch attributed to whichever activity the orchestrator names. Without that, a batch size cannot be calibrated from real runs.
+#### A failed resume costs one activity
+
+The worker reports each activity as it completes, so the session cursor tracks the run. A replacement picks up the current activity, takes full delivery, and re-crosses already-answered gates silently: checkpoint responses are keyed `activityId-checkpointId` with no agent component, so `yield_checkpoint` replays them for any worker.
+
+#### Cost keeps per-activity resolution
+
+`record_usage` records one `activity_usage` row per activity a dispatch covered, sharing an `agent_id`, rather than one figure per dispatch attributed to whichever activity the orchestrator names. Without that, a batch size cannot be calibrated from real runs.
 
 ### What one tool result may carry
 
@@ -161,11 +188,17 @@ An activity may also set `bundleTechniques: { maxChars: <n> }`, a per-technique 
 
 Once the step techniques are chosen, `get_activity` collects the unique `resource_id`s they link. What happens next depends on the delivery mode, because the map only pays for itself when a repeat delivery can collapse it.
 
-**Under reference delivery** (`context_mode: "persistent"` or `bundle: "reference"`), bodies arrive in a sibling ops `resources` map, keyed by exact `resource_id` including any `#section`, deduped across steps. These entries share the `resource:<id>` ledger with `get_resource`, so a later delivery of the same body collapses to a marker. Bodies are never nested inside `step_techniques`, which would duplicate them once per technique. `_meta.bundled_resources` lists what was delivered, and each id records a `resource_fetched` history event.
+#### Under reference delivery
 
-**Under full delivery** — the default a dispatched worker's first activity takes — no bodies are sent. That call lands in a context with nothing to collapse against, so an inlined body would ship in full again in every activity that links it, which measurably grew `get_activity` ([#322](https://github.com/m2ux/workflow-server/issues/322)). The ids arrive under `resource_refs` instead, and the worker fetches the ones it reads via `get_resource`. No `resource:<id>` key is written, since nothing could ever read it. The later activities of a batch ask for reference delivery instead, having a ledger to collapse against.
+(`context_mode: "persistent"` or `bundle: "reference"`), bodies arrive in a sibling ops `resources` map, keyed by exact `resource_id` including any `#section`, deduped across steps. These entries share the `resource:<id>` ledger with `get_resource`, so a later delivery of the same body collapses to a marker. Bodies are never nested inside `step_techniques`, which would duplicate them once per technique. `_meta.bundled_resources` lists what was delivered, and each id records a `resource_fetched` history event.
 
-**Sent in neither mode:** a single oversized resource (per-resource cap 80,000 characters by default), and anything past the window budget. Their ids join `resource_refs`, so nothing linked ever becomes unreachable.
+#### Under full delivery
+
+the default a dispatched worker's first activity takes — no bodies are sent. That call lands in a context with nothing to collapse against, so an inlined body would ship in full again in every activity that links it, which measurably grew `get_activity` ([#322](https://github.com/m2ux/workflow-server/issues/322)). The ids arrive under `resource_refs` instead, and the worker fetches the ones it reads via `get_resource`. No `resource:<id>` key is written, since nothing could ever read it. The later activities of a batch ask for reference delivery instead, having a ledger to collapse against.
+
+#### Sent in neither mode
+
+a single oversized resource (per-resource cap 80,000 characters by default), and anything past the window budget. Their ids join `resource_refs`, so nothing linked ever becomes unreachable.
 
 ### What the response looks like
 
@@ -197,7 +230,9 @@ A marker is only ever valid for the context that received the bytes it stands fo
 
 What establishes that a context holds a payload is **its own ledger**. A scope the server has already delivered an activity to is that same context arriving again — the orchestrator mints one `agent_id` per dispatch and reuses it verbatim for as long as that worker carries its batch. So the **invariant blocks** (the worker technique bundle, its `rules`, and the inherited `activity_rules`) collapse for a returning identity in *every* delivery mode, not only under `persistent`. A replacement worker arrives under a new `agent_id`, reads an empty ledger, and takes them in full.
 
-**A marker stands for a whole item** — one composed technique, one rules list, one note, one resource. No marker names a field of a body, because a body missing one of its fields is a fragment, and a reader holding a fragment has no call that returns the part it lacks.
+#### A marker stands for a whole item
+
+one composed technique, one rules list, one note, one resource. No marker names a field of a body, because a body missing one of its fields is a fragment, and a reader holding a fragment has no call that returns the part it lacks.
 
 Resuming with `context_mode: "fresh"` drops that scope's ledger entries, because the caller is stating this identity retains nothing it was sent. The next delivery to it is therefore full. `bundle: "full"` does the same for one call without touching the ledger.
 
@@ -266,6 +301,10 @@ That is either a replaced worker or a resume that arrived under a fresh identity
 ### Sizes are summable
 
 `technique_fetched`, `technique_bundled` and `resource_fetched` each carry `chars` — always the full payload size, on both paths — and `delivery: "full" | "unchanged"`. Characters delivered and characters saved are therefore both totals you can add up from the ledger.
+
+### Token usage is reported, not derived
+
+The server cannot see what a turn cost the harness, so an agent reports it with `record_usage`, one row per completed activity. `basis` says whether the figure is that activity's own spend or a running total for the agent, because the two sum differently and a reader adding them without knowing which would double-count. Read the rows back through `inspect_session` with `view: usage`.
 
 ### Coverage reaches fidelity
 

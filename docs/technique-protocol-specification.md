@@ -156,12 +156,15 @@ The attribute states *who reads* an artifact and *that* an agent artifact is JSO
 the shape of any particular JSON payload — the per-artifact field schemas belong to each artifact's
 own creation guide.
 
-**Naming the reader and converting the file are one act.** Because `agent` implies JSON on disk, a
-declaration cannot name a later step as the reader while the file is still markdown. An ID-bearing
-register in that position therefore carries **no** `audience` at all until it is converted — a
-declaration states the reader of the artifact as it exists, and the absent case is the honest one
-while the format is in transit. The registers waiting are listed in the conversion issue, and
-`check-audience` deliberately does not require presence, so the wait is not a standing failure.
+###### Naming the reader and converting the file are one act
+
+Because `agent` implies JSON on disk, a declaration cannot name a later step as the reader while the
+file is still markdown. An ID-bearing register in that position therefore carries **no** `audience`
+at all until it is converted: a declaration states the reader of the artifact as it exists, and the
+absent case is the honest one while the format is in transit.
+
+The registers waiting are listed in the conversion issue, and `check-audience` deliberately does not
+require presence, so the wait is not a standing failure.
 
 #### Symbols and naming
 
@@ -198,7 +201,9 @@ line as a new step and flattens the caveat into a disconnected peer step (AP-56)
 substance is "never X" or "always Y" with no action of its own is mis-modelled and belongs in a rule
 or a note. (A genuine enumeration or sequential sub-step legitimately stays a sub-bullet.)
 
-**Protocol variables, declared once.** A step may bind an intermediate value for later steps to read.
+#### Protocol variables, declared once
+
+A step may bind an intermediate value for later steps to read.
 The binding carries the dollar sigil — `{$name}`, snake_case, a protocol variable being a symbol
 (§3.2) — and marks the single point where the value is produced. **Every later reference drops the `$`
 and reads it as `{name}`**, identical in form to an interface designator.

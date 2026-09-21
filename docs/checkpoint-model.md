@@ -155,10 +155,18 @@ dispatching at all.
 
 ## What the design buys
 
-**Background agents never try to prompt.** A sub-agent with no user channel that attempts to ask a question hangs. Routing every question to the one agent that has a channel is what keeps that from happening.
+### Background agents never try to prompt
 
-**Relaying costs nothing to understand.** The orchestrator in the middle passes a block it never parses. It needs no view of the question, the options or the effects, so a gate can be added to an activity without touching anything between the worker and the user.
+A sub-agent with no user channel that attempts to ask a question hangs. Routing every question to the one agent that has a channel is what keeps that from happening.
 
-**The pause survives the agent.** Because the active checkpoint and its answer live in the session rather than in an agent's context, a worker that dies mid-gate loses no decision. Its replacement replays the answer and continues.
+### Relaying costs nothing to understand
 
-**Instant resolution is refused.** The two timers make the cheapest way to fake a checkpoint fail. They cannot prove a human saw the question, which [workflow fidelity](workflow-fidelity.md) records among its limits.
+The orchestrator in the middle passes a block it never parses. It needs no view of the question, the options or the effects, so a gate can be added to an activity without touching anything between the worker and the user.
+
+### The pause survives the agent
+
+Because the active checkpoint and its answer live in the session rather than in an agent's context, a worker that dies mid-gate loses no decision. Its replacement replays the answer and continues.
+
+### Instant resolution is refused
+
+The two timers make the cheapest way to fake a checkpoint fail. They cannot prove a human saw the question, which [workflow fidelity](workflow-fidelity.md) records among its limits.
