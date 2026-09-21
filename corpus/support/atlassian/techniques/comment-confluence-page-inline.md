@@ -23,4 +23,6 @@ Object describing the inline anchor.
 
 ## Protocol
 
-1. Call `createConfluenceInlineComment { cloudId, pageId, body, inlineCommentProperties }`.
+### 1. Post the Inline Comment
+
+- Call `createConfluenceInlineComment { cloudId, pageId, body, inlineCommentProperties }`.

@@ -21,7 +21,12 @@ Each matching heading with the file it sits in.
 
 ## Protocol
 
-1. Call `gitnexus_cypher { query: "MATCH (s:Section) WHERE s.name =~ '{heading_pattern}' RETURN s.name, s.filePath", repo: repo_name }` and record the rows it returns as the `{heading_matches}`.
+### 1. Search the Headings
+
+- Call `gitnexus_cypher { query: "MATCH (s:Section) WHERE s.name =~ '{heading_pattern}' RETURN s.name, s.filePath", repo: repo_name }` and record the rows it returns as the `{heading_matches}`.
    > - Where the pattern matches nothing, widen it — the match is against the whole heading, so a bare word matches only a heading that is exactly that word.
    > - Where the subject is a claim made in prose rather than a heading, this operation cannot reach it; grep the tree instead, per `query-not-grep`.
-2. Read a match as a location rather than an answer: the graph holds each heading and the file beneath it, and the prose under that heading is read from the file.
+
+### 2. Read a Match as a Location
+
+- Read a match as a location rather than an answer: the graph holds each heading and the file beneath it, and the prose under that heading is read from the file.

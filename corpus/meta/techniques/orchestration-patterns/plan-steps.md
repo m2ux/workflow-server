@@ -25,6 +25,14 @@ Boolean, default `false`. Set `true` only when planning itself detects the world
 
 ## Protocol
 
-1. Decompose `{work_goal}` into an ordered list of mostly-independent executable steps using `{planning_context}` when present.
-2. Emit `{execution_plan}` with stable step ids and explicit `depends_on` when a step requires a prior step's product.
-3. Leave `{plan_needs_replan}` false unless planning cannot produce a credible plan.
+### 1. Decompose the Goal
+
+- Decompose `{work_goal}` into an ordered list of mostly-independent executable steps using `{planning_context}` when present.
+
+### 2. Emit the Plan
+
+- Emit `{execution_plan}` with stable step ids and explicit `depends_on` when a step requires a prior step's product.
+
+### 3. Report Whether Planning Succeeded
+
+- Leave `{plan_needs_replan}` false unless planning cannot produce a credible plan.

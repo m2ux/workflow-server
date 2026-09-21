@@ -33,7 +33,18 @@ Boolean gate — true iff any assumption was marked deferred (needs-discussion).
 
 ## Protocol
 
-1. Mark each assumption with `{assumption_outcome}`. Where it is empty no decision has been asked for yet, so the assumptions are recorded with the agent's position and no outcome
-2. Write each outcome into the assumption's Log table row in place — `User` in the Resolution column; Confirmed / Corrected: <change> / Deferred: <follow-up> in the Outcome column — and remove its Open Assumptions entry. No separate response or outcome section is added (state-once-per-artifact).
-3. Link the deferred-items register row from the log row's Outcome cell for each assumption marked deferred, so the log points at the register that states the item.
-4. Preserve all assumption rows and their resolution status
+### 1. Mark Each Outcome
+
+- Mark each assumption with `{assumption_outcome}`. Where it is empty no decision has been asked for yet, so the assumptions are recorded with the agent's position and no outcome
+
+### 2. Write the Outcomes Into the Log
+
+- Write each outcome into the assumption's Log table row in place — `User` in the Resolution column; Confirmed / Corrected: <change> / Deferred: <follow-up> in the Outcome column — and remove its Open Assumptions entry. No separate response or outcome section is added (state-once-per-artifact).
+
+### 3. Link the Deferred Register
+
+- Link the deferred-items register row from the log row's Outcome cell for each assumption marked deferred, so the log points at the register that states the item.
+
+### 4. Preserve Every Row
+
+- Preserve all assumption rows and their resolution status

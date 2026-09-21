@@ -25,4 +25,6 @@ Issues matching the query, one entry per issue, carrying the requested fields.
 
 ## Protocol
 
-1. Call `searchJiraIssuesUsingJql { cloudId, jql, fields, maxResults }`; return the matches as `{matching_issues}`.
+### 1. Run the Search
+
+- Call `searchJiraIssuesUsingJql { cloudId, jql, fields, maxResults }`; return the matches as `{matching_issues}`.

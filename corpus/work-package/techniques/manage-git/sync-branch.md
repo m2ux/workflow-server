@@ -15,5 +15,10 @@ The default branch (typically `main`) fetched and rebased/merged into `{branch_n
 
 ## Protocol
 
-1. From `{target_path}`, fetch the default branch and rebase or merge it into `{branch_name}` to bring the feature branch current.
-2. Resolve any merge conflicts before continuing. If the fetch and rebase/merge produces a conflict with the default branch, resolve the conflicts interactively, then retry.
+### 1. Bring the Branch Current
+
+- From `{target_path}`, fetch the default branch and rebase or merge it into `{branch_name}` to bring the feature branch current.
+
+### 2. Resolve Conflicts
+
+- Resolve any merge conflicts before continuing. If the fetch and rebase/merge produces a conflict with the default branch, resolve the conflicts interactively, then retry.

@@ -49,5 +49,10 @@ One row per referred run: whether it materialised, what it landed, and the body 
 
 ## Protocol
 
-1. Fill the table from the five runs — `diff-coverage-map` against `{coverage_gaps}` and `{update_candidates}`, `scope-discipline-check` against `{scope_findings}`, `orphan-scan` against `{orphan_candidates}`, `public-api-enum` against `{public_api_symbols}`, and `change-risk-assessment` against `{change_risk_verdict}` — per [Template](../resources/conformance-report.md#template).
-2. Write `{diff_conformance_report}` to `{planning_folder_path}`, with [Rules](../resources/conformance-report.md#rules) governing what each row may claim.
+### 1. Fill the Table
+
+- Fill the table from the five runs — `diff-coverage-map` against `{coverage_gaps}` and `{update_candidates}`, `scope-discipline-check` against `{scope_findings}`, `orphan-scan` against `{orphan_candidates}`, `public-api-enum` against `{public_api_symbols}`, and `change-risk-assessment` against `{change_risk_verdict}` — per [Template](../resources/conformance-report.md#template).
+
+### 2. Write the Report
+
+- Write `{diff_conformance_report}` to `{planning_folder_path}`, with [Rules](../resources/conformance-report.md#rules) governing what each row may claim.

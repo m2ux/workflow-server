@@ -25,6 +25,8 @@ Affected flows falling outside `{requirements_scope}`, each with the changed sym
 
 ## Protocol
 
-1. Take the affected execution flows from `{change_report}` and hold each against `{requirements_scope}`.
-2. Collect every flow outside that scope into `{scope_findings}`, naming the changed symbol that reaches it so the reader can tell a deliberate widening from a change that spread.
+### 1. Collect the Out-of-Scope Flows
+
+- Take the affected execution flows from `{change_report}` and hold each against `{requirements_scope}`.
+- Collect every flow outside that scope into `{scope_findings}`, naming the changed symbol that reaches it so the reader can tell a deliberate widening from a change that spread.
    > A flow inside the scope is evidence of nothing on its own: `{requirements_scope}` names what the work was for, and a symbol may sit in an in-scope flow while the edit it carries serves another.

@@ -23,4 +23,6 @@ Optional new title
 
 ## Protocol
 
-1. Call `updateConfluencePage { cloudId, pageId, body, title? }`.
+### 1. Update the Page
+
+- Call `updateConfluencePage { cloudId, pageId, body, title? }`.

@@ -29,6 +29,11 @@ Its cohesion as a percentage, the symbol-weighted mean over those communities.
 
 ## Protocol
 
-1. Read the MCP resource `gitnexus://repo/{repo_name}/clusters` and record it as `{cluster_inventory}`.
+### 1. Read the Inventory
+
+- Read the MCP resource `gitnexus://repo/{repo_name}/clusters` and record it as `{cluster_inventory}`.
    > Two cuts apply and neither is announced: the inventory drops an area below five symbols, and shows at most twenty. On a `workflow-server` graph holding twenty areas it returns sixteen, the smallest of them five symbols. An area absent from it is therefore smaller than the smallest shown rather than absent from the graph, and stays readable by name at `gitnexus://repo/{repo_name}/cluster/{name}`. Where the inventory returns twenty entries, read it as a graph whose area count it does not report.
-2. Read an area's cohesion score as the symbol-weighted mean over the communities its label aggregates, so a mid-range score on a large area spans a wide range rather than describing one evenly-knit group. A low score marks membership worth checking against the code before a diagram rests on it.
+
+### 2. Read a Cohesion Score
+
+- Read an area's cohesion score as the symbol-weighted mean over the communities its label aggregates, so a mid-range score on a large area spans a wide range rather than describing one evenly-knit group. A low score marks membership worth checking against the code before a diagram rests on it.

@@ -25,4 +25,6 @@ Fields the project defines for the issue type, one entry per field.
 
 ## Protocol
 
-1. Call `getJiraIssueTypeMetaWithFields { cloudId, projectIdOrKey, issueTypeId }`; return the field metadata as `{issue_type_fields}`.
+### 1. Read the Issue Type's Fields
+
+- Call `getJiraIssueTypeMetaWithFields { cloudId, projectIdOrKey, issueTypeId }`; return the field metadata as `{issue_type_fields}`.

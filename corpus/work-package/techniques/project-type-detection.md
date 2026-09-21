@@ -27,6 +27,14 @@ Default when detection cannot run: `other`.
 
 ## Protocol
 
-1. Inspect the component's source under `{host_repo_path}/{component_name}`.
-2. Check for a `Cargo.toml` with Substrate dependencies (`sp-*`, `frame-*`, `pallet-*`).
-3. Set `{project_type}` to `rust-substrate` when those Substrate dependencies are found, otherwise `other`.
+### 1. Inspect the Component Source
+
+- Inspect the component's source under `{host_repo_path}/{component_name}`.
+
+### 2. Look for Substrate Dependencies
+
+- Check for a `Cargo.toml` with Substrate dependencies (`sp-*`, `frame-*`, `pallet-*`).
+
+### 3. Set the Project Type
+
+- Set `{project_type}` to `rust-substrate` when those Substrate dependencies are found, otherwise `other`.

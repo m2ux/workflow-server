@@ -21,5 +21,7 @@ The slug naming the work package's planning folder: `YYYY-MM-DD-{initiative_name
 
 ## Protocol
 
-1. Compose the slug: `YYYY-MM-DD-{initiative_name}` (today's date, then the kebab-case initiative name).
-2. Return `{planning_slug}` — no filesystem write.
+### 1. Derive the Slug
+
+- Compose the slug: `YYYY-MM-DD-{initiative_name}` (today's date, then the kebab-case initiative name).
+- Return `{planning_slug}` — no filesystem write.

@@ -77,5 +77,7 @@ The counts — changed symbols, affected flows, changed files — and the `risk_
 
 ## Protocol
 
-1. Call `gitnexus_detect_changes { scope: diff_scope, base_ref, repo: repo_name }` to produce the `{change_report}` (changed symbols, changed files, affected flows, risk level).
+### 1. Produce the Change Report
+
+- Call `gitnexus_detect_changes { scope: diff_scope, base_ref, repo: repo_name }` to produce the `{change_report}` (changed symbols, changed files, affected flows, risk level).
    > A `'compare'` scope with no `{base_ref}` measures against nothing and answers about nothing, so the two travel together.

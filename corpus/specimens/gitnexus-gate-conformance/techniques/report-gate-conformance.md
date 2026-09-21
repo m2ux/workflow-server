@@ -45,8 +45,16 @@ Per gated run: the measurement it took, whether a gate was presented, the answer
 
 ## Protocol
 
-1. Record the edit gate against `{impact_report}` and `{edit_approved}`: the rating the measurement carried, whether that rating presented a gate at all, and the answer it took.
+### 1. Record the Edit Gate
+
+- Record the edit gate against `{impact_report}` and `{edit_approved}`: the rating the measurement carried, whether that rating presented a gate at all, and the answer it took.
    > A rating below high presents nothing, so `{edit_approved}` holding its seeded value is the run passing rather than a gate being skipped. Say which of the two this run was.
-2. Record the rename gate against `{changes}`, `{rename_approved}` and `{change_report}`: the edits the preview listed, the answer the gate took, and whether a diff followed.
+
+### 2. Record the Rename Gate
+
+- Record the rename gate against `{changes}`, `{rename_approved}` and `{change_report}`: the edits the preview listed, the answer the gate took, and whether a diff followed.
    > `{change_report}` is absent where the gate refused, because the steps after it carry the answer. An absent report beside a refusal is the run behaving; an absent report beside an acceptance is not.
-3. Write `{gate_conformance_report}` to `{planning_folder_path}` per [Template](../resources/conformance-report.md#template), with [Rules](../resources/conformance-report.md#rules) governing what each row may claim.
+
+### 3. Write the Report
+
+- Write `{gate_conformance_report}` to `{planning_folder_path}` per [Template](../resources/conformance-report.md#template), with [Rules](../resources/conformance-report.md#rules) governing what each row may claim.

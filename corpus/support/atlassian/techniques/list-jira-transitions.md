@@ -21,4 +21,6 @@ Status transitions available from the issue's current state, each with its `id`.
 
 ## Protocol
 
-1. Call `getTransitionsForJiraIssue { cloudId, issueIdOrKey }`; return the listing as `{available_transitions}`.
+### 1. List the Available Transitions
+
+- Call `getTransitionsForJiraIssue { cloudId, issueIdOrKey }`; return the listing as `{available_transitions}`.

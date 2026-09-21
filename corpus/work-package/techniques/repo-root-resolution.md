@@ -33,6 +33,14 @@ Absolute path of the component's git working tree — the checkout whose `origin
 
 ## Protocol
 
-1. When `{component_hint}` is unset, set `{component_path}` to `.` and `{component_name}` to the basename of `{host_repo_path}` — the path is at the host root. Done.
-2. Read `{host_repo_path}/.gitmodules` and take the submodule `path` whose basename equals `{component_hint}`. Set `{component_path}` to that path and `{component_name}` to `{component_hint}`.
-3. Join `{host_repo_path}` with `{component_path}` and emit the result as `{component_git_dir}`.
+### 1. Resolve a Path at the Host Root
+
+- When `{component_hint}` is unset, set `{component_path}` to `.` and `{component_name}` to the basename of `{host_repo_path}` — the path is at the host root. Done.
+
+### 2. Resolve a Submodule Path
+
+- Read `{host_repo_path}/.gitmodules` and take the submodule `path` whose basename equals `{component_hint}`. Set `{component_path}` to that path and `{component_name}` to `{component_hint}`.
+
+### 3. Emit the Component Directory
+
+- Join `{host_repo_path}` with `{component_path}` and emit the result as `{component_git_dir}`.

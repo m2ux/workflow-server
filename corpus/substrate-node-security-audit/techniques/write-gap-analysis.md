@@ -53,10 +53,21 @@ Workflow improvement suggestions derived from gap root causes
 
 ## Protocol
 
-1. Load reference report from input `{reference_report}` (first and only time).
-2. Extract reference finding list with severities and affected files.
-3. Map each reference finding to the closest AI finding, classify each as matched/partial/gap, and severity-calibrate the matched findings.
-4. Write the `{gap_analysis}` report, assembling the `{gap_analysis.summary_metrics}`, `{gap_analysis.finding_mapping}`, `{gap_analysis.gaps}`, `{gap_analysis.severity_calibration}`, `{gap_analysis.ai_only_findings}`, and `{gap_analysis.recommendations}` sections into the artifact.
+### 1. Load the Reference Report
+
+- Load reference report from input `{reference_report}` (first and only time).
+
+### 2. Extract the Reference Findings
+
+- Extract reference finding list with severities and affected files.
+
+### 3. Map and Calibrate
+
+- Map each reference finding to the closest AI finding, classify each as matched/partial/gap, and severity-calibrate the matched findings.
+
+### 4. Write the Gap Analysis
+
+- Write the `{gap_analysis}` report, assembling the `{gap_analysis.summary_metrics}`, `{gap_analysis.finding_mapping}`, `{gap_analysis.gaps}`, `{gap_analysis.severity_calibration}`, `{gap_analysis.ai_only_findings}`, and `{gap_analysis.recommendations}` sections into the artifact.
 
 ## Rules
 

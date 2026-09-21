@@ -25,7 +25,15 @@ The issue category (`feature`, `bug`, `task`, `enhancement`, `epic`); unset when
 
 ## Protocol
 
-1. Read the category signals `{issue_record}` already carries, most authoritative first: the platform's own type field, then labels, then the title and body.
-2. When those signals settle on one category, set `{issue_type}` to it and `{issue_type_ambiguous}` to `false`.
-3. When they are absent, or name more than one category (an issue whose body holds both a defect and an enhancement), set `{issue_type_ambiguous}` to `true` and leave `{issue_type}` unset.
+### 1. Read the Category Signals
+
+- Read the category signals `{issue_record}` already carries, most authoritative first: the platform's own type field, then labels, then the title and body.
+
+### 2. Set the Type Where They Settle
+
+- When those signals settle on one category, set `{issue_type}` to it and `{issue_type_ambiguous}` to `false`.
+
+### 3. Report Ambiguity Where They Do Not
+
+- When they are absent, or name more than one category (an issue whose body holds both a defect and an enhancement), set `{issue_type_ambiguous}` to `true` and leave `{issue_type}` unset.
    > Do not pick a category unaided. `{issue_type}` fixes the branch-name prefix ([naming-conventions](./naming-conventions.md)), which is expensive to change once a PR is open, so an unsettled category is never a guess here.

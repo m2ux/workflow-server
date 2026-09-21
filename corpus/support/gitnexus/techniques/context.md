@@ -57,7 +57,12 @@ How many steps the flow runs.
 
 ## Protocol
 
-1. Call `gitnexus_context { name, file_path, uid: symbol_uid, repo: repo_name }` to assemble the `{context_report}` — incoming calls, outgoing calls, and process membership.
+### 1. Assemble the Context Report
+
+- Call `gitnexus_context { name, file_path, uid: symbol_uid, repo: repo_name }` to assemble the `{context_report}` — incoming calls, outgoing calls, and process membership.
    > - Where several symbols carry `{name}`, the answer is the candidates rather than a report. Choose among them by the file each sits in and call again with that candidate's `{symbol_uid}`, or with `{file_path}` where the answer carries no identity.
    > - Where `{name}` resolves to nothing, grep for the symbol: it is unindexed, and the tree the index walked is what `subjects-the-index-holds` bounds.
-2. Read the `{context_report}`'s caller fan-out as a blast-radius signal: many callers and broad process participation → the symbol is path-committing; an isolated symbol is low-risk to touch.
+
+### 2. Read the Fan-Out as Blast Radius
+
+- Read the `{context_report}`'s caller fan-out as a blast-radius signal: many callers and broad process participation → the symbol is path-committing; an isolated symbol is low-risk to touch.

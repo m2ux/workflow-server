@@ -25,8 +25,13 @@ Every changed file under `{planning_folder_path}`, including `README.md`, the li
 
 ## Protocol
 
-1. Resolve `{$eng_git_dir}` as the engineering checkout `manage-git.directory-scope` names. Resolve `{$eng_branch}`: `git -C {eng_git_dir} branch --show-current` — never hardcode `main`.
-2. Collect every changed path under `{planning_folder_path}` as `{publishable_files}` (`git -C {eng_git_dir} status --porcelain` restricted to that folder), and emit `{eng_branch}` as `{artifact_publish_ref}`.
+### 1. Resolve the Checkout and Branch
+
+- Resolve `{$eng_git_dir}` as the engineering checkout `manage-git.directory-scope` names. Resolve `{$eng_branch}`: `git -C {eng_git_dir} branch --show-current` — never hardcode `main`.
+
+### 2. Collect the Publishable Files
+
+- Collect every changed path under `{planning_folder_path}` as `{publishable_files}` (`git -C {eng_git_dir} status --porcelain` restricted to that folder), and emit `{eng_branch}` as `{artifact_publish_ref}`.
 
 ## Rules
 

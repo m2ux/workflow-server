@@ -29,6 +29,14 @@ The combined result text or structured object per `{synthesis_criteria}`.
 
 ## Protocol
 
-1. Read `{gathered_results.items}` in order; skip null/empty slots or note them as gaps per `{synthesis_criteria}`.
-2. Reconcile conflicts using `{synthesis_criteria}` (and `{work_goal}` when present).
-3. Emit `{combined_synthesis}` only — do not re-dispatch workers from this op.
+### 1. Read the Gathered Results
+
+- Read `{gathered_results.items}` in order; skip null/empty slots or note them as gaps per `{synthesis_criteria}`.
+
+### 2. Reconcile Conflicts
+
+- Reconcile conflicts using `{synthesis_criteria}` (and `{work_goal}` when present).
+
+### 3. Emit the Synthesis
+
+- Emit `{combined_synthesis}` only — do not re-dispatch workers from this op.

@@ -25,6 +25,8 @@ The same query with each `MATCH` restricted to `{changed_files}`.
 
 ## Protocol
 
-1. On each `MATCH` in `{cypher_query}`, add a `filePath` predicate on the node whose path that arm returns as `file_path`. A `MATCH` that already has a `WHERE` takes `AND <alias>.filePath IN [...]`; one that does not takes `WHERE <alias>.filePath IN [...]`. The list is each path of `{changed_files}`, quoted as a Cypher string.
+### 1. Add the Path Predicate
+
+- On each `MATCH` in `{cypher_query}`, add a `filePath` predicate on the node whose path that arm returns as `file_path`. A `MATCH` that already has a `WHERE` takes `AND <alias>.filePath IN [...]`; one that does not takes `WHERE <alias>.filePath IN [...]`. The list is each path of `{changed_files}`, quoted as a Cypher string.
    > A `UNION ALL` is several arms, and each arm carries the predicate — wrapping the whole query as a subquery is the other shape when the dialect can wrap `UNION ALL`, and either shape is the query the graph will run.
-2. Record the resulting string as `{cypher_query}`.
+- Record the resulting string as `{cypher_query}`.

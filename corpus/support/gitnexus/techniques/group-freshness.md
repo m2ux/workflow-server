@@ -29,8 +29,13 @@ A member list the response carries alongside the entries, and which stands empty
 
 ## Protocol
 
-1. Call `gitnexus_group_status { name: group_name }` to produce the `{group_freshness_report}`.
-2. Read the report before taking any group-wide answer as evidence.
+### 1. Take the Freshness Report
+
+- Call `gitnexus_group_status { name: group_name }` to produce the `{group_freshness_report}`.
+
+### 2. Read It Before Trusting a Group Answer
+
+- Read the report before taking any group-wide answer as evidence.
    > - A member reported as missing has no index. A group-wide search answers from the members that have one and reports nothing about the absence, so a result set that omits that component reads exactly like one where the component held no match.
    > - A member reported as behind answers from the commit it was indexed at. Its commits-behind count is the age of its evidence, and a member hundreds of commits behind is answering about a different codebase.
    > - A contract registry reported as behind describes cross-member links drawn before the members last moved.

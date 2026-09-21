@@ -21,12 +21,17 @@ The DCO-compliant merge guidance for the `{pr_number}` PR, branched on `{squash_
 
 ## Protocol
 
-1. When `{squash_merge_supported}` is true, instruct the human to merge locally so the merge commit is both GPG-signed and DCO-attested — the GitHub web UI squash merge is not GPG-signed:
+### 1. Compose the Guidance for Each Merge Setting
+
+- When `{squash_merge_supported}` is true, instruct the human to merge locally so the merge commit is both GPG-signed and DCO-attested — the GitHub web UI squash merge is not GPG-signed:
    ```
    git checkout main && git pull
    git merge --squash {branch_name}
    git commit -s -S -m 'feat: description (#{pr_number})'
    git push
    ```
-2. When `{squash_merge_supported}` is false, instruct the human that branch commits land as-is on a plain branch merge — no local signing flow is required.
-3. Emit `{presented_merge_guidance}` as advice for the human to act on; do not perform the merge.
+- When `{squash_merge_supported}` is false, instruct the human that branch commits land as-is on a plain branch merge — no local signing flow is required.
+
+### 2. Hand the Guidance Over
+
+- Emit `{presented_merge_guidance}` as advice for the human to act on; do not perform the merge.

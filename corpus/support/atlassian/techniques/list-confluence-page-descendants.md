@@ -29,4 +29,6 @@ The page's descendants, one entry per child page.
 
 ## Protocol
 
-1. Call `getConfluencePageDescendants { cloudId, pageId, depth?, limit? }`; return the listing as `{child_pages}`.
+### 1. List the Descendants
+
+- Call `getConfluencePageDescendants { cloudId, pageId, depth?, limit? }`; return the listing as `{child_pages}`.

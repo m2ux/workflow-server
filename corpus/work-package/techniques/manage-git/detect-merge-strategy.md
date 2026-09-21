@@ -15,4 +15,6 @@ Boolean — true if the repo allows squash merges
 
 ## Protocol
 
-1. Apply [view-repo](/github/techniques/view-repo.md) with *repo_path*=`{component_git_dir}`; set `{squash_merge_supported}` from the op.
+### 1. Read the Repository's Merge Settings
+
+- Apply [view-repo](/github/techniques/view-repo.md) with *repo_path*=`{component_git_dir}`; set `{squash_merge_supported}` from the op.

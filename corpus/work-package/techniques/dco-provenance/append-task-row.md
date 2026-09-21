@@ -61,5 +61,10 @@ The updated provenance log, with the appended task row
 
 ## Protocol
 
-1. Create the `{provenance_log}` when it does not exist, per [provenance-log](../../resources/provenance-log.md#template).
-2. Append one row from `{task_id}`, `{assistant_name}`, `{model_id}`, `{prompt_class}`, `{context_scope}` and `{task_description}`, per the guide's [Rules](../../resources/provenance-log.md#rules).
+### 1. Create the Log Where It Is Absent
+
+- Create the `{provenance_log}` when it does not exist, per [provenance-log](../../resources/provenance-log.md#template).
+
+### 2. Append the Row
+
+- Append one row from `{task_id}`, `{assistant_name}`, `{model_id}`, `{prompt_class}`, `{context_scope}` and `{task_description}`, per the guide's [Rules](../../resources/provenance-log.md#rules).

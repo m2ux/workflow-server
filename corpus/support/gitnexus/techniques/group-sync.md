@@ -21,6 +21,11 @@ What the rebuilt registry holds: the contracts extracted per member, and how man
 
 ## Protocol
 
-1. Call `gitnexus_group_sync { name: group_name }` and record the `{contract_registry_stats}` it reports.
+### 1. Rebuild the Registry
+
+- Call `gitnexus_group_sync { name: group_name }` and record the `{contract_registry_stats}` it reports.
    > The rebuild reads each member's own graph, so a member whose index is behind contributes contracts from the commit it was indexed at, and a registry built over members that are behind is behind with them.
-2. Read a contract with no cross-link as one whose counterpart the registry did not find, which is a publisher with no consumer in the group or a name the match did not reach — not evidence that nothing consumes it.
+
+### 2. Read a Contract with No Cross-Link
+
+- Read a contract with no cross-link as one whose counterpart the registry did not find, which is a publisher with no consumer in the group or a name the match did not reach — not evidence that nothing consumes it.
