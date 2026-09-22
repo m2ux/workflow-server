@@ -14,9 +14,13 @@
  * This check answers when a name is bound, and nothing about the shape of what it is bound to. A
  * message addressing into a value — `{report.summary}` — has its member measured against the
  * producing output's declared components by `check-binding-fidelity`'s `output-path-undeclared`,
- * which keeps every `{token}` whole for that purpose. Between them the two halves of a dotted read
- * are covered; neither reaches which of a contract's fields a particular run populates, which the
- * producing operation states in prose and no static check settles.
+ * which keeps every `{token}` whole for that purpose.
+ *
+ * That second half reaches only an output that declares components. One declaring none states
+ * nothing about its shape, so a member read off it is reached past rather than contradicted and
+ * goes unmeasured — the carve-out that check makes for every read, messages included. Neither half
+ * reaches which of a contract's fields a particular run populates, which the producing operation
+ * states in prose and no static check settles.
  *
  * Run: npx tsx guards/check-message-binding.ts [--root <workflows-dir>] [--json]
  */
