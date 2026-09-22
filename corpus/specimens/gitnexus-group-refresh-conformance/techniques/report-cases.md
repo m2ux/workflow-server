@@ -9,6 +9,14 @@ State what the group-refresh run landed under its positive and negative bindings
 
 ## Inputs
 
+### positive_stale_member_graph_name
+
+Name of the prepared member standing behind its tree, which the rebuild loop runs its pass over.
+
+### positive_current_member_graph_name
+
+Name of the prepared member standing at its tree's head.
+
 ### positive_group_name
 
 A configured repository group every member of which has a graph, so the positive case leaves no member behind.

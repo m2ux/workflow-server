@@ -1,5 +1,5 @@
 id: report-cases
-version: 1.1.0
+version: 1.2.0
 name: Report Cases
 description: State what the run landed under each binding.
 variables:
@@ -12,9 +12,11 @@ variables:
     - negative_unrebuildable_members
     - positive_contract_registry_stats
     - positive_contract_report
-    - positive_group_freshness_report
+    - positive_current_member_graph_name
     - positive_group_name
+    - positive_group_freshness_report
     - positive_member_rebuild_stats
+    - positive_stale_member_graph_name
     - positive_unrebuildable_members
 required: true
 steps:
