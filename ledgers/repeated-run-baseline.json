@@ -17,7 +17,8 @@
     "coverage-map-then-test-review": "Map the diff onto the changed symbols a test reaches, then review the suite against that map — the three points work-package assesses test coverage at: the review-mode pass in validate, the post-implementation review, and the re-review inside its fix-and-revalidate loop. Each copy carries its own gate and its own identifiers, and the graph answer has to be taken again at each because the diff has moved between them, so the repetition is three readings of a changing diff rather than one run written three times. No stage claims it.",
     "dispatch-then-gather-in-the-audit-family": "Log the dispatch, then gather the results — shared by the primary pass of the two security audit workflows, which were authored from one another. The gather binding differs in both of its inputs, so the pair is a copied idiom rather than a settled run.",
     "launch-then-walk": "Open a child session, then walk it — the pair every launch site carries, because a launch reports where the child opens and the walk is what reaches its end. The walk half is already one shared run; what repeats is the two step positions and their order, and the copies differ only in the identifiers and the two gates the work-package host carries. A construct naming the pair would put a reference in front of a single step and the run it already refers to.",
-    "persist-then-announce": "Write an artifact, then announce it — one shared binding followed by a control action whose message differs at every site, across three workflows. The pair is an idiom rather than a run worth naming: one of its two steps is the only shared work, and a construct naming it would put a reference in front of a single step.",
+    "prepare-then-address": "Prepare the stale fixture, then set the addressed graph to the name the preparation landed — the pair every case that evidences a rebuild carries, at the negative case of the index-refresh specimen and the stale-graph case of the area-comprehension specimen. The preparation is already one shared operation; what repeats beside it is a single set action, whose target is the same at both sites and whose value differs only in the identifier each case binds the landed name under. A construct naming the pair would put a reference in front of one operation and one action. No stage claims it.",
+    "persist-then-announce":"Write an artifact, then announce it — one shared binding followed by a control action whose message differs at every site, across three workflows. The pair is an idiom rather than a run worth naming: one of its two steps is the only shared work, and a construct naming it would put a reference in front of a single step.",
     "read-the-pull-request-body-back": "View the pull request, then verify the rendered body — the read-back pair at the two work-package activities that touch a pull request body. Both copies are gated, and the two gates differ, which is the drift a shared run would settle.",
     "roster-fan-out-run": "Verify the output files, compose the roster briefs, dispatch the workers — a fan-out run over a roster, shared by two activities of the substrate audit. Its operations are the substrate audit's own dispatch family rather than the orchestration patterns, and no stage of the shared-run plan claims it.",
     "sub-workflow-then-accumulate": "Hand a unit to a sub-workflow, walk the child it opened, read its run manifest, accumulate the result — the per-unit body the two prism analysis activities share, identical field for field. The walk at its centre is already one shared run; what still repeats is the three steps around it. It sits next to stage 7's subject without being named by it, and whether a shared run or a per-element activity fan is its right home is the open question there."
@@ -198,6 +199,15 @@
       ],
       "verdict": "unassigned",
       "rationale": "address-then-refresh"
+    },
+    {
+      "site": "gitnexus-area-comprehension-conformance/activities/03-stale-graph-case.yaml + gitnexus-index-refresh-conformance/activities/02-negative-case.yaml",
+      "run": [
+        "T:conformance::prepare-stale-fixture()",
+        "A:set=repo_name"
+      ],
+      "verdict": "unassigned",
+      "rationale": "prepare-then-address"
     }
   ]
 }

@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-area-comprehension-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Area Comprehension Conformance Workflow
 description: >-
   Hold the gitnexus area-comprehension run to three cases. The positive case names a concept the
@@ -9,8 +9,8 @@ description: >-
   names a concept no flow ranks into, so the query lands no process and no process symbol, both
   per-item passes run zero times, and the contexts and traces stay empty — the fallback the run
   promises for a concept outside the graph, distinct from an area the graph searched and read. The
-  stale-graph case names a tree whose graph is behind it, so the nested refresh rebuilds before the
-  ranked answer is taken from the graph as rebuilt.
+  stale-graph case prepares a throwaway checkout whose graph trails it by a commit, so the nested
+  refresh rebuilds before the ranked answer is taken from the graph as rebuilt.
 author: m2ux
 tags:
   - gitnexus
@@ -23,16 +23,12 @@ techniques:
 variables:
   - name: repo_name
     type: string
-    description: Name of the indexed graph every operation in the run addresses, which the stale-graph case rebinds to the graph it reads from.
+    description: Name of the indexed graph every operation in the run addresses, which the stale-graph case rebinds to the graph of the checkout it prepares.
     defaultValue: workflow-server
   - name: current_graph_name
     type: string
-    description: Name of the graph current with its tree, which the positive and negative cases address and the report names as the source of their answers.
+    description: Name of the graph current with its tree, which the positive and negative cases resolve `{repo_name}` to from the tree they name, and which the report names as the source of their answers.
     defaultValue: workflow-server
-  - name: stale_graph_name
-    type: string
-    description: Name of the graph behind its tree, which the stale-graph case binds `{repo_name}` to before referring to the run, and which the report names as the source of its answers.
-    defaultValue: poc-shielded
   - name: positive_search_query
     type: string
     description: A concept the graph's execution flows rank into, whose area the positive case reads.
@@ -59,16 +55,8 @@ variables:
     defaultValue: /home/mike1/projects/dev/workflow-server
   - name: stale_graph_search_query
     type: string
-    description: A concept the stale graph's execution flows rank into, whose area the stale-graph case reads off the graph as rebuilt.
-    defaultValue: docker image build
-  - name: stale_graph_tree_path
-    type: string
-    description: Filesystem path of the tree whose graph is behind it, which names the graph the stale-graph case addresses.
-    defaultValue: /home/mike1/projects/dev/poc-shielded
-  - name: stale_graph_repo_path
-    type: string
-    description: Filesystem path of the tree the stale-graph case's rebuild walks and keys its index under.
-    defaultValue: /home/mike1/projects/dev/poc-shielded
+    description: A concept the prepared checkout's one execution flow ranks into, whose area the stale-graph case reads off the graph as rebuilt.
+    defaultValue: main greeting flow
 initialActivity: positive-case
 graph:
   positive-case:

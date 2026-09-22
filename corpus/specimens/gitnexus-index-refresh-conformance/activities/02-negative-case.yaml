@@ -1,15 +1,18 @@
 id: negative-case
-version: 1.1.0
+version: 1.2.0
 name: Negative Case
-description: Refer to the index refresh over a tree whose graph is behind it.
+description: Prepare a throwaway checkout whose graph trails it, and refer to the index refresh over that tree.
 variables:
-  reads:
-    - negative_graph_name
-    - negative_repo_path
   writes:
+    - name: negative_fixture_path
+      type: string
+      description: Path of the throwaway checkout the case prepares, whose graph stands a commit behind its working tree.
+    - name: negative_graph_name
+      type: string
+      description: Name the prepared checkout's graph is keyed under, which the reads and the rebuild address and the report names as the source of this case's answers.
     - name: repo_name
       type: string
-      description: Name of the indexed graph every operation in the run addresses — the graph of the tree behind its index, set before the reads and the rebuild key under it.
+      description: Name of the indexed graph every operation in the run addresses — the graph of the prepared checkout, set before the reads and the rebuild key under it.
     - name: negative_stats
       type: object
       description: File, symbol and process counts the graph holds.
@@ -18,18 +21,25 @@ variables:
       description: Whether the graph is behind the tree it was built from.
 required: true
 steps:
+  - kind: technique
+    id: prepare-fixture
+    technique:
+      name: conformance::prepare-stale-fixture
+      outputs:
+        stale_fixture_path: negative_fixture_path
+        stale_fixture_graph_name: negative_graph_name
   - kind: action
     id: address-graph
     actions:
       - action: set
         target: repo_name
         value: "{negative_graph_name}"
-        description: The graph the reads and the rebuild address — the one built from the tree that has moved on since.
+        description: The graph the reads and the rebuild address — the one built from the prepared checkout, which a commit has moved on from since.
   - kind: routine
     id: refresh-stale-tree
     routine: gitnexus::index-refresh
     with:
-      repo_path: "{negative_repo_path}"
+      repo_path: "{negative_fixture_path}"
     outputs:
       stats: negative_stats
       index_stale: negative_index_stale
@@ -37,4 +47,4 @@ exits:
   - id: refreshed
     isDefault: true
 outcome:
-  - The same run under a tree whose graph is behind read the flag true, rebuilt, and read again, so the landed flag is the second read's verdict on whether the graph caught up
+  - The same run over a checkout the case moved a commit past its graph read the flag true, rebuilt, and read again, so the landed flag is the second read's verdict on whether the graph caught up

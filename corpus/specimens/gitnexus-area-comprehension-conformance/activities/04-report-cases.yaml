@@ -1,5 +1,5 @@
 id: report-cases
-version: 1.1.0
+version: 1.2.0
 name: Report Cases
 description: State what the run landed under each binding, and which graph answered it.
 variables:
@@ -15,6 +15,7 @@ variables:
     - positive_index_stats
     - positive_query_report
     - positive_symbol_contexts
+    - stale_graph_fixture_path
     - stale_graph_flow_traces
     - stale_graph_index_stale
     - stale_graph_index_stats

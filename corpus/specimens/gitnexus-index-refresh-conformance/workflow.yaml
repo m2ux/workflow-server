@@ -1,15 +1,16 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-index-refresh-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Index Refresh Conformance Workflow
 description: >-
   Hold the gitnexus index-refresh run to three cases. The positive case names a tree whose graph is
   current, so the first read lands a false staleness flag, no rebuild runs, and the stats describe
-  the graph as read. The negative case names a tree whose graph is behind, so the first read lands
-  the flag true, the rebuild walks the tree, and a second read says whether the graph caught up —
-  the recovery the run promises for a stale index, distinct from a graph that was current all along.
-  The unindexed-tree case names a tree with no graph, so the first read answers with an error the
-  run reads as no graph, the build lands one, and the second read lands its counts current.
+  the graph as read. The negative case prepares a throwaway checkout whose graph trails it by a
+  commit, so the first read lands the flag true, the rebuild walks the tree, and a second read says
+  whether the graph caught up — the recovery the run promises for a stale index, distinct from a
+  graph that was current all along. The unindexed-tree case names a tree with no graph, so the first
+  read answers with an error the run reads as no graph, the build lands one, and the second read
+  lands its counts current.
 author: m2ux
 tags:
   - gitnexus
@@ -28,10 +29,6 @@ variables:
     type: string
     description: Name of the graph current with its tree, which the positive case addresses and the report names as the source of its answers.
     defaultValue: workflow-server
-  - name: negative_graph_name
-    type: string
-    description: Name of the graph behind its tree, which the negative case binds `{repo_name}` to before referring to the run, and which the report names as the source of its answers.
-    defaultValue: poc-shielded
   - name: unindexed_tree_graph_name
     type: string
     description: Name the build keys the unindexed tree's graph under, which the unindexed-tree case binds `{repo_name}` to before referring to the run, and which the report names as the source of its answers.
@@ -40,10 +37,6 @@ variables:
     type: string
     description: A tree whose graph is current, so the positive case's first read finds nothing to rebuild.
     defaultValue: /home/mike1/projects/dev/workflow-server
-  - name: negative_repo_path
-    type: string
-    description: A tree whose graph is behind it, so the negative case's first read sends the run through a rebuild.
-    defaultValue: /home/mike1/projects/dev/poc-shielded
   - name: unindexed_tree_repo_path
     type: string
     description: A tree with no graph, so the unindexed-tree case's first read draws an error and the build keys a new graph under the tree's basename.

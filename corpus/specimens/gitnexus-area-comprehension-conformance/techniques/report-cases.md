@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -13,9 +13,13 @@ State what the area-comprehension run landed under its positive, negative and st
 
 Name of the graph current with its tree, which the positive and negative cases addressed.
 
+### stale_graph_fixture_path
+
+Path of the throwaway checkout the stale-graph case prepared, which the run walked and the row names as the tree its answers describe.
+
 ### stale_graph_name
 
-Name of the graph behind its tree, which the stale-graph case addressed.
+Name the prepared checkout's graph is keyed under, which the stale-graph case addressed.
 
 ### positive_index_stats
 
@@ -99,6 +103,7 @@ Three rows for the one run: the graph and bindings each case took, whether each 
    > The positive and negative rows name `{current_graph_name}` there, and the `stale-graph-case` row names `{stale_graph_name}`, so a reader sees which graph each row's answers came from.
    > A `{negative_query_report}` with no process and no process symbol is a concept no flow ranks into, its definitions filling or not; both per-item passes ran zero times, so `{negative_symbol_contexts}` and `{negative_flow_traces}` are empty by construction, and the row names that fallback rather than reading the area as read and found unconnected.
    > The `stale-graph-case` row's mark is a true staleness flag on the nested refresh's first read, a rebuild, then the second read's verdict; `{stale_graph_index_stale}` holds that verdict, and `{stale_graph_query_report}`, `{stale_graph_symbol_contexts}` and `{stale_graph_flow_traces}` were taken from the graph as rebuilt, so the row names the rebuild that preceded them rather than reading the flag as a graph that was current from the start.
+   > The `stale-graph-case` row's `Inputs` column carries `{stale_graph_fixture_path}`, the checkout the case prepared for this walk. The tree is throwaway and the reader has no standing name to look it up by, so the path is what says which tree that row's answers describe.
 
 ### 2. Write the Report
 
