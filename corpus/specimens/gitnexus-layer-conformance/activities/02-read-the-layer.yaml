@@ -1,5 +1,5 @@
 id: read-the-layer
-version: 1.1.0
+version: 1.2.0
 name: Read the Layer
 description: Bind the two operations that answer from the program-dependence layer — the taint findings a file records, and the predicates gating a function — over a graph indexed with that layer.
 variables:
@@ -20,17 +20,12 @@ steps:
       name: gitnexus::explain
       inputs:
         taint_target: dependence_target
-      outputs:
-        taint_report: taint_report
   - kind: technique
     id: read-guards
     technique:
       name: gitnexus::pdg-query
       inputs:
         dependence_mode: controls
-        dependence_target: dependence_target
-      outputs:
-        dependence_report: dependence_report
 exits:
   - id: read
     isDefault: true

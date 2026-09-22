@@ -1,5 +1,5 @@
 id: trace-and-check
-version: 1.1.0
+version: 1.2.0
 name: Trace and Check
 description: Bind the two operations that answer from the call graph alone — a path between two symbols, and the import cycles the graph holds.
 variables:
@@ -17,19 +17,10 @@ required: true
 steps:
   - kind: technique
     id: trace-path
-    technique:
-      name: gitnexus::trace
-      inputs:
-        from_symbol: from_symbol
-        to_symbol: to_symbol
-      outputs:
-        trace_report: trace_report
+    technique: gitnexus::trace
   - kind: technique
     id: check-cycles
-    technique:
-      name: gitnexus::check
-      outputs:
-        cycle_report: cycle_report
+    technique: gitnexus::check
 exits:
   - id: traced
     isDefault: true
