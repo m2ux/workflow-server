@@ -29,7 +29,7 @@ Graph addressed: {repo_name, or "none — the operations answered from the defau
 
 ### a-note-is-an-answer-about-the-graph
 
-An answer carrying a note in place of findings landed, and says the graph was built without the layer it reads; it says nothing about the code. The `Layer` column carries that, and the `Holds` column reads *unmeasured* rather than *none found*, because a graph with no taint layer records no finding whatever the code does.
+An answer whose note states the graph holds no layer to read has landed, and says the graph was built without that layer; it says nothing about the code. The `Layer` column carries that, and the `Holds` column reads *unmeasured* rather than *none found*, because a graph with no taint layer records no finding whatever the code does.
 
 ### a-missing-path-names-where-it-broke
 

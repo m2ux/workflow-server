@@ -29,13 +29,13 @@ Findings anchored at a changed symbol whose every hop sits outside what the chan
 
 ### taint_unmeasured
 
-Whether any report in `{taint_reports}` carried a note in place of findings, so the partition rests on a graph without its taint layer and settles nothing.
+Whether any report in `{taint_reports}` carried a note stating the graph holds no taint layer, so the partition rests on a graph without that layer and settles nothing.
 
 ## Protocol
 
 ### 1. Settle Whether the Layer Was There
 
-- Read each entry of `{taint_reports}` for a note in place of findings, and set `{taint_unmeasured}` true where any carries one; both partitions below are then empty by construction rather than by measurement.
+- Read each entry of `{taint_reports}` for a note stating the graph holds no taint layer, and set `{taint_unmeasured}` true where any carries one; both partitions below are then empty by construction rather than by measurement.
 
 ### 2. Partition by Where the Hops Land
 

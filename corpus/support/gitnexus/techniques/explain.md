@@ -41,7 +41,7 @@ Whether `findings` is shorter than `totalFindings`.
 
 #### note
 
-Present where the graph carries no taint layer, naming the build that records one; the answer is then empty and says nothing about the code.
+The caveats on what the layer models, carried on every answer. Where the graph carries no taint layer the note states so and names the build that records one, and the answer is then empty and says nothing about the code.
 
 ## Protocol
 
@@ -49,7 +49,7 @@ Present where the graph carries no taint layer, naming the build that records on
 
 - Call `gitnexus_explain { target: taint_target, limit, repo: repo_name }` and record the `{taint_report}`.
    > - Where `{taint_target}` names several symbols the answer is the candidates, with `totalCandidates` the true count; choose by file and name the file's path as `{taint_target}` instead.
-   > - Where the answer carries `{taint_report}.note`, the graph was built without its program-dependence layers and holds no findings to report; a rebuild carrying them is what makes this answer a measurement.
+   > - Where `{taint_report}.note` states the graph holds no taint layer, the graph was built without its program-dependence layers and holds no findings to report; a rebuild carrying them is what makes this answer a measurement.
 
 ### 2. Read a Finding's Reach
 

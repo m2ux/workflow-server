@@ -45,7 +45,7 @@ One row per bound operation: whether its answer landed, what it holds, and for t
 
 - Fill the table from the four operations — `trace` against `{trace_report}`, `check` against `{cycle_report}`, `explain` against `{taint_report}` and `pdg-query` against `{dependence_report}` — per [Template](../resources/conformance-report.md#template).
    > - A `{trace_report}` whose `status` is not `ok` still landed; its `Holds` column names the status and, on `no_path`, the furthest node reached.
-   > - A `{taint_report}` or `{dependence_report}` carrying a `note` came from a graph without the layer; its `Layer` column reads *absent* and its `Holds` column reads *unmeasured*.
+   > - A `{taint_report}` or `{dependence_report}` whose `note` states the graph holds no taint or dependence layer came from a graph without it; its `Layer` column reads *absent* and its `Holds` column reads *unmeasured*. A taint answer's note also carries the layer's modelling caveats where the layer is present, so the row reads the note's statement and not its presence.
 
 ### 2. Write the Report
 
