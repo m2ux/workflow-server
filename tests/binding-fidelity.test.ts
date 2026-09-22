@@ -344,6 +344,14 @@ steps:
    * nothing about its shape and contradicts no read. Counting one as a component would make an
    * output measured by the presence of a delivery field, and every read into it reportable.
    */
+  it('passes a read into an output whose only sub-sections are entry metadata', async () => {
+    const metadataOnly = WITH_COMPONENTS.replace(
+      /#### changed_symbols[\s\S]*?## Protocol/,
+      '#### audience\n\n`agent`\n\n#### artifact\n\n`change-report.md`\n\n## Protocol',
+    );
+    expect(await pathViolationsIn(runReading('change_report.symbols'), metadataOnly)).toEqual([]);
+  });
+
   /**
    * A gate's message is the one read a person sees, and it addresses into a value the same way a
    * loop's `over` does. The text scan keeps every `{token}` whole, so the member a message names is
@@ -360,12 +368,15 @@ steps:
     expect(await pathViolationsIn(runGating('{change_report.changed_symbols}'))).toEqual([]);
   });
 
-  it('passes a read into an output whose only sub-sections are entry metadata', async () => {
-    const metadataOnly = WITH_COMPONENTS.replace(
-      /#### changed_symbols[\s\S]*?## Protocol/,
-      '#### audience\n\n`agent`\n\n#### artifact\n\n`change-report.md`\n\n## Protocol',
-    );
-    expect(await pathViolationsIn(runReading('change_report.symbols'), metadataOnly)).toEqual([]);
+  /**
+   * The carve-out above reaches a message like any other read: an output declaring no components
+   * states nothing about its shape, so the member a gate names goes unmeasured. This is the bound
+   * on what the two message guards cover between them — one answers when the name is bound, the
+   * other the member, and neither answers for an output that declares nothing.
+   */
+  it('passes a member a checkpoint message names where the output declares no components', async () => {
+    const bare = WITH_COMPONENTS.replace(/#### changed_symbols[\s\S]*?## Protocol/, '## Protocol');
+    expect(await pathViolationsIn(runGating('{change_report.symbols}'), bare)).toEqual([]);
   });
 });
 
