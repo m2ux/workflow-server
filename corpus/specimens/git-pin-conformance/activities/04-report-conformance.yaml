@@ -1,0 +1,24 @@
+id: report-conformance
+version: 1.0.0
+name: Report Conformance
+description: Write what was asked of each checkout beside what the pin did, and whether the refused name left its checkout where it stood.
+variables:
+  reads:
+    - checkout_pins
+    - checkout_readiness
+    - left_checkout
+    - planning_folder_path
+  writes:
+    - name: conformance_report
+      type: string
+      description: The report this run wrote, as the guide shapes it.
+required: true
+steps:
+  - kind: technique
+    id: write-the-report
+    technique: report-pin-conformance
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - The report holds one row per pin with the form expected beside the form landed, and states whether the refused name left its checkout at the commit the earlier pin put there

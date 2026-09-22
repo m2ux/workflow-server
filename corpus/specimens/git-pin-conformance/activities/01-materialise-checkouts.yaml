@@ -1,0 +1,51 @@
+id: materialise-checkouts
+version: 1.0.0
+name: Materialise Checkouts
+description: Stand two worktrees of the host repository beneath the planning folder, each on a branch of its own, for the pins to move.
+variables:
+  reads:
+    - component_git_dir
+    - planning_folder_path
+  writes:
+    - name: left_checkout
+      type: string
+      description: Absolute path of the first worktree, which the branch pin and the unresolvable name both address.
+    - name: right_checkout
+      type: string
+      description: Absolute path of the second worktree, which the tag pin and the commit pin both address.
+    - name: default_branch
+      type: string
+      description: The repository's default branch, which the branch pin names.
+    - name: worktree_created
+      type: boolean
+      description: True once the worktree most recently materialised stands at its path.
+required: true
+steps:
+  - kind: action
+    id: name-the-checkouts
+    actions:
+      - action: set
+        target: left_checkout
+        value: "{planning_folder_path}/checkouts/left"
+      - action: set
+        target: right_checkout
+        value: "{planning_folder_path}/checkouts/right"
+  - kind: technique
+    id: materialise-left
+    technique:
+      name: git::create-worktree
+      inputs:
+        branch_name: git-pin-conformance/left
+        target_path: left_checkout
+  - kind: technique
+    id: materialise-right
+    technique:
+      name: git::create-worktree
+      inputs:
+        branch_name: git-pin-conformance/right
+        target_path: right_checkout
+exits:
+  - id: materialised
+    isDefault: true
+outcome:
+  - Two worktrees of one repository stand side by side, each on a branch of its own, so a pin moving one leaves the other where it was ({worktree_created})

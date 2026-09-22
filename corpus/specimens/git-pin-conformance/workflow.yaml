@@ -1,0 +1,37 @@
+$schema: ../../../schemas/workflow.schema.json
+id: git-pin-conformance
+version: 1.0.0
+title: Git Pin Conformance Workflow
+description: >-
+  Stand two worktrees of the host repository, name a revision of each kind for them — a branch, a
+  tag, a commit, and one name the repository cannot resolve — bring them there through the shared
+  readiness run, and report what was asked of each beside what landed. The pins are detached
+  checkouts of a repository already present, so what the run evidences is the operation's answer for
+  each kind of name rather than anything about the repository.
+author: m2ux
+tags:
+  - git
+  - conformance
+  - routine
+  - library
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Absolute path to the planning folder this run writes its report into, and beneath which it stands its checkouts.
+  - name: component_git_dir
+    type: string
+    description: The repository both checkouts are worktrees of — the checkout the session runs in.
+    defaultValue: "."
+initialActivity: materialise-checkouts
+graph:
+  materialise-checkouts:
+    materialised: plan-pins
+  plan-pins:
+    planned: pin-checkouts
+  pin-checkouts:
+    pinned: report-conformance
+  report-conformance:
+    reported: __terminal__
