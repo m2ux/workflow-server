@@ -11,9 +11,10 @@ Deploy [`examples/cursor-workspace/`](../examples/cursor-workspace/) with [`scri
 - **The MCP servers** — `workflow-server` reaching `http://127.0.0.1:3000/mcp` through `mcp-remote`, alongside `concept-rag`, `atlassian` and `gitnexus`.
 - **The always-applied rule** that sends an agent to `discover` before it does anything else.
 - **`AGENTS.md` and `CLAUDE.md`**, carrying the checkout basename and the `owner/repo` a session binds to.
-- **The four workspace roots** — the workspace itself, the project, the planning folder and the work trees.
+- **The five workspace roots** — the workspace itself, the project, the workflows checkout, the planning folder and the work trees.
+- **Codex** — `.codex/config.toml` carries the same MCP servers and the two always-applied rules. The kickoff path and the product checkout are trusted.
 
-For Claude Code it also installs a workspace-local baseline: the hooks under `scripts/claude/`, and a rendered `.claude/settings.json`.
+For Claude Code it also installs a workspace-local baseline: `scripts/claude` links at the hooks source, and a rendered `.claude/settings.json`.
 
 ### Running the deploy
 
@@ -35,17 +36,25 @@ Everything below lands under `~/.local/share/cursor/workspaces/<name>/`.
 
 | Path | Role |
 |------|------|
-| `*.code-workspace` | The multi-root folder list, with absolute `$HOME/…` paths |
-| `.cursor/mcp.json`, `.mcp.json` | The required MCP servers, home-path tokens expanded |
-| `.cursor/rules/`, `.claude/rules/` | The bootstrap rule and its companions |
-| `.claude/skills/` | The skills the template ships, one directory each; skills added locally stay |
-| `AGENTS.md`, `CLAUDE.md` | The target checkout and an `owner/repo` placeholder, seeded when absent and workspace-owned after that |
-| `scripts/claude/` | Portable hooks and the sandbox wrapper, from the repository's own [`scripts/claude/`](../scripts/claude/) |
+| `*.code-workspace` | Five roots with absolute `$HOME/…` paths: workspace, project, workflows, planning, work trees |
+| `rules/` | The bootstrap rule and its companions. Each `.mdc` links at the `.md` of the same name |
+| `.cursor/rules`, `.claude/rules` | Link at `rules/` |
+| `skills/` | One link per template skill, at the template directory that versions it. A skill already present stays |
+| `.cursor/skills`, `.claude/skills` | Link at `skills/` |
+| `.agents` | Links at the kickoff directory, so Codex finds skills at `.agents/skills` |
+| `.cursor/mcp.json` | The required MCP servers, home-path tokens expanded. Extra servers already present stay |
+| `.mcp.json` | Links at `.cursor/mcp.json` |
+| `.codex/config.toml` | The same MCP servers, plus the two always-applied rules, for Codex |
+| `AGENTS.md` | The target checkout and an `owner/repo` placeholder, seeded when absent and kept after that |
+| `CLAUDE.md`, `.cursor/AGENTS.md`, `.claude/CLAUDE.md` | Link at `AGENTS.md` |
+| `scripts/claude` | Links at the hooks source, [`scripts/claude/`](../scripts/claude/) in a checkout |
 | `.claude/settings.json` | Generated at deploy from [the settings template](../examples/cursor-workspace/.claude/settings.template.json) |
+
+When the product checkout exists, deploy links `.agents` at the kickoff directory and `.cursor`, `.claude` and `.codex` at the matching kickoff subdirectory. The workflows root is `<repo>/.worktrees/workflows`; deploy names that path and leaves the directory for `git worktree add`.
 
 `install.sh` places the deploy script, the workspace template and `scripts/claude/` under the install directory, so deploying a workspace does not need a full checkout.
 
-Deploy expands the `__HOME__` and `__WORKSPACE__` tokens in the template. Re-run it with `--force` after the template or the hooks change; `AGENTS.md` and `CLAUDE.md` survive that refresh, so edits describing the target repository stay put.
+Deploy expands the `__HOME__` and `__WORKSPACE__` tokens in the canonical rule files. Re-run it with `--force` after the template or the hooks change; `AGENTS.md` survives that refresh, so edits describing the target repository stay put.
 
 ## The bootstrap rule
 

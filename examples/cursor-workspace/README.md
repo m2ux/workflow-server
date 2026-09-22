@@ -15,22 +15,23 @@ Requires a checkout (repo-name) under your projects root, and `$HOME` set.
 |------|------|
 | workspace | kickoff dir (`./`) |
 | project | `$HOME/projects/dev/<repo>` (or `${env:HOST_PROJECTS_ROOT}/<repo-name>`) |
+| workflows | `…/<repo-name>/.worktrees/workflows` |
 | planning | `…/<repo-name>/.engineering/artifacts/planning` |
 | work trees | `…/<repo-name>/.worktrees` |
 
 ## Rules
 
-`.claude/rules/` and `.cursor/rules/` deploy verbatim except for `__WORKSPACE__`
-and `__HOME__`, which expand to absolute paths. Use them when a rule must name a
-path that also appears in the settings allowlist — `bash-composition.md` names
+`rules/` is the canonical copy. `.cursor/rules` and `.claude/rules` link at it,
+and each `.mdc` links at the `.md` of the same name. `__WORKSPACE__` and
+`__HOME__` expand to absolute paths in that copy. Use them when a rule must name
+a path that also appears in the settings allowlist — `bash-composition.md` names
 the `sbx` launcher this way so the two stay in step.
 
 ## Skills
 
-`.claude/skills/` deploys one directory per skill, under the same placeholder
-expansion as the rules. A skill the template does not carry stays in the
-workspace across a `--force` refresh, so deploying never removes locally added
-skills.
+`skills/<name>` links at the template directory that versions the skill.
+`.cursor/skills` and `.claude/skills` link at `skills/`. A skill the template
+does not carry stays in `skills/` across a `--force` refresh.
 
 | Skill | Use for |
 |-------|---------|
