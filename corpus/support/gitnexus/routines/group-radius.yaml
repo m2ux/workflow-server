@@ -12,8 +12,8 @@ inputs:
     description: Name of the configured repository group the reach is measured across.
   - id: concern_symbol
     description: The symbol the concern was raised against, in its home graph.
-  - id: concern_file
-    description: The file in the home tree that defines the concern, which separates it from others of the same name. Empty where the name is defined once, and the name alone then resolves it.
+  - id: concern_uid
+    description: The symbol identity that reaches the concern and no other, as a prior read of the home graph returned it. Empty where the name is defined once, and the name alone then resolves it. A file does not stand in for it, a type and its implementation block sharing one.
   - id: home_repo
     description: The graph name of the member the concern was raised in.
 
@@ -85,7 +85,7 @@ steps:
       name: gitnexus::context
       inputs:
         name: concern_symbol
-        file_path: concern_file
+        symbol_uid: concern_uid
         repo_name: home_repo
       outputs:
         context_report: home_context_report
@@ -95,6 +95,7 @@ steps:
       name: gitnexus::impact
       inputs:
         target: concern_symbol
+        target_uid: concern_uid
         direction: upstream
         repo_name: home_repo
       outputs:

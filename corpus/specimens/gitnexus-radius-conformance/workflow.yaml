@@ -29,9 +29,9 @@ variables:
     type: string
     description: The symbol the concern was raised against, in its home graph.
     defaultValue: ""
-  - name: concern_file
+  - name: concern_uid
     type: string
-    description: The file in the home tree that defines the concern, separating it from others of the same name. Empty where the name alone resolves it.
+    description: The symbol identity reaching the concern and no other, as a prior read returned it. Empty where the name alone resolves it.
     defaultValue: ""
   - name: home_repo
     type: string
