@@ -60,7 +60,7 @@ internals:
   - id: member_impact_report
     description: What depends on the held boundary name in the held member's graph.
   - id: member_probes
-    description: One entry per member and boundary name probed, with what the member's graph answered.
+    description: One entry per member and boundary name probed, naming every definition of that name the member's graph holds with the file it sits in and what depends on it, or recording that the graph holds none.
 
 steps:
   - kind: routine
@@ -174,7 +174,7 @@ steps:
             id: record-probe
             actions:
               - action: message
-                message: "{radius_member.name}: {boundary_symbol.name} has {member_impact_report.summary.direct} direct dependents in this graph."
+                message: "{radius_member.name}: {boundary_symbol.name} probed, recording each definition {member_impact_report} names with its file and its dependents."
               - action: set
                 target: member_probes
                 description: The held member's graph name, the held boundary name, and what that graph answered depends on it — appended to the probes the run holds.

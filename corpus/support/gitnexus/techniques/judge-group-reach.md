@@ -82,7 +82,8 @@ True where `{group_query_report}` carries a flow from this member.
 
 ### 3. Read Each Member's Probes
 
-- Read the member's entries of `{member_probes}` and record under `graph` each depth-1 dependent found, with the file the probed name is defined in. That file is in the member's own tree — the graph holds no node for a name the tree imports, per `edges-the-parser-cannot-see` — so what the probe found is a definition of the boundary name inside the member, and the file is what lets a reader tell a mirror of the home's symbol from a homonym.
+- Read the member's entries of `{member_probes}` and record under `graph` every definition of the boundary name the member's graph holds, each with its file and its depth-1 dependents. A probe answers in three shapes and the graph holds a different thing in each: a report, where the member defines the name once; candidates, where it defines it several times and each carries its own file and dependent count; and a not-found answer, where the member's tree defines it nowhere and the instrument is recorded as having found none.
+- Each file recorded is in the member's own tree — the graph holds no node for a name the tree imports, per `edges-the-parser-cannot-see` — so a definition the probe found is one the member makes itself, and the file is what lets a reader tell a mirror of the home's symbol from a homonym.
 
 ### 4. Search Each Member's Tree
 
@@ -91,7 +92,7 @@ True where `{group_query_report}` carries a flow from this member.
 
 ### 5. Settle the Reach
 
-- Set the member's reach to `graph` where a probe found a dependent, `hand-derived` where the search found a file, and `none` where neither did. The instruments asked stay listed whichever settled it, the registry's answer among them.
+- Set the member's reach to `graph` where a definition the probe found carries a dependent, `hand-derived` where the search found a file, and `none` where neither did. The instruments asked stay listed whichever settled it, the registry's answer among them.
 
 ### 6. Note the Search
 
