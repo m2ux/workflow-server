@@ -82,7 +82,7 @@ These end the [runs](../routines/README.md) — a routine carries no prose, so t
 | [`classify-test-coverage`](classify-test-coverage.md) | Which changed symbols no test reaches, and whose tests the change outran |
 | [`compare-affected-scope`](compare-affected-scope.md) | Which reached flows fall outside what the work was for |
 | [`extract-boundary-symbols`](extract-boundary-symbols.md) | The names by which a concern in one graph can be reached from another |
-| [`judge-group-reach`](judge-group-reach.md) | Whether a concern reaches each member of a group, and which instrument settled it |
+| [`judge-group-reach`](judge-group-reach.md) | Whether a concern reaches each member of a group, what each consumes its home as, and which instrument settled each |
 | [`select-affected-clusters`](select-affected-clusters.md) | Which functional areas a change reaches |
 | [`select-stale-members`](select-stale-members.md) | Which members of a group a rebuild reaches, and the tree each one walks |
 | [`weigh-change-risk`](weigh-change-risk.md) | The one rating a reviewer acts on |

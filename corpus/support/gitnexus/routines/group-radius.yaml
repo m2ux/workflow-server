@@ -1,11 +1,11 @@
 id: group-radius
-version: 1.1.0
+version: 2.0.0
 name: Group Radius
 description: >-
   Bring a repository group current, take a concern's radius in its home graph, name the symbols and
   packages by which another member could reach it, read the registry's links and probe every other
   member's graph and tree for those names, and settle for each member whether the concern reaches
-  it and by which instruments.
+  it, what it consumes the home as, and by which instruments.
 
 inputs:
   - id: group_name
@@ -16,11 +16,13 @@ inputs:
     description: The symbol identity that reaches the concern and no other, as a prior read of the home graph returned it. Empty where the name is defined once, and the name alone then resolves it. A file does not stand in for it, a type and its implementation block sharing one.
   - id: home_repo
     description: The graph name of the member the concern was raised in.
+  - id: pdg_layers
+    description: Whether the rebuilds the readiness run performs record the program-dependence layers. Empty where the caller takes the build's own default, which records none.
 
 outputs:
   - id: group_reach_report
     type: array
-    description: One entry per member, naming the graph it answers for, whether the concern reaches it, and the instruments that answered.
+    description: One entry per member, naming the graph it answers for, whether the concern reaches it, whether the registry declares it a consumer of the home, and the instruments that answered.
   - id: boundary_symbols
     type: array
     description: The names another member could hold a reference to, each with its kind and its home file.
@@ -66,6 +68,7 @@ steps:
     routine: gitnexus::group-refresh
     with:
       group_name: "{group_name}"
+      pdg_layers: "{pdg_layers}"
     outputs:
       group_freshness_report: group_freshness_report
       contract_registry_stats: contract_registry_stats

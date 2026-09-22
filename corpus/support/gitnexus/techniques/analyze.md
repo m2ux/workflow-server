@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -65,6 +65,10 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 ### a-rebuilt-index-reaches-a-reader-on-reload
 
 A completed rebuild publishes the graph to disk, and a running server reopens the replacement at its next check, at most once every five seconds. A read inside that window answers from the previous graph and reports it stale. Treat the second read rather than the exit status as what says the graph is current.
+
+### the-build-flag-sets-the-graph-s-layers
+
+A graph carries the program-dependence layers of the build that wrote it last. `{pdg_layers}` is therefore the state the build leaves behind rather than a request added to what is already there: a build that omits it rebuilds the graph without those layers, and the taint findings and the dependence query go from answering to reporting a missing layer. Every rebuild of a tree whose layers a caller depends on carries the flag, including one a refresh run performs on the caller's behalf.
 
 ### index-every-addressed-tree
 

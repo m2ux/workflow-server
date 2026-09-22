@@ -27,4 +27,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - The report holds one row per member with the graph it answered from and the instruments that answered, and names the members whose reach the graph could not see
+  - The report holds one row per member with the graph it answered from, the instruments that answered, and the dependency the registry declares kept apart from the reach, and names the members whose reach the graph could not see and those the registry and the tree disagree on

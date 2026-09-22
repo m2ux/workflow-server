@@ -2,7 +2,7 @@
 name: conformance-report
 description: Template and rules for the gitnexus radius conformance report, the one document a run leaves behind.
 metadata:
-  version: 1.0.0
+  version: 2.0.0
   order: 1
 ---
 
@@ -10,7 +10,7 @@ metadata:
 
 ## What this guide is for
 
-The shape of `gitnexus-radius-conformance-report.md` and what each section may claim. A reader opens that document to answer one question — did the reach run answer for every member of the group, naming the graph and the instruments behind each answer, and did it read the registry and derive by hand where the graph held no edge — so every section is evidence for that and nothing else.
+The shape of `gitnexus-radius-conformance-report.md` and what each section may claim. A reader opens that document to answer one question — did the reach run answer for every member of the group, naming the graph and the instruments behind each answer, separating what the member consumes from what it references, and deriving by hand where the graph held no edge — so every section is evidence for that and nothing else.
 
 The concern the run was asked about is its excuse for having a radius to measure. What depends on it is worth a column and nothing more.
 
@@ -23,8 +23,8 @@ The concern the run was asked about is its excuse for having a radius to measure
 
 ## What the run settled for each member
 
-| Graph | Reach | Instruments | Surfaced by search | Index behind by |
-|-------|-------|-------------|--------------------|-----------------|
+| Graph | Reach | Dependency | Instruments | Surfaced by search | Index behind by |
+|-------|-------|------------|-------------|--------------------|-----------------|
 
 ## The boundary the probes searched for
 
@@ -32,7 +32,11 @@ One line per kind — symbol, route, tool, package — naming the entries or say
 
 ## The members the graph could not see
 
-One paragraph. Name each member whose probes came back empty, the instruments that answered instead — the registry's link, the search of its tree — what was asked, and what came back.
+One paragraph. Name each member whose probes came back empty, the search of its tree that answered instead, what was asked, and what came back.
+
+## The couplings the registry and the tree disagree on
+
+One paragraph. Name each member consuming the home as a library that holds no reference to the concern, and each member referencing the concern that the group's links do not declare.
 ```
 
 ## Rules
@@ -47,4 +51,12 @@ A member whose graph held no edge is written with the instruments that answered 
 
 ### the-searched-member-is-the-finding
 
-The closing paragraph names each member answered by the registry or by a search of its tree and what came back, whether or not anything did. Those answers are what the run promises where the graph is silent, and a report that omits them would pass with the promise unkept.
+The closing paragraph names each member answered by a search of its tree and what came back, whether or not anything did. That search is what the run promises where the graph is silent, and a report that omits it would pass with the promise unkept.
+
+### the-reach-column-rests-on-symbol-evidence
+
+A row's reach carries what an instrument found in the member itself — a dependent among its own edges, or a name in its tree. A declared library link says the member depends on the package the concern's tree publishes, which is true of every symbol that tree holds alike, so a reach column fed from it reads the same for a member built around the concern and a member that never names it.
+
+### a-consumer-without-a-reference-is-named
+
+The report names each member the registry declares a consumer of the home whose reach came back `none`. The pair is the run's sharpest answer — the member could reach the concern and, as far as both symbol instruments saw, does not — and a report carrying only the members something was found in leaves the reader to read an absent row as an unasked question.

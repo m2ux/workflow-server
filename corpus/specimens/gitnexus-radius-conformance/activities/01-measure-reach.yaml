@@ -11,7 +11,7 @@ variables:
   writes:
     - name: group_reach_report
       type: array
-      description: One entry per member, naming the graph it answers for, whether the concern reaches it, and the instruments that answered.
+      description: One entry per member, naming the graph it answers for, whether the concern reaches it, whether the registry declares it a consumer of the home, and the instruments that answered.
     - name: boundary_symbols
       type: array
       description: The names another member could hold a reference to, each with its kind and its home file.
