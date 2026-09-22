@@ -1,5 +1,5 @@
 id: negative-case
-version: 1.0.0
+version: 1.1.0
 name: Negative Case
 description: Refer to the guarded rename over a symbol the graph does not hold, with the gate refusing the edit list.
 variables:
@@ -10,7 +10,7 @@ variables:
   writes:
     - name: negative_changes
       type: array
-      description: The per-file edit list, each edit carrying the confidence its provenance earns — empty by construction.
+      description: Where an edit list would stand, the refusal the preview answers with, naming the symbol the graph does not hold.
     - name: negative_rename_approved
       type: boolean
       description: Whether the previewed edit list was accepted at the gate.
@@ -35,4 +35,4 @@ exits:
   - id: gated
     isDefault: true
 outcome:
-  - The same run under a symbol the graph does not hold previewed an empty edit list, the spliced gate refused it and the steps after the gate stayed unreached, the fallback the run promises rather than a failure
+  - The same run under a symbol the graph does not hold answered the preview with a refusal naming it, the spliced gate refused it and the steps after the gate stayed unreached, the fallback the run promises rather than a failure

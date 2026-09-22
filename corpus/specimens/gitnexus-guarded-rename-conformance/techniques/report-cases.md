@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -39,7 +39,7 @@ The symbols and execution flows the applied rename actually moved, read back off
 
 ### negative_symbol_name
 
-A symbol the graph does not hold, so the negative case previews an empty edit list.
+A symbol the graph does not hold, so the negative case's preview answers with a refusal naming it.
 
 ### negative_new_name
 
@@ -51,7 +51,7 @@ The file holding the symbol, which separates one of that name from the others; e
 
 ### negative_changes
 
-The per-file edit list, each edit carrying the confidence its provenance earns — empty by construction.
+Where an edit list would stand, the refusal the preview answers with, naming the symbol the graph does not hold.
 
 ### negative_rename_approved
 
@@ -105,7 +105,7 @@ Three rows for the one run: the bindings each case took, whether each materialis
 
 - Fill the table from the three cases — the positive binding `{positive_symbol_name}`, `{positive_new_name}` and `{positive_file_path}` against `{positive_changes}`, `{positive_rename_approved}` and `{positive_change_report}`, the negative binding `{negative_symbol_name}`, `{negative_new_name}` and `{negative_file_path}` against `{negative_changes}`, `{negative_rename_approved}` and `{negative_change_report}`, and a third row named `ambiguous-name-case` for the binding `{ambiguous_name_symbol_name}`, `{ambiguous_name_new_name}` and `{ambiguous_name_file_path}` against `{ambiguous_name_changes}`, `{ambiguous_name_rename_approved}` and `{ambiguous_name_change_report}`, with `{repo_name}` as the graph the header names — per [Template](/conformance/resources/case-report.md#template).
    > An empty `{negative_changes}` for a symbol the graph does not hold, a false `{negative_rename_approved}` from the refused gate, and an absent `{negative_change_report}` because the steps after the gate did not run are together the fallback's mark; the row names that refusal rather than reading the case as a rename that moved nothing.
-   > The ambiguous-name row's mark is a status of `ambiguous` with ranked candidates in `{ambiguous_name_changes}` where an edit list would be, a false `{ambiguous_name_rename_approved}` from the refused gate, and an absent `{ambiguous_name_change_report}` because nothing was written and no diff was read back; the row names the candidates the graph offered rather than reading the case as an empty list or a rename that moved nothing.
+   > The ambiguous-name row's mark is a status of `ambiguous` with ranked candidates in `{ambiguous_name_changes}` where an edit list would be, a false `{ambiguous_name_rename_approved}` from the refused gate, and an absent `{ambiguous_name_change_report}` because nothing was written and no diff was read back; the row names the candidates the graph offered rather than reading the case as a refusal or a rename that moved nothing.
 
 ### 2. Write the Report
 
