@@ -5,6 +5,7 @@ import {
   validateWorkflowVersion,
   validateStepManifest,
   validateTechniqueFetches,
+  isEmptyStepOutput,
   buildValidation,
   type SessionView,
 } from '../src/utils/validation.js';
@@ -455,6 +456,46 @@ describe('validation', () => {
         'work',
       );
       expect(warnings.some(w => w.includes("'first-step' has empty output"))).toBe(true);
+    });
+
+    it('takes a multi-output step reported as a map keyed by output id', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: { change_report: 'two symbols', risk: 'low' } },
+          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('has empty output'))).toBe(false);
+    });
+
+    it('warns on a multi-output step reported as a map with no entries', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: {} },
+          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes("'first-step' has empty output"))).toBe(true);
+    });
+  });
+
+  describe('isEmptyStepOutput: what counts as nothing reported', () => {
+    it('reads an absent value, a blank string and an empty map as nothing', () => {
+      expect(isEmptyStepOutput(undefined)).toBe(true);
+      expect(isEmptyStepOutput('')).toBe(true);
+      expect(isEmptyStepOutput('   ')).toBe(true);
+      expect(isEmptyStepOutput({})).toBe(true);
+    });
+
+    it('reads a summary string and a populated map as something', () => {
+      expect(isEmptyStepOutput('done')).toBe(false);
+      expect(isEmptyStepOutput({ change_report: 'two symbols' })).toBe(false);
     });
   });
 

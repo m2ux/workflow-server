@@ -66,7 +66,23 @@ export function validateWorkflowVersion(view: SessionView, workflow: Workflow): 
 
 export interface StepManifestEntry {
   step_id: string;
-  output: string;
+  /**
+   * What the step produced: a summary string for a step with one output, and a map keyed by
+   * output id for a step with several, which is the shape every operation's provenance note asks
+   * the caller for.
+   */
+  output: string | Record<string, unknown>;
+}
+
+/**
+ * Whether a manifest entry reports nothing for its step — an absent value, a blank string, or a
+ * map with no entries. The manifest validator and the `step_completed` history writer both read
+ * this, so a step recorded as completed is exactly a step the validator passes.
+ */
+export function isEmptyStepOutput(output: StepManifestEntry['output'] | undefined): boolean {
+  if (!output) return true;
+  if (typeof output === 'string') return output.trim().length === 0;
+  return Object.keys(output).length === 0;
 }
 
 /**
@@ -160,7 +176,7 @@ export function validateStepManifest(
   }
 
   for (const entry of manifest) {
-    if (!entry.output || (typeof entry.output === 'string' && entry.output.trim().length === 0)) {
+    if (isEmptyStepOutput(entry.output)) {
       warnings.push(`Step '${entry.step_id}' has empty output`);
     }
   }

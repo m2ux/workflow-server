@@ -75,15 +75,15 @@ import {
   listSessionSearchRoots,
 } from '../utils/session/index.js';
 import type { SessionFile } from '../schema/session.schema.js';
-import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTechniqueFetches, validateReportedExit, validateActivityManifest } from '../utils/validation.js';
+import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTechniqueFetches, validateReportedExit, validateActivityManifest, isEmptyStepOutput } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 import { createTraceToken, decodeTraceToken } from '../trace.js';
 import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
-  output: z.string(),
-})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). Multi-output steps: JSON object keyed by output id. A loop body reports ONE ENTRY PER STEP PER ITERATION, under the step\'s declared id each time, so three passes of a two-step body are six entries in the order they ran — the manifest is what the activity did, and a body run three times reported once says it ran once. Omit entirely when no steps ran — not [].');
+  output: z.union([z.string(), z.record(z.unknown())]),
+})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). One output is a summary string; a step with more than one output is a JSON object keyed by output id. A loop body reports ONE ENTRY PER STEP PER ITERATION, under the step\'s declared id each time, so three passes of a two-step body are six entries in the order they ran — the manifest is what the activity did, and a body run three times reported once says it ran once. Omit entirely when no steps ran — not [].');
 
 const activityManifestSchema = z.array(z.object({
   activity_id: z.string(),
@@ -1392,7 +1392,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // Hybrid step_completed (RE-8): one event per step_manifest entry with non-empty output.
         if (step_manifest && exitingActivity) {
           for (const entry of step_manifest as StepManifestEntry[]) {
-            if (!entry.output || entry.output.length === 0) continue;
+            if (isEmptyStepOutput(entry.output)) continue;
             draft.history.push({
               timestamp: now,
               type: 'step_completed',
