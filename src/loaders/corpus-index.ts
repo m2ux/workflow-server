@@ -17,12 +17,15 @@ import { parseDefinition } from '../utils/serialization.js';
  * routed anywhere. Activities belong to workflows; the three library kinds are what a namespace
  * offers.
  *
- * A namespace is named by its directory name, and by the slash-joined path from the corpus root that
- * reaches it. The name is what a reference ordinarily carries, so an id stays stable however the tree
- * around it is arranged and a folder can be re-grouped without rewriting what points at it; the path
- * is what a reference carries where a name is claimed twice, or where an author would rather say
- * exactly which one they mean. `support/gitnexus/techniques/analyze.md` answers to `gitnexus` and to
- * `support/gitnexus` alike.
+ * A namespace is named by its directory name, by the slash-joined path from the corpus root that
+ * reaches it, and by as much of the end of that path as reaches it alone. The name is what a
+ * reference ordinarily carries, so an id stays stable however the tree around it is arranged and a
+ * folder can be re-grouped without rewriting what points at it; a path is what a reference carries
+ * where a name is claimed twice, or where an author would rather say exactly which one they mean.
+ * A path is matched against the end of each namespace's path, so it keeps the same invariance:
+ * grouping the whole tree under a further folder rewrites nothing. `support/gitnexus/techniques/analyze.md`
+ * answers to `gitnexus` and to `support/gitnexus` alike, and once the tree is grouped under `vendor/`
+ * both spellings still reach it beside the whole path `vendor/support/gitnexus`.
  *
  * The walk never descends into the four reserved directory names — `activities`, `resources`,
  * `routines` and `techniques` — at any depth. Those hold a namespace's own files, in volume and
@@ -434,14 +437,29 @@ export function workflowLocation(source: CorpusSource, workflowId: string): Work
  *
  * A reference carrying no separator is a name, and falls through to the path of the same spelling so
  * a top-level namespace stays reachable when a deeper directory claims its name. A reference
- * carrying one is a path, which names one directory whatever else the corpus holds.
+ * carrying one is a path: the whole path from the corpus root where one spells it, else the end of
+ * exactly one namespace's path. The trailing match is what keeps a path-spelled reference valid when
+ * the tree above the namespace is regrouped, and a run of segments that ends two paths names
+ * neither — as a name two directories claim names neither.
  */
 export function namespaceLocation(source: CorpusSource, ref: string): NamespaceLocation | null {
   const index = asIndex(source);
   const location = ref.includes(PATH_SEPARATOR)
-    ? index.namespaces.get(ref) ?? null
+    ? index.namespaces.get(ref) ?? namespaceByPathEnd(index, ref)
     : index.namespacesByName.get(ref) ?? index.namespaces.get(ref) ?? null;
   return location ? locationIfMatching(location) : null;
+}
+
+/** The one namespace whose path ends with the segments a reference carries; null where none or several do. */
+function namespaceByPathEnd(index: CorpusIndex, ref: string): NamespaceLocation | null {
+  const ending = PATH_SEPARATOR + ref;
+  let found: NamespaceLocation | null = null;
+  for (const location of index.namespaces.values()) {
+    if (!location.path.endsWith(ending)) continue;
+    if (found) return null;
+    found = location;
+  }
+  return found;
 }
 
 /** A directory a namespace owns, or null where the corpus holds no such namespace. */

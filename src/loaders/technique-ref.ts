@@ -12,11 +12,13 @@
  * Depth is unbounded on both halves: `group::subgroup::operation` is an ordinary reference, and so
  * is `support::gitnexus::analyze`.
  *
- * A namespace is spelled by its directory name, or by the path from the corpus root that reaches it
- * — `gitnexus` and `support::gitnexus` name the same one. The longest leading run that spells a
- * namespace wins, so a reference into a nested namespace is read as that namespace rather than as a
- * deep path inside a shallower one. Where both readings answer, the corpus is holding one reference
- * over two files and the reference is refused naming both, rather than one being picked.
+ * A namespace is spelled by its directory name, by the path from the corpus root that reaches it, or
+ * by as much of the end of that path as reaches it alone — `gitnexus` and `support::gitnexus` name
+ * the same one, and both keep naming it once the tree is grouped under `vendor/` and its whole path
+ * is `vendor::support::gitnexus`. The longest leading run that spells a namespace wins, so a
+ * reference into a nested namespace is read as that namespace rather than as a deep path inside a
+ * shallower one. Where both readings answer, the corpus is holding one reference over two files and
+ * the reference is refused naming both, rather than one being picked.
  *
  * A namespace prefix may also be spelled with a slash (`<namespace>/<technique>`), which is the same
  * reference under an older spelling and always names a namespace, whether or not the corpus holds
