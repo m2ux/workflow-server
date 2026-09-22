@@ -1,7 +1,7 @@
 id: read-the-layer
-version: 1.0.0
+version: 1.1.0
 name: Read the Layer
-description: Bind the two operations that answer from the program-dependence layer — the taint findings a file records, and the predicates gating a function.
+description: Bind the two operations that answer from the program-dependence layer — the taint findings a file records, and the predicates gating a function — over a graph indexed with that layer.
 variables:
   reads:
     - dependence_target
@@ -35,5 +35,5 @@ exits:
   - id: read
     isDefault: true
 outcome:
-  - Each answer landed whether or not the graph held the layer it reads, an absent layer arriving as a note inside the answer rather than as a failed step
+  - Both answers came from a graph holding the layer they read, so each carries what the layer records rather than a note about the build
   - One bag variable fed both operations under their own input names, so a caller-side value binds to two operations without a copy

@@ -1,0 +1,24 @@
+id: report-conformance
+version: 1.1.0
+name: Report Conformance
+description: State what each bound operation landed under each graph, and which answers came from a layer the graph held.
+variables:
+  reads:
+    - absent_layer_dependence_report
+    - absent_layer_graph
+    - absent_layer_taint_report
+    - cycle_report
+    - dependence_report
+    - repo_name
+    - taint_report
+    - trace_report
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-layer-conformance
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Every operation this walk bound is named with what it landed and the graph it addressed, and each layer-reading answer is marked as a measurement or as the note an absent layer leaves

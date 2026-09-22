@@ -135,7 +135,7 @@
     },
     {
       "id": "gitnexus-layer-conformance",
-      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is that a library operation bound directly as an activity step lands its declared answer whether or not the graph holds the layer it reads, which the reference guards and the all-workflows drift walk measure."
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is that a library operation bound directly as an activity step lands its declared answer under a graph holding the layer it reads and under one built without it, the two layer readers bound once per graph so both readings are measured, which the reference guards and the all-workflows drift walk measure."
     },
     {
       "id": "contract-composition",

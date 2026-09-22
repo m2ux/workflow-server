@@ -1,0 +1,42 @@
+id: read-the-absent-layer
+version: 1.0.0
+name: Read the Absent Layer
+description: Bind the same two layer-reading operations over a graph built without its program-dependence layers.
+variables:
+  reads:
+    - absent_layer_graph
+    - absent_layer_target
+  writes:
+    - name: absent_layer_taint_report
+      type: object
+      description: The taint findings matched, how many there are in full, and the note stating the graph holds no layer to record them.
+    - name: absent_layer_dependence_report
+      type: object
+      description: The control-dependence edges matched for the anchored function, how many there are in full, and the note stating the graph holds no layer to record them.
+required: true
+steps:
+  - kind: technique
+    id: read-absent-findings
+    technique:
+      name: gitnexus::explain
+      inputs:
+        repo_name: absent_layer_graph
+        taint_target: absent_layer_target
+      outputs:
+        taint_report: absent_layer_taint_report
+  - kind: technique
+    id: read-absent-guards
+    technique:
+      name: gitnexus::pdg-query
+      inputs:
+        repo_name: absent_layer_graph
+        dependence_mode: controls
+        dependence_target: absent_layer_target
+      outputs:
+        dependence_report: absent_layer_dependence_report
+exits:
+  - id: noted
+    isDefault: true
+outcome:
+  - The same two operations, addressed at a graph built without its program-dependence layers, each landed a well-formed empty answer carrying the note that names the build recording those layers, so an absent layer is an answer about the graph rather than a failed step
+  - Each step names the layerless graph in its own binding, so the address the measured case walks under is still standing when the closing activity names both graphs

@@ -1,6 +1,6 @@
 ---
 name: conformance-report
-description: The shape a bound-operation conformance report takes, and what each row may claim about an answer that landed from a layer the graph may not hold.
+description: The shape a bound-operation conformance report takes across the graphs a walk addresses, and what each row may claim about an answer that landed from a layer the graph may not hold.
 ---
 
 # Conformance Report
@@ -10,11 +10,13 @@ description: The shape a bound-operation conformance report takes, and what each
 ```markdown
 # {Specimen Title} — Conformance Report
 
-Graph addressed: {repo_name, or "none — the operations answered from the default graph"}
+Graphs addressed:
 
-| Operation | Landed | Layer | Holds |
-|-----------|--------|-------|-------|
-| `{operation-name}` | yes / no | present / absent / not read | {unmeasured / a status / a one-line summary} |
+- `{graph-name}` — {what its index holds, and which rows answer from it}
+
+| Case | Graph | Operation | Landed | Layer | Holds |
+|------|-------|-----------|--------|-------|-------|
+| {case-name} | `{graph-name}` | `{operation-name}` | yes / no | present / absent / not read | {unmeasured / a status / a one-line summary} |
 
 ## What each operation evidenced
 
@@ -37,4 +39,4 @@ A path answer with no path is not a blank row. Its `Holds` column names the stat
 
 ### the-graph-is-the-header
 
-The header names the graph every answer came from, since a report describing an unnamed tree leaves the reader to guess which checkout the symbols sit in.
+The header names every graph the walk read, one line each, with what that graph's index holds; and each row names in its `Graph` column the one its answer came from. A report describing an unnamed tree leaves the reader to guess which checkout the symbols sit in, and one naming a single tree for answers taken from several leaves the reader to attribute them by guess. The same operation over a graph carrying the program-dependence layers and over one built without them lands two answers of the same shape, so the graph is what separates a measurement from a note.

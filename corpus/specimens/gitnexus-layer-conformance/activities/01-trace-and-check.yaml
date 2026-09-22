@@ -1,5 +1,5 @@
 id: trace-and-check
-version: 1.0.0
+version: 1.1.0
 name: Trace and Check
 description: Bind the two operations that answer from the call graph alone — a path between two symbols, and the import cycles the graph holds.
 variables:
@@ -35,4 +35,5 @@ exits:
     isDefault: true
 outcome:
   - A library operation bound as this activity's own step landed its declared answer under the name the step binds
+  - The graph name sits in the bag under the name the library declares for it, so each step addresses a named graph with no binding entry of its own
   - The path answer carries a status naming which of found, broken, ambiguous and unresolved it is, so a missing path is a located break rather than a blank
