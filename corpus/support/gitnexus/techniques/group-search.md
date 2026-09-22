@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -37,7 +37,7 @@ Execution flows drawn from the group's members and merged into one ranking, each
 
 #### results
 
-The ranked flows, each carrying `_repo` — the path within the group of the member it came from — alongside the fields a single graph's ranked flow carries.
+The ranked flows, each carrying `_repo` — the path within the group of the member it came from — alongside the ranking fields a single graph's flow carries and its merged `_rrf_score`. A group answer is the ranking alone: the symbols of each flow and the definitions of the files it reached, which a single graph returns beside its flows, are absent here, so a question needing them is asked of the member graph the ranking names.
 
 #### per_repo
 

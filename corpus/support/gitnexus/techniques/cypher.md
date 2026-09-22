@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -21,7 +21,9 @@ a Cypher query string
 
 ### result_rows
 
-The matching rows as a markdown table, one row per match, with `row_count` stating how many the table holds and `staleness` naming the index that answered and how far it trails its tree.
+The matching rows as a markdown table, one row per match, with `row_count` stating how many the table holds.
+
+A statement that matches nothing answers with a bare empty list rather than a table of no rows, so `row_count` is absent on exactly the answer a reader is most likely to test it on: read the emptiness of the answer itself, and treat an absent `row_count` as zero rather than as a malformed reply. A raw list has no room for the `staleness` mapping the named operations carry, so a query's rows say nothing about the age of the graph that answered; take that from an operation that reports it, or from a direct index read.
 
 ## Protocol
 

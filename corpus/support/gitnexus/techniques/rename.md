@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -44,7 +44,8 @@ Per-file edit list, each edit carrying the confidence its provenance earns.
 ### 1. Run the Rename
 
 - Call `gitnexus_rename { symbol_name, symbol_uid, new_name, file_path, dry_run, repo: repo_name }` and record the `{changes}` it returns.
-   > Where several symbols carry `{symbol_name}`, the answer is a status of `ambiguous` with ranked candidates rather than an edit list, `totalCandidates` counting them in full. Choose the one meant and call again with its `{symbol_uid}`, or name the file holding it in `{file_path}`.
+   > - Where several symbols carry `{symbol_name}`, the answer is a status of `ambiguous` with ranked candidates rather than an edit list, `totalCandidates` counting them in full. Choose the one meant and call again with its `{symbol_uid}`, or name the file holding it in `{file_path}`.
+   > - Where the graph holds no symbol of that name the answer is an error naming it, which carries no edit list to be empty. A run gating on the preview reads that error as the refusal it is, and a gate reached with an empty list is the different case of a symbol that resolved and moved nothing.
 
 ### 2. Read Each Edit's Provenance
 

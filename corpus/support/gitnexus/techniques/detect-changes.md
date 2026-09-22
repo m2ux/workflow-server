@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -77,7 +77,9 @@ Where the change lands in the flow — each entry naming the `symbol` and its `s
 
 #### summary
 
-The counts — `changed_count` symbols, affected flows, changed files — and the `risk_level` they add up to, which is `unknown` where the answer is partial.
+The counts — `changed_count` symbols, `affected_count` flows, `changed_files` files — and the `risk_level` they add up to.
+
+A diff that moved nothing is the one answer shaped differently: it carries a `message` in place of the `changed_files` count and rates `none`, which is the rating for a measured diff holding nothing and stands apart from the `unknown` an incomplete answer takes. A diff git printed but the parser could not read takes that `unknown` alongside a `message` naming the parse and a `partial` of true — a file count is absent there too, so the absence of `changed_files` alone says nothing about which of the two arrived, and the `message` is what separates them.
 
 #### partial
 
@@ -86,6 +88,8 @@ Whether a step inside the answer failed and was swallowed, leaving the answer in
 #### truncated
 
 Whether the `changed_symbols` list was capped, in which case `summary.changed_count` and not the list's length is the number of symbols the diff moved.
+
+> Both flags are carried only when true, so each reads as absent on a whole answer rather than as false. A reader testing either one gets the verdict it wants from that absence, and a reader reporting the flag's value reports nothing where the tool asserted nothing.
 
 ## Protocol
 

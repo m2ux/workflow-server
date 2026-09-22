@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Map the MCP and RPC tools a tree defines — which are declared, where each is h
 
 ### tool_inventory
 
-Each declared tool with the file handling it and the description it registers.
+The `tools` the graph holds, each with the file handling it and the description it registers, and their `total`. A tree the graph recorded no tool for answers with both empty and a `message` saying so, which is the same answer a tree that declares none gives — the operation reads what the graph holds, and a registration shape the parser passed over is absent from it exactly as an absent registration is. Hold an empty inventory against the tree's own registration sites before reading it as a tree that serves no tools.
 
 ## Protocol
 

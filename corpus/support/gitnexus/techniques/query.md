@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -145,7 +145,7 @@ The functional area a symbol belongs to, where the graph holds one.
 
 #### staleness
 
-Which index answered and how far it trails the HEAD of the clone it was built from — `branch`, `lastCommit`, `indexedAt`, and a `status` of `current`, `behind` (with `commitsBehind`), `diverged` or `unknown`.
+Which index answered and how far it trails the HEAD of the clone it was built from — `branch`, `lastCommit`, `indexedAt`, and a `status` of `behind` (with `commitsBehind`), `diverged` or `unknown`. Carried only where the graph trails its tree, so an absent mapping says the graph stands at that HEAD.
 
 ## Protocol
 
@@ -154,4 +154,4 @@ Which index answered and how far it trails the HEAD of the clone it was built fr
 - Call `gitnexus_query { search_query, task_context, goal: search_goal, limit, max_symbols, chain_depth, repo: repo_name }` to produce the `{query_report}` of grouped execution flows.
    > - If the concept ranked into no flow, read the definitions for the files it reached before broadening the query terms; an empty flow list arrives with those still populated, so it is not an empty answer. Fall back to grep for pure text patterns.
    > - The answer stops at `{limit}` flows and `{max_symbols}` symbols each, and says neither that it stopped nor what it left behind — so raise both where the question is how many rather than which, and report the bounds the answer was taken at.
-   > - Carry `{query_report}.staleness` as the age of every reading taken from this answer; a `behind` or `diverged` status is a graph describing an earlier tree.
+   > - Where `{query_report}.staleness` is carried, it is the age of every reading taken from this answer: a `behind` or `diverged` status is a graph describing an earlier tree. An answer without it came from a graph standing at the HEAD it was built from.

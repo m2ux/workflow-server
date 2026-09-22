@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.10.0
+  version: 3.11.0
 ---
 
 ## Capability
@@ -42,7 +42,9 @@ A rename or a batch of edits is scoped by what it actually moved, not by what it
 
 ### index-freshness-first
 
-A stale index answers in the same shape as a fresh one, so every answer taken from a graph carries the age of that graph, and an answer turning on the current tree is taken against a reading of how far the graph trails it. The ranked search, the symbol context, the blast radius and the raw query each attach that reading to their answer as a `staleness` mapping: `branch`, `lastCommit` and `indexedAt` name the index that answered, and `status` is its standing against the HEAD of the clone it was built from — `current` is at that HEAD, `behind` carries `commitsBehind`, `diverged` is a recorded commit the clone's history no longer holds, and `unknown` is a tree with no history to measure. A rebuild answers `behind` and `diverged`; `unknown` is unmeasurable rather than stale, and `current` says nothing about the default branch. An answer taken over a whole repository group carries no such mapping, and the group's own status reports per member instead — including one failure more than age: a member carrying no graph at all, about which a group-wide answer says nothing.
+A stale index answers in the same shape as a fresh one, so an answer turning on the current tree is taken against a reading of how far the graph trails it. That reading arrives as a `staleness` mapping: `branch`, `lastCommit` and `indexedAt` name the index that answered, and `status` is its standing against the HEAD of the clone it was built from — `behind` carries `commitsBehind`, `diverged` is a recorded commit the clone's history no longer holds, and `unknown` is a tree with no history to measure. A rebuild answers `behind` and `diverged`; `unknown` is unmeasurable rather than stale.
+
+**The mapping rides only an answer that trails its tree, so its absence is the freshness verdict.** A graph standing at the HEAD it was built from attaches nothing, and a reader waiting for a `current` status waits on a key that never comes. A direct read of the index reports its freshness the same way, by omitting the reading where there is no distance to report. Three further answers carry no mapping whatever the graph's age: a raw query's rows, which arrive as a bare list rather than a mapping with room for one; an error, which reports what failed rather than what answered; and an answer taken over a whole repository group, where the group's own status reports per member instead — including one failure more than age, a member carrying no graph at all, about which a group-wide answer says nothing.
 
 ### edges-the-parser-cannot-see
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -57,7 +57,15 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 
 #### riskNote
 
-Why the rating is withheld, present only where `risk` is `UNKNOWN`.
+Why the rating is withheld, present where a symbol the graph holds rated `UNKNOWN`. A symbol the graph does not hold rates `UNKNOWN` too and carries no note: that answer is an error naming the target, with `impactedCount` null and none of `epistemic`, `summary` or `byDepth`, so the two are told apart by what rode alongside the rating rather than by the rating itself.
+
+#### riskSharedAxes
+
+The rating over the axes both directions share, which runs on its own scale and reads lower than the blast-radius rating on the same answer. A reader taking the first rating-shaped field it meets takes this one and reports the opposite verdict, so the blast radius is `risk` and this is the reading beside it.
+
+#### riskScale
+
+The bands the rating was cut at, which is what makes two answers comparable.
 
 #### summary
 
@@ -97,7 +105,7 @@ Whether a pass inside the answer was cut short, in which case an empty `processe
 
 #### staleness
 
-Which index answered and how far it trails the HEAD of the clone it was built from — `branch`, `lastCommit`, `indexedAt`, and a `status` of `current`, `behind` (with `commitsBehind`), `diverged` or `unknown`.
+Which index answered and how far it trails the HEAD of the clone it was built from — `branch`, `lastCommit`, `indexedAt`, and a `status` of `behind` (with `commitsBehind`), `diverged` or `unknown`. Carried only where the graph trails its tree, so an absent mapping says the graph stands at that HEAD.
 
 ## Protocol
 

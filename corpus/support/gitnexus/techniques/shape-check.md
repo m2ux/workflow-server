@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -24,6 +24,7 @@ Per route, the top-level keys its response carries, the keys each consumer reads
 ### 1. Take the Shape Report
 
 - Call `gitnexus_shape_check { route: route_path, repo: repo_name }` and record the `{shape_report}`.
+   > This reads a route's verb from a property the graph records, so a graph built before that property existed fails the read with a binder error naming it rather than answering empty — a graph too old to serve this operation, which a rebuild makes answerable.
 
 ### 2. Read What the Answer Covers
 

@@ -1,5 +1,5 @@
 id: orphan-scan
-version: 1.1.0
+version: 1.2.0
 name: Orphan Scan
 description: >-
   Ask the graph for every function and method nothing references, then narrow the answer to the
@@ -19,6 +19,7 @@ steps:
     id: narrow
     routine: gitnexus::narrow-to-changed
     with:
+      changed_files: "{changed_files}"
       cypher_query: "MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) AND NOT (()-[:CodeRelation {type: 'HANDLES_ROUTE'}]->(f)) AND NOT (()-[:CodeRelation {type: 'HANDLES_TOOL'}]->(f)) RETURN f.name AS symbol_name, f.filePath AS file_path UNION ALL MATCH (m:Method) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(m)) AND NOT (()-[:CodeRelation {type: 'METHOD_OVERRIDES'}]->(m)) AND NOT (()-[:CodeRelation {type: 'METHOD_IMPLEMENTS'}]->(m)) RETURN m.name AS symbol_name, m.filePath AS file_path"
     outputs:
       matched_symbols: orphan_candidates

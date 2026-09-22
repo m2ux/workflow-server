@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,11 +29,11 @@ The route's consumers, the response keys each reads, the middleware wrapping the
 
 #### mismatches
 
-Consumers reading a key the route's response does not carry, each with the confidence the attribution earns.
+Consumers reading a key the route's response does not carry, each with the confidence the attribution earns. The key rides an answer that holds one and is absent otherwise, never an empty list, so its presence alone is the question "does this change break a reader" already answered.
 
-#### risk
+#### impactSummary
 
-`LOW` for a route with up to three consumers, `MEDIUM` for four to nine or for any mismatch, `HIGH` for ten or more consumers or a mismatch read by four or more.
+`directConsumers` and `affectedFlows` counts, and the `riskLevel` they add up to: `LOW` for a route with up to three consumers, `MEDIUM` for four to nine or for any mismatch, `HIGH` for ten or more consumers or a mismatch read by four or more. The rating sits here rather than at the report's root, so a read addressed at the answer's top level finds nothing.
 
 ## Protocol
 
@@ -50,4 +50,4 @@ Consumers reading a key the route's response does not carry, each with the confi
 
 ### 3. Read the Risk Level
 
-- Read `{api_impact_report}.risk` as the consumer count and the mismatches together — a route nothing outside the module fetches is a different change from one a dozen components read.
+- Read `{api_impact_report}.impactSummary.riskLevel` as the consumer count and the mismatches together — a route nothing outside the module fetches is a different change from one a dozen components read.

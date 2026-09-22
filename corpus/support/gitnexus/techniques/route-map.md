@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -24,6 +24,7 @@ Each route with the file handling it, the middleware chain wrapping that handler
 ### 1. Take the Route Inventory
 
 - Call `gitnexus_route_map { route: route_path, repo: repo_name }` and record the `{route_inventory}`.
+   > The answer reads a route's verb from a property the graph records, and a graph built before that property existed fails the whole read with a binder error naming it rather than answering empty. That is a graph too old to serve this operation, not a tree without routes, and a rebuild is what makes it answerable. A direct index read does not report it either, an index trailing its tree by commits being a different fault from one predating the shape the operation asks for.
 
 ### 2. Read a Route with No Consumer
 
