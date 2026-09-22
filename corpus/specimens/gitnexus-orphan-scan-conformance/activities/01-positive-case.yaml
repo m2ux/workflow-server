@@ -1,7 +1,7 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
-description: Refer to the orphan scan over files the graph holds.
+description: Refer to the orphan scan over files the graph records unreferenced symbols in.
 variables:
   reads:
     - positive_changed_files
@@ -22,4 +22,4 @@ exits:
   - id: scanned
     isDefault: true
 outcome:
-  - The run's literal graph query narrowed to files the graph holds and landed the symbols nothing references among them
+  - The run's literal graph query narrowed to the named files and landed the symbols among them that nothing references

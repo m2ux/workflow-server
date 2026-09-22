@@ -1,13 +1,13 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-orphan-scan-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Orphan Scan Conformance Workflow
 description: >-
-  Hold the gitnexus orphan-scan run to two cases. The positive case names files the graph holds, so
-  the run's literal query narrows to symbols that exist and lands whatever nothing references among
-  them. The negative case names a file no graph holds, so the narrowing keeps no row and the run
-  lands an empty set — the fallback it promises for a file outside the index, distinct from a set
-  the graph searched and found clean.
+  Hold the gitnexus orphan-scan run to two cases. The positive case names files the graph holds and
+  records unreferenced symbols in, so the run's literal query narrows to symbols that exist and
+  lands those rows. The negative case names a file no graph holds, so the narrowing keeps no row and
+  the run lands an empty set — the fallback it promises for a file outside the index, distinct from
+  a set the graph searched and found clean.
 author: m2ux
 tags:
   - gitnexus
@@ -24,10 +24,10 @@ variables:
     defaultValue: workflow-server
   - name: positive_changed_files
     type: array
-    description: Files the graph holds, whose unreferenced symbols the positive case scans for.
+    description: Files the graph holds and records unreferenced symbols in, so the positive case lands rows a file of referenced symbols cannot.
     defaultValue:
-      - src/loaders/technique-loader.ts
-      - src/loaders/routine-loader.ts
+      - src/utils/session/store.ts
+      - src/schema/routine.schema.ts
   - name: negative_changed_files
     type: array
     description: A file no graph holds, so the negative case's narrowing keeps no row.
