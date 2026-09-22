@@ -98,6 +98,14 @@ export interface ProducerIndex {
   positions: Map<string, number>;
   /** Distinct technique refs resolved to build this index — what a delivery reports as resolve work. */
   resolvedTechniques: number;
+  /**
+   * Steps whose bound op could not be read, as `<activityId>|<stepId>`.
+   *
+   * Such a step still contributes producers — a binding's output remaps are read off the activity
+   * file — so its declarations are a subset rather than the set. A reader measuring a report
+   * against them would hold it to the remapped ids alone.
+   */
+  unreadableOps: Set<string>;
 }
 
 /**
@@ -110,11 +118,16 @@ export interface ProducerIndex {
  *
  * A step manifest reports by declared output id rather than by the bag name a remap lands under,
  * which is why the remapped-from id is the one collected here.
+ *
+ * A step whose op could not be read is left out entirely. Its remaps are still producers, so it
+ * would otherwise carry a non-empty set holding the remapped ids alone, and a correct report
+ * naming an unremapped output would be measured against a subset and reported wrong.
  */
 export function declaredOutputsByStep(index: ProducerIndex, activityId: string): Map<string, Set<string>> {
   const byStep = new Map<string, Set<string>>();
   for (const producer of index.producers) {
     if (producer.activityId !== activityId) continue;
+    if (index.unreadableOps.has(`${producer.activityId}|${producer.stepId}`)) continue;
     const outputId = producer.via === 'output' ? producer.name
       : producer.via === 'remap' ? producer.origOutputId
       : undefined;
@@ -157,7 +170,10 @@ export async function buildProducerIndex(args: {
   const positions = new Map<string, number>();
   let ordinal = 0;
 
+  const unreadableOps = new Set<string>();
   const ownOutputsCache = new Map<string, string[]>();
+  /** Refs this scan could not read, so a second step binding the same ref is marked too. */
+  const unreadableRefs = new Set<string>();
   const ownOutputsOf = async (ref: string, activityId: string): Promise<string[]> => {
     const key = `${activityId}|${ref}`;
     const hit = ownOutputsCache.get(key);
@@ -173,7 +189,9 @@ export async function buildProducerIndex(args: {
         : null;
       if (!result?.success) result = await readTechnique(ref, workflowDir, scopeWorkflowId);
       if (result.success) ids = (result.value.outputs ?? []).map((o) => o.id);
+      else unreadableRefs.add(key);
     } catch (error) {
+      unreadableRefs.add(key);
       logWarn('Provenance producer scan skipped an unreadable bound op', {
         ref, activityId, workflowId: scopeWorkflowId,
         error: error instanceof Error ? error.message : String(error),
@@ -220,6 +238,7 @@ export async function buildProducerIndex(args: {
           for (const outputId of await ownOutputsOf(ref, activity.id)) {
             if (!remapped.has(outputId)) push(outputId, 'output');
           }
+          if (unreadableRefs.has(`${activity.id}|${ref}`)) unreadableOps.add(`${activity.id}|${stepId}`);
         }
       }
       if (step.kind === 'checkpoint') {
@@ -236,7 +255,7 @@ export async function buildProducerIndex(args: {
     }
   }
 
-  return { declaredVariables, producers, positions, resolvedTechniques: ownOutputsCache.size };
+  return { declaredVariables, producers, positions, resolvedTechniques: ownOutputsCache.size, unreadableOps };
 }
 
 /** Positions are keyed by the pair, since one step id can occur in more than one activity. */

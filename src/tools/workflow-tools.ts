@@ -84,7 +84,7 @@ import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
   output: z.record(z.unknown()),
-})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). `output` is a JSON object keyed by the output id the bound operation declares, whatever the number of outputs — one output is `{"<its id>": <value>}`, not a bare string. A key the operation does not declare, and a declared id with no key, are each surfaced in _meta.validation. A loop body reports ONE ENTRY PER STEP PER ITERATION, under the step\'s declared id each time, so three passes of a two-step body are six entries in the order they ran — the manifest is what the activity did, and a body run three times reported once says it ran once. Omit entirely when no steps ran — not [].');
+})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). `output` is a JSON object keyed by the output id the bound operation declares, whatever the number of outputs — one output is `{"<its id>": <value>}`, not a bare string. A key the operation does not declare is surfaced in _meta.validation. A loop body reports ONE ENTRY PER STEP PER ITERATION, under the step\'s declared id each time, so three passes of a two-step body are six entries in the order they ran — the manifest is what the activity did, and a body run three times reported once says it ran once. Omit entirely when no steps ran — not [].');
 
 const activityManifestSchema = z.array(z.object({
   activity_id: z.string(),
@@ -1286,8 +1286,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // transition reporting nothing pays nothing.
         let declaredOutputs: ReadonlyMap<string, ReadonlySet<string>> | undefined;
         try {
-          const index = await buildProducerIndex({ workflow: result.value, workflowDir: config.workflowDir });
-          declaredOutputs = declaredOutputsByStep(index, retiring);
+          // A borrowed activity resolves its bound ops against the workflow its file was authored
+          // in, so the scan needs that scope to read them at all.
+          const diag = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
+          const index = await buildProducerIndex({
+            workflow: result.value,
+            workflowDir: config.workflowDir,
+            ...(diag.success ? { activitySourceWorkflow: diag.value.activitySourceWorkflow } : {}),
+          });
+          // `retiring` is a frontier entry, which a fan qualifies with an instance suffix; the
+          // producers are keyed by the activity the workflow declares.
+          declaredOutputs = declaredOutputsByStep(index, baseId(retiring));
         } catch (error) {
           logWarn('Step-manifest output check skipped: producer scan failed', {
             session_index, activity: retiring, error: (error as Error).message,
