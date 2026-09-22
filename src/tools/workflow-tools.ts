@@ -38,6 +38,7 @@ import {
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { entryCondition, injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
+import { renderMessage, unresolvedWarning } from '../utils/message-template.js';
 import {
   bothGates, gateAnswer, variablesWrittenIn,
   type GateUnansweredCounts, type GateVerdict,
@@ -2620,7 +2621,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('present_checkpoint', 'Load the active checkpoint (message, options, effects, auto-advance) for presenting to the user. Reads state.activeCheckpoint.',
+  server.tool('present_checkpoint', 'Load the active checkpoint (message, options, effects, auto-advance) for presenting to the user. The message and each option\'s label and description arrive rendered from the session variable bag, so the text is what the person reads; a name the bag does not hold stands as its own `{token}` and is listed in _meta.validation. Reads state.activeCheckpoint.',
     {
       ...sessionIndexParam,
     },
@@ -2648,9 +2649,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!checkpoint) throw new Error(`Checkpoint not found: ${active.checkpointId} in activity ${active.activityId}`);
 
       const view = sessionView(state);
-      const validation = buildValidation(
-        validateWorkflowVersion(view, result.value),
-      );
+
+      // Every string this response puts in front of a person renders from the one bag, so the names
+      // none of them answered report as a single list.
+      const unresolved: string[] = [];
+      const message = renderMessage(checkpoint.message, state.variables, unresolved).text;
+      const render = (text: string): string => renderMessage(text, state.variables, unresolved).text;
 
       // An option names an outcome; the workflow graph says where that outcome leads. Resolving it
       // here is what lets the orchestrator state each option's consequence before the user chooses,
@@ -2659,19 +2663,32 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // name and its options carry no consequence beyond themselves.
       const bindings = active.adhoc ? [] : getExitBindings(result.value, active.activityId);
       const options = checkpoint.options.map((option) => {
+        const presented = {
+          ...option,
+          label: render(option.label),
+          ...(option.description !== undefined ? { description: render(option.description) } : {}),
+        };
         const exitId = 'effect' in option ? option.effect?.exit : undefined;
-        if (exitId === undefined) return option;
+        if (exitId === undefined) return presented;
         const binding = bindings.find(b => b.exit === exitId);
         return {
-          ...option,
+          ...presented,
           consequence: binding
             ? { exit: exitId, next_activity: destinationField(binding.to), ...(binding.immediate ? { ends_activity: true } : {}) }
             : { exit: exitId },
         };
       });
 
+      const validation = buildValidation(
+        validateWorkflowVersion(view, result.value),
+        unresolvedWarning(active.checkpointId, unresolved),
+      );
+      if (unresolved.length > 0) {
+        logWarn(`present_checkpoint '${active.checkpointId}': unrendered names`, { session_index, unresolved });
+      }
+
       return {
-        content: [{ type: 'text' as const, text: stringifyForResponse({ ...checkpoint, options, session_index }) }],
+        content: [{ type: 'text' as const, text: stringifyForResponse({ ...checkpoint, message, options, session_index }) }],
         _meta: { session_index, validation },
       };
     }), traceOpts));

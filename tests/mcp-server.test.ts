@@ -1959,6 +1959,77 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(response.session_index).toBe(tokenWithAct);
     });
 
+    it('present_checkpoint renders the message and option labels from the variable bag', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_index'] as string;
+
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: tokenWithAct,
+          checkpoint_id: 'accept-blast-radius',
+          message: 'Changing {target} is rated {impact_report.risk}; {impact_report.summary.direct} callers reach it.',
+          options: [
+            { id: 'proceed', label: 'Edit {target}' },
+            { id: 'hold', label: 'Leave it' },
+          ],
+          variables_changed: {
+            target: 'composeLoaded',
+            impact_report: { risk: 'CRITICAL', summary: { direct: 2 } },
+          },
+        },
+      });
+
+      const presentResult = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { session_index: tokenWithAct },
+      });
+      expect(presentResult.isError).toBeFalsy();
+      const response = parseToolResponse(presentResult);
+      expect(response.message).toBe('Changing composeLoaded is rated CRITICAL; 2 callers reach it.');
+      const options = response.options as { id: string; label: string }[];
+      expect(options.find(o => o.id === 'proceed')?.label).toBe('Edit composeLoaded');
+      const meta = presentResult._meta as { validation?: { status?: string } };
+      expect(meta.validation?.status).not.toBe('warning');
+    });
+
+    it('present_checkpoint leaves a name the bag does not hold standing, and warns', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_index'] as string;
+
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: tokenWithAct,
+          checkpoint_id: 'accept-unmeasured-radius',
+          message: 'Rated {absent_report.risk}.',
+          options: [
+            { id: 'proceed', label: 'Proceed' },
+            { id: 'hold', label: 'Hold' },
+          ],
+        },
+      });
+
+      const presentResult = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { session_index: tokenWithAct },
+      });
+      expect(presentResult.isError).toBeFalsy();
+      const response = parseToolResponse(presentResult);
+      expect(response.message).toBe('Rated {absent_report.risk}.');
+      const meta = presentResult._meta as { validation?: { status?: string; warnings?: string[] } };
+      expect(meta.validation?.status).toBe('warning');
+      expect(meta.validation?.warnings?.join(' ')).toContain('absent_report.risk');
+    });
+
     it('respond_checkpoint reads activeCheckpoint from session.json', async () => {
       const act = await client.callTool({
         name: 'next_activity',
