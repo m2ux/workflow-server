@@ -1,9 +1,10 @@
 id: negative-case
-version: 1.0.0
+version: 1.1.0
 name: Negative Case
 description: Refer to the index refresh over a tree whose graph is behind it.
 variables:
   reads:
+    - negative_graph_name
     - negative_repo_path
   writes:
     - name: repo_name
@@ -22,7 +23,7 @@ steps:
     actions:
       - action: set
         target: repo_name
-        value: poc-shielded
+        value: "{negative_graph_name}"
         description: The graph the reads and the rebuild address — the one built from the tree that has moved on since.
   - kind: routine
     id: refresh-stale-tree

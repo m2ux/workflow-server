@@ -1,9 +1,10 @@
 id: unindexed-tree-case
-version: 1.0.0
+version: 1.1.0
 name: Unindexed Tree Case
 description: Refer to the index refresh over a tree that has no graph.
 variables:
   reads:
+    - unindexed_tree_graph_name
     - unindexed_tree_repo_path
   writes:
     - name: repo_name
@@ -22,7 +23,7 @@ steps:
     actions:
       - action: set
         target: repo_name
-        value: gitnexus-test-setup
+        value: "{unindexed_tree_graph_name}"
         description: The graph the reads and the build address — the basename of a tree that carries no graph until the build lands one under that name.
   - kind: routine
     id: refresh-unindexed-tree

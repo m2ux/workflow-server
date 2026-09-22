@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-diff-taint-pass-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Diff Taint Pass Conformance Workflow
 description: >-
   Hold the gitnexus diff-taint-pass run to three cases. The positive case takes the changed-symbol
@@ -24,8 +24,16 @@ techniques:
 variables:
   - name: repo_name
     type: string
-    description: Name of the indexed graph every operation in the run addresses.
+    description: Name of the indexed graph every operation in the run addresses, which the absent-layer case rebinds to the graph it reads from.
     defaultValue: workflow-server
+  - name: taint_layer_graph
+    type: string
+    description: Name of the graph carrying its taint layer, which the positive and negative cases address and the report names as the source of their answers.
+    defaultValue: workflow-server
+  - name: absent_layer_graph
+    type: string
+    description: Name of the graph built without its taint layer, which the absent-layer case binds `{repo_name}` to before referring to the run, and which the report names as the source of that case's answers.
+    defaultValue: midnight-wallet
   - name: positive_diff_scope
     type: string
     description: The whole working tree, whose changed symbols the positive case reads findings for.

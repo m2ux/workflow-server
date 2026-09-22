@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-area-comprehension-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Area Comprehension Conformance Workflow
 description: >-
   Hold the gitnexus area-comprehension run to three cases. The positive case names a concept the
@@ -23,8 +23,16 @@ techniques:
 variables:
   - name: repo_name
     type: string
-    description: Name of the indexed graph every operation in the run addresses.
+    description: Name of the indexed graph every operation in the run addresses, which the stale-graph case rebinds to the graph it reads from.
     defaultValue: workflow-server
+  - name: current_graph_name
+    type: string
+    description: Name of the graph current with its tree, which the positive and negative cases address and the report names as the source of their answers.
+    defaultValue: workflow-server
+  - name: stale_graph_name
+    type: string
+    description: Name of the graph behind its tree, which the stale-graph case binds `{repo_name}` to before referring to the run, and which the report names as the source of its answers.
+    defaultValue: poc-shielded
   - name: positive_search_query
     type: string
     description: A concept the graph's execution flows rank into, whose area the positive case reads.

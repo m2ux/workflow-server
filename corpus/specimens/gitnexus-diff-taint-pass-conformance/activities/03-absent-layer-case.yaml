@@ -1,10 +1,11 @@
 id: absent-layer-case
-version: 1.0.0
+version: 1.1.0
 name: Absent Layer Case
 description: Refer to the diff taint pass over a graph built without its taint layer.
 variables:
   reads:
     - absent_layer_diff_scope
+    - absent_layer_graph
   writes:
     - name: repo_name
       type: string
@@ -28,7 +29,7 @@ steps:
     actions:
       - action: set
         target: repo_name
-        value: midnight-wallet
+        value: "{absent_layer_graph}"
         description: The graph the detection and the per-symbol reads address — one built without its program-dependence layers, so no taint report under it holds findings.
       - action: set
         target: base_ref

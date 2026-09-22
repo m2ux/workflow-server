@@ -1,9 +1,10 @@
 id: stale-graph-case
-version: 1.0.0
+version: 1.1.0
 name: Stale Graph Case
 description: Refer to the area comprehension over a tree whose graph is behind it.
 variables:
   reads:
+    - stale_graph_name
     - stale_graph_repo_path
     - stale_graph_search_query
     - stale_graph_tree_path
@@ -35,7 +36,7 @@ steps:
     actions:
       - action: set
         target: repo_name
-        value: poc-shielded
+        value: "{stale_graph_name}"
         description: The graph the reads and the rebuild address — the one built from the tree that has moved on since.
   - kind: routine
     id: comprehend-stale-graph

@@ -1,6 +1,6 @@
 ---
 name: case-report
-description: The shape a two-case conformance report takes for one library run — a case the run measures and a case it falls back on — and what each row may claim.
+description: The shape a conformance report takes for one library run held to its cases — a case the run measures and a case it falls back on — across the graphs those cases address, and what each row may claim.
 ---
 
 # Case Report
@@ -11,12 +11,15 @@ description: The shape a two-case conformance report takes for one library run �
 # {Specimen Title} — Case Report
 
 Run: `{routine-name}`
-Graph addressed: {repo_name, or "none — the run answered from the default graph"}
 
-| Case | Inputs | Materialised | Landed | Holds |
-|------|--------|--------------|--------|-------|
-| positive | {the inputs the case bound, as values} | yes / no | `{output_name}`, … | {a one-line summary of the measurement} |
-| negative | {the inputs the case bound, as values} | yes / no | `{output_name}`, … | {the fallback the run landed: empty / unmeasured / refused / absent, and what said so} |
+Graphs addressed:
+
+- `{graph-name}` — {the cases whose answers came from it}
+
+| Case | Graph | Inputs | Materialised | Landed | Holds |
+|------|-------|--------|--------------|--------|-------|
+| positive | `{graph-name}` | {the inputs the case bound, as values} | yes / no | `{output_name}`, … | {a one-line summary of the measurement} |
+| negative | `{graph-name}` | {the inputs the case bound, as values} | yes / no | `{output_name}`, … | {the fallback the run landed: empty / unmeasured / refused / absent, and what said so} |
 
 ## What the run evidenced
 
@@ -44,4 +47,4 @@ The positive entry under *What the run evidenced* names the body shape the run c
 
 ### the-graph-is-the-header
 
-The header names the graph every answer came from, since a report describing an unnamed tree leaves the reader to guess which checkout the answers describe.
+The header names every graph the run addressed, one line each saying which cases answered from it, and each row names in its `Graph` column the one its answer came from. A run whose cases share a graph lists that graph alone and carries its name down the column; a run whose cases address a graph apiece lists each, and the column is what sorts the answers between them. A report describing an unnamed tree leaves the reader to guess which checkout the answers describe, and one naming a single tree for answers taken from several leaves the reader to attribute them by guess. Where the run names no graph and answers from the default, the header says so in the line a graph name takes.
