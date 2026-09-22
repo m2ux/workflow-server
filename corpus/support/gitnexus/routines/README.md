@@ -46,6 +46,7 @@ A run lands here rather than in a workflow because its body composes this namesp
 | Routine | Reached for |
 |---------|-------------|
 | [`group-concept-search`](group-concept-search.yaml) | Which members of a group implement a concept |
+| [`group-radius`](group-radius.yaml) | How far a concern in one member reaches into every other, each answer naming its graph and the instruments — registry, graph, tree search — that answered |
 
 ## Over an index
 

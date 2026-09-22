@@ -1,0 +1,190 @@
+id: group-radius
+version: 1.1.0
+name: Group Radius
+description: >-
+  Bring a repository group current, take a concern's radius in its home graph, name the symbols and
+  packages by which another member could reach it, read the registry's links and probe every other
+  member's graph and tree for those names, and settle for each member whether the concern reaches
+  it and by which instruments.
+
+inputs:
+  - id: group_name
+    description: Name of the configured repository group the reach is measured across.
+  - id: concern_symbol
+    description: The symbol the concern was raised against, in its home graph.
+  - id: concern_file
+    description: The file in the home tree that defines the concern, which separates it from others of the same name. Empty where the name is defined once, and the name alone then resolves it.
+  - id: home_repo
+    description: The graph name of the member the concern was raised in.
+
+outputs:
+  - id: group_reach_report
+    type: array
+    description: One entry per member, naming the graph it answers for, whether the concern reaches it, and the instruments that answered.
+  - id: boundary_symbols
+    type: array
+    description: The names another member could hold a reference to, each with its kind and its home file.
+  - id: boundary_packages
+    type: array
+    description: The names under which another member consumes the home tree as a library, each with where the name was read.
+  - id: group_query_report
+    type: object
+    description: Execution flows drawn from the group's members for the concern, each carrying the member it came from.
+  - id: group_freshness_report
+    type: object
+    description: The group's name, when its contract registry last synced, and one freshness entry per member.
+  - id: home_impact_report
+    type: object
+    description: What depends on the concern within its home graph, by depth, with a risk level.
+  - id: contract_registry_stats
+    type: object
+    description: What the rebuilt contract registry holds — the contracts extracted per member, and how many cross-link to another member.
+
+internals:
+  - id: contract_report
+    description: Each contract the rebuilt registry holds with the member publishing it, its kind, and the member it cross-links to.
+  - id: group_members
+    description: The group's members with the graph name, the tree and the home mark each carries.
+  - id: home_context_report
+    description: The concern's callers, callees and flow membership in its home graph.
+  - id: route_inventory
+    description: Each route the home tree serves with the file handling it.
+  - id: tool_inventory
+    description: Each tool the home tree declares with the file handling it.
+  - id: radius_member
+    description: The member the run holds, whose graph the probes in that pass address.
+  - id: boundary_symbol
+    description: The boundary name the run holds, which the probe in that pass searches the member for.
+  - id: member_impact_report
+    description: What depends on the held boundary name in the held member's graph.
+  - id: member_probes
+    description: One entry per member and boundary name probed, with what the member's graph answered.
+
+steps:
+  - kind: routine
+    id: ready-group
+    routine: gitnexus::group-refresh
+    with:
+      group_name: "{group_name}"
+    outputs:
+      group_freshness_report: group_freshness_report
+      contract_registry_stats: contract_registry_stats
+      contract_report: contract_report
+  - kind: technique
+    id: list-members
+    technique:
+      name: gitnexus::list-group-members
+      inputs:
+        group_name: group_name
+        home_repo: home_repo
+      outputs:
+        group_members: group_members
+  - kind: technique
+    id: read-home-connections
+    technique:
+      name: gitnexus::context
+      inputs:
+        name: concern_symbol
+        file_path: concern_file
+        repo_name: home_repo
+      outputs:
+        context_report: home_context_report
+  - kind: technique
+    id: measure-home-radius
+    technique:
+      name: gitnexus::impact
+      inputs:
+        target: concern_symbol
+        direction: upstream
+        repo_name: home_repo
+      outputs:
+        impact_report: home_impact_report
+  - kind: technique
+    id: map-home-routes
+    technique:
+      name: gitnexus::route-map
+      inputs:
+        repo_name: home_repo
+      outputs:
+        route_inventory: route_inventory
+  - kind: technique
+    id: map-home-tools
+    technique:
+      name: gitnexus::tool-map
+      inputs:
+        repo_name: home_repo
+      outputs:
+        tool_inventory: tool_inventory
+  - kind: technique
+    id: name-boundary
+    technique:
+      name: gitnexus::extract-boundary-symbols
+      inputs:
+        concern_symbol: concern_symbol
+        context_report: home_context_report
+        impact_report: home_impact_report
+        route_inventory: route_inventory
+        tool_inventory: tool_inventory
+        group_members: group_members
+        contract_report: contract_report
+      outputs:
+        boundary_symbols: boundary_symbols
+        boundary_packages: boundary_packages
+  - kind: technique
+    id: search-group
+    technique:
+      name: gitnexus::group-search
+      inputs:
+        group_name: group_name
+        search_query: concern_symbol
+      outputs:
+        group_query_report: group_query_report
+  - kind: loop
+    id: member-cycle
+    name: Member Cycle
+    loopType: forEach
+    variable: radius_member
+    over: group_members
+    maxIterations: 50
+    steps:
+      - kind: loop
+        id: boundary-cycle
+        name: Boundary Cycle
+        when: "!radius_member.is_home"
+        loopType: forEach
+        variable: boundary_symbol
+        over: boundary_symbols
+        maxIterations: 50
+        steps:
+          - kind: technique
+            id: probe
+            technique:
+              name: gitnexus::impact
+              inputs:
+                target: "{boundary_symbol.name}"
+                direction: upstream
+                repo_name: "{radius_member.name}"
+              outputs:
+                impact_report: member_impact_report
+          - kind: action
+            id: record-probe
+            actions:
+              - action: message
+                message: "{radius_member.name}: {boundary_symbol.name} has {member_impact_report.summary.direct} direct dependents in this graph."
+              - action: set
+                target: member_probes
+                description: The held member's graph name, the held boundary name, and what that graph answered depends on it — appended to the probes the run holds.
+  - kind: technique
+    id: settle-reach
+    technique:
+      name: gitnexus::judge-group-reach
+      inputs:
+        group_members: group_members
+        boundary_symbols: boundary_symbols
+        boundary_packages: boundary_packages
+        contract_report: contract_report
+        member_probes: member_probes
+        group_query_report: group_query_report
+        home_repo: home_repo
+      outputs:
+        group_reach_report: group_reach_report

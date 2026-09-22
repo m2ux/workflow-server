@@ -144,6 +144,10 @@
     {
       "id": "git-pin-conformance",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that the git library's readiness run lands each checkout at a branch, a tag and a commit as its own kind and refuses a name it cannot resolve without moving the checkout, which the reference guards and a sidecar change-surface walk measure."
+    },
+    {
+      "id": "gitnexus-radius-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that the gitnexus library's reach run answers for every member of a group, each answer naming its graph and the instruments that answered, which the reference guards and a sidecar change-surface walk measure."
     }
   ]
 }
