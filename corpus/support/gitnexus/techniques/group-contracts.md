@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -37,7 +37,9 @@ The contracts, each with the `repo` path of the member publishing it, its `type`
 
 #### crossLinks
 
-The joins the registry drew, each naming the `from` and `to` member and the `contractId` they share.
+The joins the registry drew, each carrying the `contractId` shared and a `from` and `to` end. Each end is a mapping rather than a member's name: the member's `repo`, the `symbolUid` the join lands on, and a `symbolRef` naming that symbol's file and name. A read addressed at an end expecting a name finds the mapping.
+
+A member the registry could not read still appears at an end. Its contracts come from the group's declared manifest links rather than from a graph, so a member named under `missingRepos` publishes contracts and carries joins at the same time, and the two readings describe different things about it rather than contradicting each other.
 
 #### missingRepos
 

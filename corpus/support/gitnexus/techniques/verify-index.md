@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.2.0
+  version: 3.3.0
 ---
 
 ## Capability
@@ -20,6 +20,8 @@ The commit the graph was built at, which names the tree state every answer from 
 ### index_stale
 
 Whether the graph is behind the tree it was built from, derived from the resource rather than reported by it: true where the read carries a `staleness` string, and true where the read returns an error instead of a document.
+
+The two surfaces carrying that reading shape it differently. This resource carries a sentence naming the distance; the graph inventory carries a mapping of `status`, `commitsBehind` and a `hint`. A binding reading one shape against the other finds nothing, and the verdict is the same on both: the reading rides a graph that trails its tree and is absent from one standing at the commit it was built at.
 
 ## Protocol
 

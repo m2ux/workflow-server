@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -11,7 +11,9 @@ metadata:
 
 ### repo_path
 
-Filesystem path of the tree to index. GitNexus walks the working tree from here and indexes every source file it encounters, including content that physically lives inside submodule directories, and keys the resulting index under this tree's basename — the name every later operation addresses its answers by.
+Filesystem path of the tree to index. GitNexus walks the working tree from here and indexes every source file it encounters, including content that physically lives inside submodule directories.
+
+The build keys its index under the basename of the git checkout holding this path, which is this path only where it is a checkout's own root. A directory inside a checkout resolves upward to that checkout: the whole of it is walked, the graph is keyed under its name, and nothing is registered under the name of the directory given — the build reporting success either way. Name a checkout root here, and settle which name a graph landed under by reading the inventory rather than by reading the exit status.
 
 ### force_rebuild
 
@@ -39,8 +41,9 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ### 1. Lock and Check Freshness
 
-- Coordinate concurrent invocations from sibling runs against one tree: serialize via an exclusive flock on `{repo_path}/.git/.workflow-gitnexus-refresh.lock` (blocking). Concrete form: `flock {repo_path}/.git/.workflow-gitnexus-refresh.lock -c <command>`. The lock prevents two parallel analyze invocations from racing on the shared GitNexus index for this repo.
-- Skip-if-recent (under the lock): check the mtime of `{repo_path}/.git/.workflow-gitnexus-refresh`. If it exists, was modified within the last 300 seconds, AND `{force_rebuild}` is not true, skip the analyze entirely — a sibling run already (re)built the index and another rebuild adds no value. Release the lock and return cached `{stats}`.
+- Resolve the checkout root holding `{repo_path}` — `git -C {repo_path} rev-parse --show-toplevel` — and hold the lock and the freshness signal there. That root is the tree the build walks and the name the graph lands under, and it is the only path of the two with a `.git` directory to hold either file: a `{repo_path}` inside a checkout has none, and this phase reaches for one exactly when the tree carries no graph yet, which is when a component path is most likely what was named.
+- Coordinate concurrent invocations from sibling runs against one tree: serialize via an exclusive flock on `<root>/.git/.workflow-gitnexus-refresh.lock` (blocking). Concrete form: `flock <root>/.git/.workflow-gitnexus-refresh.lock -c <command>`. The lock prevents two parallel analyze invocations from racing on the shared GitNexus index for this repo.
+- Skip-if-recent (under the lock): check the mtime of `<root>/.git/.workflow-gitnexus-refresh`. If it exists, was modified within the last 300 seconds, AND `{force_rebuild}` is not true, skip the analyze entirely — a sibling run already (re)built the index and another rebuild adds no value. Release the lock and return cached `{stats}`.
 
 ### 2. Run Analyze
 
@@ -51,7 +54,7 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ### 3. Signal
 
-- On success, `touch {repo_path}/.git/.workflow-gitnexus-refresh` so subsequent invocations see the freshness signal. Release the lock. On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds.
+- On success, `touch <root>/.git/.workflow-gitnexus-refresh` so subsequent invocations see the freshness signal. Release the lock. On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds.
 
 ## Rules
 
@@ -62,5 +65,7 @@ A completed rebuild publishes the graph to disk, and a running server reopens a 
 ### index-every-addressed-tree
 
 Index each tree whose answers a caller will ask for by name. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
+
+A component a checkout holds as a plain directory is reachable only that way, whatever path a build is handed: the build resolves to the checkout and keys one graph under it. A component earns a name of its own by being a checkout of its own — a submodule or a separate clone — so a build aimed at a plain subdirectory answers the question "does this component have a graph" with no, however many times it is run.
 
 A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and a group's freshness report marks a member with no graph as `missing`. Where a component is indexed both on its own and as part of a containing tree, both names resolve and answer at different scope — `address-a-named-graph` governs which to address.
