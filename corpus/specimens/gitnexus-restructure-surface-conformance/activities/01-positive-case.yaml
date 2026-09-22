@@ -1,0 +1,29 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the restructure surface over a symbol the graph holds.
+variables:
+  reads:
+    - positive_name
+  writes:
+    - name: positive_context_report
+      type: object
+      description: The symbol's callers, callees and flow membership — the callees an extraction carries with it, and the calls a split divides.
+    - name: positive_impact_report
+      type: object
+      description: What depends on the symbol, at depth 1/2/3, with the execution flows reached and a risk level — the callers a restructuring updates.
+required: true
+steps:
+  - kind: routine
+    id: surface-held-symbol
+    routine: gitnexus::restructure-surface
+    with:
+      name: "{positive_name}"
+    outputs:
+      context_report: positive_context_report
+      impact_report: positive_impact_report
+exits:
+  - id: measured
+    isDefault: true
+outcome:
+  - The run read the symbol's connections and measured its dependents at depth, landing a context report and an impact report that carries a risk level

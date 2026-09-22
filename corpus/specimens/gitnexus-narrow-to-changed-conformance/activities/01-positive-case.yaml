@@ -1,0 +1,27 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the narrowing over a file the graph holds.
+variables:
+  reads:
+    - positive_cypher_query
+    - positive_changed_files
+  writes:
+    - name: positive_matched_symbols
+      type: array
+      description: Rows of the query that sit in the file the graph holds, each with the symbol and the file the graph records.
+required: true
+steps:
+  - kind: routine
+    id: narrow-to-held-file
+    routine: gitnexus::narrow-to-changed
+    with:
+      cypher_query: "{positive_cypher_query}"
+      changed_files: "{positive_changed_files}"
+    outputs:
+      matched_symbols: positive_matched_symbols
+exits:
+  - id: narrowed
+    isDefault: true
+outcome:
+  - The run's path predicate kept the rows in a file the graph holds and landed the functions the graph records there

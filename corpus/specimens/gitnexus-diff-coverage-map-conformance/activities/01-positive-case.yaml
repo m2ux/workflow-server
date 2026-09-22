@@ -1,0 +1,29 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the diff coverage map over the whole working tree.
+variables:
+  reads:
+    - positive_diff_scope
+  writes:
+    - name: positive_coverage_gaps
+      type: array
+      description: Changed symbols no test file calls.
+    - name: positive_update_candidates
+      type: array
+      description: Changed symbols a test file calls against a signature or behaviour the change moved.
+required: true
+steps:
+  - kind: routine
+    id: map-working-tree
+    routine: gitnexus::diff-coverage-map
+    with:
+      diff_scope: "{positive_diff_scope}"
+    outputs:
+      coverage_gaps: positive_coverage_gaps
+      update_candidates: positive_update_candidates
+exits:
+  - id: mapped
+    isDefault: true
+outcome:
+  - The run took the working tree's changed symbols, read each one's callers across its per-symbol pass, and landed the two lists the classification separates them into

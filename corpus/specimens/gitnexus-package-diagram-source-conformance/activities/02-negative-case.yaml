@@ -1,0 +1,25 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the diagram sourcing over an index where nothing is staged.
+variables:
+  reads:
+    - negative_diff_scope
+  writes:
+    - name: negative_diagram_source
+      type: array
+      description: The functional areas an empty change reaches, each with its members — empty by construction.
+required: true
+steps:
+  - kind: routine
+    id: source-from-empty-index
+    routine: gitnexus::package-diagram-source
+    with:
+      diff_scope: "{negative_diff_scope}"
+    outputs:
+      diagram_source: negative_diagram_source
+exits:
+  - id: sourced
+    isDefault: true
+outcome:
+  - The same run over an index with nothing staged landed an empty structure, the fallback the selection promises for a change that reaches no area

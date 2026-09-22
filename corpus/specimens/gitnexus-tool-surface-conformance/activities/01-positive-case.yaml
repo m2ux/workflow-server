@@ -1,0 +1,29 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the tool surface over a tree declaring MCP tools.
+variables:
+  reads:
+    - positive_tree_path
+  writes:
+    - name: positive_tool_inventory
+      type: object
+      description: Each declared tool with the file handling it and the description it registers.
+    - name: repo_name
+      type: string
+      description: The graph the read addressed, which a report naming this inventory names too.
+required: true
+steps:
+  - kind: routine
+    id: map-declaring-tree
+    routine: gitnexus::tool-surface
+    with:
+      tree_path: "{positive_tree_path}"
+    outputs:
+      tool_inventory: positive_tool_inventory
+      repo_name: repo_name
+exits:
+  - id: mapped
+    isDefault: true
+outcome:
+  - The run named the graph covering the tree and mapped each declared tool to the file handling it and the description it registers

@@ -1,9 +1,14 @@
 id: package-diagram-source
-version: 1.0.0
+version: 1.1.0
 name: Package Diagram Source
 description: >-
   Bound a package diagram to what a change reaches — the functional areas its flows and files run
   through — and read the members of each.
+
+inputs:
+  - id: diff_scope
+    description: Which diff the change is taken from — the working tree, the index, both, or a comparison against another ref.
+    default: all
 
 outputs:
   - id: diagram_source
@@ -25,6 +30,8 @@ steps:
     id: detect
     technique:
       name: gitnexus::detect-changes
+      inputs:
+        diff_scope: diff_scope
       outputs:
         change_report: change_report
   - kind: technique

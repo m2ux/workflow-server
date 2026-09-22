@@ -1,0 +1,31 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the group concept search under a concept no member carries.
+variables:
+  reads:
+    - negative_group_name
+    - negative_search_query
+  writes:
+    - name: negative_group_query_report
+      type: object
+      description: Execution flows drawn from the group's members and merged into one ranking, each carrying the member it came from — with empty results across every member by construction.
+    - name: negative_graph_inventory
+      type: object
+      description: Every indexed graph with the tree it was built from, and the repository groups configured over them, which is where a group name that resolves to nothing is settled.
+required: true
+steps:
+  - kind: routine
+    id: search-absent-concept
+    routine: gitnexus::group-concept-search
+    with:
+      group_name: "{negative_group_name}"
+      search_query: "{negative_search_query}"
+    outputs:
+      group_query_report: negative_group_query_report
+      graph_inventory: negative_graph_inventory
+exits:
+  - id: searched
+    isDefault: true
+outcome:
+  - The same run under a concept no member carries read the same inventory and landed a ranking with empty results across every member, the fallback the search promises rather than a failure

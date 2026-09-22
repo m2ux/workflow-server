@@ -1,0 +1,41 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-diff-coverage-map-conformance
+version: 1.0.0
+title: GitNexus Diff Coverage Map Conformance Workflow
+description: >-
+  Hold the gitnexus diff-coverage-map run to two cases. The positive case takes the changed-symbol
+  set from the whole working tree, so the run iterates the symbols the change touched, reads each
+  one's callers and separates the symbols a test reaches from the ones none does. The negative case
+  takes it from the index, where nothing is staged, so the change set is empty, the per-symbol pass
+  runs zero times and both lists land empty — the fallback the run promises for a diff that moved
+  nothing, distinct from a change the graph classified and found covered.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_diff_scope
+    type: string
+    description: The whole working tree, whose changed symbols the positive case classifies.
+    defaultValue: all
+  - name: negative_diff_scope
+    type: string
+    description: The index, where nothing is staged, so the negative case's change set is empty.
+    defaultValue: staged
+initialActivity: positive-case
+graph:
+  positive-case:
+    mapped: negative-case
+  negative-case:
+    mapped: report-cases
+  report-cases:
+    reported: __terminal__

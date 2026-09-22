@@ -1,0 +1,31 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the heading lookup under a pattern no whole heading matches.
+variables:
+  reads:
+    - negative_heading_pattern
+    - negative_tree_path
+  writes:
+    - name: negative_heading_matches
+      type: array
+      description: Each matching heading with the file it sits in — empty by construction.
+    - name: repo_name
+      type: string
+      description: The graph the search addressed, which a report naming these matches names too.
+required: true
+steps:
+  - kind: routine
+    id: find-absent-headings
+    routine: gitnexus::doc-heading-lookup
+    with:
+      tree_path: "{negative_tree_path}"
+      heading_pattern: "{negative_heading_pattern}"
+    outputs:
+      heading_matches: negative_heading_matches
+      repo_name: repo_name
+exits:
+  - id: matched
+    isDefault: true
+outcome:
+  - The same run under a pattern no whole heading matches named the graph and landed an empty set, the fallback the search promises rather than a failure

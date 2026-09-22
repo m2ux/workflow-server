@@ -1,0 +1,50 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-narrow-to-changed-conformance
+version: 1.0.0
+title: GitNexus Narrow To Changed Conformance Workflow
+description: >-
+  Hold the gitnexus narrow-to-changed run to two cases. Both cases carry the same graph query for
+  every function's name and file. The positive case names a file the graph holds, so the path
+  predicate keeps rows and the run lands the functions in that file. The negative case names a file
+  no graph holds, so the predicate keeps no row and the run lands an empty set — the fallback it
+  promises for a file outside the index, distinct from a file the graph holds and found empty.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_cypher_query
+    type: string
+    description: A query for every function's name and file, which the positive case's path predicate narrows.
+    defaultValue: "MATCH (f:Function) RETURN f.name AS symbol_name, f.filePath AS file_path"
+  - name: positive_changed_files
+    type: array
+    description: A file the graph holds, whose functions the positive case's predicate keeps.
+    defaultValue:
+      - src/loaders/technique-loader.ts
+  - name: negative_cypher_query
+    type: string
+    description: The same query for every function's name and file, which the negative case's path predicate narrows.
+    defaultValue: "MATCH (f:Function) RETURN f.name AS symbol_name, f.filePath AS file_path"
+  - name: negative_changed_files
+    type: array
+    description: A file no graph holds, so the negative case's predicate keeps no row.
+    defaultValue:
+      - no/such/file.ts
+initialActivity: positive-case
+graph:
+  positive-case:
+    narrowed: negative-case
+  negative-case:
+    narrowed: report-cases
+  report-cases:
+    reported: __terminal__

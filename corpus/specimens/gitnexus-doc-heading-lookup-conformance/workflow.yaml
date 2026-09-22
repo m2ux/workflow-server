@@ -1,0 +1,48 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-doc-heading-lookup-conformance
+version: 1.0.0
+title: GitNexus Doc Heading Lookup Conformance Workflow
+description: >-
+  Hold the gitnexus doc-heading-lookup run to two cases. The positive case binds a pattern that
+  whole headings in the documentation tree match, so the run names the graph covering the tree and
+  lands the matching headings with the files they sit in. The negative case binds a pattern no
+  heading matches, so the run names the same graph and lands an empty set — the fallback it promises
+  for a pattern matching no whole heading, distinct from a tree the graph does not cover.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: midnight-docs
+  - name: positive_tree_path
+    type: string
+    description: Filesystem path of the documentation tree whose headings the positive case reads.
+    defaultValue: /home/mike1/projects/dev/midnight-agent-eng/midnight-docs
+  - name: positive_heading_pattern
+    type: string
+    description: A regular expression whole headings in the tree match, so the positive case lands rows.
+    defaultValue: ".*Overview.*"
+  - name: negative_tree_path
+    type: string
+    description: Filesystem path of the documentation tree whose headings the negative case reads.
+    defaultValue: /home/mike1/projects/dev/midnight-agent-eng/midnight-docs
+  - name: negative_heading_pattern
+    type: string
+    description: A regular expression no whole heading matches, so the negative case lands an empty set.
+    defaultValue: zzqx-no-such-heading
+initialActivity: positive-case
+graph:
+  positive-case:
+    matched: negative-case
+  negative-case:
+    matched: report-cases
+  report-cases:
+    reported: __terminal__

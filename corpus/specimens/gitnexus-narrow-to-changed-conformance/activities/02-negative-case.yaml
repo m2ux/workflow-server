@@ -1,0 +1,27 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the narrowing over a file no graph holds.
+variables:
+  reads:
+    - negative_cypher_query
+    - negative_changed_files
+  writes:
+    - name: negative_matched_symbols
+      type: array
+      description: Rows of the query that sit in a file no graph holds — empty by construction.
+required: true
+steps:
+  - kind: routine
+    id: narrow-to-absent-file
+    routine: gitnexus::narrow-to-changed
+    with:
+      cypher_query: "{negative_cypher_query}"
+      changed_files: "{negative_changed_files}"
+    outputs:
+      matched_symbols: negative_matched_symbols
+exits:
+  - id: narrowed
+    isDefault: true
+outcome:
+  - The same run under a file the graph does not hold landed an empty set, the fallback the predicate promises rather than a failure

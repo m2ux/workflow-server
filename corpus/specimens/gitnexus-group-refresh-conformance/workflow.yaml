@@ -1,0 +1,41 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-group-refresh-conformance
+version: 1.0.0
+title: GitNexus Group Refresh Conformance Workflow
+description: >-
+  Hold the gitnexus group-refresh run to two cases. The positive case binds a group every member of
+  which has a graph, so the run reads each member's freshness, rebuilds the members the report
+  names, rebuilds the contract registry and reads it back with nothing left behind. The negative
+  case binds a group with a member no graph covers, so the run names that member under
+  unrebuildable_members while it still rebuilds the registry over the members it can read — the
+  fallback it promises for a member with no graph, distinct from a member the report finds current.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_group_name
+    type: string
+    description: A configured repository group every member of which has a graph, so the positive case leaves no member behind.
+    defaultValue: mcp-servers
+  - name: negative_group_name
+    type: string
+    description: A configured repository group with a member no graph covers, so the negative case names it among the unrebuildable.
+    defaultValue: midnight-ledger
+initialActivity: positive-case
+graph:
+  positive-case:
+    refreshed: negative-case
+  negative-case:
+    refreshed: report-cases
+  report-cases:
+    reported: __terminal__

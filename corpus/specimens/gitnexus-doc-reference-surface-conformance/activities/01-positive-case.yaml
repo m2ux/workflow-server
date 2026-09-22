@@ -1,0 +1,31 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the reference surface over a file the index records.
+variables:
+  reads:
+    - positive_target_files
+    - positive_tree_path
+  writes:
+    - name: positive_referencing_files
+      type: array
+      description: Per target file, the paths of the files holding a link that resolves to it.
+    - name: repo_name
+      type: string
+      description: The graph each read addressed, which a report naming these referencers names too.
+required: true
+steps:
+  - kind: routine
+    id: surface-held-file
+    routine: gitnexus::doc-reference-surface
+    with:
+      tree_path: "{positive_tree_path}"
+      target_files: "{positive_target_files}"
+    outputs:
+      referencing_files: positive_referencing_files
+      repo_name: repo_name
+exits:
+  - id: surfaced
+    isDefault: true
+outcome:
+  - The run named the graph covering the tree and landed, for a file the index records, the files whose links resolve to it

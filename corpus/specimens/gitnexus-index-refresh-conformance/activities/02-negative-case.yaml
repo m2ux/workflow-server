@@ -1,0 +1,39 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the index refresh over a tree whose graph is behind it.
+variables:
+  reads:
+    - negative_repo_path
+  writes:
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph every operation in the run addresses — the graph of the tree behind its index, set before the reads and the rebuild key under it.
+    - name: negative_stats
+      type: object
+      description: File, symbol and process counts the graph holds.
+    - name: negative_index_stale
+      type: boolean
+      description: Whether the graph is behind the tree it was built from.
+required: true
+steps:
+  - kind: action
+    id: address-graph
+    actions:
+      - action: set
+        target: repo_name
+        value: poc-shielded
+        description: The graph the reads and the rebuild address — the one built from the tree that has moved on since.
+  - kind: routine
+    id: refresh-stale-tree
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{negative_repo_path}"
+    outputs:
+      stats: negative_stats
+      index_stale: negative_index_stale
+exits:
+  - id: refreshed
+    isDefault: true
+outcome:
+  - The same run under a tree whose graph is behind read the flag true, rebuilt, and read again, so the landed flag is the second read's verdict on whether the graph caught up

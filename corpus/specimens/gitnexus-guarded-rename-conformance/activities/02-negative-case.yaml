@@ -1,0 +1,38 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the guarded rename over a symbol the graph does not hold, with the gate refusing the edit list.
+variables:
+  reads:
+    - negative_file_path
+    - negative_new_name
+    - negative_symbol_name
+  writes:
+    - name: negative_changes
+      type: array
+      description: The per-file edit list, each edit carrying the confidence its provenance earns — empty by construction.
+    - name: negative_rename_approved
+      type: boolean
+      description: Whether the previewed edit list was accepted at the gate.
+      defaultValue: true
+    - name: negative_change_report
+      type: object
+      description: The symbols and execution flows the applied rename actually moved, read back off the diff — absent, the steps after the gate staying unreached.
+required: true
+steps:
+  - kind: routine
+    id: rename-absent-symbol
+    routine: gitnexus::guarded-rename
+    with:
+      symbol_name: "{negative_symbol_name}"
+      new_name: "{negative_new_name}"
+      file_path: "{negative_file_path}"
+    outputs:
+      changes: negative_changes
+      rename_approved: negative_rename_approved
+      change_report: negative_change_report
+exits:
+  - id: gated
+    isDefault: true
+outcome:
+  - The same run under a symbol the graph does not hold previewed an empty edit list, the spliced gate refused it and the steps after the gate stayed unreached, the fallback the run promises rather than a failure

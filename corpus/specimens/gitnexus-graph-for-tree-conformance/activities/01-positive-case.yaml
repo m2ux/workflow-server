@@ -1,0 +1,29 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the graph resolve over a tree a graph covers.
+variables:
+  reads:
+    - positive_tree_path
+  writes:
+    - name: repo_name
+      type: string
+      description: The name the operations downstream address as their graph.
+    - name: positive_index_stats
+      type: object
+      description: The symbol, relationship and process counts a build reports for the graph it wrote.
+required: true
+steps:
+  - kind: routine
+    id: name-covered-tree
+    routine: gitnexus::graph-for-tree
+    with:
+      tree_path: "{positive_tree_path}"
+    outputs:
+      repo_name: repo_name
+      index_stats: positive_index_stats
+exits:
+  - id: named
+    isDefault: true
+outcome:
+  - The first resolve named the graph covering the tree, so the build stayed unreached and the run landed the name alone

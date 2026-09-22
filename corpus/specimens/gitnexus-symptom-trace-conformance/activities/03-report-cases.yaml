@@ -1,0 +1,25 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - negative_call_chains
+    - negative_context_report
+    - negative_query_report
+    - negative_suspect_flow_traces
+    - positive_call_chains
+    - positive_context_report
+    - positive_query_report
+    - positive_suspect_flow_traces
+    - repo_name
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Both bindings of the run are named with what each landed, so a reader can tell the traced symptom from the fallback of one outside the graph

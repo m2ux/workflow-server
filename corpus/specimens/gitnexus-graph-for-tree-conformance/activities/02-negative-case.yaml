@@ -1,0 +1,29 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the graph resolve over a tree no graph covers.
+variables:
+  reads:
+    - negative_tree_path
+  writes:
+    - name: repo_name
+      type: string
+      description: The name the operations downstream address as their graph.
+    - name: negative_index_stats
+      type: object
+      description: The symbol, relationship and process counts a build reports for the graph it wrote.
+required: true
+steps:
+  - kind: routine
+    id: name-uncovered-tree
+    routine: gitnexus::graph-for-tree
+    with:
+      tree_path: "{negative_tree_path}"
+    outputs:
+      repo_name: repo_name
+      index_stats: negative_index_stats
+exits:
+  - id: named
+    isDefault: true
+outcome:
+  - The same run under a tree no graph covers landed an empty name at the first resolve, built a graph over the tree and named it, the fallback the run promises rather than a failure

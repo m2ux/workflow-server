@@ -1,0 +1,33 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the diff taint pass over the whole working tree.
+variables:
+  reads:
+    - positive_diff_scope
+  writes:
+    - name: positive_introduced_flows
+      type: array
+      description: Findings with a hop on a symbol the change moved, each naming that symbol.
+    - name: positive_inherited_flows
+      type: array
+      description: Findings anchored at a changed symbol whose every hop sits outside the change.
+    - name: positive_taint_unmeasured
+      type: boolean
+      description: Whether the graph carried no taint layer, so the partition settles nothing.
+required: true
+steps:
+  - kind: routine
+    id: pass-working-tree
+    routine: gitnexus::diff-taint-pass
+    with:
+      diff_scope: "{positive_diff_scope}"
+    outputs:
+      introduced_flows: positive_introduced_flows
+      inherited_flows: positive_inherited_flows
+      taint_unmeasured: positive_taint_unmeasured
+exits:
+  - id: passed
+    isDefault: true
+outcome:
+  - The run took the working tree's changed symbols, read the taint findings anchored at each across its per-symbol pass, and landed its partition beside the flag saying whether the layer was there to read

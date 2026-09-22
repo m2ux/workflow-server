@@ -1,0 +1,23 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - repo_name
+    - positive_cypher_query
+    - positive_changed_files
+    - positive_matched_symbols
+    - negative_cypher_query
+    - negative_changed_files
+    - negative_matched_symbols
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Both bindings of the run are named with what each landed, so a reader can tell the narrowed set from the empty fallback

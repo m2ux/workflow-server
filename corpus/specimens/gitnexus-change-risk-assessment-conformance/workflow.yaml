@@ -1,0 +1,49 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-change-risk-assessment-conformance
+version: 1.0.0
+title: GitNexus Change Risk Assessment Conformance Workflow
+description: >-
+  Hold the gitnexus change-risk-assessment run to two cases. The positive case names a symbol the
+  graph holds, so the run measures what reaches it, reads the flow inventory, measures what the diff
+  moved and settles one rating from all three. The negative case names a symbol no graph holds, so
+  the impact half resolves nothing and the verdict rests on the diff's rating alone, saying that its
+  caller set is hand-derived — the fallback the run promises for a symbol outside the index,
+  distinct from a symbol the graph measured and found unreached.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_target
+    type: string
+    description: A symbol the graph holds, whose dependents the positive case's measurement reaches.
+    defaultValue: composeLoaded
+  - name: positive_diff_scope
+    type: string
+    description: Which diff the positive case takes its changed-symbol set from.
+    defaultValue: all
+  - name: negative_target
+    type: string
+    description: A symbol no graph holds, so the negative case's impact half resolves nothing.
+    defaultValue: no_such_symbol_zz
+  - name: negative_diff_scope
+    type: string
+    description: Which diff the negative case takes its changed-symbol set from.
+    defaultValue: all
+initialActivity: positive-case
+graph:
+  positive-case:
+    assessed: negative-case
+  negative-case:
+    assessed: report-cases
+  report-cases:
+    reported: __terminal__

@@ -1,0 +1,49 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-group-concept-search-conformance
+version: 1.0.0
+title: GitNexus Group Concept Search Conformance Workflow
+description: >-
+  Hold the gitnexus group-concept-search run to two cases. The positive case binds a configured
+  group and a concept its members' execution flows carry, so the run reads the inventory, ranks
+  every member and lands a merged ranking with results. The negative case binds the same group and a
+  concept no member carries, so the run reads the same inventory and lands a ranking whose results
+  are empty across every member — the fallback it promises for a concept the group does not hold,
+  distinct from a member missing from the group's status.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_group_name
+    type: string
+    description: A configured repository group whose members the positive case ranks.
+    defaultValue: mcp-servers
+  - name: positive_search_query
+    type: string
+    description: A concept the group's members carry, so the positive case lands results.
+    defaultValue: technique loader
+  - name: negative_group_name
+    type: string
+    description: A configured repository group whose members the negative case ranks.
+    defaultValue: mcp-servers
+  - name: negative_search_query
+    type: string
+    description: A concept no member carries, so the negative case lands empty results across the group.
+    defaultValue: zzqx quiddity nonesuch
+initialActivity: positive-case
+graph:
+  positive-case:
+    searched: negative-case
+  negative-case:
+    searched: report-cases
+  report-cases:
+    reported: __terminal__

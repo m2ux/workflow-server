@@ -1,0 +1,40 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-package-diagram-source-conformance
+version: 1.0.0
+title: GitNexus Package Diagram Source Conformance Workflow
+description: >-
+  Hold the gitnexus package-diagram-source run to two cases. The positive case takes the change from
+  the whole diff, so the change set names files and flows, areas are selected from them, and the run
+  lands each area with its members. The negative case takes the change from the index, where nothing
+  is staged, so the change set is empty, no area is selected, and the run lands an empty structure —
+  the fallback it promises for a change that reaches nothing, distinct from areas read and found bare.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_diff_scope
+    type: string
+    description: The whole diff, so the positive case's change set names files and flows for the selection to work from.
+    defaultValue: all
+  - name: negative_diff_scope
+    type: string
+    description: The index alone, where nothing is staged, so the negative case's change set is empty.
+    defaultValue: staged
+initialActivity: positive-case
+graph:
+  positive-case:
+    sourced: negative-case
+  negative-case:
+    sourced: report-cases
+  report-cases:
+    reported: __terminal__

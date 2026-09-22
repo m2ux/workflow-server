@@ -1,0 +1,25 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the diagram sourcing over the whole diff.
+variables:
+  reads:
+    - positive_diff_scope
+  writes:
+    - name: positive_diagram_source
+      type: array
+      description: The functional areas the change reaches, each with its members, which the package diagram is drawn from.
+required: true
+steps:
+  - kind: routine
+    id: source-from-whole-diff
+    routine: gitnexus::package-diagram-source
+    with:
+      diff_scope: "{positive_diff_scope}"
+    outputs:
+      diagram_source: positive_diagram_source
+exits:
+  - id: sourced
+    isDefault: true
+outcome:
+  - The run's change set named files and flows, areas were selected from them, and each selected area landed with its members

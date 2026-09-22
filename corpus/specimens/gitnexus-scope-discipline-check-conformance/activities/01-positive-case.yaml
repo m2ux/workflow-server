@@ -1,0 +1,27 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the scope discipline check over the whole diff against an empty intended scope.
+variables:
+  reads:
+    - positive_diff_scope
+    - positive_requirements_scope
+  writes:
+    - name: positive_scope_findings
+      type: array
+      description: Affected flows falling outside the intended scope, each with the changed symbol that reaches it.
+required: true
+steps:
+  - kind: routine
+    id: check-whole-diff
+    routine: gitnexus::scope-discipline-check
+    with:
+      diff_scope: "{positive_diff_scope}"
+      requirements_scope: "{positive_requirements_scope}"
+    outputs:
+      scope_findings: positive_scope_findings
+exits:
+  - id: checked
+    isDefault: true
+outcome:
+  - The run took the flows the whole diff reaches, held each against an empty intended scope and landed every one as a finding with the changed symbol that reaches it

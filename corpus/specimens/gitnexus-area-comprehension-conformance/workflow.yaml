@@ -1,0 +1,57 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-area-comprehension-conformance
+version: 1.0.0
+title: GitNexus Area Comprehension Conformance Workflow
+description: >-
+  Hold the gitnexus area-comprehension run to two cases. The positive case names a concept the
+  graph's execution flows rank into, so the run names the graph, brings it current, lands the flows
+  and their symbols, and reads each symbol's connections and each flow's trace. The negative case
+  names a concept no flow ranks into, so the query lands no process and no process symbol, both
+  per-item passes run zero times, and the contexts and traces stay empty — the fallback the run
+  promises for a concept outside the graph, distinct from an area the graph searched and read.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_search_query
+    type: string
+    description: A concept the graph's execution flows rank into, whose area the positive case reads.
+    defaultValue: technique loader composition
+  - name: positive_tree_path
+    type: string
+    description: Filesystem path of the tree whose answers the positive case wants, which names the graph to address.
+    defaultValue: /home/mike1/projects/dev/workflow-server
+  - name: positive_repo_path
+    type: string
+    description: Filesystem path of the tree the positive case's rebuild walks and keys its index under.
+    defaultValue: /home/mike1/projects/dev/workflow-server
+  - name: negative_search_query
+    type: string
+    description: A concept no execution flow ranks into, so the negative case's query lands no process.
+    defaultValue: zzqx quiddity nonesuch
+  - name: negative_tree_path
+    type: string
+    description: Filesystem path of the tree whose answers the negative case wants, which names the graph to address.
+    defaultValue: /home/mike1/projects/dev/workflow-server
+  - name: negative_repo_path
+    type: string
+    description: Filesystem path of the tree the negative case's rebuild walks and keys its index under.
+    defaultValue: /home/mike1/projects/dev/workflow-server
+initialActivity: positive-case
+graph:
+  positive-case:
+    comprehended: negative-case
+  negative-case:
+    comprehended: report-cases
+  report-cases:
+    reported: __terminal__

@@ -1,0 +1,40 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-index-refresh-conformance
+version: 1.0.0
+title: GitNexus Index Refresh Conformance Workflow
+description: >-
+  Hold the gitnexus index-refresh run to two cases. The positive case names a tree whose graph is
+  current, so the first read lands a false staleness flag, no rebuild runs, and the stats describe
+  the graph as read. The negative case names a tree whose graph is behind, so the first read lands
+  the flag true, the rebuild walks the tree, and a second read says whether the graph caught up —
+  the recovery the run promises for a stale index, distinct from a graph that was current all along.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_repo_path
+    type: string
+    description: A tree whose graph is current, so the positive case's first read finds nothing to rebuild.
+    defaultValue: /home/mike1/projects/dev/workflow-server
+  - name: negative_repo_path
+    type: string
+    description: A tree whose graph is behind it, so the negative case's first read sends the run through a rebuild.
+    defaultValue: /home/mike1/projects/dev/poc-shielded
+initialActivity: positive-case
+graph:
+  positive-case:
+    refreshed: negative-case
+  negative-case:
+    refreshed: report-cases
+  report-cases:
+    reported: __terminal__

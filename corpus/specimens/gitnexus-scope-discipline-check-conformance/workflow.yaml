@@ -1,0 +1,49 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-scope-discipline-check-conformance
+version: 1.0.0
+title: GitNexus Scope Discipline Check Conformance Workflow
+description: >-
+  Hold the gitnexus scope-discipline-check run to two cases. The positive case takes the affected
+  flows from the whole diff and holds them against an empty intended scope, so every flow the change
+  reaches is a finding. The negative case takes them from the index, where nothing is staged, so the
+  change set is empty, no flow is reached and the findings are empty — the fallback the run promises
+  for a diff touching nothing, distinct from the positive case's findings, which are flows outside an
+  empty scope.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_diff_scope
+    type: string
+    description: The whole diff, so the positive case reaches every flow the working tree and index change.
+    defaultValue: all
+  - name: positive_requirements_scope
+    type: array
+    description: An empty intended scope, so every flow the positive case reaches is a finding.
+    defaultValue: []
+  - name: negative_diff_scope
+    type: string
+    description: The index alone, where nothing is staged, so the negative case's change set is empty.
+    defaultValue: staged
+  - name: negative_requirements_scope
+    type: array
+    description: An empty intended scope, held against a change set that reaches no flow.
+    defaultValue: []
+initialActivity: positive-case
+graph:
+  positive-case:
+    checked: negative-case
+  negative-case:
+    checked: report-cases
+  report-cases:
+    reported: __terminal__

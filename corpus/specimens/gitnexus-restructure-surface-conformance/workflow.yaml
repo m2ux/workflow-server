@@ -1,0 +1,40 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-restructure-surface-conformance
+version: 1.0.0
+title: GitNexus Restructure Surface Conformance Workflow
+description: >-
+  Hold the gitnexus restructure-surface run to two cases. The positive case names a symbol the graph
+  holds, so the run reads its callers, callees and flow membership and measures what depends on it
+  at depth with a risk level. The negative case names a symbol no graph holds, so the context answer
+  resolves nothing and the impact answer withholds its rating — the fallback the run promises for a
+  symbol outside the graph, distinct from a symbol the graph holds and nothing reaches.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_name
+    type: string
+    description: A symbol the graph holds, whose connections and dependents the positive case measures.
+    defaultValue: composeLoaded
+  - name: negative_name
+    type: string
+    description: A symbol no graph holds, so the negative case's context resolves nothing and its impact withholds a rating.
+    defaultValue: no_such_symbol_zz
+initialActivity: positive-case
+graph:
+  positive-case:
+    measured: negative-case
+  negative-case:
+    measured: report-cases
+  report-cases:
+    reported: __terminal__

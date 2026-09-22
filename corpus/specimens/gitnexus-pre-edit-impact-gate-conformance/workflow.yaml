@@ -1,0 +1,42 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-pre-edit-impact-gate-conformance
+version: 1.0.0
+title: GitNexus Pre-Edit Impact Gate Conformance Workflow
+description: >-
+  Hold the gitnexus pre-edit-impact-gate run to two cases. The positive case names a symbol with
+  many callers, so the measurement rates it high, the gate is presented and answered with proceed,
+  and the run lands the report with the edit approved. The negative case names a symbol the graph
+  does not resolve, so the rating is withheld, the gate is presented and answered with hold, and the
+  run lands the edit refused — the fallback it promises for a symbol it cannot rate, distinct from a
+  low-rated symbol that passes without asking.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+  - checkpoint
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_target
+    type: string
+    description: A symbol with many callers, whose rating brings the positive case to the gate.
+    defaultValue: composeLoaded
+  - name: negative_target
+    type: string
+    description: A name the graph does not resolve, so the negative case's rating is withheld.
+    defaultValue: no_such_symbol_zz
+initialActivity: positive-case
+graph:
+  positive-case:
+    gated: negative-case
+  negative-case:
+    gated: report-cases
+  report-cases:
+    reported: __terminal__

@@ -1,0 +1,50 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-doc-reference-surface-conformance
+version: 1.0.0
+title: GitNexus Doc Reference Surface Conformance Workflow
+description: >-
+  Hold the gitnexus doc-reference-surface run to two cases. The positive case names a file the index
+  records, so the run names the graph covering the documentation tree and lands the files whose
+  links resolve to it. The negative case names a path the index records no file at, so the run
+  names the same graph and lands an empty set — the fallback it promises for a file outside the
+  index, distinct from a file the graph holds and nothing links to.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: midnight-docs
+  - name: positive_tree_path
+    type: string
+    description: Filesystem path of the documentation tree whose links the positive case reads.
+    defaultValue: /home/mike1/projects/dev/midnight-agent-eng/midnight-docs
+  - name: positive_target_files
+    type: array
+    description: A file the index records, whose referencers the positive case enumerates.
+    defaultValue:
+      - api-reference/midnight-js/README.md
+  - name: negative_tree_path
+    type: string
+    description: Filesystem path of the documentation tree whose links the negative case reads.
+    defaultValue: /home/mike1/projects/dev/midnight-agent-eng/midnight-docs
+  - name: negative_target_files
+    type: array
+    description: A path the index records no file at, so the negative case's read keeps no referencer.
+    defaultValue:
+      - no/such/file.md
+initialActivity: positive-case
+graph:
+  positive-case:
+    surfaced: negative-case
+  negative-case:
+    surfaced: report-cases
+  report-cases:
+    reported: __terminal__
