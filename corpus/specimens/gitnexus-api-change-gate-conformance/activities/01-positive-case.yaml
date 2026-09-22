@@ -1,7 +1,7 @@
 id: positive-case
 version: 1.0.0
 name: Positive Case
-description: Refer to the API change gate over a route the graph holds.
+description: Refer to the API change gate over a route the graph holds under one verb.
 variables:
   reads:
     - positive_route_path
@@ -27,4 +27,4 @@ exits:
   - id: gated
     isDefault: true
 outcome:
-  - The run measured the consumers and response keys a held route's change reaches, and the gate spliced from it was presented from this activity where the measurement named a mismatch
+  - The run measured the consumers and response keys a held single-verb route's change reaches, landed one report rather than a set, and the gate spliced from it was presented from this activity where the measurement named a mismatch

@@ -3,12 +3,13 @@ id: gitnexus-pre-edit-impact-gate-conformance
 version: 1.0.0
 title: GitNexus Pre-Edit Impact Gate Conformance Workflow
 description: >-
-  Hold the gitnexus pre-edit-impact-gate run to two cases. The positive case names a symbol with
+  Hold the gitnexus pre-edit-impact-gate run to three cases. The positive case names a symbol with
   many callers, so the measurement rates it high, the gate is presented and answered with proceed,
   and the run lands the report with the edit approved. The negative case names a symbol the graph
   does not resolve, so the rating is withheld, the gate is presented and answered with hold, and the
-  run lands the edit refused — the fallback it promises for a symbol it cannot rate, distinct from a
-  low-rated symbol that passes without asking.
+  run lands the edit refused — the fallback it promises for a symbol it cannot rate. The low-rating
+  case names a symbol with one direct caller, rated LOW, so the gate's condition holds it back and
+  the run passes with the approval at its seeded true.
 author: m2ux
 tags:
   - gitnexus
@@ -32,11 +33,17 @@ variables:
     type: string
     description: A name the graph does not resolve, so the negative case's rating is withheld.
     defaultValue: no_such_symbol_zz
+  - name: low_rating_target
+    type: string
+    description: A symbol with one direct caller, rated LOW, so the low-rating case passes the gate's condition without a checkpoint.
+    defaultValue: parseProtocolSection
 initialActivity: positive-case
 graph:
   positive-case:
     gated: negative-case
   negative-case:
+    gated: low-rating-case
+  low-rating-case:
     gated: report-cases
   report-cases:
     reported: __terminal__

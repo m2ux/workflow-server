@@ -9,6 +9,8 @@ variables:
     - positive_index_stale
     - negative_stats
     - negative_index_stale
+    - unindexed_tree_stats
+    - unindexed_tree_index_stale
 required: true
 steps:
   - kind: technique
@@ -18,4 +20,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - Both bindings of the run are named with what each landed, so a reader can tell a graph read current from one rebuilt and read again
+  - All three bindings of the run are named with what each landed, so a reader can tell a graph read current from one rebuilt and read again, and a rebuild over a graph that was behind from a build over a tree that had none

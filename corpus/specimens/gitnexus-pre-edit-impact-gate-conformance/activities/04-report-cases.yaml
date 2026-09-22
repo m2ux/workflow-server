@@ -11,6 +11,9 @@ variables:
     - negative_target
     - negative_impact_report
     - negative_edit_approved
+    - low_rating_target
+    - low_rating_impact_report
+    - low_rating_edit_approved
 required: true
 steps:
   - kind: technique
@@ -20,4 +23,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - Both bindings of the run are named with what each landed, so a reader can tell an approved edit from a held one and a rated symbol from a withheld rating
+  - All three bindings of the run are named with what each landed, so a reader can tell an approved edit from a held one, a rated symbol from a withheld rating, and a proceed answered at the gate from a seed kept because no gate was presented

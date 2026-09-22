@@ -1,0 +1,58 @@
+id: stale-graph-case
+version: 1.0.0
+name: Stale Graph Case
+description: Refer to the area comprehension over a tree whose graph is behind it.
+variables:
+  reads:
+    - stale_graph_repo_path
+    - stale_graph_search_query
+    - stale_graph_tree_path
+  writes:
+    - name: repo_name
+      type: string
+      description: The graph every answer in this run came from — the one built from a tree that has moved on since, set before the reads and the rebuild under it.
+    - name: stale_graph_index_stats
+      type: object
+      description: File, symbol and process counts the graph holds.
+    - name: stale_graph_index_stale
+      type: boolean
+      description: Whether the graph is still behind the tree after the rebuild, which is the age every answer below carries.
+    - name: stale_graph_query_report
+      type: object
+      description: The execution flows the area's concept lands in, the symbols those flows run, and the definitions reached outside any flow.
+    - name: stale_graph_symbol_contexts
+      type: array
+      description: Per named symbol, its callers, callees and flow membership.
+      defaultValue: []
+    - name: stale_graph_flow_traces
+      type: array
+      description: The ordered step trace of each execution flow the area's concept ranked into.
+      defaultValue: []
+required: true
+steps:
+  - kind: action
+    id: address-graph
+    actions:
+      - action: set
+        target: repo_name
+        value: poc-shielded
+        description: The graph the reads and the rebuild address — the one built from the tree that has moved on since.
+  - kind: routine
+    id: comprehend-stale-graph
+    routine: gitnexus::area-comprehension
+    with:
+      search_query: "{stale_graph_search_query}"
+      tree_path: "{stale_graph_tree_path}"
+      repo_path: "{stale_graph_repo_path}"
+    outputs:
+      repo_name: repo_name
+      index_stats: stale_graph_index_stats
+      index_stale: stale_graph_index_stale
+      query_report: stale_graph_query_report
+      symbol_contexts: stale_graph_symbol_contexts
+      flow_traces: stale_graph_flow_traces
+exits:
+  - id: comprehended
+    isDefault: true
+outcome:
+  - The same run under a tree whose graph is behind read the staleness flag true, rebuilt inside its nested refresh, read again so the landed flag is the rebuilt graph's verdict, and took its ranked flows, connections and traces from the graph as rebuilt — the recovery the run promises for a stale index, distinct from an area read off a graph that was current from the start

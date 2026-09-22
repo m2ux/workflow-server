@@ -4,6 +4,10 @@ name: Report Cases
 description: State what the run landed under each binding.
 variables:
   reads:
+    - absent_layer_inherited_flows
+    - absent_layer_introduced_flows
+    - absent_layer_taint_unmeasured
+    - base_ref
     - negative_inherited_flows
     - negative_introduced_flows
     - negative_taint_unmeasured
@@ -20,4 +24,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - Both bindings of the run are named with what each landed, so a reader can tell a partitioned change from the empty lists an empty change set lands, and both from a layer the graph does not hold
+  - All three bindings of the run are named with what each landed, so a reader can tell a partitioned change from the empty lists an empty change set lands, and both from the true flag a layer the graph does not hold lands

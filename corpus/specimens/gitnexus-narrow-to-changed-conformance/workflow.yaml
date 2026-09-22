@@ -3,11 +3,13 @@ id: gitnexus-narrow-to-changed-conformance
 version: 1.0.0
 title: GitNexus Narrow To Changed Conformance Workflow
 description: >-
-  Hold the gitnexus narrow-to-changed run to two cases. Both cases carry the same graph query for
-  every function's name and file. The positive case names a file the graph holds, so the path
-  predicate keeps rows and the run lands the functions in that file. The negative case names a file
-  no graph holds, so the predicate keeps no row and the run lands an empty set — the fallback it
-  promises for a file outside the index, distinct from a file the graph holds and found empty.
+  Hold the gitnexus narrow-to-changed run to three cases. The positive and negative cases carry the
+  same graph query for every function's name and file. The positive case names a file the graph
+  holds, so the path predicate keeps rows and the run lands the functions in that file. The negative
+  case names a file no graph holds, so the predicate keeps no row and the run lands an empty set —
+  the fallback it promises for a file outside the index, distinct from a file the graph holds and
+  found empty. The union case carries a two-arm UNION ALL query over two held files, so each arm
+  takes its own predicate and the run lands functions and methods from both files and nothing else.
 author: m2ux
 tags:
   - gitnexus
@@ -40,11 +42,23 @@ variables:
     description: A file no graph holds, so the negative case's predicate keeps no row.
     defaultValue:
       - no/such/file.ts
+  - name: union_cypher_query
+    type: string
+    description: A two-arm UNION ALL query, one arm for every function and one for every method, each returning the symbol's name and file, so the union case's path predicate rides each arm.
+    defaultValue: "MATCH (f:Function) RETURN f.name AS symbol_name, f.filePath AS file_path UNION ALL MATCH (m:Method) RETURN m.name AS symbol_name, m.filePath AS file_path"
+  - name: union_changed_files
+    type: array
+    description: Two files the graph holds, whose functions and methods the union case's predicate keeps.
+    defaultValue:
+      - src/loaders/technique-loader.ts
+      - src/tools/workflow-tools.ts
 initialActivity: positive-case
 graph:
   positive-case:
     narrowed: negative-case
   negative-case:
+    narrowed: union-case
+  union-case:
     narrowed: report-cases
   report-cases:
     reported: __terminal__

@@ -3,11 +3,13 @@ id: gitnexus-index-refresh-conformance
 version: 1.0.0
 title: GitNexus Index Refresh Conformance Workflow
 description: >-
-  Hold the gitnexus index-refresh run to two cases. The positive case names a tree whose graph is
+  Hold the gitnexus index-refresh run to three cases. The positive case names a tree whose graph is
   current, so the first read lands a false staleness flag, no rebuild runs, and the stats describe
   the graph as read. The negative case names a tree whose graph is behind, so the first read lands
   the flag true, the rebuild walks the tree, and a second read says whether the graph caught up —
   the recovery the run promises for a stale index, distinct from a graph that was current all along.
+  The unindexed-tree case names a tree with no graph, so the first read answers with an error the
+  run reads as no graph, the build lands one, and the second read lands its counts current.
 author: m2ux
 tags:
   - gitnexus
@@ -30,11 +32,17 @@ variables:
     type: string
     description: A tree whose graph is behind it, so the negative case's first read sends the run through a rebuild.
     defaultValue: /home/mike1/projects/dev/poc-shielded
+  - name: unindexed_tree_repo_path
+    type: string
+    description: A tree with no graph, so the unindexed-tree case's first read draws an error and the build keys a new graph under the tree's basename.
+    defaultValue: /home/mike1/projects/vendor/GitNexus/gitnexus-test-setup
 initialActivity: positive-case
 graph:
   positive-case:
     refreshed: negative-case
   negative-case:
+    refreshed: unindexed-tree-case
+  unindexed-tree-case:
     refreshed: report-cases
   report-cases:
     reported: __terminal__

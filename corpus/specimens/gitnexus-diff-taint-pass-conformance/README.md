@@ -1,15 +1,18 @@
 # GitNexus Diff Taint Pass Conformance
 
-A specimen of one form: one library run held to a positive and a negative case, so the measurement and the promised fallback are evidenced side by side.
+A specimen of one form: one library run held to a positive case, a negative case and a third, so the measurement and each promised fallback are evidenced side by side.
 
 The run is `gitnexus::diff-taint-pass`, which takes the symbols a diff changed, reads the taint findings anchored at each one's file across a per-symbol pass, and separates the flows the change opened from the ones it inherited. The findings come from a graph layer a build records only when asked, so the run lands one thing more than its partition: a flag saying whether the layer was there at all. The positive case takes the changed-symbol set from the whole working tree, so the pass reads a taint report per changed symbol and the attribution lands its two lists over them, with the flag saying whether those reads found a layer. The negative case takes it from the index, where nothing is staged, so the change set is empty, the pass runs zero times, both `introduced_flows` and `inherited_flows` land empty and `taint_unmeasured` stays false — no layer read was attempted, so nothing reported the layer missing. That is the fallback the run promises for a diff that moved nothing, and the report names it as such rather than as a change partitioned and found clean.
 
-Two empty lists therefore have three readings, and the flag and the change set together separate them: a partitioned change that opened and inherited nothing, an empty change set with the flag false, and an absent layer with the flag true. The report names which of the three each case was.
+The absent-layer case addresses `midnight-wallet`, a graph built without its program-dependence layers, and takes the changed-symbol set from a comparison of the working tree against `HEAD~5`, so the change set holds symbols. The activity opens by setting the graph name and the comparison base in the bag before referring to the run, since the run's detection reads the base from there. The pass then reads a taint report per changed symbol, and each report carries the note stating the graph holds no taint layer, so the attribution lands `taint_unmeasured` true with both lists empty by construction. That is the fallback the run promises for an absent layer, and the report names it as such rather than as a change partitioned and found clean.
 
-What the walk evidences is the reference under two bindings: the same run resolves under `gitnexus::diff-taint-pass` twice, its steps — a detection, a per-symbol pass over an optional layer and an attribution — splice into each activity under that activity's prefix, and its three outputs land under the names the reference sites bind. The closing activity reports both against the shared [case report](/conformance/resources/case-report.md) guide.
+Two empty lists therefore have three readings, and the flag and the change set together separate them: a partitioned change that opened and inherited nothing, an empty change set with the flag false, and an absent layer with the flag true. The three cases land one reading each, and the report names which each case was.
+
+What the walk evidences is the reference under three bindings: the same run resolves under `gitnexus::diff-taint-pass` three times, its steps — a detection, a per-symbol pass over an optional layer and an attribution — splice into each activity under that activity's prefix, and its three outputs land under the names the reference sites bind. The closing activity reports all three against the shared [case report](/conformance/resources/case-report.md) guide.
 
 | Activity | Refers to | Binding |
 |---|---|---|
 | `positive-case` | `diff-taint-pass` | the whole working tree |
 | `negative-case` | `diff-taint-pass` | an index holding nothing staged |
-| `report-cases` | nothing — states what the two bindings landed | |
+| `absent-layer-case` | `diff-taint-pass` | a comparison over a graph built without its taint layer |
+| `report-cases` | nothing — states what the three bindings landed | |

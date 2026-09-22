@@ -11,6 +11,9 @@ variables:
     - negative_cypher_query
     - negative_changed_files
     - negative_matched_symbols
+    - union_cypher_query
+    - union_changed_files
+    - union_matched_symbols
 required: true
 steps:
   - kind: technique
@@ -20,4 +23,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - Both bindings of the run are named with what each landed, so a reader can tell the narrowed set from the empty fallback
+  - All three bindings of the run are named with what each landed, so a reader can tell the narrowed set from the empty fallback, and a one-arm narrowing from one whose predicate rides each arm of a union

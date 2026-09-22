@@ -15,6 +15,11 @@ variables:
     - positive_query_report
     - positive_symbol_contexts
     - repo_name
+    - stale_graph_flow_traces
+    - stale_graph_index_stale
+    - stale_graph_index_stats
+    - stale_graph_query_report
+    - stale_graph_symbol_contexts
 required: true
 steps:
   - kind: technique
@@ -24,4 +29,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - Both bindings of the run are named with what each landed, so a reader can tell an area the graph read from the empty passes an unranked concept lands
+  - All three bindings of the run are named with what each landed, so a reader can tell an area the graph read from the empty passes an unranked concept lands, and both from an area read off a graph the run rebuilt first

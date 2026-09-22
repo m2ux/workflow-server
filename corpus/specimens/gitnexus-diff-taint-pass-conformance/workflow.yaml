@@ -3,13 +3,15 @@ id: gitnexus-diff-taint-pass-conformance
 version: 1.0.0
 title: GitNexus Diff Taint Pass Conformance Workflow
 description: >-
-  Hold the gitnexus diff-taint-pass run to two cases. The positive case takes the changed-symbol set
-  from the whole working tree, so the run iterates the symbols the change touched, reads the taint
-  findings anchored at each and separates the flows the change opened from the ones it inherited.
-  The negative case takes it from the index, where nothing is staged, so the change set is empty,
-  the per-symbol pass runs zero times, both lists land empty and the unmeasured flag stays false
-  because no layer read was attempted — the fallback the run promises for a diff that moved nothing,
-  distinct both from a change the layer partitioned and from a layer the graph does not hold.
+  Hold the gitnexus diff-taint-pass run to three cases. The positive case takes the changed-symbol
+  set from the whole working tree, so the run iterates the symbols the change touched, reads the
+  taint findings anchored at each and separates the flows the change opened from the ones it
+  inherited. The negative case takes it from the index, where nothing is staged, so the change set
+  is empty, the per-symbol pass runs zero times, both lists land empty and the unmeasured flag stays
+  false because no layer read was attempted — the fallback the run promises for a diff that moved
+  nothing, distinct both from a change the layer partitioned and from a layer the graph does not
+  hold. The absent-layer case takes it from a comparison over a graph built without its taint layer,
+  so changed symbols land, each read reports the layer missing and the flag lands true.
 author: m2ux
 tags:
   - gitnexus
@@ -32,11 +34,17 @@ variables:
     type: string
     description: The index, where nothing is staged, so the negative case's change set is empty.
     defaultValue: staged
+  - name: absent_layer_diff_scope
+    type: string
+    description: A comparison against the commit the bag names, so the absent-layer case's change set holds symbols whose taint reads find no layer.
+    defaultValue: compare
 initialActivity: positive-case
 graph:
   positive-case:
     passed: negative-case
   negative-case:
+    passed: absent-layer-case
+  absent-layer-case:
     passed: report-cases
   report-cases:
     reported: __terminal__

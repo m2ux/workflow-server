@@ -4,6 +4,8 @@ name: Report Cases
 description: State what the run landed under each binding.
 variables:
   reads:
+    - multi_verb_api_change_approved
+    - multi_verb_api_impact_report
     - negative_api_change_approved
     - negative_api_impact_report
     - positive_api_change_approved
@@ -18,4 +20,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - Both bindings of the run are named with what each landed, so a reader can tell a gate the measurement reached from an approval that kept its seeded value
+  - All three bindings of the run are named with what each landed, so a reader can tell a gate the measurement reached from an approval that kept its seeded value, and a seed kept over an absent route from one kept over a set of routes found consistent

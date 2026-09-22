@@ -3,12 +3,14 @@ id: gitnexus-area-comprehension-conformance
 version: 1.0.0
 title: GitNexus Area Comprehension Conformance Workflow
 description: >-
-  Hold the gitnexus area-comprehension run to two cases. The positive case names a concept the
+  Hold the gitnexus area-comprehension run to three cases. The positive case names a concept the
   graph's execution flows rank into, so the run names the graph, brings it current, lands the flows
   and their symbols, and reads each symbol's connections and each flow's trace. The negative case
   names a concept no flow ranks into, so the query lands no process and no process symbol, both
   per-item passes run zero times, and the contexts and traces stay empty — the fallback the run
-  promises for a concept outside the graph, distinct from an area the graph searched and read.
+  promises for a concept outside the graph, distinct from an area the graph searched and read. The
+  stale-graph case names a tree whose graph is behind it, so the nested refresh rebuilds before the
+  ranked answer is taken from the graph as rebuilt.
 author: m2ux
 tags:
   - gitnexus
@@ -47,11 +49,25 @@ variables:
     type: string
     description: Filesystem path of the tree the negative case's rebuild walks and keys its index under.
     defaultValue: /home/mike1/projects/dev/workflow-server
+  - name: stale_graph_search_query
+    type: string
+    description: A concept the stale graph's execution flows rank into, whose area the stale-graph case reads off the graph as rebuilt.
+    defaultValue: docker image build
+  - name: stale_graph_tree_path
+    type: string
+    description: Filesystem path of the tree whose graph is behind it, which names the graph the stale-graph case addresses.
+    defaultValue: /home/mike1/projects/dev/poc-shielded
+  - name: stale_graph_repo_path
+    type: string
+    description: Filesystem path of the tree the stale-graph case's rebuild walks and keys its index under.
+    defaultValue: /home/mike1/projects/dev/poc-shielded
 initialActivity: positive-case
 graph:
   positive-case:
     comprehended: negative-case
   negative-case:
+    comprehended: stale-graph-case
+  stale-graph-case:
     comprehended: report-cases
   report-cases:
     reported: __terminal__

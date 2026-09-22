@@ -4,6 +4,7 @@ name: Report Cases
 description: State what the run landed under each binding.
 variables:
   reads:
+    - empty_diff_change_risk_verdict
     - negative_change_risk_verdict
     - positive_change_risk_verdict
     - repo_name
@@ -16,4 +17,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - Both bindings of the run are named with what each landed, so a reader can tell a verdict weighed from three measurements from one resting on the diff alone
+  - All three bindings of the run are named with what each landed, so a reader can tell a verdict weighed from three measurements from one resting on the diff alone, and both from one resting on the symbol alone

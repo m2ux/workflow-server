@@ -43,7 +43,7 @@
     },
     {
       "id": "gitnexus-api-change-gate-conformance",
-      "reason": "Declares no checkpoint of its own; the gate arrives from the gitnexus run it refers to twice, spliced in at load. The positive case reaches it where a mismatch is present and the negative case passes it unpresented, so its two options are measured by the sidecar case walk rather than by the coverage walk."
+      "reason": "Declares no checkpoint of its own; the gate arrives from the gitnexus run it refers to three times, spliced in at load. The positive case reaches it where a mismatch is present, and the negative and multi-verb cases pass it unpresented, so its two options are measured by the sidecar case walk rather than by the coverage walk."
     },
     {
       "id": "gitnexus-api-surface-review-conformance",
@@ -51,11 +51,11 @@
     },
     {
       "id": "gitnexus-area-comprehension-conformance",
-      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under a positive and a negative binding, which the reference guards and the sidecar case walk measure."
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under positive and negative bindings, one per case, which the reference guards and the sidecar case walk measure."
     },
     {
       "id": "gitnexus-change-risk-assessment-conformance",
-      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under a positive and a negative binding, which the reference guards and the sidecar case walk measure."
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under positive and negative bindings, one per case, which the reference guards and the sidecar case walk measure."
     },
     {
       "id": "gitnexus-diff-coverage-map-conformance",
@@ -63,7 +63,7 @@
     },
     {
       "id": "gitnexus-diff-taint-pass-conformance",
-      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under a positive and a negative binding, which the reference guards and the sidecar case walk measure."
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under positive and negative bindings, one per case, which the reference guards and the sidecar case walk measure."
     },
     {
       "id": "gitnexus-doc-heading-lookup-conformance",
@@ -79,7 +79,7 @@
     },
     {
       "id": "gitnexus-group-concept-search-conformance",
-      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under a positive and a negative binding, which the reference guards and the sidecar case walk measure."
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under positive and negative bindings, one per case, which the reference guards and the sidecar case walk measure."
     },
     {
       "id": "gitnexus-group-refresh-conformance",
@@ -87,15 +87,15 @@
     },
     {
       "id": "gitnexus-guarded-rename-conformance",
-      "reason": "Declares no checkpoint of its own; the gate arrives from the gitnexus run it refers to twice, spliced in at load. The positive case answers it with apply and the negative case with abandon, so both options are measured by the sidecar case walk rather than by the coverage walk."
+      "reason": "Declares no checkpoint of its own; the gate arrives from the gitnexus run it refers to three times, spliced in at load. The positive case answers it with apply, the negative case with abandon, and the ambiguous-name case never reaches it, so both options are measured by the sidecar case walk rather than by the coverage walk."
     },
     {
       "id": "gitnexus-index-refresh-conformance",
-      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under a positive and a negative binding, which the reference guards and the sidecar case walk measure."
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under positive and negative bindings, one per case, which the reference guards and the sidecar case walk measure."
     },
     {
       "id": "gitnexus-narrow-to-changed-conformance",
-      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under a positive and a negative binding, which the reference guards and the sidecar case walk measure."
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is one library run under positive and negative bindings, one per case, which the reference guards and the sidecar case walk measure."
     },
     {
       "id": "gitnexus-orphan-scan-conformance",
@@ -107,7 +107,7 @@
     },
     {
       "id": "gitnexus-pre-edit-impact-gate-conformance",
-      "reason": "Declares no checkpoint of its own; the gate arrives from the gitnexus run it refers to twice, spliced in at load. The positive case answers it with proceed and the negative case with hold, so both options are measured by the sidecar case walk rather than by the coverage walk."
+      "reason": "Declares no checkpoint of its own; the gate arrives from the gitnexus run it refers to three times, spliced in at load. The positive case answers it with proceed, the negative case with hold, and the low-rating case passes it unpresented, so both options are measured by the sidecar case walk rather than by the coverage walk."
     },
     {
       "id": "gitnexus-public-api-enum-conformance",

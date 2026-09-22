@@ -1,0 +1,39 @@
+id: unindexed-tree-case
+version: 1.0.0
+name: Unindexed Tree Case
+description: Refer to the index refresh over a tree that has no graph.
+variables:
+  reads:
+    - unindexed_tree_repo_path
+  writes:
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph every operation in the run addresses — the basename the build keys the tree's graph under, set before the first read so the error that read draws and the graph the build lands share one name.
+    - name: unindexed_tree_stats
+      type: object
+      description: File, symbol and process counts the graph holds.
+    - name: unindexed_tree_index_stale
+      type: boolean
+      description: Whether the graph is behind the tree it was built from.
+required: true
+steps:
+  - kind: action
+    id: address-graph
+    actions:
+      - action: set
+        target: repo_name
+        value: gitnexus-test-setup
+        description: The graph the reads and the build address — the basename of a tree that carries no graph until the build lands one under that name.
+  - kind: routine
+    id: refresh-unindexed-tree
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{unindexed_tree_repo_path}"
+    outputs:
+      stats: unindexed_tree_stats
+      index_stale: unindexed_tree_index_stale
+exits:
+  - id: refreshed
+    isDefault: true
+outcome:
+  - The same run over a tree with no graph drew an error naming the repository on the first read, which it read as no graph — the flag true and the stats empty — so the build walked the tree and the second read landed the new graph's counts with the flag false

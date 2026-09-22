@@ -13,6 +13,10 @@ variables:
     - positive_group_query_report
     - positive_search_query
     - repo_name
+    - unknown_group_graph_inventory
+    - unknown_group_group_name
+    - unknown_group_group_query_report
+    - unknown_group_search_query
 required: true
 steps:
   - kind: technique
@@ -22,4 +26,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - Both bindings of the run are named with what each landed, so a reader can tell the ranking with results from the one empty across every member
+  - All three bindings of the run are named with what each landed, so a reader can tell the ranking with results from the one empty across every member, and both from the error an unknown group name draws at the inventory

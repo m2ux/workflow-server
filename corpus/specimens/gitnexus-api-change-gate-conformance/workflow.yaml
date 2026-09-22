@@ -3,12 +3,14 @@ id: gitnexus-api-change-gate-conformance
 version: 1.0.0
 title: GitNexus API Change Gate Conformance Workflow
 description: >-
-  Hold the gitnexus api-change-gate run to two cases. The positive case names a route the graph
+  Hold the gitnexus api-change-gate run to three cases. The positive case names a route the graph
   holds, so the run measures the consumers and response keys the route's change reaches and presents
   its gate where the measurement names a key a consumer reads that the route does not return. The
   negative case names a route no graph holds, so the measurement names nothing, no mismatch arrives,
   the gate is never presented and the approval keeps its seeded value — the fallback the run promises
-  for a route outside the index, distinct from a route the graph measured and found consistent.
+  for a route outside the index, distinct from a route the graph measured and found consistent. The
+  multi-verb case names a URL the graph serves under three verbs, so the measurement answers with the
+  set form, routes with a total, and passes without a gate.
 author: m2ux
 tags:
   - gitnexus
@@ -25,17 +27,23 @@ variables:
     defaultValue: workflow-server
   - name: positive_route_path
     type: string
-    description: A route the graph holds, whose consumers and response keys the positive case measures.
-    defaultValue: /mcp
+    description: A route the graph holds under one verb, so the positive case's measurement is one report.
+    defaultValue: /ready
   - name: negative_route_path
     type: string
     description: A route no graph holds, so the negative case's measurement names no consumer and no mismatch.
     defaultValue: /no/such/route
+  - name: multi_verb_route_path
+    type: string
+    description: A URL the graph serves under several verbs, so the multi-verb case's measurement is the set form — routes with a total.
+    defaultValue: /mcp
 initialActivity: positive-case
 graph:
   positive-case:
     gated: negative-case
   negative-case:
+    gated: multi-verb-case
+  multi-verb-case:
     gated: report-cases
   report-cases:
     reported: __terminal__

@@ -5,13 +5,17 @@ metadata:
 
 ## Capability
 
-State what the diff-taint-pass run landed under its positive and negative bindings.
+State what the diff-taint-pass run landed under its positive, negative and absent-layer bindings.
 
 ## Inputs
 
 ### repo_name
 
 Name of the indexed graph the run addressed.
+
+### base_ref
+
+The commit the absent-layer case's compare-scoped detection measured the working tree against.
 
 ### positive_introduced_flows
 
@@ -37,11 +41,23 @@ Findings anchored at a changed symbol whose every hop sits outside the change.
 
 Whether the graph carried no taint layer, so the partition settles nothing.
 
+### absent_layer_introduced_flows
+
+Findings with a hop on a symbol the change moved, each naming that symbol.
+
+### absent_layer_inherited_flows
+
+Findings anchored at a changed symbol whose every hop sits outside the change.
+
+### absent_layer_taint_unmeasured
+
+Whether the graph carried no taint layer, so the partition settles nothing.
+
 ## Outputs
 
 ### diff_taint_pass_case_report
 
-Two rows for the one run: the bindings each case took, whether each materialised, what each landed, and which fallback the negative case took.
+Three rows for the one run: the bindings each case took, whether each materialised, what each landed, and which fallback the negative and absent-layer cases each took.
 
 #### artifact
 
@@ -55,8 +71,10 @@ Two rows for the one run: the bindings each case took, whether each materialised
 
 ### 1. Fill the Table
 
-- Fill the table from the two cases under the graph `{repo_name}` names — the positive against `{positive_introduced_flows}`, `{positive_inherited_flows}` and `{positive_taint_unmeasured}`, the negative against `{negative_introduced_flows}`, `{negative_inherited_flows}` and `{negative_taint_unmeasured}` — per [Template](/conformance/resources/case-report.md#template).
+- Fill the table from the three cases — the positive against `{positive_introduced_flows}`, `{positive_inherited_flows}` and `{positive_taint_unmeasured}`, the negative against `{negative_introduced_flows}`, `{negative_inherited_flows}` and `{negative_taint_unmeasured}`, and a third row named `absent-layer-case` against `{absent_layer_introduced_flows}`, `{absent_layer_inherited_flows}` and `{absent_layer_taint_unmeasured}` — per [Template](/conformance/resources/case-report.md#template), with `{repo_name}` in the header.
+   > The header names the graph the positive and negative cases addressed; the `absent-layer-case` row addressed a graph of its own and names it in its inputs column beside `{base_ref}`, the commit its comparison measured against, so a reader sees which graph and which diff each row's answers came from.
    > An empty `{negative_introduced_flows}` beside an empty `{negative_inherited_flows}` with `{negative_taint_unmeasured}` false is an empty change set — nothing staged, so the per-symbol pass ran zero times and no layer read was attempted; the row names that fallback rather than reading the change as partitioned and clean, and rather than reading the layer as absent, which only a true flag says.
+   > The `absent-layer-case` row's mark is `{absent_layer_taint_unmeasured}` true: the comparison landed changed symbols, each taint report carried the note stating the graph holds no taint layer, and `{absent_layer_introduced_flows}` and `{absent_layer_inherited_flows}` are empty by construction; the row names the absent layer rather than reading the change as partitioned and clean, and rather than reading the change set as empty, which only a false flag beside empty lists says.
 
 ### 2. Write the Report
 

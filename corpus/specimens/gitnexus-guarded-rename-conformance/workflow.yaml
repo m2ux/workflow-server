@@ -3,11 +3,14 @@ id: gitnexus-guarded-rename-conformance
 version: 1.0.0
 title: GitNexus Guarded Rename Conformance Workflow
 description: >-
-  Hold the gitnexus guarded-rename run to two cases. The positive case binds a symbol the graph
+  Hold the gitnexus guarded-rename run to three cases. The positive case binds a symbol the graph
   holds, so the preview lands an edit list, the gate accepts it, the rename writes the edits and the
   diff is read back. The negative case binds a symbol the graph does not hold, so the preview lands
   an empty edit list, the gate refuses it and the steps after the gate stay unreached — the fallback
   the run promises for a symbol outside the graph, distinct from an accepted list that moved nothing.
+  The ambiguous-name case binds a name two symbols carry with no file to separate them, so the
+  preview answers with a status of ambiguous and ranked candidates, the gate refuses it and nothing
+  is written.
 author: m2ux
 tags:
   - gitnexus
@@ -47,11 +50,25 @@ variables:
     type: string
     description: The file holding the symbol, which separates one of that name from the others; empty where the name alone is enough.
     defaultValue: ""
+  - name: ambiguous_name_symbol_name
+    type: string
+    description: A name two symbols in the graph carry, so the ambiguous-name case previews a status of ambiguous with ranked candidates.
+    defaultValue: isDirectory
+  - name: ambiguous_name_new_name
+    type: string
+    description: The name the ambiguous-name case's rename moves to.
+    defaultValue: isDirectoryRenamed
+  - name: ambiguous_name_file_path
+    type: string
+    description: The file holding the symbol, which separates one of that name from the others; empty here, so the name alone is offered and the graph cannot choose between its holders.
+    defaultValue: ""
 initialActivity: positive-case
 graph:
   positive-case:
     gated: negative-case
   negative-case:
+    gated: ambiguous-name-case
+  ambiguous-name-case:
     gated: report-cases
   report-cases:
     reported: __terminal__
