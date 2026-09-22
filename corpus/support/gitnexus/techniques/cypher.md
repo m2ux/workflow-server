@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -21,16 +21,14 @@ a Cypher query string
 
 ### result_rows
 
-The matching rows as a markdown table, one row per match, with `row_count` stating how many the table holds.
-
-A statement that matches nothing answers with a bare empty list rather than a table of no rows, so `row_count` is absent on exactly the answer a reader is most likely to test it on: read the emptiness of the answer itself, and treat an absent `row_count` as zero rather than as a malformed reply. A raw list has no room for the `staleness` mapping the named operations carry, so a query's rows say nothing about the age of the graph that answered; take that from an operation that reports it, or from a direct index read.
+The matching rows as a markdown table, one per match, with `row_count` stating how many. An empty match returns a bare list with no `row_count`, and no answer here carries `staleness`.
 
 ## Protocol
 
 ### 1. Confirm the Schema
 
 - Read `gitnexus://repo/{repo_name}/schema` first to confirm node labels and `CodeRelation.type` edge values.
-   > The schema lists the properties the parser can record, which is a wider set than any one graph holds; a property the graph lacks fails the whole statement with a binder error naming it, rather than matching nothing.
+   > The schema lists every property the parser can record, a wider set than any one graph holds; a property the graph lacks fails the whole statement with a binder error naming it.
 
 ### 2. Run the Query
 
@@ -38,3 +36,7 @@ A statement that matches nothing answers with a bare empty list rather than a ta
    > - If the query references labels or edges not present in the schema, re-read `gitnexus://repo/{repo_name}/schema` and correct the query.
    > - A `startLine` or `endLine` a row carries is zero-based, where the named operations report the same symbol one-based: the symbol spans editor lines `startLine + 1` to `endLine + 1`.
    > - A path over `CDG`, `REACHING_DEF`, `TAINTED` or `TAINT_PATH` edges is unindexed on its relationship properties, so a scan not anchored on a file or a symbol span, and not bounded by `LIMIT`, runs without bound. Those edges hold rows only on a graph built with its program-dependence layers.
+
+### 3. Read the Result Set
+
+- Read an absent `row_count` as zero, and take the graph's age from an answer that reports it or a direct index read.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -43,13 +43,13 @@ the symbol name to analyse
 
 ### summary_only
 
-*(optional)* Whether the answer carries the counts, the rating, the entry points and the areas and leaves out the per-depth node list — the shape for a hub symbol whose direct callers run to hundreds.
+*(optional)* Whether the answer carries the counts, the rating, the entry points and the areas and leaves out the per-depth node list.
 
 ## Outputs
 
 ### impact_report
 
-d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); the entry points whose flows the change reaches, each with the number of flows from it; a risk level; how far the answer vouches for its own completeness; and whether the rating rests on graph edges or on a hand-derived caller set.
+d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); the entry points whose flows the change reaches; a risk level; how far the answer vouches for its own completeness; and whether the rating rests on graph edges or on a hand-derived caller set.
 
 #### risk
 
@@ -57,15 +57,15 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 
 #### riskNote
 
-Why the rating is withheld, present where a symbol the graph holds rated `UNKNOWN`. A symbol the graph does not hold rates `UNKNOWN` too and carries no note: that answer is an error naming the target, with `impactedCount` null and none of `epistemic`, `summary` or `byDepth`, so the two are told apart by what rode alongside the rating rather than by the rating itself.
+Why the rating is withheld, present where a symbol the graph holds rated `UNKNOWN`. A symbol the graph does not hold also rates `UNKNOWN` and carries no note: that answer is an error naming the target, with `impactedCount` null and no `epistemic`, `summary` or `byDepth`.
 
 #### riskSharedAxes
 
-The rating over the axes both directions share, which runs on its own scale and reads lower than the blast-radius rating on the same answer. A reader taking the first rating-shaped field it meets takes this one and reports the opposite verdict, so the blast radius is `risk` and this is the reading beside it.
+The rating over the axes both directions share, which runs on its own scale and reads lower than the blast-radius rating on the same answer.
 
 #### riskScale
 
-The bands the rating was cut at, which is what makes two answers comparable.
+The bands the rating was cut at, which make two answers comparable.
 
 #### summary
 
@@ -81,7 +81,7 @@ How many nodes each depth holds in full, where `byDepth` shows a page of them.
 
 #### affected_processes
 
-The entry points whose flows the change reaches. Each names the entry-point symbol — its `name`, its `type`, and the `filePath` separating entries that share a name — and carries `affected_process_count`, the flows from that entry point the change reaches. The flow total is the sum of those counts rather than the length of this list.
+The entry points whose flows the change reaches, each with the symbol's `name`, `type` and `filePath`, and `affected_process_count` — the flows from it the change reaches. The flow total is the sum of those counts, not the length of this list.
 
 #### affected_modules
 
@@ -105,7 +105,7 @@ Whether a pass inside the answer was cut short, in which case an empty `processe
 
 #### staleness
 
-Which index answered and how far it trails the HEAD of the clone it was built from — `branch`, `lastCommit`, `indexedAt`, and a `status` of `behind` (with `commitsBehind`), `diverged` or `unknown`. Carried only where the graph trails its tree, so an absent mapping says the graph stands at that HEAD.
+The freshness reading `index-freshness-first` describes, carried only where the graph trails its tree.
 
 ## Protocol
 
@@ -114,10 +114,12 @@ Which index answered and how far it trails the HEAD of the clone it was built fr
 - Call `gitnexus_impact { target, target_uid, kind: symbol_kind, direction, maxDepth: max_depth, minConfidence: min_confidence, relationTypes: relation_types, includeTests: include_tests, summaryOnly: summary_only, repo: repo_name }`.
    > - Where several symbols carry `{target}`, the answer is the candidates rather than a report, with `totalCandidates` the true count. Choose among them and call again with that candidate's `{target_uid}`, or narrow with `{symbol_kind}`.
    > - If `{target}` does not resolve in the graph, verify the symbol name; if it is new or unindexed, fall back to grep for callers.
+   > - Where `{target}` is a hub whose direct callers run to hundreds, set `{summary_only}`.
 
 ### 2. Interpret Results
 
 - Read d=1 items first — these WILL break. Weight high-confidence (>0.8) edges.
-- Read the rating `{impact_report}.risk` carries together with `{impact_report}.epistemic`: a `lower-bound` answer rates a floor, and `{impact_report}.causes` separates the gaps a rebuild can close — `scopeExtractionFiles`, `undecidedSatisfaction` — from the irreducible `dispatchBoundary`, while `externalBoundary` shortens nothing. An `UNKNOWN` rating is a walk that resolved no caller, and is settled by a grep for `{target}` before the symbol is treated as unused.
-  > - When `{target}` is called from a macro body or reached by type-level reference, the graph holds no edge for it and `{impact_report}.epistemic` stays `exact` — gitnexus.edges-the-parser-cannot-see. Re-derive the caller set by hand and rate against that instead, and record on `{impact_report}` which of the two the rating rests on.
-  > - A class member, an overriding method and a field read reach `{target}` through edges the default set leaves out, and a test reaches it through a file the default answer omits. Where `{target}` is one of those, name the edges in `{relation_types}` and set `{include_tests}`, so a short answer is a measurement rather than the default's silence.
+- Take the blast radius from `{impact_report}.risk`, never the rating-shaped `riskSharedAxes` beside it.
+- Read that rating together with `{impact_report}.epistemic`: a `lower-bound` answer rates a floor, and `{impact_report}.causes` separates the gaps a rebuild can close — `scopeExtractionFiles`, `undecidedSatisfaction` — from the irreducible `dispatchBoundary`, while `externalBoundary` shortens nothing. Settle an `UNKNOWN` rating by a grep for `{target}` before the symbol is treated as unused.
+  > - When `{target}` is called from a macro body or reached by type-level reference, the graph holds no edge for it and `{impact_report}.epistemic` stays `exact` — gitnexus.edges-the-parser-cannot-see. Re-derive the caller set by hand, rate against that, and record on `{impact_report}` which of the two the rating rests on.
+  > - A class member, an overriding method and a field read reach `{target}` through edges the default set leaves out, and a test through a file it omits. Name those edges in `{relation_types}` and set `{include_tests}`, so a short answer is a measurement rather than the default's silence.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.11.0
+  version: 3.12.0
 ---
 
 ## Capability
@@ -11,13 +11,13 @@ Codebase intelligence via the GitNexus knowledge graph — indexing, structural 
 
 ### repo_name
 
-*(optional)* Name of the indexed graph an operation is addressed at. Omit only where exactly one graph is indexed.
+*(optional)* Name of the indexed graph an operation is addressed at.
 
 ## Rules
 
 ### address-a-named-graph
 
-Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`. Where more than one graph is indexed, an unnamed call fails and lists what is available. The name comes from the inventory of indexed graphs, which also carries the tree each was built from and the repository groups configured over them.
+Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`, omitted only where exactly one graph is indexed; where more than one is, an unnamed call fails and lists what is available. The name comes from the inventory of indexed graphs, which also carries the tree each was built from and the repository groups configured over them.
 
 A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape. Record which graph an answer came from wherever the answer is reported.
 
@@ -34,7 +34,7 @@ Grep and a direct read are the whole instrument for both, as they are for prose 
 
 Execution flows and relationships among code symbols are what the graph holds, and what the operations here return — a question about either is theirs rather than grep's.
 
-For a markdown tree the graph holds each heading and each link between files, and no prose. So a question about which sentence states a claim stays a grep question, and a ranked search answers such a question with unrelated code matches rather than with nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
+For a markdown tree the graph holds each heading and each link between files, and no prose. A question about which sentence states a claim stays a grep question, and a ranked search answers it with unrelated code matches rather than with nothing, so a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
 
 ### a-change-is-scoped-by-what-it-moved
 
@@ -44,7 +44,7 @@ A rename or a batch of edits is scoped by what it actually moved, not by what it
 
 A stale index answers in the same shape as a fresh one, so an answer turning on the current tree is taken against a reading of how far the graph trails it. That reading arrives as a `staleness` mapping: `branch`, `lastCommit` and `indexedAt` name the index that answered, and `status` is its standing against the HEAD of the clone it was built from — `behind` carries `commitsBehind`, `diverged` is a recorded commit the clone's history no longer holds, and `unknown` is a tree with no history to measure. A rebuild answers `behind` and `diverged`; `unknown` is unmeasurable rather than stale.
 
-**The mapping rides only an answer that trails its tree, so its absence is the freshness verdict.** A graph standing at the HEAD it was built from attaches nothing, and a reader waiting for a `current` status waits on a key that never comes. A direct read of the index reports its freshness the same way, by omitting the reading where there is no distance to report. Three further answers carry no mapping whatever the graph's age: a raw query's rows, which arrive as a bare list rather than a mapping with room for one; an error, which reports what failed rather than what answered; and an answer taken over a whole repository group, where the group's own status reports per member instead — including one failure more than age, a member carrying no graph at all, about which a group-wide answer says nothing.
+**The mapping rides only an answer that trails its tree, so its absence is the freshness verdict** — a reader waiting for a `current` status waits on a key that never comes. A direct read of the index omits the reading the same way. Three further answers carry no mapping whatever the graph's age: a raw query's rows, which arrive as a bare list; an error, which reports what failed rather than what answered; and an answer over a whole repository group, where the group's own status reports per member instead — including one failure more than age, a member carrying no graph at all, about which a group-wide answer says nothing.
 
 ### edges-the-parser-cannot-see
 
@@ -53,7 +53,7 @@ The graph holds the call sites the parser reads in source. Two kinds of dependen
 - **Call sites inside macro bodies.** A caller whose body a macro generates has no `CALLS` edge to what it calls, because the text that calls it exists only after expansion. In a Rust codebase built on declarative and attribute macros — pallet dispatchables, runtime-API declarations, generated trait wrappers — that removes most of the interesting edges.
 - **Type-level references.** Naming a type in a signature, an associated-type binding, or a trait bound is not a call, so it is not an edge at all.
 
-An operation's answer is therefore evidence of what the graph holds, never of what depends on the symbol. An answer states how far it vouches for itself: `epistemic` is `exact` or `lower-bound`, `causes` counts what the walk provably dropped — call sites whose receiver it could not type, files whose scope extraction failed, dispatch it could not cross, callables named as values rather than called — and a blast radius that resolved no caller is rated `UNKNOWN` rather than `LOW`. A macro-generated call site and a type-level reference leave no trace in any of those: the answer is `exact` and short. Where the changed symbol is reached through either route, the enumeration is re-derived by hand — grep for the symbol, and for the macro names that generate its callers. Say which of the two was done when reporting a blast radius, so a reader can tell a measured answer from an unmeasured one.
+An operation's answer is therefore evidence of what the graph holds, never of what depends on the symbol. An answer states how far it vouches for itself: `epistemic` is `exact` or `lower-bound`, `causes` counts what the walk provably dropped — call sites whose receiver it could not type, files whose scope extraction failed, dispatch it could not cross, callables named as values rather than called — and a blast radius that resolved no caller is rated `UNKNOWN` rather than `LOW`. A macro-generated call site and a type-level reference leave no trace in any of those: the answer is `exact` and short. Where the changed symbol is reached through either route, re-derive the enumeration by hand — grep for the symbol, and for the macro names that generate its callers — and say which of the two a reported blast radius rests on.
 
 ### a-named-operation-answers-first
 
@@ -61,7 +61,7 @@ The raw graph query answers what no named operation reaches: custom call-chain t
 
 ### keyword-shaped-queries
 
-Phrase a ranked search as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings. Embeddings are built only where the index was asked for them, which is why a repository commonly reports none; and headings and files are never embedded at any setting, so no setting gives semantic search over prose. Keyword-shaped input is the phrasing that works either way.
+Phrase a ranked search as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings — built only where the index was asked for them, and never over headings or files at any setting, so no setting gives semantic search over prose. Keyword-shaped input works either way.
 
 ### must-use-operations
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -45,7 +45,7 @@ The references the symbol makes, grouped the same way.
 
 #### processes
 
-The execution flows the symbol participates in. A flow is named by its `name` here, where a ranked query names the same kind of value by its `summary`.
+The execution flows the symbol participates in, each named by its `name` rather than by the `summary` a ranked query uses.
 
 ##### id
 
@@ -89,7 +89,7 @@ What the walk dropped, each a count of missing things: `scopeExtractionFiles` fi
 
 #### staleness
 
-Which index answered and how far it trails the HEAD of the clone it was built from — `branch`, `lastCommit`, `indexedAt`, and a `status` of `behind` (with `commitsBehind`), `diverged` or `unknown`. Carried only where the graph trails its tree, so an absent mapping says the graph stands at that HEAD.
+The freshness reading `index-freshness-first` describes, carried only where the graph trails its tree.
 
 ## Protocol
 
@@ -97,7 +97,7 @@ Which index answered and how far it trails the HEAD of the clone it was built fr
 
 - Call `gitnexus_context { name, file_path, uid: symbol_uid, kind: symbol_kind, chain_depth, repo: repo_name }` to assemble the `{context_report}` — incoming calls, outgoing calls, and process membership.
    > - Where several symbols carry `{name}`, the answer is the candidates rather than a report, with `totalCandidates` the true count and `candidatesTruncated` set where the list shown is shorter. Choose among them by the file each sits in and call again with that candidate's `{symbol_uid}`, or with `{symbol_kind}` where the answer carries no identity.
-   > - `{file_path}` separates two symbols in different files and nothing else. A file and the headings inside it share one path, so naming that path leaves the candidates it was meant to cut — the shape a whole-file name takes, where the file node and every section under it answer together. `{symbol_uid}` is what reaches one of them, and `{symbol_kind}` is what asks for the file rather than its headings.
+   > - `{file_path}` separates symbols in different files and nothing else: a file and its headings share one path, so naming it leaves those candidates standing. `{symbol_uid}` reaches one of them; `{symbol_kind}` asks for the file rather than its headings.
    > - Where `{name}` resolves to nothing the answer is an error naming it, carrying no `status` and no report to read a field from. Grep for the symbol: it is unindexed, and the tree the index walked is what `subjects-the-index-holds` bounds.
 
 ### 2. Read the Fan-Out as Blast Radius
