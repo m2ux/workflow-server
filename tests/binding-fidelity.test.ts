@@ -264,6 +264,29 @@ steps:
             message: "held {changed_symbol}"
 `;
 
+  const runGating = (message: string): string => `id: shared-run
+version: 1.0.0
+name: shared-run
+internals:
+  - id: change_report
+    description: what the diff reached
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: meta::detect
+      outputs:
+        change_report: change_report
+  - kind: checkpoint
+    id: accept-the-diff
+    message: "The diff reached ${message}. Continue?"
+    options:
+      - id: proceed
+        label: Continue
+      - id: hold
+        label: Stop
+`;
+
   async function pathViolationsIn(routine: string, technique = WITH_COMPONENTS): Promise<string[]> {
     const root = mkdtempSync(join(tmpdir(), 'wf-path-'));
     for (const [rel, files] of Object.entries({
@@ -321,6 +344,22 @@ steps:
    * nothing about its shape and contradicts no read. Counting one as a component would make an
    * output measured by the presence of a delivery field, and every read into it reportable.
    */
+  /**
+   * A gate's message is the one read a person sees, and it addresses into a value the same way a
+   * loop's `over` does. The text scan keeps every `{token}` whole, so the member a message names is
+   * measured against the producing output's components like any other read — which is what stops a
+   * gate presenting a name where a value belongs.
+   */
+  it('reports a member a checkpoint message names and the output does not declare', async () => {
+    const found = await pathViolationsIn(runGating('{change_report.symbols}'));
+    expect(found).toHaveLength(1);
+    expect(found[0]).toContain("no 'symbols'");
+  });
+
+  it('passes a member a checkpoint message names and the output declares', async () => {
+    expect(await pathViolationsIn(runGating('{change_report.changed_symbols}'))).toEqual([]);
+  });
+
   it('passes a read into an output whose only sub-sections are entry metadata', async () => {
     const metadataOnly = WITH_COMPONENTS.replace(
       /#### changed_symbols[\s\S]*?## Protocol/,

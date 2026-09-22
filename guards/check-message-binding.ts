@@ -11,6 +11,13 @@
  * orchestrator resolves the gate, and a worker publishing step outputs on `yield_checkpoint`. A
  * name a checkpoint before this step sets is bound; a name only a technique step produces is not.
  *
+ * This check answers when a name is bound, and nothing about the shape of what it is bound to. A
+ * message addressing into a value — `{report.summary}` — has its member measured against the
+ * producing output's declared components by `check-binding-fidelity`'s `output-path-undeclared`,
+ * which keeps every `{token}` whole for that purpose. Between them the two halves of a dotted read
+ * are covered; neither reaches which of a contract's fields a particular run populates, which the
+ * producing operation states in prose and no static check settles.
+ *
  * Run: npx tsx guards/check-message-binding.ts [--root <workflows-dir>] [--json]
  */
 import { readFileSync, existsSync, statSync } from 'node:fs';
