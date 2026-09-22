@@ -55,7 +55,7 @@ The closing paragraph names each member answered by a search of its tree and wha
 
 ### the-reach-column-rests-on-symbol-evidence
 
-A row's reach carries what an instrument found in the member itself — a dependent among its own edges, or a name in its tree. A declared library link says the member depends on the package the concern's tree publishes, which is true of every symbol that tree holds alike, so a reach column fed from it reads the same for a member built around the concern and a member that never names it.
+A row's reach carries what an instrument found of the concern itself in the member — a dependent among the member's own edges, or a boundary symbol in its tree. A library link and a package name both say the member depends on the tree the concern sits in, which is true of every symbol that tree holds alike, so a reach column fed from either reads the same for a member built around the concern and a member that never names it.
 
 ### a-consumer-without-a-reference-is-named
 

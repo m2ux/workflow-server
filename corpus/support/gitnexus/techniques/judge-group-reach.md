@@ -51,7 +51,7 @@ The member's graph name.
 
 ##### reach
 
-`home` for the member the concern was raised in; `graph` where a probe found a dependent through the member's own edges; `hand-derived` where a search of the member's tree found a boundary name or a package name; `none` where neither did; `unanswerable` where the member has no graph and no tree to ask.
+`home` for the member the concern was raised in; `graph` where a probe found a dependent through the member's own edges; `hand-derived` where a search of the member's tree found a boundary symbol; `none` where neither did; `unanswerable` where the member has no graph and no tree to ask.
 
 ##### dependency
 
@@ -92,10 +92,11 @@ True where `{group_query_report}` carries a flow from this member.
 
 ### 5. Settle the Reach
 
-- Set the member's reach to `graph` where a definition the probe found carries a dependent, `hand-derived` where the search found a file, and `none` where neither did. The instruments asked stay listed whichever settled it, the registry's answer among them.
+- Set the member's reach to `graph` where a definition the probe found carries a dependent, `hand-derived` where the search found a boundary symbol in the member's tree, and `none` where neither did. The instruments asked stay listed whichever settled it, the registry's answer among them.
+- The package names the same search looked for answer what the member consumes rather than what it references, so they feed the dependency reading and not this one. A package name holds wherever the member depends on the concern's tree, which is the fact a declared link already carries.
 
 ### 6. Note the Search
 
 - For every member, set `surfaced_by_search` from whether `{group_query_report}` carries a flow from it. A member the ranking surfaced and no instrument reached is the reader's first candidate for a coupling nothing here declares.
-- A member other than the home whose `dependency` is `undeclared` and whose reach is `graph` or `hand-derived` is a coupling the group's links do not declare: name it in the evidence, so the links can be completed and the registry answers for it next time.
+- A member other than the home whose `dependency` is `undeclared` and whose tree names a boundary package is a coupling the group's links do not declare: name it in the evidence, so the links can be completed and the registry answers for it next time. Where its reach is `graph` or `hand-derived` as well, the member references the concern too, and the evidence says so.
 - A member whose `dependency` is `declared` and whose reach is `none` consumes the home as a library and holds no reference to the concern. Name it as that: the link bounds what the member could reach, both symbol instruments were asked, and neither found the concern in it.
