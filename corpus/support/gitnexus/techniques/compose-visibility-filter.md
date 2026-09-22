@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -30,4 +30,4 @@ A query naming the changed symbols and filtering them to the exported surface.
 
 - Compose `{cypher_query}` to match the labels the schema declares, keep the symbols `{change_report}` names, filter to the visible ones, and return each with its file — `MATCH (f:Function) WHERE f.name IN [<the changed names>] AND f.isExported = true RETURN f.name AS symbol_name, f.filePath AS file_path` over a TypeScript tree.
    > Where no property records visibility, match on the declaration site instead — a symbol an index file re-exports, or one a module's public path reaches — and say in the answer which of the two the filter rested on.
-- Cover every label the changed set spans: a method, a class and a struct each sit under their own label, so a query naming one returns the exported surface of that label alone.
+- Cover every label the changed set spans that carries a visibility property — a method, a class and a struct each sit under their own label, so a query naming one returns that label's exported surface alone. A documentation heading carries none, so a set of headings composes over the code labels beside them.

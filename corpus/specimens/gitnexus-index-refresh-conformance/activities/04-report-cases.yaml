@@ -1,0 +1,26 @@
+id: report-cases
+version: 1.2.0
+name: Report Cases
+description: State what the run landed under each binding, and which graph answered it.
+variables:
+  reads:
+    - positive_graph_name
+    - positive_stats
+    - positive_index_stale
+    - negative_fixture_path
+    - negative_graph_name
+    - negative_stats
+    - negative_index_stale
+    - unindexed_tree_graph_name
+    - unindexed_tree_stats
+    - unindexed_tree_index_stale
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - All three bindings of the run are named with what each landed and the graph it answered from, so a reader can tell a graph read current from one rebuilt and read again, and a rebuild over a graph that was behind from a build over a tree that had none

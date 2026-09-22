@@ -1,0 +1,65 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-change-risk-assessment-conformance
+version: 1.1.0
+title: GitNexus Change Risk Assessment Conformance Workflow
+description: >-
+  Hold the gitnexus change-risk-assessment run to three cases. The positive case names a symbol the
+  graph holds, so the run measures what reaches it, reads the flow inventory, measures what the diff
+  moved and settles one rating from all three. The negative case names a symbol no graph holds, so
+  the impact half resolves nothing and the verdict rests on the diff's rating alone, saying that its
+  caller set is hand-derived — the fallback the run promises for a symbol outside the index,
+  distinct from a symbol the graph measured and found unreached. The empty-diff case names a held
+  symbol over an index holding nothing staged, so the verdict rests on the symbol's rating alone and
+  states that the diff rating is absent.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_target
+    type: string
+    description: A symbol the graph holds, whose dependents the positive case's measurement reaches.
+    defaultValue: composeLoaded
+  - name: positive_diff_scope
+    type: string
+    description: A comparison against the commit `{base_ref}` names, from which the positive case takes its changed-symbol set.
+    defaultValue: compare
+  - name: base_ref
+    type: string
+    description: The commit the positive case measures against, fixed so the diff half of its verdict weighs the same changed symbols on every walk, and holding `{positive_target}` among them so the symbol the impact half measures is one the diff moved.
+    defaultValue: 4cac20460c700a384830c7167d8aab346c9918e3
+  - name: negative_target
+    type: string
+    description: A symbol no graph holds, so the negative case's impact half resolves nothing.
+    defaultValue: no_such_symbol_zz
+  - name: negative_diff_scope
+    type: string
+    description: The same comparison the positive case takes, so the diff half measures one change under both bindings and the impact half is what differs between their rows.
+    defaultValue: compare
+  - name: empty_diff_target
+    type: string
+    description: A symbol the graph holds, whose dependents the empty-diff case's measurement reaches while its diff half lands nothing.
+    defaultValue: composeLoaded
+  - name: empty_diff_diff_scope
+    type: string
+    description: The index, where nothing is staged, so the empty-diff case's changed-symbol set is empty.
+    defaultValue: staged
+initialActivity: positive-case
+graph:
+  positive-case:
+    assessed: negative-case
+  negative-case:
+    assessed: empty-diff-case
+  empty-diff-case:
+    assessed: report-cases
+  report-cases:
+    reported: __terminal__

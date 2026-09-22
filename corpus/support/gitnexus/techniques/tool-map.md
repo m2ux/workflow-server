@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Map the MCP and RPC tools a tree defines — which are declared, where each is h
 
 ### tool_inventory
 
-Each declared tool with the file handling it and the description it registers.
+The `tools` the graph holds, each with the file handling it and the description it registers, and their `total`. A tree with no recorded tool answers empty with a `message` saying so, whether it declares none or the parser passed its registrations over.
 
 ## Protocol
 
@@ -27,8 +27,8 @@ Each declared tool with the file handling it and the description it registers.
 
 ### 2. Hold a Handler to Its Description
 
-- Take the registered description as the contract a caller reads, and hold a change to the handler against it: a handler that stops doing what its description says leaves every caller acting on the description.
+- Hold a handler change against its registered description, which is the contract every caller acts on.
 
 ### 3. Read an Empty Inventory
 
-- Read an empty inventory as a tree whose tool registrations the walk did not recognise rather than as a tree defining none — a registration built by a helper the parser reads as an ordinary call leaves no tool node.
+- Hold an empty `{tool_inventory}` against the tree's registration sites before reading it as a tree that serves none: a tool node comes from a `tool` decorator on a handler, or from a TypeScript or JavaScript file whose path carries `tool` and whose declarations pair a name with a description beside an `inputSchema`, so a tree registering its tools by calling a method leaves none.

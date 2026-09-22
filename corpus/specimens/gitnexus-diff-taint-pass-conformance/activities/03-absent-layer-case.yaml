@@ -1,0 +1,51 @@
+id: absent-layer-case
+version: 1.1.0
+name: Absent Layer Case
+description: Refer to the diff taint pass over a graph built without its taint layer.
+variables:
+  reads:
+    - absent_layer_diff_scope
+    - absent_layer_graph
+  writes:
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph every operation in the run addresses — the graph built without its program-dependence layers, set before the detection and the per-symbol reads under it.
+    - name: base_ref
+      type: string
+      description: The commit the compare-scoped detection measures the working tree against, which the run's diff step reads from the bag.
+    - name: absent_layer_introduced_flows
+      type: array
+      description: Findings with a hop on a symbol the change moved, each naming that symbol.
+    - name: absent_layer_inherited_flows
+      type: array
+      description: Findings anchored at a changed symbol whose every hop sits outside the change.
+    - name: absent_layer_taint_unmeasured
+      type: boolean
+      description: Whether the graph carried no taint layer, so the partition settles nothing.
+required: true
+steps:
+  - kind: action
+    id: address-graph
+    actions:
+      - action: set
+        target: repo_name
+        value: "{absent_layer_graph}"
+        description: The graph the detection and the per-symbol reads address — one built without its program-dependence layers, so no taint report under it holds findings.
+      - action: set
+        target: base_ref
+        value: HEAD~5
+        description: The commit the compare-scoped detection measures against, far enough behind HEAD that the changed-symbol set is non-empty.
+  - kind: routine
+    id: pass-layerless-graph
+    routine: gitnexus::diff-taint-pass
+    with:
+      diff_scope: "{absent_layer_diff_scope}"
+    outputs:
+      introduced_flows: absent_layer_introduced_flows
+      inherited_flows: absent_layer_inherited_flows
+      taint_unmeasured: absent_layer_taint_unmeasured
+exits:
+  - id: passed
+    isDefault: true
+outcome:
+  - The same run under a graph holding no taint layer landed changed symbols from the comparison, read a taint report per symbol whose note states the graph holds no taint layer, and landed the unmeasured flag true with both lists empty by construction — the fallback the run promises for an absent layer, distinct from an empty change set and from a change the layer partitioned

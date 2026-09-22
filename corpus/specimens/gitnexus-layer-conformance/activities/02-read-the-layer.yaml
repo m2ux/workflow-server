@@ -1,0 +1,39 @@
+id: read-the-layer
+version: 1.1.0
+name: Read the Layer
+description: Bind the two operations that answer from the program-dependence layer — the taint findings a file records, and the predicates gating a function — over a graph indexed with that layer.
+variables:
+  reads:
+    - dependence_target
+  writes:
+    - name: taint_report
+      type: object
+      description: The taint findings matched, how many there are in full, and whether the graph holds the layer they come from.
+    - name: dependence_report
+      type: object
+      description: The control-dependence edges matched for the anchored function, how many there are in full, and whether the graph holds the layer they come from.
+required: true
+steps:
+  - kind: technique
+    id: read-findings
+    technique:
+      name: gitnexus::explain
+      inputs:
+        taint_target: dependence_target
+      outputs:
+        taint_report: taint_report
+  - kind: technique
+    id: read-guards
+    technique:
+      name: gitnexus::pdg-query
+      inputs:
+        dependence_mode: controls
+        dependence_target: dependence_target
+      outputs:
+        dependence_report: dependence_report
+exits:
+  - id: read
+    isDefault: true
+outcome:
+  - Both answers came from a graph holding the layer they read, so each carries what the layer records rather than a note about the build
+  - One bag variable fed both operations under their own input names, so a caller-side value binds to two operations without a copy

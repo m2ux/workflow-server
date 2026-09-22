@@ -1,0 +1,40 @@
+id: positive-case
+version: 1.1.0
+name: Positive Case
+description: Refer to the index refresh over a tree whose graph is current.
+variables:
+  reads:
+    - positive_graph_name
+    - positive_repo_path
+  writes:
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph every operation in the run addresses — the graph current with its tree, set before the reads key under it.
+    - name: positive_stats
+      type: object
+      description: File, symbol and process counts the graph holds.
+    - name: positive_index_stale
+      type: boolean
+      description: Whether the graph is behind the tree it was built from.
+required: true
+steps:
+  - kind: action
+    id: address-graph
+    actions:
+      - action: set
+        target: repo_name
+        value: "{positive_graph_name}"
+        description: The graph the reads address — the one current with the tree it was built from.
+  - kind: routine
+    id: refresh-current-tree
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{positive_repo_path}"
+    outputs:
+      stats: positive_stats
+      index_stale: positive_index_stale
+exits:
+  - id: refreshed
+    isDefault: true
+outcome:
+  - The run's first read found the graph current with its tree, so no rebuild ran and the stats describe the graph as read

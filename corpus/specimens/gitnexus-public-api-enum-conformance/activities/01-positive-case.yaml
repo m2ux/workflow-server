@@ -1,0 +1,26 @@
+id: positive-case
+version: 1.1.0
+name: Positive Case
+description: Refer to the public API enumeration over a comparison against a fixed commit.
+variables:
+  reads:
+    - base_ref
+    - positive_diff_scope
+  writes:
+    - name: positive_public_api_symbols
+      type: array
+      description: The exported symbols present in the diff, each with the file and kind the graph records.
+required: true
+steps:
+  - kind: routine
+    id: enumerate-fixed-comparison
+    routine: gitnexus::public-api-enum
+    with:
+      diff_scope: "{positive_diff_scope}"
+    outputs:
+      public_api_symbols: positive_public_api_symbols
+exits:
+  - id: enumerated
+    isDefault: true
+outcome:
+  - The run's visibility filter was composed over the symbols the comparison against `{base_ref}` changed and landed the exported ones among them

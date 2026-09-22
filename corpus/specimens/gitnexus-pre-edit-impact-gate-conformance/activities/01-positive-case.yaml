@@ -1,0 +1,30 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the impact gate over a symbol with many callers.
+variables:
+  reads:
+    - positive_target
+  writes:
+    - name: positive_impact_report
+      type: object
+      description: What depends on the symbol, at depth 1/2/3, with the execution flows reached and a risk level.
+    - name: positive_edit_approved
+      type: boolean
+      description: Whether the measured blast radius was accepted at the gate. True where the rating was low enough that no gate was presented.
+      defaultValue: true
+required: true
+steps:
+  - kind: routine
+    id: gate-resolved-symbol
+    routine: gitnexus::pre-edit-impact-gate
+    with:
+      target: "{positive_target}"
+    outputs:
+      impact_report: positive_impact_report
+      edit_approved: positive_edit_approved
+exits:
+  - id: gated
+    isDefault: true
+outcome:
+  - The run measured a symbol with many callers, presented the gate its rating reached, and landed the report with the edit approved from a proceed

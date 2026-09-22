@@ -12,6 +12,7 @@ A **library** is a namespace of shared operations that declares no workflow of i
 | [`gitnexus`](gitnexus/techniques/TECHNIQUE.md) | Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, graph operations |
 | [`cargo`](cargo/techniques/TECHNIQUE.md) | Cargo subcommands, each carrying the resource budget that holds a compile inside its host |
 | [`concept-rag`](concept-rag/techniques/TECHNIQUE.md) | Knowledge-base search over pre-indexed domain maps, via the concept-rag MCP server |
+| [`conformance`](conformance/README.md) | The case-report shape a specimen holds one library run to, under a positive and a negative binding |
 
 ## A library directory
 

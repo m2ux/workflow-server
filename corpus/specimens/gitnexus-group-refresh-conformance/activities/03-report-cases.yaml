@@ -1,0 +1,30 @@
+id: report-cases
+version: 1.2.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - negative_contract_registry_stats
+    - negative_contract_report
+    - negative_group_freshness_report
+    - negative_group_name
+    - negative_member_rebuild_stats
+    - negative_unrebuildable_members
+    - positive_contract_registry_stats
+    - positive_contract_report
+    - positive_current_member_graph_name
+    - positive_group_name
+    - positive_group_freshness_report
+    - positive_member_rebuild_stats
+    - positive_stale_member_graph_name
+    - positive_unrebuildable_members
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Both bindings of the run are named with what each landed, so a reader can tell a group refreshed whole from one refreshed around a member no graph covers

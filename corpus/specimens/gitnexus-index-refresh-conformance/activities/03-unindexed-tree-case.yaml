@@ -1,0 +1,50 @@
+id: unindexed-tree-case
+version: 1.2.0
+name: Unindexed Tree Case
+description: Prepare a throwaway checkout carrying no graph, and refer to the index refresh over that tree.
+variables:
+  writes:
+    - name: unindexed_tree_repo_path
+      type: string
+      description: Path of the throwaway checkout the case prepares, which carries source and no graph.
+    - name: unindexed_tree_graph_name
+      type: string
+      description: Name the build keys the prepared checkout's graph under, which the reads and the build address and the report names as the source of this case's answers.
+    - name: repo_name
+      type: string
+      description: Name of the indexed graph every operation in the run addresses — the basename the build keys the tree's graph under, set before the first read so the error that read draws and the graph the build lands share one name.
+    - name: unindexed_tree_stats
+      type: object
+      description: File, symbol and process counts the graph holds.
+    - name: unindexed_tree_index_stale
+      type: boolean
+      description: Whether the graph is behind the tree it was built from.
+required: true
+steps:
+  - kind: technique
+    id: prepare-fixture
+    technique:
+      name: conformance::prepare-unbuilt-fixture
+      outputs:
+        unbuilt_fixture_path: unindexed_tree_repo_path
+        unbuilt_fixture_graph_name: unindexed_tree_graph_name
+  - kind: action
+    id: address-graph
+    actions:
+      - action: set
+        target: repo_name
+        value: "{unindexed_tree_graph_name}"
+        description: The graph the reads and the build address — the basename of a tree that carries no graph until the build lands one under that name.
+  - kind: routine
+    id: refresh-unindexed-tree
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{unindexed_tree_repo_path}"
+    outputs:
+      stats: unindexed_tree_stats
+      index_stale: unindexed_tree_index_stale
+exits:
+  - id: refreshed
+    isDefault: true
+outcome:
+  - The same run over a tree with no graph drew an error naming the repository on the first read, which it read as no graph — the flag true and the stats empty — so the build walked the tree and the second read landed the new graph's counts with the flag false

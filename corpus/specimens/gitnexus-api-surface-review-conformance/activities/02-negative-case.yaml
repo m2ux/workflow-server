@@ -1,0 +1,40 @@
+id: negative-case
+version: 1.1.0
+name: Negative Case
+description: Prepare a throwaway checkout serving no route, and refer to the API surface review over it.
+variables:
+  writes:
+    - name: negative_tree_path
+      type: string
+      description: Path of the throwaway checkout the case prepares, which carries source serving no route.
+    - name: negative_route_inventory
+      type: object
+      description: Each route with the file handling it, the middleware chain wrapping that handler, and the components and hooks that fetch it.
+    - name: negative_shape_report
+      type: object
+      description: Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree.
+    - name: repo_name
+      type: string
+      description: The graph both reads addressed, which a report naming either of them names too.
+required: true
+steps:
+  - kind: technique
+    id: prepare-fixture
+    technique:
+      name: conformance::prepare-unbuilt-fixture
+      outputs:
+        unbuilt_fixture_path: negative_tree_path
+  - kind: routine
+    id: review-routeless-tree
+    routine: gitnexus::api-surface-review
+    with:
+      tree_path: "{negative_tree_path}"
+    outputs:
+      route_inventory: negative_route_inventory
+      shape_report: negative_shape_report
+      repo_name: repo_name
+exits:
+  - id: reviewed
+    isDefault: true
+outcome:
+  - The same run under a tree serving no route built its graph and landed an empty inventory and an empty shape report, the fallback the run promises for a tree that serves no route rather than a failure

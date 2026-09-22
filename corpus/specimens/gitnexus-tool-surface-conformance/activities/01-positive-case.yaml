@@ -1,0 +1,29 @@
+id: positive-case
+version: 1.1.0
+name: Positive Case
+description: Refer to the tool surface over a tree registering MCP tools by calling a method.
+variables:
+  reads:
+    - positive_tree_path
+  writes:
+    - name: positive_tool_inventory
+      type: object
+      description: Each declared tool with the file handling it and the description it registers — empty, the tree registering its tools in a shape the walk does not record as a tool node.
+    - name: repo_name
+      type: string
+      description: The graph the read addressed, which a report naming this inventory names too.
+required: true
+steps:
+  - kind: routine
+    id: map-declaring-tree
+    routine: gitnexus::tool-surface
+    with:
+      tree_path: "{positive_tree_path}"
+    outputs:
+      tool_inventory: positive_tool_inventory
+      repo_name: repo_name
+exits:
+  - id: mapped
+    isDefault: true
+outcome:
+  - The run named the graph covering the tree and landed an empty inventory, the tree registering its tools by calling a method rather than in a shape the walk records as a tool node

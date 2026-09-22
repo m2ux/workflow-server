@@ -1,0 +1,39 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the symptom trace under text no flow matches and a suspect no graph holds.
+variables:
+  reads:
+    - negative_suspect_symbol
+    - negative_symptom_text
+  writes:
+    - name: negative_query_report
+      type: object
+      description: The execution flows the symptom's text ranked into, the symbols those flows run, and the definitions reached outside any flow — ranking into no flow for text nothing matches.
+    - name: negative_context_report
+      type: object
+      description: The suspect's callers, callees and flow membership — resolving nothing for a symbol no graph holds.
+    - name: negative_suspect_flow_traces
+      type: array
+      description: The ordered step trace of each execution flow the suspect participates in — empty by construction, since a suspect the graph does not hold participates in none.
+    - name: negative_call_chains
+      type: array
+      description: Every chain of calls reaching the suspect within two hops — empty by construction, since no call reaches a symbol outside the graph.
+required: true
+steps:
+  - kind: routine
+    id: trace-absent-suspect
+    routine: gitnexus::symptom-trace
+    with:
+      symptom_text: "{negative_symptom_text}"
+      suspect_symbol: "{negative_suspect_symbol}"
+    outputs:
+      query_report: negative_query_report
+      context_report: negative_context_report
+      suspect_flow_traces: negative_suspect_flow_traces
+      call_chains: negative_call_chains
+exits:
+  - id: traced
+    isDefault: true
+outcome:
+  - The same run under text no flow matches and a symbol the graph does not hold landed a ranking into no flow, a context resolving nothing, zero traces and no chain, the fallback the run promises rather than a failure

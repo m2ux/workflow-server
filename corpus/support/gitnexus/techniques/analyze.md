@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -11,11 +11,21 @@ metadata:
 
 ### repo_path
 
-Filesystem path of the tree to index. GitNexus walks the working tree from here and indexes every source file it encounters, including content that physically lives inside submodule directories, and keys the resulting index under this tree's basename — the name every later operation addresses its answers by.
+Filesystem path of the tree to index. GitNexus walks the working tree from here and indexes every source file it encounters, including content that physically lives inside submodule directories.
+
+The build keys its index under the basename of the git checkout holding this path. A directory inside a checkout resolves upward to it: the whole checkout is walked and keyed under its name, nothing under the directory given, and the build reports success either way.
 
 ### force_rebuild
 
 *(optional)* Whether the rebuild starts from scratch rather than updating what the index already holds.
+
+#### default
+
+`false`
+
+### pdg_layers
+
+*(optional)* Whether the build records the program-dependence layers — control flow, reaching definitions, control dependence and taint — that the taint findings and the dependence query answer from. A graph built without them answers those with a note naming the missing layer.
 
 #### default
 
@@ -31,27 +41,35 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ### 1. Lock and Check Freshness
 
-- Coordinate concurrent invocations from sibling runs against one tree: serialize via an exclusive flock on `{repo_path}/.git/.workflow-gitnexus-refresh.lock` (blocking). Concrete form: `flock {repo_path}/.git/.workflow-gitnexus-refresh.lock -c <command>`. The lock prevents two parallel analyze invocations from racing on the shared GitNexus index for this repo.
-- Skip-if-recent (under the lock): check the mtime of `{repo_path}/.git/.workflow-gitnexus-refresh`. If it exists, was modified within the last 300 seconds, AND `{force_rebuild}` is not true, skip the analyze entirely — a sibling run already (re)built the index and another rebuild adds no value. Release the lock and return cached `{stats}`.
+- Resolve the checkout root holding `{repo_path}` — `git -C {repo_path} rev-parse --show-toplevel` — and hold the lock and the freshness signal there: a `{repo_path}` inside a checkout has no `.git` directory to hold either file.
+- Serialize sibling runs against one tree on a blocking exclusive flock: `flock <root>/.git/.workflow-gitnexus-refresh.lock -c <command>`.
+- Under the lock, check the mtime of `<root>/.git/.workflow-gitnexus-refresh`: where it is under 300 seconds old and `{force_rebuild}` is not true, release the lock and return cached `{stats}` without analyzing.
 
 ### 2. Run Analyze
 
-- Otherwise run `npx gitnexus analyze` (or `npx gitnexus analyze --force` when `{force_rebuild}` is true) inside `{repo_path}`. The CLI exits non-zero on failure; surface its stderr.  
-  > - If `npx gitnexus` resolves to no binary (the gitnexus package is not installed), install it via `npm install -g gitnexus` (or the project-local equivalent), then retry.
+- Otherwise run `node .gitnexus/run.cjs analyze --index-only` inside `{repo_path}`, adding `--force` when `{force_rebuild}` is true and `--pdg` when `{pdg_layers}` is true. The CLI exits non-zero on failure; surface its stderr.
+  > - `--index-only` writes the graph and nothing else; the agent context files and skills the CLI can drop into the tree are outside this operation.
+  > - The runner at `.gitnexus/run.cjs` is written by a build and ignored by git, so a fresh clone carries none. Where `node` reports it missing, run `npx gitnexus analyze` with the same flags, which regenerates it.
   > - If the analyze CLI returns non-zero — typically a parser error inside the target codebase or an unsupported language — read the stderr; if it identifies a single offending file, exclude or fix it. For corrupted index state, retry with `force_rebuild=true`.
 
 ### 3. Signal
 
-- On success, `touch {repo_path}/.git/.workflow-gitnexus-refresh` so subsequent invocations see the freshness signal. Release the lock. On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds.
+- On success, `touch <root>/.git/.workflow-gitnexus-refresh` and release the lock. A first analyze on a repo with no prior index can take minutes — do not retry until exit; incremental runs are seconds.
+
+### 4. Confirm the Graph's Name
+
+- Read the inventory of indexed graphs for the name this build landed under, which the exit status does not give.
 
 ## Rules
 
 ### a-rebuilt-index-reaches-a-reader-on-reload
 
-A completed rebuild writes the graph to disk; a server already holding the previous one keeps answering from it. So a read taken straight after a successful analyze can report the index stale, and every answer drawn from it describes the tree as it was — the rebuild succeeded and the reader has not met it. Reload the MCP server where the read disagrees with the rebuild, and treat the second read rather than the exit status as what says the graph is current.
+A completed rebuild publishes the graph to disk, and a running server reopens the replacement at its next check, at most once every five seconds. A read inside that window answers from the previous graph and reports it stale. Treat the second read rather than the exit status as what says the graph is current.
 
 ### index-every-addressed-tree
 
 Index each tree whose answers a caller will ask for by name. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
 
-A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and a group's freshness report marks a member with no graph as `missing`. Where a component is indexed both on its own and as part of a containing tree, both names resolve and answer at different scope — `address-a-named-graph` governs which to address.
+A component a checkout holds as a plain directory is reachable only that way, whatever path a build is handed: the build resolves to the checkout and keys one graph under it. A component earns a name of its own by being a checkout of its own — a submodule or a separate clone.
+
+A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and a group's freshness report marks a member with no graph as `missing`. Where a component is indexed both on its own and inside a containing tree, both names resolve at different scope — `address-a-named-graph` governs which to address.

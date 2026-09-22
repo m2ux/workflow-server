@@ -1,0 +1,34 @@
+id: report-cases
+version: 1.2.0
+name: Report Cases
+description: State what the run landed under each binding, and which graph answered it.
+variables:
+  reads:
+    - current_graph_name
+    - negative_flow_traces
+    - negative_index_stale
+    - negative_index_stats
+    - negative_query_report
+    - negative_symbol_contexts
+    - positive_flow_traces
+    - positive_index_stale
+    - positive_index_stats
+    - positive_query_report
+    - positive_symbol_contexts
+    - stale_graph_fixture_path
+    - stale_graph_flow_traces
+    - stale_graph_index_stale
+    - stale_graph_index_stats
+    - stale_graph_name
+    - stale_graph_query_report
+    - stale_graph_symbol_contexts
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - All three bindings of the run are named with what each landed and the graph it answered from, so a reader can tell an area the graph read from the empty passes an unranked concept lands, and both from an area read off a graph the run rebuilt first

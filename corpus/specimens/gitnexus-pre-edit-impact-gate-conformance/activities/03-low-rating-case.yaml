@@ -1,0 +1,30 @@
+id: low-rating-case
+version: 1.0.0
+name: Low Rating Case
+description: Refer to the impact gate over a symbol with one direct caller, rated too low to reach the gate.
+variables:
+  reads:
+    - low_rating_target
+  writes:
+    - name: low_rating_impact_report
+      type: object
+      description: What depends on the symbol, at depth 1/2/3, with the execution flows reached and a risk level — LOW for a symbol with one direct caller.
+    - name: low_rating_edit_approved
+      type: boolean
+      description: Whether the measured blast radius was accepted at the gate. True where the rating was low enough that no gate was presented.
+      defaultValue: true
+required: true
+steps:
+  - kind: routine
+    id: gate-low-rated-symbol
+    routine: gitnexus::pre-edit-impact-gate
+    with:
+      target: "{low_rating_target}"
+    outputs:
+      impact_report: low_rating_impact_report
+      edit_approved: low_rating_edit_approved
+exits:
+  - id: gated
+    isDefault: true
+outcome:
+  - The same run under a symbol with one direct caller rated it LOW, so the gate's `when` held it back and the edit approval kept its seeded true — the run passing without asking, distinct from a proceed answered at the gate

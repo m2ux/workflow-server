@@ -1,0 +1,31 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the group concept search under a concept the group's members carry.
+variables:
+  reads:
+    - positive_group_name
+    - positive_search_query
+  writes:
+    - name: positive_group_query_report
+      type: object
+      description: Execution flows drawn from the group's members and merged into one ranking, each carrying the member it came from.
+    - name: positive_graph_inventory
+      type: object
+      description: Every indexed graph with the tree it was built from, and the repository groups configured over them, which is where a group name that resolves to nothing is settled.
+required: true
+steps:
+  - kind: routine
+    id: search-held-concept
+    routine: gitnexus::group-concept-search
+    with:
+      group_name: "{positive_group_name}"
+      search_query: "{positive_search_query}"
+    outputs:
+      group_query_report: positive_group_query_report
+      graph_inventory: positive_graph_inventory
+exits:
+  - id: searched
+    isDefault: true
+outcome:
+  - The run read the inventory naming the group, ranked every member against the concept and landed a merged ranking with results

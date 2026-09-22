@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -17,13 +17,13 @@ A regular expression matched against whole heading text. Match a fragment by sur
 
 ### heading_matches
 
-Each matching heading with the file it sits in.
+Each matching heading with the file it sits in, as the rows of a table.
 
 ## Protocol
 
 ### 1. Search the Headings
 
-- Call `gitnexus_cypher { query: "MATCH (s:Section) WHERE s.name =~ '{heading_pattern}' RETURN s.name, s.filePath", repo: repo_name }` and record the rows it returns as the `{heading_matches}`.
+- Call `gitnexus_cypher { statement: "MATCH (s:Section) WHERE s.name =~ '{heading_pattern}' RETURN s.name, s.filePath", repo: repo_name }` and record the rows it returns as the `{heading_matches}`.
    > - Where the pattern matches nothing, widen it — the match is against the whole heading, so a bare word matches only a heading that is exactly that word.
    > - Where the subject is a claim made in prose rather than a heading, this operation cannot reach it; grep the tree instead, per `query-not-grep`.
 

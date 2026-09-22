@@ -1,0 +1,36 @@
+id: negative-case
+version: 1.2.0
+name: Negative Case
+description: Prepare a throwaway checkout carrying no graph, and refer to the graph resolve over that tree.
+variables:
+  writes:
+    - name: negative_tree_path
+      type: string
+      description: Path of the throwaway checkout the case prepares, which carries source and no graph, and which the resolve and the build walk.
+    - name: negative_repo_name
+      type: string
+      description: The graph the run named after building one over a tree no graph covered.
+    - name: negative_index_stats
+      type: object
+      description: The symbol, relationship and process counts a build reports for the graph it wrote.
+required: true
+steps:
+  - kind: technique
+    id: prepare-fixture
+    technique:
+      name: conformance::prepare-unbuilt-fixture
+      outputs:
+        unbuilt_fixture_path: negative_tree_path
+  - kind: routine
+    id: name-uncovered-tree
+    routine: gitnexus::graph-for-tree
+    with:
+      tree_path: "{negative_tree_path}"
+    outputs:
+      repo_name: negative_repo_name
+      index_stats: negative_index_stats
+exits:
+  - id: named
+    isDefault: true
+outcome:
+  - The same run under a tree no graph covers landed an empty name at the first resolve, built a graph over the tree and named it, the fallback the run promises rather than a failure

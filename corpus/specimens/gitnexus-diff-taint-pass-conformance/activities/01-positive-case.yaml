@@ -1,0 +1,34 @@
+id: positive-case
+version: 1.2.0
+name: Positive Case
+description: Refer to the diff taint pass over a comparison against a fixed commit.
+variables:
+  reads:
+    - base_ref
+    - positive_diff_scope
+  writes:
+    - name: positive_introduced_flows
+      type: array
+      description: Findings with a hop on a symbol the change moved, each naming that symbol — empty, the changed symbols carrying no flow.
+    - name: positive_inherited_flows
+      type: array
+      description: Findings anchored at a changed symbol whose every hop sits outside the change — empty, the changed symbols carrying no flow.
+    - name: positive_taint_unmeasured
+      type: boolean
+      description: Whether the graph carried no taint layer, so the partition settles nothing.
+required: true
+steps:
+  - kind: routine
+    id: pass-fixed-comparison
+    routine: gitnexus::diff-taint-pass
+    with:
+      diff_scope: "{positive_diff_scope}"
+    outputs:
+      introduced_flows: positive_introduced_flows
+      inherited_flows: positive_inherited_flows
+      taint_unmeasured: positive_taint_unmeasured
+exits:
+  - id: passed
+    isDefault: true
+outcome:
+  - The run took the changed symbols of the comparison against `{base_ref}`, read a taint report per symbol from a graph holding the layer, and landed both lists empty with the unmeasured flag false, no changed symbol carrying a flow

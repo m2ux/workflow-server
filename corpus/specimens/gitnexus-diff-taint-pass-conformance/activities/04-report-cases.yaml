@@ -1,0 +1,28 @@
+id: report-cases
+version: 1.1.0
+name: Report Cases
+description: State what the run landed under each binding, and which graph answered it.
+variables:
+  reads:
+    - absent_layer_graph
+    - absent_layer_inherited_flows
+    - absent_layer_introduced_flows
+    - absent_layer_taint_unmeasured
+    - base_ref
+    - negative_inherited_flows
+    - negative_introduced_flows
+    - negative_taint_unmeasured
+    - positive_inherited_flows
+    - positive_introduced_flows
+    - positive_taint_unmeasured
+    - taint_layer_graph
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - All three bindings of the run are named with what each landed and the graph it answered from, so a reader can tell a partitioned change from the empty lists an empty change set lands, and both from the true flag a layer the graph does not hold lands

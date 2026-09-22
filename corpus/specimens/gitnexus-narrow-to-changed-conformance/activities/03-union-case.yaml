@@ -1,0 +1,27 @@
+id: union-case
+version: 1.0.0
+name: Union Case
+description: Refer to the narrowing over a two-arm query and two files the graph holds.
+variables:
+  reads:
+    - union_cypher_query
+    - union_changed_files
+  writes:
+    - name: union_matched_symbols
+      type: array
+      description: Rows of the query that sit in the two files the graph holds — functions from one arm and methods from the other, each with the symbol and the file the graph records.
+required: true
+steps:
+  - kind: routine
+    id: narrow-union-arms
+    routine: gitnexus::narrow-to-changed
+    with:
+      cypher_query: "{union_cypher_query}"
+      changed_files: "{union_changed_files}"
+    outputs:
+      matched_symbols: union_matched_symbols
+exits:
+  - id: narrowed
+    isDefault: true
+outcome:
+  - The same run under a UNION ALL query put a path predicate on each arm, so the rows that landed are functions and methods from both files and nothing from outside them — the two-arm shape the composition step names

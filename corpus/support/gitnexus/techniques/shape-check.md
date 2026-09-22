@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -17,17 +17,18 @@ Hold each API route's response shape against the keys its consumers read, and re
 
 ### shape_report
 
-Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree.
+Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree; each route carries its `method` — the verb, `*` for a method-agnostic route, or null for a method-less one — and its `runtimeEvidence`, authoritative only where `confirmed` is true.
 
 ## Protocol
 
 ### 1. Take the Shape Report
 
 - Call `gitnexus_shape_check { route: route_path, repo: repo_name }` and record the `{shape_report}`.
+   > A graph built before the `method` property existed fails the read with a binder error naming it rather than answering empty — too old to serve this operation, which a rebuild fixes.
 
 ### 2. Read What the Answer Covers
 
-- Read the answer as covering the routes whose response keys the index extracted and which have a consumer: a route the walk read no response shape from is absent from the report entirely, so an absent route is an unmeasured one rather than an agreeing one.
+- Read the answer as covering only routes a route decorator declares or a verb method call on an app or router registers, and among those only the ones with both an extracted response shape and a consumer: an absent route is unmeasured, not agreeing.
 
 ### 3. Read a Disagreement
 

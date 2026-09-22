@@ -1,0 +1,35 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - ambiguous_name_change_report
+    - ambiguous_name_changes
+    - ambiguous_name_file_path
+    - ambiguous_name_new_name
+    - ambiguous_name_rename_approved
+    - ambiguous_name_symbol_name
+    - negative_change_report
+    - negative_changes
+    - negative_file_path
+    - negative_new_name
+    - negative_rename_approved
+    - negative_symbol_name
+    - positive_change_report
+    - positive_changes
+    - positive_file_path
+    - positive_new_name
+    - positive_rename_approved
+    - positive_symbol_name
+    - repo_name
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - All three bindings of the run are named with what each landed, so a reader can tell an accepted rename that moved symbols from a refused gate over an empty edit list, and both from a refused gate over an ambiguous status with candidates

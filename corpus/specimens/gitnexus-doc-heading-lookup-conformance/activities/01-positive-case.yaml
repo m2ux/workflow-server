@@ -1,0 +1,31 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the heading lookup under a pattern whole headings in the tree match.
+variables:
+  reads:
+    - positive_heading_pattern
+    - positive_tree_path
+  writes:
+    - name: positive_heading_matches
+      type: array
+      description: Each matching heading with the file it sits in.
+    - name: repo_name
+      type: string
+      description: The graph the search addressed, which a report naming these matches names too.
+required: true
+steps:
+  - kind: routine
+    id: find-matching-headings
+    routine: gitnexus::doc-heading-lookup
+    with:
+      tree_path: "{positive_tree_path}"
+      heading_pattern: "{positive_heading_pattern}"
+    outputs:
+      heading_matches: positive_heading_matches
+      repo_name: repo_name
+exits:
+  - id: matched
+    isDefault: true
+outcome:
+  - The run named the graph covering the tree and landed the headings the pattern matches, each with the file it sits in

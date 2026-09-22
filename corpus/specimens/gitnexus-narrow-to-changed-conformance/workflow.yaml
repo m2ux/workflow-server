@@ -1,0 +1,65 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-narrow-to-changed-conformance
+version: 1.1.0
+title: GitNexus Narrow To Changed Conformance Workflow
+description: >-
+  Hold the gitnexus narrow-to-changed run to three cases. The positive and negative cases carry the
+  same graph query for every function's name and file. The positive case names a file the graph
+  holds, so the path predicate keeps rows and the run lands the functions in that file. The negative
+  case names a file no graph holds, so the predicate keeps no row and the run lands an empty set —
+  the fallback it promises for a file outside the index, distinct from a file the graph holds and
+  found empty. The union case carries a two-arm UNION ALL query over two files the graph records
+  both kinds in, so each arm takes its own predicate and the run lands functions and methods from
+  both files and nothing else — a set a single-arm query cannot produce.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_cypher_query
+    type: string
+    description: A query for every function's name and file, which the positive case's path predicate narrows.
+    defaultValue: "MATCH (f:Function) RETURN f.name AS symbol_name, f.filePath AS file_path"
+  - name: positive_changed_files
+    type: array
+    description: A file the graph holds, whose functions the positive case's predicate keeps.
+    defaultValue:
+      - src/loaders/technique-loader.ts
+  - name: negative_cypher_query
+    type: string
+    description: The same query for every function's name and file, which the negative case's path predicate narrows.
+    defaultValue: "MATCH (f:Function) RETURN f.name AS symbol_name, f.filePath AS file_path"
+  - name: negative_changed_files
+    type: array
+    description: A file no graph holds, so the negative case's predicate keeps no row.
+    defaultValue:
+      - no/such/file.ts
+  - name: union_cypher_query
+    type: string
+    description: A two-arm UNION ALL query, one arm for every function and one for every method, each returning the symbol's name and file, so the union case's path predicate rides each arm.
+    defaultValue: "MATCH (f:Function) RETURN f.name AS symbol_name, f.filePath AS file_path UNION ALL MATCH (m:Method) RETURN m.name AS symbol_name, m.filePath AS file_path"
+  - name: union_changed_files
+    type: array
+    description: Two files the graph records both functions and methods in, so each arm keeps rows and the landed set is provably mixed.
+    defaultValue:
+      - src/schema/when-expression.ts
+      - src/trace.ts
+initialActivity: positive-case
+graph:
+  positive-case:
+    narrowed: negative-case
+  negative-case:
+    narrowed: union-case
+  union-case:
+    narrowed: report-cases
+  report-cases:
+    reported: __terminal__

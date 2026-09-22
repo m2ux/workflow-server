@@ -1,0 +1,29 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the tool surface over a markdown tree with no tool declarations.
+variables:
+  reads:
+    - negative_tree_path
+  writes:
+    - name: negative_tool_inventory
+      type: object
+      description: Each declared tool with the file handling it and the description it registers — empty by construction, with the run's note reading the emptiness as registrations the walk did not recognise.
+    - name: repo_name
+      type: string
+      description: The graph the read addressed, which a report naming this inventory names too.
+required: true
+steps:
+  - kind: routine
+    id: map-markdown-tree
+    routine: gitnexus::tool-surface
+    with:
+      tree_path: "{negative_tree_path}"
+    outputs:
+      tool_inventory: negative_tool_inventory
+      repo_name: repo_name
+exits:
+  - id: mapped
+    isDefault: true
+outcome:
+  - The same run under a markdown tree named its graph and landed an empty inventory with a note reading it as registrations the walk did not recognise, the fallback the run promises rather than a failure
