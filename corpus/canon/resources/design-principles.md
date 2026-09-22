@@ -102,6 +102,8 @@ Activities own stage, checkpoints, transitions, and graph progress. Techniques s
 
 Tool names, return shapes, and bootstrap paths in techniques and docs match the actual harness surface. Behavioural guidance about tools lives in one authoritative place; do not invent parallel recipes or incomplete hop chains.
 
+A schema settles the call, never the answer. What a Protocol does with a response — the branch it takes, the emptiness it reads as absence, the name it expects to resolve — is a claim about what that tool returns on a real subject, and a correctly shaped call can return an answer the Protocol has no reading for. So a phase states answers the tool has been seen to give, taken against a real subject before the prose is written. An assumed answer is a defect in the operation, paid for at authoring time or at every walk after it.
+
 ## 22. Modular Over Inline
 
 Constructs live in their own files. Parents reference siblings; they do not embed activity, technique, or resource bodies inline.
