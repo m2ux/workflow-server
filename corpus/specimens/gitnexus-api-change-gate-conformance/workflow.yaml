@@ -1,11 +1,11 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-api-change-gate-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus API Change Gate Conformance Workflow
 description: >-
   Hold the gitnexus api-change-gate run to three cases. The positive case names a route the graph
-  holds, so the run measures the consumers and response keys the route's change reaches and presents
-  its gate where the measurement names a key a consumer reads that the route does not return. The
+  holds under one verb and nothing fetches, so the run measures what the route's change reaches,
+  lands one report naming no consumer and no mismatch, and leaves the gate unpresented. The
   negative case names a route no graph holds, so the measurement names nothing, no mismatch arrives,
   the gate is never presented and the approval keeps its seeded value — the fallback the run promises
   for a route outside the index, distinct from a route the graph measured and found consistent. The
@@ -27,7 +27,7 @@ variables:
     defaultValue: workflow-server
   - name: positive_route_path
     type: string
-    description: A route the graph holds under one verb, so the positive case's measurement is one report.
+    description: A route the graph holds under one verb and nothing in the tree fetches, so the positive case's measurement is one report naming no consumer.
     defaultValue: /ready
   - name: negative_route_path
     type: string

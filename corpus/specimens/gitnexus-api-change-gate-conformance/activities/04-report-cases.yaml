@@ -1,5 +1,5 @@
 id: report-cases
-version: 1.0.0
+version: 1.1.0
 name: Report Cases
 description: State what the run landed under each binding.
 variables:
@@ -20,4 +20,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - All three bindings of the run are named with what each landed, so a reader can tell a gate the measurement reached from an approval that kept its seeded value, and a seed kept over an absent route from one kept over a set of routes found consistent
+  - All three bindings of the run are named with what each landed, so a reader can tell one report over a held route with no consumer from a seed kept over an absent route and from one kept over a set of routes found consistent

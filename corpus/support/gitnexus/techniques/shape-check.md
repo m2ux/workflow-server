@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -28,7 +28,7 @@ Per route, the top-level keys its response carries, the keys each consumer reads
 
 ### 2. Read What the Answer Covers
 
-- Read the answer as covering only routes with both an extracted response shape and a consumer: an absent route is unmeasured, not agreeing.
+- Read the answer as covering only routes a route decorator declares or a verb method call on an app or router registers, and among those only the ones with both an extracted response shape and a consumer: an absent route is unmeasured, not agreeing.
 
 ### 3. Read a Disagreement
 

@@ -1,14 +1,14 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-tool-surface-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Tool Surface Conformance Workflow
 description: >-
-  Hold the gitnexus tool-surface run to two cases. The positive case names a tree that declares MCP
-  tools, so the run names the graph covering it and maps each declared tool to the file handling it
-  and the description it registers. The negative case names a markdown tree the graph holds with no
-  tool declarations, so the run names that graph and lands an empty inventory — the fallback it
-  promises for a tree whose registrations the walk did not recognise, which the run's own note reads
-  as such rather than as a tree defining none.
+  Hold the gitnexus tool-surface run to two cases. The positive case names a tree registering MCP
+  tools by calling a method, a shape outside the two the walk records as a tool node, so the run
+  names the graph covering it and lands an empty inventory. The negative case names a markdown tree
+  the graph holds with no tool declarations, so the run names that graph and lands an empty
+  inventory too — the fallback it promises for a tree whose registrations the walk did not
+  recognise, which the run's own note reads as such rather than as a tree defining none.
 author: m2ux
 tags:
   - gitnexus
@@ -25,7 +25,7 @@ variables:
     defaultValue: workflow-server
   - name: positive_tree_path
     type: string
-    description: Filesystem path of a tree declaring MCP tools, whose declarations the positive case maps.
+    description: Filesystem path of a tree registering MCP tools by calling a method, a shape outside the walk's tool detection, so the positive case's inventory is empty.
     defaultValue: /home/mike1/projects/dev/workflow-server
   - name: negative_tree_path
     type: string

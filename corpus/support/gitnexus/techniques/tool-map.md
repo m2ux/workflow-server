@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -31,4 +31,4 @@ The `tools` the graph holds, each with the file handling it and the description 
 
 ### 3. Read an Empty Inventory
 
-- Hold an empty `{tool_inventory}` against the tree's registration sites before reading it as a tree that serves none: a registration built by a helper the parser reads as an ordinary call leaves no tool node.
+- Hold an empty `{tool_inventory}` against the tree's registration sites before reading it as a tree that serves none: a tool node comes from a `tool` decorator on a handler, or from a TypeScript or JavaScript file whose path carries `tool` and whose declarations pair a name with a description beside an `inputSchema`, so a tree registering its tools by calling a method leaves none.

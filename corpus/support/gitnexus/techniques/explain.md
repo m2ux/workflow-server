@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -49,7 +49,7 @@ The caveats on what the layer models, carried on every answer. Where the graph h
 
 - Call `gitnexus_explain { target: taint_target, limit, repo: repo_name }` and record the `{taint_report}`.
    > - Where `{taint_target}` names several symbols the answer is the candidates, with `totalCandidates` the true count. The anchor matches a symbol name before a path suffix, so a bare filename answers with that file's symbols; lead the value with a separator — `/AGENTS.md` for a file at the tree's root — and the match falls to the suffix. This operation takes no symbol identity, so narrow a still-ambiguous path by naming more of it.
-   > - Where `{taint_report}.note` states the graph holds no taint layer, a rebuild carrying the program-dependence layers is what makes this answer a measurement.
+   > - Where `{taint_report}.note` states the graph holds no taint layer, a rebuild carrying the program-dependence layers is what makes this answer a measurement in the languages the source and sink models cover — Java, TypeScript, JavaScript and Python.
 
 ### 2. Read a Finding's Reach
 

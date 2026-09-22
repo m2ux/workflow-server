@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -36,6 +36,7 @@ Whether any report in `{taint_reports}` carried a note stating the graph holds n
 ### 1. Settle Whether the Layer Was There
 
 - Read each entry of `{taint_reports}` for a note stating the graph holds no taint layer, and set `{taint_unmeasured}` true where any carries one; both partitions below are then empty by construction rather than by measurement.
+   > Every report over a tree outside the languages the source and sink models cover — Java, TypeScript, JavaScript and Python — carries that note.
 
 ### 2. Partition by Where the Hops Land
 

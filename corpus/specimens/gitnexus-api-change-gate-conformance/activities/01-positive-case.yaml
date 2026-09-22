@@ -1,14 +1,14 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
-description: Refer to the API change gate over a route the graph holds under one verb.
+description: Refer to the API change gate over a route the graph holds under one verb with no consumer.
 variables:
   reads:
     - positive_route_path
   writes:
     - name: positive_api_impact_report
       type: object
-      description: The route's consumers, the response keys each reads, the middleware wrapping the handler, the execution flows it opens, and a risk level over the whole.
+      description: The route's consumers, the response keys each reads, the middleware wrapping the handler, the execution flows it opens, and a risk level over the whole — one report, naming no consumer, for a route nothing in the tree fetches.
     - name: positive_api_change_approved
       type: boolean
       description: Whether the measured consumer surface was accepted at the gate. True where the measurement named no mismatch, the rating being low enough that no gate was presented.
@@ -27,4 +27,4 @@ exits:
   - id: gated
     isDefault: true
 outcome:
-  - The run measured the consumers and response keys a held single-verb route's change reaches, landed one report rather than a set, and the gate spliced from it was presented from this activity where the measurement named a mismatch
+  - The run measured what a held single-verb route's change reaches, landed one report rather than a set naming no consumer and no mismatch, and left the gate spliced from it unpresented with the approval at its seeded value

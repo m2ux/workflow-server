@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Name of the indexed graph the run addressed.
 
 ### positive_tool_inventory
 
-Each declared tool with the file handling it and the description it registers.
+Each declared tool with the file handling it and the description it registers — empty, the tree registering its tools in a shape the walk does not record as a tool node.
 
 ### negative_tool_inventory
 
@@ -40,7 +40,7 @@ Two rows for the one run: the bindings each case took, whether each materialised
 ### 1. Fill the Table
 
 - Fill the table from the two cases — the positive against `{positive_tool_inventory}`, the negative against `{negative_tool_inventory}` — per [Template](/conformance/resources/case-report.md#template), with `{repo_name}` as the graph addressed.
-   > An empty `{negative_tool_inventory}` is the run's fallback for a markdown tree, and the run's own note reads it as registrations the walk did not recognise; the row names that mark rather than reading the tree as one defining no tools.
+   > `{positive_tool_inventory}` and `{negative_tool_inventory}` are both empty with the run's note on each: the positive tree registers its tools in a shape the walk does not record, and the markdown tree declares none. Each row names the tree it bound, the one answer standing for both.
 
 ### 2. Write the Report
 

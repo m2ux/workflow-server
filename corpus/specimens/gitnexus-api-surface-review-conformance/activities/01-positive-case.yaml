@@ -1,7 +1,7 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
-description: Refer to the API surface review over a tree whose graph serves routes.
+description: Refer to the API surface review over a tree whose graph serves routes nothing fetches.
 variables:
   reads:
     - positive_tree_path
@@ -11,7 +11,7 @@ variables:
       description: Each route with the file handling it, the middleware chain wrapping that handler, and the components and hooks that fetch it.
     - name: positive_shape_report
       type: object
-      description: Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree.
+      description: Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree — empty, the check covering only routes with a consumer and no route in this tree having one.
     - name: repo_name
       type: string
       description: The graph both reads addressed, which a report naming either of them names too.
@@ -30,4 +30,4 @@ exits:
   - id: reviewed
     isDefault: true
 outcome:
-  - The run named the graph covering a tree that serves routes, mapped those routes and held each response shape against the keys its consumers read
+  - The run named the graph covering a tree that serves routes, mapped those routes, and landed an empty shape report, the check covering only routes with a consumer and no route in this tree having one
