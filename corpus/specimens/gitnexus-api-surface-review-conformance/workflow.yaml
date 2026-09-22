@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-api-surface-review-conformance
-version: 1.2.0
+version: 1.3.0
 title: GitNexus API Surface Review Conformance Workflow
 description: >-
   Hold the gitnexus api-surface-review run to two cases. The positive case names a tree whose graph
@@ -19,10 +19,6 @@ techniques:
   activity:
     - variable-binding
 variables:
-  - name: repo_name
-    type: string
-    description: Name of the indexed graph every operation in the run addresses.
-    defaultValue: workflow-server
   - name: positive_tree_path
     type: string
     description: A tree whose graph serves API routes that nothing in the tree fetches, so the positive case maps the routes and its shape report is empty.

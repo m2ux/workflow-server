@@ -1,5 +1,5 @@
 id: negative-case
-version: 1.1.0
+version: 1.2.0
 name: Negative Case
 description: Prepare a throwaway checkout serving no route, and refer to the API surface review over it.
 variables:
@@ -13,9 +13,9 @@ variables:
     - name: negative_shape_report
       type: object
       description: Per route, the top-level keys its response carries, the keys each consumer reads, and whether the two agree.
-    - name: repo_name
+    - name: negative_repo_name
       type: string
-      description: The graph both reads addressed, which a report naming either of them names too.
+      description: The graph both reads addressed, built over the prepared checkout serving no route.
 required: true
 steps:
   - kind: technique
@@ -32,7 +32,7 @@ steps:
     outputs:
       route_inventory: negative_route_inventory
       shape_report: negative_shape_report
-      repo_name: repo_name
+      repo_name: negative_repo_name
 exits:
   - id: reviewed
     isDefault: true
