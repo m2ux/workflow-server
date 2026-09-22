@@ -1,5 +1,5 @@
 id: negative-case
-version: 1.1.0
+version: 1.2.0
 name: Negative Case
 description: Prepare a throwaway checkout carrying no graph, and refer to the graph resolve over that tree.
 variables:
@@ -7,9 +7,9 @@ variables:
     - name: negative_tree_path
       type: string
       description: Path of the throwaway checkout the case prepares, which carries source and no graph, and which the resolve and the build walk.
-    - name: repo_name
+    - name: negative_repo_name
       type: string
-      description: The name the operations downstream address as their graph.
+      description: The graph the run named after building one over a tree no graph covered.
     - name: negative_index_stats
       type: object
       description: The symbol, relationship and process counts a build reports for the graph it wrote.
@@ -27,7 +27,7 @@ steps:
     with:
       tree_path: "{negative_tree_path}"
     outputs:
-      repo_name: repo_name
+      repo_name: negative_repo_name
       index_stats: negative_index_stats
 exits:
   - id: named

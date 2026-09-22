@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-narrow-to-changed-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Narrow To Changed Conformance Workflow
 description: >-
   Hold the gitnexus narrow-to-changed run to three cases. The positive and negative cases carry the
@@ -8,8 +8,9 @@ description: >-
   holds, so the path predicate keeps rows and the run lands the functions in that file. The negative
   case names a file no graph holds, so the predicate keeps no row and the run lands an empty set —
   the fallback it promises for a file outside the index, distinct from a file the graph holds and
-  found empty. The union case carries a two-arm UNION ALL query over two held files, so each arm
-  takes its own predicate and the run lands functions and methods from both files and nothing else.
+  found empty. The union case carries a two-arm UNION ALL query over two files the graph records
+  both kinds in, so each arm takes its own predicate and the run lands functions and methods from
+  both files and nothing else — a set a single-arm query cannot produce.
 author: m2ux
 tags:
   - gitnexus
@@ -48,10 +49,10 @@ variables:
     defaultValue: "MATCH (f:Function) RETURN f.name AS symbol_name, f.filePath AS file_path UNION ALL MATCH (m:Method) RETURN m.name AS symbol_name, m.filePath AS file_path"
   - name: union_changed_files
     type: array
-    description: Two files the graph holds, whose functions and methods the union case's predicate keeps.
+    description: Two files the graph records both functions and methods in, so each arm keeps rows and the landed set is provably mixed.
     defaultValue:
-      - src/loaders/technique-loader.ts
-      - src/tools/workflow-tools.ts
+      - src/schema/when-expression.ts
+      - src/trace.ts
 initialActivity: positive-case
 graph:
   positive-case:

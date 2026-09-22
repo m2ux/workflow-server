@@ -1,14 +1,14 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
 description: Refer to the graph resolve over a tree a graph covers.
 variables:
   reads:
     - positive_tree_path
   writes:
-    - name: repo_name
+    - name: positive_repo_name
       type: string
-      description: The name the operations downstream address as their graph.
+      description: The graph the resolve named over a tree a graph already covers.
     - name: positive_index_stats
       type: object
       description: The symbol, relationship and process counts a build reports for the graph it wrote.
@@ -20,7 +20,7 @@ steps:
     with:
       tree_path: "{positive_tree_path}"
     outputs:
-      repo_name: repo_name
+      repo_name: positive_repo_name
       index_stats: positive_index_stats
 exits:
   - id: named

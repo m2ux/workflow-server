@@ -1,13 +1,14 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-doc-reference-surface-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Doc Reference Surface Conformance Workflow
 description: >-
   Hold the gitnexus doc-reference-surface run to two cases. The positive case names a file the index
   records, so the run names the graph covering the documentation tree and lands the files whose
   links resolve to it. The negative case names a path the index records no file at, so the run
-  names the same graph and lands an empty set — the fallback it promises for a file outside the
-  index, distinct from a file the graph holds and nothing links to.
+  names the same graph and lands an empty set — the fallback it promises where a target resolves to
+  no referencer. Which reading that empty set carries — a file outside the index, or a held file
+  nothing links to — is settled by the confirmation the run's note prescribes, not by either case.
 author: m2ux
 tags:
   - gitnexus

@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-graph-for-tree-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Graph For Tree Conformance Workflow
 description: >-
   Hold the gitnexus graph-for-tree run to two cases. The positive case binds a tree a graph covers,
@@ -18,10 +18,6 @@ techniques:
   activity:
     - variable-binding
 variables:
-  - name: repo_name
-    type: string
-    description: Name of the indexed graph every operation in the run addresses.
-    defaultValue: workflow-server
   - name: positive_tree_path
     type: string
     description: Filesystem path of a tree a graph covers, so the positive case names it at the first resolve.

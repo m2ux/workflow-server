@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.0
+  version: 3.5.0
 ---
 
 ## Capability
@@ -35,7 +35,8 @@ Whether the graph is behind the tree it was built from, derived from the resourc
 
 ### 3. Read an Error as No Graph
 
-- Read an error naming the repository, which arrives in place of a document and lists the graphs that exist, as no graph under this name: `{index_stale}` is true and `{stats}` is empty. Settle from that list whether the name is misspelt — read again under the spelling it gives — or unindexed, which needs a build.
+- Read an error arriving in place of a document as no graph under this name: `{index_stale}` is true and `{stats}` is empty. It names the storage path and the build that would write it, not the names that would have found one.
+   > Misspelt and unindexed both arrive this way; the graph inventory separates them.
 
 ### 4. Carry the Verdict Forward
 

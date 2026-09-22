@@ -1,12 +1,12 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-public-api-enum-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Public API Enumeration Conformance Workflow
 description: >-
   Hold the gitnexus public-api-enum run to two cases. The positive case takes the changed symbols
-  from a comparison against a fixed commit, so the visibility filter is composed over the same
-  populated set on every walk and the run lands
-  the exported symbols among them. The negative case takes them from the index, where nothing is
+  from a comparison against a fixed commit whose change set holds an exported function, so the
+  visibility filter is composed over the same populated set on every walk and the run lands the
+  exported symbols among them. The negative case takes them from the index, where nothing is
   staged, so the change set is empty, the filter names no symbol, and the run lands an empty set —
   the fallback it promises for a change with no symbols, distinct from changed symbols none of which
   is exported.
@@ -30,8 +30,8 @@ variables:
     defaultValue: compare
   - name: base_ref
     type: string
-    description: The commit the positive case measures against, fixed so the changed-symbol set the filter is composed over holds the same indexed functions on every walk.
-    defaultValue: 4cac20460c700a384830c7167d8aab346c9918e3
+    description: The commit the positive case measures against, chosen for a changed-symbol set holding an exported function — unexported symbols land the negative case's empty answer.
+    defaultValue: 45078151b1af39415ff5fb0986566a0629b83acc
   - name: negative_diff_scope
     type: string
     description: The index alone, where nothing is staged, so the negative case's changed-symbol set is empty.
