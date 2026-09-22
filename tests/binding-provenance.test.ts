@@ -22,9 +22,9 @@ function makeCtx(overrides?: Partial<ProvenanceContext>): ProvenanceContext {
   return {
     declaredVariables: new Set(['target_path', 'branch_name']),
     producers: [
-      { name: 'analysis_report', via: 'output', stepId: 'gather', activityId: 'alpha', ordinal: 0 },
-      { name: 'approved', via: 'checkpoint', stepId: 'confirm', activityId: 'alpha', ordinal: 1 },
-      { name: 'late_value', via: 'output', stepId: 'later-step', activityId: 'gamma', ordinal: 9 },
+      { name: 'analysis_report', via: 'output', stepId: 'gather', activityId: 'alpha', ordinal: 0, conditional: false },
+      { name: 'approved', via: 'checkpoint', stepId: 'confirm', activityId: 'alpha', ordinal: 1, conditional: false },
+      { name: 'late_value', via: 'output', stepId: 'later-step', activityId: 'gamma', ordinal: 9, conditional: false },
     ],
     position: 5,
     ...(overrides ?? {}),
@@ -54,6 +54,30 @@ describe('resolveInputSource', () => {
   it('resolves a checkpoint-set variable', () => {
     const r = resolveInputSource('approved', ctx, undefined, REQUIRED);
     expect(r.source).toBe("set by checkpoint 'confirm' (activity 'alpha')");
+    expect(r.kind).toBe('prior');
+  });
+
+  it('names the unguarded producer over a gated one that sits closer', () => {
+    const gatedLast = makeCtx({
+      producers: [
+        { name: 'repo_name', via: 'output', stepId: 'resolve', activityId: 'alpha', ordinal: 0, conditional: false },
+        { name: 'repo_name', via: 'output', stepId: 'name-built-graph', activityId: 'alpha', ordinal: 1, conditional: true },
+      ],
+    });
+    const r = resolveInputSource('repo_name', gatedLast, undefined, REQUIRED);
+    expect(r.source).toBe("output of step 'resolve' (activity 'alpha')");
+    expect(r.kind).toBe('prior');
+  });
+
+  it('names a gated producer as gated when it is the only one before the step', () => {
+    const onlyGated = makeCtx({
+      producers: [
+        { name: 'index_stats', via: 'output', stepId: 'build', activityId: 'alpha', ordinal: 0, conditional: true },
+      ],
+    });
+    const r = resolveInputSource('index_stats', onlyGated, undefined, REQUIRED);
+    expect(r.source).toContain("output of step 'build' (activity 'alpha')");
+    expect(r.source).toContain('behind a `when` gate');
     expect(r.kind).toBe('prior');
   });
 

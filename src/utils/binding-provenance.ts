@@ -23,7 +23,7 @@
  * scripts/check-binding-fidelity.ts so the server annotation and the guard cannot drift apart.
  */
 import type { Workflow } from '../schema/workflow.schema.js';
-import type { TechniqueBinding } from '../schema/activity.schema.js';
+import type { TechniqueBinding, Step } from '../schema/activity.schema.js';
 import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
 import type { Technique, InputItemDefinition, OutputItemDefinition } from '../schema/technique.schema.js';
 import { readTechnique } from '../loaders/technique-loader.js';
@@ -65,6 +65,12 @@ export interface ProducerSite {
   activityId: string;
   /** Document-order position across the whole workflow (activities in declared order, steps flattened). */
   ordinal: number;
+  /**
+   * Whether the step carries a `when` gate, so it produces this name on the runs its gate admits
+   * and not on the others. The server evaluates no gate — the executing agent does — so a
+   * conditional producer is reported as one rather than resolved either way.
+   */
+  conditional: boolean;
 }
 
 /** Everything the classifier needs, assembled once per get_technique call. */
@@ -152,13 +158,28 @@ export async function buildProducerIndex(args: {
   };
 
   for (const activity of workflow.activities ?? []) {
+    // A loop's gate governs every step of its body, and the flattened walk drops that ancestry, so
+    // collect it here: these are the steps a gate above them makes conditional.
+    const gatedAncestors = new Set<Step>();
+    const markGated = (steps: Step[] | undefined, gated: boolean): void => {
+      for (const s of steps ?? []) {
+        if (gated) gatedAncestors.add(s);
+        if (s.kind === 'loop') markGated(s.steps as Step[], gated || s.when !== undefined);
+      }
+    };
+    markGated(activity.steps, false);
+
     for (const step of flattenActivitySteps(activity)) {
       const at = ordinal++;
       const stepId = step.id ?? (step.kind === 'technique' ? techniqueName(step.technique) : undefined) ?? '?';
       if (step.id !== undefined) positions.set(positionKey(activity.id, step.id), at);
 
+      // A loop's own gate governs its body, so a producer inside one is conditional whether or not
+      // the body step carries a gate of its own.
+      const conditional = ('when' in step && step.when !== undefined) || gatedAncestors.has(step);
+
       const push = (name: string, via: ProducerSite['via'], origOutputId?: string): void => {
-        producers.push({ name, via, origOutputId, stepId, activityId: activity.id, ordinal: at });
+        producers.push({ name, via, origOutputId, stepId, activityId: activity.id, ordinal: at, conditional });
       };
 
       if (step.kind === 'technique') {
@@ -243,7 +264,8 @@ interface BagResolution { text: string; resolved: boolean; kind: SourceKind }
 
 function producerText(p: ProducerSite, later: boolean): string {
   const where = `'${p.stepId}' (activity '${p.activityId}')`;
-  const suffix = later ? ' — produced later in the workflow, not yet available' : '';
+  const gate = p.conditional ? ' — behind a `when` gate, so it produces this on the runs that gate admits' : '';
+  const suffix = later ? ' — produced later in the workflow, not yet available' : gate;
   if (p.via === 'output' || p.via === 'remap') {
     const remap = p.via === 'remap' ? `, remapped from output '${p.origOutputId}'` : '';
     return `output of step ${where}${remap}${suffix}`;
@@ -256,10 +278,16 @@ function producerText(p: ProducerSite, later: boolean): string {
  * Resolve a session-bag name under the name-match convention. Priority: the closest producer
  * before the current step, then a declared workflow variable, then a producer that only exists
  * later in the workflow, then a known ambient id.
+ *
+ * Among prior producers, the closest one that always runs outranks anything behind a `when` gate,
+ * however late the gated step sits. A gated step writes the name on the runs its gate admits, so on
+ * every other run the value a reader holds came from the unguarded step — and naming the gated one
+ * sends that reader to a step which did not execute.
  */
 function resolveBagName(name: string, ctx: ProvenanceContext): BagResolution {
   const sites = ctx.producers.filter((p) => p.name === name);
-  const prior = sites.filter((p) => p.ordinal < ctx.position).pop();
+  const before = sites.filter((p) => p.ordinal < ctx.position);
+  const prior = before.filter((p) => !p.conditional).pop() ?? before.pop();
   const later = sites.find((p) => p.ordinal >= ctx.position);
 
   if (prior) return { text: producerText(prior, false), resolved: true, kind: 'prior' };
