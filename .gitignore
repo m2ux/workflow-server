@@ -25,6 +25,9 @@ dist/
 
 # Agent skills, rules and settings — owned at workspace level, one home per machine
 .claude/
+.cursor
+.agents
+.codex
 
 # Environment
 .env

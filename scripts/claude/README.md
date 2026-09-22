@@ -1,9 +1,9 @@
 # Claude Code Baseline
 
 Portable Claude Code hooks and the `sbx` sandbox launcher used by the Cursor
-workspace deploy path. `deploy-cursor-workspace.sh` copies this tree into the
-kickoff workspace as `scripts/claude/` and writes workspace-local
-`.claude/settings.json` with absolute hook paths.
+workspace deploy path. `deploy-cursor-workspace.sh` links kickoff `scripts/claude`
+at this tree and writes workspace-local `.claude/settings.json` with absolute
+hook paths.
 
 ## Layout
 
