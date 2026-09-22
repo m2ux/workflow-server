@@ -37,7 +37,7 @@ import {
 } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { entryCondition, injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
-import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
+import { buildProducerIndex, declaredOutputsByStep, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
 import { renderMessage, unresolvedWarning } from '../utils/message-template.js';
 import {
   bothGates, gateAnswer, variablesWrittenIn,
@@ -83,8 +83,8 @@ import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
-  output: z.union([z.string(), z.record(z.unknown())]),
-})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). One output is a summary string; a step with more than one output is a JSON object keyed by output id. A loop body reports ONE ENTRY PER STEP PER ITERATION, under the step\'s declared id each time, so three passes of a two-step body are six entries in the order they ran — the manifest is what the activity did, and a body run three times reported once says it ran once. Omit entirely when no steps ran — not [].');
+  output: z.record(z.unknown()),
+})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). `output` is a JSON object keyed by the output id the bound operation declares, whatever the number of outputs — one output is `{"<its id>": <value>}`, not a bare string. A key the operation does not declare, and a declared id with no key, are each surfaced in _meta.validation. A loop body reports ONE ENTRY PER STEP PER ITERATION, under the step\'s declared id each time, so three passes of a two-step body are six entries in the order they ran — the manifest is what the activity did, and a body run three times reported once says it ran once. Omit entirely when no steps ran — not [].');
 
 const activityManifestSchema = z.array(z.object({
   activity_id: z.string(),
@@ -1281,7 +1281,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const view = sessionView(state, retiring ?? '');
       const manifestWarnings: (string | null)[] = [];
       if (step_manifest && retiring) {
-        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, retiring, state.checkpointResponses);
+        // The declarations are read from a producer scan of this workflow, which resolves every
+        // bound op. Built only where a manifest arrived to be measured against them, so a
+        // transition reporting nothing pays nothing.
+        let declaredOutputs: ReadonlyMap<string, ReadonlySet<string>> | undefined;
+        try {
+          const index = await buildProducerIndex({ workflow: result.value, workflowDir: config.workflowDir });
+          declaredOutputs = declaredOutputsByStep(index, retiring);
+        } catch (error) {
+          logWarn('Step-manifest output check skipped: producer scan failed', {
+            session_index, activity: retiring, error: (error as Error).message,
+          });
+        }
+        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, retiring, state.checkpointResponses, declaredOutputs);
         manifestWarnings.push(...mw);
         // Fidelity observability (#166 B8): advisory cross-check of the
         // manifest against the technique_fetched events get_technique

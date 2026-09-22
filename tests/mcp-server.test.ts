@@ -477,12 +477,12 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     // steps after it. Both exits are immediate, so either answer leaves those eleven unrun; the
     // ungated steps before the gate are what a worker that answers there has run.
     const RAN_BEFORE_ABORT = [
-      { step_id: 'announce-start', output: 'announced' },
-      { step_id: 'review-summary-approval', output: 'approved' },
-      { step_id: 'dco-sign-off-confirmation', output: 'confirmed' },
-      { step_id: 'private-remote-confirmation', output: 'confirmed' },
-      { step_id: 'push-confirmation', output: 'confirmed' },
-      { step_id: 'body-non-conformant', output: 'user aborted' },
+      { step_id: 'announce-start', output: { result: 'announced' } },
+      { step_id: 'review-summary-approval', output: { result: 'approved' } },
+      { step_id: 'dco-sign-off-confirmation', output: { result: 'confirmed' } },
+      { step_id: 'private-remote-confirmation', output: { result: 'confirmed' } },
+      { step_id: 'push-confirmation', output: { result: 'confirmed' } },
+      { step_id: 'body-non-conformant', output: { result: 'user aborted' } },
     ];
 
     it('states each option\'s consequence from the workflow graph before the user chooses', async () => {
@@ -848,6 +848,9 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       // Fetch each technique step's composed content first, as a real worker
       // does — a manifested technique step with no recorded fetch draws a
       // fidelity warning (#166 B8).
+      // A step reports under the output ids its operation declares, so the fetch that a real
+      // worker makes is also where the ids come from.
+      const declaredIds = new Map<string, string[]>();
       for (const s of actResponse.steps as Array<{ id: string; kind?: string }>) {
         if (s.kind !== 'technique') continue;
         const fetchRes = await client.callTool({
@@ -855,9 +858,17 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
           arguments: { session_index: tokenAfterStart, step_id: s.id },
         });
         expect(fetchRes.isError).toBeFalsy();
+        const fetched = parseToolResponse(fetchRes) as { outputs?: Array<{ id: string }> };
+        declaredIds.set(s.id, (fetched.outputs ?? []).map(o => o.id));
       }
 
-      const manifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
+      const manifest = actResponse.steps.map((s: { id: string }) => {
+        const ids = declaredIds.get(s.id);
+        const output = ids && ids.length > 0
+          ? Object.fromEntries(ids.map(id => [id, 'completed']))
+          : { result: 'completed' };
+        return { step_id: s.id, output };
+      });
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -984,7 +995,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
           session_index: tokenAfterAct,
           from_activity: 'start-work-package',
           activity_id: 'design-philosophy',
-          step_manifest: [{ step_id: 'resolve-target', output: 'done' }],
+          step_manifest: [{ step_id: 'resolve-target', output: { result: 'done' } }],
         },
       });
       const meta = result._meta as Record<string, unknown>;
@@ -997,7 +1008,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
       const tokenAfterAct = await resolveCheckpoints(client, nextToken, actResponse);
 
-      const reversedManifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'done' })).reverse();
+      const reversedManifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: { result: 'done' } })).reverse();
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -1024,7 +1035,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
           session_index: tokenAfterAct,
           from_activity: 'start-work-package',
           activity_id: 'design-philosophy',
-          step_manifest: [{ step_id: 'fake-step', output: 'done' }],
+          step_manifest: [{ step_id: 'fake-step', output: { result: 'done' } }],
         },
       });
       expect(result.isError).toBeFalsy();

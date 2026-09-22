@@ -306,8 +306,8 @@ describe('validation', () => {
 
     it('accounts for the steps the exit skipped instead of reporting them missing', () => {
       const manifest = [
-        { step_id: 'first-step', output: 'done' },
-        { step_id: 'keep-going', output: 'user aborted' },
+        { step_id: 'first-step', output: { result: 'done' } },
+        { step_id: 'keep-going', output: { result: 'user aborted' } },
       ];
       const workflow = makeAbortWorkflow();
 
@@ -318,7 +318,7 @@ describe('validation', () => {
 
     it('still requires the steps before the cut', () => {
       const warnings = validateStepManifest(
-        [{ step_id: 'keep-going', output: 'user aborted' }],
+        [{ step_id: 'keep-going', output: { result: 'user aborted' } }],
         makeAbortWorkflow(),
         'work',
         responded('keep-going', 'abort', 'aborted'),
@@ -368,9 +368,9 @@ describe('validation', () => {
     it('accepts a manifest that omits when-gated and condition-gated steps', () => {
       const warnings = validateStepManifest(
         [
-          { step_id: 'first-step', output: 'done' },
-          { step_id: 'item-loop', output: 'processed 3 items' },
-          { step_id: 'last-step', output: 'done' },
+          { step_id: 'first-step', output: { result: 'done' } },
+          { step_id: 'item-loop', output: { result: 'processed 3 items' } },
+          { step_id: 'last-step', output: { result: 'done' } },
         ],
         makeManifestWorkflow(),
         'work',
@@ -380,7 +380,7 @@ describe('validation', () => {
 
     it('still reports ungated steps as missing', () => {
       const warnings = validateStepManifest(
-        [{ step_id: 'first-step', output: 'done' }],
+        [{ step_id: 'first-step', output: { result: 'done' } }],
         makeManifestWorkflow(),
         'work',
       );
@@ -391,13 +391,13 @@ describe('validation', () => {
     it('accepts executed gated steps and loop-body step ids without warnings', () => {
       const warnings = validateStepManifest(
         [
-          { step_id: 'first-step', output: 'done' },
-          { step_id: 'gated-step', output: 'gate held, executed' },
-          { step_id: 'conditional-gate', output: 'user chose proceed' },
-          { step_id: 'item-loop', output: 'iterated' },
-          { step_id: 'process-item', output: 'item 1' },
-          { step_id: 'process-item', output: 'item 2' },
-          { step_id: 'last-step', output: 'done' },
+          { step_id: 'first-step', output: { result: 'done' } },
+          { step_id: 'gated-step', output: { result: 'gate held, executed' } },
+          { step_id: 'conditional-gate', output: { result: 'user chose proceed' } },
+          { step_id: 'item-loop', output: { result: 'iterated' } },
+          { step_id: 'process-item', output: { result: 'item 1' } },
+          { step_id: 'process-item', output: { result: 'item 2' } },
+          { step_id: 'last-step', output: { result: 'done' } },
         ],
         makeManifestWorkflow(),
         'work',
@@ -408,10 +408,10 @@ describe('validation', () => {
     it('reports unknown step ids as unexpected', () => {
       const warnings = validateStepManifest(
         [
-          { step_id: 'first-step', output: 'done' },
-          { step_id: 'invented-step', output: 'done' },
-          { step_id: 'item-loop', output: 'done' },
-          { step_id: 'last-step', output: 'done' },
+          { step_id: 'first-step', output: { result: 'done' } },
+          { step_id: 'invented-step', output: { result: 'done' } },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
         ],
         makeManifestWorkflow(),
         'work',
@@ -422,9 +422,9 @@ describe('validation', () => {
     it('does not report order mismatches when gated steps are skipped', () => {
       const warnings = validateStepManifest(
         [
-          { step_id: 'first-step', output: 'done' },
-          { step_id: 'item-loop', output: 'done' },
-          { step_id: 'last-step', output: 'done' },
+          { step_id: 'first-step', output: { result: 'done' } },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
         ],
         makeManifestWorkflow(),
         'work',
@@ -435,9 +435,9 @@ describe('validation', () => {
     it('reports out-of-declaration-order top-level steps', () => {
       const warnings = validateStepManifest(
         [
-          { step_id: 'last-step', output: 'done' },
-          { step_id: 'first-step', output: 'done' },
-          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: { result: 'done' } },
+          { step_id: 'first-step', output: { result: 'done' } },
+          { step_id: 'item-loop', output: { result: 'done' } },
         ],
         makeManifestWorkflow(),
         'work',
@@ -448,9 +448,9 @@ describe('validation', () => {
     it('warns on empty step output', () => {
       const warnings = validateStepManifest(
         [
-          { step_id: 'first-step', output: '  ' },
-          { step_id: 'item-loop', output: 'done' },
-          { step_id: 'last-step', output: 'done' },
+          { step_id: 'first-step', output: {} },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
         ],
         makeManifestWorkflow(),
         'work',
@@ -462,8 +462,8 @@ describe('validation', () => {
       const warnings = validateStepManifest(
         [
           { step_id: 'first-step', output: { change_report: 'two symbols', risk: 'low' } },
-          { step_id: 'item-loop', output: 'done' },
-          { step_id: 'last-step', output: 'done' },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
         ],
         makeManifestWorkflow(),
         'work',
@@ -475,26 +475,95 @@ describe('validation', () => {
       const warnings = validateStepManifest(
         [
           { step_id: 'first-step', output: {} },
-          { step_id: 'item-loop', output: 'done' },
-          { step_id: 'last-step', output: 'done' },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
         ],
         makeManifestWorkflow(),
         'work',
       );
       expect(warnings.some(w => w.includes("'first-step' has empty output"))).toBe(true);
     });
+
+  /**
+   * An output lands in the bag under the id it is reported by, so a key the operation does not
+   * declare puts a value under a name nothing reads, and a declared id with no key leaves a name a
+   * later step reads unbound. The server does not run the step, so both are warn-only.
+   */
+  describe('validateStepManifest: reported ids against declared ones', () => {
+    const declared = new Map([['first-step', new Set(['change_report'])]]);
+
+    it('passes a step reporting exactly what its operation declares', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: { change_report: 'two symbols' } },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
+        ],
+        makeManifestWorkflow(),
+        'work',
+        undefined,
+        declared,
+      );
+      expect(warnings.some(w => w.includes('first-step'))).toBe(false);
+    });
+
+    it('warns on a key the operation does not declare', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: { summary: 'two symbols' } },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
+        ],
+        makeManifestWorkflow(),
+        'work',
+        undefined,
+        declared,
+      );
+      expect(warnings.some(w => w.includes('reports [summary]') && w.includes('[change_report]'))).toBe(true);
+    });
+
+    /**
+     * A step whose bound op could not be read contributes no declarations, and measuring against
+     * declarations the server does not hold would name every unreadable reference as a worker's
+     * mistake.
+     */
+    it('measures no step the declaration map does not carry', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: { anything: 'at all' } },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
+        ],
+        makeManifestWorkflow(),
+        'work',
+        undefined,
+        new Map(),
+      );
+      expect(warnings.some(w => w.includes('does not declare'))).toBe(false);
+    });
+
+    it('measures nothing when no declarations are supplied at all', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: { anything: 'at all' } },
+          { step_id: 'item-loop', output: { result: 'done' } },
+          { step_id: 'last-step', output: { result: 'done' } },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('does not declare'))).toBe(false);
+    });
+  });
   });
 
   describe('isEmptyStepOutput: what counts as nothing reported', () => {
-    it('reads an absent value, a blank string and an empty map as nothing', () => {
+    it('reads an absent value and an empty map as nothing', () => {
       expect(isEmptyStepOutput(undefined)).toBe(true);
-      expect(isEmptyStepOutput('')).toBe(true);
-      expect(isEmptyStepOutput('   ')).toBe(true);
       expect(isEmptyStepOutput({})).toBe(true);
     });
 
-    it('reads a summary string and a populated map as something', () => {
-      expect(isEmptyStepOutput('done')).toBe(false);
+    it('reads a map carrying any key as something', () => {
       expect(isEmptyStepOutput({ change_report: 'two symbols' })).toBe(false);
     });
   });
@@ -542,11 +611,11 @@ describe('validation', () => {
       data: { ...data, agentId: 'worker' },
     });
     const fullManifest = [
-      { step_id: 'qualified-step', output: 'done' },
-      { step_id: 'bare-step', output: 'done' },
-      { step_id: 'mark-progress', output: 'done' },
-      { step_id: 'item-loop', output: 'iterated' },
-      { step_id: 'process-item', output: 'item 1' },
+      { step_id: 'qualified-step', output: { result: 'done' } },
+      { step_id: 'bare-step', output: { result: 'done' } },
+      { step_id: 'mark-progress', output: { result: 'done' } },
+      { step_id: 'item-loop', output: { result: 'iterated' } },
+      { step_id: 'process-item', output: { result: 'item 1' } },
     ];
 
     it('warns for every manifested technique step when no fetches were recorded', () => {
@@ -584,7 +653,7 @@ describe('validation', () => {
     });
 
     it('checks only manifested steps', () => {
-      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const manifest = [{ step_id: 'qualified-step', output: { result: 'done' } }];
       const history = [
         entered('work'),
         fetched('work', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
@@ -593,7 +662,7 @@ describe('validation', () => {
     });
 
     it('ignores fetches recorded for a different activity', () => {
-      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const manifest = [{ step_id: 'qualified-step', output: { result: 'done' } }];
       const history = [
         entered('work'),
         fetched('other-activity', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
@@ -604,7 +673,7 @@ describe('validation', () => {
     });
 
     it('scopes fetches to the current visit — a loop-back revisit needs fresh fetches', () => {
-      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const manifest = [{ step_id: 'qualified-step', output: { result: 'done' } }];
       const history = [
         entered('work'),
         fetched('work', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
@@ -639,7 +708,7 @@ describe('validation', () => {
     });
 
     it('PR366-TC-14: sibling agent fetch does not credit this agent (SC-11)', () => {
-      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const manifest = [{ step_id: 'qualified-step', output: { result: 'done' } }];
       const history = [
         entered('work'),
         {

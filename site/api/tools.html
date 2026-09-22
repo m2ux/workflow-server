@@ -290,7 +290,7 @@
           <thead><tr><th scope="col">In</th><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr class="param-row--nested"><td class="param-scope" rowspan="2"><code>step_manifest[]</code></td><td><code>step_id</code></td><td><code>string</code></td><td>yes</td><td>Step id from the activity definition (field name is <code>step_id</code>, not <code>id</code>).</td></tr>
-          <tr class="param-row--nested"><td><code>output</code></td><td><code>string | object</code></td><td>yes</td><td>Short summary of what the step produced. Use a JSON object when the step has multiple outputs.</td></tr>
+          <tr class="param-row--nested"><td><code>output</code></td><td><code>object</code></td><td>yes</td><td>Short summary of what the step produced. Use a JSON object when the step has multiple outputs.</td></tr>
           <tr class="param-row--nested param-row--group-start"><td class="param-scope" rowspan="3"><code>activity_manifest[]</code></td><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Completed activity id.</td></tr>
           <tr class="param-row--nested"><td><code>outcome</code></td><td><code>string</code></td><td>yes</td><td>Short outcome summary for that activity.</td></tr>
           <tr class="param-row--nested"><td><code>exit</code></td><td><code>string</code></td><td>no</td><td>Exit that activity took, if any.</td></tr>

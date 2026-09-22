@@ -50,10 +50,10 @@ export const OPTIONAL_INPUT_RE = /^[*_]{0,2}\(optional\b[^)]*\)/i;
  *  manifest encoding (#189 C4). The `source:` vocabulary is self-explanatory in situ and is
  *  documented on the tool description, so it is not restated here. */
 export const PROVENANCE_NOTE =
-  'Deliver each output by reporting it in your step-manifest `output`: one output as a short '
-  + 'summary string; a step with more than one output as a JSON object keyed by output id. An '
-  + 'output lands in the session bag under its declared id, unless it carries a `destination:` line '
-  + '— shown only on a remapped output — in which case it lands under that name.';
+  'Deliver each output by reporting it in your step-manifest `output`, a JSON object keyed by '
+  + 'output id — one output included, as `{"<its id>": <value>}`. An output lands in the session '
+  + 'bag under its declared id, unless it carries a `destination:` line — shown only on a remapped '
+  + 'output — in which case it lands under that name.';
 
 /** A place in the workflow that puts a value into the session bag under `name`. */
 export interface ProducerSite {
@@ -98,6 +98,32 @@ export interface ProducerIndex {
   positions: Map<string, number>;
   /** Distinct technique refs resolved to build this index — what a delivery reports as resolve work. */
   resolvedTechniques: number;
+}
+
+/**
+ * The output ids each step of `activityId` declares, keyed by step id.
+ *
+ * A producer site already carries the id the operation declares — under `name` where the output
+ * lands unremapped, and under `origOutputId` where a step binding remaps it — so the declarations
+ * are read off the index rather than resolved a second time. A step whose bound op could not be
+ * read contributes no entry, and a step with no entry is not measured.
+ *
+ * A step manifest reports by declared output id rather than by the bag name a remap lands under,
+ * which is why the remapped-from id is the one collected here.
+ */
+export function declaredOutputsByStep(index: ProducerIndex, activityId: string): Map<string, Set<string>> {
+  const byStep = new Map<string, Set<string>>();
+  for (const producer of index.producers) {
+    if (producer.activityId !== activityId) continue;
+    const outputId = producer.via === 'output' ? producer.name
+      : producer.via === 'remap' ? producer.origOutputId
+      : undefined;
+    if (outputId === undefined) continue;
+    const held = byStep.get(producer.stepId) ?? new Set<string>();
+    held.add(outputId);
+    byStep.set(producer.stepId, held);
+  }
+  return byStep;
 }
 
 /* ------------------------------- context assembly ------------------------------- */

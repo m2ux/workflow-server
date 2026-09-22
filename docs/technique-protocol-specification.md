@@ -414,13 +414,16 @@ references an entry by its id. Both levels are what a read addressing into a val
 ### 6.5 Step manifest
 
 A worker reports what a step produced through the `step_manifest` entry `output` field passed to
-`next_activity` (one entry per completed step, keyed by `step_id`). The encoding scales with the
-step's declared outputs:
+`next_activity` (one entry per completed step, keyed by `step_id`). `output` is a JSON object keyed
+by the output id the bound operation declares, whatever the number of outputs — a step with one
+output reports `{"needs_migration": false}`, a step with several reports
+`{"repo_root": "lib/x", "component_name": "x"}`. A step-bound technique's `provenance_note` cites
+this form at point of use.
 
-- **One output** — a short summary string (e.g. `"needs_migration=false"`).
-- **More than one output** — a JSON object keyed by output id (e.g.
-  `{"repo_root": "lib/x", "component_name": "x"}`). This is the canonical multi-output form; a
-  step-bound technique's `provenance_note` cites it at point of use.
+A key the operation does not declare lands a value under a name nothing downstream reads, and is
+surfaced in `_meta.validation`. The converse is not reported: an output can be optional, and a
+gated path or an error answer produces fewer values than the declarations allow, so a declared id
+with no key is as often the run as the report.
 
 An output lands in the session bag under its declared id, unless the step binding remaps it — in
 which case the step-bound `get_technique` delivery annotates that output with a `destination:` line
