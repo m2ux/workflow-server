@@ -8,6 +8,8 @@ The absent-layer case addresses `midnight-wallet`, a graph built without its pro
 
 Two empty lists therefore have three readings, and the flag and the change set together separate them: a partitioned change that opened and inherited nothing, an empty change set with the flag false, and an absent layer with the flag true. The three cases land one reading each, and the report names which each case was.
 
+The positive and negative cases land the same three values, no changed symbol in either carrying a flow. What separates them is the number of passes the loop ran, which the step manifest records and no output carries; a graph recording a taint finding is what would put the difference in the answers.
+
 What the walk evidences is the reference under three bindings: the same run resolves under `gitnexus::diff-taint-pass` three times, its steps — a detection, a per-symbol pass over an optional layer and an attribution — splice into each activity under that activity's prefix, and its three outputs land under the names the reference sites bind. The closing activity reports all three against the shared [case report](/conformance/resources/case-report.md) guide, reading both graph names from the standing values so its header names each graph the walk addressed and every row names the one that answered it.
 
 The walk lands no finding. The graph the positive case reads holds the taint layer and the symbols its comparison moves carry no flow, so the partition itself — a finding filed by where its hops land — goes unexercised, and a pass over these three cases evidences the flag and the change set rather than the sorting.

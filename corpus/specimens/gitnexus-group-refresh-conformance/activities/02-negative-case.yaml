@@ -1,5 +1,5 @@
 id: negative-case
-version: 1.0.0
+version: 1.1.0
 name: Negative Case
 description: Refer to the group refresh over a group with a member no graph covers.
 variables:
@@ -15,9 +15,6 @@ variables:
     - name: negative_member_rebuild_stats
       type: object
       description: The counts the graph of the member rebuilt last holds afterwards. Held here so a rebuild's answer does not land under the name a direct index read writes.
-    - name: repo_name
-      type: string
-      description: The graph the inventory read resolved, which this run takes no answer from.
     - name: negative_unrebuildable_members
       type: array
       description: The members this run leaves behind — stale, and with no graph to name the tree a rebuild would walk — naming the member no graph covers by construction.
@@ -35,7 +32,6 @@ steps:
       group_freshness_report: negative_group_freshness_report
       contract_registry_stats: negative_contract_registry_stats
       member_rebuild_stats: negative_member_rebuild_stats
-      repo_name: repo_name
       unrebuildable_members: negative_unrebuildable_members
       contract_report: negative_contract_report
 exits:

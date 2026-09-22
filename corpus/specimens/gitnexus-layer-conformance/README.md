@@ -8,6 +8,8 @@ Every step addresses a named graph. The graph name sits in the bag under the nam
 
 The two layer readers are bound twice, once per graph, so both sides of the layer are evidenced. Over `workflow-server`, indexed with its program-dependence layers, each lands what the layer records. Over `midnight-wallet`, built without them, each lands an empty answer carrying the note that names the build recording those layers. Two answers of one shape therefore have two readings, and the graph is what separates them.
 
+The two `explain` readings land the same empty finding list, the graph holding the layer recording none: only the note separates them. The `pdg-query` pair carries the measurement, its control-dependence edges standing against an empty answer.
+
 What the walk evidences is the binding and the layer's absence, not the paths or the findings. An operation declared in a library resolves under `gitnexus::<name>` from a step that names it, its inputs bind from this workflow's bag, and its declared output lands back in that bag — an answer stating the layer is absent landing exactly as findings would. The closing activity states, per operation and per graph, whether the answer is a measurement or the shape an absent layer leaves.
 
 | Activity | Binds |

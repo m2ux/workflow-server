@@ -6,6 +6,8 @@ The run is `gitnexus::change-risk-assessment`, which measures what reaches a sym
 
 The empty-diff case names `composeLoaded` again and takes the diff from the index, where nothing is staged, so the impact half measures a resolving symbol while the diff half lands no changed symbol. The verdict then rests on the symbol's rating alone and states that the diff rating is absent — the fallback the run promises for a diff that moved nothing, which the report names as such rather than as a change measured and found to touch nothing. What differs between this row and the negative one is which half fell away: the negative case lost the impact half to a symbol outside the index, and this case loses the diff half to a change set that is empty.
 
+The positive and empty-diff cases land the same verdict. The reconciliation resolves to the higher of the two inputs, and the symbol rates above the diff in both, so the case evidences the weighing only where a diff rates above the symbol it is weighed against.
+
 What the walk evidences is the reference under three bindings: the same run resolves under `gitnexus::change-risk-assessment` three times, its steps — three measurements chained into a judgement — splice into each activity under that activity's prefix, and its one output lands under the three names the reference sites bind. The closing activity reports all three against the shared [case report](/conformance/resources/case-report.md) guide.
 
 | Activity | Refers to | Binding |

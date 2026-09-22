@@ -1,5 +1,5 @@
 id: diff-coverage-map
-version: 1.0.0
+version: 1.1.0
 name: Diff Coverage Map
 description: >-
   Take the symbols a diff changed, read each one's callers out of the graph, and separate the
@@ -50,6 +50,7 @@ steps:
           inputs:
             name: "{changed_symbol.name}"
             file_path: "{changed_symbol.filePath}"
+            symbol_uid: "{changed_symbol.id}"
         actions:
           - action: set
             target: symbol_context_reports

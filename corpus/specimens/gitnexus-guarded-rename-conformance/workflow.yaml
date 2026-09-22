@@ -1,13 +1,14 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-guarded-rename-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Guarded Rename Conformance Workflow
 description: >-
   Hold the gitnexus guarded-rename run to three cases. The positive case binds a symbol the graph
   holds, so the preview lands an edit list, the gate accepts it, the rename writes the edits and the
-  diff is read back. The negative case binds a symbol the graph does not hold, so the preview lands
-  an empty edit list, the gate refuses it and the steps after the gate stay unreached — the fallback
-  the run promises for a symbol outside the graph, distinct from an accepted list that moved nothing.
+  diff is read back. The negative case binds a symbol the graph does not hold, so the preview
+  refuses with an error naming it, the gate refuses too and the steps after the gate stay unreached
+  — the fallback the run promises for a symbol outside the graph, distinct from an empty edit list,
+  which is a symbol that resolved and moved nothing.
   The ambiguous-name case binds a name two symbols carry with no file to separate them, so the
   preview answers with a status of ambiguous and ranked candidates, the gate refuses it and nothing
   is written.
@@ -40,7 +41,7 @@ variables:
     defaultValue: ""
   - name: negative_symbol_name
     type: string
-    description: A symbol the graph does not hold, so the negative case previews an empty edit list.
+    description: A symbol the graph does not hold, so the negative case's preview refuses with an error naming it.
     defaultValue: no_such_symbol_zz
   - name: negative_new_name
     type: string

@@ -1,5 +1,5 @@
 id: report-cases
-version: 1.0.0
+version: 1.1.0
 name: Report Cases
 description: State what the run landed under each binding.
 variables:
@@ -16,7 +16,6 @@ variables:
     - positive_group_name
     - positive_member_rebuild_stats
     - positive_unrebuildable_members
-    - repo_name
 required: true
 steps:
   - kind: technique

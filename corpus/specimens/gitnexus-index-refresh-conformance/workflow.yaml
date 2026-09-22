@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-index-refresh-conformance
-version: 1.3.0
+version: 1.4.0
 title: GitNexus Index Refresh Conformance Workflow
 description: >-
   Hold the gitnexus index-refresh run to three cases. The positive case names a tree whose graph is
@@ -23,11 +23,10 @@ techniques:
 variables:
   - name: repo_name
     type: string
-    description: Name of the indexed graph every operation in the run addresses, which the negative and unindexed-tree cases each rebind to the graph they read from.
-    defaultValue: workflow-server
+    description: Name of the indexed graph every operation in the run addresses, which each case binds to the graph it reads from.
   - name: positive_graph_name
     type: string
-    description: Name of the graph current with its tree, which `{repo_name}` carries through the positive case and which the report names as the source of its answers.
+    description: Name of the graph current with its tree, which the positive case binds `{repo_name}` to and which the report names as the source of its answers.
     defaultValue: workflow-server
   - name: positive_repo_path
     type: string

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 State what the group-refresh run landed under its positive and negative bindings.
 
 ## Inputs
-
-### repo_name
-
-Name of the indexed graph the run addressed.
 
 ### positive_group_name
 
@@ -79,7 +75,7 @@ Two rows for the one run: the bindings each case took, whether each materialised
 
 ### 1. Fill the Table
 
-- Fill the table from the two cases — the positive binding `{positive_group_name}` against `{positive_group_freshness_report}`, `{positive_member_rebuild_stats}`, `{positive_unrebuildable_members}`, `{positive_contract_registry_stats}` and `{positive_contract_report}`, the negative binding `{negative_group_name}` against `{negative_group_freshness_report}`, `{negative_member_rebuild_stats}`, `{negative_unrebuildable_members}`, `{negative_contract_registry_stats}` and `{negative_contract_report}`, with `{repo_name}` as the graph the header names — per [Template](/conformance/resources/case-report.md#template).
+- Fill the table from the two cases — the positive binding `{positive_group_name}` against `{positive_group_freshness_report}`, `{positive_member_rebuild_stats}`, `{positive_unrebuildable_members}`, `{positive_contract_registry_stats}` and `{positive_contract_report}`, the negative binding `{negative_group_name}` against `{negative_group_freshness_report}`, `{negative_member_rebuild_stats}`, `{negative_unrebuildable_members}`, `{negative_contract_registry_stats}` and `{negative_contract_report}` — per [Template](/conformance/resources/case-report.md#template).
    > A non-empty `{negative_unrebuildable_members}` naming the member with no graph is the fallback's mark, while `{negative_contract_registry_stats}` shows the registry rebuilt over the members the run could read; the row names that fallback rather than reading the member as current or the refresh as failed.
 
 ### 2. Write the Report
