@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -24,7 +24,7 @@ Name the fixture's graph is keyed under, which is the basename of that checkout 
 - Make `{stale_fixture_path}` a git checkout of its own: `git init` there, write a `.gitignore` holding `.gitnexus/`, write `src/greeting.js` carrying a `REVISION` string constant and a pair of functions one of which calls the other, write `src/main.js` whose entry function calls into `src/greeting.js`, and commit all of it.
    > A tree already standing at that path is the tree this phase wants, and its files and its history stay as they are.
    > The call between the two files is what gives the graph an execution flow, which is what a ranked search over this fixture answers from. One file whose functions call nothing leaves the graph holding symbols and no flow, so a case reading ranked flows off it lands empty for a reason that has nothing to do with the binding under test.
-   > `.gitnexus/` is the graph's own storage, written inside the checkout by the build below. Holding it out of the history keeps the commit the next phase makes down to the marker it rewrites.
+   > `.gitnexus/` is the graph's own storage, written inside the checkout by the build below. Holding it out of the history keeps the commit a later phase makes down to the one file it rewrites.
 
 ### 2. Build the Graph From the Tree as It Stands
 
@@ -35,8 +35,9 @@ Name the fixture's graph is keyed under, which is the basename of that checkout 
 ### 3. Move the Tree Past the Graph
 
 - Rewrite the `REVISION` constant in `src/greeting.js` to a string the file does not already carry, and commit that one file, so `HEAD` stands one commit past the commit the graph holds.
-   > A marker the file already carries leaves the working tree clean and the commit refused, and `HEAD` where the build left it. A value taken from the clock, or from the count of commits the tree holds, differs on every walk.
+   > A value the file already carries leaves the working tree clean and the commit refused, and `HEAD` where the build left it. A value taken from the clock, or from the count of commits the tree holds, differs on every walk.
    > Reading the distance back settles it: the graph inventory marks the fixture as behind by one commit, and the context resource for `{stale_fixture_graph_name}` carries the sentence naming that distance.
+- Remove `{stale_fixture_path}/.git/.workflow-gitnexus-refresh`, so no signal stands against the rebuild the case runs.
 
 ### 4. Land the Address
 
@@ -46,7 +47,11 @@ Name the fixture's graph is keyed under, which is the basename of that checkout 
 
 ### staleness-is-a-commit-the-graph-has-not-met
 
-A graph stands current when it holds the commit its tree's `HEAD` names, however recently it was built and however small the tree is. What puts it behind is a commit landing after the build. So the build comes first and the marker commit second, in that order, on every walk: the other order leaves the graph standing at `HEAD`, the gate reading false, and the case reporting a recovery nothing performed.
+A graph stands current when it holds the commit its tree's `HEAD` names, however recently it was built and however small the tree is. What puts it behind is a commit landing after the build. So the build comes first and the revision commit second, in that order, on every walk: the other order leaves the graph standing at `HEAD`, the gate reading false, and the case reporting a recovery nothing performed.
+
+### the-commit-unsettles-the-freshness-marker
+
+A build touches `{stale_fixture_path}/.git/.workflow-gitnexus-refresh` on success, and a build reaching a marker under 300 seconds old returns cached counts without walking the tree. The commit that moves the tree past its graph makes that marker's claim false, so the commit clears it: a stale signal left standing suppresses the rebuild the fixture exists to provoke, and the case lands a gate still reading true with nothing behind it.
 
 ### the-fixture-is-its-own-checkout
 
@@ -54,4 +59,4 @@ A graph stands current when it holds the commit its tree's `HEAD` names, however
 
 ### a-later-walk-meets-the-tree-already-there
 
-A walk after the first finds the checkout standing and its graph built at the commit that walk's rebuild reached. The preparation runs every phase regardless: the build brings the graph to the tree as it stands, and the marker commit moves the tree one past it, so the distance is one commit again and the gate reads true. The fixture is disposable at any moment — remove the directory and the next walk stands it up from the first phase.
+A walk after the first finds the checkout standing and its graph built at the commit that walk's rebuild reached. The preparation runs every phase regardless: the build brings the graph to the tree as it stands, and the revision commit moves the tree one past it, so the distance is one commit again and the gate reads true. The fixture is disposable at any moment — remove the directory and the next walk stands it up from the first phase.

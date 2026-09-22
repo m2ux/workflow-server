@@ -1,12 +1,15 @@
 id: unindexed-tree-case
-version: 1.1.0
+version: 1.2.0
 name: Unindexed Tree Case
-description: Refer to the index refresh over a tree that has no graph.
+description: Prepare a throwaway checkout carrying no graph, and refer to the index refresh over that tree.
 variables:
-  reads:
-    - unindexed_tree_graph_name
-    - unindexed_tree_repo_path
   writes:
+    - name: unindexed_tree_repo_path
+      type: string
+      description: Path of the throwaway checkout the case prepares, which carries source and no graph.
+    - name: unindexed_tree_graph_name
+      type: string
+      description: Name the build keys the prepared checkout's graph under, which the reads and the build address and the report names as the source of this case's answers.
     - name: repo_name
       type: string
       description: Name of the indexed graph every operation in the run addresses — the basename the build keys the tree's graph under, set before the first read so the error that read draws and the graph the build lands share one name.
@@ -18,6 +21,13 @@ variables:
       description: Whether the graph is behind the tree it was built from.
 required: true
 steps:
+  - kind: technique
+    id: prepare-fixture
+    technique:
+      name: conformance::prepare-unbuilt-fixture
+      outputs:
+        unbuilt_fixture_path: unindexed_tree_repo_path
+        unbuilt_fixture_graph_name: unindexed_tree_graph_name
   - kind: action
     id: address-graph
     actions:

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ The symbol, relationship and process counts a build reports for the graph it wro
 
 ### negative_tree_path
 
-Filesystem path of a tree no graph covers, so the negative case builds one and names it.
+Path of the throwaway checkout the negative case prepared, which carries source and no graph.
 
 ### negative_index_stats
 
@@ -48,6 +48,7 @@ Two rows for the one run: the bindings each case took, whether each materialised
 ### 1. Fill the Table
 
 - Fill the table from the two cases — the positive binding `{positive_tree_path}` against `{positive_index_stats}`, the negative binding `{negative_tree_path}` against `{negative_index_stats}`, with `{repo_name}` as the graph the header names — per [Template](/conformance/resources/case-report.md#template).
+   > `{negative_tree_path}` is the checkout the negative case prepared for this walk, so the path is what says which tree that row's counts describe.
    > A populated `{negative_index_stats}` is the mark of the fallback: the first resolve landed an empty name, the build wrote a graph over the tree, and the second resolve named it; the row names that sequence rather than reading the name as one the inventory held from the start.
 
 ### 2. Write the Report
