@@ -4,8 +4,8 @@ name: Measure Reach
 description: Refer to the run that measures a concern's reach across every member of a repository group.
 variables:
   reads:
-    - concern_file
     - concern_symbol
+    - concern_uid
     - group_name
     - home_repo
   writes:

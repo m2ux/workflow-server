@@ -79,19 +79,19 @@ The manifest file in the home tree that declares the name, or `registry` where a
 
 ### 2. Take the Radius Edge
 
-- Record the file `{impact_report}` names for its target beside the concern's own. The radius read resolves a name to the first symbol carrying it, so where the two files differ the radius is a namesake's — a wrapper or a mirror of the concern in another crate of the same tree — and its edge is taken with that file recorded.
+- Record the file `{impact_report}` names for its target beside the concern's own. Where the two differ the radius is a namesake's — a wrapper or a mirror of the concern in another crate of the same tree — and its edge is taken with that file recorded. A radius that came back as candidates rather than a report measured nothing, and adds no entry: the concern's identity reaches one symbol and the name alone reaches all of them.
 - Walk the depth-1 entries of `{impact_report}` and take each function or file name that sits in a file the home tree exports — an entry module, a public index, a file another package would import — as a `symbol` entry. A dependent buried in an internal file stays out: nothing outside the tree can name it.
 - A dependent that is a member of the concern itself — its id qualified by the concern's name, as `LedgerParameters.deserialize` is — adds no entry: a consumer reaches it through the concern's own name, and its bare name is one every tree defines somewhere, so a probe for it answers with a namesake.
 
 ### 3. Take the Served Routes
 
 - Take each route in `{route_inventory}` whose handler file is the concern's file or a depth-1 file as a `route` entry, named by its path.
-  > An empty inventory adds no entry and is recorded as such: the tree serves no route the parser recognised, which is a fact about the parser as much as the tree.
+  > An empty inventory adds no entry and is recorded as such: the tree serves no route the parser recognised, which is a fact about the parser as much as the tree. An inventory that came back an error is a third state and is recorded as unmeasured, naming the error: a read that failed and a tree that serves nothing both add no entry, and only the record separates them.
 
 ### 4. Take the Declared Tools
 
 - Take each tool in `{tool_inventory}` whose handler file is the concern's file or a depth-1 file as a `tool` entry, named by the tool name.
-  > An empty inventory adds no entry and is recorded as such, for the same reason.
+  > An empty inventory adds no entry and is recorded as such, and an errored one is recorded as unmeasured, for the same reasons.
 
 ### 5. Take the Published Packages
 

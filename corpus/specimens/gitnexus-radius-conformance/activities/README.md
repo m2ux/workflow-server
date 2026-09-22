@@ -8,7 +8,7 @@ The authoritative definition of each activity — its steps, technique bindings,
 
 ### 01. Measure Reach
 
-Refers to the gitnexus library's [`group-radius`](/gitnexus/routines/group-radius.yaml) run via [`01-measure-reach.yaml`](./01-measure-reach.yaml). The group, the concern, its defining file and its home graph travel under the run's own names, and the seven values the run produces are bound under their own names too. Leads to [Report Conformance](#02-report-conformance).
+Refers to the gitnexus library's [`group-radius`](/gitnexus/routines/group-radius.yaml) run via [`01-measure-reach.yaml`](./01-measure-reach.yaml). The group, the concern, its symbol identity and its home graph travel under the run's own names, and the seven values the run produces are bound under their own names too. Leads to [Report Conformance](#02-report-conformance).
 
 Definition: [`01-measure-reach.yaml`](./01-measure-reach.yaml)
 

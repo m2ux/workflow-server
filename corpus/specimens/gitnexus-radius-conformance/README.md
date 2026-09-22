@@ -6,7 +6,7 @@
 
 ## Overview
 
-This workflow exists to make the cross-graph reach run's answer observable. A session supplies it five things: a planning folder to write its report into, the name of a configured repository group, a symbol the concern was raised against, the file that defines it where the name alone is ambiguous, and the graph that symbol lives in; everything else the run produces.
+This workflow exists to make the cross-graph reach run's answer observable. A session supplies it five things: a planning folder to write its report into, the name of a configured repository group, a symbol the concern was raised against, the identity reaching it where the name alone is ambiguous, and the graph that symbol lives in; everything else the run produces.
 
 The concern is whatever the session names, so the evidence the walk leaves behind is about the shape of the answer — one entry per member, each naming its graph and the instruments that answered — and not about the code it was asked about.
 
