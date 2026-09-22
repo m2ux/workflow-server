@@ -1,9 +1,10 @@
 id: negative-case
-version: 1.0.0
+version: 1.1.0
 name: Negative Case
-description: Refer to the change risk assessment over a symbol no graph holds.
+description: Refer to the change risk assessment over a symbol no graph holds, with the diff taken from the same comparison the positive case takes.
 variables:
   reads:
+    - base_ref
     - negative_diff_scope
     - negative_target
   writes:
@@ -24,4 +25,4 @@ exits:
   - id: assessed
     isDefault: true
 outcome:
-  - The same run under a symbol the graph does not hold resolved nothing in its impact half, so the verdict rests on the diff's rating alone and says its caller set is hand-derived — the fallback the run promises rather than a failure
+  - The same run under a symbol the graph does not hold resolved nothing in its impact half, so the verdict rests on the rating of the comparison against `{base_ref}` alone and says its caller set is hand-derived — the fallback the run promises rather than a failure

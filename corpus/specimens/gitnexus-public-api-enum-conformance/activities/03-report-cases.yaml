@@ -1,9 +1,10 @@
 id: report-cases
-version: 1.0.0
+version: 1.1.0
 name: Report Cases
 description: State what the run landed under each binding.
 variables:
   reads:
+    - base_ref
     - repo_name
     - positive_diff_scope
     - positive_public_api_symbols

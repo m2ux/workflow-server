@@ -1,9 +1,10 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
-description: Refer to the sequence diagram source over the whole diff.
+description: Refer to the sequence diagram source over a comparison against a fixed commit.
 variables:
   reads:
+    - base_ref
     - positive_diff_scope
   writes:
     - name: positive_diagram_source
@@ -12,7 +13,7 @@ variables:
 required: true
 steps:
   - kind: routine
-    id: trace-whole-diff
+    id: trace-fixed-comparison
     routine: gitnexus::sequence-diagram-source
     with:
       diff_scope: "{positive_diff_scope}"
@@ -22,4 +23,4 @@ exits:
   - id: traced
     isDefault: true
 outcome:
-  - The run reached the flows the whole diff runs through and read the ordered step trace of each, landing the structure a sequence diagram is drawn from
+  - The run reached the flows the comparison against `{base_ref}` runs through and read the ordered step trace of each, landing the structure a sequence diagram is drawn from

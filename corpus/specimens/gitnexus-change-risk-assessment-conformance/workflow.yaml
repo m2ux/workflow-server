@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-change-risk-assessment-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Change Risk Assessment Conformance Workflow
 description: >-
   Hold the gitnexus change-risk-assessment run to three cases. The positive case names a symbol the
@@ -31,16 +31,20 @@ variables:
     defaultValue: composeLoaded
   - name: positive_diff_scope
     type: string
-    description: Which diff the positive case takes its changed-symbol set from.
-    defaultValue: all
+    description: A comparison against the commit `{base_ref}` names, from which the positive case takes its changed-symbol set.
+    defaultValue: compare
+  - name: base_ref
+    type: string
+    description: The commit the positive case measures against, fixed so the diff half of its verdict weighs the same changed symbols on every walk, and holding `{positive_target}` among them so the symbol the impact half measures is one the diff moved.
+    defaultValue: 4cac20460c700a384830c7167d8aab346c9918e3
   - name: negative_target
     type: string
     description: A symbol no graph holds, so the negative case's impact half resolves nothing.
     defaultValue: no_such_symbol_zz
   - name: negative_diff_scope
     type: string
-    description: Which diff the negative case takes its changed-symbol set from.
-    defaultValue: all
+    description: The same comparison the positive case takes, so the diff half measures one change under both bindings and the impact half is what differs between their rows.
+    defaultValue: compare
   - name: empty_diff_target
     type: string
     description: A symbol the graph holds, whose dependents the empty-diff case's measurement reaches while its diff half lands nothing.

@@ -1,9 +1,10 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
-description: Refer to the diff taint pass over the whole working tree.
+description: Refer to the diff taint pass over a comparison against a fixed commit.
 variables:
   reads:
+    - base_ref
     - positive_diff_scope
   writes:
     - name: positive_introduced_flows
@@ -18,7 +19,7 @@ variables:
 required: true
 steps:
   - kind: routine
-    id: pass-working-tree
+    id: pass-fixed-comparison
     routine: gitnexus::diff-taint-pass
     with:
       diff_scope: "{positive_diff_scope}"
@@ -30,4 +31,4 @@ exits:
   - id: passed
     isDefault: true
 outcome:
-  - The run took the working tree's changed symbols, read the taint findings anchored at each across its per-symbol pass, and landed its partition beside the flag saying whether the layer was there to read
+  - The run took the changed symbols of the comparison against `{base_ref}`, read the taint findings anchored at each across its per-symbol pass, and landed its partition beside the flag saying whether the layer was there to read

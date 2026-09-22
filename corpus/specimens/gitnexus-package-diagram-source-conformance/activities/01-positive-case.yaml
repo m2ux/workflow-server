@@ -1,9 +1,10 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
-description: Refer to the diagram sourcing over the whole diff.
+description: Refer to the diagram sourcing over a comparison against a fixed commit.
 variables:
   reads:
+    - base_ref
     - positive_diff_scope
   writes:
     - name: positive_diagram_source
@@ -12,7 +13,7 @@ variables:
 required: true
 steps:
   - kind: routine
-    id: source-from-whole-diff
+    id: source-from-fixed-comparison
     routine: gitnexus::package-diagram-source
     with:
       diff_scope: "{positive_diff_scope}"
@@ -22,4 +23,4 @@ exits:
   - id: sourced
     isDefault: true
 outcome:
-  - The run's change set named files and flows, areas were selected from them, and each selected area landed with its members
+  - The run's change set over the comparison against `{base_ref}` named files and flows, areas were selected from them, and each selected area landed with its members

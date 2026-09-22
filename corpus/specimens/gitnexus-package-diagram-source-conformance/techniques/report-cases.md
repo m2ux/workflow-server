@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -15,7 +15,11 @@ Name of the indexed graph the run addressed.
 
 ### positive_diff_scope
 
-The whole diff, so the positive case's change set names files and flows for the selection to work from.
+A comparison, so the positive case's change set names files and flows for the selection to work from.
+
+### base_ref
+
+The commit the positive case's comparison measured against.
 
 ### positive_diagram_source
 
@@ -47,7 +51,8 @@ Two rows for the one run: the bindings each case took, whether each materialised
 
 ### 1. Fill the Table
 
-- Fill the table from the two cases — the positive binding `{positive_diff_scope}` against `{positive_diagram_source}`, the negative binding `{negative_diff_scope}` against `{negative_diagram_source}` — per [Template](/conformance/resources/case-report.md#template), with `{repo_name}` in the header.
+- Fill the table from the two cases — the positive binding `{positive_diff_scope}` with `{base_ref}` against `{positive_diagram_source}`, the negative binding `{negative_diff_scope}` against `{negative_diagram_source}` — per [Template](/conformance/resources/case-report.md#template), with `{repo_name}` in the header.
+   > The positive row's inputs column carries `{base_ref}` beside `{positive_diff_scope}`, so a reader sees which commit the comparison that produced its areas measured against.
    > An empty `{negative_diagram_source}` is an empty change set selecting no area, so the member walk had nothing to iterate; the row names that fallback rather than reading it as areas the run reached and found bare.
 
 ### 2. Write the Report

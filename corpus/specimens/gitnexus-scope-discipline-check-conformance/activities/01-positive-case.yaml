@@ -1,9 +1,10 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
-description: Refer to the scope discipline check over the whole diff against an empty intended scope.
+description: Refer to the scope discipline check over a comparison against a fixed commit, held against an empty intended scope.
 variables:
   reads:
+    - base_ref
     - positive_diff_scope
     - positive_requirements_scope
   writes:
@@ -13,7 +14,7 @@ variables:
 required: true
 steps:
   - kind: routine
-    id: check-whole-diff
+    id: check-fixed-comparison
     routine: gitnexus::scope-discipline-check
     with:
       diff_scope: "{positive_diff_scope}"
@@ -24,4 +25,4 @@ exits:
   - id: checked
     isDefault: true
 outcome:
-  - The run took the flows the whole diff reaches, held each against an empty intended scope and landed every one as a finding with the changed symbol that reaches it
+  - The run took the flows the comparison against `{base_ref}` reaches, held each against an empty intended scope and landed every one as a finding with the changed symbol that reaches it

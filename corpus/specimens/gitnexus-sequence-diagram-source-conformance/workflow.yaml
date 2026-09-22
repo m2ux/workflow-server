@@ -1,10 +1,11 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-sequence-diagram-source-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Sequence Diagram Source Conformance Workflow
 description: >-
   Hold the gitnexus sequence-diagram-source run to two cases. The positive case bounds the diagram
-  to the whole diff, so the run reaches the execution flows the change runs through and reads the
+  to a comparison against a fixed commit, so the run reaches the same execution flows on every walk
+  and reads the
   ordered step trace of each. The negative case bounds it to the index, where nothing is staged, so
   the change set is empty, no flow is traced and the diagram source stays empty — the fallback the
   run promises for a diff touching nothing, distinct from a change whose flows the run traced.
@@ -24,8 +25,12 @@ variables:
     defaultValue: workflow-server
   - name: positive_diff_scope
     type: string
-    description: The whole diff, so the positive case reaches every flow the working tree and index change runs through.
-    defaultValue: all
+    description: A comparison against the commit `{base_ref}` names, so the positive case reaches every flow that comparison's changed symbols run through.
+    defaultValue: compare
+  - name: base_ref
+    type: string
+    description: The commit the positive case measures against, fixed so the flow cycle iterates the same execution flows on every walk.
+    defaultValue: 4cac20460c700a384830c7167d8aab346c9918e3
   - name: negative_diff_scope
     type: string
     description: The index alone, where nothing is staged, so the negative case's change set is empty.
