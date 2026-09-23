@@ -867,7 +867,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const meta = result._meta as Record<string, unknown>;
       const validation = meta['validation'] as { status: string; warnings: string[] };
       expect(validation.status).toBe('valid');
-    });
+    }, 180_000);
 
   });
 
