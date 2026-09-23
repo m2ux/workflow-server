@@ -21,6 +21,8 @@
 #   skills/<name>       → the template skill directory
 #   .cursor/skills      → ../skills
 #   .claude/skills      → ../skills
+#   .agents/            directory
+#   .agents/skills      → ../skills
 #   .mcp.json           canonical MCP document
 #   .cursor/mcp.json    → ../.mcp.json
 #   .codex/config.toml  generated from that MCP document and the always-apply rules
@@ -97,6 +99,7 @@ Shared content (one real file, tool folders are symlinks):
   .cursor/rules and .claude/rules link at rules/
   skills/<name> links at the template skill; extra skills already in skills/ stay
   .cursor/skills and .claude/skills link at skills/
+  .agents is a directory; .agents/skills links at skills/
   .mcp.json is the MCP document; .cursor/mcp.json links at it
   .codex/config.toml is generated from that document and the always-apply rules
 
@@ -348,6 +351,7 @@ elif [[ "$DRY_RUN" -eq 1 ]]; then
   log "symlink .cursor/rules and .claude/rules → ../rules"
   log "link template skills → ${DEST_DIR}/skills"
   log "symlink .cursor/skills and .claude/skills → ../skills"
+  log "symlink .agents/skills → ../skills"
 else
   mkdir -p "${DEST_DIR}/rules" "${DEST_DIR}/skills"
   rm -f \
@@ -422,6 +426,8 @@ PY
   ensure_symlink "${DEST_DIR}/.claude/rules" "../rules"
   ensure_symlink "${DEST_DIR}/.cursor/skills" "../skills"
   ensure_symlink "${DEST_DIR}/.claude/skills" "../skills"
+  mkdir -p "${DEST_DIR}/.agents"
+  ensure_symlink "${DEST_DIR}/.agents/skills" "../skills"
 fi
 
 # --- scripts and config — same paths as the template --------------------------
@@ -708,7 +714,7 @@ if os.path.isdir(rules_dir):
 
 parts = [
     "# Codex project config.",
-    "# Skills load from skills/.",
+    "# Skills load from .agents/skills.",
     "# MCP servers are the set written to mcp.json.",
     "# Always-apply rule text is included here.",
     "",
