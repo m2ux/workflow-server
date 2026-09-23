@@ -33,7 +33,7 @@ Absolute path to the persisted findings artifact when `{rule_hygiene_finding_cou
 
 ### 1. Load Catalog Section
 
-- Load [Rule Hygiene Anti-Patterns](/canon/resources/anti-patterns.md#rule-hygiene-anti-patterns) — sole source of Rule Hygiene detect, exclusion, and fix criteria
+- Load [Rule Hygiene](/canon/resources/anti-patterns.md#rule-hygiene) — sole source of Rule Hygiene detect, exclusion, and fix criteria
 - That section is this pass's whole scope: `no-rule-protocol-restatement` through `no-one-step-rules`, including `worker-rule-reach`
 - Do not restate, summarize, or number those entries here; follow each as written
 

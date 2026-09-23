@@ -10,120 +10,338 @@ metadata:
 
 ## Universal obligation
 
-Maps informal patterns (what agents tend to write as prose) to their formal schema equivalents. Every piece of prose must be checked against this inventory — if a formal construct exists, it must be used. Schema Expressiveness anti-patterns sharpen the same concern for catalog audits.
+Every piece of prose is checked against the entries below. Where a formal construct exists, the definition uses it. [Schema Expressiveness](./anti-patterns.md#schema-expressiveness) audits the same misses.
 
-**Authoritative schema sources:**
+This inventory names the construct. Field tables, required properties, and examples live in `schemas/README.md`. The URI `workflow-server://schemas` aggregates the JSON schemas. On-disk layout and technique inheritance live in [On-disk layout](/meta/resources/workflow-canonical.md#on-disk-layout).
 
-| Schema | Path | Documentation |
-|--------|------|---------------|
-| Workflow | `schemas/workflow.schema.json` | `schemas/README.md — Workflow Schema` |
-| Activity | `schemas/activity.schema.json` | `schemas/README.md — Activity Schema` |
-| Technique | `schemas/technique.schema.json` | `schemas/README.md — Technique Schema` |
-| Condition | `schemas/condition.schema.json` | `schemas/README.md — Condition Schema` |
-| Routine | `schemas/routine.schema.json` | `schemas/README.md — Routine Step` |
-| State | `schemas/state.schema.json` | `schemas/README.md — State Schema` |
-
-URI `workflow-server://schemas` aggregates the schemas listed above. Full ontology, field tables, examples, and validation guidance: `schemas/README.md`.
-
----
+- Workflow — `schemas/workflow.schema.json`, `schemas/README.md#workflow-schema`
+- Activity — `schemas/activity.schema.json`, `schemas/README.md#activity-schema`
+- Technique — `schemas/technique.schema.json`, `schemas/README.md#technique-schema`
+- Condition — `schemas/condition.schema.json`, `schemas/README.md#condition-schema`
+- Routine — `schemas/routine.schema.json`, `schemas/README.md#routine-routineschemajson`
 
 ## Activity-Level Constructs (activity.schema.json)
 
-An activity has a **single ordered `steps[]`** in which every step carries a required `kind` discriminator (`technique` / `action` / `checkpoint` / `loop` / `routine`). Checkpoints and loops are step KINDS at their concrete position in the sequence, not separate parallel arrays. `exits[]` is activity-level — the outcomes the orchestrator resolves at the activity boundary, not steps. An exit names the outcome and nothing else: which activity follows it is bound in the workflow's `graph`, so no activity file names another activity.
+Each entry maps a phrase onto an activity construct.
 
-| Informal Pattern | Formal Construct | Schema Fields |
-|---|---|---|
-| "A stage of the protocol" | **Activity** | Session-aware: binds techniques and routines, owns the conversation with the person at that stage ([Keep Session Interaction in Activities](./design-principles.md#24-keep-session-interaction-in-activities)). The durable graph those stages sit in is the workflow. |
-| "Do X, then do Y, then do Z" | **Technique step** | `steps[]` entry with `kind: technique`, `.id`, `.technique` (a `group::operation` string, or `{ name, inputs?, outputs? }` for input/output deviations), optional `.actions` — pure binding: no `description` / `name` / `note` (`procedure-in-protocol`, `bound-step-no-description`). One operation per step; split compounds (`no-monolith-masking-steps`). |
-| "Compose / chain techniques for work" / "Apply technique B from inside technique A" | **Activity technique steps** (not Protocol Apply) | Consecutive `steps[]` entries with `kind: technique`, each binding one op; activities (and checkpoints/loops) are the composition layer. Technique Protocols stay atomic produce paths over tools and resources — they do not `Apply` / `::`-invoke other techniques for work (`pass-orchestration-in-technique`, [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities)). |
-| "Compose / reuse activities" / "borrow an activity for a shared orchestration pattern" | **Activity→activity composition** | Borrow, bind, or include a standalone activity (or activity pattern) for reusable orchestration — allowed under [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities). Distinct from technique→technique Apply. Cross-workflow string refs (e.g. `work-package/08-implement.yaml`, `meta/patterns/02-supervisor.yaml`) resolve via the loader; meta pattern activities live under `meta/activities/patterns/` (subdirectory — not part of meta's lifecycle graph). |
-| "orchestrator-workers / fan-out then consolidate" (mid-phase) | **Graph, an instance fan** | Three graph nodes: the activity that emits the work units, the activity to run once per unit, and the one they converge on. Bind `orchestration-patterns::decompose-work-units` at the source — its id-and-brief records are a fan's collection by construction — and `gather-results` at the meeting point, with the fan's own collection as `expected_ids`. Work units inside ONE worker are the other grain: a `forEach` loop step over the same collection, which pays one delivery rather than N. |
-| "supervisor / fixed specialist lanes" | **Borrow supervisor pattern** | Borrow [`meta/patterns/02-supervisor.yaml`](/meta/activities/patterns/02-supervisor.yaml) or bind `orchestration-patterns::classify-request` → compose → dispatch → gather → synthesise; seed `{lane_roster}`. |
-| "plan-and-execute" | **Borrow plan-and-execute pattern** | Borrow [`meta/patterns/03-plan-and-execute.yaml`](/meta/activities/patterns/03-plan-and-execute.yaml) or bind `orchestration-patterns::plan-steps` / `execute-plan-step` / `replan` with forEach + while. |
-| "subagent-isolation / each unit its own commit" | **Graph, an instance fan whose activity binds `create-worktree`** | A worker shares its caller's workspace and a plain fan's branches share one working tree, so neither gives a unit a checkout of its own and the load refuses a fanned activity binding a git operation. Binding `git::create-worktree` as a step in that activity lifts the refusal, on the evidence of the wiring rather than on a declaration. Each instance materialises its own checkout, named from the instance index its delivery already carries, commits there, and reports the branch it made; the activity the fan converges on reconciles the branches the container names. Nothing goes on the routing or the collection — the arrangement belongs to the activity, and a work unit describes work. Session persistence stays at convergence, the record and planning folder being shared however the checkouts are split. Costs a full checkout per branch and makes the convergence responsible for a merge that can conflict, so reach for it only where per-unit attribution is the point. |
-| "lead-researcher / research rounds until the gaps close" | **Borrow lead-researcher pattern** | Borrow [`meta/patterns/05-lead-researcher.yaml`](/meta/activities/patterns/05-lead-researcher.yaml) or bind `plan-research-questions` → dispatch → synthesise → `assess-research-gaps` while loop. The loop is what the pattern is for; a fan opens once and cannot re-dispatch after a synthesis. A single round whose questions each deserve their own context is a graph instance fan over the questions. |
-| "agent as tool / opaque sub-agent call" | **Technique bind** | Bind `orchestration-patterns::invoke-as-tool` as a step; parent bag receives `{tool_result}` only. |
-| "hierarchical agents / manager tree" | **Child workflow composition** | `dispatch_child` / `workflow-engine::handle-sub-workflow` plus borrow a pattern activity inside the child. Harness depth-1 forbids nested Task orchestrators ([harness-compat::spawn-agent](/meta/techniques/harness-compat/spawn-agent.md)). |
-| "When entering/finishing, log/validate/set" | **Action step** | `steps[]` entry with `kind: action`, `.id`, `.actions[]` (`log`/`validate`/`set`/`emit`/`message`); a leading/trailing control step carries lifecycle actions at the start/end of the sequence (`actions[]` may be empty for a marker step). Pure action/control/checkpoint/loop steps need no `technique` binding. |
-| "Ask the user whether to proceed" | **Checkpoint step** | `steps[]` entry with `kind: checkpoint`, a stable `.id`, `.message` (statement of the subject — no `?` / confirm-imperative / next-step narration / caption of the prior technique; embed `[label]({path})` for any durable artifact — same link rule applies to action `message` fields; `link-named-artifacts`, `no-caption-only-message`), `.options[]` with `.effect` (the decision space), and `.defaultOption` plus `.autoAdvanceMs` together where the gate is soft (declare both or neither); its POSITION in `steps[]` is when it is presented (present-then-checkpoint: place it immediately after the step whose output it confirms). See `link-named-artifacts`, `no-next-step-narration`, `statement-not-question`, `no-caption-only-message`. |
-| "Repeat for each item" / "do until done" | **Loop step** | `steps[]` entry with `kind: loop`, `.id`, `.loopType` (forEach/while/doWhile), `.maxIterations`, optional `.name`; its body is a nested `.steps[]`. The iteration type picks the remaining fields: a `forEach` names the collection in `.over` and the item in `.variable`, and leaves the walk part way through on `.breakCondition`; a `while` or `doWhile` states in `.continueWhile` the test that decides whether the body runs again — `while` takes that test before the first pass, `doWhile` after it. Neither shape declares the other's fields (`check:loop-shape`). |
-| "Several activities carry the same run of steps" / "Several activities ask the user the same question" | **Routine step** | `steps[]` entry with `kind: routine`, `.id`, `.routine` (`[workflow::]name` — a bare name resolves against the referring activity's source workflow, then meta), `.with` (argument per declared input; braced is a reference to a host variable, bare is a literal, and an unbound input takes the host's value under its own id), `.outputs` (routine output id → the session variable it lands under). The run itself is declared at `routines/<name>.yaml`, under **Routine-Level Constructs**. Loop-body and per-site identifiers are prefixed from the step's `.id` at materialisation, so the same run at two sites yields two distinct identifier sets. |
-| "If X then do A, otherwise do B" (automated) / "Then move on to the next phase" | **Exit** (activity-level) + **graph binding** (workflow-level) | `exits[].id` (the outcome, in the activity's vocabulary), `.when` (the inline predicate selecting it), `.isDefault` (exactly one once there are two or more), `.immediate` (ends the sequence where a checkpoint option selects it); the destination is `graph.<activity>.<exit>` in the workflow file |
-| "This triggers the X workflow" | **Trigger** | `triggers.workflow`, `.description`, `.passContext` |
-| "This produces a report file" | **Technique output artifact** (activity `artifacts[]` is SERVER-COMPUTED, never authored) | declare a `#### artifact` on the producing technique's `## Outputs`, one filename per output — one path segment with an extension, `{token}` placeholders allowed, rejected at load otherwise (`artifact-name-is-filename`); `get_activity` synthesizes the activity's artifact contract from its steps' bound techniques (`no-hand-authored-artifacts`) |
-| "The expected result is X" | **Outcome** | `outcome[]` (string array) |
-| "Only run when X is true" | **Step gate** | `steps[].when` — an inline expression, and the one gate field every step kind carries. `steps[].condition` (references condition.schema.json) is the structured form, carried by the technique, action and checkpoint kinds; a loop step carries no `.condition`, so `.when` is its whole entry gate and `.continueWhile` decides each further pass. |
-| "The agent must follow these constraints" | **Activity rules** | `rules[]` (string array) |
-| "This activity needs X and produces Y" | **Variable contract** | `variables.reads[]` (names it consults: gates, routing, loop collections, prose, and bound-operation inputs it does not supply itself) and `variables.writes[]` (full declarations for what it puts in the bag — operation outputs, remap targets, checkpoint `setVariable` keys, `set` targets, loop items). The contract is what crosses the activity's boundary: a name a later activity, a transition, a gate or an artifact can reach. A value one step produces and another step of the same activity consumes reaches nothing outside, so it is the technique layer's own wiring and is declared nowhere here — `check:binding-fidelity` answers for those. A write declaration is contributed to every workflow whose graph includes the activity, so the declaration lives with the activity rather than with each including workflow; two declarations of one name that disagree on `type` or `defaultValue` fail the load (`check:activity-variables`). |
+### A stage of the protocol
+
+An activity: the stage that binds the techniques and routines and holds the conversation at that point in the session.
+
+[24. Keep Session Interaction in Activities](./design-principles.md#24-keep-session-interaction-in-activities). Fields: `schemas/README.md#activity`.
+
+### Do X, then do Y, then do Z
+
+A technique step: one `steps[]` entry with `kind: technique`, binding one operation.
+
+[AP-15. procedure-in-protocol](./anti-patterns.md#ap-15-procedure-in-protocol), [AP-17. bound-step-no-description](./anti-patterns.md#ap-17-bound-step-no-description), [AP-18. no-monolith-masking-steps](./anti-patterns.md#ap-18-no-monolith-masking-steps). Fields: `schemas/README.md#step`.
+
+### Compose or chain techniques for work
+
+Consecutive technique steps in the activity.
+
+[25. Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading), [AP-114. pass-orchestration-in-technique](./anti-patterns.md#ap-114-pass-orchestration-in-technique).
+
+### Compose or reuse activities
+
+A borrowed, bound, or included activity.
+
+[43. An Activity Reuses Activities](./design-principles.md#43-an-activity-reuses-activities).
+
+### Orchestrator-workers, fan-out then consolidate
+
+A graph instance fan: the activity that emits the work units, the activity that runs once per unit, and the activity they converge on.
+
+[40. Fan-Out Lives at the Layer That Runs the Work](./design-principles.md#40-fan-out-lives-at-the-layer-that-runs-the-work), [scatter-gather](/meta/techniques/scatter-gather.md). Fields: `schemas/README.md#workflow-root-entity`.
+
+### Supervisor, fixed specialist lanes
+
+The supervisor pattern activity.
+
+[02-supervisor.yaml](/meta/activities/patterns/02-supervisor.yaml), [43. An Activity Reuses Activities](./design-principles.md#43-an-activity-reuses-activities).
+
+### Plan and execute
+
+The plan-and-execute pattern activity.
+
+[03-plan-and-execute.yaml](/meta/activities/patterns/03-plan-and-execute.yaml), [43. An Activity Reuses Activities](./design-principles.md#43-an-activity-reuses-activities).
+
+### Subagent isolation, each unit its own commit
+
+A graph instance fan whose activity binds `git::create-worktree`.
+
+[a-branch-that-commits-takes-a-checkout-of-its-own](/meta/techniques/scatter-gather.md#a-branch-that-commits-takes-a-checkout-of-its-own).
+
+### Lead researcher, research rounds until the gaps close
+
+The lead-researcher pattern activity.
+
+[05-lead-researcher.yaml](/meta/activities/patterns/05-lead-researcher.yaml), [43. An Activity Reuses Activities](./design-principles.md#43-an-activity-reuses-activities).
+
+### Agent as tool, an opaque sub-agent call
+
+A technique step binding `orchestration-patterns::invoke-as-tool`.
+
+[invoke-as-tool](/meta/techniques/orchestration-patterns/invoke-as-tool.md).
+
+### Hierarchical agents, a manager tree
+
+A child workflow.
+
+[handle-sub-workflow](/meta/techniques/workflow-engine/handle-sub-workflow.md), [spawn-agent](/meta/techniques/harness-compat/spawn-agent.md).
+
+### When entering or finishing, log, validate, or set
+
+An action step in `steps[]`.
+
+Fields: `schemas/README.md#action`.
+
+### Ask the user whether to proceed
+
+A checkpoint step at that position in `steps[]`.
+
+[AP-09. checkpoint-not-prose](./anti-patterns.md#ap-09-checkpoint-not-prose), [AP-97. link-named-artifacts](./anti-patterns.md#ap-97-link-named-artifacts), [AP-98. no-next-step-narration](./anti-patterns.md#ap-98-no-next-step-narration), [AP-99. statement-not-question](./anti-patterns.md#ap-99-statement-not-question), [AP-101. no-caption-only-message](./anti-patterns.md#ap-101-no-caption-only-message). Fields: `schemas/README.md#checkpoint-steps`.
+
+### Repeat for each item, or do until done
+
+A loop step in `steps[]`.
+
+[AP-10. loop-not-prose](./anti-patterns.md#ap-10-loop-not-prose). Fields: `schemas/README.md#loop-steps`.
+
+### Several activities carry the same run of steps
+
+A routine step in `steps[]`.
+
+[42. A Routine Holds the Codified Path](./design-principles.md#42-a-routine-holds-the-codified-path). Fields: `schemas/README.md#routine-step`.
+
+### If X then do A, otherwise do B
+
+An activity exit, bound to its destination in the workflow `graph`.
+
+Fields: `schemas/README.md#exits-and-the-graph`.
+
+### This triggers the X workflow
+
+An activity trigger.
+
+Fields: `schemas/README.md#triggers`.
+
+### This produces a report file
+
+A `#### artifact` on the producing technique's output.
+
+[AP-12. artifact-not-buried](./anti-patterns.md#ap-12-artifact-not-buried), [AP-31. no-hand-authored-artifacts](./anti-patterns.md#ap-31-no-hand-authored-artifacts), [AP-130. artifact-name-is-filename](./anti-patterns.md#ap-130-artifact-name-is-filename).
+
+### The expected result is X
+
+An activity `outcome` entry.
+
+[AP-32. outcome-names-value](./anti-patterns.md#ap-32-outcome-names-value). Fields: `schemas/README.md#activity`.
+
+### Only run when X is true
+
+The step gate: `when` on every kind, and `condition` on a technique, action, or checkpoint step.
+
+[Condition Constructs](#condition-constructs-conditionschemajson). Fields: `schemas/README.md#step`.
+
+### The agent must follow these constraints
+
+An activity `rules` entry.
+
+[AP-69. no-activity-prose-rules](./anti-patterns.md#ap-69-no-activity-prose-rules), [9. Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
+
+### This activity needs X and produces Y
+
+The activity variable contract, `variables.reads` and `variables.writes`, for names that cross the activity boundary.
+
+Fields: `schemas/README.md#enforcement-model`.
 
 ## Workflow-Level Constructs (workflow.schema.json)
 
-| Informal Pattern | Formal Construct | Schema Fields |
-|---|---|---|
-| "The same procedure, performed across many sessions" | **Workflow** | The durable `graph` of activities, with `initialActivity`, rules and variables spanning the run. Fitting for a circumstance is this graph; the techniques and routines it binds stay portable. The pattern has two sources: repeated successful application in this practice, and an external source already held as procedure. The same ossification holds between a technique and a routine, at the grain of one application ([Workflows Ossify Patterns](./design-principles.md#1-workflows-ossify-patterns)). |
-| "The session starts with X" / "this policy holds all run" | **Workflow variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` — the file's own declarations are session facts and policy spanning activities. A variable an activity produces is declared by that activity under `variables.writes` and contributed here on inclusion, so a value one activity hands the next has one home. |
-| "Can run in fast or thorough mode" | **Activation variable + conditional flow** | one authoritative mode `variable` (enum or boolean) set by a detection step/checkpoint early in the workflow, with `exits[].when` and step `when`/`condition` gates that compare it directly — no parallel derived shadow flags |
-| "The agent must always do X" (session conduct) | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience). Runtime-relevant only — design-time authoring standards migrate to the workflow-design canon (`rule-audience-bucket`, `runtime-rules-only`). **Reach differs by construct**: `rules.activity` binds every activity the workflow includes, a technique group's container `## Rules` binds every operation in that group, and a Protocol bullet binds one operation. Collapsing a rule into a narrower home drops the audiences the wider one carried, so name what the surviving home covers ([Non-Destructive Updates](./design-principles.md#10-non-destructive-updates)). |
-| "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`). Activity-local `techniques[]` is STRATEGY only — per-step ops bind via `step.technique` (`techniques-list-disjoint`). |
-| "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |
-| "After X, go to Y" / "this activity can end the run" | **Graph** | `graph.<activity>.<exit>` naming where that outcome leads — one activity, or `__terminal__` to end the run; the two rows below cover a destination that opens several branches. Every exit of every activity the workflow includes is bound here, or the load fails; a workflow that borrows an activity binds that activity's exits itself, so two workflows can run one activity in different orders. |
-| "these activities read none of each other's output" | **Graph, a list destination** | `graph.<activity>.<exit>` naming two or more members. They run together, one worker to each, and the run continues from the single activity all of their own exits name — nothing declares that meeting point, and it is entered once, after the last branch returns. Each branch lands its outputs in a slot under a key derived from its activity id, so two branches cannot collide; the meeting point gathers the container. |
-| "do this once per work unit, each in its own worker" | **Graph, an instance fan** | `graph.<activity>.<exit>` naming `{ activity, over, variable }` — the activity, the collection to run it once per element of, and the name each instance reads its own element at. The graph carries the collection's NAME, so nothing about a work unit enters the routing file and the width is that collection's length when the fan is entered. Declare `maxInstances` only to sit tighter than the server's ceiling, with the reason stated. For the same work inside ONE worker, which pays one delivery rather than N, use a `forEach` loop step instead. |
+Each entry maps a phrase onto a workflow construct.
+
+### The same procedure, performed across many sessions
+
+A workflow: the durable graph of activities for that circumstance.
+
+[1. Workflows Ossify Patterns](./design-principles.md#1-workflows-ossify-patterns).
+
+### The session starts with X, or this policy holds all run
+
+A workflow variable.
+
+Fields: `schemas/README.md#variables`.
+
+### Can run in fast or thorough mode
+
+One mode variable, with exits and step gates that read it.
+
+[AP-14. mode-as-state](./anti-patterns.md#ap-14-mode-as-state), [AP-112. no-derived-state-shadow](./anti-patterns.md#ap-112-no-derived-state-shadow).
+
+### The agent must always do X
+
+A workflow rule in the audience bucket that hears it.
+
+[AP-37. rule-audience-bucket](./anti-patterns.md#ap-37-rule-audience-bucket), [AP-100. runtime-rules-only](./anti-patterns.md#ap-100-runtime-rules-only), [38. A Relocation Records the Outcome It Keeps](./design-principles.md#38-a-relocation-records-the-outcome-it-keeps).
+
+### Every activity needs this strategy technique
+
+A technique reference on `techniques.workflow` or `techniques.activity`.
+
+[AP-36. techniques-list-disjoint](./anti-patterns.md#ap-36-techniques-list-disjoint), [AP-39. hoist-universal-techniques](./anti-patterns.md#ap-39-hoist-universal-techniques). Fields: `schemas/README.md#techniquesreference`.
+
+### Start with the first activity
+
+The workflow's `initialActivity`.
+
+Fields: `schemas/README.md#workflow-root-entity`.
+
+### After X, go to Y, or this activity can end the run
+
+A `graph` binding from that activity's exit to one activity, or to `__terminal__`.
+
+Fields: `schemas/README.md#exits-and-the-graph`.
+
+### These activities read none of each other's output
+
+A `graph` destination naming two or more activities that run together.
+
+Fields: `schemas/README.md#workflow-root-entity`.
+
+### Do this once per work unit, each in its own worker
+
+A `graph` destination naming the activity, the collection, and the per-instance variable.
+
+[40. Fan-Out Lives at the Layer That Runs the Work](./design-principles.md#40-fan-out-lives-at-the-layer-that-runs-the-work), [scatter-gather](/meta/techniques/scatter-gather.md). Fields: `schemas/README.md#workflow-root-entity`.
 
 ## Routine-Level Constructs (routine.schema.json)
 
-A routine is a named run of steps at `routines/<name>.yaml`, beside `activities/`, with no position number because it holds no place in an order. Its `steps[]` are the ordinary kind-tagged list, so a run may hold technique, action, checkpoint, loop and routine steps. It declares no `exits`, no `outcome`, no `rules` and no activity-wide `techniques` — it takes no place in the graph and has no delivery of its own. The loader copies its steps into the referring activity, so every consumer downstream sees ordinary steps and none of them meets the construct.
+Each entry maps a phrase onto a routine. The file shape is `schemas/routine.schema.json`. Layout: [On-disk layout](/meta/resources/workflow-canonical.md#on-disk-layout).
 
-| Informal Pattern | Formal Construct | Schema Fields |
-|---|---|---|
-| "Accepted, codified, consistent application of a judgement" / "A sequence, an iteration, a branch, or a gate" | **Routine definition** | Sequence, iteration, branch, or gate at `routines/<name>.yaml`. The grain between technique and routine is the success of the application: the same work, where the application is still free-form, is a technique. That canon has two sources: repeated successful application in this practice, and an external source already held as procedure ([Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities), [Workflows Ossify Patterns](./design-principles.md#1-workflows-ossify-patterns)) |
-| "Name this run so two activities can share it" | **Routine definition** | `id` (kebab, carrying no `::`), `version`, `name`, `description`, and `steps[]`. The filename is the name every reference resolves |
-| "The run needs a value its host holds" | **Routine input** | `inputs[].id`, `.description`, optional `.default`. Every name the body reads that it does not write is declared here — a routine has no undeclared free variable, which is what makes the signature a contract and the body checkable with no host activity |
-| "The same run, differing only in the operation it binds" | **Operation-as-argument input** | `inputs[].kind: technique` — the parameter stands in a body step's technique position and the site's argument replaces it before the contract derives. That step declares its own `id`, since a derived one would name the parameter rather than the operation at every site |
-| "The run produces a value the host reads afterwards" | **Routine output** | `outputs[].id`, `.type`, `.description`, optional `.values` / `.optional` — a full variable declaration, carried onto the session variable the reference site binds it to. No `defaultValue`: a default is a seed at session creation, not a property of a run that writes mid-flight |
-| "A value the run's own steps pass between themselves" | **Routine internal** | `internals[].id`, `.description` — never a workflow variable, and materialised per host activity and per reference site |
+### Accepted, codified, consistent application of a judgement
+
+A routine.
+
+[42. A Routine Holds the Codified Path](./design-principles.md#42-a-routine-holds-the-codified-path), [1. Workflows Ossify Patterns](./design-principles.md#1-workflows-ossify-patterns).
+
+### Name this run so two activities can share it
+
+The routine file at `routines/<name>.yaml`. The filename is the name every reference resolves.
+
+Fields: `schemas/routine.schema.json`.
+
+### The run needs a value its host holds
+
+A routine input.
+
+Fields: `schemas/routine.schema.json`.
+
+### The same run, differing only in the operation it binds
+
+A routine input with `kind: technique`.
+
+Fields: `schemas/routine.schema.json`.
+
+### The run produces a value the host reads afterwards
+
+A routine output.
+
+Fields: `schemas/routine.schema.json`.
+
+### A value the run's own steps pass between themselves
+
+A routine internal.
+
+Fields: `schemas/routine.schema.json`.
 
 ## Technique-Level Constructs (technique.schema.json)
 
-| Informal Pattern | Formal Construct | Schema Fields |
-|---|---|---|
-| "The practitioner's judgement on live feedback" | **Technique** | The Protocol: how to orient the tool given this anatomy, how to read what came back, how to recover when it is not what was expected. What no loop, branch, or gate can hold ([Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities)). When that judgement has an endpoint or a step kind, it lives there. Where the application is accepted, codified, and consistent, the same work is a routine. |
-| "A tool with a large call space" | **Technique** | One produce path through that space. The tool's schema owns the rest (`tool-contract-restated-in-protocol`). A catalogue of flags is not a technique. |
-| "First do A, then do B" (procedure) | **Protocol** | `protocol[]` — ordered blocks `{ title?, steps[] }`, in authored order; a block belongs to the technique that authors it and a title carries no composition meaning |
-| "Shared I/O/rules for every technique in the folder" | **Container TECHNIQUE.md** | Workflow-root or group `TECHNIQUE.md` — loader merges Inputs/Outputs/Rules into descendants. A container contributes a contract, never a procedure: Protocol does not inherit, and shared steps belong to the activity or routine binding both operations. Capability names contribution only (`platform-semantics-in-capability`); set membership is the folder contents |
-| "Needs a checklist path as input" | **Inputs** | `inputs[].id`, `.description`, `.required`, `.default`, `.components` (composite members as `####` sub-sections) |
-| "Produces an audit report" | **Output** | `outputs[].id`, `.description`, `.components` (`####` sub-sections), `.artifact.name` (`#### artifact`) |
-| "Never modify the schema" | **Rules** | `rules.{rule-name}` — flat name-value pairs |
-| "If X fails, recover by Y" (failure handling) | **Protocol step** | written inline in the protocol step that gives rise to the failure |
-| "How to interpret a gate, or resume after a restart" | **Protocol step or Rules** | the technique contract is closed over `id`, `version`, `capability`, `rules`, `inputs`, `protocol` and `outputs` — a duty about interpretation or resumption is a Protocol phase where it is work, and a `## Rules` entry where it is a standing invariant |
+Each entry maps a phrase onto a technique.
+
+### The practitioner's judgement on live feedback
+
+A technique.
+
+[26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading), [42. A Routine Holds the Codified Path](./design-principles.md#42-a-routine-holds-the-codified-path).
+
+### A tool with a large call space
+
+A technique: one produce path through that space.
+
+[26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading), [AP-135. tool-contract-restated-in-protocol](./anti-patterns.md#ap-135-tool-contract-restated-in-protocol).
+
+### First do A, then do B
+
+The technique Protocol.
+
+[Protocol](/meta/resources/workflow-canonical.md#protocol), [15. Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome), [AP-108. numbered-protocol-phases](./anti-patterns.md#ap-108-numbered-protocol-phases).
+
+### Shared inputs, outputs, or rules for every technique in the folder
+
+The container `TECHNIQUE.md` contract.
+
+[Base-contract inheritance](/meta/resources/workflow-canonical.md#base-contract-inheritance), [27. State Contract Contribution](./design-principles.md#27-state-contract-contribution), [AP-115. platform-semantics-in-capability](./anti-patterns.md#ap-115-platform-semantics-in-capability).
+
+### Needs a checklist path as input
+
+A technique input.
+
+[AP-16. technique-inputs-declared](./anti-patterns.md#ap-16-technique-inputs-declared). Fields: `schemas/README.md#technique-schema`.
+
+### Produces an audit report
+
+A technique output.
+
+[AP-109. technique-outputs-declared](./anti-patterns.md#ap-109-technique-outputs-declared), [AP-12. artifact-not-buried](./anti-patterns.md#ap-12-artifact-not-buried). Fields: `schemas/README.md#technique-schema`.
+
+### Never modify the schema
+
+A technique rule.
+
+[45. A Rule States One Invariant](./design-principles.md#45-a-rule-states-one-invariant), [AP-152. one-invariant-per-rule](./anti-patterns.md#ap-152-one-invariant-per-rule).
+
+### If X fails, recover by Y
+
+A step of the Protocol phase that gives rise to the failure.
+
+[Sections](/meta/resources/workflow-canonical.md#sections).
+
+### How to interpret a gate, or resume after a restart
+
+A Protocol phase when the duty is work, and a `## Rules` entry when it is a standing invariant.
+
+[AP-121. rule-as-protocol-step](./anti-patterns.md#ap-121-rule-as-protocol-step), [26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading).
 
 ## Condition Constructs (condition.schema.json)
 
-| Informal Pattern | Formal Construct | Schema Fields |
-|---|---|---|
-| "If status equals approved" | **Simple** | `type: "simple"`, `variable`, `operator`, `value` |
-| "If the variable is defined" | **Existence** | `operator: "exists"` or `"notExists"` |
-| "If A and B are both true" | **AND** | `type: "and"`, `conditions[]` |
-| "If either A or B is true" | **OR** | `type: "or"`, `conditions[]` |
-| "If X is not the case" | **NOT** | `type: "not"`, `condition` |
+Each entry maps a phrase onto a condition.
 
-## Checkpoint Effects
+### If status equals approved
 
-Always wire checkpoint option consequences to formal effects:
+A simple condition.
 
-| Effect | Purpose | Example |
-|---|---|---|
-| `setVariable` | Set variables based on user choice | `{ "setVariable": { "approved": true } }` |
-| `exit` | Select one of the activity's declared outcomes; where it leads is the workflow's `graph` to say, and `present_checkpoint` states that consequence before the user chooses | `{ "exit": "rejected" }` |
+Fields: `schemas/README.md#simple-conditions`.
 
-## Action Types
+### If the variable is defined
 
-Step `actions[]` carry lifecycle behaviour (entry/exit logic lives on a leading/trailing control step in `steps[]`, not in a separate hook):
+A simple condition with operator `exists` or `notExists`.
 
-| Action | Purpose |
-|---|---|
-| `log` | Record to execution history |
-| `validate` | Check pre-condition, fail if not met |
-| `set` | Assign a variable value |
-| `emit` | Signal an event |
-| `message` | Display markdown content to user |
+Fields: `schemas/README.md#simple-conditions`.
+
+### If A and B are both true
+
+A condition of type `and`.
+
+Fields: `schemas/README.md#composite-conditions`.
+
+### If either A or B is true
+
+A condition of type `or`.
+
+Fields: `schemas/README.md#composite-conditions`.
+
+### If X is not the case
+
+A condition of type `not`.
+
+Fields: `schemas/README.md#composite-conditions`.

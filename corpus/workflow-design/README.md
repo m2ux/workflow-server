@@ -150,7 +150,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | Order | Resource | Purpose |
 |---|----------|---------|
 | 00 | [Design Principles](/canon/resources/design-principles.md) | Positive framing principles (stance only) |
-| 01 | [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
+| 01 | [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md) | An informal phrase mapped to the formal construct |
 | 02 | [Anti-Patterns](/canon/resources/anti-patterns.md) | Prohibited-pattern catalog (AP-XX + name) by category |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update change-request category vocabulary |
 | 04 | [Compliance Report](./resources/compliance-report.md) | Creation guide: compliance / post-update review |
@@ -234,7 +234,7 @@ corpus/workflow-design/
 └── resources/
     ├── README.md                         # Resource index + artifact→guide map
     ├── design-principles.md              # Positive framing principles
-    ├── schema-construct-inventory.md     # Construct mapping tables
+    ├── schema-construct-inventory.md     # Informal phrase to formal construct
     ├── anti-patterns.md                  # anti-pattern catalog (AP-XX + names)
     ├── update-mode-guide.md              # Update mode guide
     ├── compliance-report.md              # Creation guide: compliance / post-update

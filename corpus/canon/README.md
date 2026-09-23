@@ -6,5 +6,5 @@ The criteria a workflow definition is authored toward and audited against. The c
 |------|-------|
 | `design-principles.md` | The *prefer / before / only after* stance an author writes toward. Broader than any one defect, and carrying no Detect triad |
 | `anti-patterns.md` | Specific smells, each as **Detect / Do not flag / Fix**, grouped into families by `##` section |
-| `schema-construct-inventory.md` | Mapping tables from an informal prose pattern to the formal construct carrying it, one table per schema |
+| `schema-construct-inventory.md` | An informal prose pattern mapped to the formal construct carrying it, one section per schema |
 | `convention-conformance.md` | Reference conventions — naming, field order, structure — against sibling workflows |
