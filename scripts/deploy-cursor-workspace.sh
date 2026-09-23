@@ -99,8 +99,13 @@ Claude baseline (workspace-local only):
   writes .codex/config.toml from the mcp.json servers and the always-apply rules
 
 Written on every deploy, from the template:
-  AGENTS.md      canonical workspace instructions
-  CLAUDE.md      symlink → AGENTS.md
+  <workspace>/AGENTS.md      canonical workspace instructions
+  <workspace>/CLAUDE.md      symlink → AGENTS.md
+
+When the project checkout exists, deploy also links:
+  <checkout>/AGENTS.md       → .cursor/AGENTS.md
+  <checkout>/CLAUDE.md       → .claude/CLAUDE.md
+Both checkout paths are gitignored.
 
 PROJECT.md holds the checkout notes for this workspace. Deploy leaves it in place.
 
@@ -730,6 +735,18 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
 else
   cp -a "$AGENTS_SRC" "$AGENTS_MD"
   ln -sfn AGENTS.md "$CLAUDE_MD"
+fi
+
+# The checkout copies are links into the IDE dirs. Those dirs link at this
+# workspace, and git ignores both checkout paths.
+if [[ -d "$PROJECT_DIR" ]]; then
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    log "link ${PROJECT_DIR}/AGENTS.md → .cursor/AGENTS.md"
+    log "link ${PROJECT_DIR}/CLAUDE.md → .claude/CLAUDE.md"
+  else
+    ln -sfn .cursor/AGENTS.md "${PROJECT_DIR}/AGENTS.md"
+    ln -sfn .claude/CLAUDE.md "${PROJECT_DIR}/CLAUDE.md"
+  fi
 fi
 
 # --- ensure checkout mount points --------------------------------------------
