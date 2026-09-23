@@ -36,7 +36,7 @@ Why the tree was left as it stood. Null where the reset ran.
 
 ### 2. Discard the Tracked Modifications
 
-- `git -C {repo_path} checkout -- .`, which returns every tracked path to the commit `HEAD` stands at.
+- `git -C {repo_path} restore --source=HEAD --staged --worktree .`, which returns every tracked path in the index and the worktree to the commit `HEAD` stands at. A path staged as an addition is removed; a path whose index entry differs from `HEAD` is returned to that commit.
 
 ### 3. Return the Nested Checkouts
 
