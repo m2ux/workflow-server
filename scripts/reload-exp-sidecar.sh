@@ -56,13 +56,11 @@ Options:
                            container records, running or exited, else this
                            repo root. DIR is a worktree for a branch that is
                            not this checkout. Host compile and image rebuilds
-                           use this tree. The launcher is that checkout's
-                           start.sh when it has one, otherwise the installed
-                           copy, otherwise the copy on the docker branch.
-                           --no-build uses the installed copy first. When the
-                           chosen start.sh does not accept --dist-dir, the
-                           start.sh on the docker branch is used so a host
-                           compile still binds.
+                           use this tree. The launcher is the installed
+                           copy, or the copy on the docker branch when the
+                           install directory has none. When the chosen start.sh
+                           does not accept --dist-dir, the start.sh on the
+                           docker branch is used so a host compile still binds.
   --host-port=N            Host port. Defaults to the binding the named
                            container records, running or exited. Required when
                            none exists.
@@ -270,8 +268,8 @@ pick_start_for_dist_bind() {
   BIND_DIST=""
 }
 
-# The runner scripts live on the docker branch. An engine checkout or an install
-# dir that already has an executable copy keeps it.
+# The runner scripts live on the docker branch. An install directory that
+# already has an executable copy keeps it.
 materialize_runner() {
   local name="$1" dest
   [[ -n "$RUNNER_DIR" ]] || RUNNER_DIR="$(mktemp -d)"
@@ -289,17 +287,13 @@ materialize_runner() {
 }
 
 choose_runner() {
-  local override="$1" preferred="$2" fallback="$3" name="$4"
+  local override="$1" installed="$2" name="$3"
   if [[ -n "$override" ]]; then
     printf '%s\n' "$override"
     return
   fi
-  if [[ -x "$preferred" ]]; then
-    printf '%s\n' "$preferred"
-    return
-  fi
-  if [[ -x "$fallback" ]]; then
-    printf '%s\n' "$fallback"
+  if [[ -x "$installed" ]]; then
+    printf '%s\n' "$installed"
     return
   fi
   materialize_runner "$name"
@@ -441,18 +435,12 @@ if [[ -n "$PROJECTS" ]]; then
   PROJECTS="$(cd "$PROJECTS" && pwd)"
 fi
 
-# The launcher is the engine checkout's start.sh and stop.sh when those files are
-# executable. A --no-build run prefers the installed copies. When neither place has
-# a copy, the scripts on the docker branch are used. WORKFLOW_SERVER_START and
-# WORKFLOW_SERVER_STOP win. The launcher reads the install env, so the operator's
-# paths and signing key follow it.
-if [[ "$BUILD" -eq 1 ]]; then
-  START="$(choose_runner "${WORKFLOW_SERVER_START:-}" "${ENGINE}/scripts/start.sh" "${INSTALL_DIR}/start.sh" start.sh)"
-  STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" "${ENGINE}/scripts/stop.sh" "${INSTALL_DIR}/stop.sh" stop.sh)"
-else
-  START="$(choose_runner "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" "${ENGINE}/scripts/start.sh" start.sh)"
-  STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${ENGINE}/scripts/stop.sh" stop.sh)"
-fi
+# The launcher is the installed start.sh and stop.sh. When the install directory
+# has no copy, the scripts on the docker branch are used. WORKFLOW_SERVER_START
+# and WORKFLOW_SERVER_STOP win. The launcher reads the install env, so the
+# operator's paths and signing key follow it.
+START="$(choose_runner "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" start.sh)"
+STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" stop.sh)"
 
 [[ -x "$START" ]] || die "start.sh not found or not executable: ${START}"
 [[ -x "$STOP" ]] || die "stop.sh not found or not executable: ${STOP}"
