@@ -8,7 +8,7 @@
 #   ~/.local/share/workflow-server/update-workflows.sh
 #
 # Or curl once:
-#   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/update-workflows.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/docker/scripts/update-workflows.sh | bash
 #
 # Needs: git
 set -euo pipefail
@@ -196,7 +196,7 @@ WORKFLOWS_DIR=$(abs_path "$WORKFLOWS_DIR")
 
 [[ -d "$WORKFLOWS_DIR" ]] || die "workflows dir not found: ${WORKFLOWS_DIR}
   Run install first:
-    curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash"
+    curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/docker/scripts/install.sh | bash"
 
 is_git_checkout "$WORKFLOWS_DIR" || die "not a git checkout: ${WORKFLOWS_DIR}"
 

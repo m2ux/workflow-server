@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # workflow-server — install local layout (does not start the container)
 #
-#   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/docker/scripts/install.sh | bash
 #
 #   bash <(curl -fsSL …/install.sh) --worktree-root=~/projects/work
 #
@@ -312,9 +312,9 @@ if [[ -z "$HOST_WORKFLOWS_DIR" ]]; then
 fi
 HOST_WORKFLOWS_DIR=$(abs_path "$HOST_WORKFLOWS_DIR")
 WORKFLOWS_DIR="$HOST_WORKFLOWS_DIR"
-START_URL="${RAW_BASE}/${REF}/scripts/start.sh"
-STOP_URL="${RAW_BASE}/${REF}/scripts/stop.sh"
-UPDATE_URL="${RAW_BASE}/${REF}/scripts/update-workflows.sh"
+START_URL="${RAW_BASE}/docker/scripts/start.sh"
+STOP_URL="${RAW_BASE}/docker/scripts/stop.sh"
+UPDATE_URL="${RAW_BASE}/docker/scripts/update-workflows.sh"
 DEPLOY_CURSOR_URL="${RAW_BASE}/${REF}/scripts/deploy-cursor-workspace.sh"
 
 echo "Install dir: ${INSTALL_DIR}"
