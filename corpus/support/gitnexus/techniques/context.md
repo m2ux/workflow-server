@@ -89,7 +89,7 @@ What the walk dropped, each a count of missing things: `scopeExtractionFiles` fi
 
 #### staleness
 
-The freshness reading `index-freshness-first` describes, carried only where the graph trails its tree.
+The freshness reading `an-absent-staleness-mapping-is-the-verdict` describes, carried only where the graph trails its tree.
 
 ## Protocol
 
