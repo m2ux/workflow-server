@@ -76,7 +76,7 @@ The raw graph query answers what no named operation reaches: custom call-chain t
 
 ### keyword-shaped-queries
 
-Phrase a ranked search as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings — built only where the index was asked for them, and never over headings or files at any setting, so no setting gives semantic search over prose. Keyword-shaped input works either way.
+A ranked search answers keywords rather than a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings — built only where the index was asked for them, and never over headings or files at any setting, so no setting gives semantic search over prose. Keyword-shaped input works either way.
 
 ### must-use-operations
 
