@@ -1,0 +1,77 @@
+id: roster-refresh
+version: 1.0.0
+name: Roster Refresh
+description: >-
+  Walk a roster of trees, give each one a graph where none covers it and bring the graph current
+  where it trails its tree, and answer with what each tree's graph holds and the name it answers
+  under.
+
+inputs:
+  - id: index_roster
+    description: >-
+      The trees this run walks, one entry per tree, each carrying the filesystem path of the tree
+      and the name it is known by. A tree the roster leaves out is one no graph is built or
+      refreshed for, which is the roster's purpose — an absent graph is a decision the roster
+      records rather than a tree nobody reached.
+
+outputs:
+  - id: roster_graph_report
+    type: array
+    description: >-
+      One entry per roster entry, in roster order — the tree, the name its graph answers under, and
+      what that graph holds, or the statement that no graph could be named for it.
+
+internals:
+  - id: roster_entry
+    description: The roster entry the run holds, whose tree the reads in that pass address.
+  - id: entry_repo_name
+    description: The name the held entry's graph answers under, as the build or the inventory named it.
+  - id: entry_build_stats
+    description: The counts a build reports where the held entry's tree had no graph covering it.
+  - id: entry_index_stats
+    description: The counts the held entry's graph holds once it stands current with its tree.
+  - id: entry_index_stale
+    description: Whether the held entry's graph trailed its tree when the pass read it.
+
+steps:
+  - kind: loop
+    id: roster-cycle
+    name: Roster Cycle
+    loopType: forEach
+    variable: roster_entry
+    over: index_roster
+    maxIterations: 100
+    steps:
+      - kind: routine
+        id: name-graph
+        routine: gitnexus::graph-for-tree
+        with:
+          tree_path: "{roster_entry.tree_path}"
+        outputs:
+          repo_name: entry_repo_name
+          index_stats: entry_build_stats
+      - kind: routine
+        id: bring-current
+        routine: gitnexus::index-refresh
+        with:
+          repo_path: "{roster_entry.tree_path}"
+        outputs:
+          stats: entry_index_stats
+          index_stale: entry_index_stale
+      - kind: action
+        id: announce-build
+        when: entry_build_stats
+        actions:
+          - action: message
+            message: "{roster_entry.tree_path}: no graph covered this tree, so one was built holding {entry_build_stats}."
+      - kind: action
+        id: record-entry
+        actions:
+          - action: message
+            message: "{roster_entry.tree_path}: graph {entry_repo_name} stands current holding {entry_index_stats}, having trailed its tree ({entry_index_stale})."
+          - action: set
+            target: roster_graph_report
+            description: >-
+              The held entry's tree, the name its graph answers under, whether the pass built that
+              graph or found one already covering the tree, whether it trailed its tree, and the
+              counts it holds afterwards — appended to the report the run answers with.

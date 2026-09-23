@@ -1,13 +1,20 @@
 id: ready-checkouts
-version: 1.0.0
+version: 1.1.0
 name: Ready Checkouts
 description: >-
-  Bring every checkout a roster names to its stated revision, one pin per entry, and answer with the
-  commit each landed at or the refusal that left it as it stood.
+  Bring every checkout a roster names to its stated revision, one pin per entry, returning each to
+  what its repository records first where the caller asks for it, and answer with the commit each
+  landed at or the refusal that left it as it stood.
 
 inputs:
   - id: checkout_pins
     description: The roster this run walks — one entry per checkout, each carrying the working tree to pin and the revision to land it at.
+  - id: reset_before_pin
+    description: >-
+      Whether each checkout is returned to what its repository records before its pin is attempted.
+      A pin refuses a working tree carrying modifications, so a caller pinning trees that tools
+      write into sets this. It discards those modifications, which is why it is asked for and never
+      assumed.
   - id: planning_folder_path
     description: The session's planning folder, which every operation of the git library carries as a shared input.
 
@@ -29,6 +36,25 @@ steps:
     over: checkout_pins
     maxIterations: 20
     steps:
+      - kind: technique
+        id: reset
+        when: reset_before_pin
+        technique:
+          name: git::reset-checkout
+          inputs:
+            repo_path: "{checkout_pin.repo_path}"
+      - kind: action
+        id: announce-reset
+        when: "reset_before_pin && !reset_refusal"
+        actions:
+          - action: message
+            message: "{checkout_pin.repo_path}: modifications to {discarded_paths} discarded, and nested checkouts {nested_checkouts} returned to the commits the tree records."
+      - kind: action
+        id: announce-reset-refusal
+        when: "reset_before_pin && reset_refusal"
+        actions:
+          - action: message
+            message: "{checkout_pin.repo_path} was not reset: {reset_refusal}"
       - kind: technique
         id: pin
         technique:
