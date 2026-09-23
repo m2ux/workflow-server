@@ -1,6 +1,6 @@
 ---
 name: design-principles
-description: Positive design-time prefer/before stance for workflow authoring.
+description: Positive design-time prefer/before stance for workflow authoring. One invariant per heading.
 metadata:
   order: 0
   legacy_id: 0
@@ -8,174 +8,198 @@ metadata:
 
 # Overview
 
-Fundamental design principles for workflow design-time authoring. Each principle states a *prefer / before / only after* stance — what to author toward. A principle is broader than any one defect: it is the stance that avoids a family of smells (and related failures not yet catalogued).
+Fundamental design principles for workflow design-time authoring. Each heading is one invariant: a *prefer / before / only after* stance. A citation of the heading is a citation of that invariant.
 
-Specific bad instances are catalogued in [anti-patterns](./anti-patterns.md). Together with that catalog and the schema construct inventory, these are the **workflow-design canon** for design-time authoring.
+A principle is broader than any one defect. Specific bad instances are catalogued in [anti-patterns](./anti-patterns.md). Together with that catalog and the schema construct inventory, these are the **workflow-design canon** for design-time authoring.
+
+Ordinals are stable. A new invariant is appended.
 
 ---
 
 ## 1. Workflows Ossify Patterns
 
-The same procedure, performed across many sessions, is a workflow: a durable graph of activities that those sessions walk. It can be improved, and a circumstance — a jurisdiction, an economy, a product — can have a graph of its own, but the pattern is ossified in that graph. That pattern has two sources. Repeated successful application in this practice is one. An external source already held as procedure is the other — for example a workflow that holds an industry-standard practice as its graph. Both arrive as the graph the sessions walk. Techniques and routines stay portable across those graphs; fitting for a circumstance is the graph and its rules, not a new produce path. Novelty enters by design update or outside the graph. The same ossification holds between a technique and a routine, at the grain of one application, and from the same two sources ([Atomic Techniques; Compose at Activities](#26-atomic-techniques-compose-at-activities)).
+A repeated procedure is a durable graph of activities. A circumstance has its own graph and rules; techniques and routines stay portable across graphs. The graph comes from repeated success in this practice, or from an external procedure already held as such. Novelty is a design update, or work outside the graph. Which construct holds one application is [A Routine Holds the Codified Path](#42-a-routine-holds-the-codified-path).
 
 ## 2. Internalize Before Producing
 
-Demonstrate understanding of the conceptual model (Goal → Activity → operation), schema-vs-runtime boundaries, inline-vs-modular distinctions, and existing conventions before producing any content.
+Read the construct model — Goal, Workflow, Activity, Technique, Routine — the schema boundary, and the conventions already in the tree before writing content.
 
 ## 3. Define Complete Scope Before Execution
 
-Enumerate every file to create, modify, or remove before starting. Include the dedicated session edit root at `{target_path}`. Re-verify after completion.
+List every file to create, modify, or remove, including the session edit root at `{target_path}`, before starting, and check that list again before claiming the work done.
 
 ## 4. Clarify Before Assuming
 
-When user intent admits materially different interpretations, ask one clarifying question before acting.
+When the request admits materially different interpretations, ask one question before acting.
 
 ## 5. Maximize Schema Expressiveness
 
-Prefer the most specific formal construct the schema provides. Prose is only for `description` / `outcome` (and equivalent) fields that state WHAT without restating structure. Workflow `variables[].description` is one line only ([variable-description-one-line](./anti-patterns.md#ap-126-variable-description-one-line)). I/O contracts stay portable — describe what a value *is*, not which caller, activity, or workflow produces or consumes it.
+Use the most specific construct the schema provides. A prose field (`description`, `outcome`, and their equivalents) states what the construct is, and does not restate structure the schema already holds.
 
 ## 6. One Authoritative Home
 
-Operative criteria, reusable facts, and fill/consult content have exactly one home. Resources hold fill/consult (templates, vocabularies, criteria, policy tables); does (protocol, behavioural rules) lives outside resources — “does” means operational cadence and HOW, not normative criteria / vocabulary / policy matrices (those remain resource consult even when a technique Applies them). Other layers cite or walk the home — they do not re-author Detect, duplicate guidance, or invent pass inventories that drift from activity bind sites.
+Each operative fact has one statement. Resources hold fill and consult: templates, vocabularies, criteria, policy. Protocol holds cadence and how. Other layers cite that statement. A repeated copy exists only where delivery would not carry the statement, and that copy is not a second text to edit.
 
 ## 7. Convention Over Invention
 
-Search for existing conventions before introducing new patterns. Use established naming, field ordering, and structural patterns.
+Search existing naming, field order, and structure before introducing a pattern.
 
 ## 8. Confirm Before Irreversible Changes
 
-Classify changes by reversibility. Semi-reversible and irreversible changes require explicit confirmation with impact analysis.
+A semi-reversible or irreversible change waits for explicit confirmation that includes the impact.
 
 ## 9. Encode Constraints as Structure
 
-Critical constraints must be backed by structural enforcement (checkpoints, conditions, validate actions), not rule text alone.
+A critical constraint is a checkpoint, a condition, or a validate action. Rule text does not enforce it.
 
 ## 10. Non-Destructive Updates
 
-Compare new content against existing content. Flag any material being removed. Content-reducing updates require explicit user approval. A restructuring that removes a gate, re-routes an exit, relocates an operation, or collapses a rule into another home names the outcome, option, input or audience that still has to hold, and the check confirming it — content approval is not evidence that behaviour survived.
+Compare new content with what is there. A change that removes material names the removal and waits for explicit approval. A move that must keep an outcome is [A Relocation Records the Outcome It Keeps](#38-a-relocation-records-the-outcome-it-keeps).
 
 ## 11. Complete Documentation Structure
 
-Every workflow includes a README.md at the root and in each construct subfolder. READMEs orient (purpose, flow, value, structure, links). A completeness verdict over them names the enumeration that grounds it, not the instances inspected.
+A workflow root, and each construct folder a reader can open, has a README that orients: purpose, flow, value, structure, and links. A parent README that already names that folder's files at file grain is that orientation.
 
 ## 12. Output Economy
 
-Design artifact contracts and checkpoints for the reader who must act on them — one canonical home per fact, declared human vs agent audience, exception-only status, lean templates, one close-out document, one decision per checkpoint, statement-form messages with artifact links where named.
+An artifact or a checkpoint states one fact for one declared audience, and links the home of every other fact.
 
 ## 13. Separate Contract from Procedure
 
-On techniques, Inputs and Outputs are **bind contracts** — each declares *what* the bound value is (meaning, shape, allowed values; Outputs may include derivation/recognition criteria). Protocol orders *when* and *how* work runs and references `{id}`; it does not restate identity tables, and I/O descriptions do not carry HOW. Any how associated with an input or output — constraints, sequencing, fallbacks, side duties — migrates to a dedicated Protocol step (or a true cross-cutting Rule), not the I/O entry. Protocol also does not host trailing "Set …" phases for pure projections of another output.
+On a technique, Inputs and Outputs state what the bound value is: meaning, shape, and allowed values. An Output may state how the value is recognised. Protocol states when and how, and refers to `{id}`. How attached to a value — a constraint, an order, a fallback, a side duty — is a Protocol step, or a Rule when it cuts across steps. A phase whose only work is projecting another output is not a phase.
 
 ## 14. Single Source of Truth
 
-Each fact of session state has exactly one authoritative variable. Compare that source directly in gates and technique inputs rather than maintaining parallel derived shadows.
+Each fact of session state has one variable. Gates and technique inputs read that variable.
 
 ## 15. Phase by Sequenced Outcome
 
-A Protocol index marks a distinct outcome that must complete before the next begins. Co-aspects of the same act — facets of one survey, constraints on one write, mode branches of one apply — stay as elaborating bullets under that phase. Topic partitions that can be reordered or dropped without changing the phase sequence do not get their own numbers.
-
-Each index is a `### N. Title` sub-section whose heading names that outcome, and the work sits as bullets beneath it. The headings alone are then the sequence — an agent part-way through a run finds its place by scanning them, where a flat list makes it read every body to learn what each entry was for, and a reader looking for one phase has no anchor to be sent to. Avoids `protocol-phase-as-list-item`, whose near-miss is a flat entry led by a bold label: it names the outcome but leaves the phase without a section of its own, so nothing can cite it and the name reads as emphasis on the first sentence.
-
-A heading is two or three words in Title Case with the articles dropped — `Fold Activity Results`, not `Fold the activity's results together`. Length is the tell: past four words it has stopped naming the phase and started carrying the bullet's detail, which the bullet is about to state anyway. It is a name rather than the instruction's opening words repeated above it, so a reader scanning headings for the shape of the work learns something the bodies were not already going to tell them. A heading that can only be written by copying its bullet is usually a phase with no outcome of its own.
+A Protocol phase is one outcome that finishes before the next begins, written as a `### N. Title` section with the work in bullets under it. Facets of that same outcome stay bullets. A partition that can be reordered or dropped without changing the sequence is not its own phase. What the heading is made of is [A Phase Heading Names the Outcome](#39-a-phase-heading-names-the-outcome).
 
 ## 16. Distinguish Designators from Parameters
 
-In technique Protocol, declared values use braced designators (`{id}`); operation argument names are italicised (*arg*); argument lists attach in parentheses on the op reference. Keep argument names out of the brace and backtick namespaces reserved for values and code tokens.
+In Protocol, a declared value is `{id}`, an operation argument name is italic, and the argument list sits in parentheses on the operation reference. Argument names stay out of braces and backticks.
 
 ## 17. Document in Positive Present
 
-Definition prose (`description`, `outcome`, option text, README orientation for the defined workflow) states what the system *is* or *does* in positive declarative present tense — not avoidance or comparative framing against a prior design.
+Definition prose — `description`, `outcome`, option text, and README orientation for the defined workflow — states what the system is or does, in declarative present tense.
 
 ## 18. Prefer Shared Capability
 
-When a meta or shared-workflow technique already owns a capability, reuse it by binding that op from an activity (or borrowing an activity that already binds it). Invent a parallel local recipe only after the shared surface cannot absorb the caller's diversity. Fan-out and consolidate is owned by the layer that runs the work. Several workers on separate activities, or one activity over a collection, is a routing fact: bind it as a graph destination that names them, and gather at the activity they converge on. Work units inside ONE worker are the other layer: a `forEach` loop step, with the meta [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) ops for decomposition and the gather, before local merge recipes.
+When a shared technique already owns a capability, the activity binds that technique, or borrows an activity that already binds it. A local recipe exists when the shared surface cannot absorb the caller's diversity. Where the work runs is [Fan-Out Lives at the Layer That Runs the Work](#40-fan-out-lives-at-the-layer-that-runs-the-work).
 
 ## 19. Name Symbols Affirmatively
 
-Symbol ids state what the value *is* in affirmative, head-noun-last `snake_case`: booleans as predicates, collections as plural item nouns, I/O without direction or representation encoding. Rule slugs state a positive invariant when clearer than bare negation.
+A symbol id states what the value is: affirmative, head noun last, `snake_case`. A boolean is a predicate, a collection is a plural, and an I/O id carries neither direction nor representation. A rule slug states a positive invariant when that is clearer than a negation.
 
 ## 20. Keep Orchestration in Structure
 
-Activities own stage, checkpoints, transitions, and graph progress. Techniques stay stage-agnostic: they produce values and durable evidence — they do not name the surrounding activity flow or the gates that consume their outputs.
+An activity owns stage, checkpoints, transitions, and graph progress. A technique produces values and durable evidence, and does not name the activity flow or the gates that consume its outputs.
 
 ## 21. Match the Harness Surface
 
-Tool names, return shapes, and bootstrap paths in techniques and docs match the actual harness surface. Behavioural guidance about tools lives in one authoritative place; do not invent parallel recipes or incomplete hop chains.
-
-A schema settles the call, never the answer. What a Protocol does with a response — the branch it takes, the emptiness it reads as absence, the name it expects to resolve — is a claim about what that tool returns on a real subject, and a correctly shaped call can return an answer the Protocol has no reading for. So a phase states answers the tool has been seen to give, taken against a real subject before the prose is written. An assumed answer is a defect in the operation, paid for at authoring time or at every walk after it.
+Tool names, return shapes, and bootstrap paths in techniques and docs match the harness. Guidance about a tool's behaviour has one home. What a phase may claim about a response is [A Phase States Answers the Tool Has Returned](#41-a-phase-states-answers-the-tool-has-returned).
 
 ## 22. Modular Over Inline
 
-Constructs live in their own files. Parents reference siblings; they do not embed activity, technique, or resource bodies inline.
+A construct lives in its own file. A parent references that file.
 
 ## 23. Close the Loop
 
-When implementation is in scope, a recommendation is followed by action or an explicit stop gate — analysis alone is not the terminal deliverable.
+When implementation is in scope, a recommendation is followed by the action, or by an explicit stop.
 
 ## 24. Keep Session Interaction in Activities
 
-Techniques are session-blind: take inputs, process over tools and resources, and emit outputs. They do not know about user sessions or how to interact with humans. Activities are session-aware — they own when and how technique products reach the user (`action: message`, checkpoint `message` / `options`, artifact links).
+A technique takes inputs, works over tools and resources, and emits outputs. An activity owns when and how those products reach a person: `action: message`, checkpoint `message` and `options`, and artifact links.
 
 ## 25. Bind Sibling Operations as Steps
 
-All multi-technique work lives in activity `steps[]` (and checkpoints/loops). Bind each already-defined sibling or shared operation as its own activity step. A technique owns one capability's produce path — its Protocol does not `Apply` sibling or meta ops for work. Container I/O and rule merge is platform composition, not a technique→technique work call.
+Multi-technique work lives in activity `steps[]`, checkpoints, and loops. Each sibling or shared operation is its own step. A technique Protocol applies tools and resources. Container I/O and rule merge is composition the loader performs.
 
-## 26. Atomic Techniques; Compose at Activities
+## 26. A Technique Is a Reading
 
-A technique is the grain at which the work is the practitioner's judgement acting on live feedback — what no loop, branch, or gate can hold. A tool offers a large space of calls; the Protocol is how to orient that tool given this anatomy, how to read what came back, and how to recover when it is not what was expected. The tool's schema owns the remaining parameters (`tool-contract-restated-in-protocol`). A produce path that is only the tool's own call, with no reading, is the tool's leaflet. The inputs name the situation the path is applied to; they are not a session. When a judgement has an endpoint or a step kind, it lives there, and the technique is the reading that remains.
-
-The grain between technique and routine is the success of the application. Where the application is still free-form — ad-hoc in the practice of one physician — it lives as a technique. Where the path is accepted, codified, and consistent, it lives as a routine: the canon the walk can see. That canon has two sources: repeated successful application in this practice, and an external source already held as procedure ([Workflows Ossify Patterns](#1-workflows-ossify-patterns)). The Protocol that remains is the reading that canon cannot hold. The same work has both homes; which construct holds it is that criterion.
-
-Techniques stay small: a short produce path over tools and resources, without complex conditional/branching orchestration and without invoking other techniques to do work. Activities are the composition layer — they bind techniques (and checkpoints/loops) into useful work. An activity is a stage of the protocol: it binds those runs and owns the conversation with the person at that stage ([Keep Session Interaction in Activities](#24-keep-session-interaction-in-activities)). A routine is a named run of those produce paths, spliced into the activity that binds it, and is the home for a sequence, an iteration, a branch, or a gate that several sites share — structure the walk can see because it is already mechanized. A workflow ossifies the order those activities walk ([Workflows Ossify Patterns](#1-workflows-ossify-patterns)). Activity→activity composition is allowed: borrow, bind, or include activities to reuse standalone orchestration patterns — including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). Technique→technique work calls remain forbidden — techniques stay atomic over tools and resources. Reuse a shared capability by binding it from an activity (or borrowing that activity), not by `Apply [other-technique]` inside a Protocol.
+A technique is the judgement a loop, branch, or gate cannot hold: how to orient a tool for this anatomy, how to read what came back, and how to recover when that is not what was expected. The tool schema owns the remaining parameters. The inputs name the situation the path applies to. A path that only calls the tool is the tool's own leaflet. A judgement that already has an endpoint or a step kind lives in that construct.
 
 ## 27. State Contract Contribution
 
-Capability on a container `TECHNIQUE.md` (workflow-root or group) names what shared Inputs, Outputs, Rules, or domain invariants the contract contributes. A container contributes a contract, never a procedure — its Protocol, where it has one, is its own and reaches no descendant, and the steps a shared stage owns belong to the activity or routine that binds both operations. Loader composition — inheritance merge, folder-implied membership — lives in workflow-canonical and the schema construct inventory, not in the contract's Capability.
+Capability on a container `TECHNIQUE.md` names the shared Inputs, Outputs, Rules, or domain invariants the contract contributes. Its Protocol, where it has one, is its own and reaches no descendant. Loader composition lives in [Base-contract inheritance](/meta/resources/workflow-canonical.md#base-contract-inheritance).
 
 ## 28. Creation Guide for Generated Documents
 
-Every planning artifact a workflow persists has an associated creation-guide resource with a `## Template` section (and operative `## Rules` for how to fill it). Persist techniques cite that template; they do not invent layout in protocol prose. Shared shapes may share one guide; every bare filename still maps to a guide.
+Every planning artifact a workflow persists has a creation-guide resource with a `## Template` section and operative `## Rules` for filling it. The persisting technique cites that template. A shared shape may share one guide. Every bare filename still maps to a guide.
 
 ## 29. Cite Resource Policy; Do Not Restate It
 
-Resources own vocabularies, criteria/policy, and how fields are represented or matched on consult surfaces. Technique Protocol operates on **semantic fields** and cites those sections in house style — e.g. `per [Section Title](../resources/example.md#section-title)` (link text is the section title; the URL includes the `#` anchor) — it does not re-author the vocabulary, policy matrix, or representation/matching rules. **Separation test:** representation or layout of a consult surface may change without Protocol change when the underlying fields are unchanged. This is the cite-don't-restate half of technique↔resource policy; it complements [One Authoritative Home](#6-one-authoritative-home) and [Creation Guide for Generated Documents](#28-creation-guide-for-generated-documents) without replacing either.
+A resource owns vocabulary, criteria, and how fields are represented or matched. Protocol operates on the semantic fields and cites the section: link text is the section title, and the URL includes the `#` anchor. Representation of a consult surface can change without a Protocol change when the fields are unchanged.
 
-## 30. Resources at the Abstract Level; Split for Section Delivery
+## 30. Resources Stay Abstract
 
-A resource treats artifact names and variables at the abstract level — the *kind* of artifact, the *role* a variable plays, the template skeleton with placeholders. Concrete artifact filenames, variable bindings, and the per-run instances of both are owned by the technique (and the activity that binds the variables). The resource describes the shape; the technique instantiates it. A resource does not name the concrete artifact files or variables a specific technique produces or consumes — that coupling belongs to the technique's I/O contract and Protocol. This is the abstraction-level half of [One Authoritative Home](#6-one-authoritative-home) and [Cite Resource Policy; Do Not Restate It](#29-cite-resource-policy-do-not-restate-it).
-
-Split a multi-part resource into per-category sections, each carrying the fragment pertinent to one category (its table fragment, population rules, prefix), with any whole-document skeleton (header, per-category placeholders, footer) in its own section. The technique that renders one category fetches only its section (`get_resource { resource_id: "<resource>#<category-anchor>" }`); the consolidating step fetches only the skeleton section. No consumer loads the whole resource to read one category. Group shared fragments — scales, mappings, reference tables consulted across categories — under a single shared section, so a consumer fetches them as one unit rather than section-by-section. **Content a section-scoped reader depends on lives in a section** — operative framing, shared keys, and obligations the section consumer still needs sit under a `##` heading a `#anchor` can deliver (or move into the technique that depends on them), not only in a leading H1 span or in prose before any heading. This is the structural half of the section-or-whole economy — a resource's sections are its delivery units — and [Cite Resources at Section Grain](#32-cite-resources-at-section-grain) is the citation half that spends them.
+A resource names a kind of artifact, the role a variable plays, and a template skeleton with placeholders. Concrete filenames, variable bindings, and per-run instances belong to the technique and the activity that binds them. How a resource is split for delivery is [A Resource Splits for Section Delivery](#44-a-resource-splits-for-section-delivery).
 
 ## 31. Isolate Conditional Branches as Notes
 
-Prose that applies on one path only is set apart from prose that always applies. Within a Protocol step, the unconditional instruction is the bullet and each *when* / *if* / *otherwise* branch is a `>` note beneath it. A note carrying two or more items gives each one a bullet, written `  > - When …`, so they read as the list they are; a lone caveat is the note's own prose, with no list to express. Either shape keeps the block out of the step sequence, because the protocol parser's step regex matches a bullet at any indent and a line opening with `>` fails that match and folds into the instruction above. A reader scanning the step then sees the shape of the work without evaluating every clause to learn which parts apply to their run, and the branch stays visually attached to the instruction it qualifies rather than reading as another thing to do.
-
-Reach for structure first: a condition selecting a step, an activity, or a whole path is a `when`, a `condition`, or a declared decision, and belongs in the YAML. This stance governs only what legitimately remains in prose — a branch qualifying a single instruction, with no structural home. Prefer the note over a sibling bullet, and over an inline "if X then Y, otherwise Z" clause that buries the branch mid-sentence. Avoids `constraint-as-blockquote`; the structural alternatives are `checkpoint-not-prose`, `loop-not-prose`, and `decision-not-prose`.
+Inside a Protocol step, the unconditional instruction is the bullet, and each *when* / *if* / *otherwise* branch is a `>` note under it. A note with two or more items gives each a bullet, written `  > - When …`. A lone caveat is the note's prose. A line opening with `>` is not a step. A condition that selects a step, an activity, or a path is [Encode Constraints as Structure](#9-encode-constraints-as-structure).
 
 ## 32. Cite Resources at Section Grain
 
-A citation is a delivery instruction. What it resolves to — the path after `resources/` with `.md` stripped and any `#anchor` kept — is the unit the server loads into the consumer's context, so `example.md#section-title` delivers one section where `example.md` delivers the file. A citation therefore names the narrowest section carrying what the citing prose needs. The bare resource is the citation for a consumer that reads the whole body: a filler working a `## Template` together with the `## Rules` that populate it, an audit walking every entry.
-
-Grain is a property of the resource across the whole technique, not of one link. Every distinct citation is delivered, so a bare citation standing beside anchored ones sends the file *and* those sections, and the file's size counts against the eager budget that decides what else arrives. Where a technique needs several sections, cite each by anchor; where the set approaches the whole body, cite the resource once and drop the anchors. A section citation delivers only that heading's span, so any dependency the section reader still needs — including operative framing and shared keys — is authored inside a section per [Resources at the Abstract Level; Split for Section Delivery](#30-resources-at-the-abstract-level-split-for-section-delivery). This is the citation half of the section-or-whole economy, whose structural half is that principle — a resource is split so its sections are deliverable, and cited at the grain it was split for. Avoids `whole-resource-for-one-section` and `framing-outside-any-section`.
+A citation names the narrowest section that carries what the prose needs. The path after `resources/`, with `.md` stripped and any `#anchor` kept, is the unit loaded. The bare resource is the citation when the consumer reads the whole body. Every distinct citation is delivered, so a bare citation beside anchored ones sends the file and the sections. Where several sections are needed, cite each anchor. Where the set is most of the body, cite the resource once.
 
 ## 33. Pre-Session Prose Stands Alone
 
-Prose delivered before the framework that resolves references exists must be executable from itself: every instruction complete in the text, and every value it names either supplied there or obtained by a call the text spells out. A canonical name may appear as a label for a home the reader reaches later, never as the only place an instruction lives. A bounded exception to [One Authoritative Home](#6-one-authoritative-home) — elsewhere citing the home rather than restating it is the right economy, and on this surface the same economy strands the reader. Avoids `pre-session-prose-defers-to-the-framework`.
+Prose delivered before references can be resolved is executable from its own text. Every instruction is complete there, and every value it names is supplied there or obtained by a call the text spells out. A canonical name may label a home the reader reaches later. On this surface that label is not the only place the instruction lives. Elsewhere, citing the home is [One Authoritative Home](#6-one-authoritative-home).
 
-## 34. SOLID at the Definition Layer
+## 34. Edit the Owner
 
-A definition is a contract between constructs, so the five principles that govern code contracts govern it. **Single responsibility** — a construct holds one job and changes for one reason ([One Authoritative Home](#6-one-authoritative-home), [Atomic Techniques; Compose at Activities](#26-atomic-techniques-compose-at-activities)). **Open to extension, closed to modification** — a surface other work is calibrated or validated against, such as a schema or a measured prompt, gains a consumer's need through the construct that wraps it ([Prefer Shared Capability](#18-prefer-shared-capability)). **Substitutability** — a definition that declares a shared contract is usable wherever that contract is expected, so a consumer binds the contract and not the particular definition that satisfied it today. **Interface segregation** — a consumer declares and receives the slice it uses, and no more ([Cite Resources at Section Grain](#32-cite-resources-at-section-grain)). **Dependency inversion** — prose and bindings depend on the home that owns a fact, never on a copy of it ([Cite Resource Policy; Do Not Restate It](#29-cite-resource-policy-do-not-restate-it), [Maximize Schema Expressiveness](#5-maximize-schema-expressiveness)).
-
-The test a change runs against itself: name every file a later extension of this contract would force an edit to. A file that must change only to keep agreeing — a restated count, a duplicated field list, a copied criteria set — is coupled to content it does not own, and the citation is what survives removing the copy.
+Name every file a later extension of a contract would force an edit to. A file that must change only to keep agreeing — a restated count, a duplicated field list, a copied criteria set — is coupled to content it does not own. The citation is what remains when the copy is removed.
 
 ## 35. Prefer Removing the Thing That Needs a Prohibition
 
-Prose warning against a path — *do not also use X*, *never combine this with Y* — usually means two constructs now do one job. Retire one and the warning has nothing left to say, along with the validation and carve-outs that existed only to police the overlap. Where both paths must survive, the prohibition names the home that owns the surviving behaviour rather than restating it.
+A warning against a second path means two constructs do one job. Retire one, and the warning, the validation, and the carve-outs that policed the overlap go with it. Where both paths remain, the prohibition names the home that owns the surviving behaviour.
 
 ## 36. A Technique Names Only What Its Reader Holds
 
-A technique arrives on its own: its own text, its inherited rules, and nothing else. An operation is served only where a role's contract names it, so a technique whose prose names another operation addresses something its reader cannot fetch, and the path beside the name points into a checkout of the definitions the reader does not have. The reference is a dead end whether it invokes anything or not — a phase that applies a sibling is unperformable, a rule that names one is unfollowable, an input description that cites one is uninterpretable.
+A technique arrives as its own text and its inherited rules. A name in that text — an operation, or a rule slug — is a name the delivery carries: the technique's own rules, every container it sits beneath, and the contracts of the scopes a role's bundle names. A rule from another library is named at its full dotted address. A fact the technique needs is in its own text, or stated plainly. A choice between two operations belongs to the container that holds both, phrased so it needs no reference.
 
-A rule name is reached the same way and travels differently. A rule arrives with the technique that declares it, with every container the citer sits beneath, and with the contracts of the scopes a role's bundle names — so a sibling operation delivered alongside the citer brings its rules too, without the citer sitting under it. A slug names what that delivery carries. Shortened past it, the citation is well-formed, resolves in the checkout, and names nothing that arrived — the dead end an operation reference makes, reached by a shorter road. What a delivery carries is therefore what sets a rule citation's length, and a rule from another library, which no bundle brings, is named at full dotted address or not named at all.
+## 37. An I/O Contract Names the Value
 
-So a technique carries the fact it needs or states it plainly, and composition belongs to the run or activity binding both operations as steps. A constraint governing the choice *between* two operations belongs to the container that holds them, phrased so it needs no reference — every operation it governs already sits beneath it. This is the reachability half of [Bind Sibling Operations as Steps](#25-bind-sibling-operations-as-steps), which governs where multi-technique *work* lives; a reference that performs no work is still unreachable, and that is what this covers.
+An Input or Output describes what the value is. It does not name which caller, activity, or workflow produces or consumes it.
+
+## 38. A Relocation Records the Outcome It Keeps
+
+A restructuring that removes a gate, re-routes an exit, relocates an operation, or collapses a rule into another home names the outcome, option, input, or audience that still holds, and the check that confirms it.
+
+## 39. A Phase Heading Names the Outcome
+
+A phase heading is two or three words in Title Case, with the articles dropped. It names the outcome. Past four words it carries the bullet's detail. A heading that only repeats its bullet is a phase with no outcome of its own.
+
+## 40. Fan-Out Lives at the Layer That Runs the Work
+
+Fan-out belongs to the layer that runs the work. Several workers, or one activity over a collection, is a graph destination that names them, gathered at the activity they converge on. Work units inside one worker are a `forEach` loop step, with the meta [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) operations for the split and the gather.
+
+## 41. A Phase States Answers the Tool Has Returned
+
+A schema settles the call. What a Protocol does with a response — the branch it takes, the emptiness it reads as absence, the name it expects to resolve — states answers the tool has returned on a real subject.
+
+## 42. A Routine Holds the Codified Path
+
+Where an application is still free-form, it is a technique. Where the path is accepted and consistent, it is a routine: a named run of those produce paths, spliced into the activity that binds it, and the home for a sequence, an iteration, a branch, or a gate that several sites share. Its sources are the two in [Workflows Ossify Patterns](#1-workflows-ossify-patterns). The Protocol that remains is the reading that routine cannot hold ([A Technique Is a Reading](#26-a-technique-is-a-reading)).
+
+## 43. An Activity Reuses Activities
+
+An activity may borrow, bind, or include another activity, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher).
+
+## 44. A Resource Splits for Section Delivery
+
+A multi-part resource splits into per-category sections, each holding the fragment for one category, with the whole-document skeleton in its own section. Shared fragments — scales, mappings, reference tables — sit in one shared section. Operative framing, shared keys, and obligations a section reader needs live under a `##` heading an anchor can deliver. The consumer fetches the section it renders.
+
+## 45. A Rule States One Invariant
+
+A `## Rules` entry states one constraint. A part that can be cited and edited on its own is its own entry.
+
+## 46. A Consumer Binds the Contract
+
+A definition that declares a shared contract is usable wherever that contract is expected. The consumer binds the contract.
+
+## 47. A Calibrated Surface Extends by Wrapping
+
+A surface other work is calibrated or validated against — a schema, a measured prompt — gains a consumer's need through the construct that wraps it.

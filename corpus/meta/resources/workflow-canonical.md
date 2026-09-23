@@ -26,7 +26,7 @@ in these shapes:
 | **Standalone technique** | `techniques/<id>.md` | yes (`metadata.version`) | A single technique. |
 | **Container technique** | `techniques/<group>/TECHNIQUE.md` + `techniques/<group>/<sub>.md` | yes (each file carries `metadata.version`) | The folder is a namespace; `TECHNIQUE.md` is the container technique; each `<sub>.md` is a nested technique. |
 | **Resource** | `resources/<slug>.md` | yes | Freeform reference material. |
-| **Routine** | `routines/<name>.yaml` | YAML `id` / `version` | A named run of steps. The filename is the identity every reference resolves. Grain between technique and routine: [Atomic Techniques; Compose at Activities](/canon/resources/design-principles.md#26-atomic-techniques-compose-at-activities). |
+| **Routine** | `routines/<name>.yaml` | YAML `id` / `version` | A named run of steps. The filename is the identity every reference resolves. Grain between technique and routine: [A Routine Holds the Codified Path](/canon/resources/design-principles.md#42-a-routine-holds-the-codified-path). |
 
 Each workflow also has a **root base contract** at `techniques/TECHNIQUE.md` —
 isomorphic to a technique, carrying no technique list (the technique set is implied
@@ -101,7 +101,7 @@ An external primitive: a binary, an MCP server, a CLI command, an API. Tools hav
 - **Tool-dedicated namespace** — complex tools (`gitnexus`, `concept-rag`) warrant a
   namespace whose operations each name one capability over the tool: which calls this
   job makes, in what order, and how to read the answer. The tool's own schema owns the
-  rest of the parameter space ([Atomic Techniques; Compose at Activities](/canon/resources/design-principles.md#26-atomic-techniques-compose-at-activities)).
+  rest of the parameter space ([A Technique Is a Reading](/canon/resources/design-principles.md#26-a-technique-is-a-reading)).
 
 ## Cross-reference format
 

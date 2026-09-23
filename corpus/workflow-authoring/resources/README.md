@@ -44,7 +44,7 @@ The audit criteria this workflow applies are not held here. They live in the [`c
 
 - [Anti-Patterns](/canon/resources/anti-patterns.md) — specific smell instances, Detect / Do not flag / Fix
 - [Design Principles](/canon/resources/design-principles.md) — prefer / before / only after stance
-- [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md) — prose-to-construct mapping tables
+- [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md) — an informal phrase mapped to the formal construct
 - [Convention Conformance](/canon/resources/convention-conformance.md) — reference conventions against sibling workflows
 
 ---

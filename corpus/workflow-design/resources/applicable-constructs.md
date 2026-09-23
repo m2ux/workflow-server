@@ -28,6 +28,6 @@ Schema constructs for [create/update] of `{workflow-id}`.
 ## Rules
 
 - **One row per construct this change needs** — not the full construct inventory.
-- **Reference column** points at a live file or field; do not paste inventory tables.
+- **Reference column** points at a live file or field. A row names the construct; the inventory entry stays where it is.
 - **Line budget:** ~30 lines.
 - Skip writing this artifact in review mode.

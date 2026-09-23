@@ -33,7 +33,7 @@ Absolute path to the persisted findings artifact when `{enforcement_finding_coun
 
 ### 1. Load Criterion
 
-- Load [Execution Anti-Patterns](/canon/resources/anti-patterns.md#execution-anti-patterns), the section holding `structure-backed-constraints` — sole Detect / Do not flag / Fix source for this pass
+- Load [Execution](/canon/resources/anti-patterns.md#execution), the section holding `structure-backed-constraints` — sole Detect / Do not flag / Fix source for this pass
 - [Encode Constraints as Structure](/canon/resources/design-principles.md#9-encode-constraints-as-structure) is the framing principle; the anti-pattern is the operative criterion
 
 ### 2. Apply structure-backed-constraints
