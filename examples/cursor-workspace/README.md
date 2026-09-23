@@ -34,8 +34,19 @@ Requires a checkout (repo-name) under your projects root, and `$HOME` set.
 
 Deploy writes `.codex/config.toml`. Codex reads that file. The MCP servers in it are the set deploy writes to `mcp.json`, and the instructions are the always-apply rules.
 
+## Scripts and config
+
+`scripts/` holds the hook scripts and the `sbx` launcher. `config/` holds the JSON those hooks read. `.claude/hooks` points at `scripts/`. A hook loads `config/<name>.json` from the directory beside `scripts/`, after resolving links.
+
+Deploy copies `scripts/` and `config/` into the kickoff directory and points `.claude/hooks` at `scripts/`. Workspace `.claude/settings.json` records absolute paths under `.claude/hooks` and allowlists `scripts/sbx`.
+
+```text
+scripts/                        # hook scripts and the sbx launcher
+config/                         # JSON the hooks read
+.claude/hooks → ../scripts
+```
+
 ## See also
 
 - [scripts/deploy-cursor-workspace.sh](../../scripts/deploy-cursor-workspace.sh)
-- [scripts/claude/README.md](../../scripts/claude/README.md)
 - [setup.md](../../setup.md) · [docs/ide-setup.md](../../docs/ide-setup.md)

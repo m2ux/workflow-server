@@ -60,7 +60,7 @@ Repeat **2a → 2b** for each product repo.
 cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-workspace
 ```
 
-`install.sh` places `deploy-cursor-workspace.sh`, `examples/cursor-workspace/`, and `scripts/claude/` under the install dir (default `~/.local/share/workflow-server/`).
+`install.sh` places `deploy-cursor-workspace.sh` and `examples/cursor-workspace/` under the install dir (default `~/.local/share/workflow-server/`). Hook scripts and their config live in that template.
 
 | Flag | Purpose |
 |------|---------|
@@ -75,7 +75,7 @@ Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.
 Deploy installs:
 
 - MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`), also written to `.codex/config.toml`
-- Bootstrap rules, and `AGENTS.md` and `CLAUDE.md` from the template on every deploy. Checkout notes live in `PROJECT.md`, which deploy leaves in place
+- Bootstrap rules, and `AGENTS.md` and `CLAUDE.md` from the template on every deploy. Those instructions name `PROJECT.md` in the repository
 - Multi-root `.code-workspace` with absolute `$HOME/…` paths
 - **Claude baseline (kickoff only):** hook scripts in `scripts/`, config in `config/`, `.claude/hooks` linking `scripts/`, `scripts/sbx`, generated `.claude/settings.json`, and `.claude/skills/`
 

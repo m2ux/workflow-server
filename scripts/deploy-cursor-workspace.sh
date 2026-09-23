@@ -28,15 +28,6 @@ elif [[ -d "${SCRIPT_DIR}/examples/cursor-workspace" ]]; then
 else
   TEMPLATE_DIR="${SCRIPT_DIR}/../examples/cursor-workspace"
 fi
-# Claude hooks tree: repo scripts/claude, or install-dir scripts/claude next to deploy.
-if [[ -d "${SCRIPT_DIR}/claude" ]]; then
-  CLAUDE_SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/claude" && pwd)"
-elif [[ -d "${SCRIPT_DIR}/scripts/claude" ]]; then
-  CLAUDE_SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/scripts/claude" && pwd)"
-else
-  CLAUDE_SCRIPTS_DIR=""
-fi
-
 # Paths are built from $HOME (see --home to override).
 HOME_DIR="${HOME:-}"
 REPO_BASENAME=""
@@ -75,8 +66,6 @@ Options:
                              (default: http://127.0.0.1:3000/mcp)
   --template=DIR             Template source (default: examples/cursor-workspace next to
                              this script, or ../examples/cursor-workspace from scripts/)
-  --claude-scripts=DIR       Claude hooks source (default: scripts/claude next to this
-                             script, or \$INSTALL/scripts/claude)
   --force                    Refresh managed files in an existing workspace dir
                              (upserts required MCP servers; keeps any extras;
                              rewrites AGENTS.md from the template)
@@ -89,9 +78,8 @@ Required MCP servers written into mcp.json (workflows depend on these):
   concept-rag, atlassian, gitnexus, workflow-server
 
 Claude baseline (workspace-local only):
-  installs hook scripts at <workspace>/scripts and config at <workspace>/config
+  copies the template's scripts/ (hook scripts and sbx) and config/
   links .claude/hooks → ../scripts
-  installs the sandbox launcher at <workspace>/scripts/sbx
   links .claude/skills/<skill> → the template checkout (per skill dir, so a
     workspace keeps skills the template does not carry; an edit in the
     workspace lands in the checkout that versions it)
@@ -106,8 +94,6 @@ When the project checkout exists, deploy also writes:
   <checkout>/AGENTS.md
   <checkout>/CLAUDE.md
 Both checkout paths are gitignored.
-
-PROJECT.md holds the checkout notes for this workspace. Deploy leaves it in place.
 
 Path substitution (all MCP servers — command and args):
   \${HOME}  \$HOME  __USER_HOME__  /home/<name>/…  → \$HOME/…
@@ -204,8 +190,6 @@ while [[ $# -gt 0 ]]; do
     --mcp-url) MCP_URL="${2:?}"; shift 2 ;;
     --template=*) TEMPLATE_DIR="${1#*=}"; shift ;;
     --template) TEMPLATE_DIR="${2:?}"; shift 2 ;;
-    --claude-scripts=*) CLAUDE_SCRIPTS_DIR="${1#*=}"; shift ;;
-    --claude-scripts) CLAUDE_SCRIPTS_DIR="${2:?}"; shift 2 ;;
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --open) OPEN_AFTER=1; shift ;;
@@ -263,9 +247,6 @@ fi
 PROJECTS_ROOT="$(normalize_home_path "$PROJECTS_ROOT")"
 CURSOR_WORKSPACES_ROOT="$(normalize_home_path "$CURSOR_WORKSPACES_ROOT")"
 TEMPLATE_DIR="$(normalize_home_path "$TEMPLATE_DIR")"
-if [[ -n "$CLAUDE_SCRIPTS_DIR" ]]; then
-  CLAUDE_SCRIPTS_DIR="$(normalize_home_path "$CLAUDE_SCRIPTS_DIR")"
-fi
 
 if [[ "$PROJECTS_ROOT" != "$HOME_DIR" && "$PROJECTS_ROOT" != "$HOME_DIR"/* ]]; then
   log "note: projects root is outside \$HOME (${HOME_DIR}): ${PROJECTS_ROOT}"
@@ -299,7 +280,6 @@ log "  planning          : ${PLANNING_DIR}"
 log "  work trees        : ${WORKTREES_DIR}"
 log "  workspace file    : ${WORKSPACE_FILE}"
 log "  MCP URL           : ${MCP_URL}"
-log "  claude scripts    : ${CLAUDE_SCRIPTS_DIR:-"(none)"}"
 log "  claude settings   : ${CLAUDE_SETTINGS_TEMPLATE}"
 
 # --- copy template rules / skills (preserve extra local files) ----------------
@@ -376,46 +356,35 @@ for sub in ("rules", ".claude/rules", ".cursor/rules"):
 PY
 fi
 
-# --- hooks and scripts/sbx — workspace-local only -----------------------------
-if [[ -f "${SCRIPT_DIR}/sbx" ]]; then
-  SBX_SRC="${SCRIPT_DIR}/sbx"
-elif [[ -f "${SCRIPT_DIR}/scripts/sbx" ]]; then
-  SBX_SRC="${SCRIPT_DIR}/scripts/sbx"
-else
-  SBX_SRC=""
-fi
-if [[ -n "$CLAUDE_SCRIPTS_DIR" && -d "${CLAUDE_SCRIPTS_DIR}/hooks" ]]; then
+# --- scripts and config — same paths as the template --------------------------
+if [[ -d "${TEMPLATE_DIR}/scripts" ]]; then
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    log "install hook scripts → ${DEST_DIR}/scripts ; config → ${DEST_DIR}/config"
+    log "install scripts → ${DEST_DIR}/scripts"
+    log "install config → ${DEST_DIR}/config"
     log "link .claude/hooks → ../scripts"
-    log "install sbx → ${DEST_DIR}/scripts/sbx"
   else
     mkdir -p "${DEST_DIR}/scripts" "${DEST_DIR}/config" "${DEST_DIR}/.claude"
     find "${DEST_DIR}/scripts" -maxdepth 1 -type f -name '*.py' -delete
-    rm -rf "${DEST_DIR}/scripts/lib"
-    cp -a "${CLAUDE_SCRIPTS_DIR}/hooks/"*.py "${DEST_DIR}/scripts/"
+    rm -f "${DEST_DIR}/scripts/sbx"
+    rm -rf "${DEST_DIR}/scripts/lib" "${DEST_DIR}/scripts/claude" "${DEST_DIR}/hooks"
+    cp -a "${TEMPLATE_DIR}/scripts/." "${DEST_DIR}/scripts/"
+    rm -f "${DEST_DIR}/scripts/.gitignore"
     find "${DEST_DIR}/scripts" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
     find "${DEST_DIR}/scripts" -type f -name '*.pyc' -delete 2>/dev/null || true
     find "${DEST_DIR}/scripts" -maxdepth 1 -type f -name '*.py' -exec chmod a+x {} + 2>/dev/null || true
+    if [[ -f "${DEST_DIR}/scripts/sbx" ]]; then
+      chmod a+x "${DEST_DIR}/scripts/sbx"
+    fi
     rm -rf "${DEST_DIR}/config"
     mkdir -p "${DEST_DIR}/config"
-    if [[ -d "${CLAUDE_SCRIPTS_DIR}/config" ]]; then
-      cp -a "${CLAUDE_SCRIPTS_DIR}/config/." "${DEST_DIR}/config/"
+    if [[ -d "${TEMPLATE_DIR}/config" ]]; then
+      cp -a "${TEMPLATE_DIR}/config/." "${DEST_DIR}/config/"
     fi
-    rm -rf "${DEST_DIR}/hooks"
     rm -rf "${DEST_DIR}/.claude/hooks"
     ln -sfn ../scripts "${DEST_DIR}/.claude/hooks"
-    rm -rf "${DEST_DIR}/scripts/claude"
-    if [[ -n "$SBX_SRC" ]]; then
-      cp -a "$SBX_SRC" "${DEST_DIR}/scripts/sbx"
-      chmod a+x "${DEST_DIR}/scripts/sbx"
-    else
-      log "warning: sbx not found (skipping scripts/sbx)"
-    fi
   fi
 else
-  log "warning: claude hooks not found (skipping hooks install)"
-  log "         expected scripts/claude next to deploy, or pass --claude-scripts=DIR"
+  log "warning: template scripts/ not found (skipping hooks install): ${TEMPLATE_DIR}/scripts"
 fi
 
 # --- .claude/settings.json (workspace-local; expanded paths) ------------------
@@ -612,12 +581,16 @@ CODEX_TOML="$(
   MCP_JSON="$MCP_JSON" \
   PROJECT_DIR="$PROJECT_DIR" \
   RULES_DIR="$RULES_DIR" \
+  DEST_DIR="$DEST_DIR" \
+  HOME_DIR="$HOME_DIR" \
   python3 - <<'PY'
 import json, os, re, sys
 
 mcp = json.loads(os.environ["MCP_JSON"])
 project = os.environ["PROJECT_DIR"]
 rules_dir = os.environ.get("RULES_DIR") or ""
+workspace = os.environ.get("DEST_DIR", "").rstrip("/")
+home = os.environ.get("HOME_DIR", "").rstrip("/")
 
 def toml_str(value: str) -> str:
     escaped = (
@@ -653,6 +626,10 @@ if os.path.isdir(rules_dir):
         with open(os.path.join(rules_dir, name), encoding="utf-8") as handle:
             body = rule_body(handle.read())
         if body:
+            if workspace:
+                body = body.replace("__WORKSPACE__", workspace)
+            if home:
+                body = body.replace("__HOME__", home)
             bodies.append(body)
 
 parts = [
@@ -723,8 +700,7 @@ write_file "$WORKSPACE_FILE" "$WORKSPACE_JSON"
 
 # --- AGENTS.md / CLAUDE.md ----------------------------------------------------
 # AGENTS.md and CLAUDE.md are the workspace instructions, written on every
-# deploy from the template. Checkout notes live in PROJECT.md, which deploy
-# leaves in place.
+# deploy from the template. They name PROJECT.md, which lives in the repository.
 AGENTS_SRC="${TEMPLATE_DIR}/AGENTS.md"
 AGENTS_MD="${DEST_DIR}/AGENTS.md"
 CLAUDE_MD="${DEST_DIR}/CLAUDE.md"
@@ -775,9 +751,6 @@ if [[ ! -d "$PROJECT_DIR" ]]; then
   echo "  ${PROJECT_DIR}"
   echo
 fi
-echo "Checkout notes live in PROJECT.md. Deploy leaves that file in place."
-echo
-
 if [[ "$OPEN_AFTER" -eq 1 ]]; then
   if command -v cursor >/dev/null 2>&1; then
     run cursor "$WORKSPACE_FILE"
