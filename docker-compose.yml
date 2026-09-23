@@ -14,6 +14,7 @@
 services:
   workflow-server:
     image: ghcr.io/m2ux/workflow-server:main
+    pull_policy: always
     # Match start.sh: same UID/GID as host binds (worktrees/projects/state).
     user: "${UID:-1000}:${GID:-1000}"
     ports:
