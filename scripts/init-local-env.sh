@@ -3,7 +3,7 @@
 # Safe to re-run: preserves unknown keys; overwrites known path keys with
 # values derived from the install layout (and optional flags).
 #
-# Defaults match scripts/install.sh + start.sh:
+# Defaults match the install layout written by the docker branch install script:
 #   $HOST_PROJECTS_ROOT/<repo>/ + nested .engineering + .worktrees
 #   $INSTALL/state; corpus dest is .worktrees/workflows of this checkout
 #   container targets under /var/lib/workflow-server/...

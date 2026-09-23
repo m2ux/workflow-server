@@ -17,6 +17,7 @@ set -euo pipefail
 INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IMAGE_DEF=""
+RUNNER_DIR=""
 
 die() { echo "error: $*" >&2; exit 1; }
 
@@ -55,12 +56,13 @@ Options:
                            container records, running or exited, else this
                            repo root. DIR is a worktree for a branch that is
                            not this checkout. Host compile and image rebuilds
-                           use this tree; its start.sh/stop.sh run the
-                           container, so a branch changing the server and the
-                           launcher together is exercised as a pair; --no-build
-                           uses the installed copies. When that start.sh does
-                           not accept --dist-dir, this script's start.sh is
-                           used so a host compile still binds.
+                           use this tree. The launcher is that checkout's
+                           start.sh when it has one, otherwise the installed
+                           copy, otherwise the copy on the docker branch.
+                           --no-build uses the installed copy first. When the
+                           chosen start.sh does not accept --dist-dir, the
+                           start.sh on the docker branch is used so a host
+                           compile still binds.
   --host-port=N            Host port. Defaults to the binding the named
                            container records, running or exited. Required when
                            none exists.
@@ -166,21 +168,6 @@ done
 [[ "$BUILD" -eq 1 || "$REBUILD_IMAGE" -eq 0 ]] \
   || die "--no-build and --rebuild-image cannot be combined"
 
-# An explicit override, else the preferred copy when it is executable, else the other one. Which
-# copy is preferred depends on where the image came from; see the START/STOP resolution below.
-resolve_helper() {
-  local override="$1" preferred="$2" fallback="$3"
-  if [[ -n "$override" ]]; then
-    printf '%s\n' "$override"
-    return
-  fi
-  if [[ -x "$preferred" ]]; then
-    printf '%s\n' "$preferred"
-    return
-  fi
-  printf '%s\n' "$fallback"
-}
-
 # Keep the outgoing container's log on the host, under a name carrying the container and the hour.
 #
 # The server writes one JSON line per tool call — the tool, its duration and its outcome — which is
@@ -268,20 +255,54 @@ accepts_dist_dir() {
   [[ -n "$script" && -x "$script" ]] && grep -q -- '--dist-dir' "$script"
 }
 
-# A dist bind needs a launcher that accepts --dist-dir. The engine checkout under test
-# often predates the flag. This reload script's sibling start.sh is the copy that added it.
+# A dist bind needs a launcher that accepts --dist-dir. The copy on the docker
+# branch is that launcher when the one already chosen predates the flag.
 pick_start_for_dist_bind() {
   [[ -n "$BIND_DIST" ]] || return 0
   if accepts_dist_dir "$START"; then
     return 0
   fi
-  local sibling="${SCRIPT_DIR}/start.sh"
-  if accepts_dist_dir "$sibling"; then
-    START="$sibling"
+  START="$(materialize_runner start.sh)"
+  if accepts_dist_dir "$START"; then
     return 0
   fi
   echo "warning: start.sh does not accept --dist-dir; serving the image-baked dist" >&2
   BIND_DIST=""
+}
+
+# The runner scripts live on the docker branch. An engine checkout or an install
+# dir that already has an executable copy keeps it.
+materialize_runner() {
+  local name="$1" dest
+  [[ -n "$RUNNER_DIR" ]] || RUNNER_DIR="$(mktemp -d)"
+  dest="${RUNNER_DIR}/${name}"
+  if [[ -x "$dest" ]]; then
+    printf '%s\n' "$dest"
+    return
+  fi
+  git -C "$ENGINE" fetch --depth=1 origin docker \
+    || die "cannot fetch the docker branch for scripts/${name}"
+  git -C "$ENGINE" show "FETCH_HEAD:scripts/${name}" > "$dest" \
+    || die "docker branch has no scripts/${name}"
+  chmod +x "$dest"
+  printf '%s\n' "$dest"
+}
+
+choose_runner() {
+  local override="$1" preferred="$2" fallback="$3" name="$4"
+  if [[ -n "$override" ]]; then
+    printf '%s\n' "$override"
+    return
+  fi
+  if [[ -x "$preferred" ]]; then
+    printf '%s\n' "$preferred"
+    return
+  fi
+  if [[ -x "$fallback" ]]; then
+    printf '%s\n' "$fallback"
+    return
+  fi
+  materialize_runner "$name"
 }
 
 require_dist_index() {
@@ -420,21 +441,17 @@ if [[ -n "$PROJECTS" ]]; then
   PROJECTS="$(cd "$PROJECTS" && pwd)"
 fi
 
-# An image and the script that launches it are one pair. An engine cycle takes both from the
-# checkout it compiles, so a branch changing the server and the launcher together is exercised as
-# a whole — the launcher passes what that server reads, including --dist-dir. Taking the launcher
-# from the install instead pairs a branch's image with a release's script, and a variable the
-# branch added simply never arrives, which the server cannot distinguish from an operator not
-# setting it. A --no-build run reuses an image this checkout did not produce, so there the
-# installed copies are the better default. Either way `WORKFLOW_SERVER_START` / `_STOP` win, and
-# a checkout's start.sh still reads the install env, so the operator's paths and signing key
-# follow it.
+# The launcher is the engine checkout's start.sh and stop.sh when those files are
+# executable. A --no-build run prefers the installed copies. When neither place has
+# a copy, the scripts on the docker branch are used. WORKFLOW_SERVER_START and
+# WORKFLOW_SERVER_STOP win. The launcher reads the install env, so the operator's
+# paths and signing key follow it.
 if [[ "$BUILD" -eq 1 ]]; then
-  START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${ENGINE}/scripts/start.sh" "${INSTALL_DIR}/start.sh")"
-  STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${ENGINE}/scripts/stop.sh" "${INSTALL_DIR}/stop.sh")"
+  START="$(choose_runner "${WORKFLOW_SERVER_START:-}" "${ENGINE}/scripts/start.sh" "${INSTALL_DIR}/start.sh" start.sh)"
+  STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" "${ENGINE}/scripts/stop.sh" "${INSTALL_DIR}/stop.sh" stop.sh)"
 else
-  START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" "${ENGINE}/scripts/start.sh")"
-  STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${ENGINE}/scripts/stop.sh")"
+  START="$(choose_runner "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" "${ENGINE}/scripts/start.sh" start.sh)"
+  STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${ENGINE}/scripts/stop.sh" stop.sh)"
 fi
 
 [[ -x "$START" ]] || die "start.sh not found or not executable: ${START}"

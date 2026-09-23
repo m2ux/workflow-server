@@ -4,7 +4,7 @@
 # Agents create worktrees on the host before the server writes artifacts.
 #
 # Paths are overridable via environment variables or a local `.env` file
-# (see `.env.example`). Defaults match scripts/install.sh layout.
+# (see `.env.example`). Defaults match the install layout.
 #
 # Host-side MCP vars (WORKFLOW_WORKSPACE, WORKFLOW_DIR, …) are separate from
 # CONTAINER_* paths so a shared `.env` can drive both stdio MCP and compose.
