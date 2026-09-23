@@ -88,6 +88,8 @@ export const OutputItemDefinitionSchema = z.object({
   entry: z.record(z.string()).optional().describe('Named fields one entry carries, for an output that IS a list rather than a value with parts (authored as a reserved `#### entry` sub-section whose `#####` children are the fields). Its presence is how an output states that it is a list; `components` names the parts of an output that is not.'),
   artifact: OutputArtifactSchema.optional().describe('Optional. When populated, specifies the artifact name to create when persisting this output.'),
   audience: z.enum(['human', 'agent']).optional().describe('Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the `artifactPrefix` rule.'),
+  values: z.array(z.string()).min(1).optional().describe('The complete set of values this output admits, one of which a run leaves standing. Authored as a reserved `#### values` section. Absent where the output is not a closed set.'),
+  fieldValues: z.record(z.array(z.string()).min(1)).optional().describe('The complete set of values one entry field or component admits, keyed by that field. Authored as `#####` children of `#### values`. Absent where no nested field is a closed set.'),
   destination: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique files.'),
 });
 export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;

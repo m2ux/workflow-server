@@ -1115,4 +1115,36 @@ describe('technique-loader', () => {
       }
     });
   });
+
+  describe('declared values', () => {
+    let tempDir: string;
+    const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];
+
+    beforeEach(async () => {
+      tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-values-')));
+      writeWorkflowFixture(tempDir, 'meta');
+    });
+    afterEach(async () => {
+      await rm(tempDir, { recursive: true, force: true });
+    });
+
+    it('parses an output set and a field set from `#### values`', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(join(dir, 'valued.md'), [...FM,
+        '## Capability', '', 'Cap.', '',
+        '## Outputs', '', '### report', '', 'The report.', '',
+        '#### entry', '', '##### reach', '', 'Which reading settled.', '',
+        '#### values', '', '`ready`, `refused`', '',
+        '##### reach', '', '`home`, `none`', '',
+      ].join('\n'), 'utf-8');
+      const result = await readTechnique('valued', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const output = result.value.outputs?.find((item) => item.id === 'report');
+        expect(output?.values).toEqual(['ready', 'refused']);
+        expect(output?.fieldValues).toEqual({ reach: ['home', 'none'] });
+      }
+    });
+  });
 });
