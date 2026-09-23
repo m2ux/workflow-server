@@ -3,8 +3,8 @@
 #
 # Stops one named container, compiles the engine checkout on the host when that
 # install matches the lockfile, rebuilds the image only when package.json,
-# package-lock.json, or the Dockerfile on the docker branch drifted (or
-# --rebuild-image), and starts
+# package-lock.json, or the Dockerfile on the docker branch (or
+# --docker-branch) drifted (or --rebuild-image), and starts
 # it again on the same host port and corpus with dist and schemas bound from the
 # engine checkout. Refuses the install instance name `workflow-server` and host
 # port 3000.
@@ -28,11 +28,12 @@ Reload an experiment HTTP sidecar on a stable host port.
 Stops the named container, compiles the engine checkout on the host when that
 install matches the lockfile, and starts it again on the same host port and
 corpus with a dist bind of that compile and a schemas bind of the engine
-checkout. The image rebuilds when package.json, package-lock.json, or the
-Dockerfile on the docker branch drifted, or when --rebuild-image
-is passed. Host port, corpus, engine checkout, image and projects root
-default to what the named container records. Refuses the install instance
-name workflow-server and host port 3000.
+checkout. The image definition and the launcher come from the docker branch.
+--docker-branch names another branch when the instance is a custom one. The
+image rebuilds when package.json, package-lock.json, or that Dockerfile
+drifted, or when --rebuild-image is passed. Host port, corpus, engine
+checkout, image and projects root default to what the named container
+records. Refuses the install instance name workflow-server and host port 3000.
 
   scripts/reload-exp-sidecar.sh --name=NAME [options]
   scripts/reload-exp-sidecar.sh --name=NAME --workflows-dir=CORPUS [options]
@@ -56,11 +57,14 @@ Options:
                            container records, running or exited, else this
                            repo root. DIR is a worktree for a branch that is
                            not this checkout. Host compile and image rebuilds
-                           use this tree. The launcher is the installed
-                           copy, or the copy on the docker branch when the
-                           install directory has none. When the chosen start.sh
-                           does not accept --dist-dir, the start.sh on the
-                           docker branch is used so a host compile still binds.
+                           use this tree. The launcher is start.sh on the
+                           docker branch. --docker-branch names another branch
+                           for a custom instance. When that start.sh does not
+                           accept --dist-dir, the start.sh on the docker branch
+                           is used so a host compile still binds.
+  --docker-branch=NAME     Branch that holds the image definition and the
+                           runner scripts (default: docker). A custom instance
+                           passes the branch that carries its own copies.
   --host-port=N            Host port. Defaults to the binding the named
                            container records, running or exited. Required when
                            none exists.
@@ -84,7 +88,7 @@ Options:
 
 Environment (overridden by flags):
   EXP_NAME  EXP_IMAGE  EXP_CORPUS  EXP_ENGINE  EXP_HOST_PORT
-  EXP_PROJECTS_ROOT  EXP_LOG_DIR
+  EXP_PROJECTS_ROOT  EXP_LOG_DIR  EXP_DOCKER_BRANCH
   WORKFLOW_SERVER_START  WORKFLOW_SERVER_STOP
 
 Container-side paths, shared with start.sh so a lookup matches what it binds:
@@ -122,6 +126,8 @@ ENGINE="${EXP_ENGINE:-}"
 PROJECTS="${EXP_PROJECTS_ROOT:-}"
 PORT="${EXP_HOST_PORT:-}"
 LOG_DIR="${EXP_LOG_DIR:-${INSTALL_DIR}/logs}"
+DOCKER_BRANCH="${EXP_DOCKER_BRANCH:-docker}"
+DOCKER_TIP=""
 BUILD=1
 REBUILD_IMAGE=0
 PREFLIGHT=1
@@ -146,6 +152,8 @@ while [[ $# -gt 0 ]]; do
         shift
       fi
       ;;
+    --docker-branch=*) DOCKER_BRANCH="${1#*=}"; shift ;;
+    --docker-branch) DOCKER_BRANCH="${2:?}"; shift 2 ;;
     --host-port=*) PORT="${1#*=}"; shift ;;
     --host-port) PORT="${2:?}"; shift 2 ;;
     --log-dir=*) LOG_DIR="${1#*=}"; shift ;;
@@ -197,23 +205,34 @@ git_pin() {
   printf '%s%s\n' "$commit" "$dirty"
 }
 
-# Hash of the lockfile and the Dockerfile on the docker branch. Src edits sit outside
+# Hash of the lockfile and the Dockerfile on the selected branch. Src edits sit outside
 # this hash so a host compile plus dist bind covers them without a docker build.
 inputs_sha() {
   local dir="$1"
   cat "${dir}/package.json" "${dir}/package-lock.json" "${IMAGE_DEF}/Dockerfile" | sha256sum | awk '{print $1}'
 }
 
-# The image definition is the docker branch. The engine checkout supplies the source.
+# One fetch of the branch that holds the image definition and the runner scripts.
+ensure_docker_tip() {
+  [[ -n "$DOCKER_TIP" ]] && return 0
+  [[ -n "$DOCKER_BRANCH" ]] || die "docker branch name is empty"
+  git -C "$ENGINE" fetch --depth=1 origin "$DOCKER_BRANCH" \
+    || die "cannot fetch ${DOCKER_BRANCH}"
+  DOCKER_TIP="$(git -C "$ENGINE" rev-parse FETCH_HEAD)"
+}
+
+show_from_docker_branch() {
+  local path="$1" dest="$2"
+  ensure_docker_tip
+  git -C "$ENGINE" show "${DOCKER_TIP}:${path}" > "$dest" \
+    || die "${DOCKER_BRANCH} has no ${path}"
+}
+
+# The image definition is the selected branch. The engine checkout supplies the source.
 prepare_image_definition() {
-  local engine="$1"
   IMAGE_DEF="$(mktemp -d)"
-  git -C "$engine" fetch --depth=1 origin docker \
-    || die "cannot fetch the docker branch for the image definition"
-  git -C "$engine" show FETCH_HEAD:Dockerfile > "${IMAGE_DEF}/Dockerfile" \
-    || die "docker branch has no Dockerfile"
-  git -C "$engine" show FETCH_HEAD:.dockerignore > "${IMAGE_DEF}/.dockerignore" \
-    || die "docker branch has no .dockerignore"
+  show_from_docker_branch Dockerfile "${IMAGE_DEF}/Dockerfile"
+  show_from_docker_branch .dockerignore "${IMAGE_DEF}/.dockerignore"
 }
 
 image_exists() {
@@ -268,8 +287,7 @@ pick_start_for_dist_bind() {
   BIND_DIST=""
 }
 
-# The runner scripts live on the docker branch. An install directory that
-# already has an executable copy keeps it.
+# The runner scripts come from the selected branch. The default branch is docker.
 materialize_runner() {
   local name="$1" dest
   [[ -n "$RUNNER_DIR" ]] || RUNNER_DIR="$(mktemp -d)"
@@ -278,22 +296,15 @@ materialize_runner() {
     printf '%s\n' "$dest"
     return
   fi
-  git -C "$ENGINE" fetch --depth=1 origin docker \
-    || die "cannot fetch the docker branch for scripts/${name}"
-  git -C "$ENGINE" show "FETCH_HEAD:scripts/${name}" > "$dest" \
-    || die "docker branch has no scripts/${name}"
+  show_from_docker_branch "scripts/${name}" "$dest"
   chmod +x "$dest"
   printf '%s\n' "$dest"
 }
 
 choose_runner() {
-  local override="$1" installed="$2" name="$3"
+  local override="$1" name="$2"
   if [[ -n "$override" ]]; then
     printf '%s\n' "$override"
-    return
-  fi
-  if [[ -x "$installed" ]]; then
-    printf '%s\n' "$installed"
     return
   fi
   materialize_runner "$name"
@@ -435,12 +446,12 @@ if [[ -n "$PROJECTS" ]]; then
   PROJECTS="$(cd "$PROJECTS" && pwd)"
 fi
 
-# The launcher is the installed start.sh and stop.sh. When the install directory
-# has no copy, the scripts on the docker branch are used. WORKFLOW_SERVER_START
-# and WORKFLOW_SERVER_STOP win. The launcher reads the install env, so the
-# operator's paths and signing key follow it.
-START="$(choose_runner "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" start.sh)"
-STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" stop.sh)"
+# The launcher is start.sh and stop.sh on the selected branch, docker unless
+# --docker-branch names another. WORKFLOW_SERVER_START and WORKFLOW_SERVER_STOP
+# win. The launcher reads the install env, so the operator's paths and signing
+# key follow it.
+START="$(choose_runner "${WORKFLOW_SERVER_START:-}" start.sh)"
+STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" stop.sh)"
 
 [[ -x "$START" ]] || die "start.sh not found or not executable: ${START}"
 [[ -x "$STOP" ]] || die "stop.sh not found or not executable: ${STOP}"
@@ -515,7 +526,7 @@ INPUTS=""
 if [[ "$BUILD" -eq 1 ]]; then
   [[ -f "${ENGINE}/package.json" && -f "${ENGINE}/package-lock.json" ]] \
     || die "engine checkout is missing package.json or package-lock.json: ${ENGINE}"
-  prepare_image_definition "$ENGINE"
+  prepare_image_definition
   INPUTS="$(inputs_sha "$ENGINE")"
   if [[ "$REBUILD_IMAGE" -eq 1 ]]; then
     NEED_IMAGE=1

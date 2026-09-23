@@ -80,7 +80,8 @@ describe('reload-exp-sidecar.sh', () => {
     const flowed = out.stdout.replace(/\s+/g, ' ');
     expect(flowed).toContain('compiles the engine checkout on the host');
     expect(flowed).toContain('dist bind');
-    expect(flowed).toContain('lockfile-triggered image rebuild');
+    expect(flowed).toContain('Dockerfile');
+    expect(flowed).toContain('--docker-branch');
     expect(flowed).toContain('Do not compile on the host');
     expect(flowed).toContain('the start.sh on the docker branch is used so a host compile still binds');
     expect(flowed).toContain('Skips host compile and serves the image-baked dist');
