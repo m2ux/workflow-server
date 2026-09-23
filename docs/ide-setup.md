@@ -10,7 +10,7 @@ Deploy [`examples/cursor-workspace/`](../examples/cursor-workspace/) with [`scri
 
 - **The MCP servers** — `workflow-server` reaching `http://127.0.0.1:3000/mcp` through `mcp-remote`, alongside `concept-rag`, `atlassian` and `gitnexus`.
 - **The always-applied rule** that sends an agent to `discover` before it does anything else.
-- **`AGENTS.md`**, the canonical workspace instructions from the template. `CLAUDE.md` is a symlink to it. Checkout notes live in `PROJECT.md`, which deploy leaves in place.
+- **`AGENTS.md` and `CLAUDE.md`**, the workspace instructions from the template. Checkout notes live in `PROJECT.md`, which deploy leaves in place.
 - **The four workspace roots** — the workspace itself, the project, the planning folder and the work trees.
 
 For Claude Code it also installs a workspace-local baseline: hook scripts in `scripts/`, their config in `config/`, `.claude/hooks` linking `scripts/`, the sandbox launcher at `scripts/sbx`, and a rendered `.claude/settings.json`.
@@ -40,7 +40,7 @@ Everything below lands under `~/.local/share/cursor/workspaces/<name>/`.
 | `.codex/config.toml` | The same MCP servers, the project checkout as a writable root, and the always-apply rule text |
 | `rules/`, `.cursor/rules/`, `.claude/rules/` | Rule text in `rules/`. `.claude/rules` links there. Each `.cursor/rules/*.mdc` links to `rules/<name>.md` |
 | `.claude/skills/` | The skills the template ships, one directory each; skills added locally stay |
-| `AGENTS.md`, `CLAUDE.md` | Canonical workspace instructions from the template, written on every deploy. `CLAUDE.md` links to `AGENTS.md`. Checkout notes live in `PROJECT.md`, which deploy leaves in place |
+| `AGENTS.md`, `CLAUDE.md` | Workspace instructions from the template, written on every deploy. Checkout notes live in `PROJECT.md`, which deploy leaves in place |
 | `scripts/`, `config/` | Hook scripts in `scripts/`, config in `config/`, and the sandbox launcher at `scripts/sbx`. `.claude/hooks` links `scripts/`. Source is [`scripts/claude/`](../scripts/claude/) and [`scripts/sbx`](../scripts/sbx) |
 | `.claude/settings.json` | Generated at deploy from [the settings template](../examples/cursor-workspace/.claude/settings.template.json) |
 

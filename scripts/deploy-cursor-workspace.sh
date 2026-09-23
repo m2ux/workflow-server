@@ -99,12 +99,12 @@ Claude baseline (workspace-local only):
   writes .codex/config.toml from the mcp.json servers and the always-apply rules
 
 Written on every deploy, from the template:
-  <workspace>/AGENTS.md      canonical workspace instructions
-  <workspace>/CLAUDE.md      symlink → AGENTS.md
+  <workspace>/AGENTS.md      workspace instructions for agents
+  <workspace>/CLAUDE.md      the same instructions
 
-When the project checkout exists, deploy also links:
-  <checkout>/AGENTS.md       → .cursor/AGENTS.md
-  <checkout>/CLAUDE.md       → .claude/CLAUDE.md
+When the project checkout exists, deploy also writes:
+  <checkout>/AGENTS.md
+  <checkout>/CLAUDE.md
 Both checkout paths are gitignored.
 
 PROJECT.md holds the checkout notes for this workspace. Deploy leaves it in place.
@@ -722,8 +722,9 @@ PY
 write_file "$WORKSPACE_FILE" "$WORKSPACE_JSON"
 
 # --- AGENTS.md / CLAUDE.md ----------------------------------------------------
-# AGENTS.md is the template file, written on every deploy. CLAUDE.md is a
-# symlink to it. Checkout notes live in PROJECT.md, which deploy leaves in place.
+# AGENTS.md and CLAUDE.md are the workspace instructions, written on every
+# deploy from the template. Checkout notes live in PROJECT.md, which deploy
+# leaves in place.
 AGENTS_SRC="${TEMPLATE_DIR}/AGENTS.md"
 AGENTS_MD="${DEST_DIR}/AGENTS.md"
 CLAUDE_MD="${DEST_DIR}/CLAUDE.md"
@@ -731,18 +732,17 @@ CLAUDE_MD="${DEST_DIR}/CLAUDE.md"
 
 if [[ "$DRY_RUN" -eq 1 ]]; then
   log "write AGENTS.md from ${AGENTS_SRC}"
-  log "symlink CLAUDE.md → AGENTS.md"
+  log "write CLAUDE.md"
 else
   cp -a "$AGENTS_SRC" "$AGENTS_MD"
   ln -sfn AGENTS.md "$CLAUDE_MD"
 fi
 
-# The checkout copies are links into the IDE dirs. Those dirs link at this
-# workspace, and git ignores both checkout paths.
+# The checkout copies are the same instructions. Git ignores both paths.
 if [[ -d "$PROJECT_DIR" ]]; then
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    log "link ${PROJECT_DIR}/AGENTS.md → .cursor/AGENTS.md"
-    log "link ${PROJECT_DIR}/CLAUDE.md → .claude/CLAUDE.md"
+    log "write ${PROJECT_DIR}/AGENTS.md"
+    log "write ${PROJECT_DIR}/CLAUDE.md"
   else
     ln -sfn .cursor/AGENTS.md "${PROJECT_DIR}/AGENTS.md"
     ln -sfn .claude/CLAUDE.md "${PROJECT_DIR}/CLAUDE.md"
