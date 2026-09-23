@@ -13,9 +13,9 @@
 #   🌳 work trees  → …/<repo>/.worktrees
 #
 # Shared kickoff content has one real file. Tool folders are symlinks to it:
-#   rules/*.md          canonical rule (sibling *.mdc → the .md)
-#   .cursor/rules       → ../rules
+#   rules/*.md          the rule text
 #   .claude/rules       → ../rules
+#   .cursor/rules/*.mdc → ../../rules/<name>.md
 #   skills/<name>       → the template skill directory
 #   .cursor/skills      → ../skills
 #   .claude/skills      → ../skills
@@ -97,8 +97,8 @@ Required MCP servers written into mcp.json (workflows depend on these):
   concept-rag, atlassian, gitnexus, workflow-server
 
 Shared content (one real file, tool folders are symlinks):
-  rules/*.md is the rule; each *.mdc links at that .md
-  .cursor/rules and .claude/rules link at rules/
+  rules/*.md is the rule text; .claude/rules links at rules/
+  .cursor/rules holds one .mdc per rule, linked at rules/<name>.md
   skills/<name> links at the template skill; extra skills already in skills/ stay
   .cursor/skills and .claude/skills link at skills/
   .agents links at the kickoff directory, so Codex finds .agents/skills
@@ -335,11 +335,13 @@ log "  MCP URL           : ${MCP_URL}"
 log "  claude settings   : ${CLAUDE_SETTINGS_TEMPLATE}"
 
 # --- canonical rules and skills, then tool-folder symlinks --------------------
-# One real rule file. Cursor loads .mdc and Claude loads .md, so the .mdc name
-# is a symlink to the .md. Placeholders expand in the real file only.
+# One real rule file, rules/<name>.md. Claude's rules directory links there.
+# Cursor's rules directory holds <name>.mdc, each linked at that file.
+# Placeholders expand in the real file only.
 if [[ "$DRY_RUN" -eq 1 ]]; then
   log "write canonical rules → ${DEST_DIR}/rules"
-  log "symlink .cursor/rules and .claude/rules → ../rules"
+  log "symlink .claude/rules → ../rules"
+  log "symlink .cursor/rules/*.mdc → ../../rules/<name>.md"
   log "link template skills → ${DEST_DIR}/skills"
   log "symlink .cursor/skills and .claude/skills → ../skills"
   log "symlink .agents → ."
@@ -379,11 +381,12 @@ if rules.is_dir():
             print(f"  expanded placeholders: {p.relative_to(workspace)}")
 PY
 
-  for md in "${DEST_DIR}/rules"/*.md; do
-    [[ -f "$md" && ! -L "$md" ]] || continue
-    base="$(basename "$md")"
-    ln -sfn "$base" "${DEST_DIR}/rules/${base%.md}.mdc"
-  done
+  rm -f "${DEST_DIR}/rules"/*.mdc
+  if [[ -L "${DEST_DIR}/.cursor/rules" ]]; then
+    rm -f "${DEST_DIR}/.cursor/rules"
+  fi
+  mkdir -p "${DEST_DIR}/.cursor/rules"
+  find "${DEST_DIR}/.cursor/rules" -maxdepth 1 -type f -name '*.md' -delete
 
   # A template skill links at the checkout that versions it. Skills already in
   # skills/ that the template does not carry stay. A real tool skill directory
@@ -425,7 +428,11 @@ PY
     done
   fi
 
-  ensure_symlink "${DEST_DIR}/.cursor/rules" "../rules"
+  for md in "${DEST_DIR}/rules"/*.md; do
+    [[ -f "$md" && ! -L "$md" ]] || continue
+    base="$(basename "$md" .md)"
+    ln -sfn "../../rules/${base}.md" "${DEST_DIR}/.cursor/rules/${base}.mdc"
+  done
   ensure_symlink "${DEST_DIR}/.claude/rules" "../rules"
   ensure_symlink "${DEST_DIR}/.cursor/skills" "../skills"
   ensure_symlink "${DEST_DIR}/.claude/skills" "../skills"

@@ -37,8 +37,8 @@ Everything below lands under `~/.local/share/cursor/workspaces/<name>/`.
 | Path | Role |
 |------|------|
 | `*.code-workspace` | Five roots with absolute `$HOME/…` paths: workspace, project, workflows, planning, work trees |
-| `rules/` | The bootstrap rule and its companions. Each `.mdc` links at the `.md` of the same name |
-| `.cursor/rules`, `.claude/rules` | Link at `rules/` |
+| `rules/`, `.claude/rules/` | Rule text in `rules/`. `.claude/rules` links there |
+| `.cursor/rules/` | One `.mdc` per rule, each linking at `rules/<name>.md` |
 | `skills/` | One link per template skill, at the template directory that versions it. A skill already present stays |
 | `.cursor/skills`, `.claude/skills` | Link at `skills/` |
 | `.agents` | Links at the kickoff directory, so Codex finds skills at `.agents/skills` |
