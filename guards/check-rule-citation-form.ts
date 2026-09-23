@@ -31,9 +31,18 @@
  *                   in before the reader sees the file — the bare slug.
  *   foreign-rule    the rule belongs to a technique the citer does not inherit — the dotted address.
  *
- * What this does NOT prove: that a bare slug resolves to a declared rule, which is the dangling half
- * of `dotted-rule-address` and wants the rule roster rather than the link graph. Nor does it read
- * prose citations, the spelling the catalogue entry already describes and a reader can see.
+ * The second family is the other half of the same entry, and takes the rule roster the link graph
+ * could not supply. A bare slug is correct exactly where the rule arrives with the reader, and a
+ * delivery carries more than the folder tree shows: a role's bundle brings the contracts of every
+ * scope it names, so a sibling operation's rules reach a technique that sits nowhere near it.
+ * Nothing static says which roles serve a technique, so the library is the bound this proves —
+ * within one, a rule may arrive by a route no walk sees; from another, it never does.
+ *
+ *   rule-outside-ancestry  a bare slug declared in another library, naming nothing the reader holds.
+ *
+ * What this does NOT prove: that a bare slug resolves to a declared rule at all, which stays the
+ * dangling half. Nor does it read prose citations, the spelling the catalogue entry already
+ * describes and a reader can see.
  *
  * Hard zero, no baseline.
  *
@@ -120,6 +129,58 @@ export function ruleCitations(
   return out;
 }
 
+/** A backticked token that is nothing but a kebab slug — the spelling a bare rule citation takes. */
+const BARE_SLUG = /`([a-z0-9]+(?:-[a-z0-9]+)+)`/g;
+
+/**
+ * The library or workflow a file belongs to — the segment under the corpus root, and the namespace
+ * beneath it where that segment is `support`.
+ *
+ * Reachability is wider than the folder tree: a role's bundle carries the contracts of every scope
+ * it names, so a technique holds a sibling operation's rules without sitting beneath it. Nothing
+ * static says which roles serve a technique, so the area is the bound this guard can prove — within
+ * one area a rule may arrive by a route this check cannot see, and across areas it never does.
+ */
+export function areaOf(relPath: string): string {
+  const parts = relPath.split(/[\\/]/);
+  // Discovery is rooted at the branch, so a path may or may not carry the `corpus/` grouping.
+  if (parts[0] === 'corpus') parts.shift();
+  const head = parts[0] ?? '';
+  return head === 'support' ? `support/${parts[1] ?? ''}` : head;
+}
+
+/**
+ * The rules the loader merges into a technique: its own, and every container it sits beneath. This
+ * is the set a bare slug can name, because the reader holds this and nothing else.
+ */
+export function reachableRules(citerAbs: string, root: string, rulesOf: (abs: string) => Set<string>): Set<string> {
+  const reachable = new Set(rulesOf(citerAbs));
+  let dir = dirname(citerAbs);
+  const stop = resolve(root);
+  for (;;) {
+    for (const slug of rulesOf(join(dir, 'TECHNIQUE.md'))) reachable.add(slug);
+    if (dir === stop || dirname(dir) === dir) break;
+    dir = dirname(dir);
+  }
+  return reachable;
+}
+
+/** Every bare slug a file mentions, fences passed over, skipping its own `### slug` rule headings. */
+export function bareRuleMentions(text: string): { line: number; slug: string }[] {
+  const lines = toLines(text);
+  const { fenced } = fencedLines(lines);
+  const out: { line: number; slug: string }[] = [];
+  for (const [i, line] of lines.entries()) {
+    if (fenced.has(i) || /^### /.test(line)) continue;
+    for (const m of line.matchAll(BARE_SLUG)) {
+      const slug = m[1];
+      // A dot before the backtick is a dotted address whose tail this is, not a bare citation.
+      if (slug !== undefined && line[(m.index ?? 0) - 1] !== '.') out.push({ line: i + 1, slug });
+    }
+  }
+  return out;
+}
+
 export function checkCitation(citation: RuleCitation, citerAbs: string, site: string): Finding | null {
   const { anchor, targetAbs } = citation;
   if (targetAbs === citerAbs) {
@@ -159,15 +220,49 @@ export function collectFindings(root: string): Finding[] {
     return hit;
   };
 
+  // Which files declare each slug, so a bare mention can be told from a rule nobody declares.
+  const declaringFiles = new Map<string, string[]>();
+  for (const path of markdownUnder(root)) {
+    for (const slug of rulesOf(path)) {
+      const homes = declaringFiles.get(slug) ?? [];
+      homes.push(path);
+      declaringFiles.set(slug, homes);
+    }
+  }
+
   const findings: Finding[] = [];
   let scanned = 0;
   for (const path of markdownUnder(root)) {
     scanned++;
     const rel = relative(root, path);
     if (citerKind(rel) !== 'technique') continue;
-    for (const citation of ruleCitations(readFileSync(path, 'utf-8'), path, rulesOf)) {
+    const text = readFileSync(path, 'utf-8');
+    for (const citation of ruleCitations(text, path, rulesOf)) {
       const finding = checkCitation(citation, path, `${rel}:${citation.line}`);
       if (finding) findings.push(finding);
+    }
+    // A bare slug names what the reader's own delivery carries. Shortened past that, the citation
+    // resolves in a checkout and names nothing that arrived.
+    const reachable = reachableRules(path, root, rulesOf);
+    for (const { line, slug } of bareRuleMentions(text)) {
+      if (reachable.has(slug)) continue;
+      const homes = declaringFiles.get(slug);
+      if (!homes || homes.length === 0) continue;
+      const home = homes[0]!;
+      const homeRel = relative(root, home);
+      if (areaOf(homeRel) === areaOf(rel)) continue;
+      // A namespace's root index is named by the namespace, not by the `techniques` folder every
+      // library spells alike.
+      const area = areaOf(homeRel);
+      const owner =
+        basename(home) === 'TECHNIQUE.md'
+          ? (area.split('/').pop() ?? basename(dirname(home)))
+          : basename(home, '.md');
+      findings.push({
+        check: 'rule-outside-ancestry',
+        site: `${rel}:${line}`,
+        detail: `${slug} is declared by ${owner}, which this file neither sits beneath nor shares a library with — the bare name reaches nothing this reader was delivered; cite it as \`${owner}.${slug}\``,
+      });
     }
   }
   assertScanned(scanned, 'markdown files', root);
