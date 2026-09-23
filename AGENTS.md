@@ -4,7 +4,7 @@
 - **Repo:** whatever survives a fresh clone on any machine — setup, boundaries, testing and PR mechanics.
 - A rule that names a path on this machine, or a tool not in `package.json`, belongs here rather than the repo.
 - **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.
-- *Always* follow the [Project Instructions](/PROJECT.md)
+- *Always* follow the [Project Instructions](/components/main/PROJECT.md)
 
 
 ## Design principles

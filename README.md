@@ -1,6 +1,6 @@
 # Workspace
 
-This checkout is the Cursor workspace for workflow-server. The branch is `workspace`.
+This checkout is the general-purpose workspace for workflow-server. The branch is `workspace`.
 
 ```text
 ./
