@@ -100,8 +100,8 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
         activity_id: 'design-philosophy',
         from_activity: 'start-work-package',
         step_manifest: [
-          { step_id: 'detect-review-mode', output: 'new implementation confirmed' },
-          { step_id: 'resolve-repo-root', output: 'repo root resolved' },
+          { step_id: 'detect-review-mode', output: { result: 'new implementation confirmed' } },
+          { step_id: 'resolve-repo-root', output: { result: 'repo root resolved' } },
         ],
       },
     });
@@ -423,7 +423,7 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
           from_activity: 'start-work-package',
           agent_id: 'w-1',
           step_manifest: [
-            { step_id: 'detect-review-mode', output: 'new implementation confirmed' },
+            { step_id: 'detect-review-mode', output: { result: 'new implementation confirmed' } },
           ],
         },
       });
@@ -474,7 +474,7 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
             { id: 'declared-ok', name: 'declared-ok.md' },
             { id: 'outside-art', name: 'outside-plan.md', path: outside },
           ],
-          step_manifest: [{ step_id: 'detect-review-mode', output: 'ok' }],
+          step_manifest: [{ step_id: 'detect-review-mode', output: { result: 'ok' } }],
         },
       });
       expect(result.isError).toBeFalsy();

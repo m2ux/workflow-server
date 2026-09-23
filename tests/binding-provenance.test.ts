@@ -11,7 +11,10 @@ import {
   decorateTechniqueProvenance,
   resolveInputSource,
   resolveOutputDestination,
+  declaredOutputsByStep,
   type ProvenanceContext,
+  type ProducerIndex,
+  type ProducerSite,
 } from '../src/utils/binding-provenance.js';
 import type { Technique } from '../src/schema/technique.schema.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
@@ -343,5 +346,68 @@ describe('buildProvenanceContext', () => {
     const r = resolveInputSource('analysis_report', ctx!, binding, REQUIRED);
     expect(r.source).toBe("step-binding: output of step 'gather' (activity 'work')");
     expect(r.unresolved).toBe(false);
+  });
+});
+
+
+/**
+ * A step manifest is measured against the ids the bound operation declares, and those are read off
+ * the producer scan rather than resolved a second time.
+ */
+describe('declaredOutputsByStep', () => {
+  const site = (over: Partial<ProducerSite>): ProducerSite => ({
+    name: 'change_report', via: 'output', stepId: 'detect', activityId: 'work',
+    ordinal: 0, conditional: false, ...over,
+  });
+
+  const index = (producers: ProducerSite[], unreadable: string[] = []): ProducerIndex => ({
+    declaredVariables: new Set(),
+    producers,
+    positions: new Map(),
+    resolvedTechniques: producers.length,
+    unreadableOps: new Set(unreadable),
+  });
+
+  it('takes an unremapped output under its own id', () => {
+    const declared = declaredOutputsByStep(index([site({})]), 'work');
+    expect([...(declared.get('detect') ?? [])]).toEqual(['change_report']);
+  });
+
+  /** A manifest reports by declared id, so a remap contributes the id it was remapped FROM. */
+  it('takes a remapped output under the id the operation declares, not the bag name', () => {
+    const declared = declaredOutputsByStep(
+      index([site({ name: 'positive_change_report', via: 'remap', origOutputId: 'change_report' })]),
+      'work',
+    );
+    expect([...(declared.get('detect') ?? [])]).toEqual(['change_report']);
+  });
+
+  it('takes nothing from a checkpoint, an action or a loop, which declare no operation output', () => {
+    const declared = declaredOutputsByStep(
+      index([site({ name: 'approved', via: 'checkpoint' }), site({ name: 'noted', via: 'action' })]),
+      'work',
+    );
+    expect(declared.has('detect')).toBe(false);
+  });
+
+  it('reads only the named activity', () => {
+    const declared = declaredOutputsByStep(index([site({ activityId: 'elsewhere' })]), 'work');
+    expect(declared.size).toBe(0);
+  });
+
+  /**
+   * A step whose op could not be read still contributes its remaps, so its declarations would be
+   * the remapped ids alone. Measuring a correct report against that subset reports it wrong, so the
+   * step is left out and goes unmeasured.
+   */
+  it('leaves out a step whose bound operation could not be read', () => {
+    const declared = declaredOutputsByStep(
+      index(
+        [site({ name: 'positive_change_report', via: 'remap', origOutputId: 'change_report' })],
+        ['work|detect'],
+      ),
+      'work',
+    );
+    expect(declared.has('detect')).toBe(false);
   });
 });

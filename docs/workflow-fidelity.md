@@ -100,9 +100,9 @@ On `next_activity` an agent passes a `step_manifest`: one entry per step complet
 ```json
 {
   "step_manifest": [
-    { "step_id": "resolve-target", "output": "Target verified at /path" },
-    { "step_id": "prepare-target", "output": "Checked out main" },
-    { "step_id": "detect-layout", "output": "needs_migration=false" }
+    { "step_id": "resolve-target", "output": { "target_path": "/path" } },
+    { "step_id": "prepare-target", "output": { "checked_out_ref": "main" } },
+    { "step_id": "detect-layout", "output": { "needs_migration": false } }
   ]
 }
 ```
@@ -115,7 +115,8 @@ Each warns rather than blocks:
 |-------|-----------|
 | Presence | An ungated top-level step is missing |
 | Order | Top-level steps are out of declaration order — a relative comparison, so omitted gated steps do not shift it |
-| Output | A step carries an empty output description |
+| Output | A step reports no value at all — an absent map, or one with no keys |
+| Declaration | A reported key names no output the step's bound operation declares |
 | Identity | A step id names no step of the activity |
 
 ### Steps that may be left out
