@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -64,16 +64,20 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ### a-rebuilt-index-reaches-a-reader-on-reload
 
-A completed rebuild publishes the graph to disk, and a running server reopens the replacement at its next check, at most once every five seconds. A read inside that window answers from the previous graph and reports it stale. Treat the second read rather than the exit status as what says the graph is current.
+A completed rebuild publishes the graph to disk, and a running server reopens the replacement at its next check, at most once every five seconds. A read inside that window answers from the previous graph and reports it stale, so what says the graph is current is the second read rather than the exit status.
 
-### the-build-flag-sets-the-graph-s-layers
+### a-graph-carries-the-layers-of-its-last-build
 
-A graph carries the program-dependence layers of the build that wrote it last. `{pdg_layers}` is therefore the state the build leaves behind rather than a request added to what is already there: a build that omits it rebuilds the graph without those layers, and the taint findings and the dependence query go from answering to reporting a missing layer. Every rebuild of a tree whose layers a caller depends on carries the flag, including one a refresh run performs on the caller's behalf.
+A graph carries the program-dependence layers of the build that wrote it last, so `{pdg_layers}` is the state a build leaves behind rather than a request added to what is already there. A build that omits it rebuilds the graph without those layers, and the taint findings and the dependence query go from answering to reporting a missing layer — including where the build is one a refresh run performs on a caller's behalf.
 
-### index-every-addressed-tree
+### a-graph-answers-only-under-its-own-name
 
-Index each tree whose answers a caller will ask for by name. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
+A tree's answers are reachable under the name its own index is keyed under and no other. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
 
-A component a checkout holds as a plain directory is reachable only that way, whatever path a build is handed: the build resolves to the checkout and keys one graph under it. A component earns a name of its own by being a checkout of its own — a submodule or a separate clone.
+### a-component-carries-a-name-where-it-is-a-checkout
 
-A member of a repository group carries an index of its own for the same reason: the group addresses its members by their registry names, and a group's freshness report marks a member with no graph as `missing`. Where a component is indexed both on its own and inside a containing tree, both names resolve at different scope — `address-a-named-graph` governs which to address.
+A component a checkout holds as a plain directory is reachable under that checkout's name, whatever path a build is handed: the build resolves to the checkout and keys one graph under it. A component carries a name of its own where it is a checkout of its own — a submodule or a separate clone.
+
+### a-group-member-carries-an-index-of-its-own
+
+A repository group addresses its members by their registry names, so a member with no graph of its own is one the group's freshness report marks `missing`. Where a component is indexed both on its own and inside a containing tree, both names resolve at different scope — `an-answer-carries-the-graph-it-came-from` governs which to address.

@@ -92,7 +92,7 @@ True where `{group_query_report}` carries a flow from this member.
 
 ### 5. Settle the Reach
 
-- Set the member's reach to `graph` where a definition the probe found carries a dependent, `hand-derived` where the search found a boundary symbol in the member's tree, and `none` where neither did. The instruments asked stay listed whichever settled it, the registry's answer among them.
+- For a member with a graph or a tree to ask, set the reach to `graph` where a definition the probe found carries a dependent, `hand-derived` where the search found a boundary symbol in the member's tree, and `none` where both instruments were asked and neither found one. A member with neither keeps the `unanswerable` reach recorded for it above, an empty answer and a question never put being different readings. The instruments asked stay listed whichever settled it, the registry's answer among them.
 - The package names the same search looked for answer what the member consumes rather than what it references, so they feed the dependency reading and not this one. A package name holds wherever the member depends on the concern's tree, which is the fact a declared link already carries.
 
 ### 6. Note the Search
