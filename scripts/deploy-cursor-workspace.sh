@@ -21,7 +21,6 @@
 #   skills/<name>       → the template skill directory
 #   .cursor/skills      → ../skills
 #   .claude/skills      → ../skills
-#   .agents             → .          (Codex discovers .agents/skills)
 #   .mcp.json           canonical MCP document
 #   .cursor/mcp.json    → ../.mcp.json
 #   .codex/config.toml  generated from that MCP document and the always-apply rules
@@ -29,7 +28,6 @@
 #   config/             hook JSON, copied from the template
 #   .claude/hooks       → ../scripts
 # When the product checkout exists, the project links at the kickoff:
-#   .agents → the kickoff directory
 #   .cursor .claude .codex → the matching kickoff subdirectory
 #
 # Usage:
@@ -99,7 +97,6 @@ Shared content (one real file, tool folders are symlinks):
   .cursor/rules and .claude/rules link at rules/
   skills/<name> links at the template skill; extra skills already in skills/ stay
   .cursor/skills and .claude/skills link at skills/
-  .agents links at the kickoff directory, so Codex finds .agents/skills
   .mcp.json is the MCP document; .cursor/mcp.json links at it
   .codex/config.toml is generated from that document and the always-apply rules
 
@@ -113,7 +110,6 @@ Written on every deploy, from the template:
   <workspace>/CLAUDE.md      the same instructions
 
 When the project checkout exists, deploy also writes:
-  <checkout>/.agents → the kickoff directory
   <checkout>/.cursor, .claude, .codex → the matching kickoff subdirectory
   <checkout>/AGENTS.md and <checkout>/CLAUDE.md
 Both checkout instruction paths are gitignored.
@@ -352,7 +348,6 @@ elif [[ "$DRY_RUN" -eq 1 ]]; then
   log "symlink .cursor/rules and .claude/rules → ../rules"
   log "link template skills → ${DEST_DIR}/skills"
   log "symlink .cursor/skills and .claude/skills → ../skills"
-  log "symlink .agents → ."
 else
   mkdir -p "${DEST_DIR}/rules" "${DEST_DIR}/skills"
   rm -f \
@@ -423,23 +418,10 @@ PY
     fi
   done
 
-  agents_dir="${DEST_DIR}/.agents"
-  if [[ -d "${agents_dir}/skills" && ! -L "$agents_dir" ]]; then
-    for skill_src in "${agents_dir}/skills"/*/; do
-      [[ -d "$skill_src" ]] || continue
-      skill_name="$(basename "$skill_src")"
-      if [[ ! -e "${DEST_DIR}/skills/${skill_name}" ]]; then
-        mv "$skill_src" "${DEST_DIR}/skills/${skill_name}"
-        log "  kept local skill: ${skill_name}"
-      fi
-    done
-  fi
-
   ensure_symlink "${DEST_DIR}/.cursor/rules" "../rules"
   ensure_symlink "${DEST_DIR}/.claude/rules" "../rules"
   ensure_symlink "${DEST_DIR}/.cursor/skills" "../skills"
   ensure_symlink "${DEST_DIR}/.claude/skills" "../skills"
-  ensure_symlink "${DEST_DIR}/.agents" "."
 fi
 
 # --- scripts and config — same paths as the template --------------------------
@@ -726,7 +708,7 @@ if os.path.isdir(rules_dir):
 
 parts = [
     "# Codex project config.",
-    "# Skills load from .agents/skills.",
+    "# Skills load from skills/.",
     "# MCP servers are the set written to mcp.json.",
     "# Always-apply rule text is included here.",
     "",
@@ -821,11 +803,10 @@ if [[ -d "$PROJECT_DIR" ]]; then
   if [[ "$DRY_RUN" -eq 1 ]]; then
     log "write ${PROJECT_DIR}/AGENTS.md"
     log "write ${PROJECT_DIR}/CLAUDE.md"
-    log "link project .agents .cursor .claude .codex at ${DEST_DIR}"
+    log "link project .cursor .claude .codex at ${DEST_DIR}"
   else
     ln -sfn .cursor/AGENTS.md "${PROJECT_DIR}/AGENTS.md"
     ln -sfn .claude/CLAUDE.md "${PROJECT_DIR}/CLAUDE.md"
-    ensure_symlink "${PROJECT_DIR}/.agents" "${DEST_DIR}"
     ensure_symlink "${PROJECT_DIR}/.cursor" "${DEST_DIR}/.cursor"
     ensure_symlink "${PROJECT_DIR}/.claude" "${DEST_DIR}/.claude"
     ensure_symlink "${PROJECT_DIR}/.codex" "${DEST_DIR}/.codex"
