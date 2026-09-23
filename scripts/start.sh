@@ -18,8 +18,7 @@
 # the server starts on the definitions already on disk. Skip with
 # --no-update-workflows.
 #
-# Needs: docker (public image: ghcr.io/m2ux/workflow-server). `--build` tags a
-# local image from a checkout instead of pulling.
+# Needs: docker (public image: ghcr.io/m2ux/workflow-server).
 set -euo pipefail
 
 DEFAULT_IMAGE_REPO="ghcr.io/m2ux/workflow-server"
@@ -111,8 +110,6 @@ TRANSPORT="${TRANSPORT:-$DEFAULT_TRANSPORT}"
 BIND_HOST="${HOST:-$DEFAULT_BIND_HOST}"
 
 PULL=1
-BUILD=0
-BUILD_CONTEXT=""
 UPDATE_WORKFLOWS=1
 case "${WORKFLOW_SERVER_UPDATE_WORKFLOWS:-}" in
   0|false|no) UPDATE_WORKFLOWS=0 ;;
@@ -128,7 +125,7 @@ POSITIONAL=()
 
 usage() {
   cat <<EOF
-workflow-server start — pull GHCR image, or build a local checkout, and run with host binds.
+workflow-server start — pull the GHCR image and run it with host binds.
 
 USAGE
   start.sh -d
@@ -157,9 +154,8 @@ OPTIONS (optional overrides — prefer re-running install to change paths)
   --dist-dir=PATH           Host compiled output (RO bind onto /app/dist); optional.
                             Default off — the image's dist is what runs. An
                             experiment sidecar compiles on the host and passes this.
-  --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG}; with --build, workflow-server:local)
+  --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
   --tag=TAG                 Tag for default repo (default: ${DEFAULT_TAG})
-  --build[=DIR]             Build from DIR (Dockerfile required). DIR defaults to the current directory. Skips pull.
   --host-port=N             Host port (default: ${DEFAULT_HOST_PORT}). 0 publishes an ephemeral port and requires -d.
   --port=N                  Container PORT (default: ${DEFAULT_CONTAINER_PORT})
   --name=NAME               Container name (default: ${DEFAULT_NAME}). A second instance needs a different name.
@@ -184,8 +180,8 @@ EXAMPLES
   ~/.local/share/workflow-server/start.sh -d
   ~/.local/share/workflow-server/stop.sh
 
-  # Second instance from a checkout (install instance on :3000 stays up):
-  ./scripts/start.sh -d --build --name=workflow-server-trial --host-port=0 --no-update-workflows
+  # Second instance (install instance on :3000 stays up):
+  ./scripts/start.sh -d --name=workflow-server-trial --host-port=0 --no-update-workflows
   ./scripts/stop.sh --name=workflow-server-trial
 
   # Reload a named experiment sidecar on the same host port:
@@ -289,17 +285,6 @@ while [[ $# -gt 0 ]]; do
     --image) IMAGE_REF="${2:?}"; shift 2 ;;
     --tag=*) TAG="${1#*=}"; shift ;;
     --tag) TAG="${2:?}"; shift 2 ;;
-    --build=*) BUILD=1; BUILD_CONTEXT="${1#*=}"; shift ;;
-    --build)
-      BUILD=1
-      if [[ $# -ge 2 && "$2" != -* ]]; then
-        BUILD_CONTEXT="$2"
-        shift 2
-      else
-        BUILD_CONTEXT=""
-        shift
-      fi
-      ;;
     --host-port=*) HOST_PORT="${1#*=}"; shift ;;
     --host-port) HOST_PORT="${2:?}"; shift 2 ;;
     --port=*) CONTAINER_PORT="${1#*=}"; shift ;;
@@ -468,19 +453,8 @@ run() {
 
 if [[ -n "$IMAGE_REF" ]]; then
   FULL_IMAGE="$IMAGE_REF"
-elif [[ "$BUILD" -eq 1 ]]; then
-  FULL_IMAGE="workflow-server:local"
 else
   FULL_IMAGE="${IMAGE_REPO}:${TAG}"
-fi
-
-if [[ "$BUILD" -eq 1 ]]; then
-  [[ -n "$BUILD_CONTEXT" ]] || BUILD_CONTEXT="$PWD"
-  BUILD_CONTEXT="$(abs_dir "$BUILD_CONTEXT")"
-  [[ -f "${BUILD_CONTEXT}/Dockerfile" ]] || die "no Dockerfile in ${BUILD_CONTEXT} (--build needs a checkout with a Dockerfile)"
-  PULL=0
-  echo "Building ${FULL_IMAGE} from ${BUILD_CONTEXT}"
-  run docker build -t "$FULL_IMAGE" "$BUILD_CONTEXT"
 fi
 
 if [[ "$PULL" -eq 1 ]]; then
@@ -491,8 +465,7 @@ if [[ "$PULL" -eq 1 ]]; then
   in ~/.docker/config.json still answers for it, and the registry rejects the auth
   rather than falling back to an anonymous pull — reported as 'denied'. Clear it:
     docker logout ghcr.io
-  Otherwise check network access to ghcr.io, or build from a checkout if the tag is
-  unpublished."
+  Otherwise check network access to ghcr.io."
   fi
 fi
 
