@@ -9,7 +9,7 @@ An agent working a task produces two unrelated kinds of output: changes to the u
 3. **The workflow definitions** are served from the install's own `workflows` directory — the definitions branch — rather than from the engineering checkout.
 4. **The projects checkout** at `$HOST_PROJECTS_ROOT/<repo>/` is the main-branch clone, used for reading the codebase, for code intelligence, and as the tree new worktrees are added from.
 
-The install script on the `docker` branch creates the host layout for the HTTP and Docker install, writing the projects root into the install environment; [`scripts/deploy.sh`](../scripts/deploy.sh) wires up engineering storage.
+The install script on the `docker` branch creates the host layout for the HTTP and Docker install, writing the projects root into the install environment. Engineering storage layouts are [engineering storage](https://github.com/m2ux/workflow-server/blob/workspace/docs/engineering-storage.md).
 
 ## The planning folder
 
@@ -40,7 +40,7 @@ Artifacts are written strictly into the planning folder, which is what keeps pla
 
 ## Committing engineering content
 
-Engineering content is version-controlled independently of the domain commits. A product repository chooses a same-repo orphan branch, a shared engineering monorepo, or plain in-branch files, and [`scripts/deploy.sh`](../scripts/deploy.sh) sets that choice up. Workflow definitions live on their own separate branch.
+Engineering content is version-controlled independently of the domain commits. A product repository chooses a same-repo orphan branch, a shared engineering monorepo, or plain in-branch files. Workflow definitions live on their own separate branch.
 
 At the point after an activity where its artifacts are committed, the orchestrator works in the engineering checkout rather than the app checkout. It stages and commits the planning files under that tree, then pushes the engineering remote. Where the app repository tracks engineering as a submodule, it then returns to the app checkout and commits the updated pointer.
 

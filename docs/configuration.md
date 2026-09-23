@@ -51,7 +51,7 @@ The key that seals session state lives in a file named `secret`. The server look
 # Legacy single root — workspace doubles as the engineering root for planning
 node dist/index.js --workspace=~/work --workflow-dir=.worktrees/workflows
 
-# Per-repo layout, after install.sh, a checkout under HOST_PROJECTS_ROOT, and deploy.sh
+# Per-repo layout, after install.sh and a checkout under HOST_PROJECTS_ROOT
 node dist/index.js --repo=m2ux/workflow-server --transport=http
 
 # HTTP defaults from npm

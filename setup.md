@@ -19,16 +19,7 @@ Two steps per project. **2a** deploys engineering into the product repo. **2b** 
 
 ### 2a. Deploy engineering
 
-Only for a presently *undeployed* (no .engineering submodule) project; from the **root of the target project repo** (not the workflow-server checkout), run [`scripts/deploy.sh`](scripts/deploy.sh):
-
-```bash
-# inside the target project
-curl -fsSL -o deploy.sh \
-  https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/deploy.sh
-chmod +x deploy.sh && ./deploy.sh
-```
-
-Flags: `./deploy.sh --help`.
+A product repository keeps its engineering storage outside this tree. The layouts are [engineering storage](https://github.com/m2ux/workflow-server/blob/workspace/docs/engineering-storage.md).
 
 ### 2b. Checkout the project
 
@@ -45,40 +36,7 @@ Repeat **2a → 2b** for each product repo.
 
 ## 3. Setup Cursor workspace
 
-**Recommended path:** deploy with [`scripts/deploy-cursor-workspace.sh`](scripts/deploy-cursor-workspace.sh). That writes absolute `$HOME/…` multi-root paths (no `HOST_PROJECTS_ROOT` required when opening Cursor) and mirrors `~/.local/share/cursor/workspaces/workflow-server`:
-
-```bash
-# after install.sh ($HOME must be set; needs python3) — preferred
-~/.local/share/workflow-server/deploy-cursor-workspace.sh workflow-server
-# or from a workflow-server checkout:
-./scripts/deploy-cursor-workspace.sh workflow-server
-# refresh an existing kickoff dir (keeps extra MCP servers):
-~/.local/share/workflow-server/deploy-cursor-workspace.sh workflow-server --force
-# preview:
-~/.local/share/workflow-server/deploy-cursor-workspace.sh workflow-server --dry-run
-# no args → help (repo name is required)
-cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-workspace
-```
-
-`install.sh` places `deploy-cursor-workspace.sh` under the install dir (default `~/.local/share/workflow-server/`).
-
-| Flag | Purpose |
-|------|---------|
-| `REPO_NAME` or `--repo=NAME` | **Required.** Checkout / workspace basename (no `owner/repo`) |
-| `--home=PATH` | Build paths under this home (default `$HOME`) |
-| `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `$HOME/projects/dev` |
-| `--force` | Refresh managed files; merge `mcp.json` without dropping other servers; refresh Claude hooks/settings; rewrite `AGENTS.md` from the template |
-| `--dry-run` / `--open` / no args / `--help` | Preview, launch Cursor, or print help |
-
-Flags: `deploy-cursor-workspace.sh --help`.
-
-Deploy installs:
-
-- MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`), also written to `.codex/config.toml`
-- Bootstrap rules, and `AGENTS.md` and `CLAUDE.md` from the template on every deploy. Those instructions name `PROJECT.md` in the repository
-- Multi-root `.code-workspace` with five absolute `$HOME/…` paths: workspace, project, workflows, planning, work trees
-- Shared rules, skills and MCP, with `.cursor`, `.claude` and `.codex` linked at that one copy
-- **Claude baseline (kickoff only):** hook scripts in `scripts/`, config in `config/`, `.claude/hooks` linking `scripts/`, `scripts/sbx`, generated `.claude/settings.json`, and `.claude/skills/`
+The kickoff workspace lives on the workspace branch. [IDE setup](https://github.com/m2ux/workflow-server/blob/workspace/docs/ide-setup.md) covers the bootstrap rule and the workspace roots.
 
 ## 4. Update Workflows
 
