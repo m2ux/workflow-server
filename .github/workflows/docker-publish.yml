@@ -26,11 +26,8 @@ jobs:
 
     steps:
       - name: Checkout repository
-        # `.engineering` nests a private repo this runner cannot clone. The image
-        # copies src, schemas, and package files. HTTP smoke reads the fixture corpus.
+        # The image copies src, schemas, and package files. HTTP smoke reads the fixture corpus.
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          submodules: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

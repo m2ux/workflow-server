@@ -28,7 +28,7 @@ curl -fsSL -o deploy.sh \
 chmod +x deploy.sh && ./deploy.sh
 ```
 
-Layouts (same-repo orphan, shared engineering monorepo, in-branch): [docs/engineering-storage.md](docs/engineering-storage.md). Flags: `./deploy.sh --help`.
+Flags: `./deploy.sh --help`.
 
 ### 2b. Checkout the project
 
@@ -45,7 +45,7 @@ Repeat **2a → 2b** for each product repo.
 
 ## 3. Setup Cursor workspace
 
-**Recommended path:** deploy the [examples/cursor-workspace/](examples/cursor-workspace/) template with [`scripts/deploy-cursor-workspace.sh`](scripts/deploy-cursor-workspace.sh). That writes absolute `$HOME/…` multi-root paths (no `HOST_PROJECTS_ROOT` required when opening Cursor) and mirrors `~/.local/share/cursor/workspaces/workflow-server`:
+**Recommended path:** deploy with [`scripts/deploy-cursor-workspace.sh`](scripts/deploy-cursor-workspace.sh). That writes absolute `$HOME/…` multi-root paths (no `HOST_PROJECTS_ROOT` required when opening Cursor) and mirrors `~/.local/share/cursor/workspaces/workflow-server`:
 
 ```bash
 # after install.sh ($HOME must be set; needs python3) — preferred
@@ -60,7 +60,7 @@ Repeat **2a → 2b** for each product repo.
 cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-workspace
 ```
 
-`install.sh` places `deploy-cursor-workspace.sh` and `examples/cursor-workspace/` under the install dir (default `~/.local/share/workflow-server/`). Hook scripts and their config live in that template.
+`install.sh` places `deploy-cursor-workspace.sh` under the install dir (default `~/.local/share/workflow-server/`).
 
 | Flag | Purpose |
 |------|---------|
@@ -70,7 +70,7 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 | `--force` | Refresh managed files; merge `mcp.json` without dropping other servers; refresh Claude hooks/settings; rewrite `AGENTS.md` from the template |
 | `--dry-run` / `--open` / no args / `--help` | Preview, launch Cursor, or print help |
 
-Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md) · [docs/ide-setup.md](docs/ide-setup.md).
+Flags: `deploy-cursor-workspace.sh --help`.
 
 Deploy installs:
 
@@ -107,7 +107,7 @@ Restart the HTTP server afterward if it is running.
 |---------|--------------|-----|
 | Sessions fail while HTTP is up | `/ready` not fully ready | Require `sessionKeyWritable: true` — [http.md](http.md) |
 | Every workflow id misses while HTTP is up | Corpus bind points at the wrong tree | Require `corpusServes: true`; compare `corpus.dir` with the bind — [http.md](http.md) |
-| Agent skips `discover` | Bootstrap rule missing | [docs/ide-setup.md](docs/ide-setup.md) |
+| Agent skips `discover` | Bootstrap rule missing | Complete §3 |
 | Repo / planning path errors | Missing deploy or checkout under `HOST_PROJECTS_ROOT` | Complete §2a then §2b |
 | stdio exits at startup | No workspace or repo binding | [stdio.md](stdio.md) — `--workspace` or `--repo` required |
 

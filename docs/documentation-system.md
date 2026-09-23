@@ -33,10 +33,7 @@ Neither can detect a prose divergence between a markdown document and its site p
 | [`README.md`](../README.md) | Project overview, quick start, the workflow model at a glance | Everyone — first contact |
 | [`docs/README.md`](README.md) | Index of this directory, routing by what the reader is doing | Anyone arriving in `docs/` |
 | [`setup.md`](../setup.md) | Shared install sequence: transport, deploy, checkout under `HOST_PROJECTS_ROOT`, Cursor workspace, update workflows | Integrators |
-| [`docs/engineering-storage.md`](engineering-storage.md) | How product repos store engineering (orphan, shared monorepo, in-branch) | Integrators |
-| [`docs/install-projects-worktrees.md`](install-projects-worktrees.md) | Where checkouts, planning roots and feature worktrees sit on disk, and what creates each | Integrators |
 | [`http.md`](../http.md) / [`stdio.md`](../stdio.md) | Transport-only differences (Docker/HTTP vs local stdio MCP config) | Integrators |
-| [`docs/ide-setup.md`](ide-setup.md) | The always-applied bootstrap rule and connection verification | Integrators configuring an agent |
 | [`docs/api-reference.md`](api-reference.md) | Catalog of the tool surface and HTTP routes — brief, linking out for depth | Integrators |
 | [`docs/configuration.md`](configuration.md) | Every flag and environment variable the server reads at startup | Integrators and contributors |
 | [`docs/architecture.md`](architecture.md) | Hub introducing the architecture models and the pressure each answers | Contributors |
@@ -55,14 +52,13 @@ Neither can detect a prose divergence between a markdown document and its site p
 | [`site/`](../site/) | The rendered documentation site: user guide, technical specs, API reference, design | Readers in a browser |
 | [`PROJECT.md`](../PROJECT.md) | Project instructions for this repository. The workspace instructions name this file. It stays in the repository | AI agents |
 | `AGENTS.md`, `CLAUDE.md` | Workspace instructions for AI agents. Deploy writes both into the checkout. Git ignores both paths. They name `PROJECT.md` | AI agents |
-| [`examples/cursor-workspace/.claude/rules/`](../examples/cursor-workspace/.claude/rules/) | Agent rules the workspace template ships into a deployed kickoff directory | AI agents in a deployed workspace |
 | Engineering root (`.engineering/` or `$HOST_PROJECTS_ROOT/<repo>/.engineering`) | Planning artifacts, work packages, ADRs — engineering process, not product documentation | Project engineering |
 
 Workflow definitions live on the `workflows` branch. Authoring docs sit at that branch's `docs/` root; each product workflow also carries documentation in its `techniques/` and `resources/` folders.
 
 ## Where new documentation belongs
 
-- **A user-facing how-to** (installing, configuring, running) → `README.md` for first contact, [`setup.md`](../setup.md) for the shared sequence, [`http.md`](../http.md) / [`stdio.md`](../stdio.md) only for transport differences, `docs/ide-setup.md` for agent wiring; plus a page under `site/guide/` if it warrants the illustrated treatment.
+- **A user-facing how-to** (installing, configuring, running) → `README.md` for first contact, [`setup.md`](../setup.md) for the shared sequence, [`http.md`](../http.md) / [`stdio.md`](../stdio.md) only for transport differences; plus a page under `site/guide/` if it warrants the illustrated treatment.
 - **A new architecture model or a change to one** → a `docs/*-model.md` document, linked from the [`docs/architecture.md`](architecture.md) hub, with a matching page under `site/specs/`.
 - **Tool or schema surface changes** → the code and Zod schemas are the source; regenerate `schemas/` (`npm run build:schemas`) and the site's API pages (`npm run build:site`). Keep [`docs/api-reference.md`](api-reference.md) as a short index (update one-line descriptions and links); put behavioral depth in the relevant architecture model.
 - **Workflow-authoring contracts** → [the `workflows` branch `docs/`](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md) for layout and adding a workflow; the [technique protocol](technique-protocol-specification.md), the [identifier conventions](identifier-conventions.md) and the [schema guide](../schemas/README.md) on this tree.

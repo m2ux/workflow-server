@@ -31,10 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          # `.engineering` is a gitlink this runner has no credential for. The corpus is not a
-          # submodule, so refusing them all costs nothing the next step does not supply.
-          submodules: false
 
       # The definitions this engine serves. Without them the corpus-reading tests skip, and a
       # change on either side of the engine/definitions boundary passes both gates while the two

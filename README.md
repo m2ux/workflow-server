@@ -15,7 +15,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ## 🎯 Overview
 
-Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [IDE rule](docs/ide-setup.md) bootstraps the agent — from there, the server handles workflow discovery, session management, and step-by-step navigation.
+Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [IDE rule](setup.md#3-setup-cursor-workspace) bootstraps the agent — from there, the server handles workflow discovery, session management, and step-by-step navigation.
 
 ### How It Works
 

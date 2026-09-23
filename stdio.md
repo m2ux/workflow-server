@@ -58,8 +58,7 @@ The IDE starts the process; you do not run a long-lived server yourself.
 ```
 
 Pass `working_directory` on `start_session` as the absolute path of the checkout under work. The server derives `owner/repo` from that origin. Planning lands under  
-`$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/`
-(see [install-projects-worktrees.md](docs/install-projects-worktrees.md)).
+`$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/`.
 
 Optional: pin one repo for the whole process with `--repo=owner/your-project` instead of multi-root.
 
@@ -116,6 +115,6 @@ Then finish shared steps in [setup.md](setup.md) (**§2** deploy + checkout, **�
 | Spawn error / cannot find `dist/index.js` | Run `npm run build`; use an absolute path to `dist/index.js` |
 | Workflows not found | Readable `--workflow-dir` pointing at a tree discovery can walk: when that tree holds a `corpus/` grouping, discovery walks that grouping and does not search sibling folders; a still-flat tree of workflow directories is walked as the root. A `workflow.yaml` at any depth under that walk is a workflow. Authoring docs live at `docs/` of that tree and are not product workflows. |
 | Planning path / repo errors | [setup.md §2](setup.md#2-initialise-a-target-repo); pass `working_directory` on `start_session` |
-| Agent never calls `discover` | [docs/ide-setup.md](docs/ide-setup.md) bootstrap rule |
+| Agent never calls `discover` | [setup.md §3](setup.md#3-setup-cursor-workspace) bootstrap rule |
 
 Shared install vs deploy vs checkout: [setup.md](setup.md).

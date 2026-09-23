@@ -213,4 +213,4 @@ Every layer above detects rather than prevents, and the limits are worth stating
 
 ## Where else to look
 
-The tools these layers sit behind are catalogued in the [API reference](api-reference.md), with the [generated wire descriptions](../site/api/tools.html) giving each parameter schema. How instructions reach an agent without swamping its context is [resource resolution](resource-resolution-model.md). Getting an agent talking to the server in the first place is [IDE setup](ide-setup.md).
+The tools these layers sit behind are catalogued in the [API reference](api-reference.md), with the [generated wire descriptions](../site/api/tools.html) giving each parameter schema. How instructions reach an agent without swamping its context is [resource resolution](resource-resolution-model.md). Getting an agent talking to the server in the first place is [setup](../setup.md#3-setup-cursor-workspace).

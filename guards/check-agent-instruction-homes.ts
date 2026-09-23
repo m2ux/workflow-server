@@ -2,11 +2,9 @@
 /**
  * One home for each body of agent instruction.
  *
- * `AGENTS.md` on this tree sends an agent to the workspace `AGENTS.md` first, so anything stated in
- * both is read twice and the repo copy is the one that loses. That is not hypothetical: the code
- * intelligence section stood in both, and the two copies had already drifted apart on the index
- * statistics they quote and on the skill roster they list, with the repo copy the stale and shorter
- * of the two.
+ * Code intelligence guidance is authored in the workspace `AGENTS.md`. This tree
+ * carries no `AGENTS.md` or `CLAUDE.md`. A tool that writes either file and restates
+ * that guidance fails this sweep.
  *
  * The section is injected by an external tool (`npx gitnexus analyze`), which nothing in this
  * repository configures. So the copy cannot be prevented at its source — it can only be refused
@@ -52,8 +50,7 @@ const HOMES: Home[] = [
 function collect(): Finding[] {
   const findings: Finding[] = [];
   for (const home of HOMES) {
-    // `CLAUDE.md` is a symlink to `AGENTS.md` here, so the same bytes answer to two names. Reporting
-    // both would name one defect twice and send a reader to a file with nothing of its own to fix.
+    // When both names are the same file, report the defect once.
     const seen = new Set<string>();
     for (const rel of home.mustNotRestate) {
       const path = join(ROOT, rel);

@@ -6,7 +6,7 @@ Where a flag and a variable name the same setting, the flag wins.
 
 ## Root binding
 
-One of a workspace path **or** `--repo` is required at startup. Where each resulting directory sits on disk is [the install layout](install-projects-worktrees.md).
+One of a workspace path **or** `--repo` is required at startup. The table names where each resulting directory sits.
 
 | Variable or flag | Default | Description |
 |------------------|---------|-------------|

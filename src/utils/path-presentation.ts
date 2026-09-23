@@ -10,7 +10,7 @@ import { isPathInsideRoot } from '../worktree-validator.js';
  * server-side paths; `planning_folder_path` in tool responses is rewritten to
  * the host bind so agents can open/write artifacts in their IDE workspace.
  *
- * Canonical host layout (docs/install-projects-worktrees.md):
+ * Canonical host layout:
  *   `$HOST_PROJECTS_ROOT/<repo>/…`  (basename only — not owner/repo)
  *
  * When a server path still uses the deprecated install co-location

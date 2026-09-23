@@ -135,7 +135,7 @@ A workflow varies its path through ordinary state rather than through a mechanis
 
 ## Opening a session
 
-`start_session` opens a top-level session, defaulting to the `meta` workflow. Pass `working_directory` as the checkout under work: the server derives `owner/repo` from that checkout's origin, even when the folder is named for a branch, as [IDE setup](ide-setup.md#binding-the-repository) covers. `repo` is optional, and must equal the derived origin when supplied.
+`start_session` opens a top-level session, defaulting to the `meta` workflow. Pass `working_directory` as the checkout under work: the server derives `owner/repo` from that checkout's origin, even when the folder is named for a branch. `repo` is optional, and must equal the derived origin when supplied.
 
 A named `planning_folder` resumes an existing session. Where a derived dated slug already holds one, the server opens the next free numbered folder rather than joining it. `user_request` seeds the opening request into the variable bag, and children inherit it.
 
