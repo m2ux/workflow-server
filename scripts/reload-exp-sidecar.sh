@@ -58,10 +58,9 @@ Options:
                            repo root. DIR is a worktree for a branch that is
                            not this checkout. Host compile and image rebuilds
                            use this tree. The launcher is start.sh on the
-                           docker branch. --docker-branch names another branch
-                           for a custom instance. When that start.sh does not
-                           accept --dist-dir, the start.sh on the docker branch
-                           is used so a host compile still binds.
+                           branch named by --docker-branch (default: docker).
+                           An override that lacks --dist-dir is replaced by
+                           that branch's start.sh so a host compile still binds.
   --docker-branch=NAME     Branch that holds the image definition and the
                            runner scripts (default: docker). A custom instance
                            passes the branch that carries its own copies.
@@ -272,8 +271,8 @@ accepts_dist_dir() {
   [[ -n "$script" && -x "$script" ]] && grep -q -- '--dist-dir' "$script"
 }
 
-# A dist bind needs a launcher that accepts --dist-dir. The copy on the docker
-# branch is that launcher when the one already chosen predates the flag.
+# A dist bind needs a launcher that accepts --dist-dir. An override that lacks
+# the flag is replaced by start.sh on the branch named by --docker-branch.
 pick_start_for_dist_bind() {
   [[ -n "$BIND_DIST" ]] || return 0
   if accepts_dist_dir "$START"; then
@@ -283,7 +282,7 @@ pick_start_for_dist_bind() {
   if accepts_dist_dir "$START"; then
     return 0
   fi
-  echo "warning: start.sh does not accept --dist-dir; serving the image-baked dist" >&2
+  echo "warning: start.sh on ${DOCKER_BRANCH} does not accept --dist-dir; serving the image-baked dist" >&2
   BIND_DIST=""
 }
 
