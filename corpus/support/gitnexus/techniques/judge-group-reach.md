@@ -88,11 +88,11 @@ True where `{group_query_report}` carries a flow from this member.
 ### 4. Search Each Member's Tree
 
 - Search the member's tree for each name in `{boundary_symbols}` and each name in `{boundary_packages}` (`grep -rln`, leaving out the tree's `.git` and dependency folders) and record the files found under `grep`, package hits and symbol hits told apart. The search runs for every member with a tree, linked or not, so every row carries what the tree holds.
-  > A member with no graph and no tree has neither symbol instrument to ask: record reach `unanswerable` with no instruments beyond the registry's, and name it so the run's caller knows a member went unmeasured. Its `dependency` stands all the same, the registry answering from the group's configuration rather than from the member.
+  > A member with no graph and no tree has neither symbol instrument to ask: record reach `unanswerable` with no instruments beyond the registry's, and name it so the run's caller knows a member went unmeasured. The member recorded `home` is not this case. Its `dependency` stands all the same, the registry answering from the group's configuration rather than from the member.
 
 ### 5. Settle the Reach
 
-- For a member with a graph or a tree to ask, set the reach to `graph` where a definition the probe found carries a dependent, `hand-derived` where the search found a boundary symbol in the member's tree, and `none` where both instruments were asked and neither found one. A member with neither keeps the `unanswerable` reach recorded for it above, an empty answer and a question never put being different readings. The instruments asked stay listed whichever settled it, the registry's answer among them.
+- For a member with a graph or a tree to ask, other than the member recorded `home`, set the reach to `graph` where a definition the probe found carries a dependent, `hand-derived` where the search found a boundary symbol in the member's tree, and `none` where both instruments were asked and neither found one. A member with neither keeps the `unanswerable` reach recorded for it above, an empty answer and a question never put being different readings. The member recorded `home` keeps that reach. The instruments asked stay listed whichever settled it, the registry's answer among them.
 - The package names the same search looked for answer what the member consumes rather than what it references, so they feed the dependency reading and not this one. A package name holds wherever the member depends on the concern's tree, which is the fact a declared link already carries.
 
 ### 6. Note the Search
