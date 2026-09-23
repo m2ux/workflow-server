@@ -1,20 +1,20 @@
 id: ready-checkouts
-version: 1.1.0
+version: 2.0.0
 name: Ready Checkouts
 description: >-
-  Bring every checkout a roster names to its stated revision, one pin per entry, returning each to
-  what its repository records first where the caller asks for it, and answer with the commit each
-  landed at or the refusal that left it as it stood.
+  Bring every checkout a roster names to its stated revision, one pin per entry, putting what a
+  reset would discard in front of a person first where the caller asks for one, and answer with the
+  commit each landed at or the refusal that left it as it stood.
 
 inputs:
   - id: checkout_pins
     description: The roster this run walks — one entry per checkout, each carrying the working tree to pin and the revision to land it at.
   - id: reset_before_pin
     description: >-
-      Whether each checkout is returned to what its repository records before its pin is attempted.
-      A pin refuses a working tree carrying modifications, so a caller pinning trees that tools
-      write into sets this. It discards those modifications, which is why it is asked for and never
-      assumed.
+      Whether each checkout is surveyed for work its repository does not record and returned to what
+      it records before its pin is attempted. A pin refuses a working tree carrying modifications,
+      so a caller pinning trees that tools write into sets this. What the survey finds is put in
+      front of a person, who settles whether it is discarded.
   - id: planning_folder_path
     description: The session's planning folder, which every operation of the git library carries as a shared input.
 
@@ -24,10 +24,70 @@ outputs:
     description: One entry per roster entry, in roster order — the working tree, the revision named, and either the commit landed with the form the name resolved as, or the refusal that left the checkout as it stood.
 
 internals:
+  - id: trees_carrying_modifications
+    description: >-
+      One entry per surveyed tree holding work its repository does not record, with the tracked
+      paths and the nested checkouts standing off the commits the tree names — what the run puts in
+      front of a person before anything is discarded.
+  - id: reset_approved
+    description: >-
+      Whether the work the survey found is discarded, as the gate settled it. Unset where the run
+      was not asked to ready the trees, and where it was asked and the survey found nothing, no gate
+      standing between a caller and a reset that would destroy nothing.
+  - id: survey_entry
+    description: The roster entry the run holds, whose working tree the survey in that pass reads.
   - id: checkout_pin
     description: The roster entry the run holds, whose working tree the pin in that pass brings to its revision.
 
 steps:
+  - kind: loop
+    id: survey-cycle
+    name: Survey Cycle
+    when: reset_before_pin
+    loopType: forEach
+    variable: survey_entry
+    over: checkout_pins
+    maxIterations: 20
+    steps:
+      - kind: technique
+        id: read-state
+        technique:
+          name: git::read-working-state
+          inputs:
+            repo_path: "{survey_entry.repo_path}"
+      - kind: action
+        id: announce-unreadable
+        when: read_refusal
+        actions:
+          - action: message
+            message: "{survey_entry.repo_path} could not be surveyed: {read_refusal}. What it holds is unknown to the gate that follows."
+      - kind: action
+        id: record-survey
+        when: "modified_paths || moved_nested_checkouts"
+        actions:
+          - action: set
+            target: trees_carrying_modifications
+            description: >-
+              The surveyed tree, the tracked paths it carries modifications to, and the nested
+              checkouts standing off the commits it records — appended to what the run puts in front
+              of a person before anything is discarded.
+  - kind: checkpoint
+    id: accept-discard
+    when: "reset_before_pin && trees_carrying_modifications"
+    message: "{trees_carrying_modifications} hold work their repositories do not record. Returning them to what those repositories record discards it, and the pin that follows moves each checkout to the revision its roster entry names. A tree left as it stands refuses its pin and is reported as refused."
+    options:
+      - id: discard
+        label: Discard the work and pin
+        description: Every surveyed tree is returned to what its repository records, and the run pins it afterwards.
+        effect:
+          setVariable:
+            reset_approved: true
+      - id: keep
+        label: Keep the work and pin what is clean
+        description: Nothing is discarded. A tree carrying modifications refuses its pin and the run reports it; a tree standing clean is pinned.
+        effect:
+          setVariable:
+            reset_approved: false
   - kind: loop
     id: pin-cycle
     name: Pin Cycle
@@ -38,20 +98,20 @@ steps:
     steps:
       - kind: technique
         id: reset
-        when: reset_before_pin
+        when: reset_approved
         technique:
           name: git::reset-checkout
           inputs:
             repo_path: "{checkout_pin.repo_path}"
       - kind: action
         id: announce-reset
-        when: "reset_before_pin && !reset_refusal"
+        when: "reset_approved && !reset_refusal"
         actions:
           - action: message
             message: "{checkout_pin.repo_path}: modifications to {discarded_paths} discarded, and nested checkouts {nested_checkouts} returned to the commits the tree records."
       - kind: action
         id: announce-reset-refusal
-        when: "reset_before_pin && reset_refusal"
+        when: "reset_approved && reset_refusal"
         actions:
           - action: message
             message: "{checkout_pin.repo_path} was not reset: {reset_refusal}"

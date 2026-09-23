@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ The roster's entries, both the trees it marks for indexing and the ones it holds
 
 What the roster accounts for and what it does not.
 
-#### undeclared_components
+#### unrostered_components
 
 Each component the host declares that no roster entry covers, with its path and whether its working tree is populated. Empty where the roster covers every one.
 
@@ -43,7 +43,7 @@ Each declared component the host marks as infrastructure, named whether or not t
 
 ### 2. Name What the Roster Does Not Cover
 
-- Record under `undeclared_components` each entry of `{declared_components}` whose path no roster path matches, carrying its `is_populated` mark so a reader knows whether there is a tree to index at all.
+- Record under `unrostered_components` each entry of `{declared_components}` whose path no roster path matches, carrying its `is_populated` mark so a reader knows whether there is a tree to index at all.
 
 ### 3. Name What No Component Answers
 

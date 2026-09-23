@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -69,6 +69,10 @@ A completed rebuild publishes the graph to disk, and a running server reopens th
 ### a-graph-carries-the-layers-of-its-last-build
 
 A graph carries the program-dependence layers of the build that wrote it last, so `{pdg_layers}` is the state a build leaves behind rather than a request added to what is already there. A build that omits it rebuilds the graph without those layers, and the taint findings and the dependence query go from answering to reporting a missing layer — including where the build is one a refresh run performs on a caller's behalf.
+
+### a-settings-file-beside-a-tree-sets-its-build-defaults
+
+A build reads a settings file sitting beside the tree it walks and takes what that file holds as the settings for that build. A tree whose answers depend on the program-dependence layers carries the pin there, so every build over it records them — including one a run performs on a caller's behalf, which is where no flag the caller passes reaches. The file is JSON, so the layers are pinned with a quoted key set true; a key written unquoted is read as nothing and the build proceeds without it.
 
 ### a-graph-answers-only-under-its-own-name
 
