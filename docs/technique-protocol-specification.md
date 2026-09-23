@@ -87,6 +87,10 @@ metadata:
 `<filename-or-{token}-template>`
 #### audience        (optional: the intended reader — human | agent)
 `agent`
+#### values          (optional: the closed set this output, or one of its fields, admits)
+`ready`, `refused`
+##### <field>        (optional: the closed set one entry field or component admits)
+`home`, `none`
 
 ## Protocol          (present when the technique does work)
 ### <N>. <Title>
@@ -128,6 +132,10 @@ loader rejects the singular `## Input` / `## Output` (and `## Output(s)`) varian
 - `#### audience` (Outputs) is the intended reader of the output/artifact — `human` or `agent`.
   Absent means `human`. An `agent`-audience artifact is serialized as **JSON** on disk (named under
   the same `artifactPrefix` rule as any artifact); a `human`-audience artifact is prose markdown.
+- `#### values` (Outputs) is the closed set the output admits, one of which a run leaves standing.
+  Backticked tokens in the section body are the output's own set. `##### <field>` children are the
+  set one entry field or component admits. A description says what the value holds; the set lives
+  here, and the Protocol is what leaves each member standing.
 - `#### default` (Inputs) is the input's default value.
 - An entry whose description opens with `optional` (e.g. `*(optional)*`) is `required: false`.
 
@@ -356,13 +364,14 @@ precedence by id or name.
 ### What merges, and how
 
 Both delivery paths (`get_technique` and the `get_activity` / `get_workflow` bundle) use the same
-`composeLoaded` implementation:
+`composeLoaded` implementation. In memory the merge is complete. On the wire:
 
 - **Inputs and Outputs**: merged from every ancestor container outward to the executing workflow root;
-  the technique-local entry overrides any ancestor entry of the same id.
+  the technique-local entry overrides any ancestor entry of the same id. Own entries ride the body;
+  ancestor entries ride that ancestor's block under `contracts`.
 - **Rules**: merged from every ancestor container; the technique-local entry overrides any ancestor
-  entry of the same name. On the bundle path rules are additionally emitted as separate `rule`
-  entries (§6.2) so they can be addressed and selectively included.
+  entry of the same name. Own rules ride the body. Shared rules ride `contracts`. Role-level rules
+  that govern no one operation remain `rule` entries in the bundle's `rules` list (§6.2).
 
 A container contributes a contract, never a procedure. Protocol does not inherit: a technique's
 `## Protocol` is delivered as authored, and the steps a shared stage owns belong to the activity or
@@ -381,8 +390,9 @@ session — are not included; only the executing workflow's containers apply.
 
 ### 6.1 Body
 
-A delivered technique body (`projectTechniqueBody`) carries `capability`, `inputs?`, `protocol?` as
-authored, and `outputs?`. A technique's rules are delivered as `rule` entries (§6.2).
+A delivered technique body (`projectTechniqueBody` / `projectTechniqueWire`) carries `capability`,
+`inputs?` as authored on that technique, `protocol?`, `outputs?`, the rules that technique itself
+declares, and `inherits` naming the ancestor scopes whose contracts ride beside it.
 
 ### 6.2 Bundle
 
@@ -390,15 +400,16 @@ authored, and `outputs?`. A technique's rules are delivered as `rule` entries (�
 
 | Key | Contents |
 |-----|----------|
-| `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `validate::analyse-failure`), a standalone by its id. |
-| `rules` | `[name, text]` pairs: a technique's rules plus its inherited and group rules. |
+| `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `validate::analyse-failure`), a standalone by its id. Own rules ride the body; `inherits` names the scopes in `contracts`. |
+| `contracts` | Each ancestor's authored rules and shared inputs/outputs, once per scope id. |
+| `rules` | `[name, text]` pairs: the role's own rules, which govern no one operation. |
 | `unresolved` | References that did not resolve (a non-empty list is a definition defect). |
 
 ### 6.3 Activity bundling
 
 `get_activity` and `get_workflow` deliver an activity's `techniques[]` through this bundle;
-`get_technique` delivers a single technique via
-`composeTechnique`.
+`get_technique` delivers a single technique via `composeTechnique` projected with
+`projectTechniqueWire`, and carries the named `contracts` beside that body.
 
 ### 6.4 Binding
 
@@ -411,13 +422,16 @@ references an entry by its id. Both levels are what a read addressing into a val
 ### 6.5 Step manifest
 
 A worker reports what a step produced through the `step_manifest` entry `output` field passed to
-`next_activity` (one entry per completed step, keyed by `step_id`). The encoding scales with the
-step's declared outputs:
+`next_activity` (one entry per completed step, keyed by `step_id`). `output` is a JSON object keyed
+by the output id the bound operation declares, whatever the number of outputs — a step with one
+output reports `{"needs_migration": false}`, a step with several reports
+`{"repo_root": "lib/x", "component_name": "x"}`. A step-bound technique's `provenance_note` cites
+this form at point of use.
 
-- **One output** — a short summary string (e.g. `"needs_migration=false"`).
-- **More than one output** — a JSON object keyed by output id (e.g.
-  `{"repo_root": "lib/x", "component_name": "x"}`). This is the canonical multi-output form; a
-  step-bound technique's `provenance_note` cites it at point of use.
+A key the operation does not declare lands a value under a name nothing downstream reads, and is
+surfaced in `_meta.validation`. The converse is not reported: an output can be optional, and a
+gated path or an error answer produces fewer values than the declarations allow, so a declared id
+with no key is as often the run as the report.
 
 An output lands in the session bag under its declared id, unless the step binding remaps it — in
 which case the step-bound `get_technique` delivery annotates that output with a `destination:` line

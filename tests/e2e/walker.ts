@@ -398,7 +398,7 @@ async function transition(
   client: Client,
   sessionIndex: string,
   activityId: Destination,
-  stepManifest?: Array<{ step_id: string; output: string }>,
+  stepManifest?: Array<{ step_id: string; output: Record<string, unknown> }>,
   /** The activity this call is exiting. Omitted only on a session's first call. */
   fromActivity?: string,
   /** The exit it took — required off an activity whose exit the graph fans. */
@@ -511,7 +511,7 @@ function activityDecidedVariables(act: ActivityDef): Set<string> {
 
 interface StepExecution {
   cpRecords: CheckpointRecord[];
-  manifest: Array<{ step_id: string; output: string }>;
+  manifest: Array<{ step_id: string; output: Record<string, unknown> }>;
   stepsExecuted: string[];
   /** `<step>:<variable>` for each gate read with nothing in the bag to read. */
   gatesReadUnbound: string[];
@@ -536,7 +536,7 @@ async function executeActivitySteps(
   worker?: { agentId: string; gateRefetches: GateRefetch[] },
 ): Promise<StepExecution> {
   const cpRecords: CheckpointRecord[] = [];
-  const manifest: Array<{ step_id: string; output: string }> = [];
+  const manifest: Array<{ step_id: string; output: Record<string, unknown> }> = [];
   const stepsExecuted: string[] = [];
   const gatesReadUnbound: string[] = [];
   const decidedLater = activityDecidedVariables(act);
@@ -623,7 +623,7 @@ async function executeActivitySteps(
       }
       if (step.kind === 'technique') await fetchTechnique(step.id);
       stepsExecuted.push(step.id);
-      manifest.push({ step_id: step.id, output: 'done' });
+      manifest.push({ step_id: step.id, output: { result: 'done' } });
       for (const a of step.actions ?? []) {
         if (a.action === 'set' && a.target && a.value !== undefined) variables[a.target] = a.value;
       }
@@ -767,7 +767,7 @@ export async function walk(
   const visits = new Map<string, number>();
 
   let current: string | null = initialActivity;
-  let pendingManifest: Array<{ step_id: string; output: string }> | undefined;
+  let pendingManifest: Array<{ step_id: string; output: Record<string, unknown> }> | undefined;
   /**
    * What the next call tells the server to go to, where that is not `current` itself: the
    * destination as the graph names it when a fanning exit opens every branch with one call, and

@@ -11,7 +11,8 @@ Deploy [`examples/cursor-workspace/`](../examples/cursor-workspace/) with [`scri
 - **The MCP servers** — `workflow-server` reaching `http://127.0.0.1:3000/mcp` through `mcp-remote`, alongside `concept-rag`, `atlassian` and `gitnexus`.
 - **The always-applied rule** that sends an agent to `discover` before it does anything else.
 - **`AGENTS.md` and `CLAUDE.md`**, the workspace instructions from the template. They name `PROJECT.md` in the repository.
-- **The four workspace roots** — the workspace itself, the project, the planning folder and the work trees.
+- **The five workspace roots** — the workspace itself, the project, the workflows checkout, the planning folder and the work trees.
+- **Codex** — `.codex/config.toml` carries the same MCP servers and the always-applied rules. The kickoff path and the product checkout are trusted.
 
 For Claude Code it also installs a workspace-local baseline: hook scripts in `scripts/`, their config in `config/`, `.claude/hooks` linking `scripts/`, the sandbox launcher at `scripts/sbx`, and a rendered `.claude/settings.json`.
 
@@ -35,18 +36,23 @@ Everything below lands under `~/.local/share/cursor/workspaces/<name>/`.
 
 | Path | Role |
 |------|------|
-| `*.code-workspace` | The multi-root folder list, with absolute `$HOME/…` paths |
-| `.mcp.json`, `.cursor/mcp.json` | The required MCP servers, home-path tokens expanded. `.cursor/mcp.json` links to `.mcp.json` |
-| `.codex/config.toml` | The same MCP servers, the project checkout as a writable root, and the always-apply rule text |
-| `rules/`, `.cursor/rules/`, `.claude/rules/` | Rule text in `rules/`. `.claude/rules` links there. Each `.cursor/rules/*.mdc` links to `rules/<name>.md` |
-| `.claude/skills/` | The skills the template ships, one directory each; skills added locally stay |
+| `*.code-workspace` | Five roots with absolute `$HOME/…` paths: workspace, project, workflows, planning, work trees |
+| `rules/` | The bootstrap rule and its companions. Each `.mdc` links at the `.md` of the same name |
+| `.cursor/rules`, `.claude/rules` | Link at `rules/` |
+| `skills/` | One link per template skill, at the template directory that versions it. A skill already present stays |
+| `.cursor/skills`, `.claude/skills` | Link at `skills/` |
+| `.agents` | Links at the kickoff directory, so Codex finds skills at `.agents/skills` |
+| `.mcp.json`, `.cursor/mcp.json` | The required MCP servers, home-path tokens expanded. `.cursor/mcp.json` links to `.mcp.json`. Extra servers already present stay |
+| `.codex/config.toml` | The same MCP servers and the always-applied rules |
 | `AGENTS.md`, `CLAUDE.md` | Workspace instructions from the template, written on every deploy. They name `PROJECT.md` in the repository |
 | `scripts/`, `config/` | Hook scripts in `scripts/`, config in `config/`, and the sandbox launcher at `scripts/sbx`. `.claude/hooks` links `scripts/`. The template holds these at the same paths |
 | `.claude/settings.json` | Generated at deploy from [the settings template](../examples/cursor-workspace/.claude/settings.template.json) |
 
+When the product checkout exists, deploy links `.agents` at the kickoff directory and `.cursor`, `.claude` and `.codex` at the matching kickoff subdirectory. The workflows root is `<repo>/.worktrees/workflows`; deploy names that path and leaves the directory for `git worktree add`.
+
 `install.sh` places the deploy script and the workspace template under the install directory, so deploying a workspace does not need a full checkout.
 
-Deploy expands the `__HOME__` and `__WORKSPACE__` tokens in the template. Re-run it with `--force` after the template or the hooks change. That refresh rewrites `AGENTS.md` from the template. `PROJECT.md` stays in the repository.
+Deploy expands the `__HOME__` and `__WORKSPACE__` tokens in the canonical rule files. Re-run it with `--force` after the template or the hooks change. That refresh rewrites `AGENTS.md` from the template. `PROJECT.md` stays in the repository.
 
 ## The bootstrap rule
 

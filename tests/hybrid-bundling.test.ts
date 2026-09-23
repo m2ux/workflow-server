@@ -420,11 +420,11 @@ describe('hybrid technique bundling (#189 C1c)', () => {
         activity_id: 'wrap',
         from_activity: 'work',
         step_manifest: [
-          { step_id: 'classify', output: 'classified' },
-          { step_id: 'gather', output: 'gathered' },
-          { step_id: 'record', output: 'recorded' },
-          { step_id: 'loop-op', output: 'iterated' },
-          { step_id: 'bigone', output: 'done at length' },
+          { step_id: 'classify', output: { result: 'classified' } },
+          { step_id: 'gather', output: { result: 'gathered' } },
+          { step_id: 'record', output: { result: 'recorded' } },
+          { step_id: 'loop-op', output: { result: 'iterated' } },
+          { step_id: 'bigone', output: { result: 'done at length' } },
         ],
       },
     }) as ToolResult;

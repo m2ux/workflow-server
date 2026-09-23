@@ -1,43 +1,85 @@
 # Project Instructions
 
-This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, Node.js 18+). Agents discover, navigate, and execute structured workflows via a **Goal → Workflow → Activities → Techniques → Tools** model. Workflow data lives in a `workflows` worktree (orphan branch); engineering artifacts live in `.engineering/`. See [README.md](README.md) for overview and [docs/ide-setup.md](docs/ide-setup.md) for rule setup.
+Project instructions for this repository. The workspace instructions are the workspace `AGENTS.md` and `CLAUDE.md`.
 
-## Setup commands
+## Project overview
 
-- **Install:** `npm install`
-- **Installs resolve from the lockfile.** CI and worktree provisioning both run `npm ci`; use it locally too, and reach for `npm install` only when deliberately changing a dependency. Never delete the lockfile or run `npm update` to refresh everything — an install-time payload runs before any of this repo's code does, so the lockfile is the last point at which a build can refuse. New direct dependencies take an exact version. Versions known to carry such a payload are listed in `scripts/known-bad-versions.json`, held out of resolution by the `overrides` block in `package.json`, and failed by `npm run check:lockfile`; the file's own note says how to refresh it. A blanket `ignore-scripts` is not turned on without an allowlist and a green build behind it, because native addons need their install hooks.
-- **Build:** `npm run build`
-- **Run (stdio, default):** `npm start` or `npm run dev`
-- **Run (HTTP):** `npm run start:http` or `npm run dev:http`
-- **Tests:** `npm test` (watch) / `npm run test:ci` (single run)
-- **Typecheck:** `npm run typecheck` — two compilations, and a failure in either fails the script. `tsconfig.json` compiles the server source under the full house style. `tsconfig.tools.json` compiles the guards, the tests and the scripts under the same strictness with `noPropertyAccessFromIndexSignature` relaxed, so a file outside `src/` follows every rule but the bracket-access preference.
-- **Guards:** `npm run check:all` (every guard, one table) / `npm run check:delta` (only what your change added, against the merge-base)
-- **Guarding a corpus worktree:** `npx tsx guards/check-all.ts --root <path-to-worktree> --corpus-only`. A worktree of the corpus is a checkout of `workflows` alone — no `package.json`, so `worktree:provision` does not apply to it — and a run without `--root` measures `.worktrees/workflows` of the primary checkout. Point `--root` at the branch root: discovery walks `corpus/` and does not search sibling folders. A `workflow.yaml` at any depth under that grouping is a workflow, and a directory holding `techniques/`, `resources/` or `routines/` is a namespace references can name whether or not a definition sits beside it.
-- **Work a branch in its own worktree.** The checkout at `.worktrees/workflows` stays on the `workflows` branch, and a feature branch lives under `.worktrees/<branch>`. Switching the shared dest moves the corpus under anything reading it — a guard sweep, a coverage walk, another agent — and the result is wrong in a way that reads as a defect in the change.
-- **Worktree setup:** `npm run worktree:provision` — on the primary checkout, adds `.worktrees/workflows` and makes `node_modules` resolvable. A nested engine worktree reads that dest.
-- **A worktree is named for the branch it holds.** `.worktrees/workflow/353-context-scoped-delivery` holds `workflow/353-context-scoped-delivery` — the branch name in full, slashes and all, as nested directories. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`. Rename one by removing and re-adding it: `git worktree remove --force`, then `git worktree add` at the new path, then provision again. `git worktree move` and plain `git worktree remove` both refuse a worktree whose submodules are checked out, which provisioning is what does — so the point where a rename becomes worth making is past the point where they work.
-- **Workflow data:** `git worktree add .worktrees/workflows workflows` (see [README.md](README.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)). Product definitions live under `corpus/`; specimen workflows live under `corpus/specimens/`. Ledgers, walk artifacts and authoring docs each have a named root (`ledgers/`, `walks/`, `docs/`). The workflow id is the directory name. Check programs live under `guards/`; generate, provision and benches stay in `scripts/`. Layout authoring lives on the `workflows` branch under `docs/`. The technique file contract lives in [`docs/technique-protocol-specification.md`](docs/technique-protocol-specification.md) on this tree.
+An MCP server for AI agent workflow orchestration (TypeScript, Node.js 20), driving agents through a **Goal → Workflow → Activities → Techniques → Tools** model. Definitions live on the `workflows` orphan branch, checked out as a worktree; engineering artifacts live in `.engineering/`. See [README.md](README.md) and [docs/ide-setup.md](docs/ide-setup.md).
+
+## Commands
+
+| Task | Command |
+|------|---------|
+| Install | `npm ci` |
+| Build | `npm run build` |
+| Run (stdio, default) | `npm start` / `npm run dev` |
+| Run (HTTP) | `npm run start:http` / `npm run dev:http` |
+| Test | `npm test` (watch) / `npm run test:ci` (once) |
+| Typecheck | `npm run typecheck` |
+| Guards | `npm run check:all` / `npm run check:delta` |
+| Provision a worktree | `npm run worktree:provision` |
+
+`typecheck` is two compilations and fails on either: `tsconfig.json` over `src/` under the full house style, `tsconfig.tools.json` over guards, tests and scripts under the same strictness with `noPropertyAccessFromIndexSignature` relaxed.
+
+`worktree:provision` runs on the primary checkout, adds `.worktrees/workflows`, and makes `node_modules` resolvable. A nested engine worktree reads that dest.
+
+## Dependencies
+
+Installs resolve from the lockfile. CI and provisioning run `npm ci`; use it locally too, and `npm install` only when deliberately changing a dependency.
+
+- **Never delete the lockfile or run `npm update`.** An install-time payload runs before any of this repo's code, so the lockfile is the last point a build can refuse.
+- **New direct dependencies take an exact version.**
+- **Known-bad versions** sit in `scripts/known-bad-versions.json`, are held out of resolution by `overrides` in `package.json`, and fail `npm run check:lockfile`. That file says how to refresh it.
+- **No blanket `ignore-scripts`** without an allowlist and a green build behind it; native addons need their install hooks.
+
+## Worktrees
+
+- **Work a branch in its own worktree.** `.worktrees/workflows` stays on `workflows`; a feature branch lives at `.worktrees/<branch>`. Switching the shared dest moves the corpus under whatever is reading it — a guard sweep, a coverage walk, another agent — and the result reads as a defect in the change.
+- **Name a worktree for its branch in full**, slashes as nested directories: `.worktrees/workflow/353-context-scoped-delivery`. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`.
+- **Rename by removing and re-adding:** `git worktree remove --force`, `git worktree add` at the new path, then provision. `git worktree move` and plain `remove` both refuse a worktree with submodules checked out, which provisioning is what does — so a rename becomes worth making past the point where they work.
+- **Add the corpus worktree** with `git worktree add .worktrees/workflows workflows`, or let `npm run worktree:provision` do it.
+- **Guard a corpus worktree** with `npx tsx guards/check-all.ts --root <path-to-worktree> --corpus-only`. It holds `workflows` alone — no `package.json`, so `worktree:provision` does not apply. Without `--root` the sweep measures `.worktrees/workflows` of the primary checkout.
+
+## Corpus layout
+
+Discovery walks `corpus/` and no sibling folder. A `workflow.yaml` at any depth under it is a workflow; a directory holding `techniques/`, `resources/` or `routines/` is a namespace references can name, with or without a definition beside it. The workflow id is the directory name.
+
+Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/specimens/`), `ledgers/`, `walks/`, and `docs/` for layout authoring. On this tree: `guards/` for check programs, `scripts/` for generate, provision and the benches. The technique file contract is [docs/technique-protocol-specification.md](docs/technique-protocol-specification.md).
 
 ## Boundaries
 
-- Do **not** modify server source (`src/`, `schemas/`) or workflow YAML files unless the user explicitly asks.
-- When following workflows, respect workflow fidelity as defined in YAML files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match returns `client`; call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that origin. Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
+- Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.
+- Follow workflow fidelity as the YAML and the workflow-server rules define it. Call `discover` first, then the sequence it returns (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match returns `client` — call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work, and the server derives `owner/repo` from its origin. Fetch `workflow-server://schemas` to validate definitions. See [docs/ide-setup.md](docs/ide-setup.md).
 
 ## Branches and pull requests
 
-- **A pull request lands on `main` or on `workflows`.** Code and definitions sit on separate long-lived branches, so a base is a choice rather than a default, and one aimed anywhere else is a stack: it merges, it reads as delivered, and the change reaches neither branch until the base lands too. Check the base before merging, and re-target a stacked request the moment its base merges.
-- **A branch is absorbed when its content is on the target, not when its commits are.** The same change reaching the target by another route leaves the branch reading as unmerged work. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.
+- **A pull request lands on `main` or on `workflows`.** Code and definitions sit on separate long-lived branches, so the base is a choice. One aimed anywhere else is a stack: it merges, reads as delivered, and reaches neither branch until its base lands. Check the base before merging, and re-target a stacked request the moment its base merges.
+- **A branch is absorbed when its content is on the target, not its commits.** The same change arriving by another route leaves the branch reading as unmerged. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.
 
 ## Testing
 
-- After code or schema changes, run `npm run typecheck` and `npm test` before committing. Both pass with no `workflows/` directory: live-corpus tests skip when the root is missing or empty. That skip is a local convenience only — `verify.yml` checks out the definitions and runs them, so a test that passes by skipping here is measured there.
-- After workflow-corpus changes, run `npm run check:all`. To see only what your change added, run `npm run check:delta`. Corpus debt is triaged per finding in `ledgers/binding-fidelity-triage.json` of the pointed tree — classify a new finding there (`harmless` / `fix-later` / `live-bug`) rather than suppressing it; there is no re-snapshot command.
-- **Definition changes land on the `workflows` branch**, and take the artifacts that describe them in the same commit. Walk baselines under `walks/` record the path a definition takes, and a triage entry records a judgement about prose the definition holds; both are read against the tree they sit in, so a commit that changes a definition and leaves either behind ships a tree that disagrees with itself. A closed binding finding is the case to watch: delete the entry and the finding is untriaged, keep it and it matches nothing, so the entry moves with the change that settled it.
-- **Engine CI prices a fixture walk.** Delivery cost is a property of a walk rather than of any one file, so no guard reads it: `verify.yml` walks `delivery-fixture` and compares the total against `tests/fixtures/token-benchmark-baseline.json`, failing past 1%. Run it the way that job does — `npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=tests/fixtures/token-benchmark-baseline.json`. `--fixture-corpus` builds the corpus that walk needs into a temp root: the client workflow is authored under `tests/fixtures/token-bench/`, and the `meta` namespace beside it is derived from the lists `src/loaders/core-ops.ts` names, so a ref added there reaches the gate with no fixture to edit.
+- **After code or schema changes:** `npm run typecheck` and `npm test`. Both pass with no `.worktrees/workflows` checkout, because live-corpus tests skip on a missing or empty root — a local convenience only, since `verify.yml` checks the definitions out and runs them.
+- **After corpus changes:** `npm run check:all`, or `npm run check:delta` for what your change added. Triage a new binding finding in `ledgers/binding-fidelity-triage.json` of the pointed tree as `harmless` / `fix-later` / `live-bug` rather than suppressing it; there is no re-snapshot command.
+- **Definition changes land on `workflows`**, taking the artifacts that describe them in the same commit. Walk baselines under `walks/` and triage entries are read against the tree they sit in, so leaving either behind ships a tree that disagrees with itself. Watch a closed binding finding: delete the entry and it is untriaged, keep it and it matches nothing — so it moves with the change that settled it.
+- **Engine CI prices a fixture walk.** Delivery cost belongs to a walk rather than a file, so no guard reads it: `verify.yml` walks `delivery-fixture` against `tests/fixtures/token-benchmark-baseline.json` and fails past 1%. Run it as that job does:
+
+  ```bash
+  npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=tests/fixtures/token-benchmark-baseline.json
+  ```
+
+  `--fixture-corpus` builds that corpus into a temp root: the client workflow is authored under `tests/fixtures/token-bench/`, and the `meta` namespace beside it derives from the lists `src/loaders/core-ops.ts` names, so a ref added there reaches the gate with no fixture to edit.
 
 ## Where to look
 
-- **Quick start, schema, API:** [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md)
-- **IDE/MCP setup:** [docs/ide-setup.md](docs/ide-setup.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)
-- **Server-in-the-loop (live sidecar walks):** [.cursor/skills/server-in-the-loop/SKILL.md](.cursor/skills/server-in-the-loop/SKILL.md)
-- **Work in `.engineering/` (artifacts, planning):** [.engineering/AGENTS.md](.engineering/AGENTS.md)
+| For | Read |
+|-----|------|
+| Quick start, schema, API | [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md) |
+| IDE and MCP setup | [docs/ide-setup.md](docs/ide-setup.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md) |
+| Live sidecar walks | [examples/cursor-workspace/skills/server-in-the-loop/SKILL.md](examples/cursor-workspace/skills/server-in-the-loop/SKILL.md) |
+| Work in `.engineering/` | [.engineering/AGENTS.md](.engineering/AGENTS.md) |
+
+<!--
+Code intelligence guidance is authored in the workspace AGENTS.md.
+It is deliberately absent here: two copies drifted apart on the statistics they quoted and the
+skills they listed. `npm run check:agent-homes` fails if a tool run puts it back in AGENTS.md or CLAUDE.md.
+-->

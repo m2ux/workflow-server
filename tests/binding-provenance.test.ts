@@ -11,7 +11,10 @@ import {
   decorateTechniqueProvenance,
   resolveInputSource,
   resolveOutputDestination,
+  declaredOutputsByStep,
   type ProvenanceContext,
+  type ProducerIndex,
+  type ProducerSite,
 } from '../src/utils/binding-provenance.js';
 import type { Technique } from '../src/schema/technique.schema.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
@@ -22,9 +25,9 @@ function makeCtx(overrides?: Partial<ProvenanceContext>): ProvenanceContext {
   return {
     declaredVariables: new Set(['target_path', 'branch_name']),
     producers: [
-      { name: 'analysis_report', via: 'output', stepId: 'gather', activityId: 'alpha', ordinal: 0 },
-      { name: 'approved', via: 'checkpoint', stepId: 'confirm', activityId: 'alpha', ordinal: 1 },
-      { name: 'late_value', via: 'output', stepId: 'later-step', activityId: 'gamma', ordinal: 9 },
+      { name: 'analysis_report', via: 'output', stepId: 'gather', activityId: 'alpha', ordinal: 0, conditional: false },
+      { name: 'approved', via: 'checkpoint', stepId: 'confirm', activityId: 'alpha', ordinal: 1, conditional: false },
+      { name: 'late_value', via: 'output', stepId: 'later-step', activityId: 'gamma', ordinal: 9, conditional: false },
     ],
     position: 5,
     ...(overrides ?? {}),
@@ -54,6 +57,30 @@ describe('resolveInputSource', () => {
   it('resolves a checkpoint-set variable', () => {
     const r = resolveInputSource('approved', ctx, undefined, REQUIRED);
     expect(r.source).toBe("set by checkpoint 'confirm' (activity 'alpha')");
+    expect(r.kind).toBe('prior');
+  });
+
+  it('names the unguarded producer over a gated one that sits closer', () => {
+    const gatedLast = makeCtx({
+      producers: [
+        { name: 'repo_name', via: 'output', stepId: 'resolve', activityId: 'alpha', ordinal: 0, conditional: false },
+        { name: 'repo_name', via: 'output', stepId: 'name-built-graph', activityId: 'alpha', ordinal: 1, conditional: true },
+      ],
+    });
+    const r = resolveInputSource('repo_name', gatedLast, undefined, REQUIRED);
+    expect(r.source).toBe("output of step 'resolve' (activity 'alpha')");
+    expect(r.kind).toBe('prior');
+  });
+
+  it('names a gated producer as gated when it is the only one before the step', () => {
+    const onlyGated = makeCtx({
+      producers: [
+        { name: 'index_stats', via: 'output', stepId: 'build', activityId: 'alpha', ordinal: 0, conditional: true },
+      ],
+    });
+    const r = resolveInputSource('index_stats', onlyGated, undefined, REQUIRED);
+    expect(r.source).toContain("output of step 'build' (activity 'alpha')");
+    expect(r.source).toContain('behind a `when` gate');
     expect(r.kind).toBe('prior');
   });
 
@@ -319,5 +346,68 @@ describe('buildProvenanceContext', () => {
     const r = resolveInputSource('analysis_report', ctx!, binding, REQUIRED);
     expect(r.source).toBe("step-binding: output of step 'gather' (activity 'work')");
     expect(r.unresolved).toBe(false);
+  });
+});
+
+
+/**
+ * A step manifest is measured against the ids the bound operation declares, and those are read off
+ * the producer scan rather than resolved a second time.
+ */
+describe('declaredOutputsByStep', () => {
+  const site = (over: Partial<ProducerSite>): ProducerSite => ({
+    name: 'change_report', via: 'output', stepId: 'detect', activityId: 'work',
+    ordinal: 0, conditional: false, ...over,
+  });
+
+  const index = (producers: ProducerSite[], unreadable: string[] = []): ProducerIndex => ({
+    declaredVariables: new Set(),
+    producers,
+    positions: new Map(),
+    resolvedTechniques: producers.length,
+    unreadableOps: new Set(unreadable),
+  });
+
+  it('takes an unremapped output under its own id', () => {
+    const declared = declaredOutputsByStep(index([site({})]), 'work');
+    expect([...(declared.get('detect') ?? [])]).toEqual(['change_report']);
+  });
+
+  /** A manifest reports by declared id, so a remap contributes the id it was remapped FROM. */
+  it('takes a remapped output under the id the operation declares, not the bag name', () => {
+    const declared = declaredOutputsByStep(
+      index([site({ name: 'positive_change_report', via: 'remap', origOutputId: 'change_report' })]),
+      'work',
+    );
+    expect([...(declared.get('detect') ?? [])]).toEqual(['change_report']);
+  });
+
+  it('takes nothing from a checkpoint, an action or a loop, which declare no operation output', () => {
+    const declared = declaredOutputsByStep(
+      index([site({ name: 'approved', via: 'checkpoint' }), site({ name: 'noted', via: 'action' })]),
+      'work',
+    );
+    expect(declared.has('detect')).toBe(false);
+  });
+
+  it('reads only the named activity', () => {
+    const declared = declaredOutputsByStep(index([site({ activityId: 'elsewhere' })]), 'work');
+    expect(declared.size).toBe(0);
+  });
+
+  /**
+   * A step whose op could not be read still contributes its remaps, so its declarations would be
+   * the remapped ids alone. Measuring a correct report against that subset reports it wrong, so the
+   * step is left out and goes unmeasured.
+   */
+  it('leaves out a step whose bound operation could not be read', () => {
+    const declared = declaredOutputsByStep(
+      index(
+        [site({ name: 'positive_change_report', via: 'remap', origOutputId: 'change_report' })],
+        ['work|detect'],
+      ),
+      'work',
+    );
+    expect(declared.has('detect')).toBe(false);
   });
 });

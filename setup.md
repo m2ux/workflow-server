@@ -76,7 +76,8 @@ Deploy installs:
 
 - MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`), also written to `.codex/config.toml`
 - Bootstrap rules, and `AGENTS.md` and `CLAUDE.md` from the template on every deploy. Those instructions name `PROJECT.md` in the repository
-- Multi-root `.code-workspace` with absolute `$HOME/…` paths
+- Multi-root `.code-workspace` with five absolute `$HOME/…` paths: workspace, project, workflows, planning, work trees
+- Shared rules, skills and MCP, with `.cursor`, `.claude` and `.codex` linked at that one copy
 - **Claude baseline (kickoff only):** hook scripts in `scripts/`, config in `config/`, `.claude/hooks` linking `scripts/`, `scripts/sbx`, generated `.claude/settings.json`, and `.claude/skills/`
 
 ## 4. Update Workflows

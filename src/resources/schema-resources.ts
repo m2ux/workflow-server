@@ -7,7 +7,7 @@ const SCHEMA_DESCRIPTIONS: Record<string, string> = {
   activity: 'Activity definition schema — an ordered list of kind-tagged steps (technique | action | checkpoint | loop | routine) plus activity-level decisions and transitions',
   condition: 'Condition schema — conditional expressions for transitions, decisions, and loops',
   technique: 'Technique definition schema — reusable capabilities with protocol, tools, inputs/outputs, and rules',
-  state: 'State schema — runtime execution progress tracking',
+  'session-file': 'Session-file schema — the on-disk session.json record the server seals and loads by session_index',
 };
 
 /**
@@ -46,7 +46,7 @@ export function registerSchemaResources(server: McpServer, config: ServerConfig)
     'schemas',
     'workflow-server://schemas',
     {
-      description: 'All schema definitions for workflow interpretation (workflow, activity, condition, technique, state)',
+      description: 'All schema definitions for workflow interpretation (workflow, activity, condition, technique, session-file)',
       mimeType: 'application/json',
     },
     async (uri) => {

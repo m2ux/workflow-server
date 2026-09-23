@@ -60,7 +60,7 @@ Both live in the corpus worktree under `corpus/specimens/<id>/`; the directory n
 
 **MVW** (`mvw`): one orchestrator (`get_workflow`, one `next_activity`), one activity to `__terminal__`, one `kind: routine` step, one `kind: technique` step doing the cheapest work that records a result. Nothing else. Grow it and it is no longer the MVW. Walk it as `workflow_id: mvw`.
 
-**Change-surface specimen**: a second workflow that walks the claim table's cases on the live sidecar. Reuse an existing one only when it already covers that surface. Walk it only after the MVW has held on this instance.
+**Change-surface specimen**: a second workflow that walks the claim table's cases on the live sidecar. Reuse an existing one only when it already covers that surface. Walk it only after the MVW has held on this instance. A specimen carries representative positive and negative cases, and weighs them equally. A positive case walks a path the change claims to hold; a negative case walks a path the change claims to refuse, reject, or leave untouched, and expects that refusal.
 
 Layout: `docs/README.md` on the corpus tree. Quality: the `workflow-canon` skill. Serving check from an engine checkout, also the reload preflight:
 
@@ -103,7 +103,7 @@ Pin identity in the run record: MCP URL, corpus pin, image tag, workflow id, and
 
 ## Iterate
 
-Score each walk against what it was for: the MVW against dispatch, the specimen against the claim table. Re-run unit, e2e and guards after a design edit. Reload only when the engine must recompile or the corpus bind must move.
+Score each walk against what it was for: the MVW against dispatch, the specimen against the claim table. Positive and negative cases score alike. A negative case that passes where the change claimed a refusal is a miss of the same weight as a positive case that stops. Re-run unit, e2e and guards after a design edit. Reload only when the engine must recompile or the corpus bind must move.
 
 Stop with the name, or the install instance goes with it:
 

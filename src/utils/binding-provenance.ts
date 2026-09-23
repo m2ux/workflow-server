@@ -23,7 +23,7 @@
  * scripts/check-binding-fidelity.ts so the server annotation and the guard cannot drift apart.
  */
 import type { Workflow } from '../schema/workflow.schema.js';
-import type { TechniqueBinding } from '../schema/activity.schema.js';
+import type { TechniqueBinding, Step } from '../schema/activity.schema.js';
 import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
 import type { Technique, InputItemDefinition, OutputItemDefinition } from '../schema/technique.schema.js';
 import { readTechnique } from '../loaders/technique-loader.js';
@@ -50,10 +50,10 @@ export const OPTIONAL_INPUT_RE = /^[*_]{0,2}\(optional\b[^)]*\)/i;
  *  manifest encoding (#189 C4). The `source:` vocabulary is self-explanatory in situ and is
  *  documented on the tool description, so it is not restated here. */
 export const PROVENANCE_NOTE =
-  'Deliver each output by reporting it in your step-manifest `output`: one output as a short '
-  + 'summary string; a step with more than one output as a JSON object keyed by output id. An '
-  + 'output lands in the session bag under its declared id, unless it carries a `destination:` line '
-  + '— shown only on a remapped output — in which case it lands under that name.';
+  'Deliver each output by reporting it in your step-manifest `output`, a JSON object keyed by '
+  + 'output id — one output included, as `{"<its id>": <value>}`. An output lands in the session '
+  + 'bag under its declared id, unless it carries a `destination:` line — shown only on a remapped '
+  + 'output — in which case it lands under that name.';
 
 /** A place in the workflow that puts a value into the session bag under `name`. */
 export interface ProducerSite {
@@ -65,6 +65,12 @@ export interface ProducerSite {
   activityId: string;
   /** Document-order position across the whole workflow (activities in declared order, steps flattened). */
   ordinal: number;
+  /**
+   * Whether the step carries a `when` gate, so it produces this name on the runs its gate admits
+   * and not on the others. The server evaluates no gate — the executing agent does — so a
+   * conditional producer is reported as one rather than resolved either way.
+   */
+  conditional: boolean;
 }
 
 /** Everything the classifier needs, assembled once per get_technique call. */
@@ -92,6 +98,45 @@ export interface ProducerIndex {
   positions: Map<string, number>;
   /** Distinct technique refs resolved to build this index — what a delivery reports as resolve work. */
   resolvedTechniques: number;
+  /**
+   * Steps whose bound op could not be read, as `<activityId>|<stepId>`.
+   *
+   * Such a step still contributes producers — a binding's output remaps are read off the activity
+   * file — so its declarations are a subset rather than the set. A reader measuring a report
+   * against them would hold it to the remapped ids alone.
+   */
+  unreadableOps: Set<string>;
+}
+
+/**
+ * The output ids each step of `activityId` declares, keyed by step id.
+ *
+ * A producer site already carries the id the operation declares — under `name` where the output
+ * lands unremapped, and under `origOutputId` where a step binding remaps it — so the declarations
+ * are read off the index rather than resolved a second time. A step whose bound op could not be
+ * read contributes no entry, and a step with no entry is not measured.
+ *
+ * A step manifest reports by declared output id rather than by the bag name a remap lands under,
+ * which is why the remapped-from id is the one collected here.
+ *
+ * A step whose op could not be read is left out entirely. Its remaps are still producers, so it
+ * would otherwise carry a non-empty set holding the remapped ids alone, and a correct report
+ * naming an unremapped output would be measured against a subset and reported wrong.
+ */
+export function declaredOutputsByStep(index: ProducerIndex, activityId: string): Map<string, Set<string>> {
+  const byStep = new Map<string, Set<string>>();
+  for (const producer of index.producers) {
+    if (producer.activityId !== activityId) continue;
+    if (index.unreadableOps.has(`${producer.activityId}|${producer.stepId}`)) continue;
+    const outputId = producer.via === 'output' ? producer.name
+      : producer.via === 'remap' ? producer.origOutputId
+      : undefined;
+    if (outputId === undefined) continue;
+    const held = byStep.get(producer.stepId) ?? new Set<string>();
+    held.add(outputId);
+    byStep.set(producer.stepId, held);
+  }
+  return byStep;
 }
 
 /* ------------------------------- context assembly ------------------------------- */
@@ -125,7 +170,10 @@ export async function buildProducerIndex(args: {
   const positions = new Map<string, number>();
   let ordinal = 0;
 
+  const unreadableOps = new Set<string>();
   const ownOutputsCache = new Map<string, string[]>();
+  /** Refs this scan could not read, so a second step binding the same ref is marked too. */
+  const unreadableRefs = new Set<string>();
   const ownOutputsOf = async (ref: string, activityId: string): Promise<string[]> => {
     const key = `${activityId}|${ref}`;
     const hit = ownOutputsCache.get(key);
@@ -141,7 +189,9 @@ export async function buildProducerIndex(args: {
         : null;
       if (!result?.success) result = await readTechnique(ref, workflowDir, scopeWorkflowId);
       if (result.success) ids = (result.value.outputs ?? []).map((o) => o.id);
+      else unreadableRefs.add(key);
     } catch (error) {
+      unreadableRefs.add(key);
       logWarn('Provenance producer scan skipped an unreadable bound op', {
         ref, activityId, workflowId: scopeWorkflowId,
         error: error instanceof Error ? error.message : String(error),
@@ -152,13 +202,28 @@ export async function buildProducerIndex(args: {
   };
 
   for (const activity of workflow.activities ?? []) {
+    // A loop's gate governs every step of its body, and the flattened walk drops that ancestry, so
+    // collect it here: these are the steps a gate above them makes conditional.
+    const gatedAncestors = new Set<Step>();
+    const markGated = (steps: Step[] | undefined, gated: boolean): void => {
+      for (const s of steps ?? []) {
+        if (gated) gatedAncestors.add(s);
+        if (s.kind === 'loop') markGated(s.steps as Step[], gated || s.when !== undefined);
+      }
+    };
+    markGated(activity.steps, false);
+
     for (const step of flattenActivitySteps(activity)) {
       const at = ordinal++;
       const stepId = step.id ?? (step.kind === 'technique' ? techniqueName(step.technique) : undefined) ?? '?';
       if (step.id !== undefined) positions.set(positionKey(activity.id, step.id), at);
 
+      // A loop's own gate governs its body, so a producer inside one is conditional whether or not
+      // the body step carries a gate of its own.
+      const conditional = ('when' in step && step.when !== undefined) || gatedAncestors.has(step);
+
       const push = (name: string, via: ProducerSite['via'], origOutputId?: string): void => {
-        producers.push({ name, via, origOutputId, stepId, activityId: activity.id, ordinal: at });
+        producers.push({ name, via, origOutputId, stepId, activityId: activity.id, ordinal: at, conditional });
       };
 
       if (step.kind === 'technique') {
@@ -173,6 +238,7 @@ export async function buildProducerIndex(args: {
           for (const outputId of await ownOutputsOf(ref, activity.id)) {
             if (!remapped.has(outputId)) push(outputId, 'output');
           }
+          if (unreadableRefs.has(`${activity.id}|${ref}`)) unreadableOps.add(`${activity.id}|${stepId}`);
         }
       }
       if (step.kind === 'checkpoint') {
@@ -189,7 +255,7 @@ export async function buildProducerIndex(args: {
     }
   }
 
-  return { declaredVariables, producers, positions, resolvedTechniques: ownOutputsCache.size };
+  return { declaredVariables, producers, positions, resolvedTechniques: ownOutputsCache.size, unreadableOps };
 }
 
 /** Positions are keyed by the pair, since one step id can occur in more than one activity. */
@@ -243,7 +309,8 @@ interface BagResolution { text: string; resolved: boolean; kind: SourceKind }
 
 function producerText(p: ProducerSite, later: boolean): string {
   const where = `'${p.stepId}' (activity '${p.activityId}')`;
-  const suffix = later ? ' — produced later in the workflow, not yet available' : '';
+  const gate = p.conditional ? ' — behind a `when` gate, so it produces this on the runs that gate admits' : '';
+  const suffix = later ? ' — produced later in the workflow, not yet available' : gate;
   if (p.via === 'output' || p.via === 'remap') {
     const remap = p.via === 'remap' ? `, remapped from output '${p.origOutputId}'` : '';
     return `output of step ${where}${remap}${suffix}`;
@@ -256,10 +323,16 @@ function producerText(p: ProducerSite, later: boolean): string {
  * Resolve a session-bag name under the name-match convention. Priority: the closest producer
  * before the current step, then a declared workflow variable, then a producer that only exists
  * later in the workflow, then a known ambient id.
+ *
+ * Among prior producers, the closest one that always runs outranks anything behind a `when` gate,
+ * however late the gated step sits. A gated step writes the name on the runs its gate admits, so on
+ * every other run the value a reader holds came from the unguarded step — and naming the gated one
+ * sends that reader to a step which did not execute.
  */
 function resolveBagName(name: string, ctx: ProvenanceContext): BagResolution {
   const sites = ctx.producers.filter((p) => p.name === name);
-  const prior = sites.filter((p) => p.ordinal < ctx.position).pop();
+  const before = sites.filter((p) => p.ordinal < ctx.position);
+  const prior = before.filter((p) => !p.conditional).pop() ?? before.pop();
   const later = sites.find((p) => p.ordinal >= ctx.position);
 
   if (prior) return { text: producerText(prior, false), resolved: true, kind: 'prior' };

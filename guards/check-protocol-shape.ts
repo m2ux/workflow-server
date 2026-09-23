@@ -10,17 +10,9 @@
  * A file carrying both shapes is reported too: numbered items sitting outside any heading, beside
  * headings that name their own phases, reads as though only some of the phases were worth naming.
  *
- * ---
- *
- * NOT IN THE GUARD REGISTRY, and `tests/guard-registry.test.ts` records the reason.
- *
- * The corpus holds 409 techniques following the rule and 95 that do not. The 95 are a corpus-wide
- * conversion, and #837 argues the measurement should precede the decision: whether they are
- * converted in one pass or recorded as accepted debt is a judgement someone makes against a number,
- * and until this ran there was no number. Enrolling it would take the sweep red for work nobody has
- * scheduled, which teaches every reader to ignore a red sweep.
- *
- * What it buys now is that the 95 stop being 96. The population is a figure that moves.
+ * The measurement preceded the conversion, which is what #837 argued for: whether to convert the
+ * population or accept it as debt is a judgement made against a number, and until this ran there
+ * was no number. It reported 95, they were converted under #846, and the guard holds the shape.
  *
  * Run: npx tsx guards/check-protocol-shape.ts [--root <workflows-dir>] [--json]
  */

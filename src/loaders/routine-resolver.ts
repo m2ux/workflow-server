@@ -7,6 +7,16 @@
  * reference — so everything downstream of the loaders sees ordinary steps and none of them learns
  * the construct.
  *
+ * A bare argument means the opposite of what it means one layer down, and the gap between them is
+ * closed here rather than left to cancel out. At a reference site a braced word is a reference and
+ * a bare word is a literal, because substitution runs at load time and no variable bag exists yet
+ * to resolve a name against. At a step the executing agent reads, a bare word that resolves in the
+ * bag IS a reference. Substitution emits a resolved reference as the bare name, so a braced
+ * argument in a routine file arrives at the step in the form the agent reads as a reference, and
+ * the author's meaning survives the change of position. That is load-bearing: emitting the braces
+ * would deliver a template, and emitting an unresolved name would deliver a literal, and neither
+ * is visible at the step. `meta::variable-binding` states the same three positions corpus-side.
+ *
  * Reference addressing carries NO group grammar:
  *   - `namespace::name` — resolved ONLY in that namespace's routines (no fallback). The namespace is
  *     spelled by its directory name or by the path from the corpus root reaching it, so every

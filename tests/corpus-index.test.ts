@@ -90,6 +90,37 @@ describe('corpus discovery', () => {
     expect(namespaceLocation(root, 'security/audits')).toBeNull();
   });
 
+  it('names a namespace by the end of its path, so regrouping the tree above it rewrites no reference', () => {
+    // `security/audits/deep` is the whole path and `audits/deep` is its end; both reach the one
+    // directory, so a grouping folder added above `security/` would leave every spelling valid.
+    expect(namespaceLocation(root, 'audits/deep')?.dir).toBe(join(root, 'security', 'audits', 'deep'));
+    expect(namespaceLocation(root, 'audits/flat')).toBeNull();
+  });
+
+  it('names neither of two namespaces whose paths end alike, as it names neither of two claiming one name', () => {
+    const alike = mkdtempSync(join(tmpdir(), 'corpus-path-end-'));
+    for (const side of ['left', 'right']) {
+      mkdirSync(join(alike, side, 'lib', 'twin', 'techniques'), { recursive: true });
+    }
+    const index = indexCorpus(alike);
+    expect(namespaceLocation(index, 'lib/twin')).toBeNull();
+    expect(namespaceLocation(index, 'left/lib/twin')?.dir).toBe(join(alike, 'left', 'lib', 'twin'));
+    expect(namespaceLocation(index, 'right/lib/twin')?.dir).toBe(join(alike, 'right', 'lib', 'twin'));
+    rmSync(alike, { recursive: true, force: true });
+  });
+
+  it('prefers the whole path over the end of a longer one', () => {
+    // `lib/twin` is the whole path of the one at the root and the end of `deep/lib/twin`. The whole
+    // path wins, as a bare name falls through to the path of the same spelling.
+    const both = mkdtempSync(join(tmpdir(), 'corpus-whole-path-'));
+    mkdirSync(join(both, 'lib', 'twin', 'techniques'), { recursive: true });
+    mkdirSync(join(both, 'deep', 'lib', 'twin', 'techniques'), { recursive: true });
+    const index = indexCorpus(both);
+    expect(namespaceLocation(index, 'lib/twin')?.dir).toBe(join(both, 'lib', 'twin'));
+    expect(namespaceLocation(index, 'deep/lib/twin')?.dir).toBe(join(both, 'deep', 'lib', 'twin'));
+    rmSync(both, { recursive: true, force: true });
+  });
+
   it('resolves a namespace subdirectory from wherever the namespace sits', () => {
     expect(namespaceSubdir(root, 'lib', 'techniques')).toBe(join(root, 'lib', 'techniques'));
     expect(namespaceSubdir(root, 'no-such-namespace', 'techniques')).toBeNull();

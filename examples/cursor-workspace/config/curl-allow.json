@@ -5,9 +5,13 @@
     "raw.githubusercontent.com",
     "code.claude.com",
     "docs.claude.com",
-    "docs.anthropic.com"
+    "docs.anthropic.com",
+    "127.0.0.1",
+    "localhost"
   ],
   "allowPrefixes": {
+    "127.0.0.1": ["*"],
+    "localhost": ["*"],
     "github.com": ["*"],
     "raw.githubusercontent.com": ["*"],
     "code.claude.com": ["*"],

@@ -68,6 +68,13 @@ function deliveredInFull(bundle: Record<string, unknown>): string[] {
   return carried;
 }
 
+function deliveredContracts(bundle: Record<string, unknown>): string[] {
+  const contracts = (bundle['contracts'] ?? {}) as Record<string, unknown>;
+  const carried = Object.entries(contracts).filter(([, value]) => !isUnchangedMarker(value)).map(([key]) => key);
+  expect(carried.length, 'the delivery this reads carried no inherited contract at all').toBeGreaterThan(0);
+  return carried;
+}
+
 /** Split a get_activity response into its parsed bundle (before ---) and body text (after). */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function splitActivityResponse(result: any): { bundle: Record<string, unknown>; bodyText: string } {
@@ -203,14 +210,20 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
-      const carried = deliveredInFull(splitActivityResponse(await getActivity(idx)).bundle);
+      const first = splitActivityResponse(await getActivity(idx)).bundle;
+      const carried = deliveredInFull(first);
+      const carriedContracts = deliveredContracts(first);
 
       // Same agent_id, no context_mode declared: the orchestrator holds one identity for as long as
       // a worker carries its batch, so a second delivery under it is that same context arriving again.
       const second = splitActivityResponse(await getActivity(idx));
       const techniques = second.bundle['techniques'] as Record<string, unknown>;
+      const contracts = second.bundle['contracts'] as Record<string, unknown>;
       for (const key of carried) {
         expect(isUnchangedMarker(techniques[key]), `expected a marker for ${key}`).toBe(true);
+      }
+      for (const key of carriedContracts) {
+        expect(isUnchangedMarker(contracts[key]), `expected a marker for contract ${key}`).toBe(true);
       }
       expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
       expect(second.bundle['bundle_note']).toBeDefined();
@@ -226,6 +239,9 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
       const replacement = splitActivityResponse(await getActivity(idx, { agent_id: 'w2' }));
       for (const value of Object.values(replacement.bundle['techniques'] as Record<string, unknown>)) {
+        expect(isUnchangedMarker(value)).toBe(false);
+      }
+      for (const value of Object.values(replacement.bundle['contracts'] as Record<string, unknown>)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
     });
@@ -247,21 +263,33 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(first.bundle['bundle_mode']).toBe('reference');
       expect(first.bundle['bundle_note']).toBeDefined();
       const firstTechniques = first.bundle['techniques'] as Record<string, unknown>;
+      const firstContracts = first.bundle['contracts'] as Record<string, unknown>;
       // First delivery is full content — nothing has been delivered yet.
       for (const value of Object.values(firstTechniques)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
+      for (const value of Object.values(firstContracts)) {
+        expect(isUnchangedMarker(value)).toBe(false);
+      }
       expect(Object.keys(firstTechniques).length, 'the first delivery carried no operation').toBeGreaterThan(0);
+      expect(Object.keys(firstContracts).length, 'the first delivery carried no inherited contract').toBeGreaterThan(0);
 
       const second = splitActivityResponse(await getActivity(idx));
       const secondTechniques = second.bundle['techniques'] as Record<string, unknown>;
+      const secondContracts = second.bundle['contracts'] as Record<string, unknown>;
       // Byte-identical refetch: the first delivery carried the whole contract, so every entry of it
       // collapses to a marker and the second carries no body at all.
       for (const key of deliveredInFull(first.bundle)) {
         expect(isUnchangedMarker(secondTechniques[key]), `expected marker for ${key}`).toBe(true);
       }
+      for (const key of deliveredContracts(first.bundle)) {
+        expect(isUnchangedMarker(secondContracts[key]), `expected marker for contract ${key}`).toBe(true);
+      }
       for (const [key, value] of Object.entries(secondTechniques)) {
         expect(isUnchangedMarker(value), `${key} was delivered twice in full`).toBe(true);
+      }
+      for (const [key, value] of Object.entries(secondContracts)) {
+        expect(isUnchangedMarker(value), `contract ${key} was delivered twice in full`).toBe(true);
       }
       expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
       // The activity body itself is still delivered. (`work-package` declares no rules buckets of
@@ -573,7 +601,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     // which #336 closed by renaming the input to the `issue_record` its producers already declare —
     // a corpus fixture for a defect state goes green the moment the defect is fixed, so this case
     // now pins the RESOLVED annotation instead: a producer in an earlier activity, named.
-    it('a step-bound fetch annotates own inputs and noteworthy inherited ones', async () => {
+    it('a step-bound fetch annotates own inputs; inherited inputs ride the named contracts', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'post-impl-review');
@@ -587,9 +615,15 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const technique = parse(text.substring(text.indexOf('\n\n') + 2)) as {
         provenance_note?: string;
         inputs?: Array<{ id: string; source?: string }>;
-        inherited_inputs?: { items: Array<{ id: string; source?: string }> };
+        inherited_inputs?: unknown;
+        inherits?: string[];
+        contracts?: Record<string, { inputs?: Array<{ id: string }> }>;
       };
       expect(technique.provenance_note).toBeDefined();
+      expect(technique.inherited_inputs).toBeUndefined();
+      expect(technique.inherits?.length, 'the fetch named no inherited scope').toBeGreaterThan(0);
+      const inherited = Object.values(technique.contracts ?? {}).flatMap((block) => block.inputs ?? []);
+      expect(inherited.length, 'no named contract carried a shared input').toBeGreaterThan(0);
       // Own inputs are always annotated; the documented seam case resolves as authored.
       for (const input of technique.inputs ?? []) {
         expect(input.source, `expected a source on own input '${input.id}'`).toBeDefined();
@@ -612,16 +646,6 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       };
       const optionalOwn = new Map((optionalTechnique.inputs ?? []).map((i) => [i.id, i.source]));
       expect(optionalOwn.get('legal_review_note')).toContain('optional input');
-      // Inherited entries carry a source only where it says something the block note does not
-      // (e.g. a later-positioned producer); settled ambient constants stay bare.
-      const inherited = technique.inherited_inputs?.items ?? [];
-      expect(inherited.length).toBeGreaterThan(0);
-      expect(inherited.some((i) => i.source === undefined)).toBe(true);
-      for (const item of inherited) {
-        if (item.source !== undefined) {
-          expect(item.source).toMatch(/produced later in the workflow|step-binding/);
-        }
-      }
       // Every own input resolves at this seam, so the fetch validates clean with no warnings.
       const validation = (result._meta as Record<string, unknown>)['validation'] as { status: string; warnings: string[] };
       expect(validation.status).toBe('valid');
@@ -806,10 +830,9 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
   });
 
-  // A composed technique is one item, delivered entire. Every block it declares — the
-  // contract it inherits from its ancestor group, the rules it is held to — rides the body
-  // that states it, in every delivery mode, however many siblings of the same group were
-  // delivered before it. What collapses is the whole technique, on the branch above.
+  // An operation body is one item. Shared contracts ride beside it under `contracts`, each a
+  // whole item of its own, in every delivery mode. What collapses is the whole technique or the
+  // whole contract, never a field of either.
   describe('a composed technique arrives entire', () => {
     // Parse a get_technique response body into its technique record (drops the
     // `session_index:` header line before the first blank line).
@@ -818,9 +841,10 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       return parse(text.substring(text.indexOf('\n\n') + 2)) as Record<string, unknown>;
     }
 
-    const SHARED_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules'] as const;
+    const RECORD_SHAPED = (value: unknown): value is Record<string, unknown> =>
+      typeof value === 'object' && value !== null && !Array.isArray(value);
 
-    it('carries a sibling technique\'s shared blocks whole, under reference delivery', async () => {
+    it('carries a sibling technique\'s shared contracts as whole items, under reference delivery', async () => {
       const session = await startSession({
         workflow_id: 'work-package',
         agent_id: 'solo',
@@ -828,8 +852,6 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      // Two operations of the same group, so the contract the loader merges into both is
-      // identical — the state the fragmenting pass used to collapse.
       const stepA = 'evaluate-open-assumptions';
       const stepB = 'update-assumptions-log';
       await mcp.enter(idx, 'assumptions-review');
@@ -841,12 +863,16 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(first.isError).toBeFalsy();
       const bodyA = parseTechniqueBody(first as never);
       expect(bodyA['capability']).toBeDefined();
-      const presentInA = SHARED_BLOCKS.filter(b => bodyA[b] !== undefined);
-      expect(presentInA.length, 'technique A should carry at least one shared block').toBeGreaterThan(0);
-      for (const b of presentInA) expect(isUnchangedMarker(bodyA[b])).toBe(false);
+      expect(bodyA['inherited_inputs']).toBeUndefined();
+      expect(Array.isArray(bodyA['inherits'])).toBe(true);
+      const contractsA = (bodyA['contracts'] ?? {}) as Record<string, unknown>;
+      expect(Object.keys(contractsA).length, 'technique A named no inherited contract').toBeGreaterThan(0);
+      for (const block of Object.values(contractsA)) {
+        expect(RECORD_SHAPED(block) && block['delivery'] === 'unchanged').toBe(false);
+      }
 
-      // B is a different technique, so it arrives in full — and "in full" is every block it
-      // declares, including the ones A has already put in this context.
+      // B is a different technique, so its own body arrives in full. Scopes A already delivered
+      // collapse to whole-item markers; they are not copied onto B's body.
       const second = await client.callTool({
         name: 'get_technique',
         arguments: { session_index: idx, step_id: stepB },
@@ -854,10 +880,8 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(second.isError).toBeFalsy();
       const bodyB = parseTechniqueBody(second as never);
       expect(bodyB['capability']).toBeDefined();
-      for (const b of SHARED_BLOCKS) {
-        if (bodyB[b] === undefined) continue;
-        expect(isUnchangedMarker(bodyB[b]), `${b} arrived as a marker naming a piece of a body`).toBe(false);
-      }
+      expect(bodyB['inherited_inputs']).toBeUndefined();
+      expect(bodyB['inherited_outputs']).toBeUndefined();
     });
 
     it('records no block key on the delivery ledger', async () => {

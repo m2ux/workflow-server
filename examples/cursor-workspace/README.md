@@ -15,6 +15,7 @@ Requires a checkout (repo-name) under your projects root, and `$HOME` set.
 |------|------|
 | workspace | kickoff dir (`./`) |
 | project | `$HOME/projects/dev/<repo>` (or `${env:HOST_PROJECTS_ROOT}/<repo-name>`) |
+| workflows | `…/<repo-name>/.worktrees/workflows` |
 | planning | `…/<repo-name>/.engineering/artifacts/planning` |
 | work trees | `…/<repo-name>/.worktrees` |
 
@@ -24,7 +25,7 @@ Requires a checkout (repo-name) under your projects root, and `$HOME` set.
 
 ## Skills
 
-`skills/` is the text. `.cursor/skills`, `.claude/skills`, and `.agents/skills` point at it. A skill the template does not carry stays in the workspace `skills/` directory across a `--force` refresh.
+`skills/` is the text. Deploy links each skill at that directory. `.cursor/skills`, `.claude/skills`, and `.agents/skills` point at `skills/`. A skill the template does not carry stays across a `--force` refresh.
 
 | Skill | Use for |
 |-------|---------|

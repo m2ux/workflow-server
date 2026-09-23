@@ -243,14 +243,14 @@ export interface DerivedContract {
    */
   operationWrites: Set<string>;
   /**
-   * Names some step consults AFTER an earlier step produced them, before the namespace narrows it.
+   * Names the activity's own exit conditions test, before the namespace narrows them.
    *
-   * `internalReads` answers this inside the declared namespace; a handoff between two operations is
-   * exactly the case the namespace does not hold, so it needs the un-narrowed reading. Order is what
-   * makes it a handoff rather than a coincidence of naming: a name read before anything produced it
-   * is a different defect, and reporting it as a handoff would describe a flow that does not happen.
+   * {@link routingReads} answers this inside the declared namespace, which is the reading a
+   * contract checker wants. A value an operation lands and no declaration mentions is exactly the
+   * case that namespace does not hold, so asking whether such a value chooses an exit needs the
+   * un-narrowed set — the same reason {@link operationWrites} carries one.
    */
-  consultedAfterProduction: Set<string>;
+  routingConsults: Set<string>;
   /**
    * The subset of {@link operationWrites} whose producing output states the members it carries, so
    * the value is a structure by the operation's own account. A declaration calling one of these a
@@ -535,16 +535,13 @@ export async function deriveActivityContract(args: {
   const literalValues = new Set<string>();
   /** What a bound operation lands in the bag, taken from its file rather than from a declaration. */
   const operationWrites = new Set<string>();
-  /** Names consulted after an earlier step produced them — a handoff, at any grain. */
-  const consultedAfterProduction = new Set<string>();
-  /** Those of them whose producing output declares the members it carries. */
+  /** Those operation writes whose producing output declares the members it carries. */
   const structuredWrites = new Set<string>();
 
   const consumes = new Set<string>();
   const read = (reference: string): void => {
     const name = bagName(reference);
     mentions.add(name);
-    if (producedSoFar.has(name)) consultedAfterProduction.add(name);
     if (!namespace.has(name)) return;
     pathReads.add(reference);
     consumes.add(name);
@@ -692,7 +689,9 @@ export async function deriveActivityContract(args: {
 
   // Activity-level routing is read at the boundary, after every step has run.
   const routingReads = new Set<string>();
+  const routingConsults = new Set<string>();
   const routingRead = (name: string): void => {
+    routingConsults.add(name);
     if (!namespace.has(name)) return;
     routingReads.add(name);
     read(name);
@@ -707,8 +706,8 @@ export async function deriveActivityContract(args: {
 
   return {
     reads, writes, internalReads, artifactWrites, produces, mentions, persistedProductions,
-    routingReads, consumes, pathReads, memberWrites, artifactNames, operationWrites, structuredWrites,
-    consultedAfterProduction, literalValues,
+    routingReads, routingConsults, consumes, pathReads, memberWrites, artifactNames, operationWrites, structuredWrites,
+    literalValues,
   };
 }
 

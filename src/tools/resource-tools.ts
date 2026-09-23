@@ -5,7 +5,7 @@ import { withAuditLog, logInfo } from '../logging.js';
 
 import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { composeActivityTechnique, projectTechnique } from '../loaders/technique-loader.js';
+import { composeActivityTechnique, projectTechniqueFetch } from '../loaders/technique-loader.js';
 import { contractOperations } from '../loaders/core-ops.js';
 import {
   sessionIndexParam,
@@ -28,9 +28,6 @@ import {
   replaceSessionFile,
   verifySeal,
   computeSessionIndex,
-  migratePlanningFolder,
-  MigrationError,
-  describeMigrationError,
   createTransientFolder,
   registerTransient,
   lookupTransientBySlug,
@@ -353,30 +350,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         });
       }
 
-      // Detect-and-migrate legacy session-state in the folder before anything
-      // else. Idempotent: short-circuits when `session.json` is already
-      // present. On a successful migration the legacy `workflow-state.json`
-      // is deleted and the new seal replaces the legacy `.session-token`.
-      let migrationResult;
-      try {
-        migrationResult = await migratePlanningFolder(folder);
-      } catch (err) {
-        if (err instanceof MigrationError) {
-          throw new Error(describeMigrationError(err));
-        }
-        throw err;
-      }
-
       // The effective workflow_id resolves in this order:
-      //   1. If session.json exists (either pre-existing or just migrated),
-      //      the workflow_id stored in state wins (caller cannot rebrand a
-      //      live session).
+      //   1. If session.json exists, the workflow_id stored in state wins
+      //      (caller cannot rebrand a live session).
       //   2. Otherwise, fall back to the caller-supplied workflow_id, then
       //      to the default "meta".
       let effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
-      if (migrationResult.migrated && migrationResult.state) {
-        effectiveWorkflowId = migrationResult.state.workflowId;
-      } else if (await sessionFileExists(folder)) {
+      if (await sessionFileExists(folder)) {
         try {
           const { state: rawState } = await verifySeal(folder);
           const peek = safeValidateSessionFile(rawState);
@@ -592,9 +572,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
       if (state.contextMode) response['context_mode'] = state.contextMode;
       response['execution_path'] = resolveExecutionPath(state);
-      if (migrationResult.migrated) {
-        response['migrated'] = true;
-      }
       if (derived?.repo_source) response['repo_source'] = derived.repo_source;
       if (derived?.host_repo) response['host_repo'] = derived.host_repo;
       if (derived?.component_path) response['component_path'] = derived.component_path;
@@ -818,7 +795,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load one fully composed technique (step-bound when `step_id` is set, named when `technique_id` is; otherwise the activity\'s or workflow\'s first). ' +
+    'Load one technique (step-bound when `step_id` is set, named when `technique_id` is; otherwise the activity\'s or workflow\'s first). The body is the operation itself: own interface, own rules, and `inherits` naming the scopes whose contracts ride beside it under `contracts`. That body is the same projection an inlined `step_techniques` entry carries. ' +
     'Under `context_mode: "persistent"` or `bundle: "reference"`, a byte-identical refetch to the SAME `agent_id` scope may return an unchanged-reference; pass `full: true` when earlier content was summarized away. ' +
     'A fresh worker context must not ask for reference delivery — it holds no prior delivery to reference.',
     {
@@ -930,12 +907,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!composed.success) throw composed.error;
       techniqueId = composed.value.techniqueId;
 
-      // Binding-seam provenance (#166 B3): a step-bound fetch annotates its own inputs (and the
-      // noteworthy inherited ones) with their resolution under the name-match convention, and
-      // each remapped output with its landing name; UNRESOLVED own inputs surface as warn-only
-      // validation entries. Classification is static — declarations and document order — so the
-      // annotated payload is deterministic per (corpus, step) and byte-identical refetches keep
-      // collapsing under reference delivery.
+      // Binding-seam provenance (#166 B3): a step-bound fetch annotates its own inputs
+      // with their resolution under the name-match convention, and each remapped output with its
+      // landing name; UNRESOLVED own inputs surface as warn-only validation entries. Inherited
+      // inputs ride the named contracts, which are shared across steps and carry no step binding.
       let technique = composed.value.technique;
       const provenanceWarnings: string[] = [];
       let resolvedTechniques = 0;
@@ -956,10 +931,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           provenanceWarnings.push(...decorated.warnings);
         }
       }
-      // Hash the whole technique over the pre-marker projected text so the whole-marker
-      // branch below still collapses an identical refetch; block dedup runs later.
-      const ordered = projectTechnique(technique);
-      const text = stringifyForResponse(ordered);
+      const { wire, contracts } = projectTechniqueFetch(
+        technique, composed.value.scopes, composed.value.ownRuleKeys,
+      );
+      // Hash the operation body alone — the same bytes an inlined step hashes — so a bundled
+      // delivery and a later get_technique of that step share `technique:<id>`. Scope contracts
+      // ride beside the body under `contracts` and collapse on `bundle:contract:<id>`.
+      const text = stringifyForResponse(wire);
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -1041,13 +1019,26 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         };
       }
 
-      // Full-delivery branch. The technique is the unit this call serves, so it goes out entire —
-      // capability, interface, procedure and rules, as the file defines them. What collapses is the
-      // whole of it, on the branch above, against the `technique:<id>` key recorded here.
-      const body = text;
+      // Full-delivery branch. The hashed unit is the operation body; inherited contracts ride
+      // beside it under `contracts`, each keyed as a whole item.
+      const deliveries: Record<string, string> = { [ledgerKey]: hash };
+      const shippedContracts: Record<string, unknown> = {};
+      for (const [key, block] of Object.entries(contracts)) {
+        const contractHash = contentHash(stringifyForResponse(block));
+        const contractKey = `bundle:contract:${key}`;
+        if (referenceMode && deliveredHash(state, contractKey, scope) === contractHash) {
+          shippedContracts[key] = unchangedMarker(contractHash);
+          continue;
+        }
+        shippedContracts[key] = block;
+        deliveries[contractKey] = contractHash;
+      }
+      const payload: Record<string, unknown> = { ...wire };
+      if (Object.keys(shippedContracts).length > 0) payload['contracts'] = shippedContracts;
+      const body = stringifyForResponse(payload);
       const next = advanceSession(state, (draft) => {
         draft.currentTechnique = techniqueId as string;
-        recordDeliveries(draft, scope, { [ledgerKey]: hash });
+        recordDeliveries(draft, scope, deliveries);
         recordFirstArrival(draft);
         recordFetch(draft, 'full');
       });

@@ -6,6 +6,9 @@ import {
   inherits,
   ruleCitations,
   checkCitation,
+  areaOf,
+  bareRuleMentions,
+  reachableRules,
 } from '../guards/check-rule-citation-form.js';
 
 const GROUP = resolve('/corpus/meta/techniques/workflow-engine');
@@ -139,5 +142,53 @@ describe('checkCitation', () => {
     expect(f!.check).toBe('foreign-rule');
     expect(f!.detail).toContain('dotted address');
     expect(f!.detail).toContain('continue-batch');
+  });
+});
+
+describe('areaOf', () => {
+  it('names a library by its namespace and a workflow by its own folder', () => {
+    expect(areaOf('corpus/support/gitnexus/techniques/analyze.md')).toBe('support/gitnexus');
+    expect(areaOf('support/git/techniques/pin-revision.md')).toBe('support/git');
+    expect(areaOf('corpus/codebase-wiki/techniques/ingest.md')).toBe('codebase-wiki');
+  });
+});
+
+describe('bareRuleMentions', () => {
+  it('takes a backticked kebab slug and passes over its own rule headings', () => {
+    const text = ['prose citing `index-freshness-first` here', '', '## Rules', '', '### my-own-rule', 'body'].join('\n');
+    expect(bareRuleMentions(text)).toEqual([{ line: 1, slug: 'index-freshness-first' }]);
+  });
+
+  /**
+   * A dotted address ends in a slug, and the tail must not read as a bare citation of its own — the
+   * whole point of the dotted form is that it is already at the length its reader needs.
+   */
+  it('passes over the tail of a dotted address', () => {
+    expect(bareRuleMentions('per `gitnexus.index-freshness-first` there')).toEqual([]);
+  });
+
+  it('passes over a fenced block, which shows markup rather than citing', () => {
+    const text = ['```', 'a `some-rule-name` sample', '```'].join('\n');
+    expect(bareRuleMentions(text)).toEqual([]);
+  });
+
+  it('ignores a single word, which carries no slug shape', () => {
+    expect(bareRuleMentions('the `repo` argument')).toEqual([]);
+  });
+});
+
+describe('reachableRules', () => {
+  const ROOT = resolve('/corpus');
+
+  /** What the loader merges in: the file's own rules, and every container above it. */
+  it('carries the citer own rules and every container above it', () => {
+    const reachable = reachableRules(OP, ROOT, rulesOf);
+    expect(reachable.has('account-every-activity')).toBe(true);
+    expect(reachable.has('agent-id-scopes-delivery')).toBe(true);
+  });
+
+  /** A sibling operation is merged into nobody; it reaches a reader by the bundle, not the tree. */
+  it('leaves out a sibling operation rule, which no container merge supplies', () => {
+    expect(reachableRules(OP, ROOT, rulesOf).has('one-advance-per-activity')).toBe(false);
   });
 });

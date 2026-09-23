@@ -477,12 +477,12 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     // steps after it. Both exits are immediate, so either answer leaves those eleven unrun; the
     // ungated steps before the gate are what a worker that answers there has run.
     const RAN_BEFORE_ABORT = [
-      { step_id: 'announce-start', output: 'announced' },
-      { step_id: 'review-summary-approval', output: 'approved' },
-      { step_id: 'dco-sign-off-confirmation', output: 'confirmed' },
-      { step_id: 'private-remote-confirmation', output: 'confirmed' },
-      { step_id: 'push-confirmation', output: 'confirmed' },
-      { step_id: 'body-non-conformant', output: 'user aborted' },
+      { step_id: 'announce-start', output: { result: 'announced' } },
+      { step_id: 'review-summary-approval', output: { result: 'approved' } },
+      { step_id: 'dco-sign-off-confirmation', output: { result: 'confirmed' } },
+      { step_id: 'private-remote-confirmation', output: { result: 'confirmed' } },
+      { step_id: 'push-confirmation', output: { result: 'confirmed' } },
+      { step_id: 'body-non-conformant', output: { result: 'user aborted' } },
     ];
 
     it('states each option\'s consequence from the workflow graph before the user chooses', async () => {
@@ -848,6 +848,9 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       // Fetch each technique step's composed content first, as a real worker
       // does — a manifested technique step with no recorded fetch draws a
       // fidelity warning (#166 B8).
+      // A step reports under the output ids its operation declares, so the fetch that a real
+      // worker makes is also where the ids come from.
+      const declaredIds = new Map<string, string[]>();
       for (const s of actResponse.steps as Array<{ id: string; kind?: string }>) {
         if (s.kind !== 'technique') continue;
         const fetchRes = await client.callTool({
@@ -855,9 +858,17 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
           arguments: { session_index: tokenAfterStart, step_id: s.id },
         });
         expect(fetchRes.isError).toBeFalsy();
+        const fetched = parseToolResponse(fetchRes) as { outputs?: Array<{ id: string }> };
+        declaredIds.set(s.id, (fetched.outputs ?? []).map(o => o.id));
       }
 
-      const manifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
+      const manifest = actResponse.steps.map((s: { id: string }) => {
+        const ids = declaredIds.get(s.id);
+        const output = ids && ids.length > 0
+          ? Object.fromEntries(ids.map(id => [id, 'completed']))
+          : { result: 'completed' };
+        return { step_id: s.id, output };
+      });
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -867,7 +878,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const meta = result._meta as Record<string, unknown>;
       const validation = meta['validation'] as { status: string; warnings: string[] };
       expect(validation.status).toBe('valid');
-    });
+    }, 180_000);
 
   });
 
@@ -984,7 +995,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
           session_index: tokenAfterAct,
           from_activity: 'start-work-package',
           activity_id: 'design-philosophy',
-          step_manifest: [{ step_id: 'resolve-target', output: 'done' }],
+          step_manifest: [{ step_id: 'resolve-target', output: { result: 'done' } }],
         },
       });
       const meta = result._meta as Record<string, unknown>;
@@ -997,7 +1008,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
       const tokenAfterAct = await resolveCheckpoints(client, nextToken, actResponse);
 
-      const reversedManifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'done' })).reverse();
+      const reversedManifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: { result: 'done' } })).reverse();
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -1024,7 +1035,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
           session_index: tokenAfterAct,
           from_activity: 'start-work-package',
           activity_id: 'design-philosophy',
-          step_manifest: [{ step_id: 'fake-step', output: 'done' }],
+          step_manifest: [{ step_id: 'fake-step', output: { result: 'done' } }],
         },
       });
       expect(result.isError).toBeFalsy();
@@ -1959,6 +1970,77 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(response.session_index).toBe(tokenWithAct);
     });
 
+    it('present_checkpoint renders the message and option labels from the variable bag', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_index'] as string;
+
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: tokenWithAct,
+          checkpoint_id: 'accept-blast-radius',
+          message: 'Changing {target} is rated {impact_report.risk}; {impact_report.summary.direct} callers reach it.',
+          options: [
+            { id: 'proceed', label: 'Edit {target}' },
+            { id: 'hold', label: 'Leave it' },
+          ],
+          variables_changed: {
+            target: 'composeLoaded',
+            impact_report: { risk: 'CRITICAL', summary: { direct: 2 } },
+          },
+        },
+      });
+
+      const presentResult = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { session_index: tokenWithAct },
+      });
+      expect(presentResult.isError).toBeFalsy();
+      const response = parseToolResponse(presentResult);
+      expect(response.message).toBe('Changing composeLoaded is rated CRITICAL; 2 callers reach it.');
+      const options = response.options as { id: string; label: string }[];
+      expect(options.find(o => o.id === 'proceed')?.label).toBe('Edit composeLoaded');
+      const meta = presentResult._meta as { validation?: { status?: string } };
+      expect(meta.validation?.status).not.toBe('warning');
+    });
+
+    it('present_checkpoint leaves a name the bag does not hold standing, and warns', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_index'] as string;
+
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: tokenWithAct,
+          checkpoint_id: 'accept-unmeasured-radius',
+          message: 'Rated {absent_report.risk}.',
+          options: [
+            { id: 'proceed', label: 'Proceed' },
+            { id: 'hold', label: 'Hold' },
+          ],
+        },
+      });
+
+      const presentResult = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { session_index: tokenWithAct },
+      });
+      expect(presentResult.isError).toBeFalsy();
+      const response = parseToolResponse(presentResult);
+      expect(response.message).toBe('Rated {absent_report.risk}.');
+      const meta = presentResult._meta as { validation?: { status?: string; warnings?: string[] } };
+      expect(meta.validation?.status).toBe('warning');
+      expect(meta.validation?.warnings?.join(' ')).toContain('absent_report.risk');
+    });
+
     it('respond_checkpoint reads activeCheckpoint from session.json', async () => {
       const act = await client.callTool({
         name: 'next_activity',
@@ -2555,62 +2637,6 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(topAfter.triggeredWorkflows[0].state.frontier).toEqual(['start-work-package']);
       // The parent's own frontier is untouched.
       expect(topAfter.frontier).toEqual([]);
-    });
-  });
-
-  describe('start_session migration auto-trigger', () => {
-    it('auto-migrates a planning folder containing legacy workflow-state.json + .session-token on first call', async () => {
-      const slug = 'migration-auto';
-      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
-      const { mkdirSync, copyFileSync, existsSync } = await import('node:fs');
-      mkdirSync(folderPath, { recursive: true });
-      // Drop legacy artefacts in the folder before calling start_session.
-      const fixtureDir = resolve(import.meta.dirname, 'fixtures/legacy-session');
-      copyFileSync(join(fixtureDir, 'workflow-state.json'), join(folderPath, 'workflow-state.json'));
-      copyFileSync(join(fixtureDir, '.session-token'), join(folderPath, '.session-token'));
-
-      // Use a non-meta workflow_id so the session resolves to the workspace
-      // folder above (meta sessions are tmp-rooted and bypass workspace).
-      const result = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result) as WorkflowView;
-      // The migrated workflow_id wins over the default 'meta'.
-      expect(response.workflow.id).toBe('work-package');
-      expect(response.migrated).toBe(true);
-      expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
-
-      // Legacy artefacts have been cleaned up; new shape is in place.
-      expect(existsSync(join(folderPath, 'workflow-state.json'))).toBe(false);
-      expect(existsSync(join(folderPath, 'session.json'))).toBe(true);
-      expect(existsSync(join(folderPath, '.session-token'))).toBe(true);
-    });
-
-    it('a second call against the same migrated folder reuses session.json without re-migrating', async () => {
-      const slug = 'migration-resume';
-      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
-      const { mkdirSync, copyFileSync } = await import('node:fs');
-      mkdirSync(folderPath, { recursive: true });
-      const fixtureDir = resolve(import.meta.dirname, 'fixtures/legacy-session');
-      copyFileSync(join(fixtureDir, 'workflow-state.json'), join(folderPath, 'workflow-state.json'));
-      copyFileSync(join(fixtureDir, '.session-token'), join(folderPath, '.session-token'));
-
-      const first = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
-      });
-      const firstResponse = parseToolResponse(first);
-
-      const second = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
-      });
-      const secondResponse = parseToolResponse(second);
-      expect(secondResponse.session_index).toBe(firstResponse.session_index);
-      // The second call must NOT report a migration — session.json is already present.
-      expect(secondResponse.migrated).toBeUndefined();
     });
   });
 

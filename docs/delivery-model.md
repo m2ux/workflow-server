@@ -12,11 +12,11 @@ The server resolves an activity's declared references and bundles them into the 
 
 The response is the union of two sets, deduplicated: the technique references the workflow declares, and the core orchestrator references the server always includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`) — engine traversal, state persistence, sub-agent dispatch and orchestrator discipline.
 
-Every operation in that union arrives with its body: its capability, its interface, its procedure, and the rules it is held to.
+Every operation in that union arrives with its body: its capability, its interface, its procedure, and the rules that technique itself declares. Rules and inputs a scope shares with every technique under it arrive once under `contracts`, and each body names those scopes in `inherits`.
 
 #### Where a rule lives
 
-A rule a technique declares, or inherits from its ancestor group, governs that operation. So it rides the body that states it, where a reader meets it beside the procedure it constrains. The response's `rules` list carries what is left: the role's own rules, declared standalone and referenced by the workflow, which govern the agent rather than any one operation. The two sets are disjoint, so no rule is read twice, and an activity whose every rule belongs to an operation sends no list at all. The body wins ties, because it can say which operation a rule binds and a flat list cannot.
+A rule a technique declares governs that operation. So it rides the body that states it, where a reader meets it beside the procedure it constrains. A rule a workflow or group contract shares with every technique under that scope arrives once under `contracts`, and the body names that scope in `inherits`. The response's `rules` list carries what is left: the role's own rules, declared standalone and referenced by the workflow, which govern the agent rather than any one operation. The three sets are disjoint, so no rule is read twice, and an activity whose every rule belongs to an operation or a scope sends no list at all. The body wins ties against the flat list, because it can say which operation a rule binds and a flat list cannot.
 
 Below the separator rides the workflow metadata, whole. It carries what an orchestrator drives a run from: the rules, the variable roster, the graph and the activities. The roster gives every name the run holds with its type, its value set and its starting value, because the orchestrator has to recognise a name a worker reports back and read a value out of the session by it.
 
@@ -256,7 +256,7 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 
 ### What collapses, call by call
 
-- **`get_activity`** — under reference delivery the response carries `bundle_mode: reference`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules` and `activity_rules` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity body itself is always delivered. In the default mode the invariant blocks still collapse for a returning identity, so a `bundle_note` accompanies any response that can carry a marker, in either mode.
+- **`get_activity`** — under reference delivery the response carries `bundle_mode: reference`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules`, `activity_rules`, and `contracts` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity body itself is always delivered. In the default mode the invariant blocks still collapse for a returning identity, so a `bundle_note` accompanies any response that can carry a marker, in either mode.
 - **`get_technique`** — a byte-identical refetch returns `delivery: unchanged` and a `content_hash` instead of the composed technique. Step-bound provenance annotations (`source:` / `destination:`) are part of that content. They are fixed for a given corpus and step, so refetching the same step collapses; fetching the same operation from a *different* step re-delivers in full rather than handing back a stale reference.
 - **`get_resource`** — a byte-identical refetch of the same `resource_id` returns `delivery: unchanged` and a `content_hash` instead of the body. The key is the caller's exact `resource_id`, anchor included, so `pr-description` and `pr-description#templates` occupy independent slots.
 - **`get_workflow`** — under `context_mode: "persistent"` the orchestrator ops bundle (everything above the `---` separator) is keyed under `workflow_bundle:<hash>`. On a resume where the agent already holds it, the whole bundle collapses to a single marker, while the workflow summary below the separator stays full.
@@ -264,9 +264,9 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 
 `get_technique` and `get_resource` collapse under either `bundle: "reference"` or a session-wide `context_mode: "persistent"`. Fresh and default sessions always receive full bodies.
 
-### What composition repeats
+### What composition repeats in memory
 
-Composition merges each ancestor group's contract into every technique that group covers, so a response bundling ten techniques of one group carries that group's inherited inputs, inherited outputs and rules ten times. Each of those copies is delivered, because each belongs to the body it rides in. A technique arrives as its file defines it, so an agent reading one operation reads the whole of that operation without hunting elsewhere in the payload for a piece of it.
+Composition merges each ancestor group's contract into the in-memory technique, so guards and provenance see one fully composed value. Role-facing delivery does not copy that merge onto every body. A response bundling ten techniques of one group carries that group's rules and shared inputs once under `contracts`, and each body names the group in `inherits`. An agent reading one operation reads that operation's own fields, then the named contracts on the same response.
 
 Two steps bound to the same technique in one activity are the one case that collapses inside a response: the second entry is a marker naming the same whole technique the first delivered.
 
@@ -280,7 +280,7 @@ Hashing the content is what keeps a marker from going stale: a technique annotat
 
 ### Ledger interplay with bundling
 
-Bundled entries share the `technique:<resolvedId>` key with `get_technique`. So in a persistent-context session a bundled delivery collapses a later step-bound refetch to an unchanged reference; and a reference-mode re-delivery of the activity collapses already-delivered bundled entries to markers, with the `▼ STEP` marker riding along. `bundle: "full"` re-delivers them all, and `get_technique { step_id, full: true }` reaches any one of them.
+Bundled entries share the `technique:<resolvedId>` key with `get_technique`, hashing the same operation body (own fields plus `inherits`). So in a persistent-context session a bundled delivery collapses a later step-bound refetch to an unchanged reference; and a reference-mode re-delivery of the activity collapses already-delivered bundled entries to markers, with the `▼ STEP` marker riding along. `bundle: "full"` re-delivers them all, and `get_technique { step_id, full: true }` reaches any one of them. Scope contracts share `bundle:contract:<scopeId>` across `get_activity` and `get_technique`.
 
 ## What gets measured
 

@@ -135,9 +135,9 @@ describe('the session path a routine\'s steps reach', () => {
         activity_id: 'carries-no-routine',
         from_activity: 'refers-to-routine',
         step_manifest: [
-          { step_id: 'announce', output: 'announced' },
-          { step_id: 'review-residuals.batch-gate', output: 'accepted' },
-          { step_id: 'review-residuals.interview', output: 'walked' },
+          { step_id: 'announce', output: { result: 'announced' } },
+          { step_id: 'review-residuals.batch-gate', output: { result: 'accepted' } },
+          { step_id: 'review-residuals.interview', output: { result: 'walked' } },
         ],
       },
     });
@@ -157,7 +157,7 @@ describe('the session path a routine\'s steps reach', () => {
         session_index: sessionIndex,
         activity_id: '__terminal__',
         from_activity: 'carries-no-routine',
-        step_manifest: [{ step_id: 'review-residuals-interview', output: 'walked' }],
+        step_manifest: [{ step_id: 'review-residuals-interview', output: { result: 'walked' } }],
       },
     });
     expect(warningsOf(misnamed).join('\n')).toContain('Unexpected steps');

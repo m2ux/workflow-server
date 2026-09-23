@@ -123,7 +123,7 @@ describe('bothGates', () => {
 
 describe('variablesWrittenIn', () => {
   const site = (name: string, activityId: string, via: ProducerSite['via']): ProducerSite =>
-    ({ name, via, stepId: 's', activityId, ordinal: 0 });
+    ({ name, via, stepId: 's', activityId, ordinal: 0, conditional: false });
 
   it('takes only the producer sites inside the named activity', () => {
     const producers = [

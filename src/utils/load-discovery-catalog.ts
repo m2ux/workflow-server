@@ -15,12 +15,16 @@ interface RawManifest {
 /**
  * Catalog used for keyword discovery: the list_workflows fields plus description,
  * which the matcher scores and the MCP list does not currently ship.
+ *
+ * A workflow under `specimens/` is a conformance fixture. It stays listed and
+ * startable by id, and it is absent here, so a request cannot embed it.
  */
 export async function loadDiscoveryCatalog(workflowDir: string): Promise<DiscoveryEntry[]> {
   const index = indexCorpus(workflowDir);
   const entries: DiscoveryEntry[] = [];
   for (const location of index.workflows.values()) {
     if (location.id === META_WORKFLOW_ID) continue;
+    if (location.path === 'specimens' || location.path.startsWith('specimens/')) continue;
     const raw = parseDefinition(await readFile(location.manifest, 'utf-8')) as RawManifest;
     if (typeof raw.id !== 'string' || typeof raw.title !== 'string' || typeof raw.version !== 'string') continue;
     entries.push({

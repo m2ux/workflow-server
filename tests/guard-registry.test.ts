@@ -69,10 +69,18 @@ describe('guard registry', () => {
     expect(CORPUS_GUARDS.length).toBeGreaterThan(0);
     expect(CORPUS_GUARDS.every((g) => g.scope === 'corpus')).toBe(true);
     // The site guards read `site/`, the encoding guard reads this repo's own sources, the lockfile
-    // guard reads its lockfile, and the schema guard reads `schemas/` against the Zod sources it is
-    // generated from — none reads the corpus, so a delta run must not aim them at a corpus root.
+    // guard reads its lockfile, the schema guard reads `schemas/` against the Zod sources it is
+    // generated from, and the agent-homes guard reads this repo's instruction files — none reads
+    // the corpus, so a delta run must not aim them at a corpus root.
     expect(GUARDS.filter((g) => g.scope === 'repo').map((g) => g.id).sort())
-      .toEqual(['generated-schemas', 'lockfile-denylist', 'site-links', 'source-encoding', 'svg-layout']);
+      .toEqual([
+        'agent-instruction-homes',
+        'generated-schemas',
+        'lockfile-denylist',
+        'site-links',
+        'source-encoding',
+        'svg-layout',
+      ]);
   });
 
   /**
@@ -137,25 +145,15 @@ describe('guard registry', () => {
       'guards/check-delta.ts': 'the runner that diffs a walk against the merge-base',
       'guards/check-session-contract.ts':
         'asks whether a run stayed inside its contracts, so it needs a session and has no corpus-wide form',
-      'guards/check-corpus-links.ts':
-        'reads the corpus and holds at 7 findings — 6 links still counting directories out of their '
-        + 'namespace, all in READMEs, and 1 naming a file the corpus does not hold; enrolling it is '
-        + 'the last step of the rewrite to the anchored form, in the commit that makes it pass',
       'guards/check-message-binding.ts':
         'reads the corpus and holds at 107 findings the engine could not have avoided until '
         + 'yield_checkpoint could publish a gate activity\'s own outputs; enrolling it enforces on '
         + 'definitions written before the remedy existed, so it runs by path until those are triaged',
       'guards/check-operation-contract.ts':
-        'reads the corpus and holds at 129 findings — 12 variables declared a scalar against an '
-        + 'operation publishing members, and 117 operation writes a later step takes up and no '
-        + 'contract declares; the 12 read as defects and the 117 are what activity-variables calls '
-        + 'the technique layer\'s own wiring, so which convention gives way is a decision about the '
-        + 'corpus, and it runs by path until that is taken',
-      'guards/check-protocol-shape.ts':
-        'reads the corpus and holds at 95 findings, every one a technique indexing its protocol '
-        + 'phases as a flat numbered list where the catalogue names the heading as the form; '
-        + 'converting them is a corpus-wide change the measurement is meant to precede, so it runs '
-        + 'by path until those are converted or recorded as accepted debt',
+        'reads the corpus and holds at 12 findings, each a variable declared a scalar against an '
+        + 'operation publishing members — one value described two incompatible ways. They are a '
+        + 'corpus fix rather than a question, and enrolling before they land would take a green '
+        + 'hard-zero sweep red; enrolling is the last step, in the commit that makes it pass',
     };
 
     const onDisk = readdirSync(join(REPO, 'guards'))

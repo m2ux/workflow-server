@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { parse as parseYaml } from 'yaml';
 import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
 import { logWarn } from '../logging.js';
@@ -56,60 +57,26 @@ export class MarkdownTechniqueParseError extends Error {
  * Parse a YAML-frontmatter block delimited by `---` lines.
  * Returns `{frontmatter: {}, body: raw}` when no frontmatter is present.
  *
- * Supports the subset of YAML technique frontmatter actually
- * uses: scalar key/value pairs at the top level and nested `metadata:`
- * mapping with scalar children. Anything more complex must extend this
- * parser — the canonical ontology does not allow it today.
+ * Supports the YAML technique frontmatter the ontology allows: scalar
+ * key/value pairs at the top level and a nested `metadata:` mapping
+ * with scalar children.
  */
 function parseFrontmatter(raw: string): FrontmatterParse {
   const match = raw.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n([\s\S]*)$/);
   if (!match) return { frontmatter: {}, body: raw };
-  const yaml = match[1] ?? '';
+  const yamlText = match[1] ?? '';
   const body = match[2] ?? '';
-
-  const result: Record<string, unknown> = {};
-  const lines = yaml.split(/\r?\n/);
-  let currentParent: { key: string; child: Record<string, unknown> } | null = null;
-
-  for (const rawLine of lines) {
-    if (!rawLine.trim() || rawLine.trim().startsWith('#')) continue;
-
-    // Nested key (two-space or four-space indent).
-    const nestedMatch = rawLine.match(/^( {2,})([A-Za-z_][\w-]*)\s*:\s*(.*)$/);
-    if (nestedMatch && currentParent) {
-      const key = nestedMatch[2]!;
-      const value = stripYamlScalar(nestedMatch[3] ?? '');
-      currentParent.child[key] = value;
-      continue;
-    }
-
-    // Top-level key.
-    const topMatch = rawLine.match(/^([A-Za-z_][\w-]*)\s*:\s*(.*)$/);
-    if (topMatch) {
-      const key = topMatch[1]!;
-      const value = (topMatch[2] ?? '').trim();
-      if (!value) {
-        const child: Record<string, unknown> = {};
-        result[key] = child;
-        currentParent = { key, child };
-      } else {
-        result[key] = stripYamlScalar(value);
-        currentParent = null;
-      }
-    }
+  let parsed: unknown;
+  try {
+    parsed = parseYaml(yamlText);
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new MarkdownTechniqueParseError(`Invalid YAML frontmatter: ${reason}`);
   }
-
-  return { frontmatter: result, body };
-}
-
-function stripYamlScalar(raw: string): unknown {
-  let v = raw.trim();
-  if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
-  else if (v.startsWith("'") && v.endsWith("'")) v = v.slice(1, -1);
-  if (v === 'true') return true;
-  if (v === 'false') return false;
-  if (/^-?\d+$/.test(v)) return Number(v);
-  return v;
+  if (parsed == null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return { frontmatter: {}, body };
+  }
+  return { frontmatter: parsed as Record<string, unknown>, body };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -253,7 +220,7 @@ interface IndexParse {
   protocol: ProtocolBlock[] | undefined;
   // `audience` is carried as an unrefined string so a mistyped value reaches OutputItemDefinitionSchema's
   // `human`/`agent` enum and is rejected loudly at load, rather than being narrowed away here.
-  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; audience?: string; components?: OutputComponentsDefinition; entry?: Record<string, string> }> | undefined;
+  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; audience?: string; values?: string[]; fieldValues?: Record<string, string[]>; components?: OutputComponentsDefinition; entry?: Record<string, string> }> | undefined;
   rules: Record<string, string | string[]> | undefined;
 }
 
@@ -297,9 +264,9 @@ function parseTechniqueIndex(raw: string, sourcePath: string, id: string): Index
   };
 }
 
-/** Reserved `####` sub-section keys per entry kind: `default` on inputs, `artifact`/`audience` on
- *  outputs. A sub-section whose title matches one of these is entry metadata, not a component. */
-type ReservedKey = 'artifact' | 'default' | 'audience';
+/** Reserved `####` sub-section keys per entry kind: `default` on inputs, `artifact`/`audience`/`values`
+ *  on outputs. A sub-section whose title matches one of these is entry metadata, not a component. */
+type ReservedKey = 'artifact' | 'default' | 'audience' | 'values';
 
 /**
  * The reserved output sub-section naming what one entry carries, for an output that IS a list.
@@ -313,7 +280,24 @@ interface EntrySubsections {
   components?: OutputComponentsDefinition;
   /** Fields one entry carries, present only where the output declared itself a list. */
   entry?: Record<string, string>;
+  /** Closed set the output itself admits. */
+  values?: string[];
+  /** Closed set one entry field or component admits, keyed by that field. */
+  fieldValues?: Record<string, string[]>;
   reserved: Partial<Record<ReservedKey, string>>;
+}
+
+/** Backticked tokens in a `#### values` body, in authored order, duplicates dropped. */
+function valueTokens(body: string): string[] {
+  const seen = new Set<string>();
+  const tokens: string[] = [];
+  for (const match of body.matchAll(/`([^`]+)`/g)) {
+    const token = (match[1] ?? '').trim();
+    if (!token || seen.has(token)) continue;
+    seen.add(token);
+    tokens.push(token);
+  }
+  return tokens;
 }
 
 /**
@@ -348,6 +332,21 @@ function parseEntrySubsections(
       continue;
     }
     const key = reserved.find((r) => r === s.title.toLowerCase());
+    if (key === 'values') {
+      const fieldSections = splitSections(s.body, 5);
+      const firstField = s.body.search(/^#####\s/m);
+      const own = valueTokens(firstField === -1 ? s.body : s.body.slice(0, firstField));
+      if (own.length > 0) out.values = own;
+      if (fieldSections.length > 0) {
+        const fieldValues: Record<string, string[]> = {};
+        for (const field of fieldSections) {
+          const tokens = valueTokens(field.body);
+          if (tokens.length > 0) fieldValues[field.title] = tokens;
+        }
+        if (Object.keys(fieldValues).length > 0) out.fieldValues = fieldValues;
+      }
+      continue;
+    }
     if (key) {
       // Strip surrounding inline-code backticks from a filename/default/enum literal.
       out.reserved[key] = bodyParagraphs(s.body).replace(/^`+|`+$/g, '').trim();
@@ -434,18 +433,22 @@ function parseOutputsSection(section: Section | undefined): IndexParse['outputs'
   if (items.length === 0) return undefined;
   const result: NonNullable<IndexParse['outputs']> = [];
   for (const item of items) {
-    const { description, components, entry, reserved } = parseEntrySubsections(item.body, ['artifact', 'audience'], true);
+    const { description, components, entry, values, fieldValues, reserved } = parseEntrySubsections(item.body, ['artifact', 'audience', 'values'], true);
     const out: {
       id: string;
       description?: string;
       artifact?: { name: string };
       audience?: string;
+      values?: string[];
+      fieldValues?: Record<string, string[]>;
       components?: OutputComponentsDefinition;
       entry?: Record<string, string>;
     } = { id: item.title };
     if (description) out.description = description;
     if (components) out.components = components;
     if (entry) out.entry = entry;
+    if (values) out.values = values;
+    if (fieldValues) out.fieldValues = fieldValues;
     if (reserved.artifact !== undefined) out.artifact = { name: reserved.artifact };
     // Pass the authored value through verbatim; the `human`/`agent` enum on OutputItemDefinitionSchema
     // is the single validator, so a mistyped audience fails loudly at load (technique dropped with a

@@ -66,7 +66,21 @@ export function validateWorkflowVersion(view: SessionView, workflow: Workflow): 
 
 export interface StepManifestEntry {
   step_id: string;
-  output: string;
+  /**
+   * What the step produced, keyed by the output id the bound operation declares — one shape for
+   * every step, so a reader takes a value by name without first asking how many outputs there are.
+   */
+  output: Record<string, unknown>;
+}
+
+/**
+ * Whether a manifest entry reports nothing for its step — an absent map, or one with no entries.
+ * The manifest validator and the `step_completed` history writer both read this, so a step
+ * recorded as completed is exactly a step the validator passes.
+ */
+export function isEmptyStepOutput(output: StepManifestEntry['output'] | undefined): boolean {
+  if (!output) return true;
+  return Object.keys(output).length === 0;
 }
 
 /**
@@ -103,6 +117,13 @@ export function validateStepManifest(
   workflow: Workflow,
   activityId: string,
   checkpointResponses?: Record<string, CheckpointResponse>,
+  /**
+   * The output ids each step's bound operation declares, keyed by step id — from
+   * `declaredOutputsByStep`. A step absent from the map is not measured: its op could not be read,
+   * or it binds none, and reporting against declarations the server does not hold would name every
+   * unreadable reference as a worker's mistake.
+   */
+  declaredOutputs?: ReadonlyMap<string, ReadonlySet<string>>,
 ): string[] {
   const activity = getActivity(workflow, activityId);
   if (!activity) return [`Cannot validate manifest: activity '${activityId}' not found`];
@@ -160,8 +181,24 @@ export function validateStepManifest(
   }
 
   for (const entry of manifest) {
-    if (!entry.output || (typeof entry.output === 'string' && entry.output.trim().length === 0)) {
+    if (isEmptyStepOutput(entry.output)) {
       warnings.push(`Step '${entry.step_id}' has empty output`);
+      continue;
+    }
+    // An output lands in the bag under the id it is reported by, so a key the operation does not
+    // declare puts a value under a name nothing downstream reads. Warn-only: the server does not
+    // run the step, so what it holds is the declaration and not the answer.
+    //
+    // The converse is not checked. An output can be optional, and a gated path or an error answer
+    // legitimately produces fewer than the declarations allow, so a declared id with no key is as
+    // often the run as the report.
+    const declared = declaredOutputs?.get(entry.step_id);
+    if (!declared || declared.size === 0) continue;
+    const undeclared = Object.keys(entry.output).filter((id) => !declared.has(id));
+    if (undeclared.length > 0) {
+      warnings.push(
+        `Step '${entry.step_id}' reports [${undeclared.join(', ')}], which its operation does not declare — it declares [${[...declared].join(', ')}]`,
+      );
     }
   }
 

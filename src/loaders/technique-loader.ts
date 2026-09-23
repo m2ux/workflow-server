@@ -26,11 +26,11 @@ import {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Project an in-memory Technique object into its ordered wire shape.
+ * Project an in-memory Technique object into its ordered merged shape.
  *
- * `projectTechnique` returns the ordered record (embedded as-is inside get_activity's
- * `step_techniques` bundle map); `projectTechniqueToYaml` serialises it for the
- * get_technique raw projection.
+ * This is the composed value: own fields plus inherited blocks. Role-facing delivery and
+ * `get_technique` use `projectTechniqueWire` instead, which keeps own rules on the body and names
+ * ancestor scopes in `inherits`. `projectTechniqueToYaml` serialises this merged record.
  *
  * Field-ordering follows the canonical TechniqueSchema field declaration order — stringifyForResponse serialises
  * object keys in insertion order, so we construct the projection with the fields in the intended sequence
@@ -174,6 +174,20 @@ async function readTechniqueRef(
 /* loads markdown-sourced techniques).                                         */
 /* -------------------------------------------------------------------------- */
 
+/** A scope's authored contract, delivered once per bundle under `contracts`. */
+export interface InheritScope {
+  id: string;
+  rules?: Technique['rules'];
+  inputs?: Technique['inputs'];
+  outputs?: Technique['outputs'];
+}
+
+/** Scope note on a contract block and on in-memory `inherited_*`. Claims only what is always
+ *  true of contract-inherited entries — a group-contract input may still be a prior step's
+ *  output (e.g. a shared artifact), so how each value resolves is deliberately not stated here. */
+const INHERITED_SCOPE_NOTE =
+  'Declared by the workflow or group contract and shared by every technique in its scope — not specific to this technique.';
+
 export interface ResolvedTechnique {
   source: string;
   workflow?: string | undefined;
@@ -181,25 +195,97 @@ export interface ResolvedTechnique {
   type: 'rule' | 'technique' | 'not-found';
   body: unknown;
   ref: string;
+  /** Scopes this operation inherits from; each id is a key of the bundle's `contracts` map. */
+  scopes?: InheritScope[];
 }
+
+type LoadedComposition = {
+  technique: Technique;
+  scopes: InheritScope[];
+  ownRuleKeys: Set<string>;
+};
 
 /**
  * The deliverable body of a technique reference. One projection for ALL techniques — standalone or
  * nested. A nested technique ("sub-technique" informally) is just a technique.
  *
- * A body states the capability, the interface, the procedure AND the rules the technique is held
- * to, because those together are what an agent needs to perform the operation. The bundle's `rules`
- * list carries what is left — see `dropRulesStatedBy` for which rule takes which home.
+ * A body states the capability, the interface, the procedure, and the rules the technique itself
+ * declares. Rules and declarations a scope shares with every technique under it arrive once under
+ * `contracts`, and the body names those scopes in `inherits`. The bundle's `rules` list carries
+ * what is left — see `dropRulesStatedBy` for which rule takes which home.
  */
-function projectTechniqueBody(t: Technique): Record<string, unknown> {
+export function inheritContractBlock(scope: InheritScope): Record<string, unknown> {
+  const block: Record<string, unknown> = { note: INHERITED_SCOPE_NOTE };
+  if (scope.rules) block['rules'] = scope.rules;
+  if (scope.inputs) block['inputs'] = scope.inputs;
+  if (scope.outputs) block['outputs'] = scope.outputs;
+  return block;
+}
+
+export function putInheritContracts(
+  contracts: Record<string, unknown>,
+  scopes: InheritScope[],
+): void {
+  for (const scope of scopes) {
+    if (scope.id in contracts) continue;
+    contracts[scope.id] = inheritContractBlock(scope);
+  }
+}
+
+/**
+ * Wire projection of one composed technique: own interface, own rules, and `inherits` naming the
+ * scopes whose contracts ride beside it. Inherited blocks do not copy onto the body.
+ */
+export function projectTechniqueWire(
+  t: Technique,
+  scopes: InheritScope[],
+  ownRuleKeys: Set<string>,
+): Record<string, unknown> {
+  const ordered: Record<string, unknown> = {};
+  ordered['id'] = t.id;
+  ordered['version'] = t.version;
+  if (t.capability) ordered['capability'] = t.capability;
+  if (t.provenance_note !== undefined) ordered['provenance_note'] = t.provenance_note;
+  Object.assign(ordered, projectTechniqueBody(t, scopes, ownRuleKeys));
+  for (const key of Object.keys(t) as (keyof Technique)[]) {
+    if (key === 'inherited_inputs' || key === 'inherited_outputs' || key === 'rules') continue;
+    if (!(key in ordered) && t[key] !== undefined) {
+      ordered[String(key)] = t[key];
+    }
+  }
+  return ordered;
+}
+
+/**
+ * One operation for `get_technique` and for an inlined step: the wire body hashed as
+ * `technique:<id>`, and the ancestor contracts that body names, each hashed as
+ * `bundle:contract:<scopeId>`.
+ */
+export function projectTechniqueFetch(
+  t: Technique,
+  scopes: InheritScope[],
+  ownRuleKeys: Set<string>,
+): { wire: Record<string, unknown>; contracts: Record<string, unknown> } {
+  const wire = projectTechniqueWire(t, scopes, ownRuleKeys);
+  const contracts: Record<string, unknown> = {};
+  putInheritContracts(contracts, scopes);
+  return { wire, contracts };
+}
+
+function projectTechniqueBody(t: Technique, scopes: InheritScope[], ownRuleKeys: Set<string>): Record<string, unknown> {
   const body: Record<string, unknown> = {};
   if (t.capability) body['capability'] = t.capability;
   if (t.inputs) body['inputs'] = t.inputs;
-  if (t.inherited_inputs) body['inherited_inputs'] = t.inherited_inputs;
   if (t.protocol) body['protocol'] = t.protocol;
   if (t.outputs) body['outputs'] = t.outputs;
-  if (t.inherited_outputs) body['inherited_outputs'] = t.inherited_outputs;
-  if (t.rules) body['rules'] = t.rules;
+  if (t.rules) {
+    const own: NonNullable<Technique['rules']> = {};
+    for (const [name, value] of Object.entries(t.rules)) {
+      if (ownRuleKeys.has(name)) own[name] = value;
+    }
+    if (Object.keys(own).length > 0) body['rules'] = own;
+  }
+  if (scopes.length > 0) body['inherits'] = scopes.map((s) => s.id);
   return body;
 }
 
@@ -241,8 +327,16 @@ export async function resolveTechniques(
       const tRes = await readTechniqueRef(path, index, path.namespace ?? currentWorkflow);
       if (tRes.success) {
         const wholeDir = getNamespaceTechniquesDir(index, tRes.value.sourceWorkflowId);
-        const body = await composeLoaded(tRes.value.technique, [technique0], wholeDir);
-        results.push({ source: technique0, workflow: path.namespace, name: '', type: 'technique', body: projectTechniqueBody(body), ref });
+        const loaded = await composeLoaded(tRes.value.technique, [technique0], wholeDir, tRes.value.sourceWorkflowId);
+        results.push({
+          source: technique0,
+          workflow: path.namespace,
+          name: '',
+          type: 'technique',
+          body: projectTechniqueBody(loaded.technique, loaded.scopes, loaded.ownRuleKeys),
+          ref,
+          scopes: loaded.scopes,
+        });
         touchedSkills.set(skillKey(path.namespace, technique0), { workflow: path.namespace, technique: technique0, cached: tRes.value.technique });
       } else {
         results.push({ source: technique0, workflow: path.namespace, name: '', type: 'not-found', body: null, ref });
@@ -271,8 +365,17 @@ export async function resolveTechniques(
     }
     if (nested) {
       const nestedDir = getNamespaceTechniquesDir(index, opWorkflow ?? META_WORKFLOW_ID);
-      const body = await composeLoaded(nested, path.segments, nestedDir);
-      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'technique', body: projectTechniqueBody(body), ref });
+      const home = opWorkflow ?? META_WORKFLOW_ID;
+      const loaded = await composeLoaded(nested, path.segments, nestedDir, home);
+      results.push({
+        source: parsed.technique,
+        workflow: opWorkflow,
+        name: parsed.name,
+        type: 'technique',
+        body: projectTechniqueBody(loaded.technique, loaded.scopes, loaded.ownRuleKeys),
+        ref,
+        scopes: loaded.scopes,
+      });
       touchedSkills.set(skillKey(opWorkflow, `${parsed.technique}::${parsed.name}`), { workflow: opWorkflow, technique: `${parsed.technique}::${parsed.name}`, cached: nested });
       const idxResult = await readTechniqueRef(techniqueRef(opWorkflow, [parsed.technique]), index);
       if (idxResult.success) {
@@ -366,12 +469,6 @@ export async function resolveTechniques(
  *  addressable technique. */
 const ROOT_INDEX_ID = 'TECHNIQUE';
 
-/** Scope note delivered with `inherited_inputs`/`inherited_outputs`. Claims only what is always
- *  true of contract-inherited entries — a group-contract input may still be a prior step's
- *  output (e.g. a shared artifact), so how each value resolves is deliberately not stated here. */
-const INHERITED_SCOPE_NOTE =
-  'Declared by the workflow or group contract and shared by every technique in its scope — not specific to this technique.';
-
 /** Union two id-keyed arrays (inputs/outputs); child entries override parent entries by `id`. */
 function mergeById<T extends { id: string }>(parent: T[] | undefined, child: T[] | undefined): T[] | undefined {
   if (!parent?.length && !child?.length) return undefined;
@@ -403,8 +500,10 @@ async function loadWorkflowRoot(source: CorpusIndex, workflowId: string): Promis
  *     the technique itself wins (outermost-first merge, reversed so each mergeById call
  *     treats the ancestor as "parent" and the accumulated value as "child").
  *   - Partitions the merged inputs/outputs by winning-definition provenance: the technique's
- *     own entries stay under `inputs`/`outputs`; ancestor-contract entries are delivered under
- *     `inherited_inputs`/`inherited_outputs` with a scope note (B2, #166).
+ *     own entries stay under `inputs`/`outputs`; ancestor-contract entries stay on the in-memory
+ *     value under `inherited_inputs`/`inherited_outputs` with a scope note (B2, #166). Role-facing
+ *     wire delivery names those ancestors in `inherits` and carries each block once under
+ *     `contracts`.
  *
  * A container contributes a contract, never a procedure: the technique's own protocol is what it
  * carries, whatever ancestors it composes against.
@@ -414,18 +513,33 @@ async function loadWorkflowRoot(source: CorpusIndex, workflowId: string): Promis
  *
  * Returns the original technique unchanged on validation failure.
  */
+function emptyComposition(technique: Technique): LoadedComposition {
+  return { technique, scopes: [], ownRuleKeys: new Set(Object.keys(technique.rules ?? {})) };
+}
+
+function authoredScope(id: string, ancestor: Technique): InheritScope | undefined {
+  const scope: InheritScope = { id };
+  if (ancestor.rules && Object.keys(ancestor.rules).length > 0) scope.rules = ancestor.rules;
+  if (ancestor.inputs?.length) scope.inputs = ancestor.inputs;
+  if (ancestor.outputs?.length) scope.outputs = ancestor.outputs;
+  if (scope.rules === undefined && scope.inputs === undefined && scope.outputs === undefined) return undefined;
+  return scope;
+}
+
 async function composeLoaded(
   technique: Technique,
   pathSegments: string[],
   techniquesDir: string | null,
-): Promise<Technique> {
-  if (pathSegments.length === 1 && pathSegments[0] === ROOT_INDEX_ID) return technique;
+  rootScopeId: string,
+): Promise<LoadedComposition> {
+  if (pathSegments.length === 1 && pathSegments[0] === ROOT_INDEX_ID) return emptyComposition(technique);
 
-  const ancestors: Technique[] = [];
+  const ownRuleKeys = new Set(Object.keys(technique.rules ?? {}));
+  const ancestors: Array<{ loadId: string; technique: Technique }> = [];
   const loadAnc = async (id: string): Promise<void> => {
     try {
       const t = await tryLoadMarkdownTechnique(techniquesDir, id);
-      if (t && t.id !== technique.id) ancestors.push(t);
+      if (t && t.id !== technique.id) ancestors.push({ loadId: id, technique: t });
     } catch (e) {
       if (!(e instanceof MarkdownTechniqueParseError)) throw e;
       logWarn('Skipping malformed ancestor while composing', { id, error: (e as Error).message });
@@ -435,7 +549,17 @@ async function composeLoaded(
   for (let i = 0; i < pathSegments.length - 1; i++) {
     await loadAnc(pathSegments.slice(0, i + 1).join('/'));
   }
-  if (ancestors.length === 0) return technique;
+  if (ancestors.length === 0) return emptyComposition(technique);
+
+  const scopes: InheritScope[] = [];
+  const takenIds = new Set<string>();
+  for (const ancestor of ancestors) {
+    const preferred = ancestor.loadId === ROOT_INDEX_ID ? rootScopeId : ancestor.loadId;
+    const id = takenIds.has(preferred) ? `${rootScopeId}/${ancestor.loadId}` : preferred;
+    takenIds.add(id);
+    const scope = authoredScope(id, ancestor.technique);
+    if (scope) scopes.push(scope);
+  }
 
   // Merge outermost-first: reversing puts innermost first so each mergeById(ancestor, acc)
   // call treats the ancestor as "parent" (provides base) and acc as "child" (wins).
@@ -443,10 +567,10 @@ async function composeLoaded(
   let inputs = technique.inputs;
   let outputs = technique.outputs;
   let rules = technique.rules;
-  for (const anc of [...ancestors].reverse()) {
-    inputs = mergeById(anc.inputs, inputs);
-    outputs = mergeById(anc.outputs, outputs);
-    rules = mergeKeyed(anc.rules, rules);
+  for (const ancestor of [...ancestors].reverse()) {
+    inputs = mergeById(ancestor.technique.inputs, inputs);
+    outputs = mergeById(ancestor.technique.outputs, outputs);
+    rules = mergeKeyed(ancestor.technique.rules, rules);
   }
 
   // Partition the merged interface by winning-definition provenance (B2, #166): entries the
@@ -482,9 +606,9 @@ async function composeLoaded(
       id: technique.id,
       errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
     });
-    return technique;
+    return { technique, scopes, ownRuleKeys };
   }
-  return result.data;
+  return { technique: result.data, scopes, ownRuleKeys };
 }
 
 /**
@@ -504,12 +628,20 @@ export async function composeTechnique(
   return composed.success ? ok(composed.value.technique) : composed;
 }
 
+/** A composed technique plus the scopes its wire body names in `inherits`. */
+export interface ComposedTechnique {
+  technique: Technique;
+  sourceWorkflowId: string;
+  scopes: InheritScope[];
+  ownRuleKeys: Set<string>;
+}
+
 /** `composeTechnique`, plus the workflow the technique file was found in (`readTechniqueWithSource`). */
 export async function composeTechniqueWithSource(
   techniqueId: string,
   workflowDir: string,
   workflowId: string,
-): Promise<Result<{ technique: Technique; sourceWorkflowId: string }, TechniqueReadError>> {
+): Promise<Result<ComposedTechnique, TechniqueReadError>> {
   const index = indexCorpus(workflowDir);
   const ref = parseRef(techniqueId, index);
   if (!ref.success) return ref;
@@ -521,9 +653,17 @@ export async function composeTechniqueWithSource(
   // `techniques/` along the reference's own path, so a technique fetched across a boundary carries
   // the shared contract written above it rather than one belonging to whoever asked. Same rule as
   // the bundle path (`resolveTechniques`), which composes each op against its own home.
+  const loaded = await composeLoaded(
+    base.value.technique,
+    ref.value.segments,
+    getNamespaceTechniquesDir(index, base.value.sourceWorkflowId),
+    base.value.sourceWorkflowId,
+  );
   return ok({
-    technique: await composeLoaded(base.value.technique, ref.value.segments, getNamespaceTechniquesDir(index, base.value.sourceWorkflowId)),
+    technique: loaded.technique,
     sourceWorkflowId: base.value.sourceWorkflowId,
+    scopes: loaded.scopes,
+    ownRuleKeys: loaded.ownRuleKeys,
   });
 }
 
@@ -537,14 +677,14 @@ export async function composeTechniqueWithSource(
  * the delivery ledger and fidelity events are keyed by — and the workflow the technique file was
  * found in, which its own bare resource links resolve against. The single resolution implementation
  * behind step-bound get_technique and get_activity's hybrid step-technique bundling, so both
- * deliver identical composition by construction.
+ * compose against the same ancestors and project the same wire.
  */
 export async function composeActivityTechnique(
   ref: string,
   workflowDir: string,
   workflowId: string,
   activityId?: string,
-): Promise<Result<{ techniqueId: string; technique: Technique; sourceWorkflowId: string }, TechniqueReadError>> {
+): Promise<Result<ComposedTechnique & { techniqueId: string }, TechniqueReadError>> {
   if (activityId && isBareName(ref)) {
     const groupRef = `${activityId}${SEGMENT_SEPARATOR}${ref}`;
     const viaGroup = await composeTechniqueWithSource(groupRef, workflowDir, workflowId);
@@ -564,39 +704,55 @@ export async function composeActivityTechnique(
  * halves join on a NUL, which no rule name or rule text holds, so no pair can collide by one name
  * ending where the next one's text begins.
  */
-function rulesStatedByOperations(bodies: Record<string, unknown>): Set<string> {
+function rulesStatedByOperations(bodies: Record<string, unknown>, contracts?: Record<string, unknown>): Set<string> {
   const stated = new Set<string>();
-  for (const body of Object.values(bodies)) {
-    if (!body || typeof body !== 'object') continue;
-    const rules = (body as Record<string, unknown>)['rules'];
-    if (!rules || typeof rules !== 'object' || Array.isArray(rules)) continue;
+  const takeRules = (rules: unknown): void => {
+    if (!rules || typeof rules !== 'object' || Array.isArray(rules)) return;
     for (const [name, value] of Object.entries(rules as Record<string, string | string[]>)) {
       for (const line of Array.isArray(value) ? value : [value]) stated.add(`${name}\0${String(line)}`);
+    }
+  };
+  for (const body of Object.values(bodies)) {
+    if (!body || typeof body !== 'object') continue;
+    takeRules((body as Record<string, unknown>)['rules']);
+  }
+  if (contracts) {
+    for (const block of Object.values(contracts)) {
+      if (!block || typeof block !== 'object') continue;
+      takeRules((block as Record<string, unknown>)['rules']);
     }
   }
   return stated;
 }
 
 /**
- * Give the role's `rules` list up to the bodies, for every rule a body already states.
+ * Give the role's `rules` list up to the bodies and the scope contracts, for every rule those
+ * already state.
  *
- * Which home a rule takes is decided by what it governs. A rule a technique declares, or inherits
- * from its ancestor group, governs that operation and rides the body that states it — where a
- * reader meets it beside the procedure it constrains. The list keeps what is left: rules that
- * govern the agent rather than any one operation. The list gives way rather than the body because
- * the body is the richer home — it says WHICH operation the rule binds, which the flat list cannot.
+ * Which home a rule takes is decided by what it governs. A rule a technique declares governs that
+ * operation and rides the body that states it. A rule a scope shares with every technique under it
+ * arrives once under `contracts`. The list keeps what is left: rules that govern the agent rather
+ * than any one operation. The list gives way rather than the body or the contract because those
+ * homes say WHICH operation or scope the rule binds, which the flat list cannot.
  *
- * A body a delivery collapsed to a marker states nothing here, so a rule it holds stays in the
- * list. That is a rule delivered twice to a context that already had it, which costs a repeat
- * delivery a few characters and costs a reader nothing.
+ * A body or contract a delivery collapsed to a marker states nothing here, so a rule it holds
+ * stays in the list. That is a rule delivered twice to a context that already had it, which costs
+ * a repeat delivery a few characters and costs a reader nothing.
  *
  * Empties the list rather than leaving it empty: a `rules` key with nothing under it reads as a
  * role with no rules of its own, which is the same thing said twice.
  */
-export function dropRulesStatedBy(bundle: Record<string, unknown>, bodies: Record<string, unknown>): void {
+export function dropRulesStatedBy(
+  bundle: Record<string, unknown>,
+  bodies: Record<string, unknown>,
+  contracts?: Record<string, unknown>,
+): void {
   const list = bundle['rules'];
   if (!Array.isArray(list)) return;
-  const stated = rulesStatedByOperations(bodies);
+  const stated = rulesStatedByOperations(
+    bodies,
+    contracts ?? (bundle['contracts'] as Record<string, unknown> | undefined),
+  );
   const kept = (list as Array<[string, string]>)
     .filter(([name, line]) => !stated.has(`${name}\0${String(line)}`));
   if (kept.length > 0) bundle['rules'] = kept;
@@ -608,16 +764,17 @@ export function dropRulesStatedBy(bundle: Record<string, unknown>, bodies: Recor
  * Bundle shape is wire-stable — no markdown-migration-driven changes.
  *
  * A rule has one home in the response, and which home is decided by what the rule governs. A rule
- * a technique declares, or inherits from its ancestor group, governs that operation and rides the
- * body that states it — where a reader meets it alongside the procedure it constrains. `rules`
- * carries what is left: the role's own rules, declared standalone and referenced by the workflow,
- * which govern the agent rather than any one operation. The two sets are disjoint, so no rule is
- * read twice and none is anywhere but where it belongs.
+ * a technique declares governs that operation and rides the body that states it. A rule a scope
+ * shares with every technique under it arrives once under `contracts`, and each technique names
+ * that scope in `inherits`. `rules` carries what is left: the role's own rules, declared
+ * standalone and referenced by the workflow, which govern the agent rather than any one operation.
+ * The three sets are disjoint, so no rule is read twice and none is anywhere but where it belongs.
  */
 export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<string, unknown> {
   const techniques: Record<string, unknown> = {};
   const roleRules: Array<[string, string]> = [];
   const unresolved: string[] = [];
+  const contracts: Record<string, unknown> = {};
 
   for (const entry of resolved) {
     if (entry.type === 'technique') {
@@ -625,6 +782,7 @@ export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<str
       // appended as `::name`; a standalone has an empty name. No separate sub-technique bucket.
       const base = entry.workflow ? `${entry.workflow}/${entry.source}` : entry.source;
       techniques[entry.name ? `${base}::${entry.name}` : base] = entry.body;
+      putInheritContracts(contracts, entry.scopes ?? []);
     } else if (entry.type === 'rule') {
       const lines = Array.isArray(entry.body) ? entry.body : [entry.body];
       for (const line of lines) {
@@ -637,6 +795,7 @@ export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<str
 
   const out: Record<string, unknown> = {};
   if (Object.keys(techniques).length > 0) out['techniques'] = techniques;
+  if (Object.keys(contracts).length > 0) out['contracts'] = contracts;
   if (roleRules.length > 0) out['rules'] = roleRules;
   if (unresolved.length > 0) out['unresolved'] = unresolved;
   dropRulesStatedBy(out, techniques);

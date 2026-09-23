@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { presentDiscoverWorkflow, rankWorkflows, scoreEntry, type DiscoveryEntry } from '../src/utils/match-workflow.js';
+import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { loadDiscoveryCatalog } from '../src/utils/load-discovery-catalog.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
@@ -83,6 +84,11 @@ describe('rankWorkflows', () => {
 describe.skipIf(!LIVE_CORPUS)('loadDiscoveryCatalog', () => {
   it('loads the live corpus and matches the baseline request to work-package', async () => {
     const live = await loadDiscoveryCatalog(LIVE_CORPUS!);
+    const specimens = [...indexCorpus(LIVE_CORPUS!).workflows.values()]
+      .filter((location) => location.path === 'specimens' || location.path.startsWith('specimens/'))
+      .map((location) => location.id);
+    expect(specimens.length).toBeGreaterThan(0);
+    expect(live.some((entry) => specimens.includes(entry.id))).toBe(false);
     expect(live.some((entry) => entry.id === 'work-package')).toBe(true);
     const result = rankWorkflows(BASELINE_REQUEST, live);
     expect(result.workflow_id).toBe('work-package');

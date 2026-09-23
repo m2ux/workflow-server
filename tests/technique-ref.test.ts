@@ -199,6 +199,23 @@ describe('technique reference rule', () => {
       expect([...index.workflows.keys()]).toEqual(['client-wf', 'meta']);
     });
 
+    it('keeps every spelling valid when the tree above the library is regrouped', async () => {
+      // Grouped under `vendor/`, the library's path from the corpus root grows a segment. The
+      // references written against the smaller tree still reach it, beside the whole path.
+      const regrouped = mkdtempSync(join(tmpdir(), 'technique-ns-regrouped-'));
+      technique(join(regrouped, 'vendor', 'support', 'gitnexus'), 'analyze');
+      writeWorkflowFixture(regrouped, 'client-wf');
+      writeWorkflowFixture(regrouped, 'meta');
+      const index = indexCorpus(regrouped);
+      for (const ref of ['gitnexus::analyze', 'support::gitnexus::analyze', 'vendor::support::gitnexus::analyze']) {
+        expect(parseTechniqueRef(ref, index))
+          .toMatchObject({ namespace: 'vendor/support/gitnexus', segments: ['analyze'] });
+        const found = await readTechnique(ref, regrouped, 'client-wf');
+        expect(found.success).toBe(true);
+      }
+      rmSync(regrouped, { recursive: true, force: true });
+    });
+
     it('round-trips a built reference through the rule', () => {
       const index = indexCorpus(libRoot);
       const built = techniqueRef('support/gitnexus', ['analyze']);

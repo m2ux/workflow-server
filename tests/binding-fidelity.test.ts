@@ -264,6 +264,29 @@ steps:
             message: "held {changed_symbol}"
 `;
 
+  const runGating = (message: string): string => `id: shared-run
+version: 1.0.0
+name: shared-run
+internals:
+  - id: change_report
+    description: what the diff reached
+steps:
+  - kind: technique
+    id: detect
+    technique:
+      name: meta::detect
+      outputs:
+        change_report: change_report
+  - kind: checkpoint
+    id: accept-the-diff
+    message: "The diff reached ${message}. Continue?"
+    options:
+      - id: proceed
+        label: Continue
+      - id: hold
+        label: Stop
+`;
+
   async function pathViolationsIn(routine: string, technique = WITH_COMPONENTS): Promise<string[]> {
     const root = mkdtempSync(join(tmpdir(), 'wf-path-'));
     for (const [rel, files] of Object.entries({
@@ -327,6 +350,33 @@ steps:
       '#### audience\n\n`agent`\n\n#### artifact\n\n`change-report.md`\n\n## Protocol',
     );
     expect(await pathViolationsIn(runReading('change_report.symbols'), metadataOnly)).toEqual([]);
+  });
+
+  /**
+   * A gate's message is the one read a person sees, and it addresses into a value the same way a
+   * loop's `over` does. The text scan keeps every `{token}` whole, so the member a message names is
+   * measured against the producing output's components like any other read — which is what stops a
+   * gate presenting a name where a value belongs.
+   */
+  it('reports a member a checkpoint message names and the output does not declare', async () => {
+    const found = await pathViolationsIn(runGating('{change_report.symbols}'));
+    expect(found).toHaveLength(1);
+    expect(found[0]).toContain("no 'symbols'");
+  });
+
+  it('passes a member a checkpoint message names and the output declares', async () => {
+    expect(await pathViolationsIn(runGating('{change_report.changed_symbols}'))).toEqual([]);
+  });
+
+  /**
+   * The carve-out above reaches a message like any other read: an output declaring no components
+   * states nothing about its shape, so the member a gate names goes unmeasured. This is the bound
+   * on what the two message guards cover between them — one answers when the name is bound, the
+   * other the member, and neither answers for an output that declares nothing.
+   */
+  it('passes a member a checkpoint message names where the output declares no components', async () => {
+    const bare = WITH_COMPONENTS.replace(/#### changed_symbols[\s\S]*?## Protocol/, '## Protocol');
+    expect(await pathViolationsIn(runGating('{change_report.symbols}'), bare)).toEqual([]);
   });
 });
 
