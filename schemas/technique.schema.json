@@ -94,6 +94,8 @@
         },
         "artifact": { "$ref": "#/definitions/outputArtifact", "description": "Optional. When populated, specifies the artifact name to create when persisting this output." },
         "audience": { "type": "string", "enum": ["human", "agent"], "description": "Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the artifactPrefix rule." },
+        "values": { "type": "array", "items": { "type": "string" }, "minItems": 1, "description": "The complete set of values this output admits, one of which a run leaves standing. Authored as a reserved `#### values` section. Absent where the output is not a closed set." },
+        "fieldValues": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" }, "minItems": 1 }, "description": "The complete set of values one entry field or component admits, keyed by that field. Authored as `#####` children of `#### values`. Absent where no nested field is a closed set." },
         "destination": { "type": "string", "description": "Delivery-only, server-populated on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique markdown." }
       },
       "required": [ "id" ],

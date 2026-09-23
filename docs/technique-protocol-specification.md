@@ -87,6 +87,10 @@ metadata:
 `<filename-or-{token}-template>`
 #### audience        (optional: the intended reader — human | agent)
 `agent`
+#### values          (optional: the closed set this output, or one of its fields, admits)
+`ready`, `refused`
+##### <field>        (optional: the closed set one entry field or component admits)
+`home`, `none`
 
 ## Protocol          (present when the technique does work)
 ### <N>. <Title>
@@ -128,6 +132,10 @@ loader rejects the singular `## Input` / `## Output` (and `## Output(s)`) varian
 - `#### audience` (Outputs) is the intended reader of the output/artifact — `human` or `agent`.
   Absent means `human`. An `agent`-audience artifact is serialized as **JSON** on disk (named under
   the same `artifactPrefix` rule as any artifact); a `human`-audience artifact is prose markdown.
+- `#### values` (Outputs) is the closed set the output admits, one of which a run leaves standing.
+  Backticked tokens in the section body are the output's own set. `##### <field>` children are the
+  set one entry field or component admits. A description says what the value holds; the set lives
+  here, and the Protocol is what leaves each member standing.
 - `#### default` (Inputs) is the input's default value.
 - An entry whose description opens with `optional` (e.g. `*(optional)*`) is `required: false`.
 

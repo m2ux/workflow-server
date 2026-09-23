@@ -301,6 +301,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'none',
   },
   {
+    id: 'declared-values',
+    script: 'guards/check-declared-values.ts',
+    npmScript: 'check:declared-values',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every value an output declares is left standing by a protocol phase, and a later phase that settles the same field names it',
+    form: 'none',
+  },
+  {
     id: 'rule-citation-form',
     script: 'guards/check-rule-citation-form.ts',
     npmScript: 'check:rule-citations',
