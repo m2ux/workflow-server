@@ -41,4 +41,4 @@ How many steps the flow runs.
 
 - Read the inventory as a ranked sample of the chains the parser could follow rather than as the ways the system runs. A flow is absent from it two ways, and they take different remedies:
    > - A flow shorter than the twenty longest is traced and simply outside the sample. Read it by name at `gitnexus://repo/{repo_name}/process/{name}`.
-   > - A flow assembled inside a macro body, or reached through a type-level reference, is traced by nothing and is absent from the graph altogether — gitnexus.edges-the-parser-cannot-see. No read recovers it, and the enumeration is re-derived by hand.
+   > - A flow assembled inside a macro body, or reached through a type-level reference, is traced by nothing and is absent from the graph altogether — edges-the-parser-cannot-see. No read recovers it, and the enumeration is re-derived by hand.

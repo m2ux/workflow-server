@@ -33,7 +33,7 @@ Changed symbols a test file calls against a signature or behaviour the change mo
 
 - Read each entry of `{symbol_context_reports}` for incoming calls whose file sits in a test location — a `tests/` tree, a `__tests__` folder, or a filename carrying `.test.` or `.spec.`.
 - Take every symbol with no such caller into `{coverage_gaps}`.
-  > A symbol reached only through a macro body or a type position carries no edge at all — gitnexus.edges-the-parser-cannot-see — so grep for its name across the test tree before recording the gap, and say which instrument answered.
+  > A symbol reached only through a macro body or a type position carries no edge at all — edges-the-parser-cannot-see — so grep for its name across the test tree before recording the gap, and say which instrument answered.
 
 ### 2. Judge The Callers That Remain
 

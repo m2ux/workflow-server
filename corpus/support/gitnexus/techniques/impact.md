@@ -105,7 +105,7 @@ Whether a pass inside the answer was cut short, in which case an empty `processe
 
 #### staleness
 
-The freshness reading `index-freshness-first` describes, carried only where the graph trails its tree.
+The freshness reading `an-absent-staleness-mapping-is-the-verdict` describes, carried only where the graph trails its tree.
 
 ## Protocol
 
@@ -121,5 +121,5 @@ The freshness reading `index-freshness-first` describes, carried only where the 
 - Read d=1 items first — these WILL break. Weight high-confidence (>0.8) edges.
 - Take the blast radius from `{impact_report}.risk`, never the rating-shaped `riskSharedAxes` beside it.
 - Read that rating together with `{impact_report}.epistemic`: a `lower-bound` answer rates a floor, and `{impact_report}.causes` separates the gaps a rebuild can close — `scopeExtractionFiles`, `undecidedSatisfaction` — from the irreducible `dispatchBoundary`, while `externalBoundary` shortens nothing. Settle an `UNKNOWN` rating by a grep for `{target}` before the symbol is treated as unused.
-  > - When `{target}` is called from a macro body or reached by type-level reference, the graph holds no edge for it and `{impact_report}.epistemic` stays `exact` — gitnexus.edges-the-parser-cannot-see. Re-derive the caller set by hand, rate against that, and record on `{impact_report}` which of the two the rating rests on.
+  > - When `{target}` is called from a macro body or reached by type-level reference, the graph holds no edge for it and `{impact_report}.epistemic` stays `exact` — an-answer-states-how-far-it-vouches-for-itself. Re-derive the caller set by hand per a-radius-reached-through-an-unseen-edge-is-hand-derived, rate against that, and record on `{impact_report}` which of the two the rating rests on.
   > - A class member, an overriding method and a field read reach `{target}` through edges the default set leaves out, and a test through a file it omits. Name those edges in `{relation_types}` and set `{include_tests}`, so a short answer is a measurement rather than the default's silence.

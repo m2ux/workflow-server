@@ -46,7 +46,7 @@ A run lands here rather than in a workflow because its body composes this namesp
 | Routine | Reached for |
 |---------|-------------|
 | [`group-concept-search`](group-concept-search.yaml) | Which members of a group implement a concept |
-| [`group-radius`](group-radius.yaml) | How far a concern in one member reaches into every other, each answer naming its graph and the instruments — registry, graph, tree search — that answered |
+| [`group-radius`](group-radius.yaml) | How far a concern in one member reaches into every other and what each consumes it as, every answer naming its graph and the instruments — registry, graph, tree search — that answered |
 
 ## Over an index
 
@@ -54,6 +54,8 @@ A run lands here rather than in a workflow because its body composes this namesp
 |---------|-------------|
 | [`graph-for-tree`](graph-for-tree.yaml) | The name of a tree's graph, built where the tree has none |
 | [`index-refresh`](index-refresh.yaml) | A graph current with the tree it was built from |
+| [`roster-refresh`](roster-refresh.yaml) | Every tree a roster names carrying a graph current with it, the checkouts brought to their named revisions first where the caller asks for it |
+| [`component-scan`](component-scan.yaml) | Which components a host declares that the roster of trees to index does not cover, and which roster entries no declared component answers |
 | [`group-refresh`](group-refresh.yaml) | A group current with its members, its contract registry included |
 
 ## Stopping for a decision

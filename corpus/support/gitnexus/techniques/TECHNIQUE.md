@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.12.0
+  version: 4.0.0
 ---
 
 ## Capability
@@ -19,7 +19,9 @@ Codebase intelligence via the GitNexus knowledge graph — indexing, structural 
 
 Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`, omitted only where exactly one graph is indexed; where more than one is, an unnamed call fails and lists what is available. The name comes from the inventory of indexed graphs, which also carries the tree each was built from and the repository groups configured over them.
 
-A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape. Record which graph an answer came from wherever the answer is reported.
+### an-answer-carries-the-graph-it-came-from
+
+A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape, so an answer reported without its graph is one whose scope the reader has to guess. Every reported answer carries the name of the graph it came from, and that name is what settles which of two resolving scopes was addressed.
 
 ### subjects-the-index-holds
 
@@ -28,7 +30,9 @@ Each operation answers from the tree its index walked, and reports on that tree 
 - **A document the index never walked** — a transcript, a specification under revision, a page handed over by its author. It carries no node, so an answer about it is an answer about other files whose names happen to rank.
 - **Anything beneath a dot-directory** — the walk skips them, so `.github/workflows/` pipeline definitions, hooks and tool configuration are as absent from a fresh index as from a stale one.
 
-Grep and a direct read are the whole instrument for both, as they are for prose beneath a heading per `query-not-grep`. Settle which tree holds the subject before reaching for an operation.
+### grep-is-the-instrument-for-what-no-index-holds
+
+Grep and a direct read are the whole instrument for a subject no index holds, as they are for prose beneath a heading per `query-not-grep`. Which tree holds the subject is therefore what an operation is chosen against, an operation addressed at a subject outside its tree answering about other files rather than about the one asked for.
 
 ### query-not-grep
 
@@ -44,7 +48,9 @@ A rename or a batch of edits is scoped by what it actually moved, not by what it
 
 A stale index answers in the same shape as a fresh one, so an answer turning on the current tree is taken against a reading of how far the graph trails it. That reading arrives as a `staleness` mapping: `branch`, `lastCommit` and `indexedAt` name the index that answered, and `status` is its standing against the HEAD of the clone it was built from — `behind` carries `commitsBehind`, `diverged` is a recorded commit the clone's history no longer holds, and `unknown` is a tree with no history to measure. A rebuild answers `behind` and `diverged`; `unknown` is unmeasurable rather than stale.
 
-**The mapping rides only an answer that trails its tree, so its absence is the freshness verdict** — a reader waiting for a `current` status waits on a key that never comes. A direct read of the index omits the reading the same way. Three further answers carry no mapping whatever the graph's age: a raw query's rows, which arrive as a bare list; an error, which reports what failed rather than what answered; and an answer over a whole repository group, where the group's own status reports per member instead — including one failure more than age, a member carrying no graph at all, about which a group-wide answer says nothing.
+### an-absent-staleness-mapping-is-the-verdict
+
+The mapping rides only an answer that trails its tree, so its absence is the freshness verdict and a reader waiting for a `current` status waits on a key that never comes. A direct read of the index omits the reading the same way. Three further answers carry no mapping whatever the graph's age: a raw query's rows, which arrive as a bare list; an error, which reports what failed rather than what answered; and an answer over a whole repository group, where the group's own status reports per member instead — including one failure more than age, a member carrying no graph at all, about which a group-wide answer says nothing.
 
 ### edges-the-parser-cannot-see
 
@@ -54,7 +60,15 @@ The graph holds the call sites the parser reads in source, among the symbols the
 - **Type-level references.** Naming a type in a signature, an associated-type binding, or a trait bound is not a call, so it is not an edge at all.
 - **Names imported from another package.** A graph holds a node for each symbol its own tree defines and none for a name the tree imports from a package built elsewhere, and its import edges run file to file inside that tree. A consumer's use of a library's symbol is an edge in no graph: the library's graph never sees the consumer, and the consumer's graph has nothing to hang the edge on. Across a repository group, that coupling is held by the group's contract registry where a link declares it, and by a search of the consumer's tree otherwise.
 
-An operation's answer is therefore evidence of what the graph holds, never of what depends on the symbol. An answer states how far it vouches for itself: `epistemic` is `exact` or `lower-bound`, `causes` counts what the walk provably dropped — call sites whose receiver it could not type, files whose scope extraction failed, dispatch it could not cross, callables named as values rather than called — and a blast radius that resolved no caller is rated `UNKNOWN` rather than `LOW`. A macro-generated call site, a type-level reference and an imported name leave no trace in any of those: the answer is `exact` and short. Where the changed symbol is reached through any of these routes, re-derive the enumeration by hand — grep for the symbol, for the macro names that generate its callers, and for the package under which the symbol's tree is consumed — and say which of the three a reported blast radius rests on.
+An operation's answer is therefore evidence of what the graph holds, never of what depends on the symbol.
+
+### an-answer-states-how-far-it-vouches-for-itself
+
+An answer carries its own standing: `epistemic` is `exact` or `lower-bound`, `causes` counts what the walk provably dropped — call sites whose receiver it could not type, files whose scope extraction failed, dispatch it could not cross, callables named as values rather than called — and a blast radius that resolved no caller is rated `UNKNOWN` rather than `LOW`. A macro-generated call site, a type-level reference and an imported name leave no trace in any of those, so an answer over code reached that way is `exact` and short, and its standing is silent about the one limit that applies to it.
+
+### a-radius-reached-through-an-unseen-edge-is-hand-derived
+
+Where a symbol is reached through a macro body, a type position or an import from another package, the enumeration that stands is a hand-derived one — a search for the symbol, for the macro names that generate its callers, and for the package under which the symbol's tree is consumed. A reported blast radius names which of the three it rests on, the graph's own count being evidence about the graph rather than about the symbol.
 
 ### a-named-operation-answers-first
 
@@ -62,7 +76,7 @@ The raw graph query answers what no named operation reaches: custom call-chain t
 
 ### keyword-shaped-queries
 
-Phrase a ranked search as keywords, not as a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings — built only where the index was asked for them, and never over headings or files at any setting, so no setting gives semantic search over prose. Keyword-shaped input works either way.
+A ranked search answers keywords rather than a natural-language question. Its ranking fuses keyword and semantic scoring, and the semantic half contributes only where the index carries embeddings — built only where the index was asked for them, and never over headings or files at any setting, so no setting gives semantic search over prose. Keyword-shaped input works either way.
 
 ### must-use-operations
 

@@ -81,7 +81,7 @@ Whether a traversal cap stopped the search before it exhausted the graph, in whi
 
 - Call `gitnexus_trace { from: from_symbol, to: to_symbol, from_uid, to_uid, from_file, to_file, maxDepth: max_depth, includeTests: include_tests, repo: repo_name }` and record the `{trace_report}`.
    > - Where a name resolves to several symbols the answer's `status` is `ambiguous`, with ranked candidates and the `role` naming which end. Choose the one meant and call again with its identity in `{from_uid}` or `{to_uid}`, or name its file.
-   > - A path's edges are the parser's; a hop through a macro-generated call site or a type-level reference does not exist to be walked — gitnexus.edges-the-parser-cannot-see — so a `no_path` over such code says where the graph ends rather than where the call chain does.
+   > - A path's edges are the parser's; a hop through a macro-generated call site or a type-level reference does not exist to be walked — edges-the-parser-cannot-see — so a `no_path` over such code says where the graph ends rather than where the call chain does.
 
 ### 2. Read a Missing Path
 

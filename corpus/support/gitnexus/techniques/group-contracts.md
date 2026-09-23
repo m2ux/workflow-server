@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -50,6 +50,10 @@ The members that sync could not extract from — absent where the sync never rec
 #### suppressedMatchStages
 
 The matching stages that sync was asked to skip, in the same three states; a populated list makes the cross-links a lower bound by request.
+
+#### truncated
+
+Whether the registry held more than the answer carries. True makes the contracts and the cross-links a page rather than the set, on top of whatever the provenance fields already bound.
 
 ## Protocol
 
