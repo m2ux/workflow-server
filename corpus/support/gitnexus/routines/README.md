@@ -55,6 +55,7 @@ A run lands here rather than in a workflow because its body composes this namesp
 | [`graph-for-tree`](graph-for-tree.yaml) | The name of a tree's graph, built where the tree has none |
 | [`index-refresh`](index-refresh.yaml) | A graph current with the tree it was built from |
 | [`roster-refresh`](roster-refresh.yaml) | Every tree a roster names carrying a graph current with it, the checkouts brought to their named revisions first where the caller asks for it |
+| [`component-scan`](component-scan.yaml) | Which components a host declares that the roster of trees to index does not cover, and which roster entries no declared component answers |
 | [`group-refresh`](group-refresh.yaml) | A group current with its members, its contract registry included |
 
 ## Stopping for a decision
