@@ -60,25 +60,25 @@ Repeat **2a → 2b** for each product repo.
 cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-workspace
 ```
 
-`install.sh` places `deploy-cursor-workspace.sh`, `examples/cursor-workspace/`, and `scripts/claude/` under the install dir (default `~/.local/share/workflow-server/`).
+`install.sh` places `deploy-cursor-workspace.sh` and `examples/cursor-workspace/` under the install dir (default `~/.local/share/workflow-server/`). Hook scripts and their config live in that template.
 
 | Flag | Purpose |
 |------|---------|
 | `REPO_NAME` or `--repo=NAME` | **Required.** Checkout / workspace basename (no `owner/repo`) |
 | `--home=PATH` | Build paths under this home (default `$HOME`) |
 | `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `$HOME/projects/dev` |
-| `--force` | Refresh managed files; merge `mcp.json` without dropping other servers; refresh Claude hooks/settings; keep an existing `AGENTS.md` / `CLAUDE.md` |
+| `--force` | Refresh managed files; merge `mcp.json` without dropping other servers; refresh Claude hooks/settings; rewrite `AGENTS.md` from the template |
 | `--dry-run` / `--open` / no args / `--help` | Preview, launch Cursor, or print help |
 
 Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md) · [docs/ide-setup.md](docs/ide-setup.md).
 
 Deploy installs:
 
-- MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`)
-- Bootstrap rules, and `AGENTS.md` / `CLAUDE.md` for `repo: "owner/repo"` when the workspace has none (a workspace that already has them keeps them)
+- MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`), also written to `.codex/config.toml`
+- Bootstrap rules, and `AGENTS.md` and `CLAUDE.md` from the template on every deploy. Those instructions name `PROJECT.md` in the repository
 - Multi-root `.code-workspace` with five absolute `$HOME/…` paths: workspace, project, workflows, planning, work trees
 - Shared rules, skills and MCP, with `.cursor`, `.claude` and `.codex` linked at that one copy
-- **Claude baseline (kickoff only):** `scripts/claude` linked at the hooks source, generated `.claude/settings.json`, and `workflow-canon` under `skills/`
+- **Claude baseline (kickoff only):** hook scripts in `scripts/`, config in `config/`, `.claude/hooks` linking `scripts/`, `scripts/sbx`, generated `.claude/settings.json`, and `.claude/skills/`
 
 ## 4. Update Workflows
 

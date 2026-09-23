@@ -20,10 +20,12 @@
 #   .cursor/skills      → ../skills
 #   .claude/skills      → ../skills
 #   .agents             → .          (Codex discovers .agents/skills)
-#   .cursor/mcp.json    canonical MCP document
-#   .mcp.json           → .cursor/mcp.json
-#   .codex/config.toml  generated from that MCP document
-#   scripts/claude      → the hooks source (repo or install)
+#   .mcp.json           canonical MCP document
+#   .cursor/mcp.json    → ../.mcp.json
+#   .codex/config.toml  generated from that MCP document and the always-apply rules
+#   scripts/            hook scripts and sbx, copied from the template
+#   config/             hook JSON, copied from the template
+#   .claude/hooks       → ../scripts
 # When the product checkout exists, the project links at the kickoff:
 #   .agents → the kickoff directory
 #   .cursor .claude .codex → the matching kickoff subdirectory
@@ -45,15 +47,6 @@ elif [[ -d "${SCRIPT_DIR}/examples/cursor-workspace" ]]; then
 else
   TEMPLATE_DIR="${SCRIPT_DIR}/../examples/cursor-workspace"
 fi
-# Claude hooks tree: repo scripts/claude, or install-dir scripts/claude next to deploy.
-if [[ -d "${SCRIPT_DIR}/claude" ]]; then
-  CLAUDE_SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/claude" && pwd)"
-elif [[ -d "${SCRIPT_DIR}/scripts/claude" ]]; then
-  CLAUDE_SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/scripts/claude" && pwd)"
-else
-  CLAUDE_SCRIPTS_DIR=""
-fi
-
 # Paths are built from $HOME (see --home to override).
 HOME_DIR="${HOME:-}"
 REPO_BASENAME=""
@@ -92,11 +85,9 @@ Options:
                              (default: http://127.0.0.1:3000/mcp)
   --template=DIR             Template source (default: examples/cursor-workspace next to
                              this script, or ../examples/cursor-workspace from scripts/)
-  --claude-scripts=DIR       Claude hooks source (default: scripts/claude next to this
-                             script, or \$INSTALL/scripts/claude)
   --force                    Refresh managed files in an existing workspace dir
                              (upserts required MCP servers; keeps any extras;
-                             keeps an existing AGENTS.md / CLAUDE.md)
+                             rewrites AGENTS.md from the template)
   --dry-run                  Print actions only
   --open                     Run \`cursor <workspace-file>\` after deploy (if on PATH)
   --skip-mkdir               Do not create .worktrees / planning parents on the checkout
@@ -111,18 +102,24 @@ Shared content (one real file, tool folders are symlinks):
   skills/<name> links at the template skill; extra skills already in skills/ stay
   .cursor/skills and .claude/skills link at skills/
   .agents links at the kickoff directory, so Codex finds .agents/skills
-  .cursor/mcp.json is the MCP document; .mcp.json links at it
-  .codex/config.toml is generated from that document (Codex reads TOML)
-  scripts/claude links at the hooks source
+  .mcp.json is the MCP document; .cursor/mcp.json links at it
+  .codex/config.toml is generated from that document and the always-apply rules
 
-When the product checkout exists, it links at the kickoff:
-  .agents → the kickoff directory
-  .cursor, .claude, .codex → the matching kickoff subdirectory
-  Both the kickoff path and the checkout are trusted in ~/.codex/config.toml
+Claude baseline (workspace-local only):
+  copies the template's scripts/ (hook scripts and sbx) and config/
+  links .claude/hooks → ../scripts
+  writes .claude/settings.json from settings.template.json
 
-Workspace-owned (written when absent, kept as-is once present):
-  AGENTS.md      target-repo notes for agents
-  CLAUDE.md, .cursor/AGENTS.md, .claude/CLAUDE.md link at AGENTS.md
+Written on every deploy, from the template:
+  <workspace>/AGENTS.md      workspace instructions for agents
+  <workspace>/CLAUDE.md      the same instructions
+
+When the project checkout exists, deploy also writes:
+  <checkout>/.agents → the kickoff directory
+  <checkout>/.cursor, .claude, .codex → the matching kickoff subdirectory
+  <checkout>/AGENTS.md and <checkout>/CLAUDE.md
+Both checkout instruction paths are gitignored.
+The kickoff path and the checkout are trusted in ~/.codex/config.toml.
 
 Path substitution (all MCP servers — command and args):
   \${HOME}  \$HOME  __USER_HOME__  /home/<name>/…  → \$HOME/…
@@ -243,8 +240,6 @@ while [[ $# -gt 0 ]]; do
     --mcp-url) MCP_URL="${2:?}"; shift 2 ;;
     --template=*) TEMPLATE_DIR="${1#*=}"; shift ;;
     --template) TEMPLATE_DIR="${2:?}"; shift 2 ;;
-    --claude-scripts=*) CLAUDE_SCRIPTS_DIR="${1#*=}"; shift ;;
-    --claude-scripts) CLAUDE_SCRIPTS_DIR="${2:?}"; shift 2 ;;
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --open) OPEN_AFTER=1; shift ;;
@@ -302,9 +297,6 @@ fi
 PROJECTS_ROOT="$(normalize_home_path "$PROJECTS_ROOT")"
 CURSOR_WORKSPACES_ROOT="$(normalize_home_path "$CURSOR_WORKSPACES_ROOT")"
 TEMPLATE_DIR="$(normalize_home_path "$TEMPLATE_DIR")"
-if [[ -n "$CLAUDE_SCRIPTS_DIR" ]]; then
-  CLAUDE_SCRIPTS_DIR="$(normalize_home_path "$CLAUDE_SCRIPTS_DIR")"
-fi
 
 if [[ "$PROJECTS_ROOT" != "$HOME_DIR" && "$PROJECTS_ROOT" != "$HOME_DIR"/* ]]; then
   log "note: projects root is outside \$HOME (${HOME_DIR}): ${PROJECTS_ROOT}"
@@ -340,7 +332,6 @@ log "  planning          : ${PLANNING_DIR}"
 log "  work trees        : ${WORKTREES_DIR}"
 log "  workspace file    : ${WORKSPACE_FILE}"
 log "  MCP URL           : ${MCP_URL}"
-log "  claude scripts    : ${CLAUDE_SCRIPTS_DIR:-"(none)"}"
 log "  claude settings   : ${CLAUDE_SETTINGS_TEMPLATE}"
 
 # --- canonical rules and skills, then tool-folder symlinks --------------------
@@ -441,17 +432,35 @@ PY
   ensure_symlink "${DEST_DIR}/.agents" "."
 fi
 
-# --- scripts/claude — one link at the hooks source ---------------------------
-if [[ -n "$CLAUDE_SCRIPTS_DIR" && -d "$CLAUDE_SCRIPTS_DIR" ]]; then
+# --- scripts and config — same paths as the template --------------------------
+if [[ -d "${TEMPLATE_DIR}/scripts" ]]; then
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    log "symlink scripts/claude → ${CLAUDE_SCRIPTS_DIR}"
+    log "install scripts → ${DEST_DIR}/scripts"
+    log "install config → ${DEST_DIR}/config"
+    log "link .claude/hooks → ../scripts"
   else
-    mkdir -p "${DEST_DIR}/scripts"
-    ensure_symlink "${DEST_DIR}/scripts/claude" "${CLAUDE_SCRIPTS_DIR}"
+    mkdir -p "${DEST_DIR}/scripts" "${DEST_DIR}/config" "${DEST_DIR}/.claude"
+    find "${DEST_DIR}/scripts" -maxdepth 1 -type f -name '*.py' -delete
+    rm -f "${DEST_DIR}/scripts/sbx"
+    rm -rf "${DEST_DIR}/scripts/lib" "${DEST_DIR}/scripts/claude" "${DEST_DIR}/hooks"
+    cp -a "${TEMPLATE_DIR}/scripts/." "${DEST_DIR}/scripts/"
+    rm -f "${DEST_DIR}/scripts/.gitignore"
+    find "${DEST_DIR}/scripts" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
+    find "${DEST_DIR}/scripts" -type f -name '*.pyc' -delete 2>/dev/null || true
+    find "${DEST_DIR}/scripts" -maxdepth 1 -type f -name '*.py' -exec chmod a+x {} + 2>/dev/null || true
+    if [[ -f "${DEST_DIR}/scripts/sbx" ]]; then
+      chmod a+x "${DEST_DIR}/scripts/sbx"
+    fi
+    rm -rf "${DEST_DIR}/config"
+    mkdir -p "${DEST_DIR}/config"
+    if [[ -d "${TEMPLATE_DIR}/config" ]]; then
+      cp -a "${TEMPLATE_DIR}/config/." "${DEST_DIR}/config/"
+    fi
+    rm -rf "${DEST_DIR}/.claude/hooks"
+    ln -sfn ../scripts "${DEST_DIR}/.claude/hooks"
   fi
 else
-  log "warning: claude scripts not found (skipping scripts/claude install)"
-  log "         expected scripts/claude next to deploy, or pass --claude-scripts=DIR"
+  log "warning: template scripts/ not found (skipping hooks install): ${TEMPLATE_DIR}/scripts"
 fi
 
 # --- .claude/settings.json (workspace-local; expanded paths) ------------------
@@ -617,21 +626,131 @@ sys.stdout.write("\n")
 PY
 }
 
-# Prefer merging from existing dest, then template.
+# .mcp.json is the file. .cursor/mcp.json links to it.
 MCP_SRC=""
-if [[ -f "${DEST_DIR}/.cursor/mcp.json" ]]; then
-  MCP_SRC="${DEST_DIR}/.cursor/mcp.json"
-elif [[ -f "${DEST_DIR}/.mcp.json" ]]; then
+if [[ -f "${DEST_DIR}/.mcp.json" ]]; then
   MCP_SRC="${DEST_DIR}/.mcp.json"
-elif [[ -f "${TEMPLATE_DIR}/.cursor/mcp.json" ]]; then
-  MCP_SRC="${TEMPLATE_DIR}/.cursor/mcp.json"
+elif [[ -f "${DEST_DIR}/.cursor/mcp.json" ]]; then
+  MCP_SRC="${DEST_DIR}/.cursor/mcp.json"
 elif [[ -f "${TEMPLATE_DIR}/.mcp.json" ]]; then
   MCP_SRC="${TEMPLATE_DIR}/.mcp.json"
+elif [[ -f "${TEMPLATE_DIR}/.cursor/mcp.json" ]]; then
+  MCP_SRC="${TEMPLATE_DIR}/.cursor/mcp.json"
 fi
 
 MCP_JSON="$(merge_mcp_json "$MCP_SRC")"
-write_file "${DEST_DIR}/.cursor/mcp.json" "$MCP_JSON"
-ensure_symlink "${DEST_DIR}/.mcp.json" ".cursor/mcp.json"
+write_file "${DEST_DIR}/.mcp.json" "$MCP_JSON"
+if [[ "$DRY_RUN" -eq 1 ]]; then
+  log "symlink .cursor/mcp.json → ../.mcp.json"
+else
+  mkdir -p "${DEST_DIR}/.cursor"
+  rm -f "${DEST_DIR}/.cursor/mcp.json"
+  ln -sfn ../.mcp.json "${DEST_DIR}/.cursor/mcp.json"
+fi
+
+# Codex reads .codex/config.toml. The servers are the mcp.json set just written.
+RULES_DIR="${TEMPLATE_DIR}/rules"
+if [[ ! -d "$RULES_DIR" ]]; then
+  RULES_DIR="${TEMPLATE_DIR}/.claude/rules"
+fi
+CODEX_TOML="$(
+  MCP_JSON="$MCP_JSON" \
+  PROJECT_DIR="$PROJECT_DIR" \
+  RULES_DIR="$RULES_DIR" \
+  DEST_DIR="$DEST_DIR" \
+  HOME_DIR="$HOME_DIR" \
+  python3 - <<'PY'
+import json, os, re, sys
+
+mcp = json.loads(os.environ["MCP_JSON"])
+project = os.environ["PROJECT_DIR"]
+rules_dir = os.environ.get("RULES_DIR") or ""
+workspace = os.environ.get("DEST_DIR", "").rstrip("/")
+home = os.environ.get("HOME_DIR", "").rstrip("/")
+
+def toml_str(value: str) -> str:
+    escaped = (
+        value.replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t")
+    )
+    return f'"{escaped}"'
+
+def rule_body(text: str) -> str:
+    if not text.startswith("---"):
+        return ""
+    end = text.find("\n---", 3)
+    if end < 0:
+        return ""
+    front = text[3:end]
+    if not re.search(r"(?m)^alwaysApply:\s*true\s*$", front):
+        return ""
+    lines = text[end + 4 :].strip().splitlines()
+    while lines and (not lines[0].strip() or lines[0].startswith("# ")):
+        lines.pop(0)
+    return "\n".join(lines).strip()
+
+bodies = []
+if os.path.isdir(rules_dir):
+    names = sorted(n for n in os.listdir(rules_dir) if n.endswith(".md"))
+    if "workflow-server.md" in names:
+        names.remove("workflow-server.md")
+        names.insert(0, "workflow-server.md")
+    for name in names:
+        with open(os.path.join(rules_dir, name), encoding="utf-8") as handle:
+            body = rule_body(handle.read())
+        if body:
+            if workspace:
+                body = body.replace("__WORKSPACE__", workspace)
+            if home:
+                body = body.replace("__HOME__", home)
+            bodies.append(body)
+
+parts = [
+    "# Codex project config.",
+    "# Skills load from .agents/skills.",
+    "# MCP servers are the set written to mcp.json.",
+    "# Always-apply rule text is included here.",
+    "",
+]
+if bodies:
+    joined = "\n\n".join(bodies).replace('"""', '\\"\\"\\"')
+    parts.append('developer_instructions = """')
+    parts.append(joined)
+    parts.append('"""')
+    parts.append("")
+parts.append("[sandbox_workspace_write]")
+parts.append("writable_roots = [")
+parts.append(f"  {toml_str(project)},")
+parts.append("]")
+parts.append("")
+
+servers = mcp.get("mcpServers") or {}
+for name, spec in servers.items():
+    if not isinstance(spec, dict):
+        continue
+    parts.append(f"[mcp_servers.{name}]")
+    if isinstance(spec.get("command"), str):
+        parts.append(f"command = {toml_str(spec['command'])}")
+    args = spec.get("args")
+    if isinstance(args, list):
+        rendered = ",\n  ".join(toml_str(str(item)) for item in args)
+        parts.append(f"args = [\n  {rendered},\n]")
+    if isinstance(spec.get("url"), str):
+        parts.append(f"url = {toml_str(spec['url'])}")
+    env = spec.get("env")
+    if isinstance(env, dict) and env:
+        parts.append(f"[mcp_servers.{name}.env]")
+        for key, value in env.items():
+            parts.append(f"{key} = {toml_str(str(value))}")
+    parts.append("")
+
+sys.stdout.write("\n".join(parts).rstrip() + "\n")
+PY
+)"
+write_file "${DEST_DIR}/.codex/config.toml" "$CODEX_TOML"
 
 # --- .code-workspace (absolute $HOME paths) -----------------------------------
 # shellcheck disable=SC2016
@@ -658,121 +777,45 @@ PY
 write_file "$WORKSPACE_FILE" "$WORKSPACE_JSON"
 
 # --- AGENTS.md / CLAUDE.md ----------------------------------------------------
-# Workspace-owned: seeded on the first deploy, then left alone. The file accrues
-# repo-specific instructions an operator or agent wrote for this checkout, so a
-# generated copy is only ever a starting point. CLAUDE.md and the tool copies
-# are symlinks to that file.
+# AGENTS.md and CLAUDE.md are the workspace instructions, written on every
+# deploy from the template. They name PROJECT.md, which lives in the repository.
+AGENTS_SRC="${TEMPLATE_DIR}/AGENTS.md"
 AGENTS_MD="${DEST_DIR}/AGENTS.md"
 CLAUDE_MD="${DEST_DIR}/CLAUDE.md"
+[[ -f "$AGENTS_SRC" ]] || die "template AGENTS.md not found: ${AGENTS_SRC}"
 
-AGENTS_BODY=$(cat <<EOF
-# Target repository
-
-## Filesystem checkout (navigation)
-
-Projects live under:
-
-\`\`\`
-${PROJECTS_ROOT}
-\`\`\`
-
-The checkout for this workspace is the **repo basename**:
-
-\`\`\`
-${REPO_BASENAME}
-\`\`\`
-
-Full path: \`${PROJECT_DIR}\`
-
-Same layout for every project:
-
-\`\`\`text
-${PROJECTS_ROOT}/<repo>/
-${PROJECTS_ROOT}/<repo>/.engineering/artifacts/planning/
-${PROJECTS_ROOT}/<repo>/.worktrees/<slug>/
-\`\`\`
-
-## Session identity (\`start_session\`)
-
-If the agent needs a GitHub \`owner/repo\` for \`start_session\`, set it here:
-
-\`\`\`
-owner/repo
-\`\`\`
-
-Replace with your project (for example \`m2ux/${REPO_BASENAME}\`).
-EOF
-)
-
-if [[ -e "$AGENTS_MD" || -L "$AGENTS_MD" ]]; then
-  log "keep workspace AGENTS.md: ${AGENTS_MD}"
+if [[ "$DRY_RUN" -eq 1 ]]; then
+  log "write AGENTS.md from ${AGENTS_SRC}"
+  log "write CLAUDE.md"
 else
-  write_file "$AGENTS_MD" "${AGENTS_BODY}"$'\n'
+  cp -a "$AGENTS_SRC" "$AGENTS_MD"
+  ln -sfn AGENTS.md "$CLAUDE_MD"
 fi
 
-ensure_symlink "$CLAUDE_MD" "AGENTS.md"
 ensure_symlink "${DEST_DIR}/.cursor/AGENTS.md" "../AGENTS.md"
 ensure_symlink "${DEST_DIR}/.claude/CLAUDE.md" "../AGENTS.md"
 
-# --- Codex config from the same MCP document ---------------------------------
+# The checkout copies are the same instructions. Git ignores both paths.
+if [[ -d "$PROJECT_DIR" ]]; then
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    log "write ${PROJECT_DIR}/AGENTS.md"
+    log "write ${PROJECT_DIR}/CLAUDE.md"
+    log "link project .agents .cursor .claude .codex at ${DEST_DIR}"
+  else
+    ln -sfn .cursor/AGENTS.md "${PROJECT_DIR}/AGENTS.md"
+    ln -sfn .claude/CLAUDE.md "${PROJECT_DIR}/CLAUDE.md"
+    ensure_symlink "${PROJECT_DIR}/.agents" "${DEST_DIR}"
+    ensure_symlink "${PROJECT_DIR}/.cursor" "${DEST_DIR}/.cursor"
+    ensure_symlink "${PROJECT_DIR}/.claude" "${DEST_DIR}/.claude"
+    ensure_symlink "${PROJECT_DIR}/.codex" "${DEST_DIR}/.codex"
+  fi
+elif [[ "$DRY_RUN" -eq 1 ]]; then
+  log "project checkout absent; skip project links: ${PROJECT_DIR}"
+fi
+
 if [[ "$DRY_RUN" -eq 1 ]]; then
-  log "write ${DEST_DIR}/.codex/config.toml from .cursor/mcp.json"
   log "trust ${DEST_DIR} and ${PROJECT_DIR} in ${HOME_DIR}/.codex/config.toml"
 else
-  DEST_DIR="$DEST_DIR" PROJECT_DIR="$PROJECT_DIR" python3 - <<'PY'
-import json, os, pathlib
-
-workspace = pathlib.Path(os.environ["DEST_DIR"])
-project = os.environ["PROJECT_DIR"]
-mcp = json.loads((workspace / ".cursor" / "mcp.json").read_text(encoding="utf-8"))
-servers = mcp.get("mcpServers") or {}
-
-def toml_str(value: str) -> str:
-    escaped = value.replace("\\", "\\\\").replace('"', '\\"')
-    return f'"{escaped}"'
-
-parts = []
-for name in ("workflow-server", "concept-rag"):
-    path = workspace / "rules" / f"{name}.md"
-    if not path.is_file():
-        continue
-    text = path.read_text(encoding="utf-8")
-    if text.startswith("---"):
-        end = text.find("\n---", 3)
-        if end != -1:
-            text = text[end + 4 :]
-    body = text.strip()
-    if body:
-        parts.append(body)
-
-lines = ['developer_instructions = """', "\n\n".join(parts), '"""', ""]
-lines.append("[sandbox_workspace_write]")
-lines.append(f"writable_roots = [{toml_str(project)}]")
-lines.append("")
-for name, cfg in servers.items():
-    lines.append(f"[mcp_servers.{name}]")
-    if cfg.get("url"):
-        lines.append(f"url = {toml_str(str(cfg['url']))}")
-    if cfg.get("command"):
-        lines.append(f"command = {toml_str(str(cfg['command']))}")
-    args = cfg.get("args") or []
-    if args:
-        rendered = ", ".join(toml_str(str(arg)) for arg in args)
-        lines.append(f"args = [{rendered}]")
-    env = cfg.get("env") or {}
-    if env:
-        lines.append("")
-        lines.append(f"[mcp_servers.{name}.env]")
-        for key, value in env.items():
-            lines.append(f"{key} = {toml_str(str(value))}")
-    lines.append("")
-
-out = workspace / ".codex" / "config.toml"
-out.parent.mkdir(parents=True, exist_ok=True)
-out.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
-print(f"  wrote {out}")
-PY
-
   HOME_DIR="$HOME_DIR" DEST_DIR="$DEST_DIR" PROJECT_DIR="$PROJECT_DIR" python3 - <<'PY'
 import os, pathlib
 
@@ -792,16 +835,6 @@ if not text.endswith("\n"):
 cfg.write_text(text, encoding="utf-8")
 print(f"  trusted Codex projects in {cfg}")
 PY
-fi
-
-# --- project links at the kickoff artifacts ----------------------------------
-if [[ -d "$PROJECT_DIR" ]]; then
-  ensure_symlink "${PROJECT_DIR}/.agents" "${DEST_DIR}"
-  ensure_symlink "${PROJECT_DIR}/.cursor" "${DEST_DIR}/.cursor"
-  ensure_symlink "${PROJECT_DIR}/.claude" "${DEST_DIR}/.claude"
-  ensure_symlink "${PROJECT_DIR}/.codex" "${DEST_DIR}/.codex"
-elif [[ "$DRY_RUN" -eq 1 ]]; then
-  log "project checkout absent; skip project links: ${PROJECT_DIR}"
 fi
 
 # --- ensure checkout mount points --------------------------------------------
@@ -830,9 +863,6 @@ if [[ ! -d "$PROJECT_DIR" ]]; then
   echo "  ${PROJECT_DIR}"
   echo
 fi
-echo "Optional: set GitHub owner/repo in AGENTS.md for start_session."
-echo
-
 if [[ "$OPEN_AFTER" -eq 1 ]]; then
   if command -v cursor >/dev/null 2>&1; then
     run cursor "$WORKSPACE_FILE"

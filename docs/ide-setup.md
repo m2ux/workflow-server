@@ -10,11 +10,11 @@ Deploy [`examples/cursor-workspace/`](../examples/cursor-workspace/) with [`scri
 
 - **The MCP servers** — `workflow-server` reaching `http://127.0.0.1:3000/mcp` through `mcp-remote`, alongside `concept-rag`, `atlassian` and `gitnexus`.
 - **The always-applied rule** that sends an agent to `discover` before it does anything else.
-- **`AGENTS.md` and `CLAUDE.md`**, carrying the checkout basename and the `owner/repo` a session binds to.
+- **`AGENTS.md` and `CLAUDE.md`**, the workspace instructions from the template. They name `PROJECT.md` in the repository.
 - **The five workspace roots** — the workspace itself, the project, the workflows checkout, the planning folder and the work trees.
-- **Codex** — `.codex/config.toml` carries the same MCP servers and the two always-applied rules. The kickoff path and the product checkout are trusted.
+- **Codex** — `.codex/config.toml` carries the same MCP servers and the always-applied rules. The kickoff path and the product checkout are trusted.
 
-For Claude Code it also installs a workspace-local baseline: `scripts/claude` links at the hooks source, and a rendered `.claude/settings.json`.
+For Claude Code it also installs a workspace-local baseline: hook scripts in `scripts/`, their config in `config/`, `.claude/hooks` linking `scripts/`, the sandbox launcher at `scripts/sbx`, and a rendered `.claude/settings.json`.
 
 ### Running the deploy
 
@@ -42,19 +42,17 @@ Everything below lands under `~/.local/share/cursor/workspaces/<name>/`.
 | `skills/` | One link per template skill, at the template directory that versions it. A skill already present stays |
 | `.cursor/skills`, `.claude/skills` | Link at `skills/` |
 | `.agents` | Links at the kickoff directory, so Codex finds skills at `.agents/skills` |
-| `.cursor/mcp.json` | The required MCP servers, home-path tokens expanded. Extra servers already present stay |
-| `.mcp.json` | Links at `.cursor/mcp.json` |
-| `.codex/config.toml` | The same MCP servers, plus the two always-applied rules, for Codex |
-| `AGENTS.md` | The target checkout and an `owner/repo` placeholder, seeded when absent and kept after that |
-| `CLAUDE.md`, `.cursor/AGENTS.md`, `.claude/CLAUDE.md` | Link at `AGENTS.md` |
-| `scripts/claude` | Links at the hooks source, [`scripts/claude/`](../scripts/claude/) in a checkout |
+| `.mcp.json`, `.cursor/mcp.json` | The required MCP servers, home-path tokens expanded. `.cursor/mcp.json` links to `.mcp.json`. Extra servers already present stay |
+| `.codex/config.toml` | The same MCP servers and the always-applied rules |
+| `AGENTS.md`, `CLAUDE.md` | Workspace instructions from the template, written on every deploy. They name `PROJECT.md` in the repository |
+| `scripts/`, `config/` | Hook scripts in `scripts/`, config in `config/`, and the sandbox launcher at `scripts/sbx`. `.claude/hooks` links `scripts/`. The template holds these at the same paths |
 | `.claude/settings.json` | Generated at deploy from [the settings template](../examples/cursor-workspace/.claude/settings.template.json) |
 
 When the product checkout exists, deploy links `.agents` at the kickoff directory and `.cursor`, `.claude` and `.codex` at the matching kickoff subdirectory. The workflows root is `<repo>/.worktrees/workflows`; deploy names that path and leaves the directory for `git worktree add`.
 
-`install.sh` places the deploy script, the workspace template and `scripts/claude/` under the install directory, so deploying a workspace does not need a full checkout.
+`install.sh` places the deploy script and the workspace template under the install directory, so deploying a workspace does not need a full checkout.
 
-Deploy expands the `__HOME__` and `__WORKSPACE__` tokens in the canonical rule files. Re-run it with `--force` after the template or the hooks change; `AGENTS.md` survives that refresh, so edits describing the target repository stay put.
+Deploy expands the `__HOME__` and `__WORKSPACE__` tokens in the canonical rule files. Re-run it with `--force` after the template or the hooks change. That refresh rewrites `AGENTS.md` from the template. `PROJECT.md` stays in the repository.
 
 ## The bootstrap rule
 
@@ -76,10 +74,10 @@ Every `start_session` call for a fresh session carries `working_directory` as th
 
 Open the example workspace, restarting the MCP client if its configuration changed underneath it. Ask the agent to start a work package, or any workflow: it must call `discover` first and then follow the bootstrap it gets back. Confirm that the `start_session` call it makes carries `working_directory` as the checkout under work.
 
-Two further checks are worth making. Asking the agent to list workflows exercises `list_workflows`, which reads the catalogue — useful, though not a substitute for the bootstrap itself. And for Claude in Cursor, confirm that the kickoff directory holds `.claude/settings.json` and `scripts/claude/hooks/` after the deploy.
+Two further checks are worth making. Asking the agent to list workflows exercises `list_workflows`, which reads the catalogue — useful, though not a substitute for the bootstrap itself. And for Claude in Cursor, confirm that the kickoff directory holds `.claude/settings.json` and `.claude/hooks/` after the deploy.
 
 An agent that skips `discover` has not loaded the rule.
 
 ## Where else to look
 
-The install sequence is in [setup.md](../setup.md), whose third section covers the Cursor workspace, and the [template's own README](../examples/cursor-workspace/README.md) goes further into its deploy flags and the Claude baseline. The [hooks layout](../scripts/claude/README.md) is documented beside the hooks themselves. What differs between the two transports is in [http.md](../http.md) and [stdio.md](../stdio.md). Once an agent is connected, the tools available to it — including `context_mode` and `context_tokens` — are catalogued in the [API reference](api-reference.md).
+The install sequence is in [setup.md](../setup.md), whose third section covers the Cursor workspace, and the [template's own README](../examples/cursor-workspace/README.md) goes further into its deploy flags, the hook scripts, and the Claude baseline. What differs between the two transports is in [http.md](../http.md) and [stdio.md](../stdio.md). Once an agent is connected, the tools available to it — including `context_mode` and `context_tokens` — are catalogued in the [API reference](api-reference.md).

@@ -21,24 +21,33 @@ Requires a checkout (repo-name) under your projects root, and `$HOME` set.
 
 ## Rules
 
-`rules/` is the canonical copy. `.cursor/rules` and `.claude/rules` link at it,
-and each `.mdc` links at the `.md` of the same name. `__WORKSPACE__` and
-`__HOME__` expand to absolute paths in that copy. Use them when a rule must name
-a path that also appears in the settings allowlist — `bash-composition.md` names
-the `sbx` launcher this way so the two stay in step.
+`rules/` is the text. `.claude/rules` points at it. Each `.cursor/rules/<name>.mdc` points at `rules/<name>.md`. Deploy expands `__WORKSPACE__` and `__HOME__` in `rules/` — `bash-composition.md` names the `sbx` launcher this way so the rule and the settings allowlist stay in step.
 
 ## Skills
 
-`skills/<name>` links at the template directory that versions the skill.
-`.cursor/skills` and `.claude/skills` link at `skills/`. A skill the template
-does not carry stays in `skills/` across a `--force` refresh.
+`skills/` is the text. Deploy links each skill at that directory. `.cursor/skills`, `.claude/skills`, and `.agents/skills` point at `skills/`. A skill the template does not carry stays across a `--force` refresh.
 
 | Skill | Use for |
 |-------|---------|
-| [`workflow-canon`](.claude/skills/workflow-canon/SKILL.md) | Authoring or auditing workflow definitions against the design canon and guard suite |
+| [`workflow-canon`](skills/workflow-canon/SKILL.md) | Authoring or auditing workflow definitions against the design canon and guard suite |
+
+## Codex
+
+Deploy writes `.codex/config.toml`. Codex reads that file. The MCP servers in it are the set deploy writes to `mcp.json`, and the instructions are the always-apply rules.
+
+## Scripts and config
+
+`scripts/` holds the hook scripts and the `sbx` launcher. `config/` holds the JSON those hooks read. `.claude/hooks` points at `scripts/`. A hook loads `config/<name>.json` from the directory beside `scripts/`, after resolving links.
+
+Deploy copies `scripts/` and `config/` into the kickoff directory and points `.claude/hooks` at `scripts/`. Workspace `.claude/settings.json` records absolute paths under `.claude/hooks` and allowlists `scripts/sbx`.
+
+```text
+scripts/                        # hook scripts and the sbx launcher
+config/                         # JSON the hooks read
+.claude/hooks → ../scripts
+```
 
 ## See also
 
 - [scripts/deploy-cursor-workspace.sh](../../scripts/deploy-cursor-workspace.sh)
-- [scripts/claude/README.md](../../scripts/claude/README.md)
 - [setup.md](../../setup.md) · [docs/ide-setup.md](../../docs/ide-setup.md)

@@ -53,7 +53,8 @@ Neither can detect a prose divergence between a markdown document and its site p
 | [`schemas/README.md`](../schemas/README.md) | Schema guide for authoring workflow definitions | Workflow authors |
 | `schemas/*.schema.json` | JSON Schemas for authoring-time validation. Most are generated from their Zod sources (`npm run build:schemas`); `technique.schema.json` is hand-authored. `npm run check:schemas` verifies the generated set and reports any file in neither | Authoring-time validation and tooling |
 | [`site/`](../site/) | The rendered documentation site: user guide, technical specs, API reference, design | Readers in a browser |
-| `AGENTS.md`, `CLAUDE.md` | Instructions for AI agents working in this repository | AI agents |
+| [`PROJECT.md`](../PROJECT.md) | Project instructions for this repository. The workspace instructions name this file. It stays in the repository | AI agents |
+| `AGENTS.md`, `CLAUDE.md` | Workspace instructions for AI agents. Deploy writes both into the checkout. Git ignores both paths. They name `PROJECT.md` | AI agents |
 | [`examples/cursor-workspace/.claude/rules/`](../examples/cursor-workspace/.claude/rules/) | Agent rules the workspace template ships into a deployed kickoff directory | AI agents in a deployed workspace |
 | Engineering root (`.engineering/` or `$HOST_PROJECTS_ROOT/<repo>/.engineering`) | Planning artifacts, work packages, ADRs — engineering process, not product documentation | Project engineering |
 

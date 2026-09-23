@@ -25,12 +25,16 @@ dist/
 
 # Agent skills, rules and settings — owned at workspace level, one home per machine
 .claude/
-.cursor
-.agents
-.codex
 
 # Environment
 .env
 .env.local
 .env.*.local
 .gitnexus
+/.claude
+/.codex
+/.cursor
+/.agents
+/.ponytail
+/AGENTS.md
+/CLAUDE.md

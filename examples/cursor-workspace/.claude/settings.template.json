@@ -145,7 +145,7 @@
       "Bash(gpg-connect-agent /bye *)",
       "Bash(git config --list *)",
       "Bash(npm run *)",
-      "Bash(__WORKSPACE__/scripts/claude/bin/sbx *)",
+      "Bash(__WORKSPACE__/scripts/sbx *)",
       "Bash(sbx:*)",
       "Edit(__HOME__/projects/**)",
       "Edit(/tmp/**)",
@@ -189,7 +189,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 __WORKSPACE__/scripts/claude/hooks/gate-gh-api-hazards.py",
+            "command": "python3 __WORKSPACE__/.claude/hooks/gate-gh-api-hazards.py",
             "timeout": 5
           }
         ]
@@ -199,7 +199,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 __WORKSPACE__/scripts/claude/hooks/compound-bash-allow.py",
+            "command": "python3 __WORKSPACE__/.claude/hooks/compound-bash-allow.py",
             "timeout": 5
           }
         ]
@@ -209,7 +209,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 __WORKSPACE__/scripts/claude/hooks/block-dynamic-shell.py",
+            "command": "python3 __WORKSPACE__/.claude/hooks/block-dynamic-shell.py",
             "timeout": 5
           }
         ]
@@ -219,7 +219,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 __WORKSPACE__/scripts/claude/hooks/curl-read-allow.py",
+            "command": "python3 __WORKSPACE__/.claude/hooks/curl-read-allow.py",
             "timeout": 5
           }
         ]
@@ -229,7 +229,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 __WORKSPACE__/scripts/claude/hooks/redirect-inline-eval.py",
+            "command": "python3 __WORKSPACE__/.claude/hooks/redirect-inline-eval.py",
             "timeout": 5
           }
         ]
@@ -239,7 +239,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 __WORKSPACE__/scripts/claude/hooks/redirect-fs-mutation.py",
+            "command": "python3 __WORKSPACE__/.claude/hooks/redirect-fs-mutation.py",
             "timeout": 5
           }
         ]
@@ -249,7 +249,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 __WORKSPACE__/scripts/claude/hooks/webfetch-allow.py",
+            "command": "python3 __WORKSPACE__/.claude/hooks/webfetch-allow.py",
             "timeout": 5
           }
         ]
