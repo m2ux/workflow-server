@@ -9,7 +9,7 @@ An agent working a task produces two unrelated kinds of output: changes to the u
 3. **The workflow definitions** are served from the install's own `workflows` directory — the definitions branch — rather than from the engineering checkout.
 4. **The projects checkout** at `$HOST_PROJECTS_ROOT/<repo>/` is the main-branch clone, used for reading the codebase, for code intelligence, and as the tree new worktrees are added from.
 
-[`scripts/install.sh`](../scripts/install.sh) creates the host layout for the HTTP and Docker install, writing the projects root into the install environment; [`scripts/deploy.sh`](../scripts/deploy.sh) wires up engineering storage. The paths themselves are laid out in [install-projects-worktrees.md](install-projects-worktrees.md).
+The install script on the `docker` branch creates the host layout for the HTTP and Docker install, writing the projects root into the install environment; [`scripts/deploy.sh`](../scripts/deploy.sh) wires up engineering storage. The paths themselves are laid out in [install-projects-worktrees.md](install-projects-worktrees.md).
 
 ## The planning folder
 

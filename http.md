@@ -1,6 +1,6 @@
 # Setup — Docker / HTTP
 
-Transport-specific steps for running the server over HTTP — the published GHCR image, or an image built from a checkout.
+Transport-specific steps for running the server over HTTP from the published GHCR image. The install script lives on the `docker` branch.
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ the corpus; those values are recorded in `env` for `start.sh` and
 `update-workflows.sh`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/docker/scripts/install.sh | bash
 ```
 
 ## 2. Start
@@ -31,24 +31,22 @@ for a `start_session` that carries `working_directory` is under
 `$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/` on the host
 when `HOST_PROJECTS_ROOT` is set. The server derives `owner/repo` from that checkout's origin.
 
-Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names as `.env.example`). `HOST_PORT` selects the published port.
+Compose alternative: [`docker-compose.yml` on the `docker` branch](https://github.com/m2ux/workflow-server/blob/docker/docker-compose.yml) pulls `ghcr.io/m2ux/workflow-server:main`. `HOST_PORT` selects the published port. Schemas are the copy baked into that image.
 
-### Second instance from a checkout
+### Second instance
 
-`start.sh --name` and `--host-port` address one container. The install instance keeps the default name `workflow-server` and host port 3000. A second process uses a different name and port so the two do not replace each other.
-
-`--build` builds the image from a directory that contains this repo's `Dockerfile` (the current directory when DIR is omitted), tags it `workflow-server:local` unless `--image` names another tag, and skips the GHCR pull. `--host-port=0` with `-d` lets Docker pick a free host port; the script prints the MCP URL after start.
+`start.sh --name` and `--host-port` address one container. The install instance keeps the default name `workflow-server` and host port 3000. A second process uses a different name and port and pulls the same published image. `--host-port=0` with `-d` lets Docker pick a free host port; the script prints the MCP URL after start.
 
 ```bash
-./scripts/start.sh -d --build --name=workflow-server-trial --host-port=0 --no-update-workflows
-./scripts/stop.sh --name=workflow-server-trial
+~/.local/share/workflow-server/start.sh -d --name=workflow-server-trial --host-port=0 --no-update-workflows
+~/.local/share/workflow-server/stop.sh --name=workflow-server-trial
 ```
 
 The sidecar uses the same install binds (projects root, HMAC state) as the first instance. `--workflows-dir` selects the corpus for that container. Cursor's MCP URL is whatever `.mcp.json` names; point it at the printed URL to talk to the sidecar.
 
 ### Reload an experiment sidecar on a stable port
 
-`scripts/reload-exp-sidecar.sh` stops one named container, compiles the engine checkout on the host, and starts it again on the same host port and corpus with that `dist` (and the engine `schemas`) bound read-only. The process is still `node dist/index.js` on the image's production `node_modules`. The image itself rebuilds when `package.json`, `package-lock.json` or the Dockerfile drifted, or when `--rebuild-image` is passed. When the engine checkout's `start.sh` does not accept `--dist-dir`, the copy next to this reload script is used so the bind still lands. It refuses the install container name `workflow-server` and host port 3000.
+`scripts/reload-exp-sidecar.sh` stops one named container, compiles the engine checkout on the host, and starts it again on the same host port and corpus with that `dist` (and the engine `schemas`) bound read-only. The process is still `node dist/index.js` on the image's production `node_modules`. The image definition and the launcher come from the branch named by `--docker-branch`, which defaults to `docker`. The image rebuilds when `package.json`, `package-lock.json`, or that Dockerfile drifted, or when `--rebuild-image` is passed. An override that lacks `--dist-dir` is replaced by that branch's `start.sh` so the bind still lands. It refuses the install container name `workflow-server` and host port 3000.
 
 `--name` is the only required flag. Host port, corpus, engine checkout, image and projects root each default to what the named container records, running or exited, so reloading the pairing under test is `--name` alone and a sidecar a reboot left stopped reloads on the port it had; each is required when no container of that name exists. `--image` defaults to the image the named container records; when none exists it is `workflow-server:local`. `--build` defaults to the engine checkout the named container records; when none exists it is the checkout that contains the script. Pass a directory when naming a pairing whose engine lives in another worktree.
 

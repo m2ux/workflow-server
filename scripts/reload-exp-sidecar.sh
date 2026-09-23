@@ -3,7 +3,8 @@
 #
 # Stops one named container, compiles the engine checkout on the host when that
 # install matches the lockfile, rebuilds the image only when package.json,
-# package-lock.json or the Dockerfile drifted (or --rebuild-image), and starts
+# package-lock.json, or the Dockerfile on the docker branch (or
+# --docker-branch) drifted (or --rebuild-image), and starts
 # it again on the same host port and corpus with dist and schemas bound from the
 # engine checkout. Refuses the install instance name `workflow-server` and host
 # port 3000.
@@ -15,6 +16,8 @@ set -euo pipefail
 
 INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+IMAGE_DEF=""
+RUNNER_DIR=""
 
 die() { echo "error: $*" >&2; exit 1; }
 
@@ -25,11 +28,12 @@ Reload an experiment HTTP sidecar on a stable host port.
 Stops the named container, compiles the engine checkout on the host when that
 install matches the lockfile, and starts it again on the same host port and
 corpus with a dist bind of that compile and a schemas bind of the engine
-checkout. The image rebuilds when package.json, package-lock.json or the
-Dockerfile drifted (lockfile-triggered image rebuild), or when --rebuild-image
-is passed. Host port, corpus, engine checkout, image and projects root
-default to what the named container records. Refuses the install instance
-name workflow-server and host port 3000.
+checkout. The image definition and the launcher come from the docker branch.
+--docker-branch names another branch when the instance is a custom one. The
+image rebuilds when package.json, package-lock.json, or that Dockerfile
+drifted, or when --rebuild-image is passed. Host port, corpus, engine
+checkout, image and projects root default to what the named container
+records. Refuses the install instance name workflow-server and host port 3000.
 
   scripts/reload-exp-sidecar.sh --name=NAME [options]
   scripts/reload-exp-sidecar.sh --name=NAME --workflows-dir=CORPUS [options]
@@ -53,12 +57,13 @@ Options:
                            container records, running or exited, else this
                            repo root. DIR is a worktree for a branch that is
                            not this checkout. Host compile and image rebuilds
-                           use this tree; its start.sh/stop.sh run the
-                           container, so a branch changing the server and the
-                           launcher together is exercised as a pair; --no-build
-                           uses the installed copies. When that start.sh does
-                           not accept --dist-dir, this script's start.sh is
-                           used so a host compile still binds.
+                           use this tree. The launcher is start.sh on the
+                           branch named by --docker-branch (default: docker).
+                           An override that lacks --dist-dir is replaced by
+                           that branch's start.sh so a host compile still binds.
+  --docker-branch=NAME     Branch that holds the image definition and the
+                           runner scripts (default: docker). A custom instance
+                           passes the branch that carries its own copies.
   --host-port=N            Host port. Defaults to the binding the named
                            container records, running or exited. Required when
                            none exists.
@@ -82,7 +87,7 @@ Options:
 
 Environment (overridden by flags):
   EXP_NAME  EXP_IMAGE  EXP_CORPUS  EXP_ENGINE  EXP_HOST_PORT
-  EXP_PROJECTS_ROOT  EXP_LOG_DIR
+  EXP_PROJECTS_ROOT  EXP_LOG_DIR  EXP_DOCKER_BRANCH
   WORKFLOW_SERVER_START  WORKFLOW_SERVER_STOP
 
 Container-side paths, shared with start.sh so a lookup matches what it binds:
@@ -120,6 +125,8 @@ ENGINE="${EXP_ENGINE:-}"
 PROJECTS="${EXP_PROJECTS_ROOT:-}"
 PORT="${EXP_HOST_PORT:-}"
 LOG_DIR="${EXP_LOG_DIR:-${INSTALL_DIR}/logs}"
+DOCKER_BRANCH="${EXP_DOCKER_BRANCH:-docker}"
+DOCKER_TIP=""
 BUILD=1
 REBUILD_IMAGE=0
 PREFLIGHT=1
@@ -144,6 +151,8 @@ while [[ $# -gt 0 ]]; do
         shift
       fi
       ;;
+    --docker-branch=*) DOCKER_BRANCH="${1#*=}"; shift ;;
+    --docker-branch) DOCKER_BRANCH="${2:?}"; shift 2 ;;
     --host-port=*) PORT="${1#*=}"; shift ;;
     --host-port) PORT="${2:?}"; shift 2 ;;
     --log-dir=*) LOG_DIR="${1#*=}"; shift ;;
@@ -163,21 +172,6 @@ done
 
 [[ "$BUILD" -eq 1 || "$REBUILD_IMAGE" -eq 0 ]] \
   || die "--no-build and --rebuild-image cannot be combined"
-
-# An explicit override, else the preferred copy when it is executable, else the other one. Which
-# copy is preferred depends on where the image came from; see the START/STOP resolution below.
-resolve_helper() {
-  local override="$1" preferred="$2" fallback="$3"
-  if [[ -n "$override" ]]; then
-    printf '%s\n' "$override"
-    return
-  fi
-  if [[ -x "$preferred" ]]; then
-    printf '%s\n' "$preferred"
-    return
-  fi
-  printf '%s\n' "$fallback"
-}
 
 # Keep the outgoing container's log on the host, under a name carrying the container and the hour.
 #
@@ -210,11 +204,34 @@ git_pin() {
   printf '%s%s\n' "$commit" "$dirty"
 }
 
-# Hash of the files that determine the image's node_modules and Dockerfile. Src edits sit outside
+# Hash of the lockfile and the Dockerfile on the selected branch. Src edits sit outside
 # this hash so a host compile plus dist bind covers them without a docker build.
 inputs_sha() {
   local dir="$1"
-  (cd "$dir" && cat package.json package-lock.json Dockerfile) | sha256sum | awk '{print $1}'
+  cat "${dir}/package.json" "${dir}/package-lock.json" "${IMAGE_DEF}/Dockerfile" | sha256sum | awk '{print $1}'
+}
+
+# One fetch of the branch that holds the image definition and the runner scripts.
+ensure_docker_tip() {
+  [[ -n "$DOCKER_TIP" ]] && return 0
+  [[ -n "$DOCKER_BRANCH" ]] || die "docker branch name is empty"
+  git -C "$ENGINE" fetch --depth=1 origin "$DOCKER_BRANCH" \
+    || die "cannot fetch ${DOCKER_BRANCH}"
+  DOCKER_TIP="$(git -C "$ENGINE" rev-parse FETCH_HEAD)"
+}
+
+show_from_docker_branch() {
+  local path="$1" dest="$2"
+  ensure_docker_tip
+  git -C "$ENGINE" show "${DOCKER_TIP}:${path}" > "$dest" \
+    || die "${DOCKER_BRANCH} has no ${path}"
+}
+
+# The image definition is the selected branch. The engine checkout supplies the source.
+prepare_image_definition() {
+  IMAGE_DEF="$(mktemp -d)"
+  show_from_docker_branch Dockerfile "${IMAGE_DEF}/Dockerfile"
+  show_from_docker_branch .dockerignore "${IMAGE_DEF}/.dockerignore"
 }
 
 image_exists() {
@@ -254,20 +271,42 @@ accepts_dist_dir() {
   [[ -n "$script" && -x "$script" ]] && grep -q -- '--dist-dir' "$script"
 }
 
-# A dist bind needs a launcher that accepts --dist-dir. The engine checkout under test
-# often predates the flag. This reload script's sibling start.sh is the copy that added it.
+# A dist bind needs a launcher that accepts --dist-dir. An override that lacks
+# the flag is replaced by start.sh on the branch named by --docker-branch.
 pick_start_for_dist_bind() {
   [[ -n "$BIND_DIST" ]] || return 0
   if accepts_dist_dir "$START"; then
     return 0
   fi
-  local sibling="${SCRIPT_DIR}/start.sh"
-  if accepts_dist_dir "$sibling"; then
-    START="$sibling"
+  START="$(materialize_runner start.sh)"
+  if accepts_dist_dir "$START"; then
     return 0
   fi
-  echo "warning: start.sh does not accept --dist-dir; serving the image-baked dist" >&2
+  echo "warning: start.sh on ${DOCKER_BRANCH} does not accept --dist-dir; serving the image-baked dist" >&2
   BIND_DIST=""
+}
+
+# The runner scripts come from the selected branch. The default branch is docker.
+materialize_runner() {
+  local name="$1" dest
+  [[ -n "$RUNNER_DIR" ]] || RUNNER_DIR="$(mktemp -d)"
+  dest="${RUNNER_DIR}/${name}"
+  if [[ -x "$dest" ]]; then
+    printf '%s\n' "$dest"
+    return
+  fi
+  show_from_docker_branch "scripts/${name}" "$dest"
+  chmod +x "$dest"
+  printf '%s\n' "$dest"
+}
+
+choose_runner() {
+  local override="$1" name="$2"
+  if [[ -n "$override" ]]; then
+    printf '%s\n' "$override"
+    return
+  fi
+  materialize_runner "$name"
 }
 
 require_dist_index() {
@@ -294,10 +333,26 @@ compile_engine() {
 }
 
 rebuild_image() {
-  local engine="$1" sha="$2"
-  [[ -f "${engine}/Dockerfile" ]] || die "no Dockerfile in engine checkout: ${engine}"
+  local engine="$1" sha="$2" backup="" status=0
+  [[ -n "$IMAGE_DEF" && -f "${IMAGE_DEF}/Dockerfile" ]] || die "image definition is missing"
+  if [[ -f "${engine}/.dockerignore" ]]; then
+    backup="$(mktemp)"
+    cp "${engine}/.dockerignore" "$backup"
+  fi
+  cp "${IMAGE_DEF}/.dockerignore" "${engine}/.dockerignore"
   echo "Building ${IMAGE} from ${engine}"
-  docker build -t "$IMAGE" --label "${IMAGE_INPUTS_LABEL}=${sha}" "$engine"
+  if docker build -f "${IMAGE_DEF}/Dockerfile" -t "$IMAGE" --label "${IMAGE_INPUTS_LABEL}=${sha}" "$engine"; then
+    status=0
+  else
+    status=$?
+  fi
+  if [[ -n "$backup" ]]; then
+    cp "$backup" "${engine}/.dockerignore"
+    rm -f "$backup"
+  else
+    rm -f "${engine}/.dockerignore"
+  fi
+  [[ "$status" -eq 0 ]] || die "image build failed"
 }
 
 # The host directory a container binds at CONTAINER_TARGET, empty when it binds none.
@@ -390,22 +445,12 @@ if [[ -n "$PROJECTS" ]]; then
   PROJECTS="$(cd "$PROJECTS" && pwd)"
 fi
 
-# An image and the script that launches it are one pair. An engine cycle takes both from the
-# checkout it compiles, so a branch changing the server and the launcher together is exercised as
-# a whole — the launcher passes what that server reads, including --dist-dir. Taking the launcher
-# from the install instead pairs a branch's image with a release's script, and a variable the
-# branch added simply never arrives, which the server cannot distinguish from an operator not
-# setting it. A --no-build run reuses an image this checkout did not produce, so there the
-# installed copies are the better default. Either way `WORKFLOW_SERVER_START` / `_STOP` win, and
-# a checkout's start.sh still reads the install env, so the operator's paths and signing key
-# follow it.
-if [[ "$BUILD" -eq 1 ]]; then
-  START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${ENGINE}/scripts/start.sh" "${INSTALL_DIR}/start.sh")"
-  STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${ENGINE}/scripts/stop.sh" "${INSTALL_DIR}/stop.sh")"
-else
-  START="$(resolve_helper "${WORKFLOW_SERVER_START:-}" "${INSTALL_DIR}/start.sh" "${ENGINE}/scripts/start.sh")"
-  STOP="$(resolve_helper "${WORKFLOW_SERVER_STOP:-}" "${INSTALL_DIR}/stop.sh" "${ENGINE}/scripts/stop.sh")"
-fi
+# The launcher is start.sh and stop.sh on the selected branch, docker unless
+# --docker-branch names another. WORKFLOW_SERVER_START and WORKFLOW_SERVER_STOP
+# win. The launcher reads the install env, so the operator's paths and signing
+# key follow it.
+START="$(choose_runner "${WORKFLOW_SERVER_START:-}" start.sh)"
+STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" stop.sh)"
 
 [[ -x "$START" ]] || die "start.sh not found or not executable: ${START}"
 [[ -x "$STOP" ]] || die "stop.sh not found or not executable: ${STOP}"
@@ -478,8 +523,9 @@ HOST_COMPILE=0
 INPUTS=""
 
 if [[ "$BUILD" -eq 1 ]]; then
-  [[ -f "${ENGINE}/package.json" && -f "${ENGINE}/package-lock.json" && -f "${ENGINE}/Dockerfile" ]] \
-    || die "engine checkout is missing package.json, package-lock.json or Dockerfile: ${ENGINE}"
+  [[ -f "${ENGINE}/package.json" && -f "${ENGINE}/package-lock.json" ]] \
+    || die "engine checkout is missing package.json or package-lock.json: ${ENGINE}"
+  prepare_image_definition
   INPUTS="$(inputs_sha "$ENGINE")"
   if [[ "$REBUILD_IMAGE" -eq 1 ]]; then
     NEED_IMAGE=1

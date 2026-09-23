@@ -181,4 +181,4 @@ Because the state lives in the file rather than in an agent's context, a session
 
 Resume is a single call, `start_session({ agent_id, planning_folder })`: the server loads the file, verifies the seal, and returns the same index. A server restart is transparent, and there is no adoption or recovery step for an agent to perform.
 
-[`scripts/install.sh`](../scripts/install.sh) creates the host layout, and product checkouts live under `HOST_PROJECTS_ROOT`, for which [setup.md](../setup.md) has the sequence.
+The install script on the `docker` branch creates the host layout, and product checkouts live under `HOST_PROJECTS_ROOT`, for which [setup.md](../setup.md) has the sequence.

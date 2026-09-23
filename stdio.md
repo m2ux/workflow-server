@@ -22,7 +22,7 @@ npm run build
 Optional: same host layout as Docker (without starting a container):
 
 ```bash
-./scripts/install.sh --install-dir=~/.local/share/workflow-server
+curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/docker/scripts/install.sh | bash -s -- --install-dir=~/.local/share/workflow-server
 ```
 
 Then continue with [setup.md §2](setup.md#2-initialise-a-target-repo) (deploy engineering, then checkout under `$HOST_PROJECTS_ROOT/<repo>`).

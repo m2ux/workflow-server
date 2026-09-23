@@ -81,6 +81,14 @@ jobs:
             exit 1
           fi
 
+      - name: Fetch the image definition
+        # The Dockerfile and ignore file live on the docker branch. This checkout
+        # is the build context: package.json, src, and schemas.
+        run: |
+          git fetch --depth=1 origin docker
+          git show FETCH_HEAD:Dockerfile > Dockerfile
+          git show FETCH_HEAD:.dockerignore > .dockerignore
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
 
@@ -109,6 +117,7 @@ jobs:
         uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25
         with:
           context: .
+          file: Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

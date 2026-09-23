@@ -80,10 +80,17 @@ describe('reload-exp-sidecar.sh', () => {
     const flowed = out.stdout.replace(/\s+/g, ' ');
     expect(flowed).toContain('compiles the engine checkout on the host');
     expect(flowed).toContain('dist bind');
-    expect(flowed).toContain('lockfile-triggered image rebuild');
+    expect(flowed).toContain('Dockerfile');
+    expect(flowed).toContain('--docker-branch');
     expect(flowed).toContain('Do not compile on the host');
-    expect(flowed).toContain("this script's start.sh is used so a host compile still binds");
+    expect(flowed).toContain("that branch's start.sh so a host compile still binds");
     expect(flowed).toContain('Skips host compile and serves the image-baked dist');
+  });
+
+  it('replaces a launcher that lacks --dist-dir with the selected branch', () => {
+    const src = readFileSync(SCRIPT, 'utf8');
+    expect(src).toContain('START="$(materialize_runner start.sh)"');
+    expect(src).not.toContain('origin docker');
   });
 
   it('usage asks only for --name, pairing fields defaulting to the container record', () => {

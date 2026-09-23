@@ -3,7 +3,7 @@
 # Safe to re-run: preserves unknown keys; overwrites known path keys with
 # values derived from the install layout (and optional flags).
 #
-# Defaults match scripts/install.sh + start.sh:
+# Defaults match the install layout written by the docker branch install script:
 #   $HOST_PROJECTS_ROOT/<repo>/ + nested .engineering + .worktrees
 #   $INSTALL/state; corpus dest is .worktrees/workflows of this checkout
 #   container targets under /var/lib/workflow-server/...
@@ -32,7 +32,7 @@ Usage: $(basename "$0") [options]
   --force                Overwrite an existing .env from .env.example first
   -h, --help             Show this help
 
-Writes ${ENV_FILE} with absolute paths for the HTTP server, mcp-remote URL, and docker compose.
+Writes ${ENV_FILE} with absolute paths for the HTTP server and the mcp-remote URL.
 EOF
 }
 
@@ -200,6 +200,6 @@ fi
 echo
 echo "Next:"
 echo "  1. set -a && source .env && set +a"
-echo "  2. docker compose up --build   # or ~/.local/share/workflow-server/start.sh -d"
+echo "  2. ~/.local/share/workflow-server/start.sh -d"
 echo "  3. curl -fsS http://127.0.0.1:3000/ready   # sessionKeyWritable + corpusServes: true"
 echo "  4. Restart Cursor / reload MCP; smoke with discover + start_session"
