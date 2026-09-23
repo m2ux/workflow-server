@@ -13,7 +13,7 @@
 # (user: "${UID}:${GID}") so writes into the RW binds succeed.
 services:
   workflow-server:
-    build: .
+    image: ghcr.io/m2ux/workflow-server:main
     # Match start.sh: same UID/GID as host binds (worktrees/projects/state).
     user: "${UID:-1000}:${GID:-1000}"
     ports:
@@ -30,6 +30,7 @@ services:
       HOST_WORKTREE_ROOT: ${HOST_WORKTREE_ROOT:-}
       # PLANNING_SLUG: artifacts/planning
       WORKFLOW_DIR: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
+      # Schemas are the copy baked into the image at /app/schemas.
       SCHEMAS_DIR: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
       WORKFLOW_SERVER_KEY_DIR: ${CONTAINER_STATE_DIR:-/var/lib/workflow-server/state}
       HOME: ${CONTAINER_STATE_DIR:-/var/lib/workflow-server/state}
@@ -40,10 +41,6 @@ services:
       - type: bind
         source: ${HOST_WORKFLOWS_DIR:?set HOST_WORKFLOWS_DIR to the corpus dest}
         target: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
-        read_only: true
-      - type: bind
-        source: ${HOST_SCHEMAS_DIR:-./schemas}
-        target: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
         read_only: true
       # Projects root: checkouts + .engineering + nested .worktrees (preferred)
       - type: bind
