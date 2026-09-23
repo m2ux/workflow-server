@@ -15,10 +15,11 @@ inputs:
       a decision the roster records rather than a tree nobody reached.
   - id: ready_trees
     description: >-
-      Whether each checkout is returned to what its repository records and brought to the revision
-      the roster names before its graph is read. A tree a tool writes into carries modifications
-      nobody made, and both the reset and the pin that follows it discard work, so this is asked for
-      and never assumed. Unset leaves every checkout where it stands and reads the graphs against it.
+      Whether each checkout is surveyed for work its repository does not record and brought to the
+      revision the roster names before its graph is read. A tree a tool writes into carries
+      modifications nobody made, and what the survey finds is put in front of a person, who settles
+      whether it is discarded. Unset leaves every checkout where it stands and reads the graphs
+      against it.
   - id: planning_folder_path
     description: The session's planning folder, which every operation of the git library this run composes carries as a shared input.
 
