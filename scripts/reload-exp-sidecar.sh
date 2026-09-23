@@ -3,7 +3,8 @@
 #
 # Stops one named container, compiles the engine checkout on the host when that
 # install matches the lockfile, rebuilds the image only when package.json,
-# package-lock.json or the Dockerfile drifted (or --rebuild-image), and starts
+# package-lock.json, or the Dockerfile on the docker branch drifted (or
+# --rebuild-image), and starts
 # it again on the same host port and corpus with dist and schemas bound from the
 # engine checkout. Refuses the install instance name `workflow-server` and host
 # port 3000.
@@ -15,6 +16,7 @@ set -euo pipefail
 
 INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+IMAGE_DEF=""
 
 die() { echo "error: $*" >&2; exit 1; }
 
@@ -25,8 +27,8 @@ Reload an experiment HTTP sidecar on a stable host port.
 Stops the named container, compiles the engine checkout on the host when that
 install matches the lockfile, and starts it again on the same host port and
 corpus with a dist bind of that compile and a schemas bind of the engine
-checkout. The image rebuilds when package.json, package-lock.json or the
-Dockerfile drifted (lockfile-triggered image rebuild), or when --rebuild-image
+checkout. The image rebuilds when package.json, package-lock.json, or the
+Dockerfile on the docker branch drifted, or when --rebuild-image
 is passed. Host port, corpus, engine checkout, image and projects root
 default to what the named container records. Refuses the install instance
 name workflow-server and host port 3000.
@@ -210,11 +212,23 @@ git_pin() {
   printf '%s%s\n' "$commit" "$dirty"
 }
 
-# Hash of the files that determine the image's node_modules and Dockerfile. Src edits sit outside
+# Hash of the lockfile and the Dockerfile on the docker branch. Src edits sit outside
 # this hash so a host compile plus dist bind covers them without a docker build.
 inputs_sha() {
   local dir="$1"
-  (cd "$dir" && cat package.json package-lock.json Dockerfile) | sha256sum | awk '{print $1}'
+  cat "${dir}/package.json" "${dir}/package-lock.json" "${IMAGE_DEF}/Dockerfile" | sha256sum | awk '{print $1}'
+}
+
+# The image definition is the docker branch. The engine checkout supplies the source.
+prepare_image_definition() {
+  local engine="$1"
+  IMAGE_DEF="$(mktemp -d)"
+  git -C "$engine" fetch --depth=1 origin docker \
+    || die "cannot fetch the docker branch for the image definition"
+  git -C "$engine" show FETCH_HEAD:Dockerfile > "${IMAGE_DEF}/Dockerfile" \
+    || die "docker branch has no Dockerfile"
+  git -C "$engine" show FETCH_HEAD:.dockerignore > "${IMAGE_DEF}/.dockerignore" \
+    || die "docker branch has no .dockerignore"
 }
 
 image_exists() {
@@ -294,10 +308,26 @@ compile_engine() {
 }
 
 rebuild_image() {
-  local engine="$1" sha="$2"
-  [[ -f "${engine}/Dockerfile" ]] || die "no Dockerfile in engine checkout: ${engine}"
+  local engine="$1" sha="$2" backup="" status=0
+  [[ -n "$IMAGE_DEF" && -f "${IMAGE_DEF}/Dockerfile" ]] || die "image definition is missing"
+  if [[ -f "${engine}/.dockerignore" ]]; then
+    backup="$(mktemp)"
+    cp "${engine}/.dockerignore" "$backup"
+  fi
+  cp "${IMAGE_DEF}/.dockerignore" "${engine}/.dockerignore"
   echo "Building ${IMAGE} from ${engine}"
-  docker build -t "$IMAGE" --label "${IMAGE_INPUTS_LABEL}=${sha}" "$engine"
+  if docker build -f "${IMAGE_DEF}/Dockerfile" -t "$IMAGE" --label "${IMAGE_INPUTS_LABEL}=${sha}" "$engine"; then
+    status=0
+  else
+    status=$?
+  fi
+  if [[ -n "$backup" ]]; then
+    cp "$backup" "${engine}/.dockerignore"
+    rm -f "$backup"
+  else
+    rm -f "${engine}/.dockerignore"
+  fi
+  [[ "$status" -eq 0 ]] || die "image build failed"
 }
 
 # The host directory a container binds at CONTAINER_TARGET, empty when it binds none.
@@ -478,8 +508,9 @@ HOST_COMPILE=0
 INPUTS=""
 
 if [[ "$BUILD" -eq 1 ]]; then
-  [[ -f "${ENGINE}/package.json" && -f "${ENGINE}/package-lock.json" && -f "${ENGINE}/Dockerfile" ]] \
-    || die "engine checkout is missing package.json, package-lock.json or Dockerfile: ${ENGINE}"
+  [[ -f "${ENGINE}/package.json" && -f "${ENGINE}/package-lock.json" ]] \
+    || die "engine checkout is missing package.json or package-lock.json: ${ENGINE}"
+  prepare_image_definition "$ENGINE"
   INPUTS="$(inputs_sha "$ENGINE")"
   if [[ "$REBUILD_IMAGE" -eq 1 ]]; then
     NEED_IMAGE=1
