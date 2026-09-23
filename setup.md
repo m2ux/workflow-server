@@ -67,17 +67,17 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 | `REPO_NAME` or `--repo=NAME` | **Required.** Checkout / workspace basename (no `owner/repo`) |
 | `--home=PATH` | Build paths under this home (default `$HOME`) |
 | `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `$HOME/projects/dev` |
-| `--force` | Refresh managed files; merge `mcp.json` without dropping other servers; refresh Claude hooks/settings; keep an existing `AGENTS.md` / `CLAUDE.md` |
+| `--force` | Refresh managed files; merge `mcp.json` without dropping other servers; refresh Claude hooks/settings; rewrite `AGENTS.md` from the template |
 | `--dry-run` / `--open` / no args / `--help` | Preview, launch Cursor, or print help |
 
 Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md) · [docs/ide-setup.md](docs/ide-setup.md).
 
 Deploy installs:
 
-- MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`)
-- Bootstrap rules, and `AGENTS.md` / `CLAUDE.md` for `repo: "owner/repo"` when the workspace has none (a workspace that already has them keeps them)
+- MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`), also written to `.codex/config.toml`
+- Bootstrap rules, and `AGENTS.md` from the template on every deploy (`CLAUDE.md` links to it). Checkout notes live in `PROJECT.md`, which deploy leaves in place
 - Multi-root `.code-workspace` with absolute `$HOME/…` paths
-- **Claude baseline (kickoff only):** `scripts/claude/` + generated `.claude/settings.json` + `.claude/skills/` (`workflow-canon`)
+- **Claude baseline (kickoff only):** hook scripts in `scripts/`, config in `config/`, `.claude/hooks` linking `scripts/`, `scripts/sbx`, generated `.claude/settings.json`, and `.claude/skills/`
 
 ## 4. Update Workflows
 

@@ -4,7 +4,7 @@
 Inline-eval interpreter invocations run arbitrary code with no file for the
 location hook to vet, and are not allowlisted. They have no legitimate
 un-sandboxed use, so this hook forces them through the sandbox launcher
-scripts/claude/bin/sbx (bubblewrap, profile C: active project + /tmp
+scripts/sbx (bubblewrap, profile C: active project + /tmp
 read-write, rest read-only, no network):
 
     python/python2/python3   -c
@@ -22,7 +22,7 @@ inline eval by another spelling — `python3 - <<'EOF'`, `python3 <<'EOF'`,
 
 For a matching bare command the hook returns `deny` with a message telling the
 agent to re-issue it prefixed with `sbx`. The prefixed form is allowlisted
-(Bash(<workspace>/scripts/claude/bin/sbx *)) and auto-approves, so the user sees no
+(Bash(<workspace>/scripts/sbx *)) and auto-approves, so the user sees no
 prompt. A `deny` decision is reliable (unlike an `updatedInput` rewrite, which
 misbehaves when multiple PreToolUse Bash hooks are configured).
 
@@ -68,23 +68,24 @@ import os
 import shlex
 import sys
 
-_HERE = os.path.dirname(os.path.realpath(__file__))
-
-sys.path.insert(0, os.path.join(_HERE, "lib"))
-from project_scripts import (  # noqa: E402
+from project_scripts import (
     INTERPRETERS,
     extract_script_token,
     resolve_project_local_script,
 )
 
+_HERE = os.path.dirname(os.path.realpath(__file__))
+
 
 def _sbx_path() -> str:
-    """Workspace-local sbx when present; else ~/.claude/bin/sbx."""
-    local = Path(__file__).resolve().parent.parent / "bin" / "sbx"
-    if local.is_file():
-        return str(local)
-    home = Path.home() / ".claude" / "bin" / "sbx"
-    return str(home)
+    """Workspace scripts/sbx when present; else ~/.claude/bin/sbx."""
+    here = Path(__file__).resolve().parent
+    for base in (here, *here.parents):
+        if (base / "scripts" / "sbx").is_file():
+            return str(base / "scripts" / "sbx")
+        if base.name == "scripts" and (base / "sbx").is_file():
+            return str(base / "sbx")
+    return str(Path.home() / ".claude" / "bin" / "sbx")
 
 
 SBX = _sbx_path()
@@ -138,7 +139,7 @@ def _load_compound_hook():
 
 
 def _writable_roots(base_cwd: str) -> list[str]:
-    """Borrowed from redirect-fs-mutation.py so both redirects agree with bin/sbx
+    """Borrowed from redirect-fs-mutation.py so both redirects agree with scripts/sbx
     on where the sandbox can write."""
     try:
         rfm = _load_sibling("redirect-fs-mutation.py", "redirect_fs_mutation")

@@ -10,15 +10,15 @@ segment is `rm -rf /tmp/scratch` prompts in full.
 
 When every path the segment mutates lies inside a root sbx binds read-write, the
 sandbox runs the command unchanged, and the prefixed form
-(Bash(<...>/bin/sbx *)) auto-approves. This hook detects that case and returns
+(Bash(<...>/scripts/sbx *)) auto-approves. This hook detects that case and returns
 `deny` with a message telling the agent to re-issue the command prefixed with
 sbx. A `deny` decision is reliable, unlike an `updatedInput` rewrite, which
 misbehaves when several PreToolUse Bash hooks are configured.
 
-Writable roots are computed exactly as sbx computes them (see bin/sbx): /tmp
+Writable roots are computed exactly as sbx computes them (see scripts/sbx): /tmp
 always, plus the git top-level of the launch cwd and any directory named in
-$CLAUDE_SBX_EXTRA_ROOTS, each kept only where it lives under
-$CLAUDE_PROJECTS_BASE (default $HOME/projects). Agreement matters — a redirect
+$SBX_EXTRA_ROOTS, each kept only where it lives under
+$SBX_PROJECTS_BASE (default $HOME/projects). Agreement matters — a redirect
 whose target the sandbox cannot write trades a prompt for an EROFS failure. An
 extra root counts here when it is set in this hook's own environment, which is
 the session-wide case; a root named on the command line alone reaches sbx but
@@ -62,10 +62,13 @@ _HERE = os.path.dirname(os.path.realpath(__file__))
 
 
 def _sbx_path() -> str:
-    """Workspace-local sbx when present; else ~/.claude/bin/sbx."""
-    local = Path(__file__).resolve().parent.parent / "bin" / "sbx"
-    if local.is_file():
-        return str(local)
+    """Workspace scripts/sbx when present; else ~/.claude/bin/sbx."""
+    here = Path(__file__).resolve().parent
+    for base in (here, *here.parents):
+        if (base / "scripts" / "sbx").is_file():
+            return str(base / "scripts" / "sbx")
+        if base.name == "scripts" and (base / "sbx").is_file():
+            return str(base / "sbx")
     return str(Path.home() / ".claude" / "bin" / "sbx")
 
 
@@ -106,9 +109,9 @@ def _load_compound_hook():
 
 
 def writable_roots(base_cwd: str) -> list[str]:
-    """The roots sbx binds read-write, derived the way bin/sbx derives them."""
+    """The roots sbx binds read-write, derived the way scripts/sbx derives them."""
     roots = ["/tmp"]
-    base = os.environ.get("CLAUDE_PROJECTS_BASE") or os.path.join(
+    base = os.environ.get("SBX_PROJECTS_BASE") or os.path.join(
         str(Path.home()), "projects")
     base = os.path.realpath(base)
 
@@ -127,7 +130,7 @@ def writable_roots(base_cwd: str) -> list[str]:
         if under_base(root):
             roots.append(root)
 
-    for extra in (os.environ.get("CLAUDE_SBX_EXTRA_ROOTS") or "").split(os.pathsep):
+    for extra in (os.environ.get("SBX_EXTRA_ROOTS") or "").split(os.pathsep):
         if not extra:
             continue
         extra = os.path.realpath(extra)

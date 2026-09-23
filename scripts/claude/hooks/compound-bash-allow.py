@@ -47,10 +47,8 @@ backticks, and process substitution still force a bail.
 If any segment is unrecognized, or the command contains one of those bail-out
 constructs, the hook stays silent and normal permission flow takes over.
 
-Optional config, first of these that parses (a workspace copy beside this script
-therefore overrides the per-user one):
-    <this script's directory>/compound-bash.json
-    ~/.claude/hooks/compound-bash.json
+Optional config:
+    config/compound-bash.json beside the directory that holds this script.
     {
       "extraSafeCommands": ["my-tool", "another"],
       // or to fully replace the default safe list:
@@ -70,8 +68,7 @@ import shlex
 import sys
 from pathlib import Path
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "lib"))
-from project_scripts import resolve_project_local_script  # noqa: E402
+from project_scripts import resolve_project_local_script
 
 DEFAULT_SAFE_COMMANDS = frozenset({
     "echo", "printf", "cat", "head", "tail", "wc",
@@ -231,17 +228,12 @@ def load_allow_rules() -> list[str]:
 
 
 def load_safe_commands() -> set[str]:
-    candidates = [
-        Path(__file__).resolve().parent / "compound-bash.json",
-        Path.home() / ".claude" / "hooks" / "compound-bash.json",
-    ]
+    cfg = Path(__file__).resolve().parent.parent / "config" / "compound-bash.json"
     data = None
-    for cfg in candidates:
-        try:
-            data = json.loads(cfg.read_text())
-            break
-        except (FileNotFoundError, json.JSONDecodeError, OSError):
-            continue
+    try:
+        data = json.loads(cfg.read_text())
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        data = None
     if data is None:
         return set(DEFAULT_SAFE_COMMANDS)
     if isinstance(data.get("safeCommands"), list):

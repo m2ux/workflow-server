@@ -21,8 +21,8 @@ import os
 import shlex
 
 # Safety belt: only treat scripts as project-local when the enclosing project
-# root is under here. Override with CLAUDE_PROJECTS_BASE; default ~/projects.
-PROJECTS_BASE = os.environ.get("CLAUDE_PROJECTS_BASE") or os.path.join(
+# root is under here. Override with SBX_PROJECTS_BASE; default ~/projects.
+PROJECTS_BASE = os.environ.get("SBX_PROJECTS_BASE") or os.path.join(
     os.path.expanduser("~"), "projects"
 )
 

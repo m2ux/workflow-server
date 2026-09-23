@@ -20,21 +20,19 @@ Requires a checkout (repo-name) under your projects root, and `$HOME` set.
 
 ## Rules
 
-`.claude/rules/` and `.cursor/rules/` deploy verbatim except for `__WORKSPACE__`
-and `__HOME__`, which expand to absolute paths. Use them when a rule must name a
-path that also appears in the settings allowlist — `bash-composition.md` names
-the `sbx` launcher this way so the two stay in step.
+`rules/` is the text. `.claude/rules` points at it. Each `.cursor/rules/<name>.mdc` points at `rules/<name>.md`. Deploy expands `__WORKSPACE__` and `__HOME__` in `rules/` — `bash-composition.md` names the `sbx` launcher this way so the rule and the settings allowlist stay in step.
 
 ## Skills
 
-`.claude/skills/` deploys one directory per skill, under the same placeholder
-expansion as the rules. A skill the template does not carry stays in the
-workspace across a `--force` refresh, so deploying never removes locally added
-skills.
+`skills/` is the text. `.cursor/skills`, `.claude/skills`, and `.agents/skills` point at it. A skill the template does not carry stays in the workspace `skills/` directory across a `--force` refresh.
 
 | Skill | Use for |
 |-------|---------|
-| [`workflow-canon`](.claude/skills/workflow-canon/SKILL.md) | Authoring or auditing workflow definitions against the design canon and guard suite |
+| [`workflow-canon`](skills/workflow-canon/SKILL.md) | Authoring or auditing workflow definitions against the design canon and guard suite |
+
+## Codex
+
+Deploy writes `.codex/config.toml`. Codex reads that file. The MCP servers in it are the set deploy writes to `mcp.json`, and the instructions are the always-apply rules.
 
 ## See also
 

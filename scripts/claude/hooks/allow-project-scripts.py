@@ -11,7 +11,7 @@ Decision model:
     (chaining/redirection/expansion) makes it bail so compound-bash-allow.py
     can reason about the pieces instead.
   * The actual "is this a project-local script?" judgement lives in
-    lib/project_scripts.py and is shared with compound-bash-allow.py, so the
+    project_scripts.py and is shared with compound-bash-allow.py, so the
     location-based authorization exists in exactly one place.
 
 This means `python3 <project-file>.py` or `npx tsx <project-file>.ts` are
@@ -23,8 +23,7 @@ import json
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "lib"))
-from project_scripts import resolve_project_local_script  # noqa: E402
+from project_scripts import resolve_project_local_script
 
 # Shell features that mean "do not auto-approve here" — hand back to normal flow
 # (compound-bash-allow.py handles the compound/redirected forms per-segment).

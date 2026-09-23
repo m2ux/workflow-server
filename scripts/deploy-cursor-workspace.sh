@@ -79,7 +79,7 @@ Options:
                              script, or \$INSTALL/scripts/claude)
   --force                    Refresh managed files in an existing workspace dir
                              (upserts required MCP servers; keeps any extras;
-                             keeps an existing AGENTS.md / CLAUDE.md)
+                             rewrites AGENTS.md from the template)
   --dry-run                  Print actions only
   --open                     Run \`cursor <workspace-file>\` after deploy (if on PATH)
   --skip-mkdir               Do not create .worktrees / planning parents on the checkout
@@ -89,15 +89,20 @@ Required MCP servers written into mcp.json (workflows depend on these):
   concept-rag, atlassian, gitnexus, workflow-server
 
 Claude baseline (workspace-local only):
-  copies scripts/claude/ → <workspace>/scripts/claude/
+  installs hook scripts at <workspace>/scripts and config at <workspace>/config
+  links .claude/hooks → ../scripts
+  installs the sandbox launcher at <workspace>/scripts/sbx
   links .claude/skills/<skill> → the template checkout (per skill dir, so a
     workspace keeps skills the template does not carry; an edit in the
     workspace lands in the checkout that versions it)
   writes .claude/settings.json from settings.template.json
+  writes .codex/config.toml from the mcp.json servers and the always-apply rules
 
-Workspace-owned (written when absent, kept as-is once present):
-  AGENTS.md      target-repo notes for agents
+Written on every deploy, from the template:
+  AGENTS.md      canonical workspace instructions
   CLAUDE.md      symlink → AGENTS.md
+
+PROJECT.md holds the checkout notes for this workspace. Deploy leaves it in place.
 
 Path substitution (all MCP servers — command and args):
   \${HOME}  \$HOME  __USER_HOME__  /home/<name>/…  → \$HOME/…
@@ -296,13 +301,23 @@ log "  claude settings   : ${CLAUDE_SETTINGS_TEMPLATE}"
 if [[ "$DRY_RUN" -eq 1 ]]; then
   log "copy template rules/skills → ${DEST_DIR}"
 else
-  mkdir -p "${DEST_DIR}/.cursor/rules" "${DEST_DIR}/.claude/rules"
-
-  if [[ -d "${TEMPLATE_DIR}/.cursor/rules" ]]; then
-    cp -a "${TEMPLATE_DIR}/.cursor/rules/." "${DEST_DIR}/.cursor/rules/"
+  # rules/ is the text. .claude/rules points at it. Each .cursor/rules
+  # file points at rules/<name>.md, so that directory has to exist first.
+  if [[ -d "${TEMPLATE_DIR}/rules" ]]; then
+    mkdir -p "${DEST_DIR}/rules"
+    cp -a "${TEMPLATE_DIR}/rules/." "${DEST_DIR}/rules/"
   fi
-  if [[ -d "${TEMPLATE_DIR}/.claude/rules" ]]; then
+  if [[ -L "${TEMPLATE_DIR}/.claude/rules" ]]; then
+    mkdir -p "${DEST_DIR}/.claude"
+    rm -rf "${DEST_DIR}/.claude/rules"
+    ln -sfn ../rules "${DEST_DIR}/.claude/rules"
+  elif [[ -d "${TEMPLATE_DIR}/.claude/rules" ]]; then
+    mkdir -p "${DEST_DIR}/.claude/rules"
     cp -a "${TEMPLATE_DIR}/.claude/rules/." "${DEST_DIR}/.claude/rules/"
+  fi
+  if [[ -d "${TEMPLATE_DIR}/.cursor/rules" ]]; then
+    mkdir -p "${DEST_DIR}/.cursor/rules"
+    cp -a "${TEMPLATE_DIR}/.cursor/rules/." "${DEST_DIR}/.cursor/rules/"
   fi
 
   rm -f \
@@ -341,7 +356,7 @@ home = os.environ["HOME_DIR"].rstrip("/")
 
 # Rules only. A skill is a link to the checkout, so writing an expansion through
 # one would edit the versioned source.
-for sub in (".claude/rules", ".cursor/rules"):
+for sub in ("rules", ".claude/rules", ".cursor/rules"):
     d = pathlib.Path(workspace) / sub
     if not d.is_dir():
         continue
@@ -356,22 +371,45 @@ for sub in (".claude/rules", ".cursor/rules"):
 PY
 fi
 
-# --- scripts/claude (hooks + sbx) — workspace-local only ----------------------
-if [[ -n "$CLAUDE_SCRIPTS_DIR" && -d "$CLAUDE_SCRIPTS_DIR" ]]; then
+# --- hooks and scripts/sbx — workspace-local only -----------------------------
+if [[ -f "${SCRIPT_DIR}/sbx" ]]; then
+  SBX_SRC="${SCRIPT_DIR}/sbx"
+elif [[ -f "${SCRIPT_DIR}/scripts/sbx" ]]; then
+  SBX_SRC="${SCRIPT_DIR}/scripts/sbx"
+else
+  SBX_SRC=""
+fi
+if [[ -n "$CLAUDE_SCRIPTS_DIR" && -d "${CLAUDE_SCRIPTS_DIR}/hooks" ]]; then
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    log "copy claude scripts → ${DEST_DIR}/scripts/claude"
+    log "install hook scripts → ${DEST_DIR}/scripts ; config → ${DEST_DIR}/config"
+    log "link .claude/hooks → ../scripts"
+    log "install sbx → ${DEST_DIR}/scripts/sbx"
   else
-    mkdir -p "${DEST_DIR}/scripts"
+    mkdir -p "${DEST_DIR}/scripts" "${DEST_DIR}/config" "${DEST_DIR}/.claude"
+    find "${DEST_DIR}/scripts" -maxdepth 1 -type f -name '*.py' -delete
+    rm -rf "${DEST_DIR}/scripts/lib"
+    cp -a "${CLAUDE_SCRIPTS_DIR}/hooks/"*.py "${DEST_DIR}/scripts/"
+    find "${DEST_DIR}/scripts" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
+    find "${DEST_DIR}/scripts" -type f -name '*.pyc' -delete 2>/dev/null || true
+    find "${DEST_DIR}/scripts" -maxdepth 1 -type f -name '*.py' -exec chmod a+x {} + 2>/dev/null || true
+    rm -rf "${DEST_DIR}/config"
+    mkdir -p "${DEST_DIR}/config"
+    if [[ -d "${CLAUDE_SCRIPTS_DIR}/config" ]]; then
+      cp -a "${CLAUDE_SCRIPTS_DIR}/config/." "${DEST_DIR}/config/"
+    fi
+    rm -rf "${DEST_DIR}/hooks"
+    rm -rf "${DEST_DIR}/.claude/hooks"
+    ln -sfn ../scripts "${DEST_DIR}/.claude/hooks"
     rm -rf "${DEST_DIR}/scripts/claude"
-    cp -a "${CLAUDE_SCRIPTS_DIR}" "${DEST_DIR}/scripts/claude"
-    rm -f "${DEST_DIR}/scripts/claude/.gitignore"
-    find "${DEST_DIR}/scripts/claude" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
-    find "${DEST_DIR}/scripts/claude" -type f -name '*.pyc' -delete 2>/dev/null || true
-    find "${DEST_DIR}/scripts/claude" -type f \( -name '*.py' -o -name 'sbx' -o -name '*.cjs' \) \
-      -exec chmod a+x {} + 2>/dev/null || true
+    if [[ -n "$SBX_SRC" ]]; then
+      cp -a "$SBX_SRC" "${DEST_DIR}/scripts/sbx"
+      chmod a+x "${DEST_DIR}/scripts/sbx"
+    else
+      log "warning: sbx not found (skipping scripts/sbx)"
+    fi
   fi
 else
-  log "warning: claude scripts not found (skipping scripts/claude install)"
+  log "warning: claude hooks not found (skipping hooks install)"
   log "         expected scripts/claude next to deploy, or pass --claude-scripts=DIR"
 fi
 
@@ -538,21 +576,123 @@ sys.stdout.write("\n")
 PY
 }
 
-# Prefer merging from existing dest, then template.
+# .mcp.json is the file. .cursor/mcp.json links to it.
 MCP_SRC=""
-if [[ -f "${DEST_DIR}/.cursor/mcp.json" ]]; then
-  MCP_SRC="${DEST_DIR}/.cursor/mcp.json"
-elif [[ -f "${DEST_DIR}/.mcp.json" ]]; then
+if [[ -f "${DEST_DIR}/.mcp.json" ]]; then
   MCP_SRC="${DEST_DIR}/.mcp.json"
-elif [[ -f "${TEMPLATE_DIR}/.cursor/mcp.json" ]]; then
-  MCP_SRC="${TEMPLATE_DIR}/.cursor/mcp.json"
+elif [[ -f "${DEST_DIR}/.cursor/mcp.json" ]]; then
+  MCP_SRC="${DEST_DIR}/.cursor/mcp.json"
 elif [[ -f "${TEMPLATE_DIR}/.mcp.json" ]]; then
   MCP_SRC="${TEMPLATE_DIR}/.mcp.json"
+elif [[ -f "${TEMPLATE_DIR}/.cursor/mcp.json" ]]; then
+  MCP_SRC="${TEMPLATE_DIR}/.cursor/mcp.json"
 fi
 
 MCP_JSON="$(merge_mcp_json "$MCP_SRC")"
-write_file "${DEST_DIR}/.cursor/mcp.json" "$MCP_JSON"
 write_file "${DEST_DIR}/.mcp.json" "$MCP_JSON"
+if [[ "$DRY_RUN" -eq 1 ]]; then
+  log "symlink .cursor/mcp.json → ../.mcp.json"
+else
+  mkdir -p "${DEST_DIR}/.cursor"
+  rm -f "${DEST_DIR}/.cursor/mcp.json"
+  ln -sfn ../.mcp.json "${DEST_DIR}/.cursor/mcp.json"
+fi
+
+# Codex reads .codex/config.toml. The servers are the mcp.json set just written.
+RULES_DIR="${TEMPLATE_DIR}/rules"
+if [[ ! -d "$RULES_DIR" ]]; then
+  RULES_DIR="${TEMPLATE_DIR}/.claude/rules"
+fi
+CODEX_TOML="$(
+  MCP_JSON="$MCP_JSON" \
+  PROJECT_DIR="$PROJECT_DIR" \
+  RULES_DIR="$RULES_DIR" \
+  python3 - <<'PY'
+import json, os, re, sys
+
+mcp = json.loads(os.environ["MCP_JSON"])
+project = os.environ["PROJECT_DIR"]
+rules_dir = os.environ.get("RULES_DIR") or ""
+
+def toml_str(value: str) -> str:
+    escaped = (
+        value.replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t")
+    )
+    return f'"{escaped}"'
+
+def rule_body(text: str) -> str:
+    if not text.startswith("---"):
+        return ""
+    end = text.find("\n---", 3)
+    if end < 0:
+        return ""
+    front = text[3:end]
+    if not re.search(r"(?m)^alwaysApply:\s*true\s*$", front):
+        return ""
+    lines = text[end + 4 :].strip().splitlines()
+    while lines and (not lines[0].strip() or lines[0].startswith("# ")):
+        lines.pop(0)
+    return "\n".join(lines).strip()
+
+bodies = []
+if os.path.isdir(rules_dir):
+    names = sorted(n for n in os.listdir(rules_dir) if n.endswith(".md"))
+    if "workflow-server.md" in names:
+        names.remove("workflow-server.md")
+        names.insert(0, "workflow-server.md")
+    for name in names:
+        with open(os.path.join(rules_dir, name), encoding="utf-8") as handle:
+            body = rule_body(handle.read())
+        if body:
+            bodies.append(body)
+
+parts = [
+    "# Codex project config.",
+    "# Skills load from .agents/skills.",
+    "# MCP servers are the set written to mcp.json.",
+    "# Always-apply rule text is included here.",
+    "",
+]
+if bodies:
+    joined = "\n\n".join(bodies).replace('"""', '\\"\\"\\"')
+    parts.append('developer_instructions = """')
+    parts.append(joined)
+    parts.append('"""')
+    parts.append("")
+parts.append("[sandbox_workspace_write]")
+parts.append("writable_roots = [")
+parts.append(f"  {toml_str(project)},")
+parts.append("]")
+parts.append("")
+
+servers = mcp.get("mcpServers") or {}
+for name, spec in servers.items():
+    if not isinstance(spec, dict):
+        continue
+    parts.append(f"[mcp_servers.{name}]")
+    if isinstance(spec.get("command"), str):
+        parts.append(f"command = {toml_str(spec['command'])}")
+    args = spec.get("args")
+    if isinstance(args, list):
+        rendered = ",\n  ".join(toml_str(str(item)) for item in args)
+        parts.append(f"args = [\n  {rendered},\n]")
+    if isinstance(spec.get("url"), str):
+        parts.append(f"url = {toml_str(spec['url'])}")
+    env = spec.get("env")
+    if isinstance(env, dict) and env:
+        parts.append(f"[mcp_servers.{name}.env]")
+        for key, value in env.items():
+            parts.append(f"{key} = {toml_str(str(value))}")
+    parts.append("")
+
+sys.stdout.write("\n".join(parts).rstrip() + "\n")
+PY
+)"
+write_file "${DEST_DIR}/.codex/config.toml" "$CODEX_TOML"
 
 # --- .code-workspace (absolute $HOME paths) -----------------------------------
 # shellcheck disable=SC2016
@@ -577,64 +717,18 @@ PY
 write_file "$WORKSPACE_FILE" "$WORKSPACE_JSON"
 
 # --- AGENTS.md / CLAUDE.md ----------------------------------------------------
-# Workspace-owned: seeded on the first deploy, then left alone. The file accrues
-# repo-specific instructions an operator or agent wrote for this checkout, so a
-# generated copy is only ever a starting point. CLAUDE.md follows AGENTS.md as a
-# symlink when neither exists; a workspace that keeps them as two distinct files
-# keeps them.
+# AGENTS.md is the template file, written on every deploy. CLAUDE.md is a
+# symlink to it. Checkout notes live in PROJECT.md, which deploy leaves in place.
+AGENTS_SRC="${TEMPLATE_DIR}/AGENTS.md"
 AGENTS_MD="${DEST_DIR}/AGENTS.md"
 CLAUDE_MD="${DEST_DIR}/CLAUDE.md"
+[[ -f "$AGENTS_SRC" ]] || die "template AGENTS.md not found: ${AGENTS_SRC}"
 
-AGENTS_BODY=$(cat <<EOF
-# Target repository
-
-## Filesystem checkout (navigation)
-
-Projects live under:
-
-\`\`\`
-${PROJECTS_ROOT}
-\`\`\`
-
-The checkout for this workspace is the **repo basename**:
-
-\`\`\`
-${REPO_BASENAME}
-\`\`\`
-
-Full path: \`${PROJECT_DIR}\`
-
-Same layout for every project:
-
-\`\`\`text
-${PROJECTS_ROOT}/<repo>/
-${PROJECTS_ROOT}/<repo>/.engineering/artifacts/planning/
-${PROJECTS_ROOT}/<repo>/.worktrees/<slug>/
-\`\`\`
-
-## Session identity (\`start_session\`)
-
-If the agent needs a GitHub \`owner/repo\` for \`start_session\`, set it here:
-
-\`\`\`
-owner/repo
-\`\`\`
-
-Replace with your project (for example \`m2ux/${REPO_BASENAME}\`).
-EOF
-)
-
-if [[ -e "$AGENTS_MD" || -L "$AGENTS_MD" ]]; then
-  log "keep workspace AGENTS.md: ${AGENTS_MD}"
-else
-  write_file "$AGENTS_MD" "${AGENTS_BODY}"$'\n'
-fi
-
-if [[ -e "$CLAUDE_MD" || -L "$CLAUDE_MD" ]]; then
-  log "keep workspace CLAUDE.md: ${CLAUDE_MD}"
-elif [[ "$DRY_RUN" -eq 1 ]]; then
+if [[ "$DRY_RUN" -eq 1 ]]; then
+  log "write AGENTS.md from ${AGENTS_SRC}"
   log "symlink CLAUDE.md → AGENTS.md"
 else
+  cp -a "$AGENTS_SRC" "$AGENTS_MD"
   ln -sfn AGENTS.md "$CLAUDE_MD"
 fi
 
@@ -664,7 +758,7 @@ if [[ ! -d "$PROJECT_DIR" ]]; then
   echo "  ${PROJECT_DIR}"
   echo
 fi
-echo "Optional: set GitHub owner/repo in AGENTS.md for start_session."
+echo "Checkout notes live in PROJECT.md. Deploy leaves that file in place."
 echo
 
 if [[ "$OPEN_AFTER" -eq 1 ]]; then

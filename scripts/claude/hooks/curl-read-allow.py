@@ -18,19 +18,26 @@ is one of:
     --interface, --socks*); NO config smuggling (-K/--config); output only to
     /dev/null or stdout (-o/-D restricted; -O/--remote-name* rejected); and
     EVERY URL's host is in the configured allowlist — OR
-  * a trivially inert command (echo/printf/true/false/:).
+  * a trivially inert command (echo/printf/true/false/:) — OR
+  * a read-only stream filter (head/tail/cut/wc), so bounding a response with
+    `| head -c 400` keeps the grant.
 Anything else -> stay silent -> normal permission flow (prompt) takes over.
 
 Design principle: bail (stay silent) on ANY unrecognized flag, unparseable
 input, missing/unknown-scheme URL, or non-allowlisted host. The hook can only
 REDUCE prompts for the vetted shape; it can never over-permit.
 
+Caveat: a shaper's operands go uninspected, so `curl <allowed> | head -c 4 FILE`
+reads FILE. That is a local read with no egress or write, which the threat model
+(exfiltration and writes) does not cover; `sort`/`uniq` stay out precisely
+because their operands DO write.
+
 Caveat: `-L`/`--location` is permitted, so a redirect FROM a trusted host to a
 non-allowlisted host would be followed. This matches the WebFetch trust model
 (you trust the host and its redirects). Remove "L"/"--location" from the flag
 sets below if you want strict no-follow behavior.
 
-Config: curl-allow.json next to this hook (else ~/.claude/hooks/curl-allow.json)
+Config: config/curl-allow.json beside the directory that holds this script.
     {
       "allowedHosts": ["github.com", "raw.githubusercontent.com"],
       "allowPrefixes": {
@@ -67,17 +74,20 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 def _config_path() -> Path:
-    """Prefer config next to this hook; fall back to ~/.claude/hooks/."""
-    local = Path(__file__).resolve().parent / "curl-allow.json"
-    if local.is_file():
-        return local
-    return Path.home() / ".claude" / "hooks" / "curl-allow.json"
+    """config/curl-allow.json beside the directory that holds this script."""
+    return Path(__file__).resolve().parent.parent / "config" / "curl-allow.json"
 
 
 CONFIG_PATH = _config_path()
 DEFAULT_HOSTS = ("github.com", "raw.githubusercontent.com")
 
 INERT = frozenset({"echo", "printf", "true", "false", ":"})
+
+# Read-only stream filters permitted alongside a curl, so bounding a response
+# with `| head -c 400` does not forfeit the grant. Each writes only to stdout
+# and reaches no network. `sort` and `uniq` are absent: both accept an output
+# file (`sort -o`, and uniq's second positional), so neither is read-only.
+SHAPERS = frozenset({"head", "tail", "cut", "wc"})
 RISKY = ("$(", "`", "<(", ">(")  # `<<` handled separately as a hard bail
 
 # --- curl flag tables -------------------------------------------------------
@@ -481,7 +491,7 @@ def analyze(cmd: str, allowed: list[str], prefixes: object) -> bool:
                 debug(f"curl segment rejected: {seg!r}")
                 return False
             saw_curl = True
-        elif b in INERT:
+        elif b in INERT or b in SHAPERS:
             continue
         else:
             debug(f"non-inert non-curl segment: {seg!r} (binary={b!r})")

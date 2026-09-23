@@ -7,7 +7,7 @@ Claude Code's built-in WebFetch permission rules only support hostname-level
 matching (`WebFetch(domain:host)`), so URL paths cannot be expressed in the
 allow list. This hook closes that gap.
 
-Config: webfetch-allow.json next to this hook (else ~/.claude/hooks/webfetch-allow.json)
+Config: config/webfetch-allow.json beside the directory that holds this script.
     {
       "allowPrefixes": [
         "https://github.com/",
@@ -33,11 +33,8 @@ import sys
 from pathlib import Path
 
 def _config_path() -> Path:
-    """Prefer config next to this hook; fall back to ~/.claude/hooks/."""
-    local = Path(__file__).resolve().parent / "webfetch-allow.json"
-    if local.is_file():
-        return local
-    return Path.home() / ".claude" / "hooks" / "webfetch-allow.json"
+    """config/webfetch-allow.json beside the directory that holds this script."""
+    return Path(__file__).resolve().parent.parent / "config" / "webfetch-allow.json"
 
 
 CONFIG_PATH = _config_path()

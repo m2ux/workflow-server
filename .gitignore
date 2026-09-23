@@ -31,3 +31,8 @@ dist/
 .env.local
 .env.*.local
 .gitnexus
+/.claude
+/.codex
+/.cursor
+/.agents
+/.ponytail

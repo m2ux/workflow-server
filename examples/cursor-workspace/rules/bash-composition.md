@@ -28,18 +28,18 @@ Instead:
 - **Heredocs** — allowed (`<<`, `<<<`). Use for multi-line input.
 - **Commit messages** — `git commit -F - <<'EOF' … EOF`, or write the message to a file and `git commit -F <file>`. Never `git commit -m "$(cat …)"`.
 
-Unsure whether a command will trip? Write it to a file and dry-run the hook: `python3 __WORKSPACE__/scripts/claude/hooks/block-dynamic-shell.py --test < /tmp/cmd.txt` (passing it as an argument would trip the hook on your own test call).
+Unsure whether a command will trip? Write it to a file and dry-run the hook: `python3 __WORKSPACE__/.claude/hooks/block-dynamic-shell.py --test < /tmp/cmd.txt` (passing it as an argument would trip the hook on your own test call).
 
 # Sandboxed execution (`sbx`)
 
-`__WORKSPACE__/scripts/claude/bin/sbx <command> [args...]` runs under bubblewrap: the active project (git top-level, when under the projects root), `/tmp`, and any directory named in `CLAUDE_SBX_EXTRA_ROOTS` read-write, rest of the filesystem read-only, no network. **Always invoke by that absolute path** — it is allowlisted and auto-approves; bare `sbx` is not on PATH and fails.
+`__WORKSPACE__/scripts/sbx <command> [args...]` runs under bubblewrap: the active project (git top-level, when under the projects root), `/tmp`, and any directory named in `SBX_EXTRA_ROOTS` read-write, rest of the filesystem read-only, no network. **Always invoke by that absolute path** — it is allowlisted and auto-approves; bare `sbx` is not on PATH and fails.
 
-**`cd` before `sbx`, never inside it.** The writable project root is resolved by running `git rev-parse --show-toplevel` in the OUTER shell, before the sandbox starts. So `cd <dir> && __WORKSPACE__/scripts/claude/bin/sbx <cmd>` gets a writable `<dir>`; `sbx bash -lc 'cd <dir> && <cmd>'` gets a read-only one. This also fixes `npx` binary resolution, which depends on cwd.
+**`cd` before `sbx`, never inside it.** The writable project root is resolved by running `git rev-parse --show-toplevel` in the OUTER shell, before the sandbox starts. So `cd <dir> && __WORKSPACE__/scripts/sbx <cmd>` gets a writable `<dir>`; `sbx bash -lc 'cd <dir> && <cmd>'` gets a read-only one. This also fixes `npx` binary resolution, which depends on cwd.
 
-**When the tool and the files it writes are in different checkouts, name the second root.** Git reports a linked worktree as its own top-level, so two worktrees of one repository are two roots and `cd` buys only one of them. Start in the checkout the tool resolves from, and name the other in `CLAUDE_SBX_EXTRA_ROOTS` — a colon-separated list, each entry bound read-write only where it resolves under the projects root, anything else left read-only with a note on stderr:
+**When the tool and the files it writes are in different checkouts, name the second root.** Git reports a linked worktree as its own top-level, so two worktrees of one repository are two roots and `cd` buys only one of them. Start in the checkout the tool resolves from, and name the other in `SBX_EXTRA_ROOTS` — a colon-separated list, each entry bound read-write only where it resolves under the projects root, anything else left read-only with a note on stderr:
 
 ```bash
-cd <server-worktree> && CLAUDE_SBX_EXTRA_ROOTS=<definitions-worktree> __WORKSPACE__/scripts/claude/bin/sbx npx vitest run <test>
+cd <server-worktree> && SBX_EXTRA_ROOTS=<definitions-worktree> __WORKSPACE__/scripts/sbx npx vitest run <test>
 ```
 
 A run that exits non-zero ends with a line naming the roots it could write, so `Read-only file system` on a path outside them reads as the sandbox boundary rather than as a permissions fault.

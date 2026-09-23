@@ -10,10 +10,10 @@ Deploy [`examples/cursor-workspace/`](../examples/cursor-workspace/) with [`scri
 
 - **The MCP servers** — `workflow-server` reaching `http://127.0.0.1:3000/mcp` through `mcp-remote`, alongside `concept-rag`, `atlassian` and `gitnexus`.
 - **The always-applied rule** that sends an agent to `discover` before it does anything else.
-- **`AGENTS.md` and `CLAUDE.md`**, carrying the checkout basename and the `owner/repo` a session binds to.
+- **`AGENTS.md`**, the canonical workspace instructions from the template. `CLAUDE.md` is a symlink to it. Checkout notes live in `PROJECT.md`, which deploy leaves in place.
 - **The four workspace roots** — the workspace itself, the project, the planning folder and the work trees.
 
-For Claude Code it also installs a workspace-local baseline: the hooks under `scripts/claude/`, and a rendered `.claude/settings.json`.
+For Claude Code it also installs a workspace-local baseline: hook scripts in `scripts/`, their config in `config/`, `.claude/hooks` linking `scripts/`, the sandbox launcher at `scripts/sbx`, and a rendered `.claude/settings.json`.
 
 ### Running the deploy
 
@@ -36,16 +36,17 @@ Everything below lands under `~/.local/share/cursor/workspaces/<name>/`.
 | Path | Role |
 |------|------|
 | `*.code-workspace` | The multi-root folder list, with absolute `$HOME/…` paths |
-| `.cursor/mcp.json`, `.mcp.json` | The required MCP servers, home-path tokens expanded |
-| `.cursor/rules/`, `.claude/rules/` | The bootstrap rule and its companions |
+| `.mcp.json`, `.cursor/mcp.json` | The required MCP servers, home-path tokens expanded. `.cursor/mcp.json` links to `.mcp.json` |
+| `.codex/config.toml` | The same MCP servers, the project checkout as a writable root, and the always-apply rule text |
+| `rules/`, `.cursor/rules/`, `.claude/rules/` | Rule text in `rules/`. `.claude/rules` links there. Each `.cursor/rules/*.mdc` links to `rules/<name>.md` |
 | `.claude/skills/` | The skills the template ships, one directory each; skills added locally stay |
-| `AGENTS.md`, `CLAUDE.md` | The target checkout and an `owner/repo` placeholder, seeded when absent and workspace-owned after that |
-| `scripts/claude/` | Portable hooks and the sandbox wrapper, from the repository's own [`scripts/claude/`](../scripts/claude/) |
+| `AGENTS.md`, `CLAUDE.md` | Canonical workspace instructions from the template, written on every deploy. `CLAUDE.md` links to `AGENTS.md`. Checkout notes live in `PROJECT.md`, which deploy leaves in place |
+| `scripts/`, `config/` | Hook scripts in `scripts/`, config in `config/`, and the sandbox launcher at `scripts/sbx`. `.claude/hooks` links `scripts/`. Source is [`scripts/claude/`](../scripts/claude/) and [`scripts/sbx`](../scripts/sbx) |
 | `.claude/settings.json` | Generated at deploy from [the settings template](../examples/cursor-workspace/.claude/settings.template.json) |
 
 `install.sh` places the deploy script, the workspace template and `scripts/claude/` under the install directory, so deploying a workspace does not need a full checkout.
 
-Deploy expands the `__HOME__` and `__WORKSPACE__` tokens in the template. Re-run it with `--force` after the template or the hooks change; `AGENTS.md` and `CLAUDE.md` survive that refresh, so edits describing the target repository stay put.
+Deploy expands the `__HOME__` and `__WORKSPACE__` tokens in the template. Re-run it with `--force` after the template or the hooks change. That refresh rewrites `AGENTS.md` from the template. Checkout notes live in `PROJECT.md`, which deploy leaves in place.
 
 ## The bootstrap rule
 
@@ -67,7 +68,7 @@ Every `start_session` call for a fresh session carries `working_directory` as th
 
 Open the example workspace, restarting the MCP client if its configuration changed underneath it. Ask the agent to start a work package, or any workflow: it must call `discover` first and then follow the bootstrap it gets back. Confirm that the `start_session` call it makes carries `working_directory` as the checkout under work.
 
-Two further checks are worth making. Asking the agent to list workflows exercises `list_workflows`, which reads the catalogue — useful, though not a substitute for the bootstrap itself. And for Claude in Cursor, confirm that the kickoff directory holds `.claude/settings.json` and `scripts/claude/hooks/` after the deploy.
+Two further checks are worth making. Asking the agent to list workflows exercises `list_workflows`, which reads the catalogue — useful, though not a substitute for the bootstrap itself. And for Claude in Cursor, confirm that the kickoff directory holds `.claude/settings.json` and `.claude/hooks/` after the deploy.
 
 An agent that skips `discover` has not loaded the rule.
 
