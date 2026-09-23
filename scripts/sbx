@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# Generic sandbox launcher (profile C). Runs an arbitrary command under
+# bubblewrap with:
+#   - no network                          (--unshare-all --unshare-net)
+#   - whole filesystem READ-ONLY          (--ro-bind / /)
+#   - the ACTIVE PROJECT read-WRITE        (git top-level of cwd, if under
+#                                           $HOME/projects (or $SBX_PROJECTS_BASE))
+#   - EXTRA ROOTS read-WRITE               (each directory named in
+#                                           $SBX_EXTRA_ROOTS that also
+#                                           lives under the projects base)
+#   - /tmp read-WRITE                      (session scratch lives here)
+#   - private /dev, /proc; dies with parent
+#
+# Rationale: destructive/file-mutating commands (rm, mv, ln, dd, chmod) and
+# inline interpreters (python3 -c, node -e, ...) can do their real work inside
+# the current project and /tmp, but cannot touch the rest of the filesystem
+# (system files, ~/.ssh, home configuration, ~/.cargo, sibling projects). Containment is
+# enforced by the kernel mount namespace, so path traversal, symlinks, and cwd
+# tricks cannot escape the writable roots — stronger than a path allowlist.
+#
+# One writable root covers a command whose tool and subject share a checkout.
+# Where they do not — a test runner in one linked worktree rewriting snapshots in
+# another, git reporting each worktree as its own top-level — name the second
+# directory explicitly:
+#
+#   SBX_EXTRA_ROOTS=/path/to/other-worktree sbx npx vitest run
+#
+# The variable takes a colon-separated list. A named directory that does not
+# resolve under the projects base is dropped with a note on stderr, so the
+# projects-base rule holds for every root alike.
+#
+# Usage: sbx <command> [args...]   e.g.  sbx rm -rf build   sbx node -e '...'
+set -eo pipefail
+
+PROJECTS_BASE="${SBX_PROJECTS_BASE:-${HOME}/projects}"
+PROJECTS_BASE="$(realpath "$PROJECTS_BASE" 2>/dev/null || printf '%s' "$PROJECTS_BASE")"
+
+rw_roots=()
+
+# Records a directory as a writable root when it resolves under PROJECTS_BASE.
+# Returns non-zero, recording nothing, for anything else; the caller decides
+# whether that omission deserves a note.
+add_root() {
+  local dir resolved existing
+  dir="$1"
+  [ -n "$dir" ] || return 1
+  resolved="$(realpath "$dir" 2>/dev/null || true)"
+  [ -n "$resolved" ] && [ -d "$resolved" ] || return 1
+  case "$resolved/" in
+    "$PROJECTS_BASE"/*) ;;
+    *) return 1 ;;
+  esac
+  for existing in "${rw_roots[@]}"; do
+    if [ "$existing" = "$resolved" ]; then
+      return 0
+    fi
+  done
+  rw_roots+=("$resolved")
+}
+
+# Writable project root: the git top-level of cwd. A git root already under
+# /tmp, or outside PROJECTS_BASE, is covered by the /tmp bind or by nothing —
+# both are the ordinary shape of a run, so neither is worth a note.
+root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -n "$root" ]; then
+  add_root "$root" || true
+fi
+
+# Further roots the caller names, held to the same projects-base rule.
+extra_roots=()
+IFS=: read -r -a extra_roots <<< "${SBX_EXTRA_ROOTS:-}" || true
+for dir in "${extra_roots[@]}"; do
+  [ -n "$dir" ] || continue
+  add_root "$dir" || printf 'sbx: %s stays read-only — an extra root has to be an existing directory under %s\n' "$dir" "$PROJECTS_BASE" >&2
+done
+
+args=(
+  --ro-bind / /
+  --dev /dev
+  --proc /proc
+  --bind /tmp /tmp
+)
+for dir in "${rw_roots[@]}"; do
+  args+=(--bind "$dir" "$dir")
+done
+args+=(
+  --unshare-all
+  --unshare-net
+  --die-with-parent
+)
+
+status=0
+bwrap "${args[@]}" "$@" || status=$?
+
+# A read-only filesystem error names a path and nothing else. Naming the roots
+# on the way out makes a write outside them legible as the sandbox boundary it
+# is, rather than as a permissions fault.
+if [ "$status" -ne 0 ]; then
+  printf 'sbx: exit %s; writable: %s (name more with SBX_EXTRA_ROOTS=dir1:dir2)\n' "$status" "/tmp ${rw_roots[*]}" >&2
+fi
+exit "$status"

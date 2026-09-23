@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"name": "🏠 workspace",
+			"path": "./"
+		},
+		{
+			"name": "📂 project",
+			"path": "./components/main"
+		},
+		{
+			"name": "🔀 workflows",
+			"path": "./components/workflows"
+		},
+		{
+			"name": "📋 planning",
+			"path": "./engineering/artifacts/planning"
+		},
+		{
+			"name": "🌳 work trees",
+			"path": "./.worktrees"
+		}
+	],
+	"settings": {}
+}
