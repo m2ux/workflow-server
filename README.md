@@ -53,7 +53,7 @@ The committed tree holds the kickoff and four Cursor folders: this directory, `.
    ```bash
    ./scripts/deploy-engineering.sh
    ```
-> This creates the `.engineering` submodule at the checkout root.
+> This checks out the `engineering` branch as a worktree at `.engineering/`.
 
 5. Add project components to the workspace with:
 

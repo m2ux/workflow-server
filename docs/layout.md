@@ -1,6 +1,6 @@
 # Project layout
 
-A workspace holds the long-lived checkout of each project, that project's engineering artifacts, and the feature worktrees for work in progress. The same three places apply to every project. Plans, decision records, and session state accumulate in every project, and where that history lives is a choice. What suits a single repository owning its own history is not what suits an organisation running a dozen of them, and neither suits an experiment.
+A workspace holds the long-lived checkout of each project, that project's engineering artifacts, and the feature worktrees for work in progress. The same three places apply to every project. Plans, decision records, and session state accumulate in every project. That history lives on an orphan branch of the project, or as ordinary files on the current branch when the project is an experiment.
 
 ```text
 ./
@@ -29,27 +29,16 @@ From the workspace checkout:
 
 ## Engineering
 
-[`scripts/deploy-engineering.sh`](../scripts/deploy-engineering.sh) creates `.engineering/` at the workspace root. Pick one layout per project, or follow one organisation convention. Full flags: `./scripts/deploy-engineering.sh --help`.
+[`scripts/deploy-engineering.sh`](../scripts/deploy-engineering.sh) creates `.engineering/` at the workspace root. Pick one layout per project. Full flags: `./scripts/deploy-engineering.sh --help`.
 
 | Pattern | Command | Where the history lives |
 |---------|---------|-------------------------|
-| **Same-repo orphan** (default) | `./scripts/deploy-engineering.sh` | Orphan branch `engineering` on this project's remote. The project tracks it with a `.engineering` submodule. |
-| **Shared engineering monorepo** | `./scripts/deploy-engineering.sh --orphan <engineering-remote-url>` | One external remote. Each project has a branch named for its directory. |
+| **Same-repo orphan** (default) | `./scripts/deploy-engineering.sh` | Orphan branch `engineering` on this project's remote. The workspace checks that branch out as a worktree at `.engineering/`. |
 | **In-branch** | `./scripts/deploy-engineering.sh --in-branch` | Ordinary files on the current branch. |
 
 ### Same-repo orphan
 
-A single project owns its engineering history. Run `./scripts/deploy-engineering.sh` from the workspace checkout. The script creates the orphan branch `engineering` on this project's remote and adds `.engineering` as a submodule.
-
-### Shared engineering monorepo
-
-Several projects share one engineering remote. Each keeps its own branch, named for the project directory.
-
-```bash
-./scripts/deploy-engineering.sh --orphan git@host:org/shared-engineering.git
-```
-
-The URL is yours. A further project repeats that command against the same remote and receives its own branch. Open the submodule with `git submodule update --init -- .engineering`.
+A single project owns its engineering history. Run `./scripts/deploy-engineering.sh` from the workspace checkout. The script creates the orphan branch `engineering` on this project's remote and checks that branch out as a worktree at `.engineering/`. The worktree shares this checkout's git directory. `.engineering/` stays gitignored, so the workspace branch does not record an engineering commit.
 
 ### In-branch
 

@@ -8,9 +8,9 @@
 # tool links. This script leaves those files in place. It renders
 # .claude/settings.json and .codex/config.toml, which hold this machine's
 # paths. Component worktrees under .project/ are added with
-# scripts/add-component.sh. .engineering/ is a submodule created by
-# scripts/deploy-engineering.sh, run from this checkout. .project/,
-# .engineering/, and .worktrees/ are gitignored.
+# scripts/add-component.sh. .engineering/ is a worktree of the engineering
+# branch, created by scripts/deploy-engineering.sh, run from this checkout.
+# .project/, .engineering/, and .worktrees/ are gitignored.
 #
 # Needs: git, python3
 set -euo pipefail
@@ -28,7 +28,7 @@ The workspace file stays cursor.code-workspace.
 Render machine-local Claude settings and Codex config into the checkout.
 Leave the committed kickoff links in place. Add component worktrees with
 scripts/add-component.sh. Run scripts/deploy-engineering.sh from
-this checkout to create the .engineering submodule. This script creates
+this checkout to create the .engineering worktree. This script creates
 empty .project/ and .worktrees/ directories and does not add a component.
 
 No default name. Running with no arguments prints this help.
@@ -48,7 +48,7 @@ LAYOUT
     rules/ skills/ scripts/ config/   # committed kickoff
     .cursor/rules/*.mdc               # committed links at ../../rules/<name>.md
     .project/<component>/             # gitignored component worktree (add-component.sh)
-    .engineering/                     # gitignored submodule (deploy-engineering.sh)
+    .engineering/                     # gitignored worktree (deploy-engineering.sh)
     .worktrees/<slug>/                # gitignored feature worktrees
 EOF
 }
