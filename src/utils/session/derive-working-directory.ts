@@ -70,11 +70,11 @@ interface SubmoduleSection {
 }
 
 function isInfrastructurePath(submodulePath: string): boolean {
-  return (
-    submodulePath === 'workflows' ||
-    submodulePath === '.engineering' ||
-    submodulePath.startsWith('.engineering/')
-  );
+  return submodulePath === 'workflows' || isEngineeringPath(submodulePath);
+}
+
+function isEngineeringPath(rel: string): boolean {
+  return rel === '.engineering' || rel.startsWith('.engineering/');
 }
 
 function namesComponent(
@@ -109,6 +109,11 @@ async function gitC(
 async function showToplevel(dir: string): Promise<string | undefined> {
   const result = await gitC(dir, ['rev-parse', '--show-toplevel']);
   return result.ok && result.stdout ? resolve(result.stdout) : undefined;
+}
+
+async function gitCommonDir(dir: string): Promise<string | undefined> {
+  const result = await gitC(dir, ['rev-parse', '--git-common-dir']);
+  return result.ok && result.stdout ? resolve(dir, result.stdout) : undefined;
 }
 
 async function originUrl(dir: string): Promise<string | undefined> {
@@ -182,9 +187,24 @@ async function ascendHost(innermost: string): Promise<{
     const parentTop = await showToplevel(parentDir);
     if (!parentTop) break;
     const submodulePath = await submodulePathNamesCurrent(parentTop, current);
-    if (!submodulePath) break;
-    if (!isInfrastructurePath(submodulePath)) {
-      lastNonInfra = lastNonInfra ?? current;
+    if (submodulePath) {
+      if (!isInfrastructurePath(submodulePath)) {
+        lastNonInfra = lastNonInfra ?? current;
+      }
+      current = parentTop;
+      continue;
+    }
+    const rel = relative(parentTop, current);
+    const [currentCommon, parentCommon] = await Promise.all([
+      gitCommonDir(current),
+      gitCommonDir(parentTop),
+    ]);
+    if (
+      !currentCommon ||
+      currentCommon !== parentCommon ||
+      !isEngineeringPath(rel)
+    ) {
+      break;
     }
     current = parentTop;
   }

@@ -145,6 +145,44 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
     expect(result).toMatchObject({ kind: 'decision', decision: 'unmapped-root' });
   });
 
+  it('ascends an engineering worktree to the parent checkout', async () => {
+    const checkout = join(root, 'workflow-server');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    await writeFile(join(checkout, 'README.md'), 'x\n');
+    await git(checkout, ['add', 'README.md']);
+    await git(checkout, ['commit', '-m', 'init']);
+    await git(checkout, ['branch', 'engineering']);
+    const engineering = join(checkout, '.engineering');
+    await git(checkout, ['worktree', 'add', engineering, 'engineering']);
+    const result = await deriveWorkingDirectory({ workingDirectory: engineering });
+    expect(result).toMatchObject({
+      kind: 'ok',
+      repo: 'acme/workflow-server',
+      repo_source: 'origin',
+      toplevel: engineering,
+      host_repo_path: checkout,
+    });
+    expect(result.kind === 'ok' && result.component_path).toBeUndefined();
+  });
+
+  it('keeps a same-repo feature worktree as its own host', async () => {
+    const checkout = join(root, 'workflow-server');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    await writeFile(join(checkout, 'README.md'), 'x\n');
+    await git(checkout, ['add', 'README.md']);
+    await git(checkout, ['commit', '-m', 'init']);
+    await git(checkout, ['branch', 'feat']);
+    const feature = join(checkout, '.worktrees', 'feat');
+    await git(checkout, ['worktree', 'add', feature, 'feat']);
+    const result = await deriveWorkingDirectory({ workingDirectory: feature });
+    expect(result).toMatchObject({
+      kind: 'ok',
+      repo: 'acme/workflow-server',
+      toplevel: feature,
+      host_repo_path: feature,
+    });
+  });
+
   it('treats a checkout beside its .engineering planning tree as on the map', async () => {
     const checkout = join(root, 'workflow-server');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');

@@ -70,8 +70,10 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // The Progress Status writer both dispatch-activity and commit-and-persist name (#324 B2).
   'workflow-engine::sync-progress-status',
   // State persistence: commit-and-persist invokes these inline (same inline-ref caveat), so bundle
-  // them so the orchestrator gets the submodule/regular-file commit protocols.
+  // them so the orchestrator gets the worktree, regular-file, and submodule commit protocols.
+  'git::identify-path-type',
   'git::commit-regular-files',
+  'git::commit-worktree',
   'git::commit-submodule',
   // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
   // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
