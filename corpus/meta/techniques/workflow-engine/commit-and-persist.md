@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.16.0
+  version: 1.17.0
 ---
 
 ## Capability
@@ -35,10 +35,9 @@ Activity that just completed — or, where a fan converges, the branches it reti
 
 ### 4. Push Engineering Artifacts
 
-- Commit ALL changes under `.engineering/artifacts/` within `{planning_folder_path}`, including `README.md`, `session.json` and `.session-token`, with *message*=`docs(<workflow-id>): <activity-id> artifacts`. The primitive follows the layout, classified by `git.infrastructure-submodule-paths`. This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this operation returns: Engineering links and resume assume the remote holds the commit, so a local-only README or artifact update does not satisfy this step.  
-  > - When `.engineering` is a checkout of its own, apply [commit-submodule](/git/techniques/commit-submodule.md)(*submodule_path*=`.engineering`) — its own branch and remote carry the artifacts.
-  > - Otherwise apply [commit-regular-files](/git/techniques/commit-regular-files.md) — the artifacts are ordinary files of the host checkout.
-  > - Where the host branch accepts changes only through pull requests, the parent's submodule-pointer bump lands in a PR; a direct push to that branch is refused, and the engineering push above already satisfies this step without it.
+- Commit ALL changes under `.engineering/artifacts/` within `{planning_folder_path}`, including `README.md`, `session.json` and `.session-token`, with *message*=`docs(<workflow-id>): <activity-id> artifacts`. Apply [identify-path-type](/git/techniques/identify-path-type.md)(*path*=`.engineering`) from `{host_repo_path}` and take the primitive that `{kind}` names. This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this operation returns: Engineering links and resume assume the remote holds the commit, so a local-only README or artifact update does not satisfy this step.
+  > - When `{kind}` is `worktree`, apply [commit-worktree](/git/techniques/commit-worktree.md)(*worktree_path*=`{host_repo_path}/.engineering`, *paths*=those artifact files, *commit_message*=that message, *branch*=the branch checked out in the worktree).
+  > - Otherwise apply [commit-regular-files](/git/techniques/commit-regular-files.md)(*paths*=those artifact files, *commit_message*=that message, *branch*=the host branch). The artifacts are ordinary files of the host checkout.
 
 ### 5. Confirm Remote State
 
