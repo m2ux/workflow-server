@@ -1,8 +1,6 @@
-# Workspace
+# Agentic Workspace
 
-The `workspace` branch is an exemplar of an agentic workspace. Another repository forks this branch, commits the components it adds, and updates from upstream to take changes to the rules, skills, and scripts.
-
-The committed tree holds the kickoff and four Cursor folders: this directory, `.project`, `.engineering/artifacts/planning`, and `.worktrees`. `.project` shows every component checkout. The exemplar holds none. Those are added in the fork.
+An exemplar agentic workspace layer on top of any project. It aggregates all workspace-level config, hooks, rules, scripts etc such that multiple working environments for agentic and standard engineering can be supported simultaneously without cluttering the root of any given project. It includes helper scripts to check-out, fork and setup individual project component(s) held in external repos for the agents to work on. It is designed to be forked so that the workspace shape and config can be re-used and easily updated from upstream as it evolves.
 
 ```text
 ./
