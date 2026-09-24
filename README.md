@@ -24,7 +24,8 @@ The committed tree holds the kickoff and four Cursor folders: this directory, `.
 │   ├── add-component.sh           # add a project component
 │   ├── bump-project.sh            # fast-forward project worktrees
 │   ├── update-workspace.sh        # merge template updates into this checkout
-│   └── submit-upstream.sh         # pull request fork commits to upstream
+│   ├── submit-upstream.sh         # pull request fork commits to upstream
+│   └── raise-pr.sh                # pull request a feature worktree
 ├── cursor.code-workspace          # Cursor multi-root workspace
 ├── .project/                      # project component checkouts
 ├── .engineering/                  # engineering artifacts
@@ -80,3 +81,10 @@ The committed tree holds the kickoff and four Cursor folders: this directory, `.
 ./scripts/submit-upstream.sh
 ```
 > Pushes the current branch to `origin` and opens a pull request on the `upstream` repository. The base is branch `workspace`. When that pull request is already open, the script prints its URL.
+
+9. Open a pull request for a feature worktree with:
+
+```bash
+./scripts/raise-pr.sh <slug> [--body=TEXT]
+```
+> `<slug>` is the directory under `.worktrees/`. The script finds the component under `.project/` that owns that worktree. The base is the branch checked out there. The head is the worktree branch. Without `--body`, the body is the commit list from the git log. When `<slug>` is a checkout under `.project/`, that checkout's changes move to `.worktrees/<slug>` and the checkout returns to its upstream branch.
