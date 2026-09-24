@@ -8,7 +8,7 @@ For the illustrated read — how the pieces relate, with diagrams — start at t
 
 | If you are | Read |
 |------------|------|
-| Installing or deploying the server | [setup.md](../setup.md), then [http.md](../http.md) or [stdio.md](../stdio.md) for your transport |
+| Installing or deploying the server | [setup.md](setup.md), then [http.md](http.md) or [stdio.md](stdio.md) for your transport |
 | Setting a flag or an environment variable | [configuration.md](configuration.md) |
 | Calling the tools | [api-reference.md](api-reference.md) |
 | Building or testing the server | [development.md](development.md) |

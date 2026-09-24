@@ -95,13 +95,13 @@ curl -fsS http://127.0.0.1:32772/ready
 
 A green `/health` without `sessionKeyWritable: true` means sessions cannot start. `corpusServes: false` means the mounted tree holds no workflow, so every tool call misses — check the corpus bind against `corpus.dir`.
 
-Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints when the host port is 0). Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
+Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints when the host port is 0). Routes: [api-reference.md](api-reference.md#http-endpoints).
 
 ## Troubleshooting
 
 | Symptom | What to check |
 |---------|----------------|
-| `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [workflow-fidelity](docs/workflow-fidelity.md) |
+| `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [workflow-fidelity](workflow-fidelity.md) |
 | `corpusServes` is false | The corpus bind — compare `corpus.dir` in the payload with `--workflows-dir` |
 | OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
 | Image/container crash loop | `docker logs workflow-server`; confirm the `state` bind and image pull |

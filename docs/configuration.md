@@ -1,6 +1,6 @@
 # Configuration reference
 
-Every flag and environment variable the server reads at startup. The install sequence these settings fit into is [setup.md](../setup.md); what differs between the two transports is [http.md](../http.md) and [stdio.md](../stdio.md).
+Every flag and environment variable the server reads at startup. The install sequence these settings fit into is [setup.md](setup.md); what differs between the two transports is [http.md](http.md) and [stdio.md](stdio.md).
 
 Where a flag and a variable name the same setting, the flag wins.
 

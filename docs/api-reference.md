@@ -25,7 +25,7 @@ Started with `--transport=http` (or `TRANSPORT=http`, or `npm run start:http`). 
 | `sessionKeyWritable` | The signing-key directory is usable |
 | `corpusServes` | The mounted corpus holds at least one workflow |
 
-Reading the payload, telling two instances apart, and what a failing check means are in [http.md](../http.md#3-verify).
+Reading the payload, telling two instances apart, and what a failing check means are in [http.md](http.md#3-verify).
 
 ## Tools
 

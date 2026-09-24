@@ -85,7 +85,7 @@ For a split engineering tree, also set env
 
 `--transport=stdio` is the default (omit, or set `TRANSPORT=stdio`).
 
-Developer-only process flags: [docs/development.md](docs/configuration.md#process).
+Developer-only process flags: [configuration.md](configuration.md#process).
 
 ## 3. Verify
 

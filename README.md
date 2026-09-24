@@ -15,7 +15,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ## 🎯 Overview
 
-Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [IDE rule](setup.md#3-setup-cursor-workspace) bootstraps the agent — from there, the server handles workflow discovery, session management, and step-by-step navigation.
+Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [IDE rule](docs/setup.md#3-setup-cursor-workspace) bootstraps the agent — from there, the server handles workflow discovery, session management, and step-by-step navigation.
 
 ### How It Works
 
@@ -42,7 +42,7 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 This project is tailored towards the use of the Cursor IDE. To use with Claude Code it is recommended to setup the [Claude Code plugin for Cursor](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
 
-See: **[setup.md](setup.md)** for detailed setup instructions (including Cursor workspace at §3).
+See: **[setup.md](docs/setup.md)** for detailed setup instructions (including Cursor workspace at §3).
 
 ### Execute a workflow
 

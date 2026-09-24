@@ -4,7 +4,7 @@ Project instructions for this repository. The workspace instructions are the wor
 
 ## Project overview
 
-An MCP server for AI agent workflow orchestration (TypeScript, Node.js 20), driving agents through a **Goal → Workflow → Activities → Techniques → Tools** model. Definitions live on the `workflows` orphan branch, checked out as a worktree; engineering artifacts live in `.engineering/`. See [README.md](README.md) and [setup.md](setup.md).
+An MCP server for AI agent workflow orchestration (TypeScript, Node.js 20), driving agents through a **Goal → Workflow → Activities → Techniques → Tools** model. Definitions live on the `workflows` orphan branch, checked out as a worktree; engineering artifacts live in `.engineering/`. See [README.md](README.md) and [setup.md](docs/setup.md).
 
 ## Commands
 
@@ -49,7 +49,7 @@ Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/s
 ## Boundaries
 
 - Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.
-- Follow workflow fidelity as the YAML and the workflow-server rules define it. Call `discover` first, then the sequence it returns (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match returns `client` — call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work, and the server derives `owner/repo` from its origin. Fetch `workflow-server://schemas` to validate definitions. See [setup.md](setup.md).
+- Follow workflow fidelity as the YAML and the workflow-server rules define it. Call `discover` first, then the sequence it returns (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match returns `client` — call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work, and the server derives `owner/repo` from its origin. Fetch `workflow-server://schemas` to validate definitions. See [setup.md](docs/setup.md).
 
 ## Branches and pull requests
 
@@ -74,7 +74,7 @@ Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/s
 | For | Read |
 |-----|------|
 | Quick start, schema, API | [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md) |
-| IDE and MCP setup | [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md) |
+| IDE and MCP setup | [setup.md](docs/setup.md), [stdio.md](docs/stdio.md), [http.md](docs/http.md) |
 | Work on the engineering branch | [AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md) |
 
 <!--
