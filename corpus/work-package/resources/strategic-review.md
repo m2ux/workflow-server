@@ -33,6 +33,10 @@ The areas a scope review probes for changes the final solution does not need.
 | **Fallback Logic** | Were fallback mechanisms added that are unnecessary given the final approach? |
 | **Configuration** | Were configuration files modified beyond what the final solution requires? |
 
+## Per-file necessity
+
+For each changed file, verify: the change directly supports the solution (not a speculative attempt); it is minimal (no unnecessary additions); it doesn't include debugging artifacts; and it wasn't superseded by a simpler approach.
+
 ## Minimality Check
 
 Five questions over the change set, each answered "No" carrying the cleanup its row names.

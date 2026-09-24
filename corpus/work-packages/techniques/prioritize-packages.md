@@ -39,6 +39,10 @@ Dependency graph representation, showing which packages block or depend on which
 
 Per-package rationale for the ordering, with the value, risk, and effort assessments behind it
 
+### tie_break
+
+The dimension the ranking used when every package scored the same, and why a person may prefer another. Empty when the scores differ.
+
 ## Protocol
 
 ### 1. Analyze Dependencies
@@ -59,7 +63,7 @@ Per-package rationale for the ordering, with the value, risk, and effort assessm
 - Apply priority ordering rules: dependency-first, then high-value/low-effort, then high-risk-early
 - Identify packages that could be parallelized (independent, no shared resources)
 - Write `{priority_order}` as the ranking document per [priority-ranking](../resources/priority-ranking.md#template) and its [Rules](../resources/priority-ranking.md#rules)
-- If all packages evaluate identically on every criterion, ask the user which dimension matters most for their context to break the tie
+- When every package scores the same on every criterion, set `{tie_break}` to the dimension the ranking used and why a person may prefer another. Otherwise set `{tie_break}` empty. The activity checkpoint accepts or replaces the order.
 
 ## Rules
 
@@ -67,6 +71,6 @@ Per-package rationale for the ordering, with the value, risk, and effort assessm
 
 Dependencies constrain but do not fully determine the order — within dependency layers, other criteria apply
 
-### user-controls-final
+### recommendation-is-the-output
 
-The user controls the final priority order — present recommendations but defer to user judgment
+`{priority_order}` is the recommended order. The activity checkpoint accepts or replaces it.

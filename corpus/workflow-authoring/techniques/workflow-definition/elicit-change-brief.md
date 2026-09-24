@@ -5,7 +5,17 @@ metadata:
 
 ## Capability
 
-Change brief for a new workflow, elicited one design dimension at a time.
+Change brief for a new workflow, assembled from the dimension captures.
+
+## Inputs
+
+### design_dimensions
+
+The create-mode dimensions in guide order.
+
+### dimension_captures
+
+The answers recorded for those dimensions. Empty when no person was asked.
 
 ## Outputs
 
@@ -27,20 +37,12 @@ Number of design judgements recorded as unresolved in `{change_brief}`. Zero whe
 
 ## Protocol
 
-### 1. Select the Dimension Set
+### 1. Assemble the Change Brief
 
-- Take the create set, in its stated order, from [Mode Dimension Sets](../../resources/elicitation-guide.md#mode-dimension-sets) — do not restate or reorder the list here
-
-### 2. Capture Each Dimension
-
-- For each dimension in that order, surface the anchor questions from [Dimensions](../../resources/elicitation-guide.md#dimensions) and record the user's answers at the Capture depth that section states for the dimension
-- Omit a question already settled by an answer to an earlier dimension
-- Where an answer the user did not give would have to be invented, record the gap as an open judgement instead of choosing for them
-
-### 3. Assemble the Change Brief
-
-- Fold the captures into `{change_brief}` at the shape [Template](../../resources/change-brief.md#template) declares
-- Record each open judgement as a row of the brief's judgements table and set `{open_judgements_count}` to the number of rows
+- Fold `{dimension_captures}` into `{change_brief}` at the shape [Template](../../resources/change-brief.md#template) declares, in `{design_dimensions}` order
+- Omit a question already settled by an earlier capture
+- Where `{dimension_captures}` has no answer a dimension needs, record the gap as an open judgement
+- Set `{open_judgements_count}` to the number of open-judgement rows
 
 ## Rules
 

@@ -56,7 +56,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
   git diff {base_branch}...HEAD -- <file>
   ```
 
-- Assess each changed file against `per-file-necessity`
+- Assess each changed file against [Per-file necessity](../../resources/strategic-review.md#per-file-necessity)
 
 ### 2. Examine Scope
 
@@ -94,10 +94,4 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 - Where `{body_conforms}` is false, record each `{body_findings}` entry in the `{strategic_review_doc}` under 'PR body conformance'.
   > - A finding an earlier conformance check already stated is cited by its designator rather than restated; a body edited since that check is re-judged whole.
   > - Where `{body_conforms}` is absent, no pull request exists and the section is omitted.
-
-## Rules
-
-### per-file-necessity
-
-For each changed file, verify: the change directly supports the solution (not a speculative attempt); it is minimal (no unnecessary additions); it doesn't include debugging artifacts; and it wasn't superseded by a simpler approach.
 

@@ -11,6 +11,18 @@ variables:
       type: string
       description: Absolute path to the persisted change-brief artifact.
       defaultValue: ""
+    - name: current_dimension
+      type: string
+      description: The design dimension whose answers are being recorded.
+      defaultValue: ""
+    - name: design_dimensions
+      type: array
+      description: The create-mode design dimensions in guide order.
+      defaultValue: []
+    - name: dimension_captures
+      type: array
+      description: Answers recorded for the design dimensions. Empty when no person was asked.
+      defaultValue: []
     - name: change_request_clear
       type: boolean
       description: In update mode, true when the change request is clear enough to proceed without Gate 1 clarification.
@@ -157,6 +169,32 @@ steps:
         entity_context: "entity_title={workflow_id}; entity_type={operation_type}; status=Planning"
         seed_profile: workflow-authoring/readme-seed
     when: operation_type != 'review'
+  - kind: technique
+    id: select-dimension-set
+    technique: workflow-definition::select-dimension-set
+    when: operation_type == 'create'
+  - kind: loop
+    id: capture-dimensions
+    name: Capture Dimensions
+    loopType: forEach
+    over: design_dimensions
+    variable: current_dimension
+    maxIterations: 20
+    when: operation_type == 'create' && headless_mode != true
+    steps:
+      - kind: checkpoint
+        id: capture-dimension
+        message: "Record the answers for `{current_dimension}` at the capture depth [Dimensions](../resources/elicitation-guide.md#dimensions) states. A question an earlier dimension already settled is omitted."
+        options:
+          - id: recorded
+            label: Answers recorded
+            description: The answers for this dimension are ready to fold into the change brief.
+      - kind: action
+        id: record-dimension
+        actions:
+          - action: set
+            target: dimension_captures
+            message: Append the answers just given for {current_dimension} to dimension_captures. An answer that was not given is left absent.
   - kind: technique
     id: elicit-change-brief
     technique: workflow-definition::elicit-change-brief

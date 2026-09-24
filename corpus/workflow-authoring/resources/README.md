@@ -16,6 +16,7 @@ Read-guides for the design surface, and **creation guides** — Template plus Ru
 | [Findings Register](findings-register.md) | Creation guide: `findings-register.md`, section-delivered |
 | [Close-Out](completion-artifact.md) | Creation guide: `COMPLETE.md` |
 | [Elicitation Guide](elicitation-guide.md) | Mode dimension sets and the per-dimension question bank |
+| [YAML style](yaml-style.md) | Style a definition file is authored in |
 | [Update Mode Guide](update-mode-guide.md) | Change-request category vocabulary |
 | [README Seed](readme-seed.md) | Progress inventory, classifier and mode-exclusion map for the planning-folder `README.md` |
 

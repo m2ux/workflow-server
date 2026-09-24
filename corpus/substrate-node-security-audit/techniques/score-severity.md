@@ -27,10 +27,7 @@ The finding set annotated with per-finding Impact score, Feasibility score, comp
 
 ### 2. Determine Feasibility
 
-- Determine the Feasibility score (1-4) with a one-sentence justification
-- Connection pool and infrastructure findings affecting consensus paths through routinely-accessible systems (RPC, p2p): Feasibility >= 3
-- Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility = 2
-- Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility = 4
+- Determine the Feasibility score (1-4) with a one-sentence justification, applying [Feasibility floors](../resources/severity-rubric.md#feasibility-floors) when the finding matches one
 
 ### 3. Map To Severity
 
