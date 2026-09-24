@@ -5,6 +5,10 @@
 			"path": "./"
 		},
 		{
+			"name": "project",
+			"path": "./.project"
+		},
+		{
 			"name": "📋 planning",
 			"path": "./.engineering/artifacts/planning"
 		},

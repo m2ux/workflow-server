@@ -44,7 +44,7 @@ OPTIONS
 
 LAYOUT
   ./<name>/                           # branch workspace, in the current directory
-    cursor.code-workspace          # committed; add-component.sh appends folders
+    cursor.code-workspace             # committed; project folder is .project/
     rules/ skills/ scripts/ config/   # committed kickoff
     .cursor/rules/*.mdc               # committed links at ../../rules/<name>.md
     .project/<component>/             # gitignored component worktree (add-component.sh)
@@ -434,6 +434,6 @@ echo "Kickoff files and tool links come from the workspace branch."
 echo "Machine-local files are .claude/settings.json and .codex/config.toml in the checkout."
 echo
 echo "Add a component worktree with:"
-echo "  ${CHECKOUT_DIR}/scripts/add-component.sh <repo> <branch> [name] [display-name]"
+echo "  ${CHECKOUT_DIR}/scripts/add-component.sh <repo> <branch> [name]"
 echo "Fast-forward component worktrees with:"
 echo "  ${CHECKOUT_DIR}/scripts/bump-project.sh"

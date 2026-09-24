@@ -2,20 +2,20 @@
 
 The `workspace` branch is an exemplar of an agentic workspace. Another repository forks this branch, commits the components it adds, and updates from upstream to take changes to the rules, skills, and scripts.
 
-The committed tree holds the kickoff and three Cursor folders: this directory, `.engineering/artifacts/planning`, and `.worktrees`. It holds no project worktrees. Those are added in the fork.
+The committed tree holds the kickoff and four Cursor folders: this directory, `.project`, `.engineering/artifacts/planning`, and `.worktrees`. `.project` shows every component checkout. The exemplar holds none. Those are added in the fork.
 
 ```text
 ./
-├── AGENTS.md
-├── CLAUDE.md
-├── .mcp.json
-├── .cursor/
-├── .claude/
-├── .agents/
-├── rules/
-├── skills/
-├── config/
-├── docs/
+├── AGENTS.md                      # workspace instructions for agents
+├── CLAUDE.md                      # workspace instructions for Claude
+├── .mcp.json                      # MCP servers
+├── .cursor/                       # Cursor project configuration
+├── .claude/                       # Claude Code project configuration
+├── .agents/                       # agent skills
+├── rules/                         # always-applied agent rules
+├── skills/                        # agent skills
+├── config/                        # hook allowlists
+├── docs/                          # workspace documentation
 ├── scripts/
 │   ├── deploy-workspace.sh        # checkout the tempalte workspace
 │   ├── fork-workspace.sh          # create a fork from this checkout
@@ -23,10 +23,10 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
 │   ├── add-component.sh           # add a project component
 │   ├── bump-project.sh            # fast-forward project worktrees
 │   └── update-workspace.sh        # merge template updates into this checkout
-├── cursor.code-workspace          # add-component.sh appends folders here
-├── .project/<component-name>/     # project component primary worktree
-├── .engineering/                  # engineering deployment
-└── .worktrees/<slug>/             # feature worktrees
+├── cursor.code-workspace          # Cursor multi-root workspace
+├── .project/                      # project component checkouts
+├── .engineering/                  # engineering artifacts
+└── .worktrees/                    # feature worktrees
 ```
 ## Setup
 
@@ -55,9 +55,9 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
 5. Add project components to the workspace with:
 
    ```bash
-   ./scripts/add-component.sh <repo> <branch> [name] [display-name]
+   ./scripts/add-component.sh <repo> <branch> [name]
    ```
-> `<repo>` is owner/name or a git URL. The worktree at `.project/<name>` is the local checkout of `<branch>`. `<name>` and the display name default to `<branch>`. That folder is added to the workspace file.
+> `<repo>` is owner/name or a git URL. The worktree at `.project/<name>` is the local checkout of `<branch>`. `<name>` defaults to `<branch>`. The project folder in the workspace file shows it.
 
 6. Fast-forward every worktree under `.project/` with:
 
