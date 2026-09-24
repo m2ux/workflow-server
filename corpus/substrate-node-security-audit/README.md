@@ -240,7 +240,7 @@ Techniques define tool orchestration, protocols, and composable capabilities. Th
 | Technique | Capability |
 |-----------|------------|
 | [`score-severity`](./techniques/score-severity.md) | Impact × Feasibility severity scoring with calibration examples |
-| [`dispatch-sub-agents`](./techniques/dispatch-sub-agents/TECHNIQUE.md) | Per-phase group: assign roster, route leads, dispatch concurrently, collect results, verify output files |
+| [`dispatch-sub-agents`](./techniques/dispatch-sub-agents/TECHNIQUE.md) | Per-phase group: assign roster, route leads, compose briefs, collect results. Dispatch, gather, and the persisted-file check bind meta `orchestration-patterns` |
 | [`verify-sub-agent-output`](./techniques/verify-sub-agent-output.md) | Validate structural completeness, file coverage, output tables |
 | [`merge-findings`](./techniques/merge-findings.md) | Concatenate finding lists, deduplicate by root cause, assign finding numbers |
 | [`write-report`](./techniques/write-report.md) | Structure and format the final audit report |

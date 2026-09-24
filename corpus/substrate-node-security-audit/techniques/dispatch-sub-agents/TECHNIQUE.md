@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
 
-Shared contract for the audit's sub-agent dispatch surface — the crate-to-agent assignment, the routing of reconnaissance leads, the domain shapes its worker briefs and gathered results take, and the persistence check over the expected output files.
+Shared contract for the audit's sub-agent dispatch surface — the crate-to-agent assignment, the routing of reconnaissance leads, and the domain shapes its worker briefs and gathered results take.
 
 ## Inputs
 

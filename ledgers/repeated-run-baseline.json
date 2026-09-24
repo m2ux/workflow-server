@@ -83,7 +83,7 @@
     {
       "site": "substrate-node-security-audit/activities/02-reconnaissance.yaml + substrate-node-security-audit/activities/03-primary-audit.yaml",
       "run": [
-        "T:dispatch-sub-agents::verify-output-files(expected_output_files)",
+        "T:orchestration-patterns::verify-output-files(expected_output_files)",
         "T:dispatch-sub-agents::compose-roster-briefs()",
         "T:orchestration-patterns::dispatch-workers()"
       ],
