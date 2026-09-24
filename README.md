@@ -1,35 +1,33 @@
-# Workspace
+# Agentic Workspace
 
-The `workspace` branch is an exemplar of an agentic workspace. Another repository forks this branch, commits the components it adds, and updates from upstream to take changes to the rules, skills, and scripts.
-
-The committed tree holds the kickoff and four Cursor folders: this directory, `.project`, `.engineering/artifacts/planning`, and `.worktrees`. `.project` shows every component checkout. The exemplar holds none. Those are added in the fork.
+An exemplar agentic workspace layer on top of any project. It aggregates all workspace-level config, hooks, rules, scripts etc such that multiple working environments for agentic and standard engineering can be supported simultaneously without cluttering the root of any given project. It includes helper scripts to check-out, fork and setup individual project component(s) held in external repos for the agents to work on. It is designed to be forked so that the workspace shape and config can be re-used and easily updated from upstream as it evolves.
 
 ```text
 ./
-├── AGENTS.md                      # workspace instructions for agents
-├── CLAUDE.md                      # workspace instructions for Claude
-├── .mcp.json                      # MCP servers
+├── AGENTS.md                      # Workspace instructions for agents (Source)
+├── CLAUDE.md                      # workspace instructions for agents (Claude shaped)
+├── .mcp.json                      # MCP servers (Claude shaped)
 ├── .cursor/                       # Cursor project configuration
-├── .claude/                       # Claude Code project configuration
-├── .agents/                       # agent skills
-├── rules/                         # always-applied agent rules
-├── skills/                        # agent skills
-├── config/                        # hook allowlists
-├── hooks/                         # Claude hook scripts
-├── docs/                          # workspace documentation
+├── .claude/                       # Claude project configuration
+├── .agents/                       # Agent config (Codex shaped)
+├── rules/                         # Agent rules source
+├── skills/                        # Agent skills source
+├── config/                        # Reusable config (various IDEs)
+├── hooks/                         # Hook scripts (Claude shaped for now. TBD: needs generalising)
+├── docs/                          # Workspace documentation
 ├── scripts/
-│   ├── deploy-workspace.sh        # checkout the tempalte workspace
-│   ├── fork-workspace.sh          # create a fork from this checkout
-│   ├── deploy-engineering.sh      # deploy engineering
-│   ├── add-component.sh           # add a project component
-│   ├── bump-project.sh            # fast-forward project worktrees
-│   ├── update-workspace.sh        # merge template updates into this checkout
-│   ├── submit-upstream.sh         # pull request fork commits to upstream
-│   └── raise-pr.sh                # pull request a feature worktree
+│   ├── deploy-workspace.sh        # checkout the template workspace
+│   ├── fork-workspace.sh          # Create a fork from this checkout
+│   ├── deploy-engineering.sh      # Deploy engineering worktree
+│   ├── add-component.sh           # Add a project component from an external repo
+│   ├── bump-project.sh            # Fast-forward project worktrees
+│   ├── update-workspace.sh        # Merge upstream workspace tempate updates into this checkout
+│   ├── submit-upstream.sh         # Raise a pull request to contribute local workspace changes to upstream
+│   └── raise-pr.sh                # Raise a pull request against a local feature worktree
 ├── cursor.code-workspace          # Cursor multi-root workspace
-├── .project/                      # project component checkouts
-├── .engineering/                  # engineering artifacts
-└── .worktrees/                    # feature worktrees
+├── .project/                      # Project component worktree root
+├── .engineering/                  # Engineering artifacts worktree
+└── .worktrees/                    # Feature worktrees
 ```
 ## Setup
 
