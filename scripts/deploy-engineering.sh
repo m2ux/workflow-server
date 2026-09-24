@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # Engineering Branch Deploy Script
 #
-# Deploys engineering infrastructure to this project. Supports two modes:
-#   - Orphan Branch (default): Creates orphan branch, adds .engineering as submodule
-#     - No URL: 'engineering' branch in this repo
-#     - With URL: project-named branch in external repo
-#   - In-Branch: Manages .engineering/ as regular files in current branch
+# Deploys engineering infrastructure to this project. Supports two layouts:
+#   - Orphan branch (default): 'engineering' branch in this repo, checked out
+#     as a worktree at .engineering/
+#   - In-branch: .engineering/ as regular files on the current branch
 #
 # Usage, from the workspace checkout:
 #   scripts/deploy-engineering.sh [options]
@@ -13,9 +12,7 @@
 # .engineering/ is created at the checkout root, the parent of scripts/.
 #
 # Options:
-#   --orphan [url]             Use orphan branch mode (default if no args)
-#                              No URL: local 'engineering' branch
-#                              With URL: external repo, project-named branch
+#   --orphan                   Use the orphan engineering branch (default)
 #   --in-branch                Use in-branch mode (regular files)
 #   --keep                     Don't self-destruct after deployment
 #   --help                     Show this help
@@ -110,9 +107,7 @@ verify_push_access() {
 # =============================================================================
 
 # Modes: "orphan" (default) or "in-branch"
-# ORPHAN_REPO: empty = local repo, non-empty = external repo URL
 DEPLOY_MODE=""
-ORPHAN_REPO=""
 KEEP_SCRIPT=true
 INTERACTIVE=true
 
@@ -122,10 +117,6 @@ while [[ $# -gt 0 ]]; do
             DEPLOY_MODE="orphan"
             INTERACTIVE=false
             shift
-            if [[ $# -gt 0 && ! "$1" =~ ^-- ]]; then
-                ORPHAN_REPO="$1"
-                shift
-            fi
             ;;
         --in-branch)
             DEPLOY_MODE="in-branch"
@@ -141,7 +132,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --help|-h)
-            sed -n '2,21p' "$0"
+            sed -n '2,18p' "$0"
             exit 0
             ;;
         *)
@@ -162,8 +153,8 @@ create_engineering_structure() {
 
     local dir
     # .gitkeep is required, not cosmetic: git does not track empty directories,
-    # so without it the artifacts tree is absent for every consumer that clones
-    # the branch as a submodule.
+    # so without it the artifacts tree is absent for every consumer that checks
+    # out the branch.
     for dir in artifacts/adr artifacts/planning artifacts/reviews \
                artifacts/templates; do
         mkdir -p "$target_dir/$dir"
@@ -243,35 +234,12 @@ EOF
 }
 
 # =============================================================================
-# Submodule Helpers (idempotent)
+# Checkout helpers
 # =============================================================================
 
-# True when PATH is already registered as a submodule pointing at URL#BRANCH,
-# with a gitlink present in the index. Anything short of that is "not matching"
-# and gets rebuilt rather than patched.
-submodule_matches() {
-    local path="$1"
-    local url="$2"
-    local branch="$3"
-    local cur_url cur_branch
-
-    [ -f .gitmodules ] || return 1
-
-    cur_url="$(git config -f .gitmodules --get "submodule.$path.url" 2>/dev/null || echo "")"
-    cur_branch="$(git config -f .gitmodules --get "submodule.$path.branch" 2>/dev/null || echo "")"
-
-    [ "$cur_url" = "$url" ] || return 1
-    [ "$cur_branch" = "$branch" ] || return 1
-    git ls-files --stage -- "$path" 2>/dev/null | grep -q '^160000 ' || return 1
-
-    return 0
-}
-
-# Erase every trace of a submodule at PATH so that 'git submodule add' sees a
-# clean slate: working tree, index gitlink, .gitmodules stanza, .git/config
-# stanza, and the cached git directory. Leaving any one of these behind is what
-# makes a naive re-run fail with "already exists in the index" or "a git
-# directory for 'x' is found locally".
+# Clear a submodule registration at PATH so the directory can become a
+# worktree: working tree, index gitlink, .gitmodules stanza, .git/config
+# stanza, and the cached git directory.
 purge_submodule() {
     local path="$1"
     local common_dir
@@ -299,42 +267,60 @@ purge_submodule() {
     fi
 }
 
-# Idempotent 'git submodule add'. Re-running is a no-op when the submodule is
-# already registered correctly; a mismatched or half-removed one is purged and
-# re-added. Never aborts the script — a missing private repo yields a warning.
-ensure_submodule() {
+# Idempotent linked worktree of BRANCH at PATH in this repository.
+# A repeat run that already has PATH checked out on BRANCH is a no-op.
+# A submodule registration at PATH is removed first. The caller snapshots
+# artifacts before this runs.
+ensure_worktree() {
     local path="$1"
-    local url="$2"
-    local branch="$3"
-    local label="${4:-$path}"
+    local branch="$2"
+    local abs="${REPO_ROOT}/${path}"
+    local common_here common_there head
 
-    if submodule_matches "$path" "$url" "$branch"; then
-        if [ -e "$path/.git" ]; then
-            echo "[PASS] $label already present (branch: $branch)"
-        else
-            echo "  $label registered but not checked out — initializing..."
-            if timed_git submodule update --init -- "$path" >/dev/null 2>&1; then
-                echo "[PASS] $label (branch: $branch)"
-            else
-                echo "[WARN] $label registered but checkout failed"
-                return 1
-            fi
+    if [ -e "${abs}/.git" ]; then
+        common_here="$(git rev-parse --git-common-dir)"
+        case "$common_here" in
+            /*) ;;
+            *) common_here="$(pwd)/${common_here}" ;;
+        esac
+        common_there="$(git -C "$abs" rev-parse --git-common-dir 2>/dev/null || echo "")"
+        case "$common_there" in
+            /*) ;;
+            "") ;;
+            *) common_there="${abs}/${common_there}" ;;
+        esac
+        head="$(git -C "$abs" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
+        if [ -n "$common_there" ] \
+            && [ "$(cd "$common_here" && pwd -P)" = "$(cd "$common_there" && pwd -P)" ] \
+            && [ "$head" = "$branch" ]; then
+            echo "[PASS] $path already present (worktree: $branch)"
+            return 0
         fi
-    else
-        purge_submodule "$path"
-        if timed_git submodule add --force -b "$branch" "$url" "$path" >/dev/null 2>&1; then
-            echo "[PASS] $label (branch: $branch)"
-        else
-            echo "[WARN] $label skipped (private repo, or branch '$branch' not found)"
+        echo "  Replacing existing checkout at $path"
+        if [ -f .gitmodules ] && git config -f .gitmodules --get "submodule.${path}.url" >/dev/null 2>&1; then
             purge_submodule "$path"
+        else
+            git worktree remove --force "$abs" >/dev/null 2>&1 || true
+            rm -rf "$abs"
+        fi
+    elif [ -d "$abs" ] && [ -n "$(ls -A "$abs" 2>/dev/null)" ]; then
+        echo "[FAIL] $path exists and is not a git checkout"
+        return 1
+    fi
+
+    if ! git show-ref --verify --quiet "refs/heads/${branch}"; then
+        if ! timed_git fetch origin "${branch}"; then
+            echo "[FAIL] Could not fetch branch '$branch'"
             return 1
         fi
+        git branch "${branch}" "origin/${branch}"
     fi
 
-    # 'submodule add -b' can leave the working tree detached; pin it to the branch.
-    if [ -e "$path/.git" ]; then
-        ( cd "$path" && git checkout "$branch" >/dev/null 2>&1 ) || true
+    if ! git worktree add "$abs" "$branch"; then
+        echo "[FAIL] Could not add worktree at $path"
+        return 1
     fi
+    echo "[PASS] $path (worktree: $branch)"
     return 0
 }
 
@@ -356,33 +342,21 @@ fi
 if [ "$INTERACTIVE" = true ]; then
     echo "How should engineering artifacts be managed?"
     echo ""
-    echo "  [1] Orphan Branch - Local (default)"
+    echo "  [1] Orphan branch (default)"
     echo "      -> Creates 'engineering' branch in this repo"
-    echo "      -> Adds .engineering as submodule tracking that branch"
+    echo "      -> Checks that branch out as a worktree at .engineering/"
     echo ""
-    echo "  [2] Orphan Branch - External"
-    echo "      -> Creates '$PROJECT_NAME' branch in external repo"
-    echo "      -> Adds .engineering as submodule tracking that branch"
-    echo ""
-    echo "  [3] In-Branch"
+    echo "  [2] In-branch"
     echo "      -> .engineering/ as regular files in current branch"
     echo "      -> Engineering artifacts committed with code"
     echo ""
-    read -p "Choice [1/2/3, Enter -> Local Orphan]: " CHOICE
+    read -p "Choice [1/2, Enter -> Orphan branch]: " CHOICE
     
     case "$CHOICE" in
         1|"")
             DEPLOY_MODE="orphan"
             ;;
         2)
-            DEPLOY_MODE="orphan"
-            read -p "External repo URL: " ORPHAN_REPO
-            if [ -z "$ORPHAN_REPO" ]; then
-                echo "[FAIL] External repo URL is required"
-                exit 2
-            fi
-            ;;
-        3)
             DEPLOY_MODE="in-branch"
             ;;
         *)
@@ -399,10 +373,9 @@ fi
 # Main
 # =============================================================================
 
-# Existing artifacts are snapshotted, not deleted. Teardown of .engineering/ is
-# left to ensure_submodule, which only purges when the existing registration
-# does not already match what we are about to create — so a repeat run of an
-# already-deployed project touches nothing.
+# Existing artifacts are snapshotted, not deleted. Replacing .engineering/ is
+# left to the checkout step, which keeps a matching worktree in place — so a
+# repeat run of an already-deployed project touches nothing.
 MIGRATION_BACKUP=""
 if [ -d "$ENGINEERING_DIR/artifacts" ] && [ -n "$(find "$ENGINEERING_DIR/artifacts" -type f 2>/dev/null | head -1)" ]; then
     MIGRATION_BACKUP="${ENGINEERING_DIR}_migration_$$"
@@ -488,55 +461,36 @@ else
     # Orphan Branch Mode (Default)
     # ==========================================================================
     
-    if [ -n "$ORPHAN_REPO" ]; then
-        TARGET_REPO="$ORPHAN_REPO"
-        TARGET_BRANCH="$PROJECT_NAME"
-        echo "Using orphan branch mode (external repo)"
-        echo "Repo: $TARGET_REPO"
-        echo "Branch: $TARGET_BRANCH"
-    else
-        TARGET_REPO="$(git remote get-url origin 2>/dev/null || echo "")"
-        TARGET_BRANCH="engineering"
-        echo "Using orphan branch mode (local)"
-        echo "Branch: $TARGET_BRANCH"
-        
-        if [ -z "$TARGET_REPO" ]; then
-            echo "[FAIL] Could not determine remote URL"
-            exit 1
-        fi
+    TARGET_REPO="$(git remote get-url origin 2>/dev/null || echo "")"
+    TARGET_BRANCH="engineering"
+    echo "Using orphan branch"
+    echo "Branch: $TARGET_BRANCH"
+
+    if [ -z "$TARGET_REPO" ]; then
+        echo "[FAIL] Could not determine remote URL"
+        exit 1
     fi
     echo ""
-    
+
     if remote_branch_exists "$TARGET_REPO" "$TARGET_BRANCH"; then
         echo "[PASS] Branch '$TARGET_BRANCH' found"
     else
         echo "Branch '$TARGET_BRANCH' not found. Creating..."
         echo ""
-        
-        if [ -n "$ORPHAN_REPO" ]; then
-            TEMP_DIR=$(mktemp -d)
-            TEMP_DIRS_TO_CLEAN+=("$TEMP_DIR")
-            timed_git clone --depth 1 "$TARGET_REPO" "$TEMP_DIR" 2>/dev/null || {
-                cd "$TEMP_DIR"
-                git init
-                git remote add origin "$TARGET_REPO"
-            }
-            cd "$TEMP_DIR"
-        else
-            WORKTREE_DIR="${REPO_ROOT}_engineering_tmp"
-            TEMP_DIRS_TO_CLEAN+=("$WORKTREE_DIR")
-            # Drop any stale registration or directory from a previous aborted
-            # run, otherwise 'worktree add' fails and we would fall through onto
-            # the live branch.
-            git worktree remove --force "$WORKTREE_DIR" >/dev/null 2>&1 || true
-            rm -rf "$WORKTREE_DIR"
-            git worktree prune
-            if ! git worktree add --detach "$WORKTREE_DIR"; then
-                echo "[FAIL] Could not create temporary worktree at $WORKTREE_DIR"
-                exit 1
-            fi
-            cd "$WORKTREE_DIR"
+
+        WORKTREE_DIR="${REPO_ROOT}_engineering_tmp"
+        TEMP_DIRS_TO_CLEAN+=("$WORKTREE_DIR")
+        # Drop any stale registration or directory from a previous aborted
+        # run, otherwise 'worktree add' fails and we would fall through onto
+        # the live branch.
+        git worktree remove --force "$WORKTREE_DIR" >/dev/null 2>&1 || true
+        rm -rf "$WORKTREE_DIR"
+        git worktree prune
+        if ! git worktree add --detach "$WORKTREE_DIR"; then
+            echo "[FAIL] Could not create temporary worktree at $WORKTREE_DIR"
+            exit 1
         fi
+        cd "$WORKTREE_DIR"
         
         # The remote branch is absent, but a local one may survive from an
         # aborted run. Reuse it rather than failing on "branch already exists";
@@ -577,27 +531,22 @@ else
         echo "[PASS] Created and pushed branch '$TARGET_BRANCH'"
         
         cd "$REPO_ROOT"
-        if [ -n "$ORPHAN_REPO" ]; then
-            : # cleanup handled by trap
-        else
-            git worktree remove "$WORKTREE_DIR" 2>/dev/null || true
-        fi
-    fi
-    
-    echo ""
-    echo "Adding .engineering submodule..."
-    cd "$REPO_ROOT"
-    if ! ensure_submodule ".engineering" "$TARGET_REPO" "$TARGET_BRANCH"; then
-        echo "[FAIL] Could not register .engineering submodule"
-        exit 1
+        git worktree remove "$WORKTREE_DIR" 2>/dev/null || true
     fi
 
-    cd "$REPO_ROOT"
-    
-    migrate_existing_data "$ENGINEERING_DIR"
-    
     echo ""
-    echo "Note: .engineering submodule added. Run 'git commit' to save."
+    cd "$REPO_ROOT"
+    echo "Checking out .engineering worktree..."
+    if ! ensure_worktree ".engineering" "$TARGET_BRANCH"; then
+        echo "[FAIL] Could not check out .engineering worktree"
+        exit 1
+    fi
+    echo ""
+    echo "Note: .engineering is a worktree of branch '$TARGET_BRANCH'."
+
+    cd "$REPO_ROOT"
+
+    migrate_existing_data "$ENGINEERING_DIR"
 fi
 
 cd "$REPO_ROOT"
