@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ Absolute path of the outermost repository that claims the workspace checkout —
 
 ### component_hint
 
-Basename of the innermost toplevel when the ascent crossed a non-infrastructure submodule boundary — the component the workspace path already sits inside. Unset when the ascent crossed nothing, or crossed only infrastructure submodules.
+Basename of the innermost toplevel when the ascent crossed a non-infrastructure submodule boundary — the component the workspace path already sits inside. Unset when the ascent crossed nothing, or crossed only infrastructure boundaries (an infrastructure submodule, or the engineering worktree).
 
 ## Protocol
 
@@ -39,7 +39,9 @@ Basename of the innermost toplevel when the ascent crossed a non-infrastructure 
 
 ### 2. Ascend to the Outermost Superproject
 
-- Ascend while the current toplevel's parent directory is itself a git repository whose `.gitmodules` declares the current toplevel's basename as a submodule `path`. Each successful test moves the current toplevel to that parent; the outermost superproject wins. Record each boundary crossed, and whether it was an infrastructure submodule — apply git.infrastructure-submodule-paths. Emit `{host_repo_path}` and `{component_hint}` per their Output criteria.
+- Ascend while the current toplevel's parent directory is itself a git repository and either test holds. Each successful test moves the current toplevel to that parent; the outermost superproject wins. Record each boundary crossed. Emit `{host_repo_path}` and `{component_hint}` per their Output criteria.
+  > - The parent's `.gitmodules` declares the current toplevel as a submodule `path`. The boundary is infrastructure when git.infrastructure-submodule-paths says so.
+  > - The current toplevel is a linked worktree of that parent: `git rev-parse --git-common-dir` in both checkouts names one directory, and the worktree's path relative to the parent is an infrastructure engineering path (git.infrastructure-engineering-path). That boundary is infrastructure.
 
 ### 3. Read the Origin Remote
 

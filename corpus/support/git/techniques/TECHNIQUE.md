@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.8.0
+  version: 5.9.0
 ---
 
 ## Capability
@@ -47,9 +47,13 @@ Follow Conventional Commits: `type(optional-scope): description`. Common types: 
 
 All commits made via this technique use `git commit -s`. The `Signed-off-by` trailer is required by DCO and harmless when not. Adding it by default avoids the failure-then-retry pattern when target repos enforce DCO via a pre-commit hook.
 
+### infrastructure-engineering-path
+
+A path is the engineering tree when it equals `.engineering` or starts with `.engineering/`.
+
 ### infrastructure-submodule-paths
 
-A submodule is infrastructure when its `path` equals `workflows`, equals `.engineering`, or starts with `.engineering/`. Infrastructure submodules are never target components and never classify a repo as a monorepo on their own.
+A submodule is infrastructure when its path is an infrastructure engineering path, or its path equals `workflows`. Infrastructure submodules are never target components and never classify a repo as a monorepo on their own.
 
 ### host-is-derived-component-is-named
 

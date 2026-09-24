@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.7.0
+  version: 2.7.1
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Path to the planning folder holding the implementation summary and artifacts the
 
 ### host_repo_path
 
-Path to the repo root; used with `.engineering/` (in-tree or submodule) to resolve the engineering link URL
+Path to the repo root; used with `.engineering/` (in-tree or linked worktree) to resolve the engineering link URL
 
 ### target_path
 
