@@ -44,7 +44,7 @@ OPTIONS
 
 LAYOUT
   ./<name>/                           # branch workspace, in the current directory
-    <name>.code-workspace             # renamed from initial.code-workspace
+    <name>.code-workspace             # copied from config/initial.code-workspace
     rules/ skills/ scripts/ config/   # committed kickoff
     .cursor/rules/*.mdc               # committed links at ../../rules/<name>.md
     .project/<component>/             # gitignored component worktree (add-component.sh)
@@ -412,13 +412,13 @@ echo "Workspace checkout: ${CHECKOUT_DIR}"
 
 ensure_workspace_checkout
 
+WORKSPACE_TEMPLATE="${CHECKOUT_DIR}/config/initial.code-workspace"
 WORKSPACE_FILE="${CHECKOUT_DIR}/${CHECKOUT_NAME}.code-workspace"
-mapfile -t WORKSPACE_FILES < <(find "$CHECKOUT_DIR" -maxdepth 1 -name '*.code-workspace' -print)
-if [[ ! -f "$WORKSPACE_FILE" || ${#WORKSPACE_FILES[@]} -ne 1 ]]; then
-  [[ ${#WORKSPACE_FILES[@]} -eq 1 ]] \
-    || die "expected one *.code-workspace in ${CHECKOUT_DIR}"
-  echo "Naming workspace file → ${WORKSPACE_FILE}"
-  mv "${WORKSPACE_FILES[0]}" "$WORKSPACE_FILE"
+[[ -f "$WORKSPACE_TEMPLATE" ]] \
+  || die "workspace template missing: ${WORKSPACE_TEMPLATE}"
+if [[ ! -f "$WORKSPACE_FILE" ]]; then
+  echo "Writing workspace file → ${WORKSPACE_FILE}"
+  cp "$WORKSPACE_TEMPLATE" "$WORKSPACE_FILE"
 fi
 
 mkdir -p "${CHECKOUT_DIR}/.project"
