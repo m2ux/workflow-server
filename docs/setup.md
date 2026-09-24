@@ -15,7 +15,7 @@ Complete the transport guide’s install, then return here for §2–§4.
 
 ## 2. Initialise Workspace
 
-Follow the [Agentic Workspace](https://github.com/m2ux/workflow-server/blob/workspace/README.md) setup instructions.
+Follow the [Workspace](https://github.com/m2ux/workflow-server/blob/workspace/README.md) setup instructions.
 
 ## 3. Verify
 
