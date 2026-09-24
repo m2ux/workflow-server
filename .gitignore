@@ -5,11 +5,6 @@ node_modules/
 # `workflows` branch dest is `.worktrees/workflows`.
 .worktrees/
 
-# A corpus bound at the checkout root rather than under .worktrees — the walk writes its snapshot
-# beside the definitions, so running that suite in a checkout leaves generated output here. Nothing
-# tracked has ever lived at this path; the corpus is a branch of its own.
-/workflows/
-
 # Build output
 dist/
 *.tsbuildinfo
