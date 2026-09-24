@@ -9,7 +9,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ---
 
-**[Docs Site](https://m2ux.github.io/workflow-server/)** • **[Architecture](docs/architecture.md)** • **[API](docs/api-reference.md)** • **[Workflow Fidelity](docs/workflow-fidelity.md)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Workspace](https://github.com/m2ux/workflow-server/blob/workspace/README.md)** • **[Deployment](https://github.com/m2ux/workflow-server/blob/docker/README.md)**
+**[Documentation](https://m2ux.github.io/workflow-server/)** • **[Architecture](docs/architecture.md)** • **[API](docs/api-reference.md)** • **[Workflow Fidelity](docs/workflow-fidelity.md)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Workspace](https://github.com/m2ux/workflow-server/blob/workspace/README.md)** • **[Deployment](https://github.com/m2ux/workflow-server/blob/docker/README.md)**
 
 ---
 
