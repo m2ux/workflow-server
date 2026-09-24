@@ -8,11 +8,8 @@ For the illustrated read — how the pieces relate, with diagrams — start at t
 
 | If you are | Read |
 |------------|------|
-| Installing or deploying the server | [setup.md](../setup.md), then [http.md](../http.md) or [stdio.md](../stdio.md) for your transport |
+| Installing or deploying the server | [setup.md](setup.md), then [http.md](http.md) or [stdio.md](stdio.md) for your transport |
 | Setting a flag or an environment variable | [configuration.md](configuration.md) |
-| Deciding where a repository keeps its plans and decision records | [engineering-storage.md](engineering-storage.md) |
-| Working out where checkouts, planning roots and worktrees sit on disk | [install-projects-worktrees.md](install-projects-worktrees.md) |
-| Wiring an agent up to the server | [ide-setup.md](ide-setup.md) |
 | Calling the tools | [api-reference.md](api-reference.md) |
 | Building or testing the server | [development.md](development.md) |
 | Running a guard, or adding one | [guards/README.md](../guards/README.md) |

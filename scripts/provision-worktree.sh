@@ -8,8 +8,7 @@
 #
 # This script is idempotent and does two things:
 #   1. on the primary checkout, adds `.worktrees/workflows` of the `workflows` branch; a nested
-#      engine worktree reads that dest and does not take the branch lock. Inits `.engineering`
-#      when present.
+#      engine worktree reads that dest and does not take the branch lock.
 #   2. makes `node_modules` resolvable, by symlinking the main checkout's install
 #
 #   scripts/provision-worktree.sh              # provision the worktree this script lives in
@@ -38,8 +37,7 @@ echo "provisioning $TARGET"
 
 # --- 1. shared corpus dest ---------------------------------------------------------------------
 # One worktree of the `workflows` branch, at `.worktrees/workflows` of the primary checkout.
-# Guards and live-corpus tests read that dest (or WORKFLOWS_DIR). `.engineering` holds planning
-# artifacts and is optional — a missing remote for it must not fail provisioning.
+# Guards and live-corpus tests read that dest (or WORKFLOWS_DIR).
 common_dir="$(git -C "$TARGET" rev-parse --path-format=absolute --git-common-dir)"
 PRIMARY_ROOT="$(cd "$(dirname "$common_dir")" && pwd)"
 DEST="${PRIMARY_ROOT}/.worktrees/workflows"
@@ -71,14 +69,6 @@ elif [[ "$TOPLEVEL" == "$PRIMARY_ROOT" ]]; then
 else
   echo "  workflows      shared dest ${DEST} is missing — provision the primary checkout" >&2
   exit 1
-fi
-
-if [[ -f "$TARGET/.gitmodules" ]] && git -C "$TARGET" config --file .gitmodules --get submodule..engineering.path >/dev/null 2>&1; then
-  if git -C "$TARGET" submodule update --init .engineering >/dev/null 2>&1; then
-    echo "  .engineering   @ $(git -C "$TARGET/.engineering" rev-parse --short HEAD 2>/dev/null || echo unknown)"
-  else
-    echo "  .engineering   skipped (not reachable — planning artifacts only)"
-  fi
 fi
 
 # --- 2. node_modules ---------------------------------------------------------------------------

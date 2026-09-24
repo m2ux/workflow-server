@@ -69,7 +69,7 @@
 <main id="main">
   <h1>Artifact and workspace isolation</h1>
   <p class="lede">Orchestration metadata and your actual code never mix. Domain work happens under the <strong>workspace</strong> root (feature worktrees); plans, state, traces, and review documents live under the <strong>engineering</strong> root in a per-session planning folder. Each side stays clean, diffable, and independently version-controlled.</p>
-  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/artifact-management-model.md">docs/artifact-management-model.md</a>. Storage layouts: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">docs/engineering-storage.md</a>.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/artifact-management-model.md">docs/artifact-management-model.md</a>. Storage layouts: <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/engineering-storage.md">docs/engineering-storage.md</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 320" role="img" aria-labelledby="art-title art-desc">
@@ -106,7 +106,7 @@
   <p>Every activity carries an <code>artifactPrefix</code>, inferred by the server from the activity's filename (<code>02-design-philosophy.yaml</code> → <code>02</code>). Workers prepend it to artifacts they produce — <code>design-philosophy.md</code> becomes <code>02-design-philosophy.md</code> — so a planning folder sorts into workflow order and artifacts never clash. The activity's <code>artifacts</code> array itself is a server-computed contract, synthesized by <code>get_activity</code> from the outputs of the techniques its steps bind; activities do not author the list.</p>
 
   <h2 id="git">Git and submodule protocol</h2>
-  <p>Engineering content is version-controlled independently of product history. Common layouts (see <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">engineering storage patterns</a>): same-repo orphan branch, <strong>shared engineering monorepo</strong> (external remote + project-named branches), or in-tree <code>.engineering/</code>. When the orchestrator commits artifacts it works inside the engineering checkout first — stage, commit, push — then updates any app-repo submodule gitlink. Engineering metadata never pollutes product commits under the workspace root.</p>
+  <p>Engineering content is version-controlled independently of product history. Common layouts (see <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/engineering-storage.md">engineering storage patterns</a>): same-repo orphan branch, <strong>shared engineering monorepo</strong> (external remote + project-named branches), or in-tree <code>.engineering/</code>. When the orchestrator commits artifacts it works inside the engineering checkout first — stage, commit, push — then updates any app-repo submodule gitlink. Engineering metadata never pollutes product commits under the workspace root.</p>
 </main>
 
 

@@ -4,7 +4,7 @@ Project instructions for this repository. The workspace instructions are the wor
 
 ## Project overview
 
-An MCP server for AI agent workflow orchestration (TypeScript, Node.js 20), driving agents through a **Goal → Workflow → Activities → Techniques → Tools** model. Definitions live on the `workflows` orphan branch, checked out as a worktree; engineering artifacts live in `.engineering/`. See [README.md](README.md) and [docs/ide-setup.md](docs/ide-setup.md).
+An MCP server for AI agent workflow orchestration (TypeScript, Node.js 20), driving agents through a **Goal → Workflow → Activities → Techniques → Tools** model. Definitions live on the `workflows` orphan branch, checked out as a worktree; engineering artifacts live in `.engineering/`. See [README.md](README.md) and [setup.md](docs/setup.md).
 
 ## Commands
 
@@ -36,7 +36,7 @@ Installs resolve from the lockfile. CI and provisioning run `npm ci`; use it loc
 
 - **Work a branch in its own worktree.** `.worktrees/workflows` stays on `workflows`; a feature branch lives at `.worktrees/<branch>`. Switching the shared dest moves the corpus under whatever is reading it — a guard sweep, a coverage walk, another agent — and the result reads as a defect in the change.
 - **Name a worktree for its branch in full**, slashes as nested directories: `.worktrees/workflow/353-context-scoped-delivery`. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`.
-- **Rename by removing and re-adding:** `git worktree remove --force`, `git worktree add` at the new path, then provision. `git worktree move` and plain `remove` both refuse a worktree with submodules checked out, which provisioning is what does — so a rename becomes worth making past the point where they work.
+- **Rename by removing and re-adding:** `git worktree remove --force`, `git worktree add` at the new path, then provision.
 - **Add the corpus worktree** with `git worktree add .worktrees/workflows workflows`, or let `npm run worktree:provision` do it.
 - **Guard a corpus worktree** with `npx tsx guards/check-all.ts --root <path-to-worktree> --corpus-only`. It holds `workflows` alone — no `package.json`, so `worktree:provision` does not apply. Without `--root` the sweep measures `.worktrees/workflows` of the primary checkout.
 
@@ -49,7 +49,7 @@ Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/s
 ## Boundaries
 
 - Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.
-- Follow workflow fidelity as the YAML and the workflow-server rules define it. Call `discover` first, then the sequence it returns (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match returns `client` — call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work, and the server derives `owner/repo` from its origin. Fetch `workflow-server://schemas` to validate definitions. See [docs/ide-setup.md](docs/ide-setup.md).
+- Follow workflow fidelity as the YAML and the workflow-server rules define it. Call `discover` first, then the sequence it returns (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match returns `client` — call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work, and the server derives `owner/repo` from its origin. Fetch `workflow-server://schemas` to validate definitions. See [setup.md](docs/setup.md).
 
 ## Branches and pull requests
 
@@ -74,9 +74,8 @@ Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/s
 | For | Read |
 |-----|------|
 | Quick start, schema, API | [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md) |
-| IDE and MCP setup | [docs/ide-setup.md](docs/ide-setup.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md) |
-| Live sidecar walks | [examples/cursor-workspace/skills/server-in-the-loop/SKILL.md](examples/cursor-workspace/skills/server-in-the-loop/SKILL.md) |
-| Work in `.engineering/` | [.engineering/AGENTS.md](.engineering/AGENTS.md) |
+| IDE and MCP setup | [setup.md](docs/setup.md), [stdio.md](docs/stdio.md), [http.md](docs/http.md) |
+| Work on the engineering branch | [AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md) |
 
 <!--
 Code intelligence guidance is authored in the workspace AGENTS.md.

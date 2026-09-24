@@ -135,7 +135,7 @@ A workflow varies its path through ordinary state rather than through a mechanis
 
 ## Opening a session
 
-`start_session` opens a top-level session, defaulting to the `meta` workflow. Pass `working_directory` as the checkout under work: the server derives `owner/repo` from that checkout's origin, even when the folder is named for a branch, as [IDE setup](ide-setup.md#binding-the-repository) covers. `repo` is optional, and must equal the derived origin when supplied.
+`start_session` opens a top-level session, defaulting to the `meta` workflow. Pass `working_directory` as the checkout under work: the server derives `owner/repo` from that checkout's origin, even when the folder is named for a branch. `repo` is optional, and must equal the derived origin when supplied.
 
 A named `planning_folder` resumes an existing session. Where a derived dated slug already holds one, the server opens the next free numbered folder rather than joining it. `user_request` seeds the opening request into the variable bag, and children inherit it.
 
@@ -181,4 +181,4 @@ Because the state lives in the file rather than in an agent's context, a session
 
 Resume is a single call, `start_session({ agent_id, planning_folder })`: the server loads the file, verifies the seal, and returns the same index. A server restart is transparent, and there is no adoption or recovery step for an agent to perform.
 
-The install script on the `docker` branch creates the host layout, and product checkouts live under `HOST_PROJECTS_ROOT`, for which [setup.md](../setup.md) has the sequence.
+The install script on the `docker` branch creates the host layout, and product checkouts live under `HOST_PROJECTS_ROOT`, for which [setup.md](setup.md) has the sequence.

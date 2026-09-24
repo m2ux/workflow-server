@@ -10,14 +10,8 @@ const ROOT = resolve(import.meta.dirname, '..');
 
 // README.md is intentionally out of scope for this work package (stakeholder).
 const PRODUCT_GLOBS = [
-  'setup.md',
-  'http.md',
-  'stdio.md',
-  'AGENTS.md',
-  'CLAUDE.md',
   'docs',
   'site',
-  'examples/cursor-workspace',
   '.claude/rules',
   '.cursor/rules',
   'scripts/generate-site-data.ts',

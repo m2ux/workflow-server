@@ -1,12 +1,12 @@
 # Configuration reference
 
-Every flag and environment variable the server reads at startup. The install sequence these settings fit into is [setup.md](../setup.md); what differs between the two transports is [http.md](../http.md) and [stdio.md](../stdio.md).
+Every flag and environment variable the server reads at startup. The install sequence these settings fit into is [setup.md](setup.md); what differs between the two transports is [http.md](http.md) and [stdio.md](stdio.md).
 
 Where a flag and a variable name the same setting, the flag wins.
 
 ## Root binding
 
-One of a workspace path **or** `--repo` is required at startup. Where each resulting directory sits on disk is [the install layout](install-projects-worktrees.md).
+One of a workspace path **or** `--repo` is required at startup. The table names where each resulting directory sits.
 
 | Variable or flag | Default | Description |
 |------------------|---------|-------------|
@@ -51,7 +51,7 @@ The key that seals session state lives in a file named `secret`. The server look
 # Legacy single root — workspace doubles as the engineering root for planning
 node dist/index.js --workspace=~/work --workflow-dir=.worktrees/workflows
 
-# Per-repo layout, after install.sh, a checkout under HOST_PROJECTS_ROOT, and deploy.sh
+# Per-repo layout, after install.sh and a checkout under HOST_PROJECTS_ROOT
 node dist/index.js --repo=m2ux/workflow-server --transport=http
 
 # HTTP defaults from npm
