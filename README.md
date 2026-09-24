@@ -22,7 +22,7 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
 │   ├── deploy-engineering.sh      # deploy engineering
 │   ├── add-component.sh           # add a project component
 │   └── bump-project.sh            # fast-forward project worktrees
-├── <name>>.code-workspace         # workspace root, planning, work trees
+├── initial.code-workspace         # renamed to <name>.code-workspace at deploy
 ├── .project/<component-name>/     # project component primary worktree
 ├── .engineering/                  # engineering deployment
 └── .worktrees/<slug>/             # feature worktrees

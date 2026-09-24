@@ -44,7 +44,7 @@ OPTIONS
 
 LAYOUT
   ./<name>/                           # branch workspace, in the current directory
-    <name>.code-workspace             # renamed from the committed workspace file
+    <name>.code-workspace             # renamed from initial.code-workspace
     rules/ skills/ scripts/ config/   # committed kickoff
     .cursor/rules/*.mdc               # committed links at ../../rules/<name>.md
     .project/<component>/             # gitignored component worktree (add-component.sh)
