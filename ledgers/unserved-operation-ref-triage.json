@@ -416,6 +416,18 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
+      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:38",
+      "op": "identify-path-type",
+      "verdict": "fix-later",
+      "rationale": "operation-reference-predating-the-guard"
+    },
+    {
+      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:39",
+      "op": "commit-worktree",
+      "verdict": "fix-later",
+      "rationale": "operation-reference-predating-the-guard"
+    },
+    {
       "site": "corpus/meta/techniques/workflow-engine/compose-prompt.md:45",
       "op": "activity-worker",
       "verdict": "fix-later",
@@ -1221,6 +1233,12 @@
     },
     {
       "site": "corpus/support/git/techniques/commit-regular-files.md:28",
+      "op": "push-branch",
+      "verdict": "fix-later",
+      "rationale": "operation-reference-predating-the-guard"
+    },
+    {
+      "site": "corpus/support/git/techniques/commit-worktree.md:37",
       "op": "push-branch",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"

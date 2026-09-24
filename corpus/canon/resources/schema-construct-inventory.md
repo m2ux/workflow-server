@@ -92,25 +92,25 @@ A child workflow.
 
 ### When entering or finishing, log, validate, or set
 
-An action step in `steps[]`.
+An action step: one `steps[]` entry with `kind: action`.
 
 Fields: `schemas/README.md#action`.
 
 ### Ask the user whether to proceed
 
-A checkpoint step at that position in `steps[]`.
+A checkpoint step: one `steps[]` entry with `kind: checkpoint`.
 
 [AP-09. checkpoint-not-prose](./anti-patterns.md#ap-09-checkpoint-not-prose), [AP-97. link-named-artifacts](./anti-patterns.md#ap-97-link-named-artifacts), [AP-98. no-next-step-narration](./anti-patterns.md#ap-98-no-next-step-narration), [AP-99. statement-not-question](./anti-patterns.md#ap-99-statement-not-question), [AP-101. no-caption-only-message](./anti-patterns.md#ap-101-no-caption-only-message). Fields: `schemas/README.md#checkpoint-steps`.
 
 ### Repeat for each item, or do until done
 
-A loop step in `steps[]`.
+A loop step: one `steps[]` entry with `kind: loop`.
 
 [AP-10. loop-not-prose](./anti-patterns.md#ap-10-loop-not-prose). Fields: `schemas/README.md#loop-steps`.
 
 ### Several activities carry the same run of steps
 
-A routine step in `steps[]`.
+A routine step: one `steps[]` entry with `kind: routine`.
 
 [42. A Routine Holds the Codified Path](./design-principles.md#42-a-routine-holds-the-codified-path). Fields: `schemas/README.md#routine-step`.
 
