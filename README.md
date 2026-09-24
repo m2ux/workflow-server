@@ -15,6 +15,7 @@ The committed tree holds the kickoff and four Cursor folders: this directory, `.
 ├── rules/                         # always-applied agent rules
 ├── skills/                        # agent skills
 ├── config/                        # hook allowlists
+├── hooks/                         # Claude hook scripts
 ├── docs/                          # workspace documentation
 ├── scripts/
 │   ├── deploy-workspace.sh        # checkout the tempalte workspace
