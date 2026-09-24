@@ -4,10 +4,10 @@
 # Run from the checkout folder:
 #   ./scripts/fork-workspace.sh <repo>
 #
-# <repo> is owner/name or a git URL. The branch is the name given to
-# deploy-workspace, taken from the code-workspace filename. The local
-# branch takes that name, then the commits are pushed there. The
-# template remote becomes upstream.
+# <repo> is owner/name or a git URL. The branch is the checkout directory
+# name, the name given to deploy-workspace. The local branch takes that
+# name, then the commits are pushed there. The template remote becomes
+# upstream. cursor.code-workspace stays as it is.
 set -euo pipefail
 
 die() {
@@ -33,10 +33,7 @@ top="$(git -C "$ROOT" rev-parse --show-toplevel 2>/dev/null)" \
 [[ "$top" == "$ROOT" ]] || die "run from the checkout folder: ${top}"
 current="$(git -C "$ROOT" rev-parse --abbrev-ref HEAD)"
 [[ "$current" != "HEAD" ]] || die "checkout is detached"
-mapfile -t WORKSPACE_FILES < <(find "$ROOT" -maxdepth 1 -name '*.code-workspace' -print)
-[[ ${#WORKSPACE_FILES[@]} -eq 1 ]] \
-  || die "expected one *.code-workspace in ${ROOT}"
-BRANCH="$(basename "${WORKSPACE_FILES[0]}" .code-workspace)"
+BRANCH="$(basename "$ROOT")"
 [[ "$BRANCH" =~ ^[A-Za-z0-9._-]+$ ]] \
   || die "workspace name must be alphanumeric/._-: ${BRANCH}"
 

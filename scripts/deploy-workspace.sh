@@ -24,7 +24,7 @@ CHECKOUT_NAME=""
 usage() {
   cat <<EOF
 Check out branch workspace as ./<name> in the current directory.
-The same name is the code-workspace filename.
+The workspace file stays cursor.code-workspace.
 Render machine-local Claude settings and Codex config into the checkout.
 Leave the committed kickoff links in place. Add component worktrees with
 scripts/add-component.sh. Run scripts/deploy-engineering.sh from
@@ -38,13 +38,13 @@ USAGE
   deploy-workspace.sh --name=<name> [options]
 
 OPTIONS
-  --name=NAME              Checkout folder and <name>.code-workspace
+  --name=NAME              Checkout folder
   --repo-url=URL           Git remote (default: GitHub m2ux)
   -h, --help
 
 LAYOUT
   ./<name>/                           # branch workspace, in the current directory
-    <name>.code-workspace             # copied from config/initial.code-workspace
+    cursor.code-workspace          # committed; add-component.sh appends folders
     rules/ skills/ scripts/ config/   # committed kickoff
     .cursor/rules/*.mdc               # committed links at ../../rules/<name>.md
     .project/<component>/             # gitignored component worktree (add-component.sh)
@@ -412,15 +412,6 @@ echo "Workspace checkout: ${CHECKOUT_DIR}"
 
 ensure_workspace_checkout
 
-WORKSPACE_TEMPLATE="${CHECKOUT_DIR}/config/initial.code-workspace"
-WORKSPACE_FILE="${CHECKOUT_DIR}/${CHECKOUT_NAME}.code-workspace"
-[[ -f "$WORKSPACE_TEMPLATE" ]] \
-  || die "workspace template missing: ${WORKSPACE_TEMPLATE}"
-if [[ ! -f "$WORKSPACE_FILE" ]]; then
-  echo "Writing workspace file → ${WORKSPACE_FILE}"
-  cp "$WORKSPACE_TEMPLATE" "$WORKSPACE_FILE"
-fi
-
 mkdir -p "${CHECKOUT_DIR}/.project"
 if [[ ! -d "${CHECKOUT_DIR}/.worktrees" ]]; then
   echo "Creating feature worktrees dir → ${CHECKOUT_DIR}/.worktrees"
@@ -436,7 +427,7 @@ render_machine_local
 echo
 echo "Workspace ready."
 echo "  Checkout     : ${CHECKOUT_DIR}  (branch ${DEFAULT_WORKSPACE_BRANCH})"
-echo "  Workspace    : ${CHECKOUT_DIR}/${CHECKOUT_NAME}.code-workspace"
+echo "  Workspace    : ${CHECKOUT_DIR}/cursor.code-workspace"
 echo "  Worktrees    : ${CHECKOUT_DIR}/.worktrees/"
 echo
 echo "Kickoff files and tool links come from the workspace branch."

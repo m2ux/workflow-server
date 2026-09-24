@@ -15,7 +15,6 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
 ├── rules/
 ├── skills/
 ├── config/
-│   └── initial.code-workspace     # copied to <name>.code-workspace at deploy
 ├── docs/
 ├── scripts/
 │   ├── deploy-workspace.sh        # checkout the tempalte workspace
@@ -24,7 +23,7 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
 │   ├── add-component.sh           # add a project component
 │   ├── bump-project.sh            # fast-forward project worktrees
 │   └── update-workspace.sh        # merge template updates into this checkout
-├── <name>.code-workspace          # copied from config/initial.code-workspace
+├── cursor.code-workspace          # add-component.sh appends folders here
 ├── .project/<component-name>/     # project component primary worktree
 ├── .engineering/                  # engineering deployment
 └── .worktrees/<slug>/             # feature worktrees
