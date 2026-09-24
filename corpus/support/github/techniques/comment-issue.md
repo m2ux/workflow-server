@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.1.2
 ---
 
 ## Capability
@@ -22,4 +22,5 @@ Markdown comment body.
 ### 1. Post Comment
 
 1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
-2. `gh api repos/{owner}/{repo}/issues/{issue_number}/comments -f body="{body}"`.
+2. Write `{body}` to a temp file, per `github.authored-prose-by-file`.
+3. `gh api repos/{owner}/{repo}/issues/{issue_number}/comments -F body=@<file>`.
