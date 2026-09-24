@@ -418,7 +418,7 @@ export function repoCheckoutBasename(repo: string): string {
 /**
  * Derive the canonical per-repo paths under the install-co-located projects root:
  *   $INSTALL/projects/<repo>                 # main checkout (basename)
- *   $INSTALL/projects/<repo>/.engineering    # planning (submodule)
+ *   $INSTALL/projects/<repo>/.engineering    # planning (linked worktree)
  *   $INSTALL/projects/<repo>/.worktrees      # feature worktree parent
  *
  * Prefer binding `HOST_PROJECTS_ROOT` externally; this helper only knows the
