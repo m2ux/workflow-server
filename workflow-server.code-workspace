@@ -5,16 +5,8 @@
 			"path": "./"
 		},
 		{
-			"name": "📂 server",
-			"path": "./components/main"
-		},
-		{
-			"name": "🔀 workflows",
-			"path": "./components/workflows"
-		},
-		{
 			"name": "📋 planning",
-			"path": "./engineering/artifacts/planning"
+			"path": "./.engineering/artifacts/planning"
 		},
 		{
 			"name": "🌳 work trees",

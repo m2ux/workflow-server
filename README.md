@@ -1,25 +1,57 @@
 # Workspace
 
-This checkout is the general-purpose workspace for workflow-server. The branch is `workspace`.
+The `workspace` branch is an exemplar of an agentic workspace. Another repository forks this branch, commits the components it adds, and updates from upstream to take changes to the rules, skills, and scripts.
+
+The committed tree holds the kickoff and three Cursor folders: this directory, `.engineering/artifacts/planning`, and `.worktrees`. It holds no project worktrees. Those are added in the fork.
 
 ```text
 ./
 ├── AGENTS.md
+├── CLAUDE.md
+├── .mcp.json
+├── .cursor/
+├── .claude/
+├── .agents/
 ├── rules/
 ├── skills/
-├── scripts/
 ├── config/
-├── workflow-server.code-workspace
-├── components/
-│   ├── main/                  # worktree of branch main
-│   └── workflows/             # worktree of branch workflows
-├── engineering/               # worktree of branch engineering
-└── .worktrees/
-    └── <slug>/                # one feature worktree per branch
+├── docs/
+├── scripts/
+│   ├── deploy-workspace.sh        # checkout the tempalte workspace
+│   ├── deploy-engineering.sh      # deploy engineering
+│   ├── add-component.sh           # add a project component
+│   └── bump-project.sh            # fast-forward project worktrees
+├── <name>>.code-workspace         # workspace root, planning, work trees
+├── .project/<component-name>/     # project component primary worktree
+├── .engineering/                  # engineering deployment
+└── .worktrees/<slug>/             # feature worktrees
 ```
+## Setup
 
-`components/`, `engineering/`, and `.worktrees/` are gitignored. `scripts/deploy.sh`, started from a directory, checks this branch out as `workflow-server` there and adds those worktrees when the paths are absent. `scripts/bump.sh` fast-forwards `components/main`, `components/workflows`, and `engineering` to their upstream tips.
+1. Navigate to the directory that should contain the checkout
 
-`scripts/deploy.sh` renders machine-local Claude settings and Codex config into that checkout. It leaves the committed kickoff in place.
+2. To checkout the template workspace, run:
 
-Relative tool links (`.cursor/rules/*.mdc`, `.claude/rules`, `.claude/hooks`, `CLAUDE.md`, and the others beside them) are committed. `.claude/settings.json` and `.codex/config.toml` stay generated, because they contain this machine's home directory and MCP command paths.
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/workspace/scripts/deploy-workspace.sh <workspace-name> | bash
+   ```
+
+3. From that checkout, deploy the engineering branch with:
+
+   ```bash
+   ./scripts/deploy-engineering.sh
+   ```
+> This creates the `.engineering` submodule at the checkout root.
+
+4. Add project components to the workspace with:
+
+   ```bash
+   ./scripts/add-component.sh <repo-path> <branch> <name> [display-name]
+   ```
+> Creates `.project/<name>` as a worktree of `<branch>` and adds that folder to the workspace file.
+
+5. Fast-forward every worktree under `.project/` with:
+
+   ```bash
+   ./scripts/bump-project.sh
+   ```

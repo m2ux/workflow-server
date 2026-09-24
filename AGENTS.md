@@ -4,7 +4,7 @@
 - **Repo:** whatever survives a fresh clone on any machine — setup, boundaries, testing and PR mechanics.
 - A rule that names a path on this machine, or a tool not in `package.json`, belongs here rather than the repo.
 - **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.
-- *Always* follow the [Project Instructions](/components/main/PROJECT.md)
+- *Always* follow the [development guide](.project/main/docs/development.md) for the server checkout.
 
 
 ## Design principles
@@ -76,3 +76,4 @@ Reference example: [#395](https://github.com/m2ux/workflow-server/issues/395). [
 - For multi-step work, use todos and mark them complete as you finish; only one todo in progress at a time.
 - Request permission before starting a new task or making changes outside the current request.
 - *ALWAYS* use a local work-tree when working on a branch
+- Server source (`.project/main/src/`, `.project/main/schemas/`) and workflow YAML change when the request asks for that change.

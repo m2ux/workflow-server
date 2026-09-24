@@ -1,48 +1,55 @@
 #!/usr/bin/env bash
-# Check out branch workspace as ./workflow-server in the current directory.
+# Check out branch workspace as ./<name> in the current directory.
 #
-#   scripts/deploy.sh
-#   scripts/deploy.sh --repo-url=URL
+#   scripts/deploy-workspace.sh <name>
+#   scripts/deploy-workspace.sh --name=<name> [--repo-url=URL]
 #
 # The checkout carries the kickoff: rules, skills, scripts, config, and the
 # tool links. This script leaves those files in place. It renders
 # .claude/settings.json and .codex/config.toml, which hold this machine's
-# paths, and adds the main, workflows, and engineering worktrees when those
-# paths are absent.
-#
-# Container install stays in install.sh on main.
+# paths. Component worktrees under .project/ are added with
+# scripts/add-component.sh. .engineering/ is a submodule created by
+# scripts/deploy-engineering.sh, run from this checkout. .project/,
+# .engineering/, and .worktrees/ are gitignored.
 #
 # Needs: git, python3
 set -euo pipefail
 
 DEFAULT_REPO_URL="https://github.com/m2ux/workflow-server.git"
 DEFAULT_WORKSPACE_BRANCH="workspace"
-DEFAULT_CHECKOUT_NAME="workflow-server"
 
 REPO_URL="${WORKFLOW_SERVER_REPO_URL:-$DEFAULT_REPO_URL}"
+CHECKOUT_NAME=""
 
 usage() {
   cat <<EOF
-Check out branch workspace as ./workflow-server in the current directory.
-Add components/main, components/workflows, and engineering when those paths
-are absent. Render machine-local Claude settings and Codex config into the
-checkout. Leave the committed kickoff links in place.
+Check out branch workspace as ./<name> in the current directory.
+The same name is the code-workspace filename.
+Render machine-local Claude settings and Codex config into the checkout.
+Leave the committed kickoff links in place. Add component worktrees with
+scripts/add-component.sh. Run scripts/deploy-engineering.sh from
+this checkout to create the .engineering submodule. This script creates
+empty .project/ and .worktrees/ directories and does not add a component.
+
+No default name. Running with no arguments prints this help.
 
 USAGE
-  deploy.sh [options]
+  deploy-workspace.sh <name> [options]
+  deploy-workspace.sh --name=<name> [options]
 
 OPTIONS
+  --name=NAME              Checkout folder and <name>.code-workspace
   --repo-url=URL           Git remote (default: GitHub m2ux)
   -h, --help
 
 LAYOUT
-  ./workflow-server/                  # branch workspace, in the current directory
+  ./<name>/                           # branch workspace, in the current directory
+    <name>.code-workspace             # renamed from the committed workspace file
     rules/ skills/ scripts/ config/   # committed kickoff
     .cursor/rules/*.mdc               # committed links at ../../rules/<name>.md
-    components/main/                  # worktree of main
-    components/workflows/             # worktree of workflows
-    engineering/                      # worktree of engineering
-    .worktrees/<slug>/                # feature worktrees (gitignored)
+    .project/<component>/             # gitignored component worktree (add-component.sh)
+    .engineering/                     # gitignored submodule (deploy-engineering.sh)
+    .worktrees/<slug>/                # gitignored feature worktrees
 EOF
 }
 
@@ -80,22 +87,6 @@ ensure_workspace_checkout() {
   fi
 }
 
-# main, workflows, and engineering are worktrees. They are not files in the
-# workspace commit. Add each one when its path is absent.
-ensure_worktree() {
-  local branch="$1" dest="$2"
-  if is_git_checkout "$dest"; then
-    echo "Worktree already present: ${dest}"
-    return
-  fi
-  if [[ -e "$dest" ]]; then
-    die "${dest} exists and is not a git checkout"
-  fi
-  echo "Adding worktree ${branch} → ${dest}"
-  git -C "$CHECKOUT_DIR" worktree add -b "$branch" "$dest" "origin/${branch}" \
-    || die "failed to add worktree ${branch}"
-}
-
 # A real file or directory stays. A symlink is retargeted. A missing path is created.
 ensure_symlink() {
   local dest="$1" target="$2"
@@ -118,7 +109,6 @@ render_machine_local() {
   local settings="${CHECKOUT_DIR}/.claude/settings.json"
   local mcp="${CHECKOUT_DIR}/.mcp.json"
   local rules="${CHECKOUT_DIR}/rules"
-  local project="${CHECKOUT_DIR}/components/main"
   local mcp_json
 
   [[ -n "${HOME:-}" ]] || die "HOME is unset"
@@ -252,12 +242,11 @@ PY
   )"
 
   mkdir -p "${CHECKOUT_DIR}/.codex"
-  MCP_JSON="$mcp_json" PROJECT_DIR="$project" RULES_DIR="$rules" \
+  MCP_JSON="$mcp_json" RULES_DIR="$rules" \
     DEST_DIR="$CHECKOUT_DIR" HOME_DIR="$HOME" python3 - <<'PY' >"${CHECKOUT_DIR}/.codex/config.toml"
 import json, os, re, sys
 
 mcp = json.loads(os.environ["MCP_JSON"])
-project = os.environ["PROJECT_DIR"]
 rules_dir = os.environ.get("RULES_DIR") or ""
 workspace = os.environ.get("DEST_DIR", "").rstrip("/")
 home = os.environ.get("HOME_DIR", "").rstrip("/")
@@ -317,7 +306,7 @@ if bodies:
     parts.append("")
 parts.append("[sandbox_workspace_write]")
 parts.append("writable_roots = [")
-parts.append(f"  {toml_str(project)},")
+parts.append(f"  {toml_str(workspace)},")
 parts.append("]")
 parts.append("")
 
@@ -344,21 +333,11 @@ for name, spec in servers.items():
 sys.stdout.write("\n".join(parts).rstrip() + "\n")
 PY
 
-  if [[ -d "$project" ]]; then
-    ln -sfn .cursor/AGENTS.md "${project}/AGENTS.md"
-    ln -sfn .claude/CLAUDE.md "${project}/CLAUDE.md"
-    ensure_symlink "${project}/.cursor" "${CHECKOUT_DIR}/.cursor"
-    ensure_symlink "${project}/.claude" "${CHECKOUT_DIR}/.claude"
-    ensure_symlink "${project}/.codex" "${CHECKOUT_DIR}/.codex"
-  else
-    echo "Server worktree absent; skip project links: ${project}"
-  fi
-
-  HOME_DIR="$HOME" DEST_DIR="$CHECKOUT_DIR" PROJECT_DIR="$project" python3 - <<'PY'
+  HOME_DIR="$HOME" DEST_DIR="$CHECKOUT_DIR" python3 - <<'PY'
 import os, pathlib
 
 home = pathlib.Path(os.environ["HOME_DIR"])
-paths = [os.environ["DEST_DIR"], os.environ["PROJECT_DIR"]]
+paths = [os.environ["DEST_DIR"]]
 cfg = home / ".codex" / "config.toml"
 cfg.parent.mkdir(parents=True, exist_ok=True)
 text = cfg.read_text(encoding="utf-8") if cfg.exists() else ""
@@ -375,11 +354,24 @@ print(f"  trusted Codex projects in {cfg}")
 PY
 }
 
+if [[ $# -eq 0 ]]; then
+  usage
+  exit 0
+fi
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
       usage
       exit 0
+      ;;
+    --name=*)
+      CHECKOUT_NAME="${1#*=}"
+      shift
+      ;;
+    --name)
+      CHECKOUT_NAME="${2:?}"
+      shift 2
       ;;
     --repo-url=*)
       REPO_URL="${1#*=}"
@@ -389,43 +381,68 @@ while [[ $# -gt 0 ]]; do
       REPO_URL="${2:?}"
       shift 2
       ;;
-    *)
+    --*)
       die "unknown option: $1 (see --help)"
+      ;;
+    *)
+      if [[ -n "$CHECKOUT_NAME" ]]; then
+        die "unexpected argument: $1 (name already set to ${CHECKOUT_NAME})"
+      fi
+      CHECKOUT_NAME="$1"
+      shift
       ;;
   esac
 done
+
+if [[ -z "$CHECKOUT_NAME" ]]; then
+  usage >&2
+  die "missing name: pass <name> or --name=NAME"
+fi
+if [[ ! "$CHECKOUT_NAME" =~ ^[A-Za-z0-9._-]+$ ]]; then
+  die "name must be alphanumeric/._- (got: ${CHECKOUT_NAME})"
+fi
 
 need git
 need python3
 
 RUN_ROOT="$(pwd)"
-CHECKOUT_DIR="${RUN_ROOT}/${DEFAULT_CHECKOUT_NAME}"
+CHECKOUT_DIR="${RUN_ROOT}/${CHECKOUT_NAME}"
 
 echo "Workspace checkout: ${CHECKOUT_DIR}"
 
 ensure_workspace_checkout
-mkdir -p "${CHECKOUT_DIR}/components"
-ensure_worktree main "${CHECKOUT_DIR}/components/main"
-ensure_worktree workflows "${CHECKOUT_DIR}/components/workflows"
-ensure_worktree engineering "${CHECKOUT_DIR}/engineering"
+
+WORKSPACE_FILE="${CHECKOUT_DIR}/${CHECKOUT_NAME}.code-workspace"
+mapfile -t WORKSPACE_FILES < <(find "$CHECKOUT_DIR" -maxdepth 1 -name '*.code-workspace' -print)
+if [[ ! -f "$WORKSPACE_FILE" || ${#WORKSPACE_FILES[@]} -ne 1 ]]; then
+  [[ ${#WORKSPACE_FILES[@]} -eq 1 ]] \
+    || die "expected one *.code-workspace in ${CHECKOUT_DIR}"
+  echo "Naming workspace file → ${WORKSPACE_FILE}"
+  mv "${WORKSPACE_FILES[0]}" "$WORKSPACE_FILE"
+fi
+
+mkdir -p "${CHECKOUT_DIR}/.project"
 if [[ ! -d "${CHECKOUT_DIR}/.worktrees" ]]; then
   echo "Creating feature worktrees dir → ${CHECKOUT_DIR}/.worktrees"
   mkdir -p "${CHECKOUT_DIR}/.worktrees"
 fi
-[[ -f "${CHECKOUT_DIR}/scripts/bump.sh" ]] \
-  || die "bump.sh missing: ${CHECKOUT_DIR}/scripts/bump.sh"
-echo "Making bump.sh executable → ${CHECKOUT_DIR}/scripts/bump.sh"
-chmod +x "${CHECKOUT_DIR}/scripts/bump.sh"
+[[ -f "${CHECKOUT_DIR}/scripts/bump-project.sh" ]] \
+  || die "bump-project.sh missing: ${CHECKOUT_DIR}/scripts/bump-project.sh"
+echo "Making bump-project.sh executable → ${CHECKOUT_DIR}/scripts/bump-project.sh"
+chmod +x "${CHECKOUT_DIR}/scripts/bump-project.sh"
 
 render_machine_local
 
 echo
 echo "Workspace ready."
 echo "  Checkout     : ${CHECKOUT_DIR}  (branch ${DEFAULT_WORKSPACE_BRANCH})"
+echo "  Workspace    : ${CHECKOUT_DIR}/${CHECKOUT_NAME}.code-workspace"
 echo "  Worktrees    : ${CHECKOUT_DIR}/.worktrees/"
 echo
 echo "Kickoff files and tool links come from the workspace branch."
 echo "Machine-local files are .claude/settings.json and .codex/config.toml in the checkout."
 echo
-echo "Fast-forward the long-lived worktrees with:"
-echo "  ${CHECKOUT_DIR}/scripts/bump.sh"
+echo "Add a component worktree with:"
+echo "  ${CHECKOUT_DIR}/scripts/add-component.sh <repo-path> <branch> <name> [display-name]"
+echo "Fast-forward component worktrees with:"
+echo "  ${CHECKOUT_DIR}/scripts/bump-project.sh"

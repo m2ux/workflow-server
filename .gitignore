@@ -1,5 +1,7 @@
-/components/
-/engineering/
+/.project/
+/.engineering/
+/.gitmodules
+/history/
 /.worktrees/
 /.claude/settings.json
 /.codex/
