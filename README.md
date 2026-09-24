@@ -2,7 +2,7 @@
 
 An exemplar agentic workspace layer on top of any project. It aggregates all workspace-level config, hooks, rules, scripts etc such that multiple working environments for agentic and standard engineering can be supported simultaneously without cluttering the root of any given project. It includes helper scripts to check-out, fork and setup individual project component(s) held in external repos for the agents to work on. It is designed to be forked so that the workspace shape and config can be re-used and easily updated from upstream as it evolves.
 
-This project is tailored towards the use of the Cursor IDE. To use with Claude Code we recommend: [Claude Code plugin for Cursor](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
+This workspace is tailored towards the use of the Cursor IDE. To use with Claude Code we recommend: [Claude Code plugin for Cursor](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
 
 ```text
 ./
