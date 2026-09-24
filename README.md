@@ -65,7 +65,7 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
    ./scripts/bump-project.sh
    ```
 
-Merge template updates into this checkout with:
+7. Merge upstream template updates into this checkout with:
 
 ```bash
 ./scripts/update-workspace.sh
