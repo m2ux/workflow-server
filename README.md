@@ -40,9 +40,9 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
 3. From that checkout, create a fork with:
 
    ```bash
-   ./scripts/fork-workspace.sh <repo> [branch]
+   ./scripts/fork-workspace.sh <repo>
    ```
-> Creates a fork of this checkout at `<repo>`. `<repo>` is owner/name or a git URL. The branch defaults to `workspace`. The template remote becomes upstream.
+> Creates a fork of this checkout at `<repo>`. `<repo>` is owner/name or a git URL. The branch is the name given to deploy-workspace. The local branch takes that name, and the commits are pushed there. The template remote becomes upstream.
 
 4. From that checkout, deploy the engineering branch with:
 
