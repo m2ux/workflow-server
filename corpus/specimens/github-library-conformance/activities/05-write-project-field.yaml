@@ -1,0 +1,25 @@
+id: write-project-field
+version: 1.0.0
+name: Write Project Field
+description: Bind a single-select field write on the scratch item.
+required: true
+steps:
+  - kind: technique
+    id: write-one-option
+    technique:
+      name: github::project::write-project-field
+      inputs:
+        owner_login: m2ux
+        owner_kind: user
+        project_number: "8"
+        item_id: "253986171"
+        field_id: "416528547"
+        option_id: "29087cbe"
+        field_name: Throwaway status
+      outputs:
+        field_value: written_option_id
+exits:
+  - id: reached
+    isDefault: true
+outcome:
+  - The field write resolved under github::project::write-project-field and the re-read shows option 29087cbe

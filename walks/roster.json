@@ -42,6 +42,10 @@
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is the delivery — each activity binds the same library operation under a different spelling of its namespace — so the reference guards and the all-workflows drift walk are what measure it."
     },
     {
+      "id": "github-library-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is that four GitHub library operations resolve under github::. Live label and field writes stay on the scratch board."
+    },
+    {
       "id": "gitnexus-api-change-gate-conformance",
       "reason": "Declares no checkpoint of its own; the gate arrives from the gitnexus run it refers to three times, spliced in at load. The positive case reaches it where a mismatch is present, and the negative and multi-verb cases pass it unpresented, so its two options are measured by the sidecar case walk rather than by the coverage walk."
     },

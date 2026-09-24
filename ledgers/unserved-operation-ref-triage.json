@@ -1232,6 +1232,30 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
+      "site": "corpus/support/github/techniques/list-labels.md:26",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "library-leaf-applies-the-namespace-coordinate-op"
+    },
+    {
+      "site": "corpus/support/github/techniques/project/find-project-item.md:34",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "library-leaf-applies-the-namespace-coordinate-op"
+    },
+    {
+      "site": "corpus/support/github/techniques/remove-label.md:24",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "library-leaf-applies-the-namespace-coordinate-op"
+    },
+    {
+      "site": "corpus/support/github/techniques/replace-label-family.md:34",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "library-leaf-applies-the-namespace-coordinate-op"
+    },
+    {
       "site": "corpus/support/github/techniques/assign-issue.md:28",
       "op": "resolve-repo-coordinates",
       "verdict": "fix-later",
