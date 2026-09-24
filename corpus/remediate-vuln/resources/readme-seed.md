@@ -15,21 +15,13 @@ Header-line kind label: `Security`.
 
 Lifecycle **Status** values: `Planning`, `In Progress`, `Complete`.
 
-## Links defaults
-
-The binding sets `{include_links}` false, so this table is not written.
-
-| Resource | Link shape |
-|----------|------------|
-| — | — |
-
 ## Progress inventory
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
 | 1 | Start | Private remote, security branch, planning folder | 15-30m | ⬚ |
 
-Initial Status icons are from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). Later rows are the borrowed work-package activities, written by those activities as they run.
+Initial Status icons are from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary). This inventory is the progress body. A borrowed work-package activity updates a row only when this inventory names that row.
 
 ## Row ownership
 
@@ -39,6 +31,10 @@ Which activity owns which rows, per [row-ownership map](/meta/resources/planning
 |---|------|
 | 01 | Start |
 
-## Mode exclusion
+## Mode exclusion map
 
-No mode drops a row. This workflow does not review an existing pull request.
+Mode key: none. This workflow does not review an existing pull request.
+
+### Implement
+
+Leave Progress Status as authored.

@@ -77,7 +77,8 @@ Full path to the created `README.md`
 
 ### 6. Write README File
 
-- Write the populated `README.md` to `{planning_folder_path}/README.md`, and return that location as `{created_readme}`.
+- Create `{planning_folder_path}` when it does not already exist.
+- Write the populated `README.md` into that folder, and return that location as `{created_readme}`.
 
 ## Rules
 

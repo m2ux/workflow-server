@@ -192,7 +192,7 @@ steps:
     technique:
       name: security-setup::present-security-overview
       inputs:
-        planning_readme: created_readme
+        planning_readme: README.md
     actions:
       - action: message
         message: |-
