@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 ## Capability
 
-Shared contract for the CI/CD audit's sub-agent dispatch surface — the domain shapes its worker briefs and gathered results take, the persistence check over the output files, and the coverage and reconciliation gates.
+Shared contract for the CI/CD audit's sub-agent dispatch surface — the domain shapes its worker briefs and gathered results take, the filenames those workers persist, and the coverage and reconciliation gates.
 
 ## Inputs
 

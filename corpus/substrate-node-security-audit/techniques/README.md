@@ -12,7 +12,7 @@ The technique library for the substrate-node-security-audit workflow. Each opera
 
 | Technique | Kind | Capability |
 |-----------|------|------------|
-| [`dispatch-sub-agents`](dispatch-sub-agents/TECHNIQUE.md) | group | Assign the roster, route leads, compose domain briefs, project gathered results, verify output files — concurrent dispatch/gather bind meta `orchestration-patterns` |
+| [`dispatch-sub-agents`](dispatch-sub-agents/TECHNIQUE.md) | group | Assign the roster, route leads, compose domain briefs, project gathered results — concurrent dispatch/gather and the persisted-file check bind meta `orchestration-patterns` |
 | [`score-severity`](score-severity.md) | standalone | Impact × Feasibility severity scoring with the calibration benchmark crosscheck |
 | [`verify-sub-agent-output`](verify-sub-agent-output.md) | standalone | Validate structural completeness, file coverage, and mandatory output tables |
 | [`merge-findings`](merge-findings.md) | standalone | Concatenate finding lists, deduplicate by root cause, assign finding numbers, reconcile counts |
@@ -29,7 +29,6 @@ The technique library for the substrate-node-security-audit workflow. Each opera
 | [`route-leads`](dispatch-sub-agents/route-leads.md) | Route every reconnaissance lead to a specific agent designator |
 | [`compose-roster-briefs`](dispatch-sub-agents/compose-roster-briefs.md) | Compose each agent's bootstrap prompt into `{worker_briefs}` (dispatch is a separate meta step) |
 | [`collect-results`](dispatch-sub-agents/collect-results.md) | Project meta `gathered_results` into the audit `{dispatch_results}` shape |
-| [`verify-output-files`](dispatch-sub-agents/verify-output-files.md) | Confirm every expected output file persisted, re-dispatching for any missing file |
 
 ---
 

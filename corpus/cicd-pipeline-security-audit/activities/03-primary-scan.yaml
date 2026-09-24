@@ -33,8 +33,11 @@ steps:
     id: collect-scanner-results
     technique: dispatch-scanners::collect-results
   - kind: technique
+    id: list-scanner-output-files
+    technique: dispatch-scanners::list-output-files
+  - kind: technique
     id: verify-scanner-output-files
-    technique: dispatch-scanners::verify-output-files
+    technique: orchestration-patterns::verify-output-files
   - kind: technique
     id: compose-verification-agent
     technique: dispatch-scanners::compose-verification-brief

@@ -45,7 +45,7 @@ steps:
   - kind: technique
     id: verify-reconnaissance-files
     technique:
-      name: dispatch-sub-agents::verify-output-files
+      name: orchestration-patterns::verify-output-files
       inputs:
         expected_output_files: r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json
   - kind: technique
@@ -57,7 +57,7 @@ steps:
   - kind: technique
     id: verify-security-architecture-file
     technique:
-      name: dispatch-sub-agents::verify-output-files
+      name: orchestration-patterns::verify-output-files
       inputs:
         expected_output_files: s-architectural-analysis.json
   - kind: technique
