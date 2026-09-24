@@ -22,7 +22,8 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
 │   ├── fork-workspace.sh          # create a fork from this checkout
 │   ├── deploy-engineering.sh      # deploy engineering
 │   ├── add-component.sh           # add a project component
-│   └── bump-project.sh            # fast-forward project worktrees
+│   ├── bump-project.sh            # fast-forward project worktrees
+│   └── update-workspace.sh        # merge template updates into this checkout
 ├── <name>.code-workspace          # copied from config/initial.code-workspace
 ├── .project/<component-name>/     # project component primary worktree
 ├── .engineering/                  # engineering deployment
@@ -64,3 +65,10 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
    ```bash
    ./scripts/bump-project.sh
    ```
+
+Merge template updates into this checkout with:
+
+```bash
+./scripts/update-workspace.sh
+```
+> Fetches branch `workspace` from the `upstream` remote and merges it into the current branch.
