@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Add a component worktree under .project/ and a folder in the code-workspace file.
 #
-#   scripts/add-component.sh <repo-path> <branch> <name> [display-name]
+#   scripts/add-component.sh <repo> <branch> <name> [display-name]
 #
-# <repo-path> is a checkout of the repository that owns <branch>.
-# <name> is the directory under .project/. The display name defaults to <name>.
+# <repo> is owner/name or a git URL. The worktree at .project/<name> is the
+# local checkout of <branch>. The display name defaults to <name>.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -15,28 +15,32 @@ die() {
 }
 
 if [[ $# -lt 3 || $# -gt 4 ]]; then
-  die "usage: add-component.sh <repo-path> <branch> <name> [display-name]"
+  die "usage: add-component.sh <repo> <branch> <name> [display-name]"
 fi
 
-REPO="$(cd "$1" && pwd)" || die "repo path is not a directory: $1"
+REPO="$1"
 BRANCH="$2"
 NAME="$3"
 DISPLAY="${4:-$NAME}"
 
 [[ "$NAME" != */* && "$NAME" != "." && "$NAME" != ".." ]] \
   || die "name must be a single path segment: ${NAME}"
-git -C "$REPO" rev-parse --is-inside-work-tree >/dev/null 2>&1 \
-  || die "not a git checkout: ${REPO}"
 
 DEST="${ROOT}/.project/${NAME}"
 if [[ -e "$DEST" ]]; then
   die "component path already exists: ${DEST}"
 fi
 
+if [[ "$REPO" != *@* && "$REPO" != *://* && "$REPO" != /* ]]; then
+  [[ "$REPO" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]] \
+    || die "repo must be owner/name or a git URL: ${REPO}"
+  REPO="git@github.com:${REPO}.git"
+fi
+
 mkdir -p "${ROOT}/.project"
 echo "Adding worktree ${BRANCH} → ${DEST}"
-git -C "$REPO" worktree add "$DEST" "$BRANCH" \
-  || die "failed to add worktree ${BRANCH}"
+git clone -b "$BRANCH" "$REPO" "$DEST" \
+  || die "failed to clone ${BRANCH}"
 
 mapfile -t WORKSPACE_FILES < <(find "$ROOT" -maxdepth 1 -name '*.code-workspace' -print)
 [[ ${#WORKSPACE_FILES[@]} -eq 1 ]] \
