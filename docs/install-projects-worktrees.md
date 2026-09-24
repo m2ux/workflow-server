@@ -75,7 +75,7 @@ $HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning  # 📋 planning
 $HOST_PROJECTS_ROOT/<repo>/.worktrees                 # 🌳 work trees
 ```
 
-`deploy-cursor-workspace.sh` expands those roots to absolute `$HOME/…` paths in the generated `.code-workspace` file. The workflows directory is left for `git worktree add`. Under the kickoff directory, `scripts/claude` links at the hooks source and `.claude/settings.json` is workspace-local. The deploy itself is covered in [ide-setup.md](ide-setup.md) and in the [template's README](../.project/main/examples/cursor-workspace/README.md).
+`deploy-cursor-workspace.sh` expands those roots to absolute `$HOME/…` paths in the generated `.code-workspace` file. The workflows directory is left for `git worktree add`. Under the kickoff directory, `scripts/claude` links at the hooks source and `.claude/settings.json` is workspace-local. The deploy itself is covered in the [template's README](../.project/main/examples/cursor-workspace/README.md).
 
 ## Checking the layout
 

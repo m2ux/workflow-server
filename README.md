@@ -87,4 +87,4 @@ The committed tree holds the kickoff and four Cursor folders: this directory, `.
 ```bash
 ./scripts/raise-pr.sh <slug> [--body=TEXT]
 ```
-> `<slug>` is the directory under `.worktrees/`. The script finds the component under `.project/` that owns that worktree. The base is the branch checked out there. The head is the worktree branch. Without `--body`, the body is the commit list from the git log. When `<slug>` is a checkout under `.project/`, that checkout's changes move to `.worktrees/<slug>` and the checkout returns to its upstream branch.
+> `<slug>` is the directory under `.worktrees/`. The script finds the component under `.project/` that owns that worktree. The base is the branch checked out there. The head is the worktree branch. Without `--body`, the body is the commit list from the git log. When `<slug>` is a checkout under `.project/`, that checkout's changes move to `.worktrees/<slug>-<datetime>` and the checkout returns to its upstream branch.

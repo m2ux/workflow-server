@@ -11,9 +11,9 @@
 # from the git log.
 #
 # When <slug> is the directory name of a checkout under .project/, changes
-# in that checkout are moved to .worktrees/<slug> first. The checkout returns
-# to its upstream branch. A branch of the same name stays in .project/; the
-# worktree branch is then <slug>-changes.
+# in that checkout are moved to .worktrees/<slug>-<datetime> first. The
+# checkout returns to its upstream branch. The new branch carries the same
+# datetime tag.
 set -euo pipefail
 
 die() {
@@ -64,7 +64,10 @@ top="$(git -C "$ROOT" rev-parse --show-toplevel 2>/dev/null)" \
 
 WT="${ROOT}/.worktrees/${SLUG}"
 COMPONENT_DIR="${ROOT}/.project/${SLUG}"
-if [[ ! -d "$WT" ]] && abs_git_common "$COMPONENT_DIR" >/dev/null; then
+if abs_git_common "$COMPONENT_DIR" >/dev/null; then
+  stamp="$(date +%Y%m%d-%H%M%S)"
+  feature="${SLUG}-${stamp}"
+  WT="${ROOT}/.worktrees/${feature}"
   git -C "$COMPONENT_DIR" remote get-url origin >/dev/null 2>&1 \
     || die "component origin is absent: ${COMPONENT_DIR}"
   current="$(git -C "$COMPONENT_DIR" rev-parse --abbrev-ref HEAD)"
@@ -80,13 +83,9 @@ if [[ ! -d "$WT" ]] && abs_git_common "$COMPONENT_DIR" >/dev/null; then
   fi
   [[ -n "$restore" ]] || die "component has no upstream branch: ${COMPONENT_DIR}"
   if [[ "$current" == "$restore" ]]; then
-    feature="$SLUG"
-    [[ "$feature" != "$restore" ]] || feature="${SLUG}-changes"
     ahead="$(git -C "$COMPONENT_DIR" rev-list --count "origin/${restore}..HEAD")"
     [[ "$ahead" -gt 0 || -n "$(git -C "$COMPONENT_DIR" status --porcelain)" ]] \
-      || die "worktree is absent: ${WT}"
-    git -C "$COMPONENT_DIR" show-ref --verify --quiet "refs/heads/${feature}" \
-      && die "branch ${feature} already exists"
+      || die "no changes in ${COMPONENT_DIR}"
     git -C "$COMPONENT_DIR" branch "$feature" HEAD
   else
     feature="$current"
