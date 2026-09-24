@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Add a component worktree under .project/ and a folder in the code-workspace file.
 #
-#   scripts/add-component.sh <repo> <branch> <name> [display-name]
+#   scripts/add-component.sh <repo> <branch> [name] [display-name]
 #
 # <repo> is owner/name or a git URL. The worktree at .project/<name> is the
-# local checkout of <branch>. The display name defaults to <name>.
+# local checkout of <branch>. <name> and the display name default to <branch>.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -14,14 +14,14 @@ die() {
   exit 1
 }
 
-if [[ $# -lt 3 || $# -gt 4 ]]; then
-  die "usage: add-component.sh <repo> <branch> <name> [display-name]"
+if [[ $# -lt 2 || $# -gt 4 ]]; then
+  die "usage: add-component.sh <repo> <branch> [name] [display-name]"
 fi
 
 REPO="$1"
 BRANCH="$2"
-NAME="$3"
-DISPLAY="${4:-$NAME}"
+NAME="${3:-$BRANCH}"
+DISPLAY="${4:-$BRANCH}"
 
 [[ "$NAME" != */* && "$NAME" != "." && "$NAME" != ".." ]] \
   || die "name must be a single path segment: ${NAME}"

@@ -55,9 +55,9 @@ The committed tree holds the kickoff and three Cursor folders: this directory, `
 5. Add project components to the workspace with:
 
    ```bash
-   ./scripts/add-component.sh <repo> <branch> <name> [display-name]
+   ./scripts/add-component.sh <repo> <branch> [name] [display-name]
    ```
-> `<repo>` is owner/name or a git URL. The worktree at `.project/<name>` is the local checkout of `<branch>`, and that folder is added to the workspace file.
+> `<repo>` is owner/name or a git URL. The worktree at `.project/<name>` is the local checkout of `<branch>`. `<name>` and the display name default to `<branch>`. That folder is added to the workspace file.
 
 6. Fast-forward every worktree under `.project/` with:
 
