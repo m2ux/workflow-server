@@ -1,6 +1,11 @@
 # Project Instructions
 
-Project instructions for this repository. The workspace instructions are the workspace `AGENTS.md` and `CLAUDE.md`.
+Project instructions for this repository.
+
+- **Here:** whatever survives a fresh clone on any machine — setup, boundaries, testing and PR mechanics.
+- A rule that names a path on this machine, or a tool not in `package.json`, belongs here rather than the repo.
+- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.
+- *Always* follow the [development guide](/docs/development.md).
 
 ## Project overview
 
@@ -51,10 +56,24 @@ Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/s
 - Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.
 - Follow workflow fidelity as the YAML and the workflow-server rules define it. Call `discover` first, then the sequence it returns (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match returns `client` — call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work, and the server derives `owner/repo` from its origin. Fetch `workflow-server://schemas` to validate definitions. See [docs/ide-setup.md](docs/ide-setup.md).
 
-## Branches and pull requests
+## Issues and PRs
 
+Reference example: [#395](https://github.com/m2ux/workflow-server/issues/395). [#394](https://github.com/m2ux/workflow-server/issues/394) is the same material after conversion. Write to this mandate directly — do not draft in shorthand and translate after.
+
+- **Explain the situation before naming it.** Ordinary sentences first, then the concept's name. Never open with a term of art the reader hasn't been handed.
+- **Title:** `Name: plain description`**.** No conventional-commit prefixes, no abbreviations ("references", not "refs"), no anti-pattern numbers, no code tokens unless the token is the subject.
+- **No file:line citations in the body.** Evidence reads as prose. Citations, traces and surveys go to `.engineering/artifacts/planning/`, linked once under **Investigation detail**.
+- **Spell out jargon.** "Phase 0/1/2" becomes named stages; shorthand like fold-by-reference gets a sentence or a definition on first use. Reference an anti-pattern by name with its meaning stated, so the reference corroborates rather than being required reading.
+- **One paragraph per stage, and no section that restates another.** Where a "what was verified" section states what was proved, an acceptance-criteria list repeats it. Cut the prose around the counts, never the counts.
+- **Shape:** Summary → what happens today → the fix (named stages) → scope → what was verified → non-goals. Add "why now is cheap", acceptance criteria or investigation detail only where each carries something no other section does.
+- **These bodies narrate against what preceded them.** They are the one sanctioned home for before/after; everything persisting past merge stays in positive present tense.
+- Prefer replacement over accretion. When updating PR bodies. Don't narrate history. Don't add changes as comments. Replace the body with the version correct today.
 - **A pull request lands on `main` or on `workflows`.** Code and definitions sit on separate long-lived branches, so the base is a choice. One aimed anywhere else is a stack: it merges, reads as delivered, and reaches neither branch until its base lands. Check the base before merging, and re-target a stacked request the moment its base merges.
 - **A branch is absorbed when its content is on the target, not its commits.** The same change arriving by another route leaves the branch reading as unmerged. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.
+
+## Task management
+
+- Server source (`.project/main/src/`, `.project/main/schemas/`) and workflow YAML change when the request asks for that change.
 
 ## Testing
 
