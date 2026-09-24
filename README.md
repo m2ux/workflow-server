@@ -24,7 +24,7 @@ The committed tree holds the kickoff and four Cursor folders: this directory, `.
 │   ├── add-component.sh           # add a project component
 │   ├── bump-project.sh            # fast-forward project worktrees
 │   ├── update-workspace.sh        # merge template updates into this checkout
-│   └── update-upstream.sh         # pull request fork commits to upstream
+│   └── submit-upstream.sh         # pull request fork commits to upstream
 ├── cursor.code-workspace          # Cursor multi-root workspace
 ├── .project/                      # project component checkouts
 ├── .engineering/                  # engineering artifacts
@@ -77,6 +77,6 @@ The committed tree holds the kickoff and four Cursor folders: this directory, `.
 8. Open a pull request for this fork's commits against upstream `workspace` with:
 
 ```bash
-./scripts/update-upstream.sh
+./scripts/submit-upstream.sh
 ```
 > Pushes the current branch to `origin` and opens a pull request on the `upstream` repository. The base is branch `workspace`. When that pull request is already open, the script prints its URL.

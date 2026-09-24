@@ -2,7 +2,7 @@
 # Open a pull request for this fork's commits against the upstream workspace branch.
 #
 # Run from the checkout folder:
-#   ./scripts/update-upstream.sh
+#   ./scripts/submit-upstream.sh
 #
 # origin is this fork. upstream is the template remote fork-workspace.sh keeps.
 # The pull request base is branch workspace on upstream. The head is the
@@ -30,7 +30,7 @@ github_slug() {
 }
 
 if [[ $# -ne 0 ]]; then
-  die "usage: update-upstream.sh"
+  die "usage: submit-upstream.sh"
 fi
 
 ROOT="$(pwd)"
@@ -67,9 +67,9 @@ else
   head="${origin_owner}:${current}"
 fi
 
-existing="$(gh api --jq '.[0].html_url // ""' \
+existing="$(gh api --method GET --jq '.[0].html_url // ""' \
   "repos/${upstream_slug}/pulls" \
-  -f "head=${head}" \
+  -f "head=${origin_owner}:${current}" \
   -f "base=${UPSTREAM_BRANCH}" \
   -f state=open)"
 if [[ -n "$existing" ]]; then
