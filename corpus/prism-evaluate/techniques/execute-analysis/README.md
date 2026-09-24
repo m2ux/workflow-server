@@ -8,5 +8,4 @@ The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQ
 
 | Technique | Contributes |
 |---|---|
-| [`accumulate-analysis-run`](accumulate-analysis-run.md) | One completed analysis run recorded into the evaluation's accumulators, so consolidation reads every dimension from a single place |
 | [`compose-trigger-context`](compose-trigger-context.md) | Resolves the context one execution group's analysis run is dispatched with, translating the evaluation's own terms into the ones that run reads |

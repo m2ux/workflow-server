@@ -10,7 +10,7 @@ variables:
     - execution_groups
     - target_path
   writes:
-    - name: all_artifact_paths
+    - name: all_analysis_artifact_paths
       type: array
       description: Paths to every analysis artifact the runs produced
     - name: completed_analyses
@@ -80,7 +80,7 @@ steps:
         target: completed_analyses
         value: "[]"
       - action: set
-        target: all_artifact_paths
+        target: all_analysis_artifact_paths
         value: "[]"
   - kind: loop
     id: group-iteration
@@ -115,7 +115,7 @@ steps:
         technique: prism/read-run-manifest
       - kind: technique
         id: accumulate-analysis-run
-        technique: accumulate-analysis-run
+        technique: prism/accumulate-analysis-run
 outcome:
   - Every planned dimension has been analysed through the prism pipeline; any run that failed is flagged so coverage gaps are visible rather than silent
 exits:

@@ -44,4 +44,5 @@ Each folder holds one mode's chain: a container contract and the passes beneath 
 | [`generate-report`](generate-report.md) | The reader-facing report and the definitive findings |
 | [`link-report-references`](link-report-references.md) | The report's citations, resolved against the target |
 | [`emit-run-manifest`](emit-run-manifest.md) / [`read-run-manifest`](read-run-manifest.md) | What a run recorded, and what a later run reads back |
+| [`accumulate-analysis-run`](accumulate-analysis-run.md) | One completed run appended to the caller's accumulators, including a partial or error run |
 | [`read-definitive-findings`](read-definitive-findings.md) | The findings contract a consuming workflow reads instead of the raw artifacts |
