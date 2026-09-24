@@ -37,7 +37,6 @@ Best for multi-app / monorepo orgs that want one engineering remote and clean pr
 
 - The script creates or uses branch `<project-name>` on that remote (basename of the project directory) and wires the app's `.engineering` submodule to it.
 - Sibling apps repeat deploy with the **same** engineering remote; each gets its own branch. History stays out of product default branches.
-- Optional history submodule can use the same project-named branch convention (`--history-repo`, `--skip-history`).
 - After deploy, open/update the `.engineering` submodule in your checkout (`git submodule update --init -- .engineering`), including **external** remotes.
 
 ### In-branch

@@ -17,8 +17,6 @@
 #                              No URL: local 'engineering' branch
 #                              With URL: external repo, project-named branch
 #   --in-branch                Use in-branch mode (regular files)
-#   --history-repo <url>       Custom history repo (default: m2ux/ai-metadata)
-#   --skip-history             Skip private history submodule
 #   --keep                     Don't self-destruct after deployment
 #   --help                     Show this help
 
@@ -28,7 +26,6 @@ set -euo pipefail
 # Configuration
 # =============================================================================
 
-DEFAULT_HISTORY_REPO="https://github.com/m2ux/ai-metadata.git"
 NETWORK_TIMEOUT=30
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -116,8 +113,6 @@ verify_push_access() {
 # ORPHAN_REPO: empty = local repo, non-empty = external repo URL
 DEPLOY_MODE=""
 ORPHAN_REPO=""
-HISTORY_REPO="$DEFAULT_HISTORY_REPO"
-SKIP_HISTORY=false
 KEEP_SCRIPT=true
 INTERACTIVE=true
 
@@ -137,14 +132,6 @@ while [[ $# -gt 0 ]]; do
             INTERACTIVE=false
             shift
             ;;
-        --history-repo)
-            HISTORY_REPO="$2"
-            shift 2
-            ;;
-        --skip-history)
-            SKIP_HISTORY=true
-            shift
-            ;;
         --keep)
             KEEP_SCRIPT=true
             shift
@@ -154,7 +141,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --help|-h)
-            head -28 "$0" | tail -24
+            sed -n '2,21p' "$0"
             exit 0
             ;;
         *)
@@ -178,7 +165,7 @@ create_engineering_structure() {
     # so without it the artifacts tree is absent for every consumer that clones
     # the branch as a submodule.
     for dir in artifacts/adr artifacts/planning artifacts/reviews \
-               artifacts/templates scripts; do
+               artifacts/templates; do
         mkdir -p "$target_dir/$dir"
         if [ -z "$(ls -A "$target_dir/$dir" 2>/dev/null)" ]; then
             touch "$target_dir/$dir/.gitkeep"
@@ -198,14 +185,11 @@ Engineering artifacts for $PROJECT_NAME.
 ├── README.md                 # This file
 ├── AGENTS.md                 # AI agent guidelines
 ├── ARCHITECTURE.md           # Engineering scenarios guide
-├── artifacts/                # Output artifacts
-│   ├── adr/                  # Architecture Decision Records
-│   ├── planning/             # Work package plans
-│   ├── reviews/              # Code and architecture reviews
-│   └── templates/            # Reusable templates
-├── workflows/                # Workflow definitions (submodule)
-├── history/                  # Project history (orphan branch submodule)
-└── scripts/                  # Utility scripts
+└── artifacts/                # Output artifacts
+    ├── adr/                  # Architecture Decision Records
+    ├── planning/             # Work package plans
+    ├── reviews/              # Code and architecture reviews
+    └── templates/            # Reusable templates
 \`\`\`
 EOF
     fi
@@ -252,105 +236,10 @@ Engineering artifacts should be:
 - `artifacts/planning/` - Work package plans and specifications
 - `artifacts/reviews/` - Code and architecture reviews
 - `artifacts/templates/` - Reusable documentation templates
-- `workflows/` - Workflow definitions (submodule)
-- `history/` - Project history (orphan branch submodule)
-- `scripts/` - Utility scripts
 EOF
     fi
 
-    if [ ! -f "$target_dir/scripts/update.sh" ]; then
-        cat > "$target_dir/scripts/update.sh" << 'EOF'
-#!/usr/bin/env bash
-# Update submodules (workflows and/or history)
-# Usage: ./scripts/update.sh [--workflows] [--history] [--project NAME]
-set -e
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ENGINEERING_ROOT="$(dirname "$SCRIPT_DIR")"
-PROJECT_NAME="${PROJECT_NAME:-$(basename "$(dirname "$ENGINEERING_ROOT")")}"
-UPDATE_WORKFLOWS=false; UPDATE_HISTORY=false
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --workflows) UPDATE_WORKFLOWS=true; shift ;;
-        --history) UPDATE_HISTORY=true; shift ;;
-        --project) PROJECT_NAME="$2"; shift 2 ;;
-        *) shift ;;
-    esac
-done
-[ "$UPDATE_WORKFLOWS" = false ] && [ "$UPDATE_HISTORY" = false ] && { UPDATE_WORKFLOWS=true; UPDATE_HISTORY=true; }
-if [ "$UPDATE_WORKFLOWS" = true ] && [ -d "$ENGINEERING_ROOT/workflows" ]; then
-    echo "=== Updating workflows ===" && cd "$ENGINEERING_ROOT/workflows"
-    git fetch origin --quiet 2>/dev/null || true
-    git checkout workflows --quiet 2>/dev/null || true
-    git pull origin workflows --quiet && echo "[PASS] workflows: $(git rev-parse --short HEAD)"
-fi
-if [ "$UPDATE_HISTORY" = true ] && [ -d "$ENGINEERING_ROOT/history" ]; then
-    echo "=== Updating history ===" && cd "$ENGINEERING_ROOT/history"
-    git fetch origin "$PROJECT_NAME" && git checkout "$PROJECT_NAME" 2>/dev/null || true
-    git pull origin "$PROJECT_NAME" && echo "[PASS] history: $(git rev-parse --short HEAD)"
-fi
-EOF
-        chmod +x "$target_dir/scripts/update.sh"
-    fi
-    
     echo "  [PASS] Structure verified"
-}
-
-ensure_history_branch() {
-    local repo_url="$1"
-    local branch_name="$2"
-
-    # Restore the CALLER's directory, not REPO_ROOT: this is called from inside
-    # the temporary orphan-branch worktree, and returning to REPO_ROOT would make
-    # every subsequent command operate on the wrong branch.
-    local caller_dir
-    caller_dir="$(pwd)"
-
-    if remote_branch_exists "$repo_url" "$branch_name"; then
-        echo "  [PASS] History branch '$branch_name' exists"
-        return 0
-    fi
-    
-    echo "  Creating orphan branch '$branch_name' in history repo..."
-    
-    local temp_dir
-    temp_dir=$(mktemp -d)
-    TEMP_DIRS_TO_CLEAN+=("$temp_dir")
-    
-    timed_git clone --depth 1 "$repo_url" "$temp_dir" 2>/dev/null || {
-        cd "$temp_dir"
-        git init
-        git remote add origin "$repo_url"
-    }
-    
-    cd "$temp_dir"
-    git checkout --orphan "$branch_name"
-    git rm -rf . 2>/dev/null || true
-    
-    cat > README.md << EOF
-# $branch_name
-
-Project history and AI conversation artifacts.
-EOF
-    
-    git add README.md
-    git commit -m "docs: initialize $branch_name history branch"
-    
-    if ! verify_push_access "$repo_url" "$branch_name"; then
-        echo "  [WARN] Cannot push to $repo_url — check repo permissions"
-        cd "$caller_dir"
-        return 1
-    fi
-
-    if timed_git push -u origin "$branch_name" 2>/dev/null; then
-        echo "  [PASS] Created and pushed branch '$branch_name'"
-    else
-        echo "  [WARN] Failed to push branch '$branch_name' — check repo permissions"
-        cd "$caller_dir"
-        return 1
-    fi
-
-    cd "$caller_dir"
-    return 0
 }
 
 # =============================================================================
@@ -585,46 +474,6 @@ if [ "$DEPLOY_MODE" = "in-branch" ]; then
     create_engineering_structure "$ENGINEERING_DIR"
     
     echo ""
-    echo "Setting up nested repos..."
-    cd "$ENGINEERING_DIR"
-
-    # Plain clones, not submodules, in this mode. An existing clone is refreshed
-    # in place; only a non-repo leftover directory is discarded.
-    ensure_clone() {
-        local path="$1"
-        local url="$2"
-        local branch="$3"
-
-        if [ -e "$path/.git" ]; then
-            echo "[PASS] $path already present — refreshing"
-            ( cd "$path" \
-                && timed_git fetch origin "$branch" >/dev/null 2>&1 \
-                && git checkout "$branch" >/dev/null 2>&1 \
-                && timed_git pull --ff-only origin "$branch" >/dev/null 2>&1 ) || \
-                echo "[WARN] $path refresh failed — leaving existing checkout as-is"
-            return 0
-        fi
-
-        rm -rf "$path"
-        if timed_git clone --single-branch --branch "$branch" "$url" "$path" >/dev/null 2>&1; then
-            echo "[PASS] $path (branch: $branch)"
-        else
-            echo "[WARN] $path skipped (private repo, or branch '$branch' not found)"
-            rm -rf "$path"
-            return 1
-        fi
-    }
-
-    ensure_clone "workflows" "https://github.com/m2ux/workflow-server.git" "workflows" || true
-
-    if [ "$SKIP_HISTORY" = false ]; then
-        ensure_history_branch "$HISTORY_REPO" "$PROJECT_NAME" || true
-        ensure_clone "history" "$HISTORY_REPO" "$PROJECT_NAME" || true
-    fi
-
-    cd "$REPO_ROOT"
-    
-    echo ""
     echo "[PASS] Created .engineering/ structure"
     
     migrate_existing_data "$ENGINEERING_DIR"
@@ -702,15 +551,6 @@ else
 
         create_engineering_structure "."
 
-        ensure_submodule "workflows" \
-            "https://github.com/m2ux/workflow-server.git" "workflows" || true
-
-        if [ "$SKIP_HISTORY" = false ]; then
-            ensure_history_branch "$HISTORY_REPO" "$PROJECT_NAME" || true
-            ensure_submodule "history" "$HISTORY_REPO" "$PROJECT_NAME" || true
-        fi
-
-
         # Guard against any helper having changed directory out from under us:
         # committing here on the wrong branch would pollute the project branch.
         CURRENT_BRANCH="$(git symbolic-ref --short -q HEAD || echo "")"
@@ -750,29 +590,6 @@ else
     if ! ensure_submodule ".engineering" "$TARGET_REPO" "$TARGET_BRANCH"; then
         echo "[FAIL] Could not register .engineering submodule"
         exit 1
-    fi
-
-    echo ""
-    echo "Initializing nested submodules..."
-    if [ -f "$ENGINEERING_DIR/.gitmodules" ]; then
-        cd "$ENGINEERING_DIR"
-
-        if timed_git submodule update --init -- workflows >/dev/null 2>&1; then
-            echo "[PASS] workflows"
-        else
-            echo "[WARN] workflows skipped"
-        fi
-
-        if [ "$SKIP_HISTORY" = false ]; then
-            if timed_git submodule update --init -- history >/dev/null 2>&1; then
-                ( cd history && git checkout "$PROJECT_NAME" >/dev/null 2>&1 ) || true
-                echo "[PASS] history (branch: $PROJECT_NAME)"
-            else
-                echo "[WARN] history skipped (private or branch not found)"
-            fi
-        fi
-    else
-        echo "  No nested submodules declared"
     fi
 
     cd "$REPO_ROOT"
