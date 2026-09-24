@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.0
+  version: 3.5.0
 ---
 
 ## Capability
@@ -8,6 +8,14 @@ metadata:
 Planning-folder `README.md` from the universal planning Template under the bound readme-seed profile.
 
 ## Inputs
+
+### include_links
+
+*(optional)* Whether the seeded README carries the Links table. True fills that table from the seed and `{entity_context}`. False leaves the table out, so the README records no public pull-request or issue link.
+
+#### default
+
+`true`
 
 ### entity_context
 
@@ -55,7 +63,9 @@ Full path to the created `README.md`
 
 ### 3. Fill Header And Links
 
-- Populate the header (title, classifier from seed + `{entity_context}`, date, lifecycle Status), Executive Summary placeholder, and Links table (seed defaults merged with `{entity_context}` URLs when present), each per its entry in [Rules](/meta/resources/planning-readme.md#rules).
+- Populate the header (title, classifier from seed + `{entity_context}`, date, lifecycle Status) and the Executive Summary placeholder, each per its entry in [Rules](/meta/resources/planning-readme.md#rules).
+- When `{include_links}` is true, populate the Links table from the seed defaults merged with `{entity_context}` URLs when present, per [Links table](/meta/resources/planning-readme.md#links-table).
+  > When `{include_links}` is false, the written README has no Links section.
 
 ### 4. Lay In Progress Rows
 
