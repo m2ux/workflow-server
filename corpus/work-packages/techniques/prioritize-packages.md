@@ -63,7 +63,7 @@ The dimension the ranking used when every package scored the same, and why a per
 - Apply priority ordering rules: dependency-first, then high-value/low-effort, then high-risk-early
 - Identify packages that could be parallelized (independent, no shared resources)
 - Write `{priority_order}` as the ranking document per [priority-ranking](../resources/priority-ranking.md#template) and its [Rules](../resources/priority-ranking.md#rules)
-- When every package scores the same on every criterion, set `{tie_break}` to the dimension the ranking used and why a person may prefer another. Otherwise set `{tie_break}` empty. The activity checkpoint accepts or replaces the order.
+- When every package scores the same on every criterion, set `{tie_break}` to the dimension the ranking used and why a person may prefer another. Otherwise set `{tie_break}` empty.
 
 ## Rules
 
@@ -73,4 +73,4 @@ Dependencies constrain but do not fully determine the order — within dependenc
 
 ### recommendation-is-the-output
 
-`{priority_order}` is the recommended order. The activity checkpoint accepts or replaces it.
+`{priority_order}` is the recommended order.

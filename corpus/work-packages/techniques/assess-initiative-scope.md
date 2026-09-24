@@ -38,7 +38,7 @@ Total number of identified packages
 ### 2. Identify Packages
 
 - Parse the user's description to identify distinct units of work
-- If the boundary between two packages is not determined, record that boundary on `{work_packages}` as unresolved. The activity checkpoint is where a person settles it.
+- If the boundary between two packages is not determined, record that boundary on `{work_packages}` as unresolved.
 - Each package should be independently deliverable (its own branch, PR, and review cycle)
 - Name each package descriptively using the domain language from the user's description
 - Capture a one-sentence description for each package
