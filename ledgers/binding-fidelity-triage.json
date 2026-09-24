@@ -139,13 +139,6 @@
     },
     {
       "check": "dead-output",
-      "site": "git/techniques/identify-path-type.md",
-      "detail": "output 'kind' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "github/techniques/list-issues.md",
       "detail": "output 'issue_records' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",

@@ -416,6 +416,18 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
+      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:38",
+      "op": "identify-path-type",
+      "verdict": "fix-later",
+      "rationale": "operation-reference-predating-the-guard"
+    },
+    {
+      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:39",
+      "op": "commit-worktree",
+      "verdict": "fix-later",
+      "rationale": "operation-reference-predating-the-guard"
+    },
+    {
       "site": "corpus/meta/techniques/workflow-engine/compose-prompt.md:45",
       "op": "activity-worker",
       "verdict": "fix-later",
@@ -1226,10 +1238,40 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
+      "site": "corpus/support/git/techniques/commit-worktree.md:37",
+      "op": "push-branch",
+      "verdict": "fix-later",
+      "rationale": "operation-reference-predating-the-guard"
+    },
+    {
       "site": "corpus/support/github/techniques/add-labels.md:24",
       "op": "resolve-repo-coordinates",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
+    },
+    {
+      "site": "corpus/support/github/techniques/list-labels.md:26",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "library-leaf-applies-the-namespace-coordinate-op"
+    },
+    {
+      "site": "corpus/support/github/techniques/project/find-project-item.md:34",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "library-leaf-applies-the-namespace-coordinate-op"
+    },
+    {
+      "site": "corpus/support/github/techniques/remove-label.md:24",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "library-leaf-applies-the-namespace-coordinate-op"
+    },
+    {
+      "site": "corpus/support/github/techniques/replace-label-family.md:34",
+      "op": "resolve-repo-coordinates",
+      "verdict": "fix-later",
+      "rationale": "library-leaf-applies-the-namespace-coordinate-op"
     },
     {
       "site": "corpus/support/github/techniques/assign-issue.md:28",

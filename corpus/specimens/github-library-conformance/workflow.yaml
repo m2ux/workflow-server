@@ -1,0 +1,32 @@
+$schema: ../../../schemas/workflow.schema.json
+id: github-library-conformance
+version: 1.0.0
+title: GitHub Library Conformance
+description: >-
+  Bind the GitHub library operations: list labels, replace a label family, find a project,
+  read a project field, and write a single-select option. The writes are exercised on the throwaway board.
+author: m2ux
+tags:
+  - specimen
+  - github
+  - conformance
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: target_repo
+    type: string
+    description: GitHub repository as owner/repo the label operations address.
+    defaultValue: m2ux/workflow-server
+initialActivity: list-labels
+graph:
+  list-labels:
+    reached: replace-label-family
+  replace-label-family:
+    reached: find-project
+  find-project:
+    reached: read-project-field
+  read-project-field:
+    reached: write-project-field
+  write-project-field:
+    reached: __terminal__

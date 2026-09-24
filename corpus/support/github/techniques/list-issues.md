@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.1.2
 ---
 
 ## Capability
@@ -28,6 +28,6 @@ Issues the search or listing returned, one JSON object per issue.
 ### 1. List Or Search Issues
 
 1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
-2. When `{search_text}` is set: `gh api "search/issues?q={search_text}+repo:{owner}/{repo}+type:issue" --paginate`.
+2. When `{search_text}` is set, write the search query to a temp file, per `github.authored-prose-by-file`: `{search_text}`, then ` repo:{owner}/{repo} type:issue`. `gh api search/issues --paginate -F q=@<file>`.
 3. When `{search_text}` is unset: `gh api "repos/{owner}/{repo}/issues?{list_query}" --paginate` with `{list_query}` defaulting to `state=open`.
 4. Set `{issue_records}` to the parsed array either branch returned.

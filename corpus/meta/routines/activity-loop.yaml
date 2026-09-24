@@ -21,6 +21,8 @@ inputs:
     description: Path of the component under work, relative to the host repository.
   - id: host_repo_path
     description: Absolute path of the outermost git host for the workspace checkout.
+  - id: kind
+    description: Path kind of the engineering checkout. `worktree` selects the worktree commit; any other value selects an ordinary commit of the host checkout. A caller that binds nothing supplies the host's own kind.
   - id: target_status
     description: The Progress status an entry publishes for the activity it marks.
 
