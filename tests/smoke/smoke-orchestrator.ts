@@ -12,7 +12,7 @@
  * --resume`, so it remembers which steps it has done.
  *
  * Usage (run from the worktree root):
- *   npx tsx scripts/smoke/smoke-orchestrator.ts [--activities=N] [--model=sonnet] [--root=DIR]
+ *   npx tsx tests/smoke/smoke-orchestrator.ts [--activities=N] [--model=sonnet] [--root=DIR]
  *
  * Scoped by default (--activities=2) to validate plumbing cheaply before a full
  * 13-activity run. The sandbox lives at a CONSISTENT root (default
@@ -24,11 +24,11 @@ import { execFileSync } from 'node:child_process';
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createHarness } from '../../tests/e2e/harness.js';
-import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../../tests/e2e/harness.js';
-import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
+import { createHarness } from '../e2e/harness.js';
+import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../e2e/harness.js';
+import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../e2e/walker.js';
 import { type Graph, destinationTargets } from '../../src/schema/workflow.schema.js';
-import { defaultPolicy, makePolicy } from '../../tests/e2e/policies.js';
+import { defaultPolicy, makePolicy } from '../e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
 import { parseWhen } from '../../src/schema/when-expression.js';
 import { checkSession, relayGaps } from '../../guards/check-session-contract.js';

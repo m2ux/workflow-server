@@ -11,7 +11,7 @@
  * scorecard is written to stderr.
  *
  * `--gate` is what the Verify workflow runs, at the 1% default. Re-recording it, and why the
- * fixture must name the walk under review: benchmark/README.md § Token delivery benchmark.
+ * fixture must name the walk under review: docs/benchmark.md § Token delivery benchmark.
  *
  * Usage (from a server checkout with `node_modules`):
  *
@@ -48,7 +48,7 @@
  * Exit: 0 on completed walk; 2 if finalStatus !== completed; 3 on gate failure;
  * 1 on hard failure.
  *
- * See benchmark/README.md § "Token delivery benchmark" and docs/api.md
+ * See docs/benchmark.md § "Token delivery benchmark" and docs/api.md
  * § Reference Delivery.
  */
 import { execFileSync } from 'node:child_process';

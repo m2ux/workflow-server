@@ -1,6 +1,6 @@
 # Development guide
 
-Setting up, building and testing the workflow server. Settings the server reads at startup are in [configuration.md](configuration.md); the guard suite is documented beside the guards in [`guards/README.md`](../guards/README.md); the benchmarks and the profiler are in [benchmark/README.md](../benchmark/README.md).
+Setting up, building and testing the workflow server. Settings the server reads at startup are in [configuration.md](configuration.md); the guard suite is documented beside the guards in [`guards/README.md`](../guards/README.md); the benchmarks and the profiler are in [benchmark.md](benchmark.md).
 
 ## What you need
 
@@ -65,7 +65,7 @@ The directories, and what each one owns:
 | `src/trace.ts` | The trace store and the encoding of trace tokens |
 | `schemas/` | JSON Schemas for editor tooling, generated from their Zod sources by `npm run build:schemas`. `check:schemas` holds each file to that rendering |
 | `scripts/` | Install and container helpers, and schema generation |
-| `benchmark/` | The three headless benchmarks |
+| `benchmark/` | The three headless benchmarks, and the run profiler under `benchmark/scripts/` |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution — documented in [`guards/README.md`](../guards/README.md) |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
 | `.worktrees/workflows/` | A worktree of the `workflows` branch — the corpus the server serves |
@@ -117,7 +117,7 @@ Zero means the edit reaches nothing in flight. A non-zero count is the set of ru
 
 ## What runs on a pull request
 
-[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) checks the `workflows` branch out at `workflows/`, then runs `npm run typecheck`, `npm run check:schemas`, `guards/check-tool-call-shape.ts` against that checkout, `npm run test:ci` with `WORKFLOWS_DIR` set to it, and the [fixture delivery gate](../benchmark/README.md#appendix). Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
+[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) checks the `workflows` branch out at `workflows/`, then runs `npm run typecheck`, `npm run check:schemas`, `guards/check-tool-call-shape.ts` against that checkout, `npm run test:ci` with `WORKFLOWS_DIR` set to it, and the [fixture delivery gate](benchmark.md#appendix). Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
 
 ## The two branches
 
@@ -137,4 +137,4 @@ The guards and the end-to-end walks read that checkout, so [corpus-coupled basel
 
 ## Authoring definitions
 
-How to add a workflow is the [authoring guide](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md). The file contract is the [technique protocol](technique.md). The schema the server loads stays in this tree: [schemas/README.md](../schemas/README.md).
+How to add a workflow is the [authoring guide](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md). The file contract is the [technique protocol](technique.md). The schema the server loads stays in this tree: [schemas](schemas.md).

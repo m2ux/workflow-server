@@ -46,13 +46,13 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
 
 ### Reload an experiment sidecar on a stable port
 
-`scripts/reload-exp-sidecar.sh` stops one named container, compiles the engine checkout on the host, and starts it again on the same host port and corpus with that `dist` (and the engine `schemas`) bound read-only. The process is still `node dist/index.js` on the image's production `node_modules`. The image definition and the launcher come from the branch named by `--docker-branch`, which defaults to `docker`. The image rebuilds when `package.json`, `package-lock.json`, or that Dockerfile drifted, or when `--rebuild-image` is passed. An override that lacks `--dist-dir` is replaced by that branch's `start.sh` so the bind still lands. It refuses the install container name `workflow-server` and host port 3000.
+`tests/scripts/reload-exp-sidecar.sh` stops one named container, compiles the engine checkout on the host, and starts it again on the same host port and corpus with that `dist` (and the engine `schemas`) bound read-only. The process is still `node dist/index.js` on the image's production `node_modules`. The image definition and the launcher come from the branch named by `--docker-branch`, which defaults to `docker`. The image rebuilds when `package.json`, `package-lock.json`, or that Dockerfile drifted, or when `--rebuild-image` is passed. An override that lacks `--dist-dir` is replaced by that branch's `start.sh` so the bind still lands. It refuses the install container name `workflow-server` and host port 3000.
 
 `--name` is the only required flag. Host port, corpus, engine checkout, image and projects root each default to what the named container records, running or exited, so reloading the pairing under test is `--name` alone and a sidecar a reboot left stopped reloads on the port it had; each is required when no container of that name exists. `--image` defaults to the image the named container records; when none exists it is `workflow-server:local`. `--build` defaults to the engine checkout the named container records; when none exists it is the checkout that contains the script. Pass a directory when naming a pairing whose engine lives in another worktree.
 
 ```bash
 # First reload of a new experiment: name the pairing.
-./scripts/reload-exp-sidecar.sh \
+./tests/scripts/reload-exp-sidecar.sh \
   --name=workflow-server-exp \
   --image=workflow-server:exp-ttd \
   --build=.worktrees/feat/time-to-dispatch-experiment \
@@ -60,7 +60,7 @@ The sidecar uses the same install binds (projects root, HMAC state) as the first
   --host-port=32772
 
 # Every reload after it: compile the same pairing on the host.
-./scripts/reload-exp-sidecar.sh --name=workflow-server-exp
+./tests/scripts/reload-exp-sidecar.sh --name=workflow-server-exp
 ```
 
 `--no-build` reuses the image the named container records and does not compile on the host. `--rebuild-image` rebuilds the image, skips host compile, and serves the image-baked `dist`. Point the experiment MCP server at the printed URL. Leave `workflow-server` on :3000. A recreate drops in-memory MCP sessions; the next walk calls `discover` on the sidecar again.

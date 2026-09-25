@@ -7,7 +7,7 @@ import { baseSimulation } from './policies.js';
 import { declaredCheckpoints, declaredOptions, optionCoverage, checkpointGaps } from './coverage.js';
 import { corpusRoot } from '../corpus-root.js';
 import { indexCorpus } from '../../src/loaders/corpus-index.js';
-import { parseWorkflowIds } from '../../scripts/coverage-scope.js';
+import { parseWorkflowIds } from '../scripts/coverage-scope.js';
 
 /**
  * Every checkpoint option the corpus declares gets taken by some walk, or is listed as one this
@@ -61,7 +61,7 @@ const DRY_WALKS = Number(process.env.WF_DRY_WALKS ?? '50');
  *
  * Empty means all of them, which is what a corpus change to the walker, the policies or the server
  * needs — those move how every workflow walks. `WF_COVERAGE_SCOPE` narrows it to the walked
- * workflows a corpus change can move, which scripts/coverage-scope.ts derives from a corpus diff.
+ * workflows a corpus change can move, which tests/scripts/coverage-scope.ts derives from a corpus diff.
  *
  * `WF_WALKED` is the walked set the corpus roster names. The engine does not open that file.
  *

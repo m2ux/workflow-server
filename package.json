@@ -80,7 +80,7 @@
     "bench:token": "tsx benchmark/run-token-benchmark.ts",
     "bench:dispatch": "tsx benchmark/run-dispatch-benchmark.ts",
     "bench:batch": "tsx benchmark/run-batch-benchmark.ts",
-    "profile:run": "tsx scripts/run-profile.ts"
+    "profile:run": "tsx benchmark/scripts/run-profile.ts"
   },
   "license": "MIT",
   "devDependencies": {
