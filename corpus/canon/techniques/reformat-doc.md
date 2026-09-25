@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -23,19 +23,20 @@ The document at `{document_path}` after reformatting.
 
 ### 1. Keep the Introduction
 
-- Read `{document_path}`. The page introduces the concepts. A reader of it does not need the implementation.
-- Leave a fact that is only how a call is shaped, or only how a field is declared. Those homes are the API reference and the schema guide. Link them with a keyword in a sentence that already needs them.
+- Read `{document_path}`. The page introduces the concepts. The account of what each case does stays: a table of cases, and the sentences that say what is sent or what collapses.
+- Leave a fact that is only how a call is shaped, or only how a field is declared. Those homes are the API reference and the schema guide. Link them with a keyword in a sentence that already needs them. A schema link targets the section that specifies those fields.
 
 ### 2. Title and Opening
 
-- Set every title to title case. The document title names what the document is. A section title does not begin with "The", and a title does not name how many items it contains. A count of an inventory goes stale when the inventory grows.
+- Set every title to title case. The document title names what the document is. A heading names its subject. A pronoun with nothing in the heading to refer to is not a title. A section title does not begin with "The", and a title does not name how many items it contains. A sentence does not address an inventory by its count. It says what the items do. A count goes stale when the inventory grows.
 - Open with one plain-language paragraph that tells a lay reader what the document is for, and when and why the thing happens. Introduce every term of art the rest of the page uses, in the flow of that prose, and bold each term at that first use. The sentence says what the term is, not only the word. A canonical concept is called by its name. A reference names what it refers to. A paragraph is at most six lines.
 
 ### 3. Lists and Figures
 
 - Where a paragraph is a run of parallel items, make those items a bullet list.
-- Each section that explains how something proceeds carries two high-level diagrams, and so does each subsection with its own account. One shows the sequence of what happens. One shows the pieces it is made of.
-- A block of prose under those diagrams that is a further concept becomes its own section, with its own pair. A block that only restates the pictures, or only gives implementation detail, leaves the page.
+- A section other than the introduction is split when it runs past eight sentences. A heading per paragraph is too fine. Each code block has its own subsection.
+- Each section that explains how something proceeds carries two high-level diagrams, and so does each subsection with its own account. One shows the sequence of what happens. One shows the pieces it is made of. The diagrams accompany the account. They do not replace it.
+- A block of prose under those diagrams that is a further concept becomes its own section, with its own pair. A block that only restates the pictures leaves the page.
 - For each figure, write one paragraph in that section that describes the thing, then names the figure in parentheses at the end of the sentence. Do not open the sentence with the figure number. Put an italic title-case caption under the figure. The caption says what the picture shows. A term in that caption that a reader cannot already read takes a parenthesis after it. A term that reads on its own does not.
 - On the diagram of the pieces, each box carries a note and each arrow a label. A note or a label is six words or less, and it names its subject. Write each note in reading order.
 - A paragraph under a figure stays on what that figure shows. It does not add a concept the figure does not show, and it does not define again a term the opening already introduced.
@@ -53,7 +54,7 @@ The document at `{document_path}` after reformatting.
 
 ### titles-are-title-case
 
-Every heading, figure caption, and table title is title case. A short word such as "a", "of", "from", or "with" stays lowercase unless it is first or last. A section title does not begin with "The", and a title does not name how many items it contains. A count of an inventory goes stale when the inventory grows.
+Every heading, figure caption, and table title is title case. A short word such as "a", "of", "from", or "with" stays lowercase unless it is first or last. A heading names its subject. A pronoun with nothing in the heading to refer to is not a title. A section title does not begin with "The", and a title does not name how many items it contains. A count of an inventory goes stale when the inventory grows.
 
 ### opening-orients-a-lay-reader
 
@@ -63,17 +64,29 @@ The first paragraph states what the document is for, when it happens, and why, i
 
 A paragraph is at most six lines. A longer one is split in two, and split again until none remains over six.
 
+### a-long-section-gains-subsections
+
+A section other than the introduction is split when it runs past eight sentences. A heading per paragraph is too fine.
+
+### a-code-block-is-its-own-subsection
+
+Each code block has its own subsection.
+
+### a-sentence-does-not-count-an-inventory
+
+A sentence does not address an inventory by its count. It says what the items do. A count goes stale when the inventory grows.
+
 ### parallel-items-form-a-list
 
 Items that share a role are a bullet list. A sentence that states one fact stays a sentence.
 
 ### diagrams-replace-a-mechanical-account
 
-Each section that explains how something proceeds carries two high-level diagrams, one of the sequence and one of the pieces, and each subsection with its own account carries its own pair. The diagrams are that account. The sentence describes the thing, then names the figure in parentheses at the end. It does not walk the same steps again.
+Each section that explains how something proceeds carries two high-level diagrams, one of the sequence and one of the pieces, and each subsection with its own account carries its own pair. The diagrams accompany the account of what each case does. They do not replace it. The sentence describes the thing, then names the figure in parentheses at the end. It does not walk the same steps again.
 
 ### outline-stays-high-level
 
-The page introduces the concepts. Implementation detail — a timer threshold, a key shape, a refusal condition, a field-by-field effect — is not on this page.
+The page introduces the concepts and keeps the account of what each case does. A timer threshold, a key shape, a refusal condition, and a field-by-field effect are not on this page.
 
 ### a-further-concept-is-its-own-section
 
@@ -85,7 +98,7 @@ The shape of a tool call lives in the API reference. This page links that catalo
 
 ### fields-live-in-the-schema
 
-A field list and a sample definition live in the schema guide. This page links that guide with the word schema.
+A field list and a sample definition live in the schema guide. This page links that guide with the word schema, and the link targets the section that specifies those fields.
 
 ### figure-caption-follows-the-figure
 

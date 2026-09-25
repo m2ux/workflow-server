@@ -18,7 +18,7 @@ Everything from §1 onward is the normative contract — addressing, composition
 
 ### Where the implementation lives
 
-The loader validates against [the Zod source](https://github.com/m2ux/workflow-server/blob/main/src/schema/technique.schema.ts), and [technique.schema.json](https://github.com/m2ux/workflow-server/blob/main/schemas/technique.schema.json) is its hand-maintained, editor-facing mirror. Reading a technique off disk is split between [the markdown loader](https://github.com/m2ux/workflow-server/blob/main/src/loaders/markdown-technique-loader.ts) and [the resolver](https://github.com/m2ux/workflow-server/blob/main/src/loaders/technique-loader.ts). For a short catalogue of the tools involved, see the [API reference](https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md).
+The loader validates against [the Zod source](https://github.com/m2ux/workflow-server/blob/main/src/schema/technique.schema.ts), and [technique.schema.json](https://github.com/m2ux/workflow-server/blob/main/schemas/technique.schema.json) is its hand-maintained, editor-facing mirror. Reading a technique off disk is split between [the markdown loader](https://github.com/m2ux/workflow-server/blob/main/src/loaders/markdown-technique-loader.ts) and [the resolver](https://github.com/m2ux/workflow-server/blob/main/src/loaders/technique-loader.ts). For a short catalogue of the tools involved, see the [API reference](https://github.com/m2ux/workflow-server/blob/main/docs/api.md).
 
 ---
 
