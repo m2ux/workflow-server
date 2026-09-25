@@ -37,7 +37,11 @@ What the stand-ins say is deliberately not the corpus's own prose. A reading tak
 
 ### The gate runs on every pull request
 
-The [Verify](../.github/workflows/verify.yml) workflow runs `--gate` at the 1% default against `delivery-fixture`. No guard can measure this, because delivery cost is a property of a walk rather than of a file.
+The [Verify](../.github/workflows/verify.yml) workflow runs `--gate` at the 1% default against `delivery-fixture`. No guard can measure this, because delivery cost is a property of a walk rather than of a file. The job runs:
+
+```bash
+npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=tests/fixtures/token-benchmark-baseline.json
+```
 
 #### When the gate fails
 

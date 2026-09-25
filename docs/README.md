@@ -34,4 +34,4 @@ Each model answers one pressure the design is under. [architecture.md](architect
 
 ## Where other material lives
 
-Workflow definitions — the YAML, the techniques and the resources — live on the [`workflows` branch](https://github.com/m2ux/workflow-server/tree/workflows), with authoring guides at that branch's `docs/` root. Plans, reviews and decision records live under the engineering root and are not product documentation.
+Workflow definitions — the YAML, the techniques and the resources — live on the [`workflows` branch](https://github.com/m2ux/workflow-server/tree/workflows), with authoring guides at that branch's `docs/` root. Plans, reviews and decision records live under the engineering root and are not product documentation. Work on the engineering branch starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).

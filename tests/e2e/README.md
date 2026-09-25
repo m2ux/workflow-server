@@ -27,7 +27,7 @@ which determines the path taken; the six named policies (`default`,
 ## Prerequisites
 
 ```bash
-npm install
+npm ci
 npm run build      # only needed for the 3a agent smoke-run (worker uses dist/)
 ```
 
