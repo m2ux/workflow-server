@@ -2,7 +2,7 @@
 
 > Part of the [Ponytail Lean-Coding Workflow](../README.md)
 
-The technique library for the ponytail workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-operation `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+The technique library for the ponytail workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-technique `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
 ---
 

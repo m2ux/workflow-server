@@ -207,9 +207,9 @@ The cross-cutting `variable-binding` technique is declared once at the workflow 
 | `read-definitive-findings` | A completed run's per-finding entries, loaded from the findings artifact into a triggering session — bound by triggering workflows |
 | `link-report-references` | The final report with its finding IDs and artifact references resolved to links |
 
-The `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per technique. The rest are standalone `techniques/<slug>.md` files.
+The `::*` techniques are **technique-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per technique. The rest are standalone `techniques/<slug>.md` files.
 
-**Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each standalone technique's `techniques/<slug>.md` file and each operation-group's `techniques/<group>/<op>.md` file documents its protocol flow.
+**Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each standalone technique's `techniques/<slug>.md` file and each technique-group's `techniques/<group>/<op>.md` file documents its protocol flow.
 
 ---
 
@@ -342,34 +342,34 @@ corpus/prism/
 │   ├── read-run-manifest.md                 # Read a run's status and recorded paths back from its manifest
 │   ├── read-definitive-findings.md          # Load a run's per-finding entries for a triggering session
 │   ├── link-report-references.md            # Resolve the final report's finding IDs and artifact references
-│   ├── full-prism/                          # Full Prism operation-group
+│   ├── full-prism/                          # Full Prism technique-group
 │   │   ├── TECHNIQUE.md                      # Group contract
 │   │   ├── adversarial.md                    # Adversarial pass + graph verification
 │   │   └── synthesis.md                      # Definitive synthesis pass
-│   ├── behavioral-pipeline/                 # Behavioral operation-group
+│   ├── behavioral-pipeline/                 # Behavioral technique-group
 │   │   ├── TECHNIQUE.md                      # Group contract
 │   │   ├── independent-lenses.md             # Four independent behavioral lenses
 │   │   └── synthesis.md                      # Labeled behavioral synthesis
-│   ├── subsystem-analysis/                  # Subsystem operation-group
+│   ├── subsystem-analysis/                  # Subsystem technique-group
 │   │   ├── TECHNIQUE.md                      # Group contract
 │   │   ├── decompose.md                      # AST split into subsystems
 │   │   ├── calibrate.md                      # Per-region prism assignment
 │   │   ├── execute.md                        # Per-subsystem analysis
 │   │   └── synthesize.md                     # Cross-subsystem synthesis
-│   ├── verified-analysis/                   # Verified operation-group
+│   ├── verified-analysis/                   # Verified technique-group
 │   │   ├── TECHNIQUE.md                      # Group contract
 │   │   ├── initial-analysis.md               # Initial L12 pass
 │   │   ├── gap-detection.md                  # Boundary + audit gap analysis
 │   │   ├── gap-extraction.md                 # Extract structured gap data
 │   │   └── corrected-analysis.md             # Corrected re-analysis
-│   ├── smart-analysis/                      # Smart operation-group
+│   ├── smart-analysis/                      # Smart technique-group
 │   │   ├── TECHNIQUE.md                      # Group contract
 │   │   ├── prereq-scan.md                    # Prerequisite/knowledge-gap scan
 │   │   ├── knowledge-fill.md                 # Optional knowledge fill
 │   │   ├── select-mode.md                    # Compose the pipeline
 │   │   ├── run-analysis.md                   # Run composed analysis
 │   │   └── dispute-correction.md             # Optional dispute self-correction
-│   └── adaptive-analysis/                   # Adaptive operation-group
+│   └── adaptive-analysis/                   # Adaptive technique-group
 │       ├── TECHNIQUE.md                      # Group contract
 │       ├── stage-1-sdl.md                    # SDL deep_scan (Haiku)
 │       ├── stage-2-l12.md                    # L12 escalation (Sonnet)

@@ -1,6 +1,6 @@
 ---
 name: conformance-report
-description: The shape a bound-operation conformance report takes across the graphs a walk addresses, and what each row may claim about an answer that landed from a layer the graph may not hold.
+description: The shape a bound-technique conformance report takes across the graphs a walk addresses, and what each row may claim about an answer that landed from a layer the graph may not hold.
 ---
 
 # Conformance Report

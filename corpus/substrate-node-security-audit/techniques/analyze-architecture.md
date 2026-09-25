@@ -35,7 +35,7 @@ Per-component-pair record of the data that flows across each boundary and direct
 
 #### privilege_map
 
-Per-operation record of the required authority, where it is verified in code, and what happens when verification is absent, bypassable, or inconsistent, plus the security-relevant runtime configuration constants and whether each is appropriate and post-genesis-mutable.
+Per-technique record of the required authority, where it is verified in code, and what happens when verification is absent, bypassable, or inconsistent, plus the security-relevant runtime configuration constants and whether each is appropriate and post-genesis-mutable.
 
 #### candidate_points
 

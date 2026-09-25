@@ -81,7 +81,7 @@ Severity labels throughout are computed from an **Impact × Feasibility** rubric
 
 ## Techniques
 
-Each activity step binds exactly one technique via `step.technique`. The techniques are organised into four operation-groups (one per authoring activity) plus one standalone technique, all inheriting the workflow-root [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) base contract. The cross-cutting meta [`variable-binding`](/meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity; `execute-analysis` additionally declares the meta [`scatter-gather`](/meta/techniques/scatter-gather.md) strategy technique for its per-scope trigger loop.
+Each activity step binds exactly one technique via `step.technique`. The techniques are organised into four technique-groups (one per authoring activity) plus one standalone technique, all inheriting the workflow-root [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) base contract. The cross-cutting meta [`variable-binding`](/meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity; `execute-analysis` additionally declares the meta [`scatter-gather`](/meta/techniques/scatter-gather.md) strategy technique for its per-scope trigger loop.
 
 | Technique | Capability |
 |-----------|------------|
@@ -93,7 +93,7 @@ Each activity step binds exactly one technique via `step.technique`. The techniq
 
 Two capabilities are drawn from elsewhere in the corpus rather than authored here: [`gitnexus::analyze`](/gitnexus/techniques/analyze.md) indexes the target during scope-definition, and [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) triggers the prism child workflow during execute-analysis.
 
-**Detailed documentation:** See [techniques/README.md](./techniques/README.md) for the full library index with per-operation breakdowns.
+**Detailed documentation:** See [techniques/README.md](./techniques/README.md) for the full library index with per-technique breakdowns.
 
 ---
 
@@ -134,13 +134,13 @@ corpus/prism-audit/
 ├── techniques/
 │   ├── README.md                              # Technique library index
 │   ├── TECHNIQUE.md                           # Workflow-root base contract (inherited by all)
-│   ├── scope-definition/                      # Scope operation-group
+│   ├── scope-definition/                      # Scope technique-group
 │   │   ├── TECHNIQUE.md                        # Group contract
 │   │   ├── collect-inputs.md                   # Collect target, description, output path
 │   │   ├── validate-target.md                  # Verify the target is an analysable codebase
 │   │   ├── summarize-scope.md                  # Summarise the assembled scope for confirmation
 │   │   └── create-output-folder.md             # Create the output directory
-│   ├── compose-audit-prompt/                  # Prompt-composition operation-group
+│   ├── compose-audit-prompt/                  # Prompt-composition technique-group
 │   │   ├── TECHNIQUE.md                        # Group contract
 │   │   ├── survey-structure.md                 # Survey module layout and LOC
 │   │   ├── identify-security-characteristics.md # Scan for security-relevant patterns
@@ -149,11 +149,11 @@ corpus/prism-audit/
 │   │   ├── identify-cross-cutting-concerns.md  # Error handling, feature flags, dependencies
 │   │   ├── compose-prompt.md                   # Assemble the self-contained audit prompt
 │   │   └── build-audit-scopes.md               # Partition the audit into prism scopes
-│   ├── execute-analysis/                      # Prism-trigger operation-group
+│   ├── execute-analysis/                      # Prism-trigger technique-group
 │   │   ├── TECHNIQUE.md                        # Group contract
 │   │   ├── compose-trigger-context.md          # Unpack a scope into prism trigger variables
 │   │   └── accumulate-analysis-run.md          # Record one completed prism run into the audit accumulators
-│   ├── audit-finalize/                        # Finalization operation-group
+│   ├── audit-finalize/                        # Finalization technique-group
 │   │   ├── TECHNIQUE.md                        # Group contract
 │   │   ├── split-report.md                     # Split REPORT.md → AUDIT-REPORT.md
 │   │   ├── create-detailed-findings.md         # Build DETAILED-FINDINGS.md from DEFINITIVE-FINDINGS.md

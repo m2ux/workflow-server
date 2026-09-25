@@ -1913,7 +1913,7 @@ A technique's rule states policy over a subject the technique does not own, so i
 
 **Do not flag:** A prohibition or conformance statement addressed to the reader — a worker rule barring a worker's own call, an adapter rule naming the only conforming form of its own dispatch. An invariant on the technique's own cadence, outputs, or the composition of what it writes. A one-line pointer to the surface that owns the policy. The same claim held in both places (`no-technique-resource-dual-home`). Operational cadence filed in a resource (`resource-fills-not-does`).
 
-**Fix:** Move the claim to the surface that owns the subject, widen that statement to cover whatever the rule uniquely carried, and delete the rule where nothing operation-specific remains. Cite the owning surface from the phase that needs it. Where no surface owns the subject yet, `operative-criteria-need-a-home` names the migration. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Move the claim to the surface that owns the subject, widen that statement to cover whatever the rule uniquely carried, and delete the rule where nothing technique-specific remains. Cite the owning surface from the phase that needs it. Where no surface owns the subject yet, `operative-criteria-need-a-home` names the migration. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-148. inherited-input-re-declared
 
@@ -1985,7 +1985,7 @@ A Protocol writes a call signature without an argument its schema marks optional
 
 **Do not flag:** An argument the schema requires outright (`call-omits-required-argument`). A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. An argument the tool accepts either way in every state the technique reaches. The conditional obligation itself, in the signature or in a phrase naming which calls must pass it (`tool-contract-restated-in-protocol`).
 
-**Fix:** Name the argument in the signature, and declare the value as an input where the technique takes it from its caller. Where the technique reaches the call in both states, mark that input optional and state the state that leaves it unset. The operation-to-operation form is `apply-omits-declared-input`.
+**Fix:** Name the argument in the signature, and declare the value as an input where the technique takes it from its caller. Where the technique reaches the call in both states, mark that input optional and state the state that leaves it unset. The technique-to-technique form is `apply-omits-declared-input`.
 
 ### AP-154. call-omits-required-argument
 

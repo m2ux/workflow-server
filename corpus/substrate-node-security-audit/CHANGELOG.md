@@ -179,7 +179,7 @@ Introduces a dedicated security architecture analysis sub-agent dispatched durin
 **Architectural change — Security Architecture Sub-Agent:**
 - NEW activity `sub-architectural-analysis` (13-sub-architectural-analysis.yaml): A sub-agent dispatched during reconnaissance that performs security-oriented architectural decomposition. Receives the crate map, file inventory, and trust boundaries; returns four structured artifacts:
   1. **Component Interaction Model** — per-component-pair data flows, trust assumptions, and required security properties
-  2. **Privilege and Authority Map** — per-operation authority requirements and verification points
+  2. **Privilege and Authority Map** — per-technique authority requirements and verification points
   3. **Candidate Point List** — ranked locations where code complexity concentrates (Dowd methodology)
   4. **Emergent Vulnerability Domains** — security-relevant properties that don't map to any §3 checklist item
 

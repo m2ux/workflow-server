@@ -10,7 +10,7 @@ The technique library for the prism-audit workflow. Each technique is one capabi
 
 ## Techniques
 
-Four operation-groups (one per authoring activity) plus one standalone technique. A group is a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `.md` file per technique.
+Four technique-groups (one per authoring activity) plus one standalone technique. A group is a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `.md` file per technique.
 
 | Technique | Kind | Capability |
 |-----------|------|------------|

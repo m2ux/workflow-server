@@ -8,7 +8,7 @@ Authoring procedure — adding a workflow, resource, technique or routine, and h
 
 Each folder at this branch's root is a kind of content. A walk that loads the workflows operators run enters `corpus/` and skips the other kind names.
 
-A directory at any depth under `corpus/` that holds `techniques/`, `resources/` or `routines/` is a **namespace**, and every reference reaches it by that directory's name. One that also holds a `workflow.yaml` is a **workflow** — a product an operator starts. One that does not is a **library**: shared operations any workflow binds, with no graph of its own. Grouping folders hold namespaces and name nothing themselves.
+A directory at any depth under `corpus/` that holds `techniques/`, `resources/` or `routines/` is a **namespace**, and every reference reaches it by that directory's name. One that also holds a `workflow.yaml` is a **workflow** — a product an operator starts. One that does not is a **library**: shared techniques any workflow binds, with no graph of its own. Grouping folders hold namespaces and name nothing themselves.
 
 ```
 <branch root>
@@ -45,7 +45,7 @@ A specimen is a worked example of a form. An author copies from it when creating
 
 ### support
 
-A library is a namespace of shared operations that declares no workflow. Libraries sit at `corpus/support/` because each belongs to no single product and to every one that reaches it. `support/` is a grouping folder and appears in no reference — a library is reached by its own directory name, `git::commit-regular-files`. Contents: [`corpus/support/README.md`](corpus/support/README.md).
+A library is a namespace of shared techniques that declares no workflow. Libraries sit at `corpus/support/` because each belongs to no single product and to every one that reaches it. `support/` is a grouping folder and appears in no reference — a library is reached by its own directory name, `git::commit-regular-files`. Contents: [`corpus/support/README.md`](corpus/support/README.md).
 
 ### ledgers
 

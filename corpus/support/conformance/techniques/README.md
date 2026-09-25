@@ -2,7 +2,7 @@
 
 > Part of the [conformance library](../README.md)
 
-The techniques a specimen applies to set a case up, rather than to measure one. The authoritative capability, outputs and rules live in the per-operation `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+The techniques a specimen applies to set a case up, rather than to measure one. The authoritative capability, outputs and rules live in the per-technique `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
 | Technique | Does |
 |-----------|------|

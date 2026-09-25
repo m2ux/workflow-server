@@ -116,7 +116,7 @@ Delegated work units Primary Scan dispatches singly, each executed by a dedicate
 
 Reusable capabilities that activities invoke — each technique encapsulates a specific analytical or orchestration capability.
 
-Most capabilities are operation-groups: a `<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` per technique, bound from steps as `<group>::<op>`. Two are standalone files. The shared base contract for the set lives in [`techniques/TECHNIQUE.md`](./techniques/TECHNIQUE.md).
+Most capabilities are technique-groups: a `<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` per technique, bound from steps as `<group>::<op>`. Two are standalone files. The shared base contract for the set lives in [`techniques/TECHNIQUE.md`](./techniques/TECHNIQUE.md).
 
 | Order | Technique | Kind | Capability | Used By |
 |---|-------|------|------------|---------|

@@ -2,7 +2,7 @@
 
 > Part of the [GitNexus namespace](../README.md)
 
-Each technique here is one capability a step binds, or a technique's Protocol names as the tool it reaches for. The authoritative capability, inputs, outputs and rules live in the per-operation `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+Each technique here is one capability a step binds, or a technique's Protocol names as the tool it reaches for. The authoritative capability, inputs, outputs and rules live in the per-technique `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
 [`TECHNIQUE.md`](TECHNIQUE.md) holds the input every technique inherits and the rules every one of them is held to.
 
