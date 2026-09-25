@@ -11,7 +11,7 @@ Shared Inputs, Outputs, Rules, and Errors for every technique in this set.
 
 ### planning_folder_path
 
-The review's working folder — where every operation reads prior artifacts from and writes its own artifacts into.
+The review's working folder — where every technique reads prior artifacts from and writes its own artifacts into.
 
 ### target_repo_path
 

@@ -4,7 +4,7 @@
 
 Composes each execution group's prism trigger context and records the resulting run into the evaluation's accumulators, so the analysis stage holds the run's contract artifacts and its….
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

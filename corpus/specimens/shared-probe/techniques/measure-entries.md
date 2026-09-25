@@ -19,4 +19,4 @@ The directory to count, relative to `{component_path}`.
 
 - Count the entries directly inside `{probe_target}` and report the number in the step manifest.
 
-The count lands in the manifest and nowhere else: what a site binding this library evidences is which folder answered its reference, and that is a property of the delivery rather than of any value the operation produces.
+The count lands in the manifest and nowhere else: what a site binding this library evidences is which folder answered its reference, and that is a property of the delivery rather than of any value the technique produces.

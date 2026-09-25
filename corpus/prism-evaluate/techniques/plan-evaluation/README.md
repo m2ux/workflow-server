@@ -4,7 +4,7 @@
 
 Turns an evaluation request into a runnable plan: what the target is, which dimensions judge it, and the prism configuration each dimension takes.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

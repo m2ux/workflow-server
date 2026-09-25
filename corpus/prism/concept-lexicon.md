@@ -48,13 +48,13 @@ Concealment mechanisms cluster into six categories across domains. In code, conc
 
 ## Analytical Method Concepts
 
-These describe the reasoning operations the prisms use to arrive at findings.
+These describe the reasoning techniques the prisms use to arrive at findings.
 
 ### Dialectical Testing
 
 Three independent perspectives stress-test a claim: one defends it, one attacks it, and one examines what both take for granted. The claim transforms through this process, and the gap between the original claim and the transformed claim is itself a diagnostic — it reveals the hidden assumptions that shaped the original framing.
 
-This operation appears explicitly in the L12 structural lens (00) and its compressed variant (18). It also appears structurally in the full-prism pipeline, where the three passes (structural, adversarial, synthesis) instantiate the same pattern at the pipeline level rather than within a single prompt. The adversarial pass (01) is the "attack" perspective operating with full context isolation — it has never seen the structural analysis being generated, only the finished text.
+This technique appears explicitly in the L12 structural lens (00) and its compressed variant (18). It also appears structurally in the full-prism pipeline, where the three passes (structural, adversarial, synthesis) instantiate the same pattern at the pipeline level rather than within a single prompt. The adversarial pass (01) is the "attack" perspective operating with full context isolation — it has never seen the structural analysis being generated, only the finished text.
 
 ### Falsifiable Claim
 
@@ -64,7 +64,7 @@ The falsifiability requirement is what makes the subsequent dialectical testing 
 
 ### Invariant Inversion
 
-Invariant inversion is the operation of engineering a design where a property that was impossible in the original system becomes trivially satisfiable. The point is not to propose a better design — it is to discover what new impossibility the inversion creates. The conservation law is the named relationship between the original impossibility and the new one.
+Invariant inversion is the technique of engineering a design where a property that was impossible in the original system becomes trivially satisfiable. The point is not to propose a better design — it is to discover what new impossibility the inversion creates. The conservation law is the named relationship between the original impossibility and the new one.
 
 For example, if the structural invariant is "this system cannot guarantee both consistency and availability," the inversion engineers a design where consistency and availability are trivially satisfiable. That design will necessarily sacrifice something else — perhaps it requires unbounded memory, or it can only handle a single client. The conservation law names the relationship: *consistency x availability x resource-boundedness = constant*.
 
@@ -76,7 +76,7 @@ The adversarial pass (01) specifically challenges these classifications. Bugs la
 
 ### Recursive Entailment
 
-Recursive entailment is the pattern of applying a fix, observing the new problem the fix creates, applying a fix to that, and continuing until a persistent property emerges. The fix-cascade lens (16) uses this as its primary operation. It is a compressed version of the iterative improvement sequence in the L12 pipeline, focused specifically on whether a defect is fixable or structural.
+Recursive entailment is the pattern of applying a fix, observing the new problem the fix creates, applying a fix to that, and continuing until a persistent property emerges. The fix-cascade lens (16) uses this as its primary technique. It is a compressed version of the iterative improvement sequence in the L12 pipeline, focused specifically on whether a defect is fixable or structural.
 
 The key insight is that a fix that "buries the problem deeper" — making the symptom disappear while preserving the root cause — is itself a diagnostic signal. If every attempted fix recreates the same class of problem, the underlying cause is a structural invariant that must be managed rather than solved.
 
@@ -108,7 +108,7 @@ This is distinct from a simple bug. A bug is where code fails to do what it shou
 
 A trust gradient maps where validation actually happens in a system versus where it is merely assumed to have happened. The trust topology lens (13) constructs this map by tracing data from external boundaries inward, identifying every point where a component trusts that a prior component has already validated, sanitized, or authorized the input.
 
-Trust inversions occur when low-level code depends on high-level invariants without checking them — utility functions that are only safe when called from a specific context, or read operations that silently perform privileged mutations. Boundary collapse occurs when two components each believe the other owns the same validation responsibility, resulting in either double validation (wasted work) or zero validation (a security gap).
+Trust inversions occur when low-level code depends on high-level invariants without checking them — utility functions that are only safe when called from a specific context, or read techniques that silently perform privileged mutations. Boundary collapse occurs when two components each believe the other owns the same validation responsibility, resulting in either double validation (wasted work) or zero validation (a security gap).
 
 ### Temporal Coupling
 
@@ -154,7 +154,7 @@ These concern the relationship between what an artifact claims to be or do and w
 
 ### Interface Contract
 
-An interface contract is what a function's signature promises about types, side effects, and return values. The contract lens (11) reads code function by function, comparing each signature's promise against the implementation's actual behavior. Violations include functions that silently behave differently based on input type (not value), sentinel values with context-dependent meaning, and methods that mutate shared state as a side effect of a read operation.
+An interface contract is what a function's signature promises about types, side effects, and return values. The contract lens (11) reads code function by function, comparing each signature's promise against the implementation's actual behavior. Violations include functions that silently behave differently based on input type (not value), sentinel values with context-dependent meaning, and methods that mutate shared state as a side effect of a read technique.
 
 The contract lens targets the gap within a single function's boundary. This distinguishes it from the abstraction leak lens (15), which targets what escapes across layer boundaries, and the fidelity lens (31), which targets drift between documentation and behavior.
 
@@ -258,7 +258,7 @@ The pedagogy law names the constraint that gets transferred as an assumption —
 
 ### Claim Inversion
 
-Claim inversion is the operation of extracting every empirical claim an artifact embeds — about timing, causality, resources, or human behavior — and then assuming each claim is false to trace the corruption that unfolds when the artifact meets a contradicting reality. The claim lens (07) builds three alternative designs, each inverting one claim, to reveal the original's hidden assumptions.
+Claim inversion is the technique of extracting every empirical claim an artifact embeds — about timing, causality, resources, or human behavior — and then assuming each claim is false to trace the corruption that unfolds when the artifact meets a contradicting reality. The claim lens (07) builds three alternative designs, each inverting one claim, to reveal the original's hidden assumptions.
 
 The core impossibility the lens seeks is the goal the artifact is trying to optimize around that cannot actually be achieved. This is related to but distinct from a conservation law: the core impossibility is what the artifact pretends is possible, while the conservation law names the specific trade-off that makes it impossible.
 
@@ -352,7 +352,7 @@ Gap-aware analysis (L12-G, resource 43) integrates self-auditing into the L12 pi
 
 ### Reflexive Self-Diagnosis
 
-Reflexive self-diagnosis is the operation of applying the analytical framework to its own output. The oracle lens (44) implements this as a 5-phase protocol: structural analysis, epistemic typing, self-correction, reflexive diagnosis (applying the framework to itself to find its own blind spots), and a final harvest that reports retracted claims alongside findings. This is the L13 operation — the reflexive ceiling where further recursion produces infinite regress rather than new insight.
+Reflexive self-diagnosis is the technique of applying the analytical framework to its own output. The oracle lens (44) implements this as a 5-phase protocol: structural analysis, epistemic typing, self-correction, reflexive diagnosis (applying the framework to itself to find its own blind spots), and a final harvest that reports retracted claims alongside findings. This is the L13 technique — the reflexive ceiling where further recursion produces infinite regress rather than new insight.
 
 ---
 

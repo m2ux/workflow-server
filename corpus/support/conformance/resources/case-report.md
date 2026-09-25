@@ -23,12 +23,12 @@ Graphs addressed:
 
 ## What the run evidenced
 
-- positive — {what the measurement proves about the run's body: the operations it reached, the values it landed, the shape it exercised}
+- positive — {what the measurement proves about the run's body: the techniques it reached, the values it landed, the shape it exercised}
 - negative — {which promised fallback the run took, and what in its outputs distinguishes that fallback from a measurement that found nothing}
 
 ## Gaps
 
-{One line per case whose run did not materialise, or whose operation could not be called, naming what stopped it. Omit the section when both cases ran to their landing.}
+{One line per case whose run did not materialise, or whose technique could not be called, naming what stopped it. Omit the section when both cases ran to their landing.}
 ```
 
 ## Rules

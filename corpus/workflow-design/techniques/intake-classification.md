@@ -11,7 +11,7 @@ Operation-type classification and design-intent baseline for create, update, or 
 
 ### operation_type
 
-The classified operation — sole mode state for the session:
+The classified technique — sole mode state for the session:
 
 - **Review** — existing-workflow reference(s) plus an audit intent (recognition signals include "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", "evaluate workflow")
 - **Update** — existing-workflow reference plus a change request
@@ -63,7 +63,7 @@ When `{operation_type}` is `update`, the categorized change request derived from
 
 ## Protocol
 
-### 1. Classify Operation
+### 1. Classify Technique
 
 - Determine `{operation_type}` per the Output criteria
 - Set `{operation_type_ambiguous}` true when classification signals conflict or are insufficient; otherwise false

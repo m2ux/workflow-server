@@ -4,7 +4,7 @@
 
 Turns a codebase into the self-contained audit prompt an analysis run works from, tailored to that codebase's architecture, language and risk exposure.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

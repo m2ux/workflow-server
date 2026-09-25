@@ -15,13 +15,13 @@ Free-form statement of the document the user wants authored, rewritten, or audit
 
 ### source_document_path
 
-*(optional)* Path to the existing document a rewrite or audit run reads. Its presence signals a non-author operation.
+*(optional)* Path to the existing document a rewrite or audit run reads. Its presence signals a non-author technique.
 
 ## Outputs
 
 ### operation_type
 
-The classified operation — `author`, `rewrite`, or `audit`.
+The classified technique — `author`, `rewrite`, or `audit`.
 
 ### controlled_language
 
@@ -49,11 +49,11 @@ The class of document (email, web page, instruction, report, form, and so on) ch
 
 ### intent_needs_confirmation
 
-True when the operation type is ambiguous or the reader profile cannot be settled from the request — drives the intake gate.
+True when the technique type is ambiguous or the reader profile cannot be settled from the request — drives the intake gate.
 
 ## Protocol
 
-### 1. Classify the Operation
+### 1. Classify the Technique
 
 - Classify `{user_request}` as `author` (a new document), `rewrite` (an existing document made plain), or `audit` (an existing document assessed against the principles) — a named `{source_document_path}` signals `rewrite` or `audit`; the user's goal selects between them
 - Set `{$operation_type_ambiguous}` true when the request admits more than one plausible reading, false when it is clear
@@ -69,7 +69,7 @@ True when the operation type is ambiguous or the reader profile cannot be settle
 
 ### 4. Flag Unsettled Intent
 
-- Set `{intent_needs_confirmation}` true when `{$operation_type_ambiguous}` is true or the profile still carries an unsettled gap; false when operation and profile are both settled
+- Set `{intent_needs_confirmation}` true when `{$operation_type_ambiguous}` is true or the profile still carries an unsettled gap; false when technique and profile are both settled
 
 ## Rules
 

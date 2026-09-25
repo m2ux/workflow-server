@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Holds the lean-coding contract: what the pass is working on, how strict a lens it runs under, and the discipline every operation in the set applies.
+Holds the lean-coding contract: what the pass is working on, how strict a lens it runs under, and the discipline every technique in the set applies.
 
 ## Inputs
 
@@ -61,4 +61,4 @@ When two options at the same rung are equal in size, take the one that is correc
 
 ### report-only-no-apply
 
-Only the climb changes code. Every other operation writes what it found into its own artifact and leaves the tree untouched.
+Only the climb changes code. Every other technique writes what it found into its own artifact and leaves the tree untouched.

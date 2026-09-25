@@ -15,13 +15,13 @@ The lens resource to apply, named by its slug (e.g. `reachability`, `state-audit
 
 ### analysis_focus
 
-*(optional)* Optional focus area to guide the analysis (e.g. 'error handling', 'state management', 'concurrency'). Noted as a framing constraint; it does not narrow the lens — the lens operations are exhaustive.
+*(optional)* Optional focus area to guide the analysis (e.g. 'error handling', 'state management', 'concurrency'). Noted as a framing constraint; it does not narrow the lens — the lens techniques are exhaustive.
 
 ## Outputs
 
 ### lens_analysis
 
-The applied lens's complete output following its own operations
+The applied lens's complete output following its own techniques
 
 #### artifact
 
@@ -40,24 +40,24 @@ The lens's findings, in the structure the lens defines
 ### 1. Load Lens
 
 - Load the lens named by `{lens_name}` from the prism workflow resources (e.g. `{lens_name}` = `reachability` → [reachability](../resources/reachability.md))
-- The lens prompt is the program — it defines the exact sequence of analytical operations to execute
+- The lens prompt is the program — it defines the exact sequence of analytical techniques to execute
 - If the named lens cannot be loaded, report the error and the fact that `{lens_name}` did not resolve to a known resource; do not silently fall back to a different lens
 
 ### 2. Read Target
 
 - If `{target_content}` is a file path, read the file to obtain the code or text
 - If no content was provided or the file cannot be found, request the file path or content from the caller before proceeding
-- If an `{analysis_focus}` is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
+- If an `{analysis_focus}` is provided, note it as a framing constraint but do not narrow the analysis — the lens techniques are exhaustive
 
 ### 3. Gather Structural Context
 
 - When the lens makes claims about impact, coupling, reachability, or dead code and `{repo_name}` is non-empty: use [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*search_query*: the lens claim's subject as keywords, *repo_name*: `{repo_name}`) and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: each of the target's entry points, *repo_name*: `{repo_name}`) to obtain execution flows and caller/callee maps as supplementary evidence. An empty `{repo_name}` is a target no graph covers, and this step is skipped.
-- Structural context is supplementary evidence, not a replacement for the lens operations. The lens chain executes completely regardless of whether graph data is available.
+- Structural context is supplementary evidence, not a replacement for the lens techniques. The lens chain executes completely regardless of whether graph data is available.
 
 ### 4. Execute Lens
 
-- Apply every operation in the lens prompt sequentially against the target
-- Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain.
+- Apply every technique in the lens prompt sequentially against the target
+- Execute completely — do not abbreviate or skip techniques. The analytical depth comes from the full chain.
 
 ### 5. Write Artifact
 
@@ -66,14 +66,14 @@ The lens's findings, in the structure the lens defines
 
 ### 6. Format Output
 
-- Structure `{lens_analysis}` with the section headers the lens's own operations produce — a lens defines its own output shape (a bug table, a trust map, a dead-code list, an alternative-architecture set, …). Do not force an L12 conservation-law structure onto a non-L12 lens.
+- Structure `{lens_analysis}` with the section headers the lens's own techniques produce — a lens defines its own output shape (a bug table, a trust map, a dead-code list, an alternative-architecture set, …). Do not force an L12 conservation-law structure onto a non-L12 lens.
 - Include file paths, line numbers, and specific names for every finding, per `evidence-required`
 
 ## Rules
 
 ### lens-is-program
 
-The lens resource is an imperative program. Execute its operations in order, producing the output each operation requests. The lens determines what kind of analysis is performed; this technique only loads it, feeds it the target, and persists its output.
+The lens resource is an imperative program. Execute its techniques in order, producing the output each technique requests. The lens determines what kind of analysis is performed; this technique only loads it, feeds it the target, and persists its output.
 
 ### single-lens-scope
 

@@ -10,7 +10,7 @@ This workflow exists to make a routine's argument binding observable. A session 
 
 The work the measurements do is deliberately trivial — count what a directory holds, or sum the bytes of the files in it, and name the next directory down. Both only read, so the run costs about what the construct costs. The evidence it leaves behind is about which measurement each site supplied and what one run did with each, not about the repository it measured.
 
-It serves two readers. One wants to know whether this server materialises a run correctly at two sites that disagree about the operation, and takes that from the report. The other is writing a run of their own and wants a worked example of the shape — an operation the site chooses, a repeat-until loop, and later steps steering on what that operation reported.
+It serves two readers. One wants to know whether this server materialises a run correctly at two sites that disagree about the technique, and takes that from the report. The other is writing a run of their own and wants a worked example of the shape — a technique the site chooses, a repeat-until loop, and later steps steering on what that technique reported.
 
 | # | Activity | Description |
 |---|----------|-------------|
@@ -43,11 +43,11 @@ stateDiagram-v2
 
 ## The shape it demonstrates
 
-The two passes are one run. [`routines/measured-pass.yaml`](./routines/measured-pass.yaml) holds it: a loop that continues while a target is held, a step whose operation the site supplies, gates that read what that operation reported, and an advance onto the target it named next.
+The two passes are one run. [`routines/measured-pass.yaml`](./routines/measured-pass.yaml) holds it: a loop that continues while a target is held, a step whose technique the site supplies, gates that read what that technique reported, and an advance onto the target it named next.
 
 Three things about that shape are worth copying.
 
-**The operation is the site's choice, and the gates are not.** The run reads `probe_result` without knowing which measurement produced it, so every measurement a site may supply answers under that one name. The rule saying so lives with the measurements, in [`techniques/TECHNIQUE.md`](./techniques/TECHNIQUE.md), because the sites are where the choice is made and the run is where the reading is written.
+**The technique is the site's choice, and the gates are not.** The run reads `probe_result` without knowing which measurement produced it, so every measurement a site may supply answers under that one name. The rule saying so lives with the measurements, in [`techniques/TECHNIQUE.md`](./techniques/TECHNIQUE.md), because the sites are where the choice is made and the run is where the reading is written.
 
 **What the run produces for itself, it does not declare.** `probe_result` is neither an input nor an output of the run: the run's own step put it in the bag and the run's own gates read it back. A run may not promise it onward either, because which values it carries follows from the argument, and the next site's argument may carry others.
 

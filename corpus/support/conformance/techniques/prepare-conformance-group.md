@@ -21,7 +21,7 @@ Name the group is configured under: `conformance-group`.
 
 ### current_member_graph_name
 
-Name of the second member this operation prepares, which is the basename of its root: `conformance-current-fixture`. Its checkout stands at `/tmp/conformance-current-fixture`.
+Name of the second member this technique prepares, which is the basename of its root: `conformance-current-fixture`. Its checkout stands at `/tmp/conformance-current-fixture`.
 
 ## Protocol
 
@@ -35,7 +35,7 @@ Name of the second member this operation prepares, which is the basename of its 
 ### 2. Configure the Group
 
 - Write `~/.gitnexus/groups/{conformance_group_name}/group.yaml` naming both members — `{stale_member_graph_name}` and `{current_member_graph_name}` — each mapped to its own registered graph name, with no declared links.
-   > A member named here and absent from the graph inventory lands in the run's unrebuildable list, which is the mark of a different case. Both members carry a graph when this operation returns.
+   > A member named here and absent from the graph inventory lands in the run's unrebuildable list, which is the mark of a different case. Both members carry a graph when this technique returns.
 
 ### 3. Land the Address
 
@@ -49,4 +49,4 @@ A group refresh rebuilds the members its freshness read names and rewrites the g
 
 ### one-member-behind-is-what-the-rebuild-loop-needs
 
-The loop over stale members runs a pass per member the freshness read names, and names none where every member stands at its tree's head. The stale member is what puts a pass in the loop, so it joins the group already behind — prepared before this operation, not by it.
+The loop over stale members runs a pass per member the freshness read names, and names none where every member stands at its tree's head. The stale member is what puts a pass in the loop, so it joins the group already behind — prepared before this technique, not by it.

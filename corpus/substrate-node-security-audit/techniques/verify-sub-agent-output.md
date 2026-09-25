@@ -93,7 +93,7 @@ agent-id, scope, specific check to perform
 
 ### 10. Check Error Path Persistence
 
-- For each Group A pallet agent, verify that every `StorageMap::insert()` site identified in the agent's storage lifecycle pairing table has been checked for error-path persistence: does a subsequent fallible operation (host API call, event construction, serialization) exist on the same code path? If so, does the error path revert the insert? If the agent's output does not address error-path persistence for any insert site, flag for follow-up. This specifically targets the pattern where `insert()` persists but the handler returns `None` on a downstream failure.
+- For each Group A pallet agent, verify that every `StorageMap::insert()` site identified in the agent's storage lifecycle pairing table has been checked for error-path persistence: does a subsequent fallible technique (host API call, event construction, serialization) exist on the same code path? If so, does the error path revert the insert? If the agent's output does not address error-path persistence for any insert site, flag for follow-up. This specifically targets the pattern where `insert()` persists but the handler returns `None` on a downstream failure.
 
 ### 11. Produce Verification Report
 

@@ -30,7 +30,7 @@ The finding set annotated with per-finding Impact score, Feasibility score, comp
 - Determine the Feasibility score (1-4) with a one-sentence justification
 - Connection pool and infrastructure findings affecting consensus paths through routinely-accessible systems (RPC, p2p): Feasibility >= 3
 - Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility = 2
-- Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility = 4
+- Conditions occurring under normal technique without attacker action (pruning, routine block production, standard configs): Feasibility = 4
 
 ### 3. Map To Severity
 
@@ -52,7 +52,7 @@ Severity MUST use the Impact x Feasibility rubric. Compare each finding against 
 
 ### under-rating
 
-Infrastructure and availability findings (pool sharing, SSL, genesis consistency, panics under normal operation) are systematically under-rated. Use the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md#calibration-benchmark-table).
+Infrastructure and availability findings (pool sharing, SSL, genesis consistency, panics under normal technique) are systematically under-rated. Use the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md#calibration-benchmark-table).
 
 ### over-rating
 

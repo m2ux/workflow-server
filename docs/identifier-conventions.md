@@ -34,7 +34,7 @@ An id that mirrors an external tool, server or command-line parameter takes that
 
 ### What counts as a name
 
-A name — a technique, operation or resource identity, and the file, hyperlink or `::` target that addresses it — is a slug, never an evaluated variable, and is `kebab-case`: `create-issue`, `resolve-cloud-id.md`.
+A name — a technique or resource identity, and the file, hyperlink or `::` target that addresses it — is a slug, never an evaluated variable, and is `kebab-case`: `create-issue`, `resolve-cloud-id.md`.
 
 #### Rule names are names too
 

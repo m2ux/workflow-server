@@ -68,4 +68,4 @@ Why the checkout was left as it stood: the name resolved to nothing at `{remote_
 
 ### a-branch-pins-the-fetched-head
 
-A branch name lands the commit the remote's branch head stood at when this operation fetched, and `{pinned_commit}` is that commit. The checkout does not track the branch, so a later push to it moves nothing here: a claim derived from the checkout stays a claim about one commit.
+A branch name lands the commit the remote's branch head stood at when this technique fetched, and `{pinned_commit}` is that commit. The checkout does not track the branch, so a later push to it moves nothing here: a claim derived from the checkout stays a claim about one commit.

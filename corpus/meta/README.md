@@ -6,12 +6,12 @@
 
 ## Overview
 
-The meta workflow is the structural home for the session's orchestration logic. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique operation via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
+The meta workflow is the structural home for the session's orchestration logic. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
 
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the techniques bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - State persistence is server-managed (no agent-side persist/restore); on-disk shape: [`docs/state_management_model.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state_management_model.md).
 
@@ -55,7 +55,7 @@ folders carry double duty. They are the local content for the meta workflow
 itself AND the cross-workflow shared layer every other workflow reaches.
 
 The on-disk layout a technique takes, how a base contract reaches the
-operations beneath it, the cross-reference format, and the section
+techniques beneath it, the cross-reference format, and the section
 conventions every technique follows are defined in
 [`meta/resources/workflow-canonical.md`](./resources/workflow-canonical.md).
 
@@ -67,12 +67,12 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 | Technique | Capability |
 |-----------|------------|
-| [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for executing a workflow's structured flow — session lifecycle, activity dispatch, agent entry, transitions, planning Progress, and the checkpoint protocol. |
+| [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Techniques and rules for executing a workflow's structured flow — session lifecycle, activity dispatch, agent entry, transitions, planning Progress, and the checkpoint protocol. |
 | [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries every agent is held to — single source of truth for file sensitivity, communication tone, attribution, code commentary, interaction, operational discipline and checkpoint discipline |
 | [`orchestrator-conduct`](techniques/orchestrator-conduct.md) | The boundaries only an orchestrator can honour — single source of truth for domain-work delegation, agent-tree depth, dispatch on resume, commit scope, automatic transitions and ad-hoc interaction |
 | [`worker-conduct`](techniques/worker-conduct.md) | The boundaries only a dispatched worker can honour — how it writes the artifacts its activity declares, and what it reports having written |
 | [`verify-artifact-conforms`](techniques/verify-artifact-conforms.md) | Artifact-conformance pass any workflow binds: each artifact measured against the guide its filename maps to, the caller's canonical-home map, and the [Artifact Writing Register](resources/writing-register.md), corrected in place |
-| [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
+| [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent techniques (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
 
 > Cross-cutting rules live in `agent-conduct` (any agent), `orchestrator-conduct` (an orchestrator's alone) and `worker-conduct` (a dispatched worker's alone), and capability techniques (`workflow-engine`, `harness-compat`, etc.) reference them as their single source of truth. A bundle addresses the rule families its role owns, so a rule reaches the agent that can act on it.
 
@@ -82,7 +82,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`; unique match walks the child. Ongoing delivery policy is in the operations bundle. |
+| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`; unique match walks the child. Ongoing delivery policy is in the techniques bundle. |
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
 | `planning-readme` | [Planning Folder README Guide](./resources/planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`. |
 | `resume-intent-lexicon` | [Resume Intent Lexicon](./resources/resume-intent-lexicon.md) | Continuation-phrase vocabulary `start_session` matches when deciding whether to scan saved sessions. |
@@ -126,7 +126,7 @@ corpus/meta/
 │   ├── verify-artifact-conforms.md          # Artifact-conformance pass bound by any workflow that persists artifacts
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
-│   │   └── {op}.md                          #   one file per operation (start-session, create-session, dispatch-activity, ...)
+│   │   └── {op}.md                          #   one file per technique (start-session, create-session, dispatch-activity, ...)
 │   ├── harness-compat/                      # Harness-independent agent dispatch
 │   ├── orchestration-patterns/              # Atomic dispatch/gather/synthesise ops for pattern activities
 │   └── fan/                                 # Contract and rules for carrying a graph fan

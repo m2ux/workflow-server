@@ -81,7 +81,7 @@ Severity labels throughout are computed from an **Impact × Feasibility** rubric
 
 ## Techniques
 
-Each activity step binds exactly one operation via `step.technique`. The operations are organised into four operation-groups (one per authoring activity) plus one standalone technique, all inheriting the workflow-root [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) base contract. The cross-cutting meta [`variable-binding`](/meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity; `execute-analysis` additionally declares the meta [`scatter-gather`](/meta/techniques/scatter-gather.md) strategy technique for its per-scope trigger loop.
+Each activity step binds exactly one technique via `step.technique`. The techniques are organised into four operation-groups (one per authoring activity) plus one standalone technique, all inheriting the workflow-root [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) base contract. The cross-cutting meta [`variable-binding`](/meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity; `execute-analysis` additionally declares the meta [`scatter-gather`](/meta/techniques/scatter-gather.md) strategy technique for its per-scope trigger loop.
 
 | Technique | Capability |
 |-----------|------------|

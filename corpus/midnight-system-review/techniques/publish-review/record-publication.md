@@ -11,7 +11,7 @@ Record the publication outcome — what was posted, where, as which review type,
 
 ### review_posted
 
-Whether the review comment was actually posted, from the posting operation.
+Whether the review comment was actually posted, from the posting technique.
 
 ### pr_number
 

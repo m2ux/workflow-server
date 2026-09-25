@@ -96,7 +96,7 @@ A Progress mark is unreadable to anyone who does not hold the working tree it wa
 
 ### account-every-activity
 
-Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, basis, agent_id: worker_agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records a figure at each activity boundary and says what that figure counts, read from the harness rather than assumed, so cost keeps a figure per activity; the bound those figures inform is the server's, not this operation's (`batch-is-bounded-by-the-server`). Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
+Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, basis, agent_id: worker_agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records a figure at each activity boundary and says what that figure counts, read from the harness rather than assumed, so cost keeps a figure per activity; the bound those figures inform is the server's, not this technique's (`batch-is-bounded-by-the-server`). Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
 
 ### distrust-then-reconcile
 
@@ -118,7 +118,7 @@ A dispatch produces nothing the user can read while it runs, and a gate arrives 
 
 ### dispatch-topology
 
-Client walks dispatch workers via this operation, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see `batch-is-bounded-by-the-server`. Do not set `context_mode: "persistent"` on worker-dispatched sessions — see `delivery-keys-on-agent-context`.
+Client walks dispatch workers via this technique, each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see `batch-is-bounded-by-the-server`. Do not set `context_mode: "persistent"` on worker-dispatched sessions — see `delivery-keys-on-agent-context`.
 
 Where the exit taken is bound to several branches rather than one activity, the [fan](../fan/TECHNIQUE.md) group carries them instead: one call opens every branch, they run in one turn under their own identities, and the run continues from the activity they converge on. That group's width is the destination's, and it is not a batch — a branch takes one activity and is not continued.
 
@@ -136,7 +136,7 @@ Delivery mode follows the agent context, not the session: one worker `agent_id` 
 
 ### batch-is-bounded-by-the-server
 
-A worker's batch is bounded at delivery, not by this operation's judgement: the server refuses the next activity once that context has been delivered the cap of distinct activities or accumulated more delivery than its batch budget allows, and reports where a context stands on every `get_activity`. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the `activity_complete` envelope reports [`batch_may_continue`](./finalize-activity.md#batch_may_continue) true. That answer is given when the worker takes an activity, before the lazy fetches of that activity draw down the same budget, so a batch reported as having room can still be refused at the next boundary; the refusal is an ordinary outcome, met by ending the batch and spawning a replacement ([continue-batch](./continue-batch.md)).
+A worker's batch is bounded at delivery, not by this technique's judgement: the server refuses the next activity once that context has been delivered the cap of distinct activities or accumulated more delivery than its batch budget allows, and reports where a context stands on every `get_activity`. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the `activity_complete` envelope reports [`batch_may_continue`](./finalize-activity.md#batch_may_continue) true. That answer is given when the worker takes an activity, before the lazy fetches of that activity draw down the same budget, so a batch reported as having room can still be refused at the next boundary; the refusal is an ordinary outcome, met by ending the batch and spawning a replacement ([continue-batch](./continue-batch.md)).
 
 ### reject-partial-worker-result
 

@@ -6,7 +6,7 @@
 
 ## Overview
 
-[Prisms](https://github.com/m2ux/workflow-server/blob/workflows/corpus/prism/resources/README.md) are succinct structured prompts (70–330 words) that force an LLM through a specific sequence of analytical operations — each one targeting a class of problem that free-form analysis reliably misses. The results are qualitatively different: conservation laws instead of style suggestions, quantified bug tables instead of vague warnings.
+[Prisms](https://github.com/m2ux/workflow-server/blob/workflows/corpus/prism/resources/README.md) are succinct structured prompts (70–330 words) that force an LLM through a specific sequence of analytical techniques — each one targeting a class of problem that free-form analysis reliably misses. The results are qualitatively different: conservation laws instead of style suggestions, quantified bug tables instead of vague warnings.
 
 **Why use this workflow instead of prompting directly?**
 
@@ -185,7 +185,7 @@ graph TD
 
 ## Techniques
 
-The cross-cutting `variable-binding` technique is declared once at the workflow level and inherited by every activity. The rest are activity-specific strategy techniques. Operation-group techniques (`::*`) expose their operations as `<group>::<op>` references; standalone techniques bind directly. See each activity's YAML for the authoritative step-to-technique bindings.
+The cross-cutting `variable-binding` technique is declared once at the workflow level and inherited by every activity. The rest are activity-specific strategy techniques. Operation-group techniques (`::*`) expose their techniques as `<group>::<op>` references; standalone techniques bind directly. See each activity's YAML for the authoritative step-to-technique bindings.
 
 | Technique | Capability |
 |-----------|------------|
@@ -207,7 +207,7 @@ The cross-cutting `variable-binding` technique is declared once at the workflow 
 | `read-definitive-findings` | A completed run's per-finding entries, loaded from the findings artifact into a triggering session — bound by triggering workflows |
 | `link-report-references` | The final report with its finding IDs and artifact references resolved to links |
 
-The `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per operation. The rest are standalone `techniques/<slug>.md` files.
+The `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per technique. The rest are standalone `techniques/<slug>.md` files.
 
 **Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each standalone technique's `techniques/<slug>.md` file and each operation-group's `techniques/<group>/<op>.md` file documents its protocol flow.
 
@@ -215,7 +215,7 @@ The `::*` techniques are **operation-groups** — a `techniques/<group>/` direct
 
 ## Resources (58)
 
-Resources are indexed markdown files containing lens prompts. Each lens encodes a specific analytical operation.
+Resources are indexed markdown files containing lens prompts. Each lens encodes a specific analytical technique.
 
 | Range | Family | Count | Description |
 |-------|--------|-------|-------------|

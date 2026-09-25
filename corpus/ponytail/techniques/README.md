@@ -2,7 +2,7 @@
 
 > Part of the [Ponytail Lean-Coding Workflow](../README.md)
 
-The technique library for the ponytail workflow. Each operation is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-operation `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+The technique library for the ponytail workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-operation `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
 ---
 
@@ -33,7 +33,7 @@ These techniques are inherited or bound from a shared namespace, not authored he
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's operation to the workflow-scoped variable bag |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's technique to the workflow-scoped variable bag |
 | [`gitnexus::query`](/gitnexus/techniques/query.md) / [`::context`](/gitnexus/techniques/context.md) | Bound within `scope-intake` for concept-driven flow discovery and symbol-level caller/callee inspection when the codebase is indexed |
 
 For the full technique-to-activity picture with capability summaries, see the [workflow README](../README.md#techniques).

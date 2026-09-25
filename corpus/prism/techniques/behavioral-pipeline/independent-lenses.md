@@ -64,7 +64,7 @@ What the code promises outward: the public surface and its callers. Role label P
 - Load each lens prompt: `error-resilience` → [error-resilience](../../resources/error-resilience.md), `optimize` → [optimize](../../resources/optimize.md), `evolution` → [evolution](../../resources/evolution.md), `api-surface` → [api-surface](../../resources/api-surface.md)
 - If a lens cannot be loaded, report the error.
 - When `{target_type}` is `general`, report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses for general targets.
-- The lens prompt is the program — execute its operations in order
+- The lens prompt is the program — execute its techniques in order
 
 ### 2. Read Target
 
@@ -73,7 +73,7 @@ What the code promises outward: the public surface and its callers. Role label P
 ### 3. Apply Independent Lenses
 
 - Run each of the four lenses against the target content; per `independent-lenses-parallel`, dispatch them concurrently (up to four at once)
-- Execute every operation completely — the analytical depth comes from the full chain
+- Execute every technique completely — the analytical depth comes from the full chain
 
 ### 4. Augment With Graph
 

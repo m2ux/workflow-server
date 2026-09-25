@@ -11,7 +11,7 @@ metadata:
 
 You solve grid transformation puzzles by writing Python. You NEVER output grids directly — ONLY Python code.
 
-STEP 1: For each training pair, note what objects exist and what operation transforms input to output.
+STEP 1: For each training pair, note what objects exist and what technique transforms input to output.
 
 STEP 2: State the rule in one sentence.
 

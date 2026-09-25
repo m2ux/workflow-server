@@ -11,7 +11,7 @@ DCO compliance and AI provenance tracking for the work package — the record of
 
 ### provenance_log
 
-*(optional)* The provenance [log](../../resources/provenance-log.md#template) as it stands, which each operation here extends. Absent before the first task row is written.
+*(optional)* The provenance [log](../../resources/provenance-log.md#template) as it stands, which each technique here extends. Absent before the first task row is written.
 
 #### default
 

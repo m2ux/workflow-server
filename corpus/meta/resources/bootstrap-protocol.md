@@ -33,10 +33,10 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
    string, and the `repo` binding it echoes. Later text calls them `meta_session_index` and
    `target_repo`.
 
-3. Call `get_workflow { session_index }`. The response is the workflow's resolved operations bundle,
+3. Call `get_workflow { session_index }`. The response is the workflow's resolved techniques bundle,
    then a `\n\n---\n\n` separator, then the workflow's metadata and activity roster.
 
-   Read the bundle. From here on the operations and rules it carries govern, and this bootstrap text
+   Read the bundle. From here on the techniques and rules it carries govern, and this bootstrap text
    stops applying. It names an `initialActivity`: that id is the argument to your first
    `next_activity` call, which is where the workflow itself takes over.
 

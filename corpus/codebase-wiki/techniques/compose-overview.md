@@ -17,7 +17,7 @@ The composed `overview.md` completion summary — areas covered, page counts by 
 
 ### 1. Read The Wiki State
 
-- Read `index.md` for the catalog of pages and their types, and `log.md` for the ledger of what the build covered across its operations.
+- Read `index.md` for the catalog of pages and their types, and `log.md` for the ledger of what the build covered across its techniques.
 
 ### 2. Compose The Summary
 

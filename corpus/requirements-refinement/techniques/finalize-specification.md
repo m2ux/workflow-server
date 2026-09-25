@@ -65,4 +65,4 @@ Absolute path to the written change summary.
 
 ### promotion-outside-this-operation
 
-Promotion to `{target_doc_path}` is outside this operation.
+Promotion to `{target_doc_path}` is outside this technique.

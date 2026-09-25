@@ -41,7 +41,7 @@ Why the tree was left as it stood. Null where the reset ran.
 ### 3. Return the Nested Checkouts
 
 - `git -C {repo_path} submodule update`, which moves each nested checkout the tree already holds to the commit this tree records for it, and record each one moved with that commit as `{nested_checkouts}`.
-  > The update is asked without `--init`, so a nested checkout the tree has never populated stays absent rather than being cloned. Bringing one into existence is a different act from returning one to its recorded commit, and this operation performs only the second.
+  > The update is asked without `--init`, so a nested checkout the tree has never populated stays absent rather than being cloned. Bringing one into existence is a different act from returning one to its recorded commit, and this technique performs only the second.
 
 ### 4. Confirm the Tree Stands Clean
 

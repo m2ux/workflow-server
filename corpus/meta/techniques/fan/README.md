@@ -2,9 +2,9 @@
 
 > Part of [techniques](../README.md)
 
-Contract and rules for carrying a graph fan — the operations that open every branch a destination names, give each its own identity, run them in one turn, and retire them against the….
+Contract and rules for carrying a graph fan — the techniques that open every branch a destination names, give each its own identity, run them in one turn, and retire them against the….
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

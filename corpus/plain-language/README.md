@@ -19,7 +19,7 @@ Activity `#` columns match the on-disk `NN-` file prefixes; the prefix is server
 **Detailed documentation:**
 
 - **Activities:** [activities/README.md](./activities/README.md) — the per-activity orientation map, linking the authoritative YAML.
-- **Techniques:** [techniques/README.md](./techniques/README.md) — the local operation group and the shared operations this workflow binds.
+- **Techniques:** [techniques/README.md](./techniques/README.md) — the local technique group and the shared techniques this workflow binds.
 - **Resources:** [resources/README.md](./resources/README.md) — the criteria home, the controlled-language overlay, and the creation guides.
 
 ---
@@ -69,7 +69,7 @@ corpus/plain-language/
 │   └── 05-deliver.yaml                     # Write the document to its output path
 ├── techniques/
 │   ├── README.md                           # Technique orientation map
-│   └── plain-language/                     # Local operation group — cross-workflow addressable
+│   └── plain-language/                     # Local technique group — cross-workflow addressable
 │       ├── TECHNIQUE.md                    # Group contract
 │       ├── intake-and-profile.md
 │       ├── analyze-source.md

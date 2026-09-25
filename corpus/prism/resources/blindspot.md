@@ -14,23 +14,23 @@ metadata:
 
 Execute every step below. Output the complete analysis.
 
-## Step 1: Catalog the Operations
+## Step 1: Catalog the Techniques
 
-List every cognitive operation this analytical output performs. Not what it FINDS — what it DOES. Name each operation as a verb phrase: "inverts assumptions," "traces dependencies," "constructs alternatives." Be exhaustive — include implicit operations (comparing, ranking, filtering) not just explicit ones.
+List every cognitive technique this analytical output performs. Not what it FINDS — what it DOES. Name each technique as a verb phrase: "inverts assumptions," "traces dependencies," "constructs alternatives." Be exhaustive — include implicit techniques (comparing, ranking, filtering) not just explicit ones.
 
-## Step 2: Name the Absent Operations
+## Step 2: Name the Absent Techniques
 
-What cognitive operations does NO part of this analysis perform? Look for:
+What cognitive techniques does NO part of this analysis perform? Look for:
 - Questions it never asks (what domain of inquiry is invisible?)
 - Evidence types it never considers (quantitative? historical? social? ethical?)
 - Perspectives it never takes (adversarial? generative? phenomenological? political?)
 - Scales it never examines (micro? macro? temporal? social?)
 
-For each absent operation: name it, explain what it would reveal, and explain why this analytical framework structurally cannot perform it.
+For each absent technique: name it, explain what it would reveal, and explain why this analytical framework structurally cannot perform it.
 
 ## Step 3: The Structural Exclusion
 
-Why are the absent operations absent? Not "we forgot" — name the structural property of the analytical framework that makes these operations invisible. What would the framework have to GIVE UP to include them?
+Why are the absent techniques absent? Not "we forgot" — name the structural property of the analytical framework that makes these techniques invisible. What would the framework have to GIVE UP to include them?
 
 ## Step 4: The Catalog's Conservation Law
 

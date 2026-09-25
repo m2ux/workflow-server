@@ -88,7 +88,7 @@ All findings with lens attribution and convergent/unique classification
 
 - Apply each lens independently to the same artifact content  
   > Do not let findings from one lens influence the execution of another — independence is what produces non-overlapping findings.
-- Execute each lens completely — do not abbreviate the operations
+- Execute each lens completely — do not abbreviate the techniques
 - Keep outputs separate and clearly labelled by lens name
 
 ### 5. Write Artifacts
@@ -97,7 +97,7 @@ All findings with lens attribution and convergent/unique classification
 
 ### 6. Cross Lens Synthesis
 
-- After all lenses complete, identify where findings converge (same structural property found via different operations)
+- After all lenses complete, identify where findings converge (same structural property found via different techniques)
 - Write the synthesis as `{portfolio_synthesis}` into `{output_path}` per [portfolio-synthesis](../resources/portfolio-synthesis.md#template) and its [Rules](../resources/portfolio-synthesis.md#rules)
 
 ## Rules

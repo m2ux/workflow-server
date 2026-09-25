@@ -22,7 +22,7 @@ What does this artifact claim to be? List explicit promises: type signatures, co
 ## Step 2: Trace the Displacement
 Where does the implementation contradict the claim? Not bugs — identity slippage. Look for:
 - Sentinel values with context-dependent meaning (None means "not set" here, "use default" there)
-- Operations named "get" or "read" that silently mutate state
+- Techniques named "get" or "read" that silently mutate state
 - Functions that return different types in different contexts
 - Components that serve a different purpose than their name suggests
 

@@ -11,7 +11,7 @@ Target workflow's root README, orienting a reader to its purpose, structure and 
 
 ### operation_type
 
-The classified operation for the request — create, update or review.
+The classified technique for the request — create, update or review.
 
 ### scope_manifest
 

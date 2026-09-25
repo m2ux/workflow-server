@@ -25,7 +25,7 @@ Orchestrator agent identity for this session.
 
 ### 1. Load resources
 
-- Load resources declared on bundle operations per `resource-loading-via-tool`
+- Load resources declared on bundle techniques per `resource-loading-via-tool`
 - Use `force-full-after-summarization` when the context `{agent_id}` names no longer holds prior deliveries
 
 ### 2. Resolve the activity to open with
@@ -34,7 +34,7 @@ Orchestrator agent identity for this session.
 
 ### 3. Walk the workflow to its end
 
-- Open with that activity and take one at a time under the `activity-loop` run, whose steps decide every branch of a turn — which operation enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this operation; no route hands over the file that declares it, and reading one to execute from is outside this role (`orchestrator-conduct.no-domain-work`)
+- Open with that activity and take one at a time under the `activity-loop` run, whose steps decide every branch of a turn — which technique enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this technique; no route hands over the file that declares it, and reading one to execute from is outside this role (`orchestrator-conduct.no-domain-work`)
   > - Every entry is a worker dispatch — never execute steps inline (`orchestrator-conduct.no-inline-on-resume`, `orchestrator-conduct.no-domain-work`).
   > - Where a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable.
 
@@ -42,7 +42,7 @@ Orchestrator agent identity for this session.
 
 ### follow-bundled-rules
 
-Follow the rules in the operations bundle throughout — [agent-conduct](../agent-conduct.md), [orchestrator-conduct](../orchestrator-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically.
+Follow the rules in the techniques bundle throughout — [agent-conduct](../agent-conduct.md), [orchestrator-conduct](../orchestrator-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically.
 
 ### no-state-reconstruction-on-attach
 

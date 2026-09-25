@@ -14,7 +14,7 @@ The pre-writing decision surface for a plain-language run. Answers: who reads th
 ~~~~markdown
 # Document Profile — {document title}
 
-**Operation:** Author | Rewrite | Audit · **Document type:** {type} · **Controlled language:** on | off
+**Technique:** Author | Rewrite | Audit · **Document type:** {type} · **Controlled language:** on | off
 
 ## Readers
 

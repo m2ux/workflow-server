@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Harness-specific invoke details for `harness_kind: cline`. Catalogue of alternate operation rules (`spawn` / `resume` / `concurrent`); standing wait policy; group contract is foreground-always.
+Harness-specific invoke details for `harness_kind: cline`. Catalogue of alternate technique rules (`spawn` / `resume` / `concurrent`); standing wait policy; group contract is foreground-always.
 
 ## Rules
 

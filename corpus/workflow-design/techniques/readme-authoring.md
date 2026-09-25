@@ -11,7 +11,7 @@ Root `README.md` that orients readers to the workflow's purpose, structure, and 
 
 ### operation_type
 
-The classified operation. When `update`, the README is updated in place to reflect structural changes; when `create`, it is generated fresh.
+The classified technique. When `update`, the README is updated in place to reflect structural changes; when `create`, it is generated fresh.
 
 ## Outputs
 

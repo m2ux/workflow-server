@@ -305,7 +305,7 @@ parsed reference up with the current-workflow-first precedence of §2.
 
 ### 4.1 Executable references (`::`) vs symbol references (`.`)
 
-A `::` path is an **executable reference** — it names a technique or operation to apply/invoke
+A `::` path is an **executable reference** — it names a technique or technique to apply/invoke
 ("apply `lint::autofix`", "go through `index::context`"). The
 rule-resolution and group-expansion forms above are the bundle layer: how an activity's technique
 list pulls rule entries into delivery.
@@ -324,14 +324,14 @@ invoked.
 
 ### 4.2 Invocation arguments (`(…)`)
 
-When a protocol step invokes an operation with arguments, the argument list is written in
-**parentheses attached to the operation reference** — `[group](path)::[op](path)(arg: value, …)` —
+When a protocol step invokes a technique with arguments, the argument list is written in
+**parentheses attached to the technique reference** — `[group](path)::[op](path)(arg: value, …)` —
 never in curly braces. Curly braces are reserved for the designator namespace (`{input_id}`,
 `{output_id}.field`, `{$local}`); a brace-wrapped argument list (`::op {arg: value}`) collides with
 that namespace and cannot be told apart from a designator. Inside the parens, an argument value that
 is itself a variable or input keeps its designator brace (`::context(name: {$symbol})`); a literal
 value stays bare (`::detect-changes(*diff_scope*: 'compare')`); the argument keys are the
-operation's own parameter names and are italicised, which keeps them out of the brace namespace
+technique's own parameter names and are italicised, which keeps them out of the brace namespace
 values use and the backtick namespace code tokens use. The distinction parallels §4.1: `()` carries the call
 shape, `{}` carries the data reference — parentheses call, braces name.
 
@@ -371,11 +371,11 @@ Both delivery paths (`get_technique` and the `get_activity` / `get_workflow` bun
   ancestor entries ride that ancestor's block under `contracts`.
 - **Rules**: merged from every ancestor container; the technique-local entry overrides any ancestor
   entry of the same name. Own rules ride the body. Shared rules ride `contracts`. Role-level rules
-  that govern no one operation remain `rule` entries in the bundle's `rules` list (§6.2).
+  that govern no one technique remain `rule` entries in the bundle's `rules` list (§6.2).
 
 A container contributes a contract, never a procedure. Protocol does not inherit: a technique's
 `## Protocol` is delivered as authored, and the steps a shared stage owns belong to the activity or
-routine that binds both operations rather than to the folder that holds them.
+routine that binds both techniques rather than to the folder that holds them.
 
 ### Whose ancestors count
 
@@ -402,7 +402,7 @@ declares, and `inherits` naming the ancestor scopes whose contracts ride beside 
 |-----|----------|
 | `techniques` | Each delivered technique body, keyed by path — a nested technique by its full `::` path (e.g. `validate::analyse-failure`), a standalone by its id. Own rules ride the body; `inherits` names the scopes in `contracts`. |
 | `contracts` | Each ancestor's authored rules and shared inputs/outputs, once per scope id. |
-| `rules` | `[name, text]` pairs: the role's own rules, which govern no one operation. |
+| `rules` | `[name, text]` pairs: the role's own rules, which govern no one technique. |
 | `unresolved` | References that did not resolve (a non-empty list is a definition defect). |
 
 ### 6.3 Activity bundling
@@ -423,12 +423,12 @@ references an entry by its id. Both levels are what a read addressing into a val
 
 A worker reports what a step produced through the `step_manifest` entry `output` field passed to
 `next_activity` (one entry per completed step, keyed by `step_id`). `output` is a JSON object keyed
-by the output id the bound operation declares, whatever the number of outputs — a step with one
+by the output id the bound technique declares, whatever the number of outputs — a step with one
 output reports `{"needs_migration": false}`, a step with several reports
 `{"repo_root": "lib/x", "component_name": "x"}`. A step-bound technique's `provenance_note` cites
 this form at point of use.
 
-A key the operation does not declare lands a value under a name nothing downstream reads, and is
+A key the technique does not declare lands a value under a name nothing downstream reads, and is
 surfaced in `_meta.validation`. The converse is not reported: an output can be optional, and a
 gated path or an error answer produces fewer values than the declarations allow, so a declared id
 with no key is as often the run as the report.

@@ -112,7 +112,7 @@ Tone / attribution: [agent-conduct](/meta/techniques/agent-conduct.md). Prefer t
 - [ ] Smart pointer usage (`Rc`, `Arc`, `Box`) only when appropriate
 
 **Error Handling:**
-- [ ] Consistent use of `Result<T, E>` for fallible operations
+- [ ] Consistent use of `Result<T, E>` for fallible techniques
 - [ ] Appropriate error types (custom errors vs standard library)
 - [ ] Proper error propagation using `?` operator
 - [ ] Meaningful error messages and contextual information

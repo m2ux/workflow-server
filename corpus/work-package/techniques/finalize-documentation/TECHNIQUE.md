@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-The documentation a closing work package leaves behind, and the planning-folder context every operation here writes into.
+The documentation a closing work package leaves behind, and the planning-folder context every technique here writes into.
 
 ## Inputs
 

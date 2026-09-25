@@ -15,7 +15,7 @@ The scope-manifest entry just drafted — its path, action, type, and one-line d
 
 ### operation_type
 
-The classified operation — `create` or `update`.
+The classified technique — `create` or `update`.
 
 ## Outputs
 

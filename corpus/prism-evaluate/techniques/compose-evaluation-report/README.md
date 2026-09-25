@@ -4,7 +4,7 @@
 
 Consolidates the per-dimension findings of sibling analysis runs into one evaluation of the target, adding the reading no single run reaches: what holds across dimensions.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

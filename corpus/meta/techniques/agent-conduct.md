@@ -35,7 +35,7 @@ Resolving a checkpoint is the meta-orchestrator's, via [present-checkpoint-to-us
 
 ### operational-discipline-bundled-tools-only
 
-Domain-specific tools may ONLY be invoked from operations bundled into the current activity or workflow response. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls.
+Domain-specific tools may ONLY be invoked from techniques bundled into the current activity or workflow response. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls.
 
 ### operational-discipline-resources-via-tool
 

@@ -4,7 +4,7 @@
 
 ## Techniques
 
-The operation library for the evaluation workflow. Each operation is one capability an activity step binds; its protocol, inputs, outputs and rules are defined in its own file. This file indexes them.
+The technique library for the evaluation workflow. Each technique is one capability an activity step binds; its protocol, inputs, outputs and rules are defined in its own file. This file indexes them.
 
 | Technique group | Capability |
 |-----------------|------------|
@@ -17,11 +17,11 @@ The operation library for the evaluation workflow. Each operation is one capabil
 
 ---
 
-## Operations by Group
+## Techniques by Group
 
 ### plan-evaluation
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`collect-scope`](plan-evaluation/collect-scope.md) | Establish the scope from the user's request |
 | [`classify-target`](plan-evaluation/classify-target.md) | Resolve the target's kind |
@@ -35,14 +35,14 @@ The operation library for the evaluation workflow. Each operation is one capabil
 
 ### execute-analysis
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`compose-trigger-context`](execute-analysis/compose-trigger-context.md) | Compose one group's trigger context |
 | [`accumulate-analysis-run`](execute-analysis/accumulate-analysis-run.md) | Record a completed run into the evaluation's accumulators |
 
 ### compose-evaluation-report
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`extract-findings`](compose-evaluation-report/extract-findings.md) | Draw each dimension's findings into the report |
 | [`identify-patterns`](compose-evaluation-report/identify-patterns.md) | Name the core finding and the cross-cutting patterns |
@@ -52,7 +52,7 @@ The operation library for the evaluation workflow. Each operation is one capabil
 
 ### resolve-findings
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`load-and-classify`](resolve-findings/load-and-classify.md) | Turn the report's findings into an ordered, located worklist |
 | [`propose-mitigation-by-tier`](resolve-findings/propose-mitigation-by-tier.md) | Propose a mitigation in the shape the finding's tier takes |
@@ -68,9 +68,9 @@ Bound or inherited from elsewhere, not authored here:
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](/meta/techniques/variable-binding.md) | Binding each step's operation to the session's variable bag |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Binding each step's technique to the session's variable bag |
 | [`scatter-gather`](/meta/techniques/scatter-gather.md) | The per-group and per-finding fan-out loops |
 | [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) | Triggering prism as a child workflow, once per execution group |
-| [`workflow-engine::take-activity`](/meta/techniques/workflow-engine/take-activity.md) | The operation the `activity-loop` run enters each prism activity through |
+| [`workflow-engine::take-activity`](/meta/techniques/workflow-engine/take-activity.md) | The technique the `activity-loop` run enters each prism activity through |
 | [`git::commit-regular-files`](/git/techniques/commit-regular-files.md) | Committing the applied mitigations |
 | [`verify-artifact-conforms`](/meta/techniques/verify-artifact-conforms.md) | Checking each written artifact against its guide |

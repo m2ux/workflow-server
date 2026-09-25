@@ -15,7 +15,7 @@ metadata:
 Execute every step below. Output the complete analysis.
 
 ## Step 1: The Evidence Cost Map
-Name every shared state whose invariants go unchecked. For each: what diagnostic information would detect corruption early? What's the allocation cost to preserve it—O(1) checksum, O(n) snapshot, O(n²) operation log? What does the fast path discard? Rank by: validation_cost × mutation_frequency.
+Name every shared state whose invariants go unchecked. For each: what diagnostic information would detect corruption early? What's the allocation cost to preserve it—O(1) checksum, O(n) snapshot, O(n²) technique log? What does the fast path discard? Rank by: validation_cost × mutation_frequency.
 
 ## Step 2: The Silent Waste Cascade
 For each unchecked state, trace corruption forward. At each hop measure: CPU wasted on corrupt data, memory wasted on defensive copies made because validation was too expensive, I/O wasted on retries that cannot diagnose root cause. The key insight: the same skipped validation causes both errors AND performance waste. Map: Unchecked Write → Wasted Computation → Silent Exit.

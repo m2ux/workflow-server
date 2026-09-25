@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-The technique library for the meta workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative capability, inputs, outputs, protocol and rules live in the per-technique `.md` file (or a group `TECHNIQUE.md` plus its operation files). This file orients readers to the library layout and points to those authoritative sources.
+The technique library for the meta workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative capability, inputs, outputs, protocol and rules live in the per-technique `.md` file (or a group `TECHNIQUE.md` plus its technique files). This file orients readers to the library layout and points to those authoritative sources.
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds shared Inputs, Outputs, Rules and Errors for every technique here.
 

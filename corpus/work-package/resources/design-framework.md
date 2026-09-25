@@ -91,7 +91,7 @@ A contradiction exists when improving one parameter degrades another:
 | **Extraction** | Remove/separate problematic part | Extract interface, separate concerns |
 | **Local Quality** | Optimize each part differently | Hot path optimization |
 | **Asymmetry** | Break symmetry for benefit | Read replicas, CQRS |
-| **Merging** | Combine related operations | Batch processing, connection pooling |
+| **Merging** | Combine related techniques | Batch processing, connection pooling |
 | **Universality** | One thing serves multiple purposes | Generic abstractions |
 | **Nesting** | Place one thing inside another | Decorator pattern, middleware |
 | **Counterweight** | Compensate with opposing action | Circuit breakers, rate limiting |

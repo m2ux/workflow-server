@@ -34,13 +34,13 @@ Every bare filename this workflow persists maps to a guide that owns its Templat
 | `findings-register.md` | [findings-register](findings-register.md) |
 | `COMPLETE.md` | [completion-artifact](completion-artifact.md) |
 
-Layout authority lives in the guide, not in the protocol of the operation that persists the file.
+Layout authority lives in the guide, not in the protocol of the technique that persists the file.
 
 ---
 
 ## Criteria homes
 
-The audit criteria this workflow applies are not held here. They live in the [`canon`](/canon/README.md) namespace, and the operations that apply them reference that home:
+The audit criteria this workflow applies are not held here. They live in the [`canon`](/canon/README.md) namespace, and the techniques that apply them reference that home:
 
 - [Anti-Patterns](/canon/resources/anti-patterns.md) — specific smell instances, Detect / Do not flag / Fix
 - [Design Principles](/canon/resources/design-principles.md) — prefer / before / only after stance

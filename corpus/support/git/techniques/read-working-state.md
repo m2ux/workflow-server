@@ -43,4 +43,4 @@ Why the tree could not be read. Null where the read answered.
 
 ### the-read-writes-nothing
 
-This operation answers what a tree holds and changes none of it. A caller puts its answer in front of a person before an operation that discards, so the answer has to describe a tree that still holds what it names.
+This technique answers what a tree holds and changes none of it. A caller puts its answer in front of a person before a technique that discards, so the answer has to describe a tree that still holds what it names.

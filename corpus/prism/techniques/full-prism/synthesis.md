@@ -35,10 +35,10 @@ The reconciled reading of the two prior analyses: refined conservation law, refi
 
 ### 3. Apply Lens
 
-- Apply every operation in the lens prompt sequentially against `{target_content}`, with ANALYSIS 1 and ANALYSIS 2 as context
-- Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain.
+- Apply every technique in the lens prompt sequentially against `{target_content}`, with ANALYSIS 1 and ANALYSIS 2 as context
+- Execute completely — do not abbreviate or skip techniques. The analytical depth comes from the full chain.
 - If the analysis stays at surface level without reaching the conservation law, re-execute from the structural invariant step. The depth comes from the inversion chain, not the initial claim.
 
 ### 4. Write Artifact
 
-- Write the complete analysis as `{definitive_synthesis}` into `{output_path}`, sectioned to match the lens operations: refined conservation law, refined meta-law, definitive classification, deepest finding. If the write fails, verify `{output_path}` exists and is writable.
+- Write the complete analysis as `{definitive_synthesis}` into `{output_path}`, sectioned to match the lens techniques: refined conservation law, refined meta-law, definitive classification, deepest finding. If the write fails, verify `{output_path}` exists and is writable.

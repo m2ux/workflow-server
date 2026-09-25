@@ -4,7 +4,7 @@
 
 Settles what the audit covers: the target and its structural metadata, the concerns the audit is for, and the directory its artifacts occupy.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Shared contract for the operations that classify, author and audit workflow definition files.
+Shared contract for the techniques that classify, author and audit workflow definition files.
 
 ## Rules
 

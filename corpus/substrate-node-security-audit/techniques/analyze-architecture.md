@@ -63,7 +63,7 @@ Vulnerability domains derived from the architecture that fall outside any §3 ch
 
 ### 2. Build Privilege Map
 
-- For each state-modifying operation category (block production, inherent injection, extrinsic dispatch, genesis construction, configuration loading, external data ingestion), document the required authority, where it is verified in code, and what happens if verification is absent, bypassable, or inconsistent, into `{architectural_analysis.privilege_map}`. Flag operations that appear to require authority but are unrestricted.
+- For each state-modifying technique category (block production, inherent injection, extrinsic dispatch, genesis construction, configuration loading, external data ingestion), document the required authority, where it is verified in code, and what happens if verification is absent, bypassable, or inconsistent, into `{architectural_analysis.privilege_map}`. Flag techniques that appear to require authority but are unrestricted.
 - Enumerate the runtime configuration constants (`parameter_types!`, `Config` trait associated types) that affect security boundaries — existential deposits, maximum block weight, session lengths, pool sizes — recording each value, whether it suits the threat model, and whether it can change post-genesis.
 
 ### 3. Identify Candidate Points
@@ -88,4 +88,4 @@ Every component interaction cites at least one code-level observation — a func
 
 ### graph-first-when-indexed
 
-When `{gitnexus_available}`, the interaction model and candidate-point ranking are sourced from the call graph via the `gitnexus` operations before manual reasoning, per `gitnexus.must-use-operations`; reading the top files (`largest-files-read-first`) remains the comprehension layer the graph does not replace.
+When `{gitnexus_available}`, the interaction model and candidate-point ranking are sourced from the call graph via the `gitnexus` techniques before manual reasoning, per `gitnexus.must-use-operations`; reading the top files (`largest-files-read-first`) remains the comprehension layer the graph does not replace.

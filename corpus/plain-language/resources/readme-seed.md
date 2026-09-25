@@ -26,7 +26,7 @@ Lifecycle **Status** values: `Profiling`, `Drafting`, `Evaluating`, `Complete`.
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 1 | Intake and profile | Operation, reader profile, content selection | 10-20m | ⬚ |
+| 1 | Intake and profile | Technique, reader profile, content selection | 10-20m | ⬚ |
 | 2 | [Document profile](document-profile.md) | Readers, purpose, context, content | 10-20m | ⬚ |
 | 3 | Source analysis | Findings against the existing document | 15-30m | ⊘ |
 | 4 | Draft | The plain-language document | 20-60m | ⬚ |

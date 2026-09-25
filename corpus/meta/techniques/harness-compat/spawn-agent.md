@@ -25,7 +25,7 @@ The sub-agent's final output (text, including any `<checkpoint_yield>` block) â€
 
 ## Protocol
 
-### 1. Resolve harness operation
+### 1. Resolve harness technique
 
 - Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: spawn` â†’ `{harness_technique}`, `{harness_operation}`.
 

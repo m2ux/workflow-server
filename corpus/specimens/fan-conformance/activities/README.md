@@ -134,7 +134,7 @@ graph TD
 
 ### 08. Note Probe
 
-Writes one note and commits it on a branch of its own. Its first act is to materialise a checkout of its own — that binding is what admits the commit operations that follow, since branches of a fan otherwise share one working tree and no instance could attribute its own change. Every write it makes lands inside that checkout and nowhere else.
+Writes one note and commits it on a branch of its own. Its first act is to materialise a checkout of its own — that binding is what admits the commit techniques that follow, since branches of a fan otherwise share one working tree and no instance could attribute its own change. Every write it makes lands inside that checkout and nowhere else.
 
 Definition: [`08-note-probe.yaml`](./08-note-probe.yaml)
 

@@ -170,7 +170,7 @@ Test output is quiet on success ("no news is good news"); on a crash, the last t
 
 ## Property-Based Testing
 
-Use `proptest` to assert invariants over generated inputs (e.g. buffer count never exceeds capacity; final state matches last operation), complementing example-based tests:
+Use `proptest` to assert invariants over generated inputs (e.g. buffer count never exceeds capacity; final state matches last technique), complementing example-based tests:
 
 ```rust
 use proptest::prelude::*;

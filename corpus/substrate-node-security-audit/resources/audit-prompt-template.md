@@ -40,7 +40,7 @@ Before detailed review, build a mental model of the system:
 5. **Identify all pallet hooks:** `on_initialize`, `on_finalize`, `on_idle`, `offchain_worker` -- these execute every block and panics here halt the chain
 6. **Map data flows using forward/backward tracing:**
    - **Forward tracing (entry → sink):** For each trust boundary entry point (RPC, inherent data, config), trace data forward through transformations, storage writes, and event emissions. Identify where untrusted data first touches consensus-critical state.
-   - **Backward tracing (sensitive op → source):** For each sensitive operation (storage writes, weight calculations, key generation, error formatting), trace backward to the data source. If the source is external/untrusted and no validation intervenes, flag as a finding.
+   - **Backward tracing (sensitive op → source):** For each sensitive technique (storage writes, weight calculations, key generation, error formatting), trace backward to the data source. If the source is external/untrusted and no validation intervenes, flag as a finding.
    - **Candidate point analysis:** Prioritize review at "candidate points" — locations where code complexity is highest: functions with multiple mutex acquisitions, nested `match` on external data, `unsafe` blocks, error-handling switch points, and codec deserialization sites.
 7. **Identify `Send`/`Sync` boundary violations:** Rust's type system prevents data races via `Send`/`Sync` trait bounds. Search for `unsafe impl Send` or `unsafe impl Sync` — these override the compiler's safety analysis and must be manually verified for soundness.
 8. **Enumerate critical functions (function registry):** For every crate identified as priority-1 or priority-2 in §5, build an explicit registry of functions that must be read during manual review. This registry is a prerequisite for §3.
@@ -229,7 +229,7 @@ For each finding, the agent MUST compute severity using both dimensions. Do not 
 | 1 | Requires physical access, highly unlikely conditions, or multiple independent failures |
 | 2 | Requires privileged access (root, validator key, config file control, operator action) |
 | 3 | Requires only network access (RPC, p2p, public endpoint) |
-| 4 | Occurs under normal operation, passive conditions, or routine network activity |
+| 4 | Occurs under normal technique, passive conditions, or routine network activity |
 
 **Severity = map((I + F) / 2):**
 

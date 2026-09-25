@@ -42,4 +42,4 @@ From the PR #1849 review runs:
 | 3/5 | `comment` |
 | 2/5, 1/5 | `request-changes` |
 
-The 4/5 approve carries its follow-ups in the review body; the 3/5 comment states that fixes are expected before merge without formally blocking. This mapping is the only source of `review_type` — it is always computed here and bound explicitly at publish, never derived by the posting operation.
+The 4/5 approve carries its follow-ups in the review body; the 3/5 comment states that fixes are expected before merge without formally blocking. This mapping is the only source of `review_type` — it is always computed here and bound explicitly at publish, never derived by the posting technique.

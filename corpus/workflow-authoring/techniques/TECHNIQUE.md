@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Shared inputs and authoring invariants for every operation in this workflow.
+Shared inputs and authoring invariants for every technique in this workflow.
 
 ## Inputs
 

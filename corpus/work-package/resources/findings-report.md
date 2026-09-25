@@ -121,7 +121,7 @@ Every finding states whether the state that triggers it can be reached, on this 
 
 | Value | Meaning |
 |---|---|
-| `reachable` | on a path the change takes in normal operation |
+| `reachable` | on a path the change takes in normal technique |
 | `conditional` | needs a specific state that occurs in practice |
 | `parameter-gated` | needs a configuration or governance parameter change |
 | `privileged-action` | needs a privileged operator or governance action whose result is already undefined |

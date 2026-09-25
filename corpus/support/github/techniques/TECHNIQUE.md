@@ -29,7 +29,7 @@ A list endpoint answers with one page — 30 items — unless the call asks for 
 
 ### authored-prose-by-file
 
-A title or a body is text somebody wrote, so it can carry a double quote, a backtick or a newline. Interpolated into a command it ends the quoted string early and the rest of the sentence reaches the shell as arguments. Every such value is written to a temp file and passed as `-F <field>=@<file>`; no operation here splices one into a command. A value the caller cannot author freely — a number, a branch name, a label, an enum — is placed inline.
+A title or a body is text somebody wrote, so it can carry a double quote, a backtick or a newline. Interpolated into a command it ends the quoted string early and the rest of the sentence reaches the shell as arguments. Every such value is written to a temp file and passed as `-F <field>=@<file>`; no technique here splices one into a command. A value the caller cannot author freely — a number, a branch name, a label, an enum — is placed inline.
 
 ### github-access-only-here
 

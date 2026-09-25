@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Ordered design-dimension set for the current operation from the elicitation-guide mode dimension sets.
+Ordered design-dimension set for the current technique from the elicitation-guide mode dimension sets.
 
 ## Inputs
 
 ### operation_type
 
-The classified operation. Selects the update dimension set when `update`; otherwise the create dimension set.
+The classified technique. Selects the update dimension set when `update`; otherwise the create dimension set.
 
 ## Outputs
 

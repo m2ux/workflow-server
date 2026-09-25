@@ -32,7 +32,7 @@ An activity: the stage that binds the techniques and routines and holds the conv
 
 ### Do X, then do Y, then do Z
 
-A technique step: one `steps[]` entry with `kind: technique`, binding one operation.
+A technique step: one `steps[]` entry with `kind: technique`, binding one technique.
 
 [AP-15. procedure-in-protocol](./anti-patterns.md#ap-15-procedure-in-protocol), [AP-17. bound-step-no-description](./anti-patterns.md#ap-17-bound-step-no-description), [AP-18. no-monolith-masking-steps](./anti-patterns.md#ap-18-no-monolith-masking-steps). Fields: `schemas/README.md#step`.
 
@@ -40,7 +40,7 @@ A technique step: one `steps[]` entry with `kind: technique`, binding one operat
 
 Consecutive technique steps in the activity.
 
-[25. Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading), [AP-114. pass-orchestration-in-technique](./anti-patterns.md#ap-114-pass-orchestration-in-technique).
+[25. Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps), [26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading), [AP-114. pass-orchestration-in-technique](./anti-patterns.md#ap-114-pass-orchestration-in-technique).
 
 ### Compose or reuse activities
 
@@ -236,7 +236,7 @@ A routine input.
 
 Fields: `schemas/routine.schema.json`.
 
-### The same run, differing only in the operation it binds
+### The same run, differing only in the technique it binds
 
 A routine input with `kind: technique`.
 

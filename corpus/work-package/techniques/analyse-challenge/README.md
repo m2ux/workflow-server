@@ -2,9 +2,9 @@
 
 > Part of [techniques](../README.md)
 
-Adversarial challenge of a concern set and the fold of its findings back into that set — the shared contract both operations work over.
+Adversarial challenge of a concern set and the fold of its findings back into that set — the shared contract both techniques work over.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

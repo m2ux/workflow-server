@@ -2,7 +2,7 @@
 
 > Part of the [Security Audit Workflow](../README.md)
 
-The technique library for the substrate-node-security-audit workflow. Each operation is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each operation's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+The technique library for the substrate-node-security-audit workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each technique's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
 [`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs for every technique here — notably `planning_folder_path`.
 
@@ -21,9 +21,9 @@ The technique library for the substrate-node-security-audit workflow. Each opera
 | [`map-vulnerability-domains`](map-vulnerability-domains.md) | standalone | Bind the architectural analysis to §3 verification procedures, partitioned by crate |
 | [`execute-ensemble-pass`](execute-ensemble-pass.md) | standalone | Scope and run a second-model audit pass with blind-spot verification |
 
-### dispatch-sub-agents operations
+### dispatch-sub-agents techniques
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`assign-roster`](dispatch-sub-agents/assign-roster.md) | Assign each in-scope crate to a sub-agent group and identify its supplementary files |
 | [`route-leads`](dispatch-sub-agents/route-leads.md) | Route every reconnaissance lead to a specific agent designator |
@@ -60,7 +60,7 @@ The technique library for the substrate-node-security-audit workflow. Each opera
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's operation to the workflow-scoped variable bag |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's technique to the workflow-scoped variable bag |
 | [`orchestration-patterns::dispatch-workers`](/meta/techniques/orchestration-patterns/dispatch-workers.md) / [`gather-results`](/meta/techniques/orchestration-patterns/gather-results.md) | Bound from reconnaissance / primary-audit after domain brief composition |
 | [`harness-compat::spawn-agent`](/meta/techniques/harness-compat/spawn-agent.md) / [`spawn-concurrent`](/meta/techniques/harness-compat/spawn-concurrent.md) | Invoked inside meta `orchestration-patterns::dispatch-workers` |
 

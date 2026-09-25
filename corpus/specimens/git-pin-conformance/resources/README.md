@@ -20,4 +20,4 @@ Which guide owns each persisted filename's shape.
 
 ## Why there is only one
 
-The run's product is evidence about the operation: for each kind of name, where the pin landed and what it resolved the name as, and for the name it could not resolve, that the checkout stayed put. The commits themselves are a column of that evidence rather than a document of their own.
+The run's product is evidence about the technique: for each kind of name, where the pin landed and what it resolved the name as, and for the name it could not resolve, that the checkout stayed put. The commits themselves are a column of that evidence rather than a document of their own.

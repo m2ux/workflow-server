@@ -2,9 +2,9 @@
 
 > Part of the [prism workflow](../README.md)
 
-Each operation here applies a lens, plans which lens to apply, or turns what the passes produced into something a reader or a consuming workflow can use. The lens prompts themselves are [resources](../resources/README.md); a technique is how one is loaded, applied and read.
+Each technique here applies a lens, plans which lens to apply, or turns what the passes produced into something a reader or a consuming workflow can use. The lens prompts themselves are [resources](../resources/README.md); a technique is how one is loaded, applied and read.
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds the inputs every operation inherits and the invariants every one of them is held to — pass isolation, evidence, and write discipline.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds the inputs every technique inherits and the invariants every one of them is held to — pass isolation, evidence, and write discipline.
 
 ---
 

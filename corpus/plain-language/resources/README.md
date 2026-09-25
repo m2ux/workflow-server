@@ -33,7 +33,7 @@ Every bare filename this workflow persists maps to a guide that owns its Templat
 | `iso-checklist.md` | [iso-checklist](iso-checklist.md) |
 | `plain-document.md` | The delivered document itself — no creation guide; it is the run's product, not a planning artifact |
 
-Layout authority lives in the guide, not in the protocol of the operation that persists the file.
+Layout authority lives in the guide, not in the protocol of the technique that persists the file.
 
 ---
 
@@ -50,7 +50,7 @@ Techniques cite the section that governs their work; they do not restate the gui
 
 ## Cross-workflow access
 
-Other workflows may consult this workflow's resources and bind its operations by id:
+Other workflows may consult this workflow's resources and bind its techniques by id:
 
 - `plain-language/plain-language-standard`
 - `plain-language/asd-ste100`
@@ -59,4 +59,4 @@ Other workflows may consult this workflow's resources and bind its operations by
 - `plain-language/evaluation-report`
 - `plain-language/iso-checklist`
 
-Operations bind as `plain-language::<operation>` — for example `plain-language::evaluate-document` to run an evaluation from another workflow.
+Techniques bind as `plain-language::<technique>` — for example `plain-language::evaluate-document` to run an evaluation from another workflow.

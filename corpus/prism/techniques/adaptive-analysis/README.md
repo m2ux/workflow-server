@@ -4,7 +4,7 @@
 
 Depth escalation. Each stage is a deeper and more expensive reading, and the chain stops at the first stage whose signal is adequate — so a target that yields to a cheap pass never pays for a full one.
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one operation of the chain.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one technique of the chain.
 
 ---
 

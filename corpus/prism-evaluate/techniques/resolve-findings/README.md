@@ -4,7 +4,7 @@
 
 Carries each evaluation finding from a criticism to a decided change: what it would take to answer, what the user chose, and what the target ends up saying.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

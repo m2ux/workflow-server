@@ -26,7 +26,7 @@ Name the implicit contract: "This code assumes X was done before Y." Is that ass
 
 ## Step 2: Find Invariant Windows
 Locate the gap between when a condition is checked and when it is acted upon:
-- Check-then-use gaps: permission checked, then operation performed — can the condition change in between?
+- Check-then-use gaps: permission checked, then technique performed — can the condition change in between?
 - Stale cached decisions: a value computed once, used many times, but its basis changes without invalidating the cache
 - Validated at intake, consumed later: input checked at the boundary but used deep inside where the invariant no longer holds
 

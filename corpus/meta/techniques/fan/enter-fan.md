@@ -15,7 +15,7 @@ Publish the in-progress mark for every branch a graph destination fans, then ope
 
 ### fan_destination
 
-The destination exactly as the graph names it — a list of members, or one activity together with the collection to run it over. Passed through unread: the server expands it, so this operation never learns which construct produced the branches and never computes a width.
+The destination exactly as the graph names it — a list of members, or one activity together with the collection to run it over. Passed through unread: the server expands it, so this technique never learns which construct produced the branches and never computes a width.
 
 ### from_activity
 

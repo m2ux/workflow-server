@@ -11,7 +11,7 @@ A reusable fan-out shape: work units run inside a worker's loop or across the br
 
 ### 1. Scatter
 
-- **In a worker.** Iterate the work units in a `forEach` loop, invoking the per-unit operation once per unit for one scalar output per iteration. The scatter runs in the calling context, and one delivery of the loop body's technique serves every pass.
+- **In a worker.** Iterate the work units in a `forEach` loop, invoking the per-unit technique once per unit for one scalar output per iteration. The scatter runs in the calling context, and one delivery of the loop body's technique serves every pass.
 - **In the graph.** Bind the exit that reaches the per-unit activity to a destination naming that activity together with the collection to run it over. The run opens one worker per element, each handed its own element at the name the destination gives, and the branches converge on the activity their own exits name. The branches share the calling worker's checkout.
 
 ### 2. Gather
@@ -20,7 +20,7 @@ A reusable fan-out shape: work units run inside a worker's loop or across the br
 
 ### 3. Combine
 
-- Invoke the combine operation with the gathered collection as its input; its output lands in the bag under that operation's declared output name, per [variable-binding](./variable-binding.md). The caller supplies which combine operation.
+- Invoke the combine technique with the gathered collection as its input; its output lands in the bag under that technique's declared output name, per [variable-binding](./variable-binding.md). The caller supplies which combine technique.
 
 ## Rules
 
@@ -34,7 +34,7 @@ A scalar emitted per unit — per iteration inside a worker, per branch under a 
 
 ### isolation-then-combine
 
-Per-unit outputs are gathered into an isolated ordered collection and merged ONLY through the delegated combine operation. They are NEVER auto-bound into the parent variable bag by scalar name, which would race and clobber. Under a graph fan the isolation is structural rather than honoured, the server landing each branch's whole reported map in a slot of its own — `variable-binding.a-branch-lands-under-its-own-derived-key`.
+Per-unit outputs are gathered into an isolated ordered collection and merged ONLY through the delegated combine technique. They are NEVER auto-bound into the parent variable bag by scalar name, which would race and clobber. Under a graph fan the isolation is structural rather than honoured, the server landing each branch's whole reported map in a slot of its own — `variable-binding.a-branch-lands-under-its-own-derived-key`.
 
 ### order-is-preserved
 
@@ -42,7 +42,7 @@ The gathered collection is in work-unit order — under a graph fan the slot is 
 
 ### a-branch-that-commits-takes-a-checkout-of-its-own
 
-A graph fan's branches share one working tree, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the fanned activity binds [create-worktree](/git/techniques/create-worktree.md) as its own step, and the load admits the git operations for it on that evidence — the wiring is the claim, so there is nothing to declare and nothing to take on trust.
+A graph fan's branches share one working tree, so a unit's work is a value it reports and not a commit it makes. Where each unit's work IS its commit, the fanned activity binds [create-worktree](/git/techniques/create-worktree.md) as its own step, and the load admits the git techniques for it on that evidence — the wiring is the claim, so there is nothing to declare and nothing to take on trust.
 
 > Reach for it only where per-unit attribution is the point: it costs a checkout per branch and makes the convergence responsible for a reconciliation that can conflict.
 

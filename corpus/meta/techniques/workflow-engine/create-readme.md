@@ -35,7 +35,7 @@ Resource id of the workflow's readme-seed profile (Progress inventory, classifie
 
 ### operation_type
 
-*(optional)* Operation/mode string for seed profiles that key exclusions on create / update / review.
+*(optional)* Technique/mode string for seed profiles that key exclusions on create / update / review.
 
 ## Outputs
 

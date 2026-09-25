@@ -11,7 +11,7 @@ Summarises what the pass can honestly claim, into the ledger's gain field.
 
 ### debt_ledger
 
-The harvested debt ledger whose `gain` field this operation fills.
+The harvested debt ledger whose `gain` field this technique fills.
 
 ## Outputs
 

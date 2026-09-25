@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Apply all seven CI/CD injection detection patterns (P1-P7) — derived from the hackerbot-claw campaign and GitHub's script injection documentation, each identifying a specific source-to-sink vulnerability class — to GitHub Actions workflow files, tracing data flow from attacker-controlled input (source) to privileged execution (sink) and documenting the complete chain. The operations in this set decompose that scan into pattern-catalog loading, the seven per-pattern detection passes, and structured-result assembly.
+Apply all seven CI/CD injection detection patterns (P1-P7) — derived from the hackerbot-claw campaign and GitHub's script injection documentation, each identifying a specific source-to-sink vulnerability class — to GitHub Actions workflow files, tracing data flow from attacker-controlled input (source) to privileged execution (sink) and documenting the complete chain. The techniques in this set decompose that scan into pattern-catalog loading, the seven per-pattern detection passes, and structured-result assembly.
 
 ## Inputs
 

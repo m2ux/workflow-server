@@ -157,7 +157,7 @@ jobs:
 
 ### Description
 
-Workflows triggered by `issue_comment` or `pull_request_review_comment` that execute privileged operations without verifying the commenter's relationship to the repository.
+Workflows triggered by `issue_comment` or `pull_request_review_comment` that execute privileged techniques without verifying the commenter's relationship to the repository.
 
 ### Grep Patterns
 

@@ -55,7 +55,7 @@ EXTERNAL KNOWLEDGE (AgentsKB — free, instant):
 
 META-CAPABILITIES (you can create new tools):
 - `evolve` — Generate a domain-adapted prism via 3-generation recursive cooking. Use when no existing prism fits the goal.
-- `COOK NEW PRISM` — Design a custom prism from scratch for a specific sub-goal. Specify: name, operation steps, optimal model. The system will create and run it.
+- `COOK NEW PRISM` — Design a custom prism from scratch for a specific sub-goal. Specify: name, technique steps, optimal model. The system will create and run it.
 - `RESEARCH via AgentsKB` — For knowledge gaps: (1) generate questions matching AgentsKB's 6 types, (2) batch query, (3) inject verified answers back into analysis. Prefer fact/reference/troubleshooting types — these have highest accuracy.
 - `CHAIN` — Run one tool, analyze its output, then decide the next tool based on results. Not a fixed sequence — adaptive.
 - `CONVERGE` — After each step, check: did we find a conservation law? Did confabulation drop? If yes, we're converging — consider stopping. If no, iterate.
@@ -99,7 +99,7 @@ For each step:
 What external sources to consult. What queries to run. How findings feed back.
 
 ## New Tools Needed (if existing prisms insufficient)
-For each new prism: name, what it does, key operation steps, why existing tools can't do this.
+For each new prism: name, what it does, key technique steps, why existing tools can't do this.
 
 ## Cost Estimate
 Total API calls and approximate cost. Budget checkpoints.

@@ -185,9 +185,9 @@ The workflow produces planning documentation under the planning folder: START-HE
 
 ## Techniques Summary
 
-Workflow-specific techniques live under `techniques/`. Three are **operation groups** (a `TECHNIQUE.md` contract plus one file per operation, referenced as `<group>::<op>`); the rest are standalone techniques. All share the base contract in `techniques/TECHNIQUE.md`.
+Workflow-specific techniques live under `techniques/`. Three are **technique groups** (a `TECHNIQUE.md` contract plus one file per technique, referenced as `<group>::<op>`); the rest are standalone techniques. All share the base contract in `techniques/TECHNIQUE.md`.
 
-| Technique / Operation | Type | Capability | Used By |
+| Technique / Technique | Type | Capability | Used By |
 |-----------------------|------|------------|---------|
 | `assess-initiative-scope` | Standalone | Identify and categorize work packages | Scope Assessment |
 | `setup-planning-folder` | Standalone | Create START-HERE.md and README.md skeletons | Folder Setup |
@@ -203,7 +203,7 @@ Workflow-specific techniques live under `techniques/`. Three are **operation gro
 | `orchestrate-package-execution::initialize-iteration` | Group op | Build the remaining-packages list and progress indicator | Implementation |
 | `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow, update status | Implementation (loop) |
 | `workflow-engine::derive-planning-slug` | Meta | Derive the canonical planning-folder slug | Folder Setup |
-| `variable-binding` | Meta | Bind step operations to the workflow variable bag | Inherited by every activity (declared at `workflow.techniques.activity`) |
+| `variable-binding` | Meta | Bind step techniques to the workflow variable bag | Inherited by every activity (declared at `workflow.techniques.activity`) |
 | `scatter-gather` | Meta | Fan out and aggregate forEach iterations | Package Planning, Implementation (supporting) |
 
 ## Resources

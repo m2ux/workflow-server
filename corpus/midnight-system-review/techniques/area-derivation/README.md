@@ -4,7 +4,7 @@
 
 Own the investigation plan: derive bounded investigation areas by mapping the change surface onto the subsystem map, and amend that plan under user direction until it is approved.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

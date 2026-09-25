@@ -20,7 +20,7 @@ If the target profile includes a "Toolkit Focus Items" section, apply those targ
 
 For every function that modifies state (`self.xxx = ...`, `state.xxx = ...`):
 
-- [ ] Is the modification conditional on operation success?
+- [ ] Is the modification conditional on technique success?
 - [ ] If state is updated regardless of success/failure, local state diverges from the authoritative source
 
 **Anti-pattern:**
@@ -73,7 +73,7 @@ For every `std::fs::read`, `read_to_end`, or `read_to_string`:
 
 ### 5. Unchecked Arithmetic on Financial Values
 
-For every arithmetic operation on token/balance/financial values:
+For every arithmetic technique on token/balance/financial values:
 
 - [ ] Is it `checked_add` / `checked_sub` / `checked_mul` (not `+`, `-`, `*`)?
 - [ ] Are `as` casts replaced with `try_from` (not `u128 as i128`)?

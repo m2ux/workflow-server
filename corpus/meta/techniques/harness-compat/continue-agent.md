@@ -29,7 +29,7 @@ The resumed agent's next yield or final output
 
 ## Protocol
 
-### 1. Resolve harness operation
+### 1. Resolve harness technique
 
 - Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: resume` → `{harness_technique}`, `{harness_operation}`.
 
@@ -49,4 +49,4 @@ Harness-level resume preserves the context window. Useful, not required for corr
 
 ### resume-preserves-delivery-scope
 
-A resumed agent is the same delivery context, so `{composed_prompt}` re-binds the workflow-server worker `agent_id` the dispatch bound — the identity the ledger is keyed on (`dispatch-activity.delivery-keys-on-agent-context`), distinct from the harness `{agent_id}` this operation resumes. Under that identity the resumed agent's refetches collapse to unchanged markers; a resume that did not preserve the window still holds the identity and takes `workflow-engine.force-full-after-summarization`.
+A resumed agent is the same delivery context, so `{composed_prompt}` re-binds the workflow-server worker `agent_id` the dispatch bound — the identity the ledger is keyed on (`dispatch-activity.delivery-keys-on-agent-context`), distinct from the harness `{agent_id}` this technique resumes. Under that identity the resumed agent's refetches collapse to unchanged markers; a resume that did not preserve the window still holds the identity and takes `workflow-engine.force-full-after-summarization`.

@@ -9,7 +9,7 @@ metadata:
   type: generative
   steps: 4
   words: 190
-  origin: "Round 42 — fills epistemic gap: no prism performed creative/generative operations"
+  origin: "Round 42 — fills epistemic gap: no prism performed creative/generative techniques"
 ---
 
 Execute every step below. Output the complete analysis.

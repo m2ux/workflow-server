@@ -38,7 +38,7 @@ Whether the working tree at that path holds anything. False for a submodule the 
 ### 1. Read What the Host Declares
 
 - `git -C {host_repo_path} config --file .gitmodules --get-regexp "^submodule\..*\.path$"`, and take the value of each line as a `path`.
-  > The declaration file is read rather than the working tree, because a submodule the host declares and no clone has populated is exactly the entry a walk of the working tree would miss, and it is one this operation answers for. `git submodule foreach` skips it for the same reason and is not the instrument here.
+  > The declaration file is read rather than the working tree, because a submodule the host declares and no clone has populated is exactly the entry a walk of the working tree would miss, and it is one this technique answers for. `git submodule foreach` skips it for the same reason and is not the instrument here.
 
 ### 2. Mark the Infrastructure
 

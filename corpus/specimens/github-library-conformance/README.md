@@ -1,6 +1,6 @@
 # GitHub Library Conformance
 
-Binds five GitHub library operations. Label replacement and the single-select write run against the throwaway board, and each write is confirmed by the re-read its operation already specifies.
+Binds five GitHub library techniques. Label replacement and the single-select write run against the throwaway board, and each write is confirmed by the re-read its technique already specifies.
 
 | Activity | Refers to |
 |---|---|

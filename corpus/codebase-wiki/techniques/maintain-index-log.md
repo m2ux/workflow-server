@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Keep the wiki's catalog and ledger current with every mutation: update `index.md` to list and route to each page, and append `log.md` with an entry for each create/update operation. This is how the index-and-log-on-every-mutation invariant is enforced — every ingest and every publish refresh runs this technique so navigation and provenance never fall behind the pages. File IO is delegated to `work-package::manage-artifacts::write-artifact`.
+Keep the wiki's catalog and ledger current with every mutation: update `index.md` to list and route to each page, and append `log.md` with an entry for each create/update technique. This is how the index-and-log-on-every-mutation invariant is enforced — every ingest and every publish refresh runs this technique so navigation and provenance never fall behind the pages. File IO is delegated to `work-package::manage-artifacts::write-artifact`.
 
 ## Inputs
 
@@ -33,7 +33,7 @@ The refreshed catalog: one entry per page, organized by page type and routing to
 
 ### mutation_log
 
-The appended ledger: one entry per create/update operation, in operation order.
+The appended ledger: one entry per create/update technique, in technique order.
 
 #### artifact
 
@@ -65,7 +65,7 @@ This technique runs on every mutation — paired with each ingest in the build l
 
 ### log-is-append-only
 
-`log.md` is an append-only ledger — new entries are added; prior entries are never edited or removed, so the log is a faithful operation history.
+`log.md` is an append-only ledger — new entries are added; prior entries are never edited or removed, so the log is a faithful technique history.
 
 ### delegate-file-writes
 

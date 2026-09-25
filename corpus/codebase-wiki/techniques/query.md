@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Answer a question against the wiki by navigating hierarchically — search `index.md`, follow `[[wikilinks]]` to the relevant pages, and synthesize an answer whose claims carry `[[wikilink]]` citations back to the pages they rest on and the confidence of those pages. Optionally persist the synthesized answer as a page so the knowledge compounds. This is the operation other workflows bind as `codebase-wiki/query` to read the wiki without loading it whole.
+Answer a question against the wiki by navigating hierarchically — search `index.md`, follow `[[wikilinks]]` to the relevant pages, and synthesize an answer whose claims carry `[[wikilink]]` citations back to the pages they rest on and the confidence of those pages. Optionally persist the synthesized answer as a page so the knowledge compounds. This is the technique other workflows bind as `codebase-wiki/query` to read the wiki without loading it whole.
 
 ## Inputs
 

@@ -4,7 +4,7 @@
 
 A target too large for one reading is split into regions, each region given the lens its shape calls for, and the per-region findings reconciled across the boundaries between them. Code-only, since the decomposition is structural.
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one operation of the chain.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one technique of the chain.
 
 ---
 

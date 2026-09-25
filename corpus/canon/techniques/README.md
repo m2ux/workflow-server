@@ -1,6 +1,6 @@
 # Canon techniques
 
-Operations shared by every workflow that reaches the canon.
+Techniques shared by every workflow that reaches the canon.
 
 | Technique | What it does |
 |-----------|----------------|

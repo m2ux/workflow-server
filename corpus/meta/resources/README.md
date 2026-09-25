@@ -4,7 +4,7 @@
 
 Markdown resources providing the bootstrap navigation primer and shared cross-workflow reference structures (such as the canonical planning-folder README guide). Agent entry Protocol lives on workflow-engine techniques ([activity-worker](../techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](../techniques/workflow-engine/workflow-orchestrator.md)); agent stubs are composed by [compose-prompt](../techniques/workflow-engine/compose-prompt.md).
 
-Tool reference content for Atlassian, GitNexus, and state management has moved into the corresponding capability techniques' operations — each operation declares its own `tools` block and any `prose` reference content.
+Tool reference content for Atlassian, GitNexus, and state management has moved into the corresponding capability techniques' techniques — each technique declares its own `tools` block and any `prose` reference content.
 
 ---
 
@@ -27,8 +27,8 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 |----------|-----------------------------|
 | `activity-worker-prompt` | [`workflow-engine::activity-worker`](../techniques/workflow-engine/activity-worker.md) (+ [compose-prompt](../techniques/workflow-engine/compose-prompt.md) stub) |
 | `workflow-orchestrator-prompt` | [`workflow-engine::workflow-orchestrator`](../techniques/workflow-engine/workflow-orchestrator.md) (+ [compose-prompt](../techniques/workflow-engine/compose-prompt.md) stub) |
-| GitNexus Reference | Inlined into [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) operations |
-| Atlassian Tools | Inlined into [`atlassian`](/atlassian/techniques/TECHNIQUE.md) operations |
+| GitNexus Reference | Inlined into [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) techniques |
+| Atlassian Tools | Inlined into [`atlassian`](/atlassian/techniques/TECHNIQUE.md) techniques |
 | Workflow State Format | State persistence is server-managed (no agent-facing schema resource needed). The canonical on-disk shape is defined by [`schemas/session-file.schema.json`](https://github.com/m2ux/workflow-server/blob/main/schemas/session-file.schema.json) and is documented in [`docs/state_management_model.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state_management_model.md). |
 
 ---

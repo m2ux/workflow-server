@@ -80,9 +80,9 @@ The authoritative gates, options and effects live in each activity's YAML.
 | [`compose-evaluation-report`](./techniques/compose-evaluation-report/TECHNIQUE.md) | Consolidating sibling runs into one evaluation of the target |
 | [`resolve-findings`](./techniques/resolve-findings/TECHNIQUE.md) | Carrying a finding from criticism to decided change |
 
-The analysis itself is reached by trigger: `execute-analysis` dispatches prism as a child workflow per execution group, and `apply-mitigations` commits through a shared git operation.
+The analysis itself is reached by trigger: `execute-analysis` dispatches prism as a child workflow per execution group, and `apply-mitigations` commits through a shared git technique.
 
-**Detailed documentation:** [techniques/README.md](./techniques/README.md) for the operation index.
+**Detailed documentation:** [techniques/README.md](./techniques/README.md) for the technique index.
 
 ---
 
@@ -165,7 +165,7 @@ corpus/prism-evaluate/
 ├── workflow.yaml                     # Workflow metadata, rules, and variable declarations
 ├── README.md                         # This file
 ├── activities/                       # One YAML per activity, plus the orientation map
-├── techniques/                       # Operation groups, each with a shared contract
+├── techniques/                       # Technique groups, each with a shared contract
 │   ├── TECHNIQUE.md                  # The evaluation's standing context
 │   ├── plan-evaluation/              # Request → runnable plan
 │   ├── execute-analysis/             # Trigger context and run records

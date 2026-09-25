@@ -27,8 +27,8 @@ Name the trust contract: "Component X trusts Component Y to have already done Z.
 ## Step 2: Find Trust Inversions
 Look for where low-level code silently depends on high-level invariants:
 - Utility functions or helpers that are only safe when called from a specific context
-- Functions performing privileged operations under a read-only or neutral-sounding name
-- Read operations that silently mutate — authority concealed in signature
+- Functions performing privileged techniques under a read-only or neutral-sounding name
+- Read techniques that silently mutate — authority concealed in signature
 
 Find: authority that is scope-conditional, not structural. What happens when the scope assumption breaks?
 
@@ -36,6 +36,6 @@ Find: authority that is scope-conditional, not structural. What happens when the
 Find the seams where two components each believe the other owns the same responsibility:
 - Double validation: same input validated twice at cost, with no record of which layer is canonical
 - Zero validation: input traverses a boundary because each side assumed the other checked it
-- Privilege escalation paths: how many hops from untrusted input to trusted operation?
+- Privilege escalation paths: how many hops from untrusted input to trusted technique?
 
 Force specificity: cite exact functions, parameters, or call sites. Name the trust law: which authority assumption, when false, causes the deepest failure with the least visible signal?

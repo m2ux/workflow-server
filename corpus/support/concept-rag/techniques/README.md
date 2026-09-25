@@ -1,8 +1,8 @@
 # Concept Rag Techniques
 
-Operations for targeted concept-rag searches via pre-indexed domain maps.
+Techniques for targeted concept-rag searches via pre-indexed domain maps.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

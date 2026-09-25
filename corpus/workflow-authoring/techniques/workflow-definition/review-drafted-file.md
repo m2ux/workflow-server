@@ -19,7 +19,7 @@ The authored file at that entry's path, as just written.
 
 ### operation_type
 
-The classified operation for the request — create, update or review.
+The classified technique for the request — create, update or review.
 
 ### impact_analysis_path
 
@@ -53,7 +53,7 @@ The removals inventory carrying a row for every observed reduction, each stating
 
 ### a-removal-is-inventoried-or-restored
 
-Every reduction the inventory does not name leaves this operation with a row composed for it, so the inventory can end the run naming every removal the run actually made.
+Every reduction the inventory does not name leaves this technique with a row composed for it, so the inventory can end the run naming every removal the run actually made.
 
 ### unasked-content-is-preserved
 

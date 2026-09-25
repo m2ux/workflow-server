@@ -11,7 +11,7 @@ Design-session completion summary in the planning folder.
 
 ### operation_type
 
-The classified operation. When `update`, the summary frames the delivery as changes to an existing workflow; when `create`, as a newly created workflow.
+The classified technique. When `update`, the summary frames the delivery as changes to an existing workflow; when `create`, as a newly created workflow.
 
 ## Outputs
 

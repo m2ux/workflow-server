@@ -34,7 +34,7 @@ Definition: [`03-lint-wiki.yaml`](./03-lint-wiki.yaml). Leads to [Publish](#04-p
 
 ### 04. Publish
 
-Finalize the index, log, and overview, leaving an `overview.md` completion summary as a durable entry point, and record the wiki as published. Publish is local-only by design — no branch, commit, or pull-request operations — so the wiki is delivered in place under the wiki tree root.
+Finalize the index, log, and overview, leaving an `overview.md` completion summary as a durable entry point, and record the wiki as published. Publish is local-only by design — no branch, commit, or pull-request techniques — so the wiki is delivered in place under the wiki tree root.
 
 Definition: [`04-publish.yaml`](./04-publish.yaml). Terminal.
 

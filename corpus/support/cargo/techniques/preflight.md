@@ -41,4 +41,4 @@ Array of `{name, install_hint}` for any unmet prerequisite. Empty array when all
 
 ### probe-reports-only
 
-The finding is this operation's whole product. An `install_hint` names what would resolve a gap; running it is outside this operation.
+The finding is this technique's whole product. An `install_hint` names what would resolve a gap; running it is outside this technique.

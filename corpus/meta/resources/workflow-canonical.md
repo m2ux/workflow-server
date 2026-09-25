@@ -71,7 +71,7 @@ list). Its sections are inherited by every technique in the workflow:
 
 A container contributes a **contract, never a procedure**. `## Protocol` does not
 inherit: a technique's steps are its own, and the steps a shared stage owns belong to
-the activity or routine that binds both operations.
+the activity or routine that binds both techniques.
 
 Inheritance is **recursive** down the nesting chain: workflow root `TECHNIQUE.md` →
 container `<group>/TECHNIQUE.md` → nested technique (`<sub>.md`) or standalone. Each
@@ -99,7 +99,7 @@ An external primitive: a binary, an MCP server, a CLI command, an API. Tools hav
 - **Inline** — simple tools (`git`, `cargo`, Claude Code primitives) appear as bare
   command strings in protocol step text.
 - **Tool-dedicated namespace** — complex tools (`gitnexus`, `concept-rag`) warrant a
-  namespace whose operations each name one capability over the tool: which calls this
+  namespace whose techniques each name one capability over the tool: which calls this
   job makes, in what order, and how to read the answer. The tool's own schema owns the
   rest of the parameter space ([A Technique Is a Reading](/canon/resources/design-principles.md#26-a-technique-is-a-reading)).
 

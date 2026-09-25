@@ -2,9 +2,9 @@
 
 > Part of the [GitNexus namespace](../README.md)
 
-Each run here is a named sequence of the namespace's [operations](../techniques/README.md), declared with the inputs it needs and the values it produces. An activity reaches one with a `kind: routine` step; the loader substitutes the site's arguments through the body, prefixes every identifier from the step's id, and splices ordinary steps in its place. This file orients — the signature and the body live in the per-run `.yaml`.
+Each run here is a named sequence of the namespace's [techniques](../techniques/README.md), declared with the inputs it needs and the values it produces. An activity reaches one with a `kind: routine` step; the loader substitutes the site's arguments through the body, prefixes every identifier from the step's id, and splices ordinary steps in its place. This file orients — the signature and the body live in the per-run `.yaml`.
 
-A run lands here rather than in a workflow because its body composes this namespace's own operations. Callers may sit in any workflow, or arrive later.
+A run lands here rather than in a workflow because its body composes this namespace's own techniques. Callers may sit in any workflow, or arrive later.
 
 ---
 
@@ -72,4 +72,4 @@ A technique is session-blind, so a run that puts something in front of a person 
 
 ## Reference convention
 
-A run is reached **qualified** — `gitnexus::<run>` — from anywhere outside the namespace, and its body names this namespace's operations qualified too, because a bare reference resolves in the workflow the run is spliced into rather than here.
+A run is reached **qualified** — `gitnexus::<run>` — from anywhere outside the namespace, and its body names this namespace's techniques qualified too, because a bare reference resolves in the workflow the run is spliced into rather than here.

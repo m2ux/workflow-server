@@ -13,7 +13,7 @@ Update prism routing technique files to reflect resource changes: fix renamed re
 
 - For each entry in `{change_set}.renamed`, replace the old name with the new name across all rules and protocol sections of `{plan_analysis_technique}`.
   > If an expected technique file cannot be found, verify that the prism workflow techniques directory exists.
-- Add a goal-mapping-matrix entry for every entry in `{change_set}.new`: analytical goal keyword to prism index, where the goal keyword matches the prism's cognitive operation or domain from its YAML frontmatter `description`.
+- Add a goal-mapping-matrix entry for every entry in `{change_set}.new`: analytical goal keyword to prism index, where the goal keyword matches the prism's cognitive technique or domain from its YAML frontmatter `description`.
 - Update the code-vs-general, model-sensitivity, neutral-variant-routing, resource list, query-recommendation, and single-unit-recommendation sections.
 
 ### 2. Update Portfolio Analysis
@@ -24,7 +24,7 @@ Update prism routing technique files to reflect resource changes: fix renamed re
 
 ### 3. Update Behavioral Pipeline
 
-- Fix renamed references to behavioral lens names or indices in the `behavioral-pipeline` operation group.
+- Fix renamed references to behavioral lens names or indices in the `behavioral-pipeline` technique group.
 
 ### 4. Update Orchestrate Prism
 
