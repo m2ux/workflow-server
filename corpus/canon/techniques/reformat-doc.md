@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,14 +29,15 @@ The document at `{document_path}` after reformatting.
 ### 2. Title and Opening
 
 - Set every title to title case. The document title names what the document is. A section title does not begin with "The".
-- Open with one plain-language paragraph that tells a lay reader what the document is for.
+- Open with one plain-language paragraph that tells a lay reader what the document is for, and when and why the thing happens. A reference names what it refers to.
 
 ### 3. Lists and Figures
 
 - Where a paragraph is a run of parallel items, make those items a bullet list.
 - Each section that explains how something proceeds carries two high-level diagrams, and so does each subsection with its own account. One shows the sequence of what happens. One shows the pieces it is made of.
 - A block of prose under those diagrams that is a further concept becomes its own section, with its own pair. A block that only restates the pictures, or only gives implementation detail, leaves the page.
-- For each figure, write one paragraph in that section that refers to it as Figure N. Put an italic title-case caption under the figure. The caption says what the picture shows.
+- For each figure, write one paragraph in that section that describes the thing, then names the figure in parentheses at the end of the sentence. Do not open the sentence with the figure number. Put an italic title-case caption under the figure. The caption says what the picture shows. A term in that caption that a reader cannot already read takes a parenthesis after it. A term that reads on its own does not.
+- On the diagram of the pieces, each box carries a note and each arrow a label. A note or a label is six words or less.
 
 ### 4. Commands and Links
 
@@ -51,7 +52,7 @@ Every heading, figure caption, and table title is title case. A short word such 
 
 ### opening-orients-a-lay-reader
 
-The first paragraph states what the document is for, in words a reader outside the implementation can follow.
+The first paragraph states what the document is for, when it happens, and why, in words a reader outside the implementation can follow. A reference names what it refers to.
 
 ### parallel-items-form-a-list
 
@@ -59,7 +60,7 @@ Items that share a role are a bullet list. A sentence that states one fact stays
 
 ### diagrams-replace-a-mechanical-account
 
-Each section that explains how something proceeds carries two high-level diagrams, one of the sequence and one of the pieces, and each subsection with its own account carries its own pair. The diagrams are that account. Prose under them names the figures. It does not walk the same steps again.
+Each section that explains how something proceeds carries two high-level diagrams, one of the sequence and one of the pieces, and each subsection with its own account carries its own pair. The diagrams are that account. The sentence describes the thing, then names the figure in parentheses at the end. It does not walk the same steps again.
 
 ### outline-stays-high-level
 
@@ -79,7 +80,11 @@ A field list and a sample definition live in the schema guide. This page links t
 
 ### figure-caption-follows-the-figure
 
-The caption is italic, sits under the figure, and begins with Figure N. The section paragraph names that figure. The caption does not say "behaviour" or "structure".
+The caption is italic, sits under the figure, and begins with Figure N. The section sentence describes the thing, then names the figure in parentheses at the end. It does not open with the figure number. The caption does not say "behaviour" or "structure". A term a reader cannot already read takes a parenthesis immediately after it. A term that reads on its own does not.
+
+### piece-diagram-is-annotated
+
+On the diagram of the pieces, each box carries a note of what it is, and each arrow a label of how the two fit. A note or a label is six words or less.
 
 ### commands-live-in-an-appendix
 

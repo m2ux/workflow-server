@@ -7,6 +7,7 @@ This folder holds documentation that belongs to this tree's layout: how the name
 - this file — adding a workflow, resource, technique or routine, and how definition files link
 - [technique-protocol-specification.md](technique-protocol-specification.md) — the technique file contract: anatomy, addressing, composition, delivery
 - [identifier-conventions.md](identifier-conventions.md) — how every id in a definition is spelled, and why it has to bind
+- [design-canon.md](design-canon.md) — where the design principles, anti-pattern catalog, construct inventory and conformance live, and how to reach them
 
 ## Discovery
 
