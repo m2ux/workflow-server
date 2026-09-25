@@ -28,16 +28,16 @@ Each model answers one pressure the design is under. [architecture.md](architect
 
 | Model                                               | Answers                                                              |
 | --------------------------------------------------- | -------------------------------------------------------------------- |
-| [Dispatch](dispatch-model.md)                       | How work is split across a chain of agents                           |
-| [Checkpoints](checkpoint-model.md)                  | How a background agent asks a question it cannot ask directly        |
+| [Dispatch](dispatch.md)                             | How work is split across a chain of agents                           |
+| [Checkpoints](checkpoint.md)                        | How a background agent asks a question it cannot ask directly        |
 | [State management](state.md)                        | How the next activity is chosen, and where session state lives       |
 | [Workflow](workflow.md)                             | The guide an operator follows, its phases, and where each outcome leads |
 | [Technique](technique.md)                           | One capability a step names                                          |
 | [Routine](routine.md)                               | A run of steps written once and spliced in wherever it is needed     |
 | [Resource](resource.md)                             | Reference material a technique cites and does not contain            |
-| [Artifact management](artifact-management-model.md) | How planning output is kept out of the code change                   |
+| [Artifact management](state.md#the-planning-folder) | How planning output is kept out of the code change                   |
 | [Resolution](resolution.md)                         | How a name reaches a technique, resource, activity, or routine       |
-| [Delivery](delivery-model.md)                       | What then travels to an agent, how much of it, and what it costs     |
+| [Delivery](delivery.md)                             | What then travels to an agent, how much of it, and what it costs     |
 | [Fidelity](fidelity.md)                             | How a claim to have followed the workflow is checked, layer by layer |
 
 
