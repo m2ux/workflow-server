@@ -63,7 +63,7 @@ The directories, and what each one owns:
 | `src/tools/` | The tool implementations, split between `workflow-tools.ts` and `resource-tools.ts` |
 | `src/utils/` | Session storage and sealing under `session/`, plus delivery accounting, batching, validation and variable seeding |
 | `src/trace.ts` | The trace store and the encoding of trace tokens |
-| `schemas/` | JSON Schemas for editor tooling. Most are generated from their Zod sources by `npm run build:schemas`; `technique.schema.json` is hand-authored, and `check:schemas` holds both facts |
+| `schemas/` | JSON Schemas for editor tooling, generated from their Zod sources by `npm run build:schemas`. `check:schemas` holds each file to that rendering |
 | `scripts/` | Install and container helpers, and schema generation |
 | `benchmark/` | The three headless benchmarks |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution — documented in [`guards/README.md`](../guards/README.md) |

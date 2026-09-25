@@ -7,11 +7,9 @@
  * reaches an author as their own file being wrong — a spurious authoring error, at a remove from the
  * change that caused it, with nothing pointing back to it.
  *
- * The subject is the files the generator WRITES, read from its own declared list rather than from
- * the directory: `technique.schema.json` is hand-authored, carries an `$id` the generator's preamble
- * never writes, and has no entry — a guard written over the directory would go permanently red on a
- * file no change ever touches. The directory is still accounted for, by naming the hand-authored
- * ones, so a schema added to `schemas/` and to neither list is reported rather than ignored.
+ * The subject is the files the generator writes, read from its own declared list. A schema file in
+ * `schemas/` that is not in that list is reported, so a file added beside the generated set is not
+ * ignored.
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -20,11 +18,6 @@ import { GENERATED_SCHEMAS, SCHEMAS_DIR, renderSchema, schemaPath } from '../scr
 import { report, type Finding } from './guard-protocol.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
-
-/** Schema files authored by hand, each with why it is not generated. */
-const HAND_AUTHORED: Record<string, string> = {
-  'technique.schema.json': 'hand-authored: it carries its own $id and mirrors a markdown file contract rather than a Zod source',
-};
 
 export function collectStaleSchemas(): Finding[] {
   const findings: Finding[] = [];
@@ -52,11 +45,11 @@ export function collectStaleSchemas(): Finding[] {
 
   for (const file of readdirSync(SCHEMAS_DIR)) {
     if (!file.endsWith('.schema.json')) continue;
-    if (generated.has(file) || file in HAND_AUTHORED) continue;
+    if (generated.has(file)) continue;
     findings.push({
       check: 'schema-unaccounted',
       site: `schemas/${file}`,
-      detail: `${file} is in neither the generator's list nor the hand-authored list, so nothing checks it`,
+      detail: `${file} is not in the generator's list, so nothing checks it`,
     });
   }
   return findings;

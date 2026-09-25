@@ -14,7 +14,7 @@ The workflow server uses six schemas:
 | [workflow.schema.json](workflow.schema.json#L7)         | Defines workflow structure |
 | [activity.schema.json](activity.schema.json#L7)         | Defines an activity        |
 | [routine.schema.json](routine.schema.json#L7)           | Defines a routine          |
-| [technique.schema.json](technique.schema.json#L131)     | Defines a technique        |
+| [technique.schema.json](technique.schema.json#L7)       | Defines a technique        |
 | [condition.schema.json](condition.schema.json#L7)       | Defines a condition        |
 | [session-file.schema.json](session-file.schema.json#L7) | The on-disk session file   |
 
@@ -149,6 +149,6 @@ What writes the session bag is [state](../docs/state.md).
 
 ## Fields
 
-The field lists live in the schema files linked above. Five of them are generated from the Zod sources ([generate-schemas.ts](../scripts/generate-schemas.ts#L37)). [technique.schema.json](technique.schema.json#L4) is hand-authored.
+The field lists live in the schema files linked above. All six are generated from the Zod sources ([generate-schemas.ts](../scripts/generate-schemas.ts#L37)).
 
 A step's shape is the `kind` branch in [activity.schema.json](activity.schema.json#L185): [technique](activity.schema.json#L185), [action](activity.schema.json#L393), [checkpoint](activity.schema.json#L428), [loop](activity.schema.json#L510), [routine](activity.schema.json#L578). The same branches are inlined in [workflow.schema.json](workflow.schema.json#L343) and [routine.schema.json](routine.schema.json#L220).
