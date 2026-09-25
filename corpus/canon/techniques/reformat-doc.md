@@ -28,7 +28,7 @@ The document at `{document_path}` after reformatting.
 
 ### 2. Title and Opening
 
-- Set every title to title case. The document title names what the document is. A section title does not begin with "The".
+- Set every title to title case. The document title names what the document is. A section title does not begin with "The", and a title does not name how many items it contains. A count of an inventory goes stale when the inventory grows.
 - Open with one plain-language paragraph that tells a lay reader what the document is for, and when and why the thing happens. Introduce every term of art the rest of the page uses, in the flow of that prose, and bold each term at that first use. A reference names what it refers to. A paragraph is at most six lines.
 
 ### 3. Lists and Figures
@@ -48,7 +48,7 @@ The document at `{document_path}` after reformatting.
 
 ### titles-are-title-case
 
-Every heading, figure caption, and table title is title case. A short word such as "a", "of", "from", or "with" stays lowercase unless it is first or last. A section title does not begin with "The".
+Every heading, figure caption, and table title is title case. A short word such as "a", "of", "from", or "with" stays lowercase unless it is first or last. A section title does not begin with "The", and a title does not name how many items it contains. A count of an inventory goes stale when the inventory grows.
 
 ### opening-orients-a-lay-reader
 
