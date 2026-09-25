@@ -4,17 +4,17 @@
 
 Read the page for the task in front of you.
 
-| If you are                                | Read                                                                               |
-| ----------------------------------------- | ---------------------------------------------------------------------------------- |
-| Installing or deploying the server        | [setup](setup.md)                                                               |
-| Setting a flag or an environment variable | [configuration](configuration.md)                                               |
-| Calling the tools                         | [api](api.md)                                                                   |
-| Building or testing the server            | [development](development.md)                                                   |
-| Running a guard, or adding one            | [guards](../guards/README.md)                                                   |
-| Pricing a delivery change                 | [benchmark](../benchmark/README.md)                                             |
-| Authoring workflow definitions            | [corpus](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md) |
-| Looking up a field                        | [schemas](../schemas/README.md)                                                 |
-| Adding or changing documentation          | [documentation](documentation.md)                                               |
+| Read            | If you are                                |
+| --------------- | ----------------------------------------- |
+| [setup](setup.md) | Installing or deploying the server        |
+| [configuration](configuration.md) | Setting a flag or an environment variable |
+| [api](api.md) | Calling the tools                         |
+| [development](development.md) | Building or testing the server            |
+| [guards](../guards/README.md) | Running a guard, or adding one            |
+| [benchmark](../benchmark/README.md) | Pricing a delivery change                 |
+| [corpus](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md) | Authoring workflow definitions            |
+| [schemas](../schemas/README.md) | Looking up a field                        |
+| [documentation](documentation.md) | Adding or changing documentation          |
 
 
 
