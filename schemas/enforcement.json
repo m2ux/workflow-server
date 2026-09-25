@@ -1,0 +1,378 @@
+{
+  "workflow": {
+    "activities": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "author": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "description": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "initialActivity": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "rules.activity": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "rules.universal": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "rules.workflow": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "tags": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "techniques.activity": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "techniques.workflow": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "title": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "variables": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "variables[].defaultValue": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "variables[].required": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "variables[].type": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "variables[].values": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "version": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    }
+  },
+  "activity": {
+    "artifactPrefix": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "bundleTechniques": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "description": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "exits": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "name": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "outcome": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "required": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "rules": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "steps[].actions": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].autoAdvanceMs": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].breakCondition": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].condition": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].continueWhile": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].defaultOption": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].kind": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].loopType": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].maxIterations": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].options": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].options[].effect.exit": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "steps[].options[].effect.setVariable": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].over": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].required": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].steps": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].steps[].id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].steps[].kind": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].steps[].required": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].steps[].when": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].technique.inputs": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].technique.outputs": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].variable": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].when": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "techniques": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "triggers": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "triggers[].passContext": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "variables.reads": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "variables.writes": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "variables.writes[].defaultValue": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "variables.writes[].required": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "variables.writes[].type": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "variables.writes[].values": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    }
+  },
+  "routine": {
+    "steps[].actions": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].autoAdvanceMs": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].breakCondition": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].condition": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].continueWhile": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].defaultOption": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].kind": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].loopType": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].maxIterations": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].options": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].options[].effect.exit": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "steps[].options[].effect.setVariable": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].over": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].required": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].steps": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].steps[].id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].steps[].kind": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].steps[].required": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].steps[].when": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].technique.inputs": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].technique.outputs": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].variable": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    },
+    "steps[].when": {
+      "owner": "Agent",
+      "strictness": "advisory"
+    }
+  },
+  "technique": {
+    "capability": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "inputs[].default": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "inputs[].id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "outputs[].artifact.name": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "outputs[].id": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "protocol": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    },
+    "version": {
+      "owner": "Engine",
+      "strictness": "advisory"
+    }
+  }
+}

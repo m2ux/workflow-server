@@ -14,7 +14,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { GENERATED_SCHEMAS, SCHEMAS_DIR, renderSchema, schemaPath } from '../scripts/generate-schemas.js';
+import { ENFORCEMENT_FILE, GENERATED_SCHEMAS, SCHEMAS_DIR, enforcementPath, renderEnforcementFile, renderSchema, schemaPath } from '../scripts/generate-schemas.js';
 import { report, type Finding } from './guard-protocol.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -40,6 +40,21 @@ export function collectStaleSchemas(): Finding[] {
       check: 'schema-stale',
       site: `schemas/${file}`,
       detail: `${file} does not match the Zod schema it is generated from — the source changed and the file did not`,
+    });
+  }
+
+  const enforcement = enforcementPath();
+  if (!existsSync(enforcement)) {
+    findings.push({
+      check: 'schema-missing',
+      site: `schemas/${ENFORCEMENT_FILE}`,
+      detail: `${ENFORCEMENT_FILE} is generated from the enforcement annotations and no file exists for it`,
+    });
+  } else if (readFileSync(enforcement, 'utf-8') !== renderEnforcementFile()) {
+    findings.push({
+      check: 'schema-stale',
+      site: `schemas/${ENFORCEMENT_FILE}`,
+      detail: `${ENFORCEMENT_FILE} does not match the enforcement annotations — the source changed and the file did not`,
     });
   }
 

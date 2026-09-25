@@ -9,6 +9,7 @@ import { SessionFileSchema } from '../src/schema/session.schema.js';
 import { ActivitySchema } from '../src/schema/activity.schema.js';
 import { RoutineSchema } from '../src/schema/routine.schema.js';
 import { TechniqueSchema } from '../src/schema/technique.schema.js';
+import { renderEnforcement } from '../src/schema/enforcement.js';
 
 /**
  * The JSON Schema files under `schemas/`, generated from the Zod sources they mirror.
@@ -55,6 +56,16 @@ export function schemaPath(name: string): string {
   return join(SCHEMAS_DIR, `${name}.schema.json`);
 }
 
+export const ENFORCEMENT_FILE = 'enforcement.json';
+
+export function enforcementPath(): string {
+  return join(SCHEMAS_DIR, ENFORCEMENT_FILE);
+}
+
+export function renderEnforcementFile(): string {
+  return renderEnforcement(GENERATED_SCHEMAS);
+}
+
 function generateAll(): void {
   mkdirSync(SCHEMAS_DIR, { recursive: true });
   console.log('Generating JSON Schema files...\n');
@@ -62,6 +73,8 @@ function generateAll(): void {
     writeFileSync(schemaPath(entry.name), renderSchema(entry));
     console.log(`[PASS] Generated ${entry.name}.schema.json`);
   }
+  writeFileSync(enforcementPath(), renderEnforcementFile());
+  console.log(`[PASS] Generated ${ENFORCEMENT_FILE}`);
   console.log('\n[PASS] Done');
 }
 

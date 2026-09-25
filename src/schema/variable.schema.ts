@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { enforcement } from './enforcement.js';
 import { EXEMPT_DATA_IDS, QUALIFIED_DATA_ID_PATTERN } from './identifiers.js';
 
 // A variable name is a qualified snake_case noun phrase (AP-60: >=2 words, e.g.
@@ -10,11 +11,11 @@ export const VariableNameSchema = z.union([
 
 export const VariableDefinitionSchema = z.object({
   name: VariableNameSchema,
-  type: z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes.'),
+  type: enforcement(z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes.'), { owner: 'Engine', strictness: 'advisory' }),
   description: z.string().optional(),
-  values: z.array(z.string()).min(1).optional().describe('The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type.'),
-  defaultValue: z.unknown().optional().describe('Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this).'),
-  required: z.boolean().default(false).describe('Authoring metadata; the server does not check that the variable is ever set.'),
+  values: enforcement(z.array(z.string()).min(1).optional().describe('The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type.'), { owner: 'Engine', strictness: 'advisory' }),
+  defaultValue: enforcement(z.unknown().optional().describe('Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this).'), { owner: 'Engine', strictness: 'enforced' }),
+  required: enforcement(z.boolean().default(false).describe('Authoring metadata; the server does not check that the variable is ever set.'), { owner: 'Agent', strictness: 'advisory' }),
 }).superRefine((variable, ctx) => {
   if (variable.values === undefined) return;
   if (variable.type !== 'string') {
@@ -60,7 +61,7 @@ export function isOutsideValueSet(variable: Pick<VariableDefinition, 'values'>, 
  * about a starting value takes the value another site names.
  */
 export const ActivityVariablesSchema = z.object({
-  reads: z.array(VariableNameSchema).optional().describe('Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound techniques\' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here.'),
-  writes: z.array(VariableDefinitionSchema).optional().describe('Session variables this activity puts into the bag: its bound techniques\' outputs (under their declared id or the step binding\'s remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow\'s variable set, defaultValue included.'),
+  reads: enforcement(z.array(VariableNameSchema).optional().describe('Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound techniques\' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here.'), { owner: 'Engine', strictness: 'advisory' }),
+  writes: enforcement(z.array(VariableDefinitionSchema).optional().describe('Session variables this activity puts into the bag: its bound techniques\' outputs (under their declared id or the step binding\'s remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow\'s variable set, defaultValue included.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict();
 export type ActivityVariables = z.infer<typeof ActivityVariablesSchema>;
