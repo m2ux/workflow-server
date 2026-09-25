@@ -2,11 +2,19 @@
 
 This folder holds documentation that belongs to this tree's layout: how the named roots are arranged, and how to add a workflow, resource, technique or routine. What each named root is *for*, and what it holds, is in that folder's own README; the [branch README](../README.md#named-roots) maps them.
 
-## Contents
+## Document corpus
 
-- this file — adding a workflow, resource, technique or routine, and how definition files link
-- [identifier-conventions.md](identifier-conventions.md) — how every id in a definition is spelled, and why it has to bind
-- [design-canon.md](design-canon.md) — where the design principles, anti-pattern catalog, construct inventory and conformance live, and how to reach them
+The definition docs on this branch.
+
+| Document | What it is |
+|----------|------------|
+| [Identifier conventions](identifier-conventions.md) | How every id in a definition is spelled |
+| [Canon](../corpus/canon/README.md) | The namespace the homes below are served from |
+| [Design principles](../corpus/canon/resources/design-principles.md) | The stance an author writes toward |
+| [Anti-patterns](../corpus/canon/resources/anti-patterns.md) | Smells, each as detect, do not flag, fix |
+| [Schema construct inventory](../corpus/canon/resources/schema-construct-inventory.md) | A prose pattern mapped to the construct that carries it |
+| [Convention conformance](../corpus/canon/resources/convention-conformance.md) | Comparison against sibling workflows |
+| [Design canon](design-canon.md) | How to reach the homes, and how to cite one |
 
 ## Discovery
 
