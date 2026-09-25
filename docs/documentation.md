@@ -2,21 +2,15 @@
 
 How this repository's documentation is organized: which layer a fact belongs to, where new documentation belongs, and the conventions all of it follows. A reader looking for a document starts at the [index](README.md).
 
-## The two layers
+## Two layers
 
 Documentation is written twice over, for two different readers, and the division is by what the reader is doing rather than by topic.
 
-### Markdown holds the contract
-
 [`docs/`](.) carries exact values, field names, ordering rules, edge cases and the commands that exercise them. Its reader is implementing against the server, auditing a run or debugging one, arrives by grep or by a link from code, and reads one section.
 
-### The site holds the orientation
+[`site/`](../site/) is a hand-authored static site — semantic HTML, one shared stylesheet, inline SVG diagrams, no client-side JavaScript. Its reader is forming a mental model of why the problem exists and how the pieces relate, and reads linearly. Prefer on-site links for reading. Link to markdown on GitHub for editing, or for a document with no HTML page.
 
-[`site/`](../site/) is a hand-authored static site — semantic HTML, one shared stylesheet, inline SVG diagrams, no client-side JavaScript. Its reader is forming a mental model of why the problem exists and how the pieces relate, and reads linearly. **Prefer on-site links for reading**; link to markdown on GitHub for editing, or for a document with no HTML page.
-
-### Which layer a fact belongs to
-
-The test is whether a reader would **check** it or **absorb** it. A default value, an exemption list, a ledger key: checked, so markdown. Why checkpoints travel up the agent chain at all: absorbed, so the site.
+The test is whether a reader would check a fact or absorb it. A default value, an exemption list, a ledger key: checked, so markdown. Why checkpoints travel up the agent chain at all: absorbed, so the site.
 
 ### What keeps the site consistent
 
@@ -37,6 +31,8 @@ Neither can detect a prose divergence between a markdown document and its site p
 - **Design rationale** (why an architectural decision stands) → record the decision as an ADR on the engineering branch first, then surface the distilled rationale on the relevant `site/design/` page (present tense; not a changelog).
 - **Engineering process artifacts** (plans, analyses, reviews, ADRs) → under the engineering root (`artifacts/` on an engineering-branch checkout, or `.engineering/artifacts/` in in-tree layouts). These are never product documentation and are not linked from it; design pages restate standing decisions in their own words rather than linking there.
 
+
+
 ## Conventions
 
 - **Describe the system as it is.** Documentation states current behaviour in plain present tense; evolution narratives belong in engineering planning artifacts. Standing reasons behind decisions may appear on `site/design/` pages — still present tense, never a changelog.
@@ -50,3 +46,4 @@ Neither can detect a prose divergence between a markdown document and its site p
 - **Sentences carry one idea, and paragraphs carry one topic.** A reader arriving at a contract is checking something specific, and a sixty-word sentence with three clauses makes them parse before they can check. Prefer a table where the material is a set of cases, and keep a table cell to a line — a cell that has grown into a paragraph belongs in prose beneath the table.
 - **Spell out a term of art at first use.** Give the full form once, then the short one.
 - **Everything is reachable.** Every HTML page is listed in `SITE_ROUTES` and linked from the generated global navigation. The home page "Where to start" table and section hubs provide additional entry points. No document should depend on full-text search alone.
+
