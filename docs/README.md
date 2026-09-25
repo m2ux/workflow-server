@@ -7,7 +7,7 @@ How a running process is bound, and what it exposes.
 | Read | What it is |
 |------|------------|
 | [configuration](configuration.md) | Every flag and environment variable the server reads at startup |
-| [api](api.md) | The catalog of tools and HTTP routes |
+| [api](api.md) | The catalog of tools, resources, and HTTP routes |
 
 ## Repository
 
@@ -17,7 +17,7 @@ How this tree is built, checked, measured, and written.
 |------|------------|
 | [development](development.md) | Building and testing this repository |
 | [guards](../guards/README.md) | The check programs, and how a verdict is a judgement |
-| [benchmark](../benchmark/README.md) | How much text a run sends, and what that run cost |
+| [benchmark](benchmark.md) | How much text a run sends, and what that run cost |
 | [documentation](documentation.md) | Which layer a fact belongs to, and the conventions |
 
 ## Authoring
@@ -27,7 +27,7 @@ The index of definition documents, and the schema that checks a definition.
 | Read | What it is |
 |------|------------|
 | [corpus](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md) | The definition documents on the workflows branch |
-| [schemas](../schemas/README.md) | The schema for a definition and for the session record |
+| [schemas](schemas.md) | The schema for a definition and for the session record |
 
 
 ## Architecture

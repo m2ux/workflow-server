@@ -26,13 +26,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Declaration {
-    fact the file that owns the
+    the file that owns the fact
   }
   class Workflow {
-    includes the activities it
+    the activities it includes
   }
   class Bag {
-    variables the session's
+    the session's variables
   }
   Declaration --> Workflow : contributed on include
   Workflow --> Bag : seeded at open
@@ -58,13 +58,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class WorkflowFile {
-    policy starting facts and
+    starting facts and policy
   }
   class ActivityFile {
-    produces what the activity
+    what the activity produces
   }
   class Variable {
-    fact a named
+    a named fact
   }
   WorkflowFile --> Variable : declares the starting facts
   ActivityFile --> Variable : declares what it produces
@@ -101,13 +101,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ActivityList {
-    produces what the activity
+    what the activity produces
   }
   class WorkflowList {
-    with facts the session starts
+    facts the session starts with
   }
   class VariableSet {
-    load one set at
+    one set at load
   }
   ActivityList --> VariableSet : contributed on include
   WorkflowList --> VariableSet : already declared
@@ -136,10 +136,10 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class Declarations {
-    values the combined starting
+    the combined starting values
   }
   class Bag {
-    opens empty until the session
+    empty until the session opens
   }
   Declarations --> Bag : seeded at open
 ```
@@ -165,10 +165,10 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class Variable {
-    value no starting
+    no starting value
   }
   class Gate {
-    absence tests that
+    tests that absence
   }
   Variable --> Gate : absent, or later present
 ```
@@ -197,13 +197,13 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class Bag {
-    variables the session's
+    the session's variables
   }
   class CheckpointAnswer {
-    decided what the person
+    what the person decided
   }
   class WorkerOutput {
-    found what the work
+    what the work found
   }
   CheckpointAnswer --> Bag : written by the server
   WorkerOutput --> Bag : written by the server
@@ -229,13 +229,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Option {
-    picks what the person
+    what the person picks
   }
   class Effect {
-    writes the variable that option
+    the variable that option writes
   }
   class Bag {
-    write receives that
+    receives that write
   }
   Option --> Effect : may carry
   Effect --> Bag : applied before the worker continues
@@ -269,13 +269,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class WorkerResult {
-    settled the variables the work
+    the variables the work settled
   }
   class Orchestrator {
-    map relays that
+    relays that map
   }
   class Bag {
-    write receives the
+    receives the write
   }
   WorkerResult --> Orchestrator : returned with the activity
   Orchestrator --> Bag : written on the transition
@@ -309,10 +309,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Exits {
-    declares the outcomes an activity
+    the outcomes an activity declares
   }
   class Graph {
-    leads where each exit
+    where each exit leads
   }
   Exits --> Graph : bound by the workflow
 ```
@@ -358,13 +358,13 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class Condition {
-    bag a test against the
+    a test against the bag
   }
   class DefaultExit {
-    hold taken when none
+    taken when none hold
   }
   class CheckpointOption {
-    outright names an exit
+    names an exit outright
   }
   Condition --> DefaultExit : loses when it holds
   CheckpointOption --> Condition : wins over the test
@@ -394,10 +394,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Graph {
-    destination every exit and
+    every exit and destination
   }
   class ActivityRow {
-    lead where this activity's exits
+    where this activity's exits lead
   }
   Graph --> ActivityRow : the worker's share
 ```
@@ -430,10 +430,10 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class ImmediateExit {
-    checkpoint chosen at a
+    chosen at a checkpoint
   }
   class Steps {
-    ahead the sequence still
+    the sequence still ahead
   }
   ImmediateExit --> Steps : ends them
 ```
@@ -458,13 +458,13 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class Variable {
-    variant marks the
+    marks the variant
   }
   class Exit {
-    path reads it to choose a
+    reads it to choose a path
   }
   class StepGate {
-    step reads it to skip a
+    reads it to skip a step
   }
   Variable --> Exit : lives in the one bag
   Variable --> StepGate : lives in the one bag
@@ -493,13 +493,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class SessionIndex {
-    opened the run that was
+    the run that was opened
   }
   class Decision {
-    yet the server cannot open one
+    the server cannot open one yet
   }
   class CatalogMatch {
-    index a client returned with the
+    a client returned with the index
   }
   Decision --> SessionIndex : not both
   CatalogMatch --> SessionIndex : returned beside it
@@ -546,13 +546,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Workspace {
-    change the code
+    the code change
   }
   class PlanningFolder {
-    run the notes of the
+    the notes of the run
   }
   class StateFile {
-    folder the session, in that
+    the session, in that folder
   }
   PlanningFolder --> StateFile : holds
   Workspace --> PlanningFolder : does not hold the notes
@@ -584,10 +584,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class StateFile {
-    plaintext the session, in
+    the session, in plaintext
   }
   class Seal {
-    key binds those bytes to the
+    binds those bytes to the key
   }
   Seal --> StateFile : checked on every read
 ```
@@ -615,13 +615,13 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class BytesRead {
-    saw what the call
+    what the call saw
   }
   class Write {
-    composed the change it
+    the change it composed
   }
   class StateFile {
-    matches replaced only while it
+    replaced only while it matches
   }
   BytesRead --> StateFile : must still be these bytes
   Write --> StateFile : refused when they are not
@@ -659,10 +659,10 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class StateFile {
-    reached the place the run has
+    the place the run has reached
   }
   class Agent {
-    index holds only the session
+    holds only the session index
   }
   StateFile --> Agent : resume returns the same index
 ```

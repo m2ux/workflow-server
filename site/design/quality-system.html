@@ -164,7 +164,7 @@
     <li><strong>Fidelity behaviour</strong> — the runtime validators, binding provenance, fetch observability (including <code>technique_bundled</code> coverage), reference-not-repeat delivery, and trace-token signing, each tested as an observable contract rather than an implementation detail.</li>
     <li><strong>End-to-end execution</strong> — <code>mcp-server.test.ts</code> drives real tool calls; a deterministic walker (<a href="https://github.com/m2ux/workflow-server/blob/main/tests/e2e/walker.ts"><code>tests/e2e/walker.ts</code></a>) enumerates every reachable path through every workflow definition and executes each one against the live server when a corpus checkout is present. A corpus verify job walks the registry on that tree's pull requests.</li>
     <li><strong>Documentation</strong> — <code>site.test.ts</code> runs the two site guards and the drift check described below, making stale documentation a red build.</li>
-    <li><strong>Agent smoke runs</strong> — <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/smoke/smoke-orchestrator.ts"><code>scripts/smoke/</code></a> drives a real agent through a workflow for the behaviour no deterministic walk can check: whether the instructions actually steer a model.</li>
+    <li><strong>Agent smoke runs</strong> — <a href="https://github.com/m2ux/workflow-server/blob/main/tests/smoke/smoke-orchestrator.ts"><code>tests/smoke/</code></a> drives a real agent through a workflow for the behaviour no deterministic walk can check: whether the instructions actually steer a model.</li>
   </ul>
 
   <h2 id="pipelines">Generated, then guarded</h2>

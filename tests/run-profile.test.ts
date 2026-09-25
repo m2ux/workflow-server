@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { parseTranscript, profileRun, sumUsage, type TranscriptRecord } from '../scripts/run-profile.js';
+import { parseTranscript, profileRun, sumUsage, type TranscriptRecord } from '../benchmark/scripts/run-profile.js';
 
 const FIXTURES = join(fileURLToPath(new URL('.', import.meta.url)), 'fixtures/run-profile');
 const RUN = join(FIXTURES, 'profiled-run.jsonl');

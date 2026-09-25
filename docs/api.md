@@ -1,6 +1,6 @@
 # API Reference
 
-MCP tool surface and HTTP routes.
+HTTP routes, MCP resources, and MCP tools.
 
 ## HTTP endpoints
 
@@ -27,6 +27,19 @@ Repsonses from `GET /ready`. Ready only when every one is true.
 | [corpusServes](../src/transports/http.ts#L105) | The mounted corpus holds at least one workflow                    | [Process](configuration.md#process)                                                |
 
 
+
+## MCP resources
+
+Schema documents, fetched by URI. The field guide is the [schema](schemas.md).
+
+| Resource | Purpose | Detail |
+| -------- | ------- | ------ |
+| [workflow-server://schemas](../src/resources/schema-resources.ts#L47) | Every schema, in one document | [Schema guide](schemas.md) |
+| [workflow-server://schemas/workflow](../src/resources/schema-resources.ts#L23) | A workflow | [workflow.schema.json](../schemas/workflow.schema.json#L9) |
+| [workflow-server://schemas/activity](../src/resources/schema-resources.ts#L23) | An activity | [activity.schema.json](../schemas/activity.schema.json#L9) |
+| [workflow-server://schemas/condition](../src/resources/schema-resources.ts#L23) | A condition | [condition.schema.json](../schemas/condition.schema.json#L8) |
+| [workflow-server://schemas/technique](../src/resources/schema-resources.ts#L23) | A technique | [technique.schema.json](../schemas/technique.schema.json#L9) |
+| [workflow-server://schemas/session-file](../src/resources/schema-resources.ts#L23) | The on-disk session record | [session-file.schema.json](../schemas/session-file.schema.json#L9) |
 
 ## MCP Tools
 

@@ -2,7 +2,7 @@
 
 A **workflow** is a guide an operator follows, end to end, to fulfill a set of objectives. An author writes one when that work has more than one phase. An **activity** is one phase. The **graph** says where each of an activity's **exits** leads. An **exit** is a named outcome in the activity's own words. The **initial activity** is the phase the run opens on.
 
-A **variable** is a name the run holds, with a type and a starting value. A **rule** is an invariant. A **technique** is a capability file a step or a role applies. **Audience** says who receives a rule or a technique: the **orchestrator**, which tracks the workflow, or every activity's **worker**. A **reference** is the name that reaches a technique. How a name reaches its file is [resolution](resolution.md). The fields are the [schema](../schemas/README.md#workflow-root-entity).
+A **variable** is a name the run holds, with a type and a starting value. A **rule** is an invariant. A **technique** is a capability file a step or a role applies. **Audience** says who receives a rule or a technique: the **orchestrator**, which tracks the workflow, or every activity's **worker**. A **reference** is the name that reaches a technique. How a name reaches its file is [resolution](resolution.md). The fields are the [schema](../schemas/workflow.schema.json#L9).
 
 ## File
 
@@ -22,13 +22,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Definition {
-    workflow file the
+    the workflow file
   }
   class Activities {
-    ordered phases the
+    the ordered phases
   }
   class Graph {
-    each exit where
+    where each exit
   }
   Definition --> Activities : names
   Activities --> Graph : exits are bound in
@@ -75,13 +75,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class OrchestratorSet {
-    the orchestrator for
+    for the orchestrator
   }
   class ActivitySet {
-    every activity inherited by
+    inherited by every activity
   }
   class Universal {
-    to both surfaced
+    surfaced to both
   }
   OrchestratorSet --> ActivitySet : not repeated on each activity
   Universal --> OrchestratorSet : also delivered
@@ -112,13 +112,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Activity {
-    its outcomes declares
+    declares its outcomes
   }
   class Exit {
-    what happened names
+    names what happened
   }
   class Destination {
-    runs next names what
+    names what runs next
   }
   Activity --> Exit : declares
   Exit --> Destination : bound in the graph

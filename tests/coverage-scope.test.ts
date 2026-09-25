@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { classifyChange, coverageScope, parseWorkflowIds, pathsFromNameStatus } from '../scripts/coverage-scope.js';
+import { classifyChange, coverageScope, parseWorkflowIds, pathsFromNameStatus } from './scripts/coverage-scope.js';
 
 /**
  * Which workflows a coverage walk has to cover for a given corpus change.

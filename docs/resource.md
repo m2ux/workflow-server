@@ -22,13 +22,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Technique {
-    it needs cites the guide
+    cites the guide it needs
   }
   class Link {
-    a name rewritten to
+    rewritten to a name
   }
   class ResourceFile {
-    the id one markdown file, the filename is
+    one markdown file, the filename is the id
   }
   Technique --> Link : a markdown hyperlink
   Link --> ResourceFile : the slug
@@ -76,13 +76,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class BareName {
-    workflow only this
+    this workflow only
   }
   class Prefix {
-    path names the namespace the
+    the namespace the path names
   }
   class Resource {
-    name reaches the file that
+    the file that name reaches
   }
   BareName --> Resource : resolved here
   Prefix --> Resource : resolved in that namespace
@@ -116,10 +116,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Resource {
-    whole guide the
+    the whole guide
   }
   class Section {
-    its body one heading and
+    one heading and its body
   }
   Resource --> Section : a section anchor narrows to
 ```
@@ -149,7 +149,7 @@ classDiagram
     written once
   }
   class CitingTechnique {
-    by link cites
+    cites by link
   }
   SharedResource --> CitingTechnique : reused, not copied
 ```

@@ -63,7 +63,7 @@ jobs:
 
       # The generated schemas are what an authoring client validates against, so a schema change
       # that never reached `schemas/` surfaces to an author as their own file being wrong. The
-      # subject is the files the generator writes; `technique.schema.json` is hand-authored.
+      # subject is the files the generator writes, including the technique schema.
       - name: Verify the generated schemas match their Zod sources
         run: npm run check:schemas
 

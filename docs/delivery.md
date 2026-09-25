@@ -29,16 +29,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class DeclaredReferences {
-    workflow named by the
+    named by the workflow
   }
   class CoreSet {
-    role included for every
+    included for every role
   }
   class ConditionalExtras {
-    reachable added only when
+    added only when reachable
   }
   class Bundle {
-    handed what the agent is
+    what the agent is handed
   }
   DeclaredReferences --> Bundle : gathered in
   CoreSet --> Bundle : gathered in
@@ -70,19 +70,19 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Techniques {
-    included one capability each, body
+    one capability each, body included
   }
   class Contracts {
-    inputs shared rules and
+    shared rules and inputs
   }
   class RoleRules {
-    agent govern the
+    govern the agent
   }
   class WorkflowMetadata {
-    names graph, activities, variable
+    graph, activities, variable names
   }
   class OrchestratorBundle {
-    handed what the orchestrator is
+    what the orchestrator is handed
   }
   Techniques --> Contracts : names what it inherits
   RoleRules --> OrchestratorBundle : rides once
@@ -125,13 +125,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ActivityTechniques {
-    steps named by the activity's
+    named by the activity's steps
   }
   class WorkerConduct {
-    worker held to by every
+    held to by every worker
   }
   class WorkerBundle {
-    handed what the worker is
+    what the worker is handed
   }
   ActivityTechniques --> WorkerBundle : gathered in
   WorkerConduct --> WorkerBundle : gathered in
@@ -165,16 +165,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ActivityFile {
-    prefix leading digits are the
+    leading digits are the prefix
   }
   class Prefix {
-    document put in front of each
+    put in front of each document
   }
   class ExpectedDocuments {
-    techniques built from the step
+    built from the step techniques
   }
   class PlanningFolder {
-    name sorts by activity
+    sorts by activity name
   }
   ActivityFile --> Prefix : read from the filename
   Prefix --> PlanningFolder : names each document
@@ -210,13 +210,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class StepName {
-    technique the step that binds the
+    the step that binds the technique
   }
   class TechniqueName {
-    bundled role technique, not
+    role technique, not bundled
   }
   class SessionDefinitions {
-    names only this session's
+    only this session's names
   }
   StepName --> SessionDefinitions : asks for one
   TechniqueName --> SessionDefinitions : asks for one
@@ -281,13 +281,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class WindowBudget {
-    activity unasked text, one
+    unasked text, one activity
   }
   class BatchBudget {
-    accumulate how much one context may
+    how much one context may accumulate
   }
   class ResultBound {
-    weigh how much one handover may
+    how much one handover may weigh
   }
   class OneActivity
   class OneRun
@@ -322,13 +322,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Window {
-    activity the worker's context for one
+    the worker's context for one activity
   }
   class UnconditionalContent {
-    contract the definition and the role
+    the definition and the role contract
   }
   class SpeculativeSteps {
-    skip steps a gate may still
+    steps a gate may still skip
   }
   UnconditionalContent --> Window : rides whatever the budget says
   SpeculativeSteps --> Window : spends the share, then stops
@@ -363,7 +363,7 @@ A body the budget leaves out is recorded as delivered to nobody. A ledger entry 
 
 ### Batch Budget
 
-One worker walks several activities, pauses at a commit and at a gate, and continues as the same worker (Figure 15). That run has a character limit and an activity limit (Figure 16). How the chain of agents is shaped is [dispatch](dispatch.md). What the numbers come to on a real corpus is in [benchmarks](../benchmark/README.md).
+One worker walks several activities, pauses at a commit and at a gate, and continues as the same worker (Figure 15). That run has a character limit and an activity limit (Figure 16). How the chain of agents is shaped is [dispatch](dispatch.md). What the numbers come to on a real corpus is in [benchmarks](benchmark.md).
 
 ```mermaid
 sequenceDiagram
@@ -381,13 +381,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Run {
-    worker several activities, one
+    several activities, one worker
   }
   class CharacterLimit {
-    hold text one context may
+    text one context may hold
   }
   class ActivityLimit {
-    take activities one context may
+    activities one context may take
   }
   Run --> CharacterLimit : stops when either binds
   Run --> ActivityLimit : stops when either binds
@@ -463,10 +463,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ToolResult {
-    whole goes out
+    goes out whole
   }
   class LogLine {
-    handover work outgrew one
+    work outgrew one handover
   }
   ToolResult --> LogLine : logged past the bound
 ```
@@ -500,13 +500,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Activity {
-    dispatch response for this
+    response for this dispatch
   }
   class InlinedSteps {
-    response small steps placed in that
+    small steps placed in that response
   }
   class LazySteps {
-    fetch left for a later
+    left for a later fetch
   }
   Activity --> InlinedSteps : carries, until the window is spent
   Activity --> LazySteps : names, but does not carry
@@ -564,16 +564,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ReferenceMode {
-    collapse a repeat can
+    a repeat can collapse
   }
   class FullMode {
-    against nothing yet to collapse
+    nothing yet to collapse against
   }
   class ResourceBody {
-    itself the reference material
+    the reference material itself
   }
   class ResourceName {
-    later ask for the body
+    ask for the body later
   }
   ReferenceMode --> ResourceBody : sends
   FullMode --> ResourceName : sends
@@ -615,13 +615,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Context {
-    finish one agent, spawn to
+    one agent, spawn to finish
   }
   class Ledger {
-    sent what this context was already
+    what this context was already sent
   }
   class Marker {
-    held stands for bytes already
+    stands for bytes already held
   }
   Context --> Ledger : records each delivery
   Ledger --> Marker : same bytes, sent again
@@ -708,13 +708,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class History {
-    dispatch one record per
+    one record per dispatch
   }
   class Ledger {
-    saved full size, sent or
+    full size, sent or saved
   }
   class UsageReport {
-    reported turn cost, agent
+    turn cost, agent reported
   }
   class Dispatch
   class Fetch
@@ -748,4 +748,4 @@ The server cannot see what a turn cost the host, so an agent reports it, one row
 
 #### Benchmarks
 
-One program prices a session mode, one prices a re-dispatch, and one prices a run of activities. All three, and the gate that runs on every pull request, are in [benchmarks](../benchmark/README.md).
+One program prices a session mode, one prices a re-dispatch, and one prices a run of activities. All three, and the gate that runs on every pull request, are in [benchmarks](benchmark.md).

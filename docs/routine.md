@@ -2,7 +2,7 @@
 
 A **routine** is a named run of steps, written once and referred to from more than one **site**. A site is a step in an **activity** — one phase of a **workflow** — that points at the routine. The loader substitutes the site's arguments, prefixes every identifier from that step, and splices the steps in place of the reference. Downstream, the manifest, the guards, and the worker see ordinary steps.
 
-An **input** is a parameter the site supplies. An **output** is a value the run produces, owned here. An **internal** is a name the body's steps pass between themselves, and it never enters the workflow's variables. A **reference** is the name the site uses. How that name reaches the file is [resolution](resolution.md#routine). The fields of the file are the [schema](../schemas/README.md#routine-routineschemajson). The fields of the referring step are the [schema](../schemas/README.md#routine-step).
+An **input** is a parameter the site supplies. An **output** is a value the run produces, owned here. An **internal** is a name the body's steps pass between themselves, and it never enters the workflow's variables. A **reference** is the name the site uses. How that name reaches the file is [resolution](resolution.md#routine). The fields of the file are the [schema](../schemas/routine.schema.json#L9). The fields of the referring step are the [schema](../schemas/activity.schema.json#L578).
 
 ## File
 
@@ -22,10 +22,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class RoutineFile {
-    the name one file, the filename is
+    one file, the filename is the name
   }
   class Signature {
-    and outputs inputs
+    inputs and outputs
   }
   class Steps {
     the run
@@ -90,13 +90,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Input {
-    the site supplied by
+    supplied by the site
   }
   class Internal {
-    the body passed inside
+    passed inside the body
   }
   class Output {
-    the routine owned by
+    owned by the routine
   }
   Input --> Internal : not the same name space as the host
   Internal --> Output : an output is declared in full
@@ -126,13 +126,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Site {
-    the prefix the step id is
+    the step id is the prefix
   }
   class Arguments {
-    the inputs values for
+    values for the inputs
   }
   class Bindings {
-    output variable where each
+    where each output variable
   }
   Site --> Arguments : with
   Site --> Bindings : outputs
@@ -179,10 +179,10 @@ classDiagram
     the reference
   }
   class PrefixedBody {
-    the site every id carries
+    every id carries the site
   }
   class OrdinarySteps {
-    the worker what
+    what the worker runs
   }
   Site --> PrefixedBody : arguments substituted
   PrefixedBody --> OrdinarySteps : spliced in place

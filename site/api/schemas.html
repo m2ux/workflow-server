@@ -68,7 +68,7 @@
 <main id="main">
   <h1>Schema reference</h1>
   <p class="lede">The JSON Schemas that define workflows, activities, techniques, conditions, and session state. The Zod schemas in <code>src/schema/</code> are the source of truth; the JSON files under <code>schemas/</code> are generated from them (<code>npm run build:schemas</code>) and validate workflow definitions at authoring time.</p>
-  <p>The field tables below show each schema's top-level shape and are rendered from the checked-in schema files. For authoring guidance — how the pieces fit together when writing a workflow — read the <a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md">schema guide</a>.</p>
+  <p>The field tables below show each schema's top-level shape and are rendered from the checked-in schema files. For authoring guidance — how the pieces fit together when writing a workflow — read the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md">schema guide</a>.</p>
 
       <!-- BEGIN GENERATED — edit scripts/generate-site-data.ts, then run npm run build:site -->
       <section class="schema" id="activity">
@@ -206,23 +206,39 @@
       </section>
       <section class="schema" id="technique">
         <h2><code>technique.schema.json</code></h2>
-        <p class="schema-summary">Technique definition schema for workflow-server</p>
+        <p class="schema-summary">Technique definition schema — a capability file parsed from markdown into this shape.</p>
         <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/technique.schema.json">Edit source on GitHub</a></p>
         <p class="table-caption">Top-level fields</p>
         <div class="table-wrap">
         <table>
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>Unique identifier for the technique</td></tr>
-          <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>Semantic version of the technique</td></tr>
-          <tr><td><code>capability</code></td><td><code>string</code></td><td>yes</td><td>What this technique enables agents to do</td></tr>
-          <tr><td><code>provenance_note</code></td><td><code>string</code></td><td>no</td><td>Delivery-only, server-populated on a step-bound get_technique: states the output delivery mechanics that the <code>source:</code>/<code>destination:</code> annotations rely on. Never authored in technique markdown.</td></tr>
-          <tr><td><code>rules</code></td><td><code>rulesDefinition</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>inputs</code></td><td><code>inputsDefinition</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>inherited_inputs</code></td><td><code>inheritedInputs</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>protocol</code></td><td><code>protocolDefinition</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>outputs</code></td><td><code>outputsDefinition</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>inherited_outputs</code></td><td><code>inheritedOutputs</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
+          <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
+          <tr><td><code>capability</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
+          <tr><td><code>provenance_note</code></td><td><code>string</code></td><td>no</td><td>Delivery-only, populated by the server on a step-bound get_technique: states the output delivery mechanics that the <code>source:</code>/<code>destination:</code> annotations rely on. Never authored in technique files.</td></tr>
+          <tr><td><code>rules</code></td><td><code>object</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>inputs</code></td><td><code>object[]</code></td><td>no</td><td>Inputs the technique expects from context: array of named items (mirrors output structure for deterministic binding)</td></tr>
+          <tr><td><code>inputs[].id</code></td><td><code>string</code></td><td>yes</td><td>Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining techniques.</td></tr>
+          <tr><td><code>inputs[].description</code></td><td><code>string</code></td><td>no</td><td>Human-readable description of this input. Optional inputs say so in prose (a leading &quot;(optional)&quot;); necessity is otherwise implied by protocol use — there is no engine-enforced required flag.</td></tr>
+          <tr><td><code>inputs[].default</code></td><td><code>any</code></td><td>no</td><td>Default value when not supplied</td></tr>
+          <tr><td><code>inputs[].components</code></td><td><code>object</code></td><td>no</td><td>Named sub-members of a composite input (authored as <code>####</code> sub-sections under the input). Mirrors output components.</td></tr>
+          <tr><td><code>inputs[].source</code></td><td><code>string</code></td><td>no</td><td>Delivery-only, populated by the server on a step-bound get_technique: where this input's value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default) or UNRESOLVED. Never authored in technique files.</td></tr>
+          <tr><td><code>inherited_inputs</code></td><td><code>object</code></td><td>no</td><td>Inputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique's own inputs.</td></tr>
+          <tr><td><code>protocol</code></td><td><code>object[]</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>protocol[].title</code></td><td><code>string</code></td><td>no</td><td>Optional label for this block (the authored <code>### Title</code>, ordinal prefix stripped).</td></tr>
+          <tr><td><code>protocol[].steps</code></td><td><code>string[]</code></td><td>yes</td><td>Ordered imperative step bullets for this block.</td></tr>
+          <tr><td><code>outputs</code></td><td><code>object[]</code></td><td>no</td><td>What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components</td></tr>
+          <tr><td><code>outputs[].id</code></td><td><code>string</code></td><td>yes</td><td>Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename.</td></tr>
+          <tr><td><code>outputs[].description</code></td><td><code>string</code></td><td>no</td><td>Human-readable description of this output</td></tr>
+          <tr><td><code>outputs[].components</code></td><td><code>components</code></td><td>no</td><td>Named output components: each key is a component id, value is the spec or description for that component, or — where the component holds a list — the fields one entry of it carries</td></tr>
+          <tr><td><code>outputs[].entry</code></td><td><code>object</code></td><td>no</td><td>Named fields one entry carries, for an output that IS a list rather than a value with parts (authored as a reserved <code>#### entry</code> sub-section whose <code>#####</code> children are the fields). Its presence is how an output states that it is a list; <code>components</code> names the parts of an output that is not.</td></tr>
+          <tr><td><code>outputs[].artifact</code></td><td><code>object</code></td><td>no</td><td>Optional. When populated, specifies the artifact name to create when persisting this output.</td></tr>
+          <tr><td><code>outputs[].audience</code></td><td><code>&quot;human&quot; | &quot;agent&quot;</code></td><td>no</td><td>Optional. The intended reader of this output/artifact — <code>human</code> (a person reads it linearly) or <code>agent</code> (the next agent consumes it as state). Absent means <code>human</code>. An <code>agent</code>-audience artifact is serialized as JSON on disk under the <code>artifactPrefix</code> rule.</td></tr>
+          <tr><td><code>outputs[].values</code></td><td><code>string[]</code></td><td>no</td><td>The complete set of values this output admits, one of which a run leaves standing. Authored as a reserved <code>#### values</code> section. Absent where the output is not a closed set.</td></tr>
+          <tr><td><code>outputs[].fieldValues</code></td><td><code>object</code></td><td>no</td><td>The complete set of values one entry field or component admits, keyed by that field. Authored as <code>#####</code> children of <code>#### values</code>. Absent where no nested field is a closed set.</td></tr>
+          <tr><td><code>outputs[].destination</code></td><td><code>string</code></td><td>no</td><td>Delivery-only, populated by the server on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique files.</td></tr>
+          <tr><td><code>inherited_outputs</code></td><td><code>object</code></td><td>no</td><td>Outputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique's own outputs.</td></tr>
           </tbody>
         </table>
         </div>

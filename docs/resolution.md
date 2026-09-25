@@ -25,13 +25,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Standalone {
-    file one technique
+    one technique file
   }
   class Group {
-    files an index and nested
+    an index and nested files
   }
   class ResourceFile {
-    file one resource
+    one resource file
   }
   Group --> Standalone : a nested file is still a technique
 ```
@@ -60,13 +60,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Reference {
-    names a path of
+    a path of names
   }
   class Namespace {
-    lives where the file
+    where the file lives
   }
   class Technique {
-    reaches the file the path
+    the file the path reaches
   }
   Reference --> Namespace : omitted when it is this one
   Reference --> Technique : the path inside that namespace
@@ -114,13 +114,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Directory {
-    corpus a folder in the
+    a folder in the corpus
   }
   class Namespace {
-    reach a name references can
+    a name references can reach
   }
   class Workflow {
-    run a definition an operator can
+    a definition an operator can run
   }
   Directory --> Namespace : holds a library or a definition
   Namespace --> Workflow : usually the same directory
@@ -158,10 +158,10 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class CurrentWorkflow {
-    first tried
+    tried first
   }
   class Meta {
-    behaviours the shared
+    the shared behaviours
   }
   CurrentWorkflow --> Meta : shadows a same-named file
 ```
@@ -192,18 +192,18 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class WorkflowTechniques {
-    orchestrator for the
+    for the orchestrator
   }
   class ActivityTechniques {
-    activity inherited by every
+    inherited by every activity
   }
   WorkflowTechniques --> Orchestrator: delivered with the workflow
   ActivityTechniques --> Activity: ahead of the activity's own
   class Orchestrator {
-    workflow tracks the
+    tracks the workflow
   }
   class Activity {
-    phase one
+    one phase
   }
 ```
 
@@ -234,13 +234,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Reference {
-    filename a filename, or workflow then
+    a filename, or workflow then filename
   }
   class ActivitiesDir {
-    directory the workflow's activities
+    the workflow's activities directory
   }
   class ActivityFile {
-    names the phase that filename
+    the phase that filename names
   }
   Reference --> ActivitiesDir : the activities segment is filled in
   ActivitiesDir --> ActivityFile : the file
@@ -273,13 +273,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Reference {
-    name namespace, then the routine
+    namespace, then the routine name
   }
   class RoutineFile {
-    name one file, the filename is the
+    one file, the filename is the name
   }
   class Steps {
-    splice ordinary steps after the
+    ordinary steps after the splice
   }
   Reference --> RoutineFile : the last segment
   RoutineFile --> Steps : spliced in place of the reference
@@ -311,13 +311,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Technique {
-    capability one
+    one capability
   }
   class Protocol {
-    steps the ordered
+    the ordered steps
   }
   class Rules {
-    technique invariants on the
+    invariants on the technique
   }
   Technique --> Protocol : publishes
   Technique --> Rules : publishes
@@ -357,13 +357,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Reference {
-    names a path of
+    a path of names
   }
   class Technique {
-    addressed the file
+    the file addressed
   }
   class Rule {
-    it a named invariant on
+    a named invariant on it
   }
   Reference --> Technique : the path
   Reference --> Rule : the trailing segment
@@ -390,10 +390,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class StepText {
-    step the invocation written in the
+    the invocation written in the step
   }
   class BundledBody {
-    delivered the technique already
+    the technique already delivered
   }
   StepText --> BundledBody : the same technique
 ```
@@ -433,13 +433,13 @@ stateDiagram-v2
 ```mermaid
 classDiagram
   class Prefix {
-    namespace names the
+    names the namespace
   }
   class CurrentWorkflow {
-    prefix tried first when there is no
+    tried first when there is no prefix
   }
   class Meta {
-    second the shared layer, tried
+    the shared layer, tried second
   }
   Prefix --> CurrentWorkflow : a prefix does not fall through
   CurrentWorkflow --> Meta : shadows a same-named file
@@ -473,13 +473,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class TechniqueRules {
-    body ride on the technique
+    ride on the technique body
   }
   class ScopeRules {
-    contract ride on the
+    ride on the contract
   }
   class RoleRules {
-    technique govern the role, not one
+    govern the role, not one technique
   }
   TechniqueRules --> RoleRules : not restated there
   ScopeRules --> RoleRules : not restated there
@@ -505,23 +505,23 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Techniques {
-    path bodies, keyed by
+    bodies, keyed by path
   }
   class Contracts {
-    rules an ancestor's shared inputs and
+    an ancestor's shared inputs and rules
   }
   class Rules {
-    each role rules, one line
+    role rules, one line each
   }
   class Unresolved {
-    nothing names that matched
+    names that matched nothing
   }
   Techniques --> Bundle: gathered in
   Contracts --> Bundle: gathered in
   Rules --> Bundle: gathered in
   Unresolved --> Bundle: gathered in
   class Bundle {
-    to what the list resolved
+    what the list resolved to
   }
 ```
 
@@ -553,10 +553,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Ancestor {
-    procedure a contract, not a
+    a contract, not a procedure
   }
   class Descendant {
-    delivered the technique
+    the technique delivered
   }
   Ancestor --> Descendant : merged, own entry wins
 ```
@@ -584,10 +584,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Technique {
-    needs cites the guide it
+    cites the guide it needs
   }
   class Resource {
-    inlined the guide, not
+    the guide, not inlined
   }
   Technique --> Resource : a link, rewritten to a name
 ```
@@ -617,13 +617,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class BareName {
-    only this workflow
+    this workflow only
   }
   class Prefix {
-    names the namespace the path
+    the namespace the path names
   }
   class Resource {
-    reaches the file that name
+    the file that name reaches
   }
   BareName --> Resource : resolved here
   Prefix --> Resource : resolved in that namespace
@@ -662,10 +662,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Resource {
-    guide the whole
+    the whole guide
   }
   class Section {
-    body one heading and its
+    one heading and its body
   }
   Resource --> Section : a section anchor narrows to
 ```

@@ -21,7 +21,7 @@
  * changes how EVERY workflow walks, so it needs the full set. This reads a corpus diff and the
  * walked ids the caller passes in `WF_WALKED`. A 100% rename is not a coverage change.
  *
- *   WF_WALKED=id,id npx tsx scripts/coverage-scope.ts <base-corpus-ref> [head-corpus-ref] [--root <dir>]
+ *   WF_WALKED=id,id npx tsx tests/scripts/coverage-scope.ts <base-corpus-ref> [head-corpus-ref] [--root <dir>]
  *
  * Prints one workflow id per line, or nothing when the change cannot move coverage.
  */
@@ -29,13 +29,13 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { loadWorkflow } from '../src/loaders/workflow-loader.js';
-import { workflowIdFromCorpusPath } from '../src/loaders/corpus-index.js';
-import { parseDefinition } from '../src/utils/serialization.js';
-import { requireWorkflowsRoot, defaultCorpusDest } from '../guards/workflows-root.js';
+import { loadWorkflow } from '../../src/loaders/workflow-loader.js';
+import { workflowIdFromCorpusPath } from '../../src/loaders/corpus-index.js';
+import { parseDefinition } from '../../src/utils/serialization.js';
+import { requireWorkflowsRoot, defaultCorpusDest } from '../../guards/workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
+const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '../..'));
 
 /**
  * Paths from `git diff --name-status` that can move option coverage.
