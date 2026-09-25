@@ -1,12 +1,16 @@
 # Delivery
 
-A workflow's instructions are too much to hand an agent all at once. They are split into techniques, each one way of doing a single thing, and into resources, the reference material a technique points at. An activity is a mechanism that formalises the application of techniques into steps that can be reliably delivered to an agent. When the run reaches a step, the server loads the named file and sends it to the agent.
+A workflow's instructions are too much to hand an agent all at once. They are split into **techniques**, each one way of doing a single thing, and **resources**, the reference material a technique points at. An **activity** names the techniques its steps need. A **reference** is that name. When the run reaches the step, the server loads the file and sends it, because that is the instruction for the work in hand.
 
-This page details what gets sent, based upon a judgement about how much of it one agent's context may hold, and what delivery costs. Which file a reference reaches is [resolution](resource-resolution.md). The [calls](api-reference.md#workflow-navigation) that ask for a delivery are in the tool catalog.
+An **orchestrator** tracks one workflow. A **worker** carries out one activity. **Conduct** is the rules every worker is held to. What the server sends them together is a **bundle**: what the workflow names, a **core set** (the instructions always added for that role), and anything added only when the workflow can reach it.
+
+A **context** is the working memory one agent holds from start to finish. A **window** is how much of that one activity may spend on content the worker did not ask for. A **batch** is several activities continued by one worker. A **gate** is a pause for a person. Steps placed in the response are **inlined**; the rest are fetched later. A **prefix** is the leading digits of an activity file, put in front of each document it writes.
+
+The first send of a file is in full. A later send to the same context is a short **marker**, and that way of sending is **reference delivery**. The **ledger** records what the context was already sent. A **dispatch** is one worker being sent an activity, and each one is counted. Which file a reference reaches is [resolution](resource-resolution.md). The [calls](api-reference.md#workflow-navigation) that ask for a delivery are in the tool catalog.
 
 <a id="what-a-role-receives"></a>
 
-## Role Receives
+## What Agents Are Sent
 
 A bundle is assembled and handed to an agent, so the agent does not go looking up files itself (Figure 1). A bundle is what the workflow names, what the server always includes, and what is added only when the workflow can reach it (Figure 2).
 
@@ -45,7 +49,7 @@ classDiagram
 
 ### Orchestrator Bundle
 
-An orchestrator receives its operations and the workflow it drives (Figure 3). Those are the operations, the shared contracts, and the workflow metadata (Figure 4).
+An orchestrator receives the techniques it is to carry out, and the workflow it drives (Figure 3). Those are the techniques, the shared contracts, and the workflow metadata (Figure 4).
 
 ```mermaid
 sequenceDiagram
@@ -188,9 +192,11 @@ classDiagram
 
 <a id="the-three-budgets"></a>
 
-## Three Budgets
+## Delivery Budgets
 
-Three limits each answer a different question, and are set apart from each other (Figure 11). They are one activity, one run, and one result (Figure 12). The numbers are in [configuration](configuration.md#delivery-budgets).
+The window limits what one activity may add that the worker did not ask for. The batch limits what one context accumulates across a run. A **handover** is one tool result, and its limit is what that result may weigh.
+
+They answer different questions and stay set apart (Figure 11). An activity, a run, and a result are what they bound (Figure 12). The numbers are in [configuration](configuration.md#delivery-budgets).
 
 ```mermaid
 sequenceDiagram
@@ -203,7 +209,7 @@ sequenceDiagram
   Delivery->>Result: What one handover may weigh
 ```
 
-*Figure 11. Three Limits, Each on a Different Question.*
+*Figure 11. Separate Limits, Each on a Different Question.*
 
 ```mermaid
 classDiagram
@@ -359,7 +365,7 @@ classDiagram
 
 ### Resource Bodies
 
-A linked resource arrives as a body only when a later delivery can collapse it, and as a name otherwise (Figure 21). Those are the two modes (Figure 22).
+A linked resource arrives as a body only when a later delivery can collapse it, and as a name otherwise (Figure 21). Reference mode carries the body, and full mode carries the name (Figure 22).
 
 ```mermaid
 sequenceDiagram
