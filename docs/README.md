@@ -58,3 +58,4 @@ Each file an author writes, introduced in [architecture](architecture.md).
 | [Resource](resource.md)   | Reference material a technique cites and does not contain               |
 
 
+Plans and decision records live under the engineering root. Work on that branch starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).

@@ -132,6 +132,8 @@ classDiagram
 
 A namespace is a directory offering artifacts to references. It earns that by holding a `techniques/`, `resources/` or `routines/` directory, or by holding a `workflow.yaml` — and a directory holding a definition is a workflow as well, the guide an operator follows. The two are usually one directory: a workflow keeping its own library beside its definition is addressable with nothing done to it.
 
+Discovery walks `corpus/` under the pointed tree and does not search sibling folders. The walk stops at a workflow: a definition owns everything beneath it, so a workflow file nested under another workflow is not a second product. The workflow id is the directory name. A declaration that names a different id is an identity mismatch, and neither name resolves.
+
 `activities/` earns nothing. An activity declares exits, and the destinations those exits lead to live in a definition's `graph`, so an activity in a directory holding no definition could never be routed. Activities belong to workflows; the three library kinds are what a namespace offers.
 
 #### Name and Path
