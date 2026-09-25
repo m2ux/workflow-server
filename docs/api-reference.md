@@ -32,6 +32,8 @@ Repsonses from `GET /ready`. Ready only when every one is true.
 
 Each[tool](../site/api/tools.html): what it takes, what it returns, and the page that explains the behaviour.
 
+`{ a, b }` always present. `a?` optional. `∪` add. `⊕` exactly one. `∅` none.
+
 ### Bootstrap
 
 Calls available before a session exists.
