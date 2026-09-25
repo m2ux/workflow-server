@@ -108,7 +108,7 @@
               "kind": {
                 "type": "string",
                 "const": "technique",
-                "description": "Declared where the argument is an operation reference standing in a body step's technique position. A reference site binds it with a literal reference, and an unbound one with no default fails the load."
+                "description": "Declared where the argument is a technique reference standing in a body step's technique position. A reference site binds it with a literal reference, and an unbound one with no default fails the load."
               },
               "default": {
                 "type": [
@@ -236,7 +236,7 @@
                         "properties": {
                           "name": {
                             "type": "string",
-                            "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes."
+                            "description": "The `group::technique` (or bare op / `workflow::group::op`) technique reference this step invokes."
                           },
                           "inputs": {
                             "type": "object",
@@ -263,7 +263,7 @@
                         "additionalProperties": false
                       }
                     ],
-                    "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
+                    "description": "Canonical per-step binding: a `group::technique` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
                   },
                   "actions": {
                     "type": "array",
