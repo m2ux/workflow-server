@@ -28,15 +28,15 @@ One of a workspace path **or** `--repo` is required at startup. The table names 
 
 ## Delivery budgets
 
-[The delivery model](delivery.md#the-three-budgets) explains what each one is for and how it was calibrated.
+[Delivery](delivery.md#delivery-budgets) explains what each one is for and how it was calibrated.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `BUNDLE_HEADROOM_FRACTION` | `0.8` | Share of a worker's declared window that eager step-technique bundling may spend ([window budget](delivery.md#the-window-budget)) |
+| `BUNDLE_HEADROOM_FRACTION` | `0.8` | Share of a worker's declared window that eager step-technique bundling may spend ([window budget](delivery.md#window-budget)) |
 | `BUNDLE_CHARS_PER_TOKEN` | `4` | Token to character factor, used by both window and batch budgets |
-| `MAX_RESPONSE_CHARS` | `60000` | What one tool result may carry, measured over response text and protocol metadata together. Reports; never truncates ([response bound](delivery.md#what-one-tool-result-may-carry)) |
-| `BATCH_HEADROOM_FRACTION` | `0.35` | Share of a worker's window one dispatch may accumulate across a run of activities; clamped to [0, 1] ([batch budget](delivery.md#the-batch-budget)) |
-| `BATCH_MAX_ACTIVITIES` | `3` | Distinct activities one delivery scope may take; clamped to [1, 100] ([batch budget](delivery.md#the-batch-budget)) |
+| `MAX_RESPONSE_CHARS` | `60000` | What one tool result may carry, measured over response text and protocol metadata together. Reports; never truncates ([response bound](delivery.md#one-tool-result)) |
+| `BATCH_HEADROOM_FRACTION` | `0.35` | Share of a worker's window one dispatch may accumulate across a run of activities; clamped to [0, 1] ([batch budget](delivery.md#batch-budget)) |
+| `BATCH_MAX_ACTIVITIES` | `3` | Distinct activities one delivery scope may take; clamped to [1, 100] ([batch budget](delivery.md#batch-budget)) |
 | `FAN_MAX_BRANCHES` | `4` | Branches one fanned exit may open, unless the destination declares a tighter `maxInstances`; clamped to [2, 100] ([fanning](dispatch.md#fanning-an-exit-across-several-branches)) |
 
 ## Signing key

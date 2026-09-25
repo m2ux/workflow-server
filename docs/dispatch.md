@@ -116,7 +116,7 @@ classDiagram
 
 ### Batching a Run
 
-One dispatch may carry several activities, walked by one worker. The run still pauses for a commit and for a gate, and continues as that same worker (Figure 7). A refusal is the cue to start a replacement (Figure 8). How far a run may go is the [batch limit](delivery.md#the-batch-budget).
+One dispatch may carry several activities, walked by one worker. The run still pauses for a commit and for a gate, and continues as that same worker (Figure 7). A refusal is the cue to start a replacement (Figure 8). How far a run may go is the [batch limit](delivery.md#batch-budget).
 
 ```mermaid
 sequenceDiagram

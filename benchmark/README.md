@@ -86,7 +86,7 @@ classDiagram
 
 ## Batch Benchmark
 
-The same stretch of work is done twice. Figure 5 shows the first time, with a new worker for each activity, and the second time, with one worker for the whole stretch. The text counted follows the [batch limit](../docs/delivery.md#the-batch-budget). Figure 6 shows those two passes, and a start-up cost that is typed in rather than measured: the cost of spinning up a worker is not something this run can see.
+The same stretch of work is done twice. Figure 5 shows the first time, with a new worker for each activity, and the second time, with one worker for the whole stretch. The text counted follows the [batch limit](../docs/delivery.md#batch-budget). Figure 6 shows those two passes, and a start-up cost that is typed in rather than measured: the cost of spinning up a worker is not something this run can see.
 
 ```mermaid
 sequenceDiagram

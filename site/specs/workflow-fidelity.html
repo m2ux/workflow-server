@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Workflow fidelity — Workflow Server</title>
+<title>Fidelity — Workflow Server</title>
 <meta name="description" content="The seven enforcement layers that keep agents on the defined workflow path and make deviations visible.">
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -66,7 +66,7 @@
 <!-- END GENERATED BREADCRUMB -->
 
 <main id="main">
-  <h1>Workflow fidelity</h1>
+  <h1>Fidelity</h1>
   <p class="lede">Agents drift: context degrades over long sessions, and without enforcement a model may skip steps, dodge checkpoints, or fabricate state. The server counters this with seven enforcement layers — some hard gates that block, some advisory checks that warn — each operating at a different granularity.</p>
   <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/fidelity.md">docs/fidelity.md</a>.</p>
 
@@ -112,7 +112,7 @@
 
   <h2 id="hard">The hard gates</h2>
   <p><strong>Integrity (L1).</strong> Everything the server hands out or persists is HMAC-signed with a server-held key: the <code>.session-token</code> seal on session state, one-shot checkpoint handles, and trace tokens. An agent cannot fabricate or tamper with any of them — a mismatch between <code>session.json</code> and its seal is a hard error on read.</p>
-  <p><strong>Checkpoint gate (L2).</strong> While a checkpoint is active, transition tools hard-fail; only <code>present_checkpoint</code> and <code>respond_checkpoint</code> are exempt. Responses are validated against the checkpoint definition, and timing is enforced — a minimum response delay for user-answered checkpoints, the full <code>autoAdvanceMs</code> timer for auto-advanced ones — so an agent cannot instantly answer its own question. Details in the <a href="./checkpoints.html">checkpoint model</a>.</p>
+  <p><strong>Checkpoint gate (L2).</strong> While a checkpoint is active, transition tools hard-fail; only <code>present_checkpoint</code> and <code>respond_checkpoint</code> are exempt. Responses are validated against the checkpoint definition, and timing is enforced — a minimum response delay for user-answered checkpoints, the full <code>autoAdvanceMs</code> timer for auto-advanced ones — so an agent cannot instantly answer its own question. Details in the <a href="./checkpoints.html">checkpoints</a>.</p>
 
   <h2 id="advisory">The advisory layers</h2>
   <p class="prose" id="why-detection">Layers 3–6 warn rather than block. Only checks that are cheap and certain hard-stop execution; manifest completeness, version drift, and fetch coverage surface warnings in <code>_meta.validation</code> and the trace because the server can verify observable consistency, not that work was done well. See <a href="../design/protocol.html">Protocol</a> for how to read them.</p>

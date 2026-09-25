@@ -118,9 +118,9 @@ When a worker yields a checkpoint, the server records it in the session's `activ
 
 ### What Refuses While a Gate Is Open
 
-Some operations guard the run's own progress, each with its own inline check:
+Some calls guard the run's own progress, each with its own inline check:
 
-| Operation | Why it refuses |
+| Call | Why it refuses |
 |-----------|----------------|
 | `next_activity` | The run must not advance past a question nobody answered |
 | `yield_checkpoint` | A second pause on top of an outstanding one cannot be unwound |
@@ -130,7 +130,7 @@ Others deliver content — `get_workflow`, `get_activity`, `get_technique`, `get
 
 ### What Stays Open, and Why
 
-| Operation | Why it must not gate |
+| Call | Why it must not gate |
 |-----------|----------------------|
 | `present_checkpoint`, `respond_checkpoint` | They are the resolution mechanism |
 | `inspect_session`, `get_workflow_status` | Diagnostics, so an orchestrator can examine a run that has stopped |

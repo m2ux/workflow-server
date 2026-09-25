@@ -6,7 +6,7 @@ Install Workflow Server and prepare a target repository so an IDE agent can run 
 
 ## 1. Choose a transport
 
-Complete the transport guide’s install, then return here for §2–§4.
+Complete the transport guide’s install, then return here for the workspace and the verify step.
 
 | Path                              | When | Guide |
 |-----------------------------------|------|--------|
