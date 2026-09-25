@@ -147,8 +147,6 @@ These fields are on every step kind.
 
 What writes the session bag is [state](../docs/state.md).
 
-## Fields
+## Zod Source
 
-The field lists live in the schema files linked above. All six are generated from the Zod sources ([generate-schemas.ts](../scripts/generate-schemas.ts#L37)).
-
-A step's shape is the `kind` branch in [activity.schema.json](activity.schema.json#L185): [technique](activity.schema.json#L185), [action](activity.schema.json#L393), [checkpoint](activity.schema.json#L428), [loop](activity.schema.json#L510), [routine](activity.schema.json#L578). The same branches are inlined in [workflow.schema.json](workflow.schema.json#L343) and [routine.schema.json](routine.schema.json#L220).
+All six field lists are generated from the Zod sources ([generate-schemas.ts](../scripts/generate-schemas.ts#L37)).
