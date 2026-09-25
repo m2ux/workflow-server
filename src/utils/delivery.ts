@@ -40,7 +40,7 @@ import { stringifyForResponse } from './serialization.js';
  * `get_activity { bundle: 'full' }` suppresses the markers for a whole delivery, so a context that
  * lost several items takes them all back on one call.
  *
- * See docs/resource-resolution-model.md § Reference Delivery.
+ * See docs/delivery.md § Reference delivery.
  */
 
 /** Hash used for delivery-ledger comparison: sha256, truncated for payload brevity. */

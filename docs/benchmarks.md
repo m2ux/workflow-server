@@ -11,7 +11,7 @@ Each tool prices a different thing, and using the wrong one gives a number that 
 
 The three benchmarks drive the real server over an in-memory transport, and count characters using the server's own accounting rather than their own estimate. All three measure eager activity payloads and never fetch a technique or resource lazily, so each figure is a **floor**. On real runs the lazy half is usually the larger one.
 
-The contract under test throughout is [reference delivery](delivery-model.md#reference-delivery).
+The contract under test throughout is [reference delivery](delivery.md#reference-delivery).
 
 ## Token delivery benchmark
 
@@ -83,7 +83,7 @@ Stdout is one JSON object with per-activity fresh and resume characters plus the
 
 ## Batch benchmark
 
-[`scripts/run-batch-benchmark.ts`](../scripts/run-batch-benchmark.ts) walks one run of activities twice: once with a fresh worker context per activity taking full delivery, and once as a single context taking reference delivery after the first activity — which is what [the batch bound](delivery-model.md#the-batch-budget) admits. Delivered characters are counted by the same `deliveredChars` rule the bound applies, so the script cannot report a saving the bound disagrees with.
+[`scripts/run-batch-benchmark.ts`](../scripts/run-batch-benchmark.ts) walks one run of activities twice: once with a fresh worker context per activity taking full delivery, and once as a single context taking reference delivery after the first activity — which is what [the batch bound](delivery.md#the-batch-budget) admits. Delivered characters are counted by the same `deliveredChars` rule the bound applies, so the script cannot report a saving the bound disagrees with.
 
 ### Elapsed time is a wash, and that is the finding
 

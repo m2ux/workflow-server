@@ -54,7 +54,7 @@ The directories, and what each one owns:
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
 
-Inside the corpus worktree, product definitions live under `corpus/`, and discovery walks that grouping without searching sibling folders. Layout authoring lives at `.worktrees/workflows/docs/`. What makes a directory a namespace is in [resource resolution](resource-resolution-model.md#what-a-namespace-is).
+Inside the corpus worktree, product definitions live under `corpus/`, and discovery walks that grouping without searching sibling folders. Layout authoring lives at `.worktrees/workflows/docs/`. What makes a directory a namespace is in [resource resolution](resource-resolution.md#what-a-namespace-is).
 
 ## Testing
 

@@ -1,12 +1,12 @@
 # Delivery model
 
-[Resolution](resource-resolution-model.md) says which file a name reaches. This document says what then travels to an agent: how a role's contract is assembled, how much of it one context may hold, and what each delivery costs.
+[Resolution](resource-resolution.md) says which file a name reaches. This document says what then travels to an agent: how a role's contract is assembled, how much of it one context may hold, and what each delivery costs.
 
 Three budgets run through it, all measured in characters and each protecting something different. One bounds what a single activity may spend on content the worker did not ask for. One bounds what a worker may accumulate across a run of activities. One bounds what a single tool result may carry. They are set independently because they answer different questions, and the sections below take each in turn.
 
 ## What a role receives
 
-The server resolves an activity's declared references and bundles them into the buckets [resolution](resource-resolution-model.md#how-a-reference-resolves) produces, so an agent never chains resolution calls of its own at runtime.
+The server resolves an activity's declared references and bundles them into the buckets [resolution](resource-resolution.md#how-a-reference-resolves) produces, so an agent never chains resolution calls of its own at runtime.
 
 <a id="the-orchestrator-bundle"></a>
 
@@ -29,6 +29,14 @@ What the metadata never carries, at any size, is the prose explaining what each 
 ### The worker bundle
 
 The response is the union of the activity's declared technique references and the core worker references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the worker role itself, finalize-activity, and the conduct every worker is held to. The role is in that set because every worker stub names it and only the meta workflow declares it, so a client worker would otherwise be told to apply a technique its bundle never carried.
+
+<a id="how-documents-are-named"></a>
+
+#### How documents are named
+
+An activity file such as `02-analyse-sources.yaml` gives the server a numeric prefix, the leading digits of that filename. The worker puts the prefix in front of each document it writes, so a file named `analyse-sources.md` lands as `02-analyse-sources.md`. Sorting the planning folder by name sorts it by activity, and two activities do not share a filename.
+
+The same response names the documents the activity is expected to produce. The server builds that list from the outputs of the techniques the activity's steps use. Each entry names the output and the filename. The activity file does not carry the list. Where the folder sits is in [state management](state-management.md#the-planning-folder).
 
 ### What arrives only where it can be reached
 
@@ -95,7 +103,7 @@ A body the budget leaves out is recorded as delivered to nobody: a ledger entry 
 
 This one bounds a **run** of activities. One dispatch may carry several rather than exactly one, and the worker walks them under a single `agent_id`, so it pays the harness's context establishment — system prompt, project instructions, tool schemas — once for the run rather than once per activity. That saving is the point of batching; it is larger than anything the delivered content saves by collapsing.
 
-The run pauses at every activity boundary, because the orchestrator owns the commit that boundary requires, and at every gate, because the orchestrator owns the answer. It **resumes in place** across both, under the identity its dispatch bound, so a pause costs a round trip rather than a respawn. [Dispatch](dispatch-model.md) covers the topology.
+The run pauses at every activity boundary, because the orchestrator owns the commit that boundary requires, and at every gate, because the orchestrator owns the answer. It **resumes in place** across both, under the identity its dispatch bound, so a pause costs a round trip rather than a respawn. [Dispatch](dispatch.md) covers the topology.
 
 #### The server bounds the run
 

@@ -4,7 +4,7 @@ A workflow's full set of instructions runs to tens of thousands of characters. H
 
 So the server hands over one piece at a time. Behaviour is broken into techniques — a technique being a markdown definition of a single capability — and an activity names the ones it needs.
 
-This document covers how a name reaches a file: how techniques and resources are named, how a reference is written and resolved, and what a namespace is. What then travels to an agent, and what it costs, is [the delivery model](delivery-model.md).
+This document covers how a name reaches a file: how techniques and resources are named, how a reference is written and resolved, and what a namespace is. What then travels to an agent, and what it costs, is [the delivery model](delivery.md).
 
 ## How a technique or resource is named
 
@@ -100,7 +100,7 @@ The result of resolving a list of references is a bundle grouped into these buck
 * **`rules`** — a flat array of `[rule-name, rule-line]` tuples (one tuple per line) for rules that govern the role rather than any one operation.
 * **`unresolved`** — references that did not resolve.
 
-Empty buckets are omitted. The lookup is structural and requires no session token; most clients receive it indirectly through the bundles that `get_workflow` and `get_activity` produce, which [the delivery model](delivery-model.md#what-a-role-receives) describes.
+Empty buckets are omitted. The lookup is structural and requires no session token; most clients receive it indirectly through the bundles that `get_workflow` and `get_activity` produce, which [the delivery model](delivery.md#what-a-role-receives) describes.
 
 ## What an ancestor contributes to a descendant
 
@@ -145,7 +145,7 @@ The server resolves the reference:
 
 An optional `#section` anchor — a GitHub-style heading slug — narrows the result to that section and its body. That is how a technique fetches just the template it references without the whole file. The content is loaded from the named workflow's own `resources/{slug}.md` and returned alongside the resource `id` and `version`.
 
-A refetch of a body the calling context already holds can collapse to a short marker instead. [Reference delivery](delivery-model.md#reference-delivery) carries that contract, including that a bare id and a sectioned id occupy independent ledger keys. Either way, each call appends a `resource_fetched` history event.
+A refetch of a body the calling context already holds can collapse to a short marker instead. [Reference delivery](delivery.md#reference-delivery) carries that contract, including that a bare id and a sectioned id occupy independent ledger keys. Either way, each call appends a `resource_fetched` history event.
 
 ### What this buys
 

@@ -14,7 +14,7 @@ The canon lives in the corpus rather than here because agents read it during a r
 
 ### Fetch by section
 
-`anti-patterns.md` exceeds the per-resource eager-delivery cap on its own, so a whole-file reference is never bundled — see [the delivery model](delivery-model.md#resources-bodies-only-under-reference-delivery). Cite the narrowest section carrying what you need.
+`anti-patterns.md` exceeds the per-resource eager-delivery cap on its own, so a whole-file reference is never bundled — see [the delivery model](delivery.md#resources-bodies-only-under-reference-delivery). Cite the narrowest section carrying what you need.
 
 ### Cite a principle by title
 

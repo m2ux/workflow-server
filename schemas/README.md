@@ -1164,5 +1164,5 @@ A minimal technique demonstrating key concepts:
 - [API Reference](../docs/api-reference.md) — MCP tool catalog
 - [Site API](../site/api/tools.html) — wire descriptions generated from source
 - [Development Guide](../docs/development.md) — Building and testing the server
-- [Resource Resolution Model](../docs/resource-resolution-model.md) — How techniques and resources are loaded
+- [Resource Resolution Model](../docs/resource-resolution.md) — How techniques and resources are loaded
 - [Setup](../docs/setup.md) — Bootstrap rule and `workflow-server://schemas` MCP resource

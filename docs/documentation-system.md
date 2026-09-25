@@ -37,7 +37,7 @@ Neither can detect a prose divergence between a markdown document and its site p
 | [`docs/api-reference.md`](api-reference.md) | Catalog of the tool surface and HTTP routes — brief, linking out for depth | Integrators |
 | [`docs/configuration.md`](configuration.md) | Every flag and environment variable the server reads at startup | Integrators and contributors |
 | [`docs/architecture.md`](architecture.md) | Hub introducing the architecture models and the pressure each answers | Contributors |
-| [`docs/dispatch-model.md`](dispatch-model.md), [`checkpoint-model.md`](checkpoint-model.md), [`state-management-model.md`](state-management-model.md), [`artifact-management-model.md`](artifact-management-model.md), [`resource-resolution-model.md`](resource-resolution-model.md), [`delivery-model.md`](delivery-model.md), [`workflow-fidelity.md`](workflow-fidelity.md) | The behavioural models, one concern each | Contributors and agents needing depth |
+| [`docs/dispatch.md`](dispatch.md), [`checkpoint.md`](checkpoint.md), [`state-management.md`](state-management.md), [`resource-resolution.md`](resource-resolution.md), [`delivery.md`](delivery.md), [`workflow-fidelity.md`](workflow-fidelity.md) | The behavioural models, one concern each | Contributors and agents needing depth |
 | [`site/api/tools.html`](../site/api/tools.html) | Wire tool descriptions and parameter schemas, generated from `src/tools/` | Agents and IDE tooling |
 | [Document corpus](README.md#document-corpus) | The only list of links to definition docs on the `workflows` branch | Workflow authors |
 | [`docs/design-canon.md`](design-canon.md) | Where the design principles, anti-pattern catalog, construct inventory and conformance live, and how to reach them | Workflow authors |
@@ -57,7 +57,7 @@ Workflow definitions live on the `workflows` branch. Each product workflow also 
 ## Where new documentation belongs
 
 - **A user-facing how-to** (installing, configuring, running) → `README.md` for first contact, [`setup.md`](setup.md) for the shared sequence, [`http.md`](http.md) / [`stdio.md`](stdio.md) only for transport differences; plus a page under `site/guide/` if it warrants the illustrated treatment.
-- **A new architecture model or a change to one** → a `docs/*-model.md` document, linked from the [`docs/architecture.md`](architecture.md) hub, with a matching page under `site/specs/`.
+- **A new architecture model or a change to one** → a document under [`docs/`](.), linked from the [`docs/architecture.md`](architecture.md) hub, with a matching page under `site/specs/`.
 - **Tool or schema surface changes** → the code and Zod schemas are the source; regenerate `schemas/` (`npm run build:schemas`) and the site's API pages (`npm run build:site`). Keep [`docs/api-reference.md`](api-reference.md) as a short index (update one-line descriptions and links); put behavioral depth in the relevant architecture model.
 - **Workflow-authoring contracts** → the [document corpus](README.md#document-corpus). A page that is about one of those documents links the name in the sentence. The [schema guide](../schemas/README.md) stays on this tree, generated from the Zod sources.
 - **How a tool or program is run** → the README beside it. `guards/README.md` documents the guard sweep, because a reader who opens `guards/` should not have to leave it to find out how the programs there run.

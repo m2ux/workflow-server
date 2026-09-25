@@ -1577,7 +1577,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const meta: Record<string, unknown> = { session_index, validation };
 
       // Where the exiting worker stands, read at the boundary so the lazy fetches of the activity it
-      // just finished are counted (docs/dispatch-model.md § Batching a run of activities).
+      // just finished are counted (docs/dispatch.md § Batching a run of activities).
       if (agent_id && context_tokens !== undefined && !isTerminal) {
         const bound = batchBound(context_tokens, {
           headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
@@ -1762,7 +1762,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const newDeliveries: Record<string, string> = {};
 
       // Whether this scope's ledger describes what it is holding. Governs the blocks identical on
-      // every activity — see docs/resource-resolution-model.md § Reference Delivery.
+      // every activity — see docs/delivery.md § Reference delivery.
       const mayReferBack = bundle !== 'full' && (referenceMode || hasDispatch(state, scope));
 
       // Bundle the techniques the activity references (delivered as full protocols), deduped with

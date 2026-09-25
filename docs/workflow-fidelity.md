@@ -32,7 +32,7 @@ Double-bordered nodes are hard gates; they refuse the call until satisfied. Dash
 
 Session state is not something an agent carries. An agent holds a six-character `session_index`; the server keeps the state on disk beside the planning folder. So what needs protecting is the file, not a credential in a prompt.
 
-`session.json` is plaintext and schema-validated. `.session-token` beside it is a sealed envelope, binding those exact bytes to the engineering root and to a server-held signing key using a keyed hash (HMAC-SHA256). The server verifies the seal on every read and raises `SEAL_MISMATCH` when the two disagree. The file layout itself is in [the state management model](state-management-model.md#persistence).
+`session.json` is plaintext and schema-validated. `.session-token` beside it is a sealed envelope, binding those exact bytes to the engineering root and to a server-held signing key using a keyed hash (HMAC-SHA256). The server verifies the seal on every read and raises `SEAL_MISMATCH` when the two disagree. The file layout itself is in [the state management model](state-management.md#persistence).
 
 Where the signing key lives, and how the server finds it, is in [the configuration reference](configuration.md#signing-key).
 
@@ -74,7 +74,7 @@ Others deliver content — `get_workflow`, `get_activity`, `get_technique`, `get
 - An agent cannot resolve instantly. Both timers run from the recorded pause, so answering faster than a person could read is refused. This closes the cheapest way to fake a gate: calling `respond_checkpoint` straight after `yield_checkpoint` without showing anyone anything. Real worker execution takes minutes, so the check never fires on a legitimate run.
 - An agent cannot dismiss an unconditional checkpoint. `condition_not_met` is rejected without a `condition` field.
 
-The three resolution modes and the timers each one waits out are specified in [the checkpoint model](checkpoint-model.md#three-ways-to-resolve-one).
+The three resolution modes and the timers each one waits out are specified in [the checkpoint model](checkpoint.md#three-ways-to-resolve-one).
 
 ## Layer 3: cross-activity validation
 
@@ -144,7 +144,7 @@ The server records every delivery of technique or resource content into the sess
 
 All three delivery events carry `chars`, the full payload size on either path, and `delivery: "full" | "unchanged"` — so characters delivered and characters saved are both summable from the history rather than estimated. An unchanged-reference answer under persistent context mode still counts as a delivery.
 
-Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique operation, or by an inline bundle delivery. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery-model.md#reference-delivery) and [hybrid technique bundling](delivery-model.md#eager-technique-bundling).
+Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique operation, or by an inline bundle delivery. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery.md#reference-delivery) and [hybrid technique bundling](delivery.md#eager-technique-bundling).
 
 ## Layer 6: the activity manifest
 
@@ -215,4 +215,4 @@ Every layer above detects rather than prevents, and the limits are worth stating
 
 ## Where else to look
 
-The tools these layers sit behind are catalogued in the [API reference](api-reference.md), with the [generated wire descriptions](../site/api/tools.html) giving each parameter schema. How instructions reach an agent without swamping its context is [resource resolution](resource-resolution-model.md). Getting an agent talking to the server in the first place is [setup](setup.md#3-setup-cursor-workspace).
+The tools these layers sit behind are catalogued in the [API reference](api-reference.md), with the [generated wire descriptions](../site/api/tools.html) giving each parameter schema. How instructions reach an agent without swamping its context is [resource resolution](resource-resolution.md). Getting an agent talking to the server in the first place is [setup](setup.md#3-setup-cursor-workspace).

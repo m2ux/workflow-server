@@ -2,7 +2,7 @@
 
 A workflow sometimes has to stop and ask. Which directory to target, whether a pull request is ready, which of two readings of a request was meant — none of these can be settled from state, and a wrong guess produces work nobody wanted. A **checkpoint** is a declared pause for exactly that question: a gate written into an activity's steps that holds the run until someone answers.
 
-The agent that reaches the gate is not the agent that can ask. Work is [dispatched down a chain of sub-agents](dispatch-model.md), and the ones at the bottom run in the background with no channel to the user, so the question has to travel up to the user-facing agent and the answer has to travel back down. Because the pause comes into being at the moment a worker reaches it rather than being declared ahead of the run, this is just-in-time checkpointing.
+The agent that reaches the gate is not the agent that can ask. Work is [dispatched down a chain of sub-agents](dispatch.md), and the ones at the bottom run in the background with no channel to the user, so the question has to travel up to the user-facing agent and the answer has to travel back down. Because the pause comes into being at the moment a worker reaches it rather than being declared ahead of the run, this is just-in-time checkpointing.
 
 ## The checkpoint flow
 

@@ -24,12 +24,11 @@ Each model answers one pressure the design is under. [architecture.md](architect
 
 | Model | Answers |
 |-------|---------|
-| [Dispatch](dispatch-model.md) | How work is split across a chain of agents |
-| [Checkpoints](checkpoint-model.md) | How a background agent asks a question it cannot ask directly |
-| [State management](state-management-model.md) | How the next activity is chosen, and where session state lives |
-| [Artifact management](artifact-management-model.md) | How planning output is kept out of the code change |
-| [Resource resolution](resource-resolution-model.md) | How a `::` reference reaches a file on disk |
-| [Delivery](delivery-model.md) | What then travels to an agent, how much of it, and what it costs |
+| [Dispatch](dispatch.md) | How work is split across a chain of agents |
+| [Checkpoints](checkpoint.md) | How a background agent asks a question it cannot ask directly |
+| [State management](state-management.md) | How the next activity is chosen, where session state lives, and where the run's notes are written |
+| [Resource resolution](resource-resolution.md) | How a `::` reference reaches a file on disk |
+| [Delivery](delivery.md) | What then travels to an agent, how much of it, and what it costs |
 | [Workflow fidelity](workflow-fidelity.md) | How a claim to have followed the workflow is checked |
 
 ## Document corpus

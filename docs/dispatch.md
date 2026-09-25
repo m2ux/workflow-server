@@ -22,7 +22,7 @@ The boundaries are the point. The user-facing agent never holds step detail, the
 
 ## Mechanics of dispatch
 
-Each session has a six-character `session_index`, derived deterministically from the planning slug. Agents pass that index — never a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [state management](state-management-model.md#persistence)).
+Each session has a six-character `session_index`, derived deterministically from the planning slug. Agents pass that index — never a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [state management](state-management.md#persistence)).
 
 <a id="spawning-the-orchestrator"></a>
 
@@ -76,7 +76,7 @@ One dispatch may carry a **run** of activities rather than exactly one, walked u
 
 Such a run still pauses at every activity boundary and at every gate, because the orchestrator owns both the commit and the answer. It **resumes in place** across each pause, under the identity its dispatch bound, so the pause costs a round trip rather than a respawn. And a refused continuation is the orchestrator's cue to release the identity and dispatch a replacement under a **new** `agent_id`.
 
-Why batching is worth doing, how far a run may go, and what refuses it are in [the batch budget](delivery-model.md#the-batch-budget), specified beside the other limits on what one context may hold.
+Why batching is worth doing, how far a run may go, and what refuses it are in [the batch budget](delivery.md#the-batch-budget), specified beside the other limits on what one context may hold.
 
 ### Fanning an exit across several branches
 
