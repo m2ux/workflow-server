@@ -91,9 +91,9 @@ jobs:
 
       # Delivery cost is the one property no guard measures, because it is a property of a WALK
       # rather than of a file. The gate walks the `delivery-fixture` under tests/fixtures/token-bench
-      # and compares the characters delivered against tests/fixtures/token-benchmark-baseline.json.
+      # and compares the characters delivered against benchmark/fixtures/token-benchmark-baseline.json.
       #
       # A change that adds delivery on that fixture fails here at 1%. Confirm the increase is
       # wanted, re-record the fixture in the same commit, and say what the walk gained.
       - name: Gate delivery cost against the recorded baseline
-        run: npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=tests/fixtures/token-benchmark-baseline.json > /dev/null
+        run: npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=benchmark/fixtures/token-benchmark-baseline.json > /dev/null

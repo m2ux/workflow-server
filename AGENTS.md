@@ -49,7 +49,7 @@ Installs resolve from the lockfile. CI and provisioning run `npm ci`; use it loc
 
 Discovery walks `corpus/` and no sibling folder. A `workflow.yaml` at any depth under it is a workflow; a directory holding `techniques/`, `resources/` or `routines/` is a namespace references can name, with or without a definition beside it. The workflow id is the directory name.
 
-Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/specimens/`), `ledgers/`, `walks/`, and `docs/` for layout authoring. On this tree: `guards/` for check programs, `scripts/` for generate, provision and the benches. The technique file contract is on the workflows branch, at [docs/technique-protocol-specification.md](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md).
+Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/specimens/`), `ledgers/`, `walks/`, and `docs/` for layout authoring. On this tree: `guards/` for check programs, `scripts/` for generate and provision, `benchmark/` for the headless benches. The technique file contract is on the workflows branch, at [docs/technique-protocol-specification.md](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md).
 
 ## Boundaries
 
@@ -80,10 +80,10 @@ Reference example: [#395](https://github.com/m2ux/workflow-server/issues/395). [
 - **After code or schema changes:** `npm run typecheck` and `npm test`. Both pass with no `.worktrees/workflows` checkout, because live-corpus tests skip on a missing or empty root — a local convenience only, since `verify.yml` checks the definitions out and runs them.
 - **After corpus changes:** `npm run check:all`, or `npm run check:delta` for what your change added. Triage a new binding finding in `ledgers/binding-fidelity-triage.json` of the pointed tree as `harmless` / `fix-later` / `live-bug` rather than suppressing it; there is no re-snapshot command.
 - **Definition changes land on `workflows`**, taking the artifacts that describe them in the same commit. Walk baselines under `walks/` and triage entries are read against the tree they sit in, so leaving either behind ships a tree that disagrees with itself. Watch a closed binding finding: delete the entry and it is untriaged, keep it and it matches nothing — so it moves with the change that settled it.
-- **Engine CI prices a fixture walk.** Delivery cost belongs to a walk rather than a file, so no guard reads it: `verify.yml` walks `delivery-fixture` against `tests/fixtures/token-benchmark-baseline.json` and fails past 1%. Run it as that job does:
+- **Engine CI prices a fixture walk.** Delivery cost belongs to a walk rather than a file, so no guard reads it: `verify.yml` walks `delivery-fixture` against `benchmark/fixtures/token-benchmark-baseline.json` and fails past 1%. Run it as that job does:
 
   ```bash
-  npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=tests/fixtures/token-benchmark-baseline.json
+  npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=benchmark/fixtures/token-benchmark-baseline.json
   ```
 
   `--fixture-corpus` builds that corpus into a temp root: the client workflow is authored under `tests/fixtures/token-bench/`, and the `meta` namespace beside it derives from the lists `src/loaders/core-ops.ts` names, so a ref added there reaches the gate with no fixture to edit.

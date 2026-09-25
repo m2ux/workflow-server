@@ -1,6 +1,6 @@
 # Development guide
 
-Setting up, building and testing the workflow server. Settings the server reads at startup are in [configuration.md](configuration.md); the guard suite is documented beside the guards in [`guards/README.md`](../guards/README.md); the benchmarks and the profiler are in [benchmarks.md](benchmarks.md).
+Setting up, building and testing the workflow server. Settings the server reads at startup are in [configuration.md](configuration.md); the guard suite is documented beside the guards in [`guards/README.md`](../guards/README.md); the benchmarks and the profiler are in [benchmark/README.md](../benchmark/README.md).
 
 ## What you need
 
@@ -46,7 +46,8 @@ The directories, and what each one owns:
 | `src/utils/` | Session storage and sealing under `session/`, plus delivery accounting, batching, validation and variable seeding |
 | `src/trace.ts` | The trace store and the encoding of trace tokens |
 | `schemas/` | JSON Schemas for editor tooling. Most are generated from their Zod sources by `npm run build:schemas`; `technique.schema.json` is hand-authored, and `check:schemas` holds both facts |
-| `scripts/` | Install and container helpers, schema generation, and the benchmarks |
+| `scripts/` | Install and container helpers, and schema generation |
+| `benchmark/` | The three headless benchmarks |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution — documented in [`guards/README.md`](../guards/README.md) |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
 | `.worktrees/workflows/` | A worktree of the `workflows` branch — the corpus the server serves |
@@ -97,7 +98,7 @@ Zero means the edit reaches nothing in flight. A non-zero count is the set of ru
 
 ## What runs on a pull request
 
-[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`, `npm run test:ci`, and the [fixture delivery gate](benchmarks.md#the-gate-runs-on-every-pull-request). Live-corpus tests skip when `.worktrees/workflows` is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
+[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`, `npm run test:ci`, and the [fixture delivery gate](../benchmark/README.md#the-gate-runs-on-every-pull-request). Live-corpus tests skip when `.worktrees/workflows` is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
 
 ## The two branches
 

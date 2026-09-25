@@ -42,7 +42,7 @@ Neither can detect a prose divergence between a markdown document and its site p
 | [Document corpus](README.md#document-corpus) | The only list of links to definition docs on the `workflows` branch | Workflow authors |
 | [`docs/design-canon.md`](design-canon.md) | Where the design principles, anti-pattern catalog, construct inventory and conformance live, and how to reach them | Workflow authors |
 | [`docs/development.md`](development.md) | Building and testing the server, and the two-branch layout | Contributors |
-| [`docs/benchmarks.md`](benchmarks.md) | The three benchmarks, the profiler, and the delivery gate | Contributors changing the delivery path |
+| [`benchmark/README.md`](../benchmark/README.md) | The three benchmarks, the profiler, and the delivery gate | Contributors changing the delivery path |
 | [`guards/README.md`](../guards/README.md) | Running the guard sweep, the delta runner, and how a ledger entry is a judgement | Contributors and workflow authors |
 | [`docs/documentation-system.md`](documentation-system.md) | This page: what each source is for, where new documentation belongs, and the conventions all of it follows | Anyone adding or changing documentation |
 | [`schemas/README.md`](../schemas/README.md) | Schema guide for authoring workflow definitions | Workflow authors |

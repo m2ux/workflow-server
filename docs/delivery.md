@@ -328,4 +328,4 @@ Each bundled step records a `technique_bundled` history event, and that counts a
 
 ### Benchmarks
 
-`npm run bench:token` prices a session mode, `npm run bench:dispatch` prices a re-dispatch, and `npm run bench:batch` prices a run of activities. All three, and the gate that runs on every pull request, are in [benchmarks.md](benchmarks.md).
+`npm run bench:token` prices a session mode, `npm run bench:dispatch` prices a re-dispatch, and `npm run bench:batch` prices a run of activities. All three, and the gate that runs on every pull request, are in [benchmark/README.md](../benchmark/README.md).

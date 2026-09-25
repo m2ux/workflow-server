@@ -68,7 +68,7 @@ function rules(entries: Array<[string, string]>): string {
 
 /** Write `meta` and a copy of the authored client workflow into `dest`. */
 export function buildTokenBenchCorpus(dest: string): string {
-  const authored = resolve(import.meta.dirname, 'fixtures/token-bench/delivery-fixture');
+  const authored = resolve(import.meta.dirname, '../tests/fixtures/token-bench/delivery-fixture');
   mkdirSync(dest, { recursive: true });
   cpSync(authored, join(dest, 'delivery-fixture'), { recursive: true });
 

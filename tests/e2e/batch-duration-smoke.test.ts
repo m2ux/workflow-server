@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DEFAULT_RUN, measure } from '../../scripts/run-batch-benchmark.js';
+import { DEFAULT_RUN, measure } from '../../benchmark/run-batch-benchmark.js';
 import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
