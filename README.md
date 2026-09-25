@@ -30,10 +30,10 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 User Goal → Workflow → Activities → Techniques → Tools
 ```
 
-- **Workflows** — define the overall process (e.g., implement a feature from issue to merged PR)
-- **Activities** — are phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** — are markdown definitions of a capability, with optional rules
-- **Tools** — are the operations the agent invokes
+- **Workflows** — define the mechanical process and outcome contract (e.g., implement a feature from issue to merged PR)
+- **Activities** — are mechanical phases within a workflow (e.g., plan, implement, review, validate)
+- **Techniques** — are prose-based capability definitions, with an explicit contract (inputs, outputs, procedure, rules)
+- **Tools** — are the external programs or APIs a technique invokes
 
 
 ## 🚀 Quick Start
