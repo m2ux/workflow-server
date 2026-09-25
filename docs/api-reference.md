@@ -32,8 +32,6 @@ Repsonses from `GET /ready`. Ready only when every one is true.
 
 Each [tool](../site/api/tools.html): what it takes, what it returns, and the page that explains the behaviour.
 
-`{ a, b }` always present. `a?` optional. `∪` add. `⊕` exactly one. `∅` none.
-
 ### Bootstrap
 
 Calls available before a session exists.
@@ -43,6 +41,8 @@ Calls available before a session exists.
 | [discover](../src/tools/workflow-tools.ts#L778) | Entry point, before any other tool | ∅ | Server info and a bootstrap stub              | [Verify](setup.md#3-verify)                                             |
 | [list_workflows](../src/tools/workflow-tools.ts#L796) | The catalog of available workflows     | ∅ | { [id](../src/loaders/workflow-loader.ts#L392), [title](../src/loaders/workflow-loader.ts#L392), [version](../src/loaders/workflow-loader.ts#L392), [tags](../src/loaders/workflow-loader.ts#L392)? } ∪ { [load_errors](../src/tools/workflow-tools.ts#L800) } | [What a namespace is](resource-resolution-model.md#what-a-namespace-is) |
 | [health_check](../src/tools/workflow-tools.ts#L2949) | Server health                          | ∅ | [status](../src/tools/workflow-tools.ts#L2953), [server](../src/tools/workflow-tools.ts#L2954), [version](../src/tools/workflow-tools.ts#L2955), [workflows_available](../src/tools/workflow-tools.ts#L2956), [uptime_seconds](../src/tools/workflow-tools.ts#L2957), [repo_binding](../src/tools/workflow-tools.ts#L2958) | [HTTP endpoints](#http-endpoints)                                       |
+
+> *`{ a, b }` always present. `a?` optional. `∪` add. `⊕` exactly one. `∅` none.*
 
 ### Session
 
@@ -55,6 +55,7 @@ Opening a run, and reading where that run stands.
 | [get_workflow_status](../src/tools/workflow-tools.ts#L2965) | Where the session stands                              | { [session_index](../src/utils/session/params.ts#L10) } | [status](../src/tools/workflow-tools.ts#L3007), [in_flight](../src/tools/workflow-tools.ts#L3012), [completed_activities](../src/tools/workflow-tools.ts#L3013), [variables](../src/tools/workflow-tools.ts#L3016), [workflow](../src/tools/workflow-tools.ts#L3017), [last_checkpoint](../src/tools/workflow-tools.ts#L3025)? | [Polling](dispatch-model.md#polling-a-dispatched-workflow)               |
 | [inspect_session](../src/tools/workflow-tools.ts#L3040) | Read session state. A checkpoint does not block it { [session_index](../src/utils/session/params.ts#L10) } ∪ { [view](../src/tools/workflow-tools.ts#L3044)?, [child_index](../src/tools/workflow-tools.ts#L3046)?, [variable](../src/tools/workflow-tools.ts#L3048)?, [agent_id](../src/tools/workflow-tools.ts#L3050)? } | The [projection](../src/tools/workflow-tools.ts#L3064) named by view | [Persistence](state-management-model.md#persistence)                     |
 
+> *`{ a, b }` always present. `a?` optional. `∪` add. `⊕` exactly one. `∅` none.*
 ### Workflow navigation
 
 Moving through the workflow, and pausing when a person has to decide.
@@ -69,6 +70,7 @@ Moving through the workflow, and pausing when a person has to decide.
 | [present_checkpoint](../src/tools/workflow-tools.ts#L2645) | Load the active checkpoint for the user                                     | { [session_index](../src/utils/session/params.ts#L10) } | { [message](../src/tools/workflow-tools.ts#L2677), [options](../src/tools/workflow-tools.ts#L2686), [session_index](../src/tools/workflow-tools.ts#L2712) } | [Presenting and resolving](checkpoint-model.md#the-user-facing-agent-presents-and-resolves) |
 | [respond_checkpoint](../src/tools/workflow-tools.ts#L2719) | Clear the active checkpoint                                                 | { [session_index](../src/utils/session/params.ts#L10) } ∪ { [option_id](../src/tools/workflow-tools.ts#L2724) ⊕ [auto_advance](../src/tools/workflow-tools.ts#L2725) ⊕ [condition_not_met](../src/tools/workflow-tools.ts#L2726) } | { [checkpoint_id](../src/tools/workflow-tools.ts#L2870), [resolved](../src/tools/workflow-tools.ts#L2871), [session_index](../src/tools/workflow-tools.ts#L2872) } ∪ { [resolved_option](../src/tools/workflow-tools.ts#L2874)?, [effect](../src/tools/workflow-tools.ts#L2875)?, [dismissed](../src/tools/workflow-tools.ts#L2876)?, [exit](../src/tools/workflow-tools.ts#L2882)? } | [Three ways to resolve one](checkpoint-model.md#three-ways-to-resolve-one)                  |
 
+> *`{ a, b }` always present. `a?` optional. `∪` add. `⊕` exactly one. `∅` none.*
 ### Techniques and resources
 
 Loading one technique, or one piece of reference material.
@@ -78,6 +80,7 @@ Loading one technique, or one piece of reference material.
 | [get_technique](../src/tools/resource-tools.ts#L796) | Load one technique on demand                                  { [session_index](../src/utils/session/params.ts#L10) } ∪ { [technique_id](../src/tools/resource-tools.ts#L804)?, [step_id](../src/tools/resource-tools.ts#L807)?, [activity_id](../src/tools/resource-tools.ts#L808)?, [agent_id](../src/utils/session/params.ts#L49)?, [bundle](../src/tools/resource-tools.ts#L809)?, [full](../src/tools/resource-tools.ts#L810)? } | { [composed technique](../src/tools/resource-tools.ts#L1055) } ⊕ { [unchanged marker](../src/tools/resource-tools.ts#L1017) } | [Asking for one by name](delivery-model.md#asking-for-one-by-name)                      |
 | [get_resource](../src/tools/resource-tools.ts#L1061) | Load a resource { [session_index](../src/utils/session/params.ts#L10), [resource_id](../src/tools/resource-tools.ts#L1069) } ∪ { [agent_id](../src/utils/session/params.ts#L49)?, [bundle](../src/tools/resource-tools.ts#L1070)?, [full](../src/tools/resource-tools.ts#L1071)? } | { [resource body](../src/tools/resource-tools.ts#L1126) } ⊕ { [unchanged marker](../src/tools/resource-tools.ts#L1156) } | [Loading a resource](resource-resolution-model.md#loading-a-resource-when-it-is-needed) |
 
+> *`{ a, b }` always present. `a?` optional. `∪` add. `⊕` exactly one. `∅` none.*
 ### Trace and accounting
 
 Reading what the run did, and recording what it cost.
@@ -86,3 +89,5 @@ Reading what the run did, and recording what it cost.
 | -------------- | ---------------------------------------------------------- | ---------------- | -------------------------------------------------------------- | -------------------------------------------------------------------- |
 | [get_trace](../src/tools/workflow-tools.ts#L2898) | The session trace, from tokens or from memory { [session_index](../src/utils/session/params.ts#L10) } ∪ { [trace_tokens](../src/tools/workflow-tools.ts#L2901)?, [agent_id](../src/tools/workflow-tools.ts#L2902)? } | { [traceId](../src/tools/workflow-tools.ts#L2926), [source](../src/tools/workflow-tools.ts#L2926), [event_count](../src/tools/workflow-tools.ts#L2926), [events](../src/tools/workflow-tools.ts#L2926), [session_index](../src/tools/workflow-tools.ts#L2926) } ∪ { [token_errors](../src/tools/workflow-tools.ts#L2927)? } | [Execution trace](workflow-fidelity.md#layer-7-the-execution-trace)  |
 | [record_usage](../src/tools/workflow-tools.ts#L2546) | Record one completed activity's token usage                    { [session_index](../src/utils/session/params.ts#L10), [activity](../src/tools/workflow-tools.ts#L2549), [usage](../src/tools/workflow-tools.ts#L2550), [basis](../src/tools/workflow-tools.ts#L2555) } ∪ { [agent_id](../src/tools/workflow-tools.ts#L2562)? } | [status](../src/tools/workflow-tools.ts#L2592), [activity](../src/tools/workflow-tools.ts#L2593), [session_index](../src/tools/workflow-tools.ts#L2594), [usage_events](../src/tools/workflow-tools.ts#L2595) | [Token usage](delivery-model.md#token-usage-is-reported-not-derived) |
+
+> *`{ a, b }` always present. `a?` optional. `∪` add. `⊕` exactly one. `∅` none.*
