@@ -87,8 +87,8 @@ Each reference resolves as follows:
 
 ### Rules come along automatically
 
-When a technique is resolved, remaining **role** rules — those not already on an operation body or
-a scope contract — are appended as rule entries. Operation and scope rules ride those homes; they
+When a technique is resolved, remaining **role** rules — those not already on a technique body or
+a scope contract — are appended as rule entries. Technique and scope rules ride those homes; they
 are not restated in the list.
 
 ### The bundle buckets
@@ -97,14 +97,14 @@ The result of resolving a list of references is a bundle grouped into these buck
 
 * **`techniques`** — keyed by full path (`{workflow}/{technique}` or `{technique}`, with `::{sub}` appended for a nested technique) → technique body (own fields plus `inherits`).
 * **`contracts`** — keyed by scope id (workflow id or group path) → that ancestor's authored rules and shared inputs/outputs.
-* **`rules`** — a flat array of `[rule-name, rule-line]` tuples (one tuple per line) for rules that govern the role rather than any one operation.
+* **`rules`** — a flat array of `[rule-name, rule-line]` tuples (one tuple per line) for rules that govern the role rather than any one technique.
 * **`unresolved`** — references that did not resolve.
 
 Empty buckets are omitted. The lookup is structural and requires no session token; most clients receive it indirectly through the bundles that `get_workflow` and `get_activity` produce, which [the delivery model](delivery.md#what-a-role-receives) describes.
 
 ## What an ancestor contributes to a descendant
 
-An ancestor container contributes a contract, never a procedure. Every ancestor along the path — the workflow-root `TECHNIQUE.md` and each containing group's `TECHNIQUE.md` — merges its inputs, outputs and rules into the in-memory descendant, the descendant's own entry winning on a shared id or name. Role-facing delivery carries each ancestor's authored block once under `contracts`, and the descendant names those scopes in `inherits`. A technique's protocol is delivered as authored; the steps a shared stage owns belong to the activity or routine that binds both operations, not to the folder that holds them.
+An ancestor container contributes a contract, never a procedure. Every ancestor along the path — the workflow-root `TECHNIQUE.md` and each containing group's `TECHNIQUE.md` — merges its inputs, outputs and rules into the in-memory descendant, the descendant's own entry winning on a shared id or name. Role-facing delivery carries each ancestor's authored block once under `contracts`, and the descendant names those scopes in `inherits`. A technique's protocol is delivered as authored; the steps a shared stage owns belong to the activity or routine that binds both techniques, not to the folder that holds them.
 
 ## The shared meta layer
 

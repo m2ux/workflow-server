@@ -116,7 +116,7 @@ Each warns rather than blocks:
 | Presence | An ungated top-level step is missing |
 | Order | Top-level steps are out of declaration order — a relative comparison, so omitted gated steps do not shift it |
 | Output | A step reports no value at all — an absent map, or one with no keys |
-| Declaration | A reported key names no output the step's bound operation declares |
+| Declaration | A reported key names no output the step's bound technique declares |
 | Identity | A step id names no step of the activity |
 
 ### Steps that may be left out
@@ -144,7 +144,7 @@ The server records every delivery of technique or resource content into the sess
 
 All three delivery events carry `chars`, the full payload size on either path, and `delivery: "full" | "unchanged"` — so characters delivered and characters saved are both summable from the history rather than estimated. An unchanged-reference answer under persistent context mode still counts as a delivery.
 
-Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique operation, or by an inline bundle delivery. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery.md#reference-delivery) and [hybrid technique bundling](delivery.md#eager-technique-bundling).
+Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique, or by an inline bundle delivery. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery.md#reference-delivery) and [hybrid technique bundling](delivery.md#eager-technique-bundling).
 
 ## Layer 6: the activity manifest
 

@@ -55,15 +55,15 @@ An orchestrator receives the techniques it is to carry out, and the workflow it 
 sequenceDiagram
   participant Server
   participant Orchestrator
-  Server->>Orchestrator: Operations, with their bodies
+  Server->>Orchestrator: Techniques, with their bodies
   Server->>Orchestrator: Workflow metadata, below the separator
 ```
 
-*Figure 3. An Orchestrator Receives Its Operations and the Workflow.*
+*Figure 3. An Orchestrator Receives Its Techniques and the Workflow.*
 
 ```mermaid
 classDiagram
-  class Operations {
+  class Techniques {
     one capability each, body included
   }
   class Contracts {
@@ -78,13 +78,13 @@ classDiagram
   class OrchestratorBundle {
     what the orchestrator is handed
   }
-  Operations --> Contracts : names what it inherits
+  Techniques --> Contracts : names what it inherits
   RoleRules --> OrchestratorBundle : rides once
   WorkflowMetadata --> OrchestratorBundle : rides below the separator
-  Operations --> OrchestratorBundle : rides with its body
+  Techniques --> OrchestratorBundle : rides with its body
 ```
 
-*Figure 4. Operations, Shared Contracts, Role Rules, and Workflow Metadata.*
+*Figure 4. Techniques, Shared Contracts, Role Rules, and Workflow Metadata.*
 
 <a id="the-worker-bundle"></a>
 
@@ -161,34 +161,34 @@ classDiagram
 
 ### Asking for One by Name
 
-An agent asks for one operation that was not in the bundle (Figure 9). It names that operation by the step, or by the operation itself (Figure 10).
+An agent asks for one technique that was not in the bundle (Figure 9). It names that technique by the step, or by the technique itself (Figure 10).
 
 ```mermaid
 sequenceDiagram
   participant Agent
   participant Server
-  Agent->>Server: Ask for one operation by name
-  Server-->>Agent: That operation, if this session's definitions name it
+  Agent->>Server: Ask for one technique by name
+  Server-->>Agent: That technique, if this session's definitions name it
 ```
 
-*Figure 9. One Operation, Asked for by Name.*
+*Figure 9. One Technique, Asked for by Name.*
 
 ```mermaid
 classDiagram
   class StepName {
-    the step that binds the operation
+    the step that binds the technique
   }
-  class OperationName {
-    role operation, not bundled
+  class TechniqueName {
+    role technique, not bundled
   }
   class SessionDefinitions {
     only this session's names
   }
   StepName --> SessionDefinitions : asks for one
-  OperationName --> SessionDefinitions : asks for one
+  TechniqueName --> SessionDefinitions : asks for one
 ```
 
-*Figure 10. A Step Name, or an Operation Name.*
+*Figure 10. A Step Name, or an Technique Name.*
 
 <a id="the-three-budgets"></a>
 
