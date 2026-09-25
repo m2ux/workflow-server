@@ -5,7 +5,7 @@
  * repositories or issue trackers. Two layers:
  *
  *   STATIC (always runs; CI-safe, no network):
- *     (1) disclosure-gating — every step that binds a disclosure-capable operation (PR create/
+ *     (1) disclosure-gating — every step that binds a disclosure-capable technique (PR create/
  *         render/mark-ready/review-comment, issue creation/commenting/assignment, tracker
  *         transitions) must carry a gate that evaluates definitively FALSE under the workflow's
  *         seeded variable defaults (stealth_mode: true et al.). An ungated or truthy-gated

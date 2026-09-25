@@ -28,7 +28,6 @@
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
-              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
               <li><a href="../specs/resource-resolution.html">Resolution</a></li>
               <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
             </ul>
@@ -69,7 +68,7 @@
 <main id="main">
   <h1>Session store</h1>
   <p class="lede">A session is a folder. Everything the server knows about a run — position, variables, history, children — lives in one sealed <code>session.json</code> inside a planning folder under the engineering root. Agents identify a run with a derived six-character <code>session_index</code>, not a path or hand-carried token; the server holds the truth. Every piece of the design follows from making that file trustworthy, resumable, and inspectable.</p>
-  <p>The implementation is <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/store.ts"><code>src/utils/session/</code></a>; the file's exact shape is <a href="../api/schemas.html#session-file"><code>session-file.schema.json</code></a>, and the user-level view of the same folder is in <a href="../specs/artifact-management.html">artifact and workspace isolation</a>. The server needs workspace and engineering roots at launch (or a legacy single root), and every authenticated call reads or writes disk under the engineering planning tree.</p>
+  <p>The implementation is <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/store.ts"><code>src/utils/session/</code></a>; the file's exact shape is <a href="../api/schemas.html#session-file"><code>session-file.schema.json</code></a>, and the user-level view of the same folder is in <a href="../specs/state-management.html#planning-folder">state</a>. The server needs workspace and engineering roots at launch (or a legacy single root), and every authenticated call reads or writes disk under the engineering planning tree.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 320" role="img" aria-labelledby="ss-title ss-desc">
@@ -126,7 +125,7 @@
       <tbody>
         <tr><td>Identity</td><td><code>schemaVersion</code>, <code>sessionIndex</code>, <code>workflowId</code>, <code>workflowVersion</code> (captured at start, checked for drift on every call), <code>agentId</code>, <code>startedAt</code>.</td></tr>
         <tr><td>Position</td><td><code>currentActivity</code>, <code>completedActivities</code>, <code>skippedActivities</code>, <code>status</code> (<code>running</code>, <code>completed</code>, <code>aborted</code>), and <code>activeCheckpoint</code> — the gate that pauses navigation while a decision is outstanding.</td></tr>
-        <tr><td>Data</td><td><code>variables</code>, the schema-validated bag mutated only through declared paths (checkpoint effects and recorded outputs — see <a href="../specs/state-management.html">state management</a>), plus <code>checkpointResponses</code>, which caches each resolved checkpoint so a replayed yield returns the earlier answer instead of asking twice.</td></tr>
+        <tr><td>Data</td><td><code>variables</code>, the schema-validated bag mutated only through declared paths (checkpoint effects and recorded outputs — see <a href="../specs/state-management.html">state</a>), plus <code>checkpointResponses</code>, which caches each resolved checkpoint so a replayed yield returns the earlier answer instead of asking twice.</td></tr>
         <tr><td>Ordering</td><td><code>seq</code>, a monotonic counter bumped by every mutation, and <code>ts</code> — together they make "which write is newer" a comparison, not a guess.</td></tr>
         <tr><td>Delivery</td><td><code>contextMode</code> (<code>persistent</code> or <code>fresh</code>) and <code>deliveredContent</code>, the per-agent ledger of content hashes behind <a href="../design/protocol.html#delivery">reference-not-repeat delivery</a>.</td></tr>
         <tr><td>Structure</td><td><code>triggeredWorkflows</code> (embedded child sessions), <code>parentSession</code> (the back-reference), and <code>planningFolderPath</code>, re-stamped on resume so the file stays correct if the folder moves.</td></tr>
@@ -148,7 +147,7 @@
   <p>A planning folder is a session when it holds <code>session.json</code>. <code>start_session</code> writes that file for a new slug and loads it on resume; a folder without the file is a fresh session.</p>
 
   <h2 id="next">Next</h2>
-  <p>How a tool call reads and writes this state safely is <a href="./request-lifecycle.html">the request lifecycle</a>; the checkpoint pause encoded in <code>activeCheckpoint</code> is <a href="../specs/checkpoints.html">the checkpoint model</a>.</p>
+  <p>How a tool call reads and writes this state safely is <a href="./request-lifecycle.html">the request lifecycle</a>; the checkpoint pause encoded in <code>activeCheckpoint</code> is <a href="../specs/checkpoints.html">checkpoints</a>.</p>
 </main>
 
 

@@ -4,7 +4,7 @@
  * Deterministic checks over every workflow's activities + techniques:
  *
  *   (1) arg-conformance — every `step.technique.inputs` key is a declared input, and every
- *       `step.technique.outputs` key a declared output, of the bound operation's composed
+ *       `step.technique.outputs` key a declared output, of the bound technique's composed
  *       signature (own ∪ group ∪ root). A key that is not in the signature is a stale/overfit
  *       deviation left behind by a rename or refactor.
  *
@@ -35,7 +35,7 @@
  *       names a field that component declares for an entry. This is (4) one level further down:
  *       (4) settles a read into a value against the members its producer declares and stops at the
  *       list, where the entry inside it is what the read is actually about. The item name is
- *       introduced by the loop and appears in no operation's signature, so resolution runs
+ *       introduced by the loop and appears in no technique's signature, so resolution runs
  *       item → the collection the loop iterates → the producing output → the component, and
  *       compares against the fields that component declares. Only a component declaring entry
  *       fields is measured, for the reason (4) only measures an output declaring components.
@@ -265,11 +265,11 @@ function buildRegistry(wf: string): void {
 let workflows: string[] = [];
 
 /**
- * Which operation a step's `technique:` names, over this guard's own signature registry.
+ * Which technique a step's `technique:` names, over this guard's own signature registry.
  *
  * The reference is read by the server's rule (`parseTechniqueRef`), so guard and server cannot
  * disagree about whether a leading segment names a workflow or a group. Only the lookup is the
- * guard's own: the registry holds parsed signatures rather than technique files.
+ * guard's own: the registry holds parsed signatures rather tha technique files.
  */
 function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry; homeWf: string; key: string } | null {
   let parsed: TechniqueRef;
@@ -302,7 +302,7 @@ function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry
   return null;
 }
 
-/** Why a reference resolves to nothing: the rule refuses it, or the corpus holds no such operation. */
+/** Why a reference resolves to nothing: the rule refuses it, or the corpus holds no such technique. */
 function unresolvedDetail(ref: string): string {
   try {
     parseTechniqueRef(ref, INDEX);
@@ -322,12 +322,12 @@ const PLACEHOLDER = new Set(['path', 'token', 'placeholder', 'field', 'key', 'va
 const producedByWf = new Map<string, Set<string>>();
 const fileLocals = new Map<string, Set<string>>();
 /**
- * Per routine file, the inputs whose argument is an operation reference (#739).
+ * Per routine file, the inputs whose argument is a technique reference (#739).
  *
- * Such a parameter stands where an operation reference belongs and a reference site replaces it when
+ * Such a parameter stands where a technique reference belongs and a reference site replaces it when
  * the definitions load, so the declaration spells a name no technique answers to. Resolving it here
- * would be resolving a placeholder; what the operation a site supplies is bound to is a question the
- * routines guard asks once per reference site, where there is an operation to ask about.
+ * would be resolving a placeholder; what the technique a site supplies is bound to is a question the
+ * routines guard asks once per reference site, where there is a technique to ask about.
  */
 const fileOperationParameters = new Map<string, Set<string>>();
 
@@ -453,7 +453,7 @@ const steps: Step[] = [];
  * A read that addresses INTO a value — `change_report.changed_symbols` rather than `change_report`.
  *
  * The head is what the resolution rules answer for; the tail is a claim about the value's shape,
- * which the producing operation states in its output's `####` components. Kept whole here because
+ * which the producing technique states in its output's `####` components. Kept whole here because
  * every other scan splits the head off and discards the rest, which is why a tail naming a member
  * no contract declares reads exactly like a member that is there.
  */
@@ -463,7 +463,7 @@ const pathConsumes: Array<{ rel: string; wf: string; activityId: string; path: s
  *
  * A read off the item — `{process.summary}` under a loop over `{query_report.processes}` — is a
  * claim about one ENTRY of that collection. Resolving it needs the loop, because the item name is
- * introduced by the loop and names nothing the producing operation declares.
+ * introduced by the loop and names nothing the producing technique declares.
  */
 const loopItems: Array<{
   rel: string; wf: string; activityId: string; item: string; over: string;
@@ -480,7 +480,7 @@ const expressionConsumes: Array<{ rel: string; wf: string; stepId: string; name:
 
 /**
  * Arguments a `kind: routine` step binds, as written: `{token}` for a reference to a host variable
- * and a bare name for a rename, alongside literals like an operation reference. Read the same way a
+ * and a bare name for a rename, alongside literals like a technique reference. Read the same way a
  * technique step's input deviations are, and for the same question — whether anything consumes a
  * declared output. Held apart from `expressionConsumes` because these are not expressions: a literal
  * argument names no bag variable, and asking a resolution rule about one reports a missing producer
@@ -537,7 +537,7 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
       inputsMap: tb.inputs ?? {}, outputsMap: tb.outputs ?? {}, activityId,
     });
   }
-  // A `kind: routine` step binds the run the way a technique step binds an operation: `with` values
+  // A `kind: routine` step binds the run the way a technique step binds a technique: `with` values
   // name what the host hands it — braced for a reference, bare for a rename — and `outputs` values
   // name the host variables its productions land under. The walk reads authored files and never the
   // materialised body, so a value whose only consumer is a routine argument reads as dead without
@@ -729,7 +729,7 @@ const namespaceRef = (path: string): string => namespaceRefByPath.get(path) ?? p
 /**
  * The namespaces whose declarations are in every workflow's reach.
  *
- * A namespace that declares no workflow is a library: nothing starts it, and every operation it
+ * A namespace that declares no workflow is a library: nothing starts it, and every technique it
  * holds is there to be applied from somewhere else. Its declared ids are therefore readable from any
  * workflow that applies one, and its outputs are consumed from outside by design — which is exactly
  * the standing `meta` has, and the reason `meta` was named here before there was a second one.
@@ -785,7 +785,7 @@ function ensureIndexed(): void {
   const graphed = new Set(corpusNamespaces(ROOT, INDEX).filter((n) => n.manifest !== undefined).map(({ ref }) => ref));
   // A run is read because a `routines/` directory holds it, and for no other reason. A library
   // declares runs and may declare neither activities nor techniques, so every membership the sweep
-  // below tests for is one a library can fail while still holding the runs where its own operations
+  // below tests for is one a library can fail while still holding the runs where its own techniques
   // are composed — and an unscanned run reports every output it consumes as one nothing consumes.
   for (const { ref, dir } of corpusNamespaces(ROOT, INDEX)) {
     if (existsSync(join(dir, 'routines'))) scanRoutines(ref);
@@ -974,13 +974,13 @@ export function collectViolations(): Violation[] {
   const callerSupplied = new Set<string>();
   // (1) binding-resolution + arg-conformance + orphan-input
   for (const s of steps) {
-    // The step binds an operation its routine takes as an argument, so the technique position holds
+    // The step binds a technique its routine takes as an argument, so the technique position holds
     // a parameter until a reference site fills it. There is nothing here to resolve, and nothing to
     // hold a binding against either — both are per-site questions the routines guard asks.
     if (fileOperationParameters.get(s.rel)?.has(s.technique)) continue;
     const r = resolve(s.technique, s.wf, s.activityId);
     if (!r) {
-      // A step's `technique:` ref must resolve to a real operation (workflow-local, meta, or
+      // A step's `technique:` ref must resolve to a real technique (workflow-local, meta, or
       // cross-workflow). check-all-refs only validates the activity/workflow `techniques[]` list, so
       // after the step-binding migration this is the only guard covering step.technique bindings.
       v.push({ check: 'binding-resolution', site: `${s.rel}[${s.stepId}]`, detail: unresolvedDetail(s.technique) });
@@ -1079,11 +1079,11 @@ export function collectViolations(): Violation[] {
 }
 
 /**
- * Which operation output lands under each bag name, by the name the value is read under.
+ * Which technique output lands under each bag name, by the name the value is read under.
  *
  * A step's `outputs` map remaps a declared output onto another name; an output the map leaves alone
  * lands under its own id. Both are producers, and a reader addressing into either is making a claim
- * about that operation's declared shape.
+ * about that technique's declared shape.
  */
 function producersByBagName(): Map<string, Array<{ ref: string; wf: string; activityId: string; outputId: string }>> {
   const byName = new Map<string, Array<{ ref: string; wf: string; activityId: string; outputId: string }>>();
@@ -1152,9 +1152,9 @@ function collectPathViolations(): Violation[] {
  *
  * `collectPathViolations` settles a read into a value against the members its producer declares, and
  * stops there. Where the member is a list, the entry inside it is one level further down: a loop
- * introduces an item name the producing operation never mentions, and a read off that item is a
+ * introduces an item name the producing technique never mentions, and a read off that item is a
  * claim about one entry of the collection. Resolution runs the same route as the level above —
- * item → the collection the loop iterates → the producing operation's output → the component — and
+ * item → the collection the loop iterates → the producing technique's output → the component — and
  * applies the same comparison to the fields that component declares for an entry.
  *
  * Only a component that declares entry fields is measured, for the reason the level above declares
@@ -1195,7 +1195,7 @@ function collectEntryFieldViolations(): Violation[] {
       if (seen.has(key)) continue;
       seen.add(key);
       // Every producer landing under this name is consulted, the way the level above consults them:
-      // where two operations land one bag name and disagree about an entry's fields, a read
+      // where two techniques land one bag name and disagree about an entry's fields, a read
       // satisfied by one and not the other is a disagreement worth reporting, not one to resolve by
       // taking whichever was walked first.
       for (const { producer, fields } of fieldsByProducer) {

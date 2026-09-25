@@ -510,8 +510,8 @@ describe('fan load rules', () => {
     expect(errors).toEqual([]);
   });
 
-  // L14 — one rule covers every operation a branch cannot execute, each case carrying its reason.
-  it('L14 refuses a fanned activity binding the persist operation', async () => {
+  // L14 — one rule covers every technique a branch cannot execute, each case carrying its reason.
+  it('L14 refuses a fanned activity binding the persist technique', async () => {
     const errors = await loadErrors({
       ...instanceFanFixture,
       activities: [
@@ -532,7 +532,7 @@ describe('fan load rules', () => {
     expect(rendered(errors)).toContain('persists the session record and the planning folder');
   });
 
-  it('L14 refuses a fanned activity binding a version-control operation', async () => {
+  it('L14 refuses a fanned activity binding a version-control technique', async () => {
     const errors = await loadErrors({
       ...instanceFanFixture,
       activities: [
@@ -553,7 +553,7 @@ describe('fan load rules', () => {
 
   // L14 reads the branch's own bindings: an activity that materialises a checkout of its own
   // commits into that one, so the shared-tree reason does not hold and the checkout group is legal.
-  it('L14 admits a version-control operation where the branch takes a checkout of its own', async () => {
+  it('L14 admits a version-control technique where the branch takes a checkout of its own', async () => {
     const errors = await loadErrors({
       ...instanceFanFixture,
       activities: [
@@ -613,7 +613,7 @@ describe('fan load rules', () => {
 
   it('L14 refuses the session-level persist however the working trees are split', async () => {
     // What a checkout of its own splits is the working tree. The session record and the planning
-    // folder are shared either way, so the operation that commits them stays refused — and says so
+    // folder are shared either way, so the technique that commits them stays refused — and says so
     // rather than repeating the shared-tree reason that no longer applies.
     const errors = await loadErrors({
       ...instanceFanFixture,

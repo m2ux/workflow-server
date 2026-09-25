@@ -9,13 +9,22 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ---
 
-**[Documentation](https://m2ux.github.io/workflow-server/)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Workspace](https://github.com/m2ux/workflow-server/blob/workspace/README.md)** • **[Deployment](https://github.com/m2ux/workflow-server/blob/docker/README.md)**
+**[Site](https://m2ux.github.io/workflow-server/)** •  **[Documentation](docs/README.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Workspace](https://github.com/m2ux/workflow-server/tree/workspace)** • **[Deployment](https://github.com/m2ux/workflow-server/tree/docker)**
 
 ---
 
 ## 🎯 Overview
 
-Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [IDE rule](docs/setup.md#3-setup-cursor-workspace) bootstraps the agent — from there, the server handles workflow discovery, session management, and step-by-step navigation.
+Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [rule](docs/setup.md#3-verify) bootstraps a meta-orchestration agent — from there, the agent-server conversation handles workflow discovery, session management, and step-by-step navigation.
+
+### Why?
+
+**pseudo-mechanical** workflow execution provides:
+
+* Optionality to ossify repeated operations into a schematised mechanical form.
+* Precision composition and delivery of procedure to avoid context rot and maximise token efficiency
+* Ontological seperation of skill-like prose into procedural (technique) and non-procedural (resource)
+* A corpus of pre-constructed general purpose workflow elements for software engineering
 
 ### How It Works
 
@@ -30,10 +39,10 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 User Goal → Workflow → Activities → Techniques → Tools
 ```
 
-- **Workflows** — define the overall process (e.g., implement a feature from issue to merged PR)
-- **Activities** — are phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** — are markdown definitions of a capability, with optional rules
-- **Tools** — are the operations the agent invokes
+- **Workflows** — define the mechanical process and outcome contract (e.g., implement a feature from issue to merged PR)
+- **Activities** — are mechanical phases within a workflow (e.g., plan, implement, review, validate)
+- **Techniques** — are prose-based capability definitions, with an explicit contract (inputs, outputs, procedure, rules)
+- **Tools** — are the external programs or APIs a technique invokes
 
 
 ## 🚀 Quick Start
@@ -55,9 +64,9 @@ Resume the work-package workflow for PR #1000
 
 The agent matches the request to the appropriate activity and guides you through the structured phases.
 
-### MCP Tools
+### API
 
-The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
+See [docs/api.md](docs/api.md).
 
 ## 📜 License
 

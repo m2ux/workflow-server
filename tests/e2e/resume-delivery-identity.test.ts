@@ -114,7 +114,7 @@ describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', (
     // carries the activity body, which never collapses.
     expect(resumedText).toContain('delivery: unchanged');
 
-    // The dispatch carried the whole contract, so the resume carries a marker for every operation
+    // The dispatch carried the whole contract, so the resume carries a marker for every technique
     // of it and the contract share falls to a fraction of what it was.
     expect(resumedContractChars).toBeLessThan(firstContractChars / 2);
 

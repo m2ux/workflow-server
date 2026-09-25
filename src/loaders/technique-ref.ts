@@ -9,7 +9,7 @@
  * segment follows them; the rest of the path is then resolved in that namespace and nowhere else.
  * Otherwise every segment is a path inside the referring workflow's `techniques/` — the first names
  * a group, the last names the technique — resolved against the referring workflow and then `meta`.
- * Depth is unbounded on both halves: `group::subgroup::operation` is an ordinary reference, and so
+ * Depth is unbounded on both halves: `group::subgroup::technique` is an ordinary reference, and so
  * is `support::gitnexus::analyze`.
  *
  * A namespace is spelled by its directory name, by the path from the corpus root that reaches it, or
@@ -153,7 +153,7 @@ export function techniquePath(segments: readonly string[]): string {
 /**
  * Whether a reference is a bare technique name — one segment, carrying neither separator.
  *
- * The activity-group convention reads such a name as an operation in the group named after its
+ * The activity-group convention reads such a name as a technique in the group named after its
  * activity, and only such a name: a reference that already spells a path says where it lives.
  */
 export function isBareName(ref: string): boolean {

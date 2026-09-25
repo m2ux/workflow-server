@@ -70,7 +70,7 @@ describe('what the guards enumerate', () => {
   });
 
   it('publishes a workflow two directories claim as a library, carrying no definition', () => {
-    // Its operations are borrowable by path and so are measured. Its graph is enterable only by
+    // Its techniques are borrowable by path and so are measured. Its graph is enterable only by
     // starting it under its name, which is the one thing a claimed name takes away, so a guard
     // grading a graph finds nothing here to read and does not hold an author to rules about a
     // product nobody can run.

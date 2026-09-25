@@ -16,6 +16,8 @@ The workflow server uses five interconnected schemas:
 | `technique.schema.json` | Defines agent technique capabilities | Describing tool orchestration patterns and execution guidance |
 | `activity.schema.json` | Defines unified activities | Combining intent matching with workflow execution stages |
 
+<a id="enforcement-model"></a>
+
 ## Enforcement Model
 
 The server enforces structure at load time plus a small runtime core; most schema semantics are carried out by the executing agents. `get_activity` delivers the raw activity YAML verbatim, so every authored field reaches the agent — the classification below states what the **server** does with each field:
@@ -42,7 +44,7 @@ The schemas work together to define workflows (design-time) and track their exec
 
 ### Workflow Structure
 
-A workflow consists of activities and the `graph` binding their exits to one another. Each activity contains a single ordered `steps[]` where every step carries a `kind`: a technique step (binds an operation), an action step (control-only), a checkpoint step (an inline user decision point at its concrete position), or a loop step (a compound step whose body is a nested `steps[]`). An activity declares `exits` — its named outcomes — and the workflow's `graph` says where each leads, so an activity borrowed by two workflows sits in each one's shape without either editing the other's files. An activity can optionally trigger other workflows. Every workflow declares an `initialActivity`: the activity the run opens on, and the root the reachability half of the activity-variables guard walks from.
+A workflow consists of activities and the `graph` binding their exits to one another. Each activity contains a single ordered `steps[]` where every step carries a `kind`: a technique step (binds a technique), an action step (control-only), a checkpoint step (an inline user decision point at its concrete position), or a loop step (a compound step whose body is a nested `steps[]`). An activity declares `exits` — its named outcomes — and the workflow's `graph` says where each leads, so an activity borrowed by two workflows sits in each one's shape without either editing the other's files. An activity can optionally trigger other workflows. Every workflow declares an `initialActivity`: the activity the run opens on, and the root the reachability half of the activity-variables guard walks from.
 
 ```mermaid
 stateDiagram-v2
@@ -306,7 +308,7 @@ The activity object is closed: a field outside this set is a schema error. The a
 
 A step is one entry in the activity's single ordered `steps[]`. Every step carries a required `kind` discriminator that selects its shape. Each kind is a closed object — a field outside its declared set is a schema error (AP-64 bound-step purity: a step is a bound unit of work, so no step kind carries a `description`; guidance lives in the bound technique's protocol):
 
-- **`kind: technique`** — binds an operation via `technique` (a `group::operation` string, or `{ name, inputs?, outputs? }` when it has input deviations / output remaps); may also carry `actions`.
+- **`kind: technique`** — binds a technique via `technique` (a `group::technique` string, or `{ name, inputs?, outputs? }` when it has input deviations / output remaps); may also carry `actions`.
 - **`kind: action`** — a control-only step carrying `actions[]` (may be empty for a marker step).
 - **`kind: checkpoint`** — an inline user decision point (see below); its position in `steps[]` is when it is presented.
 - **`kind: loop`** — a compound step whose body is a nested `steps[]` (see below).
@@ -400,7 +402,7 @@ Two references to one routine in one activity are collision-free by construction
 
 A routine lives at `routines/<name>.yaml`, one file per routine, with no position number because it holds no place in an order. The filename is the name a reference resolves, so the file's `id` has to agree with it.
 
-Which `routines/` directory is the one whose referrers the run serves: the workflow whose activities reach it, or `meta` where two or more do. A library — a namespace offering `techniques/`, `resources/` or `routines/` and declaring no workflow — is a third home, for a run that binds that library's own operations. `check:routines` holds a routine to it.
+Which `routines/` directory is the one whose referrers the run serves: the workflow whose activities reach it, or `meta` where two or more do. A library — a namespace offering `techniques/`, `resources/` or `routines/` and declaring no workflow — is a third home, for a run that binds that library's own techniques. `check:routines` holds a routine to it.
 
 | Field       | Type       | Purpose                                      |
 | ----------- | ---------- | -------------------------------------------- |
@@ -597,7 +599,7 @@ Activities are the execution units of a workflow. Each activity contains an orde
 
 ### Steps
 
-`steps[]` is the activity's single ordered execution list. Every step carries a `kind`. A technique step binds an operation; an action step is control-only:
+`steps[]` is the activity's single ordered execution list. Every step carries a `kind`. A technique step binds a technique; an action step is control-only:
 
 ```json
 {
@@ -1159,8 +1161,8 @@ A minimal technique demonstrating key concepts:
 
 ## Related Documentation
 
-- [API Reference](../docs/api-reference.md) — MCP tool catalog
+- [API Reference](../docs/api.md) — MCP tool catalog
 - [Site API](../site/api/tools.html) — wire descriptions generated from source
 - [Development Guide](../docs/development.md) — Building and testing the server
-- [Resource Resolution Model](../docs/resource-resolution-model.md) — How techniques and resources are loaded
+- [Resolution](../docs/resolution.md) — How a name reaches a technique, resource, activity, or routine
 - [Setup](../docs/setup.md) — Bootstrap rule and `workflow-server://schemas` MCP resource

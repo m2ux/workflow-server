@@ -21,13 +21,13 @@
  * get_workflow alongside the workflow's declared technique refs.
  */
 /**
- * The fan's own operations, delivered to an orchestrator whose workflow graph actually fans an exit
+ * The fan's own techniques, delivered to an orchestrator whose workflow graph actually fans an exit
  * rather than to every orchestrator. None is core: a workflow with no fanning exit can never reach
  * any of them, and together they cost several thousand characters of what an orchestrator receives
  * before its first decision. `get_workflow` adds them where the graph in the same response shows a
  * fan, so the procedure and the routing that needs it arrive together.
  *
- * The three `fan::` operations are the steps the activity loop takes on a fanning exit — open every
+ * The three `fan::` techniques are the steps the activity loop takes on a fanning exit — open every
  * branch, spawn them together, retire them in order. Their shared rules ride in on the group
  * contract each of them sits beneath.
  *
@@ -48,7 +48,7 @@ export const FAN_DISPATCH_TECHNIQUES: readonly string[] = [
  * Technique refs every orchestrator needs at the workflow level. Returned by `get_workflow`
  * alongside the workflow's declared technique refs.
  *
- * The order is the reading order: the operations every dispatch applies lead, then the ones a run
+ * The order is the reading order: the techniques every dispatch applies lead, then the ones a run
  * applies at its own boundaries, then the ones a particular run may never reach at all.
  */
 export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
@@ -106,7 +106,7 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // the role that applies them. `loop-control` is in LOOP_ONLY_RULES, held back from a run whose
   // activities hold no loop.
   'workflow-engine::step-control',
-  // How a step's bound operation meets the variable bag: the input precedence, and whether a
+  // How a step's bound technique meets the variable bag: the input precedence, and whether a
   // string names a variable or is one. Engine mechanics rather than a workflow's choice, on the
   // same terms as conduct below.
   'variable-binding',
@@ -118,7 +118,7 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
 ];
 
 /**
- * The checkpoint operations, delivered where a gate is reachable.
+ * The checkpoint techniques, delivered where a gate is reachable.
  *
  * Two lists rather than one, because the two roles meet a gate from opposite sides: a worker
  * pauses at one, an orchestrator puts it in front of the user and resolves it. Both are held out
@@ -140,7 +140,7 @@ export const ORCHESTRATOR_CHECKPOINT_TECHNIQUES: readonly string[] = [
  * Rules that govern an activity only where the graph runs it as a branch of a fan, by the ref the
  * bundle resolves them under.
  *
- * A rule arrives with the whole file it is declared in, so an operation that is otherwise wanted
+ * A rule arrives with the whole file it is declared in, so a technique that is otherwise wanted
  * carries these to every activity — including the ones whose exits fan onto nothing, where the
  * rule describes a position in the graph the activity never occupies. Named here, they are held
  * back from those, on the same terms `FAN_DISPATCH_TECHNIQUES` is held back from a workflow whose
@@ -169,11 +169,11 @@ export const LOOP_ONLY_RULES: readonly string[] = [
 ];
 
 /**
- * Every operation a session's role contracts can name.
+ * Every technique a session's role contracts can name.
  *
  * The union of both roles' sets, because one session serves both and a `get_technique` call does
  * not say which it speaks for. This is the set a by-id fetch admits: derived from the definitions
- * the run is already walking, so an id names an operation of its own contract or nothing at all —
+ * the run is already walking, so an id names a technique of its own contract or nothing at all —
  * nothing here reaches a file neither role would have been sent.
  */
 export function contractOperations(refs: {

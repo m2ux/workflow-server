@@ -12,13 +12,13 @@
  * makes the signature a contract and the body checkable with no host activity. A reference site that
  * leaves a declared input unbound takes the host's value under the same spelling.
  *
- * Three guarantees hold for every routine EXCEPT one that binds an operation by argument — an input
+ * Three guarantees hold for every routine EXCEPT one that binds a technique by argument — an input
  * declared `kind: technique`, whose value stands in a body step's technique position. Such a body
- * names a parameter where an operation reference belongs, so what it reads and what artifact it
+ * names a parameter where a technique reference belongs, so what it reads and what artifact it
  * declares depend on the argument, and until a site supplies one there is nothing to derive:
  *
- * - A contract derives in isolation. For a routine binding an operation by argument it derives once
- *   per reference site, against the operation that site supplies.
+ * - A contract derives in isolation. For a routine binding a technique by argument it derives once
+ *   per reference site, against the technique that site supplies.
  * - A routine walks from its declared inputs. Such a routine is walked per reference site instead.
  * - The artifact check runs once per routine. For such a routine it runs once per reference site.
  *
@@ -40,20 +40,20 @@ export const RoutineIdSchema = z.string().regex(
  * A declared parameter. A reference site binds it under `with`; a site that leaves it unbound takes
  * the host's value under the same spelling, unless the declaration carries a default.
  *
- * `kind: technique` declares that the argument is an operation reference rather than a value. Such a
+ * `kind: technique` declares that the argument is a technique reference rather than a value. Such a
  * parameter stands in a body step's technique position and is substituted there before the contract
- * derivation runs, so every reference site yields a concrete operation and every signature resolves.
- * It is what lets one run carry several passes that differ in nothing but the operation they bind.
+ * derivation runs, so every reference site yields a concrete technique and every signature resolves.
+ * It is what lets one run carry several passes that differ in nothing but the technique they bind.
  */
 export const RoutineInputSchema = z.object({
   id: VariableNameSchema.describe('The name this parameter carries inside the body, and the name an unbound site falls through to in the host\'s bag.'),
   description: z.string().describe('What the parameter is for, in the routine\'s own vocabulary.'),
-  kind: z.literal('technique').optional().describe('Declared where the argument is an operation reference standing in a body step\'s technique position. A reference site binds it with a literal reference, and an unbound one with no default fails the load.'),
+  kind: z.literal('technique').optional().describe('Declared where the argument is a technique reference standing in a body step\'s technique position. A reference site binds it with a literal reference, and an unbound one with no default fails the load.'),
   default: z.union([z.string(), z.number(), z.boolean()]).optional().describe('The value the body takes where a reference site binds nothing. Without one, an unbound input reads the host\'s value under this id.'),
 }).strict();
 export type RoutineInput = z.infer<typeof RoutineInputSchema>;
 
-/** Whether a parameter's argument is an operation reference rather than a value. */
+/** Whether a parameter's argument is a technique reference rather than a value. */
 export function isOperationInput(input: RoutineInput): boolean {
   return input.kind === 'technique';
 }
@@ -104,9 +104,9 @@ export const RoutineSchema = z.object({
 
   steps: z.array(StepSchema).min(1).describe('The run, an ordered list of kind-tagged steps. A routine with no steps is a signature with nothing behind it.'),
 }).strict().superRefine((routine, ctx) => {
-  // A technique step may omit its id, in which case it is derived from the operation reference's
+  // A technique step may omit its id, in which case it is derived from the technique reference's
   // last segment. Where that reference is a parameter, the derived id would be the parameter's own
-  // name — one identifier for every site, naming the placeholder rather than the operation.
+  // name — one identifier for every site, naming the placeholder rather than the technique.
   const parameters = new Set((routine.inputs ?? []).filter(isOperationInput).map((input) => input.id));
   if (parameters.size === 0) return;
   const visit = (steps: readonly z.infer<typeof StepSchema>[], path: (string | number)[]): void => {
@@ -117,7 +117,7 @@ export const RoutineSchema = z.object({
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: [...path, index, 'id'],
-            message: `this step binds the operation parameter '${reference}', so it declares its own id — a derived one would be '${reference}' at every reference site, naming the parameter rather than the operation it stands for`,
+            message: `this step binds the technique parameter '${reference}', so it declares its own id — a derived one would be '${reference}' at every reference site, naming the parameter rather than the technique it stands for`,
           });
         }
       }
@@ -129,7 +129,7 @@ export const RoutineSchema = z.object({
 
 export type Routine = z.infer<typeof RoutineSchema>;
 
-/** The parameters a routine declares whose argument is an operation reference. */
+/** The parameters a routine declares whose argument is a technique reference. */
 export function operationInputs(routine: Routine): string[] {
   return (routine.inputs ?? []).filter(isOperationInput).map((input) => input.id);
 }

@@ -1,7 +1,7 @@
 {
   "workflowId": "delivery-fixture",
   "label": "baseline",
-  "description": "Two-activity walk of the delivery-cost fixture corpus, one activity at each end of the size scale against a meta namespace derived from core-ops.ts (tests/token-bench-corpus.ts, built by --fixture-corpus). Engine CI gates delivery against this; a work-package character-count belongs on the corpus tree under walks/. `activityDeliveries` splits each delivery into the role contract and the body that varies with the activity, so a change that moves one share is not mistaken for one that moves the other. What the walk buys for its characters is a whole contract: every operation of a role arrives with its body and the rules it is held to, each rule stated once, so an agent acts from what it was handed rather than fetching the rest by id (#847).",
+  "description": "Two-activity walk of the delivery-cost fixture corpus, one activity at each end of the size scale against a meta namespace derived from core-ops.ts (benchmark/token-bench-corpus.ts, built by --fixture-corpus). Engine CI gates delivery against this; a work-package character-count belongs on the corpus tree under walks/. `activityDeliveries` splits each delivery into the role contract and the body that varies with the activity, so a change that moves one share is not mistaken for one that moves the other. What the walk buys for its characters is a whole contract: every operation of a role arrives with its body and the rules it is held to, each rule stated once, so an agent acts from what it was handed rather than fetching the rest by id (#847).",
   "contextMode": "fresh",
   "agentId": "bench-solo",
   "path": ["minimal", "large"],

@@ -1,6 +1,6 @@
 # Development guide
 
-Setting up, building and testing the workflow server. Settings the server reads at startup are in [configuration.md](configuration.md); the guard suite is documented beside the guards in [`guards/README.md`](../guards/README.md); the benchmarks and the profiler are in [benchmarks.md](benchmarks.md).
+Setting up, building and testing the workflow server. Settings the server reads at startup are in [configuration.md](configuration.md); the guard suite is documented beside the guards in [`guards/README.md`](../guards/README.md); the benchmarks and the profiler are in [benchmark/README.md](../benchmark/README.md).
 
 ## What you need
 
@@ -64,7 +64,8 @@ The directories, and what each one owns:
 | `src/utils/` | Session storage and sealing under `session/`, plus delivery accounting, batching, validation and variable seeding |
 | `src/trace.ts` | The trace store and the encoding of trace tokens |
 | `schemas/` | JSON Schemas for editor tooling. Most are generated from their Zod sources by `npm run build:schemas`; `technique.schema.json` is hand-authored, and `check:schemas` holds both facts |
-| `scripts/` | Install and container helpers, schema generation, and the benchmarks |
+| `scripts/` | Install and container helpers, and schema generation |
+| `benchmark/` | The three headless benchmarks |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution — documented in [`guards/README.md`](../guards/README.md) |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
 | `.worktrees/workflows/` | A worktree of the `workflows` branch — the corpus the server serves |
@@ -73,7 +74,7 @@ The directories, and what each one owns:
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
 
-Inside the corpus worktree, product definitions live under `corpus/`. Named roots beside it are `ledgers/`, `walks/`, and `docs/` for layout authoring, at `.worktrees/workflows/docs/`. What makes a directory a namespace, and where the walk stops, is in [resource resolution](resource-resolution-model.md#what-a-namespace-is).
+Inside the corpus worktree, product definitions live under `corpus/`, and discovery walks that grouping without searching sibling folders. Named roots beside it are `ledgers/`, `walks/`, and `docs/` for layout authoring, at `.worktrees/workflows/docs/`. What makes a directory a namespace, and where the walk stops, is in [resolution](resolution.md#what-a-namespace-is).
 
 ## Testing
 
@@ -116,7 +117,7 @@ Zero means the edit reaches nothing in flight. A non-zero count is the set of ru
 
 ## What runs on a pull request
 
-[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) checks the `workflows` branch out at `workflows/`, then runs `npm run typecheck`, `npm run check:schemas`, `guards/check-tool-call-shape.ts` against that checkout, `npm run test:ci` with `WORKFLOWS_DIR` set to it, and the [fixture delivery gate](benchmarks.md#the-gate-runs-on-every-pull-request). Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
+[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) checks the `workflows` branch out at `workflows/`, then runs `npm run typecheck`, `npm run check:schemas`, `guards/check-tool-call-shape.ts` against that checkout, `npm run test:ci` with `WORKFLOWS_DIR` set to it, and the [fixture delivery gate](../benchmark/README.md#appendix). Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
 
 ## The two branches
 
@@ -136,6 +137,4 @@ The guards and the end-to-end walks read that checkout, so [corpus-coupled basel
 
 ## Authoring definitions
 
-How to add a workflow, resource or technique, and how definition files link, live on the `workflows` branch under [`docs/`](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md). In a checkout that holds the corpus worktree they are at `.worktrees/workflows/docs/`.
-
-The technique file contract and the schema the server loads stay in this tree: [technique protocol specification](technique-protocol-specification.md), [identifier conventions](identifier-conventions.md), [`schemas/README.md`](../schemas/README.md).
+How to add a workflow is the [authoring guide](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md). The file contract is the [technique protocol](technique.md). The schema the server loads stays in this tree: [schemas/README.md](../schemas/README.md).

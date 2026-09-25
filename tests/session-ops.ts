@@ -1,5 +1,5 @@
 /**
- * Session-level operations over a harness client, shared by the integration
+ * Session-level techniques over a harness client, shared by the integration
  * suites that drive a workflow through the MCP wire. One home for the planning
  * path layout, so a change to it moves every suite at once.
  */
@@ -29,7 +29,7 @@ export interface SessionOps {
   enter(sessionIndex: string, activityId: string, fromActivity?: string): Promise<void>;
 }
 
-/** Bind the session operations to a connected harness and the workflow under test. */
+/** Bind the session techniques to a connected harness and the workflow under test. */
 export function sessionOps(h: Harness, workflowId: string): SessionOps {
   const folder = (slug: string) => planningFolderPath(h.workspaceDir, slug);
   /**

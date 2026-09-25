@@ -20,10 +20,10 @@ import type { HistoryEntry } from '../../src/schema/state.schema.js';
  * - FOUR, so a cap of three leaves one behind to be refused rather than the run merely ending.
  * - A two-answer gate in the FIRST, because a batch is read from the stop where the worker halts
  *   and is answered without being replaced.
- * - The first two stops bind the SAME THREE operations. One walk reads how much of the second
+ * - The first two stops bind the SAME THREE techniques. One walk reads how much of the second
  *   delivery the holding context already has against how much the first collapsed within itself,
  *   which needs content shared across stops and at least as much of it as the first stop carries.
- * - The last two bind one operation each. They exist to reach the cap and to be refused at it, and
+ * - The last two bind one technique each. They exist to reach the cap and to be refused at it, and
  *   nothing reads what they deliver.
  */
 const FIXTURE = resolve(import.meta.dirname, '../fixtures/batched-dispatch');
@@ -303,7 +303,7 @@ describe('batched dispatch (#407)', () => {
     // with the first.
     //
     // A comparison of the two deliveries' SIZES said this until seeding the review-mode flag (#599)
-    // moved 21 operations into this activity's bundle, making it the larger of the two while it
+    // moved 21 techniques into this activity's bundle, making it the larger of the two while it
     // still reuses everything the context holds. Size was never the invariant; two different
     // activities have no reason to stand in a fixed ratio. What the reuse saves in characters is
     // `batch-duration-smoke`'s floor to defend; that it happens across the gate is this test's.

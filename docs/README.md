@@ -1,37 +1,61 @@
-# Workflow Server documentation
+Begin with [setup](setup.md), the shared sequence after a transport is chosen.
 
-These pages hold the contract: exact values, field names, ordering rules and the commands that exercise them. Read them when you are implementing against the server, auditing a run, or debugging one.
+## Server
 
-For the illustrated read — how the pieces relate, with diagrams — start at the [documentation site](https://m2ux.github.io/workflow-server/).
+How a running process is bound, and what it exposes.
 
-## Start here
+| Read | What it is |
+|------|------------|
+| [configuration](configuration.md) | Every flag and environment variable the server reads at startup |
+| [api](api.md) | The catalog of tools and HTTP routes |
 
-| If you are | Read |
-|------------|------|
-| Installing or deploying the server | [setup.md](setup.md), then [http.md](http.md) or [stdio.md](stdio.md) for your transport |
-| Setting a flag or an environment variable | [configuration.md](configuration.md) |
-| Calling the tools | [api-reference.md](api-reference.md) |
-| Building or testing the server | [development.md](development.md) |
-| Running a guard, or adding one | [guards/README.md](../guards/README.md) |
-| Pricing a delivery change | [benchmarks.md](benchmarks.md) |
-| Authoring workflow definitions | [technique-protocol-specification.md](technique-protocol-specification.md), [identifier-conventions.md](identifier-conventions.md), [schemas/README.md](../schemas/README.md) |
-| Looking for the design principles or the anti-pattern catalog | [design-canon.md](design-canon.md) |
-| Adding or changing documentation | [documentation-system.md](documentation-system.md) |
+## Repository
 
-## The architecture models
+How this tree is built, checked, measured, and written.
 
-Each model answers one pressure the design is under. [architecture.md](architecture.md) introduces them and says which pressure each one answers.
+| Read | What it is |
+|------|------------|
+| [development](development.md) | Building and testing this repository |
+| [guards](../guards/README.md) | The check programs, and how a verdict is a judgement |
+| [benchmark](../benchmark/README.md) | How much text a run sends, and what that run cost |
+| [documentation](documentation.md) | Which layer a fact belongs to, and the conventions |
 
-| Model | Answers |
-|-------|---------|
-| [Dispatch](dispatch-model.md) | How work is split across a chain of agents |
-| [Checkpoints](checkpoint-model.md) | How a background agent asks a question it cannot ask directly |
-| [State management](state-management-model.md) | How the next activity is chosen, and where session state lives |
-| [Artifact and workspace isolation](artifact-management-model.md) | How planning output is kept out of the user's source tree |
-| [Resource resolution](resource-resolution-model.md) | How a `::` reference reaches a file on disk |
-| [Delivery](delivery-model.md) | What then travels to an agent, how much of it, and what it costs |
-| [Workflow fidelity](workflow-fidelity.md) | How a claim to have followed the workflow is checked |
+## Authoring
 
-## Where other material lives
+The index of definition documents, and the schema that checks a definition.
 
-Workflow definitions — the YAML, the techniques and the resources — live on the [`workflows` branch](https://github.com/m2ux/workflow-server/tree/workflows), with authoring guides at that branch's `docs/` root. Plans, reviews and decision records live under the engineering root and are not product documentation. Work on the engineering branch starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).
+| Read | What it is |
+|------|------------|
+| [corpus](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md) | The definition documents on the workflows branch |
+| [schemas](../schemas/README.md) | The schema for a definition and for the session record |
+
+
+## Architecture
+
+Each model answers one pressure, introduced in [architecture](architecture.md).
+
+
+| Model                        | Answers                                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------------------------- |
+| [Dispatch](dispatch.md)      | How work is split across a chain of agents                                                    |
+| [Checkpoints](checkpoint.md) | How a background agent asks a question it cannot ask directly                                 |
+| [State](state.md)            | How the next activity is chosen, where session state lives, and where planning output is kept |
+| [Resolution](resolution.md)  | How a name reaches a technique, resource, activity, or routine                                |
+| [Delivery](delivery.md)      | What then travels to an agent, how much of it, and what it costs                              |
+| [Fidelity](fidelity.md)      | How a claim to have followed the workflow is checked, layer by layer                          |
+
+
+## Artifacts
+
+Each file an author writes, introduced in [architecture](architecture.md).
+
+
+| Artifact                  | What it is                                                              |
+| ------------------------- | ----------------------------------------------------------------------- |
+| [Workflow](workflow.md)   | The guide an operator follows, its phases, and where each outcome leads |
+| [Technique](technique.md) | One capability a step names                                             |
+| [Routine](routine.md)     | A run of steps written once and spliced in wherever it is needed        |
+| [Resource](resource.md)   | Reference material a technique cites and does not contain               |
+
+
+Plans and decision records live under the engineering root. Work on that branch starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).

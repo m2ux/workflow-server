@@ -170,7 +170,7 @@ async function readTechniqueRef(
 }
 
 /* -------------------------------------------------------------------------- */
-/* Operations resolution (unchanged in shape — only the underlying load layer  */
+/* Techniques resolution (unchanged in shape — only the underlying load layer  */
 /* loads markdown-sourced techniques).                                         */
 /* -------------------------------------------------------------------------- */
 
@@ -195,7 +195,7 @@ export interface ResolvedTechnique {
   type: 'rule' | 'technique' | 'not-found';
   body: unknown;
   ref: string;
-  /** Scopes this operation inherits from; each id is a key of the bundle's `contracts` map. */
+  /** Scopes this technique inherits from; each id is a key of the bundle's `contracts` map. */
   scopes?: InheritScope[];
 }
 
@@ -257,7 +257,7 @@ export function projectTechniqueWire(
 }
 
 /**
- * One operation for `get_technique` and for an inlined step: the wire body hashed as
+ * One technique for `get_technique` and for an inlined step: the wire body hashed as
  * `technique:<id>`, and the ancestor contracts that body names, each hashed as
  * `bundle:contract:<scopeId>`.
  */
@@ -698,7 +698,7 @@ export async function composeActivityTechnique(
 }
 
 /**
- * Every rule line a bundle's operation bodies state, keyed by name and text.
+ * Every rule line a bundle's technique bodies state, keyed by name and text.
  *
  * A body's `rules` is a map from name to one line or several; the list is one entry per line. Both
  * halves join on a NUL, which no rule name or rule text holds, so no pair can collide by one name
@@ -730,10 +730,10 @@ function rulesStatedByOperations(bodies: Record<string, unknown>, contracts?: Re
  * already state.
  *
  * Which home a rule takes is decided by what it governs. A rule a technique declares governs that
- * operation and rides the body that states it. A rule a scope shares with every technique under it
+ * technique and rides the body that states it. A rule a scope shares with every technique under it
  * arrives once under `contracts`. The list keeps what is left: rules that govern the agent rather
- * than any one operation. The list gives way rather than the body or the contract because those
- * homes say WHICH operation or scope the rule binds, which the flat list cannot.
+ * than any one technique. The list gives way rather than the body or the contract because those
+ * homes say WHICH technique or scope the rule binds, which the flat list cannot.
  *
  * A body or contract a delivery collapsed to a marker states nothing here, so a rule it holds
  * stays in the list. That is a rule delivered twice to a context that already had it, which costs
@@ -760,14 +760,14 @@ export function dropRulesStatedBy(
 }
 
 /**
- * Shape a resolved-operations array for tool-response output.
+ * Shape a resolved-techniques array for tool-response output.
  * Bundle shape is wire-stable — no markdown-migration-driven changes.
  *
  * A rule has one home in the response, and which home is decided by what the rule governs. A rule
- * a technique declares governs that operation and rides the body that states it. A rule a scope
+ * a technique declares governs that technique and rides the body that states it. A rule a scope
  * shares with every technique under it arrives once under `contracts`, and each technique names
  * that scope in `inherits`. `rules` carries what is left: the role's own rules, declared
- * standalone and referenced by the workflow, which govern the agent rather than any one operation.
+ * standalone and referenced by the workflow, which govern the agent rather than any one technique.
  * The three sets are disjoint, so no rule is read twice and none is anywhere but where it belongs.
  */
 export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<string, unknown> {

@@ -5,4 +5,4 @@ metadata:
 
 ## Capability
 
-Probing operations for the collision fixture.
+Probing techniques for the collision fixture.

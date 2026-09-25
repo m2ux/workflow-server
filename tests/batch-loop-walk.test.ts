@@ -30,7 +30,7 @@ import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
  * EFFECTS are declared in `EFFECTS` below — this file's reading of what each step does to the bag, not
  * something the server enforces, since the loop is executed by an agent. That reading can be wrong in
  * the same way the definition can, which is why `EFFECTS` is written as a table to be audited against
- * the operations rather than buried in the walk.
+ * the techniques rather than buried in the walk.
  */
 
 /**
@@ -46,7 +46,7 @@ interface Envelope {
   /**
    * `none` is not a result type the corpus declares — it is this file's way of scripting a worker that
    * returned no accepted envelope at all, which the two declared types cannot express and which is the
-   * case every worker-producing operation carries a recovery branch for.
+   * case every worker-producing technique carries a recovery branch for.
    */
   result_type: 'activity_complete' | 'checkpoint_pending' | 'none';
   next_activity_id?: string | Record<string, unknown> | null;
@@ -58,7 +58,7 @@ interface Envelope {
 type Bag = Record<string, unknown>;
 
 /**
- * What each loop step does to the variable bag, read off the operations the step binds.
+ * What each loop step does to the variable bag, read off the techniques the step binds.
  *
  * - `continue-batched-worker` → `workflow-engine::continue-batch`: advances the pointer, then returns
  *   an envelope and the identity now holding the activity — the held one, or a replacement it spawned.

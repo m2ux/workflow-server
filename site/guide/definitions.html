@@ -28,7 +28,6 @@
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
-              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
               <li><a href="../specs/resource-resolution.html">Resolution</a></li>
               <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
             </ul>
@@ -114,7 +113,7 @@
   <p class="prose">An <strong>activity</strong> is one phase of a workflow: planning, implementation, review, validation, and so on. Each activity is a YAML file listing ordered steps and optional transitions to other activities. The orchestrator moves between activities as the run progresses; the server tracks which activity is current in <code>session.json</code>. See <a href="../specs/workflows.html#activities">Activities</a>.</p>
 
   <h3 id="artifact">Artifact</h3>
-  <p class="prose">An <strong>artifact</strong> is a planning output the workflow stores in your session folder — design notes, compliance reviews, implementation plans — separate from your application source code. Artifacts give later activities and checkpoints something concrete to reference. See <a href="../specs/artifact-management.html">Artifacts</a>.</p>
+  <p class="prose">An <strong>artifact</strong> is a planning output the workflow stores in your session folder — design notes, compliance reviews, implementation plans — separate from your application source code. Artifacts give later activities and checkpoints something concrete to reference. See <a href="../specs/state-management.html#planning-folder">the planning folder</a>.</p>
 
   <h3 id="bootstrap-rule">Bootstrap rule</h3>
   <p class="prose">The <strong>bootstrap rule</strong> is a short always-applied instruction in your IDE that routes workflow requests through <code>discover</code> before any other workflow-server tool. Without it, agents may skip the startup sequence and call tools out of order. Add it during setup — see <a href="./getting-started.html#bootstrap-rule">Getting started</a>.</p>
@@ -191,7 +190,7 @@
   <p class="prose">The <strong>workflow server</strong> is the MCP server in this repository. It loads workflow definitions from the workflows tree, exposes tools for agents to navigate them, enforces fidelity and checkpoints, and persists session state under the engineering root. See <a href="../index.html">Home</a> and <a href="./getting-started.html">Getting started</a>.</p>
 
   <h3 id="workspace">Workspace</h3>
-  <p class="prose">The <strong>workspace</strong> is the feature-worktree root (<code>ServerConfig.workspaceDir</code>) — typically nested <code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.worktrees/</code>, the projects multi-root bind, or an explicit path via <code>--workspace</code> / <code>WORKFLOW_WORKSPACE</code>. Domain code lives in checkouts you manage; planning does not. See <a href="./getting-started.html#layout">Install layout</a> and <a href="../specs/artifact-management.html">Artifacts</a>.</p>
+  <p class="prose">The <strong>workspace</strong> is the feature-worktree root (<code>ServerConfig.workspaceDir</code>) — typically nested <code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.worktrees/</code>, the projects multi-root bind, or an explicit path via <code>--workspace</code> / <code>WORKFLOW_WORKSPACE</code>. Domain code lives in checkouts you manage; planning does not. See <a href="./getting-started.html#layout">Install layout</a> and <a href="../specs/state-management.html#planning-folder">the planning folder</a>.</p>
 
   <h2 id="next">Next</h2>
   <p class="prose"><a href="../specs/workflows.html">Workflows</a> — file layout, step kinds, binding, and runtime delivery. <a href="../specs/architecture.html">Architecture overview</a> — the enforcement models behind the server.</p>

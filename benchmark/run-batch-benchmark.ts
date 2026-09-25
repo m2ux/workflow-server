@@ -176,7 +176,7 @@ async function walk(
 }
 
 /**
- * Compose every step-bound operation of the walked run and measure how much of each delivery is
+ * Compose every step-bound technique of the walked run and measure how much of each delivery is
  * content declared above it (#404 W6). Reported warn-only: a container rule is meant to be
  * cross-cutting, so a low reach figure describes the design rather than faulting it.
  */

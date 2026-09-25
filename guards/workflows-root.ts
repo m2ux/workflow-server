@@ -104,7 +104,7 @@ export interface CorpusNamespace {
  * The question asked of each candidate is whether the directory resolves, under either name it
  * answers to — not whether its name does. A library whose name two directories claim stays fully
  * live: every reference into one is a technique, resource or routine reference, and all three take
- * the path spelling, so an activity can bind an operation in either and the server will deliver it.
+ * the path spelling, so an activity can bind a technique in either and the server will deliver it.
  * Dropping the pair would leave everything inside both folders unmeasured, and a sweep that reaches
  * nothing reports the same success as one that reached everything. `corpusWorkflows` is right to
  * keep asking about the name: a workflow is started by name and has no second spelling, so one whose
@@ -116,7 +116,7 @@ export interface CorpusNamespace {
  * directory the server declines to serve.
  *
  * A directory reached only by its path is published here as a library, whatever sits beside its
- * techniques. Its operations are borrowable and so are measured; its graph is enterable only by
+ * techniques. Its techniques are borrowable and so are measured; its graph is enterable only by
  * starting it under its name, which is the one thing a claimed name takes away. `manifest` is how a
  * guard tells the two halves apart.
  */

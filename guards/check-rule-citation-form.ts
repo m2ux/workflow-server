@@ -34,7 +34,7 @@
  * The second family is the other half of the same entry, and takes the rule roster the link graph
  * could not supply. A bare slug is correct exactly where the rule arrives with the reader, and a
  * delivery carries more than the folder tree shows: a role's bundle brings the contracts of every
- * scope it names, so a sibling operation's rules reach a technique that sits nowhere near it.
+ * scope it names, so a sibling technique's rules reach a technique that sits nowhere near it.
  * Nothing static says which roles serve a technique, so the library is the bound this proves —
  * within one, a rule may arrive by a route no walk sees; from another, it never does.
  *
@@ -137,7 +137,7 @@ const BARE_SLUG = /`([a-z0-9]+(?:-[a-z0-9]+)+)`/g;
  * beneath it where that segment is `support`.
  *
  * Reachability is wider than the folder tree: a role's bundle carries the contracts of every scope
- * it names, so a technique holds a sibling operation's rules without sitting beneath it. Nothing
+ * it names, so a technique holds a sibling technique's rules without sitting beneath it. Nothing
  * static says which roles serve a technique, so the area is the bound this guard can prove — within
  * one area a rule may arrive by a route this check cannot see, and across areas it never does.
  */

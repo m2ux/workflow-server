@@ -42,7 +42,7 @@ const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
 /**
- * The homes that own the contract, by domain: the engine operations own when a gate is presented and
+ * The homes that own the contract, by domain: the engine techniques own when a gate is presented and
  * how it resolves, agent-conduct owns the role split and the obligations that follow from it, and
  * orchestrator-conduct owns the boundaries on the role that resolves a gate. Rule text here states
  * the contract; anywhere else restates it. These are the engine and conduct surfaces

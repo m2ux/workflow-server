@@ -25,7 +25,7 @@ import { type CorpusSource, namespaceSubdir } from './corpus-index.js';
  *
  * The parser fails loudly on a malformed op child (missing canonical sections
  * that the schema treats as required, e.g. a child with no Protocol body)
- * rather than silently dropping the operation.
+ * rather than silently dropping the technique.
  */
 
 /** Parsed frontmatter + body separator. */
@@ -188,7 +188,7 @@ function bodyAsList(body: string): string[] {
  *   [x](../../prism/resources/lens.md#section)         (directory-counting, intra- or cross-workflow)
  *   [x](/prism/resources/lens.md#section)              (workflow-anchored)
  * The agent-facing projection needs the id form get_resource accepts
- * (`<id>[#section]` or `<workflow>/<id>[#section]`), mirroring how `technique::operation`
+ * (`<id>[#section]` or `<workflow>/<id>[#section]`), mirroring how `technique::technique`
  * refs surface in the protocol. Only links whose path is under a `resources/` segment are
  * rewritten; technique links (`./<group>/TECHNIQUE.md`, `<op>.md`) are left untouched.
  */

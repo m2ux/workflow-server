@@ -52,7 +52,7 @@ export const InstanceFanSchema = z.object({
     'The collection in the variable bag this destination runs the activity once per element of, by name or by a dotted path into a named value (`work_units`, `execution_plan.steps`). Read when the fan is entered, so its length is the fan\'s width.',
   ),
   variable: VariableNameSchema.describe(
-    'The name each instance reads its own element at. The activity this fan runs declares it among the names it needs its workflow to supply; name it as the consuming operation\'s own input id so no step needs a rename.',
+    'The name each instance reads its own element at. The activity this fan runs declares it among the names it needs its workflow to supply; name it as the consuming technique\'s own input id so no step needs a rename.',
   ),
   maxInstances: z.number().int().min(
     2,

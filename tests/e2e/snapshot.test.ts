@@ -111,10 +111,10 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
    * Layer 2 — definition lint, over the same six walks.
    *
    * The likeliest breakage in a rename is a dangling reference: an activity, or a core op, pointing
-   * at a technique/operation/rule the loader cannot resolve. The six policies together visit every
+   * at a technique/technique/rule the loader cannot resolve. The six policies together visit every
    * activity, so the unresolved set they report is the corpus's.
    */
-  it('reports no unresolved operation refs', () => {
+  it('reports no unresolved technique refs', () => {
     const observed = new Set<string>();
     for (const w of allWalks()) {
       for (const ref of w.orchestratorUnresolved) observed.add(ref);

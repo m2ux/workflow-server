@@ -28,7 +28,6 @@
               <li><a href="./dispatch.html" aria-current="page">Dispatch</a></li>
               <li><a href="./checkpoints.html">Checkpoints</a></li>
               <li><a href="./state-management.html">State</a></li>
-              <li><a href="./artifact-management.html">Artifacts</a></li>
               <li><a href="./resource-resolution.html">Resolution</a></li>
               <li><a href="./workflow-fidelity.html">Fidelity</a></li>
             </ul>
@@ -70,7 +69,7 @@
   <h1>Hierarchical dispatch</h1>
   <p class="lede prose">Workflows run through three agent layers — meta orchestrator, workflow orchestrator, and activity workers — kept apart by what they must not share: user conversation, workflow state, and task context.</p>
   <p class="prose note"><strong>Layer key:</strong> L0 = user-facing meta orchestrator · L1 = workflow orchestrator (state owner) · L2 = activity worker (task executor).</p>
-  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/dispatch-model.md">docs/dispatch-model.md</a>.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/dispatch.md">docs/dispatch.md</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 360" role="img" aria-labelledby="disp-title disp-desc">
@@ -132,7 +131,7 @@
   <p>Hosts without background sub-agents run the same model <strong>inline</strong>: a single agent adopts each persona in turn within one conversation. The server's enforcement — checkpoint gates, manifests, traces — works identically; only the persona-switching mechanism changes. Portability across MCP clients mattered more than mandating a particular execution topology.</p>
 
   <h2 id="related">Related</h2>
-  <p>Checkpoints bubble up through these same layers — see the <a href="./checkpoints.html">checkpoint model</a>. Session state and the <code>session.json</code> file are covered in <a href="./state-management.html">state management</a>.</p>
+  <p>Checkpoints bubble up through these same layers — see <a href="./checkpoints.html">checkpoints</a>. Session state and the <code>session.json</code> file are covered in <a href="./state-management.html">state</a>.</p>
 </main>
 
 

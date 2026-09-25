@@ -47,7 +47,7 @@ function checkPrefixAndDuplicates(files: string[]): string[] {
   return issues;
 }
 
-/** Recursively collect technique .md files (group dirs contain per-operation files). */
+/** Recursively collect technique .md files (group dirs contain per-technique files). */
 function walkTechniqueFiles(dir: string): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {

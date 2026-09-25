@@ -4,7 +4,7 @@
  * The rest of the guard suite reads definitions against definitions and against themselves. Nothing
  * read a described call against the tool it calls, so a server contract could change and its callers
  * in the corpus stay as they were, green the whole time: the test suite drives the server directly
- * rather than through the operation text, so it exercises the contract while the operations that
+ * rather than through the technique text, so it exercises the contract while the techniques that
  * actually drive a run are never measured against it. That is the gap this closes. The tool
  * inventory comes from the registrations themselves, so the guard reads whatever the server accepts
  * today and needs no second list to keep in step.
@@ -21,7 +21,7 @@
  *                     arose — a renamed parameter, or a name that was never one — and the call
  *                     fails or silently drops the value depending on how strict that schema is.
  *   missing-required  a complete signature that omits a parameter the schema requires. The call is
- *                     refused at runtime, so the operation describes a step a run cannot take.
+ *                     refused at runtime, so the technique describes a step a run cannot take.
  *
  * The second check needs to know whether the text stands for the whole call, because the corpus
  * also shows a call partially — naming the one argument under discussion and no other. Two marks

@@ -84,7 +84,7 @@ import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
   output: z.record(z.unknown()),
-})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). `output` is a JSON object keyed by the output id the bound operation declares, whatever the number of outputs — one output is `{"<its id>": <value>}`, not a bare string. A key the operation does not declare is surfaced in _meta.validation. A loop body reports ONE ENTRY PER STEP PER ITERATION, under the step\'s declared id each time, so three passes of a two-step body are six entries in the order they ran — the manifest is what the activity did, and a body run three times reported once says it ran once. Omit entirely when no steps ran — not [].');
+})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). `output` is a JSON object keyed by the output id the bound technique declares, whatever the number of outputs — one output is `{"<its id>": <value>}`, not a bare string. A key the technique does not declare is surfaced in _meta.validation. A loop body reports ONE ENTRY PER STEP PER ITERATION, under the step\'s declared id each time, so three passes of a two-step body are six entries in the order they ran — the manifest is what the activity did, and a body run three times reported once says it ran once. Omit entirely when no steps ran — not [].');
 
 const activityManifestSchema = z.array(z.object({
   activity_id: z.string(),
@@ -135,7 +135,7 @@ const yieldVariablesChangedSchema = z.record(z.unknown()).optional().describe(
  * every delivery. Editing one is a new key and a full delivery, which is the intent.
  */
 const STEP_TECHNIQUES_NOTE =
-  'Each step_techniques entry is a discrete ▼ STEP block carrying the same operation body a get_technique { step_id } fetch returns: own interface, own rules, and `inherits` naming the scopes whose contracts arrive once on this response under `contracts`. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past the eager-delivery budget derived from your window or a per-activity size cap) still require get_technique { step_id } before execution.';
+  'Each step_techniques entry is a discrete ▼ STEP block carrying the same technique body a get_technique { step_id } fetch returns: own interface, own rules, and `inherits` naming the scopes whose contracts arrive once on this response under `contracts`. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past the eager-delivery budget derived from your window or a per-activity size cap) still require get_technique { step_id } before execution.';
 
 const RESOURCES_BUNDLED_NOTE =
   'Bodies for technique-linked resources from eagerly bundled steps under `resources`, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers. Ids under `resource_refs` were NOT bundled (oversized, or past the eager-delivery budget derived from your window) — call get_resource for those, or with full: true after summarization.';
@@ -144,12 +144,12 @@ const RESOURCE_REFS_NOTE =
   'Ids of the technique-linked resources for the eagerly bundled steps, under `resource_refs` (exact resource_id, including #section). No bodies are bundled in this mode — call get_resource for the ids you actually need to read.';
 
 const MARKER_PREAMBLE =
-  'Entries marked { delivery: "unchanged", content_hash } are content you already hold. A marker always stands for a WHOLE item — one operation, one inherited contract, one rules list, one note, one resource — so nothing you are handed is a body with a piece missing.';
+  'Entries marked { delivery: "unchanged", content_hash } are content you already hold. A marker always stands for a WHOLE item — one technique, one inherited contract, one rules list, one note, one resource — so nothing you are handed is a body with a piece missing.';
 
 const PRIOR_CALL_MARKER_NOTE =
-  'A marker may point at content already in your context from an earlier call to this session — reuse it from there, the notes on this response included. To get a marked item back in full, fetch it: get_technique { step_id, full: true } for a step\'s technique, get_technique { technique_id, full: true } for an operation of your contract, get_resource { full: true } for a resource. get_activity { bundle: "full" } re-sends what a response can carry rather than everything this session has sent you, so a context that lost several items asks for each one it needs.';
+  'A marker may point at content already in your context from an earlier call to this session — reuse it from there, the notes on this response included. To get a marked item back in full, fetch it: get_technique { step_id, full: true } for a step\'s technique, get_technique { technique_id, full: true } for a technique of your contract, get_resource { full: true } for a resource. get_activity { bundle: "full" } re-sends what a response can carry rather than everything this session has sent you, so a context that lost several items asks for each one it needs.';
 
-/** What divides an operations bundle from the definition it was assembled for, in every response. */
+/** What divides a techniques bundle from the definition it was assembled for, in every response. */
 const SEPARATOR = '\n\n---\n\n';
 
 /**
@@ -801,7 +801,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every operation of your contract arrives with its body; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one operation. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every technique of your contract arrives with its body; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one technique. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
     {
       ...sessionIndexParam,
     },
@@ -862,7 +862,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
       // technique resolves it once.
       const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
-      // The fan's operations ride the response for a workflow whose graph actually fans, and no
+      // The fan's techniques ride the response for a workflow whose graph actually fans, and no
       // other. An orchestrator reads this response for the session it is driving, so the procedure
       // arrives with the graph that needs it; a workflow with no fanning exit pays nothing for a
       // procedure it can never reach.
@@ -930,14 +930,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded, next);
 
-      // Pre-separator preamble holds the resolved-operations bundle. Tests and clients split on
+      // Pre-separator preamble holds the resolved-techniques bundle. Tests and clients split on
       // the first SEPARATOR to recover the workflow section, so we keep that single separator.
       const preambleParts = [opsBlock].filter(s => s.length > 0);
       const preamble = preambleParts.length > 0 ? preambleParts.join('\n\n') + SEPARATOR : '';
 
 
       // What the orchestrator's own delivery cost. This is the largest fixed payload of a session —
-      // the same operations bundle every run, read before the first decision — so it reports on the
+      // the same techniques bundle every run, read before the first decision — so it reports on the
       // same channel as the worker-facing deliveries rather than being the one call that says nothing.
       logInfo('Workflow delivery cost', {
         session_index, workflow: workflow_id, agentId: state.agentId,
@@ -1577,7 +1577,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const meta: Record<string, unknown> = { session_index, validation };
 
       // Where the exiting worker stands, read at the boundary so the lazy fetches of the activity it
-      // just finished are counted (docs/dispatch-model.md § Batching a run of activities).
+      // just finished are counted (docs/dispatch.md § Batching a run of activities).
       if (agent_id && context_tokens !== undefined && !isTerminal) {
         const bound = batchBound(context_tokens, {
           headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
@@ -1654,7 +1654,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). Your activity and the operations of your contract ride whole; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one operation. What the eager budget leaves out is fetchable: a step\'s own technique with get_technique { step_id }, a resource under `resource_refs` with get_resource. ' +
+  server.tool('get_activity', 'Worker tool: load the activity this context was dispatched for. Name it with `activity_id`, activity and instance together where the graph runs one activity once per element of a collection; omit it on an ordinary walk, where one activity is in flight. `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). Your activity and the techniques of your contract ride whole; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one technique. What the eager budget leaves out is fetchable: a step\'s own technique with get_technique { step_id }, a resource under `resource_refs` with get_resource. ' +
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
@@ -1762,7 +1762,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const newDeliveries: Record<string, string> = {};
 
       // Whether this scope's ledger describes what it is holding. Governs the blocks identical on
-      // every activity — see docs/resource-resolution-model.md § Reference Delivery.
+      // every activity — see docs/delivery.md § Reference delivery.
       const mayReferBack = bundle !== 'full' && (referenceMode || hasDispatch(state, scope));
 
       // Bundle the techniques the activity references (delivered as full protocols), deduped with
@@ -1818,7 +1818,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       // Per-entry collapse: each composed technique and each inherited contract is hashed WHOLE, so
-      // an activity that introduces one new operation or one new scope receives that one entire
+      // an activity that introduces one new technique or one new scope receives that one entire
       // while the rest this context already holds collapse to markers naming the whole of themselves.
       const bundleTechniques = bundleData['techniques'] as Record<string, unknown> | undefined;
       if (bundleTechniques) {
@@ -2025,7 +2025,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             // technique to squeeze in a later smaller one.
             if (spentChars + text.length > eagerBudgetChars) break;
             // The arrival marker leads the block; the wire fields follow at the same level, so a
-            // bundled entry is the get_technique operation body with a step header — own
+            // bundled entry is the get_technique body with a step header — own
             // capability, interface, procedure and rules, plus `inherits`.
             const entry = { marker: stepMarker, ...wire };
             spentChars += text.length;

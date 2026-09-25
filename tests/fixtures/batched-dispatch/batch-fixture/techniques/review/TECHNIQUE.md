@@ -20,7 +20,7 @@ What the review step recorded.
 
 - Read what the stop before recorded and write a short note under `{review_note}` saying whether it
   still holds.
-- This operation exists to be bound at two activities: a batch is read against how much of a second
+- This technique exists to be bound at two activities: a batch is read against how much of a second
   delivery the holding context already has, which needs content shared ACROSS activities rather than
   only within one.
 

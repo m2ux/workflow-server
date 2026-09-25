@@ -7,11 +7,11 @@ import { liveCorpusRoot } from '../corpus-root.js';
 import type { Step } from '../../src/schema/activity.schema.js';
 
 /**
- * One run at two sites that disagree about the operation, driven against the live corpus.
+ * One run at two sites that disagree about the technique, driven against the live corpus.
  *
  * The fixture files above prove a routine materialises; what they do not carry is the shape a run
- * takes when the work it does is the site's choice — an operation standing in a body step, gates
- * reading what that operation reported, and a second site supplying something else. That shape is
+ * takes when the work it does is the site's choice — a technique standing in a body step, gates
+ * reading what that technique reported, and a second site supplying something else. That shape is
  * what `meta/routines/activity-loop.yaml` has, and a specimen is where it can be walked without
  * standing up a client session and a child session to watch it.
  *
@@ -41,14 +41,14 @@ async function passBody(activityId: string): Promise<Step[]> {
   return loop!.steps as Step[];
 }
 
-/** What the measuring step of a pass binds — the operation that site supplied. */
+/** What the measuring step of a pass binds — the technique that site supplied. */
 const boundOperation = (body: Step[]): string => {
   const measure = body.find((s) => s.id?.endsWith('.measure')) as Extract<Step, { kind: 'technique' }>;
   expect(measure, 'no measuring step in the delivered body').toBeDefined();
   return typeof measure.technique === 'string' ? measure.technique : measure.technique.name;
 };
 
-describe.skipIf(!LIVE_CORPUS)('one run delivered at two sites that supply different operations', () => {
+describe.skipIf(!LIVE_CORPUS)('one run delivered at two sites that supply different techniques', () => {
   it('delivers ordinary steps at both sites, with no kind:routine at any depth', async () => {
     for (const site of ['count-pass', 'size-pass']) {
       const { activity } = await deliverActivity(harness, 'routine-conformance', site);
@@ -62,7 +62,7 @@ describe.skipIf(!LIVE_CORPUS)('one run delivered at two sites that supply differ
     }
   });
 
-  it('substitutes each site\'s own operation into the step that stands for it', async () => {
+  it('substitutes each site\'s own technique into the step that stands for it', async () => {
     expect(boundOperation(await passBody('count-pass'))).toBe('count-entries');
     expect(boundOperation(await passBody('size-pass'))).toBe('measure-size');
   });
@@ -77,12 +77,12 @@ describe.skipIf(!LIVE_CORPUS)('one run delivered at two sites that supply differ
       .toEqual(sizing.map((id) => id!.replace('sizing.', '')));
   });
 
-  it('delivers the gates that read what the supplied operation produced', async () => {
+  it('delivers the gates that read what the supplied technique produced', async () => {
     for (const site of ['count-pass', 'size-pass']) {
       const gates = (await passBody(site)).map((s) => s.when).filter(Boolean);
       // The run declares `probe_result` as neither input nor output: its own step puts it in the bag
       // and its own gates read it back. Both readings reach the worker at both sites.
-      expect(gates, `${site} lost a gate on the operation's own production`)
+      expect(gates, `${site} lost a gate on the technique's own production`)
         .toEqual(expect.arrayContaining(['probe_result.entry_count > 0', 'probe_result.entry_count == 0']));
     }
   });

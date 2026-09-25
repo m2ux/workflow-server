@@ -10,7 +10,7 @@ metadata:
 ## Capability
 
 meta-version — cross-cutting behavioural boundaries for agents (fixture). Rules-only technique
-with no protocol or operations.
+with no protocol or techniques.
 
 ## Rules
 

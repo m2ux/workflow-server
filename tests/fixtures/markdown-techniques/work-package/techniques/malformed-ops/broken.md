@@ -1,7 +1,7 @@
 # broken
 
-An operation child with no Procedure section — the loader must fail loudly
-rather than silently dropping this operation.
+A technique child with no Procedure section — the loader must fail loudly
+rather than silently dropping this technique.
 
 ## Inputs
 

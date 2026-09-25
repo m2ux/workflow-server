@@ -16,26 +16,26 @@
  *   written but not read. Either way it is not what the declaration says it is.
  * - `routine-undeclared-read` — a name the body reads that the signature does not declare. The
  *   body's reads are wider than the tokens its step fields spell: they include, for every bound
- *   operation, that operation's prose interpolations and the declared inputs the step leaves
+ *   technique, that technique's prose interpolations and the declared inputs the step leaves
  *   unbound, both of which resolve out of the bag under their own names with no field to rewrite.
  *   A name the body itself produces is none of those: the run reads its own step's production back
  *   out of the bag, so no site supplies it and the host derivation reads it the same way.
  * - `routine-operation-unbound` — an input declared `kind: technique` that no step of the body binds.
  *   It stands in a technique position rather than being read as a value, so an unread-input rule
  *   asking the derivation about it would report every one of them.
- * - `routine-reads-argument-output` — a signature carrying a value the bound operation produces. A
- *   run takes its argument's operation and not that operation's values, which differ by argument, so
+ * - `routine-reads-argument-output` — a signature carrying a value the bound technique produces. A
+ *   run takes its argument's technique and not that technique's values, which differ by argument, so
  *   a declaration naming one holds at the site that supplied it and nowhere else.
  *
- * A routine whose body binds an operation by argument names a parameter where an operation reference
+ * A routine whose body binds a technique by argument names a parameter where a technique reference
  * belongs, so it has no signature of its own and the rules are derived against whatever stands in
- * that position: once per reference site, against the operation that site supplies; or, where no
- * site refers to it at all, once against the operation its own declaration defaults to. A routine
- * binding no operation by argument keeps the once-per-routine path, which needs neither.
+ * that position: once per reference site, against the technique that site supplies; or, where no
+ * site refers to it at all, once against the technique its own declaration defaults to. A routine
+ * binding no technique by argument keeps the once-per-routine path, which needs neither.
  *
- * - `routine-signature-unheld` — a routine whose body binds an operation by argument and for which
- *   nothing is derived: sites refer to it and not one supplies an operation this can read, or no site
- *   and no declared default puts an operation in the parameter's place. Every reading is skipped, so
+ * - `routine-signature-unheld` — a routine whose body binds a technique by argument and for which
+ *   nothing is derived: sites refer to it and not one supplies a technique this can read, or no site
+ *   and no declared default puts a technique in the parameter's place. Every reading is skipped, so
  *   no signature rule can fire; saying so is what keeps a routine nothing checked from reading as a
  *   routine nothing found fault with.
  *
@@ -53,8 +53,8 @@
  *   A library namespace is a home of its own, on the terms the shared home is one. It declares no
  *   workflow, so no activity of its own ever reaches a routine and the owner computation can only
  *   send the file somewhere else. What earns it is the body, read as authored and again with each
- *   operation a declared default or a reference site can put in a parameter's place: a run composing
- *   that library's operations sits beside them, and one binding none of them under any of those
+ *   technique a declared default or a reference site can put in a parameter's place: a run composing
+ *   that library's techniques sits beside them, and one binding none of them under any of those
  *   readings is governed by the owner rule like any other.
  *
  * Findings are guard findings rather than load failures, which is the recorded decision: the
@@ -89,7 +89,7 @@ interface Reference {
   site: string;
   /** The routine the reference names, as written. */
   ref: string;
-  /** The arguments the site binds, which an operation parameter's contract is derived against. */
+  /** The arguments the site binds, which a technique parameter's contract is derived against. */
   args: Record<string, string | number | boolean> | undefined;
   /** The routine name it resolves to, and where. */
   resolved?: { workflowId: string; name: string };
@@ -136,8 +136,8 @@ async function checkSignature(
   workflowId: string,
   routine: Routine,
   routines: Awaited<ReturnType<typeof buildRoutineLookup>>,
-  /** The bodies to derive: one per reference site where the routine binds an operation by argument. */
-  bodies: ReadonlyArray<{ operations: OperationMap; site: string }>,
+  /** The bodies to derive: one per reference site where the routine binds a technique by argument. */
+  bodies: ReadonlyArray<{ techniques: OperationMap; site: string }>,
 ): Promise<Finding[]> {
   const scope = routineScope(routine);
   const declared = new Set([...scope.inputs.keys(), ...scope.outputs.keys(), ...scope.internals.keys()]);
@@ -160,7 +160,7 @@ async function checkSignature(
     const derived = await deriveActivityContract({
       activity: {
         id: routine.id, version: routine.version, name: routine.name, required: true,
-        steps: bodyWithOperations(routine.steps, body.operations),
+        steps: bodyWithOperations(routine.steps, body.techniques),
       } as Activity,
       workflowDir: root,
       scopeWorkflowId: workflowId,
@@ -171,14 +171,14 @@ async function checkSignature(
     for (const name of derived.mentions) if (!derived.literalValues.has(name)) consulted.add(name);
 
     // An undeclared read is something the body DOES, so it is reported where it happens. One site's
-    // operation reading a name is a gap in the signature whether or not another site's operation
+    // technique reading a name is a gap in the signature whether or not another site's technique
     // reads it.
     //
     // Less what the body produces, which is the same narrowing a host activity gets: a name an
     // earlier step of the run puts in the bag is read back from there, so no site supplies it and no
     // declaration can say anything true about it. Held to the wider rule, a run consuming its own
     // step's envelope would have to declare it as an input, which is a value the host is asked for
-    // and never reads — and where the producing step binds its operation by argument, the rule below
+    // and never reads — and where the producing step binds its technique by argument, the rule below
     // then refuses the same declaration.
     for (const name of derived.mentions) {
       if (declared.has(name) || derived.literalValues.has(name) || derived.produces.has(name)) continue;
@@ -191,17 +191,17 @@ async function checkSignature(
     // A value the ARGUMENT produces cannot be carried onward, because which values those are follows
     // from the argument. A name the body passes on has to be one the run owns at every site, and a
     // declaration naming one of the argument's outputs is a signature that holds only at this one.
-    for (const name of await argumentProductions(root, workflowId, routine, body.operations, routines)) {
+    for (const name of await argumentProductions(root, workflowId, routine, body.techniques, routines)) {
       if (!declared.has(name)) continue;
       findings.push({
         check: 'routine-reads-argument-output', site: body.site,
-        detail: `'${name}' is an output of the operation this site binds and the signature declares it — a run takes its argument's operation and not that operation's values, which differ by argument, so nothing downstream of the run can be promised one`,
+        detail: `'${name}' is an output of the technique this site binds and the signature declares it — a run takes its argument's technique and not that technique's values, which differ by argument, so nothing downstream of the run can be promised one`,
       });
     }
   }
 
   // A declaration rule asks whether the body ever honours what the signature promises, so it is
-  // graded over every body and reported against the declaration. An input one site's operation
+  // graded over every body and reported against the declaration. An input one site's technique
   // consults and another's does not is still an input the run consults.
   for (const [id] of scope.outputs) {
     if (written.has(id)) continue;
@@ -215,7 +215,7 @@ async function checkSignature(
       if (consulted.has(id)) continue;
       findings.push({
         check: 'routine-operation-unbound', site,
-        detail: `input '${id}' declares 'kind: technique' and no step of the body binds it — every reference site is asked for an operation the run never invokes`,
+        detail: `input '${id}' declares 'kind: technique' and no step of the body binds it — every reference site is asked for a technique the run never invokes`,
       });
       continue;
     }
@@ -243,35 +243,35 @@ async function checkSignature(
 }
 
 /**
- * What the operation one site binds produces, derived from the parameterised steps alone and with
+ * What the technique one site binds produces, derived from the parameterised steps alone and with
  * their actions dropped.
  *
  * Taking the whole body's productions would answer a different question, and so would keeping the
  * actions: a step's actions are the RUN's writes, authored beside the binding and the same whichever
- * operation the site supplies. Only what the operation itself declares varies by argument, and only
+ * technique the site supplies. Only what the technique itself declares varies by argument, and only
  * that is what a signature may not carry.
  */
 async function argumentProductions(
   root: string,
   workflowId: string,
   routine: Routine,
-  operations: OperationMap,
+  techniques: OperationMap,
   routines: Awaited<ReturnType<typeof buildRoutineLookup>>,
 ): Promise<Set<string>> {
-  if (operations.size === 0) return new Set();
+  if (techniques.size === 0) return new Set();
   const parameterised: Step[] = [];
   const collect = (authored: readonly Step[], substituted: readonly Step[]): void => {
     authored.forEach((step, index) => {
       const mirror = substituted[index]!;
       if (step.kind === 'technique') {
         const reference = typeof step.technique === 'string' ? step.technique : step.technique.name;
-        if (operations.has(reference)) parameterised.push({ ...mirror, actions: undefined } as Step);
+        if (techniques.has(reference)) parameterised.push({ ...mirror, actions: undefined } as Step);
       } else if (step.kind === 'loop') {
         collect(step.steps as Step[], (mirror as Step & { kind: 'loop' }).steps as Step[]);
       }
     });
   };
-  collect(routine.steps, bodyWithOperations(routine.steps, operations));
+  collect(routine.steps, bodyWithOperations(routine.steps, techniques));
   if (parameterised.length === 0) return new Set();
 
   const derived = await deriveActivityContract({
@@ -289,7 +289,7 @@ async function argumentProductions(
 /**
  * The names the routine as AUTHORED puts in positions the derivation cannot report.
  *
- * Two of them, and both are gone by the time a derived body is read. An operation parameter stands
+ * Two of them, and both are gone by the time a derived body is read. A technique parameter stands
  * in a technique position, which substitution has replaced with a concrete reference. And a
  * comparison's right-hand operand is a value by the dialect's grammar, so a parameter standing there
  * is never a bag read however plainly the body consults it.
@@ -363,7 +363,7 @@ function authoredActivities(workflowId: string, dir: string): AuthoredActivity[]
 }
 
 /**
- * The operations one reference site supplies, or undefined where it supplies something the load
+ * The techniques one reference site supplies, or undefined where it supplies something the load
  * refuses — a missing argument, or one carrying a token that has no value when definitions load.
  * Reporting those here would name the same defect the load already names, with less of the site.
  */
@@ -372,14 +372,14 @@ function siteOperations(
   parameters: string[],
   args: Record<string, string | number | boolean> | undefined,
 ): Map<string, string> | undefined {
-  const operations = new Map<string, string>();
+  const techniques = new Map<string, string>();
   const declared = routineScope(routine).inputs;
   for (const id of parameters) {
     const argument = args?.[id] ?? declared.get(id)?.default;
     if (typeof argument !== 'string' || argument.includes('{')) return undefined;
-    operations.set(id, argument);
+    techniques.set(id, argument);
   }
-  return operations;
+  return techniques;
 }
 
 /**
@@ -398,20 +398,20 @@ function libraryNamespace(index: CorpusIndex, namespaceId: string): NamespaceLoc
 }
 
 /**
- * Whether a routine's body binds an operation the namespace holding it offers.
+ * Whether a routine's body binds a technique the namespace holding it offers.
  *
  * A reference names its namespace by that directory's name or by the path from the corpus root
  * reaching it, so both spellings answer. Every segment before the last belongs to the namespace,
  * and a reference carrying none names no namespace at all: it resolves in the host workflow once
  * the run is spliced, which is a relation to the host rather than to the library.
  *
- * A run composes a library two ways, and both count. It binds an operation the library declares, and
+ * A run composes a library two ways, and both count. It binds a technique the library declares, and
  * it refers to another of the library's runs — a reference whose own body is the library's
- * operations, spliced where it stands.
+ * techniques, spliced where it stands.
  *
- * A parameter standing in an operation's place carries no reference of its own, so the body is read
- * once per operation the declaration or a site can put there: the declared defaults, and each site's
- * arguments. A run whose every operation arrives that way names the library through what is bound
+ * A parameter standing in a technique's place carries no reference of its own, so the body is read
+ * once per technique the declaration or a site can put there: the declared defaults, and each site's
+ * arguments. A run whose every technique arrives that way names the library through what is bound
  * into it rather than in its own steps, and one spelling naming the library is enough.
  */
 function bindsNamespaceOperation(
@@ -439,8 +439,8 @@ function bindsNamespaceOperation(
     siteOperations(routine, parameters, undefined),
     ...sites.map((reference) => siteOperations(routine, parameters, reference.args)),
   ];
-  return candidates.some((operations) =>
-    operations !== undefined && binds(bodyWithOperations(routine.steps, operations) as Step[]));
+  return candidates.some((techniques) =>
+    techniques !== undefined && binds(bodyWithOperations(routine.steps, techniques) as Step[]));
 }
 
 export async function collectRoutineFindings(root: string): Promise<Finding[]> {
@@ -499,8 +499,8 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   }
 
   // The signature check. Once per routine, and once per REFERENCE SITE for a routine whose body binds
-  // an operation by argument: such a body names a parameter where an operation reference belongs, so
-  // it has no signature of its own and there is nothing to derive until a site says which operation.
+  // a technique by argument: such a body names a parameter where a technique reference belongs, so
+  // it has no signature of its own and there is nothing to derive until a site says which technique.
   // A routine no site refers to holds its signature against nothing, which `routine-signature-unheld`
   // reports.
   for (const [workflowId, routines] of declared) {
@@ -511,42 +511,42 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
       const declaration = `${workflowId}/routines/${routine.id}.yaml`;
       if (parameters.length === 0) {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, [
-          { operations: new Map(), site: declaration },
+          { techniques: new Map(), site: declaration },
         ]));
         continue;
       }
       const sites = sitesByRoutine.get(keyOf(workflowId, routine.id)) ?? [];
       const bodies = [];
       for (const reference of sites) {
-        const operations = siteOperations(routine, parameters, reference.args);
-        if (operations === undefined) continue; // an argument the load refuses; the load names it
-        bodies.push({ operations, site: `${declaration} at ${reference.site}` });
+        const techniques = siteOperations(routine, parameters, reference.args);
+        if (techniques === undefined) continue; // an argument the load refuses; the load names it
+        bodies.push({ techniques, site: `${declaration} at ${reference.site}` });
       }
       if (bodies.length > 0) {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
         continue;
       }
-      // A declaration supplying its own operation holds the signature where NO site refers to it:
-      // the default is then the only operation that ever stands in the parameter's place. Where
+      // A declaration supplying its own technique holds the signature where NO site refers to it:
+      // the default is then the only technique that ever stands in the parameter's place. Where
       // sites exist and none is readable, nothing was derived and that is what the finding below
       // says — grading the declaration against its default there would report on a body no site runs.
       const fromDefaults = sites.length === 0 ? siteOperations(routine, parameters, undefined) : undefined;
       if (fromDefaults) {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, [
-          { operations: fromDefaults, site: `${declaration} at its declared defaults` },
+          { techniques: fromDefaults, site: `${declaration} at its declared defaults` },
         ]));
         continue;
       }
       // Nothing was derived, so no signature rule could fire. Saying so is the difference between a
       // guard with no verdict and a guard reporting that a routine is sound. Two ways to arrive
-      // here: sites exist and not one supplies an operation this can read, or no site exists at all.
+      // here: sites exist and not one supplies a technique this can read, or no site exists at all.
       findings.push({
         check: 'routine-signature-unheld', site: declaration,
         detail: sites.length > 0
-          ? `no reference site supplies an operation argument this can read — ${sites.length} site(s) refer to '${routine.id}' and each binds `
+          ? `no reference site supplies a technique argument this can read — ${sites.length} site(s) refer to '${routine.id}' and each binds `
             + `${parameters.map((id) => `'${id}'`).join(', ')} to something that resolves at run time or not at all, so the signature was not held against the body`
-          : `no reference site supplies an operation argument this can read — nothing in the corpus refers to '${routine.id}', and its body binds `
-            + `${parameters.map((id) => `'${id}'`).join(', ')} in a technique position, so there is no operation to derive the signature against`,
+          : `no reference site supplies a technique argument this can read — nothing in the corpus refers to '${routine.id}', and its body binds `
+            + `${parameters.map((id) => `'${id}'`).join(', ')} in a technique position, so there is no technique to derive the signature against`,
       });
     }
   }
@@ -590,7 +590,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
         detail: `computed home is '${home}' and the file sits in '${workflowId}' — its referrers are `
           + `${[...owners].sort().map((owner) => `'${owner}'`).join(', ')}, so `
           + (owners.size === 1 ? 'the one workflow that owns them is its home' : 'the shared home is its home')
-          + (library ? `; '${workflowId}' is a library, which is a home for a run that binds its operations, and this body binds none` : ''),
+          + (library ? `; '${workflowId}' is a library, which is a home for a run that binds its techniques, and this body binds none` : ''),
       });
     }
   }
@@ -601,6 +601,6 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   await runGuard('routines', () => requireWorkflowsRoot(defaultCorpusDest(join(DIR, '..'))), collectRoutineFindings, {
     okMessage: 'every routine\'s signature matches its body, and every routine sits in a home that answers for it',
-    remedy: 'declare what the body reads, remove what it does not, or move the file to the home its referrers compute — or to the library whose operations it binds',
+    remedy: 'declare what the body reads, remove what it does not, or move the file to the home its referrers compute — or to the library whose techniques it binds',
   });
 }

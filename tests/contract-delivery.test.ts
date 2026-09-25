@@ -13,7 +13,7 @@ import { sessionOps, type SessionOps } from './session-ops.js';
  *
  * Both role-facing deliveries sit on a path their role cannot skip: `get_workflow` opens every
  * orchestrator, and `get_activity` is the call a dispatched worker makes to receive its work. Each
- * carries every operation of that role's contract entire — capability, interface, procedure and the
+ * carries every technique of that role's contract entire — capability, interface, procedure and the
  * rules it is held to — and what one tool result may carry is measured and reported rather than
  * spent deciding which of those to withhold.
  */
@@ -23,7 +23,7 @@ function responseText(result: any): string {
   return (result.content[0] as { type: 'text'; text: string }).text;
 }
 
-/** The operations bundle a `get_workflow` response carries, and the metadata after the separator. */
+/** The techniques bundle a `get_workflow` response carries, and the metadata after the separator. */
 function splitWorkflowResponse(text: string): { ops: Record<string, unknown>; summary: Record<string, unknown> } {
   const at = text.indexOf('\n\n---\n\n');
   expect(at).toBeGreaterThan(0);
@@ -40,7 +40,7 @@ const isMarker = (value: unknown): boolean =>
   RECORD_SHAPED(value) && value['delivery'] === 'unchanged';
 
 /**
- * Every operation body in a delivery, from both maps that carry one.
+ * Every technique body in a delivery, from both maps that carry one.
  *
  * A collapsed entry is a whole-item marker rather than a body, and stands for the same bytes
  * delivered earlier — so it is not a body this response is accountable for.
@@ -58,8 +58,8 @@ function operationBodies(bundle: Record<string, unknown>): Array<[string, Record
 }
 
 /**
- * A response has two homes for a rule: the bodies of the operations it governs, and the role's own
- * `rules` list, for a rule that governs no one operation.
+ * A response has two homes for a rule: the bodies of the techniques it governs, and the role's own
+ * `rules` list, for a rule that governs no one technique.
  *
  * `bodies` reads every rule line the first home holds. `list` reads the lines the second holds that
  * a body ALREADY states -- the overlap between the two, which is empty when each rule has one home.
@@ -116,15 +116,15 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
 
   afterAll(async () => { await harness.close(); });
 
-  it('carries a body for every operation, and names none it withheld', () => {
+  it('carries a body for every technique, and names none it withheld', () => {
     const carried = Object.keys((ops['techniques'] ?? {}) as Record<string, unknown>);
-    expect(carried.length, 'no operation body rode the startup response').toBeGreaterThan(0);
-    expect(ops['operation_refs'], 'the response named an operation it carried no body for').toBeUndefined();
+    expect(carried.length, 'no technique body rode the startup response').toBeGreaterThan(0);
+    expect(ops['operation_refs'], 'the response named a technique it carried no body for').toBeUndefined();
     expect(ops['operations_note']).toBeUndefined();
   });
 
-  it('carries the rules of each operation, on the body or on a contract it names', () => {
-    // An agent reading one operation reads the rules it is held to in the same response: the
+  it('carries the rules of each technique, on the body or on a contract it names', () => {
+    // An agent reading one technique reads the rules it is held to in the same response: the
     // rules the technique declares ride its body, and the rules a scope shares arrive once
     // under `contracts`, named from `inherits`.
     const contracts = (ops['contracts'] ?? {}) as Record<string, { rules?: Record<string, unknown> }>;
@@ -134,14 +134,14 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
       if (!Array.isArray(names)) return false;
       return names.some((id) => RECORD_SHAPED(contracts[String(id)]) && contracts[String(id)]!['rules'] !== undefined);
     });
-    expect(held.length, 'no operation arrived with the rules it is held to').toBeGreaterThan(0);
+    expect(held.length, 'no technique arrived with the rules it is held to').toBeGreaterThan(0);
     expect(Object.keys(contracts).length, 'inherited rules had no contract to ride').toBeGreaterThan(0);
   });
 
   it('carries the role\'s own rules, and states no rule twice', () => {
-    // A rule has one home, and which home is decided by what it governs. A rule an operation
-    // declares rides that operation's body; a rule a scope shares rides that scope's contract;
-    // `rules` carries what governs the agent rather than any one operation. Reading both and
+    // A rule has one home, and which home is decided by what it governs. A rule a technique
+    // declares rides that technique's body; a rule a scope shares rides that scope's contract;
+    // `rules` carries what governs the agent rather than any one technique. Reading both and
     // finding a line in each would be a reader asked to hold the same boundary twice over,
     // from two places that can drift apart.
     expect(Array.isArray(ops['rules'])).toBe(true);
@@ -180,7 +180,7 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
    */
   it('goes out whole whether or not it fits what one tool result may carry', () => {
     expect(wholeResult).toBeGreaterThan(0);
-    expect(ops['techniques'], 'the limit shed an operation body').toBeDefined();
+    expect(ops['techniques'], 'the limit shed a technique body').toBeDefined();
   });
 
   it('refuses an id outside the contract this session names', async () => {
@@ -189,10 +189,10 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
       arguments: { session_index: sessionIndex, technique_id: 'some-other-workflow::secret' },
     });
     expect(fetched.isError).toBe(true);
-    expect(JSON.stringify(fetched.content)).toContain('not an operation this session');
+    expect(JSON.stringify(fetched.content)).toContain('not a technique this session');
   });
 
-  it('still serves an operation by id, for a context that lost its delivery', async () => {
+  it('still serves a technique by id, for a context that lost its delivery', async () => {
     const carried = Object.keys((ops['techniques'] ?? {}) as Record<string, unknown>);
     const fetched = await client.callTool({
       name: 'get_technique',
@@ -202,7 +202,7 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
     expect(responseText(fetched).length).toBeGreaterThan(0);
   });
 
-  it('refuses a call naming both an operation and a step', async () => {
+  it('refuses a call naming both a technique and a step', async () => {
     const fetched = await client.callTool({
       name: 'get_technique',
       arguments: { session_index: sessionIndex, technique_id: 'agent-conduct', step_id: 'resolve-target' },
@@ -245,24 +245,24 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery carries the worker contrac
 
   afterAll(async () => { await harness.close(); });
 
-  it('carries the activity, the rules and every operation, and names none it withheld', () => {
+  it('carries the activity, the rules and every technique, and names none it withheld', () => {
     const body = parse(text.slice(text.indexOf('\n\n---\n\n') + 7)) as Record<string, unknown>;
     expect(body['id']).toBe('start-work-package');
     expect(body['steps']).toBeDefined();
-    // Every rule this worker is held to rides the body of the operation or step it governs, so on
+    // Every rule this worker is held to rides the body of the technique or step it governs, so on
     // this activity the role's own list is empty and absent rather than empty and present. A rule
-    // governing no one operation would put it back.
-    expect(ruleLines(bundle, 'list'), 'the list restates a rule an operation body already carries')
+    // governing no one technique would put it back.
+    expect(ruleLines(bundle, 'list'), 'the list restates a rule a technique body already carries')
       .toEqual([]);
     expect(ruleLines(bundle, 'bodies').length, 'the worker was handed no rules at all')
       .toBeGreaterThan(0);
     expect(Object.keys((bundle['techniques'] ?? {}) as Record<string, unknown>).length).toBeGreaterThan(0);
-    expect(bundle['operation_refs'], 'the payload named an operation it carried no body for').toBeUndefined();
+    expect(bundle['operation_refs'], 'the payload named a technique it carried no body for').toBeUndefined();
     expect(bundle['operations_note']).toBeUndefined();
-    expect(meta.operation_refs, 'the metadata named an operation the payload withheld').toBeUndefined();
+    expect(meta.operation_refs, 'the metadata named a technique the payload withheld').toBeUndefined();
   });
 
-  it('carries the rules of each operation and each inlined step in the body that states them', () => {
+  it('carries the rules of each technique and each inlined step in the body that states them', () => {
     const withRules = operationBodies(bundle).filter(([, entry]) => entry['rules'] !== undefined);
     expect(withRules.length, 'no delivered body carried the rules it is held to').toBeGreaterThan(0);
   });
@@ -328,10 +328,10 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery carries the worker contrac
  * A marker stands for a WHOLE item — one composed technique, one rules list, one note, one resource
  * — so a reader that cannot resolve one has a call that returns the thing it lacks. A marker on a
  * FIELD of a body has no such call: the field is not a thing with an identity, only a component of
- * an operation that was delivered anyway.
+ * a technique that was delivered anyway.
  *
  * Read over both delivery modes and both maps, because the fragmenting pass ran across the
- * operations bundle and the step map alike.
+ * techniques bundle and the step map alike.
  */
 describe.skipIf(!liveCorpusRoot())('a marker stands for a whole item', () => {
   it('holds across a walk delivered twice to one worker', async () => {
@@ -412,7 +412,7 @@ describe.skipIf(!liveCorpusRoot())('a delivery is the same however the limit is 
         expect(summary['initialActivity'], `${limit}: no initial activity`).toBeTruthy();
         expect(Object.keys((summary['graph'] ?? {}) as object).length, `${limit}: no graph`).toBeGreaterThan(0);
         expect((summary['activities'] as unknown[]).length, `${limit}: no roster`).toBeGreaterThan(0);
-        expect(ops['operation_refs'], `${limit}: the limit shed an operation body`).toBeUndefined();
+        expect(ops['operation_refs'], `${limit}: the limit shed a technique body`).toBeUndefined();
         // Less what identifies the session rather than the workflow: a fresh session per limit
         // carries its own index and its own planning folder by construction.
         const { session_index: _idx, planning_folder_path: _folder, ...definition } = summary;
@@ -444,7 +444,7 @@ describe.skipIf(!liveCorpusRoot())('a delivery is the same however the limit is 
           const meta = taken._meta as {
             operation_refs?: string[]; bundled_steps?: string[]; bundled_resources?: string[];
           };
-          expect(meta.operation_refs, `${limit} ${activityId}: an operation was withheld`).toBeUndefined();
+          expect(meta.operation_refs, `${limit} ${activityId}: a technique was withheld`).toBeUndefined();
           // The session index rides the header of every delivery and is fresh per limit.
           walk.push(responseText(taken).split('\n').filter(l => !l.startsWith('session_index:')).join('\n'));
         }

@@ -31,7 +31,7 @@
  *   the name        more than one separator; a name no candidate workflow declares; a cycle
  *   the arguments   an argument naming no declared input; an output binding naming no declared
  *                   output; an output left unbound whose declaration does not permit it; an
- *                   operation parameter with no argument, or one bound to something that is not a
+ *                   technique parameter with no argument, or one bound to something that is not a
  *                   literal reference
  *   the body        a parameter standing where the `when` dialect takes a value; a substitution
  *                   carrying a quote into that position; an operand the dialect cannot read beside a
@@ -155,11 +155,11 @@ type SubstitutionMap = ReadonlyMap<string, Substitution>;
 
 /**
  * What a reference site supplies for each parameter declared `kind: technique`: the parameter's name
- * against the operation reference standing in for it.
+ * against the technique reference standing in for it.
  *
  * This is a namespace of its own rather than an entry in the substitution map, because the two
  * substitute in disjoint positions. A value moves through bag names, tokens and expressions; an
- * operation moves into exactly one field, and a body that spelled the parameter anywhere else would
+ * technique moves into exactly one field, and a body that spelled the parameter anywhere else would
  * be naming a variable the signature does not declare.
  */
 export type OperationMap = ReadonlyMap<string, string>;
@@ -167,7 +167,7 @@ export type OperationMap = ReadonlyMap<string, string>;
 /** Everything one reference site puts over one routine's body. */
 interface SiteBinding {
   names: SubstitutionMap;
-  operations: OperationMap;
+  techniques: OperationMap;
 }
 
 /** The name a substitution puts in a bare-name position. A dropped binding has none. */
@@ -224,7 +224,7 @@ function substituteTokens(text: string, map: SubstitutionMap): string {
  *
  * The dialect's comparison is `IDENT op literal`, so this position holds a value and never a name. A
  * string is quoted, because a bare word there is tokenised as `[A-Za-z_][A-Za-z0-9_.]*` and an
- * operation-era value like `full-prism` would otherwise split at the hyphen.
+ * hyphenated value like `full-prism` would otherwise split at the hyphen.
  */
 function comparisonValue(
   substitution: Substitution,
@@ -427,16 +427,16 @@ function substituteBindingValue(
 }
 
 /**
- * Put the site's operation in the technique position where the step binds a parameter.
+ * Put the site's technique in the technique position where the step binds a parameter.
  *
- * A parameter stands in the position an operation reference occupies, and a routine declares every
+ * A parameter stands in the position a technique reference occupies, and a routine declares every
  * name in its own scope, so a reference equal to a declared parameter is that parameter and nothing
  * else. Substitution happens here, before the contract derives, so the derivation reads a concrete
- * operation and never a placeholder.
+ * technique and never a placeholder.
  */
-function substituteOperation(step: Step & { kind: 'technique' }, operations: OperationMap): void {
+function substituteOperation(step: Step & { kind: 'technique' }, techniques: OperationMap): void {
   const reference = typeof step.technique === 'string' ? step.technique : step.technique.name;
-  const supplied = operations.get(reference);
+  const supplied = techniques.get(reference);
   if (supplied === undefined) return;
   if (typeof step.technique === 'string') (step as { technique: string }).technique = supplied;
   else (step.technique as TechniqueBinding).name = supplied;
@@ -444,7 +444,7 @@ function substituteOperation(step: Step & { kind: 'technique' }, operations: Ope
 
 /** Rewrite every field of one step that can name a value in the routine's scope. */
 function substituteStep(step: Step, siteBinding: SiteBinding, context: string): Step {
-  const { names: map, operations } = siteBinding;
+  const { names: map, techniques } = siteBinding;
   const out = step as Record<string, unknown>;
 
   if (typeof out['when'] === 'string') out['when'] = substituteExpression(out['when'], map, context);
@@ -467,11 +467,11 @@ function substituteStep(step: Step, siteBinding: SiteBinding, context: string): 
   }
 
   if (step.kind === 'technique') {
-    substituteOperation(step, operations);
+    substituteOperation(step, techniques);
     if (typeof step.technique === 'object') {
       const binding = step.technique as TechniqueBinding;
       if (binding.inputs) binding.inputs = substituteValueMap(binding.inputs, map) as Record<string, string | number | boolean>;
-      // An output remap's KEY is the operation's own output id and its VALUE is the variable the
+      // An output remap's KEY is the technique's own output id and its VALUE is the variable the
       // value lands under, so only the value moves.
       if (binding.outputs) binding.outputs = substituteTargetMap(binding.outputs, map);
     }
@@ -606,7 +606,7 @@ function bindReference(
 ): SiteBinding {
   const scope = routineScope(routine);
   const map = new Map<string, Substitution>();
-  const operations = new Map<string, string>();
+  const techniques = new Map<string, string>();
 
   // Overbound: an argument naming no declared input. The declared list is the author's fix site.
   for (const argument of Object.keys(step.with ?? {})) {
@@ -628,7 +628,7 @@ function bindReference(
   for (const [id, input] of scope.inputs) {
     const argument = step.with?.[id];
     if (isOperationInput(input)) {
-      operations.set(id, operationArgument(argument ?? input.default, id, routine.id, context));
+      techniques.set(id, operationArgument(argument ?? input.default, id, routine.id, context));
       continue;
     }
     if (argument !== undefined) {
@@ -657,14 +657,14 @@ function bindReference(
     map.set(id, { kind: 'name', name: internalName(activityId, referencePath, id) });
   }
 
-  return { names: map, operations };
+  return { names: map, techniques };
 }
 
 /**
- * The operation reference a site supplies for one parameter.
+ * The technique reference a site supplies for one parameter.
  *
- * An operation parameter takes neither the host's fall-through nor a runtime value. A host bag holds
- * values and never operations, so an unbound parameter has nothing to fall through to; and
+ * A technique parameter takes neither the host's fall-through nor a runtime value. A host bag holds
+ * values and never techniques, so an unbound parameter has nothing to fall through to; and
  * substitution runs when the definitions load, so a braced argument names something with no value
  * yet and would leave the technique position spelling a token.
  */
@@ -677,14 +677,14 @@ function operationArgument(
   if (argument === undefined) {
     throw new RoutineResolutionError(
       `${context}: input '${id}' of routine '${routineId}' declares 'kind: technique' and this site binds no argument — `
-      + 'bind it to an operation reference under \'with\', or give the declaration a default. An operation parameter takes '
-      + 'no value from the host, a bag holding values rather than operations.',
+      + 'bind it to a technique reference under \'with\', or give the declaration a default. A technique parameter takes '
+      + 'no value from the host, a bag holding values rather tha techniques.',
     );
   }
   if (typeof argument !== 'string' || argument.includes('{')) {
     throw new RoutineResolutionError(
       `${context}: input '${id}' of routine '${routineId}' declares 'kind: technique' and this site binds '${String(argument)}' — `
-      + 'an operation parameter takes a literal reference, because substitution happens when the definitions load and a token has no value then.',
+      + 'a technique parameter takes a literal reference, because substitution happens when the definitions load and a token has no value then.',
     );
   }
   return argument;
@@ -978,17 +978,17 @@ export function collectRoutineRefs(activity: { steps?: Step[] | undefined }): st
 }
 
 /**
- * A routine's body with one site's operation arguments standing in its technique positions.
+ * A routine's body with one site's technique arguments standing in its technique positions.
  *
- * What a caller derives a contract from, for a routine whose body binds an operation by argument:
+ * What a caller derives a contract from, for a routine whose body binds a technique by argument:
  * such a body has no signature of its own, so the derivation runs against a site rather than against
  * the declaration.
  */
-export function bodyWithOperations(steps: readonly Step[], operations: OperationMap): Step[] {
+export function bodyWithOperations(steps: readonly Step[], techniques: OperationMap): Step[] {
   const body = structuredClone(steps) as Step[];
   const visit = (list: Step[]): void => {
     for (const step of list) {
-      if (step.kind === 'technique') substituteOperation(step, operations);
+      if (step.kind === 'technique') substituteOperation(step, techniques);
       else if (step.kind === 'loop') visit(step.steps as Step[]);
     }
   };

@@ -4,14 +4,14 @@
  * An activity that hands work to another workflow says so twice: once in its `triggers[]`
  * declaration, which is what a reader of the definition sees, and once in the step that binds
  * `workflow-engine::handle-sub-workflow`, which is what actually dispatches. The server acts on
- * neither — it dispatches when the step's operation calls `dispatch_child` — so nothing but this
+ * neither — it dispatches when the step's technique calls `dispatch_child` — so nothing but this
  * guard holds the two together, and either one alone reads as a capability that is not there:
  * a declaration with no step promises a launch that never happens, and a step with no declaration
  * launches a workflow the definition never admits to.
  *
  * Three rules, all hard-zero:
- *   - every declared launch is performed — by a step binding the launch operation, or by a step
- *     whose bound operation applies it
+ *   - every declared launch is performed — by a step binding the launch technique, or by a step
+ *     whose bound technique applies it
  *   - every launch step is declared by the activity it sits in
  *   - both name a workflow the corpus actually holds
  *
@@ -49,7 +49,7 @@ function declaredLaunches(activity: Record<string, unknown>): string[] {
     .filter((w): w is string => typeof w === 'string');
 }
 
-/** A step that binds the launch operation, with the workflow id it passes (null when it names none). */
+/** A step that binds the launch technique, with the workflow id it passes (null when it names none). */
 interface LaunchStep { stepId: string; workflowId: string | null }
 
 /** Recursively walk every `steps[]` array (including loop steps) for launch bindings. */
@@ -94,7 +94,7 @@ function collectTechniqueRefs(node: unknown, out: string[]): void {
 
 /**
  * Body of the technique a ref names, or null when the ref resolves to no file. Refs take the forms
- * `[workflow::]group::operation`, the legacy `workflow/technique`, and a bare `technique` — each
+ * `[workflow::]group::technique`, the legacy `workflow/technique`, and a bare `technique` — each
  * resolving under some workflow's `techniques/` tree.
  */
 function techniqueBody(source: CorpusSource, currentWorkflow: string, ref: string): string | null {
@@ -148,7 +148,7 @@ export function collectLaunchedWorkflowViolations(root: string = ROOT): Launched
       collectLaunchSteps(activity.steps, steps);
       const launched = steps.map((s) => s.workflowId).filter((w): w is string => w !== null);
 
-      // A step's operation may apply the launch itself rather than the activity binding it
+      // A step's technique may apply the launch itself rather than the activity binding it
       // directly — composition, not a missing launch.
       const refs: string[] = [];
       collectTechniqueRefs(activity.steps, refs);
@@ -159,7 +159,7 @@ export function collectLaunchedWorkflowViolations(root: string = ROOT): Launched
 
       for (const id of declared) {
         if (!launched.includes(id) && !composedLaunch) {
-          out.push({ site: rel, detail: `declares a launch of '${id}' that nothing performs — no step binds ${LAUNCH_OPERATION} and no bound operation applies it; perform the launch or drop the declaration` });
+          out.push({ site: rel, detail: `declares a launch of '${id}' that nothing performs — no step binds ${LAUNCH_OPERATION} and no bound technique applies it; perform the launch or drop the declaration` });
         }
         if (!known.has(id)) {
           out.push({ site: rel, detail: `declares a launch of '${id}', which the corpus holds no workflow for` });

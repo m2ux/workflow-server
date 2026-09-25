@@ -28,7 +28,6 @@
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
-              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
               <li><a href="../specs/resource-resolution.html">Resolution</a></li>
               <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
             </ul>
@@ -68,7 +67,7 @@
 <main id="main">
   <h1>MCP tool reference</h1>
   <p class="lede">Every tool the server registers, with its parameters and types. The tool descriptions and parameter tables on this page are generated directly from the server source, so they cannot drift from the code.</p>
-  <p>Conventions: most tools identify their session with a <code>session_index</code> — the 6-character token returned by <code>start_session</code>. Tools in the Bootstrap group work without one. The short catalog lives in <a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">docs/api-reference.md</a>; behavioral depth is in the architecture models linked from there.</p>
+  <p>Conventions: most tools identify their session with a <code>session_index</code> — the 6-character token returned by <code>start_session</code>. Tools in the Bootstrap group work without one. The short catalog lives in <a href="https://github.com/m2ux/workflow-server/blob/main/docs/api.md">docs/api.md</a>; behavioral depth is in the architecture models linked from there.</p>
 
       <!-- BEGIN GENERATED — edit scripts/generate-site-data.ts, then run npm run build:site -->
       <p>Each registered MCP tool is listed below. Expand an entry for the full description and advanced parameters. This page is generated from the server source — do not hand-edit the tool bodies.</p>
@@ -290,7 +289,7 @@
           <thead><tr><th scope="col">In</th><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr class="param-row--nested"><td class="param-scope" rowspan="2"><code>step_manifest[]</code></td><td><code>step_id</code></td><td><code>string</code></td><td>yes</td><td>Step id from the activity definition (field name is <code>step_id</code>, not <code>id</code>).</td></tr>
-          <tr class="param-row--nested"><td><code>output</code></td><td><code>object</code></td><td>yes</td><td>What the step produced, as a JSON object keyed by the output id the bound operation declares — one output included. A key the operation does not declare is surfaced in _meta.validation.</td></tr>
+          <tr class="param-row--nested"><td><code>output</code></td><td><code>object</code></td><td>yes</td><td>What the step produced, as a JSON object keyed by the output id the bound technique declares — one output included. A key the technique does not declare is surfaced in _meta.validation.</td></tr>
           <tr class="param-row--nested param-row--group-start"><td class="param-scope" rowspan="3"><code>activity_manifest[]</code></td><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Completed activity id.</td></tr>
           <tr class="param-row--nested"><td><code>outcome</code></td><td><code>string</code></td><td>yes</td><td>Short outcome summary for that activity.</td></tr>
           <tr class="param-row--nested"><td><code>exit</code></td><td><code>string</code></td><td>no</td><td>Exit that activity took, if any.</td></tr>
@@ -438,7 +437,7 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
-          <tr><td><code>technique_id</code></td><td><code>string</code></td><td>no</td><td>Optional. An operation of your role's contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only operations this session's roles name are servable; anything else is refused. Not for a step's own technique, which <code>step_id</code> addresses.</td></tr>
+          <tr><td><code>technique_id</code></td><td><code>string</code></td><td>no</td><td>Optional. A technique of your role's contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only techniques this session's roles name are servable; anything else is refused. Not for a step's own technique, which <code>step_id</code> addresses.</td></tr>
           <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
           <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
@@ -454,7 +453,7 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
-          <tr><td><code>technique_id</code></td><td><code>string</code></td><td>no</td><td>Optional. An operation of your role's contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only operations this session's roles name are servable; anything else is refused. Not for a step's own technique, which <code>step_id</code> addresses.</td></tr>
+          <tr><td><code>technique_id</code></td><td><code>string</code></td><td>no</td><td>Optional. A technique of your role's contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only techniques this session's roles name are servable; anything else is refused. Not for a step's own technique, which <code>step_id</code> addresses.</td></tr>
           <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
           <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>

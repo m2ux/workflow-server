@@ -241,7 +241,7 @@
                                 "$ref": "#/definitions/workflow/properties/variables/items/properties/name/anyOf/1"
                               }
                             ],
-                            "description": "The name each instance reads its own element at. The activity this fan runs declares it among the names it needs its workflow to supply; name it as the consuming operation's own input id so no step needs a rename."
+                            "description": "The name each instance reads its own element at. The activity this fan runs declares it among the names it needs its workflow to supply; name it as the consuming technique's own input id so no step needs a rename."
                           },
                           "maxInstances": {
                             "type": "integer",
@@ -298,14 +298,14 @@
                     "items": {
                       "$ref": "#/definitions/workflow/properties/variables/items/properties/name"
                     },
-                    "description": "Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound operations' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here."
+                    "description": "Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound techniques' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here."
                   },
                   "writes": {
                     "type": "array",
                     "items": {
                       "$ref": "#/definitions/workflow/properties/variables/items"
                     },
-                    "description": "Session variables this activity puts into the bag: its bound operations' outputs (under their declared id or the step binding's remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow's variable set, defaultValue included."
+                    "description": "Session variables this activity puts into the bag: its bound techniques' outputs (under their declared id or the step binding's remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow's variable set, defaultValue included."
                   }
                 },
                 "additionalProperties": false,
@@ -359,7 +359,7 @@
                               "properties": {
                                 "name": {
                                   "type": "string",
-                                  "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes."
+                                  "description": "The `group::technique` (or bare op / `workflow::group::op`) technique reference this step invokes."
                                 },
                                 "inputs": {
                                   "type": "object",
@@ -386,7 +386,7 @@
                               "additionalProperties": false
                             }
                           ],
-                          "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
+                          "description": "Canonical per-step binding: a `group::technique` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
                         },
                         "actions": {
                           "type": "array",

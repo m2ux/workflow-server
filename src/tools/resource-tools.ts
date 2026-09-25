@@ -795,14 +795,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load one technique (step-bound when `step_id` is set, named when `technique_id` is; otherwise the activity\'s or workflow\'s first). The body is the operation itself: own interface, own rules, and `inherits` naming the scopes whose contracts ride beside it under `contracts`. That body is the same projection an inlined `step_techniques` entry carries. ' +
+    'Load one technique (step-bound when `step_id` is set, named when `technique_id` is; otherwise the activity\'s or workflow\'s first). The body is the technique itself: own interface, own rules, and `inherits` naming the scopes whose contracts ride beside it under `contracts`. That body is the same projection an inlined `step_techniques` entry carries. ' +
     'Under `context_mode: "persistent"` or `bundle: "reference"`, a byte-identical refetch to the SAME `agent_id` scope may return an unchanged-reference; pass `full: true` when earlier content was summarized away. ' +
     'A fresh worker context must not ask for reference delivery — it holds no prior delivery to reference.',
     {
       ...sessionIndexParam,
       ...agentIdParam,
       technique_id: z.string().optional().describe(
-        'Optional. An operation of your role\'s contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only operations this session\'s roles name are servable; anything else is refused. Not for a step\'s own technique, which `step_id` addresses.',
+        'Optional. A technique of your role\'s contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only techniques this session\'s roles name are servable; anything else is refused. Not for a step\'s own technique, which `step_id` addresses.',
       ),
       step_id: z.string().optional().describe('Optional. Step id whose bound technique to load; omit for the activity/workflow first technique.'),
       activity_id: z.string().optional().describe('Optional. The activity you were dispatched for. A step id resolves against the session\'s CURRENT activity, so passing this turns a pointer that has moved on into an error instead of a technique from the wrong activity.'),
@@ -811,7 +811,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     },
     withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, agent_id, technique_id, step_id, activity_id, bundle, full }) => {
       if (technique_id && step_id) {
-        throw new Error('Pass either technique_id or step_id: one names an operation of your role\'s contract, the other the technique a step binds.');
+        throw new Error('Pass either technique_id or step_id: one names a technique of your role\'s contract, the other the technique a step binds.');
       }
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
@@ -840,9 +840,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       let boundStep: Step | undefined;
 
       if (technique_id) {
-        // An operation of the role contract, addressed by the id the bundle keys it under. The
+        // A technique of the role contract, addressed by the id the bundle keys it under. The
         // admissible set is derived from the definitions this session is already walking, so an id
-        // names an operation of its own contract or nothing at all — this is not a way to read an
+        // names a technique of its own contract or nothing at all — this is not a way to read an
         // arbitrary file. A run reaches here for a protocol a role needs that its activity never
         // declared, and for one a context that lost its delivery is asking back.
         const servedActivityDef = servedFor ? getActivity(wfResult.value, servedFor) : undefined;
@@ -853,7 +853,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         });
         if (!admissible.has(technique_id)) {
           throw new Error(
-            `'${technique_id}' is not an operation this session's roles name. Servable: [${[...admissible].sort().join(', ')}]`,
+            `'${technique_id}' is not a technique this session's roles name. Servable: [${[...admissible].sort().join(', ')}]`,
           );
         }
         techniqueId = technique_id;
@@ -897,8 +897,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       // Activity-group convention (see composeActivityTechnique): a bare op id resolves first
       // against the group named after the current activity, falling back to as-authored — both
-      // within the activity's source-workflow scope. A contract operation named outright resolves
-      // as authored and never through that group: it is the role's operation, not the activity's,
+      // within the activity's source-workflow scope. A contract technique named outright resolves
+      // as authored and never through that group: it is the role's technique, not the activity's,
       // and a same-named op under the activity would answer for it.
       const composed = await composeActivityTechnique(
         techniqueId, config.workflowDir, techniqueScopeWorkflowId,
@@ -934,7 +934,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const { wire, contracts } = projectTechniqueFetch(
         technique, composed.value.scopes, composed.value.ownRuleKeys,
       );
-      // Hash the operation body alone — the same bytes an inlined step hashes — so a bundled
+      // Hash the technique body alone — the same bytes an inlined step hashes — so a bundled
       // delivery and a later get_technique of that step share `technique:<id>`. Scope contracts
       // ride beside the body under `contracts` and collapse on `bundle:contract:<id>`.
       const text = stringifyForResponse(wire);
@@ -1019,7 +1019,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         };
       }
 
-      // Full-delivery branch. The hashed unit is the operation body; inherited contracts ride
+      // Full-delivery branch. The hashed unit is the technique body; inherited contracts ride
       // beside it under `contracts`, each keyed as a whole item.
       const deliveries: Record<string, string> = { [ledgerKey]: hash };
       const shippedContracts: Record<string, unknown> = {};

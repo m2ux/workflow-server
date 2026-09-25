@@ -1,15 +1,12 @@
 # Setup — stdio
 
-Transport-specific steps for a **local checkout** where the IDE spawns the server over stdio (default transport).  
-Shared sequence: **[setup.md](setup.md)** (layout, deploy, checkout under `HOST_PROJECTS_ROOT`, Cursor workspace, update workflows).
+The IDE spawns the server over stdio, the default transport. Shared steps are [setup](setup.md).
 
 ## Prerequisites
 
-- [Node.js 18+](https://nodejs.org/)
-- Git
-- MCP client (Cursor, Claude Desktop, or compatible)
+Node.js, Git, and an MCP client.
 
-## 1. Build from source
+## 1. Build
 
 ```bash
 git clone https://github.com/m2ux/workflow-server.git
@@ -19,22 +16,15 @@ git worktree add .worktrees/workflows workflows
 npm run build
 ```
 
-Optional: same host layout as Docker (without starting a container):
+That worktree is the corpus the server serves when `--workflow-dir` is omitted.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/docker/scripts/install.sh | bash -s -- --install-dir=~/.local/share/workflow-server
-```
+## 2. MCP client
 
-Then continue with [setup.md §2](setup.md#2-initialise-a-target-repo) (deploy engineering, then checkout under `$HOST_PROJECTS_ROOT/<repo>`).
+The IDE starts the process. Startup requires `--workspace=PATH` or `--repo=owner/repo`. `--install-dir` alone exits.
 
-## 2. MCP client (stdio)
+### One workspace
 
-The IDE starts the process; you do not run a long-lived server yourself.
-
-**Required:** either `--repo=owner/repo` (checkout under `HOST_PROJECTS_ROOT`) **or** `--workspace=PATH` (and optional engineering root via env).  
-`--install-dir` alone is not enough — the process exits without a workspace or repo binding.
-
-### Recommended: install multi-root (matches Docker + `HOST_PROJECTS_ROOT`)
+Planning sits at `.engineering/artifacts/planning` under that path.
 
 ```json
 {
@@ -43,78 +33,58 @@ The IDE starts the process; you do not run a long-lived server yourself.
       "command": "node",
       "args": [
         "/path/to/workflow-server/dist/index.js",
-        "--install-dir=/home/you/.local/share/workflow-server",
-        "--workspace=/home/you/projects/dev",
-        "--workflow-dir=/path/to/workflows"
-      ],
-      "env": {
-        "WORKFLOW_SERVER_ENGINEERING_DIR": "/home/you/projects/dev",
-        "HOST_PROJECTS_ROOT": "/home/you/projects/dev",
-        "WORKFLOW_SERVER_INSTALL_DIR": "/home/you/.local/share/workflow-server"
-      }
-    }
-  }
-}
-```
-
-Pass `working_directory` on `start_session` as the absolute path of the checkout under work. The server derives `owner/repo` from that origin. Planning lands under  
-`$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/`.
-
-Optional: pin one repo for the whole process with `--repo=owner/your-project` instead of multi-root.
-
-### Alternative: explicit workspace (single-root)
-
-```json
-{
-  "mcpServers": {
-    "workflow-server": {
-      "command": "node",
-      "args": [
-        "/path/to/workflow-server/dist/index.js",
-        "--workspace=/path/to/your/checkout",
-        "--workflow-dir=/path/to/workflows"
+        "--workspace=/path/to/your/checkout"
       ]
     }
   }
 }
 ```
 
-For a split engineering tree, also set env  
-`WORKFLOW_SERVER_ENGINEERING_DIR=/path/to/engineering/checkout`  
-(planning then uses `artifacts/planning` under that root).
+A separate engineering checkout uses `WORKFLOW_SERVER_ENGINEERING_DIR`. Planning is then `artifacts/planning` under that directory.
 
-`--transport=stdio` is the default (omit, or set `TRANSPORT=stdio`).
+### Several checkouts
 
-Developer-only process flags: [configuration.md](configuration.md#process).
+`--workspace` is a directory named `projects`, or `$INSTALL/projects`. Each session lands at `<root>/<repo>/.engineering/artifacts/planning/<slug>`. The repo is chosen on `start_session`, from `working_directory`.
+
+```json
+{
+  "mcpServers": {
+    "workflow-server": {
+      "command": "node",
+      "args": [
+        "/path/to/workflow-server/dist/index.js",
+        "--workspace=/home/you/projects"
+      ]
+    }
+  }
+}
+```
+
+`--repo=owner/repo` pins one checkout under the install root: `$INSTALL/projects/<repo>/.worktrees`, with planning at `$INSTALL/projects/<repo>/.engineering/artifacts/planning`.
+
+`--transport=stdio` is the default. Other flags are in [configuration](configuration.md#process).
 
 ## 3. Verify
 
-There is no HTTP listener under stdio — the IDE owns the process.
+There is no HTTP listener. The IDE owns the process.
 
 | Check | How |
-|-------|-----|
-| Build | `npm run typecheck` (and `npm run build` if `dist/` is stale) |
-| Paths | `--repo` + `--install-dir`, or `--workspace`, plus readable `--workflow-dir` |
-| MCP load | Restart the IDE (or reload MCP servers); the workflow-server entry shows as connected with no spawn error |
-| Smoke | `discover`, then `start_session` with **`working_directory`** as the checkout under work (`list_workflows` alone is not enough) |
+| ----- | --- |
+| Build | `npm run typecheck`, and `npm run build` when `dist/` is stale |
+| Binding | `--workspace` or `--repo`, and a readable corpus |
+| MCP | Reload MCP. The entry is connected, with no spawn error |
+| Smoke | `discover`, then `start_session` with `workflow_id`, `agent_id`, and `working_directory` |
 
-**Expected cues**
+`start_session` returns a six-character `session_index`. A spawn failure is on stderr of `node …/dist/index.js`.
 
-- MCP entry shows connected (no spawn error in the client log).
-- `start_session` returns a six-character **`session_index`**.
-
-If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/repo, bad `WORKFLOW_DIR`, etc.).
-
-Then finish shared steps in [setup.md](setup.md) (**§2** deploy + checkout, **§3** Cursor workspace, **§4** Update Workflows).
+Then [initialise the workspace](setup.md#2-initialise-workspace) and [verify](setup.md#3-verify).
 
 ## Troubleshooting
 
 | Symptom | What to check |
-|---------|----------------|
-| Process exits immediately | Provide **`--workspace=…`** or **`--repo=owner/repo`** — `--install-dir` alone is not enough |
-| Spawn error / cannot find `dist/index.js` | Run `npm run build`; use an absolute path to `dist/index.js` |
-| Workflows not found | Readable `--workflow-dir` pointing at a tree discovery can walk: when that tree holds a `corpus/` grouping, discovery walks that grouping and does not search sibling folders; a still-flat tree of workflow directories is walked as the root. A `workflow.yaml` at any depth under that walk is a workflow. Authoring docs live at `docs/` of that tree and are not product workflows. |
-| Planning path / repo errors | [setup.md §2](setup.md#2-initialise-a-target-repo); pass `working_directory` on `start_session` |
-| Agent never calls `discover` | [setup.md §3](setup.md#3-setup-cursor-workspace) bootstrap rule |
-
-Shared install vs deploy vs checkout: [setup.md](setup.md).
+| ------- | ------------- |
+| Exits immediately | `--workspace` or `--repo`. `--install-dir` alone is not a binding |
+| Cannot find `dist/index.js` | `npm run build`, and an absolute path to that file |
+| Workflows not found | `--workflow-dir` or the default `.worktrees/workflows`. A tree with `corpus/` is walked there. `docs/` on that tree is not a workflow |
+| Planning or repo errors | `working_directory` on `start_session` is the checkout under work. The server derives `owner/repo` from its origin |
+| Agent never calls `discover` | The [verify](setup.md#3-verify) step |

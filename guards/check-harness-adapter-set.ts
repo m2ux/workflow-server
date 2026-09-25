@@ -1,12 +1,12 @@
 /**
  * check-harness-adapter-set — the harness adapters are one set, described the same way three times.
  *
- * `resolve-harness-operation` turns a harness kind into a technique file and an operation kind into a
+ * `resolve-harness-operation` turns a harness kind into a technique file and a technique kind into a
  * Rules section name inside it, and `spawn-agent`, `continue-agent` and `spawn-concurrent` then apply
  * whatever that resolves to. So an adapter is reached through the VALUE of a variable, never through a
  * `technique:` binding — which is what every other guard reads. Nothing else checks the set.
  *
- * The obligation is real and stated only in prose: each adapter exposes the same operation kinds. And the
+ * The obligation is real and stated only in prose: each adapter exposes the same technique kinds. And the
  * set is enumerated twice, in places that must agree — the resolution map, which calls itself
  * authoritative, and `CORE_ORCHESTRATOR_TECHNIQUES`, whose own comment explains why a technique named
  * inside another technique's Protocol has no other delivery path. A fifth adapter has to be added in both.
@@ -20,7 +20,7 @@
  * that actually decides the vocabulary passed clean. Scoping to the step is what makes the parse mean
  * what it claims.
  *
- * A name that does not parse must never narrow the set silently: an operation kind the pattern rejects
+ * A name that does not parse must never narrow the set silently: a technique kind the pattern rejects
  * would drop out of the vocabulary AND out of every adapter's declared set, so a genuinely missing slice
  * would go unnoticed. Anything name-shaped that fails to parse is reported rather than skipped.
  *
@@ -71,10 +71,10 @@ const MAP_ROW_RE = /^\s+- `([^`]+)` → \[[^\]]+\]\(\.\/([^)]+)\)\s*$/;
 const VOCAB_TOKEN_RE = /`([^`]+)`/g;
 /** A Rules section heading in an adapter, parseable or not. */
 const RULE_HEADING_RE = /^###\s+(\S.*?)\s*$/;
-/** What an operation kind and a harness kind may be spelled as. */
+/** What a technique kind and a harness kind may be spelled as. */
 const NAME_RE = /^[a-z][a-z0-9-]*$/;
 
-/** The generic operations of the group — callers, not adapters, so not expected in the map. */
+/** The generic techniques of the group — callers, not adapters, so not expected in the map. */
 const GENERIC_OPS = new Set([
   'resolve-harness-operation', 'spawn-agent', 'continue-agent', 'spawn-concurrent',
 ]);
@@ -94,7 +94,7 @@ function stepLines(lines: readonly string[], step: number): string[] {
 interface Parsed {
   /** Harness kind → adapter filename, in map order, with duplicates preserved. */
   rows: Array<{ kind: string; file: string }>;
-  /** The operation kinds a caller may ask for. */
+  /** The technique kinds a caller may ask for. */
   slices: string[];
   /** Names in either enumeration that do not parse, and so cannot be matched. */
   unparseable: string[];
@@ -122,7 +122,7 @@ function parseMap(source: CorpusSource): Parsed {
     if (close > paren) {
       for (const [, token] of vocabulary.slice(paren, close).matchAll(VOCAB_TOKEN_RE)) {
         if (NAME_RE.test(token!)) slices.push(token!);
-        else unparseable.push(`operation kind '${token}'`);
+        else unparseable.push(`technique kind '${token}'`);
       }
     }
   }
@@ -161,7 +161,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
 
   const { rows, slices, unparseable } = parseMap(index);
   assertScanned(rows.length, `harness rows in ${mapSite}`, root);
-  assertScanned(slices.length, `operation kinds in ${mapSite}`, root);
+  assertScanned(slices.length, `technique kinds in ${mapSite}`, root);
 
   for (const name of unparseable) {
     findings.push({
@@ -214,7 +214,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       findings.push({
         check: 'name-unparseable',
         site,
-        detail: `declares a rule '${heading}' this guard cannot match against an operation kind — spell `
+        detail: `declares a rule '${heading}' this guard cannot match against a technique kind — spell `
           + 'it lowercase with hyphens, or the slice it answers for goes unchecked',
       });
     }
@@ -227,7 +227,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
         findings.push({
           check: 'slice-missing',
           site,
-          detail: `declares no '${slice}' rule, so resolving that operation kind for '${kind}' names a `
+          detail: `declares no '${slice}' rule, so resolving that technique kind for '${kind}' names a `
             + 'section the file does not have',
         });
       } else if (count > 1) {
@@ -244,7 +244,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
         findings.push({
           check: 'slice-unreachable',
           site,
-          detail: `declares '${rule}', which no operation kind resolves to — add it to the vocabulary in `
+          detail: `declares '${rule}', which no technique kind resolves to — add it to the vocabulary in `
             + 'the map, or fold it into a slice a caller can ask for',
         });
       }
@@ -264,13 +264,13 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     findings.push({
       check: 'adapter-unmapped',
       site: `src/loaders/core-ops.ts → harness-compat::${orphan}`,
-      detail: 'is delivered as a core operation but no map row resolves to it — add the row or drop the '
+      detail: 'is delivered as a core technique but no map row resolves to it — add the row or drop the '
         + 'entry, because the map is where a kind becomes a technique',
     });
   }
 
   for (const file of readdirSync(groupDir(index)).sort()) {
-    // The group's own contract and its orientation index are not operations, so neither is held
+    // The group's own contract and its orientation index are not techniques, so neither is held
     // to resolving as one. Every construct folder carries a README, so reading one as an unmapped
     // adapter makes that convention unsatisfiable in this folder alone.
     if (!file.endsWith('.md') || file === 'TECHNIQUE.md' || file === 'README.md') continue;
@@ -278,7 +278,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     findings.push({
       check: 'adapter-unmapped',
       site: groupSite(root, index, file),
-      detail: 'is neither a generic operation nor a mapped adapter, so nothing can resolve to it',
+      detail: 'is neither a generic technique nor a mapped adapter, so nothing can resolve to it',
     });
   }
 
@@ -288,7 +288,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   await runGuard('harness-adapter-set', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
-    okMessage: 'every harness kind resolves to an adapter declaring exactly the operation kinds the map offers',
-    remedy: 'add the adapter to the map, give it every operation kind once, and register it as a core operation',
+    okMessage: 'every harness kind resolves to an adapter declaring exactly the technique kinds the map offers',
+    remedy: 'add the adapter to the map, give it every technique kind once, and register it as a core technique',
   });
 }

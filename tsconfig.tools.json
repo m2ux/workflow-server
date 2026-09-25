@@ -8,5 +8,5 @@
     "sourceMap": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["guards/**/*", "tests/**/*", "scripts/**/*"]
+  "include": ["guards/**/*", "tests/**/*", "scripts/**/*", "benchmark/**/*"]
 }

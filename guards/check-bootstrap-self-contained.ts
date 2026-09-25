@@ -21,7 +21,7 @@
  *
  * What stays legitimate, and why the checks are shaped to allow it: a URI the reader's own client
  * resolves (`workflow-server://schemas/workflow`, `mailto:`), a same-document anchor, and a
- * `group::operation` name carried as a LABEL for the home a rule keeps once the operations bundle
+ * `group::technique` name carried as a LABEL for the home a rule keeps once the techniques bundle
  * arrives — a name the text says is for later and nothing depends on following now. None is a link or
  * a rule address, so no check sees it.
  *

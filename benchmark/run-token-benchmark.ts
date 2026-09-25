@@ -7,11 +7,11 @@
  * (cross-activity resource repeat tax). Prints one JSON metrics object to stdout.
  *
  * By default, stdout also includes `vsReference`: relative deltas against the committed
- * baseline fixture (`tests/fixtures/token-benchmark-baseline.json`). A compact
+ * baseline fixture (`benchmark/fixtures/token-benchmark-baseline.json`). A compact
  * scorecard is written to stderr.
  *
  * `--gate` is what the Verify workflow runs, at the 1% default. Re-recording it, and why the
- * fixture must name the walk under review: docs/development.md § Token delivery benchmark.
+ * fixture must name the walk under review: benchmark/README.md § Token delivery benchmark.
  *
  * Usage (from a server checkout with `node_modules`):
  *
@@ -26,12 +26,12 @@
  *                              comparison across two different workflows is reported but never gated.
  *   --fixture-corpus           Build the delivery-cost fixture corpus into a temp root and walk
  *                              that, ignoring WORKFLOWS_DIR. Its `meta` namespace is derived from
- *                              `core-ops.ts` rather than checked in — see tests/token-bench-corpus.ts.
+ *                              `core-ops.ts` rather than checked in — see benchmark/token-bench-corpus.ts.
  *   --label=<string>           Run label in the JSON output (default: run)
  *   --context-mode=fresh|persistent   Forced on start_session (default: fresh)
  *   --agent-id=<string>        Forced agent_id / ledger key (default: bench-solo)
  *   --server-root=<path>       Server checkout root (default: cwd)
- *   --reference=<path>         Baseline fixture path (default: <server-root>/scripts/fixtures/…)
+ *   --reference=<path>         Baseline fixture path (default: benchmark/fixtures/token-benchmark-baseline.json)
  *   --no-compare               Skip vs-reference scorecard
  *   --gate                     Fail (exit 3) on a delivery-char regression beyond the threshold
  *   --max-regression-pct=<n>   Gate threshold in percent (default: 1)
@@ -48,7 +48,7 @@
  * Exit: 0 on completed walk; 2 if finalStatus !== completed; 3 on gate failure;
  * 1 on hard failure.
  *
- * See docs/development.md § "Token delivery benchmark" and docs/api-reference.md
+ * See benchmark/README.md § "Token delivery benchmark" and docs/api.md
  * § Reference Delivery.
  */
 import { execFileSync } from 'node:child_process';
@@ -102,7 +102,7 @@ interface Metrics {
 /**
  * What one `get_activity` cost, split at the boundary the gate reasons about.
  *
- * `roleContract` is the operations bundle — the worker's contract, identical whichever activity it
+ * `roleContract` is the techniques bundle — the worker's contract, identical whichever activity it
  * is dispatched for. `activityBody` is the remainder: the activity definition, its step techniques
  * and the blocks that ride with them. A fixture walking one small activity and one large one makes
  * the two shares separable, which a walk of similarly-sized activities cannot do.
@@ -199,7 +199,7 @@ const HOT_RESOURCES = [
   'review-mode#review-type-selection',
 ] as const;
 
-const DEFAULT_REFERENCE = 'tests/fixtures/token-benchmark-baseline.json';
+const DEFAULT_REFERENCE = 'benchmark/fixtures/token-benchmark-baseline.json';
 
 /** Default `--gate` threshold: total delivery chars may not regress by more than this percent. */
 const DEFAULT_MAX_REGRESSION_PCT = 1;
@@ -432,7 +432,7 @@ async function main(): Promise<void> {
   // Set before the harness loads, which reads WORKFLOWS_DIR at construction.
   let fixtureCorpus: string | undefined;
   if (hasFlag('fixture-corpus')) {
-    const corpusMod = await import(pathToFileURL(join(serverRoot, 'tests/token-bench-corpus.ts')).href) as typeof import('../tests/token-bench-corpus.js');
+    const corpusMod = await import(pathToFileURL(join(serverRoot, 'benchmark/token-bench-corpus.ts')).href) as typeof import('./token-bench-corpus.js');
     fixtureCorpus = corpusMod.buildTokenBenchCorpusInTemp();
     process.env.WORKFLOWS_DIR = fixtureCorpus;
   }
@@ -493,7 +493,7 @@ async function main(): Promise<void> {
     }
 
     // The fixed/variable split of one delivery. `worker_bundle_chars` is the server's own count of
-    // the operations bundle it assembled, so the two shares sum to the response rather than being
+    // the techniques bundle it assembled, so the two shares sum to the response rather than being
     // re-derived here from a text the walker would have to parse.
     if (name === 'get_activity' && !(result as { isError?: boolean }).isError) {
       const meta = (result as { _meta?: { delivery_cost?: { worker_bundle_chars?: number } } })._meta;

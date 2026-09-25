@@ -45,8 +45,8 @@ describe('the checkpoint protocols are held out of the core lists', () => {
   });
 });
 
-describe('the operations a by-id fetch admits', () => {
-  it('admits both roles\' core operations, one session serving both', () => {
+describe('the techniques a by-id fetch admits', () => {
+  it('admits both roles\' core techniques, one session serving both', () => {
     const servable = contractOperations({});
     for (const ref of [...CORE_ORCHESTRATOR_TECHNIQUES, ...CORE_WORKER_TECHNIQUES]) {
       expect(servable).toContain(ref);
@@ -58,7 +58,7 @@ describe('the operations a by-id fetch admits', () => {
    * resolves every `techniques[]` reference never sees one. Rename the corpus folder it names and
    * the loader returns `not-found`, which the bundle carries into every delivery of that role — the
    * orchestrator losing its commit protocols, say, with nothing red. That exact drift happened while
-   * these operations were moving into namespaces of their own, and the only thing that caught it was
+   * these techniques were moving into namespaces of their own, and the only thing that caught it was
    * a walk incidentally counting unresolved refs. This asks the question directly.
    */
   it.skipIf(!liveCorpusRoot())('names only refs the corpus resolves', async () => {
@@ -111,7 +111,7 @@ describe('the fan-only rules', () => {
 
 describe('the loop-only rules', () => {
   /**
-   * A grouped technique resolves its rules under `<group>::<operation>::<rule>`, which is a
+   * A grouped technique resolves its rules under `<group>::<technique>::<rule>`, which is a
    * segment longer than the standalone form beside it in `FAN_ONLY_RULES`. A ref written to the
    * shorter spelling filters nothing and reports nothing, so the loop controls would ride to every
    * worker whose run holds no loop — the cost this cut exists to avoid.

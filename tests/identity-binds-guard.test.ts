@@ -16,9 +16,9 @@ import { collectFindings } from '../guards/check-identity-binds.js';
  */
 describe('identity-binds guard', () => {
   interface Case {
-    /** `## Inputs` body of the operation the step binds. */
+    /** `## Inputs` body of the technique the step binds. */
     inputs?: string;
-    /** `## Inputs` body of the group container above it, whose declarations the operation inherits. */
+    /** `## Inputs` body of the group container above it, whose declarations the technique inherits. */
     containerInputs?: string;
     /** The step's `technique:` block, indented as a step field. */
     binding: string;
@@ -72,7 +72,7 @@ describe('identity-binds guard', () => {
   const REQUIRED = '### seed_value\n\nThe value taken up.\n';
   const SAME_NAME = '    technique:\n      name: grp::op\n      inputs:\n        seed_value: seed_value\n';
 
-  it('reports a same-name bind on an input the operation requires', () => {
+  it('reports a same-name bind on an input the technique requires', () => {
     const findings = findingsFor({ inputs: REQUIRED, binding: SAME_NAME });
     expect(findings.map((f) => f.check)).toContain('identity-bind');
   });
@@ -99,7 +99,7 @@ describe('identity-binds guard', () => {
    * the name into the read contract — strip it and `check-activity-variables` reports the declared
    * read as unconsulted.
    */
-  it('passes a same-name bind on an input the operation marks optional', () => {
+  it('passes a same-name bind on an input the technique marks optional', () => {
     const findings = findingsFor({
       inputs: '### seed_value\n\n*(optional)* The value taken up.\n',
       binding: SAME_NAME,
@@ -153,10 +153,10 @@ describe('identity-binds guard', () => {
   });
 
   /**
-   * Where the reference resolves to more than one operation the optionality carve-outs cannot be
+   * Where the reference resolves to more than one technique the optionality carve-outs cannot be
    * tested, and a check that cannot tell a deviation from a restatement should not call it one.
    */
-  it('passes a bind whose operation the corpus does not hold', () => {
+  it('passes a bind whose technique the corpus does not hold', () => {
     const findings = findingsFor({
       inputs: REQUIRED,
       binding: '    technique:\n      name: grp::nowhere\n      inputs:\n        seed_value: seed_value\n',

@@ -9,13 +9,13 @@ import { type Activity, type Step, type TechniqueStep, techniqueName } from '../
 import { type Routine, RoutineSchema, operationInputs, safeValidateRoutine } from '../src/schema/routine.schema.js';
 
 /**
- * An operation as an argument (#739 W01): an input declared `kind: technique` takes an operation
+ * A technique as an argument (#739 W01): an input declared `kind: technique` takes a technique
  * reference rather than a value, and the reference stands in a body step's technique position until
- * a site says which operation. Substitution happens at materialisation, which is before the contract
+ * a site says which technique. Substitution happens at materialisation, which is before the contract
  * derives — so a derived contract never meets a placeholder.
  *
  * The cases here are about the two namespaces staying apart. A value moves through bag names, tokens
- * and expressions; an operation moves into exactly one field.
+ * and expressions; a technique moves into exactly one field.
  */
 
 const routine = (partial: Partial<Routine> & { id: string; steps: Step[] }): Routine =>
@@ -59,7 +59,7 @@ const passStep = (host: Activity): TechniqueStep => {
   return loop.steps[0] as TechniqueStep;
 };
 
-describe('an operation reaches the technique position', () => {
+describe('a technique reaches the technique position', () => {
   it('substitutes the site\'s argument where the body names the parameter', () => {
     const host = activity([
       { kind: 'routine', id: 'adversarial', routine: 'per-unit-pass', with: { pass_operation: 'full-prism::adversarial' } },
@@ -68,7 +68,7 @@ describe('an operation reaches the technique position', () => {
     expect(techniqueName(passStep(host).technique)).toBe('full-prism::adversarial');
   });
 
-  it('gives two sites two operations from one body', () => {
+  it('gives two sites two techniques from one body', () => {
     const adversarial = activity([
       { kind: 'routine', id: 'adversarial', routine: 'per-unit-pass', with: { pass_operation: 'full-prism::adversarial' } },
     ] as Step[], 'adversarial-pass');
@@ -111,7 +111,7 @@ describe('an operation reaches the technique position', () => {
 });
 
 describe('the two namespaces stay apart', () => {
-  it('leaves the value substitution untouched by the operation argument', () => {
+  it('leaves the value substitution untouched by the technique argument', () => {
     const host = activity([
       {
         kind: 'routine', id: 'adversarial', routine: 'per-unit-pass',
@@ -147,7 +147,7 @@ describe('what a site may not supply', () => {
     materializeActivityRoutines(activity([step as unknown as Step]), lookupFrom([PER_UNIT_PASS]), 'wf');
   };
 
-  it('refuses an unbound operation parameter, there being no host value to fall through to', () => {
+  it('refuses an unbound technique parameter, there being no host value to fall through to', () => {
     expect(() => materialise({ kind: 'routine', id: 'pass', routine: 'per-unit-pass' }))
       .toThrow(/declares 'kind: technique' and this site binds no argument/);
   });
@@ -293,7 +293,7 @@ describe('a parameter standing to the left of a comparison', () => {
   });
 });
 
-describe('a step binding an operation parameter declares its own id', () => {
+describe('a step binding a technique parameter declares its own id', () => {
   const withStep = (step: Record<string, unknown>): unknown => ({
     id: 'unnamed-pass', version: '1.0.0', name: 'unnamed-pass',
     inputs: [{ id: 'pass_operation', kind: 'technique', description: 'The lens.' }],
@@ -303,7 +303,7 @@ describe('a step binding an operation parameter declares its own id', () => {
   it('refuses one that omits it, the derived id being the parameter at every site', () => {
     const result = safeValidateRoutine(withStep({ kind: 'technique', technique: { name: 'pass_operation' } }));
     expect(result.success).toBe(false);
-    expect(result.error?.issues[0]?.message).toContain("binds the operation parameter 'pass_operation'");
+    expect(result.error?.issues[0]?.message).toContain("binds the technique parameter 'pass_operation'");
   });
 
   it('refuses one nested in a loop body', () => {
@@ -315,18 +315,18 @@ describe('a step binding an operation parameter declares its own id', () => {
     expect(result.error?.issues[0]?.path).toEqual(['steps', 0, 'steps', 0, 'id']);
   });
 
-  it('admits a step binding an ordinary operation with no id, which derives one', () => {
+  it('admits a step binding an ordinary technique with no id, which derives one', () => {
     expect(safeValidateRoutine(withStep({ kind: 'technique', technique: 'full-prism::adversarial' })).success).toBe(true);
   });
 });
 
-describe('the declaration says which parameters are operations', () => {
+describe('the declaration says which parameters are techniques', () => {
   it('names them, so a caller can tell a per-site routine from a per-definition one', () => {
     expect(operationInputs(PER_UNIT_PASS)).toEqual(['pass_operation']);
     expect(operationInputs(routine({ id: 'plain', steps: [{ kind: 'action', id: 'note', actions: [] }] as Step[] }))).toEqual([]);
   });
 
-  it('puts one site\'s operations into a body without touching the declaration', () => {
+  it('puts one site\'s techniques into a body without touching the declaration', () => {
     const body = bodyWithOperations(PER_UNIT_PASS.steps, new Map([['pass_operation', 'full-prism::synthesis']]));
     const substituted = (body[0] as Step & { kind: 'loop' }).steps[0] as TechniqueStep;
     expect(techniqueName(substituted.technique)).toBe('full-prism::synthesis');

@@ -60,7 +60,7 @@ export function isOutsideValueSet(variable: Pick<VariableDefinition, 'values'>, 
  * about a starting value takes the value another site names.
  */
 export const ActivityVariablesSchema = z.object({
-  reads: z.array(VariableNameSchema).optional().describe('Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound operations\' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here.'),
-  writes: z.array(VariableDefinitionSchema).optional().describe('Session variables this activity puts into the bag: its bound operations\' outputs (under their declared id or the step binding\'s remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow\'s variable set, defaultValue included.'),
+  reads: z.array(VariableNameSchema).optional().describe('Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound techniques\' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here.'),
+  writes: z.array(VariableDefinitionSchema).optional().describe('Session variables this activity puts into the bag: its bound techniques\' outputs (under their declared id or the step binding\'s remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow\'s variable set, defaultValue included.'),
 }).strict();
 export type ActivityVariables = z.infer<typeof ActivityVariablesSchema>;

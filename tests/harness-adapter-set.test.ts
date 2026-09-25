@@ -7,7 +7,7 @@ import { collectFindings } from '../guards/check-harness-adapter-set.js';
 
 /**
  * The harness adapters are reached through the VALUE of a variable — a harness kind becomes a file and an
- * operation kind becomes a Rules section inside it — so no binding check sees them, and the obligation
+ * technique kind becomes a Rules section inside it — so no binding check sees them, and the obligation
  * that each adapter exposes the same slices lives in prose. Measured before the guard existed: a partial
  * adapter, a renamed slice, a map row with no file, and a deleted slice all passed the whole suite.
  *
@@ -26,7 +26,7 @@ const ADAPTER = (slices: string[]): string =>
     .join('\n');
 
 const MAP = (rows: string[], slices: string[], vocabulary?: string): string => [
-  '# Resolve harness operation', '',
+  '# Resolve harness technique', '',
   // The real map describes these names in Outputs before deciding them in step 2. A guard that scans the
   // whole file matches here first, and then a step-2 rewrite cannot change its verdict.
   '## Outputs', '', '### harness_operation', '',
@@ -80,7 +80,7 @@ const ALL = ['spawn', 'resume', 'concurrent'];
 
 describe('harness adapter set', () => {
   it('refuses an adapter missing a slice a caller can ask for', () => {
-    // Resolving that operation kind would name a section the file does not have.
+    // Resolving that technique kind would name a section the file does not have.
     expect(checks({ ...REGISTERED, 'claude-code': ['spawn'], cursor: ALL, cline: ALL, generic: ALL }))
       .toEqual(['slice-missing', 'slice-missing']);
   });
@@ -108,7 +108,7 @@ describe('harness adapter set', () => {
       .toEqual(['adapter-unmapped']);
   });
 
-  it('reads the operation kinds from the step that decides them, not a mention elsewhere', () => {
+  it('reads the technique kinds from the step that decides them, not a mention elsewhere', () => {
     // The map names these in Outputs too. A whole-file scan matches there first, so narrowing step 2
     // would change nothing the guard sees — and the adapters would keep passing against a stale set.
     expect(checks({ 'claude-code': ALL, cursor: ALL, cline: ALL, generic: ALL },

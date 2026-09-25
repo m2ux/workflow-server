@@ -16,7 +16,7 @@ const CONTAINER = `${GROUP}/TECHNIQUE.md`;
 const OP = `${GROUP}/dispatch-activity.md`;
 const SIBLING = `${GROUP}/continue-batch.md`;
 
-/** Stand-in roster: the container and one operation each declare a rule. */
+/** Stand-in roster: the container and one technique each declare a rule. */
 const ROSTER = new Map<string, Set<string>>([
   [CONTAINER, new Set(['agent-id-scopes-delivery'])],
   [OP, new Set(['account-every-activity'])],
@@ -187,8 +187,8 @@ describe('reachableRules', () => {
     expect(reachable.has('agent-id-scopes-delivery')).toBe(true);
   });
 
-  /** A sibling operation is merged into nobody; it reaches a reader by the bundle, not the tree. */
-  it('leaves out a sibling operation rule, which no container merge supplies', () => {
+  /** A sibling technique is merged into nobody; it reaches a reader by the bundle, not the tree. */
+  it('leaves out a sibling technique rule, which no container merge supplies', () => {
     expect(reachableRules(OP, ROOT, rulesOf).has('one-advance-per-activity')).toBe(false);
   });
 });

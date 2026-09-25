@@ -1,8 +1,6 @@
 # Configuration reference
 
-Every flag and environment variable the server reads at startup. The install sequence these settings fit into is [setup.md](setup.md); what differs between the two transports is [http.md](http.md) and [stdio.md](stdio.md).
-
-Where a flag and a variable name the same setting, the flag wins.
+Every flag and environment variable the server reads at startup.
 
 ## Root binding
 
@@ -30,20 +28,20 @@ One of a workspace path **or** `--repo` is required at startup. The table names 
 
 ## Delivery budgets
 
-Three budgets bound what reaches an agent, each protecting something different. [The delivery model](delivery-model.md#the-three-budgets) explains what each one is for and how it was calibrated.
+[Delivery](delivery.md#delivery-budgets) explains what each one is for and how it was calibrated.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `BUNDLE_HEADROOM_FRACTION` | `0.8` | Share of a worker's declared window that eager step-technique bundling may spend ([window budget](delivery-model.md#the-window-budget)) |
+| `BUNDLE_HEADROOM_FRACTION` | `0.8` | Share of a worker's declared window that eager step-technique bundling may spend ([window budget](delivery.md#window-budget)) |
 | `BUNDLE_CHARS_PER_TOKEN` | `4` | Token to character factor, used by both window and batch budgets |
-| `MAX_RESPONSE_CHARS` | `60000` | What one tool result may carry, measured over response text and protocol metadata together. Reports; never truncates ([response bound](delivery-model.md#what-one-tool-result-may-carry)) |
-| `BATCH_HEADROOM_FRACTION` | `0.35` | Share of a worker's window one dispatch may accumulate across a run of activities; clamped to [0, 1] ([batch budget](delivery-model.md#the-batch-budget)) |
-| `BATCH_MAX_ACTIVITIES` | `3` | Distinct activities one delivery scope may take; clamped to [1, 100] ([batch budget](delivery-model.md#the-batch-budget)) |
-| `FAN_MAX_BRANCHES` | `4` | Branches one fanned exit may open, unless the destination declares a tighter `maxInstances`; clamped to [2, 100] ([fanning](dispatch-model.md#fanning-an-exit-across-several-branches)) |
+| `MAX_RESPONSE_CHARS` | `60000` | What one tool result may carry, measured over response text and protocol metadata together. Reports; never truncates ([response bound](delivery.md#one-tool-result)) |
+| `BATCH_HEADROOM_FRACTION` | `0.35` | Share of a worker's window one dispatch may accumulate across a run of activities; clamped to [0, 1] ([batch budget](delivery.md#batch-budget)) |
+| `BATCH_MAX_ACTIVITIES` | `3` | Distinct activities one delivery scope may take; clamped to [1, 100] ([batch budget](delivery.md#batch-budget)) |
+| `FAN_MAX_BRANCHES` | `4` | Branches one fanned exit may open, unless the destination declares a tighter `maxInstances`; clamped to [2, 100] ([fanning](dispatch.md#fanning-an-exit-across-several-branches)) |
 
 ## Signing key
 
-The key that seals session state lives in a file named `secret`. The server looks for its directory in `WORKFLOW_SERVER_KEY_DIR` first, then `WORKFLOW_SERVER_STATE_DIR`, falling back to `~/.workflow-server`. Docker's `start.sh` sets it explicitly, because non-root containers often run with `HOME=/` and the key would otherwise land somewhere unwritable. What the seal proves is in [workflow fidelity](workflow-fidelity.md#layer-1-session-integrity).
+The key that seals session state lives in a file named `secret`. The server looks for its directory in `WORKFLOW_SERVER_KEY_DIR` first, then `WORKFLOW_SERVER_STATE_DIR`, falling back to `~/.workflow-server`. Docker's `start.sh` sets it explicitly, because non-root containers often run with `HOME=/` and the key would otherwise land somewhere unwritable. What the seal proves is in [fidelity](fidelity.md#layer-1-session-integrity).
 
 ## Examples
 

@@ -28,7 +28,6 @@
               <li><a href="./dispatch.html">Dispatch</a></li>
               <li><a href="./checkpoints.html">Checkpoints</a></li>
               <li><a href="./state-management.html">State</a></li>
-              <li><a href="./artifact-management.html">Artifacts</a></li>
               <li><a href="./resource-resolution.html">Resolution</a></li>
               <li><a href="./workflow-fidelity.html">Fidelity</a></li>
             </ul>
@@ -68,7 +67,7 @@
 
 <main id="main">
   <h1>Architecture</h1>
-  <p class="lede prose">The workflow-server is a small state machine wrapped in an MCP tool surface. Agents call tools; the server validates every request against the workflow definition, composes techniques and resources just in time, and persists canonical session state on disk under the engineering root (feature work under a separate workspace root). The architecture is organized as models — dispatch, checkpoints, state, artifacts, resolution, and fidelity — so long-running, multi-agent runs stay bounded, pauses reach the user-facing agent, and transitions never depend on guesswork.</p>
+  <p class="lede prose">The workflow-server is a small state machine wrapped in an MCP tool surface. Agents call tools; the server validates every request against the workflow definition, composes techniques and resources just in time, and persists canonical session state on disk under the engineering root (feature work under a separate workspace root). The architecture is organized as models — dispatch, checkpoints, state, resolution, and fidelity — so long-running, multi-agent runs stay bounded, pauses reach the user-facing agent, and transitions never depend on guesswork.</p>
 
   <h2 id="models">Models</h2>
   <ul class="card-grid">
@@ -84,23 +83,18 @@
     </li>
     <li class="card">
       <h3>3. State management</h3>
-      <p>Deterministic transitions: a schema-validated variable bag, mutation through checkpoint effects and worker outputs, and first-matching-condition transition evaluation — never a guess.</p>
+      <p>Deterministic transitions: a schema-validated variable bag, mutation through checkpoint effects and worker outputs, and first-matching-condition transition evaluation — never a guess. Session notes live in one planning folder, apart from the code change.</p>
       <span class="card-cta"><a href="./state-management.html">State model</a></span>
     </li>
     <li class="card">
-      <h3>4. Artifact and workspace isolation</h3>
-      <p>Strict separation between the workspace root (feature worktrees) and the engineering root (planning folders hold plans, state, and traces), with predictable artifact naming.</p>
-      <span class="card-cta"><a href="./artifact-management.html">Artifact model</a></span>
-    </li>
-    <li class="card">
-      <h3>5. Technique and resource resolution</h3>
+      <h3>4. Technique and resource resolution</h3>
       <p>All behaviour is composed from techniques, referenced by <code>::</code>-paths, resolved workflow-first with a shared <code>meta</code> fallback, and delivered as bundles — with reference material lazy-loaded.</p>
-      <span class="card-cta"><a href="./resource-resolution.html">Resolution model</a></span>
+      <span class="card-cta"><a href="./resource-resolution.html">Resolution</a></span>
     </li>
     <li class="card">
-      <h3>6. Workflow fidelity</h3>
+      <h3>5. Fidelity</h3>
       <p>Seven enforcement layers — from HMAC token integrity to the execution trace — that keep agents on the defined path and make deviations visible.</p>
-      <span class="card-cta"><a href="./workflow-fidelity.html">Fidelity model</a></span>
+      <span class="card-cta"><a href="./workflow-fidelity.html">Fidelity</a></span>
     </li>
   </ul>
 </main>
