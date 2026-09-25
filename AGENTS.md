@@ -7,10 +7,6 @@ Project instructions for this repository.
 - **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.
 - When building, testing, or changing a checkout, follow [development.md](docs/development.md).
 
-## Project overview
-
-An MCP server for AI agent workflow orchestration (TypeScript, Node.js 20), driving agents through a **Goal → Workflow → Activities → Techniques → Tools** model. Definitions live on the `workflows` orphan branch, checked out as a worktree; engineering artifacts live in `.engineering/`. See [README.md](README.md) and [setup.md](docs/setup.md).
-
 ## Worktrees
 
 - **Work a branch in its own worktree.** `.worktrees/workflows` stays on `workflows`; a feature branch lives at `.worktrees/<branch>`. Switching the shared dest moves the corpus under whatever is reading it — a guard sweep, a coverage walk, another agent — and the result reads as a defect in the change.
@@ -55,10 +51,11 @@ Reference example: [#395](https://github.com/m2ux/workflow-server/issues/395). [
 
 ## Where to look
 
-[docs/README.md](docs/README.md) is the index. Work on the engineering branch starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).
+Recursively follow these links to discover the complete documentation corpus for this project. 
 
-<!--
-Code intelligence guidance is authored in the workspace AGENTS.md.
-It is deliberately absent here: two copies drifted apart on the statistics they quoted and the
-skills they listed. `npm run check:agent-homes` fails if a tool run puts it back in AGENTS.md or CLAUDE.md.
--->
+* [Overview](./README.md)
+* [Site](https://m2ux.github.io/workflow-server/)
+* [Server](docs/README.md)
+* [Workflows](https://github.com/m2ux/workflow-server/blob/workflows/README.md)
+* [Workspace](https://github.com/m2ux/workflow-server/blob/workspace/README.md)
+* [Deployment](https://github.com/m2ux/workflow-server/blob/docker/README.md)
