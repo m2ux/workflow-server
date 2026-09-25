@@ -51,7 +51,7 @@ function peel(schema: ZodTypeAny): { meta?: Enforcement; core: ZodTypeAny } {
     if (!next || next === current) break;
     current = next;
   }
-  return { meta, core: current };
+  return meta === undefined ? { core: current } : { meta, core: current };
 }
 
 function assign(out: Map<string, Enforcement>, path: string, meta: Enforcement): void {
@@ -69,7 +69,8 @@ function walk(schema: ZodTypeAny, path: string, state: WalkState): void {
   const typeName = core._def.typeName as string;
   if (typeName === 'ZodObject') {
     state.seen.add(core);
-    for (const [key, child] of Object.entries(core.shape as Record<string, ZodTypeAny>)) {
+    const shape = (core as unknown as { shape: Record<string, ZodTypeAny> }).shape;
+    for (const [key, child] of Object.entries(shape)) {
       walk(child, path ? `${path}.${key}` : key, state);
     }
     return;
