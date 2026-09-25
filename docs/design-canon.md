@@ -27,4 +27,4 @@ The [technique protocol](technique-protocol-specification.md) and the [identifie
 - [schemas/README.md](https://github.com/m2ux/workflow-server/blob/main/schemas/README.md) — the workflow and activity file shapes
 - [guards/README.md](https://github.com/m2ux/workflow-server/blob/main/guards/README.md) — the checks that enforce them mechanically
 
-The split is the same one the [documentation system](https://github.com/m2ux/workflow-server/blob/main/docs/documentation-system.md#the-two-layers) draws everywhere: what the server is lives on the server tree, and what the definitions must say lives with the definitions.
+The split is the same one the [documentation system](https://github.com/m2ux/workflow-server/blob/main/docs/documentation.md#the-two-layers) draws everywhere: what the server is lives on the server tree, and what the definitions must say lives with the definitions.
