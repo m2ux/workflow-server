@@ -14,20 +14,37 @@ The workflow definitions live on the `workflows` branch. Cloning the server on i
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
 git worktree add .worktrees/workflows workflows
-npm install
+npm ci
 ```
 
-A linked worktree needs the same two things and starts with neither. `npm run worktree:provision` supplies them — see [running guards in a worktree](../guards/README.md#running-guards-in-a-worktree).
+A linked worktree needs the corpus checkout and a resolvable `node_modules`, and starts with neither. `npm run worktree:provision` supplies them — see [running guards in a worktree](../guards/README.md#running-guards-in-a-worktree).
 
 ## Commands
 
 ```bash
+npm ci                # install from the lockfile
 npm run typecheck     # type check: server source, then guards + tests + scripts
 npm run build         # production build
+npm start             # production, stdio
+npm run start:http    # production HTTP entry point
 npm run dev           # hot reload via tsx, stdio transport
 npm run dev:http      # hot reload over HTTP
-npm run start:http    # production HTTP entry point
+npm test              # watch mode
+npm run test:ci       # once
+npm run check:all     # every guard
+npm run check:delta   # guards against the merge-base
+npm run worktree:provision
 ```
+
+`typecheck` is two compilations and fails on either: `tsconfig.json` over `src/` under the full house style, `tsconfig.tools.json` over guards, tests and scripts under the same strictness with `noPropertyAccessFromIndexSignature` relaxed.
+
+## Dependencies
+
+Installs resolve from the lockfile. CI runs `npm ci`; use it locally too, and `npm install` only when deliberately changing a dependency. When a worktree cannot resolve `node_modules`, provision tells you to run `npm ci` in the primary checkout.
+
+- **New direct dependencies take an exact version.**
+- **Known-bad versions** sit in `scripts/known-bad-versions.json`, are held out of resolution by `overrides` in `package.json`, and fail `npm run check:lockfile`. That file says how to refresh it.
+- **No blanket `ignore-scripts`** without an allowlist and a green build behind it; native addons need their install hooks.
 
 ## Project structure
 
@@ -40,6 +57,7 @@ The directories, and what each one owns:
 | `src/config.ts` | `ServerConfig` — the resolved roots, transport, port, and the delivery budgets |
 | `src/transports/` | One module per transport, each owning its own connect, listen and shutdown lifecycle |
 | `src/middleware/` | Request id, per-request logging and the shared JSON error body — HTTP only, no footprint on the stdio path |
+| `src/resources/` | MCP resources the server exposes, including `workflow-server://schemas` |
 | `src/schema/` | The Zod schemas everything is validated against, plus the identifier rules and the `when` expression evaluator |
 | `src/loaders/` | Filesystem to validated object: workflows, techniques, resources, schemas, and the `::` reference resolver |
 | `src/tools/` | The tool implementations, split between `workflow-tools.ts` and `resource-tools.ts` |
@@ -51,10 +69,11 @@ The directories, and what each one owns:
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
 | `.worktrees/workflows/` | A worktree of the `workflows` branch — the corpus the server serves |
 | `docs/` | This documentation |
+| `site/` | The hand-authored documentation site |
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
 
-Inside the corpus worktree, product definitions live under `corpus/`, and discovery walks that grouping without searching sibling folders. Layout authoring lives at `.worktrees/workflows/docs/`. What makes a directory a namespace is in [resource resolution](resource-resolution-model.md#what-a-namespace-is).
+Inside the corpus worktree, product definitions live under `corpus/`. Named roots beside it are `ledgers/`, `walks/`, and `docs/` for layout authoring, at `.worktrees/workflows/docs/`. What makes a directory a namespace, and where the walk stops, is in [resource resolution](resource-resolution-model.md#what-a-namespace-is).
 
 ## Testing
 
@@ -67,9 +86,9 @@ npm test -- --run tests/e2e               # one directory
 
 Coverage needs `@vitest/coverage-v8`, which is not a dependency of this repository. Install it before passing `--coverage`.
 
-The suite is large enough that naming its files here would go stale faster than it helps. `tests/` holds the unit and integration suites, `tests/e2e/` holds the end-to-end walks through the workflow corpus, and `npm test -- --run` prints the live inventory with the pass and fail counts. Integration tests drive the server over `InMemoryTransport`, and the schema tests exercise every Zod schema with valid and invalid input.
+The suite is large enough that naming its files here would go stale faster than it helps. `tests/` holds the unit and integration suites, `tests/e2e/` holds the end-to-end walks through the workflow corpus, and `npm run test:ci` prints the live inventory with the pass and fail counts. Integration tests drive the server over `InMemoryTransport`, and the schema tests exercise every Zod schema with valid and invalid input.
 
-Two things about the suite are worth knowing before changing anything in it. Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too when a live corpus is present; live-corpus tests skip when `.worktrees/workflows` is missing. And the end-to-end walks are snapshotted against a specific corpus commit, which is what the next section is about.
+Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too when a live corpus is present. Live-corpus tests skip when `.worktrees/workflows` is missing. The walks record a path through the definitions beside them, which is what the next section is about.
 
 ## Corpus-coupled baselines
 
@@ -93,11 +112,11 @@ Count them before landing:
 npm run sessions:census -- --workflow <id> --status running --list
 ```
 
-Zero means the edit reaches nothing in flight. A non-zero count is the set of runs that will pick it up, and the `--list` output names each one's folder, recorded version and current activity.
+Zero means the edit reaches nothing in flight. A non-zero count is the set of runs that will pick it up, and the `--list` output names each one's folder, nesting depth, recorded version, status and current activity.
 
 ## What runs on a pull request
 
-[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`, `npm run test:ci`, and the [fixture delivery gate](benchmarks.md#the-gate-runs-on-every-pull-request). Live-corpus tests skip when `.worktrees/workflows` is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
+[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) checks the `workflows` branch out at `workflows/`, then runs `npm run typecheck`, `npm run check:schemas`, `guards/check-tool-call-shape.ts` against that checkout, `npm run test:ci` with `WORKFLOWS_DIR` set to it, and the [fixture delivery gate](benchmarks.md#the-gate-runs-on-every-pull-request). Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
 
 ## The two branches
 

@@ -75,7 +75,17 @@ npm run worktree:provision            # this worktree
 npm run worktree:provision -- <path>  # another one
 ```
 
-It adds a `workflows` worktree and makes `node_modules` resolvable. Idempotent.
+It runs on the primary checkout, adds `.worktrees/workflows`, and makes `node_modules` resolvable. A nested engine worktree reads that dest and does not take the branch lock. Idempotent.
+
+Name the worktree for its branch in full, slashes as nested directories (`.worktrees/workflow/353-context-scoped-delivery`). Rename by removing and re-adding: `git worktree remove --force`, `git worktree add` at the new path, then provision.
+
+Add the corpus worktree with `git worktree add .worktrees/workflows workflows`, or let provision do it. That tree holds `workflows` alone — no `package.json`, so provision does not apply to it. Guard it with:
+
+```bash
+npx tsx guards/check-all.ts --root <path-to-worktree> --corpus-only
+```
+
+Without `--root` the sweep measures `.worktrees/workflows` of the primary checkout.
 
 ## Guards that are also tests
 
