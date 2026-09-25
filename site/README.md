@@ -32,4 +32,4 @@ Hand-authored regions sit outside `<!-- BEGIN GENERATED … -->` / `<!-- END GEN
 - Dense API and schema material uses native `<details>` for full descriptions and nested fields.
 - Tables and diagrams may use the full layout width.
 
-Open [index.html](index.html) directly in a browser to preview. How the whole documentation system fits together is described in [docs/documentation-system.md](../docs/documentation-system.md).
+Open [index.html](index.html) directly in a browser to preview. How the whole documentation system fits together is described in [docs/documentation.md](../docs/documentation.md).
