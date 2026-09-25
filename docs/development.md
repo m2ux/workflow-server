@@ -118,4 +118,4 @@ The guards and the end-to-end walks read that checkout, so [corpus-coupled basel
 
 ## Authoring definitions
 
-How to add a workflow is the [authoring guide](README.md#document-corpus). The file contract is the [technique protocol](README.md#document-corpus). The schema the server loads stays in this tree: [schemas/README.md](../schemas/README.md).
+How to add a workflow is the [authoring guide](README.md#document-corpus). The file contract is the [technique protocol](technique.md). The schema the server loads stays in this tree: [schemas/README.md](../schemas/README.md).

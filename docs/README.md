@@ -1,22 +1,22 @@
-# Workflow Server documentation
-
-These pages hold the contract: exact values, field names, ordering rules and the commands that exercise them. Read them when you are implementing against the server, auditing a run, or debugging one.
-
-For the illustrated read — how the pieces relate, with diagrams — start at the [documentation site](https://m2ux.github.io/workflow-server/).
+# Documentation Catalogue
 
 ## Start here
 
 
 | If you are                                | Read                                                                               |
 | ----------------------------------------- | ---------------------------------------------------------------------------------- |
-| Installing or deploying the server        | [setup.md](setup.md), then [http.md](http.md) or [stdio.md](stdio.md)              |
+| Installing or deploying the server        | [setup.md](setup.md)                                                               |
 | Setting a flag or an environment variable | [configuration.md](configuration.md)                                               |
 | Calling the tools                         | [api.md](api.md)                                                                   |
 | Building or testing the server            | [development.md](development.md)                                                   |
 | Running a guard, or adding one            | [guards/README.md](../guards/README.md)                                            |
 | Pricing a delivery change                 | [benchmark/README.md](../benchmark/README.md)                                      |
 | Authoring workflow definitions            | [Document corpus](#document-corpus), and [schemas/README.md](../schemas/README.md) |
-| Adding or changing documentation          | [documentation.md](documentation.md)                                 |
+| Writing a technique                       | [technique.md](technique.md)                                                       |
+| Writing a workflow                        | [workflow.md](workflow.md)                                                         |
+| Writing a routine                         | [routine.md](routine.md)                                                           |
+| Writing a resource                        | [resource.md](resource.md)                                                         |
+| Adding or changing documentation          | [documentation.md](documentation.md)                                               |
 
 
 
@@ -31,6 +31,10 @@ Each model answers one pressure the design is under. [architecture.md](architect
 | [Dispatch](dispatch-model.md)                       | How work is split across a chain of agents                           |
 | [Checkpoints](checkpoint-model.md)                  | How a background agent asks a question it cannot ask directly        |
 | [State management](state.md)                        | How the next activity is chosen, and where session state lives       |
+| [Workflow](workflow.md)                             | The guide an operator follows, its phases, and where each outcome leads |
+| [Technique](technique.md)                           | One capability a step names                                          |
+| [Routine](routine.md)                               | A run of steps written once and spliced in wherever it is needed     |
+| [Resource](resource.md)                             | Reference material a technique cites and does not contain            |
 | [Artifact management](artifact-management-model.md) | How planning output is kept out of the code change                   |
 | [Resolution](resolution.md)                         | How a name reaches a technique, resource, activity, or routine       |
 | [Delivery](delivery-model.md)                       | What then travels to an agent, how much of it, and what it costs     |
@@ -47,7 +51,6 @@ Definitions and the docs that describe them live on the `workflows` branch. This
 | Document                                                                                                                                  | What it is                                                         |
 | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
 | [Authoring guide](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md)                                                  | Layout, and how to add a workflow, resource, technique, or routine |
-| [Technique protocol](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md)                     | The technique file contract                                        |
 | [Identifier conventions](https://github.com/m2ux/workflow-server/blob/workflows/docs/identifier-conventions.md)                           | How every id in a definition is spelled                            |
 | [Canon](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/README.md)                                                    | The namespace the four homes below are served from                 |
 | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md)                   | The stance an author writes toward                                 |

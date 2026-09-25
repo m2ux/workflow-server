@@ -2,7 +2,7 @@
  * Technique-template guard (B9, issue #166).
  *
  * Every technique file under `<workflow>/techniques/` follows the normative template
- * (workflows docs/technique-protocol-specification.md §3):
+ * (docs/technique.md#file-anatomy):
  *
  * - Frontmatter carries `metadata.version` and nothing else — identity comes from the path,
  *   and the loader reads no other key.
@@ -12,11 +12,11 @@
  *   Rules — each at most once, in that order (Outputs precede Protocol: the interface reads
  *   as a whole before the procedure).
  * - `###` entry ids under Inputs/Outputs are snake_case; an id that mirrors an external
- *   tool parameter may be camelCase (spec §3.2 — Atlassian's `cloudId` binds natively).
+ *   tool parameter may be camelCase (docs/technique.md#inputs-and-outputs — Atlassian's `cloudId` binds natively).
  *   `###` rule names under Rules are kebab-case, optionally dot-grouped (`commit.signed`).
- * - Every `{$name}` protocol-variable binding is snake_case (spec §3.3; AP-55).
+ * - Every `{$name}` protocol-variable binding is snake_case (docs/technique.md#protocol-variables; AP-55).
  * - Every `#### artifact` body under Outputs is a filename the loader can accept — one path
- *   segment with an extension, `{token}` placeholders allowed (spec §3.2). The Zod schema rejects
+ *   segment with an extension, `{token}` placeholders allowed (docs/technique.md#inputs-and-outputs). The Zod schema rejects
  *   anything else at load, which drops the technique with a logged warning; this guard is what
  *   makes an unfilenameable declaration read as a red test naming the file, rather than a
  *   technique quietly missing from the corpus (#330).
@@ -62,7 +62,7 @@ export interface TemplateViolation {
 const CANONICAL = ['Capability', 'Inputs', 'Outputs', 'Protocol', 'Rules'];
 
 const SNAKE = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/;
-/** External-tool parameter mirror (spec §3.2): lowerCamelCase, no underscores. */
+/** External-tool parameter mirror (docs/technique.md#inputs-and-outputs): lowerCamelCase, no underscores. */
 const CAMEL = /^[a-z][a-z0-9]*(?:[A-Z][a-z0-9]*)+$/;
 /** Kebab rule name, optionally dot-grouped: `index-freshness-first`, `commit.signed`. */
 const RULE_NAME = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*(?:\.[a-z][a-z0-9]*(?:-[a-z0-9]+)*)*$/;
