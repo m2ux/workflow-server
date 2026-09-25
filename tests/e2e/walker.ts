@@ -88,7 +88,6 @@ export interface ActivityDef {
   steps?: StepDef[];
   exits?: ExitDef[];
   techniques?: string[];
-  techniques?: { primary?: string; supporting?: string[] };
   artifactPrefix?: string;
   artifacts?: Array<{ id?: string; name: string; location?: string }>;
 }
