@@ -50,7 +50,7 @@ A simple or experimental project keeps `.engineering/` as ordinary files on the 
 
 ## A session's notes
 
-One run of a workflow opens one folder under the engineering root: `.engineering/artifacts/planning/<slug>/`. That folder holds the plans, reviews, and session record for the run. What the folder contains, and how those documents are named, is the server's [artifact management](https://github.com/m2ux/workflow-server/blob/main/docs/artifact-management-model.md#the-planning-folder).
+One run of a workflow opens one folder under the engineering root: `.engineering/artifacts/planning/<slug>/`. That folder holds the plans, reviews, and session record for the run. What the folder contains is the server's [planning folder](https://github.com/m2ux/workflow-server/blob/main/docs/state-management.md#the-planning-folder). How those documents are named is [the worker bundle](https://github.com/m2ux/workflow-server/blob/main/docs/delivery.md#how-documents-are-named).
 
 The notes are committed in `.engineering/`. The feature worktree commits only the code change. When an activity's documents are committed, the orchestrator stages the planning files in `.engineering/`, commits them, and pushes that remote. Where the application repository tracks engineering as a submodule, the orchestrator then returns to the application checkout and commits the updated pointer. How `.engineering/` itself is created is [above](#engineering).
 
