@@ -1,22 +1,14 @@
 {
   "mcpServers": {
     "concept-rag": {
-      "command": "node",
+      "command": "/usr/bin/node",
       "args": [
-        "${HOME}/projects/main/concept-rag/dist/conceptual_index.js",
-        "${HOME}/.concept_rag"
-      ]
-    },
-    "atlassian": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://mcp.atlassian.com/v1/sse"
+        "/home/mike1/projects/main/concept-rag/dist/conceptual_index.js",
+        "/home/mike1/.concept_rag"
       ]
     },
     "gitnexus": {
-      "command": "node",
+      "command": "/usr/bin/node",
       "args": [
         "/usr/local/bin/gitnexus",
         "mcp"
@@ -25,6 +17,10 @@
     "workflow-server": {
       "type": "http",
       "url": "http://127.0.0.1:3000/mcp"
+    },
+    "workflow-server-exp": {
+      "type": "http",
+      "url": "http://127.0.0.1:32772/mcp"
     }
   }
 }

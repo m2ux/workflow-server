@@ -2,6 +2,8 @@
 
 An exemplar agentic workspace layer on top of any project. It aggregates all workspace-level config, hooks, rules, scripts etc such that multiple working environments for agentic and standard engineering can be supported simultaneously without cluttering the root of any given project. It includes helper scripts to check-out, fork and setup individual project component(s) held in external repos for the agents to work on. It is designed to be forked so that the workspace shape and config can be re-used and easily updated from upstream as it evolves.
 
+This workspace is tailored towards the use of the Cursor IDE. To use with Claude Code we recommend: [Claude Code plugin for Cursor](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
+
 ```text
 ./
 ├── AGENTS.md                      # Workspace instructions for agents (Source)
@@ -65,24 +67,25 @@ An exemplar agentic workspace layer on top of any project. It aggregates all wor
    ```bash
    ./scripts/bump-project.sh
    ```
+## Maintenance
 
-7. Merge upstream template updates into this checkout with:
-
+### Merge upstream template updates into this checkout
+Fetches branch `workspace` from the `upstream` remote and merges it into the current branch.
 ```bash
 ./scripts/update-workspace.sh
 ```
-> Fetches branch `workspace` from the `upstream` remote and merges it into the current branch.
-
-8. Open a pull request for this fork's commits against upstream `workspace` with:
+### Open a pull request for this fork's commits against upstream `workspace`
+Pushes the current branch to `origin` and opens a pull request on the `upstream` repository. The base is branch `workspace`. When that pull request is already open, the script prints its URL.
 
 ```bash
 ./scripts/submit-upstream.sh
 ```
-> Pushes the current branch to `origin` and opens a pull request on the `upstream` repository. The base is branch `workspace`. When that pull request is already open, the script prints its URL.
+### Open a pull request for a feature worktree
 
-9. Open a pull request for a feature worktree with:
+* `<slug>` is the directory under `.worktrees/`. The script finds the component under `.project/` that owns that worktree. The base is the branch checked out there. The head is the worktree branch. Without `--body`, the body is the commit list from the git log.
+* When `<slug>` is a checkout under `.project/`, that checkout's changes move to `.worktrees/<slug>-<datetime>` and the checkout returns to its upstream branch.
 
 ```bash
 ./scripts/raise-pr.sh <slug> [--body=TEXT]
 ```
-> `<slug>` is the directory under `.worktrees/`. The script finds the component under `.project/` that owns that worktree. The base is the branch checked out there. The head is the worktree branch. Without `--body`, the body is the commit list from the git log. When `<slug>` is a checkout under `.project/`, that checkout's changes move to `.worktrees/<slug>-<datetime>` and the checkout returns to its upstream branch.
+
