@@ -16,7 +16,7 @@ description: >-
 
 A live sidecar walks real workflow traffic to validate codebase changes, corpus changes, or both. Specimen workflows are the vehicle. The first live walk is always a **minimum viable workflow (MVW)** so a broken engine is visible before anyone pays for a change-surface walk.
 
-HTTP is the transport; it is not the interface. **The walk is driven through the sidecar's MCP tools** (see **Reach the instance through MCP**). Bootstrap steps come from `discover`; reload flags live in `http.md` and `scripts/reload-exp-sidecar.sh`. Cite those, do not copy them.
+HTTP is the transport; it is not the interface. **The walk is driven through the sidecar's MCP tools** (see **Reach the instance through MCP**). Bootstrap steps come from `discover`; reload flags live in `http.md` and `tests/scripts/reload-exp-sidecar.sh`. Cite those, do not copy them.
 
 ## Typical flow
 
@@ -75,7 +75,7 @@ npx tsx guards/check-all.ts --root <corpus-worktree> --serving-only
 3. Reload:
 
 ```bash
-./scripts/reload-exp-sidecar.sh \
+./tests/scripts/reload-exp-sidecar.sh \
   --name=workflow-server-exp \
   --image=workflow-server:exp-<slug> \
   --build=<engine-worktree> \
@@ -84,7 +84,7 @@ npx tsx guards/check-all.ts --root <corpus-worktree> --serving-only
   --projects-root="${XDG_DATA_HOME:-$HOME/.local/share}/workflow-server/exp-projects"
 ```
 
-   Later cycles: `./scripts/reload-exp-sidecar.sh --name=workflow-server-exp`. Leave preflight on.
+   Later cycles: `./tests/scripts/reload-exp-sidecar.sh --name=workflow-server-exp`. Leave preflight on.
 
 4. `curl -fsS http://127.0.0.1:32772/ready` — walk only on HTTP 200 with `status: "ready"`, `checks.sessionKeyWritable: true`, `checks.corpusServes: true`.
 5. `docker inspect workflow-server-exp --format '{{json .Config.Labels}}'` — cite `workflow-server.corpus.pin` and `workflow-server.engine.pin` (suffix `-dirty` for uncommitted edits).
