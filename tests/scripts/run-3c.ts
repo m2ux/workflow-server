@@ -5,18 +5,18 @@
  * written, manifest status, unresolved refs — then lists the files actually
  * created on disk. The workspace is kept for inspection.
  *
- *   npx tsx scripts/run-3c.ts [--policy=full-workflow] [--workflow=work-package]
+ *   npx tsx tests/scripts/run-3c.ts [--policy=full-workflow] [--workflow=work-package]
  */
 import { readdirSync, statSync } from 'node:fs';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
-import { createHarness } from '../tests/e2e/harness.js';
-import { walk, type Policy } from '../tests/e2e/walker.js';
+import { createHarness } from '../e2e/harness.js';
+import { walk, type Policy } from '../e2e/walker.js';
 import {
   defaultPolicy, skipOptionalPolicy, fullWorkflowPolicy,
   researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
-} from '../tests/e2e/policies.js';
+} from '../e2e/policies.js';
 
 const POLICIES: Record<string, Policy> = {
   'default': defaultPolicy,

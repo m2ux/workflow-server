@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ActivitySchema } from './activity.schema.js';
 import { SemanticVersionSchema } from './common.js';
+import { enforcement } from './enforcement.js';
 import { VariableDefinitionSchema, VariableNameSchema } from './variable.schema.js';
 
 export { VariableNameSchema, VariableDefinitionSchema, type VariableDefinition } from './variable.schema.js';
@@ -11,8 +12,8 @@ export { VariableNameSchema, VariableDefinitionSchema, type VariableDefinition }
 // get_activity technique bundle, so a technique common to all activities (e.g. variable-binding) is
 // declared once here instead of duplicated on each activity's own `techniques[]`.
 export const WorkflowTechniquesSchema = z.object({
-  workflow: z.array(z.string()).optional().describe('Orchestrator-level technique references (`::` paths); bundled into get_workflow alongside the core orchestrator techniques.'),
-  activity: z.array(z.string()).optional().describe('Technique references inherited by every activity; injected into every get_activity technique bundle.'),
+  workflow: enforcement(z.array(z.string()).optional().describe('Orchestrator-level technique references (`::` paths); bundled into get_workflow alongside the core orchestrator techniques.'), { owner: 'Engine', strictness: 'enforced' }),
+  activity: enforcement(z.array(z.string()).optional().describe('Technique references inherited by every activity; injected into every get_activity technique bundle.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict();
 export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
 
@@ -27,9 +28,9 @@ export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchem
 // neither one's to own: its home is the conduct technique whose audience it binds, delivered
 // through the bundle (#518, #519).
 export const WorkflowRulesSchema = z.object({
-  workflow: z.array(z.string()).optional().describe('Orchestrator-only rules governing workflow execution; surfaced in get_workflow.'),
-  activity: z.array(z.string()).optional().describe('Worker-facing rules inherited by every activity; injected into every get_activity response.'),
-  universal: z.array(z.string()).optional().describe('Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity.'),
+  workflow: enforcement(z.array(z.string()).optional().describe('Orchestrator-only rules governing workflow execution; surfaced in get_workflow.'), { owner: 'Engine', strictness: 'advisory' }),
+  activity: enforcement(z.array(z.string()).optional().describe('Worker-facing rules inherited by every activity; injected into every get_activity response.'), { owner: 'Engine', strictness: 'advisory' }),
+  universal: enforcement(z.array(z.string()).optional().describe('Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity.'), { owner: 'Engine', strictness: 'advisory' }),
 }).strict();
 export type WorkflowRules = z.infer<typeof WorkflowRulesSchema>;
 
@@ -152,23 +153,23 @@ export const destinationPhrase = (destination: Destination): string =>
 
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
-  id: z.string().describe('Unique workflow identifier'),
-  version: SemanticVersionSchema.describe('Semantic version'),
-  title: z.string().describe('Human-readable workflow title'),
-  description: z.string().optional().describe('Detailed workflow description'),
-  author: z.string().optional().describe('Author metadata; not read by the server.'),
-  tags: z.array(z.string()).optional(),
+  id: enforcement(z.string().describe('Unique workflow identifier'), { owner: 'Engine', strictness: 'enforced' }),
+  version: enforcement(SemanticVersionSchema.describe('Semantic version'), { owner: 'Engine', strictness: 'advisory' }),
+  title: enforcement(z.string().describe('Human-readable workflow title'), { owner: 'Engine', strictness: 'advisory' }),
+  description: enforcement(z.string().optional().describe('Detailed workflow description'), { owner: 'Engine', strictness: 'advisory' }),
+  author: enforcement(z.string().optional().describe('Author metadata; not read by the server.'), { owner: 'Agent', strictness: 'advisory' }),
+  tags: enforcement(z.array(z.string()).optional(), { owner: 'Engine', strictness: 'advisory' }),
   rules: WorkflowRulesSchema.optional().describe('Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds.'),
-  variables: z.array(VariableDefinitionSchema).optional().describe('The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow\'s graph — get_workflow renders the whole set, and two declarations of one name that each name a different type, starting value or value set fail the load — one silent about a starting value takes the value another site names. The session variable bag is seeded from each declaration\'s defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity\'s variables_changed.'),
+  variables: enforcement(z.array(VariableDefinitionSchema).optional().describe('The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow\'s graph — get_workflow renders the whole set, and two declarations of one name that each name a different type, starting value or value set fail the load — one silent about a starting value takes the value another site names. The session variable bag is seeded from each declaration\'s defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity\'s variables_changed.'), { owner: 'Engine', strictness: 'advisory' }),
   techniques: WorkflowTechniquesSchema.optional().describe('Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity).'),
-  initialActivity: z.string().describe('ID of the first activity to execute: the id the first `next_activity` call names, and the root the reachability half of the activity-variables guard walks from — the analysis that decides, for each activity, which variables the run has written by the time it arrives there.'),
+  initialActivity: enforcement(z.string().describe('ID of the first activity to execute: the id the first `next_activity` call names, and the root the reachability half of the activity-variables guard walks from — the analysis that decides, for each activity, which variables the run has written by the time it arrives there.'), { owner: 'Engine', strictness: 'advisory' }),
   graph: GraphSchema.optional().describe('The workflow\'s shape: for each activity, where each of its exits leads. This is the single home for the routing — an activity names outcomes, the workflow names destinations, so a borrowed activity sits in this graph without its lending workflow having a say. A destination naming one activity sends the run there, and `__terminal__` ends the run. A destination naming several activities runs them together, one worker to each. A destination naming one activity together with the collection to run it over runs one worker per element of that collection, each handed its own element at the name the destination gives; the graph names the collection, so the width is that collection\'s length when the fan is entered. Any destination is bounded by the server\'s ceiling, or by a tighter `maxInstances` an instance fan declares, measured against the branches it opens once every member is flattened. Either fan lands each branch\'s outputs in its own slot under the branch\'s own derived key, and the run enters the single activity all of the branches\' own exits name, once, after the last of them returns. Omitted only by a workflow whose activities declare no exits.'),
   // JSON Schema validates individual definition files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.
   // The shorthand string references are resolved into fully typed Activity objects during load,
   // but we allow strings in the intermediate raw schema before transformation.
   // However, the final Workflow type expects Activity[] to avoid type errors across the codebase.
-  activities: z.array(ActivitySchema).min(1).optional().describe('Activities that comprise this workflow. An activity whose exits the `graph` binds sits in a sequence; one declaring no exits is terminal. Omitted in definition files where activities are separate files.'),
+  activities: enforcement(z.array(ActivitySchema).min(1).optional().describe('Activities that comprise this workflow. An activity whose exits the `graph` binds sits in a sequence; one declaring no exits is terminal. Omitted in definition files where activities are separate files.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict();
 export type Workflow = z.infer<typeof WorkflowSchema>;
 

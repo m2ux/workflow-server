@@ -363,7 +363,7 @@ A body the budget leaves out is recorded as delivered to nobody. A ledger entry 
 
 ### Batch Budget
 
-One worker walks several activities, pauses at a commit and at a gate, and continues as the same worker (Figure 15). That run has a character limit and an activity limit (Figure 16). How the chain of agents is shaped is [dispatch](dispatch.md). What the numbers come to on a real corpus is in [benchmarks](../benchmark/README.md).
+One worker walks several activities, pauses at a commit and at a gate, and continues as the same worker (Figure 15). That run has a character limit and an activity limit (Figure 16). How the chain of agents is shaped is [dispatch](dispatch.md). What the numbers come to on a real corpus is in [benchmarks](benchmark.md).
 
 ```mermaid
 sequenceDiagram
@@ -748,4 +748,4 @@ The server cannot see what a turn cost the host, so an agent reports it, one row
 
 #### Benchmarks
 
-One program prices a session mode, one prices a re-dispatch, and one prices a run of activities. All three, and the gate that runs on every pull request, are in [benchmarks](../benchmark/README.md).
+One program prices a session mode, one prices a re-dispatch, and one prices a run of activities. All three, and the gate that runs on every pull request, are in [benchmarks](benchmark.md).

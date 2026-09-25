@@ -35,8 +35,8 @@ drifted, or when --rebuild-image is passed. Host port, corpus, engine
 checkout, image and projects root default to what the named container
 records. Refuses the install instance name workflow-server and host port 3000.
 
-  scripts/reload-exp-sidecar.sh --name=NAME [options]
-  scripts/reload-exp-sidecar.sh --name=NAME --workflows-dir=CORPUS [options]
+  tests/scripts/reload-exp-sidecar.sh --name=NAME [options]
+  tests/scripts/reload-exp-sidecar.sh --name=NAME --workflows-dir=CORPUS [options]
 
 Required:
   --name=NAME              Container name (not workflow-server).
@@ -96,14 +96,14 @@ Container-side paths, shared with start.sh so a lookup matches what it binds:
 
 Example — name a pairing once, then reload it by name:
 
-  scripts/reload-exp-sidecar.sh \\
+  tests/scripts/reload-exp-sidecar.sh \\
     --name=workflow-server-exp \\
     --image=workflow-server:exp-ttd \\
     --build=.worktrees/feat/time-to-dispatch-experiment \\
     --workflows-dir=.worktrees/feat/time-to-dispatch-meta \\
     --host-port=32772
 
-  scripts/reload-exp-sidecar.sh --name=workflow-server-exp
+  tests/scripts/reload-exp-sidecar.sh --name=workflow-server-exp
 EOF
 }
 
@@ -403,7 +403,7 @@ if [[ -z "$ENGINE" ]] && command -v docker >/dev/null 2>&1; then
   ENGINE="$(container_label "$NAME" "workflow-server.engine.dir")"
 fi
 if [[ -z "$ENGINE" ]]; then
-  ENGINE="$(cd "${SCRIPT_DIR}/.." && pwd)"
+  ENGINE="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 else
   [[ -d "$ENGINE" ]] || die "engine checkout is not a directory: ${ENGINE}"
   ENGINE="$(cd "$ENGINE" && pwd)"

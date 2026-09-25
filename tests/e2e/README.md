@@ -127,8 +127,8 @@ walks that whole set; a comma-separated list narrows it.
 ## 3. Standalone 3c run — inspect one walk
 
 ```bash
-npx tsx scripts/run-3c.ts --policy=full-workflow      # default policy: full-workflow
-npx tsx scripts/run-3c.ts --policy=review-mode
+npx tsx tests/scripts/run-3c.ts --policy=full-workflow      # default policy: full-workflow
+npx tsx tests/scripts/run-3c.ts --policy=review-mode
 ```
 
 Same deterministic 3c engine as the suite, but prints a readable per-activity
@@ -147,15 +147,15 @@ viewer, not a gate.
 
 ```bash
 npm run build                                                  # required first
-npx tsx scripts/smoke/smoke-orchestrator.ts --activities=2     # scoped (recommended first)
-npx tsx scripts/smoke/smoke-orchestrator.ts --activities=14 --keep   # full walk
+npx tsx tests/smoke/smoke-orchestrator.ts --activities=2     # scoped (recommended first)
+npx tsx tests/smoke/smoke-orchestrator.ts --activities=14 --keep   # full walk
 ```
 
 A real headless `claude` **worker** executes each activity's steps against the
 **technique-branch** server, while the walker acts as a **deterministic
 orchestrator** (transitions + checkpoint responses from a policy). Worker and
 orchestrator are separate processes cooperating through the on-disk sealed
-`session.json`. See [scripts/smoke/README.md](../../scripts/smoke/README.md) for
+`session.json`. See [tests/smoke/README.md](../smoke/README.md) for
 the architecture.
 
 Flags: `--activities=N` (cap, default 2), `--model=sonnet`, `--keep` (keep
@@ -176,7 +176,7 @@ scoped** (`--activities=1` or `2`) before a full walk.
 ## 5. Dual-agent run (Layer 3b) — `--orchestrator=agent`
 
 ```bash
-npx tsx scripts/smoke/smoke-orchestrator.ts --orchestrator=agent --activities=2
+npx tsx tests/smoke/smoke-orchestrator.ts --orchestrator=agent --activities=2
 ```
 
 Same driver/plumbing as 3a, but the **orchestrator is also an agent**: when the

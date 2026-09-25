@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
-const SCRIPT = resolve(ROOT, 'scripts/reload-exp-sidecar.sh');
+const SCRIPT = resolve(ROOT, 'tests/scripts/reload-exp-sidecar.sh');
 
 function run(
   args: string[],
@@ -105,7 +105,7 @@ describe('reload-exp-sidecar.sh', () => {
     expect(flowed).toContain('Defaults to the image the named container records, running or exited');
     // Later-cycle example is --name alone. The first-pairing block still names --image.
     expect(out.stdout).toMatch(
-      /^  scripts\/reload-exp-sidecar\.sh --name=workflow-server-exp\s*$/m,
+      /^  tests\/scripts\/reload-exp-sidecar\.sh --name=workflow-server-exp\s*$/m,
     );
   });
 

@@ -99,7 +99,7 @@ fails to resolve the checkpoint, the driver falls back to the policy so the run
 proceeds (recorded as `policy-fallback` in the transcript).
 
 ```bash
-npx tsx scripts/smoke/smoke-orchestrator.ts --orchestrator=agent --activities=2
+npx tsx tests/smoke/smoke-orchestrator.ts --orchestrator=agent --activities=2
 ```
 
 This is the only mechanism that exercises the orchestrator agent's

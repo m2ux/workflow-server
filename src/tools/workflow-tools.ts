@@ -265,7 +265,7 @@ async function fixedResponseParts(args: {
     ? `${args.activityBody}\n${stringifyForResponse({ artifacts })}`
     : args.activityBody;
 
-  // Payload-borne enforcement hints (#189 C7, R7): the enforcement model (schemas/README) lives
+  // Payload-borne enforcement hints (#189 C7, R7): the enforcement model (docs/schemas.md) lives
   // in docs that never ride the wire, so a payload-only reader still infers the SERVER executes
   // inert fields (guessing it applies `action: set`, unsure who owns auto-advance). Annotate, at
   // delivery time, only the constructs this activity actually contains — an activity without

@@ -1,13 +1,14 @@
 import { z } from 'zod';
 import { ConditionSchema } from './condition.schema.js';
 import { SemanticVersionSchema } from './common.js';
+import { enforcement } from './enforcement.js';
 import { ActivityVariablesSchema } from './variable.schema.js';
 
 // Techniques reference (activity-level — optional when steps declare their own techniques).
 // A flat list of activity-wide technique references (`::` paths): the strategy/capability
 // techniques (e.g. `variable-binding`, `scatter-gather`) whose protocols apply across the
 // activity's steps. Per-step techniques are bound at the step via `step.technique`, not here.
-export const TechniquesReferenceSchema = z.array(z.string()).describe('Activity-wide technique references (`::` paths); bundled into get_activity.');
+export const TechniquesReferenceSchema = enforcement(z.array(z.string()).describe('Activity-wide technique references (`::` paths); bundled into get_activity.'), { owner: 'Engine', strictness: 'enforced' });
 export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
 // Hybrid technique bundling (#189 C1c) — optional per-activity override on the automatic,
@@ -17,9 +18,9 @@ export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 // per-technique size cap layered on that budget; `maxChars: 0` opts the activity out of eager
 // bundling entirely. A step whose gate has no fixed answer at delivery time — it reads a variable
 // this activity produces, or one absent from the bag — stays lazy via get_technique.
-export const BundleTechniquesSchema = z.object({
+export const BundleTechniquesSchema = enforcement(z.object({
   maxChars: z.number().int().nonnegative().describe('Per-technique character cap layered on the server-derived per-activity eager-delivery budget: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }. Set to 0 to opt this activity out of eager step-technique bundling entirely.'),
-}).strict();
+}).strict(), { owner: 'Engine', strictness: 'enforced' });
 export type BundleTechniques = z.infer<typeof BundleTechniquesSchema>;
 
 // Action schema
@@ -37,7 +38,7 @@ export type Action = z.infer<typeof ActionSchema>;
 export const WorkflowTriggerSchema = z.object({
   workflow: z.string().describe('ID of the workflow to trigger'),
   description: z.string().optional().describe('Description of when/why this workflow is triggered'),
-  passContext: z.array(z.string()).optional().describe('Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session\'s bag starts from the child workflow\'s own declared defaults, nothing more.'),
+  passContext: enforcement(z.array(z.string()).optional().describe('Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session\'s bag starts from the child workflow\'s own declared defaults, nothing more.'), { owner: 'Agent', strictness: 'advisory' }),
 });
 export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
@@ -47,8 +48,8 @@ export const CheckpointOptionSchema = z.object({
   label: z.string(),
   description: z.string().optional(),
   effect: z.object({
-    setVariable: z.record(z.unknown()).optional().describe('Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt.'),
-    exit: z.string().optional().describe('Exit of the owning activity this option selects — a name from the activity\'s `exits[]`, never an activity id. The destination is the workflow\'s to state: `present_checkpoint` reads it from the workflow graph so the option\'s consequence is stated before the user chooses. An adhoc checkpoint has no declared exits, so its options carry setVariable only.'),
+    setVariable: enforcement(z.record(z.unknown()).optional().describe('Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt.'), { owner: 'Engine', strictness: 'enforced' }),
+    exit: enforcement(z.string().optional().describe('Exit of the owning activity this option selects — a name from the activity\'s `exits[]`, never an activity id. The destination is the workflow\'s to state: `present_checkpoint` reads it from the workflow graph so the option\'s consequence is stated before the user chooses. An adhoc checkpoint has no declared exits, so its options carry setVariable only.'), { owner: 'Engine', strictness: 'advisory' }),
   }).strict().optional(),
 });
 export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
@@ -62,8 +63,8 @@ export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
  */
 export const TechniqueBindingSchema = z.object({
   name: z.string().describe('The `group::technique` (or bare op / `workflow::group::op`) technique reference this step invokes.'),
-  inputs: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default.'),
-  outputs: z.record(z.string()).optional().describe('Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id.'),
+  inputs: enforcement(z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default.'), { owner: 'Agent', strictness: 'advisory' }),
+  outputs: enforcement(z.record(z.string()).optional().describe('Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id.'), { owner: 'Agent', strictness: 'advisory' }),
 });
 export type TechniqueBinding = z.infer<typeof TechniqueBindingSchema>;
 
@@ -71,10 +72,10 @@ export type TechniqueBinding = z.infer<typeof TechniqueBindingSchema>;
 // lives in the bound technique's protocol (AP-64), so no step kind carries a `description`.
 // `required` is declared only when false — omitting it means the step is required (the default).
 const stepCommonFields = {
-  when: z.string().optional().describe(
+  when: enforcement(z.string().optional().describe(
     'Inline boolean expression that gates this step. Operators: ==, !=, >, <, >=, <=, bare identifier truthiness, unary !, &&, ||, and parentheses. Precedence (C-style, tightest first): () > ! > comparisons > && > ||. Mixing && and || at the same nesting depth requires parentheses. Examples: "has_saved_state == true", "remediation_round > 0", "a == true && b != false", "(a && b) || c", "is_review_mode != true && (problem_complexity == \\"moderate\\" || problem_complexity == \\"complex\\")". Evaluated by the executing agent against current variable state; the server never evaluates gates. Mechanical nets (e2e walker, guards) use the shared reference evaluator and treat invalid expressions as false (step does not run). On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal.',
-  ),
-  required: z.literal(false).optional().describe('Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it.'),
+  ), { owner: 'Agent', strictness: 'advisory' }),
+  required: enforcement(z.literal(false).optional().describe('Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it.'), { owner: 'Agent', strictness: 'advisory' }),
 };
 
 // The structured entry gate, carried by the step kinds whose only gate is an entry gate. A loop
@@ -82,7 +83,7 @@ const stepCommonFields = {
 // whether it goes round again. One field per question, so neither reader has to ask which kind of
 // step it is holding.
 const stepEntryCondition = {
-  condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met.'),
+  condition: enforcement(ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met.'), { owner: 'Agent', strictness: 'advisory' }),
 };
 
 /**
@@ -93,19 +94,19 @@ const stepEntryCondition = {
  * error (AP-64 bound-step purity).
  */
 export const TechniqueStepSchema = z.object({
-  kind: z.literal('technique').describe('Step-kind discriminator.'),
-  id: z.string().optional().describe('Identifier for this step within the activity. Optional: the loader derives it from the last `::` segment of the technique name.'),
+  kind: enforcement(z.literal('technique').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().optional().describe('Identifier for this step within the activity. Optional: the loader derives it from the last `::` segment of the technique name.'), { owner: 'Engine', strictness: 'enforced' }),
   technique: z.union([z.string(), TechniqueBindingSchema]).describe('Canonical per-step binding: a `group::technique` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.'),
-  actions: z.array(ActionSchema).optional(),
+  actions: enforcement(z.array(ActionSchema).optional(), { owner: 'Agent', strictness: 'advisory' }),
   ...stepCommonFields,
   ...stepEntryCondition,
 }).strict();
 export type TechniqueStep = z.infer<typeof TechniqueStepSchema>;
 
 export const ActionStepSchema = z.object({
-  kind: z.literal('action').describe('Step-kind discriminator.'),
-  id: z.string().describe('Identifier for this step within the activity.'),
-  actions: z.array(ActionSchema).optional().describe('Control actions; may be empty for marker steps.'),
+  kind: enforcement(z.literal('action').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Identifier for this step within the activity.'), { owner: 'Engine', strictness: 'enforced' }),
+  actions: enforcement(z.array(ActionSchema).optional().describe('Control actions; may be empty for marker steps.'), { owner: 'Agent', strictness: 'advisory' }),
   ...stepCommonFields,
   ...stepEntryCondition,
 }).strict();
@@ -115,12 +116,12 @@ export type ActionStep = z.infer<typeof ActionStepSchema>;
 // which prefixes the identifiers it contributes and holds a signature the body is checked against;
 // a gate shared on its own is a one-step routine (#704, #738 W01).
 export const CheckpointStepSchema = z.object({
-  kind: z.literal('checkpoint').describe('Step-kind discriminator.'),
-  id: z.string().describe('Identifier for this step within the activity; the stable checkpoint-response replay key.'),
+  kind: enforcement(z.literal('checkpoint').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Identifier for this step within the activity; the stable checkpoint-response replay key.'), { owner: 'Engine', strictness: 'enforced' }),
   message: z.string().describe('Message presented to the user.'),
-  options: z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'),
-  defaultOption: z.string().optional().describe('The answer a soft gate takes when no person is reached.'),
-  autoAdvanceMs: z.number().int().positive().optional().describe('The interval the server spends before applying a soft gate\'s default on respond_checkpoint { auto_advance: true }.'),
+  options: enforcement(z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'), { owner: 'Engine', strictness: 'enforced' }),
+  defaultOption: enforcement(z.string().optional().describe('The answer a soft gate takes when no person is reached.'), { owner: 'Engine', strictness: 'enforced' }),
+  autoAdvanceMs: enforcement(z.number().int().positive().optional().describe('The interval the server spends before applying a soft gate\'s default on respond_checkpoint { auto_advance: true }.'), { owner: 'Engine', strictness: 'enforced' }),
   ...stepCommonFields,
   ...stepEntryCondition,
 }).strict();
@@ -135,16 +136,16 @@ export type CheckpointStep = z.infer<typeof CheckpointStepSchema>;
 // that test is, `over`/`variable` the collection and the item, `maxIterations` the ceiling. A loop
 // carries no `condition`, so its entry gate is `when` — uniformly with every other step kind.
 export const LoopStepSchema = z.object({
-  kind: z.literal('loop').describe('Step-kind discriminator.'),
-  id: z.string().describe('Identifier for this step within the activity.'),
+  kind: enforcement(z.literal('loop').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Identifier for this step within the activity.'), { owner: 'Engine', strictness: 'enforced' }),
   name: z.string().optional().describe('Structural label for the iteration (the one step kind that carries a name).'),
-  loopType: z.enum(['forEach', 'while', 'doWhile']).describe('Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after.'),
-  continueWhile: ConditionSchema.optional().describe('The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken.'),
-  variable: z.string().optional().describe('Current-item variable bound each iteration.'),
-  over: z.string().optional().describe('Collection expression iterated by a forEach loop.'),
-  breakCondition: ConditionSchema.optional().describe('Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead.'),
-  maxIterations: z.number().int().positive().optional().describe('Safety bound on iteration count, enforced by the executing agent.'),
-  steps: z.array(z.lazy((): z.ZodTypeAny => StepSchema)).describe('The loop body, a nested ordered list of steps.'),
+  loopType: enforcement(z.enum(['forEach', 'while', 'doWhile']).describe('Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after.'), { owner: 'Agent', strictness: 'advisory' }),
+  continueWhile: enforcement(ConditionSchema.optional().describe('The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken.'), { owner: 'Agent', strictness: 'advisory' }),
+  variable: enforcement(z.string().optional().describe('Current-item variable bound each iteration.'), { owner: 'Agent', strictness: 'advisory' }),
+  over: enforcement(z.string().optional().describe('Collection expression iterated by a forEach loop.'), { owner: 'Agent', strictness: 'advisory' }),
+  breakCondition: enforcement(ConditionSchema.optional().describe('Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead.'), { owner: 'Agent', strictness: 'advisory' }),
+  maxIterations: enforcement(z.number().int().positive().optional().describe('Safety bound on iteration count, enforced by the executing agent.'), { owner: 'Agent', strictness: 'advisory' }),
+  steps: enforcement(z.array(z.lazy((): z.ZodTypeAny => StepSchema)).describe('The loop body, a nested ordered list of steps.'), { owner: 'Engine', strictness: 'enforced' }),
   ...stepCommonFields,
 }).strict();
 export type LoopStep = z.infer<typeof LoopStepSchema>;
@@ -163,8 +164,8 @@ export type LoopStep = z.infer<typeof LoopStepSchema>;
 // condition pushed into a body would hand every gate in the run a capability its author never
 // declared. One field for the one question the site decides: whether the run happens.
 export const RoutineStepSchema = z.object({
-  kind: z.literal('routine').describe('Step-kind discriminator.'),
-  id: z.string().describe('Identifier for this step within the activity, and the prefix every identifier in the materialised body carries.'),
+  kind: enforcement(z.literal('routine').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Identifier for this step within the activity, and the prefix every identifier in the materialised body carries.'), { owner: 'Engine', strictness: 'enforced' }),
   routine: z.string().describe('Routine reference: `[namespace::]name`, the namespace spelled by its directory name or by the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity\'s source workflow and then meta. The last segment is the routine and every segment before it belongs to the namespace — a routine name carries no group grammar.'),
   with: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Arguments: routine input id → the value it takes here. A braced value is a reference to a host variable and a bare value is a literal. A declared input left unbound takes the host\'s value under the input\'s own id, or the input\'s declared default.'),
   outputs: z.record(z.string()).optional().describe('Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and its declaration says whether that is allowed.'),
@@ -314,12 +315,12 @@ export type Exit = z.infer<typeof ExitSchema>;
 // from the `## Outputs` of the techniques the activity's steps bind (AP-65, AP-43).
 export const ActivitySchema = z.object({
   // Identity (required)
-  id: z.string().describe('Unique identifier for the activity'),
+  id: enforcement(z.string().describe('Unique identifier for the activity'), { owner: 'Engine', strictness: 'enforced' }),
   version: SemanticVersionSchema.describe('Semantic version of the activity'),
-  name: z.string().describe('Human-readable activity name'),
+  name: enforcement(z.string().describe('Human-readable activity name'), { owner: 'Engine', strictness: 'advisory' }),
   
   // Description (optional)
-  description: z.string().optional().describe('Detailed description of the activity'),
+  description: enforcement(z.string().optional().describe('Detailed description of the activity'), { owner: 'Engine', strictness: 'advisory' }),
 
   // The activity's variable contract (#493): what it reads, and what it writes. Its writes are
   // contributed to the variable set of every workflow whose graph includes it.
@@ -338,14 +339,14 @@ export const ActivitySchema = z.object({
 
   // The activity's named outcomes (read at the activity boundary, not part of the worker step
   // sequence). Where each leads is the workflow's `graph` to bind — the activity names no other activity.
-  exits: z.array(ExitSchema).optional().describe('Named outcomes of this activity, one of which it takes when its steps end. Each is bound to a destination in the workflow\'s `graph`; an unbound exit fails the workflow load. Omitted on an activity that is terminal by omission.'),
-  triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows the orchestrator dispatches from this activity (via dispatch_child with an explicit workflow_id); the server does not act on trigger declarations.'),
+  exits: enforcement(z.array(ExitSchema).optional().describe('Named outcomes of this activity, one of which it takes when its steps end. Each is bound to a destination in the workflow\'s `graph`; an unbound exit fails the workflow load. Omitted on an activity that is terminal by omission.'), { owner: 'Engine', strictness: 'advisory' }),
+  triggers: enforcement(z.array(WorkflowTriggerSchema).optional().describe('Workflows the orchestrator dispatches from this activity (via dispatch_child with an explicit workflow_id); the server does not act on trigger declarations.'), { owner: 'Agent', strictness: 'advisory' }),
 
   // Metadata (optional)
-  outcome: z.array(z.string()).optional().describe('Expected outcomes when activity completes successfully. Advisory — the server does not reconcile them against activity_manifest outcomes.'),
-  required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
-  rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
-  artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.yaml). Server-computed — do not set in definition files.'),
+  outcome: enforcement(z.array(z.string()).optional().describe('Expected outcomes when activity completes successfully. Advisory — the server does not reconcile them against activity_manifest outcomes.'), { owner: 'Agent', strictness: 'advisory' }),
+  required: enforcement(z.boolean().default(true).describe('Whether this activity is required in the workflow'), { owner: 'Engine', strictness: 'advisory' }),
+  rules: enforcement(z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'), { owner: 'Engine', strictness: 'advisory' }),
+  artifactPrefix: enforcement(z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.yaml). Server-computed — do not set in definition files.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict();
 
 export type Activity = z.infer<typeof ActivitySchema>;

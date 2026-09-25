@@ -1,163 +1,256 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "technique.schema.json",
   "title": "technique",
-  "description": "Technique definition schema for workflow-server",
+  "description": "Technique definition schema — a capability file parsed from markdown into this shape.",
   "$ref": "#/definitions/technique",
   "definitions": {
-    "inputItemDefinition": {
-      "type": "object",
-      "properties": {
-        "id": { "type": "string", "description": "Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining skills." },
-        "description": { "type": "string", "description": "Human-readable description of this input. Optional inputs say so in prose (a leading \"(optional)\"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag." },
-        "default": { "description": "Default value when not supplied" },
-        "components": { "$ref": "#/definitions/outputComponentsDefinition", "description": "Named sub-members of a composite input (authored as #### sub-sections). Mirrors output components." },
-        "source": { "type": "string", "description": "Delivery-only, server-populated on a step-bound get_technique: where this input's value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default) or UNRESOLVED. Never authored in technique markdown." }
-      },
-      "required": [ "id" ],
-      "additionalProperties": false,
-      "description": "Single input entry: id (required, hyphen-delimited), optional description, default, and components"
-    },
-    "inputsDefinition": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/inputItemDefinition" },
-      "description": "Inputs the skill expects from context: array of named items (mirrors output structure for deterministic binding). When a protocol step uses an existing artifact (e.g. loads from a path or file), the skill MUST declare one or more associated input entries that supply that artifact or path."
-    },
-    "protocolBlock": {
-      "type": "object",
-      "properties": {
-        "title": { "type": "string", "description": "Optional label for this block (the authored `### Title`, ordinal prefix stripped)." },
-        "steps": { "type": "array", "items": { "type": "string" }, "description": "Ordered imperative step bullets for this block." }
-      },
-      "required": ["steps"],
-      "additionalProperties": false
-    },
-    "protocolDefinition": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/protocolBlock" },
-      "description": "Protocol: a single ordered list of step blocks (no phase construct), in authored order. A technique's protocol is its own — a container contract contributes inputs, outputs and rules to its descendants, never steps."
-    },
-    "rulesDefinition": {
-      "type": "object",
-      "additionalProperties": {
-        "oneOf": [
-          { "type": "string", "description": "Single rule text." },
-          { "type": "array", "items": { "type": "string" }, "description": "Array of related rules grouped under this key." }
-        ]
-      },
-      "description": "Named rules: each key is a rule name or group. Values can be a single rule string or an array of related rules. Note: workflow/activity schemas use a different format (string array of ordered imperative directives)."
-    },
-    "componentEntry": {
-      "type": "object",
-      "properties": {
-        "description": { "type": "string", "description": "What the component is — the prose above its first ##### sub-section." },
-        "entry": {
-          "type": "object",
-          "additionalProperties": { "type": "string" },
-          "description": "Named fields one entry of this component carries (authored as ##### sub-sections under the component). Each key is a field id, value its description."
-        }
-      },
-      "required": [ "entry" ],
-      "additionalProperties": false,
-      "description": "A component that holds a list, stating the fields one entry of it carries. A description says what the list is; only these fields say what is addressable inside one entry, so a step reading a field off an item has something to be checked against."
-    },
-    "outputComponentsDefinition": {
-      "type": "object",
-      "additionalProperties": {
-        "oneOf": [
-          { "type": "string", "description": "The spec or description for that component." },
-          { "$ref": "#/definitions/componentEntry" }
-        ]
-      },
-      "description": "Named output components: each key is a component id, value is the spec or description for that component, or — where the component holds a list — the fields one entry of it carries (mirrors inputs structure)"
-    },
-    "outputArtifact": {
-      "type": "object",
-      "properties": {
-        "name": { "type": "string", "description": "Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). Declare the name here, never hardcode it in Protocol prose." },
-        "action": { "type": "string", "enum": ["create", "update"], "default": "create", "description": "Whether this output creates a new artifact or updates an existing one" }
-      },
-      "required": [ "name" ],
-      "additionalProperties": false,
-      "description": "Optional. When present, defines the artifact name to create when persisting this output."
-    },
-    "outputItemDefinition": {
-      "type": "object",
-      "properties": {
-        "id": { "type": "string", "description": "Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename." },
-        "description": { "type": "string", "description": "Human-readable description of this output" },
-        "components": { "$ref": "#/definitions/outputComponentsDefinition" },
-        "entry": {
-          "type": "object",
-          "additionalProperties": { "type": "string" },
-          "description": "Named fields one entry carries, for an output that IS a list rather than a value with parts (authored as a reserved #### entry sub-section whose ##### children are the fields). Its presence is how an output states that it is a list; components names the parts of an output that is not."
-        },
-        "artifact": { "$ref": "#/definitions/outputArtifact", "description": "Optional. When populated, specifies the artifact name to create when persisting this output." },
-        "audience": { "type": "string", "enum": ["human", "agent"], "description": "Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the artifactPrefix rule." },
-        "values": { "type": "array", "items": { "type": "string" }, "minItems": 1, "description": "The complete set of values this output admits, one of which a run leaves standing. Authored as a reserved `#### values` section. Absent where the output is not a closed set." },
-        "fieldValues": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" }, "minItems": 1 }, "description": "The complete set of values one entry field or component admits, keyed by that field. Authored as `#####` children of `#### values`. Absent where no nested field is a closed set." },
-        "destination": { "type": "string", "description": "Delivery-only, server-populated on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique markdown." }
-      },
-      "required": [ "id" ],
-      "additionalProperties": false,
-      "not": { "required": [ "components", "entry" ] },
-      "description": "Single output entry: id (required, generic hyphen-delimited), optional description, components, and artifact (for persistence). An output is a value with parts or a list of entries, never both, so components and entry are mutually exclusive."
-    },
-    "outputsDefinition": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/outputItemDefinition" },
-      "description": "What the technique produces: one or more named outputs, each with optional name, description, and components"
-    },
-    "inheritedInputs": {
-      "type": "object",
-      "properties": {
-        "note": { "type": "string", "description": "One-line scope note: why these inputs are shared contract context rather than specific to this technique." },
-        "items": { "$ref": "#/definitions/inputsDefinition" }
-      },
-      "required": ["note", "items"],
-      "additionalProperties": false,
-      "description": "Delivery-only, server-populated at composition time: inputs inherited from the workflow-root/group contract (TECHNIQUE.md), partitioned out of `inputs`. Never authored in technique markdown."
-    },
-    "inheritedOutputs": {
-      "type": "object",
-      "properties": {
-        "note": { "type": "string", "description": "One-line scope note: why these outputs are shared contract obligations rather than specific to this technique." },
-        "items": { "$ref": "#/definitions/outputsDefinition" }
-      },
-      "required": ["note", "items"],
-      "additionalProperties": false,
-      "description": "Delivery-only, server-populated at composition time: outputs inherited from the workflow-root/group contract (TECHNIQUE.md), partitioned out of `outputs`. Never authored in technique markdown."
-    },
     "technique": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "description": "Unique identifier for the technique"
+          "type": "string"
         },
         "version": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$",
-          "description": "Semantic version of the technique"
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
         },
         "capability": {
-          "type": "string",
-          "description": "What this technique enables agents to do"
+          "type": "string"
         },
         "provenance_note": {
           "type": "string",
-          "description": "Delivery-only, server-populated on a step-bound get_technique: states the output delivery mechanics that the `source:`/`destination:` annotations rely on. Never authored in technique markdown."
+          "description": "Delivery-only, populated by the server on a step-bound get_technique: states the output delivery mechanics that the `source:`/`destination:` annotations rely on. Never authored in technique files."
         },
         "rules": {
-          "$ref": "#/definitions/rulesDefinition"
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Single rule text."
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Array of related rules grouped under this key."
+              }
+            ]
+          }
         },
-        "inputs": { "$ref": "#/definitions/inputsDefinition" },
-        "inherited_inputs": { "$ref": "#/definitions/inheritedInputs" },
-        "protocol": { "$ref": "#/definitions/protocolDefinition" },
-        "outputs": { "$ref": "#/definitions/outputsDefinition" },
-        "inherited_outputs": { "$ref": "#/definitions/inheritedOutputs" }
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining techniques."
+              },
+              "description": {
+                "type": "string",
+                "description": "Human-readable description of this input. Optional inputs say so in prose (a leading \"(optional)\"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag."
+              },
+              "default": {
+                "description": "Default value when not supplied"
+              },
+              "components": {
+                "type": "object",
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "The spec or description for that component."
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "description": "What the component is — the prose above its first `#####` sub-section."
+                        },
+                        "entry": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Named fields one entry of this component carries (authored as `#####` sub-sections under the component). Each key is a field id, value its description."
+                        }
+                      },
+                      "required": [
+                        "entry"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "description": "Named sub-members of a composite input (authored as `####` sub-sections under the input). Mirrors output components."
+              },
+              "source": {
+                "type": "string",
+                "description": "Delivery-only, populated by the server on a step-bound get_technique: where this input's value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default) or UNRESOLVED. Never authored in technique files."
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Inputs the technique expects from context: array of named items (mirrors output structure for deterministic binding)"
+        },
+        "inherited_inputs": {
+          "type": "object",
+          "properties": {
+            "note": {
+              "type": "string",
+              "description": "One-line scope note: why these inputs are shared contract context rather than specific to this technique."
+            },
+            "items": {
+              "$ref": "#/definitions/technique/properties/inputs"
+            }
+          },
+          "required": [
+            "note",
+            "items"
+          ],
+          "additionalProperties": false,
+          "description": "Inputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique's own inputs."
+        },
+        "protocol": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Optional label for this block (the authored `### Title`, ordinal prefix stripped)."
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Ordered imperative step bullets for this block."
+              }
+            },
+            "required": [
+              "steps"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename."
+              },
+              "description": {
+                "type": "string",
+                "description": "Human-readable description of this output"
+              },
+              "components": {
+                "$ref": "#/definitions/technique/properties/inputs/items/properties/components",
+                "description": "Named output components: each key is a component id, value is the spec or description for that component, or — where the component holds a list — the fields one entry of it carries"
+              },
+              "entry": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Named fields one entry carries, for an output that IS a list rather than a value with parts (authored as a reserved `#### entry` sub-section whose `#####` children are the fields). Its presence is how an output states that it is a list; `components` names the parts of an output that is not."
+              },
+              "artifact": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "pattern": "^(?:[A-Za-z0-9._-]|\\{[A-Za-z0-9._$-]+\\})+\\.[A-Za-z0-9]+$",
+                    "description": "Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). One filename, one path segment, with an extension — a technique writing several files declares one output per artifact. Declare the name here, never hardcode it in Protocol prose."
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "create",
+                      "update"
+                    ],
+                    "default": "create",
+                    "description": "Whether this output creates a new artifact or updates an existing one"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false,
+                "description": "Optional. When populated, specifies the artifact name to create when persisting this output."
+              },
+              "audience": {
+                "type": "string",
+                "enum": [
+                  "human",
+                  "agent"
+                ],
+                "description": "Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the `artifactPrefix` rule."
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "description": "The complete set of values this output admits, one of which a run leaves standing. Authored as a reserved `#### values` section. Absent where the output is not a closed set."
+              },
+              "fieldValues": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "description": "The complete set of values one entry field or component admits, keyed by that field. Authored as `#####` children of `#### values`. Absent where no nested field is a closed set."
+              },
+              "destination": {
+                "type": "string",
+                "description": "Delivery-only, populated by the server on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique files."
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "description": "What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components"
+        },
+        "inherited_outputs": {
+          "type": "object",
+          "properties": {
+            "note": {
+              "type": "string",
+              "description": "One-line scope note: why these outputs are shared contract obligations rather than specific to this technique."
+            },
+            "items": {
+              "$ref": "#/definitions/technique/properties/outputs"
+            }
+          },
+          "required": [
+            "note",
+            "items"
+          ],
+          "additionalProperties": false,
+          "description": "Outputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique's own outputs."
+        }
       },
-      "required": ["id", "version", "capability"],
+      "required": [
+        "id",
+        "version",
+        "capability"
+      ],
       "additionalProperties": false
     }
   }

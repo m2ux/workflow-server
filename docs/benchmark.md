@@ -1,6 +1,6 @@
 # Benchmarks
 
-These programs measure how much text the server sends an agent while it works through a workflow, and what a finished run cost in tokens. The contract under test is [reference delivery](../docs/delivery.md#reference-delivery).
+These programs measure how much text the server sends an agent while it works through a workflow, and what a finished run cost in tokens. The contract under test is [reference delivery](delivery.md#reference-delivery).
 
 - Three benchmarks drive the server over an in-memory transport and change one thing at a time to isolate cause.
 - The profiler reads a run that already happened.
@@ -9,14 +9,14 @@ Pick the tool that changes the thing you changed: a number from another tool can
 
 | Tool | Command | What It Varies |
 |------|---------|----------------|
-| [Token Delivery Benchmark](run-token-benchmark.ts) | `npm run bench:token` | the session mode, over one solo walk |
-| [Dispatch Overhead Benchmark](run-dispatch-benchmark.ts) | `npm run bench:dispatch` | one re-dispatch: a spawn pass against a resume pass of the same activity |
-| [Batch Benchmark](run-batch-benchmark.ts) | `npm run bench:batch` | the batch: the same run walked per activity, then as one context |
-| [Run Profiler](../scripts/run-profile.ts) | `npm run profile:run` | nothing; it reads a real run off disk |
+| [Token Delivery Benchmark](../benchmark/run-token-benchmark.ts) | `npm run bench:token` | the session mode, over one solo walk |
+| [Dispatch Overhead Benchmark](../benchmark/run-dispatch-benchmark.ts) | `npm run bench:dispatch` | one re-dispatch: a spawn pass against a resume pass of the same activity |
+| [Batch Benchmark](../benchmark/run-batch-benchmark.ts) | `npm run bench:batch` | the batch: the same run walked per activity, then as one context |
+| [Run Profiler](../benchmark/scripts/run-profile.ts) | `npm run profile:run` | nothing; it reads a real run off disk |
 
 ## Token Delivery Benchmark
 
-The benchmark asks the server to work through one workflow and counts the text that comes back. Figure 1 shows that count compared with the [baseline](fixtures/token-benchmark-baseline.json): if the text has grown too much, the check fails. Figure 2 shows where the walk gets its workflow, and the baseline it is scored against. The check on every pull request runs the [commands](#appendix) against a small sample workflow called delivery-fixture.
+The benchmark asks the server to work through one workflow and counts the text that comes back. Figure 1 shows that count compared with the [baseline](../benchmark/fixtures/token-benchmark-baseline.json): if the text has grown too much, the check fails. Figure 2 shows where the walk gets its workflow, and the baseline it is scored against. The check on every pull request runs the [commands](#appendix) against a small sample workflow called delivery-fixture.
 
 ```mermaid
 sequenceDiagram
@@ -86,7 +86,7 @@ classDiagram
 
 ## Batch Benchmark
 
-The same stretch of work is done twice. Figure 5 shows the first time, with a new worker for each activity, and the second time, with one worker for the whole stretch. The text counted follows the [batch limit](../docs/delivery.md#batch-budget). Figure 6 shows those two passes, and a start-up cost that is typed in rather than measured: the cost of spinning up a worker is not something this run can see.
+The same stretch of work is done twice. Figure 5 shows the first time, with a new worker for each activity, and the second time, with one worker for the whole stretch. The text counted follows the [batch limit](delivery.md#batch-budget). Figure 6 shows those two passes, and a start-up cost that is typed in rather than measured: the cost of spinning up a worker is not something this run can see.
 
 ```mermaid
 sequenceDiagram
