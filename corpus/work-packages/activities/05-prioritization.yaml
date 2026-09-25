@@ -18,7 +18,7 @@ steps:
   - kind: checkpoint
     id: priority-confirmed
     message: |-
-      The proposed execution order, with the dependency graph and per-package rationale behind it:
+      The proposed execution order, with the dependency graph and per-package rationale behind it. When `{tie_break}` is set, that is the dimension the ranking used because every package scored the same.
 
       {priority_order}
     options:

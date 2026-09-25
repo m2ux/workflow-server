@@ -21,4 +21,4 @@ The evaluation in figures — findings by dimension, findings by severity, dimen
 
 ### 2. Index the Deliverables
 
-- Fold the deliverable index into `{evaluation_metrics}` — `{evaluation_report_path}`, `{evaluation_plan_path}`, and each artifact in `{all_artifact_paths}` — organised by dimension.
+- Fold the deliverable index into `{evaluation_metrics}` — `{evaluation_report_path}`, `{evaluation_plan_path}`, and each artifact in `{all_analysis_artifact_paths}` — organised by dimension.

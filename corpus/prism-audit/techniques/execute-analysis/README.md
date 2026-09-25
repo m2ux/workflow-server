@@ -8,5 +8,4 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 
 | Technique | Contributes |
 |---|---|
-| [`accumulate-analysis-run`](accumulate-analysis-run.md) | One completed analysis run recorded into the audit's accumulators, so finalization consolidates every scope from a single place |
 | [`compose-trigger-context`](compose-trigger-context.md) | Resolves the context one audit scope's analysis run is dispatched with |

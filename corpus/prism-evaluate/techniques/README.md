@@ -38,7 +38,7 @@ The technique library for the evaluation workflow. Each technique is one capabil
 | Technique | Capability |
 |-----------|------------|
 | [`compose-trigger-context`](execute-analysis/compose-trigger-context.md) | Compose one group's trigger context |
-| [`accumulate-analysis-run`](execute-analysis/accumulate-analysis-run.md) | Record a completed run into the evaluation's accumulators |
+| [`prism/accumulate-analysis-run`](/prism/techniques/accumulate-analysis-run.md) | One completed run appended to the evaluation accumulators, including a partial or error run |
 
 ### compose-evaluation-report
 

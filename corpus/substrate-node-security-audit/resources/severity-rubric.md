@@ -30,6 +30,14 @@ Every finding MUST be scored on both dimensions. Do not assign severity intuitiv
 | 3 | Network | Requires only network access (RPC, p2p, public endpoint) | RPC flood, malformed transaction, peer spoofing |
 | 4 | Passive | Occurs under normal technique or routine activity | Database pruning, routine block production, standard configs |
 
+## Feasibility floors
+
+These floors apply when the finding matches the condition. They are the score, not a hint.
+
+- Connection pool and infrastructure findings affecting consensus paths through routinely-accessible systems (RPC, p2p): Feasibility at least 3.
+- Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility 2.
+- Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility 4.
+
 ## Computing Severity
 
 ```

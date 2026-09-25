@@ -25,7 +25,11 @@ The file to author — full path, action and kind, with a one-line statement of 
 
 ### yaml_file
 
-The authored file at the manifest entry's path, parsing cleanly and conforming to the schema its kind selects.
+The authored file at the manifest entry's path.
+
+### schema_conforms
+
+True when `{yaml_file}` parses and conforms to the schema its kind selects. False when this pass left a validation failure.
 
 ## Protocol
 
@@ -46,7 +50,7 @@ The authored file at the manifest entry's path, parsing cleanly and conforming t
 
 ### 4. Draft the Content
 
-- Write `{yaml_file}` at the path `{current_file}` names, under the Rules below
+- Write `{yaml_file}` at the path `{current_file}` names, in the style [YAML style](../../resources/yaml-style.md) states
 
 ### 5. Validate Against the Schema
 
@@ -56,37 +60,9 @@ The authored file at the manifest entry's path, parsing cleanly and conforming t
 
 - Where the parser rejects the file, compare the failing line against the same construct in the reference file and correct the syntax
 - Where the file parses but does not conform, read the schema definition for the failing field and correct the content
-- Re-validate until the file passes
+- Validate once more. Set `{schema_conforms}` true when the file passes, and false when a failure remains.
 
 ## Rules
-
-### block-style-arrays
-
-Declare arrays as a key followed by `-`-prefixed items on indented lines. Do not annotate an array with an item count.
-
-### block-style-mappings
-
-Prefer block style — nested objects are indented `key: value` lines. Reserve flow style for short inline values.
-
-### scalar-quoting
-
-Quote any scalar containing a colon-space, starting with a character YAML treats specially, or that would otherwise parse as a number or boolean. Prefer double quotes where the value needs escape sequences.
-
-### multi-line-scalars
-
-Use a block scalar for multi-line text — `|` to preserve newlines, `>` to fold.
-
-### version-format
-
-Versions are semantic X.Y.Z, per [Reference Conventions](/canon/resources/convention-conformance.md#reference-conventions).
-
-### field-ordering
-
-Field order follows existing files of the same kind, per [Reference Conventions](/canon/resources/convention-conformance.md#reference-conventions).
-
-### schema-reference
-
-A root definition file declares a `$schema` field naming its schema at the same relative depth every sibling uses.
 
 ### smallest-edit-that-resolves
 
