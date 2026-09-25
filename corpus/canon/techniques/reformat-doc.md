@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ The document at `{document_path}` after reformatting.
 ### 2. Title and Opening
 
 - Set every title to title case. The document title names what the document is. A section title does not begin with "The", and a title does not name how many items it contains. A count of an inventory goes stale when the inventory grows.
-- Open with one plain-language paragraph that tells a lay reader what the document is for, and when and why the thing happens. Introduce every term of art the rest of the page uses, in the flow of that prose, and bold each term at that first use. A reference names what it refers to. A paragraph is at most six lines.
+- Open with one plain-language paragraph that tells a lay reader what the document is for, and when and why the thing happens. Introduce every term of art the rest of the page uses, in the flow of that prose, and bold each term at that first use. The sentence says what the term is, not only the word. A canonical concept is called by its name. A reference names what it refers to. A paragraph is at most six lines.
 
 ### 3. Lists and Figures
 
@@ -37,12 +37,17 @@ The document at `{document_path}` after reformatting.
 - Each section that explains how something proceeds carries two high-level diagrams, and so does each subsection with its own account. One shows the sequence of what happens. One shows the pieces it is made of.
 - A block of prose under those diagrams that is a further concept becomes its own section, with its own pair. A block that only restates the pictures, or only gives implementation detail, leaves the page.
 - For each figure, write one paragraph in that section that describes the thing, then names the figure in parentheses at the end of the sentence. Do not open the sentence with the figure number. Put an italic title-case caption under the figure. The caption says what the picture shows. A term in that caption that a reader cannot already read takes a parenthesis after it. A term that reads on its own does not.
-- On the diagram of the pieces, each box carries a note and each arrow a label. A note or a label is six words or less.
+- On the diagram of the pieces, each box carries a note and each arrow a label. A note or a label is six words or less, and it names its subject. Write each note in reading order.
+- A paragraph under a figure stays on what that figure shows. It does not add a concept the figure does not show, and it does not define again a term the opening already introduced.
+- Figures appear in the order they are numbered.
+- Run [rotate-class-notes](../scripts/rotate-class-notes.py) on `{document_path}`. Mermaid draws a box line by moving its first word to the end, after a colon, and the script puts that word first so the drawing reads in order. Run it once. A second run rotates the notes again.
 
 ### 4. Commands and Links
 
 - Move raw command lines into an appendix at the end, unless those lines are the API reference or the schema guide. In the sentence that needs them, the link text is the word commands.
 - In prose, the link text is a keyword that continues the sentence.
+- Once the opening has named a thing, the page keeps that name. It does not switch to the identifier the source uses for it.
+- A closing list of other documents is the documentation index, not a section of this page.
 
 ## Rules
 
@@ -52,7 +57,7 @@ Every heading, figure caption, and table title is title case. A short word such 
 
 ### opening-orients-a-lay-reader
 
-The first paragraph states what the document is for, when it happens, and why, in words a reader outside the implementation can follow. It introduces every term of art the rest of the page uses, in the flow of that prose, and bolds each term at that first use. A reference names what it refers to.
+The first paragraph states what the document is for, when it happens, and why, in words a reader outside the implementation can follow. It introduces every term of art the rest of the page uses, in the flow of that prose, and bolds each term at that first use. The sentence says what the term is, not only the word. A canonical concept is called by its name. A reference names what it refers to.
 
 ### paragraphs-are-at-most-six-lines
 
@@ -88,7 +93,23 @@ The caption is italic, sits under the figure, and begins with Figure N. The sect
 
 ### piece-diagram-is-annotated
 
-On the diagram of the pieces, each box carries a note of what it is, and each arrow a label of how the two fit. A note or a label is six words or less.
+On the diagram of the pieces, each box carries a note of what it is, and each arrow a label of how the two fit. A note or a label is six words or less, and it names its subject. The note is written in reading order, then [rotate-class-notes](../scripts/rotate-class-notes.py) is run once on the document. Mermaid draws a box line by moving its first word to the end, after a colon, and that script puts the last word first so the drawing reads in order.
+
+### prose-under-a-figure-stays-on-the-figure
+
+A paragraph under a figure stays on what that figure shows. It does not add a concept the figure does not show, and it does not define again a term the opening already introduced.
+
+### figures-appear-in-number-order
+
+Figures appear in the order they are numbered.
+
+### the-page-keeps-the-concepts-name
+
+Once the opening has named a thing, the page keeps that name. It does not switch to the identifier the source uses for it.
+
+### a-catalog-of-documents-is-the-index
+
+A closing list of other documents is the documentation index, not a section of this page.
 
 ### commands-live-in-an-appendix
 
