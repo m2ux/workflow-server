@@ -11,9 +11,9 @@ A workspace holds the long-lived checkout of each project, that project's engine
 
 | Path | Role |
 |------|------|
-| `.project/<component>/` | The project's long-lived checkout. |
-| `.engineering/` | Plans, decision records, reviews, and templates. |
-| `.worktrees/<slug>/` | A feature worktree of one component. |
+| `.project/<component>/` | The project's long-lived checkout. Workflow definitions are one such component, not part of `.engineering/`. |
+| `.engineering/` | Plans, decision records, reviews, and session state. |
+| `.worktrees/<slug>/` | A feature worktree of one component. Code changes for a task are made here. |
 
 `.project/`, `.engineering/`, and `.worktrees/` are gitignored on the workspace checkout. Each component under `.project/` is its own git checkout. A feature worktree shares that checkout's git directory and lives under `.worktrees/`.
 
@@ -47,6 +47,12 @@ A simple or experimental project keeps `.engineering/` as ordinary files on the 
 ```bash
 ./scripts/deploy-engineering.sh --in-branch
 ```
+
+## A session's notes
+
+One run of a workflow opens one folder under the engineering root: `.engineering/artifacts/planning/<slug>/`. That folder holds the plans, reviews, and session record for the run. What the folder contains, and how those documents are named, is the server's [artifact management](https://github.com/m2ux/workflow-server/blob/main/docs/artifact-management-model.md#the-planning-folder).
+
+The notes are committed in `.engineering/`. The feature worktree commits only the code change. When an activity's documents are committed, the orchestrator stages the planning files in `.engineering/`, commits them, and pushes that remote. Where the application repository tracks engineering as a submodule, the orchestrator then returns to the application checkout and commits the updated pointer. How `.engineering/` itself is created is [above](#engineering).
 
 ## Feature worktrees
 
