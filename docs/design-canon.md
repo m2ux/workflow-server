@@ -22,7 +22,7 @@ Anchors on the principles home embed the section ordinal, so an anchor breaks wh
 
 ## What the server holds
 
-The [technique protocol](technique-protocol-specification.md) and the [identifier conventions](identifier-conventions.md) live with the definitions. The server holds the schema those files are checked against, and the guards that enforce them:
+The [technique protocol](https://github.com/m2ux/workflow-server/blob/main/docs/technique.md) lives with the server. The [identifier conventions](identifier-conventions.md) live with the definitions. The server holds the schema those files are checked against, and the guards that enforce them:
 
 - [schemas/README.md](https://github.com/m2ux/workflow-server/blob/main/schemas/README.md) — the workflow and activity file shapes
 - [guards/README.md](https://github.com/m2ux/workflow-server/blob/main/guards/README.md) — the checks that enforce them mechanically

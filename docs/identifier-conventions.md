@@ -2,7 +2,7 @@
 
 Every identifier in a workflow definition belongs to one of two namespaces, and which one it belongs to decides how it is spelled. This is not a house style: a symbol id is matched against a runtime variable by exact string, so the wrong alphabet does not bind.
 
-These rules govern technique inputs and outputs, protocol variables, activity variables, exit predicates, session state and rule names. The [technique protocol specification](technique-protocol-specification.md) applies them to technique files; `check:identifiers` and `check:technique-template` enforce them corpus-wide.
+These rules govern technique inputs and outputs, protocol variables, activity variables, exit predicates, session state and rule names. The [technique protocol](https://github.com/m2ux/workflow-server/blob/main/docs/technique.md) applies them to technique files; `check:identifiers` and `check:technique-template` enforce them corpus-wide.
 
 ## The symbol model
 
