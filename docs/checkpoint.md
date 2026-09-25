@@ -1,180 +1,365 @@
-# Checkpoint model
+# Checkpoints
 
-A workflow sometimes has to stop and ask. Which directory to target, whether a pull request is ready, which of two readings of a request was meant — none of these can be settled from state, and a wrong guess produces work nobody wanted. A **checkpoint** is a declared pause for exactly that question: a gate written into an activity's steps that holds the run until someone answers.
+A workflow sometimes has to stop and ask a person. Which directory to use, whether a change is ready, which of two readings was meant: the run cannot settle these from what it already knows, and a wrong guess produces work nobody wanted. A checkpoint is that pause, written into the steps, and it holds the run until someone answers.
 
-The agent that reaches the gate is not the agent that can ask. Work is [dispatched down a chain of sub-agents](dispatch.md), and the ones at the bottom run in the background with no channel to the user, so the question has to travel up to the user-facing agent and the answer has to travel back down. Because the pause comes into being at the moment a worker reaches it rather than being declared ahead of the run, this is just-in-time checkpointing.
+The agent that reaches the pause is not the agent that can ask. Work travels down a [chain](dispatch.md) of agents. The ones at the bottom run in the background and cannot speak to the person, so the question travels up to the agent that can, and the answer travels back down. The pause begins when a worker reaches it, through the [calls](api-reference.md#workflow-navigation) that record it, show it, answer it, and continue.
 
-## The checkpoint flow
+## Checkpoint Flow
+
+Figure 1 is the question traveling up to the person and the answer traveling back down. Figure 2 is the three agents and the session that holds the pause.
+
+```mermaid
+sequenceDiagram
+  participant Session
+  participant Worker
+  participant Orchestrator
+  participant Person as User-facing agent
+  Worker->>Session: Record the pause and stop
+  Worker->>Orchestrator: Hand up a block with no payload
+  Orchestrator->>Person: Pass the block on unchanged
+  Person->>Session: Read the question and record the answer
+  Person->>Orchestrator: Wake, with the variable updates
+  Orchestrator->>Worker: Wake
+  Worker->>Session: Continue once the pause is cleared
+```
+
+*Figure 1. The Question Travels Up, and the Answer Travels Back Down.*
+
+```mermaid
+classDiagram
+  class Worker
+  class Orchestrator
+  class UserFacingAgent
+  class Session {
+    the active pause
+    the recorded answer
+  }
+  Worker --> Session : records and continues
+  Orchestrator --> Worker : relays
+  UserFacingAgent --> Session : shows the question and records the answer
+  UserFacingAgent --> Orchestrator : wakes
+```
+
+*Figure 2. The Three Agents, and the Session That Holds the Pause.*
 
 <a id="the-worker-pauses"></a>
 
-### The worker pauses
+### Worker Pauses
 
-On reaching a `kind: checkpoint` step, the worker stops its domain work and calls the server:
+Figure 3 is the worker branching on the server's answer. Figure 4 is the worker, the session, and that answer.
 
-```javascript
-yield_checkpoint({ session_index, checkpoint_id: "confirm-target" })
+```mermaid
+sequenceDiagram
+  participant Worker
+  participant Session
+  Worker->>Session: Record the pause
+  alt No answer yet
+    Session-->>Worker: Yielded
+    Worker->>Worker: Emit an empty block and stop
+  else An answer is already recorded
+    Session-->>Worker: Replayed
+    Worker->>Worker: Apply the answer and continue
+  end
 ```
 
-The server records the pause in the session's `activeCheckpoint` field, stamps it with the time, and answers with a status the worker branches on:
+*Figure 3. The Worker Branches on Yielded or Replayed.*
 
-- **`yielded`** — the pause is recorded. The worker emits a `<checkpoint_yield>` block and stops. The block carries no payload; the active checkpoint lives in the session, and whoever presents it reads it from there.
-- **`replayed`** — this checkpoint already has a recorded answer. The worker applies that answer and carries straight on, without pausing and without emitting anything.
+```mermaid
+classDiagram
+  class Worker
+  class Session {
+    active pause
+    recorded answer
+  }
+  Worker --> Session : records the pause
+  Session --> Worker : yielded or replayed
+```
 
-The replay path is what makes a lost worker cheap. Responses are keyed by activity and checkpoint with no agent component, so a replacement worker re-crossing a gate its predecessor already answered crosses it silently.
+*Figure 4. The Worker and the Session That Answers It.*
 
-Only one checkpoint may be active **per session**. Yielding a second while one is outstanding is refused by name, which stops a run nesting pauses it cannot unwind.
+### One Pause per Session
 
-The bound is per session rather than per run, and the distinction matters wherever a workflow dispatches another. The refusal reads the `activeCheckpoint` of the session the call addresses, and the session-file schema is recursive, so every node in the tree — the parent and each of its embedded children — carries its own slot. A parent and a child can therefore hold gates at the same time, and two children can as well. What no single session can do is stack two.
+Figure 5 is a second pause refused on a session that already has one, while a parent and a child each keep their own. Figure 6 is that slot on every session in the tree, and the answer key a replacement worker uses.
 
-A worker that meets a decision its activity never declared may yield one anyway, supplying its own `message` and `options`. A declared gate owns its own wording, so those two fields are refused there.
+```mermaid
+sequenceDiagram
+  participant Worker
+  participant Session
+  participant Child
+  Worker->>Session: Yield a pause
+  Worker->>Session: Yield a second pause
+  Session-->>Worker: Refused
+  Child->>Child: Its own pause, held at the same time
+```
 
-### The orchestrator relays
+*Figure 5. A Second Pause on One Session Is Refused.*
 
-The orchestrator is itself a background sub-agent, so it cannot resolve the gate either. It finds the `<checkpoint_yield>` block in the worker's output, echoes it upward unchanged, and goes to sleep.
+```mermaid
+classDiagram
+  class ParentSession {
+    one pause
+  }
+  class ChildSession {
+    one pause
+  }
+  class AnswerKey {
+    activity and checkpoint
+  }
+  ParentSession --> ChildSession : embeds
+  AnswerKey --> ParentSession : a replacement worker replays
+```
+
+*Figure 6. Each Session in the Tree Has One Slot.*
+
+### Orchestrator Relays
+
+Figure 7 is the block passing upward unchanged. Figure 8 is the orchestrator standing between the worker and the agent that can ask.
+
+```mermaid
+sequenceDiagram
+  participant Worker
+  participant Orchestrator
+  participant Top as User-facing agent
+  Worker->>Orchestrator: Checkpoint block
+  Orchestrator->>Top: The same block, unread
+  Orchestrator->>Orchestrator: Sleep
+```
+
+*Figure 7. The Block Passes Upward Unchanged.*
+
+```mermaid
+classDiagram
+  class Worker
+  class Orchestrator
+  class UserFacingAgent
+  Worker --> Orchestrator : emits the block
+  Orchestrator --> UserFacingAgent : passes it on
+```
+
+*Figure 8. The Orchestrator between the Worker and the User-Facing Agent.*
 
 <a id="the-user-facing-agent-presents-and-resolves"></a>
 
-### The user-facing agent presents and resolves
+### User-Facing Agent Presents and Resolves
 
-The top-level agent receives the block and asks what the question is:
+Figure 9 is the question shown to the person and the answer written back. Figure 10 is the agent, the session, and the two kinds of effect.
 
-```javascript
-present_checkpoint({ session_index })
+```mermaid
+sequenceDiagram
+  participant Agent as User-facing agent
+  participant Session
+  participant Person
+  Agent->>Session: Read the question and the options
+  Agent->>Person: Ask
+  Person-->>Agent: The answer
+  Agent->>Session: Record the answer and clear the pause
 ```
 
-The server reads `activeCheckpoint`, finds the matching definition in the workflow, and returns the message, the options, and the effects each option carries. The agent puts those to the user through whatever prompt its host offers, then records the answer:
+*Figure 9. The Question Is Shown, and the Answer Is Written Back.*
 
-```javascript
-respond_checkpoint({ session_index, option_id: "proceed" })
+```mermaid
+classDiagram
+  class UserFacingAgent
+  class Session
+  class SetVariable
+  class Exit
+  UserFacingAgent --> Session : reads and records
+  Session --> SetVariable : writes a variable
+  Session --> Exit : names an outcome
 ```
 
-The server clears `activeCheckpoint`, records the decision, and applies each effect on its own terms. A `setVariable` effect is written into the session variable bag. An `exit` effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back for the orchestrator to enact, because resolving a checkpoint does not itself move the session. Where the named exit is `immediate`, the response says so, and the activity's remaining steps do not run.
+*Figure 10. The Agent, the Session, and the Two Effects.*
 
 <a id="three-ways-to-resolve-one"></a>
 
-### Three ways to resolve one
+### Three Ways to Resolve One
 
-| Mode | What it means | Timing |
-|------|---------------|--------|
-| `option_id` | The user picked this option | At least three seconds must have passed since the pause was recorded |
-| `auto_advance` | Take the checkpoint's own `defaultOption` | The full `autoAdvanceMs` must have passed |
-| `condition_not_met` | The checkpoint's prerequisite is false, so dismiss it | None |
+Figure 11 is the server accepting exactly one of the three answers. Figure 12 is those three answers and the two timers.
 
-The server validates the chosen option against the definition, and exactly one of the three modes may be supplied. Both timers are measured from the moment the pause was recorded, so an orchestrator that answers instantly is rejected rather than trusted — a gate resolved in under three seconds cannot have been shown to anyone.
+```mermaid
+sequenceDiagram
+  participant Agent as User-facing agent
+  participant Server
+  Agent->>Server: One of the three answers
+  alt The wait has not elapsed
+    Server-->>Agent: Rejected
+  else The wait has elapsed
+    Server-->>Agent: Recorded
+  end
+```
 
-Auto-advance needs both `defaultOption` and `autoAdvanceMs` on the checkpoint. That pair is the whole of softness: a gate declaring both is soft, and a gate that must wait for a person declares neither. Declaring one without the other is a defect.
+*Figure 11. Exactly One Answer, after Its Wait.*
 
-Dismissal by `condition_not_met` is only open to a checkpoint carrying a structured `condition`; one gated by an inline `when` expression cannot be dismissed this way. The server checks that the condition field is present but cannot check whether it is true, so the agent's evaluation is taken on trust and recorded for audit.
+```mermaid
+classDiagram
+  class OptionChosen
+  class AutoAdvance
+  class ConditionNotMet
+  class PauseTimestamp
+  OptionChosen --> PauseTimestamp : three seconds
+  AutoAdvance --> PauseTimestamp : the declared wait
+  ConditionNotMet --> PauseTimestamp : no wait
+```
+
+*Figure 12. The Three Answers and the Timers They Wait On.*
 
 <a id="the-resume-protocol"></a>
 
-## The resume protocol
+## Resume Protocol
 
-With the checkpoint resolved, the agents wake in reverse order through the host's sub-agent resume mechanism. Under single-agent execution the wake is a no-op: the same agent switches back to its worker persona and continues.
+Figure 13 is the agents waking in reverse, and the worker refused while the pause is still active. Figure 14 is the same three agents, with one agent playing both roles when nothing is in the background.
 
-The user-facing agent resumes the orchestrator, passing the variable updates in plain text. The orchestrator updates its own state and resumes the worker the same way. The worker then clears its own pause with the server:
-
-```javascript
-resume_checkpoint({ session_index })
+```mermaid
+sequenceDiagram
+  participant Top as User-facing agent
+  participant Orchestrator
+  participant Worker
+  participant Session
+  Top->>Orchestrator: Wake, with the variable updates
+  Orchestrator->>Worker: Wake
+  Worker->>Session: Continue
+  alt The pause is still active
+    Session-->>Worker: Hard error
+  else The pause is cleared
+    Session-->>Worker: The recorded effects
+  end
 ```
 
-The server verifies that `activeCheckpoint` really has been cleared and returns the recorded effects so the worker can apply them locally. Calling this while the checkpoint is still active is a hard error — the answer has to exist before the worker moves.
+*Figure 13. The Agents Wake in Reverse, or the Worker Is Refused.*
 
-## Declaring a checkpoint
-
-A checkpoint is a step in an activity's `steps` list, tagged with its kind:
-
-```yaml
-steps:
-  - kind: checkpoint
-    id: confirm-target
-    message: "Please confirm the detected target is correct."
-    condition:
-      type: simple
-      variable: target_detected
-      operator: exists
-    options:
-      - id: proceed
-        label: "Proceed"
-        description: "The target is correct; continue."
-        effect:
-          setVariable:
-            target_confirmed: true
-      - id: edit
-        label: "Choose another"
-        description: "Select a different target before proceeding."
-        effect:
-          setVariable:
-            target_confirmed: false
+```mermaid
+classDiagram
+  class UserFacingAgent
+  class Orchestrator
+  class Worker
+  class SingleAgent {
+    both roles
+  }
+  UserFacingAgent --> Orchestrator : wakes
+  Orchestrator --> Worker : wakes
+  SingleAgent --> SingleAgent : switches back to the worker role
 ```
 
-| Field | Role |
-|-------|------|
-| `id` | Identifies the checkpoint within its activity |
-| `message` | The question put to the user |
-| `options` | At least one option, each with `id`, `label`, `description` and an optional `effect` |
-| `condition` | Structured condition that must hold for the gate to be presented; when false it is skipped |
-| `when` | Inline expression alternative to `condition`, and not dismissible by `condition_not_met` |
-| `defaultOption` | The answer a soft gate takes when no person is reached; declared with `autoAdvanceMs` |
-| `autoAdvanceMs` | Milliseconds the server waits before taking `defaultOption`; declared with it |
-| `required` | Authoring metadata |
+*Figure 14. Three Agents Waking, or One Agent Switching Role.*
 
-A checkpoint used at several sites is a routine: the gate is declared once under the owning workflow's `routines/`, and each site refers to it with a `kind: routine` step. A gate that is not part of a larger run is a one-step routine. The reference prefixes every identifier the run contributes, so two sites cannot collide, and the routine's signature is held against its body. The loader materialises the reference before delivery, so every consumer downstream sees an ordinary checkpoint. The `check:duplicate-bodies` guard reports a checkpoint body authored inline at two sites.
+## Declaring a Checkpoint
 
-## Where a checkpoint belongs
+Figure 15 is one declaration reused at several sites, then shown to the worker as an ordinary checkpoint. Figure 16 is the step, the shared routine, and the sites that refer to it.
 
-### A gate that comes too late changes nothing
+```mermaid
+sequenceDiagram
+  participant Author
+  participant Routine
+  participant Site
+  participant Worker
+  Author->>Routine: Declare the gate once
+  Site->>Routine: Refer to it
+  Routine->>Worker: An ordinary checkpoint
+```
 
-A checkpoint's position in the step list decides whether its answer can steer anything. Every step
-gated on a variable the checkpoint decides has to run after it. A gate reading an unbound variable is
-false, so the step is skipped, and the answer arrives with nothing left to apply it to. The run
-completes, having asked a question that changed nothing.
+*Figure 15. Declared Once, Then Shown as an Ordinary Checkpoint.*
 
-### The five exemptions
+```mermaid
+classDiagram
+  class CheckpointStep
+  class Routine
+  class Site
+  Routine --> CheckpointStep : the body
+  Site --> Routine : a reference
+```
 
-`check:decision-order` holds the line mechanically, reporting a checkpoint whose decision a step
-before it is already gated on. Five cases are exempt, because in each the earlier read has an answer
-or loses nothing by not firing:
+*Figure 16. The Step, the Shared Routine, and the Sites That Refer to It.*
 
-| Exempt | Why |
-|--------|-----|
-| The variable declares a `defaultValue` | Seeding puts it in the bag at session creation, so the earlier gate reads the default rather than nothing |
-| The earlier gate reads by `exists` / `notExists` | A presence test answers on a missing variable; absence is one of its two answers |
-| The earlier step only messages or logs | An announcement that does not fire costs nothing, and gating one on a not-yet-decided value is the ordinary way to stay quiet until it is known |
-| The deciding option carries an `exit` | Leaving the activity sends the run back through the earlier step on its next visit, which then reads what the option wrote |
-| The two gates demand incompatible values of one variable | No single run reaches both steps, so the earlier one was never waiting on this decision |
+The step's fields are the [schema](../schemas/README.md#checkpoint-step).
 
-The last two carve out the standard way of settling a value. A technique derives it. An announcement
-reports it when the derivation was confident, and a checkpoint decides it when the derivation was
-ambiguous, the two carrying opposite gates on the ambiguity flag. Without the exemptions that shape
-reports as a defect, which is why each one is load-bearing: removing any of them puts a working
-pattern back on the report.
+## Where a Checkpoint Belongs
 
-Requirements come from conjuncts only. An `or` proves nothing about which branch a run took, so a
-gate built from one contributes no exclusion — the guard reports rather than assumes.
+Figure 17 is a gate placed before the steps its answer steers, and a gate placed too late. Figure 18 is the checkpoint, the later steps, and the check that reports a decision read too early.
 
-### Never the first step
+```mermaid
+sequenceDiagram
+  participant Run
+  participant Gate as Checkpoint
+  participant Later as Later steps
+  Run->>Gate: Ask
+  Gate->>Later: The answer is available
+  Note over Later: A step before the gate reads nothing and is skipped
+```
 
-`check:checkpoint-entry` refuses a checkpoint as an activity's first step, because that dispatch pays
-full delivery and then yields before doing any work. A decision that has to precede all of an
-activity's work belongs at the preceding activity's tail, or as the orchestrator's precondition on
-dispatching at all.
+*Figure 17. The Gate Comes before the Steps Its Answer Steers.*
 
-## What the design buys
+```mermaid
+classDiagram
+  class Checkpoint
+  class LaterStep
+  class EarlierStep
+  class DecisionOrderCheck
+  Checkpoint --> LaterStep : the answer applies
+  EarlierStep --> DecisionOrderCheck : reported, unless exempt
+```
 
-### Background agents never try to prompt
+*Figure 18. The Checkpoint, the Steps around It, and the Order Check.*
 
-A sub-agent with no user channel that attempts to ask a question hangs. Routing every question to the one agent that has a channel is what keeps that from happening.
+### Never the First Step
 
-### Relaying costs nothing to understand
+Figure 19 is a checkpoint refused as the first step, and the two places that decision can sit instead. Figure 20 is the activity and the dispatch that would otherwise pay for a pause before any work.
 
-The orchestrator in the middle passes a block it never parses. It needs no view of the question, the options or the effects, so a gate can be added to an activity without touching anything between the worker and the user.
+```mermaid
+sequenceDiagram
+  participant Dispatch
+  participant Activity
+  Dispatch->>Activity: First step is a checkpoint
+  Activity-->>Dispatch: Refused
+  Note over Activity: Put the decision at the previous activity's end, or before dispatch
+```
 
-### The pause survives the agent
+*Figure 19. A Checkpoint Is Refused as the First Step.*
 
-Because the active checkpoint and its answer live in the session rather than in an agent's context, a worker that dies mid-gate loses no decision. Its replacement replays the answer and continues.
+```mermaid
+classDiagram
+  class Activity
+  class Checkpoint
+  class PrecedingActivity
+  class Orchestrator
+  Activity --> Checkpoint : not the first step
+  PrecedingActivity --> Checkpoint : the decision sits at its end
+  Orchestrator --> Activity : or the decision is a precondition of dispatch
+```
 
-### Instant resolution is refused
+*Figure 20. The Activity, and the Two Places the Decision Can Sit.*
 
-The two timers make the cheapest way to fake a checkpoint fail. They cannot prove a human saw the question, which [workflow fidelity](workflow-fidelity.md) records among its limits.
+## What the Design Buys
+
+Figure 21 is a question kept off a background agent and a pause that outlives the worker. Figure 22 is the channel, the session, and the timers. What those timers cannot prove is in [fidelity](workflow-fidelity.md).
+
+```mermaid
+sequenceDiagram
+  participant Worker
+  participant Top as User-facing agent
+  participant Session
+  Worker->>Top: The question, via the relay
+  Note over Worker: The worker does not ask the person
+  Worker->>Session: The pause and the answer
+  Note over Session: A replacement worker reads the same answer
+```
+
+*Figure 21. The Question Stays with the Agent Who Can Ask, and the Pause Stays in the Session.*
+
+```mermaid
+classDiagram
+  class UserFacingAgent {
+    the only channel to the person
+  }
+  class Orchestrator {
+    passes the block unread
+  }
+  class Session {
+    pause and answer
+  }
+  class Timers
+  UserFacingAgent --> Session
+  Orchestrator --> UserFacingAgent
+  Timers --> Session : an instant answer is refused
+```
+
+*Figure 22. The Channel, the Unread Relay, the Session, and the Timers.*
