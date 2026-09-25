@@ -18,14 +18,10 @@ Project instructions for this repository.
 - **Never delete the lockfile or run `npm update`.** An install-time payload runs before any of this repo's code, so the lockfile is the last point a build can refuse.
 - Adding a dependency, exact versions, and the known-bad denylist: [development.md](docs/development.md#dependencies).
 
-Discovery walks `corpus/` and no sibling folder. A `workflow.yaml` at any depth under it is a workflow; a directory holding `techniques/`, `resources/` or `routines/` is a namespace references can name, with or without a definition beside it. The workflow id is the directory name.
-
-Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/specimens/`), `ledgers/`, `walks/`, and `docs/` for layout authoring. On this tree: `guards/` for check programs, `scripts/` for generate and provision, `benchmark/` for the headless benches. The technique file contract is [docs/technique.md](docs/technique.md).
-
 ## Boundaries
 
 - Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.
-- Follow workflow fidelity as the YAML and the workflow-server rules define it. Call `discover` first, then the sequence it returns (`start_session` / `get_workflow` / `next_activity` / `get_activity`). A unique catalog match embeds a child and returns `client` — call `get_workflow` and `next_activity` on that child. A fresh `start_session` carries `working_directory` as the absolute path of the checkout under work, and the server derives `owner/repo` from its origin. Fetch `workflow-server://schemas` to validate definitions. See [setup.md](docs/setup.md).
+- Call `discover` first and follow what it returns. A fresh `start_session` passes `working_directory` as the checkout under work. The rest of the sequence is [setup](docs/setup.md).
 
 ## Issues and PRs
 
@@ -42,18 +38,14 @@ Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/s
 
 ## Testing
 
-- **After code or schema changes:** `npm run typecheck` and `npm run test:ci`. Both pass with no `.worktrees/workflows` checkout, because live-corpus tests skip on a missing or empty root — a local convenience only. `verify.yml` checks the definitions out at `workflows/` and runs the suite against them.
-- **After corpus changes:** `npm run check:all`, or `npm run check:delta` for what your change added. Triage a new binding finding in `ledgers/binding-fidelity-triage.json` of the pointed tree as `harmless` / `fix-later` / `live-bug` rather than suppressing it; there is no re-snapshot command.
-- **Definition changes land on `workflows`**, taking the artifacts that describe them in the same commit. Walk baselines under `walks/` and triage entries are read against the tree they sit in, so leaving either behind ships a tree that disagrees with itself. Watch a closed binding finding: delete the entry and it is untriaged, keep it and it matches nothing — so it moves with the change that settled it.
-- Delivery cost is gated in engine CI. The command and the 1% rule: [benchmark](benchmark/README.md#appendix).
+Commands, what CI runs, and how a walk is re-baselined: [development](docs/development.md). Delivery cost: [benchmark](benchmark/README.md#appendix).
+
+- **Definition changes land on `workflows`**, with the walk baselines and triage entries that describe them, in the same commit. A closed binding finding moves with the change that settled it: delete it and it is untriaged, keep it and it matches nothing.
 
 ## Where to look
 
-Recursively follow these links to discover the complete documentation corpus for this project. 
+[docs/README.md](docs/README.md) is the index. Open the page for the task. Do not copy that catalogue here.
 
-* [Overview](./README.md)
-* [Site](https://m2ux.github.io/workflow-server/)
-* [Server](docs/README.md)
-* [Workflows](https://github.com/m2ux/workflow-server/blob/workflows/README.md)
-* [Workspace](https://github.com/m2ux/workflow-server/blob/workspace/README.md)
-* [Deployment](https://github.com/m2ux/workflow-server/blob/docker/README.md)
+A **workflow** is the guide an operator follows. An **activity** is one phase of it. A **technique** is one capability a step names. A **routine** is steps written once and spliced in. A **resource** is material a technique cites and does not contain.
+
+Engineering work starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).
