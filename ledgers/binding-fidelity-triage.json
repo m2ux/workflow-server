@@ -8,7 +8,8 @@
     "artifact-template-placeholder": "The brace names a field of a rendered artifact or commit-trailer template, not a value read from the variable bag.",
     "documentation-notation": "The brace is metasyntax or an illustrative example inside a spec sentence, not a read.",
     "container-contract-shape": "A workflow-root or group TECHNIQUE.md output naming the shape the whole group contributes to, not a value one step produces and another remaps. No single bind site can consume it — the descendants each fill part of it — so having no consumer is what the contract looks like when it is correct. The second do-not-flag carve-out of `output-without-destination`.",
-    "sub-agent-brief-seed": "Every bind site of the op sits in a Sub-Agent activity, dispatched by an orchestrator that composes its brief. The input arrives in that brief, so no workflow variable or sibling step produces it."
+    "sub-agent-brief-seed": "Every bind site of the op sits in a Sub-Agent activity, dispatched by an orchestrator that composes its brief. The input arrives in that brief, so no workflow variable or sibling step produces it.",
+    "agent-applied-result": "A canon technique an agent applies writes its result to the path it was given. No step in the corpus reads that output; the caller is the agent, not a binding."
   },
   "entries": [
     {
@@ -416,6 +417,13 @@
       "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
+    },
+    {
+      "check": "dead-output",
+      "site": "canon/techniques/reformat-doc.md",
+      "detail": "output 'reformatted_document' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "agent-applied-result"
     }
   ]
 }
