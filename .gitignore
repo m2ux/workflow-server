@@ -4,6 +4,7 @@ node_modules/
 # Nested worktrees (per-checkout parent; not $INSTALL/worktrees). The
 # `workflows` branch dest is `.worktrees/workflows`.
 .worktrees/
+.engineering/
 
 # Build output
 dist/
