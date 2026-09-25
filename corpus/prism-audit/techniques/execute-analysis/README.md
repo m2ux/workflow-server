@@ -4,7 +4,7 @@
 
 Composes each audit scope's analysis trigger context and records the resulting run into the audit's accumulators, so finalization holds the run's contract artifacts and the status it….
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

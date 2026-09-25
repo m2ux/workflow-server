@@ -45,7 +45,7 @@ Absolute path to the written review report.
 
 ### review_summary
 
-The rendered review text destined for the pull request — posted verbatim by the publish operation, byte-for-byte what sign-off approved.
+The rendered review text destined for the pull request — posted verbatim by the publish technique, byte-for-byte what sign-off approved.
 
 ## Protocol
 

@@ -11,7 +11,7 @@ Post-activity Progress mark plus commit/push of source-side changes and engineer
 
 ### activity_id
 
-Activity that just completed — or, where a fan converges, the branches it retired, this operation persisting once for all of them per `fan.persist-the-fan-at-convergence`.
+Activity that just completed — or, where a fan converges, the branches it retired, this technique persisting once for all of them per `fan.persist-the-fan-at-convergence`.
 
 ### mark_progress_na
 
@@ -35,7 +35,7 @@ Activity that just completed — or, where a fan converges, the branches it reti
 
 ### 4. Push Engineering Artifacts
 
-- Commit ALL changes under `.engineering/artifacts/` within `{planning_folder_path}`, including `README.md`, `session.json` and `.session-token`, with *message*=`docs(<workflow-id>): <activity-id> artifacts`. Apply [identify-path-type](/git/techniques/identify-path-type.md)(*path*=`.engineering`) from `{host_repo_path}` and take the primitive that `{kind}` names. This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this operation returns: Engineering links and resume assume the remote holds the commit, so a local-only README or artifact update does not satisfy this step.
+- Commit ALL changes under `.engineering/artifacts/` within `{planning_folder_path}`, including `README.md`, `session.json` and `.session-token`, with *message*=`docs(<workflow-id>): <activity-id> artifacts`. Apply [identify-path-type](/git/techniques/identify-path-type.md)(*path*=`.engineering`) from `{host_repo_path}` and take the primitive that `{kind}` names. This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this technique returns: Engineering links and resume assume the remote holds the commit, so a local-only README or artifact update does not satisfy this step.
   > - When `{kind}` is `worktree`, apply [commit-worktree](/git/techniques/commit-worktree.md)(*worktree_path*=`{host_repo_path}/.engineering`, *paths*=those artifact files, *commit_message*=that message, *branch*=the branch checked out in the worktree).
   > - Otherwise apply [commit-regular-files](/git/techniques/commit-regular-files.md)(*paths*=those artifact files, *commit_message*=that message, *branch*=the host branch). The artifacts are ordinary files of the host checkout.
 
@@ -66,4 +66,4 @@ Across the meta workflow's setup activities — every activity up to and includi
 
 ### session-files-ride-along
 
-`session.json` and `.session-token` are written by the server on every authenticated tool call and so are always present in the planning folder by the time this operation runs. Stage them in the SAME engineering commit as the activity's other artifacts — do not produce a separate `state` commit.
+`session.json` and `.session-token` are written by the server on every authenticated tool call and so are always present in the planning folder by the time this technique runs. Stage them in the SAME engineering commit as the activity's other artifacts — do not produce a separate `state` commit.

@@ -11,7 +11,7 @@ Decompose source code into subsystems, assign different prisms per region via ca
 
 ### code_subsystem
 
-One decomposed structural subsystem of the source, carrying its identity, line range, source file, and the names of its peer subsystems. Shared across the decompose, calibrate, and execute operations.
+One decomposed structural subsystem of the source, carrying its identity, line range, source file, and the names of its peer subsystems. Shared across the decompose, calibrate, and execute techniques.
 
 #### subsystem_name
 

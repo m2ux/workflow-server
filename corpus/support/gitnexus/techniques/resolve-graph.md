@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Name the indexed graph an operation addresses, and report which graphs and repository groups exist to address.
+Name the indexed graph a technique addresses, and report which graphs and repository groups exist to address.
 
 ## Inputs
 
@@ -17,7 +17,7 @@ Name the indexed graph an operation addresses, and report which graphs and repos
 
 ### repo_name
 
-The name to give the operations in this group as their `{repo_name}`. Empty when no indexed graph covers `{tree_path}`.
+The name to give the techniques in this group as their `{repo_name}`. Empty when no indexed graph covers `{tree_path}`.
 
 ### graph_inventory
 
@@ -29,7 +29,7 @@ Every indexed graph with the tree it was built from, when it was built, the comm
 
 - Call `gitnexus_list_repos { limit, offset }` for the indexed graphs and `gitnexus_group_list` for the group names, and record the two together as `{graph_inventory}`.
    > The graphs arrive a page at a time, fifty to a page unless `limit` says otherwise, in a stable order. While the page's `pagination.hasMore` is true, call again with `offset` set to its `pagination.nextOffset`; a graph is absent from the inventory only once the last page has been read.
-- Call `gitnexus_group_list { name }` for each group whose members the question reaches, and record them under that group. Called with no name the operation answers with names alone, so an inventory read for a member is read one group at a time.
+- Call `gitnexus_group_list { name }` for each group whose members the question reaches, and record them under that group. Called with no name the technique answers with names alone, so an inventory read for a member is read one group at a time.
   > A group's members are registry names, which address a graph and name no tree. The tree each sits in comes from the indexed-graph half of this inventory, matched on that name.
 
 ### 2. Resolve

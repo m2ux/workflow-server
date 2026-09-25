@@ -4,7 +4,7 @@
 
 Initiative-level analysis that grounds package planning, in the two forms an initiative starts from: continuing prior work, or beginning fresh.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

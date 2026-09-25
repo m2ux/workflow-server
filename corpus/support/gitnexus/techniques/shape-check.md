@@ -24,7 +24,7 @@ Per route, the top-level keys its response carries, the keys each consumer reads
 ### 1. Take the Shape Report
 
 - Call `gitnexus_shape_check { route: route_path, repo: repo_name }` and record the `{shape_report}`.
-   > A graph built before the `method` property existed fails the read with a binder error naming it rather than answering empty — too old to serve this operation, which a rebuild fixes.
+   > A graph built before the `method` property existed fails the read with a binder error naming it rather than answering empty — too old to serve this technique, which a rebuild fixes.
 
 ### 2. Read What the Answer Covers
 

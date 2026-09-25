@@ -4,7 +4,7 @@
 
 Three isolated passes over one target: a structural reading, an adversarial challenge to it, and the reconciliation that survives both. The challenge is what makes the mode self-correcting — it is given the prior artifacts and nothing else, so it cannot inherit the first pass's reasoning.
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one operation of the chain.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one technique of the chain.
 
 ---
 

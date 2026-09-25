@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Git operations for planning folders and artifacts — parent repos, submodules, and branch push. Owns the host-versus-component distinction: host path and `owner/repo` come from git; a repository name in request prose identifies a component only.
+Git techniques for planning folders and artifacts — parent repos, submodules, and branch push. Owns the host-versus-component distinction: host path and `owner/repo` come from git; a repository name in request prose identifies a component only.
 
 ## Inputs
 
 ### planning_folder_path
 
-Path to the session's planning folder, as the server returned it. Operations that derive a path from where the session keeps its artifacts take it from here; not every operation needs one.
+Path to the session's planning folder, as the server returned it. Techniques that derive a path from where the session keeps its artifacts take it from here; not every technique needs one.
 
 ## Rules
 
@@ -33,7 +33,7 @@ NEVER skip hooks (`--no-verify`, `--no-gpg-sign`) unless the user explicitly req
 
 ### explicit-commit
 
-NEVER commit changes unless the user explicitly asks. Verify the request before executing. Scope: ad-hoc commits only — distinct from `commit-and-persist.commit-after-activity`, which mandates commit+push after each completed activity, and from any bound operation whose own rules mandate a commit as the value it produces.
+NEVER commit changes unless the user explicitly asks. Verify the request before executing. Scope: ad-hoc commits only — distinct from `commit-and-persist.commit-after-activity`, which mandates commit+push after each completed activity, and from any bound technique whose own rules mandate a commit as the value it produces.
 
 ### read-agents-md
 

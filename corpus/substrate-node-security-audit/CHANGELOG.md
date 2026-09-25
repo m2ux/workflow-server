@@ -6,15 +6,15 @@ All notable changes to the substrate-node-security-audit workflow.
 
 Additive, availability-gated adoption of the [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) capability for the workflow's codebase scanning and structural analysis, from a focused workflow-design review against three goals: effective prism-technique reuse / no duplication, effective GitNexus use, and GitNexus preferred over grep where appropriate. No phase, checkpoint, activity, or contract break — every change is a `gitnexus_available`-gated addition beside the retained grep/manual method.
 
-**GitNexus indexing (scope-setup):** `01-scope-setup.yaml` gains an `index-codebase` step binding `gitnexus::analyze`, setting the new `gitnexus_available` gate variable. A new `workflow.yaml` rule routes structural analysis (symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, blast radius) through the operations when indexed, with grep/full-file reads as the fallback — mirroring `gitnexus.must-use-operations`.
+**GitNexus indexing (scope-setup):** `01-scope-setup.yaml` gains an `index-codebase` step binding `gitnexus::analyze`, setting the new `gitnexus_available` gate variable. A new `workflow.yaml` rule routes structural analysis (symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, blast radius) through the techniques when indexed, with grep/full-file reads as the fallback — mirroring `gitnexus.must-use-operations`.
 
 **Reconnaissance & architecture (F3):** `map-codebase` and `analyze-architecture` gain gated graph enrichment — `read-cluster` for community structure, `query`/`read-process` for functional areas and execution flows, `cypher` for cross-community (trust-boundary) edges, `context` for fan-in, `impact` for candidate-point blast radius.
 
 **Function registry & coverage (F4/F5):** `build-function-registry` seeds enumeration from the symbol graph (`cypher`) when indexed; `apply-checklist`'s function-count cross-check prefers the exact graph count over `grep 'fn '`; `verify-sub-agent-output` takes the coverage-gate denominator from the GitNexus inventory. Reading full function bodies and the >200-line coverage gate are unchanged.
 
-**Static-analysis structural checks (F6/F7):** `scan-storage-lifecycle` resolves insert/remove caller pairing and cross-function enumeration via `context`/`cypher`; `search-pattern-catalog` routes STRUCTURAL verification steps through the operations; `static-analysis-patterns.md` gains a grep↔GitNexus boundary preamble and classifies the structural checks (1, 3, 5, 15, 16, 17, 29, 31, 32). grep stays the instrument for pattern-presence lead generation.
+**Static-analysis structural checks (F6/F7):** `scan-storage-lifecycle` resolves insert/remove caller pairing and cross-function enumeration via `context`/`cypher`; `search-pattern-catalog` routes STRUCTURAL verification steps through the techniques; `static-analysis-patterns.md` gains a grep↔GitNexus boundary preamble and classifies the structural checks (1, 3, 5, 15, 16, 17, 29, 31, 32). grep stays the instrument for pattern-presence lead generation.
 
-**Documentation (F1/F8):** `README.md` records the deliberate divergence from `prism-audit` (two different-philosophy audits sharing the Impact × Feasibility model and now `gitnexus`, but not an analysis spine — this workflow is not rebuilt on prism, by design) and names the operations it reuses. `audit-prompt-template.md` gains a three-instruments stance line (grep = presence, full reads = comprehension, graph = structure/relationships) that preserves the read-EVERY-file philosophy.
+**Documentation (F1/F8):** `README.md` records the deliberate divergence from `prism-audit` (two different-philosophy audits sharing the Impact × Feasibility model and now `gitnexus`, but not an analysis spine — this workflow is not rebuilt on prism, by design) and names the techniques it reuses. `audit-prompt-template.md` gains a three-instruments stance line (grep = presence, full reads = comprehension, graph = structure/relationships) that preserves the read-EVERY-file philosophy.
 
 *Design-review note:* goal 1 (prism reuse) was assessed as a pass — the apparent overlaps with the prism family are structural/orchestration, not content; the Substrate-specific payloads (§3 checklist, multi-agent roster, calibrated rubric) have no prism equivalent, so no prism-family technique was adopted and no wholesale rebuild was undertaken.
 
@@ -28,7 +28,7 @@ Structural, schema-expressiveness, rule-hygiene, and resource-hygiene remediatio
 
 **Variable hygiene (F-08):** The unread gate variables `agents_assigned` and `agents_dispatched` were pruned — the dispatch-completeness gate is carried by `dispatch_complete`. Variables newly wired into the F-05 condition are retained.
 
-**Technique decomposition (F-10 / F-11):** The `dispatch-sub-agents` 6-phase monolith was split into a per-phase operation group (`assign-roster`, `route-leads`, `dispatch-concurrent`, `collect-results`, `verify-output-files`); the 13 bindings across reconnaissance and primary-audit were rebound to the matching operation, preserving the sub-agent-roster exception for the distinct per-agent dispatches. Redundant same-activity re-bindings of `merge-findings` and `verify-sub-agent-output` in primary-audit (which only re-surfaced an already-produced output) were collapsed.
+**Technique decomposition (F-10 / F-11):** The `dispatch-sub-agents` 6-phase monolith was split into a per-phase technique group (`assign-roster`, `route-leads`, `dispatch-concurrent`, `collect-results`, `verify-output-files`); the 13 bindings across reconnaissance and primary-audit were rebound to the matching technique, preserving the sub-agent-roster exception for the distinct per-agent dispatches. Redundant same-activity re-bindings of `merge-findings` and `verify-sub-agent-output` in primary-audit (which only re-surfaced an already-produced output) were collapsed.
 
 **Binding fidelity (F-13 / F-14):** `map-vulnerability-domains` now reads `architectural_analysis.{interaction_model, privilege_map, candidate_points, emergent_domains}` via dotted path, closing the cross-sub-agent binding gap. `score-severity`'s input was canonicalized from `findings` to the producer's `merge_table`, retiring the per-call rename.
 
@@ -59,8 +59,8 @@ Integrates 3 new vulnerability patterns (V31–V33) and 1 pattern extension (V4)
 **Track 1 — New mechanical checks (resource 05, executed by Group B):**
 - +Check 27: Hardcoded Trivial Weight on Extrinsics (V32) — literal weight constants below 10,000 on user-callable extrinsics enable block-filling DoS
 - +Check 28: Unbounded Temporal Parameter (V33) — future-pointing block number/timestamp parameters without maximum offset allow indefinite signature validity, permanent locks
-- +Check 29: Missing `#[transactional]` on Multi-Write Storage Operations (V31) — `decl_module!` pallets and hook paths without transactional wrapping allow partial state corruption
-- +Check 30: RPC Method Access Control / DenyUnsafe Gating — custom RPC handlers exposing sensitive operations (signing, key management) without `DenyUnsafe` guard
+- +Check 29: Missing `#[transactional]` on Multi-Write Storage Techniques (V31) — `decl_module!` pallets and hook paths without transactional wrapping allow partial state corruption
+- +Check 30: RPC Method Access Control / DenyUnsafe Gating — custom RPC handlers exposing sensitive techniques (signing, key management) without `DenyUnsafe` guard
 - +Check 31: Event Emission Fidelity / False Top-Up Prevention — financial events emitted before state finalization, with incorrect amounts, or on reverting error paths
 
 **Track 1a — SlowMist Blockchain Common Vulnerability List cross-reference (resource 05):**
@@ -179,7 +179,7 @@ Introduces a dedicated security architecture analysis sub-agent dispatched durin
 **Architectural change — Security Architecture Sub-Agent:**
 - NEW activity `sub-architectural-analysis` (13-sub-architectural-analysis.yaml): A sub-agent dispatched during reconnaissance that performs security-oriented architectural decomposition. Receives the crate map, file inventory, and trust boundaries; returns four structured artifacts:
   1. **Component Interaction Model** — per-component-pair data flows, trust assumptions, and required security properties
-  2. **Privilege and Authority Map** — per-operation authority requirements and verification points
+  2. **Privilege and Authority Map** — per-technique authority requirements and verification points
   3. **Candidate Point List** — ranked locations where code complexity concentrates (Dowd methodology)
   4. **Emergent Vulnerability Domains** — security-relevant properties that don't map to any §3 checklist item
 

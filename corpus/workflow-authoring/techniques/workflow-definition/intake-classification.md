@@ -11,7 +11,7 @@ Operation-type classification and design-intent baseline for create, update or r
 
 ### operation_type
 
-The classified operation — sole mode state for the run:
+The classified technique — sole mode state for the run:
 
 - **Review** — existing-workflow reference(s) plus an audit intent (recognition signals include "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", "evaluate workflow")
 - **Update** — existing-workflow reference plus a change request
@@ -59,7 +59,7 @@ In update mode, the categorised change request from `{user_description}`: one or
 
 ## Protocol
 
-### 1. Classify Operation
+### 1. Classify Technique
 
 - Determine `{operation_type}` per the Output criteria
 - Set `{operation_type_ambiguous}` true when classification signals conflict or are insufficient; otherwise false
@@ -85,4 +85,4 @@ In update mode, the categorised change request from `{user_description}`: one or
 
 ### derive-before-ask
 
-Classify mode, target and clarity from the request before asking anything. `{intent_needs_confirmation}` is the sole gap signal this operation emits; it never substitutes a guess for the flag.
+Classify mode, target and clarity from the request before asking anything. `{intent_needs_confirmation}` is the sole gap signal this technique emits; it never substitutes a guess for the flag.

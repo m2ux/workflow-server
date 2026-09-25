@@ -17,4 +17,4 @@ The Full Prism passes that follow the structural pass, each executed in its own 
 
 ### lens-is-program
 
-The lens resource is an imperative program. Execute its operations in order, producing the output each operation requests.
+The lens resource is an imperative program. Execute its techniques in order, producing the output each technique requests.

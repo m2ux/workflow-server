@@ -2,15 +2,15 @@
 
 > Part of the [Midnight System Review Workflow](../README.md)
 
-The technique library for the midnight-system-review workflow. Each operation is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each operation's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+The technique library for the midnight-system-review workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each technique's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs for every technique here: `planning_folder_path` and `target_repo_path`. Groups are named after their owning activity, so steps bind their own group's operations by bare id; every foreign reference is fully qualified.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs for every technique here: `planning_folder_path` and `target_repo_path`. Groups are named after their owning activity, so steps bind their own group's techniques by bare id; every foreign reference is fully qualified.
 
 ---
 
-## Operation Groups
+## Technique Groups
 
-| Group | Operations |
+| Group | Techniques |
 |-------|------------|
 | [`scope-intake`](scope-intake/TECHNIQUE.md) | [`classify-review-target`](scope-intake/classify-review-target.md) — PR vs local · [`resolve-change-surface`](scope-intake/resolve-change-surface.md) — inventory artifact from transport-supplied surface data · [`detect-toolchain`](scope-intake/detect-toolchain.md) — probe the three toolchain gates |
 | [`area-derivation`](area-derivation/TECHNIQUE.md) | [`derive-areas`](area-derivation/derive-areas.md) — change surface × subsystem map → bounded areas and plan · [`amend-plan`](area-derivation/amend-plan.md) — apply user amendment direction inside the approval loop |
@@ -19,7 +19,7 @@ The technique library for the midnight-system-review workflow. Each operation is
 | [`verdict-and-report`](verdict-and-report/TECHNIQUE.md) | [`compute-verdict`](verdict-and-report/compute-verdict.md) — 1-5 verdict from accepted findings, with `review_type` · [`render-review`](verdict-and-report/render-review.md) — canonical-format report and verbatim `review_summary` |
 | [`publish-review`](publish-review/TECHNIQUE.md) | [`record-publication`](publish-review/record-publication.md) — publication close-out record |
 
-## Reused Operations
+## Reused Techniques
 
 | Reference | Used for |
 |-----------|----------|

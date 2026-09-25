@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Record that the first operation of the pair executed.
+Record that the first technique of the pair executed.
 
 ## Outputs
 
 ### first_noted
 
-True once this operation has executed.
+True once this technique has executed.
 
 ## Protocol
 
@@ -23,4 +23,4 @@ True once this operation has executed.
 
 ### alpha-own
 
-The first note is this operation's output, not the pair's.
+The first note is this technique's output, not the pair's.

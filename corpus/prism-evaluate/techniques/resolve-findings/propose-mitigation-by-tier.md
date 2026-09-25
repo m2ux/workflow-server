@@ -22,7 +22,7 @@ The mitigation proposed for the finding: its tier, the target location it addres
 ### 2. Compose the Mitigation
 
 - Compose `{proposed_mitigation}` in the shape the finding's tier prescribes (`t1-correction`, `t2-reframing`, `t3-novel-mechanism`, `t4-acknowledgement`), carrying the target location, the text, and the reasoning.  
-  > When the run reaches this operation again for a finding already proposed on, the context gathered since supersedes the earlier proposal's wording.
+  > When the run reaches this technique again for a finding already proposed on, the context gathered since supersedes the earlier proposal's wording.
 
 ## Rules
 

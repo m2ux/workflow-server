@@ -33,7 +33,7 @@ Every wiki claim carries a confidence score of `high`, `medium`, or `low`, per t
 
 ### index-and-log-on-every-mutation
 
-`index.md` and `log.md` are maintained on every mutation — the catalog and the append-only operation ledger never fall behind the pages. Any operation that creates or updates a page also updates the index and appends the log in the same pass.
+`index.md` and `log.md` are maintained on every mutation — the catalog and the append-only technique ledger never fall behind the pages. Any technique that creates or updates a page also updates the index and appends the log in the same pass.
 
 ### contradictions-surfaced-at-lint
 
@@ -41,8 +41,8 @@ Contradictions between pages or claims are surfaced at lint, not silently reconc
 
 ### knowledge-compounds
 
-Knowledge compounds across operations — each ingest augments the existing wiki rather than rebuilding it. Existing pages are updated in place with new sections and deeper detail; prior content is preserved unless a cited source contradicts it.
+Knowledge compounds across techniques — each ingest augments the existing wiki rather than rebuilding it. Existing pages are updated in place with new sections and deeper detail; prior content is preserved unless a cited source contradicts it.
 
 ### hierarchical-navigation
 
-Read `index.md` and follow `[[wikilinks]]` to the relevant pages rather than loading the whole wiki. Hierarchical navigation, not brute-force context loading, is how every operation locates the pages it needs.
+Read `index.md` and follow `[[wikilinks]]` to the relevant pages rather than loading the whole wiki. Hierarchical navigation, not brute-force context loading, is how every technique locates the pages it needs.

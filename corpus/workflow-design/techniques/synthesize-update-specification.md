@@ -11,7 +11,7 @@ Update-mode design specification covering only dimensions that change.
 
 ### operation_type
 
-The classified operation type (`update`).
+The classified technique type (`update`).
 
 ### change_category
 

@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Record that the second operation of the pair executed.
+Record that the second technique of the pair executed.
 
 ## Outputs
 
 ### second_noted
 
-True once this operation has executed.
+True once this technique has executed.
 
 ## Protocol
 
@@ -23,4 +23,4 @@ True once this operation has executed.
 
 ### beta-own
 
-The second note is this operation's output, not the pair's.
+The second note is this technique's output, not the pair's.

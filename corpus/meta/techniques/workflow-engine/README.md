@@ -4,7 +4,7 @@
 
 Contract and rules for executing a workflow's structured flow — sessions, activities, agents, Progress, and checkpoints.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

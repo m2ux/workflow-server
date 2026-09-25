@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Contract shared by every operation in this group.
+Contract shared by every technique in this group.
 
 ## Inputs
 
 ### pair_id
 
-Identifier of the pair these operations belong to.
+Identifier of the pair these techniques belong to.
 
 #### default
 
@@ -21,4 +21,4 @@ Identifier of the pair these operations belong to.
 
 ### pair-together
 
-Both operations of this pair execute in the same activity.
+Both techniques of this pair execute in the same activity.

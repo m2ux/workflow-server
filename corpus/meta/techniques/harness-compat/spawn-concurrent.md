@@ -21,7 +21,7 @@ Array of agent results, one per dispatched agent
 
 ## Protocol
 
-### 1. Resolve harness operation
+### 1. Resolve harness technique
 
 - Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: concurrent` → `{harness_technique}`, `{harness_operation}`.
 

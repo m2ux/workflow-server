@@ -22,7 +22,7 @@ Failure-class discharge records use three-way disposition: **confirmed** (eviden
 ## P2 — Code-graph queries
 
 - Validates: structural claims — callers/callees of a changed symbol, reachability, blast radius, cross-function comparison (e.g. do the root and internal execution paths build the same event tuple?).
-- Instrument: the [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) operations, each call addressed at `{repo_name}` — [`query`](/gitnexus/techniques/query.md) for the execution flows a concept lands in, [`context`](/gitnexus/techniques/context.md) for one symbol's callers, callees and flow membership, [`impact`](/gitnexus/techniques/impact.md) for a changed symbol's blast radius, and [`detect-changes`](/gitnexus/techniques/detect-changes.md) for the symbols a diff moved and the flows they sit on.
+- Instrument: the [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) techniques, each call addressed at `{repo_name}` — [`query`](/gitnexus/techniques/query.md) for the execution flows a concept lands in, [`context`](/gitnexus/techniques/context.md) for one symbol's callers, callees and flow membership, [`impact`](/gitnexus/techniques/impact.md) for a changed symbol's blast radius, and [`detect-changes`](/gitnexus/techniques/detect-changes.md) for the symbols a diff moved and the flows they sit on.
 - Gate: `gitnexus_available`; fallback is grep-based enumeration plus targeted file reads (P1 discipline).
 - Bounding: one named structural question per probe; take the graph answer with its symbol references as the anchor.
 - Limit: a caller inside a macro body and a symbol named only in a type position carry no edge, per `gitnexus.edges-the-parser-cannot-see`. On a pallet dispatchable or a runtime-API declaration an empty caller set is absence of evidence, so a refutation resting on one re-derives the callers by grep and says which instrument answered.
@@ -71,7 +71,7 @@ Failure-class discharge records use three-way disposition: **confirmed** (eviden
 ## P8a — Downstream-caller propagation
 
 - Validates: error propagation from a changed callee through caller control flow — whether a caller surfaces, handles, or swallows errors from the changed function when the signature, return, or failure semantics changed.
-- Instrument: enumerate callers of the changed symbol (the `gitnexus` operations when `gitnexus_available`, otherwise grep plus targeted reads), then trace each caller's control flow around the fallible call — early returns, error handling branches, swallowed errors.
+- Instrument: enumerate callers of the changed symbol (the `gitnexus` techniques when `gitnexus_available`, otherwise grep plus targeted reads), then trace each caller's control flow around the fallible call — early returns, error handling branches, swallowed errors.
 - Gate: `gitnexus_available` for enumeration; fallback is grep-based caller discovery plus reads (P1/P2 discipline).
 - Bounding: one caller's propagation path per probe; anchor the fallible call and the observed error-handling behavior.
 - Evidence form: file:line of the caller's fallible call and error-handling path, with the observed propagation or swallowing behavior.
@@ -79,7 +79,7 @@ Failure-class discharge records use three-way disposition: **confirmed** (eviden
 ## P8b — Downstream-caller post-call storage
 
 - Validates: caller-side persistent-state integrity after a non-propagating (swallowed-error) call — each caller that mutates persistent state (storage writes/deletes, accounting consumption) commits or rolls back correctly when the callee returns without propagating failure (the accounting-consumed-before-success class).
-- Instrument: enumerate callers of the changed symbol (the `gitnexus` operations when `gitnexus_available`, otherwise grep plus targeted reads), then trace each caller's state mutations **after** the fallible call — the order of consume/delete versus commit.
+- Instrument: enumerate callers of the changed symbol (the `gitnexus` techniques when `gitnexus_available`, otherwise grep plus targeted reads), then trace each caller's state mutations **after** the fallible call — the order of consume/delete versus commit.
 - Gate: `gitnexus_available` for enumeration; fallback is grep-based caller discovery plus reads (P1/P2 discipline).
 - Bounding: one caller's post-call storage path per probe; anchor the state mutation and its ordering against the fallible call.
 - Evidence form: file:line of the caller's state mutation and the fallible call, with the observed on-failure behavior and a per-caller path anchor for refutation.

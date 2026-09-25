@@ -8,3 +8,5 @@ The criteria a workflow definition is authored toward and audited against. The c
 | `anti-patterns.md` | Specific smells, each as **Detect / Do not flag / Fix**, grouped into families by `##` section |
 | `schema-construct-inventory.md` | An informal prose pattern mapped to the formal construct carrying it, one section per schema |
 | `convention-conformance.md` | Reference conventions — naming, field order, structure — against sibling workflows |
+
+Techniques live in [techniques/](techniques/README.md). [reformat-doc](techniques/reformat-doc.md) reformats an existing document.

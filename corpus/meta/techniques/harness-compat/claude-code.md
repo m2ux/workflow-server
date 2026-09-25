@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Harness-specific invoke details for `harness_kind: claude-code`. Catalogue of alternate operation rules (`spawn` / `resume` / `concurrent`); standing wait/depth policy; group contract is foreground-always.
+Harness-specific invoke details for `harness_kind: claude-code`. Catalogue of alternate technique rules (`spawn` / `resume` / `concurrent`); standing wait/depth policy; group contract is foreground-always.
 
 ## Rules
 

@@ -22,8 +22,8 @@ One branch technique commits. It writes its note inside the checkout its activit
 
 ---
 
-## Shared operations bound by this workflow
+## Shared techniques bound by this workflow
 
-Operations a shared namespace holds are referenced by qualified id from this workflow. [`orchestration-patterns::gather-results`](/meta/techniques/orchestration-patterns/gather-results.md) reconciles a container against the collection that produced it; [`git::create-worktree`](/git/techniques/create-worktree.md), [`git::commit-regular-files`](/git/techniques/commit-regular-files.md) and [`git::merge-branches`](/git/techniques/merge-branches.md) give an isolated writer its checkout, its commit, and the merge at the convergence.
+Techniques a shared namespace holds are referenced by qualified id from this workflow. [`orchestration-patterns::gather-results`](/meta/techniques/orchestration-patterns/gather-results.md) reconciles a container against the collection that produced it; [`git::create-worktree`](/git/techniques/create-worktree.md), [`git::commit-regular-files`](/git/techniques/commit-regular-files.md) and [`git::merge-branches`](/git/techniques/merge-branches.md) give an isolated writer its checkout, its commit, and the merge at the convergence.
 
-The first of those git operations is load-bearing beyond what it does. An engine rule reads whether a fanned activity binds it and admits the commit operations only where it does, so the binding is what exempts this run's writers from the refusal that otherwise stops a fanned activity from committing.
+The first of those git techniques is load-bearing beyond what it does. An engine rule reads whether a fanned activity binds it and admits the commit techniques only where it does, so the binding is what exempts this run's writers from the refusal that otherwise stops a fanned activity from committing.

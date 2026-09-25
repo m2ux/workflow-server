@@ -2,11 +2,19 @@
 
 This folder holds documentation that belongs to this tree's layout: how the named roots are arranged, and how to add a workflow, resource, technique or routine. What each named root is *for*, and what it holds, is in that folder's own README; the [branch README](../README.md#named-roots) maps them.
 
-## Contents
+## Document corpus
 
-- this file — adding a workflow, resource, technique or routine, and how definition files link
-- [technique-protocol-specification.md](technique-protocol-specification.md) — the technique file contract: anatomy, addressing, composition, delivery
-- [identifier-conventions.md](identifier-conventions.md) — how every id in a definition is spelled, and why it has to bind
+The definition docs on this branch.
+
+| Document | What it is |
+|----------|------------|
+| [Identifier conventions](identifier-conventions.md) | How every id in a definition is spelled |
+| [Canon](../corpus/canon/README.md) | The namespace the homes below are served from |
+| [Design principles](../corpus/canon/resources/design-principles.md) | The stance an author writes toward |
+| [Anti-patterns](../corpus/canon/resources/anti-patterns.md) | Smells, each as detect, do not flag, fix |
+| [Schema construct inventory](../corpus/canon/resources/schema-construct-inventory.md) | A prose pattern mapped to the construct that carries it |
+| [Convention conformance](../corpus/canon/resources/convention-conformance.md) | Comparison against sibling workflows |
+| [Design canon](design-canon.md) | How to reach the homes, and how to cite one |
 
 ## Discovery
 
@@ -42,7 +50,7 @@ A resource is a slug-named markdown file under a workflow's `resources/` directo
 
 A technique is a markdown file under a `techniques/` directory. Put it in the `meta` workflow when every workflow should have it, or in one workflow's own directory when only that workflow does — a workflow-local technique shadows a `meta` one of the same name. A technique may hold nested techniques in a folder of its own, and a nested technique is addressed by appending its slug to the parent's path. Like resources, techniques are discovered by reading the directory.
 
-The file contract — anatomy, addressing, composition, delivery — is the [technique protocol specification](technique-protocol-specification.md). How every id is spelled is in the [identifier conventions](identifier-conventions.md).
+The file contract — anatomy, addressing, composition, delivery — is the [technique protocol](https://github.com/m2ux/workflow-server/blob/main/docs/technique.md). How every id is spelled is in the [identifier conventions](identifier-conventions.md).
 
 The grain of the work — judgement on live feedback versus accepted, codified application — is [A Technique Is a Reading](/canon/resources/design-principles.md#26-a-technique-is-a-reading) and [A Routine Holds the Codified Path](/canon/resources/design-principles.md#42-a-routine-holds-the-codified-path).
 

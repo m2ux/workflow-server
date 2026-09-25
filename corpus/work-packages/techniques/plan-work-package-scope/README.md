@@ -4,7 +4,7 @@
 
 Define scope, dependencies, effort, and success criteria for the packages of a multi-package initiative, spanning the planning-approach overview and per-package planning.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Contract and rules for executing a workflow's structured flow — sessions, activities, agents, Progress, and checkpoints. Every rule here is one both an orchestrator and a worker can act on; the boundaries a single role carries belong to that role's own operation.
+Contract and rules for executing a workflow's structured flow — sessions, activities, agents, Progress, and checkpoints. Every rule here is one both an orchestrator and a worker can act on; the boundaries a single role carries belong to that role's own technique.
 
 ## Rules
 
@@ -19,9 +19,9 @@ Check `_meta.validation` in each response. Warnings are advisory but should be a
 
 ### resource-loading-via-tool
 
-Resource refs returned in operation bodies (e.g. `planning-readme`) are lightweight pointers. When `get_activity` includes a sibling `resources` map, reuse those bodies (or unchanged markers). Otherwise load via `get_resource { session_index, resource_id }`.
+Resource refs returned in technique bodies (e.g. `planning-readme`) are lightweight pointers. When `get_activity` includes a sibling `resources` map, reuse those bodies (or unchanged markers). Otherwise load via `get_resource { session_index, resource_id }`.
 
-The ids come from the delivery: the `resources` map keys, `resource_refs`, and the refs in the operation bodies this response carried, each already qualified. Pass one of those verbatim. A ref that will not resolve is a definition defect to report, not a spelling to search for — an id guessed under another workflow prefix or another slug spelling costs a round trip and returns an error, and the id that would have worked was in the response already.
+The ids come from the delivery: the `resources` map keys, `resource_refs`, and the refs in the technique bodies this response carried, each already qualified. Pass one of those verbatim. A ref that will not resolve is a definition defect to report, not a spelling to search for — an id guessed under another workflow prefix or another slug spelling costs a round trip and returns an error, and the id that would have worked was in the response already.
 
 ### fetch-costs-what-it-delivers
 

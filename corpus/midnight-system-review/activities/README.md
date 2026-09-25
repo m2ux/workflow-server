@@ -19,4 +19,4 @@ This file is an orientation map. The authoritative definition of each activity â
 | 05 | [`consolidate-evidence`](05-consolidate-evidence.yaml) | Where the probes converge: their records read whole, in plan order, into the evidence log |
 | 06 | [`finding-adjudication`](06-finding-adjudication.yaml) | Grade every candidate with the complete tuple, disposition against the accepted-issue threshold, enforce tuple completeness structurally |
 | 07 | [`verdict-and-report`](07-verdict-and-report.yaml) | Compute the verdict from accepted findings, render the report, reconcile accounting, sign off (with rework routing), decide publication |
-| 08 | [`publish-review`](08-publish-review.yaml) *(conditional)* | Post the review via the reused work-package operation and record the publication |
+| 08 | [`publish-review`](08-publish-review.yaml) *(conditional)* | Post the review via the reused work-package technique and record the publication |

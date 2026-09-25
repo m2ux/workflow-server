@@ -6,9 +6,9 @@
 
 ## Overview
 
-This workflow exists to make the pin operation's answer observable for each kind of name it accepts. A session supplies it two things: a planning folder to write its report into and stand its checkouts under, and the repository the checkouts are worktrees of; everything else the run produces.
+This workflow exists to make the pin technique's answer observable for each kind of name it accepts. A session supplies it two things: a planning folder to write its report into and stand its checkouts under, and the repository the checkouts are worktrees of; everything else the run produces.
 
-The work is deliberately cheap — two worktrees of a repository already present, moved by detached checkouts to commits the repository already holds. The evidence it leaves behind is about what the operation answered for each name and whether a refusal left the checkout where it stood, not about the repository it moved.
+The work is deliberately cheap — two worktrees of a repository already present, moved by detached checkouts to commits the repository already holds. The evidence it leaves behind is about what the technique answered for each name and whether a refusal left the checkout where it stood, not about the repository it moved.
 
 It serves two readers. One wants to know whether this server delivers the library's run so that a branch, a tag and a commit each land as their own kind and an unresolvable name is refused rather than guessed at, and takes that from the report. The other is writing a workflow that brings several checkouts to stated revisions and wants a worked example of the reference — a roster in, a per-checkout answer out.
 

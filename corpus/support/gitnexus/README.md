@@ -2,7 +2,7 @@
 
 Codebase intelligence over a knowledge graph: what calls what, which execution flows a concept lands in, what a change would break, and which of a repository group's members can answer at all.
 
-This is a **library namespace**, not a workflow. It declares no `workflow.yaml` and takes no place in any graph — it offers operations and runs to whatever binds them, and a caller may sit in any workflow or arrive later. References reach it as `gitnexus::<name>`, or as `support::gitnexus::<name>` where the path is the clearer address.
+This is a **library namespace**, not a workflow. It declares no `workflow.yaml` and takes no place in any graph — it offers techniques and runs to whatever binds them, and a caller may sit in any workflow or arrive later. References reach it as `gitnexus::<name>`, or as `support::gitnexus::<name>` where the path is the clearer address.
 
 ---
 
@@ -10,8 +10,8 @@ This is a **library namespace**, not a workflow. It declares no `workflow.yaml` 
 
 | Folder | Holds | Grain |
 |--------|-------|-------|
-| [`techniques/`](techniques/README.md) | One operation per GitNexus endpoint, the query compositions a run executes, and the judgements the runs end on | One answer: a tool call, a resource read, a composed query, or a reading of what those returned |
-| [`routines/`](routines/README.md) | Named runs of those operations | A sequence, an iteration, a branch, a gate |
+| [`techniques/`](techniques/README.md) | One technique per GitNexus endpoint, the query compositions a run executes, and the judgements the runs end on | One answer: a tool call, a resource read, a composed query, or a reading of what those returned |
+| [`routines/`](routines/README.md) | Named runs of those techniques | A sequence, an iteration, a branch, a gate |
 
 **The split is what the construct can hold.** A technique is a short produce path over one endpoint with the prose that reads its answer; it carries no loop, no branch and no user decision. A run that walks a collection, selects between two paths, or stops for a person is a routine, where the schema holds each of those as structure the step manifest and the coverage walk can see.
 
@@ -21,7 +21,7 @@ A restriction the graph already holds is written into the query it runs. [`const
 
 ## Addressing an answer
 
-Every operation answers from **one** indexed graph, and the caller says which by giving `{repo_name}`. Apply [`resolve-graph`](techniques/resolve-graph.md) for that name and for the groups configured over the graphs. A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape, so where an answer is reported the graph it came from is reported with it.
+Every technique answers from **one** indexed graph, and the caller says which by giving `{repo_name}`. Apply [`resolve-graph`](techniques/resolve-graph.md) for that name and for the groups configured over the graphs. A component and a containing tree that also holds it are separate graphs whose answers differ in scope while sharing a shape, so where an answer is reported the graph it came from is reported with it.
 
 Two subjects sit outside every index and take grep instead: a document the walk never read, and anything beneath a dot-directory. The namespace's own [`TECHNIQUE.md`](techniques/TECHNIQUE.md) holds those rules and the rest of the shared contract.
 

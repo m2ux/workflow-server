@@ -67,7 +67,7 @@ Each id in `{branches_to_merge}` appears exactly once in the report. A fan pays 
 
 ### a-conflict-is-reported-not-absorbed
 
-An unresolved conflict is named with its paths and its unit, and the activity holding this operation decides what happens next. This operation never abandons a branch, never forces one side, and never leaves the integration branch mid-merge: an unresolved conflict is backed out of so the integration branch stands at a commit, with the conflict recorded.
+An unresolved conflict is named with its paths and its unit, and the activity holding this technique decides what happens next. This technique never abandons a branch, never forces one side, and never leaves the integration branch mid-merge: an unresolved conflict is backed out of so the integration branch stands at a commit, with the conflict recorded.
 
 ### merge-order-is-the-collection-order
 

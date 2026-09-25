@@ -28,7 +28,7 @@ The update set omits activity model, variables, and techniques — those are alr
 | **Checkpoints** | Per-activity decision points — question, options, and per-option effects (`setVariable`, `exit`) | Where must a human decide? What are the options, and what does each set or which outcome does it select? Blocking or auto-advance? |
 | **Artifacts** | Output files each activity produces (each named by the producing technique's `#### artifact` output) | What durable outputs does each activity leave behind? Where do they live? |
 | **Variables** | Workflow-level state: name, type, description, default, required | What state must persist across activities? What gates each branch? What's each variable's default? |
-| **Techniques** | Capability description and binding sites; reuse meta / cross-workflow before authoring local | What operations do steps perform? Does an existing meta or other-workflow technique already cover it? What's genuinely new? |
+| **Techniques** | Capability description and binding sites; reuse meta / cross-workflow before authoring local | What techniques do steps perform? Does an existing meta or other-workflow technique already cover it? What's genuinely new? |
 | **Rules** | Cross-activity rules with enforcement classification — structural (checkpoint / condition / validate) or guidance-only | What constraints must always hold? Which can be violated by ignoring text, and so need structural backing? |
 
 ## Minimum Viable Elicitation

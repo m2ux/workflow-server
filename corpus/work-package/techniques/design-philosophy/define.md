@@ -17,7 +17,7 @@ A clear problem definition with system understanding, impact assessment, success
 
 ### 1. Review Context
 
-- Review `{issue_record}` and `{problem_context}`; the solution-space methodology (conventional-first, inventive principles) lives in the [design-framework](../../resources/design-framework.md#design-framework-trizics-approach) and is applied later at plan time — this operation defines the problem only
+- Review `{issue_record}` and `{problem_context}`; the solution-space methodology (conventional-first, inventive principles) lives in the [design-framework](../../resources/design-framework.md#design-framework-trizics-approach) and is applied later at plan time — this technique defines the problem only
 
 ### 2. Define Problem
 

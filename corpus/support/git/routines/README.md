@@ -2,7 +2,7 @@
 
 > Part of the [git library](../techniques/TECHNIQUE.md)
 
-Each run here is a named sequence of the library's [operations](../techniques/README.md), declared with the inputs it needs and the values it produces, and reached from an activity by a `kind: routine` step. This file orients — the signature and the body live in the per-run `.yaml`.
+Each run here is a named sequence of the library's [techniques](../techniques/README.md), declared with the inputs it needs and the values it produces, and reached from an activity by a `kind: routine` step. This file orients — the signature and the body live in the per-run `.yaml`.
 
 | Routine | Reached for |
 |---------|-------------|

@@ -62,4 +62,4 @@ The members the report marks stale and the inventory names no tree for, by name.
 ### 4. Name the Unrebuildable
 
 - Leave out a member the inventory names no tree for, and name it in `{unrebuildable_members}`.
-   > A member marked `missing` has no graph, so the inventory holds no entry and no operation here yields its tree. Rebuilding it takes a path from whoever holds the checkout, which is a question for a person rather than an answer the group carries. A run that passed such a member on with no tree would walk from nowhere.
+   > A member marked `missing` has no graph, so the inventory holds no entry and no technique here yields its tree. Rebuilding it takes a path from whoever holds the checkout, which is a question for a person rather than an answer the group carries. A run that passed such a member on with no tree would walk from nowhere.

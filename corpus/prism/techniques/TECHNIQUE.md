@@ -41,7 +41,7 @@ The code or text to analyze — a file path or inline content.
 
 ### complete-execution
 
-Every operation in the lens prompt is executed. Do not skip or summarize operations — the analytical depth comes from the full chain.
+Every technique in the lens prompt is executed. Do not skip or summarize techniques — the analytical depth comes from the full chain.
 
 ### evidence-required
 

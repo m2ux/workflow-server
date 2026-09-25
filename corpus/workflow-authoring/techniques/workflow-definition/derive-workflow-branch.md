@@ -15,7 +15,7 @@ Id of the workflow this run authors or changes — the branch name's distinguish
 
 ### operation_type
 
-The classified operation for the request — create, update or review.
+The classified technique for the request — create, update or review.
 
 ## Outputs
 

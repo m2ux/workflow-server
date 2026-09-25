@@ -4,7 +4,7 @@
 
 The assumption lifecycle a work package runs on: what an assumption is, the categories it is classified into, and the log that holds its outcome.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

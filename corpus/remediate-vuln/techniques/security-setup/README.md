@@ -4,7 +4,7 @@
 
 Shared contract for initialising a high-sensitivity security fix — the advisory inputs, the private remote and the security feature branch off the private fork, the isolated planning….
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

@@ -43,7 +43,7 @@ How likely the faulty path actually executes in production.
 
 | Level | Definition |
 |-------|------------|
-| high | On the default path — ordinary operation reaches it |
+| high | On the default path — ordinary technique reaches it |
 | medium | Reached under realistic but non-default conditions: upgrades, failures, edge configurations, adversarial-but-plausible inputs |
 | low | Requires unusual coincidence of conditions |
 

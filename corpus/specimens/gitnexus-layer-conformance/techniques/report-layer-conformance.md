@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-State what each gitnexus operation this walk bound landed in the bag, under each of the two graphs the walk addressed, and which of the answers came from a graph layer that was there to read.
+State what each gitnexus technique this walk bound landed in the bag, under each of the two graphs the walk addressed, and which of the answers came from a graph layer that was there to read.
 
 ## Inputs
 
@@ -45,7 +45,7 @@ The control-dependence edges matched for the anchored function, how many there a
 
 ### layer_conformance_report
 
-One row per bound operation per graph: whether its answer landed, what it holds, and for the layer-reading operations whether the graph held the layer they read.
+One row per bound technique per graph: whether its answer landed, what it holds, and for the layer-reading techniques whether the graph held the layer they read.
 
 #### artifact
 

@@ -87,7 +87,7 @@ Generated static SCALE metadata and its consumers: static subxt bindings (`metad
 - Coupled with: all event-emitting pallets, runtime spec identity.
 - Probe affinities: metadata comparison (`strings` over `.scale`, decode checks), consumer-side tracing.
 
-## Operations and Tooling
+## Techniques and Tooling
 
 ### Release and upgrade automation — `.github/workflows/` (notably `release-image.yml`), `local-environment/src/commands/`
 

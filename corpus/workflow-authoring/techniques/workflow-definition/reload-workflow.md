@@ -50,7 +50,7 @@ The **change surface**: the union of `{touched_files}` and every activity or tec
 
 ### one-target-per-binding
 
-This operation resolves exactly the target `{target_workflow_id}` names for `{surface_files}` and `{touched_files}`. Contract-closure may add referencers from other workflow ids under `{target_path}` into `{changed_files}`; those paths stay attributed against the same `{base_ref}`.
+This technique resolves exactly the target `{target_workflow_id}` names for `{surface_files}` and `{touched_files}`. Contract-closure may add referencers from other workflow ids under `{target_path}` into `{changed_files}`; those paths stay attributed against the same `{base_ref}`.
 
 ### whole-file-change-surface
 

@@ -48,7 +48,7 @@ True iff irreducible opens remain after this merge; false for an empty open set.
 
 ### concern-document-is-the-record
 
-`{concern_document}` is the single statement of every concern this operation folds; the flags it emits summarise that document rather than standing apart from it.
+`{concern_document}` is the single statement of every concern this technique folds; the flags it emits summarise that document rather than standing apart from it.
 
 ### empty-set-is-success
 

@@ -57,7 +57,7 @@ The Description field carries the [Issue Template](issue-creation.md#issue-templ
 
 ### Jira Markdown Notes
 
-Issue bodies are authored in markdown; the creating operation converts them. Native Jira syntax, where a body needs it:
+Issue bodies are authored in markdown; the creating technique converts them. Native Jira syntax, where a body needs it:
 
 | Element | Jira Syntax | Standard Markdown |
 |---------|-------------|-------------------|

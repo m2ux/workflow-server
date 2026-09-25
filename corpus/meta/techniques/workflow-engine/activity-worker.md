@@ -33,8 +33,8 @@ Worker agent identity for this dispatch.
 
 ### 1. Verify dispatch
 
-- Confirm the activity `id` on the `get_activity` response whose operations bundle delivered this technique equals `{activity_id}` per `verify-dispatched-activity`
-- Follow the operations bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
+- Confirm the activity `id` on the `get_activity` response whose techniques bundle delivered this technique equals `{activity_id}` per `verify-dispatched-activity`
+- Follow the techniques bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
 - Read `may_continue` from the `batch:` block leading that response — this context's standing against its bound (`batch-ends-where-the-server-says`)
 
 ### 2. Load resources
@@ -51,8 +51,8 @@ Worker agent identity for this dispatch.
 
 - Execute each activity step in document order
 - Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
-- For `kind: technique` steps, load the bound operation on reach per `progressive-step-technique-load`
-- Apply each bound operation via [variable-binding](../variable-binding.md)
+- For `kind: technique` steps, load the bound technique on reach per `progressive-step-technique-load`
+- Apply each bound technique via [variable-binding](../variable-binding.md)
 - Honor `when:` gates against the variable bag per `gate-evaluation`, and a loop's controls per `loop-control`
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
 

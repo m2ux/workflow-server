@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Maps a step's bound operation onto the workflow variable bag by the operation's declared `inputs[]`/`outputs[]` signature.
+Maps a step's bound technique onto the workflow variable bag by the technique's declared `inputs[]`/`outputs[]` signature.
 
 ## Protocol
 
 ### 1. Resolve the Contract
 
-- Resolve the contract. Load the composed `inputs[]`/`outputs[]` of the bound operation (the `::`-path signature merged with ancestor `TECHNIQUE.md` declarations — `get_technique` returns it fully composed).
+- Resolve the contract. Load the composed `inputs[]`/`outputs[]` of the bound technique (the `::`-path signature merged with ancestor `TECHNIQUE.md` declarations — `get_technique` returns it fully composed).
 
 ### 2. Bind the Inputs
 
@@ -23,9 +23,9 @@ Maps a step's bound operation onto the workflow variable bag by the operation's 
    5. Else the input is unsatisfied — surface it as a binding gap (the call-site must supply it via a `step.technique.inputs` deviation, or the signature must declare a `default`).
 - Resolve a string deviation by the disambiguation rule: a string that matches the bag-name grammar (`^[a-z_][a-z0-9_]*(\.[a-z0-9_]+)*$`) AND resolves in the variable bag is a rename reference (bind the named variable's value); otherwise it is a literal; a string containing `{…}` is always a template (interpolate `{path}` against the bag, walking dotted paths into nested objects, then substitute and bind the result).
 
-### 3. Invoke the Operation
+### 3. Invoke the Technique
 
-- Invoke the bound operation with the concrete input map.
+- Invoke the bound technique with the concrete input map.
 
 ### 4. Land the Outputs
 
@@ -36,11 +36,11 @@ Maps a step's bound operation onto the workflow variable bag by the operation's 
 
 ### signature-is-the-contract
 
-A step's consumed and produced data is exactly the bound operation's composed `inputs[]`/`outputs[]`. Keep signatures complete: every `{name}` an operation's protocol reads is a declared input (or carries a `default`), and every value it emits is a declared output. An incomplete signature is a binding gap, not an implicit convention.
+A step's consumed and produced data is exactly the bound technique's composed `inputs[]`/`outputs[]`. Keep signatures complete: every `{name}` a technique's protocol reads is a declared input (or carries a `default`), and every value it emits is a declared output. An incomplete signature is a binding gap, not an implicit convention.
 
 ### binding-carries-only-deviations
 
-The structured `step.technique` object carries ONLY what differs from the defaults; a step with no deviation uses the bare-string form (`technique: group::operation`) instead. `inputs` lists ONLY inputs whose value differs from same-name binding or a declared `default` — an input equal to its default, or already in the bag under its own id, is omitted. The three input-deviation forms are: a literal (`inputs: { scope: '--workspace' }`), a rename naming another bag variable (`inputs: { check_id: failed_check_id }`), and a `{var}` template including dotted projection (`inputs: { scope: '-p {current_task.crate}' }`). `outputs` lists ONLY outputs whose landed bag name differs from the output's own id (`outputs: { session_index: client_session_index }`); an output that lands under its own name is omitted.
+The structured `step.technique` object carries ONLY what differs from the defaults; a step with no deviation uses the bare-string form (`technique: group::technique`) instead. `inputs` lists ONLY inputs whose value differs from same-name binding or a declared `default` — an input equal to its default, or already in the bag under its own id, is omitted. The three input-deviation forms are: a literal (`inputs: { scope: '--workspace' }`), a rename naming another bag variable (`inputs: { check_id: failed_check_id }`), and a `{var}` template including dotted projection (`inputs: { scope: '-p {current_task.crate}' }`). `outputs` lists ONLY outputs whose landed bag name differs from the output's own id (`outputs: { session_index: client_session_index }`); an output that lands under its own name is omitted.
 
 ### an-argument-position-sets-its-own-default
 
@@ -54,7 +54,7 @@ The two readings that could meet — a step's and a routine's — do not, and wh
 
 ### outputs-by-name-and-path
 
-Downstream `when`/`condition`/`transition` reference an operation's output by its declared name or a dotted path into it (`validation_results.validation_passed`) — never via a redundant flattened flag or a prose glue step that only re-expresses a field. A nested-object output lands whole and resolves by path directly.
+Downstream `when`/`condition`/`transition` reference a technique's output by its declared name or a dotted path into it (`validation_results.validation_passed`) — never via a redundant flattened flag or a prose glue step that only re-expresses a field. A nested-object output lands whole and resolves by path directly.
 
 ### a-branch-lands-under-its-own-derived-key
 
@@ -68,8 +68,8 @@ Outputs land in the bag through the `variables-changed` channel of the worker's 
 
 ### generic-not-overfit
 
-Bind against the operation's intrinsic, reusable signature; resolve a name mismatch by aligning the caller's bag variable to the operation's canonical input id (or, failing that, a single `step.technique.inputs` rename), not by bending the operation to the call-site. This is the generic-not-overfit principle governing which side of a mismatch moves, so that implicit same-name binding is maximised rather than eroded by per-caller overfitting.
+Bind against the technique's intrinsic, reusable signature; resolve a name mismatch by aligning the caller's bag variable to the technique's canonical input id (or, failing that, a single `step.technique.inputs` rename), not by bending the technique to the call-site. This is the generic-not-overfit principle governing which side of a mismatch moves, so that implicit same-name binding is maximised rather than eroded by per-caller overfitting.
 
 ### activity-group-shorthand
 
-When an activity's operations are collected into a group named after the activity, a step names its operation by the bare op id alone: `technique: classify` inside the `intake` activity resolves to `intake::classify`. Resolution tries the activity-named group FIRST, so a bare op takes precedence over a same-named standalone or group base, and an op that shares its group's name resolves to the op (`technique: research` → `research::research`, not the `research` group base). If no group named after the activity holds the op, the bare id falls back to standalone / group-base resolution, then fails. Operations from any OTHER group or namespace — including the shared `meta` layer — are always written qualified (`gitnexus::analyze`, `review-assumptions::reconcile`). The shorthand keeps an activity's own operations terse while every foreign reference stays explicit.
+When an activity's techniques are collected into a group named after the activity, a step names its technique by the bare op id alone: `technique: classify` inside the `intake` activity resolves to `intake::classify`. Resolution tries the activity-named group FIRST, so a bare op takes precedence over a same-named standalone or group base, and an op that shares its group's name resolves to the op (`technique: research` → `research::research`, not the `research` group base). If no group named after the activity holds the op, the bare id falls back to standalone / group-base resolution, then fails. Techniques from any OTHER group or namespace — including the shared `meta` layer — are always written qualified (`gitnexus::analyze`, `review-assumptions::reconcile`). The shorthand keeps an activity's own techniques terse while every foreign reference stays explicit.

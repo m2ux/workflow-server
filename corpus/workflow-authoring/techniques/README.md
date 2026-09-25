@@ -6,13 +6,13 @@ The technique library for this workflow. Each technique is one capability an act
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds the inputs and authoring invariants shared by every technique here, including the canonical-home map.
 
-Workflow-local operations live in the [`workflow-definition`](./workflow-definition/TECHNIQUE.md) group, so each has a `group::operation` address that another workflow can bind without copying the file.
+Workflow-local techniques live in the [`workflow-definition`](./workflow-definition/TECHNIQUE.md) group, so each has a `group::technique` address that another workflow can bind without copying the file.
 
 ---
 
-## Local operations
+## Local techniques
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`intake-classification`](./workflow-definition/intake-classification.md) | Classify create, update or review; land the gap flags, the target set and the baseline |
 | [`elicit-change-brief`](./workflow-definition/elicit-change-brief.md) | Elicit a new workflow's change brief one design dimension at a time |
@@ -37,7 +37,7 @@ Workflow-local operations live in the [`workflow-definition`](./workflow-definit
 | [`commit-verification`](./workflow-definition/commit-verification.md) | Confirm the commit landed with every touched file in it |
 | [`create-completion-doc`](./workflow-definition/create-completion-doc.md) | Record the run's single terminal document, retrospective included |
 
-## Shared operations bound by this workflow
+## Shared techniques bound by this workflow
 
 Resolved directly from the named workflow — no copy is held here.
 

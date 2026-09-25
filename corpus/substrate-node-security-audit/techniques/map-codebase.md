@@ -93,7 +93,7 @@ forward and backward traces for priority-1 paths
 
 ### 6. Trace Data Flows
 
-- Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system, recording these traces alongside the boundary and critical-path findings to assemble `{reconnaissance_data}`, with the classified components assembled as `{crate_map}`. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
+- Apply forward tracing (entry point to sink) and backward tracing (sensitive technique to data source) to map how data moves through the system, recording these traces alongside the boundary and critical-path findings to assemble `{reconnaissance_data}`, with the classified components assembled as `{crate_map}`. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
 
 > When `{gitnexus_available}`, seed forward/backward traces from the call graph via [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: the symbol each trace starts from, *repo_name*: `{repo_name}`) for its callers and callees, and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md)(*cypher_query*: a match spelling the custom chain being traced, *repo_name*: `{repo_name}`), so a trace follows the resolved graph rather than a manual read of each hop. Reading the function bodies at each candidate point remains the comprehension step.
 
@@ -113,4 +113,4 @@ Consensus-critical configuration structs are enumerated; a struct missing constr
 
 ### graph-first-when-indexed
 
-When `{gitnexus_available}`, enumeration and relational structure (components, boundaries, call chains, critical-path flows) are sourced from the GitNexus graph via the `gitnexus` operations before any manual tracing, per `gitnexus.must-use-operations`; the manual/grep path is the fallback when the index is absent or stale. The graph supplies structure and relationships — reading function bodies for invariant reasoning is unchanged.
+When `{gitnexus_available}`, enumeration and relational structure (components, boundaries, call chains, critical-path flows) are sourced from the GitNexus graph via the `gitnexus` techniques before any manual tracing, per `gitnexus.must-use-operations`; the manual/grep path is the fallback when the index is absent or stale. The graph supplies structure and relationships — reading function bodies for invariant reasoning is unchanged.

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Shared inputs and invariants for the fan conformance operations — the cheap surveys each branch runs, and the record every branch keeps of its own interval so the report can say whether a batch overlapped.
+Shared inputs and invariants for the fan conformance techniques — the cheap surveys each branch runs, and the record every branch keeps of its own interval so the report can say whether a batch overlapped.
 
 ## Inputs
 
@@ -17,7 +17,7 @@ Path of the component being surveyed, relative to the host repository. `.` for a
 
 ### record-your-own-interval
 
-Every operation that runs in a branch records the instant it began and the instant it finished, in its own output, as ISO 8601. A branch cannot see its siblings and must not guess at them: it reports only what it did and when, and the activity the branches converge on is where those intervals are compared.
+Every technique that runs in a branch records the instant it began and the instant it finished, in its own output, as ISO 8601. A branch cannot see its siblings and must not guess at them: it reports only what it did and when, and the activity the branches converge on is where those intervals are compared.
 
 ### survey-cheaply
 
@@ -25,4 +25,4 @@ Each survey answers its question from directory listings and commit metadata, an
 
 ### an-instance-sees-only-its-own-unit
 
-An operation running in a branch works on the unit it was handed and reaches no further. Its siblings are covering their own, and an instance that ranges wider has a context indistinguishable from a whole-component pass — which is what having an instance of its own was for.
+A technique running in a branch works on the unit it was handed and reaches no further. Its siblings are covering their own, and an instance that ranges wider has a context indistinguishable from a whole-component pass — which is what having an instance of its own was for.

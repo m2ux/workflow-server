@@ -265,11 +265,11 @@ Required inputs are named in description instead of `inputs[]`.
 
 A bound step still carries description/name prose.
 
-**Detect:** A `kind: technique` or `kind: action` step that binds an operation still carries `description` or `name`. A bound step allows `kind`, `id`, `technique` (a string or `{ name, inputs, outputs }`), and structural `actions`, `when`, `condition`, or `required: false`. Unbound procedure in a description is `procedure-in-protocol`.
+**Detect:** A `kind: technique` or `kind: action` step that binds a technique still carries `description` or `name`. A bound step allows `kind`, `id`, `technique` (a string or `{ name, inputs, outputs }`), and structural `actions`, `when`, `condition`, or `required: false`. Unbound procedure in a description is `procedure-in-protocol`.
 
 **Do not flag:** `kind: loop` may have `name`, loop fields, and nested `steps[]`. `kind: checkpoint` uses inline `message` and `options` and a stable `id`. A checkpoint or a loop is inline in `steps[]`, never `step.checkpoint` or a separate `checkpoints[]` or `loops[]` array.
 
-**Fix:** Bind an existing operation when one fits and delete the description; otherwise enrich that operation's `## Capability` or `## Protocol` and strip the step prose. A one-line non-procedural summary is removed from the step too. N steps that differ only by description are `no-monolith-masking-steps`.
+**Fix:** Bind an existing technique when one fits and delete the description; otherwise enrich that technique's `## Capability` or `## Protocol` and strip the step prose. A one-line non-procedural summary is removed from the step too. N steps that differ only by description are `no-monolith-masking-steps`.
 
 ### AP-18. no-monolith-masking-steps
 
@@ -501,7 +501,7 @@ A step set feeds that same step's own inputs.
 
 Activity techniques[] overlaps step technique binds.
 
-**Detect:** An entry in activity-level `techniques[]` is also bound by a step, top-level or inside a loop, via `step.technique`. Activity `techniques[]` holds a cross-cutting strategy (`variable-binding`, `scatter-gather`), not a per-step operation.
+**Detect:** An entry in activity-level `techniques[]` is also bound by a step, top-level or inside a loop, via `step.technique`. Activity `techniques[]` holds a cross-cutting strategy (`variable-binding`, `scatter-gather`), not a per-step technique.
 
 **Do not flag:** A strategy technique listed at activity level that no step binds.
 
@@ -525,9 +525,9 @@ A rule sits in the wrong rules.* audience bucket.
 
 N steps bind one technique without structural reason to split.
 
-**Detect:** Two or more steps in one activity bind the same technique. (a) Redundant re-execution — they differ only by which already-produced output to surface — collapses to one step. (b) Unrolled iteration — the same operation on N collection items — is one `forEach` with one binding. (c) Monolith-masking — distinguished only by a sub-mode input — splits into a group with one named operation per mode (`no-monolith-masking-steps`).
+**Detect:** Two or more steps in one activity bind the same technique. (a) Redundant re-execution — they differ only by which already-produced output to surface — collapses to one step. (b) Unrolled iteration — the same technique on N collection items — is one `forEach` with one binding. (c) Monolith-masking — distinguished only by a sub-mode input — splits into a group with one named technique per mode (`no-monolith-masking-steps`).
 
-**Do not flag:** A fixed roster of distinct static targets with different structured inputs. Mutually exclusive `when` branches. Distinct-purpose invocations at different pipeline points. The same operation as distinct phases inside one loop iteration.
+**Do not flag:** A fixed roster of distinct static targets with different structured inputs. Mutually exclusive `when` branches. Distinct-purpose invocations at different pipeline points. The same technique as distinct phases inside one loop iteration.
 
 **Fix:** Collapse, loop, or split per that classification.
 
@@ -601,7 +601,7 @@ Protocol cites a filename/path instead of a canonical I/O id.
 
 A filename lives in Protocol instead of the I/O declaration.
 
-**Detect:** Protocol prose names a concrete artifact filename, a literal or an ad-hoc path, instead of a canonical Input or Output id. A name selected by a mode is one literal per operation (`artifact-name-is-filename`).
+**Detect:** Protocol prose names a concrete artifact filename, a literal or an ad-hoc path, instead of a canonical Input or Output id. A name selected by a mode is one literal per technique (`artifact-name-is-filename`).
 
 **Do not flag:** Protocol references that already use `{canonical_id}` only. Opaque multi-file path arrays — see `no-opaque-artifact-path-array`.
 
@@ -675,7 +675,7 @@ Prose prescribes a harness/MCP tool-call recipe.
 
 **Detect:** Capability, Protocol, Rules, or non-engine resource prose prescribes how to invoke a harness or MCP tool — a call name with "via", "call", or "after", an argument shape, or a sequence of session tools (`get_resource`, `get_technique`, `get_activity`, `get_workflow`, `start_session`, `next_activity`, `list_workflows`).
 
-**Do not flag:** A `meta` workflow-engine, harness-compat, conduct, bootstrap, or agent-entry technique ([activity-worker](/meta/techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md), [compose-prompt](/meta/techniques/workflow-engine/compose-prompt.md)) whose domain is the calls its reader makes (`engine-internals-narrated`). An operation that wraps a raw tool and names that tool (`canonical-technique-reference`). A markdown or `::` hyperlink that names what to consult, with no tool recipe.
+**Do not flag:** A `meta` workflow-engine, harness-compat, conduct, bootstrap, or agent-entry technique ([activity-worker](/meta/techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md), [compose-prompt](/meta/techniques/workflow-engine/compose-prompt.md)) whose domain is the calls its reader makes (`engine-internals-narrated`). A technique that wraps a raw tool and names that tool (`canonical-technique-reference`). A markdown or `::` hyperlink that names what to consult, with no tool recipe.
 
 **Fix:** Delete the tool recipe. Keep the imperative and the canonical hyperlink or `{id}`. A role boundary stays role prose ("workers source definitions from orchestrator-provided context"), not "do not call `get_workflow`".
 
@@ -687,7 +687,7 @@ A raw harness tool name is used where a wrapping op exists.
 
 **Detect:** Protocol names a raw harness or MCP tool for a capability that another technique wraps. The canonical form is `[op](path)` or `[group](path)::[op](path)`, which the server resolves to `::`. A stale or inconsistent name is `consistent-tool-names`.
 
-**Do not flag:** The operation that wraps the primitive — naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it, which the step must perform unaided (`unreachable-operation-reference`).
+**Do not flag:** The technique that wraps the primitive — naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it, which the step must perform unaided (`unreachable-operation-reference`).
 
 **Fix:** Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments.
 
@@ -745,7 +745,7 @@ The same shared input is redeclared instead of hoisted.
 
 Invocation argument names or lists use the wrong typographic namespace.
 
-**Detect:** (a) A technique/operation invocation passes its argument list in braces (`::op {arg: value}`) instead of parentheses on the op reference. (b) An operation argument *name* appears bare or backticked (sharing the designator/code-token form) rather than italic. Test: the token names a parameter slot of the applied op, not a declared `{id}` value and not a literal path/command.
+**Detect:** (a) A technique/technique invocation passes its argument list in braces (`::op {arg: value}`) instead of parentheses on the op reference. (b) A technique argument *name* appears bare or backticked (sharing the designator/code-token form) rather than italic. Test: the token names a parameter slot of the applied op, not a declared `{id}` value and not a literal path/command.
 
 **Do not flag:** Brace objects that are not invocation arg lists (query/template/JSON payloads, raw tool-doc object shapes); italic emphasis that is ordinary English, not an op parameter name; correctly braced/backticked argument *values* (`backtick-code-tokens`, `brace-declared-ids`).
 
@@ -771,7 +771,7 @@ Symbol ids use the wrong case convention.
 
 **Detect:** Symbol ids (inputs, outputs, sub-fields, `{$locals}`) in kebab/camel — they must be `snake_case` to bind to activity/condition/session state. Case used to encode input vs output direction. Rule/technique/resource/file/`::` targets wrongly snaked.
 
-**Do not flag:** Tool/MCP/CLI param mirrors keeping the tool's exact spelling (`session_index`, `cloudId`). NAME class stays `kebab-case`: technique/operation/resource identities, hyperlink/`::` targets, and rule names (cited by dotted address, never evaluated). One snake symbol declared in both Inputs and Outputs when the value is input∩output (hoistable per `hoist-shared-inputs`).
+**Do not flag:** Tool/MCP/CLI param mirrors keeping the tool's exact spelling (`session_index`, `cloudId`). NAME class stays `kebab-case`: technique/technique/resource identities, hyperlink/`::` targets, and rule names (cited by dotted address, never evaluated). One snake symbol declared in both Inputs and Outputs when the value is input∩output (hoistable per `hoist-shared-inputs`).
 
 **Fix:** Snake every symbol id. Keep a tool-parameter mirror. Keep kebab for a name or a rule.
 
@@ -913,7 +913,7 @@ An activity carries prose rules: instead of pure mechanics.
 
 Technique folder/name disagrees with shape-origin (reuse boundary, activity seam, or shared namespace).
 
-**Detect:** A technique's directory or name encodes the wrong locus for its shape-origin: a reusable harness/capability primitive lives under a client workflow; a cross-activity intrinsic capability is named for one activity; or an activity-seam-only set is named as if it were a standalone capability. Also flag a group folder whose ops are the workflow's entire operation set (`<group>::` only restates the workflow). Discriminator is shape-origin, not consumer count.
+**Detect:** A technique's directory or name encodes the wrong locus for its shape-origin: a reusable harness/capability primitive lives under a client workflow; a cross-activity intrinsic capability is named for one activity; or an activity-seam-only set is named as if it were a standalone capability. Also flag a group folder whose ops are the workflow's entire technique set (`<group>::` only restates the workflow). Discriminator is shape-origin, not consumer count.
 
 **Do not flag:** Activity-named group used only to organize seam-driven ops (protocols inside stay stage-agnostic — `technique-stage-agnostic`); multiple distinct capability groups composed by one activity; inventing a group for a hypothetical second cluster (YAGNI).
 
@@ -1189,7 +1189,7 @@ Lifecycle rows are append-only instead of updated in place.
 
 A resource owns DOES procedure (session cadence or operational HOW) instead of fill/consult content.
 
-**Detect:** A resource section is shaped like technique Protocol or session orchestration — imperative cadence ("after each phase/task", "Ask after…", "surface… then classify…"), numbered operational steps, or behavioural routing ("validate before proceeding", "confirm at checkpoint", "proceed to interview/batch"). Vocabulary, labels, and probe lists a template consumes stay. Behavioural cadence and gate routing that an operation applies move to the technique. Methodology a different technique consumes than the filename suggests stays, for that consumer. Bind-topology essays are also `no-resource-caller-backlink`.
+**Detect:** A resource section is shaped like technique Protocol or session orchestration — imperative cadence ("after each phase/task", "Ask after…", "surface… then classify…"), numbered operational steps, or behavioural routing ("validate before proceeding", "confirm at checkpoint", "proceed to interview/batch"). Vocabulary, labels, and probe lists a template consumes stay. Behavioural cadence and gate routing that a technique applies move to the technique. Methodology a different technique consumes than the filename suggests stays, for that consumer. Bind-topology essays are also `no-resource-caller-backlink`.
 
 **Do not flag:** Artifact templates/anchors, format skeletons, category/risk/status **labels**, probe lists framed as fill vocabulary (not "Ask after each…"), reference lexicons, calibration benchmarks, and fill Rules that constrain row/section **shape** (null-row format, one-row-per-item) without prescribing when to interview or which activity runs next.
 
@@ -1225,11 +1225,11 @@ An input slot restates another artifact's content.
 
 Output-discipline rules exist without a verify gate.
 
-**Detect:** An output-discipline ruleset exists only as prose with no verify operation at a workflow boundary — style decays per-worker with nothing detecting drift (duplicated homes, null sections, restated slots).
+**Detect:** An output-discipline ruleset exists only as prose with no verify technique at a workflow boundary — style decays per-worker with nothing detecting drift (duplicated homes, null sections, restated slots).
 
 **Do not flag:** Rules already paired with a bound verify/fix-in-place gate (verify-readme-conforms pattern).
 
-**Fix:** Pair every output-discipline ruleset with a verify operation at a workflow boundary — mechanical checks for structural rules, declared line budgets otherwise; gate verifies and fixes in place with no checkpoint, loop, or routing variable.
+**Fix:** Pair every output-discipline ruleset with a verify technique at a workflow boundary — mechanical checks for structural rules, declared line budgets otherwise; gate verifies and fixes in place with no checkpoint, loop, or routing variable.
 
 ### AP-96. artifact-audience-declared
 
@@ -1253,7 +1253,7 @@ A durable artifact is named in a message but not linked.
 
 **Do not flag:** Pure in-chat subjects (no durable file); internal `set`/`log` diagnostics that are not user-presented artifact references.
 
-**Fix:** Declare a path output on the producing technique. Persist before the message when the file does not exist yet. Interpolate `[label]({path_variable})`. The write operation assigns a numeric prefix. On a checkpoint the message stays a statement (`checkpoint-requires-decision`).
+**Fix:** Declare a path output on the producing technique. Persist before the message when the file does not exist yet. Interpolate `[label]({path_variable})`. The write technique assigns a numeric prefix. On a checkpoint the message stays a statement (`checkpoint-requires-decision`).
 
 ### AP-98. no-next-step-narration
 
@@ -1413,15 +1413,15 @@ Capability or Protocol produces a value that is not declared on Outputs.
 
 A workflow-local technique re-implements a capability a shared namespace already offers.
 
-**Detect:** A workflow-local technique embeds a harness recipe in its Protocol for a capability a shared namespace already holds an operation for. Also flag a local re-teaching of a concurrent fan-out — `Task`, spawn-concurrent, or dispatch-then-merge — when [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) or a borrowable [`meta/activities/patterns/`](/meta/activities/patterns/README.md) activity already covers the shape. Test: the local novelty is only parameters or caller-specific composition; the verb is already owned elsewhere. A shared op that almost fits, missing an input, optional flag, or output, still owns the capability.
+**Detect:** A workflow-local technique embeds a harness recipe in its Protocol for a capability a shared namespace already holds a technique for. Also flag a local re-teaching of a concurrent fan-out — `Task`, spawn-concurrent, or dispatch-then-merge — when [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) or a borrowable [`meta/activities/patterns/`](/meta/activities/patterns/README.md) activity already covers the shape. Test: the local novelty is only parameters or caller-specific composition; the verb is already owned elsewhere. A shared op that almost fits, missing an input, optional flag, or output, still owns the capability.
 
 **Do not flag:** A change to the shared op itself that keeps existing callers working — a new optional input, default, output, or small protocol branch. A new shared op when no shared capability exists yet. A local technique that only assembles caller-specific values while the activity binds the shared op. Session-level `dispatch-activity`.
 
-**Fix:** Delete the local harness recipe. Bind the shared op from the activity, or borrow an activity that already binds it. Keep caller-specific value assembly in a local technique when the activity needs it (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). See [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps).
+**Fix:** Delete the local harness recipe. Bind the shared op from the activity, or borrow an activity that already binds it. Keep caller-specific value assembly in a local technique when the activity needs it (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). See [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps).
 
 ### AP-111. contract-not-procedure
 
-"### 7. Set Operation Flags" restating create/update/review recognition criteria already (or better) owned by Outputs
+"### 7. Set Technique Flags" restating create/update/review recognition criteria already (or better) owned by Outputs
 
 Protocol carries identity criteria or a trailing "Set …" phase that belongs on the Output contract.
 
@@ -1449,9 +1449,9 @@ A derived shadow variable duplicates an authoritative state variable.
 
 A technique performs or prescribes human/session interaction.
 
-**Detect:** Technique Capability, Protocol, or Rules instructs presenting, surfacing, showing, narrating, or otherwise delivering content to a user, session, or chat. Test: the imperative needs a human audience or session channel to succeed, and no tool or operation owns that channel.
+**Detect:** Technique Capability, Protocol, or Rules instructs presenting, surfacing, showing, narrating, or otherwise delivering content to a user, session, or chat. Test: the imperative needs a human audience or session channel to succeed, and no tool or technique owns that channel.
 
-**Do not flag:** Assembling or persisting a declared output the activity will surface. An activity binding a tool or operation whose domain is external delivery (push, open a PR, send). Naming "the user's request" as an input origin (`io-agnostic-contract`). A stage or gate locus (`technique-stage-agnostic`).
+**Do not flag:** Assembling or persisting a declared output the activity will surface. An activity binding a tool or technique whose domain is external delivery (push, open a PR, send). Naming "the user's request" as an input origin (`io-agnostic-contract`). A stage or gate locus (`technique-stage-agnostic`).
 
 **Fix:** Delete present, surface, and show-to-user phases. Keep assemble, derive, and persist that emit `{id}`. Put human-facing delivery on the binding activity (`action: message`, or a checkpoint message linking `{id}` or a path). See [Keep Session Interaction in Activities](./design-principles.md#24-keep-session-interaction-in-activities).
 
@@ -1459,21 +1459,21 @@ A technique performs or prescribes human/session interaction.
 
 "`run-audit-passes`: Apply audit-expressiveness…" / "`publish-workflow-pr`: Apply push-branch, then create-pr…"
 
-A technique's Protocol invokes other techniques to do work — sequencing sibling or shared operations the binding site should carry as consecutive steps.
+A technique's Protocol invokes other techniques to do work — sequencing sibling or shared techniques the binding site should carry as consecutive steps.
 
 **Detect:** Technique Capability or Protocol applies, invokes, or runs another technique for work, by `Apply [technique]` or a `::` invocation, one or many. Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass pipeline or a façade over shared ops; Outputs that only re-export children. Test: moving each invoked op to its own `steps[]` entry at the binding site, with any local value-assembly technique kept separate, preserves behaviour.
 
 **Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`). Citing resources, including creation-guide Templates. Container I/O and rule merge. Activity `steps[]` and routine technique binds. Activity borrow, bind, or include of a reusable orchestration pattern. Tools. One produce path over tools and resources (load, derive, persist one product) with no Apply or `::` work invoke. Stage or gate locus without an op inventory (`technique-stage-agnostic`).
 
-**Fix:** Delete the façade, or strip Apply and `::` work invokes from the Protocol. Bind each sibling or shared operation as its own step of the run that needs both, in the order required. Keep distinct local value assembly as a separate technique. See [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps) and [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
+**Fix:** Delete the façade, or strip Apply and `::` work invokes from the Protocol. Bind each sibling or shared technique as its own step of the run that needs both, in the order required. Keep distinct local value assembly as a separate technique. See [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps) and [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
 
 ### AP-115. platform-semantics-in-capability
 
-"Shared base contract… Inputs… are inherited by every technique… Operations inherit the Rules below…"
+"Shared base contract… Inputs… are inherited by every technique… Techniques inherit the Rules below…"
 
 Capability (or a techniques-folder README) teaches loader composition instead of naming what the contract contributes.
 
-**Detect:** Capability on a container `TECHNIQUE.md` (workflow root or group), or orientation prose for that container, explains how the loader applies the contract: Inputs, Outputs, or Rules inherited or merged into descendants; a technique set implied by folder contents; a standalone-versus-group placement lecture; or a trailing "Operations inherit the … below" clause. Test: the sentence teaches how composition works rather than what shared contract exists.
+**Detect:** Capability on a container `TECHNIQUE.md` (workflow root or group), or orientation prose for that container, explains how the loader applies the contract: Inputs, Outputs, or Rules inherited or merged into descendants; a technique set implied by folder contents; a standalone-versus-group placement lecture; or a trailing "Techniques inherit the … below" clause. Test: the sentence teaches how composition works rather than what shared contract exists.
 
 **Do not flag:** A platform home — [schema-construct-inventory](./schema-construct-inventory.md), [workflow-canonical](/meta/resources/workflow-canonical.md), design-principles, this catalogue, or a meta harness or engine resource whose domain is the platform. A one-line contribution statement with no merge lecture. A README note that `techniques.activity` strategy techniques apply to every activity. A delivery or tool recipe (`no-delivery-mechanism-narration`, `no-tool-usage-prescription`).
 
@@ -1509,7 +1509,7 @@ A leaf Rule (or a Protocol phase whose only job is the same restatement) re-enco
 
 Prose substitutes for a bind decision that structure already owns.
 
-**Detect:** Definition prose outside the bind home — an I/O description, Capability, a Protocol aside, a Rule, README orientation, option or action text — tells the agent how to obtain, satisfy, fall back, remap, or otherwise resolve a declared input or output. That resolution belongs in [variable-binding](/meta/techniques/variable-binding.md), in call-site `step.technique.inputs` or `outputs` deviations, or in a declared `default`. Test: deleting the sentence leaves a binding gap that structure should close, or the sentence only teaches how to get the value into the operation.
+**Detect:** Definition prose outside the bind home — an I/O description, Capability, a Protocol aside, a Rule, README orientation, option or action text — tells the agent how to obtain, satisfy, fall back, remap, or otherwise resolve a declared input or output. That resolution belongs in [variable-binding](/meta/techniques/variable-binding.md), in call-site `step.technique.inputs` or `outputs` deviations, or in a declared `default`. Test: deleting the sentence leaves a binding gap that structure should close, or the sentence only teaches how to get the value into the technique.
 
 **Do not flag:** The variable-binding technique and any surface whose domain is bind resolution. A declared `default` or an optional or required marker. Meaning, shape, and allowed values. Protocol that consumes an already-bound `{id}`. Engine mechanics restated as Rules (`no-engine-mechanics-as-rules`). Naming a specific producer or consumer (`io-agnostic-contract`).
 
@@ -1541,11 +1541,11 @@ An Input or Output description holds how the value is produced or used.
 
 ### AP-121. rule-as-protocol-step
 
-"4. Follow the rules in the operations bundle throughout — agent-conduct, workflow-engine…"
+"4. Follow the rules in the techniques bundle throughout — agent-conduct, workflow-engine…"
 
 A standalone / cross-cutting rule is encoded as a numbered Protocol (or bootstrap-instruction) step instead of living under `## Rules`.
 
-**Detect:** A Protocol phase, bootstrap-instruction bullet, or sequenced list states only a standing invariant, prohibition, or "follow X rules throughout" duty, with no produce, transform, or persist outcome for that step. Test: removing the step leaves the work sequence intact, and the sentence still belongs as a constraint on the whole operation or session. The inverse is `no-one-step-rules`.
+**Detect:** A Protocol phase, bootstrap-instruction bullet, or sequenced list states only a standing invariant, prohibition, or "follow X rules throughout" duty, with no produce, transform, or persist outcome for that step. Test: removing the step leaves the work sequence intact, and the sentence still belongs as a constraint on the whole technique or session. The inverse is `no-one-step-rules`.
 
 **Do not flag:** A work phase that cites a Rule or resource policy while doing work. A step-local `>` caveat (`constraint-as-blockquote`). One-step guidance filed as a Rule (`no-one-step-rules`). A Rule that restates Protocol (`no-rule-protocol-restatement`).
 
@@ -1565,25 +1565,25 @@ A worker/orchestrator spawn stub or agent-entry technique restates delivery, bin
 
 ### AP-123. capability-as-op-inventory
 
-"Operations and rules for executing a workflow's structured flow — session lifecycle (list/match/scan/create/start), activity dispatch (dispatch-activity), agent entry techniques (activity-worker, workflow-orchestrator) composed via compose-prompt, …"
+"Techniques and rules for executing a workflow's structured flow — session lifecycle (list/match/scan/create/start), activity dispatch (dispatch-activity), agent entry techniques (activity-worker, workflow-orchestrator) composed via compose-prompt, …"
 
 `## Capability` (especially a container `TECHNIQUE.md`) enumerates nested ops, facets, or folder contents instead of stating a succinct contribution overview.
 
-**Detect:** Capability is a comma or em-dash inventory of child techniques, protocol facets, or folder operations, often with a hyperlink to each, rather than what the contract or group contributes. Test: the sentence must be edited whenever a nested operation is added, renamed, or removed, and a reader could get the same list from the folder or index.
+**Detect:** Capability is a comma or em-dash inventory of child techniques, protocol facets, or folder techniques, often with a hyperlink to each, rather than what the contract or group contributes. Test: the sentence must be edited whenever a nested technique is added, renamed, or removed, and a reader could get the same list from the folder or index.
 
 **Do not flag:** A one- or two-clause purpose statement that names the domain without listing children. Leaf Capability that names the single product (`procedure-in-capability`). A container contribution statement for shared I/O or rules (`platform-semantics-in-capability`). README orientation that points at an index table (`readme-orients-not-transcribes`).
 
-**Fix:** Rewrite Capability as the shared domain. Leave the operation catalogue to the folder, the techniques index, or the YAML binds. See [State Contract Contribution](./design-principles.md#27-state-contract-contribution); also `platform-semantics-in-capability`, `procedure-in-capability`.
+**Fix:** Rewrite Capability as the shared domain. Leave the technique catalogue to the folder, the techniques index, or the YAML binds. See [State Contract Contribution](./design-principles.md#27-state-contract-contribution); also `platform-semantics-in-capability`, `procedure-in-capability`.
 
 ### AP-124. alternate-ops-as-protocol-sequence
 
 "### 1. Spawn … ### 2. Resume … ### 3. Concurrent" (or unnumbered `### spawn` / `### resume` / `### concurrent` under `## Protocol`)
 
-Mutually exclusive operation variants — or standing host-invoke policy — are encoded as Protocol phases as if they were a sequenced procedure.
+Mutually exclusive technique variants — or standing host-invoke policy — are encoded as Protocol phases as if they were a sequenced procedure.
 
-**Detect:** A technique `## Protocol` lists alternate modes of the same operation that a caller selects exactly one of (spawn versus resume versus concurrent; create versus update) and never walks in order. Also flag a Protocol bullet whose only job is standing host policy (blocking-equivalent wait, depth-1, index-in-prompt, prefer or omit flags) with no produce, transform, or persist outcome for that step. Test: renumbering the phases would not change runtime behaviour, because only one phase applies per call.
+**Detect:** A technique `## Protocol` lists alternate modes of the same technique that a caller selects exactly one of (spawn versus resume versus concurrent; create versus update) and never walks in order. Also flag a Protocol bullet whose only job is standing host policy (blocking-equivalent wait, depth-1, index-in-prompt, prefer or omit flags) with no produce, transform, or persist outcome for that step. Test: renumbering the phases would not change runtime behaviour, because only one phase applies per call.
 
-**Do not flag:** Sequential phases ([Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome), `numbered-protocol-phases`). One Protocol phase whose bullets are mode branches of one invoke. A Rules catalogue for a host or compat file. A generic operation whose Protocol is resolve, then dispatch, then await ([spawn-agent](/meta/techniques/harness-compat/spawn-agent.md)).
+**Do not flag:** Sequential phases ([Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome), `numbered-protocol-phases`). One Protocol phase whose bullets are mode branches of one invoke. A Rules catalogue for a host or compat file. A generic technique whose Protocol is resolve, then dispatch, then await ([spawn-agent](/meta/techniques/harness-compat/spawn-agent.md)).
 
 **Fix:** Move alternate slices and standing host policy into `## Rules`, naming slices by `operation_kind` when a resolver selects them. Keep `## Protocol` for ordered outcomes. A caller Applies the selected rule section. See also `rule-as-protocol-step`, `no-one-step-rules`.
 
@@ -1721,7 +1721,7 @@ A consult resource's id is a verb phrase.
 
 **Do not flag:** A prompt the agent executes (a lens, bootstrap, or agent-conduct prompt). An id that already names its content. A bare noun where no sibling carries a kind word. A noun-modifier that only looks verbal (`review-format`, `update-mode-guide`). A technique or activity id.
 
-**Fix:** Rename to the content plus its kind, and update `name:`, the resources index, and every relative and `::` reference in one edit. Where the verb names an operation, move the content into a technique. See [Convention Over Invention](./design-principles.md#7-convention-over-invention).
+**Fix:** Rename to the content plus its kind, and update `name:`, the resources index, and every relative and `::` reference in one edit. Where the verb names a technique, move the content into a technique. See [Convention Over Invention](./design-principles.md#7-convention-over-invention).
 
 ### AP-132. deployment-path-in-capability
 
@@ -1787,13 +1787,13 @@ A reference names a Protocol phase by its ordinal.
 
 "capture session history via `inspect_session` (same stance as [generate-summary] / [verify-outcomes])"
 
-No operation owns a harness capability that several techniques call.
+No technique owns a harness capability that several techniques call.
 
-**Detect:** One tool is named for the same capability in two or more technique bodies, and no operation declares that product on `## Outputs`. Signals: permitted argument values listed at more than one site; a citation of another consumer (`single-rule-authority`). Test: no file answers which operation a caller would bind.
+**Detect:** One tool is named for the same capability in two or more technique bodies, and no technique declares that product on `## Outputs`. Signals: permitted argument values listed at more than one site; a citation of another consumer (`single-rule-authority`). Test: no file answers which technique a caller would bind.
 
 **Do not flag:** One call site (`duplicate-shared-capability`). A site that already binds a wrapping op, and the wrapper (`canonical-technique-reference`). An engine, conduct, bootstrap, or agent-entry surface. Distinct capabilities of one tool.
 
-**Fix:** Author the operation, declare the product, bind it as an activity step, and let consumers declare that product as an input. Repoint sideways citations at the owner. See also `pass-orchestration-in-technique`.
+**Fix:** Author the technique, declare the product, bind it as an activity step, and let consumers declare that product as an input. Repoint sideways citations at the owner. See also `pass-orchestration-in-technique`.
 
 ### AP-138. output-without-destination
 
@@ -1823,7 +1823,7 @@ A resource carries operative prose in a span no `##` anchor reaches, while techn
 
 "`### activity_id` and `### session_index` declared, with no phase naming either"
 
-A technique declares an input its own Protocol and Rules never reach, so the bind contract promises a value the operation cannot spend.
+A technique declares an input its own Protocol and Rules never reach, so the bind contract promises a value the technique cannot spend.
 
 **Detect:** For each `### <id>` under a technique's `## Inputs`, search that technique's `## Protocol` and `## Rules` for the id — braced as `{id}`, as `{id}.field`, or named bare inside a tool-call signature a phase passes. Flag an entry with no occurrence. Test: the only phase that spends the value is the declaration itself.
 
@@ -1835,11 +1835,11 @@ A technique declares an input its own Protocol and Rules never reach, so the bin
 
 "Apply [continue-agent] with the composed prompt"
 
-A Protocol Apply passes some of the applied operation's declared inputs and omits others, so the applied op runs on whatever the bag happens to hold.
+A Protocol Apply passes some of the applied technique's declared inputs and omits others, so the applied op runs on whatever the bag happens to hold.
 
 **Detect:** For each Protocol `Apply` or `::` invocation, resolve the target's `## Inputs`, including any merged from its container. Flag a required input the Apply site neither passes nor covers by a declared `default`, and that no same-name slot on the applying technique makes ambient. Test: a required slot of the target is absent from the Apply line and from the applying technique's own contract.
 
-**Do not flag:** An input the target marks optional or backs with a `#### default`. An input the applying technique declares under the same id. A container-merged input the whole group shares. An activity `steps[]` bind. An agent-entry technique naming the operations of a loop whose activity YAML is the bind site (`prompt-restates-owned-mechanics`).
+**Do not flag:** An input the target marks optional or backs with a `#### default`. An input the applying technique declares under the same id. A container-merged input the whole group shares. An activity `steps[]` bind. An agent-entry technique naming the techniques of a loop whose activity YAML is the bind site (`prompt-restates-owned-mechanics`).
 
 **Fix:** Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it. A slot declared and never passed on is `declared-input-never-read`.
 
@@ -1861,7 +1861,7 @@ A Protocol branch conditions on a magnitude nothing declares, so the agent canno
 
 A rules entry cites rules another file owns and the reader already receives, so it tracks a section it does not own.
 
-**Detect:** A `## Rules` entry (or `rules.*` string) whose body is a citation, or a list of citations, to rules declared elsewhere, and the reader already receives those rules — by container merge, by the operations bundle, or by a sibling entry that commands following that set. Compare the list with the cited home's roster. Flag when the home holds a rule the list omits; when the entry states nothing the cited rule does not; when the entry is a subset of an obligation a sibling already states; or when the entry reuses the cited rule's name or a near-variant, so the shortened dotted address is ambiguous. Test: adding a rule to the cited home leaves this entry incomplete, or removing the entry changes no behaviour.
+**Detect:** A `## Rules` entry (or `rules.*` string) whose body is a citation, or a list of citations, to rules declared elsewhere, and the reader already receives those rules — by container merge, by the techniques bundle, or by a sibling entry that commands following that set. Compare the list with the cited home's roster. Flag when the home holds a rule the list omits; when the entry states nothing the cited rule does not; when the entry is a subset of an obligation a sibling already states; or when the entry reuses the cited rule's name or a near-variant, so the shortened dotted address is ambiguous. Test: adding a rule to the cited home leaves this entry incomplete, or removing the entry changes no behaviour.
 
 **Do not flag:** A pointer that narrows or qualifies the cited rule — a scope restriction, a threshold, an exception the cited rule does not state. Container `TECHNIQUE.md` Rules the loader merges into descendants. A prohibition citing the home that owns the behaviour it forbids (`no-rule-protocol-restatement`). README index tables (`readme-orients-not-transcribes`). Capability op inventories (`capability-as-op-inventory`).
 
@@ -1875,9 +1875,9 @@ A reference does not resolve to one source, so the reader cannot tell which valu
 
 **Detect:** For each prose reference to a value, a tool result, or a completed action, name the construct that supplies it — a declared input or output on this technique, a workflow variable, an earlier phase of this Protocol, a resolvable link, or a field a named call returns. Flag when nothing supplies it, and when the named kind is one the context holds several of. Passive wording is the tell: "already returned by", "as returned", "has already landed", or "carry it to X" where no phase applies X.
 
-**Do not flag:** A reference whose target is declared but wears the wrong form (`anchored-protocol-references`). A needed value absent from `inputs[]` (`technique-inputs-declared`). A vague noun for a declared output (`brace-output-references`). Magnitudes (`branch-on-undeclared-threshold`). Anaphora for a noun already anchored once in the same step. A precondition another operation guarantees, where the step names that operation.
+**Do not flag:** A reference whose target is declared but wears the wrong form (`anchored-protocol-references`). A needed value absent from `inputs[]` (`technique-inputs-declared`). A vague noun for a declared output (`brace-output-references`). Magnitudes (`branch-on-undeclared-threshold`). Anaphora for a noun already anchored once in the same step. A precondition another technique guarantees, where the step names that technique.
 
-**Fix:** Name the supplier — the phase that produces the value, the call that returns it, or the operation that guarantees the action — or declare it and reference the designator. Where nothing supplies it, delete the reference. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Name the supplier — the phase that produces the value, the call that returns it, or the technique that guarantees the action — or declare it and reference the designator. Where nothing supplies it, delete the reference. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-145. pre-session-prose-defers-to-the-framework
 
@@ -1893,11 +1893,11 @@ Bootstrap prose sends the reader somewhere they have no way to go.
 
 ### AP-146. instruction-narrates-an-actor
 
-"The next activity reaches this context only as a continuation stub the orchestrator sends after continue-batch has advanced the pointer" / "The orchestrator applies commit-and-persist for the activity just finished before reaching this operation"
+"The next activity reaches this context only as a continuation stub the orchestrator sends after continue-batch has advanced the pointer" / "The orchestrator applies commit-and-persist for the activity just finished before reaching this technique"
 
 A rule, Protocol step, or I/O description describes an actor instead of instructing its reader.
 
-**Detect:** For each rule, Protocol step, I/O description, Capability sentence, README orientation line, and option or action text, name the actor the surface is delivered to. Where a surface reaches more than one — a container `TECHNIQUE.md` merged into its descendants, or `rules.universal` — flag a clause only some of those actors can act on. Flag a clause that narrates a second actor's behaviour, state, operations, or limitations, which the reader can neither observe nor act on, and a clause that states the reader's own duty in the third person. Test: strike the clause. Where it named a second actor, flag it if the instruction is still complete. Where it named the reader in the third person, flag it if what remains no longer tells the reader to do the thing. A clause already addressed to the reader that repeats an imperative is not this fault.
+**Detect:** For each rule, Protocol step, I/O description, Capability sentence, README orientation line, and option or action text, name the actor the surface is delivered to. Where a surface reaches more than one — a container `TECHNIQUE.md` merged into its descendants, or `rules.universal` — flag a clause only some of those actors can act on. Flag a clause that narrates a second actor's behaviour, state, techniques, or limitations, which the reader can neither observe nor act on, and a clause that states the reader's own duty in the third person. Test: strike the clause. Where it named a second actor, flag it if the instruction is still complete. Where it named the reader in the third person, flag it if what remains no longer tells the reader to do the thing. A clause already addressed to the reader that repeats an imperative is not this fault.
 
 **Do not flag:** A duty stated as outside the reader's, with no account of who holds it. A value the reader takes from its own tool responses. A precondition the reader can check. The contract the reader itself applies, on the surface that owns it. An actor role carried as data a stub or manifest binds. Prose restating a contract owned elsewhere (`prompt-restates-owned-mechanics`). A rule whose only defect is its bucket (`rule-audience-bucket`). One that is mis-filed and narrating is both.
 
@@ -1905,15 +1905,15 @@ A rule, Protocol step, or I/O description describes an actor instead of instruct
 
 ### AP-147. rule-binds-beyond-its-operation
 
-"`sync-progress-status` is the only writer of Progress status — not a per-activity YAML step, not a client-workflow activity rule, not a worker duty" on a persistence operation's `## Rules`
+"`sync-progress-status` is the only writer of Progress status — not a per-activity YAML step, not a client-workflow activity rule, not a worker duty" on a persistence technique's `## Rules`
 
-An operation's rule states policy over a subject the operation does not own, so it binds readers who never apply it.
+A technique's rule states policy over a subject the technique does not own, so it binds readers who never apply it.
 
-**Detect:** For each `## Rules` entry, name the subject it constrains and ask whether the operation performs or produces that subject. Flag an entry whose subject outlives it — a sole writer, owner, or home named for something the operation only contributes to, or a duty assigned to an actor the entry is not delivered to. Test: strike the operation from the sentence; where the claim still binds somebody, it is policy, and its home is the surface that owns the subject.
+**Detect:** For each `## Rules` entry, name the subject it constrains and ask whether the technique performs or produces that subject. Flag an entry whose subject outlives it — a sole writer, owner, or home named for something the technique only contributes to, or a duty assigned to an actor the entry is not delivered to. Test: strike the technique from the sentence; where the claim still binds somebody, it is policy, and its home is the surface that owns the subject.
 
-**Do not flag:** A prohibition or conformance statement addressed to the reader — a worker rule barring a worker's own call, an adapter rule naming the only conforming form of its own dispatch. An invariant on the operation's own cadence, outputs, or the composition of what it writes. A one-line pointer to the surface that owns the policy. The same claim held in both places (`no-technique-resource-dual-home`). Operational cadence filed in a resource (`resource-fills-not-does`).
+**Do not flag:** A prohibition or conformance statement addressed to the reader — a worker rule barring a worker's own call, an adapter rule naming the only conforming form of its own dispatch. An invariant on the technique's own cadence, outputs, or the composition of what it writes. A one-line pointer to the surface that owns the policy. The same claim held in both places (`no-technique-resource-dual-home`). Operational cadence filed in a resource (`resource-fills-not-does`).
 
-**Fix:** Move the claim to the surface that owns the subject, widen that statement to cover whatever the rule uniquely carried, and delete the rule where nothing operation-specific remains. Cite the owning surface from the phase that needs it. Where no surface owns the subject yet, `operative-criteria-need-a-home` names the migration. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Move the claim to the surface that owns the subject, widen that statement to cover whatever the rule uniquely carried, and delete the rule where nothing technique-specific remains. Cite the owning surface from the phase that needs it. Where no surface owns the subject yet, `operative-criteria-need-a-home` names the migration. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-148. inherited-input-re-declared
 
@@ -1921,9 +1921,9 @@ An operation's rule states policy over a subject the operation does not own, so 
 
 A leaf redeclares an input a container contract merges into it, so one bind slot carries two descriptions and each is edited without the other.
 
-**Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf is read. Where the leaf's wording narrows the value to that one operation, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.
+**Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf is read. Where the leaf's wording narrows the value to that one technique, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.
 
-**Do not flag:** A leaf entry that changes the bind contract — a differing `#### default`, or an optionality the operation needs. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares (`hoist-shared-inputs`).
+**Do not flag:** A leaf entry that changes the bind contract — a differing `#### default`, or an optionality the technique needs. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares (`hoist-shared-inputs`).
 
 **Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}`. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
@@ -1973,7 +1973,7 @@ One `## Rules` entry states several constraints, so no part of it can be cited o
 
 **Do not flag:** A single constraint stated with the failure mode that makes it matter. Paragraphs or bullets elaborating one constraint across the cases it covers, each case subordinate to the named invariant. Length alone settles nothing. A rule scoped to one protocol step (`no-one-step-rules`). One invariant with two homes (`single-rule-authority`). Two entries whose triggers intersect (`overlapping-rule-scopes`).
 
-**Fix:** Give each constraint its own entry, named for the invariant it states. Demote cost guidance and hazards to a `>` caveat on the rule they qualify (`constraint-as-blockquote`). Delete any part whose claim another surface already owns — a schema field's description, a load-time refusal, another operation's rule (`schema-semantics-restated`, `rule-binds-beyond-its-operation`). See [A Rule States One Invariant](./design-principles.md#45-a-rule-states-one-invariant).
+**Fix:** Give each constraint its own entry, named for the invariant it states. Demote cost guidance and hazards to a `>` caveat on the rule they qualify (`constraint-as-blockquote`). Delete any part whose claim another surface already owns — a schema field's description, a load-time refusal, another technique's rule (`schema-semantics-restated`, `rule-binds-beyond-its-operation`). See [A Rule States One Invariant](./design-principles.md#45-a-rule-states-one-invariant).
 
 ### AP-153. call-omits-conditionally-required-argument
 
@@ -1981,23 +1981,23 @@ One `## Rules` entry states several constraints, so no part of it can be cited o
 
 A Protocol writes a call signature without an argument its schema marks optional and its server demands in the state that Protocol arrives in, so the call is refused at run time and the caller improvises a repair the definition never specified.
 
-**Detect:** For each tool call a Protocol phase or Rule writes as a signature, read the tool's description and its refusal text for a state in which an optional argument becomes required. Name the state the operation is in when it reaches that call. Flag a signature the tool refuses from that state. A schema check settles nothing: both the executable call and the refused one satisfy it.
+**Detect:** For each tool call a Protocol phase or Rule writes as a signature, read the tool's description and its refusal text for a state in which an optional argument becomes required. Name the state the technique is in when it reaches that call. Flag a signature the tool refuses from that state. A schema check settles nothing: both the executable call and the refused one satisfy it.
 
-**Do not flag:** An argument the schema requires outright (`call-omits-required-argument`). A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. An argument the tool accepts either way in every state the operation reaches. The conditional obligation itself, in the signature or in a phrase naming which calls must pass it (`tool-contract-restated-in-protocol`).
+**Do not flag:** An argument the schema requires outright (`call-omits-required-argument`). A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. An argument the tool accepts either way in every state the technique reaches. The conditional obligation itself, in the signature or in a phrase naming which calls must pass it (`tool-contract-restated-in-protocol`).
 
-**Fix:** Name the argument in the signature, and declare the value as an input where the operation takes it from its caller. Where the operation reaches the call in both states, mark that input optional and state the state that leaves it unset. The operation-to-operation form is `apply-omits-declared-input`.
+**Fix:** Name the argument in the signature, and declare the value as an input where the technique takes it from its caller. Where the technique reaches the call in both states, mark that input optional and state the state that leaves it unset. The technique-to-technique form is `apply-omits-declared-input`.
 
 ### AP-154. call-omits-required-argument
 
 "`record_usage { session_index, activity, usage }`, against a tool declaring a fourth parameter as required"
 
-A Protocol writes a whole call signature without an argument the tool's schema declares required, so the operation describes a step no run can take.
+A Protocol writes a whole call signature without an argument the tool's schema declares required, so the technique describes a step no run can take.
 
 **Detect:** For each tool call a Protocol phase or Rule writes as a whole signature, compare the arguments it names against the parameters that tool declares required. Flag every required parameter the signature does not name. A signature is whole unless its own text marks it partial. Test: the call the signature stands for is one the tool refuses before its handler runs.
 
 **Do not flag:** A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. A call to a tool the corpus does not register. An argument required only in a state the schema cannot express (`call-omits-conditionally-required-argument`).
 
-**Fix:** Name the argument in the signature, and declare the value as an input where the operation takes it from its caller. Where the omission traces to a parameter the tool gained after the operation was written, sweep every call the corpus describes to that tool (`stale-restatement-after-change`).
+**Fix:** Name the argument in the signature, and declare the value as an input where the technique takes it from its caller. Where the omission traces to a parameter the tool gained after the technique was written, sweep every call the corpus describes to that tool (`stale-restatement-after-change`).
 
 ### AP-155. call-names-an-undeclared-argument
 
@@ -2027,25 +2027,25 @@ A Protocol phase is an entry in a flat numbered list, so it has a number and no 
 
 "never [continue-agent](../harness-compat/continue-agent.md) on a prior worker" in a rule / "the commit it was built at sits in the inventory [resolve-graph](./resolve-graph.md) reads" as a Protocol aside
 
-A technique names another operation without invoking it, sending its reader somewhere that reader cannot go.
+A technique names another technique without invoking it, sending its reader somewhere that reader cannot go.
 
-**Detect:** A technique file names another technique or operation — in Capability, Protocol, or `## Rules` — by a markdown link to a technique file or by a `::` address, and no work is invoked: a rule naming the instrument for a question or forbidding one, a Protocol aside citing where a fact lives, a documentation or canonical-form reference. Test: what the reader does with the name needs a file the delivery did not carry.
+**Detect:** A technique file names another technique or technique — in Capability, Protocol, or `## Rules` — by a markdown link to a technique file or by a `::` address, and no work is invoked: a rule naming the instrument for a question or forbidding one, a Protocol aside citing where a fact lives, a documentation or canonical-form reference. Test: what the reader does with the name needs a file the delivery did not carry.
 
-**Do not flag:** A reference that invokes work (`pass-orchestration-in-technique`). A technique reference in an I/O contract (`technique-ref-in-io-contract`). READMEs and other orientation surfaces that run no protocol. Resource citations, which travel with the technique citing them. A bare operation id where the slot's value is an operation id, with no navigable link. A raw tool name a remedy step must run unaided (`canonical-technique-reference`).
+**Do not flag:** A reference that invokes work (`pass-orchestration-in-technique`). A technique reference in an I/O contract (`technique-ref-in-io-contract`). READMEs and other orientation surfaces that run no protocol. Resource citations, which travel with the technique citing them. A bare technique id where the slot's value is a technique id, with no navigable link. A raw tool name a remedy step must run unaided (`canonical-technique-reference`).
 
-**Fix:** State the fact the reference stood for, without naming the operation. Where it carried a standing choice of instrument, move it to the container technique that holds both operations, phrased so it needs no reference. Where it carried sequencing, the run binding both operations owns it. See [A Technique Names Only What Its Reader Holds](./design-principles.md#36-a-technique-names-only-what-its-reader-holds); also `pass-orchestration-in-technique`, `anchored-protocol-references`.
+**Fix:** State the fact the reference stood for, without naming the technique. Where it carried a standing choice of instrument, move it to the container technique that holds both techniques, phrased so it needs no reference. Where it carried sequencing, the run binding both techniques owns it. See [A Technique Names Only What Its Reader Holds](./design-principles.md#36-a-technique-names-only-what-its-reader-holds); also `pass-orchestration-in-technique`, `anchored-protocol-references`.
 
 ### AP-158. produce-path-without-a-reading
 
 "1. Call `<tool> { … }` and record the `{report}`." as the whole Protocol
 
-A technique's Protocol is the tool's own call and nothing else, so the operation contributes no reading the raw response does not already give.
+A technique's Protocol is the tool's own call and nothing else, so the technique contributes no reading the raw response does not already give.
 
 **Detect:** A technique `## Protocol` whose phases reduce to invoking one tool, or reading one resource, and recording the response under a declared id, with no phase that interprets, bounds, or qualifies the answer: no statement of what the response omits or caps, no derivation, no verdict, no recovery for an unexpected answer. Test: what a reader gains beyond the tool's own schema is only a variable name.
 
 **Do not flag:** A reading that lives in a declared Output description or a `## Rules` entry. A wrapper whose contribution is the argument shape it fixes for one named question. A compose step that assembles a value another step consumes. A Protocol that carries the tool's argument structure (`tool-contract-restated-in-protocol`).
 
-**Fix:** Add the phase that reads the answer — what it caps, what it omits, what an empty result means, what the recovery is. Where no such reading exists, retire the operation and bind the tool at the run that needed it. See [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading).
+**Fix:** Add the phase that reads the answer — what it caps, what it omits, what an empty result means, what the recovery is. Where no such reading exists, retire the technique and bind the tool at the run that needed it. See [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading).
 
 ### AP-159. construct-folder-without-a-readme
 
@@ -2065,7 +2065,7 @@ A construct subfolder carries definitions and no README, so nothing orients a re
 
 A duty moves to another home and neither home names the outcome the move had to keep, so the behaviour is gone while every file still reads correctly on its own.
 
-**Detect:** On a change surface, a gate, an exit, a bound operation, or a rule that the base ref carried at a site is absent there, and an equivalent construct appears elsewhere. Flag where neither site states the outcome, option, input, or audience the move preserves, nor the check that confirms it. Test: what the move had to keep, and where that is recorded, exists only in the reviewer's head. A relocation reads clean file by file, so a per-file walk never reaches it.
+**Detect:** On a change surface, a gate, an exit, a bound technique, or a rule that the base ref carried at a site is absent there, and an equivalent construct appears elsewhere. Flag where neither site states the outcome, option, input, or audience the move preserves, nor the check that confirms it. Test: what the move had to keep, and where that is recorded, exists only in the reviewer's head. A relocation reads clean file by file, so a per-file walk never reaches it.
 
 **Do not flag:** A removal the change states as a removal. A receiving site that declares the same output, gate, or artifact the losing site did. Surviving prose still asserting the old behaviour (`stale-restatement-after-change`).
 
@@ -2075,7 +2075,7 @@ A duty moves to another home and neither home names the outcome the move had to 
 
 "`unanswerable` where the member has neither instrument to ask" on an output, under a phase setting that same field to `none` wherever neither instrument found anything
 
-An output's contract admits a value no Protocol path leaves standing, so the vocabulary promises a reading the operation cannot give.
+An output's contract admits a value no Protocol path leaves standing, so the vocabulary promises a reading the technique cannot give.
 
 **Detect:** For each value a technique's `## Outputs` enumerates — on an entry, a component, or a nested field — name the phase that leaves it standing when the run ends. Flag a value whose assigning phase is followed by a phase that reassigns the same field over a population that includes those subjects, and a value no phase assigns. Test: as the last phase completes, a later phase's own criteria settle that subject's field. Each phase can be correct alone; only their order is wrong.
 

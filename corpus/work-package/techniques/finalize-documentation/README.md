@@ -2,9 +2,9 @@
 
 > Part of [techniques](../README.md)
 
-The documentation a closing work package leaves behind, and the planning-folder context every operation here writes into.
+The documentation a closing work package leaves behind, and the planning-folder context every technique here writes into.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

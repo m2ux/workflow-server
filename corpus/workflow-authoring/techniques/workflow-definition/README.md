@@ -2,9 +2,9 @@
 
 > Part of [techniques](../README.md)
 
-Shared contract for the operations that classify, author and audit workflow definition files.
+Shared contract for the techniques that classify, author and audit workflow definition files.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

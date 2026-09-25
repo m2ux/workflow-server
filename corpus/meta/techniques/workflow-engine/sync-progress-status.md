@@ -72,7 +72,7 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 
 ### progress-rows-only
 
-This operation writes Progress row fields and nothing else in the README. The header's lifecycle `**Status:**` line has an owner of its own, per [Progress table](/meta/resources/planning-readme.md#progress-table).
+This technique writes Progress row fields and nothing else in the README. The header's lifecycle `**Status:**` line has an owner of its own, per [Progress table](/meta/resources/planning-readme.md#progress-table).
 
 ### preserve-unrelated-rows
 

@@ -4,7 +4,7 @@
 
 The chain is assembled from the target rather than stated by the caller: what the analysis needs to know first, what is missing, which mode to run, and whether the result survives its own dispute.
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one operation of the chain.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one technique of the chain.
 
 ---
 

@@ -114,7 +114,7 @@ Required whenever a unit is `walked` and reaches any file on the change surface.
 
 A unit that reaches the change surface with **no** evidence rows is incomplete coverage — record it as `blocked` (missing evidence), not as a silent walk. Evidence limited to hunk lines while the unit claims the whole file is the same defect. Description Hygiene without a prose-field inventory and evidence table is the canonical form of that defect.
 
-The obligation is one divergence row per unwalked enumeration unit of each named home, plus evidence rows for every walked unit that reaches the change surface. The inventory of units is not restated here — it lives in the walking operation's own first phase, which is its single home.
+The obligation is one divergence row per unwalked enumeration unit of each named home, plus evidence rows for every walked unit that reaches the change surface. The inventory of units is not restated here — it lives in the walking technique's own first phase, which is its single home.
 
 ## Known
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Adversarial challenge of a concern set and the fold of its findings back into that set — the shared contract both operations work over.
+Adversarial challenge of a concern set and the fold of its findings back into that set — the shared contract both techniques work over.
 
 ## Inputs
 

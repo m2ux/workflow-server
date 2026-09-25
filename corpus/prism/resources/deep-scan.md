@@ -36,7 +36,7 @@ Trace: What diagnostic information is destroyed vs. propagated?
 Look for these three patterns:
 
 A) Async State Handoff Violation
-- Where is shared mutable state passed to async operations?
+- Where is shared mutable state passed to async techniques?
 - Look for: dict.update() + async call, or object mutation before await
 - Find: Race conditions where concurrent tasks read inconsistent state
 

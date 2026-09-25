@@ -5,19 +5,19 @@ metadata:
 
 ## Capability
 
-Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, and graph operations across a repository and its siblings.
+Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, and graph techniques across a repository and its siblings.
 
 ## Inputs
 
 ### repo_name
 
-*(optional)* Name of the indexed graph an operation is addressed at.
+*(optional)* Name of the indexed graph a technique is addressed at.
 
 ## Rules
 
 ### address-a-named-graph
 
-Every operation here answers from one indexed graph, and the caller says which by giving `{repo_name}`, omitted only where exactly one graph is indexed; where more than one is, an unnamed call fails and lists what is available. The name comes from the inventory of indexed graphs, which also carries the tree each was built from and the repository groups configured over them.
+Every technique here answers from one indexed graph, and the caller says which by giving `{repo_name}`, omitted only where exactly one graph is indexed; where more than one is, an unnamed call fails and lists what is available. The name comes from the inventory of indexed graphs, which also carries the tree each was built from and the repository groups configured over them.
 
 ### an-answer-carries-the-graph-it-came-from
 
@@ -25,18 +25,18 @@ A component and a containing tree that also holds it are separate graphs whose a
 
 ### subjects-the-index-holds
 
-Each operation answers from the tree its index walked, and reports on that tree rather than failing when it is addressed at something outside it. Two kinds of subject sit outside every index:
+Each technique answers from the tree its index walked, and reports on that tree rather than failing when it is addressed at something outside it. Two kinds of subject sit outside every index:
 
 - **A document the index never walked** — a transcript, a specification under revision, a page handed over by its author. It carries no node, so an answer about it is an answer about other files whose names happen to rank.
 - **Anything beneath a dot-directory** — the walk skips them, so `.github/workflows/` pipeline definitions, hooks and tool configuration are as absent from a fresh index as from a stale one.
 
 ### grep-is-the-instrument-for-what-no-index-holds
 
-Grep and a direct read are the whole instrument for a subject no index holds, as they are for prose beneath a heading per `query-not-grep`. Which tree holds the subject is therefore what an operation is chosen against, an operation addressed at a subject outside its tree answering about other files rather than about the one asked for.
+Grep and a direct read are the whole instrument for a subject no index holds, as they are for prose beneath a heading per `query-not-grep`. Which tree holds the subject is therefore what a technique is chosen against, a technique addressed at a subject outside its tree answering about other files rather than about the one asked for.
 
 ### query-not-grep
 
-Execution flows and relationships among code symbols are what the graph holds, and what the operations here return — a question about either is theirs rather than grep's.
+Execution flows and relationships among code symbols are what the graph holds, and what the techniques here return — a question about either is theirs rather than grep's.
 
 For a markdown tree the graph holds each heading and each link between files, and no prose. A question about which sentence states a claim stays a grep question, and a ranked search answers it with unrelated code matches rather than with nothing, so a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
 
@@ -60,7 +60,7 @@ The graph holds the call sites the parser reads in source, among the symbols the
 - **Type-level references.** Naming a type in a signature, an associated-type binding, or a trait bound is not a call, so it is not an edge at all.
 - **Names imported from another package.** A graph holds a node for each symbol its own tree defines and none for a name the tree imports from a package built elsewhere, and its import edges run file to file inside that tree. A consumer's use of a library's symbol is an edge in no graph: the library's graph never sees the consumer, and the consumer's graph has nothing to hang the edge on. Across a repository group, that coupling is held by the group's contract registry where a link declares it, and by a search of the consumer's tree otherwise.
 
-An operation's answer is therefore evidence of what the graph holds, never of what depends on the symbol.
+A technique's answer is therefore evidence of what the graph holds, never of what depends on the symbol.
 
 ### an-answer-states-how-far-it-vouches-for-itself
 
@@ -72,7 +72,7 @@ Where a symbol is reached through a macro body, a type position or an import fro
 
 ### a-named-operation-answers-first
 
-The raw graph query answers what no named operation reaches: custom call-chain traces, ordering and error-path assertions, and visibility filters. What depends on a symbol, what one symbol connects to, how one symbol reaches another, and which execution flows a concept lands in are each the subject of an operation here, whose declared output states what its answer means. A hand-written query returns rows and states nothing, so every reading such a contract carries is the author's to supply and to get right.
+The raw graph query answers what no named technique reaches: custom call-chain traces, ordering and error-path assertions, and visibility filters. What depends on a symbol, what one symbol connects to, how one symbol reaches another, and which execution flows a concept lands in are each the subject of a technique here, whose declared output states what its answer means. A hand-written query returns rows and states nothing, so every reading such a contract carries is the author's to supply and to get right.
 
 ### keyword-shaped-queries
 
@@ -80,6 +80,6 @@ A ranked search answers keywords rather than a natural-language question. Its ra
 
 ### must-use-operations
 
-Indexed-codebase structural analysis (call relationships, execution flows, blast radius, change impact) MUST go through these operations — do NOT paste raw `gitnexus_*` calls or Cypher into technique protocols; raw calls live only inside the operation procedures here. For that analysis, grep / Read / glob are the fallback ONLY when the codebase is not indexed or stale.
+Indexed-codebase structural analysis (call relationships, execution flows, blast radius, change impact) MUST go through these techniques — do NOT paste raw `gitnexus_*` calls or Cypher into technique protocols; raw calls live only inside the technique procedures here. For that analysis, grep / Read / glob are the fallback ONLY when the codebase is not indexed or stale.
 
 Two questions fall outside this rule rather than under its fallback, and each names its own instrument: a subject no index holds (`subjects-the-index-holds`) and a question the graph cannot answer (`query-not-grep`). Grep is the first instrument for both, on a fresh index as much as a stale one.

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Ingest a scoped source area at the pinned baseline commit — and, optionally, task-derived knowledge — into typed wiki pages whose every claim cites a raw source path and carries a confidence score. Creates new pages or augments existing ones in place, then cascades the change to related pages so cross-references stay consistent. Augment and update are folded into ingest: task knowledge is an additional input source alongside the raw code, not a separate operation. This is the operation other workflows bind as `codebase-wiki/ingest` to build or grow the wiki.
+Ingest a scoped source area at the pinned baseline commit — and, optionally, task-derived knowledge — into typed wiki pages whose every claim cites a raw source path and carries a confidence score. Creates new pages or augments existing ones in place, then cascades the change to related pages so cross-references stay consistent. Augment and update are folded into ingest: task knowledge is an additional input source alongside the raw code, not a separate technique. This is the technique other workflows bind as `codebase-wiki/ingest` to build or grow the wiki.
 
 ## Inputs
 
@@ -57,7 +57,7 @@ A one-line description of this ingest for the log ledger — the area covered (`
 ### 2. Read Raw Source
 
 - Read the raw source for `{target_area}` in place at `{raw_baseline_commit}` — the immutable baseline. Do not copy source into the wiki.
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[resolve-graph](/gitnexus/techniques/resolve-graph.md)(*tree_path*: the source tree the baseline was pinned from) and take its `{repo_name}` as the graph every operation below addresses, and its `{graph_inventory}` for the commit that graph was built at. An empty `{repo_name}` means the tree carries no index, and the reads below are grep and file reads instead.
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[resolve-graph](/gitnexus/techniques/resolve-graph.md)(*tree_path*: the source tree the baseline was pinned from) and take its `{repo_name}` as the graph every technique below addresses, and its `{graph_inventory}` for the commit that graph was built at. An empty `{repo_name}` means the tree carries no index, and the reads below are grep and file reads instead.
 - Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md) against `{repo_name}` and read its `{index_stale}`, per `gitnexus.index-freshness-first` — a graph built before `{raw_baseline_commit}` describes a tree the citations do not point at.
 - Take the area's structure from the graph so claims about it rest on evidence rather than inference: [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*search_query*: `{target_area}` as keywords, *repo_name*: `{repo_name}`) whose `{query_report}` gives the execution flows the area participates in, and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{$symbol}`, *repo_name*: `{repo_name}`) for each symbol a page names, whose `{context_report}` gives the callers and callees that become the `related[]` the cascade in step 5 acts on.
   > - A caller reached through a macro body or named only in a type position is absent from either answer, per `gitnexus.edges-the-parser-cannot-see`. Where the area is built on generated code, a claim of completeness rests on a grep alongside the graph, and the page says which was done.

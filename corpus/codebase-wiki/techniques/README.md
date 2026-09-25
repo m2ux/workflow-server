@@ -4,7 +4,7 @@
 
 The technique library for the codebase-wiki workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-technique `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
-[`TECHNIQUE.md`](./TECHNIQUE.md) holds shared Inputs (`wiki_path`, `raw_baseline_commit`), citation and confidence requirements, and workflow invariants for every technique here. Reuse operations: `ingest`, `query`, `lint`, `maintain-index-log`, `cross-link`. Internal: `collect-scope`, `compose-overview` (bound in `confirm-scope` and `publish`).
+[`TECHNIQUE.md`](./TECHNIQUE.md) holds shared Inputs (`wiki_path`, `raw_baseline_commit`), citation and confidence requirements, and workflow invariants for every technique here. Reuse techniques: `ingest`, `query`, `lint`, `maintain-index-log`, `cross-link`. Internal: `collect-scope`, `compose-overview` (bound in `confirm-scope` and `publish`).
 
 The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` / activity level, not bound per step.
 
@@ -24,7 +24,7 @@ The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/
 
 ## Cross-workflow consumption and delegation
 
-These operations are standalone, so other workflows bind them with the slash form:
+These techniques are standalone, so other workflows bind them with the slash form:
 
 | Reference | Used for |
 |-----------|----------|

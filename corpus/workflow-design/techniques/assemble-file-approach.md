@@ -15,7 +15,7 @@ The scope-manifest entry being drafted — its path, action (create/modify/remov
 
 ### operation_type
 
-The classified operation. When `update`, the approach frames the change against the file's existing content rather than a from-scratch draft.
+The classified technique. When `update`, the approach frames the change against the file's existing content rather than a from-scratch draft.
 
 ### preservation_required
 

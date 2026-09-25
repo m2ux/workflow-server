@@ -44,4 +44,4 @@ Per-test failure detail, empty when every test passed.
 
 ### failures-are-not-masked
 
-A reported failure is investigated as reported. `--no-fail-fast` does not appear in either invocation, because a suite that hides its first failure returns a verdict this operation cannot compose.
+A reported failure is investigated as reported. `--no-fail-fast` does not appear in either invocation, because a suite that hides its first failure returns a verdict this technique cannot compose.

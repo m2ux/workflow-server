@@ -4,7 +4,7 @@
 
 Shared contract for the work package's two open-work registers — the single home each keeps for its class of outstanding item, and the append-only discipline both follow.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

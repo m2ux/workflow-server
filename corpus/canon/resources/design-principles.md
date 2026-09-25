@@ -78,7 +78,7 @@ A Protocol phase is one outcome that finishes before the next begins, written as
 
 ## 16. Distinguish Designators from Parameters
 
-In Protocol, a declared value is `{id}`, an operation argument name is italic, and the argument list sits in parentheses on the operation reference. Argument names stay out of braces and backticks.
+In Protocol, a declared value is `{id}`, a technique argument name is italic, and the argument list sits in parentheses on the technique reference. Argument names stay out of braces and backticks.
 
 ## 17. Document in Positive Present
 
@@ -112,9 +112,9 @@ When implementation is in scope, a recommendation is followed by the action, or 
 
 A technique takes inputs, works over tools and resources, and emits outputs. An activity owns when and how those products reach a person: `action: message`, checkpoint `message` and `options`, and artifact links.
 
-## 25. Bind Sibling Operations as Steps
+## 25. Bind Sibling Techniques as Steps
 
-Multi-technique work lives in activity `steps[]`, checkpoints, and loops. Each sibling or shared operation is its own step. A technique Protocol applies tools and resources. Container I/O and rule merge is composition the loader performs.
+Multi-technique work lives in activity `steps[]`, checkpoints, and loops. Each sibling or shared technique is its own step. A technique Protocol applies tools and resources. Container I/O and rule merge is composition the loader performs.
 
 ## 26. A Technique Is a Reading
 
@@ -158,7 +158,7 @@ A warning against a second path means two constructs do one job. Retire one, and
 
 ## 36. A Technique Names Only What Its Reader Holds
 
-A technique arrives as its own text and its inherited rules. A name in that text — an operation, or a rule slug — is a name the delivery carries: the technique's own rules, every container it sits beneath, and the contracts of the scopes a role's bundle names. A rule from another library is named at its full dotted address. A fact the technique needs is in its own text, or stated plainly. A choice between two operations belongs to the container that holds both, phrased so it needs no reference.
+A technique arrives as its own text and its inherited rules. A name in that text — a technique, or a rule slug — is a name the delivery carries: the technique's own rules, every container it sits beneath, and the contracts of the scopes a role's bundle names. A rule from another library is named at its full dotted address. A fact the technique needs is in its own text, or stated plainly. A choice between two techniques belongs to the container that holds both, phrased so it needs no reference.
 
 ## 37. An I/O Contract Names the Value
 
@@ -166,7 +166,7 @@ An Input or Output describes what the value is. It does not name which caller, a
 
 ## 38. A Relocation Records the Outcome It Keeps
 
-A restructuring that removes a gate, re-routes an exit, relocates an operation, or collapses a rule into another home names the outcome, option, input, or audience that still holds, and the check that confirms it.
+A restructuring that removes a gate, re-routes an exit, relocates a technique, or collapses a rule into another home names the outcome, option, input, or audience that still holds, and the check that confirms it.
 
 ## 39. A Phase Heading Names the Outcome
 
@@ -174,7 +174,7 @@ A phase heading is two or three words in Title Case, with the articles dropped. 
 
 ## 40. Fan-Out Lives at the Layer That Runs the Work
 
-Fan-out belongs to the layer that runs the work. Several workers, or one activity over a collection, is a graph destination that names them, gathered at the activity they converge on. Work units inside one worker are a `forEach` loop step, with the meta [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) operations for the split and the gather.
+Fan-out belongs to the layer that runs the work. Several workers, or one activity over a collection, is a graph destination that names them, gathered at the activity they converge on. Work units inside one worker are a `forEach` loop step, with the meta [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) techniques for the split and the gather.
 
 ## 41. A Phase States Answers the Tool Has Returned
 

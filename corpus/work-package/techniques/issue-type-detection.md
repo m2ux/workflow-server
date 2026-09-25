@@ -11,7 +11,7 @@ The work-type category of an already-tracked issue, with an ambiguity flag when 
 
 ### issue_record
 
-The tracked issue as returned by the platform's read operation — carries the issue's type field, labels, title, and body.
+The tracked issue as returned by the platform's read technique — carries the issue's type field, labels, title, and body.
 
 ## Outputs
 

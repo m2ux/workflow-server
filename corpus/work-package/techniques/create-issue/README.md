@@ -4,7 +4,7 @@
 
 Shared contract for raising a tracker issue: what the issue is about, what kind of change it records, and the identity the run carries forward once it exists.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

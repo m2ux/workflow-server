@@ -52,7 +52,7 @@ True when any row of `{coverage_ledger}` carries status `blocked`, or when any r
 
 ### 4. Cross-Check the Coverage and Count the Surface
 
-- Check `{coverage_ledger}` against the enumeration inventory the walking operation holds — [Enumerate the Criteria Units](./audit-canon.md#1-enumerate-the-criteria-units) — and declare no inventory here
+- Check `{coverage_ledger}` against the enumeration inventory the walking technique holds — [Enumerate the Criteria Units](./audit-canon.md#1-enumerate-the-criteria-units) — and declare no inventory here
 - Treat a `walked` row that reaches changed files without `evidence` as a coverage gap (same weight as `blocked`)
 - Emit `{verified_findings}`, `{open_finding_count}`, `{has_critical_finding}` and `{has_coverage_gap}` at the shapes their Output declarations state
 

@@ -98,9 +98,9 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 - Save `{session_index}` and `{planning_folder_path}` from the response. Record `{repo}` as bag `{target_repo}` (the echoed binding). Do not compose or reconcile the planning path yourself.
 
-### 3. Take Operations Bundle
+### 3. Take Techniques Bundle
 
-- Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in force-full-after-summarization.
+- Call `get_workflow { session_index }` and follow the returned techniques bundle. After summarization, re-fetch with the escapes in force-full-after-summarization.
 
 ## Rules
 

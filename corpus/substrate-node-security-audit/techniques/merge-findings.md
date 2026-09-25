@@ -110,7 +110,7 @@ Severity scoring cross-checks every finding against the calibration benchmarks; 
 
 ### unconditional-defect-feasibility-floor
 
-When evidence describes a defect that triggers on every invocation of the affected path — signalled by `unconditional`, `every invocation`, `guaranteed`, or `deterministic` — Feasibility is at minimum 3 (reachable from external input) or 4 (normal operation).
+When evidence describes a defect that triggers on every invocation of the affected path — signalled by `unconditional`, `every invocation`, `guaranteed`, or `deterministic` — Feasibility is at minimum 3 (reachable from external input) or 4 (normal technique).
 
 ### operates-on-outputs-only
 

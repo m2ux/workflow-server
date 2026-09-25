@@ -2,7 +2,7 @@
 
 > Part of the [Prism Audit Workflow](../README.md)
 
-The technique library for the prism-audit workflow. Each operation is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each operation's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+The technique library for the prism-audit workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each technique's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
 [`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs, Outputs, Rules, and Errors for every technique here.
 
@@ -10,7 +10,7 @@ The technique library for the prism-audit workflow. Each operation is one capabi
 
 ## Techniques
 
-Four operation-groups (one per authoring activity) plus one standalone technique. A group is a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `.md` file per operation.
+Four technique-groups (one per authoring activity) plus one standalone technique. A group is a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `.md` file per technique.
 
 | Technique | Kind | Capability |
 |-----------|------|------------|
@@ -22,11 +22,11 @@ Four operation-groups (one per authoring activity) plus one standalone technique
 
 ---
 
-## Operations by Group
+## Techniques by Group
 
 ### scope-definition (Define Audit Scope)
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`collect-inputs`](scope-definition/collect-inputs.md) | Collect the target, description, and output location from the user's request |
 | [`validate-target`](scope-definition/validate-target.md) | Verify the target is an analysable codebase and gather its structural metadata |
@@ -35,7 +35,7 @@ Four operation-groups (one per authoring activity) plus one standalone technique
 
 ### compose-audit-prompt (Generate Audit Prompt)
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`survey-structure`](compose-audit-prompt/survey-structure.md) | Survey the module layout and total lines of code |
 | [`identify-security-characteristics`](compose-audit-prompt/identify-security-characteristics.md) | Scan for security-relevant patterns (gates the no-security-characteristics checkpoint) |
@@ -47,14 +47,14 @@ Four operation-groups (one per authoring activity) plus one standalone technique
 
 ### execute-analysis (Execute Prism Analysis)
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`compose-trigger-context`](execute-analysis/compose-trigger-context.md) | Unpack a scope into the prism trigger variables (target, description, output, pipeline mode, focus) |
 | [`prism/accumulate-analysis-run`](/prism/techniques/accumulate-analysis-run.md) | One completed run appended to the audit accumulators, including a partial or error run |
 
 ### audit-finalize (Audit Report Finalization)
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
 | [`split-report`](audit-finalize/split-report.md) | Split prism's `REPORT.md` into the summary `AUDIT-REPORT.md` |
 | [`create-detailed-findings`](audit-finalize/create-detailed-findings.md) | Build `DETAILED-FINDINGS.md` from prism's `DEFINITIVE-FINDINGS.md` — one expanded write-up per finding |
@@ -66,10 +66,10 @@ Four operation-groups (one per authoring activity) plus one standalone technique
 
 ## Reference Convention
 
-Because each group is named after the activity whose steps bind it, those steps reference operations two ways (see the meta `activity-group-shorthand` rule):
+Because each group is named after the activity whose steps bind it, those steps reference techniques two ways (see the meta `activity-group-shorthand` rule):
 
 - **Bare op** where the activity name matches the group — `collect-inputs` inside `scope-definition` resolves to `scope-definition::collect-inputs`; `deliver-audit` is a bare standalone reference.
-- **Qualified `group::op`** where a step reaches an operation whose group is not the activity's own group — e.g. `compose-audit-prompt::survey-structure`.
+- **Qualified `group::op`** where a step reaches a technique whose group is not the activity's own group — e.g. `compose-audit-prompt::survey-structure`.
 
 ---
 
@@ -79,9 +79,9 @@ These techniques are inherited or bound cross-workflow, not authored here:
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's operation to the workflow-scoped variable bag |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's technique to the workflow-scoped variable bag |
 | [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) | Bound in `execute-analysis` to trigger the prism workflow as a child, once per audit scope |
-| [`workflow-engine::take-activity`](/meta/techniques/workflow-engine/take-activity.md) | Supplied to the `activity-loop` run in `execute-analysis` as the operation each prism activity is entered through |
+| [`workflow-engine::take-activity`](/meta/techniques/workflow-engine/take-activity.md) | Supplied to the `activity-loop` run in `execute-analysis` as the technique each prism activity is entered through |
 | [`gitnexus::analyze`](/gitnexus/techniques/analyze.md) | Bound in `scope-definition` to index the target codebase |
 | [`scatter-gather`](/meta/techniques/scatter-gather.md) | Declared on the `execute-analysis` activity as its activity-wide strategy technique for the per-scope trigger loop |
 

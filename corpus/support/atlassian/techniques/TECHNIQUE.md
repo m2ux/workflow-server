@@ -5,23 +5,23 @@ metadata:
 
 ## Capability
 
-Operations for common Jira and Confluence tasks via the Atlassian MCP server — site/account discovery, Jira issue/transition/comment management, and Confluence page/comment management.
+Techniques for common Jira and Confluence tasks via the Atlassian MCP server — site/account discovery, Jira issue/transition/comment management, and Confluence page/comment management.
 
 ## Inputs
 
 ### cloudId
 
-UUID of the target Atlassian cloud site. Required by every product-specific operation.
+UUID of the target Atlassian cloud site. Required by every product-specific technique.
 
 ## Rules
 
 ### resolve-cloud-id-once
 
-Apply [resolve-cloud-id](./resolve-cloud-id.md) ONCE per session and cache the `{cloudId}`. Every product-specific operation requires it.
+Apply [resolve-cloud-id](./resolve-cloud-id.md) ONCE per session and cache the `{cloudId}`. Every product-specific technique requires it.
 
 ### content-format-markdown
 
-Set `contentFormat` to `markdown` for Confluence create/update/read operations.
+Set `contentFormat` to `markdown` for Confluence create/update/read techniques.
 
 ### account-id-for-users
 
@@ -33,4 +33,4 @@ ALWAYS apply [list-jira-transitions](./list-jira-transitions.md) before [transit
 
 ### verify-after-mutation
 
-After any mutating operation, apply the corresponding read operation (e.g., [get-jira-issue](./get-jira-issue.md), [get-confluence-page](./get-confluence-page.md)) to verify the change.
+After any mutating technique, apply the corresponding read technique (e.g., [get-jira-issue](./get-jira-issue.md), [get-confluence-page](./get-confluence-page.md)) to verify the change.

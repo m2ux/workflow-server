@@ -2,9 +2,9 @@
 
 > Part of the [GitNexus namespace](../README.md)
 
-Each operation here is one capability a step binds, or a technique's Protocol names as the tool it reaches for. The authoritative capability, inputs, outputs and rules live in the per-operation `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+Each technique here is one capability a step binds, or a technique's Protocol names as the tool it reaches for. The authoritative capability, inputs, outputs and rules live in the per-technique `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds the input every operation inherits and the rules every one of them is held to.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds the input every technique inherits and the rules every one of them is held to.
 
 ---
 
@@ -18,7 +18,7 @@ Each operation here is one capability a step binds, or a technique's Protocol na
 | [`trace`](trace.md) | The shortest call path from one symbol to another, or where the chain breaks |
 | [`detect-changes`](detect-changes.md) | The symbols a diff moved and the flows they sit on |
 | [`check`](check.md) | The circular file imports a graph holds |
-| [`cypher`](cypher.md) | Whatever the higher-level operations do not reach |
+| [`cypher`](cypher.md) | Whatever the higher-level techniques do not reach |
 | [`read-cluster`](read-cluster.md) / [`read-clusters`](read-clusters.md) | One functional area's members; the whole area inventory |
 | [`read-process`](read-process.md) / [`read-processes`](read-processes.md) | One flow's ordered trace; the whole flow inventory |
 | [`heading-search`](heading-search.md) | Sections of a markdown tree, by heading text |
@@ -46,7 +46,7 @@ A graph built with its program-dependence layers answers two questions the call 
 
 | Technique | Does |
 |-----------|------|
-| [`resolve-graph`](resolve-graph.md) | Names the graph an operation addresses, and what else is indexed |
+| [`resolve-graph`](resolve-graph.md) | Names the graph a technique addresses, and what else is indexed |
 | [`verify-index`](verify-index.md) | Reads what a graph holds and how far behind its tree it is |
 | [`analyze`](analyze.md) | Rebuilds a tree's index, with or without its program-dependence layers |
 | [`rename`](rename.md) | Reports or writes a graph-driven multi-file rename |
@@ -65,7 +65,7 @@ A group is addressed through its members' graphs and two resources of its own. T
 
 ## Composing a query
 
-A restriction the graph already holds — the files a change touched, the names a diff moved that a consumer can see — is written into a `MATCH` and executed. These operations produce that query string; the [run](../routines/README.md) that follows is what executes it.
+A restriction the graph already holds — the files a change touched, the names a diff moved that a consumer can see — is written into a `MATCH` and executed. These techniques produce that query string; the [run](../routines/README.md) that follows is what executes it.
 
 | Technique | Composes |
 |-----------|----------|
@@ -92,4 +92,4 @@ These end the [runs](../routines/README.md) — a routine carries no prose, so t
 
 ## Reference convention
 
-Every operation is a standalone file under this folder and is reached **qualified** — `gitnexus::<op>` — from anywhere outside the namespace, because a bare reference resolves in the referring workflow. A rule is named by its dotted address rather than invoked: `gitnexus.index-freshness-first`.
+Every technique is a standalone file under this folder and is reached **qualified** — `gitnexus::<op>` — from anywhere outside the namespace, because a bare reference resolves in the referring workflow. A rule is named by its dotted address rather than invoked: `gitnexus.index-freshness-first`.

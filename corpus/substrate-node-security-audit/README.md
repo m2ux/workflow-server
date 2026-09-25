@@ -21,7 +21,7 @@ This workflow guides the complete lifecycle of a security audit:
 - Impact × Feasibility severity scoring with target-profile-backed calibration benchmarks
 - Contamination prevention — the reference report is quarantined until the gap-analysis phase
 - The [target profile](./resources/target-profile.md) separates target-specific configuration from core workflow rules
-- Graph-backed structural analysis — when the target is GitNexus-indexed (recorded at scope-setup), reconnaissance, function-registry, architecture, and the structural static-analysis checks source enumeration and call-graph structure from the shared [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) operations; grep and full-file reads are the fallback
+- Graph-backed structural analysis — when the target is GitNexus-indexed (recorded at scope-setup), reconnaissance, function-registry, architecture, and the structural static-analysis checks source enumeration and call-graph structure from the shared [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) techniques; grep and full-file reads are the fallback
 
 The role split (orchestrator coordinates and dispatches; sub-agents perform deep crate-level review) and the verification/merge gates are workflow invariants — see the `rules` in [`workflow.yaml`](./workflow.yaml).
 
@@ -233,7 +233,7 @@ The three primary-group activities — the crate deep review, the static analysi
 
 ## Techniques
 
-Techniques define tool orchestration, protocols, and composable capabilities. The codebase-analysis techniques (`map-codebase`, `analyze-architecture`, `build-function-registry`, `scan-storage-lifecycle`, and the static-analysis structural checks) reuse the [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) operations for graph-backed enumeration and call-graph structure when the target is indexed, falling back to grep and full-file reads otherwise.
+Techniques define tool orchestration, protocols, and composable capabilities. The codebase-analysis techniques (`map-codebase`, `analyze-architecture`, `build-function-registry`, `scan-storage-lifecycle`, and the static-analysis structural checks) reuse the [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) techniques for graph-backed enumeration and call-graph structure when the target is indexed, falling back to grep and full-file reads otherwise.
 
 ### Orchestrator Techniques
 

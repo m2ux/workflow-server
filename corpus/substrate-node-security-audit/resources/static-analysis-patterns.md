@@ -14,7 +14,7 @@ Each pattern defines a search string, triage or verification criteria, and pass/
 
 ## The grep and GitNexus Boundary
 
-grep is the instrument for pattern-*presence* lead generation — matching a literal/regex to surface candidate sites (every entry under Grep Patterns). Where a check's *verification* step is structural — symbol/definition enumeration, call graph, caller/callee, reachability, or cross-function comparison — grep still generates the leads, but the verification routes through the `gitnexus` operations when the target is GitNexus-indexed (`gitnexus_available`), per `gitnexus.query-not-grep`; the [search-pattern-catalog](../techniques/search-pattern-catalog.md) technique dispatches that routing. When the index is absent or stale, the manual verification procedure stands. Reading full function bodies remains the instrument for pattern-*absence* findings — the graph does not replace it.
+grep is the instrument for pattern-*presence* lead generation — matching a literal/regex to surface candidate sites (every entry under Grep Patterns). Where a check's *verification* step is structural — symbol/definition enumeration, call graph, caller/callee, reachability, or cross-function comparison — grep still generates the leads, but the verification routes through the `gitnexus` techniques when the target is GitNexus-indexed (`gitnexus_available`), per `gitnexus.query-not-grep`; the [search-pattern-catalog](../techniques/search-pattern-catalog.md) technique dispatches that routing. When the index is absent or stale, the manual verification procedure stands. Reading full function bodies remains the instrument for pattern-*absence* findings — the graph does not replace it.
 
 ---
 
@@ -122,7 +122,7 @@ map_or(Ok(Vec::new()  |  map_or(Ok(Default::default()  |  unwrap_or(Ok(Vec  |  u
 
 ## Mechanical Checks
 
-Each check extends the entries under [Grep Patterns](#grep-patterns) with verification logic that goes beyond simple matching. Each check's **Search** step is a grep presence sweep (lead generation). Checks whose **Verify** step is STRUCTURAL — enumerate all definitions, trace callers/callees, test reachability, or compare across functions — route that verification through the `gitnexus` operations when `gitnexus_available` (per [The grep and GitNexus Boundary](#the-grep-and-gitnexus-boundary)): **Check 1** (enumerate all `Ord`/`PartialOrd` impls), **Check 3** (backward/forward call-chain to pair size and serialize functions), **Check 5** (enumerate all genesis-construction sites), **Check 15** (trace the builder chain to `.connect()`), **Check 16** (compare feature-gated definitions used in executor construction), **Check 17** (reachability from a user-callable extrinsic), **Check 29** (trace callers to distinguish extrinsic vs hook), **Check 31** (emission ordering along the call path), and **Check 32** (helpers reachable only from inherent entry points). The remaining checks are grep-lead + local-read verification.
+Each check extends the entries under [Grep Patterns](#grep-patterns) with verification logic that goes beyond simple matching. Each check's **Search** step is a grep presence sweep (lead generation). Checks whose **Verify** step is STRUCTURAL — enumerate all definitions, trace callers/callees, test reachability, or compare across functions — route that verification through the `gitnexus` techniques when `gitnexus_available` (per [The grep and GitNexus Boundary](#the-grep-and-gitnexus-boundary)): **Check 1** (enumerate all `Ord`/`PartialOrd` impls), **Check 3** (backward/forward call-chain to pair size and serialize functions), **Check 5** (enumerate all genesis-construction sites), **Check 15** (trace the builder chain to `.connect()`), **Check 16** (compare feature-gated definitions used in executor construction), **Check 17** (reachability from a user-callable extrinsic), **Check 29** (trace callers to distinguish extrinsic vs hook), **Check 31** (emission ordering along the call path), and **Check 32** (helpers reachable only from inherent entry points). The remaining checks are grep-lead + local-read verification.
 
 ### Check 1: Ord/PartialOrd Field Coverage
 
@@ -263,11 +263,11 @@ Each check extends the entries under [Grep Patterns](#grep-patterns) with verifi
 - **Verify:** The default value is semantically valid for the domain. Zero is not a valid timestamp (epoch 1970). Default decimal precision may not match the actual asset.
 - **FAIL if:** A storage lookup returns a domain-invalid default that is subsequently used in calculations (division, multiplication, time comparison) without an explicit initialization check.
 
-### Check 23: Silent Error Swallowing in Hook Financial Operations
+### Check 23: Silent Error Swallowing in Hook Financial Techniques
 
-- **Search:** `if let Ok` in `on_initialize`, `on_finalize`, `on_idle` functions, specifically on `Currency::deposit`, `Currency::transfer`, `Currency::withdraw`, or `mint` operations
+- **Search:** `if let Ok` in `on_initialize`, `on_finalize`, `on_idle` functions, specifically on `Currency::deposit`, `Currency::transfer`, `Currency::withdraw`, or `mint` techniques
 - **Verify:** The `else` branch either emits an event, increments an error counter, or is explicitly documented as intentionally silent.
-- **FAIL if:** A financial operation in a hook uses `if let Ok(...)` with no `else` clause. The inverse of the panic-path problem: silent failure drops funds or rewards without any observable signal.
+- **FAIL if:** A financial technique in a hook uses `if let Ok(...)` with no `else` clause. The inverse of the panic-path problem: silent failure drops funds or rewards without any observable signal.
 
 ### Check 24: Narrowing Type Casts Without Bounds Check
 
@@ -314,10 +314,10 @@ Each check extends the entries under [Grep Patterns](#grep-patterns) with verifi
 
 - **Search:** Extrinsic parameters representing future block numbers or timestamps. Typical names: `expiring_block_number`, `deadline`, `valid_until`, `lock_until`, `unlock_at`, `end_block`, `expiry`. Search for `BlockNumber` or `T::BlockNumber` in extrinsic signatures, and keyword patterns `expir`, `deadline`, `valid_until`, `lock_until`, `unlock_at` in pallet source files.
 - **Verify:** For each future-pointing temporal parameter, verify that an upper bound is enforced: `ensure!(param <= current + MAX_OFFSET, ...)` where `MAX_OFFSET` is a runtime constant.
-- **FAIL if:** No maximum offset check exists. An unbounded expiration means leaked signatures never expire, pending operations never time out, and locked assets remain locked indefinitely. The MAX_OFFSET should be a configurable runtime constant, not a hardcoded value.
+- **FAIL if:** No maximum offset check exists. An unbounded expiration means leaked signatures never expire, pending techniques never time out, and locked assets remain locked indefinitely. The MAX_OFFSET should be a configurable runtime constant, not a hardcoded value.
 - **Relationship to V18:** V18 (Deferred Action Precondition Gap) covers missing validation on scheduled actions generally. Check 28 targets the specific temporal-bound case — even if the deferred action is otherwise valid, an unbounded expiration window is itself a vulnerability.
 
-### Check 29: Missing `#[transactional]` on Multi-Write Storage Operations
+### Check 29: Missing `#[transactional]` on Multi-Write Storage Techniques
 
 - **Search:** `decl_module!` in pallet source files. If found, the pallet uses pre-frame-v2 syntax where extrinsics are NOT automatically transactional. Then search for storage-writing helper functions (`try_mutate`, `::insert(`, `::mutate(`, `::put(`) that are called from extrinsics or hooks.
 - **Verify:** For each `decl_module!` pallet:
@@ -332,23 +332,23 @@ Each check extends the entries under [Grep Patterns](#grep-patterns) with verifi
 
 - **Search:** `into_rpc()` registration sites in node service and RPC module files, and custom RPC handler implementations. Search for `DenyUnsafe`, `RpcMethods`, `unsafe`, `author`, `key`, `sign`, `rotate_keys`, `insert_key`, `submit_extrinsic` in RPC-related files.
 - **Verify:** For each custom RPC handler registered via `into_rpc()`:
-  1. Identify whether the method performs a sensitive operation (key management, signing, transaction submission, state mutation)
+  1. Identify whether the method performs a sensitive technique (key management, signing, transaction submission, state mutation)
   2. Verify sensitive methods check `DenyUnsafe` and return an error when called in `Safe` mode
   3. Verify the node's default RPC method exposure is `Safe` (not `Unsafe`) — check CLI argument defaults and service configuration
-- **FAIL if:** A custom RPC method that performs signing, key insertion, key rotation, or unsolicited transaction submission does not gate on `DenyUnsafe`. Also FAIL if the node defaults to `--rpc-methods=Unsafe` or if there is no `DenyUnsafe` check anywhere in custom RPC code that exposes sensitive operations.
+- **FAIL if:** A custom RPC method that performs signing, key insertion, key rotation, or unsolicited transaction submission does not gate on `DenyUnsafe`. Also FAIL if the node defaults to `--rpc-methods=Unsafe` or if there is no `DenyUnsafe` check anywhere in custom RPC code that exposes sensitive techniques.
 - **Rationale:** An externally-accessible RPC interface exposing unsafe methods allows remote attackers to extract keys, sign arbitrary payloads, or drain funds from node-controlled accounts. This is the code-level manifestation of the "Ethereum Black Valentine's Day" attack class (SlowMist). Substrate's framework provides the `DenyUnsafe` guard, but custom RPC extensions must opt in explicitly.
 - **Note:** Standard Substrate RPC modules (`system`, `chain`, `state`) are gated by the framework. This check targets **custom** RPC handlers added by the project.
 
 ### Check 31: Event Emission Fidelity (False Top-Up Prevention)
 
 - **Search:** `deposit_event(`, `Self::deposit_event(`, `Event::` in all pallet source files, focusing on extrinsics and hooks that involve balance transfers, token minting, deposits, or withdrawals.
-- **Verify:** For each event emission site involving a financial operation (transfer, mint, burn, deposit, withdraw, claim):
+- **Verify:** For each event emission site involving a financial technique (transfer, mint, burn, deposit, withdraw, claim):
   1. Verify the event is emitted AFTER the state transition completes successfully — not before, and not in a branch that can still fail
   2. Verify the amount in the event matches the actual state change (fees deducted, rounding applied, partial fills reflected)
   3. Verify no event is emitted on error paths that revert state (in `decl_module!` pallets without `#[transactional]`, an event emitted before a later failure persists even though the intent failed)
-  4. For hooks (`on_initialize`/`on_finalize`): verify events are emitted only for operations that actually succeeded, not optimistically
+  4. For hooks (`on_initialize`/`on_finalize`): verify events are emitted only for techniques that actually succeeded, not optimistically
 - **FAIL if:** (a) A financial event is emitted before the corresponding state transition is finalized, (b) the event amount diverges from the actual state change, or (c) an event is emitted on a path where subsequent failure does not revert the event. External systems (exchanges, indexers, bridges) rely on events as the source of truth for crediting funds — a misleading event enables false deposit attacks.
-- **Relationship to V8 and V31:** V8 (Silent Error Swallowing) covers the case where financial operations fail silently with no event. Check 31 covers the inverse: events that fire when they shouldn't, or with incorrect amounts. Check 29 (Missing `#[transactional]`) is related — non-transactional extrinsics can emit events that persist despite later failure.
+- **Relationship to V8 and V31:** V8 (Silent Error Swallowing) covers the case where financial techniques fail silently with no event. Check 31 covers the inverse: events that fire when they shouldn't, or with incorrect amounts. Check 29 (Missing `#[transactional]`) is related — non-transactional extrinsics can emit events that persist despite later failure.
 
 ### Check 32: Inherent Data Decoding Panic Paths
 

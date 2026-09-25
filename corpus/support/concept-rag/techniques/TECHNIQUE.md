@@ -5,4 +5,4 @@ metadata:
 
 ## Capability
 
-Operations for targeted concept-rag searches via pre-indexed domain maps.
+Techniques for targeted concept-rag searches via pre-indexed domain maps.

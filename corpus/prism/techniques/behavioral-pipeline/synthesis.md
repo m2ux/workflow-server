@@ -33,7 +33,7 @@ The reconciled behavioral reading across failure, cost, change, and promise.
 
 - Load the [behavioral-synthesis](../../resources/behavioral-synthesis.md) lens prompt
 - If the lens cannot be loaded, report the error.
-- The lens prompt is the program — execute its operations in order
+- The lens prompt is the program — execute its techniques in order
 
 ### 2. Construct Synthesis Input
 
@@ -44,7 +44,7 @@ The reconciled behavioral reading across failure, cost, change, and promise.
 ### 3. Apply Synthesis Lens
 
 - Apply the lens against `{synthesis_input}`
-- Execute every operation completely — the analytical depth comes from the full chain
+- Execute every technique completely — the analytical depth comes from the full chain
 
 ### 4. Write Artifact
 

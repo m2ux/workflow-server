@@ -49,7 +49,7 @@ Severity MUST use the Impact x Feasibility rubric. Compare each finding against 
 
 ### under-rating
 
-Infrastructure and availability findings (pool sharing, SSL, genesis consistency, panics under normal operation) are systematically under-rated. Use the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md#calibration-benchmark-table).
+Infrastructure and availability findings (pool sharing, SSL, genesis consistency, panics under normal technique) are systematically under-rated. Use the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md#calibration-benchmark-table).
 
 ### over-rating
 

@@ -4,7 +4,7 @@
 
 Shared Inputs, Outputs, and domain invariants for mid-phase multi-agent orchestration patterns.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

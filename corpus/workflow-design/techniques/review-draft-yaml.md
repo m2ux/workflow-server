@@ -15,7 +15,7 @@ The set of files just drafted for this workflow — the entries of `{scope_manif
 
 ### operation_type
 
-The classified operation — `create` or `update`.
+The classified technique — `create` or `update`.
 
 ## Outputs
 

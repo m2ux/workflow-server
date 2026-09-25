@@ -11,7 +11,7 @@ Identify the root cause of a single failed validation check.
 
 ### check_id
 
-Identifier of the failed check, as the operation that ran it publishes the value.
+Identifier of the failed check, as the technique that ran it publishes the value.
 
 ### failure_diagnostics
 

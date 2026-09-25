@@ -4,7 +4,7 @@
 
 The highest-accuracy mode: an initial reading, a deliberate search for what it missed, and a re-analysis that answers the gaps. The gap pass is separate from the analysis pass so it cannot be satisfied by the reasoning it is checking.
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one operation of the chain.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds what the passes share; each pass below is one technique of the chain.
 
 ---
 

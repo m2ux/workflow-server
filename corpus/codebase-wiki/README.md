@@ -1,19 +1,19 @@
 # Codebase Wiki Workflow
 
-> Build and maintain a durable, citation-backed, navigable LLM knowledge base over a codebase, in the Karpathy LLM-wiki format adapted for code. Its operations are reusable techniques other workflows bind to create, augment, query, and update the wiki.
+> Build and maintain a durable, citation-backed, navigable LLM knowledge base over a codebase, in the Karpathy LLM-wiki format adapted for code. Its techniques are reusable techniques other workflows bind to create, augment, query, and update the wiki.
 
 ---
 
 ## Overview
 
-A codebase wiki is a tree of typed Markdown pages — concepts, entities, source-summaries, and comparisons — navigated hierarchically from an index, where every claim cites a raw source path and carries a confidence score. It adapts the [Karpathy LLM-wiki knowledge-base format](https://blog.starmorph.com/blog/karpathy-llm-wiki-knowledge-base-guide) for code: knowledge that compounds across operations instead of being rebuilt each time, and that an agent reads by following `[[wikilinks]]` from the index rather than loading the whole codebase into context.
+A codebase wiki is a tree of typed Markdown pages — concepts, entities, source-summaries, and comparisons — navigated hierarchically from an index, where every claim cites a raw source path and carries a confidence score. It adapts the [Karpathy LLM-wiki knowledge-base format](https://blog.starmorph.com/blog/karpathy-llm-wiki-knowledge-base-guide) for code: knowledge that compounds across techniques instead of being rebuilt each time, and that an agent reads by following `[[wikilinks]]` from the index rather than loading the whole codebase into context.
 
 **Why build a wiki instead of re-reading the code each time?**
 
 - **Knowledge compounds.** Each ingest augments the existing wiki rather than starting over, so understanding accumulates across sessions and across workflows.
 - **Every claim is traceable.** A claim cites the raw source path it rests on, pinned to an immutable baseline commit, and carries a confidence score — so a reader knows both where a fact came from and how sure the wiki is of it.
 - **Navigation over brute force.** Reading `index.md` and following `[[wikilinks]]` to the relevant pages costs a fraction of the context of loading the codebase, and scales as the codebase grows.
-- **Reusable by other workflows.** The wiki operations are techniques other workflows bind directly — a comprehension or review workflow can ingest into, or query, the shared wiki without re-implementing any of it.
+- **Reusable by other workflows.** The wiki techniques are techniques other workflows bind directly — a comprehension or review workflow can ingest into, or query, the shared wiki without re-implementing any of it.
 
 **Use this workflow when you want to:**
 - Build a persistent, cited knowledge base over a codebase or subsystem.
@@ -26,7 +26,7 @@ A codebase wiki is a tree of typed Markdown pages — concepts, entities, source
 - **Typed page** — every page is one of four types: `concept` (an architectural idea), `entity` (a concrete code unit), `source-summary` (a per-file/area digest), or `comparison` (a cross-cutting comparison). See [wiki-format](./resources/wiki-format.md).
 - **Raw baseline** — the source tree at the pinned `raw_baseline_commit`, referenced in place; there is no physical copy. Citations are repo-relative paths at that commit.
 - **Citation + confidence** — every claim cites a raw source and carries a `high`/`medium`/`low` confidence. See [citation-conventions](./resources/citation-conventions.md).
-- **Index and log** — `index.md` is the navigable catalog; `log.md` is the append-only operation ledger. Both are maintained on every mutation.
+- **Index and log** — `index.md` is the navigable catalog; `log.md` is the append-only technique ledger. Both are maintained on every mutation.
 
 ---
 
@@ -43,7 +43,7 @@ The spine is linear with a single rework back-edge. Definitions live in [`activi
 
 ## Techniques
 
-Standalone operations plus the shared workflow-root base contract. Definitions live in [`techniques/`](./techniques/README.md).
+Standalone techniques plus the shared workflow-root base contract. Definitions live in [`techniques/`](./techniques/README.md).
 
 | Technique | Capability |
 |-----------|------------|
@@ -57,7 +57,7 @@ Shared Inputs (`wiki_path`, `raw_baseline_commit`), citation and confidence rule
 
 ## Reuse by other workflows
 
-These operations are standalone, so another workflow binds them at a step with the slash form `codebase-wiki/<op>` — exactly as any standalone technique in another workflow is referenced:
+These techniques are standalone, so another workflow binds them at a step with the slash form `codebase-wiki/<op>` — exactly as any standalone technique in another workflow is referenced:
 
 ```yaml
 - kind: technique

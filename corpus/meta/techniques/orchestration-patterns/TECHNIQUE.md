@@ -59,4 +59,4 @@ Honor [spawn-agent](../harness-compat/spawn-agent.md)::depth-1-only. Hierarchica
 
 ### prefer-activity-composition
 
-Multi-op pipelines (decompose → dispatch → gather → synthesise) are bound as activity steps or borrowed pattern activities under `meta/activities/patterns/`. These ops do not `Apply` sibling orchestration-patterns operations for work.
+Multi-op pipelines (decompose → dispatch → gather → synthesise) are bound as activity steps or borrowed pattern activities under `meta/activities/patterns/`. These ops do not `Apply` sibling orchestration-patterns techniques for work.

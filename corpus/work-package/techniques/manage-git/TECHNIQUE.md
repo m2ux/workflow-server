@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Shared contract for the work package's git work: which checkout each class of operation runs in, what a code commit carries, and which shell reaches a remote.
+Shared contract for the work package's git work: which checkout each class of technique runs in, what a code commit carries, and which shell reaches a remote.
 
 ## Inputs
 
@@ -18,15 +18,15 @@ Path to the product repo root, whether a monorepo or a standalone checkout.
 
 ### directory-scope
 
-Which checkout each class of operation runs in, and the one place the engineering checkout is resolved:
+Which checkout each class of technique runs in, and the one place the engineering checkout is resolved:
 
-| Operation class | Runs in |
+| Technique class | Runs in |
 |---|---|
 | Edit-side work — branch, pull request, sync, push | `{target_path}` |
 | Submodule refresh | `{host_repo_path}` |
 | Planning artifact commits | The **engineering checkout**: `{host_repo_path}/.engineering` where that path is a git checkout of its own, and `{host_repo_path}` otherwise |
 
-Branches and pull requests are created against the target's upstream. Every operation and every rendering step that needs the engineering checkout resolves it by this table rather than restating the condition.
+Branches and pull requests are created against the target's upstream. Every technique and every rendering step that needs the engineering checkout resolves it by this table rather than restating the condition.
 
 ### code-commit-coauthor-trailer
 

@@ -102,7 +102,7 @@ So nothing detects that a fan is complete and announces it — completeness is s
 
 ## Orchestration Model
 
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md). Fanning adds the [fan](/meta/techniques/fan/TECHNIQUE.md) group, which is delivered only to a workflow whose graph holds a fan: its operations are what tell an orchestrator to open every branch in one turn, give each its own identity, and take the convergence from what the record shows rather than judging for itself when the fan is done.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md). Fanning adds the [fan](/meta/techniques/fan/TECHNIQUE.md) group, which is delivered only to a workflow whose graph holds a fan: its techniques are what tell an orchestrator to open every branch in one turn, give each its own identity, and take the convergence from what the record shows rather than judging for itself when the fan is done.
 
 ---
 
@@ -130,7 +130,7 @@ Four properties are reached only in the first destination, and each is there for
 
 ## Isolated Branches
 
-Branches of a fan share one working tree and one git index, and a commit derives its paths from that tree's status — so no instance could stage or attribute its own change, and the load refuses a fanned activity that commits. The exception is evidence rather than assertion: an activity that materialises its own checkout binds [`git::create-worktree`](/git/techniques/create-worktree.md), the load looks for that binding, and finding it admits the commit operations. The claim and the thing claimed are one artifact, so there is nothing to declare and nothing to take on trust.
+Branches of a fan share one working tree and one git index, and a commit derives its paths from that tree's status — so no instance could stage or attribute its own change, and the load refuses a fanned activity that commits. The exception is evidence rather than assertion: an activity that materialises its own checkout binds [`git::create-worktree`](/git/techniques/create-worktree.md), the load looks for that binding, and finding it admits the commit techniques. The claim and the thing claimed are one artifact, so there is nothing to declare and nothing to take on trust.
 
 What a split working tree does not split is the session record and the planning folder. Those are shared however the checkouts are arranged, which is why persisting the session stays at the activity the fan converges on.
 

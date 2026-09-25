@@ -11,7 +11,7 @@ The run's single terminal record: what was delivered, what was decided, what sta
 
 ### operation_type
 
-The classified operation for the request — create, update or review.
+The classified technique for the request — create, update or review.
 
 ### scope_manifest
 

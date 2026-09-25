@@ -12,4 +12,4 @@ The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/
 
 **One technique, after the run.** [`report-radius-conformance`](./report-radius-conformance.md) reads what the reach run settled and writes the document.
 
-**The run under test is not here.** The measurement is the gitnexus library's [`group-radius`](/gitnexus/routines/group-radius.yaml), which composes the library's own readiness, reading, probing and settling operations. What this specimen owns is the reading of the answer, so the evidence is about the library's run rather than about anything authored beside it.
+**The run under test is not here.** The measurement is the gitnexus library's [`group-radius`](/gitnexus/routines/group-radius.yaml), which composes the library's own readiness, reading, probing and settling techniques. What this specimen owns is the reading of the answer, so the evidence is about the library's run rather than about anything authored beside it.

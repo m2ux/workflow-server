@@ -11,11 +11,11 @@ Triage validation failures and aggregate cross-check results.
 
 ### no-cargo-here
 
-This technique MUST NOT invoke cargo, describe cargo invocations, or duplicate cargo command-line text. Cargo execution belongs entirely to the [cargo](/cargo/techniques/TECHNIQUE.md) library. validate-build operates on the OUTPUTS of its operations.
+This technique MUST NOT invoke cargo, describe cargo invocations, or duplicate cargo command-line text. Cargo execution belongs entirely to the [cargo](/cargo/techniques/TECHNIQUE.md) library. validate-build operates on the OUTPUTS of its techniques.
 
 ### failure-cause-not-test-design
 
-[analyze-failure](./analyze-failure.md) settles why a check failed. Test-suite quality is a separate judgement and no operation here makes it.
+[analyze-failure](./analyze-failure.md) settles why a check failed. Test-suite quality is a separate judgement and no technique here makes it.
 
 ### do-not-mask-flaky
 

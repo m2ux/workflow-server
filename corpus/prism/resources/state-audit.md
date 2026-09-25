@@ -19,16 +19,16 @@ Execute every step below. Output the complete analysis.
 For every piece of mutable state (instance variables, caches, session objects, file-backed stores), list all distinct states it can occupy. Identify initialization states, terminal states, and intermediate states. Map which code paths create which states.
 
 ## Step 2: Trace State Transitions
-Map every possible transition between states for each variable. Document which operations trigger transitions. Flag any transitions that lack explicit handling code—where state A can become state B but no logic defines what happens during or after that change.
+Map every possible transition between states for each variable. Document which techniques trigger transitions. Flag any transitions that lack explicit handling code—where state A can become state B but no logic defines what happens during or after that change.
 
 ## Step 3: Hunt State Machine Violations
 Find these three patterns:
 
 A) Orphaned State Persistence
-Where state survives across logical boundaries: session data that endures after logout operations, caches that remain populated after configuration changes, error flags that persist across retry loops.
+Where state survives across logical boundaries: session data that endures after logout techniques, caches that remain populated after configuration changes, error flags that persist across retry loops.
 
 B) Assumed State Violation
-Where code execution assumes state is reached without guards: method calls that require initialization but lack checks, operations that depend on prior completion without state verification, error handling that assumes state is consistent.
+Where code execution assumes state is reached without guards: method calls that require initialization but lack checks, techniques that depend on prior completion without state verification, error handling that assumes state is consistent.
 
 C) Cache-Source Divergence
 Where cached data becomes stale because mutations lack invalidation triggers: writes that bypass cache updates, derived state that doesn't recalculate on dependency change, file-backed state that changes externally without notification.

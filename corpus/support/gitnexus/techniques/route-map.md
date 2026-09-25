@@ -25,7 +25,7 @@ Each route with the file handling it, the middleware chain wrapping that handler
 
 - Call `gitnexus_route_map { route: route_path, repo: repo_name }` and record the `{route_inventory}`.
    > - The routes recorded are those a route decorator declares and those registered by calling a verb method on an app or router with a path literal, so a tree serving its routes another way answers empty.
-   > - A graph built before the `method` property existed fails the whole read with a binder error naming it rather than answering empty: a graph too old to serve this operation, not a tree without routes, and a rebuild makes it answerable. A direct index read does not report this fault — trailing its tree by commits is a different thing from predating the shape the operation asks for.
+   > - A graph built before the `method` property existed fails the whole read with a binder error naming it rather than answering empty: a graph too old to serve this technique, not a tree without routes, and a rebuild makes it answerable. A direct index read does not report this fault — trailing its tree by commits is a different thing from predating the shape the technique asks for.
 
 ### 2. Read a Route with No Consumer
 

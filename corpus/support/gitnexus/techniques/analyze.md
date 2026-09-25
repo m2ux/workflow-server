@@ -48,7 +48,7 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 ### 2. Run Analyze
 
 - Otherwise run `node .gitnexus/run.cjs analyze --index-only` inside `{repo_path}`, adding `--force` when `{force_rebuild}` is true and `--pdg` when `{pdg_layers}` is true. The CLI exits non-zero on failure; surface its stderr.
-  > - `--index-only` writes the graph and nothing else; the agent context files and skills the CLI can drop into the tree are outside this operation.
+  > - `--index-only` writes the graph and nothing else; the agent context files and skills the CLI can drop into the tree are outside this technique.
   > - The runner at `.gitnexus/run.cjs` is written by a build and ignored by git, so a fresh clone carries none. Where `node` reports it missing, run `npx gitnexus analyze` with the same flags, which regenerates it.
   > - If the analyze CLI returns non-zero — typically a parser error inside the target codebase or an unsupported language — read the stderr; if it identifies a single offending file, exclude or fix it. For corrupted index state, retry with `force_rebuild=true`.
 
@@ -76,7 +76,7 @@ A build reads a settings file sitting beside the tree it walks and takes what th
 
 ### a-graph-answers-only-under-its-own-name
 
-A tree's answers are reachable under the name its own index is keyed under and no other. A component folded only into a containing tree's index is reachable under that tree's name alone, so an operation addressing the component by its own name finds nothing.
+A tree's answers are reachable under the name its own index is keyed under and no other. A component folded only into a containing tree's index is reachable under that tree's name alone, so a technique addressing the component by its own name finds nothing.
 
 ### a-component-carries-a-name-where-it-is-a-checkout
 

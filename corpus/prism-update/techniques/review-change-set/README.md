@@ -4,7 +4,7 @@
 
 Review of a categorized change set: a reviewable summary of it, and the exclusion adjustments applied to it, yielding the approved change set to import.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

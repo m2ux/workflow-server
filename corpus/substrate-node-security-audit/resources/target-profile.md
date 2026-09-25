@@ -216,7 +216,7 @@ In addition to the 4 universal blind-spot items (§3.1 weight, §3.3 event filte
 | 7 | §3.14 system tx type exhaustiveness | Search for wildcard `_ =>` match arms in `apply_system_transaction` | `ledger/src/versions/common/mod.rs`, `pallets/midnight-system/src/lib.rs` |
 | 8 | Check 15: SSL/TLS mode | Trace `PgPoolOptions::new()` builder chain for explicit `.ssl_mode()` | `primitives/mainchain-follower/src/data_source/mod.rs` |
 | 9 | Check 16: Host function divergence | Search feature-gated `HostFunctions` type aliases in service init | `node/src/service.rs` |
-| 10 | §3.1 flush ordering | Enumerate ALL writes in `on_finalize` in execution order. Verify `flush_storage()` runs after the last state-modifying operation. Specifically: does `mint_coins` execute after `flush_storage`? | `pallets/midnight/src/lib.rs` |
+| 10 | §3.1 flush ordering | Enumerate ALL writes in `on_finalize` in execution order. Verify `flush_storage()` runs after the last state-modifying technique. Specifically: does `mint_coins` execute after `flush_storage`? | `pallets/midnight/src/lib.rs` |
 | 11 | §3.6 absent-entity query semantics | For `get_contract_state` and `get_unclaimed_amount`, verify that a non-existent entity returns `Err(...)`, not `Ok(default)`. `None` mapped to `Ok(empty)` is FAIL. | `ledger/src/versions/common/mod.rs` |
 | 12 | Check 25: Config-variant panic | For each `expect()`/`unwrap()` on `Option` from config/database accessor in `service.rs`, check: does `DatabaseConfig::InMemory` cause `.path()` to return `None`? | `node/src/service.rs` (A3 scope) |
 | 13 | Check 26: Genesis extrinsics truncation | Trace genesis extrinsics decoding from chain spec properties. Does the parsing stop at the first invalid element? Produce path enumeration table. | `node/src/service.rs`, `node/src/command.rs` (A3 scope) |
@@ -279,7 +279,7 @@ The following calibration examples are derived from a professional security audi
 | Fixed-seed RNG 0x42 in treasury minting | 4 | 3 | 3.5 | **High** | Seed is public constant, observation is trivial. |
 | Chain spec `unwrap()` on malformed properties | 3 | 3 | 3.0 | **Medium** | Config file control is routine. |
 | Startup panic on chain spec `unwrap()` | 3 | 3 | 3.0 | **Medium** | CI pipelines, manual edits, distribution channels all produce malformed specs. F >= 3. |
-| Panic on missing parent header (pruning) | 3 | 4 | 3.5 | **High** | Database pruning and reorgs are normal operation — F=4. |
+| Panic on missing parent header (pruning) | 3 | 4 | 3.5 | **High** | Database pruning and reorgs are normal technique — F=4. |
 | Shared connection pool (N conns, RPC + consensus) | 4 | 3 | 3.5 | **Critical** | Single RPC burst during block production is routine. |
 | Incomplete Ord in consensus-sorted collection | 4 | 3 | 3.5 | **High** | Field collisions statistically expected at blockchain volumes. |
 | Config struct missing mathematical invariant | 4 | 3 | 3.5 | **High** | Config errors are operational hazards, not exotic attacks. |

@@ -1,6 +1,6 @@
 # Namespace Conformance Workflow
 
-A worked example of a library that offers operations without being a workflow, and of the two spellings that reach one.
+A worked example of a library that offers techniques without being a workflow, and of the two spellings that reach one.
 
 ## The form
 
@@ -10,11 +10,11 @@ A namespace answers to two names. `shared-probe` is its directory name, which is
 
 ## What the run does
 
-`reach-by-name` binds the operation under the bare name. `reach-by-path` binds the same operation under the path. Both sites count one directory, because the evidence wanted is which folder answered each reference rather than anything about the counting.
+`reach-by-name` binds the technique under the bare name. `reach-by-path` binds the same technique under the path. Both sites count one directory, because the evidence wanted is which folder answered each reference rather than anything about the counting.
 
-That evidence is a property of the delivery rather than of any value the run produces, so neither activity lands a variable and the operation declares no outputs. What the two spellings delivered — the technique's id, its version, the library it was served from, and the `component_path` it inherited — is read off the two responses by the test that drives the specimen and sees both. Each activity therefore stands alone as the thing an author copies, and the run carries no state whose only reader is its own test.
+That evidence is a property of the delivery rather than of any value the run produces, so neither activity lands a variable and the technique declares no outputs. What the two spellings delivered — the technique's id, its version, the library it was served from, and the `component_path` it inherited — is read off the two responses by the test that drives the specimen and sees both. Each activity therefore stands alone as the thing an author copies, and the run carries no state whose only reader is its own test.
 
-The shared contract travels with the operation either way: `component_path` is declared once on the library's own `TECHNIQUE.md` and arrives on `measure-entries` as an inherited input, under both spellings.
+The shared contract travels with the technique either way: `component_path` is declared once on the library's own `TECHNIQUE.md` and arrives on `measure-entries` as an inherited input, under both spellings.
 
 ## Copying from it
 

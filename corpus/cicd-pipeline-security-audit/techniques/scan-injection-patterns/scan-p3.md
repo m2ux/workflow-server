@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Apply P3 comment trigger abuse detection: flag `issue_comment` and `pull_request_review_comment` workflows that execute privileged operations without author-association filtering.
+Apply P3 comment trigger abuse detection: flag `issue_comment` and `pull_request_review_comment` workflows that execute privileged techniques without author-association filtering.
 
 ## Protocol
 
@@ -13,4 +13,4 @@ Apply P3 comment trigger abuse detection: flag `issue_comment` and `pull_request
 
 - Identify workflows triggered by `issue_comment` or `pull_request_review_comment`
 - Check for `author_association` filtering (MEMBER, OWNER, COLLABORATOR)
-- Flag workflows that execute privileged operations on any commenter's trigger
+- Flag workflows that execute privileged techniques on any commenter's trigger

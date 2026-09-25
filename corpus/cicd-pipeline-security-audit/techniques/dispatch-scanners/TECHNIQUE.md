@@ -25,7 +25,7 @@ Complete [inventory of workflow files](../../resources/intermediate-artifact-sch
 
 ### worker_briefs
 
-Ordered `{ id, description, prompt }` array produced by compose operations for the next meta dispatch step.
+Ordered `{ id, description, prompt }` array produced by compose techniques for the next meta dispatch step.
 
 ### dispatch_status
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Resolve harness kind plus an operation kind to the harness-specific technique file and rule slice. Single authoritative map for harness-compat dispatch — callers must not duplicate the kind → file table.
+Resolve harness kind plus a technique kind to the harness-specific technique file and rule slice. Single authoritative map for harness-compat dispatch — callers must not duplicate the kind → file table.
 
 ## Inputs
 

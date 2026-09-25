@@ -10,7 +10,7 @@ metadata:
 
 ## What this guide is for
 
-The shape of `git-pin-conformance-report.md` and what each section may claim. A reader opens that document to answer one question — did the pin operation land each checkout at the revision named, for each kind of name, and refuse the name it could not resolve without touching the checkout — so every section is evidence for that and nothing else.
+The shape of `git-pin-conformance-report.md` and what each section may claim. A reader opens that document to answer one question — did the pin technique land each checkout at the revision named, for each kind of name, and refuse the name it could not resolve without touching the checkout — so every section is evidence for that and nothing else.
 
 The repository the checkouts belong to is the run's excuse for having revisions to name. Which commits they were is worth a column and nothing more.
 
@@ -35,7 +35,7 @@ One paragraph. Name the commit the branch pin landed on the first checkout, the 
 
 ### expected-beside-landed
 
-Every row carries the form the name was expected to resolve as and the form the pin resolved it as, or the refusal. A row that names only the commit describes a checkout; the pair describes the operation, which is what the document is evidence of.
+Every row carries the form the name was expected to resolve as and the form the pin resolved it as, or the refusal. A row that names only the commit describes a checkout; the pair describes the technique, which is what the document is evidence of.
 
 ### a-gap-is-written-as-a-gap
 

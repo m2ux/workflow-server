@@ -69,7 +69,7 @@ Each activity's authoritative definition lives in its [`activities/NN-<id>.yaml`
 | [`verify-prism-consistency`](techniques/verify-prism-consistency.md) | Verify content integrity, stale references, prompt routing, counts, and duplicate indices |
 | [`submit-update`](techniques/submit-update.md) | Ensure a feature branch, push commits, open a pull request, and report the result |
 
-`review-change-set` is an operation-group ([`review-change-set/`](techniques/review-change-set/) with a `TECHNIQUE.md` shared contract plus one file per operation); the rest are flat standalones. The cross-cutting `variable-binding` strategy technique is inherited by every activity.
+`review-change-set` is an technique-group ([`review-change-set/`](techniques/review-change-set/) with a `TECHNIQUE.md` shared contract plus one file per technique); the rest are flat standalones. The cross-cutting `variable-binding` strategy technique is inherited by every activity.
 
 ---
 

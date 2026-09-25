@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Format merged, severity-scored findings into a structured markdown CI/CD security audit report. Each finding includes pattern identification, source-to-sink mapping, severity assessment, affected file, vulnerable code snippet, and a specific remediation recommendation. The report includes an executive summary, finding details, a severity distribution, a remediation roadmap, and methodology notes. The operations in this set decompose that into remediation loading and report assembly.
+Format merged, severity-scored findings into a structured markdown CI/CD security audit report. Each finding includes pattern identification, source-to-sink mapping, severity assessment, affected file, vulnerable code snippet, and a specific remediation recommendation. The report includes an executive summary, finding details, a severity distribution, a remediation roadmap, and methodology notes. The techniques in this set decompose that into remediation loading and report assembly.
 
 ## Inputs
 

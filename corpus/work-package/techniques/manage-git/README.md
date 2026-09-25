@@ -2,9 +2,9 @@
 
 > Part of [techniques](../README.md)
 
-Shared contract for the work package's git work: which checkout each class of operation runs in, what a code commit carries, and which shell reaches a remote.
+Shared contract for the work package's git work: which checkout each class of technique runs in, what a code commit carries, and which shell reaches a remote.
 
-The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
+The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
 | Technique | Contributes |
 |---|---|

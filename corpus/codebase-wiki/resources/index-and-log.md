@@ -42,7 +42,7 @@ Creation guide for the two files every wiki mutation touches. `index.md` is how 
 ```markdown
 # Mutation Log
 
-| When | Operation | Pages | Baseline | Trigger |
+| When | Technique | Pages | Baseline | Trigger |
 |------|-----------|-------|----------|---------|
 | {timestamp} | one line on what was ingested | [[slug]], [[slug]] | `{commit}` | code-driven \| task-driven |
 ```
@@ -52,6 +52,6 @@ Creation guide for the two files every wiki mutation touches. `index.md` is how 
 - **One index entry per page, grouped by page type.** The type sections are the navigation, so a page appears under exactly one of them. An empty type section is omitted until it has a page.
 - **The index summary is one line.** It exists to let a reader choose between pages; the page itself holds the content.
 - **Wikilinks, not paths.** Both files address pages by `[[slug]]`, so a page move does not break the catalog.
-- **The log is append-only.** A new entry is added per operation, in operation order. A prior entry is never edited, so the ledger stays a faithful history.
+- **The log is append-only.** A new entry is added per technique, in technique order. A prior entry is never edited, so the ledger stays a faithful history.
 - **Every log entry names its baseline commit.** That commit is what the entry's claims were read against, and it is what makes a stale claim detectable later.
-- **Line budget:** one line per page in the index and one row per operation in the log. Both grow with the wiki, so the budget is per entry rather than per file: an index entry over one line, or a log entry over one row, is over budget.
+- **Line budget:** one line per page in the index and one row per technique in the log. Both grow with the wiki, so the budget is per entry rather than per file: an index entry over one line, or a log entry over one row, is over budget.
