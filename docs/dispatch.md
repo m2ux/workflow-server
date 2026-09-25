@@ -1,139 +1,304 @@
-# Dispatch model
+# Dispatch
 
-One agent cannot run a whole workflow well. Talking to the user, tracking where a long run has got to, and writing code are three different jobs. An agent doing all three fills its context with material irrelevant to whichever one it is currently doing.
+One agent cannot talk to a person, track a long run, and write the code. Each of those fills the context with material the others do not need. So the work is handed down a chain: each agent starts the next for a narrower job and takes a report back. Every call names that run with a short session index, never a token. The [calls](api-reference.md#session) that open a child run and ask where it stands are in the tool catalog. Where the session itself is kept is [state](state.md#persistence).
 
-So the work is handed down a chain. Each agent spawns the next for a narrower scope and takes its report back. Any harness that can spawn background sub-agents can drive this; Cursor's `Task` tool is one such mechanism. Hosts without sub-agents run the same workflow inline, described at the end.
+## Roles
 
-## The three roles
+### Diversity
 
-### The user-facing agent
+A person talks to one agent. That agent starts an orchestrator. The orchestrator starts a worker for one activity and takes the result back (Figure 1). The three stay apart: only the first talks to the person, only the second tracks the run, only the third does the work (Figure 2).
 
-is the only one that talks to the person. It finds and selects workflows, opens a session, spawns an orchestrator, and presents every question the run raises. It executes no domain work and tracks no step-level state.
+```mermaid
+sequenceDiagram
+  participant Person
+  participant UserFacing as User-facing agent
+  participant Orchestrator
+  participant Worker
+  Person->>UserFacing: The request
+  UserFacing->>Orchestrator: Start the workflow
+  Orchestrator->>Worker: One activity
+  Worker-->>Orchestrator: The result
+  Orchestrator-->>UserFacing: Where the run stands
+```
 
-### The orchestrator
+*Figure 1. Work Handed Down the Chain, and the Report Handed Back.*
 
-runs in the background and owns one workflow from start to finish. It reads the state variables, decides which activity comes next, dispatches a worker to run it, commits the artifacts that come back, and passes any question upward without trying to answer it.
+```mermaid
+classDiagram
+  class UserFacingAgent {
+    talks to the person
+  }
+  class Orchestrator {
+    tracks one workflow
+  }
+  class Worker {
+    runs one activity
+  }
+  UserFacingAgent --> Orchestrator : starts
+  Orchestrator --> Worker : starts
+  Worker --> Orchestrator : reports
+```
 
-### The worker
-
-runs activities and nothing else. It loads each activity, executes its steps in order, pauses at any gate it reaches, and returns a structured result naming the variables it changed and the artifacts it wrote.
-
-The boundaries are the point. The user-facing agent never holds step detail, the orchestrator never does domain work, and the worker never talks to the user.
-
-## Mechanics of dispatch
-
-Each session has a six-character `session_index`, derived deterministically from the planning slug. Agents pass that index — never a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [state management](state-management.md#persistence)).
+*Figure 2. The Three Roles, and Who Starts Whom.*
 
 <a id="spawning-the-orchestrator"></a>
 
-### Spawning the orchestrator
+## Lifecycle
 
-When the user-facing agent decides to start a workflow, it calls `dispatch_child` against its own session. `start_session` is top-level only and rejects a `session_index`, so it opens the bootstrap session and never a child.
+### Spawning an Orchestrator
 
-```javascript
-dispatch_child({
-  session_index: "<meta_index>",
-  workflow_id: "<workflow_id>",
-  agent_id: "orchestrator",
-  planning_slug: "<child_slug>",
-  repo: "<owner>/<repo>"
-})
+Starting a workflow opens a child session inside the parent's, then starts the orchestrator in the background (Figure 3). The child is part of the parent's session, and it inherits the parent's planning folder (Figure 4).
+
+```mermaid
+sequenceDiagram
+  participant UserFacing as User-facing agent
+  participant Server
+  participant Orchestrator
+  UserFacing->>Server: Open a child workflow
+  Server-->>UserFacing: The child's place in the run
+  UserFacing->>Orchestrator: Start it in the background
 ```
 
-The repository comes from `session.repo`. An optional `repo` binds it where the parent has none, and must match where the parent already has one. The child records which execution path drove it.
+*Figure 3. A Child Workflow Is Opened, Then an Orchestrator Is Started.*
 
-This creates a **child session embedded in the parent's own `session.json`**, at `triggeredWorkflows[N].state`. The session-file schema is recursive, so a child is a sub-object of its parent's file rather than a file of its own. The parent gains a `triggeredWorkflows` entry naming the child's workflow, index and triggering activity, plus a `workflow_triggered` history event.
-
-The response carries three values: the child's `session_index`, the canonical `planning_folder_path`, and `workflow.initialActivity`. The last exists because a session that has not yet entered an activity reports no current activity, leaving the parent no other route to the child's first activity id.
-
-Two consequences follow from the embedding. A child inherits the parent's planning folder — the persistent-parent path creates no folder and seeds no README. And a child's place in the tree is its position in the file: the session above it is the one whose `triggeredWorkflows` entry holds it, and nothing on the child names it.
-
-Where the parent is a transient meta bootstrap, the server first promotes it to an empty workspace planning folder. Promoting onto a folder that already holds a session is refused, and the existing files are left untouched. A persistent parent appends a second child.
-
-The user-facing agent then starts the orchestrator in the background through the host's spawn mechanism:
-
-```javascript
-Task({
-  subagent_type: "generalPurpose",
-  prompt: "You are a workflow orchestrator. Your session_index is: <child_index>..."
-})
+```mermaid
+classDiagram
+  class ParentSession {
+    the run already open
+  }
+  class ChildSession {
+    embedded in the parent
+  }
+  class PlanningFolder {
+    the parent's notes
+  }
+  ParentSession --> ChildSession : holds
+  ChildSession --> PlanningFolder : inherits
 ```
 
-### Spawning a worker
+*Figure 4. A Child Session Inside the Parent's.*
 
-Spawning a worker does not create a session. The worker **shares the orchestrator's index**, so both resolve to the same state file and neither can drift from the other. Spawning an orchestrator is the opposite case: it opens a child session of its own.
+### Spawning a Worker
 
-```javascript
-Task({
-  subagent_type: "generalPurpose",
-  prompt: "You are an autonomous worker agent... session_index: <orchestrator_index>... Activity: implement..."
-})
+A worker does not open a session of its own. It shares the orchestrator's, so both read the same state (Figure 5). That is the opposite of an orchestrator, which opens a child (Figure 6).
+
+```mermaid
+sequenceDiagram
+  participant Orchestrator
+  participant Worker
+  participant Session
+  Orchestrator->>Worker: One activity, same session
+  Worker->>Session: Read and write the shared state
 ```
 
-### Batching a run of activities
+*Figure 5. A Worker Shares the Orchestrator's Session.*
 
-One dispatch may carry a **run** of activities rather than exactly one, walked under a single `agent_id`. Two things about that belong to the topology rather than to the budget.
+```mermaid
+classDiagram
+  class OrchestratorSession {
+    one state file
+  }
+  class Worker {
+    no session of its own
+  }
+  class ChildSession {
+    an orchestrator's own
+  }
+  Worker --> OrchestratorSession : shares
+  ChildSession --> OrchestratorSession : is not this
+```
 
-Such a run still pauses at every activity boundary and at every gate, because the orchestrator owns both the commit and the answer. It **resumes in place** across each pause, under the identity its dispatch bound, so the pause costs a round trip rather than a respawn. And a refused continuation is the orchestrator's cue to release the identity and dispatch a replacement under a **new** `agent_id`.
+*Figure 6. A Shared Session, Not a Child Session.*
 
-Why batching is worth doing, how far a run may go, and what refuses it are in [the batch budget](delivery.md#the-batch-budget), specified beside the other limits on what one context may hold.
+## Several at Once
 
-### Fanning an exit across several branches
+### Batching a Run
 
-A graph destination may name several branches rather than one activity — several different activities, or one activity run once per element of a collection. They run together, one worker to each, all spawned in a single response turn.
+One dispatch may carry several activities, walked by one worker. The run still pauses for a commit and for a gate, and continues as that same worker (Figure 7). A refusal is the cue to start a replacement (Figure 8). How far a run may go is the [batch limit](delivery.md#the-batch-budget).
 
-#### The frontier is the cursor
+```mermaid
+sequenceDiagram
+  participant Orchestrator
+  participant Worker
+  Orchestrator->>Worker: Several activities, one identity
+  Worker->>Orchestrator: Pause for a commit or a gate
+  Orchestrator->>Worker: Continue as the same worker
+```
 
-The session record holds the activities in flight as a list: one entry on an ordinary walk, one per branch while a fan runs. An entry for one instance of a fanned activity carries its slot — `review-pass#1` — so entries stay distinct strings and a call naming an instance matches exactly one.
+*Figure 7. One Worker Continues after a Pause.*
 
-#### Two barrier points, neither a call
+```mermaid
+classDiagram
+  class Run {
+    several activities
+  }
+  class Worker {
+    one identity for the run
+  }
+  class Replacement {
+    a new identity
+  }
+  Run --> Worker : continues in place
+  Run --> Replacement : after a refusal
+```
 
-One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen. Then each branch's return retires that branch and enters the destination if and only if the frontier is then empty, so the only call that can enter the meeting point is the one that empties it. Entering early is unrepresentable rather than refused, and a crashed and resumed orchestrator re-derives the barrier from the session file with no extra state.
+*Figure 8. Continue the Same Worker, or Replace It.*
 
-#### What bounds a fan's width
+<a id="fanning-an-exit-across-several-branches"></a>
 
-The bound exempts a scope with no activity yet and refuses only an activity a scope already holds, so a fresh branch asking for its first activity is admitted whatever the width. What bounds a fan is its own ceiling: the server's configured `DEFAULT_FAN_MAX_BRANCHES`, or a tighter `maxInstances` the destination declares. Either is measured against the branches it opens once every member is flattened, so a list, an instance fan and a mixture of the two answer to one number.
+### Fanning an Exit
 
-#### Every branch takes full delivery
+A destination may name several branches, one worker for each item of a list the activity before it wrote. An empty list is not a fan. They start together in one turn, and the run meets again only when every branch has returned (Figure 9). The exit, the list, the branches, and the meeting point are one picture (Figure 10). How many branches may open is in [configuration](configuration.md#delivery-budgets).
 
-Delivery scoping keys on the calling context's identity, which each branch carries, so nothing collapses to a reference marker. A fan pays each branch's payload in full and establishes one harness context per branch where a batch establishes one in total. The meeting point then takes a further fresh context and re-pays whatever the branches collectively held. While several activities are in flight, `get_activity` refuses an omitted identity, one equal to the session agent, and one that already holds a sibling; a resume of the same entry, and a replacement under a fresh identity for that entry, are served.
+```mermaid
+sequenceDiagram
+  participant Orchestrator
+  participant List
+  participant BranchA as Branch
+  participant BranchB as Branch
+  Orchestrator->>List: Read the items written earlier
+  Orchestrator->>BranchA: One worker for an item
+  Orchestrator->>BranchB: One worker for an item
+  BranchA-->>Orchestrator: Return
+  BranchB-->>Orchestrator: Return
+  Orchestrator->>Orchestrator: Meet, once every branch is back
+```
 
-#### A fan is a wall-clock purchase
+*Figure 9. One Worker per List Item, Meeting When All Return.*
 
-Several long reasoning passes run inside one response turn instead of several sequential round trips. The wait is free, because a turn does not resume until every tool result returns — nothing polls, times out or is scheduled.
+```mermaid
+classDiagram
+  class Exit {
+    names the fan
+  }
+  class List {
+    items the prior activity wrote
+  }
+  class Branch {
+    one worker per item
+  }
+  class MeetingPoint {
+    waits until every branch returns
+  }
+  Exit --> List : reads
+  List --> Branch : one worker each
+  Branch --> MeetingPoint : returns to
+```
 
-It also buys one thing a character count cannot see. The batch budget counts characters delivered, never characters generated, so nothing bounds how much reasoning accumulates inside one worker. A fan converts unbounded growth in one context into several bounded ones.
+*Figure 10. An Exit, the List, the Branches, and the Meeting Point.*
+
+### Fan Starts from Scratch
+
+Each branch is a new worker, sent its instructions in full. A batch is the opposite: one worker continues (Figure 11). A fan pays a context per branch; a batch pays one for the run (Figure 12).
+
+```mermaid
+sequenceDiagram
+  participant Orchestrator
+  participant Branch as Fan branch
+  participant Batch as Batched worker
+  Orchestrator->>Branch: Start from scratch, full instructions
+  Orchestrator->>Batch: Continue the same worker
+```
+
+*Figure 11. A Fan Branch Starts Fresh. A Batch Continues.*
+
+```mermaid
+classDiagram
+  class Fan {
+    one context per branch
+  }
+  class Batch {
+    one context for the run
+  }
+  Fan --> BranchContext : pays each
+  Batch --> SharedContext : pays once
+  class BranchContext
+  class SharedContext
+```
+
+*Figure 12. A Context per Branch, or One for the Run.*
 
 <a id="polling-a-dispatched-workflow"></a>
 
-## Polling a dispatched workflow
+## Asking and Resuming
 
-The user-facing agent can poll a dispatched workflow with `get_workflow_status`:
+### Polling a Dispatched Workflow
 
-```javascript
-get_workflow_status({ session_index: "<child_index>" })
+The user-facing agent can ask where a child run stands without waking it (Figure 13). The answer is the session's place: going, waiting on a person, or finished (Figure 14).
+
+```mermaid
+sequenceDiagram
+  participant UserFacing as User-facing agent
+  participant Server
+  UserFacing->>Server: Ask where the child stands
+  Server-->>UserFacing: Going, waiting, or finished
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `status` | `blocked` when `activeCheckpoint` is set, `completed` when no activities remain, `active` otherwise |
-| `in_flight` | The activities the session is on — one on an ordinary walk, one per branch while a fan runs, empty when nothing is in flight |
-| `completed_activities` | Activities finished so far |
-| `last_checkpoint` | The most recent resolved checkpoint |
+*Figure 13. Ask Where a Child Run Stands.*
 
-## Resuming sub-agents
-
-An agent that pauses — waiting for a checkpoint resolution, say — does not die. Hosts that support sub-agents typically expose a resume mechanism that re-enters a previously spawned sub-agent with new instructions appended to its existing context. Cursor's `Task` tool, for example, accepts a `resume` parameter keyed on the sub-agent's id.
-
-```javascript
-Task({
-  resume: "<sub_agent_id>",
-  prompt: "The checkpoint has been resolved. The user selected option 'proceed'. Please continue."
-})
+```mermaid
+classDiagram
+  class ChildRun
+  class Status {
+    going, waiting, or finished
+  }
+  ChildRun --> Status : reports
 ```
 
-The new instructions append to the sub-agent's existing context window, so it continues its execution loop without losing its memory of the codebase or the workflow state.
+*Figure 14. A Child Run and Where It Stands.*
 
-## Hosts without sub-agents
+### Resuming a Sub-Agent
 
-Where the harness cannot spawn sub-agents, the top-level agent executes the workflow **inline**: one agent takes each of the three roles in turn within a single conversation. Everything the server enforces — the seal over session state, the checkpoint gate, the manifests and the trace — behaves identically. Only the way the roles change hands differs.
+An agent that pauses does not end. The host re-enters it with new instructions added to the context it already has (Figure 15). The memory of the work stays; the new instruction is appended (Figure 16).
+
+```mermaid
+sequenceDiagram
+  participant Orchestrator
+  participant Worker
+  Orchestrator->>Worker: Resume, with the answer appended
+  Worker->>Worker: Continue from the context it held
+```
+
+*Figure 15. A Paused Agent Is Re-Entered with the Answer.*
+
+```mermaid
+classDiagram
+  class ExistingContext {
+    memory of the work
+  }
+  class NewInstruction {
+    appended, not a fresh start
+  }
+  ExistingContext --> NewInstruction : continues with
+```
+
+*Figure 16. The Context Already Held, Plus the New Instruction.*
+
+## One Conversation
+
+### Hosts without Sub-Agents
+
+Where the host cannot start a background agent, one agent takes each role in turn in a single conversation (Figure 17). What the server enforces is the same; only the handoff differs (Figure 18).
+
+```mermaid
+sequenceDiagram
+  participant Agent
+  Agent->>Agent: Talk to the person
+  Agent->>Agent: Track the run
+  Agent->>Agent: Do the activity
+```
+
+*Figure 17. One Agent Takes Each Role in Turn.*
+
+```mermaid
+classDiagram
+  class Server {
+    same gates and state
+  }
+  class Handoff {
+    inside one conversation
+  }
+  Server --> Handoff : unchanged
+```
+
+*Figure 18. The Server Is Unchanged. The Handoff Is Not.*

@@ -37,10 +37,10 @@ Neither can detect a prose divergence between a markdown document and its site p
 | [`docs/api-reference.md`](api-reference.md) | Catalog of the tool surface and HTTP routes — brief, linking out for depth | Integrators |
 | [`docs/configuration.md`](configuration.md) | Every flag and environment variable the server reads at startup | Integrators and contributors |
 | [`docs/architecture.md`](architecture.md) | Hub introducing the architecture models and the pressure each answers | Contributors |
-| [`docs/dispatch.md`](dispatch.md), [`checkpoint.md`](checkpoint.md), [`state-management.md`](state-management.md), [`resource-resolution.md`](resource-resolution.md), [`delivery.md`](delivery.md), [`workflow-fidelity.md`](workflow-fidelity.md) | The behavioural models, one concern each | Contributors and agents needing depth |
+| [`docs/dispatch.md`](dispatch.md), [`checkpoint.md`](checkpoint.md), [`state.md`](state.md), [`resource-resolution.md`](resource-resolution.md), [`delivery.md`](delivery.md), [`workflow-fidelity.md`](workflow-fidelity.md) | The behavioural models, one concern each | Contributors and agents needing depth |
 | [`site/api/tools.html`](../site/api/tools.html) | Wire tool descriptions and parameter schemas, generated from `src/tools/` | Agents and IDE tooling |
 | [Document corpus](README.md#document-corpus) | The only list of links to definition docs on the `workflows` branch | Workflow authors |
-| [`docs/design-canon.md`](design-canon.md) | Where the design principles, anti-pattern catalog, construct inventory and conformance live, and how to reach them | Workflow authors |
+| [Design canon](README.md#document-corpus) | Where the design principles, anti-pattern catalog, construct inventory and conformance live, and how to reach them | Workflow authors |
 | [`docs/development.md`](development.md) | Building and testing the server, and the two-branch layout | Contributors |
 | [`benchmark/README.md`](../benchmark/README.md) | The three benchmarks, the profiler, and the delivery gate | Contributors changing the delivery path |
 | [`guards/README.md`](../guards/README.md) | Running the guard sweep, the delta runner, and how a ledger entry is a judgement | Contributors and workflow authors |

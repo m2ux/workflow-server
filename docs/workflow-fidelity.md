@@ -32,7 +32,7 @@ Double-bordered nodes are hard gates; they refuse the call until satisfied. Dash
 
 Session state is not something an agent carries. An agent holds a six-character `session_index`; the server keeps the state on disk beside the planning folder. So what needs protecting is the file, not a credential in a prompt.
 
-`session.json` is plaintext and schema-validated. `.session-token` beside it is a sealed envelope, binding those exact bytes to the engineering root and to a server-held signing key using a keyed hash (HMAC-SHA256). The server verifies the seal on every read and raises `SEAL_MISMATCH` when the two disagree. The file layout itself is in [the state management model](state-management.md#persistence).
+`session.json` is plaintext and schema-validated. `.session-token` beside it is a sealed envelope, binding those exact bytes to the engineering root and to a server-held signing key using a keyed hash (HMAC-SHA256). The server verifies the seal on every read and raises `SEAL_MISMATCH` when the two disagree. The file layout itself is in [the state management model](state.md#persistence).
 
 Where the signing key lives, and how the server finds it, is in [the configuration reference](configuration.md#signing-key).
 

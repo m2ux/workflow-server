@@ -15,7 +15,6 @@ For the illustrated read — how the pieces relate, with diagrams — start at t
 | Running a guard, or adding one | [guards/README.md](../guards/README.md) |
 | Pricing a delivery change | [benchmark/README.md](../benchmark/README.md) |
 | Authoring workflow definitions | [Document corpus](#document-corpus), and [schemas/README.md](../schemas/README.md) on this tree |
-| Looking for the design principles or the anti-pattern catalog | [design-canon.md](design-canon.md) |
 | Adding or changing documentation | [documentation-system.md](documentation-system.md) |
 
 ## The architecture models
@@ -26,7 +25,7 @@ Each model answers one pressure the design is under. [architecture.md](architect
 |-------|---------|
 | [Dispatch](dispatch-model.md) | How work is split across a chain of agents |
 | [Checkpoints](checkpoint-model.md) | How a background agent asks a question it cannot ask directly |
-| [State management](state-management-model.md) | How the next activity is chosen, and where session state lives |
+| [State management](state.md) | How the next activity is chosen, and where session state lives |
 | [Artifact management](artifact-management-model.md) | How planning output is kept out of the code change |
 | [Resource resolution](resource-resolution-model.md) | How a `::` reference reaches a file on disk |
 | [Delivery](delivery-model.md) | What then travels to an agent, how much of it, and what it costs |
@@ -46,5 +45,6 @@ Definitions and the docs that describe them live on the `workflows` branch. This
 | [Anti-patterns](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) | Smells, each as detect, do not flag, fix |
 | [Schema construct inventory](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/schema-construct-inventory.md) | A prose pattern mapped to the construct that carries it |
 | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) | Comparison against sibling workflows |
+| [Design canon](https://github.com/m2ux/workflow-server/blob/workflows/docs/design-canon.md) | How to reach the four homes, and how to cite one |
 
 Plans, reviews, and decision records live under the engineering root and are not product documentation.
