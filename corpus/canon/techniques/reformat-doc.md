@@ -29,7 +29,7 @@ The document at `{document_path}` after reformatting.
 ### 2. Title and Opening
 
 - Set every title to title case. The document title names what the document is. A section title does not begin with "The".
-- Open with one plain-language paragraph that tells a lay reader what the document is for, and when and why the thing happens. A reference names what it refers to.
+- Open with one plain-language paragraph that tells a lay reader what the document is for, and when and why the thing happens. Introduce every term of art the rest of the page uses, in the flow of that prose, and bold each term at that first use. A reference names what it refers to. A paragraph is at most six lines.
 
 ### 3. Lists and Figures
 
@@ -52,7 +52,11 @@ Every heading, figure caption, and table title is title case. A short word such 
 
 ### opening-orients-a-lay-reader
 
-The first paragraph states what the document is for, when it happens, and why, in words a reader outside the implementation can follow. A reference names what it refers to.
+The first paragraph states what the document is for, when it happens, and why, in words a reader outside the implementation can follow. It introduces every term of art the rest of the page uses, in the flow of that prose, and bolds each term at that first use. A reference names what it refers to.
+
+### paragraphs-are-at-most-six-lines
+
+A paragraph is at most six lines. A longer one is split in two, and split again until none remains over six.
 
 ### parallel-items-form-a-list
 
