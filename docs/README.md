@@ -6,14 +6,15 @@ Read the page for the task in front of you.
 
 | If you are                                | Read                                                                               |
 | ----------------------------------------- | ---------------------------------------------------------------------------------- |
-| Installing or deploying the server        | [setup.md](setup.md)                                                               |
-| Setting a flag or an environment variable | [configuration.md](configuration.md)                                               |
-| Calling the tools                         | [api.md](api.md)                                                                   |
-| Building or testing the server            | [development.md](development.md)                                                   |
-| Running a guard, or adding one            | [guards/README.md](../guards/README.md)                                            |
-| Pricing a delivery change                 | [benchmark/README.md](../benchmark/README.md)                                      |
-| Authoring workflow definitions            | [Document corpus](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md), and [schemas/README.md](../schemas/README.md) |
-| Adding or changing documentation          | [documentation.md](documentation.md)                                               |
+| Installing or deploying the server        | [setup](setup.md)                                                               |
+| Setting a flag or an environment variable | [configuration](configuration.md)                                               |
+| Calling the tools                         | [api](api.md)                                                                   |
+| Building or testing the server            | [development](development.md)                                                   |
+| Running a guard, or adding one            | [guards](../guards/README.md)                                                   |
+| Pricing a delivery change                 | [benchmark](../benchmark/README.md)                                             |
+| Authoring workflow definitions            | [corpus](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md) |
+| Looking up a field                        | [schemas](../schemas/README.md)                                                 |
+| Adding or changing documentation          | [documentation](documentation.md)                                               |
 
 
 
