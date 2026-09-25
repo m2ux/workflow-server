@@ -2,7 +2,7 @@
 
 A **routine** is a named run of steps, written once and referred to from more than one **site**. A site is a step in an **activity** — one phase of a **workflow** — that points at the routine. The loader substitutes the site's arguments, prefixes every identifier from that step, and splices the steps in place of the reference. Downstream, the manifest, the guards, and the worker see ordinary steps.
 
-An **input** is a parameter the site supplies. An **output** is a value the run produces, owned here. An **internal** is a name the body's steps pass between themselves, and it never enters the workflow's variables. A **reference** is the name the site uses. How that name reaches the file is [resolution](resolution.md#routine). The fields of the file are the [schema](../schemas/README.md#routine-routineschemajson). The fields of the referring step are the [schema](../schemas/README.md#routine-step).
+An **input** is a parameter the site supplies. An **output** is a value the run produces, owned here. An **internal** is a name the body's steps pass between themselves, and it never enters the workflow's variables. A **reference** is the name the site uses. How that name reaches the file is [resolution](resolution.md#routine). The fields of the file are the [schema](../schemas/routine.schema.json#L9). The fields of the referring step are the [schema](../schemas/activity.schema.json#L578).
 
 ## File
 

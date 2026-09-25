@@ -1,22 +1,25 @@
-# Workflow Schema System
+# Schema System
 
 This folder contains JSON Schema definitions for the workflow server. These schemas define the structure for workflow definitions, conditional logic, and the on-disk session record.
 
-The server also exposes these schemas as MCP resources under `workflow-server://schemas` (combined) and `workflow-server://schemas/{id}` (per schema), built from the JSON files in this folder.
+The server exposes these schemas as [MCP resources](../docs/api.md#mcp-resources).
 
 ## Overview
 
-The workflow server uses five interconnected schemas:
+The workflow server uses six schemas:
 
-| Schema | Purpose | Use Case |
-|--------|---------|----------|
-| `workflow.schema.json` | Defines workflow structure | Creating new workflows with activities, steps, checkpoints |
-| `condition.schema.json` | Defines conditional expressions | Gating steps and dismissing checkpoints |
-| `session-file.schema.json` | Persistent server-managed session file (`session.json`) | On-disk session state owned by the workflow server; loaded by `session_index` and sealed by `.session-token` |
-| `technique.schema.json` | Defines agent technique capabilities | Describing tool orchestration patterns and execution guidance |
-| `activity.schema.json` | Defines unified activities | Combining intent matching with workflow execution stages |
 
-<a id="enforcement-model"></a>
+| Schema                                                  | Purpose                    |
+| ------------------------------------------------------- | -------------------------- |
+| [workflow.schema.json](workflow.schema.json#L7)         | Defines workflow structure |
+| [activity.schema.json](activity.schema.json#L7)         | Defines an activity        |
+| [routine.schema.json](routine.schema.json#L7)           | Defines a routine          |
+| [technique.schema.json](technique.schema.json#L131)     | Defines a technique        |
+| [condition.schema.json](condition.schema.json#L7)       | Defines a condition        |
+| [session-file.schema.json](session-file.schema.json#L7) | The on-disk session file   |
+
+
+
 
 ## Enforcement Model
 
@@ -26,1143 +29,126 @@ The server enforces structure at load time plus a small runtime core; most schem
 - **Advisory** — rendered to agents and/or checked warn-only; compliance is never enforced.
 - **Agent-interpreted** — delivered in the payload, but no server code path reads it; the executing agent carries its semantics.
 
-| Construct | Engine-enforced | Advisory (incl. warn-only checks) | Agent-interpreted |
-|---|---|---|---|
-| Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly); `variables[].defaultValue` (seeded into the session variable bag at session creation, recorded as a `variables_seeded` history event) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (the file's own, plus every `variables.writes` declaration the activities in its graph contribute; rendered in `get_workflow`); `initialActivity` (wrong first activity warns); `variables[].type` and `variables[].values` (checkpoint `setVariable` values validated warn-only — mismatches stored as written) | `author`; `variables[].required` (never checked — authoring metadata) |
-| Activity | `variables.writes[]` (contributed to the including workflow's variable set at load; two declarations of one name that disagree on `type`, `defaultValue` or `values` fail the load); `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle); `bundleTechniques` (hybrid step-technique bundling in `get_activity`) | `variables.reads[]` (the names the activity needs the workflow to supply; `check:activity-variables` holds the graph to them); `name`, `description`, `required`, `rules[]`; `exits[]` (every one bound in the workflow's `graph` or the load fails; the destination reached warns only — `next_activity` moves anywhere) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
-| Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` gates, carried by every step kind; `condition` gates, carried by the technique, action and checkpoint kinds (a loop states its continuation test in `continueWhile` instead — see the Loop step row); the server never evaluates a condition, and on a checkpoint step only `condition` enables `condition_not_met` dismissal; `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag and is slated for removal at the next schema major, #166 B7/B12) |
-| Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.exit` (checked at load against the activity's `exits`; the destination is read from the workflow graph, recorded and returned, and the orchestrator enacts it via `next_activity`) | — |
-| Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `continueWhile` (the continuation test the agent takes to decide whether the body runs again), `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
-| Technique | `id` (resolution); rule addressing (`tech::rule`, group-prefix expansion); `inputs[].id` / `outputs[].id` (composition merge keys); `outputs[].artifact.name` (drives the composed artifact contract) | `version`, `capability`; `inputs[].required` / `default` (rendered; the server neither verifies a required input was supplied nor applies a default); protocol content | input-binding resolution and output remaps (the name-match convention is an agent convention; step-bound `get_technique` annotates resolution statically) |
-| Condition | — | condition text is rendered for warn-only `transition_condition` matching (exact string equality) | all evaluation — `simple` / `and` / `or` / `not`, `exists` / null semantics |
-
-Two declarative paths lead from a workflow definition into engine-held state: `variables[].defaultValue` (seeded once, at session creation) and a checkpoint option's `setVariable` effect (the one runtime write). Everything else a definition "does" at runtime, an agent does.
-
-## Schema Relationships
-
-The schemas work together to define workflows (design-time) and track their execution (runtime). The diagrams below illustrate these relationships.
-
-### Workflow Structure
-
-A workflow consists of activities and the `graph` binding their exits to one another. Each activity contains a single ordered `steps[]` where every step carries a `kind`: a technique step (binds a technique), an action step (control-only), a checkpoint step (an inline user decision point at its concrete position), or a loop step (a compound step whose body is a nested `steps[]`). An activity declares `exits` — its named outcomes — and the workflow's `graph` says where each leads, so an activity borrowed by two workflows sits in each one's shape without either editing the other's files. An activity can optionally trigger other workflows. Every workflow declares an `initialActivity`: the activity the run opens on, and the root the reachability half of the activity-variables guard walks from.
-
-```mermaid
-stateDiagram-v2
-    direction LR
-    
-    state "Workflow Definition" as WD {
-        [*] --> Activity1: initialActivity
-        Activity1 --> Activity2: graph binds an exit
-        Activity2 --> Activity3: graph binds an exit (predicate selects it)
-        Activity3 --> [*]: complete
-        
-        state Activity1 {
-            TechniqueStep
-            CheckpointStep
-        }
-        state Activity2 {
-            Steps
-            Exits
-        }
-        state Activity3 {
-            LoopStep
-            Triggers
-        }
-    }
-    
-    note right of WD
-        workflow.schema.json
-        Defines structure
-    end note
-```
-
-### Schema Dependencies
-
-The second diagram shows how the schema files depend on each other:
-
-- **workflow.schema.json** defines the overall structure and references `activity.schema.json` for activities
-- **activity.schema.json** defines unified activities with a single ordered `steps[]` (each step a kind: technique, action, checkpoint, loop, or routine), plus the activity's exits and triggers
-- **technique.schema.json** defines agent capabilities, tool orchestration patterns, and execution protocols
-- **condition.schema.json** provides reusable condition expressions (simple comparisons, AND/OR/NOT combinators)
-- **session-file.schema.json** describes the persistent server-managed session file (`session.json`) that lives under each planning folder; it captures workflow ID/version, frontier, variables, history, active checkpoint, and (for child workflows) the parent session snapshot. The companion `.session-token` is an HMAC-signed seal binding `session.json` to the workspace + server signing key.
-
-At design-time, you work with `workflow.schema.json`, `activity.schema.json`, and `technique.schema.json`. At runtime, `session-file.schema.json` describes the on-disk session file loaded by `session_index`.
-
-```mermaid
-flowchart TB
-    subgraph Workflow["workflow.schema.json"]
-        W[Workflow] --> A[Activities]
-        W --> SK1["techniques{workflow,activity}"]
-        W --> G["graph (exit -> destination)"]
-    end
-    
-    subgraph Activity["activity.schema.json"]
-        A --> S["steps[] (kind: technique|action|checkpoint|loop)"]
-        S --> C["checkpoint step (inline)"]
-        S --> L["loop step (compound, nested steps[])"]
-        A --> T["exits[]"]
-        A --> TR[Triggers]
-        A --> SK2["techniques[]"]
-    end
-    
-    subgraph Technique["technique.schema.json"]
-        SK1 --> SKD[Technique Definition]
-        SK2 --> SKD
-        S -.->|"step.technique"| SKD
-        SKD --> Cap[Capability]
-        SKD --> In[Inputs]
-        SKD --> Out[Output]
-        SKD --> Proto[Protocol]
-        SKD --> Rules[Rules]
-    end
-    
-    subgraph Condition["condition.schema.json"]
-        S --> COND[Conditions]
-        C --> COND
-        T --> COND
-        D --> COND
-        L --> COND
-        COND --> Simple["Simple: variable op value"]
-        COND --> And["AND: conditions[]"]
-        COND --> Or["OR: conditions[]"]
-        COND --> Not["NOT: condition"]
-    end
-    
-    subgraph Session["session-file.schema.json"]
-        W -.->|"runtime"| ST[Session File]
-        ST --> CA[frontier]
-        ST --> CS[history]
-        ST --> CR[checkpointResponses]
-        ST --> TW[triggeredWorkflows]
-    end
-```
-
----
-
-## Schema Ontology
-
-This section defines the key concepts, their fields, and relationships within the schema system.
-
-### Entity Relationships
-
-```mermaid
-erDiagram
-    Workflow ||--o{ Activity : contains
-    Workflow ||--o{ Variable : defines
-    
-    Activity ||--o{ Step : "contains (ordered, kind-tagged)"
-    Activity ||--o{ Exit : declares
-    Activity ||--o{ WorkflowTrigger : triggers
-    Workflow ||--o{ ExitBinding : binds
-    ExitBinding |o--|| Exit : "gives a destination to"
-    
-    Step ||--o{ Action : "performs (technique/action kind)"
-    Step |o--o| Condition : "gated by (when on every kind, condition on technique/action/checkpoint, continueWhile on loop)"
-    Step ||--|{ CheckpointOption : "has (checkpoint kind)"
-    Step ||--o{ Step : "iterates (loop kind, nested body)"
-    CheckpointOption ||--o| Effect : triggers
-    
-
-    Workflow {
-        string id PK
-        string version
-        string title
-        string description
-        string initialActivity FK
-        WorkflowTechniquesReference techniques
-    }
-    
-    Activity {
-        string id PK
-        string version
-        string name
-        boolean required
-    }
-    
-    Step {
-        string id PK
-        enum kind
-        string technique
-        Action_array actions
-        string when
-        boolean required
-    }
-    
-    CheckpointStep {
-        string id PK
-        enum kind
-        string message
-        string defaultOption
-        integer autoAdvanceMs
-    }
-    
-    CheckpointOption {
-        string id PK
-        string label
-        string description
-    }
-    
-    Exit {
-        string id PK
-        string label
-        string when
-        boolean isDefault
-        boolean immediate
-    }
-
-    ExitBinding {
-        string activity FK
-        string exit FK
-        string destination FK
-    }
-    
-    LoopStep {
-        string id PK
-        enum kind
-        string name
-        enum loopType
-        string variable
-        integer maxIterations
-    }
-    
-    Variable {
-        string name PK
-        enum type
-        string description
-        array values
-        any defaultValue
-        boolean required
-    }
-    
-    WorkflowTrigger {
-        string workflow FK
-        string description
-        array passContext
-    }
-    
-    Action {
-        enum action
-        string target
-        string message
-        any value
-    }
-    
-    Condition {
-        enum type
-        string variable
-        string operator
-        any value
-    }
-    
-    Effect {
-        object setVariable
-        string exit FK
-    }
-```
-
-### Core Concepts
-
-#### Workflow (Root Entity)
-
-A workflow is the top-level container representing a complete process definition. Its activities are connected by its `graph` and entered at `initialActivity`.
-
-| Field             | Type       | Purpose                                                    |
-| ----------------- | ---------- | ---------------------------------------------------------- |
-| `id`              | string     | Unique identifier for the workflow                         |
-| `version`         | string     | Semantic version (X.Y.Z)                                   |
-| `title`           | string     | Human-readable display name                                |
-| `description`     | string     | Detailed description                                       |
-| `author`          | string     | Author metadata (not read by the server)                   |
-| `tags`            | string[]   | Categorization labels                                      |
-| `rules`           | { workflow?, activity?, universal?: string[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds |
-| `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
-| `variables`       | Variable[] | State variables                                            |
-| `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
-| `graph`           | object     | Exit bindings: activity id → exit id → destination. A destination names one activity, `__terminal__`, a list of at least two members the run opens together, or one activity with the collection to run it once per element of. Every exit of every activity is bound here; an unbound exit, an unknown exit and an unknown destination each fail the load |
-| `activitiesDir`   | string     | Directory containing external activity files (server-resolved) |
-| `activities`      | Activity[] | Inline activity definitions (or loaded from activitiesDir) |
-
-#### Activity
-
-A unified activity defines workflow execution as a single ordered `steps[]` (each step kind-tagged), plus the outcomes it can reach. Activities can also trigger other workflows.
-
-| Field             | Type              | Purpose                                    |
-| ----------------- | ----------------- | ------------------------------------------ |
-| `id`              | string            | Unique identifier within workflow          |
-| `version`         | string            | Semantic version (X.Y.Z)                   |
-| `name`            | string            | Display name                               |
-| `description`     | string            | What this activity accomplishes            |
-| `techniques`      | TechniquesReference | Activity-wide technique references (`::` paths) |
-| `bundleTechniques` | BundleTechniques | Opt-in hybrid bundling: `get_activity` inlines each ungated step technique whose composed wire form is at most `maxChars`; larger and gated ones stay lazy via `get_technique` |
-| `steps`           | Step[]            | Ordered, kind-tagged execution list (technique / action / checkpoint / loop / routine) |
-| `exits`           | Exit[]            | Named outcomes of the activity; the workflow's `graph` binds each to a destination |
-| `triggers`        | WorkflowTrigger[] | Workflows to trigger from this activity    |
-| `outcome`         | string[]          | Expected outcomes on completion (advisory; never reconciled against manifests) |
-| `required`        | boolean           | Whether activity must be completed         |
-| `rules`           | string[]          | Activity-level execution rules             |
-| `artifactPrefix`  | string            | Server-computed numeric prefix from filename |
-
-The activity object is closed: a field outside this set is a schema error. The activity's artifact contract is not a schema field — `get_activity` synthesizes it from the `## Outputs` of the techniques the activity's steps bind (each output's `#### artifact` filename, prefixed with `artifactPrefix` at write time).
-
-#### Step
-
-A step is one entry in the activity's single ordered `steps[]`. Every step carries a required `kind` discriminator that selects its shape. Each kind is a closed object — a field outside its declared set is a schema error (AP-64 bound-step purity: a step is a bound unit of work, so no step kind carries a `description`; guidance lives in the bound technique's protocol):
-
-- **`kind: technique`** — binds a technique via `technique` (a `group::technique` string, or `{ name, inputs?, outputs? }` when it has input deviations / output remaps); may also carry `actions`.
-- **`kind: action`** — a control-only step carrying `actions[]` (may be empty for a marker step).
-- **`kind: checkpoint`** — an inline user decision point (see below); its position in `steps[]` is when it is presented.
-- **`kind: loop`** — a compound step whose body is a nested `steps[]` (see below).
-- **`kind: routine`** — a reference to a named run of steps declared in a `routines/` file (see below). The loader replaces it with the steps it stands for, so no consumer downstream ever meets one.
-
-Shared base fields on every kind:
-
-| Field         | Type     | Purpose                           |
-| ------------- | -------- | --------------------------------- |
-| `kind`        | enum     | Required discriminator: `technique`, `action`, `checkpoint`, `loop`, or `routine` |
-| `id`          | string   | Unique identifier within activity (stable; required on a checkpoint step — it is the replay key) |
-| `when`        | string   | Inline boolean gate — run this step or skip it. Agent-evaluated; the server never evaluates gates |
-| `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped. Agent-evaluated. On a checkpoint step, `condition` (not `when`) is what enables `condition_not_met` dismissal. Not carried by a `loop` or a `routine` step, whose entry gate is `when` alone |
-| `required`    | `false`  | Worker hint, declared only when `false` (marks an optional step); an omitted `required` means the step is required |
-
-#### Checkpoint Step
-
-A `kind: checkpoint` step is a decision point requiring user input, inlined at its concrete position in `steps[]`. It blocks by default; declaring `defaultOption` and `autoAdvanceMs` is what makes it auto-advanceable.
-
-A checkpoint step carries its own body: `message` and `options` are required, alongside the optional fields below. A body two activities both need is declared as a routine (see [Routine Step](#routine-step)) and referred to from each site, so one home serves both.
-
-| Field       | Type               | Purpose                                             |
-| ----------- | ------------------ | --------------------------------------------------- |
-| `id`        | string             | Checkpoint identity. Bare ids (`confirm-proceed`) are the response-replay key as written. Loop-body checkpoints that need a distinct answer per iteration use a template form `<baseId>#{...}` (e.g. `assumption-decision#{current_assumption.id}`); workers yield the expanded `<baseId>#<instance>` and the server matches the definition on the base id while recording under the full string. |
-| `kind`      | enum               | `checkpoint`                                        |
-| `message`   | string             | Question to present to user                         |
-| `options`   | CheckpointOption[] | Available choices                                   |
-| `defaultOption` | string          | The answer a soft gate takes when no person is reached. |
-| `autoAdvanceMs` | integer         | Milliseconds the server spends before applying a soft gate's default on `respond_checkpoint { auto_advance }`; it enforces the full interval. |
-
-The pair is the whole of softness: a checkpoint declaring both is soft, and one declaring neither waits for an explicit selection. The loader rejects a checkpoint declaring one without the other — half a pair names either an answer the server will never apply or a wait with nothing to take. The rule lives in the loader rather than the step schema because a checkpoint step is a discriminated-union member, which a Zod refinement cannot be, so it is absent from the generated JSON Schema and enforced when the definition loads.
-
-#### Exit
-
-An exit is a named outcome of the activity, in the activity's own vocabulary. It says what happened, never what runs next: the destination is bound per exit in the workflow's `graph`. An activity declaring no exits is terminal. Where the destination the orchestrator moves to disagrees with the exit it reports, `next_activity` warns in `_meta.validation` but is not blocked.
-
-| Field       | Type    | Purpose                                                                 |
-| ----------- | ------- | ----------------------------------------------------------------------- |
-| `id`        | string  | Outcome name, unique within the activity                                |
-| `label`     | string  | Human-readable statement of the outcome                                 |
-| `when`      | string  | Inline expression selecting this exit, in the dialect step gates use    |
-| `isDefault` | true    | The outcome when no `when` held and no checkpoint option named one; declared exactly once on an activity with two or more exits |
-| `immediate` | true    | Selecting this exit at a checkpoint ends the step sequence there        |
-
-#### WorkflowTrigger
-
-A workflow trigger declares a workflow the orchestrator dispatches from this activity (via `dispatch_child` with an explicit `workflow_id`). Used for composing workflows (e.g., work-packages triggering work-package for each planned package). The declaration is advisory — the server does not act on triggers.
-
-| Field         | Type     | Purpose                                    |
-| ------------- | -------- | ------------------------------------------ |
-| `workflow`    | string   | ID of the workflow to trigger              |
-| `description` | string   | When/why this workflow is triggered        |
-| `passContext` | string[] | Context variable names the dispatching agent relays to the child; the server does not copy them (a child session's bag starts from the child workflow's own declared defaults) |
-
-#### Loop Step
-
-A `kind: loop` step is a compound step that iterates over collections or while conditions hold, with a nested `steps[]` body (replacing the old separate `loops[]` array). It is the one step kind that may carry a `name` (it labels the iteration).
-
-| Field            | Type      | Purpose                             |
-| ---------------- | --------- | ----------------------------------- |
-| `id`             | string    | Unique identifier within activity   |
-| `kind`           | enum      | `loop`                              |
-| `name`           | string    | Loop name (optional; labels the iteration) |
-| `loopType`       | enum      | "forEach", "while", or "doWhile" (renamed from `type` to avoid clashing with `Condition.type`) |
-| `variable`       | string    | Iteration variable name             |
-| `over`           | string    | Collection to iterate (forEach)     |
-| `continueWhile`  | Condition | Continuation test of a `while`/`doWhile` loop: the body runs again while it holds. Declared by every repeat-until loop and by no `forEach`. Agent-evaluated; `loopType` says when it is taken |
-| `maxIterations`  | integer   | Safety limit (agent-enforced)       |
-| `breakCondition` | Condition | Early exit from item iteration, agent-evaluated before each item: the walk stops part way through the collection when it holds. A repeat-until loop states its stopping condition in `continueWhile` |
-| `steps`          | Step[]    | Nested step body executed per iteration |
-
-#### Routine Step
-
-A `kind: routine` step refers to a named run of steps declared in a `routines/` file beside `activities/`. The loader resolves the name, substitutes the site's arguments through the routine's body, prefixes every identifier inside it from this step's `id`, and splices the result in place of the reference — so the step manifest, artifact composition, the guard suite and the worker all see ordinary steps. The kind exists between parsing and materialisation and nowhere else.
-
-| Field       | Type                  | Purpose                                      |
-| ----------- | --------------------- | -------------------------------------------- |
-| `id`        | string                | Required. Unique within the activity, and the prefix every identifier in the materialised body carries — it is the prefix, not a label |
-| `kind`      | enum                  | `routine`                                    |
-| `routine`   | string                | `[namespace::]name`. A qualified name resolves in that namespace only, the namespace spelled by its directory name or by the path from the corpus root reaching it (`support::gitnexus::probe`); a bare name resolves against the referring activity's source workflow and then `meta`. The last segment is the routine and every segment before it belongs to the namespace — a routine name carries no group grammar |
-| `with`      | map                   | Arguments: routine input id → its value here. A braced value is a reference to a host variable, a bare value is a literal. A declared input left unbound takes its declared default, or the host's value under the input's own id |
-| `outputs`   | map                   | Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and is a load failure unless its declaration says `optional: true` |
-
-Its entry gate is `when` alone, as a loop's is, and it carries `required: false` and nothing about routing. A structured `condition` is rejected: it would have to reach the run's steps to mean anything, and on a checkpoint that field is what makes the gate dismissible — so a site condition pushed into a body would hand every gate in the run a capability its author never declared.
-
-A site gate applies to every step the reference stands for, because the run is no longer a single step that could carry the decision. A body step with a gate of its own takes **both**, conjoined: the site gate says whether the run happens and the body gate says whether that step happens within it.
-
-Two references to one routine in one activity are collision-free by construction, each body prefixed from its own reference id. A routine may refer to another; prefixes compose (`converge-assumptions.pass.iteration.challenge`) and a reference cycle fails the load.
-
-#### Routine (`routine.schema.json`)
-
-A routine lives at `routines/<name>.yaml`, one file per routine, with no position number because it holds no place in an order. The filename is the name a reference resolves, so the file's `id` has to agree with it.
-
-Which `routines/` directory is the one whose referrers the run serves: the workflow whose activities reach it, or `meta` where two or more do. A library — a namespace offering `techniques/`, `resources/` or `routines/` and declaring no workflow — is a third home, for a run that binds that library's own techniques. `check:routines` holds a routine to it.
-
-| Field       | Type       | Purpose                                      |
-| ----------- | ---------- | -------------------------------------------- |
-| `id`        | string     | Kebab-case, matching the filename, carrying no `::` |
-| `version`   | string     | Semantic version                             |
-| `name`      | string     | Human-readable name                          |
-| `description` | string   | What the run does, and when to refer to it   |
-| `inputs`    | Input[]    | Declared parameters: `id`, `description`, optional `default` |
-| `outputs`   | Output[]   | Declared produced values: `id`, `type`, `description`, optional `values`, optional `optional: true` |
-| `internals` | Internal[] | Names the body's steps pass between themselves: `id` and `description`, and nothing else |
-| `steps`     | Step[]     | The run. At least one step — a routine with none is a signature with nothing behind it |
-
-Its input, output and internal ids are the names in scope inside the body, and a routine has no *undeclared* free variables: every name its body reads or writes is one of the three, which is what makes the signature a contract and the body checkable with no host activity. An internal declares no type, no default and no value set, because it never enters the workflow's variable set — its materialised name carries both the host activity and the whole composed reference path, so two activities using one routine do not share it. An output carries a full variable declaration, because the routine is where the value is owned.
-
-A routine declares no `exits`, no `outcome`, no `rules`, no `triggers` and no activity-wide `techniques`: it takes no place in the graph, costs no hand-off, and has no delivery of its own for prose to be delivered at.
-
-### Supporting Types
-
-#### TechniquesReference
-
-A flat array of strings — an activity's technique references, addressed by `::` path. Optional: an activity may rely solely on the techniques its steps declare plus those inherited from the workflow's `techniques.activity`.
-
-```
-techniques: string[]
-```
-
-At the **workflow** level, `techniques` is instead an object partitioned by audience (mirroring `rules`): `workflow` references go to the orchestrator (`get_workflow`), and `activity` references are inherited by every activity (injected into every `get_activity` bundle). There is no `universal` bucket for techniques.
-
-```
-techniques: { workflow?: string[]; activity?: string[] }
-```
-
-#### Action
-
-An action performed during workflow execution. Action verbs are interpreted by the executing agent — the server has no action interpreter. In particular, `set` does not write the session variable bag (only a checkpoint option's `setVariable` effect writes it at runtime) and is slated for removal at the next workflow-schema major (#166 B7 decided retire; B12 executes it).
-
-| Field     | Type   | Purpose                             |
-| --------- | ------ | ----------------------------------- |
-| `action`  | enum   | "log", "validate", "set", "emit", or "message" |
-| `target`  | string | Target of the action                |
-| `message` | string | Message content                     |
-| `value`   | any    | Value for set/emit actions          |
-
-#### Variable
-
-A workflow variable definition. Declarations are rendered to agents via `get_workflow`; the session variable bag is seeded from each declaration's `defaultValue` at session creation (recorded as one `variables_seeded` history event) and thereafter written only by checkpoint `setVariable` effects, whose values are validated against `type` and `values` warn-only (mismatches are stored as written and surfaced in `_meta.validation`). `required` is never checked — agents honor it from the declaration.
-
-| Field          | Type    | Purpose                                          |
-| -------------- | ------- | ------------------------------------------------ |
-| `name`         | string  | Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption (see `src/schema/identifiers.ts`) |
-| `type`         | enum    | "string", "number", "boolean", "array", "object" (warn-only validated on checkpoint `setVariable`; mismatched values are stored as written) |
-| `description`  | string  | What the variable holds, and what its absence means |
-| `values`       | array   | The complete set of values a `string` variable admits. A `defaultValue` outside it fails the load; a `setVariable` or `set` literal outside it warns |
-| `defaultValue` | any     | Initial value, seeded into the session bag at session creation. Never combine with an `exists`/`notExists` gate on the same variable (`check:variable-model`) |
-| `required`     | boolean | Whether variable must be set (agent-honored)     |
-
-#### Condition
-
-A conditional expression for control flow. Defined in `condition.schema.json`.
-
-| Type     | Structure                 | Purpose                   |
-| -------- | ------------------------- | ------------------------- |
-| `simple` | variable, operator, value | Basic comparison          |
-| `and`    | conditions[]              | All must be true          |
-| `or`     | conditions[]              | At least one must be true |
-| `not`    | condition                 | Negation                  |
-
-### Field Naming Conventions
-
-#### Consistent Patterns
-
-| Pattern       | Usage                     | Examples                                |
-| ------------- | ------------------------- | --------------------------------------- |
-| `id`          | Unique identifier         | activity.id, step.id, checkpoint step id   |
-| `name`        | Display name for entities | activity.name, loop step name              |
-| `description` | Detailed explanation      | workflow.description, activity.description |
-| `required`    | Mandatory flag            | variable.required, step.required        |
-
-#### Distinct Concepts
-
-| Field   | Context            | Meaning                 |
-| ------- | ------------------ | ----------------------- |
-| `title` | Workflow only      | Top-level display name  |
-| `name`  | All other entities | Entity display name     |
-| `label` | Options/branches   | User-facing choice text |
-
----
-
-## Workflow Schema
-
-The workflow schema (`workflow.schema.json`) defines the complete structure of a workflow, including metadata, variables, and activities. Workflows can use inline activities or reference external activity files via `activitiesDir` (a server convention — the server resolves `activitiesDir` by loading activity files and populating the `activities` array before schema validation runs).
-
-### Top-Level Structure
-
-```json
-{
-  "$schema": "../../schemas/workflow.schema.json",
-  "id": "my-workflow",
-  "version": "1.0.0",
-  "title": "My Workflow",
-  "description": "A sample workflow",
-  "author": "author-name",
-  "tags": ["sample", "documentation"],
-  "rules": ["Rule 1", "Rule 2"],
-  "variables": [],
-  "initialActivity": "first-activity",
-  "activitiesDir": "activities"
-}
-```
-
-### Required Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | string | Unique workflow identifier |
-| `version` | string | Semantic version (e.g., `1.0.0`) |
-| `title` | string | Human-readable title |
-| `activities` | array | Array of activity definitions (or loaded from activitiesDir) |
-
-### Optional Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `$schema` | string | Path to schema file for validation |
-| `description` | string | Workflow description |
-| `author` | string | Author name |
-| `tags` | string[] | Categorization tags |
-| `rules` | { workflow?, activity?, universal?: string[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both). Every entry is a rule string: text two workflows both need is neither one's to own, so its home is the conduct technique whose audience it binds and the bundle delivers it |
-| `techniques` | { workflow?, activity?: string[] } | Orchestrator techniques (`workflow`, bundled into `get_workflow`) + techniques inherited by every activity (`activity`, injected into every `get_activity`) |
-| `variables` | array | Variable definitions with types and defaults |
-| `initialActivity` | string | ID of first activity (required for sequential workflows) |
-| `activitiesDir` | string | Directory containing external activity YAML files (server-resolved, not in JSON schema) |
-
-### Variables
-
-Variables store state that persists across activities. Define them at the workflow level. The declaration is the agents' contract and the server honors it: the session variable bag is seeded from every declared `defaultValue` at session creation (one `variables_seeded` history event records the map), and after that only checkpoint `setVariable` effects write it server-side, validated warn-only against the declared `type`. A variable without a default stays absent from the bag — reserve `exists`/`notExists` gates for those (`check:variable-model` rejects such gates on defaulted variables).
-
-```json
-{
-  "variables": [
-    {
-      "name": "user_confirmed",
-      "type": "boolean",
-      "description": "Whether user confirmed the action",
-      "defaultValue": false,
-      "required": false
-    },
-    {
-      "name": "selected_option",
-      "type": "string",
-      "description": "User's selected option",
-      "required": false
-    }
-  ]
-}
-```
-
-**Variable Types:** `string`, `number`, `boolean`, `array`, `object`
-
-### Activities
-
-Activities are the execution units of a workflow. Each activity contains an ordered, kind-tagged `steps[]` and the `exits` it can reach, and is reached through the workflow's `graph` from the `initialActivity`.
-
-```json
-{
-  "activities": [
-    {
-      "id": "first-activity",
-      "version": "1.0.0",
-      "name": "Initial Activity",
-      "description": "The first activity of the workflow",
-      "steps": [],
-      "exits": []
-    }
-  ]
-}
-```
-
-**Activity Properties:**
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | string | Unique activity identifier |
-| `version` | string | Semantic version (X.Y.Z) |
-| `name` | string | Human-readable activity name |
-| `description` | string | Activity description |
-| `required` | boolean | Whether activity is required (default: true) |
-| `steps` | array | Ordered, kind-tagged execution list (technique / action / checkpoint / loop / routine) |
-| `exits` | array | Named outcomes; the workflow's `graph` binds each to a destination |
-| `triggers` | array | Workflows to trigger from this activity |
-| `outcome` | string[] | Expected outcomes on completion |
-| `rules` | array | Activity-level execution rules and constraints |
-| `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
-
-### Steps
-
-`steps[]` is the activity's single ordered execution list. Every step carries a `kind`. A technique step binds a technique; an action step is control-only:
-
-```json
-{
-  "steps": [
-    {
-      "kind": "technique",
-      "id": "verify-prerequisites",
-      "technique": "setup::verify-prerequisites"
-    },
-    {
-      "kind": "action",
-      "id": "log-start",
-      "actions": [{ "action": "log", "message": "Activity started" }]
-    }
-  ]
-}
-```
-
-### Checkpoint Steps
-
-A `kind: checkpoint` step pauses execution and requires user input. It sits inline in `steps[]` at the position where it is presented:
-
-```json
-{
-  "steps": [
-    {
-      "kind": "checkpoint",
-      "id": "confirm-proceed",
-      "when": "needs_confirmation == true",
-      "message": "Do you want to proceed?",
-      "options": [
-        {
-          "id": "proceed",
-          "label": "Yes, proceed",
-          "effect": {
-            "setVariable": { "user_confirmed": true }
-          }
-        },
-        {
-          "id": "cancel",
-          "label": "No, cancel",
-          "effect": {
-            "exit": "cancelled"
-          }
-        }
-      ]
-    }
-  ]
-}
-```
-
-The `when` / `condition` gate uses the same formal condition schema shared by every step kind (`condition.schema.json`). If omitted, the checkpoint is always presented. The two gate spellings differ at the dismissal seam: only a structured `condition` makes the checkpoint dismissible via `respond_checkpoint { condition_not_met }` — a `when`-gated checkpoint cannot be dismissed that way.
-
-**Replay and instance-qualified ids.** `yield_checkpoint` stores responses under `<activityId>-<checkpoint_id>`. A later yield of the same key returns `status: "replayed"` (no new `activeCheckpoint`). Inside a loop, pass `<baseId>#<instance>` when each iteration needs its own decision; the loader resolves the definition by base id (portion before `#`). Use a bare id when one answer should cover every iteration.
-
-**Checkpoint Option Effects** (per-effect enforcement):
-- `setVariable` — the server applies the assignments to the session variable bag; the one engine-applied effect
-- `exit` — one of the owning activity's declared exits, checked at load. `present_checkpoint` resolves it through the workflow graph and returns the destination with the option, so the orchestrator states the consequence before the user chooses; `respond_checkpoint` records it and returns it for the orchestrator to enact via `next_activity`. Where the exit is `immediate`, the response also says the activity ends there.
-
-An adhoc checkpoint — one the activity does not declare, supplied at `yield_checkpoint` — has no declared exits to name, so its options carry `setVariable` only.
-
-### Loop Steps
-
-A `kind: loop` step is a compound step that walks a collection or repeats while its `continueWhile` test holds. Its body is a nested `steps[]` (there is no separate `loops[]` array). It is the one step kind that may carry a `name`:
-
-```json
-{
-  "steps": [
-    {
-      "kind": "loop",
-      "id": "task-loop",
-      "name": "Task Loop",
-      "loopType": "forEach",
-      "variable": "current_task",
-      "over": "tasks",
-      "maxIterations": 100,
-      "steps": [
-        {
-          "kind": "technique",
-          "id": "process-task",
-          "technique": "tasks::process-task"
-        }
-      ]
-    }
-  ]
-}
-```
-
-**Loop Types (`loopType`):** `forEach` walks the collection named in `over`, binding each item to `variable`; `while` and `doWhile` repeat while the `continueWhile` test holds, `while` taking that test before the first pass and `doWhile` after one.
-
-### Exits and the graph
-
-An activity names the outcomes it can reach; the workflow says where each one leads. The activity:
-
-```json
-{
-  "exits": [
-    { "id": "confirmed", "when": "user_confirmed == true" },
-    { "id": "declined", "isDefault": true },
-    { "id": "aborted", "immediate": true }
-  ]
-}
-```
-
-And the workflow that runs it:
-
-```json
-{
-  "graph": {
-    "confirm-scope": {
-      "confirmed": "next-activity",
-      "declined": "fallback-activity",
-      "aborted": "__terminal__"
-    }
-  }
-}
-```
-
-The orchestrator takes the first exit whose `when` holds, falls to the default when none does, and
-lets an exit a checkpoint option named win over both. A destination of `__terminal__` ends the run
-without landing on an activity.
-
-### Triggers
-
-Triggers allow an activity to invoke another workflow:
-
-```json
-{
-  "triggers": [
-    {
-      "workflow": "work-package",
-      "description": "Execute work-package workflow for each planned package",
-      "passContext": ["current_package", "priority_order"]
-    }
-  ]
-}
-```
-
----
-
-## Condition Schema
-
-The condition schema (`condition.schema.json`) defines expressions for gating steps and loops and for dismissing checkpoints. Conditions are evaluated by the executing agents against the session's variable state — the server never evaluates a condition at runtime. An exit's predicate is the inline `when` expression instead.
-
-### Simple Conditions
-
-Compare a variable to a value:
-
-```json
-{
-  "type": "simple",
-  "variable": "status",
-  "operator": "==",
-  "value": "approved"
-}
-```
-
-**Operators:**
-
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `==` | Equal | `"status" == "active"` |
-| `!=` | Not equal | `"count" != 0` |
-| `>` | Greater than | `"score" > 80` |
-| `<` | Less than | `"attempts" < 3` |
-| `>=` | Greater or equal | `"level" >= 5` |
-| `<=` | Less or equal | `"errors" <= 10` |
-| `exists` | Variable is defined | `"user_id" exists` |
-| `notExists` | Variable is undefined | `"error" notExists` |
-
-### Composite Conditions
-
-Combine conditions with logical operators:
-
-**AND - All conditions must be true:**
-
-```json
-{
-  "type": "and",
-  "conditions": [
-    {
-      "type": "simple",
-      "variable": "status",
-      "operator": "==",
-      "value": "ready"
-    },
-    {
-      "type": "simple",
-      "variable": "count",
-      "operator": ">",
-      "value": 0
-    }
-  ]
-}
-```
-
-**OR - At least one condition must be true:**
-
-```json
-{
-  "type": "or",
-  "conditions": [
-    {
-      "type": "simple",
-      "variable": "role",
-      "operator": "==",
-      "value": "admin"
-    },
-    {
-      "type": "simple",
-      "variable": "role",
-      "operator": "==",
-      "value": "moderator"
-    }
-  ]
-}
-```
-
-**NOT - Condition must be false:**
-
-```json
-{
-  "type": "not",
-  "condition": {
-    "type": "simple",
-    "variable": "blocked",
-    "operator": "==",
-    "value": true
-  }
-}
-```
-
-### Nested Conditions
-
-Conditions can be nested for complex logic:
-
-```json
-{
-  "type": "and",
-  "conditions": [
-    {
-      "type": "simple",
-      "variable": "authenticated",
-      "operator": "==",
-      "value": true
-    },
-    {
-      "type": "or",
-      "conditions": [
-        {
-          "type": "simple",
-          "variable": "role",
-          "operator": "==",
-          "value": "admin"
-        },
-        {
-          "type": "simple",
-          "variable": "permissions",
-          "operator": "exists"
-        }
-      ]
-    }
-  ]
-}
-```
-
----
-
-## Session File Schema
-
-Runtime session shape is `session-file.schema.json` — the on-disk `session.json` the server seals and loads by `session_index`. History event types and checkpoint-response records are declared in `src/schema/state.schema.ts` and composed into that file schema.
-
-## Complete Example
-
-Here's a minimal valid workflow that demonstrates all key concepts:
-
-```json
-{
-  "$schema": "../../schemas/workflow.schema.json",
-  "id": "example-workflow",
-  "version": "1.0.0",
-  "title": "Example Workflow",
-  "description": "A minimal workflow demonstrating key schema features",
-  "variables": [
-    {
-      "name": "approved",
-      "type": "boolean",
-      "defaultValue": false
-    }
-  ],
-  "initialActivity": "review",
-  "activities": [
-    {
-      "id": "review",
-      "version": "1.0.0",
-      "name": "Review",
-      "description": "Initial review and approval",
-      "steps": [
-        {
-          "kind": "technique",
-          "id": "gather",
-          "technique": "review::gather-information"
-        },
-        {
-          "kind": "checkpoint",
-          "id": "approve",
-          "message": "Do you approve this item?",
-          "options": [
-            {
-              "id": "approve",
-              "label": "Approve",
-              "effect": {
-                "setVariable": { "approved": true }
-              }
-            },
-            {
-              "id": "reject",
-              "label": "Reject",
-              "effect": {
-                "setVariable": { "approved": false }
-              }
-            }
-          ]
-        }
-      ],
-      "exits": [
-        {
-          "id": "approved",
-          "when": "approved == true"
-        },
-        {
-          "to": "rejected",
-          "isDefault": true
-        }
-      ]
-    },
-    {
-      "id": "process",
-      "version": "1.0.0",
-      "name": "Processing",
-      "steps": [
-        {
-          "kind": "technique",
-          "id": "process",
-          "technique": "processing::process-item"
-        }
-      ]
-    },
-    {
-      "id": "rejected",
-      "version": "1.0.0",
-      "name": "Rejection",
-      "steps": [
-        {
-          "kind": "technique",
-          "id": "notify",
-          "technique": "notify::notify-rejection"
-        }
-      ]
-    }
-  ]
-}
-```
-
----
-
-## Validation
-
-### Using the Validation Script
-
-Validate a workflow directory:
-
-```bash
-npx tsx guards/validate-workflow-yaml.ts path/to/workflow-dir
-```
-
-### Programmatic Validation
-
-```typescript
-import { validateWorkflow, safeValidateWorkflow } from './src/schema/workflow.schema';
-
-// Throws on invalid
-const workflow = validateWorkflow(data);
-
-// Returns { success: true, data } or { success: false, error }
-const result = safeValidateWorkflow(data);
-if (result.success) {
-  console.log('Valid workflow:', result.data);
-} else {
-  console.error('Validation errors:', result.error);
-}
-```
-
-### Common Validation Errors
-
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Missing required property | `id`, `version`, `title`, or `activities` not provided | Add the required property |
-| Invalid version format | Version doesn't match `X.Y.Z` pattern | Use semantic versioning |
-| Invalid activity reference | `initialActivity` or a `graph` destination references a non-existent activity | Check activity IDs match |
-| Checkpoint missing options | Checkpoint defined without any options | Add at least one option |
-| Unbound exit | An activity declares an exit the workflow's `graph` does not bind | Bind it, or remove the exit |
-| Ambiguous default | An activity declares several exits and no single `isDefault` | Mark exactly one as the default |
-
----
-
-## Activity Schema
-
-The activity schema (`activity.schema.json`) defines unified activities that combine workflow execution: a single ordered, kind-tagged `steps[]` (technique / action / checkpoint / loop / routine) plus the activity's exits and triggers. Activities are reached through the workflow's `graph` from its `initialActivity`. This schema is **generated** by [`scripts/generate-schemas.ts`](../scripts/generate-schemas.ts) from the Zod source of truth (it was previously hand-maintained) — do not hand-edit `activity.schema.json`.
-
-### Top-Level Structure
-
-```json
-{
-  "id": "discover-session",
-  "version": "1.0.0",
-  "name": "Discover Session",
-  "steps": [
-    { "kind": "technique", "id": "identify-target", "technique": "state-management::identify-target" },
-    { "kind": "technique", "id": "scan-planning-folders", "technique": "state-management::scan-planning-folders" }
-  ],
-  "outcome": ["Workflow target identified", "Prior state located if available"]
-}
-```
-
-### Required Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | string | Unique activity identifier |
-| `version` | string | Semantic version (e.g., `3.0.0`) |
-| `name` | string | Human-readable activity name |
-
-### Optional Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `description` | string | Detailed description |
-| `bundleTechniques` | BundleTechniques | Opt-in hybrid bundling (`{ maxChars }`): `get_activity` inlines each ungated step technique whose composed wire form is at most `maxChars` |
-| `steps` | Step[] | Ordered, kind-tagged execution list (technique / action / checkpoint / loop / routine) |
-| `exits` | Exit[] | Named outcomes of the activity |
-| `triggers` | WorkflowTrigger[] | Workflows to trigger from this activity |
-| `outcome` | string[] | Expected outcomes when activity completes |
-| `required` | boolean | Whether activity is required (default: true) |
-| `rules` | string[] | Activity-level execution rules and constraints |
-| `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
-
-### Activity Flow
-
-Activities are connected by the parent workflow's `graph`, which binds each activity's exits to the activity that follows, and require `initialActivity` on that workflow. *Workflow* selection — which workflow handles a request — happens at the catalog level via `list_workflows` and `start_session`, scored on title, description, and `tags`.
-
-### Complete Example
-
-A complete activity definition with workflow trigger:
-
-```json
-{
-  "id": "implementation",
-  "version": "1.1.0",
-  "name": "Implementation",
-  "description": "Execute each planned work package by triggering the work-package workflow",
-  "triggers": [
-    {
-      "workflow": "work-package",
-      "description": "Each iteration starts the work-package workflow for one planned package",
-      "passContext": ["current_package", "priority_order"]
-    }
-  ],
-  "steps": [
-    {
-      "kind": "loop",
-      "id": "package-iteration",
-      "name": "Package Iteration",
-      "loopType": "forEach",
-      "variable": "current_package",
-      "over": "remaining_packages",
-      "steps": [
-        { "kind": "technique", "id": "select", "technique": "implementation::select-next-package" },
-        { "kind": "technique", "id": "trigger", "technique": "implementation::trigger-work-package" },
-        { "kind": "technique", "id": "update", "technique": "implementation::update-roadmap-status" }
-      ]
-    }
-  ],
-  "outcome": [
-    "All planned work packages implemented",
-    "Roadmap status reflects completion"
-  ]
-}
-```
-
----
-
-## Technique Schema
-
-The technique schema (`technique.schema.json`) defines agent capabilities for workflow execution. Techniques are authored as markdown — a standalone `techniques/<slug>.md`, a grouped `techniques/<group>/TECHNIQUE.md` plus one `<sub>.md` per nested technique, or a per-workflow root `techniques/TECHNIQUE.md` — and the server parses them into the JSON shape below (served at `workflow-server://schemas/technique`).
-
-### Top-Level Structure
-
-```json
-{
-  "id": "activity-worker",
-  "version": "2.0.0",
-  "capability": "Bootstrap and execute a single workflow activity with consistent tool usage",
-  "rules": {}
-}
-```
-
-### Required Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | string | Unique technique identifier (the file/folder slug) |
-| `version` | string | Semantic version (e.g., `2.0.0`) |
-| `capability` | string | What this technique enables agents to do |
-
-### Optional Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `rules` | object | Name-value pairs: each key is a rule name (e.g. configuration-invariant); each value is a single rule string or an array of rule strings for grouped rules. |
-| `inputs` | array | Inputs the technique expects from context: array of items. Each item has **id** (required; hyphen-delimited), optional **description**, **default**, and **components** (a name→description map authored as `####` sub-sections). Optional inputs say so in the description prose (a leading "(optional)"); necessity is otherwise implied by protocol use. When a protocol step uses an existing artifact (e.g. loads from a path), the technique declares one or more associated input entries. Mirrors output structure. |
-| `protocol` | array | An ordered list of step blocks (no phase construct). Each block has optional **title** and a **steps** array of imperative bullet strings. Failure handling is inline in the steps. |
-| `output` | array | What the technique produces: array of output items. Each item has **id** (required; generic hyphen-delimited identifier, not a filename), optional **description**, optional **components** (named object), and optional **artifact** (when present: **name** = filename to use when persisting, a literal or `{token}`-template, e.g. `01-audit-report.md`). |
-
-A technique has `id`, `capability`, `protocol`, `rules`, and optional `inputs` and `output`. Nested techniques are individual `<sub>.md` files addressed by `::` path and are themselves techniques.
-
-Delivered techniques carry additional server-populated (never authored) fields. Composition partitions contract-inherited entries into `inherited_inputs`/`inherited_outputs` blocks (each `{ note, items }`), distinct from the technique's own `inputs`/`outputs`. A step-bound `get_technique` adds binding-seam provenance, resolved statically from declarations and document order: a `source` on each own input item stating where its value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default, or `UNRESOLVED`), a `source` on an inherited item only where it adds to the block's scope note (a step-binding override or a later-positioned producer), a `destination` on each output item the step binding remaps (the session-bag name it lands under), and a top-level `provenance_note` stating the output delivery mechanics.
-
-### Protocol
-
-Protocol is a single ordered list of step blocks (rendered from `## Protocol` in the markdown). Each block carries optional `title` and an ordered `steps` array, in authored order. A technique's protocol is its own — a container contract contributes inputs, outputs and rules to its descendants, never steps. Failure handling is inline in the steps.
-
-```json
-{
-  "protocol": [
-    { "title": "Load checklist", "steps": ["Read the checklist from the resource.", "Verify version matches workflow."] },
-    { "title": "Execute step", "steps": ["Run the step logic.", "Record outcome."] }
-  ]
-}
-```
-
-### Complete Example
-
-A minimal technique demonstrating key concepts:
-
-```json
-{
-  "id": "example-technique",
-  "version": "1.0.0",
-  "capability": "Demonstrate technique schema structure",
-  "protocol": [
-    { "title": "Discover", "steps": ["Call list_workflows to find available workflows.", "Select the appropriate workflow for the task."] },
-    { "title": "Execute", "steps": ["Load the activity via next_activity.", "Execute each step following technique guidance."] }
-  ]
-}
-```
-
----
-
-## Related Documentation
-
-- [API Reference](../docs/api.md) — MCP tool catalog
-- [Site API](../site/api/tools.html) — wire descriptions generated from source
-- [Development Guide](../docs/development.md) — Building and testing the server
-- [Resolution](../docs/resolution.md) — How a name reaches a technique, resource, activity, or routine
-- [Setup](../docs/setup.md) — Bootstrap rule and `workflow-server://schemas` MCP resource
+
+
+### Workflow
+
+
+| Field                                        | Class             | What the server does                                                                                                                       |
+| -------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                                         | Engine-enforced   | Resolves the workflow file.                                                                                                                |
+| `techniques.workflow`, `techniques.activity` | Engine-enforced   | Compose the bundle.                                                                                                                        |
+| `activities`, `activitiesDir`                | Engine-enforced   | Assemble the activities.                                                                                                                   |
+| `variables[].defaultValue`                   | Engine-enforced   | Seeded into the session variable bag at session creation, and recorded as a `variables_seeded` history event.                              |
+| `version`                                    | Advisory          | A mid-session drift warns.                                                                                                                 |
+| `title`, `description`, `tags`               | Advisory          | Rendered.                                                                                                                                  |
+| `rules.*`                                    | Advisory          | Rendered.                                                                                                                                  |
+| `variables[]`                                | Advisory          | The file's own declarations, plus every `variables.writes` declaration the activities in its graph contribute, rendered in `get_workflow`. |
+| `initialActivity`                            | Advisory          | A wrong first activity warns.                                                                                                              |
+| `variables[].type`, `variables[].values`     | Advisory          | Checkpoint `setVariable` values are validated warn-only. A mismatch is stored as written.                                                  |
+| `author`                                     | Agent-interpreted | Authoring metadata. Never checked.                                                                                                         |
+| `variables[].required`                       | Agent-interpreted | Authoring metadata. Never checked.                                                                                                         |
+
+
+
+
+### Activity
+
+
+| Field                                        | Class             | What the server does                                                                                                                                           |
+| -------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `variables.writes[]`                         | Engine-enforced   | Contributed to the including workflow's variable set at load. Two declarations of one name that disagree on `type`, `defaultValue`, or `values` fail the load. |
+| `id`                                         | Engine-enforced   | The navigation key.                                                                                                                                            |
+| `artifactPrefix`                             | Engine-enforced   | Computed from the filename, and orders the activities.                                                                                                         |
+| Composed artifact contract                   | Engine-enforced   | Synthesized from the bound techniques' outputs.                                                                                                                |
+| `techniques[]`                               | Engine-enforced   | The bundle.                                                                                                                                                    |
+| `bundleTechniques`                           | Engine-enforced   | Hybrid step-technique bundling in `get_activity`.                                                                                                              |
+| `variables.reads[]`                          | Advisory          | The names the activity needs the workflow to supply. `check:activity-variables` holds the graph to them.                                                       |
+| `name`, `description`, `required`, `rules[]` | Advisory          | Rendered.                                                                                                                                                      |
+| `exits[]`                                    | Advisory          | Every exit is bound in the workflow's `graph`, or the load fails. The destination reached warns only. `next_activity` moves anywhere.                          |
+| `triggers[]`, `passContext`                  | Agent-interpreted | `dispatch_child` takes an explicit `workflow_id`. A child session's bag starts from the child workflow's own declared defaults.                                |
+| `outcome[]`                                  | Agent-interpreted | Never reconciled against manifests.                                                                                                                            |
+
+
+
+
+### Step
+
+These fields are on every step kind.
+
+
+| Field           | Class             | What the server does                                                                                                                                                                                                        |
+| --------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kind`          | Engine-enforced   | Selects the closed contract for that kind.                                                                                                                                                                                  |
+| `id`            | Engine-enforced   | A duplicate id is a load error. The id is the key for manifests and for a step-bound `get_technique`.                                                                                                                       |
+| `step_manifest` | Advisory          | Absence of a gated step is accepted. An ungated omission warns.                                                                                                                                                             |
+| `when`          | Agent-interpreted | A gate on every step kind. The server never evaluates it.                                                                                                                                                                   |
+| `condition`     | Agent-interpreted | A gate on the technique, action, and checkpoint kinds. A loop states its continuation test in `continueWhile`. On a checkpoint step, only `condition` enables `condition_not_met` dismissal. The server never evaluates it. |
+| `required`      | Agent-interpreted | A hint to the worker.                                                                                                                                                                                                       |
+| `actions[]`     | Agent-interpreted | No verb has a server interpreter. `set` does not write the variable bag. Removal is scheduled for the next schema major (#166).                                                                                             |
+
+
+
+
+### Checkpoint step
+
+
+| Field                            | Class           | What the server does                                                                                                                                                         |
+| -------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options[]`                      | Engine-enforced | `option_id` is hard-validated.                                                                                                                                               |
+| `effect.setVariable`             | Engine-enforced | Applied to the session variable bag. This is the one engine-applied effect.                                                                                                  |
+| `defaultOption`, `autoAdvanceMs` | Engine-enforced | The server enforces the full timer before `auto_advance`.                                                                                                                    |
+| `effect.exit`                    | Advisory        | Checked at load against the activity's `exits`. The destination is read from the workflow graph, recorded, and returned. The orchestrator enacts it through `next_activity`. |
+
+
+
+
+### Loop step
+
+
+| Field              | Class             | What the server does                                                                        |
+| ------------------ | ----------------- | ------------------------------------------------------------------------------------------- |
+| `steps[]`          | Engine-enforced   | Ids are unique in the body. The body is flattened for lookups and for artifact composition. |
+| `step_manifest`    | Advisory          | A loop-body step id is accepted, and never required.                                        |
+| `loopType`         | Agent-interpreted | The agent executes the iteration and bounds it.                                             |
+| `continueWhile`    | Agent-interpreted | The test the agent uses to decide whether the body runs again.                              |
+| `variable`, `over` | Agent-interpreted | The agent executes the iteration and bounds it.                                             |
+| `breakCondition`   | Agent-interpreted | The agent executes the iteration and bounds it.                                             |
+| `maxIterations`    | Agent-interpreted | The agent executes the iteration and bounds it.                                             |
+
+
+
+
+### Technique
+
+
+| Field                                   | Class             | What the server does                                                                                                      |
+| --------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `id`                                    | Engine-enforced   | Resolves the technique.                                                                                                   |
+| Rule address                            | Engine-enforced   | `tech::rule` and a group prefix both address a rule.                                                                      |
+| `inputs[].id`, `outputs[].id`           | Engine-enforced   | The merge keys for composition.                                                                                           |
+| `outputs[].artifact.name`               | Engine-enforced   | Drives the composed artifact contract.                                                                                    |
+| `version`, `capability`                 | Advisory          | Rendered.                                                                                                                 |
+| `inputs[].required`, `inputs[].default` | Advisory          | Rendered. The server does not check that a required input was supplied, and does not apply a default.                     |
+| Protocol                                | Advisory          | Rendered.                                                                                                                 |
+| Input bindings, output remaps           | Agent-interpreted | Name matching is the agent's convention. A step-bound `get_technique` annotates that resolution, and does not perform it. |
+
+
+
+
+### Condition
+
+
+| Field          | Class             | What the server does                                                                    |
+| -------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| Condition text | Advisory          | Rendered for a warn-only `transition_condition` match, by exact string equality.        |
+| Evaluation     | Agent-interpreted | The agent evaluates `simple`, `and`, `or`, `not`, and `exists`, including a null value. |
+
+
+What writes the session bag is [state](../docs/state.md).
+
+## Fields
+
+The field lists live in the schema files linked above. Five of them are generated from the Zod sources ([generate-schemas.ts](../scripts/generate-schemas.ts#L37)). [technique.schema.json](technique.schema.json#L4) is hand-authored.
+
+A step's shape is the `kind` branch in [activity.schema.json](activity.schema.json#L185): [technique](activity.schema.json#L185), [action](activity.schema.json#L393), [checkpoint](activity.schema.json#L428), [loop](activity.schema.json#L510), [routine](activity.schema.json#L578). The same branches are inlined in [workflow.schema.json](workflow.schema.json#L343) and [routine.schema.json](routine.schema.json#L220).

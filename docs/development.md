@@ -57,7 +57,7 @@ The directories, and what each one owns:
 | `src/config.ts` | `ServerConfig` — the resolved roots, transport, port, and the delivery budgets |
 | `src/transports/` | One module per transport, each owning its own connect, listen and shutdown lifecycle |
 | `src/middleware/` | Request id, per-request logging and the shared JSON error body — HTTP only, no footprint on the stdio path |
-| `src/resources/` | MCP resources the server exposes, including `workflow-server://schemas` |
+| `src/resources/` | MCP resources the server exposes. The schema URIs are the [API](api.md#mcp-resources) |
 | `src/schema/` | The Zod schemas everything is validated against, plus the identifier rules and the `when` expression evaluator |
 | `src/loaders/` | Filesystem to validated object: workflows, techniques, resources, schemas, and the `::` reference resolver |
 | `src/tools/` | The tool implementations, split between `workflow-tools.ts` and `resource-tools.ts` |

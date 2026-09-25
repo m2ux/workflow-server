@@ -368,7 +368,7 @@ The server checks that the pause has been cleared and returns the recorded effec
 
 ## Declaring a Checkpoint
 
-One declaration is reused at several sites, then shown to the worker as an ordinary checkpoint (Figure 15). The step, the shared routine, and the sites that refer to it are the pieces (Figure 16). The step's fields are the [schema](../schemas/README.md#checkpoint-step).
+One declaration is reused at several sites, then shown to the worker as an ordinary checkpoint (Figure 15). The step, the shared routine, and the sites that refer to it are the pieces (Figure 16). The step's fields are the [schema](../schemas/activity.schema.json#L428).
 
 ```mermaid
 sequenceDiagram
@@ -432,7 +432,7 @@ steps:
             target_confirmed: false
 ```
 
-The fields of that declaration are the [schema](../schemas/README.md#checkpoint-step).
+The fields of that declaration are the [schema](../schemas/activity.schema.json#L428).
 
 
 

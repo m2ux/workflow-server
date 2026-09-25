@@ -7,7 +7,7 @@ How a running process is bound, and what it exposes.
 | Read | What it is |
 |------|------------|
 | [configuration](configuration.md) | Every flag and environment variable the server reads at startup |
-| [api](api.md) | The catalog of tools and HTTP routes |
+| [api](api.md) | The catalog of tools, resources, and HTTP routes |
 
 ## Repository
 
