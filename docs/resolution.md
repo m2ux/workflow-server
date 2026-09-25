@@ -335,7 +335,7 @@ A technique publishes:
 * **`protocol`** — an ordered list of blocks `{title?, steps[]}`. Steps are imperative bullets; failure handling is expressed inline within the relevant steps.
 * **`rules`** — named behavioural invariants that apply across the technique. Each key is a rule name (or a group prefix); each value is a single rule string or an array of related rules.
 
-Section shapes and the addressing grammar are the [technique protocol](technique.md). The case and shape of every id are the [identifier conventions](README.md#document-corpus).
+Section shapes and the addressing grammar are the [technique protocol](technique.md). The case and shape of every id are the [identifier conventions](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
 
 ### Technique or Rule
 

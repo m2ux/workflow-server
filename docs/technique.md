@@ -4,7 +4,7 @@ A **technique** is a reusable capability file: what it does, what it needs, the 
 
 A **protocol** is the ordered work. A **rule** is an invariant that holds across the technique, not one action. An **input** is a value the caller supplies. An **output** is a value the technique exposes when it finishes. A **reference** is the name a step uses to reach a technique or a rule. A **nested technique** is a technique inside another's folder, and it is itself a technique.
 
-A **contract** is the inputs, outputs, and rules a folder shares with the techniques it contains. A **bundle** is what the server then sends: each technique's own body, the contracts beside it, and the role's rules. A **protocol variable** is a value one step produces for a later step in the same protocol, and it is not part of the interface. A **symbol** is a rule named by walking its ancestry, without invoking anything. How an id is spelled is the [identifier conventions](README.md#document-corpus). The fields a workflow file declares are the [schema](../schemas/README.md). The [calls](api.md) that deliver a technique are in the tool catalog.
+A **contract** is the inputs, outputs, and rules a folder shares with the techniques it contains. A **bundle** is what the server then sends: each technique's own body, the contracts beside it, and the role's rules. A **protocol variable** is a value one step produces for a later step in the same protocol, and it is not part of the interface. A **symbol** is a rule named by walking its ancestry, without invoking anything. How an id is spelled is the [identifier conventions](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md). The fields a workflow file declares are the [schema](../schemas/README.md). The [calls](api.md) that deliver a technique are in the tool catalog.
 
 ## File Layout
 
@@ -202,7 +202,7 @@ A `###` heading under `## Rules` is an invariant that governs the technique as a
 * A constraint shared by sibling techniques belongs on their common container, which delivers it by inheritance.
 * A constraint that governs only one child belongs on that child.
 
-A rule name is kebab-case and states the invariant as a positive assertion. How that name is spelled is the [identifier conventions](README.md#document-corpus).
+A rule name is kebab-case and states the invariant as a positive assertion. How that name is spelled is the [identifier conventions](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
 
 ### Error Handling
 
@@ -394,7 +394,7 @@ An output lands in the session under its declared id, unless the step binding re
 
 ## Authoring
 
-The interface stays free of any one workflow. The full set is the [anti-patterns](README.md#document-corpus). What binds a technique file:
+The interface stays free of any one workflow. The full set is the [anti-patterns](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md). What binds a technique file:
 
 * An input or output describes what a value is. A technique names another technique only in the protocol or the capability, as utilisation.
 * A protocol references data by its input or output id. An artifact filename lives in the artifact declaration, one filename per output.
@@ -402,7 +402,7 @@ The interface stays free of any one workflow. The full set is the [anti-patterns
 * A protocol step is an action. A standing prohibition is a rule, or a guard folded into the step it qualifies.
 * A behavioral constraint is a rule. It lives at the smallest container that covers what it governs.
 * A resource describes what it is. It does not name the techniques that use it.
-* An identifier's alphabet and grammatical shape both carry meaning. That spelling is the [identifier conventions](README.md#document-corpus).
+* An identifier's alphabet and grammatical shape both carry meaning. That spelling is the [identifier conventions](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
 
 ## Validation
 
