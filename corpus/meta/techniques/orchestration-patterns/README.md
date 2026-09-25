@@ -20,3 +20,4 @@ The shared contract every operation here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`plan-steps`](plan-steps.md) | Produce an inspectable ordered execution plan of steps for the goal — the plan half of plan-and-execute |
 | [`replan`](replan.md) | Revise the execution plan in light of the replan reason and prior step results, producing a new plan for remaining work |
 | [`synthesise-results`](synthesise-results.md) | Combine gathered results into a single synthesis under caller-supplied criteria — the consolidate step every scatter ends in, whether the units ran in one worker or in branches of their own |
+| [`verify-output-files`](verify-output-files.md) | Confirm every expected output file persisted into the planning folder, re-dispatching the worker whose file is missing |

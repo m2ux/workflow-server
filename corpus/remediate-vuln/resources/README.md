@@ -1,3 +1,5 @@
 # remediate-vuln Resources
 
-(No local resources defined.)
+| Resource | Holds |
+|----------|--------|
+| [readme-seed.md](readme-seed.md) | Progress inventory and classifier for the private planning README. The Links table is left out. |

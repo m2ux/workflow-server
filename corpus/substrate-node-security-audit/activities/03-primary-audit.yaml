@@ -67,7 +67,7 @@ steps:
   - kind: technique
     id: verify-agent-output-files
     technique:
-      name: dispatch-sub-agents::verify-output-files
+      name: orchestration-patterns::verify-output-files
       inputs:
         expected_output_files: a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json
   - kind: technique
@@ -96,7 +96,7 @@ steps:
         expected_ids: worker_briefs
   - kind: technique
     id: preserve-verification-report
-    technique: dispatch-sub-agents::verify-output-files
+    technique: orchestration-patterns::verify-output-files
   - kind: action
     id: finalize-activity
     actions:

@@ -182,10 +182,17 @@ steps:
           exit: abort
   - kind: technique
     id: initialize-planning-folder
-    technique: security-setup::initialize-planning-folder
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        seed_profile: remediate-vuln/readme-seed
+        include_links: false
   - kind: technique
     id: present-security-overview
-    technique: security-setup::present-security-overview
+    technique:
+      name: security-setup::present-security-overview
+      inputs:
+        planning_readme: README.md
     actions:
       - action: message
         message: |-
