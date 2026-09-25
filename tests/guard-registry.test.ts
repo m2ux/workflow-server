@@ -151,7 +151,7 @@ describe('guard registry', () => {
         + 'definitions written before the remedy existed, so it runs by path until those are triaged',
       'guards/check-operation-contract.ts':
         'reads the corpus and holds at 12 findings, each a variable declared a scalar against an '
-        + 'operation publishing members — one value described two incompatible ways. They are a '
+        + 'technique publishing members — one value described two incompatible ways. They are a '
         + 'corpus fix rather than a question, and enrolling before they land would take a green '
         + 'hard-zero sweep red; enrolling is the last step, in the commit that makes it pass',
     };

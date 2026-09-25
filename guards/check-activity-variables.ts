@@ -239,7 +239,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       // production drops out of `writes` and the consultation drops out of `reads`, and the two
       // silences look exactly like a name that is simply not used. This reads the wider `produces`
       // and `mentions` to see them. A production nothing consults elsewhere is not reported: a
-      // utility operation's confirmation value legitimately dies with its step.
+      // utility technique's confirmation value legitimately dies with its step.
       for (const name of record.derived.produces) {
         if (AMBIENT_CONTEXT_IDS.has(name)) continue;
         if (declaredAnywhere.has(name)) continue;
@@ -285,7 +285,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       }
     }
     // Who reads a name: any activity declaring a read of it, the activity that writes it and then
-    // reads it back within its own steps, and any activity a bound operation consumes it in
+    // reads it back within its own steps, and any activity a bound technique consumes it in
     // without requiring it. "Nothing reads it" has to mean nothing.
     const readersOf = new Map<string, string[]>();
     for (const record of records) {

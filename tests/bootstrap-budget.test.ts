@@ -2,7 +2,7 @@
  * Bootstrap-time fixed content stays inside the budget the protocol states (#404 W4).
  *
  * Before an orchestrator makes any decision it reads a fixed block: the bootstrap text `discover`
- * returns, the session-start response, and the operations bundle `get_workflow` delivers. Those are
+ * returns, the session-start response, and the techniques bundle `get_workflow` delivers. Those are
  * the same characters on every run, so their size is a property of the corpus and the server rather
  * than of a session.
  *
@@ -21,12 +21,12 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
 
 /**
  * Characters of fixed content an orchestrator reads before its first decision: the `discover` text,
- * the session-start response, and the operations bundle. Raise it deliberately — it grows only when
+ * the session-start response, and the techniques bundle. Raise it deliberately — it grows only when
  * the corpus decides an orchestrator needs more before it can act.
  *
  * 113,000 since the checkpoint presentation contract took one home (#400 W1). When a gate is
  * presented, what makes a gate soft, and which gate may never be soft are stated once, in the two
- * workflow-engine operations that present and resolve a checkpoint — and those operations are in
+ * workflow-engine techniques that present and resolve a checkpoint — and those techniques are in
  * this bundle, because the orchestrator reading it is the agent that resolves gates. The same text
  * previously sat in four workflow rule buckets, three of them delivered to workers who cannot
  * resolve a gate at all; those copies are gone, but they were never counted here.
@@ -38,17 +38,17 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
  * receiving the inherited bind contract it has nothing to bind, which took about 5,100 characters
  * out of this bundle — the conduct techniques and the harness adapters were each carrying it.
  *
- * The concurrent-dispatch operation is absent from this figure and belongs outside it: it rides the
+ * The concurrent-dispatch technique is absent from this figure and belongs outside it: it rides the
  * response for a workflow whose graph actually fans, so an orchestrator driving one that does not
  * pays nothing for a procedure it can never reach. Meta's own graph fans nowhere.
  *
  * 172,000 since an orchestrator receives its whole contract with its work (#847). The figure it
- * replaces was not what an orchestrator read: it measured a bundle that carried one operation body
+ * replaces was not what an orchestrator read: it measured a bundle that carried one technique body
  * and named the other eighteen as ids, each of them a fetch before the orchestrator could act, and
- * each of the bodies it did carry stripped of the rules that operation is held to. What this counts
- * now is every operation entire, and each rule stated once — in the body of the operation it
- * governs, or in the role's own `rules` list where it governs no one operation. Trimming it means
- * having fewer or smaller operations in the baseline, or collapsing the copies composition makes
+ * each of the bodies it did carry stripped of the rules that technique is held to. What this counts
+ * now is every technique entire, and each rule stated once — in the body of the technique it
+ * governs, or in the role's own `rules` list where it governs no one technique. Trimming it means
+ * having fewer or smaller techniques in the baseline, or collapsing the copies composition makes
  * of one ancestor group's contract; see the sizing question in #836.
  */
 const BUDGET = 172_000;

@@ -54,7 +54,7 @@ describe('borrowed-activity technique resolution', () => {
     ].join('\n'));
     writeFileSync(join(sourceDir, 'techniques', 'standalone-op.md'), [
       '---', 'metadata:', '  version: 1.0.0', '---', '',
-      '## Capability', '', 'Standalone operation.', '', '## Protocol', '', '1. Operate.',
+      '## Capability', '', 'Standalone technique.', '', '## Protocol', '', '1. Operate.',
     ].join('\n'));
 
     // A meta technique linking a resource of its own, bare. Whoever binds it, the link names
@@ -70,7 +70,7 @@ describe('borrowed-activity technique resolution', () => {
     ].join('\n'));
     writeFileSync(join(metaDir, 'techniques', 'shared-op.md'), [
       '---', 'metadata:', '  version: 1.0.0', '---', '',
-      '## Capability', '', 'Shared operation with its own resource.', '',
+      '## Capability', '', 'Shared technique with its own resource.', '',
       '## Protocol', '', '1. Follow [the template](../resources/shared-template.md).',
     ].join('\n'));
     writeFileSync(join(metaDir, 'resources', 'shared-template.md'), '# Shared Template\n');

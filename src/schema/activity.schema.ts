@@ -6,7 +6,7 @@ import { ActivityVariablesSchema } from './variable.schema.js';
 // Techniques reference (activity-level — optional when steps declare their own techniques).
 // A flat list of activity-wide technique references (`::` paths): the strategy/capability
 // techniques (e.g. `variable-binding`, `scatter-gather`) whose protocols apply across the
-// activity's steps. Per-step operations are bound at the step via `step.technique`, not here.
+// activity's steps. Per-step techniques are bound at the step via `step.technique`, not here.
 export const TechniquesReferenceSchema = z.array(z.string()).describe('Activity-wide technique references (`::` paths); bundled into get_activity.');
 export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
@@ -55,13 +55,13 @@ export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
 
 // Step schema
 /**
- * Structured per-step technique binding. `name` is the operation reference; `inputs` carries input
+ * Structured per-step technique binding. `name` is the technique reference; `inputs` carries input
  * deviations (op input id → source expression: rename / literal / `{template}`) and `outputs`
  * carries output remaps (op output id → the workflow variable name its value lands under). A step
  * with no deviations uses the bare-string form instead of this object.
  */
 export const TechniqueBindingSchema = z.object({
-  name: z.string().describe('The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes.'),
+  name: z.string().describe('The `group::technique` (or bare op / `workflow::group::op`) technique reference this step invokes.'),
   inputs: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default.'),
   outputs: z.record(z.string()).optional().describe('Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id.'),
 });
@@ -87,7 +87,7 @@ const stepEntryCondition = {
 
 /**
  * A step in an activity's ordered execution list — a `kind`-tagged unit in the unified model:
- * `technique` (binds an operation), `action` (control-only), `checkpoint` (an inline user decision
+ * `technique` (binds a technique), `action` (control-only), `checkpoint` (an inline user decision
  * point at its concrete position in the sequence), or `loop` (a compound step whose body is the
  * recursive `steps`). Each kind is a closed object: a field outside its declared set is a schema
  * error (AP-64 bound-step purity).
@@ -95,7 +95,7 @@ const stepEntryCondition = {
 export const TechniqueStepSchema = z.object({
   kind: z.literal('technique').describe('Step-kind discriminator.'),
   id: z.string().optional().describe('Identifier for this step within the activity. Optional: the loader derives it from the last `::` segment of the technique name.'),
-  technique: z.union([z.string(), TechniqueBindingSchema]).describe('Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.'),
+  technique: z.union([z.string(), TechniqueBindingSchema]).describe('Canonical per-step binding: a `group::technique` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.'),
   actions: z.array(ActionSchema).optional(),
   ...stepCommonFields,
   ...stepEntryCondition,
@@ -210,7 +210,7 @@ export function entryCondition(step: Step): z.infer<typeof ConditionSchema> | un
   return step.kind === 'loop' || step.kind === 'routine' ? undefined : step.condition;
 }
 
-/** The operation reference of a step's technique binding, whether bare-string or structured. */
+/** The technique reference of a step's technique binding, whether bare-string or structured. */
 export function techniqueName(technique: TechniqueStep['technique'] | undefined): string | undefined {
   return typeof technique === 'string' ? technique : technique?.name;
 }

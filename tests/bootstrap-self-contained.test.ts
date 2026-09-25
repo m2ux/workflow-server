@@ -11,7 +11,7 @@ import { collectFindings, MIN_PROSE_LINES } from '../guards/check-bootstrap-self
  * `get_activity`, so a corpus link or a rule address in that text is an instruction with no way to
  * follow it. Everywhere else, citing the home rather than restating it is the right economy; on this one
  * surface it strands the reader. Hard-zero: inline the substance and keep the name only as a label for
- * after the operations bundle arrives.
+ * after the techniques bundle arrives.
  *
  * A hard-zero assertion alone would pass just as well if the guard stopped detecting anything, so the
  * synthetic roots below prove each check still fires — in every spelling the corpus sanctions — and that
@@ -25,7 +25,7 @@ afterAll(() => {
 
 /**
  * A corpus root holding `body` as the pre-session resource, over a technique tree shaped like the real
- * one: an operation inside a group, a group's own `TECHNIQUE.md`, a flat technique, and the workflow's
+ * one: a technique inside a group, a group's own `TECHNIQUE.md`, a flat technique, and the workflow's
  * own `TECHNIQUE.md`. Each is keyed differently, and a fixture with only one of them leaves the other
  * three branches of the lookup unproven.
  *
@@ -47,7 +47,7 @@ function rootWith(body: string, pad = true): string {
   const short = MIN_PROSE_LINES - body.split('\n').filter((line) => line.trim() !== '').length;
   const filler = Array.from({ length: Math.max(0, short) }, (_, i) => `Step ${i + 1} of the procedure.`);
   write('meta/resources/bootstrap-protocol.md', pad ? [body, ...filler].join('\n') : body);
-  // An operation inside a group, keyed on its own filename. Its Inputs and Protocol headings must NOT
+  // A technique inside a group, keyed on its own filename. Its Inputs and Protocol headings must NOT
   // become rule names — without the `## Rules` gating every I/O id and step name in the corpus would.
   write(
     'meta/techniques/git/resolve-host-repo.md',
@@ -124,7 +124,7 @@ describe('bootstrap self-containment guard', () => {
   it('leaves alone the constructs the pre-session text legitimately carries', () => {
     // A filename whose stem is a technique name — inert because the lookup is on the pair, and `plan` is
     // a declared technique here, so this is the collision the pair lookup exists for. Then: schemes the
-    // client resolves with and without an authority, an empty destination, an operation named as a
+    // client resolves with and without an authority, an empty destination, a technique named as a
     // forward label, a same-document anchor, an I/O id that is not a rule, and a rule name this
     // technique does not declare.
     const body = [

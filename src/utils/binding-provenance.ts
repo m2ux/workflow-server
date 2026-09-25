@@ -111,7 +111,7 @@ export interface ProducerIndex {
 /**
  * The output ids each step of `activityId` declares, keyed by step id.
  *
- * A producer site already carries the id the operation declares — under `name` where the output
+ * A producer site already carries the id the technique declares — under `name` where the output
  * lands unremapped, and under `origOutputId` where a step binding remaps it — so the declarations
  * are read off the index rather than resolved a second time. A step whose bound op could not be
  * read contributes no entry, and a step with no entry is not measured.

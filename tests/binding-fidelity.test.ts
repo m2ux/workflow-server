@@ -112,7 +112,7 @@ describe('dead-output scoping', () => {
 /**
  * A library's runs, read from a tree built for the purpose.
  *
- * A run is where a library's operations are composed, so a value consumed only there is consumed
+ * A run is where a library's techniques are composed, so a value consumed only there is consumed
  * nowhere the sweep looks unless the sweep opens `routines/`. The membership tests that select a
  * namespace for the graph half — a `techniques/` directory, a definition with `activities/` beside
  * it — are each one a library can fail while holding runs, so the scan is driven by the directory

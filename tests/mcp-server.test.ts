@@ -848,7 +848,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       // Fetch each technique step's composed content first, as a real worker
       // does — a manifested technique step with no recorded fetch draws a
       // fidelity warning (#166 B8).
-      // A step reports under the output ids its operation declares, so the fetch that a real
+      // A step reports under the output ids its technique declares, so the fetch that a real
       // worker makes is also where the ids come from.
       const declaredIds = new Map<string, string[]>();
       for (const s of actResponse.steps as Array<{ id: string; kind?: string }>) {
@@ -1100,7 +1100,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const body = parseWorkflowResponse(result);
 
       // work-package declares `variable-binding` at techniques.activity (worker-inherited). It is NOT
-      // an orchestrator technique, so it is absent from the orchestrator's account of its operations.
+      // an orchestrator technique, so it is absent from the orchestrator's account of its techniques.
       const accounted = Object.keys((preamble['techniques'] ?? {}) as Record<string, unknown>);
       expect(accounted.length).toBeGreaterThan(0);
       expect(accounted).not.toContain('variable-binding');
@@ -1633,7 +1633,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
   // ============== Concurrent Session Isolation ==============
 
   describe('concurrent session isolation', () => {
-    it('operations on one session should not affect another', async () => {
+    it('techniques on one session should not affect another', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'work-package', agent_id: 'test-agent-1' },

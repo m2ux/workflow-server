@@ -209,14 +209,14 @@ describe('activity-variables guard', () => {
     }
   });
 
-  it('counts an optional operation input as a consumer of the value that reaches it', async () => {
+  it('counts an optional technique input as a consumer of the value that reaches it', async () => {
     const root = mkdtempSync(join(tmpdir(), 'wf-avars-optional-'));
     try {
       mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
       mkdirSync(join(root, 'wf', 'techniques'), { recursive: true });
       writeFileSync(join(root, 'wf', 'workflow.yaml'),
         'id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\n');
-      // The operation derives the value when it is unset, so the workflow need not supply it — but
+      // The technique derives the value when it is unset, so the workflow need not supply it — but
       // the checkpoint's write does reach it.
       writeFileSync(join(root, 'wf', 'techniques', 'post.md'),
         '---\nmetadata:\n  version: 1.0.0\n---\n\n## Capability\n\nPost it.\n\n'

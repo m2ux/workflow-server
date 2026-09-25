@@ -30,7 +30,7 @@ interface Tree {
   libraryActivities?: Record<string, Record<string, string>>;
   /** Routine files, by workflow id: routine name → its YAML body. */
   routines?: Record<string, Record<string, string>>;
-  /** Technique markdown, by workflow id: `group/operation` → its file body. */
+  /** Technique markdown, by workflow id: `group/technique` → its file body. */
   techniques?: Record<string, Record<string, string>>;
 }
 
@@ -225,7 +225,7 @@ steps:
    * `{$name}` and read bare afterwards. Those reads name the step's own working value, so charging
    * them to the bag asks a routine to declare a name nothing in the session ever holds.
    */
-  it('does not report a name the bound operation binds as a protocol local', async () => {
+  it('does not report a name the bound technique binds as a protocol local', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: referrer('    outputs:\n      run_verdict: host_verdict\n') } },
       techniques: {
@@ -277,11 +277,11 @@ steps:
   });
 
   /**
-   * A routine takes its argument's OPERATION and not that operation's values. Which values those are
+   * A routine takes its argument's OPERATION and not that technique's values. Which values those are
    * follows from the argument, so a signature naming one holds at the site that supplied it and
    * nowhere else — and the host reading it downstream is promised something the next site withdraws.
    */
-  it('reports a signature carrying a value the bound operation produces', async () => {
+  it('reports a signature carrying a value the bound technique produces', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    with:\n      pass_operation: analysis::sweep\n    outputs:\n      run_verdict: host_verdict\n` } },
       techniques: {
@@ -332,7 +332,7 @@ steps:
       },
     });
     expect(checks(findings)).toEqual(['routine-reads-argument-output']);
-    expect(findings[0]?.detail).toContain("'run_verdict' is an output of the operation this site binds");
+    expect(findings[0]?.detail).toContain("'run_verdict' is an output of the technique this site binds");
   });
 
   /**
@@ -402,7 +402,7 @@ steps:
    * reporting that the routine is sound — it is reporting that it looked at nothing, and the two read
    * identically unless one of them says so.
    */
-  it('says so when no reference site supplies an operation it can read', async () => {
+  it('says so when no reference site supplies a technique it can read', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    with:\n      pass_operation: "{chosen_lens}"\n` } },
       routines: {
@@ -435,8 +435,8 @@ steps:
 
   /**
    * The counterpart, and the one the corpus actually has: a step's actions are the RUN's writes,
-   * authored beside the binding and the same whichever operation the site supplies. Only what the
-   * operation declares varies by argument.
+   * authored beside the binding and the same whichever technique the site supplies. Only what the
+   * technique declares varies by argument.
    */
   it('does not report an output the run writes through an action beside the binding', async () => {
     const findings = await findingsFor({
@@ -828,7 +828,7 @@ steps:
 
   /**
    * A library declares no workflow, so it holds no activity file and the owner computation can only
-   * name somewhere else. Left at that, a run composing a library's operations could never sit beside
+   * name somewhere else. Left at that, a run composing a library's techniques could never sit beside
    * them — which is the arrangement the resolver's `namespace::name` form exists for.
    */
   const probe = `---
@@ -849,7 +849,7 @@ Probe the target.
 
   const libraryReferrer = 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: lib::shared-run\n';
 
-  it('accepts a library-homed routine whose body binds that library\'s operations', async () => {
+  it('accepts a library-homed routine whose body binds that library\'s techniques', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: libraryReferrer } },
       techniques: { lib: { probe } },
@@ -873,7 +873,7 @@ Probe the target.
   });
 
   /**
-   * The run a missing caller does bear on: its signature is derived against the operation that
+   * The run a missing caller does bear on: its signature is derived against the technique that
    * stands in the parameter's place, which a site supplies or a declared default carries. A
    * parameter with neither has nothing to derive against, and silence there would read as a run
    * nothing found fault with.
@@ -904,7 +904,7 @@ steps:
     expect(finding!.detail).toContain('nothing in the corpus refers to');
   });
 
-  it('reports a library-homed routine that binds none of that library\'s operations', async () => {
+  it('reports a library-homed routine that binds none of that library\'s techniques', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: libraryReferrer } },
       techniques: { lib: { probe } },
@@ -921,9 +921,9 @@ steps:
    * The exemption is a library's, and a workflow declaring the same shape is held to the ordinary
    * rule: its activities are what the owner computation reads, so a run one other workflow reaches
    * belongs to that workflow whatever its own directory offers. A reader granting the exemption on
-   * the operations alone would move every workflow's runs out of reach of the placement rule.
+   * the techniques alone would move every workflow's runs out of reach of the placement rule.
    */
-  it('reports a workflow-homed routine binding its own operations, the exemption being a library\'s', async () => {
+  it('reports a workflow-homed routine binding its own techniques, the exemption being a library\'s', async () => {
     const findings = await findingsFor({
       activities: {
         wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: other::shared-run\n' },
@@ -940,7 +940,7 @@ steps:
 
   /**
    * A run composes a library by reaching another of its runs as readily as by binding one of its
-   * operations: the reference splices that run's body, which is the library's operations, where it
+   * techniques: the reference splices that run's body, which is the library's techniques, where it
    * stands.
    */
   it('accepts a library-homed routine that reaches a sibling run of the same library', async () => {
@@ -958,12 +958,12 @@ steps:
   });
 
   /**
-   * An operation arriving by parameter carries its reference in the declaration's default rather
+   * A technique arriving by parameter carries its reference in the declaration's default rather
    * than in the step, so the body is read with that substituted. Read as authored, the step names a
    * bare parameter id, which names no namespace and would send the file away from the library whose
-   * operation it runs.
+   * technique it runs.
    */
-  it('accepts a library-homed routine whose operation arrives from a declared default', async () => {
+  it('accepts a library-homed routine whose technique arrives from a declared default', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: libraryReferrer } },
       techniques: { lib: { probe } },
@@ -989,11 +989,11 @@ steps:
   });
 
   /**
-   * A parameter carries no namespace of its own, so a run whose every operation arrives that way
+   * A parameter carries no namespace of its own, so a run whose every technique arrives that way
    * names its library through what a site binds into it. Read from the authored steps alone the
    * body names nothing, and the file is sent to the workflow that refers to it.
    */
-  it('accepts a library-homed routine whose operation arrives from a site argument', async () => {
+  it('accepts a library-homed routine whose technique arrives from a site argument', async () => {
     const findings = await findingsFor({
       activities: {
         wf: {
@@ -1022,11 +1022,11 @@ steps:
   });
 
   /**
-   * A run the authored steps name the library in is homed there whatever stands in its operation
+   * A run the authored steps name the library in is homed there whatever stands in its technique
    * positions. A reading that only ever substitutes would have no body to inspect where a parameter
    * has neither an argument nor a default, and would send the file away from the library it spells.
    */
-  it('accepts a library-homed routine naming the library outright, its other operation unbound', async () => {
+  it('accepts a library-homed routine naming the library outright, its other technique unbound', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: libraryReferrer } },
       techniques: { lib: { probe } },
@@ -1054,7 +1054,7 @@ steps:
   });
 
   /**
-   * Where sites exist and none supplies an operation this can read, nothing is derived and the
+   * Where sites exist and none supplies a technique this can read, nothing is derived and the
    * unheld finding says so. Grading the declaration against its own default there would report on a
    * body no reference site runs, and would retire the one verdict that says nothing was checked.
    */
@@ -1090,8 +1090,8 @@ steps:
   });
 
   /**
-   * A declaration supplying its own operation holds its signature without a site, the default being
-   * the operation every site that says nothing runs. Reporting it unheld states that nothing could
+   * A declaration supplying its own technique holds its signature without a site, the default being
+   * the technique every site that says nothing runs. Reporting it unheld states that nothing could
    * be derived, which the default falsifies — and what is derived is graded, so a body contradicting
    * the declaration is reported rather than passed over.
    */
@@ -1123,7 +1123,7 @@ steps:
     expect(findings.find((f) => f.check === 'routine-signature-unheld')).toBeUndefined();
   });
 
-  it('holds the signature of a caller-less routine whose operation carries a default', async () => {
+  it('holds the signature of a caller-less routine whose technique carries a default', async () => {
     const findings = await findingsFor({
       activities: { wf: { host: 'id: host\nversion: 1.0.0\nname: Host\nsteps:\n' + action } },
       techniques: { lib: { probe } },

@@ -22,19 +22,19 @@ import {
  * What the stand-ins say is deliberately not the corpus's own prose. A reading taken against this
  * fixture prices how the engine DELIVERS a role contract — how much of a response is the contract
  * every activity carries, what collapses on a second delivery, what a shared block costs when
- * several operations inherit it. Uniform bodies measure that at least as honestly as varied ones,
+ * several techniques inherit it. Uniform bodies measure that at least as honestly as varied ones,
  * and they are reproducible, which the baseline requires.
  *
  * The shape each stand-in carries is chosen for what it exercises rather than for realism:
- *   - a root `TECHNIQUE.md` whose inputs every operation inherits, so the shared-block pass has
+ *   - a root `TECHNIQUE.md` whose inputs every technique inherits, so the shared-block pass has
  *     something to collapse across the bundle;
- *   - a `TECHNIQUE.md` per group, whose rules the loader merges into every operation beneath it,
+ *   - a `TECHNIQUE.md` per group, whose rules the loader merges into every technique beneath it,
  *     so the response's own rules list carries what a step entry would otherwise restate;
- *   - two rules per operation, so a rules list is a substantial share of a delivery as it is in
+ *   - two rules per technique, so a rules list is a substantial share of a delivery as it is in
  *     the corpus.
  */
 
-/** Every operation ref a delivery of this fixture can name, including the reachable-only sets. */
+/** Every technique ref a delivery of this fixture can name, including the reachable-only sets. */
 function contractRefs(): string[] {
   return [...new Set([
     ...CORE_ORCHESTRATOR_TECHNIQUES,
@@ -81,7 +81,7 @@ export function buildTokenBenchCorpus(dest: string): string {
   write('meta/workflow.yaml', `id: meta
 version: 1.0.0
 title: Fixture Meta
-description: Host for the role-contract operations every delivery carries, derived from the lists src/loaders/core-ops.ts names.
+description: Host for the role-contract techniques every delivery carries, derived from the lists src/loaders/core-ops.ts names.
 initialActivity: bootstrap
 graph:
   bootstrap:
@@ -103,12 +103,12 @@ exits:
     isDefault: true
 `);
 
-  // The root contract every operation inherits. Three inputs, because three is what the corpus's
+  // The root contract every technique inherits. Three inputs, because three is what the corpus's
   // own root carries and what makes an inherited block worth collapsing.
   write('meta/techniques/TECHNIQUE.md', `${FRONT}
 ## Capability
 
-Contract shared by every operation in the meta namespace — the coordinates a run works against.
+Contract shared by every technique in the meta namespace — the coordinates a run works against.
 
 ## Inputs
 
@@ -122,7 +122,7 @@ Path of the component being worked on, relative to \`{host_repo_path}\` — \`.\
 
 ### planning_folder_path
 
-Path to the session's planning folder, as the server returned it. Operations that read or write session artifacts take it from here; not every operation needs one.
+Path to the session's planning folder, as the server returned it. Techniques that read or write session artifacts take it from here; not every technique needs one.
 ${rules([
     ['session-index-passes-on-each-call', 'Every authenticated tool call carries the `session_index` the session opened with. The index is stable for the life of the session.'],
     ['validation-warnings', 'Read `_meta.validation` on each response. A warning is advisory and is addressed rather than ignored.'],
@@ -134,19 +134,19 @@ ${rules([
     if (group && !groups.has(group)) {
       groups.add(group);
       write(`meta/techniques/${group}/TECHNIQUE.md`, technique(
-        `What every ${titleCase(group).toLowerCase()} operation of this fixture shares.`,
+        `What every ${titleCase(group).toLowerCase()} technique of this fixture shares.`,
         rules([[`${group}-operations-name-their-effect`,
-          `An operation of ${titleCase(group)} states what it leaves behind, so a caller reading the group knows which of its operations changed anything.`]]),
+          `A technique of ${titleCase(group)} states what it leaves behind, so a caller reading the group knows which of its techniques changed anything.`]]),
       ));
     }
     const path = group ? `meta/techniques/${group}/${op}.md` : `meta/techniques/${op}.md`;
     write(path, technique(
-      `${titleCase(op)} — the role-contract operation this fixture stands in for at \`${ref}\`.`,
+      `${titleCase(op)} — the role-contract technique this fixture stands in for at \`${ref}\`.`,
       `${rules([
         [`${op}-states-its-outcome`,
           `${titleCase(op)} reports what it reached, so the caller reads an outcome rather than inferring one from the absence of an error.`],
         [`${op}-carries-its-own-coordinates`,
-          `${titleCase(op)} takes the coordinates it works against from the contract above rather than deriving them, so two operations of one run never disagree about where they are working.`],
+          `${titleCase(op)} takes the coordinates it works against from the contract above rather than deriving them, so two techniques of one run never disagree about where they are working.`],
       ])}
 ## Protocol
 

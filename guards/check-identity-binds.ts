@@ -32,10 +32,10 @@
  *   contract derivation counts no read for one. A same-name bind on an optional input is the
  *   activity saying it does supply it, and that is what carries the name into the activity's read
  *   contract — strip it and `check-activity-variables` reports the declared read as unconsulted.
- *   So each pair is held against the bound operation's own signature, and a pair on an input that
- *   operation marks optional or gives a default is left alone.
+ *   So each pair is held against the bound technique's own signature, and a pair on an input that
+ *   technique marks optional or gives a default is left alone.
  *
- * Where the bound operation cannot be resolved to one file, the pair is left alone too: the
+ * Where the bound technique cannot be resolved to one file, the pair is left alone too: the
  * exclusion above cannot be tested, and a guard that cannot tell a deviation from a restatement
  * should not call it one.
  *
@@ -52,11 +52,11 @@ import { requireRootOrExit, runGuard, type Finding } from './guard-protocol.js';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
-/** The group and namespace contract file, which declares what every operation under it inherits. */
+/** The group and namespace contract file, which declares what every technique under it inherits. */
 const CONTAINER = 'TECHNIQUE.md';
 
-/** One operation file: where it sits, and the inputs it does not require. */
-interface Operation {
+/** One technique file: where it sits, and the inputs it does not require. */
+interface Technique {
   rel: string;
   optional: Set<string>;
 }
@@ -86,19 +86,19 @@ function optionalInputs(text: string): Set<string> {
 }
 
 /**
- * Every operation in the corpus, keyed by the file's basename — the leaf a reference names.
+ * Every technique in the corpus, keyed by the file's basename — the leaf a reference names.
  *
- * What a step binds is the COMPOSED contract: an operation inherits the inputs its group and
+ * What a step binds is the COMPOSED contract: a technique inherits the inputs its group and
  * namespace containers declare, and a container marks its own optional. `repo_path` is optional on
  * the GitHub container and appears in no leaf, so reading the leaf alone would call a same-name
  * bind on it a restatement and advise a strip that breaks the read contract. Container markings are
- * therefore collected on the way down and merged into every operation beneath them.
+ * therefore collected on the way down and merged into every technique beneath them.
  *
- * A container is not itself an operation, so it is read for what it declares and not indexed as a
+ * A container is not itself a technique, so it is read for what it declares and not indexed as a
  * reference target.
  */
-function operationsByLeaf(root: string): Map<string, Operation[]> {
-  const out = new Map<string, Operation[]>();
+function operationsByLeaf(root: string): Map<string, Technique[]> {
+  const out = new Map<string, Technique[]>();
   const visit = (dir: string, inherited: ReadonlySet<string>): void => {
     const names = readdirSync(dir).sort();
     let scope = inherited;
@@ -124,17 +124,17 @@ function operationsByLeaf(root: string): Map<string, Operation[]> {
 }
 
 /**
- * The one operation a step's reference names, or undefined where it names several.
+ * The one technique a step's reference names, or undefined where it names several.
  *
  * A reference spells its path with either separator, and a bare leaf resolves against the workflow
  * that spells it before anywhere else — which is the rule the loader applies and the only thing
- * that tells two same-named operations apart.
+ * that tells two same-named techniques apart.
  */
 function resolveOperation(
-  byLeaf: Map<string, Operation[]>,
+  byLeaf: Map<string, Technique[]>,
   reference: string,
   homeNamespace: string,
-): Operation | undefined {
+): Technique | undefined {
   const segments = reference.split(/::|\//);
   const candidates = byLeaf.get(segments[segments.length - 1]!);
   if (!candidates || candidates.length === 0) return undefined;
@@ -161,7 +161,7 @@ function identityKeys(map: unknown): string[] {
 function walkSteps(
   steps: Step[] | undefined,
   report: (stepId: string, field: string, keys: string[], reference: string) => void,
-  byLeaf: Map<string, Operation[]>,
+  byLeaf: Map<string, Technique[]>,
   homeNamespace: string,
 ): void {
   for (const step of steps ?? []) {
@@ -172,9 +172,9 @@ function walkSteps(
     if (!binding || typeof binding !== 'object') continue;
     const { name, inputs, outputs } = binding as { name?: unknown; inputs?: unknown; outputs?: unknown };
     if (typeof name !== 'string') continue;
-    const operation = resolveOperation(byLeaf, name, homeNamespace);
-    if (!operation) continue;
-    const required = identityKeys(inputs).filter((key) => !operation.optional.has(key));
+    const technique = resolveOperation(byLeaf, name, homeNamespace);
+    if (!technique) continue;
+    const required = identityKeys(inputs).filter((key) => !technique.optional.has(key));
     if (required.length > 0) report(step.id ?? '(unnamed step)', 'inputs', required, name);
     const landed = identityKeys(outputs);
     if (landed.length > 0) report(step.id ?? '(unnamed step)', 'outputs', landed, name);

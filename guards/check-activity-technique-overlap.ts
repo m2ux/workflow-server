@@ -4,7 +4,7 @@
  * An activity's top-level `techniques[]` list is for the cross-cutting STRATEGY/capability
  * techniques (e.g. `variable-binding`, `scatter-gather`) that support the agent across the WHOLE
  * activity. It must NOT re-list a technique that one of the activity's own steps already binds via
- * `step.technique` — that operation's authoritative declaration is the step binding, and duplicating
+ * `step.technique` — that technique's authoritative declaration is the step binding, and duplicating
  * it at the activity level is redundant (and drifts). This flags any activity-level `techniques[]`
  * entry whose reference also appears as a `step.technique` binding anywhere in the activity (top-level
  * steps or loop steps). Hard-zero rule (no baseline): every overlap must be removed from the

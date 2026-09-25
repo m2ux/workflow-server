@@ -282,7 +282,7 @@ describe('corpus discovery', () => {
     });
 
     it('names no namespace when no leading run spells one', () => {
-      expect(splitNamespaceRef(root, ['group', 'operation'])).toBeNull();
+      expect(splitNamespaceRef(root, ['group', 'technique'])).toBeNull();
     });
 
     it('leaves a run alone where only one side holds the kind', () => {

@@ -24,7 +24,7 @@
  * that resolves and a file inside it that does not is a reference nothing checks: the anchor guard
  * checks anchors, the pinned-path guard checks TypeScript, and a link from one corpus file to
  * another falls between them. What an agent does with a reference to a file that is not there is
- * undefined, and where the target is an operation the likely outcome is that it improvises the call
+ * undefined, and where the target is a technique the likely outcome is that it improvises the call
  * the library exists to stop anyone improvising.
  *
  * Links that reach out of the corpus entirely — into the server repo's `docs/` or `schemas/` — are a
@@ -99,7 +99,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
             });
             continue;
           }
-          // The namespace resolves and the file inside it does not. A technique applying an operation
+          // The namespace resolves and the file inside it does not. A technique applying a technique
           // by a link is the one place this is silent and costly: what an agent does with a reference
           // to a file that is not there is undefined, and the likely outcome is that it improvises the
           // call the library exists to stop anyone improvising.

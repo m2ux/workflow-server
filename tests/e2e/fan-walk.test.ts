@@ -98,7 +98,7 @@ describe('the collection a fan runs over', () => {
   });
 });
 
-describe('the concurrent-dispatch operation reaches the orchestrator that can use it', () => {
+describe('the concurrent-dispatch technique reaches the orchestrator that can use it', () => {
   const workflowBundle = async (workflowId: string): Promise<string> => {
     const start = await harness.client.callTool({
       name: 'start_session',

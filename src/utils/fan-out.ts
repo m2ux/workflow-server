@@ -1,40 +1,40 @@
 import type { Technique } from '../schema/technique.schema.js';
 
 /**
- * Fan-out: how much of a delivered operation is content declared somewhere above it (#528 W5).
+ * Fan-out: how much of a delivered technique is content declared somewhere above it (#528 W5).
  *
- * Two things ride along with every operation inside a container. Rules declared on a root or group
- * `TECHNIQUE.md` reach every operation in that container, and inherited I/O entries reach every
- * operation that composes the contract. Both are cross-cutting by design, so a low share here is not
+ * Two things ride along with every technique inside a container. Rules declared on a root or group
+ * `TECHNIQUE.md` reach every technique in that container, and inherited I/O entries reach every
+ * technique that composes the contract. Both are cross-cutting by design, so a low share here is not
  * a defect and nothing gates on these figures — they are reported so the fan-out is visible and a
  * regression is arguable.
  *
  * Reported as warn-only figures beside `bench:batch`. A threshold would fail the corpus on its
- * intended design: a container rule is *meant* to apply to operations that do not name it.
+ * intended design: a container rule is *meant* to apply to techniques that do not name it.
  * Unused delivery content — a body with no tool, input, or observable behaviour behind it — is a
  * different measurement, and is not a third ratio here.
  */
 
-/** One measurement over a set of delivered operations. */
+/** One measurement over a set of delivered techniques. */
 export interface FanOutMetrics {
-  /** Composed operations measured. */
-  operations: number;
-  /** Rule entries delivered across them, counting one per entry per operation that receives it. */
+  /** Composed techniques measured. */
+  techniques: number;
+  /** Rule entries delivered across them, counting one per entry per technique that receives it. */
   ruleEntries: number;
   /** Characters those entries account for. */
   ruleChars: number;
-  /** Entries whose text names the operation it arrives with. */
+  /** Entries whose text names the technique it arrives with. */
   ruleEntriesNamingTheirOperation: number;
-  /** Inherited input and output items delivered, counted per operation that receives them. */
+  /** Inherited input and output items delivered, counted per technique that receives them. */
   inheritedIoItems: number;
   /** Characters those items account for, note text included. */
   inheritedIoChars: number;
-  /** Inherited items whose id the receiving operation's protocol templates as `{id}`. */
+  /** Inherited items whose id the receiving technique's protocol templates as `{id}`. */
   inheritedIoItemsTemplated: number;
 }
 
 const EMPTY: FanOutMetrics = {
-  operations: 0,
+  techniques: 0,
   ruleEntries: 0,
   ruleChars: 0,
   ruleEntriesNamingTheirOperation: 0,
@@ -43,7 +43,7 @@ const EMPTY: FanOutMetrics = {
   inheritedIoItemsTemplated: 0,
 };
 
-/** Every prose surface of an operation a rule could plausibly be about. */
+/** Every prose surface of a technique a rule could plausibly be about. */
 function operationText(technique: Technique): string {
   const protocol = (technique.protocol ?? [])
     .flatMap((block) => [block.title ?? '', ...block.steps])
@@ -52,7 +52,7 @@ function operationText(technique: Technique): string {
 }
 
 /**
- * The names an operation answers to: its full id, and the last segment of a `group::op` or `group/op`
+ * The names a technique answers to: its full id, and the last segment of a `group::op` or `group/op`
  * path, which is how a sibling rule refers to it.
  */
 function operationNames(technique: Technique): string[] {
@@ -61,7 +61,7 @@ function operationNames(technique: Technique): string[] {
   return tail === id ? [id] : [id, tail];
 }
 
-/** Accumulate one composed operation into a running measurement. */
+/** Accumulate one composed technique into a running measurement. */
 export function measureOperation(technique: Technique, into: FanOutMetrics = { ...EMPTY }): FanOutMetrics {
   const names = operationNames(technique);
   const text = operationText(technique);
@@ -74,7 +74,7 @@ export function measureOperation(technique: Technique, into: FanOutMetrics = { .
     for (const entry of entries) {
       ruleEntries += 1;
       ruleChars += key.length + entry.length;
-      // A rule is about this operation when it names it, or when the operation's own prose names the
+      // A rule is about this technique when it names it, or when the technique's own prose names the
       // rule's key — the two ways the corpus ties a rule to the work it governs.
       if (names.some((name) => entry.includes(name)) || text.includes(key)) naming += 1;
     }
@@ -94,7 +94,7 @@ export function measureOperation(technique: Technique, into: FanOutMetrics = { .
   }
 
   return {
-    operations: into.operations + 1,
+    techniques: into.techniques + 1,
     ruleEntries: into.ruleEntries + ruleEntries,
     ruleChars: into.ruleChars + ruleChars,
     ruleEntriesNamingTheirOperation: into.ruleEntriesNamingTheirOperation + naming,
@@ -104,7 +104,7 @@ export function measureOperation(technique: Technique, into: FanOutMetrics = { .
   };
 }
 
-/** Fold a set of composed operations into one measurement. */
+/** Fold a set of composed techniques into one measurement. */
 export function measureFanOut(techniques: readonly Technique[]): FanOutMetrics {
   return techniques.reduce<FanOutMetrics>((acc, t) => measureOperation(t, acc), { ...EMPTY });
 }
@@ -122,12 +122,12 @@ export function fanOutRatios(m: FanOutMetrics): { ruleReachPct: number; inherite
 /** One warn-only line per ratio, for a benchmark run to print beside its measured figures. */
 export function fanOutLines(m: FanOutMetrics): string[] {
   const { ruleReachPct, inheritedIoReachPct } = fanOutRatios(m);
-  const perOp = (chars: number): number => (m.operations === 0 ? 0 : Math.round(chars / m.operations));
+  const perOp = (chars: number): number => (m.techniques === 0 ? 0 : Math.round(chars / m.techniques));
   return [
-    `  fan-out (warn-only, nothing gates on these): ${m.operations} operations composed`,
+    `  fan-out (warn-only, nothing gates on these): ${m.techniques} techniques composed`,
     `  container rules: ${m.ruleChars} chars over ${m.ruleEntries} entries, `
-    + `${ruleReachPct}% naming the operation they arrive with (${perOp(m.ruleChars)} chars an operation)`,
+    + `${ruleReachPct}% naming the technique they arrive with (${perOp(m.ruleChars)} chars a technique)`,
     `  inherited I/O: ${m.inheritedIoChars} chars over ${m.inheritedIoItems} items, `
-    + `${inheritedIoReachPct}% templated by the receiving protocol (${perOp(m.inheritedIoChars)} chars an operation)`,
+    + `${inheritedIoReachPct}% templated by the receiving protocol (${perOp(m.inheritedIoChars)} chars a technique)`,
   ];
 }

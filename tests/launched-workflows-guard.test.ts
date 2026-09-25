@@ -16,7 +16,7 @@ import { liveCorpusRoot } from './corpus-root.js';
 describe('launched workflows guard', () => {
   /**
    * Write a corpus holding a launcher activity plus a `prism` workflow to launch, and collect.
-   * `operationBody` seeds `launcher/techniques/compose-launch.md`, the operation a step can bind
+   * `operationBody` seeds `launcher/techniques/compose-launch.md`, the technique a step can bind
    * instead of the launch itself.
    */
   function violationsFor(activityYaml: string, operationBody = 'Nothing to see.'): ReturnType<typeof collectLaunchedWorkflowViolations> {
@@ -71,8 +71,8 @@ ${steps}`;
     expect(v[0]!.detail).toContain("declares a launch of 'prism' that nothing performs");
   });
 
-  it('accepts a declaration performed by an operation a step binds', () => {
-    // Composition, not a missing launch: the step's operation applies the launch itself.
+  it('accepts a declaration performed by a technique a step binds', () => {
+    // Composition, not a missing launch: the step's technique applies the launch itself.
     const v = violationsFor(activity(DECLARATION, `  - kind: technique
     id: launch-and-record
     technique: compose-launch

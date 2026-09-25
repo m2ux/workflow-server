@@ -18,7 +18,7 @@ import { stringifyForResponse } from './serialization.js';
  * entire or replaces entire — one composed technique, one rules list, one note, one resource. No
  * key names a field of a body, because a body delivered without one of its fields is a fragment,
  * and a reader holding a fragment has no call that returns the part it lacks: the field is not a
- * thing with an identity, only a component of an operation that was delivered anyway.
+ * thing with an identity, only a component of a technique that was delivered anyway.
  *
  * Content keys are namespaced by delivery channel so the composition paths
  * never cross-reference each other's payloads:

@@ -14,7 +14,7 @@
  * Two steps match when they are the same kind doing the same bound work. Each step reduces to a
  * signature that keeps what the run *is* and drops what a site is free to vary:
  *
- *   technique    the operation reference, plus the sorted keys of its input bindings
+ *   technique    the technique reference, plus the sorted keys of its input bindings
  *   checkpoint   the shared-body reference, or the sorted ids of its inline options
  *   action       the sorted `verb=target` pairs, or `marker` for a step that carries none
  *   loop         the iteration type, the collection, and the signatures of its own body
@@ -100,7 +100,7 @@ function isRecord(value: unknown): value is Step {
 
 /* ------------------------------- step signatures ------------------------------- */
 
-/** The operation a technique step binds, in either the bare-string or the structured form. */
+/** The technique a technique step binds, in either the bare-string or the structured form. */
 function opReference(binding: unknown): string {
   if (typeof binding === 'string') return binding;
   if (isRecord(binding)) return String(binding.name ?? '');

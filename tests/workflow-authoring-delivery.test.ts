@@ -59,7 +59,7 @@ const EAGER_STEP_IDS = [
 /**
  * Every `##` section of the anti-pattern home, which is that home in full. Four entries sit
  * outside the family sections, so a walk that matches titles by pattern drops them — the walking
- * operation enumerates this list for the same reason, and this is the assertion that the
+ * technique enumerates this list for the same reason, and this is the assertion that the
  * enumeration survives delivery.
  */
 const ANTI_PATTERN_SECTIONS = [

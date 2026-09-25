@@ -27,14 +27,14 @@ describe('technique reference rule', () => {
     // A workflow carrying techniques, one of them nested two groups deep.
     const shared = writeWorkflowFixture(root, 'shared-wf');
     technique(shared, 'standalone');
-    technique(shared, join('group', 'operation'));
-    technique(shared, join('group', 'subgroup', 'operation'));
+    technique(shared, join('group', 'technique'));
+    technique(shared, join('group', 'subgroup', 'technique'));
     // A workflow with no techniques/ directory: a declared workflow is still what its name means.
     writeWorkflowFixture(root, 'bare-wf');
     // The workflow whose activities do the referring, carrying a group named after another workflow.
     const local = writeWorkflowFixture(root, 'local-wf');
     technique(local, 'standalone');
-    technique(local, join('bare-wf', 'operation'));
+    technique(local, join('bare-wf', 'technique'));
     const meta = writeWorkflowFixture(root, 'meta');
     technique(meta, 'shared-only');
     index = indexCorpus(root);
@@ -51,13 +51,13 @@ describe('technique reference rule', () => {
     it('reads it as a workflow whether or not that workflow carries techniques yet', () => {
       // `bare-wf` holds no techniques/ directory, and local-wf holds a group folder of that name:
       // the reference names the workflow, so the local group is not what it addresses.
-      expect(parseTechniqueRef('bare-wf::operation', index))
-        .toMatchObject({ namespace: 'bare-wf', segments: ['operation'] });
+      expect(parseTechniqueRef('bare-wf::technique', index))
+        .toMatchObject({ namespace: 'bare-wf', segments: ['technique'] });
     });
 
     it('reads it as a group when the corpus declares no such workflow', () => {
-      expect(parseTechniqueRef('group::operation', index))
-        .toMatchObject({ namespace: undefined, segments: ['group', 'operation'] });
+      expect(parseTechniqueRef('group::technique', index))
+        .toMatchObject({ namespace: undefined, segments: ['group', 'technique'] });
     });
 
     it('reads a bare name as a technique in the referring workflow', () => {
@@ -73,20 +73,20 @@ describe('technique reference rule', () => {
 
   describe('depth', () => {
     it('admits a path of any depth inside a workflow', () => {
-      expect(parseTechniqueRef('group::subgroup::operation', index))
-        .toMatchObject({ namespace: undefined, segments: ['group', 'subgroup', 'operation'] });
+      expect(parseTechniqueRef('group::subgroup::technique', index))
+        .toMatchObject({ namespace: undefined, segments: ['group', 'subgroup', 'technique'] });
     });
 
     it('admits a workflow prefix before a nested path', () => {
-      expect(parseTechniqueRef('shared-wf::group::subgroup::operation', index))
-        .toMatchObject({ namespace: 'shared-wf', segments: ['group', 'subgroup', 'operation'] });
+      expect(parseTechniqueRef('shared-wf::group::subgroup::technique', index))
+        .toMatchObject({ namespace: 'shared-wf', segments: ['group', 'subgroup', 'technique'] });
     });
   });
 
   describe('the slash spelling of a workflow prefix', () => {
     it('names the workflow, and the rest is the path within it', () => {
-      expect(parseTechniqueRef('shared-wf/group::operation', index))
-        .toMatchObject({ namespace: 'shared-wf', segments: ['group', 'operation'] });
+      expect(parseTechniqueRef('shared-wf/group::technique', index))
+        .toMatchObject({ namespace: 'shared-wf', segments: ['group', 'technique'] });
     });
 
     it('names a workflow whether or not the corpus holds one', () => {
@@ -96,7 +96,7 @@ describe('technique reference rule', () => {
   });
 
   describe('what the rule refuses', () => {
-    const refused = ['', '::standalone', 'standalone::', 'group::::operation', 'a/b/c', 'group::a/b', '/standalone'];
+    const refused = ['', '::standalone', 'standalone::', 'group::::technique', 'a/b/c', 'group::a/b', '/standalone'];
     for (const ref of refused) {
       it(`refuses '${ref}' and names the rule in the refusal`, () => {
         expect(() => parseTechniqueRef(ref, index)).toThrow(TechniqueRefError);
@@ -109,7 +109,7 @@ describe('technique reference rule', () => {
     }
 
     it('surfaces the refusal through the loader rather than as a technique that is merely absent', async () => {
-      const result = await readTechnique('group::::operation', root, 'local-wf');
+      const result = await readTechnique('group::::technique', root, 'local-wf');
       expect(result.success).toBe(false);
       if (!result.success) expect(result.error.name).toBe('TechniqueRefError');
     });
@@ -117,7 +117,7 @@ describe('technique reference rule', () => {
 
   describe('spelling a reference', () => {
     it('writes a built reference canonically', () => {
-      expect(techniqueRef('shared-wf', ['group', 'operation']).text).toBe('shared-wf::group::operation');
+      expect(techniqueRef('shared-wf', ['group', 'technique']).text).toBe('shared-wf::group::technique');
       expect(techniqueRef(undefined, ['standalone']).text).toBe('standalone');
     });
 
@@ -127,7 +127,7 @@ describe('technique reference rule', () => {
 
     it('calls a name bare only when it carries neither separator', () => {
       expect(isBareName('standalone')).toBe(true);
-      expect(isBareName('group::operation')).toBe(false);
+      expect(isBareName('group::technique')).toBe(false);
       expect(isBareName('shared-wf/standalone')).toBe(false);
     });
   });
@@ -136,9 +136,9 @@ describe('technique reference rule', () => {
     it('reads and bundles a slash-prefixed nested reference the same way', async () => {
       // One rule, so `workflow/group::op` names the same file whichever path asks: the slash carries
       // the workflow and the `::` that follows walks into a group folder, on both.
-      const read = await readTechnique('shared-wf/group::operation', root, 'local-wf');
+      const read = await readTechnique('shared-wf/group::technique', root, 'local-wf');
       expect(read.success).toBe(true);
-      const bundled = (await resolveTechniques(['shared-wf/group::operation'], root, 'local-wf'))[0]!;
+      const bundled = (await resolveTechniques(['shared-wf/group::technique'], root, 'local-wf'))[0]!;
       expect(bundled.type).toBe('technique');
       expect(bundled.workflow).toBe('shared-wf');
     });
@@ -241,9 +241,9 @@ describe('technique reference rule', () => {
     });
 
     it('does not deliver a same-named local group in place of a workflow that has no techniques yet', async () => {
-      // local-wf holds techniques/bare-wf/operation.md, and bare-wf is a workflow: the reference
+      // local-wf holds techniques/bare-wf/technique.md, and bare-wf is a workflow: the reference
       // names the workflow, so it resolves to nothing rather than to the local group's file.
-      const result = await readTechnique('bare-wf::operation', root, 'local-wf');
+      const result = await readTechnique('bare-wf::technique', root, 'local-wf');
       expect(result.success).toBe(false);
       if (!result.success) expect(result.error.name).toBe('TechniqueNotFoundError');
     });

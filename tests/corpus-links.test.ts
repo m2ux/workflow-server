@@ -117,7 +117,7 @@ describe('corpus links', () => {
     /**
      * The half the anchored form does not settle: the namespace resolves and the file does not.
      * Nothing else in the suite reads a link from one corpus file to another — the anchor guard
-     * checks anchors and the pinned-path guard checks TypeScript — which is why an operation
+     * checks anchors and the pinned-path guard checks TypeScript — which is why a technique
      * referenced by a name no file answers to survived being applied on every run.
      */
     it('reports a link naming a namespace the corpus holds and a file it does not', () => {

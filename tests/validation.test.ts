@@ -485,14 +485,14 @@ describe('validation', () => {
     });
 
   /**
-   * An output lands in the bag under the id it is reported by, so a key the operation does not
+   * An output lands in the bag under the id it is reported by, so a key the technique does not
    * declare puts a value under a name nothing reads, and a declared id with no key leaves a name a
    * later step reads unbound. The server does not run the step, so both are warn-only.
    */
   describe('validateStepManifest: reported ids against declared ones', () => {
     const declared = new Map([['first-step', new Set(['change_report'])]]);
 
-    it('passes a step reporting exactly what its operation declares', () => {
+    it('passes a step reporting exactly what its technique declares', () => {
       const warnings = validateStepManifest(
         [
           { step_id: 'first-step', output: { change_report: 'two symbols' } },
@@ -507,7 +507,7 @@ describe('validation', () => {
       expect(warnings.some(w => w.includes('first-step'))).toBe(false);
     });
 
-    it('warns on a key the operation does not declare', () => {
+    it('warns on a key the technique does not declare', () => {
       const warnings = validateStepManifest(
         [
           { step_id: 'first-step', output: { summary: 'two symbols' } },

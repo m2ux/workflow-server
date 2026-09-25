@@ -3,9 +3,9 @@
  * merges into it (`inherited-input-re-declared`).
  *
  * The loader composes a workflow-root `TECHNIQUE.md` and any group `TECHNIQUE.md` into every
- * descendant, so an operation reaches those inputs without declaring them. A leaf that declares one
+ * descendant, so a technique reaches those inputs without declaring them. A leaf that declares one
  * again adds no bind point — it adds a second description of the same slot, and the two are edited
- * apart. Most of the instances this guard was written from had narrowed the wording to the operation
+ * apart. Most of the instances this guard was written from had narrowed the wording to the technique
  * they sat on, so a caller binding the op read the ancestor's contract while a reader of the file
  * took the leaf's, with nothing marking which governed.
  *

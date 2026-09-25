@@ -103,8 +103,8 @@ describe('citation-grain guard', () => {
     })).toEqual([]);
   });
 
-  /** Composition between operations is what `technique-references-technique` owns, not delivery. */
-  it('passes a technique citing a sibling operation both ways', () => {
+  /** Composition between techniques is what `technique-references-technique` owns, not delivery. */
+  it('passes a technique citing a sibling technique both ways', () => {
     expect(findingsFor({
       'techniques/other.md': `${header}### 1. Act\n\n## Rules\n\n### a-rule\n\nHolds.\n`,
       'techniques/op.md':

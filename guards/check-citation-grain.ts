@@ -90,7 +90,7 @@ function collect(root: string = ROOT): Finding[] {
 
     for (const [target, anchors] of cited) {
       if (!anchors.has('') || anchors.size < 2) continue;
-      // The entry is about a technique consulting a resource. A sibling operation cited both ways
+      // The entry is about a technique consulting a resource. A sibling technique cited both ways
       // is the composition question `technique-references-technique` owns, not a delivery one.
       if (!target.includes(`${sep}resources${sep}`)) continue;
       if (sectionCount(target) < 2) continue;

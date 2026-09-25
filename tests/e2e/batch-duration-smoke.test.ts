@@ -41,7 +41,7 @@ describe.skipIf(!liveCorpusRoot())('batch duration smoke (#407)', () => {
     // The saving is composition-sensitive, which is why the floor is stated against a measurement
     // rather than an ambition. Collapse works item by item on what a held context already has, so
     // content delivered as one activity bundle collapses only when the whole bundle matches. Seeding
-    // `is_review_mode` moved 21 operations out of individual fetches and into the activity that binds
+    // `is_review_mode` moved 21 techniques out of individual fetches and into the activity that binds
     // them (#599) — worth 54,981 characters and 21 round trips on a fresh-context walk, and worth
     // 24,142 characters of this run's collapse, because a bundle that grew is a bundle that no longer
     // matches. Both halves are real; the tension between them is #603.

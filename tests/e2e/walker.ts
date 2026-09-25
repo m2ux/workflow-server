@@ -87,7 +87,7 @@ export interface ActivityDef {
   id: string;
   steps?: StepDef[];
   exits?: ExitDef[];
-  operations?: string[];
+  techniques?: string[];
   techniques?: { primary?: string; supporting?: string[] };
   artifactPrefix?: string;
   artifacts?: Array<{ id?: string; name: string; location?: string }>;
@@ -142,9 +142,9 @@ export interface WalkStep {
   manifestStatus?: string | undefined;
   /** Checkpoints declared by the activity but referenced by no step/loop step (definition smell). */
   orphanCheckpoints: string[];
-  /** Operation refs the activity bundle could not resolve (Layer 2 signal). */
+  /** Technique refs the activity bundle could not resolve (Layer 2 signal). */
   unresolved: string[];
-  /** Number of operation refs the activity declares (from its definition). */
+  /** Number of technique refs the activity declares (from its definition). */
   declaredOperations: number;
   /**
    * The server's own reading of this activity's gated technique steps at delivery: how many stayed
@@ -163,7 +163,7 @@ export interface WalkResult {
   initialActivity: string;
   /** All activity ids the workflow declares (for coverage / reachability checks). */
   declaredActivities: string[];
-  /** Unresolved orchestrator-side operation refs from the workflow bundle. */
+  /** Unresolved orchestrator-side technique refs from the workflow bundle. */
   orchestratorUnresolved: string[];
   path: string[];
   steps: WalkStep[];
@@ -429,7 +429,7 @@ async function transition(
 
 /**
  * The collection an instance fan runs over, where the walk has no value for it. A dry walk executes
- * no technique, so the operation that assigns the work units never runs and the enter would be
+ * no technique, so the technique that assigns the work units never runs and the enter would be
  * refused for want of a collection. Two units is the smallest width a fan opens, and it sits under
  * every ceiling. The seed travels as the retiring activity's own reported write, which is the
  * activity the graph holds responsible for the collection; a fan whose collection already holds
@@ -437,7 +437,7 @@ async function transition(
  *
  * An EMPTY collection is no value to keep. A fan of no instances is refused when it opens, so a name
  * the bag holds as `[]` leaves the walk exactly where a name the bag does not hold at all does — and
- * a declared `defaultValue: []` is the ordinary way to write a collection an operation fills in. The
+ * a declared `defaultValue: []` is the ordinary way to write a collection a technique fills in. The
  * walk drives the gated exit that reaches such a fan, so refusing to seed there is the walk holding
  * a flag true while the collection standing behind it is empty, which is a state no run reaches.
  */
@@ -931,7 +931,7 @@ export async function walk(
       manifestStatus,
       orphanCheckpoints: findOrphanCheckpoints(act),
       unresolved,
-      declaredOperations: (act.operations ?? []).length,
+      declaredOperations: (act.techniques ?? []).length,
       lazyGates,
       nextActivity: next,
     });

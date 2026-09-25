@@ -57,7 +57,7 @@ green. It lives in `snapshot.test.ts`:
   definition lint, and its baselines, all over one set of walks. Each policy
   walks a distinct path to the terminal `complete` activity; the matrix asserts
   by name that it reaches its own branch and that the session flips to
-  `completed`, that every operation/technique reference the server resolves
+  `completed`, that every technique/technique reference the server resolves
   actually resolves, and that every declared activity is reachable by some
   policy. It separately holds a normalized, committed **baseline** per policy
   (path, checkpoint decisions, artifacts written, manifest status, unresolved
@@ -199,7 +199,7 @@ never a gate. Run scoped first.
 - **Does the whole two-agent system still work?** → 3b (5, when built).
 
 Day to day, run (1) on every change. Reach for (3) when the change touches prose
-agents read (technique/activity wording, operation bundles), not just structure.
+agents read (technique/activity wording, technique bundles), not just structure.
 
 ---
 

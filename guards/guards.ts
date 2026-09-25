@@ -107,7 +107,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: 'every nested output component is declared in one place, so a container and its operation cannot drift into two descriptions of one value',
+    proves: 'every nested output component is declared in one place, so a container and its technique cannot drift into two descriptions of one value',
     form: 'none',
   },
   {
@@ -337,7 +337,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: 'every harness kind resolves to an adapter exposing exactly the operation kinds callers ask for',
+    proves: 'every harness kind resolves to an adapter exposing exactly the technique kinds callers ask for',
     form: 'none',
   },
   {
@@ -567,7 +567,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: "every routine's declared signature matches its own body, and every routine sits in the home its referrers compute or in a library whose operations it binds",
+    proves: "every routine's declared signature matches its own body, and every routine sits in the home its referrers compute or in a library whose techniques it binds",
     form: 'materialised',
   },
   {
@@ -617,7 +617,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: 'every reference a technique makes to another operation is classified, an operation being served only where a role contract names it',
+    proves: 'every reference a technique makes to another technique is classified, a technique being served only where a role contract names it',
     form: 'none',
   },
 ];

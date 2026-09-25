@@ -18,7 +18,7 @@ What the step recorded, so the activity has something to report.
 ### 1. Record
 
 - Write a short note under `{preparation_note}` describing what this stop did.
-- The note is the whole of the work: this operation exists to give an activity a body to deliver,
+- The note is the whole of the work: this technique exists to give an activity a body to deliver,
   so a walk measuring delivery has something to measure.
 
 ## Rules

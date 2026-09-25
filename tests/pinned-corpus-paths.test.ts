@@ -51,7 +51,7 @@ describe('a path authored into a fixture tree', () => {
   it('is recognised below a call that wraps, across blank and comment lines', () => {
     const lines = [
       '  write(',
-      '    // An operation inside a group, keyed on its own filename.',
+      '    // A technique inside a group, keyed on its own filename.',
       '',
       "    'wf/techniques/group/op.md',",
       "    '## Rules',",

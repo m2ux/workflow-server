@@ -115,7 +115,7 @@ export function parseToolResponse(result: ToolResult): ParsedResponse {
 
 /**
  * Parse a get_workflow / get_activity response. These prepend a resolved
- * technique/operations bundle separated by a `\n\n---\n\n` marker from the
+ * technique/techniques bundle separated by a `\n\n---\n\n` marker from the
  * definition body; we return the definition portion.
  */
 export function parseWorkflowResponse(result: ToolResult): ParsedResponse {
@@ -133,10 +133,10 @@ export function rawText(result: ToolResult): string {
 }
 
 /**
- * Extract the resolved-operations bundle that get_activity / get_workflow
+ * Extract the resolved-techniques bundle that get_activity / get_workflow
  * prepend before the `\n\n---\n\n` separator. Returns {} when no bundle is
- * present. The bundle shape is { operations?, rules?, errors?, unresolved? };
- * a non-empty `unresolved` array means the activity references operations that
+ * present. The bundle shape is { techniques?, rules?, errors?, unresolved? };
+ * a non-empty `unresolved` array means the activity references techniques that
  * the technique loader could not resolve (a dangling ref).
  */
 export function parseBundle(result: ToolResult): ParsedResponse {

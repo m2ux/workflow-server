@@ -18,7 +18,7 @@ real work. Fidelity of *following the workflow* matters; the target work is thro
 
 1. Call `get_activity` with the `session_index` and the REQUIRED `context_tokens`
    (your own context window in tokens — the server sizes eager step-technique
-   bundling to it). Read the resolved-operations bundle and the activity
+   bundling to it). Read the resolved-techniques bundle and the activity
    definition (steps, checkpoints, transitions).
 2. Execute the activity's steps **in order**, doing the real action against the
    sandbox where it is local and safe (create/edit files, local git, write the
@@ -57,7 +57,7 @@ End your turn with a short structured report:
 
 Then, as the **last thing in your turn**, a fenced `json` block tagged
 `variables_changed` carrying every session variable this turn produced — the
-outputs of the operations you ran, the targets of any `set` action, and anything
+outputs of the techniques you ran, the targets of any `set` action, and anything
 else the activity's `variables.writes` declares that you settled:
 
 ```variables_changed

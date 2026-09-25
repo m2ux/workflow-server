@@ -434,7 +434,7 @@ const SITE_PARAM_HINTS: Record<string, string> = {
   exit: 'Name of the exit the previous activity took.',
   step_manifest: 'Steps completed in the previous activity, for example `[{ "step_id": "detect-review-mode", "output": { "is_review_mode": false } }]`. Omit if no steps ran.',
   'step_manifest[].step_id': 'Step id from the activity definition (field name is `step_id`, not `id`).',
-  'step_manifest[].output': 'What the step produced, as a JSON object keyed by the output id the bound operation declares — one output included. A key the operation does not declare is surfaced in _meta.validation.',
+  'step_manifest[].output': 'What the step produced, as a JSON object keyed by the output id the bound technique declares — one output included. A key the technique does not declare is surfaced in _meta.validation.',
   activity_manifest: 'History of completed activities with their outcomes and the exit each took.',
   'activity_manifest[].activity_id': 'Completed activity id.',
   'activity_manifest[].outcome': 'Short outcome summary for that activity.',

@@ -72,16 +72,16 @@ describe('technique-loader', () => {
       }
     });
 
-    it('materialises workflow-engine operations and rules from markdown', async () => {
+    it('materialises workflow-engine techniques and rules from markdown', async () => {
       const result = await readTechnique('meta/workflow-engine', WORKFLOW_DIR);
       expect(result.success).toBe(true);
       if (result.success) {
-        // The index carries rules but NO operations map — operations are files now.
-        expect((result.value as { operations?: unknown }).operations).toBeUndefined();
+        // The index carries rules but NO techniques map — techniques are files now.
+        expect((result.value as { techniques?: unknown }).techniques).toBeUndefined();
         expect(result.value.rules).toBeDefined();
         expect(Object.keys(result.value.rules!).length).toBeGreaterThanOrEqual(3);
       }
-      // Operations resolve from their `<op>.md` files via resolveTechniques.
+      // Techniques resolve from their `<op>.md` files via resolveTechniques.
       const resolved = await resolveTechniques(
         ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::commit-and-persist'],
         WORKFLOW_DIR,
@@ -120,10 +120,10 @@ describe('technique-loader', () => {
       const check = byName['check']!.body as { protocol?: Array<{ steps: string[] }> };
       expect(Array.isArray(check.protocol)).toBe(true);
       expect(check.protocol!.flatMap((b) => b.steps).length).toBeGreaterThan(0);
-      // The grouped index itself loads as a plain technique with no operations map.
+      // The grouped index itself loads as a plain technique with no techniques map.
       const idx = await readTechnique('cargo-operations', FIXTURE_DIR, 'work-package');
       expect(idx.success).toBe(true);
-      if (idx.success) expect((idx.value as { operations?: unknown }).operations).toBeUndefined();
+      if (idx.success) expect((idx.value as { techniques?: unknown }).techniques).toBeUndefined();
     });
 
     it('PR126-TC-04: falls back to meta when no workflow-local override exists', async () => {
@@ -158,9 +158,9 @@ describe('technique-loader', () => {
       }
     });
 
-    it('PR126-TC-06: a malformed op file (missing Protocol) does not resolve as an operation', async () => {
+    it('PR126-TC-06: a malformed op file (missing Protocol) does not resolve as a technique', async () => {
       // broken.md has no `## Protocol`; the op parser throws and resolveTechniques surfaces the ref
-      // as not-found rather than a partial/silent operation. The grouped index still loads fine.
+      // as not-found rather than a partial/silent technique. The grouped index still loads fine.
       const resolved = await resolveTechniques(['work-package/malformed-ops::broken'], FIXTURE_DIR);
       expect(resolved[0]!.type).toBe('not-found');
       const idx = await readTechnique('malformed-ops', FIXTURE_DIR, 'work-package');
@@ -393,7 +393,7 @@ describe('technique-loader', () => {
       }
     });
 
-    it('resolves an operation from a grouped <group>/<op>.md; the index has no operations map', async () => {
+    it('resolves a technique from a grouped <group>/<op>.md; the index has no techniques map', async () => {
       const dir = join(tempDir, 'meta', 'techniques', 'vc');
       await mkdir(dir, { recursive: true });
       await writeFile(
@@ -410,7 +410,7 @@ describe('technique-loader', () => {
       expect(idx.success).toBe(true);
       if (idx.success) {
         expect(idx.value.id).toBe('vc');
-        expect((idx.value as { operations?: unknown }).operations).toBeUndefined();
+        expect((idx.value as { techniques?: unknown }).techniques).toBeUndefined();
       }
       const resolved = await resolveTechniques(['vc::commit'], tempDir);
       expect(resolved[0]!.type).toBe('technique');
@@ -637,7 +637,7 @@ describe('technique-loader', () => {
         join(dir, 'grp', 'op.md'),
         [
           ...FM('op'),
-          '## Capability', '', 'The operation.', '',
+          '## Capability', '', 'The technique.', '',
           '## Rules', '', '### op-rule', '', 'Op constraint.', '',
           '## Protocol', '', '1. Do the op', '',
         ].join('\n'),

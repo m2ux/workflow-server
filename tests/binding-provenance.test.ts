@@ -351,7 +351,7 @@ describe('buildProvenanceContext', () => {
 
 
 /**
- * A step manifest is measured against the ids the bound operation declares, and those are read off
+ * A step manifest is measured against the ids the bound technique declares, and those are read off
  * the producer scan rather than resolved a second time.
  */
 describe('declaredOutputsByStep', () => {
@@ -374,7 +374,7 @@ describe('declaredOutputsByStep', () => {
   });
 
   /** A manifest reports by declared id, so a remap contributes the id it was remapped FROM. */
-  it('takes a remapped output under the id the operation declares, not the bag name', () => {
+  it('takes a remapped output under the id the technique declares, not the bag name', () => {
     const declared = declaredOutputsByStep(
       index([site({ name: 'positive_change_report', via: 'remap', origOutputId: 'change_report' })]),
       'work',
@@ -382,7 +382,7 @@ describe('declaredOutputsByStep', () => {
     expect([...(declared.get('detect') ?? [])]).toEqual(['change_report']);
   });
 
-  it('takes nothing from a checkpoint, an action or a loop, which declare no operation output', () => {
+  it('takes nothing from a checkpoint, an action or a loop, which declare no technique output', () => {
     const declared = declaredOutputsByStep(
       index([site({ name: 'approved', via: 'checkpoint' }), site({ name: 'noted', via: 'action' })]),
       'work',
@@ -400,7 +400,7 @@ describe('declaredOutputsByStep', () => {
    * the remapped ids alone. Measuring a correct report against that subset reports it wrong, so the
    * step is left out and goes unmeasured.
    */
-  it('leaves out a step whose bound operation could not be read', () => {
+  it('leaves out a step whose bound technique could not be read', () => {
     const declared = declaredOutputsByStep(
       index(
         [site({ name: 'positive_change_report', via: 'remap', origOutputId: 'change_report' })],

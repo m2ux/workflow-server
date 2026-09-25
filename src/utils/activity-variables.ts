@@ -184,7 +184,7 @@ export interface DerivedContract {
    */
   artifactWrites: Set<string>;
   /**
-   * Every name a step produces, whether or not any declaration mentions it: a bound operation's
+   * Every name a step produces, whether or not any declaration mentions it: a bound technique's
    * declared output, a remap target, a checkpoint's setVariable key, a `set` action's target, a
    * loop's item variable. Most are local to the activity — an output a later step of the same
    * activity consumes and nothing else ever sees — so this is not a set of session writes. It is
@@ -203,7 +203,7 @@ export interface DerivedContract {
   persistedProductions: Set<string>;
   /**
    * Every name the activity consumes, whether or not the contract requires it: the reads above,
-   * plus the inputs a bound operation takes when they are there and derives when they are not. An
+   * plus the inputs a bound technique takes when they are there and derives when they are not. An
    * optional input is not something the workflow must supply, so it is no read — but a value that
    * reaches one is consumed, which is a different question.
    */
@@ -232,13 +232,13 @@ export interface DerivedContract {
    */
   artifactNames: Set<string>;
   /**
-   * What a bound operation lands in the bag, under the id it declares or the step binding's remap
+   * What a bound technique lands in the bag, under the id it declares or the step binding's remap
    * target, before the namespace narrows it.
    *
    * `writes` cannot answer for these. It admits a name only once the namespace holds it, and the
-   * namespace is assembled from the declarations — so an operation output the activity omits from
+   * namespace is assembled from the declarations — so a technique output the activity omits from
    * `variables.writes` is absent from both sides at once, and the omission reads exactly like an
-   * operation that lands nothing. This set is derived from the technique file instead, which states
+   * technique that lands nothing. This set is derived from the technique file instead, which states
    * the outputs whether or not any contract mentions them.
    */
   operationWrites: Set<string>;
@@ -246,15 +246,15 @@ export interface DerivedContract {
    * Names the activity's own exit conditions test, before the namespace narrows them.
    *
    * {@link routingReads} answers this inside the declared namespace, which is the reading a
-   * contract checker wants. A value an operation lands and no declaration mentions is exactly the
+   * contract checker wants. A value a technique lands and no declaration mentions is exactly the
    * case that namespace does not hold, so asking whether such a value chooses an exit needs the
    * un-narrowed set — the same reason {@link operationWrites} carries one.
    */
   routingConsults: Set<string>;
   /**
    * The subset of {@link operationWrites} whose producing output states the members it carries, so
-   * the value is a structure by the operation's own account. A declaration calling one of these a
-   * scalar and the operation publishing it are describing one value in two incompatible ways.
+   * the value is a structure by the technique's own account. A declaration calling one of these a
+   * scalar and the technique publishing it are describing one value in two incompatible ways.
    */
   structuredWrites: Set<string>;
   /**
@@ -388,7 +388,7 @@ function bindingOf(step: Step): TechniqueBinding | undefined {
   return typeof step.technique === 'object' ? step.technique : undefined;
 }
 
-/** A bound operation's signature: what it consults, and what it lands in the bag. */
+/** A bound technique's signature: what it consults, and what it lands in the bag. */
 interface OpSignature {
   /** Input ids, with the two markings that let the executing agent supply the value itself. */
   inputs: Array<{ id: string; suppliable: boolean }>;
@@ -399,7 +399,7 @@ interface OpSignature {
    */
   structuredOutputs: string[];
   /**
-   * Outputs the operation persists as an artifact. The server consumes these when it synthesizes
+   * Outputs the technique persists as an artifact. The server consumes these when it synthesizes
    * the activity's artifact contract, so a value with no other reader still has one.
    */
   artifactOutputs: string[];
@@ -412,7 +412,7 @@ interface OpSignature {
 const EMPTY_SIGNATURE: OpSignature = { inputs: [], outputs: [], structuredOutputs: [], artifactOutputs: [], artifactNames: [], proseReads: [] };
 
 /**
- * Read a bound operation's signature as the step receives it: composed with its container
+ * Read a bound technique's signature as the step receives it: composed with its container
  * contracts, through the same resolution `get_technique` and `get_activity` deliver with. Own and
  * inherited entries are taken together, since both resolve out of the same session bag at the
  * step — which of them is a session variable is settled by the workflow's declared namespace, not
@@ -459,7 +459,7 @@ async function readSignature(
       artifactNames: outputs
         .map((output) => output.artifact?.name)
         .filter((name): name is string => typeof name === 'string'),
-      // A token naming an entry of the operation's own signature is that entry — whether it is
+      // A token naming an entry of the technique's own signature is that entry — whether it is
       // read at all is settled by the signature, where a default or an "(optional)" marking says
       // the agent may supply it. What is left names the session directly. Prose is a technique's
       // own surface rather than a step's binding, so it contributes the head: member grain is a
@@ -533,9 +533,9 @@ export async function deriveActivityContract(args: {
   const artifactNames = new Set<string>();
   /** Unbraced binding values the namespace settled as literals — mentioned, and read by nothing. */
   const literalValues = new Set<string>();
-  /** What a bound operation lands in the bag, taken from its file rather than from a declaration. */
+  /** What a bound technique lands in the bag, taken from its file rather than from a declaration. */
   const operationWrites = new Set<string>();
-  /** Those operation writes whose producing output declares the members it carries. */
+  /** Those technique writes whose producing output declares the members it carries. */
   const structuredWrites = new Set<string>();
 
   const consumes = new Set<string>();
@@ -641,7 +641,7 @@ export async function deriveActivityContract(args: {
     if (step.kind === 'routine') {
       const routine = resolveRoutineQuietly(routines, scopeWorkflowId, step.routine);
       for (const input of routine?.inputs ?? []) {
-        // An operation parameter's argument is a reference to a definition rather than a name in the
+        // A technique parameter's argument is a reference to a definition rather than a name in the
         // bag, so the site neither reads nor writes anything by binding it.
         if (isOperationInput(input)) continue;
         const argument = step.with?.[input.id];
@@ -712,12 +712,12 @@ export async function deriveActivityContract(args: {
 }
 
 /**
- * The orchestrator's side of the session bag: every input the operations of meta's
+ * The orchestrator's side of the session bag: every input the techniques of meta's
  * `workflow-engine` group declare.
  *
  * A worker writes some values for the orchestrator rather than for a later activity — a Progress
  * row marked cancelled where a validation suite could not run, the outcomes a finished run
- * reports. The orchestrator's operations are the consumer, and they sit outside the workflow's own
+ * reports. The orchestrator's techniques are the consumer, and they sit outside the workflow's own
  * graph by construction, since every workflow is driven by the same engine. Without this, a value
  * written for the engine reads as a value nothing consumes.
  */

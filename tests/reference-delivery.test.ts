@@ -40,18 +40,18 @@ function isUnchangedMarker(value: unknown): value is UnchangedMarker {
 }
 
 /**
- * The operations a delivery carried a body for, keyed as the bundle keys them.
+ * The techniques a delivery carried a body for, keyed as the bundle keys them.
  *
- * Reference delivery is about what a context has been sent: an operation it holds comes back as a
+ * Reference delivery is about what a context has been sent: a technique it holds comes back as a
  * marker, and everything else arrives entire. A case asserting "everything collapses" therefore
  * asks it of what was delivered, which is what this reads off the first response.
  */
 /**
  * Whether a delivery carried the role's own rules in full.
  *
- * A rule has one home, decided by what it governs: a rule an operation declares or inherits rides
- * that operation's body, and the `rules` list carries only what governs no one operation. So the
- * list is absent on an activity whose every rule belongs to an operation, present where one does
+ * A rule has one home, decided by what it governs: a rule a technique declares or inherits rides
+ * that technique's body, and the `rules` list carries only what governs no one technique. So the
+ * list is absent on an activity whose every rule belongs to a technique, present where one does
  * not, and a marker where this context already holds it. Full delivery is the third of those.
  */
 function rulesDeliveredInFull(bundle: Record<string, unknown>): boolean {
@@ -64,7 +64,7 @@ function deliveredInFull(bundle: Record<string, unknown>): string[] {
   // Each call site drives a loop over this list, so an empty one is a case that asserts about no
   // entries and passes for it. A fresh context takes the whole contract, so every delivery a caller
   // reads here carries at least one body.
-  expect(carried.length, 'the delivery this reads carried no operation body at all').toBeGreaterThan(0);
+  expect(carried.length, 'the delivery this reads carried no technique body at all').toBeGreaterThan(0);
   return carried;
 }
 
@@ -271,7 +271,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const value of Object.values(firstContracts)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
-      expect(Object.keys(firstTechniques).length, 'the first delivery carried no operation').toBeGreaterThan(0);
+      expect(Object.keys(firstTechniques).length, 'the first delivery carried no technique').toBeGreaterThan(0);
       expect(Object.keys(firstContracts).length, 'the first delivery carried no inherited contract').toBeGreaterThan(0);
 
       const second = splitActivityResponse(await getActivity(idx));
@@ -389,7 +389,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       for (const value of Object.values(techniques)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
-      expect(deliveredInFull(forced.bundle).length, 'bundle: full carried no operation in full').toBeGreaterThan(0);
+      expect(deliveredInFull(forced.bundle).length, 'bundle: full carried no technique in full').toBeGreaterThan(0);
     });
 
     it('persists contextMode and the delivery ledger in session.json', async () => {
@@ -411,10 +411,10 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(onDisk.deliveredContent?.solo).toBeDefined();
       const keys = Object.keys(onDisk.deliveredContent.solo as Record<string, string>);
       expect(keys.some(k => k.startsWith('bundle:'))).toBe(true);
-      // A rule rides the body of the operation it governs, and the role's own `rules` list carries
-      // what governs no one operation. The list is content-keyed (set semantics) so alternating
+      // A rule rides the body of the technique it governs, and the role's own `rules` list carries
+      // what governs no one technique. The list is content-keyed (set semantics) so alternating
       // rule sets across activities still collapse — and an activity whose every rule has an
-      // operation home sends no list, and records no key for one.
+      // technique home sends no list, and records no key for one.
       expect(keys.some(k => /^bundle:rules:[0-9a-f]{16}$/.test(k)))
         .toBe(Array.isArray(delivered.bundle['rules']));
       expect(keys.some(k => /^activity_rules:[0-9a-f]{16}$/.test(k))).toBe(true);
@@ -830,7 +830,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
   });
 
-  // An operation body is one item. Shared contracts ride beside it under `contracts`, each a
+  // A technique body is one item. Shared contracts ride beside it under `contracts`, each a
   // whole item of its own, in every delivery mode. What collapses is the whole technique or the
   // whole contract, never a field of either.
   describe('a composed technique arrives entire', () => {
@@ -937,7 +937,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       expect(first.isError).toBeFalsy();
       const firstSplit = splitWorkflowResponse(first as never);
       // First call: ops bundle delivered full, not a marker. What proves "full" is the role's rules
-      // and a body for every operation.
+      // and a body for every technique.
       expect(isUnchangedMarker(parse(firstSplit.opsBlock))).toBe(false);
       const firstBundle = parse(firstSplit.opsBlock) as Record<string, unknown>;
       expect(Array.isArray(firstBundle['rules'])).toBe(true);

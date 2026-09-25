@@ -626,22 +626,22 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
 }
 
 /**
- * Operations a fan's branch cannot execute whatever its destination declares, so a fanned activity
+ * Techniques a fan's branch cannot execute whatever its destination declares, so a fanned activity
  * binding one fails the load rather than failing inside a worker. Both are refused for what the
- * instances share beyond their checkouts: the persist operation writes the session record and the
+ * instances share beyond their checkouts: the persist technique writes the session record and the
  * planning folder, and the child-workflow dispatch records one activity id where a fan holds
  * several in flight.
  *
  * The git namespace is the conditional case and is handled at the rule rather than here.
  * It is refused where a fan's branches share one working tree and one git index — a commit derives
  * its paths from that tree's status, so no instance could stage or attribute its own change — and
- * permitted where the fanned activity binds the operation that gives each instance a checkout of
+ * permitted where the fanned activity binds the technique that gives each instance a checkout of
  * its own.
  */
 const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map([
   [
     'workflow-engine::commit-and-persist',
-    'This operation persists the session record and the planning folder, which every instance of a fan shares however their checkouts are split — so the instances would each commit a folder their siblings are still writing. Persist once, at the activity the fan converges on. Taking a checkout of its own does not admit it either: what that splits is the working tree, not the record.',
+    'This technique persists the session record and the planning folder, which every instance of a fan shares however their checkouts are split — so the instances would each commit a folder their siblings are still writing. Persist once, at the activity the fan converges on. Taking a checkout of its own does not admit it either: what that splits is the working tree, not the record.',
   ],
   [
     'workflow-engine::handle-sub-workflow',
@@ -652,25 +652,25 @@ const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map(
 /**
  * The git namespace, refused whole in a branch.
  *
- * The key is the namespace rather than the operations that stage, which is coarser than the hazard
+ * The key is the namespace rather than the techniques that stage, which is coarser than the hazard
  * it guards: five of the eleven only read or compute — a slug composed from a date, a path derived
  * from the planning folder, a name-status diff — and a fan binding one of those is refused for what
  * its siblings do. The prefix is what a rule can decide from a step's ref alone, without loading
- * each operation's protocol to ask whether it writes; and the caller that needs one takes the same
+ * each technique's protocol to ask whether it writes; and the caller that needs one takes the same
  * worktree binding that admits the rest, so the coarseness costs a binding rather than the
  * capability.
  */
 const CHECKOUT_GROUP_PREFIX = 'git::';
 
 /**
- * The operation that gives a branch a checkout of its own, and so the evidence that lifts the
+ * The technique that gives a branch a checkout of its own, and so the evidence that lifts the
  * checkout-group refusal for it. An activity binding this materialises a worktree per instance —
  * named from the instance index the delivery carries — and commits into that rather than into the
  * tree its siblings are writing.
  */
 const WORKTREE_OPERATION = 'git::create-worktree';
 
-/** The operation a technique step binds, whether the step names it plainly or deviates from it. */
+/** The technique a technique step binds, whether the step names it plainly or deviates from it. */
 function boundOperation(step: Step): string | undefined {
   if (step.kind !== 'technique') return undefined;
   return typeof step.technique === 'string' ? step.technique : step.technique.name;
@@ -767,24 +767,24 @@ function fanErrors(workflow: Workflow, fan: FanGroup): string[] {
         );
       }
 
-      // L14 — decidable from the flattened steps and each step's bound operation name, with no
+      // L14 — decidable from the flattened steps and each step's bound technique name, with no
       // composed signatures. A branch that materialises a checkout of its own commits into that
       // one, so the shared-tree reason does not hold for it and the checkout group is legal there.
       // The evidence is the branch's own binding rather than a claim on the destination: an author
       // who wired the worktree has done the thing the exemption rests on, where an author who
-      // declared an intention may not have. The session-level operations stay refused either way,
+      // declared an intention may not have. The session-level techniques stay refused either way,
       // because the record and its planning folder are shared however the checkouts are split.
       const steps = flattenActivitySteps(branchActivity);
       const ownsItsCheckout = steps.some((step) => boundOperation(step) === WORKTREE_OPERATION);
       for (const step of steps) {
-        const operation = boundOperation(step);
-        if (operation === undefined || operation === WORKTREE_OPERATION) continue;
-        const reason = OPERATIONS_A_BRANCH_CANNOT_EXECUTE.get(operation)
-          ?? (!ownsItsCheckout && operation.startsWith(CHECKOUT_GROUP_PREFIX)
+        const technique = boundOperation(step);
+        if (technique === undefined || technique === WORKTREE_OPERATION) continue;
+        const reason = OPERATIONS_A_BRANCH_CANNOT_EXECUTE.get(technique)
+          ?? (!ownsItsCheckout && technique.startsWith(CHECKOUT_GROUP_PREFIX)
             ? `A fan's instances share one working tree and one git index, and a commit derives its paths from that tree's status, so no instance can stage or attribute its own change. Move the commit to the activity before the fan or to the activity it converges on, or bind '${WORKTREE_OPERATION}' in this activity so each instance commits a checkout of its own.`
             : undefined);
         if (reason === undefined) continue;
-        errors.push(`Activity '${branch}' is fanned by ${site} and binds '${operation}'. ${reason}`);
+        errors.push(`Activity '${branch}' is fanned by ${site} and binds '${technique}'. ${reason}`);
       }
     }
 

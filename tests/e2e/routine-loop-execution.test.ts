@@ -19,7 +19,7 @@ import type { Step } from '../../src/schema/activity.schema.js';
  * question has had no asker.
  *
  * This is that runner. The body comes from the live server, materialised at the site under test, and
- * is then executed here: the operation the site supplied is stood in for by a stub whose returns are
+ * is then executed here: the technique the site supplied is stood in for by a stub whose returns are
  * the run's own input, the gates are taken with the server's own evaluators, and the loop iterates
  * until its continuation test clears or its declared bound stops it.
  *
@@ -107,7 +107,7 @@ function run(steps: Step[], tree: Record<string, Reading>, bag: Record<string, u
       if (!gated(step)) continue;
       log.executed.push(step.id!);
       if (step.kind === 'technique') {
-        // The site's operation, stood in for: the run reads `probe_result` without knowing which
+        // The site's technique, stood in for: the run reads `probe_result` without knowing which
         // measurement produced it, which is the whole contract under test.
         const bound = (step.technique as { inputs?: Record<string, string> }).inputs ?? {};
         const target = bag[bound['probe_target'] ?? ''] as string;
@@ -165,7 +165,7 @@ describe.skipIf(!LIVE_CORPUS)('the materialised run, executed', () => {
     expect(log.bag['count_pass_counting_empty_target']).toBeNull();
   });
 
-  it('runs the same sequence at the other site, under its own operation and its own names', async () => {
+  it('runs the same sequence at the other site, under its own technique and its own names', async () => {
     const log = run(await body('size-pass'), TREE, { initial_target: '.' });
     expect(log.passes).toBe(3);
     expect(log.bag['size_measurements']).toEqual([TREE['.'], TREE['src/util']]);

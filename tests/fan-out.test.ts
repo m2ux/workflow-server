@@ -2,15 +2,15 @@ import { describe, it, expect } from 'vitest';
 import type { Technique } from '../src/schema/technique.schema.js';
 import { measureOperation, fanOutRatios, fanOutLines } from '../src/utils/fan-out.js';
 
-/** Minimal composed operation: one container rule that names it, one inherited input it templates. */
+/** Minimal composed technique: one container rule that names it, one inherited input it templates. */
 function sample(): Technique {
   return {
     id: 'group::sample-op',
     version: '1.0.0',
-    capability: 'A sample operation.',
+    capability: 'A sample technique.',
     rules: {
       'sample-op-rule': 'sample-op must name the file it writes.',
-      'cross-cutting': 'Every operation in the group follows the container contract.',
+      'cross-cutting': 'Every technique in the group follows the container contract.',
     },
     inherited_inputs: {
       note: 'Shared by the group.',

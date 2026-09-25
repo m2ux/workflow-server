@@ -1,10 +1,10 @@
 /**
- * check-unserved-operation-refs — a technique that sends its reader to another operation.
+ * check-unserved-operation-refs — a technique that sends its reader to another technique.
  *
- * An operation is served only where a role's contract names it: `get_technique { technique_id }`
+ * A technique is served only where a role's contract names it: `get_technique { technique_id }`
  * admits what the workflow techniques list, the activity techniques list, or the activity's own
  * `techniques[]` declare, and never what a step binds. A technique naming a sibling or a
- * cross-namespace operation therefore addresses something its reader cannot fetch — and the
+ * cross-namespace technique therefore addresses something its reader cannot fetch — and the
  * markdown path beside it points into a corpus checkout the reader does not hold, so neither half
  * of the reference resolves. The prose reads as a route and is a dead end.
  *
@@ -13,7 +13,7 @@
  * unperformable, a Rule that names one is unfollowable, and an Inputs entry that cites one is
  * uninterpretable. All three send a reader somewhere it cannot go. A technique carries what its
  * reader needs or states the fact plainly; composition belongs to the routine or activity that
- * binds both operations as steps.
+ * binds both techniques as steps.
  *
  * Three spellings count, because the corpus writes the reference each way:
  *
@@ -67,7 +67,7 @@ const H2 = /^##\s+(.+?)\s*$/;
 export interface Ref {
   /** `<path>:<line>` of the reference. */
   site: string;
-  /** The operation the reference names, as the link's label reads it. */
+  /** The technique the reference names, as the link's label reads it. */
   op: string;
   /** The `## ` section holding it, which says what the reference was for. */
   section: string;
@@ -174,8 +174,8 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     findings.push({
       check: 'unserved-operation-ref',
       site: ref.site,
-      detail: `${ref.section} names '${ref.op}', an operation its reader is not served and whose path it cannot resolve`
-        + ' — bind the operation as a step of the run that needs both, or carry the fact the reference stood for;'
+      detail: `${ref.section} names '${ref.op}', a technique its reader is not served and whose path it cannot resolve`
+        + ' — bind the technique as a step of the run that needs both, or carry the fact the reference stood for;'
         + ` classify it in ${LEDGER} if it stays`,
     });
   }
@@ -212,7 +212,7 @@ if (isMain) {
   // than throwing past the handler — a measurement that failed is not a corpus with nothing wrong.
   const collect = (root: string): Finding[] => { census(root); return collectFindings(root); };
   await runGuard('unserved-operation-refs', () => requireWorkflowsRoot(DEFAULT_ROOT), collect, {
-    okMessage: 'no technique sends its reader to an operation it was not served',
-    remedy: `bind the operation as a step of the run that needs both, or carry the fact; classify what stays in ${LEDGER}`,
+    okMessage: 'no technique sends its reader to a technique it was not served',
+    remedy: `bind the technique as a step of the run that needs both, or carry the fact; classify what stays in ${LEDGER}`,
   });
 }

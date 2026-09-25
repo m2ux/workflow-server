@@ -1,27 +1,27 @@
 /**
  * check-nested-output-home — every nested output component is declared in one place.
  *
- * A technique group splits its I/O contract between a container and its operations. The container
- * declares what the group shares; each operation declares what it produces, with `#### artifact`
+ * A technique group splits its I/O contract between a container and its techniques. The container
+ * declares what the group shares; each technique declares what it produces, with `#### artifact`
  * and `#### audience` on the file it writes. A nested `####` component under an output names a part
  * of that output's content.
  *
  * Two shapes put one component in two places, and both drift:
  *
- *   same-id — the container declares output `X` with component `c`, and an operation declares the
+ *   same-id — the container declares output `X` with component `c`, and a technique declares the
  *   same output `X` with the same component `c`. Whoever edits one has no signal that the other
  *   exists, and the two statements diverge into different descriptions of the same value.
  *
  *   sibling-top-level — the container nests component `c` under its artifact output, and a sibling
- *   operation declares `c` as a top-level output of its own. The same value is a part of a document
+ *   technique declares `c` as a top-level output of its own. The same value is a part of a document
  *   in one file and a first-class product in another.
  *
  * Every instance found by hand had already drifted by the time it was read — one container called a
- * component "sections added during user-driven loop" where the operation producing it called them
+ * component "sections added during user-driven loop" where the technique producing it called them
  * "findings for the selected area". A description that has drifted still reads as current fact.
  *
- * The operation keeps the declaration: it produces the value, and it sits beside the artifact and
- * audience declarations for the same output. A container component no operation re-declares is
+ * The technique keeps the declaration: it produces the value, and it sits beside the artifact and
+ * audience declarations for the same output. A container component no technique re-declares is
  * untouched — that is the working split, not a defect.
  *
  * Run: npx tsx guards/check-nested-output-home.ts [--root <workflows-dir>] [--json]
@@ -46,7 +46,7 @@ interface TriageEntry {
 /**
  * Accepted debt.
  *
- * The remedy this guard names — the producing operation keeps the declaration — assumes the two
+ * The remedy this guard names — the producing technique keeps the declaration — assumes the two
  * statements mean the same thing. Where they do not, applying it adopts one meaning over the other,
  * and which is correct is a question about the workflow that produces the values rather than about
  * the duplication. Those entries are triaged until that workflow is walked.
@@ -128,7 +128,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
       const opOutputs = outputs(opPath);
       const site = cite(opPath);
       for (const [opOutputId, comps] of opOutputs) {
-        // sibling-top-level: the operation declares at top level what the container nests.
+        // sibling-top-level: the technique declares at top level what the container nests.
         if (nested.has(opOutputId) && !accepted.has(`${site} ${opOutputId}`)) {
           out.push({
             check: 'nested-output-declared-once',
@@ -136,7 +136,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
             detail:
               `declares '${opOutputId}' as a top-level output while `
               + `${cite(container)} nests it under '${nested.get(opOutputId)}' — two homes for one `
-              + `value. The producing operation keeps it; drop the container's nested component`,
+              + `value. The producing technique keeps it; drop the container's nested component`,
           });
         }
         if (nested.has(opOutputId)) matched.add(`${site} ${opOutputId}`);
@@ -153,7 +153,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
               detail:
                 `output '${opOutputId}' declares component '${c}', which `
                 + `${cite(container)} also declares under the same output — two homes for one `
-                + `value. The producing operation keeps it; drop the container's nested component`,
+                + `value. The producing technique keeps it; drop the container's nested component`,
             });
           }
         }

@@ -147,7 +147,7 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
       // What reference delivery saved on the resume path, read on the role contract — the part of a
       // response that repeats, and so the part a collapse can act on. The response as a whole is a
       // different quantity: it also carries the activity body, which never collapses, and it spends
-      // the room a collapse frees on the operation bodies the bound deferred from the fresh
+      // the room a collapse frees on the technique bodies the bound deferred from the fresh
       // delivery, so a resume that saved a great deal can still be the longer of the two.
       const [freshChars] = dispatches.map(d => (d.data as { chars: number }).chars);
       expect(freshChars).toBeGreaterThan(0);

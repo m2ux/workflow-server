@@ -102,7 +102,7 @@ interface Metrics {
 /**
  * What one `get_activity` cost, split at the boundary the gate reasons about.
  *
- * `roleContract` is the operations bundle — the worker's contract, identical whichever activity it
+ * `roleContract` is the techniques bundle — the worker's contract, identical whichever activity it
  * is dispatched for. `activityBody` is the remainder: the activity definition, its step techniques
  * and the blocks that ride with them. A fixture walking one small activity and one large one makes
  * the two shares separable, which a walk of similarly-sized activities cannot do.
@@ -493,7 +493,7 @@ async function main(): Promise<void> {
     }
 
     // The fixed/variable split of one delivery. `worker_bundle_chars` is the server's own count of
-    // the operations bundle it assembled, so the two shares sum to the response rather than being
+    // the techniques bundle it assembled, so the two shares sum to the response rather than being
     // re-derived here from a text the walker would have to parse.
     if (name === 'get_activity' && !(result as { isError?: boolean }).isError) {
       const meta = (result as { _meta?: { delivery_cost?: { worker_bundle_chars?: number } } })._meta;

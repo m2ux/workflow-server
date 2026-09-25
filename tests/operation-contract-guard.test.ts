@@ -7,17 +7,17 @@ import { collectFindings } from '../guards/check-operation-contract.js';
 
 /**
  * operation-contract guard: what an activity's variable contract says about a value, held against
- * what the operation filling it publishes.
+ * what the technique filling it publishes.
  *
  * Both families exist because the contract guard narrows every derived name to the workflow's
  * declared namespace, and that namespace is assembled out of the declarations — so an omission and
- * an operation that lands nothing are the same silence there. The fixtures pin the reportable case
+ * a technique that lands nothing are the same silence there. The fixtures pin the reportable case
  * and each carve-out, because a guard whose negative fixture stops failing reports clean over
  * ground it never read.
  */
 describe('operation-contract guard', () => {
   interface Case {
-    /** `## Outputs` body of the bound operation. */
+    /** `## Outputs` body of the bound technique. */
     outputs: string;
     /** `variables.writes` entries of the activity binding it. */
     writes: string;
@@ -31,7 +31,7 @@ describe('operation-contract guard', () => {
 
   /**
    * A two-step activity: `op` lands the outputs under test, and `consume` takes one value up. The
-   * second operation declares the input it is fed, because an unbound binding key names no input of
+   * second technique declares the input it is fed, because an unbound binding key names no input of
    * the signature and is walked by nothing — so a fixture binding one would leave the value
    * unmentioned, and every handoff case would pass for the wrong reason.
    */
@@ -87,10 +87,10 @@ describe('operation-contract guard', () => {
   }
 
   /**
-   * The audit instance: a variable declared a string summary while the operation bound to that step
+   * The audit instance: a variable declared a string summary while the technique bound to that step
    * publishes a structure. Both declarations were internally consistent and every check stayed green.
    */
-  it('reports a scalar declaration against an operation publishing members', async () => {
+  it('reports a scalar declaration against a technique publishing members', async () => {
     const findings = await findingsFor({
       outputs: '### test_status\n\nThe check\'s status.\n\n#### check_id\n\nWhich check ran.\n\n'
         + '#### passed\n\nWhether every test passed.\n',
@@ -99,7 +99,7 @@ describe('operation-contract guard', () => {
     expect(findings.map((f) => f.check)).toContain('declared-type-mismatch');
   });
 
-  it('passes the same variable declared as the shape the operation publishes', async () => {
+  it('passes the same variable declared as the shape the technique publishes', async () => {
     const findings = await findingsFor({
       outputs: '### test_status\n\nThe check\'s status.\n\n#### check_id\n\nWhich check ran.\n\n'
         + '#### passed\n\nWhether every test passed.\n',
@@ -121,11 +121,11 @@ describe('operation-contract guard', () => {
   });
 
   /**
-   * The other audit instance: an operation lands a value, the activity's own exit condition tests
+   * The other audit instance: a technique lands a value, the activity's own exit condition tests
    * it, and the contract declares no write of it. The value chooses where the run goes next, so it
    * outlives the activity, and a reader of the contract cannot see what decided the exit.
    */
-  it('reports an operation write the activity routes on and the contract omits', async () => {
+  it('reports a technique write the activity routes on and the contract omits', async () => {
     const findings = await findingsFor({
       outputs: '### symbol_work_list\n\nThe symbols to document.\n',
       writes: '    - name: other_value\n      type: string\n      description: Something else.\n',
@@ -150,7 +150,7 @@ describe('operation-contract guard', () => {
    * reading reported 117 of these, which is what made the family read as a convention question
    * rather than a defect family.
    */
-  it('passes an operation write only a later step of the same activity consumes', async () => {
+  it('passes a technique write only a later step of the same activity consumes', async () => {
     const findings = await findingsFor({
       outputs: '### symbol_work_list\n\nThe symbols to document.\n',
       writes: '    - name: other_value\n      type: string\n      description: Something else.\n',
@@ -160,10 +160,10 @@ describe('operation-contract guard', () => {
   });
 
   /**
-   * A production nothing goes on to consume dies with its step — a utility operation's confirmation
+   * A production nothing goes on to consume dies with its step — a utility technique's confirmation
    * value owes the contract nothing, and reporting it would report most of the corpus.
    */
-  it('passes an operation write nothing takes up', async () => {
+  it('passes a technique write nothing takes up', async () => {
     const findings = await findingsFor({
       outputs: '### run_confirmation\n\nThat the thing was done.\n',
       writes: '    - name: other_value\n      type: string\n      description: Something else.\n',
@@ -175,7 +175,7 @@ describe('operation-contract guard', () => {
    * The server consumes a persisted output when it synthesizes the activity's artifact contract, so
    * the value reaches a reader whatever the variable contract says.
    */
-  it('passes an operation write the technique persists as an artifact', async () => {
+  it('passes a technique write the technique persists as an artifact', async () => {
     const findings = await findingsFor({
       outputs: '### written_report\n\nThe written report.\n\n#### artifact\n\n`report.md`\n',
       writes: '    - name: other_value\n      type: string\n      description: Something else.\n',

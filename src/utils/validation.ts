@@ -67,7 +67,7 @@ export function validateWorkflowVersion(view: SessionView, workflow: Workflow): 
 export interface StepManifestEntry {
   step_id: string;
   /**
-   * What the step produced, keyed by the output id the bound operation declares — one shape for
+   * What the step produced, keyed by the output id the bound technique declares — one shape for
    * every step, so a reader takes a value by name without first asking how many outputs there are.
    */
   output: Record<string, unknown>;
@@ -118,7 +118,7 @@ export function validateStepManifest(
   activityId: string,
   checkpointResponses?: Record<string, CheckpointResponse>,
   /**
-   * The output ids each step's bound operation declares, keyed by step id — from
+   * The output ids each step's bound technique declares, keyed by step id — from
    * `declaredOutputsByStep`. A step absent from the map is not measured: its op could not be read,
    * or it binds none, and reporting against declarations the server does not hold would name every
    * unreadable reference as a worker's mistake.
@@ -185,7 +185,7 @@ export function validateStepManifest(
       warnings.push(`Step '${entry.step_id}' has empty output`);
       continue;
     }
-    // An output lands in the bag under the id it is reported by, so a key the operation does not
+    // An output lands in the bag under the id it is reported by, so a key the technique does not
     // declare puts a value under a name nothing downstream reads. Warn-only: the server does not
     // run the step, so what it holds is the declaration and not the answer.
     //
@@ -197,7 +197,7 @@ export function validateStepManifest(
     const undeclared = Object.keys(entry.output).filter((id) => !declared.has(id));
     if (undeclared.length > 0) {
       warnings.push(
-        `Step '${entry.step_id}' reports [${undeclared.join(', ')}], which its operation does not declare — it declares [${[...declared].join(', ')}]`,
+        `Step '${entry.step_id}' reports [${undeclared.join(', ')}], which its technique does not declare — it declares [${[...declared].join(', ')}]`,
       );
     }
   }
@@ -217,7 +217,7 @@ export function validateStepManifest(
  * or by a fetch whose resolved technique id matches the step's binding —
  * either the authored ref or its `<activity>::<op>` activity-group form, the
  * two ids `get_technique`'s shorthand resolution can record — so a technique
- * fetched once covers every manifested step bound to the same operation.
+ * fetched once covers every manifested step bound to the same technique.
  * Advisory only, like the rest of manifest validation.
  */
 export function validateTechniqueFetches(

@@ -19,7 +19,7 @@
  * That second half reaches only an output that declares components. One declaring none states
  * nothing about its shape, so a member read off it is reached past rather than contradicted and
  * goes unmeasured — the carve-out that check makes for every read, messages included. Neither half
- * reaches which of a contract's fields a particular run populates, which the producing operation
+ * reaches which of a contract's fields a particular run populates, which the producing technique
  * states in prose and no static check settles.
  *
  * Run: npx tsx guards/check-message-binding.ts [--root <workflows-dir>] [--json]
