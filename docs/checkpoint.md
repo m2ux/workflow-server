@@ -34,17 +34,17 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Worker {
-    activity carries out one
+    carries out one activity
   }
   class Orchestrator {
-    up relays the question
+    relays the question up
   }
   class UserFacingAgent {
-    person asks the
+    asks the person
   }
   class Session {
-    pause the active
-    answer the recorded
+    the active pause
+    the recorded answer
   }
   Worker --> Session : records and continues
   Orchestrator --> Worker : relays
@@ -83,11 +83,11 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Worker {
-    pause records the
+    records the pause
   }
   class Session {
-    pause active
-    answer recorded
+    active pause
+    recorded answer
   }
   Worker --> Session : records the pause
   Session --> Worker : yielded or replayed
@@ -129,13 +129,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ParentSession {
-    pause one
+    one pause
   }
   class ChildSession {
-    pause one
+    one pause
   }
   class AnswerKey {
-    checkpoint activity and
+    activity and checkpoint
   }
   ParentSession --> ChildSession : embeds
   AnswerKey --> ParentSession : a replacement worker replays
@@ -168,13 +168,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Worker {
-    block emits the
+    emits the block
   }
   class Orchestrator {
-    unread passes it on
+    passes it on unread
   }
   class UserFacingAgent {
-    person can ask the
+    can ask the person
   }
   Worker --> Orchestrator : emits the block
   Orchestrator --> UserFacingAgent : passes it on
@@ -208,16 +208,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class UserFacingAgent {
-    person asks the
+    asks the person
   }
   class Session {
-    pause holds the
+    holds the pause
   }
   class SetVariable {
-    variable writes a
+    writes a variable
   }
   class Exit {
-    outcome names an
+    names an outcome
   }
   UserFacingAgent --> Session : reads and records
   Session --> SetVariable : writes a variable
@@ -269,16 +269,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class OptionChosen {
-    picks the person
+    the person picks
   }
   class AutoAdvance {
-    default the declared
+    the declared default
   }
   class ConditionNotMet {
-    apply the gate does not
+    the gate does not apply
   }
   class PauseTimestamp {
-    began when the pause
+    when the pause began
   }
   OptionChosen --> PauseTimestamp : waits briefly
   AutoAdvance --> PauseTimestamp : waits as declared
@@ -336,16 +336,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class UserFacingAgent {
-    wakes asks, then
+    asks, then wakes
   }
   class Orchestrator {
-    worker wakes the
+    wakes the worker
   }
   class Worker {
-    activity continues the
+    continues the activity
   }
   class SingleAgent {
-    roles both
+    both roles
   }
   UserFacingAgent --> Orchestrator : wakes
   Orchestrator --> Worker : wakes
@@ -388,13 +388,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class CheckpointStep {
-    steps the pause in the
+    the pause in the steps
   }
   class Routine {
-    once declares the gate
+    declares the gate once
   }
   class Site {
-    routine refers to the
+    refers to the routine
   }
   Routine --> CheckpointStep : the body
   Site --> Routine : a reference
@@ -458,16 +458,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Checkpoint {
-    pause the
+    the pause
   }
   class LaterStep {
-    answer reads the
+    reads the answer
   }
   class EarlierStep {
-    gate runs before the
+    runs before the gate
   }
   class DecisionOrderCheck {
-    read reports an early
+    reports an early read
   }
   Checkpoint --> LaterStep : the answer applies
   EarlierStep --> DecisionOrderCheck : reported, unless exempt
@@ -517,16 +517,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Activity {
-    follows the work that
+    the work that follows
   }
   class Checkpoint {
-    step not its first
+    not its first step
   }
   class PrecedingActivity {
-    decision can end on the
+    can end on the decision
   }
   class Orchestrator {
-    dispatch can decide before
+    can decide before dispatch
   }
   Activity --> Checkpoint : not the first step
   PrecedingActivity --> Checkpoint : sits at its end
@@ -559,16 +559,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class UserFacingAgent {
-    person the only channel to the
+    the only channel to the person
   }
   class Orchestrator {
-    unread passes the block
+    passes the block unread
   }
   class Session {
-    answer pause and
+    pause and answer
   }
   class Timers {
-    answer refuse an instant
+    refuse an instant answer
   }
   UserFacingAgent --> Session : records the answer
   Orchestrator --> UserFacingAgent : passes the block

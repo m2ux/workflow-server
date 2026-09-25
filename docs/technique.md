@@ -24,13 +24,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Standalone {
-    no children one file,
+    one file, no children
   }
   class Container {
-    a folder an index for
+    an index for a folder
   }
   class Nested {
-    a folder a technique inside
+    a technique inside a folder
   }
   Standalone --> Container : a folder holds children
   Container --> Nested : a file inside the folder
@@ -64,16 +64,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Capability {
-    technique does what the
+    what the technique does
   }
   class Interface {
-    and outputs inputs
+    inputs and outputs
   }
   class Protocol {
-    ordered steps the
+    the ordered steps
   }
   class Rules {
-    the technique invariants on
+    invariants on the technique
   }
   Capability --> Interface : stated before
   Interface --> Protocol : the work follows the interface
@@ -169,13 +169,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Binding {
-    written once the dollar sigil,
+    the dollar sigil, written once
   }
   class Read {
-    no sigil the same name,
+    the same name, no sigil
   }
   class Interface {
-    this variable not
+    not this variable
   }
   Binding --> Read : later steps consume
   Binding --> Interface : not delivered
@@ -226,13 +226,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Reference {
-    double-colon path a
+    a double-colon path
   }
   class Technique {
-    that path the file
+    the file the path reaches
   }
   class Rule {
-    a name a trailing segment that matches
+    a trailing segment that matches a name
   }
   Reference --> Technique : the path
   Reference --> Rule : the trailing segment
@@ -271,10 +271,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Executable {
-    a technique invokes
+    invokes a technique
   }
   class Symbol {
-    invokes anything names a rule,
+    names a rule, does not invoke
   }
   Executable --> Symbol : a rule is named, not invoked
 ```
@@ -308,13 +308,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Ancestor {
-    outputs, rules shared inputs,
+    shared inputs, outputs, rules
   }
   class Local {
-    same id wins on the
+    wins on the same id
   }
   class Protocol {
-    not inherit does
+    does not inherit
   }
   Ancestor --> Local : merged outward
   Local --> Protocol : authored as written
@@ -353,13 +353,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Body {
-    own rules capability, interface, protocol,
+    capability, interface, protocol, own rules
   }
   class Contracts {
-    fields, once an ancestor's shared
+    an ancestor's shared fields, once
   }
   class RoleRules {
-    one technique govern the role, not
+    govern the role, not one technique
   }
   Body --> Contracts : names what it inherits
   RoleRules --> Body : ride beside, not on

@@ -22,10 +22,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class RoutineFile {
-    the name one file, the filename is
+    one file, the filename is the name
   }
   class Signature {
-    and outputs inputs
+    inputs and outputs
   }
   class Steps {
     the run
@@ -90,13 +90,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Input {
-    the site supplied by
+    supplied by the site
   }
   class Internal {
-    the body passed inside
+    passed inside the body
   }
   class Output {
-    the routine owned by
+    owned by the routine
   }
   Input --> Internal : not the same name space as the host
   Internal --> Output : an output is declared in full
@@ -126,13 +126,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Site {
-    the prefix the step id is
+    the step id is the prefix
   }
   class Arguments {
-    the inputs values for
+    values for the inputs
   }
   class Bindings {
-    output variable where each
+    where each output variable
   }
   Site --> Arguments : with
   Site --> Bindings : outputs
@@ -179,10 +179,10 @@ classDiagram
     the reference
   }
   class PrefixedBody {
-    the site every id carries
+    every id carries the site
   }
   class OrdinarySteps {
-    the worker what
+    what the worker runs
   }
   Site --> PrefixedBody : arguments substituted
   PrefixedBody --> OrdinarySteps : spliced in place

@@ -22,13 +22,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Definition {
-    workflow file the
+    the workflow file
   }
   class Activities {
-    ordered phases the
+    the ordered phases
   }
   class Graph {
-    each exit where
+    where each exit
   }
   Definition --> Activities : names
   Activities --> Graph : exits are bound in
@@ -75,13 +75,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class OrchestratorSet {
-    the orchestrator for
+    for the orchestrator
   }
   class ActivitySet {
-    every activity inherited by
+    inherited by every activity
   }
   class Universal {
-    to both surfaced
+    surfaced to both
   }
   OrchestratorSet --> ActivitySet : not repeated on each activity
   Universal --> OrchestratorSet : also delivered
@@ -112,13 +112,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Activity {
-    its outcomes declares
+    declares its outcomes
   }
   class Exit {
-    what happened names
+    names what happened
   }
   class Destination {
-    runs next names what
+    names what runs next
   }
   Activity --> Exit : declares
   Exit --> Destination : bound in the graph

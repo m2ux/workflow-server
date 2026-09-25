@@ -24,16 +24,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Work {
-    task the whole
+    the whole task
   }
   class Talk {
-    person speaks to the
+    speaks to the person
   }
   class Track {
-    run follows the
+    follows the run
   }
   class Doing {
-    work does the
+    does the work
   }
   Work --> Talk : a context for talking
   Work --> Track : a context for tracking
@@ -59,10 +59,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Question {
-    decide what the work cannot
+    what the work cannot decide
   }
   class Answer {
-    decides what the person
+    what the person decides
   }
   Question --> Answer : is answered by
 ```
@@ -85,10 +85,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Run {
-    path follows the written
+    follows the written path
   }
   class Path {
-    place the next
+    the next place
   }
   Path --> Run : names the next place
 ```
@@ -111,13 +111,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Workflow {
-    guide the operator's
+    the operator's guide
   }
   class Activity {
-    guide one phase of the
+    one phase of the guide
   }
   class Exit {
-    next where the outcome leads
+    where the outcome leads next
   }
   Workflow --> Activity : names
   Activity --> Exit : an outcome
@@ -141,10 +141,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Step {
-    technique names a
+    names a technique
   }
   class Technique {
-    follow what to do and how to
+    what to do and how to follow
   }
   Step --> Technique : names
 ```
@@ -167,10 +167,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Routine {
-    once a run written
+    a run written once
   }
   class Site {
-    arguments supplies the
+    supplies the arguments
   }
   Site --> Routine : splices in
 ```
@@ -193,10 +193,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Technique {
-    contain cites a guide it does not
+    cites a guide it does not contain
   }
   class Resource {
-    needed the guide, fetched when
+    the guide, fetched when needed
   }
   Technique --> Resource : cites
 ```
@@ -221,10 +221,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Name {
-    capability asked for
+    asked for capability
   }
   class File {
-    capability text of the
+    text of the capability
   }
   Name --> File : stands for
 ```
@@ -248,10 +248,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Run {
-    file agent that needs the
+    agent that needs the file
   }
   class File {
-    agent piece handed to the
+    piece handed to the agent
   }
   Run --> File : asks for this piece
   File --> Run : returns only this piece
@@ -275,10 +275,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Claim {
-    happened says what
+    says what happened
   }
   class Declared {
-    wrote what the workflow
+    what the workflow wrote
   }
   Claim --> Declared : compared with
 ```

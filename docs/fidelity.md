@@ -59,13 +59,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class StateFile {
-    plaintext the run, in
+    the run, in plaintext
   }
   class Seal {
-    key binds those bytes to the
+    binds those bytes to the key
   }
   class SessionIndex {
-    nothing finds the file, proves
+    finds the file, proves nothing
   }
   Seal --> StateFile : attests
   SessionIndex --> StateFile : looks up
@@ -100,13 +100,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Checkpoint {
-    cleared unanswered until
+    unanswered until cleared
   }
   class Advance {
-    open refused while it is
+    refused while it is open
   }
   class Answer {
-    it the calls that clear
+    the calls that clear it
   }
   Checkpoint --> Advance : blocks
   Answer --> Checkpoint : clears
@@ -164,13 +164,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class LastPosition {
-    recorded what the server
+    what the server recorded
   }
   class Claim {
-    is where the agent says it
+    where the agent says it is
   }
   class Graph {
-    declared the exits the workflow
+    the exits the workflow declared
   }
   Claim --> LastPosition : compared with
   Claim --> Graph : must be an exit it declared
@@ -205,16 +205,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Exit {
-    reached the outcome the activity
+    the outcome the activity reached
   }
   class Activity {
-    name declares that
+    declares that name
   }
   class Graph {
-    target binds the exit to the
+    binds the exit to the target
   }
   class Record {
-    trace sealed state and the
+    sealed state and the trace
   }
   Exit --> Activity : must be declared
   Exit --> Graph : must lead to the target
@@ -245,13 +245,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class StepReport {
-    ran steps the agent says it
+    steps the agent says it ran
   }
   class ActivityReport {
-    far activities so
+    activities so far
   }
   class DeliveryRecord {
-    sent techniques the server actually
+    techniques the server actually sent
   }
   StepReport --> DeliveryRecord : a step with no send is a warning
   ActivityReport --> StepReport : the journey beside the steps
@@ -348,13 +348,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class CallRecord {
-    when what was called, and
+    what was called, and when
   }
   class Token {
-    handover the record since the last
+    the record since the last handover
   }
   class Agent {
-    it carries the token, does not read
+    carries the token, does not read it
   }
   CallRecord --> Token : packaged at a handover
   Token --> Agent : carried unread
@@ -408,13 +408,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Report {
-    did what the agent says it
+    what the agent says it did
   }
   class Calls {
-    happen what the server saw
+    what the server saw happen
   }
   class Unseen {
-    looked the work, and whether a person
+    the work, and whether a person looked
   }
   Report --> Calls : corroborated, not settled
   Unseen --> Report : outside the check
