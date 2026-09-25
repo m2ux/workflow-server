@@ -1,12 +1,16 @@
 # Checkpoints
 
-A workflow sometimes has to stop and ask a person. Which directory to use, whether a change is ready, which of two readings was meant: the run cannot settle these from what it already knows, and a wrong guess produces work nobody wanted. A checkpoint is that pause, written into the steps, and it holds the run until someone answers.
+A workflow sometimes has to stop and ask a person. Which directory to use, whether a change is ready, which of two readings was meant: the run cannot settle these from what it already knows, and a wrong guess produces work nobody wanted. A **checkpoint** is that pause, written into the steps, and it holds the run until someone answers.
 
-The agent that reaches the pause is not the agent that can ask. Work travels down a [chain](dispatch.md) of agents. The ones at the bottom run in the background and cannot speak to the person, so the question travels up to the agent that can, and the answer travels back down. The pause begins when a worker reaches it, through the [calls](api-reference.md#workflow-navigation) that record it, show it, answer it, and continue.
+A **worker** carries out one activity, in the background, and cannot speak to the person. An **orchestrator** tracks the workflow and passes the question along. A **user-facing agent** is the one that can ask. Work travels down a [chain](dispatch.md) of these agents, so the question travels up and the answer travels back down.
+
+A **session** holds the pause and the recorded answer. The worker hands up a **block**, an empty marker, and stops. **Yielded** means the pause is new. **Replayed** means an answer is already there and the worker continues. An **answer key** names the activity and the checkpoint, so a replacement worker can replay. The [calls](api-reference.md#workflow-navigation) record the pause, show it, answer it, and continue.
+
+A **gate** is a checkpoint placed before the steps its answer steers. An answer's **effect** writes a variable or names the activity's outcome. A **routine** declares one gate that several **sites** reuse. A **dispatch** sends a worker an activity, and a checkpoint is never that activity's first step. What a timer cannot prove is in [fidelity](fidelity.md).
 
 ## Checkpoint Flow
 
-Figure 1 is the question traveling up to the person and the answer traveling back down. Figure 2 is the three agents and the session that holds the pause.
+The question travels up to the person, and the answer travels back down (Figure 1). The agents and the session hold that pause (Figure 2).
 
 ```mermaid
 sequenceDiagram
@@ -23,30 +27,36 @@ sequenceDiagram
   Worker->>Session: Continue once the pause is cleared
 ```
 
-*Figure 1. The Question Travels Up, and the Answer Travels Back Down.*
+*Figure 1. Question Travels Up, and the Answer Travels Back Down.*
 
 ```mermaid
 classDiagram
-  class Worker
-  class Orchestrator
-  class UserFacingAgent
+  class Worker {
+    activity carries out one
+  }
+  class Orchestrator {
+    up relays the question
+  }
+  class UserFacingAgent {
+    person asks the
+  }
   class Session {
-    the active pause
-    the recorded answer
+    pause the active
+    answer the recorded
   }
   Worker --> Session : records and continues
   Orchestrator --> Worker : relays
-  UserFacingAgent --> Session : shows the question and records the answer
+  UserFacingAgent --> Session : shows and records
   UserFacingAgent --> Orchestrator : wakes
 ```
 
-*Figure 2. The Three Agents, and the Session That Holds the Pause.*
+*Figure 2. Agents, and the Session That Holds the Pause.*
 
 <a id="the-worker-pauses"></a>
 
 ### Worker Pauses
 
-Figure 3 is the worker branching on the server's answer. Figure 4 is the worker, the session, and that answer.
+The worker branches on the server's answer (Figure 3). The session is what answers it (Figure 4).
 
 ```mermaid
 sequenceDiagram
@@ -62,24 +72,26 @@ sequenceDiagram
   end
 ```
 
-*Figure 3. The Worker Branches on Yielded or Replayed.*
+*Figure 3. Worker Branches on Yielded (a new pause) or Replayed (an answer already recorded).*
 
 ```mermaid
 classDiagram
-  class Worker
+  class Worker {
+    pause records the
+  }
   class Session {
-    active pause
-    recorded answer
+    pause active
+    answer recorded
   }
   Worker --> Session : records the pause
   Session --> Worker : yielded or replayed
 ```
 
-*Figure 4. The Worker and the Session That Answers It.*
+*Figure 4. Worker and the Session That Answers It.*
 
 ### One Pause per Session
 
-Figure 5 is a second pause refused on a session that already has one, while a parent and a child each keep their own. Figure 6 is that slot on every session in the tree, and the answer key a replacement worker uses.
+A second pause is refused on a session that already has one, while a parent and a child each keep their own (Figure 5). Every session in the tree has that slot, and a replacement worker replays by the answer key (Figure 6).
 
 ```mermaid
 sequenceDiagram
@@ -97,13 +109,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ParentSession {
-    one pause
+    pause one
   }
   class ChildSession {
-    one pause
+    pause one
   }
   class AnswerKey {
-    activity and checkpoint
+    checkpoint activity and
   }
   ParentSession --> ChildSession : embeds
   AnswerKey --> ParentSession : a replacement worker replays
@@ -113,7 +125,7 @@ classDiagram
 
 ### Orchestrator Relays
 
-Figure 7 is the block passing upward unchanged. Figure 8 is the orchestrator standing between the worker and the agent that can ask.
+The block passes upward unchanged (Figure 7). The orchestrator stands between the worker and the agent that can ask (Figure 8).
 
 ```mermaid
 sequenceDiagram
@@ -125,24 +137,30 @@ sequenceDiagram
   Orchestrator->>Orchestrator: Sleep
 ```
 
-*Figure 7. The Block Passes Upward Unchanged.*
+*Figure 7. Block Passes Upward Unchanged.*
 
 ```mermaid
 classDiagram
-  class Worker
-  class Orchestrator
-  class UserFacingAgent
+  class Worker {
+    block emits the
+  }
+  class Orchestrator {
+    unread passes it on
+  }
+  class UserFacingAgent {
+    person can ask the
+  }
   Worker --> Orchestrator : emits the block
   Orchestrator --> UserFacingAgent : passes it on
 ```
 
-*Figure 8. The Orchestrator between the Worker and the User-Facing Agent.*
+*Figure 8. Orchestrator between the Worker and the User-Facing Agent.*
 
 <a id="the-user-facing-agent-presents-and-resolves"></a>
 
 ### User-Facing Agent Presents and Resolves
 
-Figure 9 is the question shown to the person and the answer written back. Figure 10 is the agent, the session, and the two kinds of effect.
+The question is shown to the person, and the answer is written back (Figure 9). The agent, the session, and the effects are the pieces (Figure 10).
 
 ```mermaid
 sequenceDiagram
@@ -155,32 +173,40 @@ sequenceDiagram
   Agent->>Session: Record the answer and clear the pause
 ```
 
-*Figure 9. The Question Is Shown, and the Answer Is Written Back.*
+*Figure 9. Question Is Shown, and the Answer Is Written Back.*
 
 ```mermaid
 classDiagram
-  class UserFacingAgent
-  class Session
-  class SetVariable
-  class Exit
+  class UserFacingAgent {
+    person asks the
+  }
+  class Session {
+    pause holds the
+  }
+  class SetVariable {
+    variable writes a
+  }
+  class Exit {
+    outcome names an
+  }
   UserFacingAgent --> Session : reads and records
   Session --> SetVariable : writes a variable
   Session --> Exit : names an outcome
 ```
 
-*Figure 10. The Agent, the Session, and the Two Effects.*
+*Figure 10. Agent, the Session, and the Effects.*
 
 <a id="three-ways-to-resolve-one"></a>
 
-### Three Ways to Resolve One
+### Resolving a Pause
 
-Figure 11 is the server accepting exactly one of the three answers. Figure 12 is those three answers and the two timers.
+The server accepts one answer, and only after its wait (Figure 11). Each answer waits on the pause timestamp (Figure 12).
 
 ```mermaid
 sequenceDiagram
   participant Agent as User-facing agent
   participant Server
-  Agent->>Server: One of the three answers
+  Agent->>Server: One answer
   alt The wait has not elapsed
     Server-->>Agent: Rejected
   else The wait has elapsed
@@ -188,26 +214,34 @@ sequenceDiagram
   end
 ```
 
-*Figure 11. Exactly One Answer, after Its Wait.*
+*Figure 11. One Answer, after Its Wait.*
 
 ```mermaid
 classDiagram
-  class OptionChosen
-  class AutoAdvance
-  class ConditionNotMet
-  class PauseTimestamp
-  OptionChosen --> PauseTimestamp : three seconds
-  AutoAdvance --> PauseTimestamp : the declared wait
+  class OptionChosen {
+    picks the person
+  }
+  class AutoAdvance {
+    default the declared
+  }
+  class ConditionNotMet {
+    apply the gate does not
+  }
+  class PauseTimestamp {
+    began when the pause
+  }
+  OptionChosen --> PauseTimestamp : waits briefly
+  AutoAdvance --> PauseTimestamp : waits as declared
   ConditionNotMet --> PauseTimestamp : no wait
 ```
 
-*Figure 12. The Three Answers and the Timers They Wait On.*
+*Figure 12. Answers and the Timers They Wait On.*
 
 <a id="the-resume-protocol"></a>
 
 ## Resume Protocol
 
-Figure 13 is the agents waking in reverse, and the worker refused while the pause is still active. Figure 14 is the same three agents, with one agent playing both roles when nothing is in the background.
+The agents wake in reverse, and the worker is refused while the pause is still active (Figure 13). The same agents wake, or one agent plays both roles when nothing is in the background (Figure 14).
 
 ```mermaid
 sequenceDiagram
@@ -225,26 +259,32 @@ sequenceDiagram
   end
 ```
 
-*Figure 13. The Agents Wake in Reverse, or the Worker Is Refused.*
+*Figure 13. Agents Wake in Reverse, or the Worker Is Refused.*
 
 ```mermaid
 classDiagram
-  class UserFacingAgent
-  class Orchestrator
-  class Worker
+  class UserFacingAgent {
+    wakes asks, then
+  }
+  class Orchestrator {
+    worker wakes the
+  }
+  class Worker {
+    activity continues the
+  }
   class SingleAgent {
-    both roles
+    roles both
   }
   UserFacingAgent --> Orchestrator : wakes
   Orchestrator --> Worker : wakes
-  SingleAgent --> SingleAgent : switches back to the worker role
+  SingleAgent --> SingleAgent : switches back to the worker
 ```
 
-*Figure 14. Three Agents Waking, or One Agent Switching Role.*
+*Figure 14. Agents Waking, or One Agent Switching Role.*
 
 ## Declaring a Checkpoint
 
-Figure 15 is one declaration reused at several sites, then shown to the worker as an ordinary checkpoint. Figure 16 is the step, the shared routine, and the sites that refer to it.
+One declaration is reused at several sites, then shown to the worker as an ordinary checkpoint (Figure 15). The step, the shared routine, and the sites that refer to it are the pieces (Figure 16). The step's fields are the [schema](../schemas/README.md#checkpoint-step).
 
 ```mermaid
 sequenceDiagram
@@ -261,20 +301,24 @@ sequenceDiagram
 
 ```mermaid
 classDiagram
-  class CheckpointStep
-  class Routine
-  class Site
+  class CheckpointStep {
+    steps the pause in the
+  }
+  class Routine {
+    once declares the gate
+  }
+  class Site {
+    routine refers to the
+  }
   Routine --> CheckpointStep : the body
   Site --> Routine : a reference
 ```
 
-*Figure 16. The Step, the Shared Routine, and the Sites That Refer to It.*
-
-The step's fields are the [schema](../schemas/README.md#checkpoint-step).
+*Figure 16. Step, the Shared Routine, and the Sites That Refer to It.*
 
 ## Where a Checkpoint Belongs
 
-Figure 17 is a gate placed before the steps its answer steers, and a gate placed too late. Figure 18 is the checkpoint, the later steps, and the check that reports a decision read too early.
+A gate comes before the steps its answer steers, and a gate placed too late does not (Figure 17). The checkpoint, the steps around it, and the order check are the pieces (Figure 18).
 
 ```mermaid
 sequenceDiagram
@@ -286,23 +330,31 @@ sequenceDiagram
   Note over Later: A step before the gate reads nothing and is skipped
 ```
 
-*Figure 17. The Gate Comes before the Steps Its Answer Steers.*
+*Figure 17. Gate Comes before the Steps Its Answer Steers.*
 
 ```mermaid
 classDiagram
-  class Checkpoint
-  class LaterStep
-  class EarlierStep
-  class DecisionOrderCheck
+  class Checkpoint {
+    pause the
+  }
+  class LaterStep {
+    answer reads the
+  }
+  class EarlierStep {
+    gate runs before the
+  }
+  class DecisionOrderCheck {
+    read reports an early
+  }
   Checkpoint --> LaterStep : the answer applies
   EarlierStep --> DecisionOrderCheck : reported, unless exempt
 ```
 
-*Figure 18. The Checkpoint, the Steps around It, and the Order Check.*
+*Figure 18. Checkpoint, the Steps around It, and the Order Check.*
 
 ### Never the First Step
 
-Figure 19 is a checkpoint refused as the first step, and the two places that decision can sit instead. Figure 20 is the activity and the dispatch that would otherwise pay for a pause before any work.
+A checkpoint is refused as the first step, and the decision sits in one of the other places (Figure 19). The activity and the dispatch would otherwise pay for a pause before any work (Figure 20).
 
 ```mermaid
 sequenceDiagram
@@ -317,20 +369,28 @@ sequenceDiagram
 
 ```mermaid
 classDiagram
-  class Activity
-  class Checkpoint
-  class PrecedingActivity
-  class Orchestrator
+  class Activity {
+    follows the work that
+  }
+  class Checkpoint {
+    step not its first
+  }
+  class PrecedingActivity {
+    decision can end on the
+  }
+  class Orchestrator {
+    dispatch can decide before
+  }
   Activity --> Checkpoint : not the first step
-  PrecedingActivity --> Checkpoint : the decision sits at its end
-  Orchestrator --> Activity : or the decision is a precondition of dispatch
+  PrecedingActivity --> Checkpoint : sits at its end
+  Orchestrator --> Activity : precondition of dispatch
 ```
 
-*Figure 20. The Activity, and the Two Places the Decision Can Sit.*
+*Figure 20. Activity, and Where the Decision Can Sit.*
 
 ## What the Design Buys
 
-Figure 21 is a question kept off a background agent and a pause that outlives the worker. Figure 22 is the channel, the session, and the timers. What those timers cannot prove is in [fidelity](workflow-fidelity.md).
+A question stays off a background agent, and a pause outlives the worker (Figure 21). The channel, the session, and the timers are what hold that (Figure 22).
 
 ```mermaid
 sequenceDiagram
@@ -343,23 +403,25 @@ sequenceDiagram
   Note over Session: A replacement worker reads the same answer
 ```
 
-*Figure 21. The Question Stays with the Agent Who Can Ask, and the Pause Stays in the Session.*
+*Figure 21. Question Stays with the Agent Who Can Ask, and the Pause Stays in the Session.*
 
 ```mermaid
 classDiagram
   class UserFacingAgent {
-    the only channel to the person
+    person the only channel to the
   }
   class Orchestrator {
-    passes the block unread
+    unread passes the block
   }
   class Session {
-    pause and answer
+    answer pause and
   }
-  class Timers
-  UserFacingAgent --> Session
-  Orchestrator --> UserFacingAgent
+  class Timers {
+    answer refuse an instant
+  }
+  UserFacingAgent --> Session : records the answer
+  Orchestrator --> UserFacingAgent : passes the block
   Timers --> Session : an instant answer is refused
 ```
 
-*Figure 22. The Channel, the Unread Relay, the Session, and the Timers.*
+*Figure 22. Channel, the Unread Relay, the Session, and the Timers.*

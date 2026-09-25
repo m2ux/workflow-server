@@ -1,8 +1,6 @@
 # Configuration reference
 
-Every flag and environment variable the server reads at startup. The install sequence these settings fit into is [setup.md](setup.md); what differs between the two transports is [http.md](http.md) and [stdio.md](stdio.md).
-
-Where a flag and a variable name the same setting, the flag wins.
+Every flag and environment variable the server reads at startup.
 
 ## Root binding
 
@@ -30,7 +28,7 @@ One of a workspace path **or** `--repo` is required at startup. The table names 
 
 ## Delivery budgets
 
-Three budgets bound what reaches an agent, each protecting something different. [The delivery model](delivery.md#the-three-budgets) explains what each one is for and how it was calibrated.
+[The delivery model](delivery.md#the-three-budgets) explains what each one is for and how it was calibrated.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -43,7 +41,7 @@ Three budgets bound what reaches an agent, each protecting something different. 
 
 ## Signing key
 
-The key that seals session state lives in a file named `secret`. The server looks for its directory in `WORKFLOW_SERVER_KEY_DIR` first, then `WORKFLOW_SERVER_STATE_DIR`, falling back to `~/.workflow-server`. Docker's `start.sh` sets it explicitly, because non-root containers often run with `HOME=/` and the key would otherwise land somewhere unwritable. What the seal proves is in [workflow fidelity](workflow-fidelity.md#layer-1-session-integrity).
+The key that seals session state lives in a file named `secret`. The server looks for its directory in `WORKFLOW_SERVER_KEY_DIR` first, then `WORKFLOW_SERVER_STATE_DIR`, falling back to `~/.workflow-server`. Docker's `start.sh` sets it explicitly, because non-root containers often run with `HOME=/` and the key would otherwise land somewhere unwritable. What the seal proves is in [fidelity](fidelity.md#layer-1-session-integrity).
 
 ## Examples
 

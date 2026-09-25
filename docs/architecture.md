@@ -1,48 +1,176 @@
-# System architecture overview
+# Architecture
 
-The Workflow Server drives AI agents through long, multi-step engineering tasks. Three things make that hard: the task is often ambiguous, it runs for longer than any one agent's context lasts, and an agent that loses its place can do real damage to a codebase.
+The workflow server drives agents through long engineering tasks. The task is often ambiguous, it outlasts one agent's **context**, the working memory that agent holds, and an agent that loses its place can damage a codebase. Read the sections in order. Each one is the outline of a page, and the page is the account.
 
-The architecture answers those pressures through a set of models, one per page. Each section below names the pressure and the page that answers it.
+A **dispatch** divides the work so that no one context holds all of it. A **checkpoint** is how a **worker**, an agent that cannot speak to the person, still gets an answer. **State** is the path already written down, so the next step is not a guess. Notes from the run live in a **planning folder**, apart from the code.
 
-## Work is handed down a chain of agents
+**Resolution** is how a name stands for one file. **Delivery** is that file handed over when the run needs it. **Fidelity** is the check on a claim to have followed the workflow.
 
-[Dispatch](dispatch.md). A user-facing agent picks the workflow and talks to the person; a background orchestrator tracks where the run has got to; and a worker executes one activity at a time and then reports.
+## Dispatch
 
-Splitting them keeps each context small, and it means a worker that runs out of room can be replaced without the run losing its place.
+One agent cannot talk to a person, track a long run, and write the code. Talking, tracking, and doing stay apart, each in its own context (Figure 1). A worker that runs out of room can be replaced, and the run does not lose its place. That division is what [dispatch](dispatch.md) is (Figure 2).
 
-## A background agent still has to ask
+```mermaid
+sequenceDiagram
+  participant Work
+  participant Agents
+  Work->>Agents: Divided, one context each
+```
 
-[Checkpoints](checkpoint.md). A worker runs with no channel to the user, so it cannot ask a question when it hits one.
+*Figure 1. Work Divided So No One Context Holds All of It.*
 
-A checkpoint is how it stops and gets an answer anyway: the pause is recorded in the session, travels up the chain to the agent that can ask, and the answer travels back down.
+```mermaid
+classDiagram
+  class Work {
+    task the whole
+  }
+  class Talk {
+    person speaks to the
+  }
+  class Track {
+    run follows the
+  }
+  class Doing {
+    work does the
+  }
+  Work --> Talk : a context for talking
+  Work --> Track : a context for tracking
+  Work --> Doing : a context for the work
+```
 
-## What happens next is not the model's judgement
+*Figure 2. Talking, Tracking, and Doing, Kept Apart.*
 
-[State management](state.md). An activity names the outcome it reached by evaluating declared predicates against a bag of declared variables, and the workflow file says where each outcome leads. The same definition and the same state therefore always take the same path.
+## Checkpoints
 
-That page also covers how variables get their initial values, and the two routes by which they change.
+The work sometimes cannot decide, and the agent doing the work cannot ask the person. The question leaves the work (Figure 3). It comes back as an answer, and the work goes on. That leaving and returning is what [checkpoints](checkpoint.md) are (Figure 4).
 
-## Planning and code stay apart
+```mermaid
+sequenceDiagram
+  participant Work
+  participant Question
+  Work->>Question: Cannot decide
+  Question->>Work: Returns as an answer
+```
 
-Session notes stay out of the code change. A session opens one planning folder for them. Where that folder sits is the workspace [project layout](https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md). What the folder holds, including the progress table, is [state management](state.md#the-planning-folder). How each document in it is named is [the worker bundle](delivery.md#how-documents-are-named).
+*Figure 3. A Question Leaves the Work and Comes Back.*
 
-## Instructions arrive one piece at a time
+```mermaid
+classDiagram
+  class Question {
+    decide what the work cannot
+  }
+  class Answer {
+    decides what the person
+  }
+  Question --> Answer : is answered by
+```
 
-Loading a whole workflow's instructions into an agent at once degrades it, so behaviour is broken into techniques and handed over as the run needs them. That takes two pages.
+*Figure 4. A Question, and the Answer That Returns.*
 
-[Resolution](resource-resolution.md) covers how a name reaches a file: a technique is a markdown definition of one capability, and activities reference techniques by a `::` path.
+## State
 
-[Delivery](delivery.md) covers what then travels — how a role's contract is assembled, the budgets that bound it, and reference delivery, which sends a marker to an agent already holding the bytes.
+Ask what to do next, and two runs of the same facts can take different paths. The next place is written down before the run reaches it, so those runs take the same path (Figure 5). Notes from the run stay in the planning folder, apart from the code. Where that folder sits is the workspace [project layout](https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md), what it holds is [state](state.md#the-planning-folder), and the path itself is [state](state.md) (Figure 6).
 
-## A claim to have followed the workflow is checkable
+```mermaid
+sequenceDiagram
+  participant Run
+  participant Path
+  Path->>Run: The next place is already written
+```
 
-[Workflow fidelity](workflow-fidelity.md). Seven layers make it so: the seal over session state, the checkpoint gate, four advisory validations, and the trace.
+*Figure 5. The Next Place Is Written before the Run Reaches It.*
 
-## Where else to look
+```mermaid
+classDiagram
+  class Run {
+    path follows the written
+  }
+  class Path {
+    place the next
+  }
+  Path --> Run : names the next place
+```
 
-| For | Read |
-|-----|------|
-| The tool catalogue | [API reference](api-reference.md), with [generated wire contracts](../site/api/tools.html) |
-| Build commands and the test suite | [Development guide](development.md) |
-| The corpus guards | [`guards/README.md`](../guards/README.md) |
-| Routing by what you are doing | [Documentation index](README.md) |
+*Figure 6. A Run, and the Path Written Down for It.*
+
+## Resolution
+
+A whole workflow's instructions are too much to hand over at once. The run names the one capability it needs now (Figure 7). That name stands for a file, and the rest stays unread. That standing-for is what [resolution](resource-resolution.md) is (Figure 8).
+
+```mermaid
+sequenceDiagram
+  participant Run
+  participant Name
+  participant File
+  Run->>Name: The one capability needed now
+  Name->>File: Stands for the file
+```
+
+*Figure 7. A Name Stands for One File.*
+
+```mermaid
+classDiagram
+  class Name {
+    capability asked for
+  }
+  class File {
+    capability text of the
+  }
+  Name --> File : stands for
+```
+
+*Figure 8. A Name, and the File It Stands For.*
+
+## Delivery
+
+The named file has to reach the agent that needs it. It is handed over when it is needed, not all at once (Figure 9). A later need for the same file does not send the whole text again. That handing-over is what [delivery](delivery.md) is, and how a document in the planning folder is [named](delivery.md#how-documents-are-named) is there too (Figure 10).
+
+```mermaid
+sequenceDiagram
+  participant Run
+  participant File
+  Run->>File: Ask for the piece needed now
+  File->>Run: That piece, and not the rest
+```
+
+*Figure 9. One Piece Is Handed Over When Needed.*
+
+```mermaid
+classDiagram
+  class Run {
+    file agent that needs the
+  }
+  class File {
+    agent piece handed to the
+  }
+  Run --> File : asks for this piece
+  File --> Run : returns only this piece
+```
+
+*Figure 10. A Run, and the One Piece Handed to It.*
+
+## Fidelity
+
+An agent can claim it followed the workflow and be wrong. What the run claims can be set beside what was declared (Figure 11). A mismatch is visible, rather than left as a story the agent tells. That comparison is what [fidelity](fidelity.md) is (Figure 12).
+
+```mermaid
+sequenceDiagram
+  participant Claim
+  participant Declared
+  Claim->>Declared: Set beside what was written down
+```
+
+*Figure 11. A Claim Set beside What Was Declared.*
+
+```mermaid
+classDiagram
+  class Claim {
+    happened says what
+  }
+  class Declared {
+    wrote what the workflow
+  }
+  Claim --> Declared : compared with
+```
+
+*Figure 12. A Claim, and What Was Declared.*

@@ -29,7 +29,7 @@ Each model answers one pressure the design is under. [architecture.md](architect
 | [Artifact management](artifact-management-model.md) | How planning output is kept out of the code change |
 | [Resource resolution](resource-resolution-model.md) | How a `::` reference reaches a file on disk |
 | [Delivery](delivery-model.md) | What then travels to an agent, how much of it, and what it costs |
-| [Workflow fidelity](workflow-fidelity.md) | How a claim to have followed the workflow is checked |
+| [Fidelity](fidelity.md) | How a claim to have followed the workflow is checked, layer by layer |
 
 ## Document corpus
 

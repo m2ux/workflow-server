@@ -103,7 +103,7 @@ Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints
 
 | Symptom | What to check |
 |---------|----------------|
-| `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [workflow-fidelity](workflow-fidelity.md) |
+| `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [fidelity](fidelity.md) |
 | `corpusServes` is false | The corpus bind — compare `corpus.dir` in the payload with `--workflows-dir` |
 | OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
 | Image/container crash loop | `docker logs workflow-server`; confirm the `state` bind and image pull |

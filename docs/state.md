@@ -162,7 +162,7 @@ Every response carries `execution_path`: `agent` where a caller walks the defini
 
 Session files live under the engineering root rather than under the feature worktree. The code change stays in the workspace; the notes of the run stay in one planning folder the session opens. Where that folder sits is the workspace [project layout](https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md#a-sessions-notes). [PLANNING_SLUG](configuration.md#root-binding) overrides the `artifacts/planning` segment. How the server is pointed at the two roots is [root binding](configuration.md#root-binding).
 
-The folder holds a `README.md` a person can open to see what the work is and how far it has got. Documents an activity produces are written here and nowhere else. How those documents are named is in [the worker bundle](delivery.md#how-documents-are-named). The history of tool calls lives in `session.json`. How that history is recorded and read back is in [workflow fidelity](workflow-fidelity.md).
+The folder holds a `README.md` a person can open to see what the work is and how far it has got. Documents an activity produces are written here and nowhere else. How those documents are named is in [the worker bundle](delivery.md#how-documents-are-named). The history of tool calls lives in `session.json`. How that history is recorded and read back is in [fidelity](fidelity.md).
 
 The `README.md` carries a Progress table. The orchestrator marks a row in progress before it hands the activity to a worker, and complete once that activity's work is committed. The worker reports the documents it produced. It does not edit the table. The table still advances when a worker is lost and replaced.
 
@@ -171,7 +171,7 @@ The `README.md` carries a Progress table. The orchestrator marks a row in progre
 The server owns the canonical session state and writes it to disk atomically on every authenticated call. Agents hold a six-character `session_index`, derived deterministically from the planning slug, and nothing else. They neither read nor write the state themselves. Each session folder holds two files:
 
 * **`session.json`** carries the state as plaintext, validated against [`schemas/session-file.schema.json`](../schemas/session-file.schema.json). It holds where the run has got to, what it decided, and what it did — the workflow and version it started against, the variable bag, the activities completed and skipped, the checkpoint responses, the history, any launched children, and for a child, a snapshot of its parent. A person can read it, and it is reproducible from the workflow definition. Read the schema for the field-by-field shape rather than a list here, which would drift from it.
-* **`.session-token`** is a sealed envelope binding those exact bytes to the engineering root and to the server's signing key. The server verifies it on every read, and a disagreement raises `SealMismatchError`. What the seal does and does not prove is in [workflow fidelity](workflow-fidelity.md#layer-1-session-integrity).
+* **`.session-token`** is a sealed envelope binding those exact bytes to the engineering root and to the server's signing key. The server verifies it on every read, and a disagreement raises `SealMismatchError`. What the seal does and does not prove is in [fidelity](fidelity.md#layer-1-session-integrity).
 
 ### Two calls against one session
 

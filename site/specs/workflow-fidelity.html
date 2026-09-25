@@ -68,7 +68,7 @@
 <main id="main">
   <h1>Workflow fidelity</h1>
   <p class="lede">Agents drift: context degrades over long sessions, and without enforcement a model may skip steps, dodge checkpoints, or fabricate state. The server counters this with seven enforcement layers — some hard gates that block, some advisory checks that warn — each operating at a different granularity.</p>
-  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md">docs/workflow-fidelity.md</a>.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/fidelity.md">docs/fidelity.md</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 470" role="img" aria-labelledby="fid-title fid-desc">
@@ -135,7 +135,7 @@
   <p>Enforcement is half the story; the server also keeps agents' context windows small so instructions stay in effective attention: lightweight <code>get_workflow</code> metadata instead of full definitions, transitions delivered with each activity, pre-resolved technique bundles, lazy resources, a self-describing bootstrap, and compressed trace tokens (see <a href="./resource-resolution.html">resolution</a>).</p>
 
   <h2 id="limits">Honest limitations</h2>
-  <p>The enforcement is detection-oriented, not proof-oriented. The server verifies that steps were <em>reported</em>, not that the work was done; that a claimed condition maps to the target, not that it is true; that a checkpoint was <em>answered</em> after a plausible delay, not that a human saw it. The mechanical trace corroborates what tool calls actually happened, and post-hoc audit can cross-reference claims against checkpoint logs — the full list of limitations is in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md">canonical document</a>.</p>
+  <p>The enforcement is detection-oriented, not proof-oriented. The server verifies that steps were <em>reported</em>, not that the work was done; that a claimed condition maps to the target, not that it is true; that a checkpoint was <em>answered</em> after a plausible delay, not that a human saw it. The mechanical trace corroborates what tool calls actually happened, and post-hoc audit can cross-reference claims against checkpoint logs — the full list of limitations is in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/fidelity.md">canonical document</a>.</p>
 </main>
 
 

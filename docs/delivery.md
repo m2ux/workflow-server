@@ -27,16 +27,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class DeclaredReferences {
-    named by the workflow
+    workflow named by the
   }
   class CoreSet {
-    included for every role
+    role included for every
   }
   class ConditionalExtras {
-    added only when reachable
+    reachable added only when
   }
   class Bundle {
-    what the agent is handed
+    handed what the agent is
   }
   DeclaredReferences --> Bundle : gathered in
   CoreSet --> Bundle : gathered in
@@ -64,19 +64,19 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Techniques {
-    one capability each, body included
+    included one capability each, body
   }
   class Contracts {
-    shared rules and inputs
+    inputs shared rules and
   }
   class RoleRules {
-    govern the agent
+    agent govern the
   }
   class WorkflowMetadata {
-    graph, activities, variable names
+    names graph, activities, variable
   }
   class OrchestratorBundle {
-    what the orchestrator is handed
+    handed what the orchestrator is
   }
   Techniques --> Contracts : names what it inherits
   RoleRules --> OrchestratorBundle : rides once
@@ -105,13 +105,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ActivityTechniques {
-    named by the activity's steps
+    steps named by the activity's
   }
   class WorkerConduct {
-    held to by every worker
+    worker held to by every
   }
   class WorkerBundle {
-    what the worker is handed
+    handed what the worker is
   }
   ActivityTechniques --> WorkerBundle : gathered in
   WorkerConduct --> WorkerBundle : gathered in
@@ -139,16 +139,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ActivityFile {
-    leading digits are the prefix
+    prefix leading digits are the
   }
   class Prefix {
-    put in front of each document
+    document put in front of each
   }
   class ExpectedDocuments {
-    built from the step techniques
+    techniques built from the step
   }
   class PlanningFolder {
-    sorts by activity name
+    name sorts by activity
   }
   ActivityFile --> Prefix : read from the filename
   Prefix --> PlanningFolder : names each document
@@ -176,13 +176,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class StepName {
-    the step that binds the technique
+    technique the step that binds the
   }
   class TechniqueName {
-    role technique, not bundled
+    bundled role technique, not
   }
   class SessionDefinitions {
-    only this session's names
+    names only this session's
   }
   StepName --> SessionDefinitions : asks for one
   TechniqueName --> SessionDefinitions : asks for one
@@ -214,13 +214,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class WindowBudget {
-    unasked text, one activity
+    activity unasked text, one
   }
   class BatchBudget {
-    how much one context may accumulate
+    accumulate how much one context may
   }
   class ResultBound {
-    how much one handover may weigh
+    weigh how much one handover may
   }
   class OneActivity
   class OneRun
@@ -251,13 +251,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Window {
-    the worker's context for one activity
+    activity the worker's context for one
   }
   class UnconditionalContent {
-    the definition and the role contract
+    contract the definition and the role
   }
   class SpeculativeSteps {
-    steps a gate may still skip
+    skip steps a gate may still
   }
   UnconditionalContent --> Window : rides whatever the budget says
   SpeculativeSteps --> Window : spends the share, then stops
@@ -285,13 +285,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Run {
-    several activities, one worker
+    worker several activities, one
   }
   class CharacterLimit {
-    text one context may hold
+    hold text one context may
   }
   class ActivityLimit {
-    activities one context may take
+    take activities one context may
   }
   Run --> CharacterLimit : stops when either binds
   Run --> ActivityLimit : stops when either binds
@@ -318,10 +318,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ToolResult {
-    goes out whole
+    whole goes out
   }
   class LogLine {
-    work outgrew one handover
+    handover work outgrew one
   }
   ToolResult --> LogLine : logged past the bound
 ```
@@ -347,13 +347,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Activity {
-    response for this dispatch
+    dispatch response for this
   }
   class InlinedSteps {
-    small steps placed in that response
+    response small steps placed in that
   }
   class LazySteps {
-    left for a later fetch
+    fetch left for a later
   }
   Activity --> InlinedSteps : carries, until the window is spent
   Activity --> LazySteps : names, but does not carry
@@ -383,16 +383,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ReferenceMode {
-    a repeat can collapse
+    collapse a repeat can
   }
   class FullMode {
-    nothing yet to collapse against
+    against nothing yet to collapse
   }
   class ResourceBody {
-    the reference material itself
+    itself the reference material
   }
   class ResourceName {
-    ask for the body later
+    later ask for the body
   }
   ReferenceMode --> ResourceBody : sends
   FullMode --> ResourceName : sends
@@ -420,13 +420,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Context {
-    one agent, spawn to finish
+    finish one agent, spawn to
   }
   class Ledger {
-    what this context was already sent
+    sent what this context was already
   }
   class Marker {
-    stands for bytes already held
+    held stands for bytes already
   }
   Context --> Ledger : records each delivery
   Ledger --> Marker : same bytes, sent again
@@ -438,7 +438,7 @@ classDiagram
 
 ## What Gets Measured
 
-Each dispatch and each fetch is recorded, and the agent reports what a turn cost (Figure 25). That is the history, the ledger, and that report (Figure 26). Coverage of a bundled step counts for [fidelity](workflow-fidelity.md#layer-5-the-step-manifest).
+Each dispatch and each fetch is recorded, and the agent reports what a turn cost (Figure 25). That is the history, the ledger, and that report (Figure 26). Coverage of a bundled step counts for [fidelity](fidelity.md#layer-5-the-step-manifest).
 
 ```mermaid
 sequenceDiagram
@@ -453,13 +453,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class History {
-    one record per dispatch
+    dispatch one record per
   }
   class Ledger {
-    full size, sent or saved
+    saved full size, sent or
   }
   class UsageReport {
-    turn cost, agent reported
+    reported turn cost, agent
   }
   class Dispatch
   class Fetch

@@ -28,13 +28,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class UserFacingAgent {
-    talks to the person
+    person talks to the
   }
   class Orchestrator {
-    tracks one workflow
+    workflow tracks one
   }
   class Worker {
-    runs one activity
+    activity runs one
   }
   UserFacingAgent --> Orchestrator : starts
   Orchestrator --> Worker : starts
@@ -66,13 +66,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ParentSession {
-    the run already open
+    open the run already
   }
   class ChildSession {
-    embedded in the parent
+    parent embedded in the
   }
   class PlanningFolder {
-    the parent's notes
+    notes the parent's
   }
   ParentSession --> ChildSession : holds
   ChildSession --> PlanningFolder : inherits
@@ -98,13 +98,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class OrchestratorSession {
-    one state file
+    file one state
   }
   class Worker {
-    no session of its own
+    own no session of its
   }
   class ChildSession {
-    an orchestrator's own
+    own an orchestrator's
   }
   Worker --> OrchestratorSession : shares
   ChildSession --> OrchestratorSession : is not this
@@ -132,13 +132,13 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Run {
-    several activities
+    activities several
   }
   class Worker {
-    one identity for the run
+    run one identity for the
   }
   class Replacement {
-    a new identity
+    identity a new
   }
   Run --> Worker : continues in place
   Run --> Replacement : after a refusal
@@ -171,16 +171,16 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Exit {
-    names several branches
+    branches names several
   }
   class List {
-    items the prior activity wrote
+    wrote items the prior activity
   }
   class Branch {
-    one worker per item
+    item one worker per
   }
   class MeetingPoint {
-    waits until every branch returns
+    returns waits until every branch
   }
   Exit --> List : reads
   List --> Branch : one worker each
@@ -207,10 +207,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Fan {
-    one context per branch
+    branch one context per
   }
   class Batch {
-    one context for the run
+    run one context for the
   }
   Fan --> BranchContext : pays each
   Batch --> SharedContext : pays once
@@ -242,7 +242,7 @@ sequenceDiagram
 classDiagram
   class ChildRun
   class Status {
-    going, waiting, or finished
+    finished going, waiting, or
   }
   ChildRun --> Status : reports
 ```
@@ -266,10 +266,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class ExistingContext {
-    memory of the work
+    work memory of the
   }
   class NewInstruction {
-    appended, not a fresh start
+    start appended, not a fresh
   }
   ExistingContext --> NewInstruction : continues with
 ```
@@ -295,10 +295,10 @@ sequenceDiagram
 ```mermaid
 classDiagram
   class Server {
-    same gates and state
+    state same gates and
   }
   class Handoff {
-    inside one conversation
+    conversation inside one
   }
   Server --> Handoff : unchanged
 ```
