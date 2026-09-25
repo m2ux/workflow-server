@@ -98,7 +98,7 @@ Zero means the edit reaches nothing in flight. A non-zero count is the set of ru
 
 ## What runs on a pull request
 
-[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`, `npm run test:ci`, and the [fixture delivery gate](../benchmark/README.md#the-gate-runs-on-every-pull-request). Live-corpus tests skip when `.worktrees/workflows` is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
+[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`, `npm run test:ci`, and the [fixture delivery gate](../benchmark/README.md#appendix). Live-corpus tests skip when `.worktrees/workflows` is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
 
 ## The two branches
 

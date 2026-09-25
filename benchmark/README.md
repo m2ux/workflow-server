@@ -7,61 +7,146 @@ These programs measure how much text the server sends an agent while it works th
 
 Pick the tool that changes the thing you changed: a number from another tool cannot be blamed on your edit.
 
+| Tool | Command | What It Varies |
+|------|---------|----------------|
+| [Token Delivery Benchmark](run-token-benchmark.ts) | `npm run bench:token` | the session mode, over one solo walk |
+| [Dispatch Overhead Benchmark](run-dispatch-benchmark.ts) | `npm run bench:dispatch` | one re-dispatch: a spawn pass against a resume pass of the same activity |
+| [Batch Benchmark](run-batch-benchmark.ts) | `npm run bench:batch` | the batch: the same run walked per activity, then as one context |
+| [Run Profiler](../scripts/run-profile.ts) | `npm run profile:run` | nothing; it reads a real run off disk |
 
-| Tool                                                     | Command                  | What it varies                                                           |
-| -------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------ |
-| [Token delivery benchmark](run-token-benchmark.ts)       | `npm run bench:token`    | the session mode, over one solo walk                                     |
-| [Dispatch overhead benchmark](run-dispatch-benchmark.ts) | `npm run bench:dispatch` | one re-dispatch: a spawn pass against a resume pass of the same activity |
-| [Batch benchmark](run-batch-benchmark.ts)                | `npm run bench:batch`    | the batch: the same run walked per activity, then as one context         |
-| [Run profiler](../scripts/run-profile.ts)                | `npm run profile:run`    | nothing; it reads a real run off disk                                    |
+## Token Delivery Benchmark
 
+The benchmark asks the server to work through one workflow and counts the text that comes back. Figure 1 shows that count compared with the [baseline](fixtures/token-benchmark-baseline.json): if the text has grown too much, the check fails. Figure 2 shows where the walk gets its workflow, and the baseline it is scored against. The check on every pull request runs the [commands](#appendix) against a small sample workflow called delivery-fixture.
 
+```mermaid
+sequenceDiagram
+  participant Bench as Token benchmark
+  participant Server
+  participant Baseline
+  Bench->>Server: Work through one workflow
+  Server-->>Bench: How much text came back
+  Bench->>Baseline: Compare with the saved result
+  alt The text has grown too much
+    Bench-->>Bench: The check fails
+  end
+```
 
+*Figure 1. One Walk, Compared with the Saved Result.*
 
-## Token delivery benchmark
+```mermaid
+classDiagram
+  class TokenBenchmark
+  class Server
+  class SampleWorkflow {
+    the workflow under test
+    the role instructions built for the run
+  }
+  class SavedResult
+  TokenBenchmark --> Server : one walk
+  TokenBenchmark --> SavedResult : the score
+  Server --> SampleWorkflow : reads
+```
 
-Records payload characters and ledger cost for one walk, under `context_mode: fresh` and `persistent`. It probes `get_resource` for linked and hot templates, because the robot walker does not call `get_resource` on its own.
+*Figure 2. The Sample Workflow the Server Reads, and the Saved Result the Walk Is Scored Against.*
 
-Each run compares against [fixtures/token-benchmark-baseline.json](fixtures/token-benchmark-baseline.json). Engine CI walks `delivery-fixture` under `tests/fixtures/token-bench`. Context mode and recording date live on the fixture.
+## Dispatch Overhead Benchmark
 
-- Stderr is a scorecard.
-- Stdout is one JSON object: `getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, and `vsReference` (absolute and percent deltas, and `deliveryCostIndex` — baseline 100, lower is better, the sum of activity, workflow, resource and technique characters).
-- Exit `2` when the walk does not complete, `3` on gate failure.
+Starting a worker from scratch means sending it the full instructions. Continuing that same worker means sending less, because it already has them. Figure 3 shows those two passes, and the text saved by the second. Figure 4 shows that both passes are the same activity.
 
+```mermaid
+sequenceDiagram
+  participant Bench as Dispatch benchmark
+  participant Server
+  loop Each sampled activity
+    Bench->>Server: Start a new worker, full instructions
+    Server-->>Bench: How much text was sent
+    Bench->>Server: Continue that worker, send only what is new
+    Server-->>Bench: How much text was sent
+  end
+  Bench-->>Bench: How much the second pass saved
+```
 
-### What the fixture separates
+*Figure 3. Start a Worker from Scratch, Then Continue the Same One.*
 
-A delivery is a role contract, the same for every activity, plus that activity's body and step techniques. `delivery-fixture` holds one activity at each end of the scale:
+```mermaid
+classDiagram
+  class DispatchBenchmark
+  class Server
+  class Activity
+  class FirstPass
+  class SecondPass
+  DispatchBenchmark --> Server
+  DispatchBenchmark --> FirstPass
+  DispatchBenchmark --> SecondPass
+  FirstPass --> Activity
+  SecondPass --> Activity
+```
 
-- `minimal` — one step, one small operation.
-- `large` — four steps, a group of four.
+*Figure 4. Both Passes Are the Same Activity.*
 
-Each `get_activity` is stored under `activityDeliveries` as `roleContract` (`worker_bundle_chars`, echoed on `_meta.delivery_cost`) and `activityBody` (the remainder). Those sum to `roleContractChars` and `activityBodyChars`. The contract arrives whole on the first delivery and collapses to markers on the second, so the two rows are the fixed share and the variable share.
+## Batch Benchmark
 
-### The priced contract is derived
+The same stretch of work is done twice. Figure 5 shows the first time, with a new worker for each activity, and the second time, with one worker for the whole stretch. The text counted follows the [batch limit](../docs/delivery.md#the-batch-budget). Figure 6 shows those two passes, and a start-up cost that is typed in rather than measured: the cost of spinning up a worker is not something this run can see.
 
-The client workflow is authored under `tests/fixtures/token-bench/`. [token-bench-corpus.ts](token-bench-corpus.ts), under `--fixture-corpus`, writes a temporary `meta` namespace:
+```mermaid
+sequenceDiagram
+  participant Bench as Batch benchmark
+  participant Server
+  Bench->>Server: A new worker for each activity
+  Server-->>Bench: Text sent, and how many workers started
+  Bench->>Server: One worker for the whole stretch
+  Server-->>Bench: Text sent, and how many workers started
+  Note over Bench: The cost of starting a worker is typed in
+```
 
-- a technique at every reference [core-ops.ts](../src/loaders/core-ops.ts) names
-- a root contract the operations inherit
-- a contract per group
+*Figure 5. The Same Stretch of Work, Once per Activity and Once with One Worker.*
 
-A reference added to `core-ops.ts` reaches the gate with no fixture to edit. The stand-in bodies are uniform, so a reading prices how the engine delivers a contract, and a recorded baseline can be reproduced.
+```mermaid
+classDiagram
+  class BatchBenchmark
+  class Server
+  class NewWorkerEachActivity
+  class OneWorkerForTheRun
+  class StartupCost
+  BatchBenchmark --> Server
+  BatchBenchmark --> NewWorkerEachActivity
+  BatchBenchmark --> OneWorkerForTheRun
+  BatchBenchmark --> StartupCost : typed in
+```
 
-### The gate runs on every pull request
+*Figure 6. The Two Passes, and a Start-up Cost That Is Typed In.*
 
-[Verify](../.github/workflows/verify.yml) runs `--gate` at the 1% default against `delivery-fixture`. Delivery cost is a property of a walk, so no guard measures it.
+## Run Profiler
 
-When an increase is wanted:
+This one does not run the server. It reads a run that already finished. Figure 7 shows that read: the opening stretch of the run is marked off, and the tokens are split between the lead agent and each worker. Figure 8 shows the two records that read comes from, and the profile built out of them.
 
-1. Confirm it. A new activity or a widened contract costs characters.
-2. Re-record from a `--no-compare` run of the same walk, in the same commit.
-3. Say in `description` what the walk gained.
+```mermaid
+sequenceDiagram
+  participant Profiler
+  participant Record
+  Profiler->>Record: Read the finished run and its workers
+  Profiler->>Profiler: Mark off the opening stretch
+  Profiler-->>Profiler: Split the tokens, lead agent and each worker
+```
 
-- Pin `WORKFLOWS_DIR` to the tree the fixture walked. The scorecard warns when the run and the reference disagree on workflow.
-- The gate compares two fresh-mode walks of that same workflow.
-- A persistent-mode run measures the reference-delivery win.
-- A cross-mode comparison reports, is banner-warned, and `--gate` refuses it (`vsReference.modeMatched`).
+*Figure 7. A Finished Run, with the Lead Agent's Tokens Separate from Each Worker's.*
+
+```mermaid
+classDiagram
+  class Profiler
+  class SessionRecord
+  class WorkerRecords
+  class Profile
+  Profiler --> SessionRecord
+  Profiler --> WorkerRecords
+  Profiler --> Profile : the timeline and the token split
+```
+
+*Figure 8. The Session Record, the Worker Records, and the Profile Built from Them.*
+
+## Appendix
+
+### Token Delivery
 
 ```bash
 # Fresh-mode ship gate. Fails with exit 3 above the threshold.
@@ -77,65 +162,8 @@ npm run --silent bench:token -- --label=opt --context-mode=persistent
 npm run --silent bench:token -- --label=raw --context-mode=persistent --no-compare
 ```
 
-
-
-## Dispatch overhead benchmark
-
-[run-dispatch-benchmark.ts](run-dispatch-benchmark.ts) prices a re-dispatch. For each sampled activity it runs two passes on the same worker `agent_id`, and both fetch the activity payload and every step-bound technique:
-
-- a fresh spawn at full delivery
-- the same context resumed under `bundle: "reference"`
-
-What the run reports:
-
-- Characters come from `activity_dispatched`, `technique_fetched`, `technique_bundled`, and `resource_fetched`.
-- Stdout is one JSON object: per-activity fresh and resume characters, and `savingPct`.
-- Stderr names any activity that missed a pair.
-- `--gate --min-saving-pct=<n>` exits `3` below the saving.
-
-
-
-## Batch benchmark
-
-[run-batch-benchmark.ts](run-batch-benchmark.ts) walks one run twice. Characters use the same `deliveredChars` rule as [the batch bound](../docs/delivery.md#the-batch-budget).
-
-- a fresh worker context per activity, at full delivery
-- one context, with reference delivery after the first activity, which is what the bound admits
-
-Server-side elapsed time lands within a few percent either way. Reference delivery composes every payload and then hashes it, so a batch does slightly more server work to put fewer bytes on the wire. The saving is the bytes and the dispatches.
-
-The harness cost a fresh worker pays is not visible headless:
-
-- system prompt
-- project instructions
-- tool schemas
-
-The script reports the dispatches a batch avoids and prices them with `--spawn-seconds=<n>`. The default is the mean of the dispatches on a profiled run. Pass a figure measured with [the profiler](#run-profiler).
-
-## Run profiler
-
-[run-profile.ts](../scripts/run-profile.ts) reads a session transcript and the worker transcripts beside it, places startup milestones on a timeline, and splits token usage between the orchestrator's main context and each worker.
+### Run Profiler
 
 ```bash
 npm run profile:run -- --session=03e43af3
-npm run profile:run -- --session=03e43af3 --session=f5783c2a --json
-npm run profile:run -- --transcript=~/.claude/projects/<slug>/<session-id>.jsonl --window=full
 ```
-
-- `--session` resolves an id or prefix under `--projects-dir` (default `~/.claude/projects`). Repeatable.
-- `--transcript` takes a path. Repeatable.
-- `--window=startup`, the default, runs from the first record until the client workflow's opening activity is reported done.
-- `--json` writes the profile to stdout.
-
-The opener is the `initialActivity` of the session the graph leads to. A session index with no meta activity belongs to the client workflow, and the first `next_activity` against it names that opener. The profiler reports the id it found. The same rule holds when a run abandons one meta session and starts another before dispatching.
-
-- Main-context figures are the orchestrator turns inside the window.
-- A worker joins at its dispatch, and its whole ledger comes with it.
-- Worker turns are read from `subagents/` beside the transcript. When the transcript carries them inline and that directory is absent, the profile sets `workerTurnsUnread` and the report says the worker figures are unread.
-
-The harness writes one transcript record per content block and repeats the same usage object on each. `requestId` is the unit a figure attaches to. Each field is the maximum across the response's records:
-
-- the shared value for cache and input
-- the terminal count for `output_tokens`
-
-Every total is reported beside `recordSummed`, the sum over records for the same span, and their `ratio`.
