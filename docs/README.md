@@ -27,7 +27,7 @@ Each model answers one pressure the design is under. [architecture.md](architect
 | [Checkpoints](checkpoint-model.md) | How a background agent asks a question it cannot ask directly |
 | [State management](state.md) | How the next activity is chosen, and where session state lives |
 | [Artifact management](artifact-management-model.md) | How planning output is kept out of the code change |
-| [Resource resolution](resource-resolution-model.md) | How a `::` reference reaches a file on disk |
+| [Resolution](resolution.md) | How a name reaches a technique, resource, activity, or routine |
 | [Delivery](delivery-model.md) | What then travels to an agent, how much of it, and what it costs |
 | [Fidelity](fidelity.md) | How a claim to have followed the workflow is checked, layer by layer |
 

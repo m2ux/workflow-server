@@ -6,7 +6,7 @@ An **orchestrator** tracks one workflow. A **worker** carries out one activity. 
 
 A **context** is the working memory one agent holds from start to finish. A **window** is how much of that one activity may spend on content the worker did not ask for. A **batch** is several activities continued by one worker. A **gate** is a pause for a person. Steps placed in the response are **inlined**; the rest are fetched later. A **prefix** is the leading digits of an activity file, put in front of each document it writes.
 
-The first send of a file is in full. A later send to the same context is a short **marker**, and that way of sending is **reference delivery**. The **ledger** records what the context was already sent. A **dispatch** is one worker being sent an activity, and each one is counted. Which file a reference reaches is [resolution](resource-resolution.md). The [calls](api-reference.md#workflow-navigation) that ask for a delivery are in the tool catalog.
+The first send of a file is in full. A later send to the same context is a short **marker**, and that way of sending is **reference delivery**. The **ledger** records what the context was already sent. A **dispatch** is one worker being sent an activity, and each one is counted. Which file a reference reaches is [resolution](resolution.md). The [calls](api-reference.md#workflow-navigation) that ask for a delivery are in the tool catalog.
 
 <a id="what-a-role-receives"></a>
 

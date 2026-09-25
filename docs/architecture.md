@@ -95,7 +95,7 @@ classDiagram
 
 ## Resolution
 
-A whole workflow's instructions are too much to hand over at once. The run names the one capability it needs now (Figure 7). That name stands for a file, and the rest stays unread. That standing-for is what [resolution](resource-resolution.md) is (Figure 8).
+A whole workflow's instructions are too much to hand over at once. The run names the one capability it needs now (Figure 7). That name stands for a file, and the rest stays unread. That standing-for is what [resolution](resolution.md) is (Figure 8).
 
 ```mermaid
 sequenceDiagram
