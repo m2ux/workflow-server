@@ -24,7 +24,7 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 * Optionality to ossify repeated operations into a schematised mechanical form.
 * Precision composition and delivery of procedure to avoid context rot and maximise token efficiency
 * Ontological seperation of skill-like prose into procedural (technique) and non-procedural (resource)
-* Provides a corpus of pre-constructed general purpose workflow elements for software engineering
+* A corpus of pre-constructed general purpose workflow elements for software engineering
 
 ### How It Works
 
@@ -64,9 +64,9 @@ Resume the work-package workflow for PR #1000
 
 The agent matches the request to the appropriate activity and guides you through the structured phases.
 
-### MCP Tools
+### API
 
-The server registers 17 MCP tools across five concerns. See [docs/api.md](docs/api.md) for full signatures.
+See [docs/api.md](docs/api.md).
 
 ## 📜 License
 
