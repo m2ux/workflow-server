@@ -117,6 +117,4 @@ The guards and the end-to-end walks read that checkout, so [corpus-coupled basel
 
 ## Authoring definitions
 
-How to add a workflow, resource or technique, and how definition files link, live on the `workflows` branch under [`docs/`](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md). In a checkout that holds the corpus worktree they are at `.worktrees/workflows/docs/`.
-
-The technique file contract and the schema the server loads stay in this tree: [technique protocol specification](technique-protocol-specification.md), [identifier conventions](identifier-conventions.md), [`schemas/README.md`](../schemas/README.md).
+How to add a workflow is the [authoring guide](README.md#document-corpus). The file contract is the [technique protocol](README.md#document-corpus). The schema the server loads stays in this tree: [schemas/README.md](../schemas/README.md).

@@ -14,7 +14,7 @@ For the illustrated read — how the pieces relate, with diagrams — start at t
 | Building or testing the server | [development.md](development.md) |
 | Running a guard, or adding one | [guards/README.md](../guards/README.md) |
 | Pricing a delivery change | [benchmarks.md](benchmarks.md) |
-| Authoring workflow definitions | [technique-protocol-specification.md](technique-protocol-specification.md), [identifier-conventions.md](identifier-conventions.md), [schemas/README.md](../schemas/README.md) |
+| Authoring workflow definitions | [Document corpus](#document-corpus), and [schemas/README.md](../schemas/README.md) on this tree |
 | Looking for the design principles or the anti-pattern catalog | [design-canon.md](design-canon.md) |
 | Adding or changing documentation | [documentation-system.md](documentation-system.md) |
 
@@ -27,11 +27,24 @@ Each model answers one pressure the design is under. [architecture.md](architect
 | [Dispatch](dispatch-model.md) | How work is split across a chain of agents |
 | [Checkpoints](checkpoint-model.md) | How a background agent asks a question it cannot ask directly |
 | [State management](state-management-model.md) | How the next activity is chosen, and where session state lives |
-| [Artifact and workspace isolation](artifact-management-model.md) | How planning output is kept out of the user's source tree |
+| [Artifact management](artifact-management-model.md) | How planning output is kept out of the code change |
 | [Resource resolution](resource-resolution-model.md) | How a `::` reference reaches a file on disk |
 | [Delivery](delivery-model.md) | What then travels to an agent, how much of it, and what it costs |
 | [Workflow fidelity](workflow-fidelity.md) | How a claim to have followed the workflow is checked |
 
-## Where other material lives
+## Document corpus
 
-Workflow definitions — the YAML, the techniques and the resources — live on the [`workflows` branch](https://github.com/m2ux/workflow-server/tree/workflows), with authoring guides at that branch's `docs/` root. Plans, reviews and decision records live under the engineering root and are not product documentation.
+Definitions and the docs that describe them live on the `workflows` branch. This is the only list of those links in this tree. Other pages name the document and point here.
+
+| Document | What it is |
+|----------|------------|
+| [Authoring guide](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md) | Layout, and how to add a workflow, resource, technique, or routine |
+| [Technique protocol](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md) | The technique file contract |
+| [Identifier conventions](https://github.com/m2ux/workflow-server/blob/workflows/docs/identifier-conventions.md) | How every id in a definition is spelled |
+| [Canon](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/README.md) | The namespace the four homes below are served from |
+| [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) | The stance an author writes toward |
+| [Anti-patterns](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) | Smells, each as detect, do not flag, fix |
+| [Schema construct inventory](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/schema-construct-inventory.md) | A prose pattern mapped to the construct that carries it |
+| [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) | Comparison against sibling workflows |
+
+Plans, reviews, and decision records live under the engineering root and are not product documentation.

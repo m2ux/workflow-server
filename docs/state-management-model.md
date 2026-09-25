@@ -66,6 +66,8 @@ Because those outputs land in the bag rather than in a prompt, `get_workflow_sta
 
 An action step is carried out by the worker rather than by the engine, so the way its result reaches the bag is the worker reporting it among these outputs.
 
+<a id="choosing-the-next-activity"></a>
+
 ## Choosing the next activity
 
 ### Two halves, in two files
@@ -133,6 +135,8 @@ reads the recorded exit and accounts for the steps it skipped.
 
 A workflow varies its path through ordinary state rather than through a mechanism of its own. A boolean set early, by a detection step or by a checkpoint, marks the variant, and exit predicates and step gates branch on it to skip or redirect activities. Because the variable lives in the single bag, the variant persists across activities without anything carrying it. A review mode, an update mode, a dry run — each is built this way rather than by a mode switch the engine knows about.
 
+<a id="opening-a-session"></a>
+
 ## Opening a session
 
 `start_session` opens a top-level session, defaulting to the `meta` workflow. Pass `working_directory` as the checkout under work: the server derives `owner/repo` from that checkout's origin, even when the folder is named for a branch. `repo` is optional, and must equal the derived origin when supplied.
@@ -149,6 +153,8 @@ Not every call returns a session index.
 | A `decision`, and no `session_index` | A durable meta start that cannot uniquely open a client. The decision is `workflow-selection` or `resume-session` |
 
 Every response carries `execution_path`: `agent` where a caller walks the definition, `runner` where the server does.
+
+<a id="persistence"></a>
 
 ## Persistence
 

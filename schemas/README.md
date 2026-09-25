@@ -16,6 +16,8 @@ The workflow server uses five interconnected schemas:
 | `technique.schema.json` | Defines agent technique capabilities | Describing tool orchestration patterns and execution guidance |
 | `activity.schema.json` | Defines unified activities | Combining intent matching with workflow execution stages |
 
+<a id="enforcement-model"></a>
+
 ## Enforcement Model
 
 The server enforces structure at load time plus a small runtime core; most schema semantics are carried out by the executing agents. `get_activity` delivers the raw activity YAML verbatim, so every authored field reaches the agent — the classification below states what the **server** does with each field:

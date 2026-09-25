@@ -24,6 +24,8 @@ The boundaries are the point. The user-facing agent never holds step detail, the
 
 Each session has a six-character `session_index`, derived deterministically from the planning slug. Agents pass that index — never a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [state management](state-management-model.md#persistence)).
 
+<a id="spawning-the-orchestrator"></a>
+
 ### Spawning the orchestrator
 
 When the user-facing agent decides to start a workflow, it calls `dispatch_child` against its own session. `start_session` is top-level only and rejects a `session_index`, so it opens the bootstrap session and never a child.
@@ -101,6 +103,8 @@ Delivery scoping keys on the calling context's identity, which each branch carri
 Several long reasoning passes run inside one response turn instead of several sequential round trips. The wait is free, because a turn does not resume until every tool result returns — nothing polls, times out or is scheduled.
 
 It also buys one thing a character count cannot see. The batch budget counts characters delivered, never characters generated, so nothing bounds how much reasoning accumulates inside one worker. A fan converts unbounded growth in one context into several bounded ones.
+
+<a id="polling-a-dispatched-workflow"></a>
 
 ## Polling a dispatched workflow
 

@@ -6,6 +6,8 @@ The agent that reaches the gate is not the agent that can ask. Work is [dispatch
 
 ## The checkpoint flow
 
+<a id="the-worker-pauses"></a>
+
 ### The worker pauses
 
 On reaching a `kind: checkpoint` step, the worker stops its domain work and calls the server:
@@ -31,6 +33,8 @@ A worker that meets a decision its activity never declared may yield one anyway,
 
 The orchestrator is itself a background sub-agent, so it cannot resolve the gate either. It finds the `<checkpoint_yield>` block in the worker's output, echoes it upward unchanged, and goes to sleep.
 
+<a id="the-user-facing-agent-presents-and-resolves"></a>
+
 ### The user-facing agent presents and resolves
 
 The top-level agent receives the block and asks what the question is:
@@ -47,6 +51,8 @@ respond_checkpoint({ session_index, option_id: "proceed" })
 
 The server clears `activeCheckpoint`, records the decision, and applies each effect on its own terms. A `setVariable` effect is written into the session variable bag. An `exit` effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back for the orchestrator to enact, because resolving a checkpoint does not itself move the session. Where the named exit is `immediate`, the response says so, and the activity's remaining steps do not run.
 
+<a id="three-ways-to-resolve-one"></a>
+
 ### Three ways to resolve one
 
 | Mode | What it means | Timing |
@@ -60,6 +66,8 @@ The server validates the chosen option against the definition, and exactly one o
 Auto-advance needs both `defaultOption` and `autoAdvanceMs` on the checkpoint. That pair is the whole of softness: a gate declaring both is soft, and a gate that must wait for a person declares neither. Declaring one without the other is a defect.
 
 Dismissal by `condition_not_met` is only open to a checkpoint carrying a structured `condition`; one gated by an inline `when` expression cannot be dismissed this way. The server checks that the condition field is present but cannot check whether it is true, so the agent's evaluation is taken on trust and recorded for audit.
+
+<a id="the-resume-protocol"></a>
 
 ## The resume protocol
 

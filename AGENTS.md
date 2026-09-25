@@ -49,7 +49,7 @@ Installs resolve from the lockfile. CI and provisioning run `npm ci`; use it loc
 
 Discovery walks `corpus/` and no sibling folder. A `workflow.yaml` at any depth under it is a workflow; a directory holding `techniques/`, `resources/` or `routines/` is a namespace references can name, with or without a definition beside it. The workflow id is the directory name.
 
-Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/specimens/`), `ledgers/`, `walks/`, and `docs/` for layout authoring. On this tree: `guards/` for check programs, `scripts/` for generate, provision and the benches. The technique file contract is [docs/technique-protocol-specification.md](docs/technique-protocol-specification.md).
+Named roots on `workflows`: `corpus/` for definitions (specimens under `corpus/specimens/`), `ledgers/`, `walks/`, and `docs/` for layout authoring. On this tree: `guards/` for check programs, `scripts/` for generate, provision and the benches. The technique file contract is on the workflows branch, at [docs/technique-protocol-specification.md](https://github.com/m2ux/workflow-server/blob/workflows/docs/technique-protocol-specification.md).
 
 ## Boundaries
 

@@ -1,47 +1,19 @@
-# Artifact and workspace isolation
+# Artifact Management
 
-An agent working a task produces two unrelated kinds of output: changes to the user's code, and the plans, reviews and session state it accumulates while working out what those changes should be. Committed together, the second buries the first — a reviewer reads past planning notes to reach the diff, and the product's history carries the process that produced it. So the two live in separate trees and are committed separately, and an agent stays inside whichever one its current work belongs to.
+An agent working a task produces two kinds of output. One is the change to the code. The other is the notes it keeps while deciding that change: plans, reviews, and the record of the run. Those notes stay out of the code's history.
 
-## The four directory scopes
-
-1. **The feature worktree** holds the user's code, under the worktree root. Every domain action — writing code, running tests, refactoring, building — happens strictly inside it. Under `--repo=owner/repo`, feature trees sit at `$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/`.
-2. **The engineering root** holds the orchestration metadata: plans, session state, traces and decision records. Under `--repo`, that is `$HOST_PROJECTS_ROOT/<repo>/.engineering/`, either an engineering submodule or a materialised tree inside the main checkout. Under a legacy single-root `--workspace`, it is the workspace path itself, with planning in a nested `.engineering/` tree.
-3. **The workflow definitions** are served from the install's own `workflows` directory — the definitions branch — rather than from the engineering checkout.
-4. **The projects checkout** at `$HOST_PROJECTS_ROOT/<repo>/` is the main-branch clone, used for reading the codebase, for code intelligence, and as the tree new worktrees are added from.
-
-The install script on the `docker` branch creates the host layout for the HTTP and Docker install, writing the projects root into the install environment. Engineering storage layouts are [engineering storage](https://github.com/m2ux/workflow-server/blob/workspace/docs/engineering-storage.md).
+Where the two are stored, and how the notes are committed, is [project layout](https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md) on the workspace branch. How the server is pointed at the directories it reads is [root binding](configuration.md#root-binding).
 
 ## The planning folder
 
-A session opens a planning folder under the engineering root, and that folder is where everything the run thinks lives. Which root that is follows from how the server was bound at startup:
+A session is one run of a workflow. It opens one planning folder, and that folder holds everything the run writes down. The path is in [project layout](https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md#a-sessions-notes). `PLANNING_SLUG` overrides the `artifacts/planning` segment.
 
-| Binding | Engineering root | Planning folder |
-|---------|------------------|-----------------|
-| `--repo=owner/repo`, or an explicit engineering directory | `$HOST_PROJECTS_ROOT/<repo>/.engineering` | `<engineering>/artifacts/planning/<slug>/` |
-| `--workspace=PATH` (legacy single root) | the workspace path itself | `<workspace>/.engineering/artifacts/planning/<slug>/` |
+The folder holds a `README.md` a person can open to see what the work is and how far it has got. The server writes `session.json` and `.session-token` beside it. Those two files, and what the seal proves, are in [state management](state-management-model.md#the-two-files). The history of tool calls lives in `session.json`. How that history is recorded and read back is in [workflow fidelity](workflow-fidelity.md). Documents an activity produces are written in this folder and nowhere else.
 
-`PLANNING_SLUG` overrides the relative segment. The flags themselves are in [the configuration reference](configuration.md#root-binding).
+The `README.md` carries a Progress table. The orchestrator, the agent that tracks the run, marks a row in progress before it hands the activity to a worker, and complete once that activity's work is committed. The worker reports the documents it produced. It does not edit the table. The table still advances when a worker is lost and replaced.
 
-The folder holds a `README.md`, which is the index a person opens to see what the work is and where it stands; `session.json`, the session and variable state, which the server manages and validates and whose history array is the mechanical record of what the agents did; `.session-token`, the seal binding that state to the engineering root; and the artifacts each activity produces.
+## How documents are named
 
-The server writes the first two files and only those two. There is no separate trace file — the mechanical log lives in the session history, and [workflow fidelity](workflow-fidelity.md) covers how it is recorded and read back.
+An activity is one phase of a workflow, stored as a file such as `02-analyse-sources.yaml`. The leading digits are a prefix the server reads from that filename. A worker puts the prefix in front of each document it writes, so the analysis lands as `02-analyse-sources.md`. Sorting the folder by name sorts it by activity, and two activities do not share a filename.
 
-### Progress tracking
-
-The planning `README.md` carries a Progress table, and its Status cells are the quickest read on where a run has got to. Writing them is the orchestrator's job rather than the worker's: a worker reports the artifacts it produced in its result and nothing more. The orchestrator marks a row in progress before it dispatches and complete once the activity's work is committed, which is why the table keeps advancing even when a worker is lost and replaced.
-
-## How artifacts are named
-
-Each activity carries a two-digit prefix, which the server infers from the activity's own filename — an activity defined in `02-analyse-sources.yaml` carries the prefix `02`. A worker producing an artifact prepends that prefix to the filename, so an analysis from that activity lands as `02-analyse-sources.md`. Ordering artifacts by name then orders them by the activity that wrote them, and two activities cannot collide over one filename.
-
-Each activity also exposes the artifacts it is expected to produce. The server computes that list from the outputs of the techniques the activity's steps bind, and each entry carries the producing output's id and filename; activities do not author the list themselves.
-
-Artifacts are written strictly into the planning folder, which is what keeps planning and review documents out of the user's source tree.
-
-## Committing engineering content
-
-Engineering content is version-controlled independently of the domain commits. A product repository chooses a same-repo orphan branch, a shared engineering monorepo, or plain in-branch files. Workflow definitions live on their own separate branch.
-
-At the point after an activity where its artifacts are committed, the orchestrator works in the engineering checkout rather than the app checkout. It stages and commits the planning files under that tree, then pushes the engineering remote. Where the app repository tracks engineering as a submodule, it then returns to the app checkout and commits the updated pointer.
-
-That sequence is what keeps orchestration state version-controlled independently of the user's own commits in the feature worktree.
+The server also tells the worker which documents the activity is expected to produce. It builds that list from the outputs of the techniques the activity's steps use. Each entry names the output and the filename. The activity file does not carry the list.

@@ -164,6 +164,8 @@ Each check warns: that every activity id exists in the workflow, that outcomes a
 
 Where Layer 5 records step-level detail, this records the workflow-level journey. The split matters in the orchestrator and worker pattern, where the orchestrator tracks the journey and the worker tracks the steps.
 
+<a id="layer-7-the-execution-trace"></a>
+
 ## Layer 7: the execution trace
 
 ### What each event carries

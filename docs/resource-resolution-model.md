@@ -24,7 +24,7 @@ A technique publishes:
 * **`protocol`** — an ordered list of blocks `{title?, steps[]}`. Steps are imperative bullets; failure handling is expressed inline within the relevant steps.
 * **`rules`** — named behavioural invariants that apply across the technique. Each key is a rule name (or a group prefix); each value is a single rule string or an array of related rules.
 
-The full file contract — section shapes and the addressing grammar — is [the technique protocol specification](technique-protocol-specification.md). The case and shape rules that govern every id in it are [the identifier conventions](identifier-conventions.md).
+Section shapes and the addressing grammar are the [technique protocol](README.md#document-corpus). The case and shape of every id are the [identifier conventions](README.md#document-corpus).
 
 ## Referring to a technique or a rule
 
@@ -125,6 +125,8 @@ The activity set is injected into every `get_activity` technique bundle, ahead o
 Even with techniques tightly scoped, large reference material (Git CLI tutorials, API guides, templates) does not belong inline. A technique references a resource by id through a normal markdown hyperlink in its content — a template linked from an Input or Output, for instance. When the server projects a technique for delivery, it **rewrites those resource hyperlinks into `get_resource`-callable refs**: the bare id form `{id}[#section]`, or the cross-workflow form `{workflow}/{id}[#section]`. Technique links are left untouched.
 
 Server responses do not bundle resource bodies by default. The agent loads a resource when it needs it.
+
+<a id="loading-a-resource-when-it-is-needed"></a>
 
 ## Loading a resource when it is needed
 

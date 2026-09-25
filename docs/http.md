@@ -80,6 +80,8 @@ curl -fsS http://127.0.0.1:32772/ready
 
 **Keeping a walk out of live planning.** Planning resolves at `<projects-root>/<repo>/.engineering/artifacts/planning`, so a sidecar sharing the install projects root writes a dated folder beside real work on every run. `--projects-root=DIR` gives an experiment a root of its own, holding its own checkout of the target repo, and the whole run can then be thrown away.
 
+<a id="3-verify"></a>
+
 ## 3. Verify
 
 | Check | How                                                        |

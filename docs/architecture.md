@@ -24,9 +24,9 @@ That page also covers how variables get their initial values, and the two routes
 
 ## Planning and code stay apart
 
-[Artifact and workspace isolation](artifact-management-model.md). Session state, plans and artifacts live under an engineering root; feature worktrees live under the checkout; and the two are committed independently.
+[Artifact management](artifact-management-model.md). Session state, plans, and artifacts are committed apart from the code change. Where those checkouts sit is the workspace [project layout](https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md).
 
-It also covers how artifacts are named and how the planning folder is laid out.
+The page also covers how artifacts are named and what the planning folder holds.
 
 ## Instructions arrive one piece at a time
 

@@ -8,6 +8,8 @@ Three budgets run through it, all measured in characters and each protecting som
 
 The server resolves an activity's declared references and bundles them into the buckets [resolution](resource-resolution-model.md#how-a-reference-resolves) produces, so an agent never chains resolution calls of its own at runtime.
 
+<a id="the-orchestrator-bundle"></a>
+
 ### The orchestrator bundle
 
 The response is the union of two sets, deduplicated: the technique references the workflow declares, and the core orchestrator references the server always includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`) — engine traversal, state persistence, sub-agent dispatch and orchestrator discipline.
@@ -21,6 +23,8 @@ A rule a technique declares governs that operation. So it rides the body that st
 Below the separator rides the workflow metadata, whole. It carries what an orchestrator drives a run from: the rules, the variable roster, the graph and the activities. The roster gives every name the run holds with its type, its value set and its starting value, because the orchestrator has to recognise a name a worker reports back and read a value out of the session by it.
 
 What the metadata never carries, at any size, is the prose explaining what each variable is *for*. That absence is the contract rather than a limit being reached. Nothing the orchestrator decides turns on that prose, and the activity that produces a value and the activity that consumes it each carry it in their own definition, delivered whole to the worker dispatched there.
+
+<a id="the-worker-bundle"></a>
 
 ### The worker bundle
 
@@ -39,6 +43,8 @@ Three things are added by the delivery rather than carried in a core list, becau
 Each reading is over the **whole workflow**, not the activity in hand. That is load-bearing rather than approximate. A bundle's rules are keyed as one set, so a technique set that varied activity by activity would re-deliver the entire rules list at every activity whose set differed — which costs several times what the narrower reading saves.
 
 What is held back stays reachable. A worker may raise a decision its activity never declared, and an orchestrator then has to present and resolve it, so both checkpoint pairs are servable by `get_technique { technique_id }` from any session. That is what makes the omission safe rather than merely cheap.
+
+<a id="asking-for-one-by-name"></a>
 
 #### Asking for one by name
 
@@ -301,6 +307,8 @@ That is either a replaced worker or a resume that arrived under a fresh identity
 ### Sizes are summable
 
 `technique_fetched`, `technique_bundled` and `resource_fetched` each carry `chars` — always the full payload size, on both paths — and `delivery: "full" | "unchanged"`. Characters delivered and characters saved are therefore both totals you can add up from the ledger.
+
+<a id="token-usage-is-reported-not-derived"></a>
 
 ### Token usage is reported, not derived
 
