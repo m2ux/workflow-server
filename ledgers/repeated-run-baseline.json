@@ -75,7 +75,7 @@
         "T:workflow-engine::handle-sub-workflow(workflow_id)",
         "R:activity-loop(enter_activity,initial_activity,planning_folder_path,session_index)",
         "T:prism/read-run-manifest()",
-        "T:accumulate-analysis-run()"
+        "T:prism/accumulate-analysis-run()"
       ],
       "verdict": "unassigned",
       "rationale": "sub-workflow-then-accumulate"

@@ -11,6 +11,7 @@ variables:
     - planning_folder_path
     - pr_number
     - removals_approved
+    - schema_conforms
     - scope_manifest_confirmed
     - target_path
     - workflow_id
@@ -18,6 +19,10 @@ variables:
     - name: current_file
       type: object
       description: The file currently being drafted.
+    - name: schema_conforms
+      type: boolean
+      description: True when the file just authored parses and conforms to its schema.
+      defaultValue: false
     - name: has_unflagged_removals
       type: boolean
       description: True when drafting detects removals absent from the impact inventory.
@@ -127,9 +132,20 @@ steps:
     maxIterations: 50
     when: scope_manifest_confirmed == true
     steps:
-      - kind: technique
-        id: author-yaml
-        technique: workflow-definition::yaml-authoring
+      - kind: loop
+        id: author-until-valid
+        name: Author Until Valid
+        loopType: doWhile
+        continueWhile:
+          type: simple
+          variable: schema_conforms
+          operator: ==
+          value: false
+        maxIterations: 5
+        steps:
+          - kind: technique
+            id: author-yaml
+            technique: workflow-definition::yaml-authoring
       - kind: technique
         id: review-file
         technique: workflow-definition::review-drafted-file

@@ -4,7 +4,7 @@ name: Consolidate Evaluation Report
 description: Consolidate the per-dimension DEFINITIVE-FINDINGS.md into a unified EVALUATION-REPORT.md.
 variables:
   reads:
-    - all_artifact_paths
+    - all_analysis_artifact_paths
     - completed_analyses
     - dimension_plan
     - evaluation_description

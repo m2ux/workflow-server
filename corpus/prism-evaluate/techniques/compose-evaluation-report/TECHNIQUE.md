@@ -17,7 +17,7 @@ Each dimension's lens configuration, which labels and interprets a group's findi
 
 Completed prism run references, each with its report path, definitive-findings path, and reported completion status.
 
-### all_artifact_paths
+### all_analysis_artifact_paths
 
 Every analysis artifact path the triggered runs produced.
 

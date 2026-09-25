@@ -11,6 +11,7 @@ variables:
     - planning_folder_path
     - pr_number
     - remediation_round
+    - schema_conforms
     - target_path
     - target_workflow_ids
     - verified_findings
@@ -18,6 +19,10 @@ variables:
     - name: audit_findings
       type: array
       description: One entry per criteria violation, each carrying its entry name, location, evidence, severity, origin and known marking.
+    - name: schema_conforms
+      type: boolean
+      description: True when the file just authored parses and conforms to its schema.
+      defaultValue: false
     - name: changed_files
       type: array
       description: The change surface for the bound target — whole touched files closed under I/O-contract referencers.
@@ -57,13 +62,24 @@ variables:
       description: The authored file at the manifest entry's path, parsing cleanly and conforming to the schema its kind selects.
 required: true
 steps:
-  - kind: technique
-    id: author-fixes
-    technique:
-      name: workflow-definition::yaml-authoring
-      inputs:
-        selected_findings: verified_findings
+  - kind: loop
+    id: author-fixes-until-valid
+    name: Author Fixes Until Valid
+    loopType: doWhile
+    continueWhile:
+      type: simple
+      variable: schema_conforms
+      operator: ==
+      value: false
+    maxIterations: 5
     when: remediation_round > 0
+    steps:
+      - kind: technique
+        id: author-fixes
+        technique:
+          name: workflow-definition::yaml-authoring
+          inputs:
+            selected_findings: verified_findings
   - kind: technique
     id: record-fixes
     technique:
