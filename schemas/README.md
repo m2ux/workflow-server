@@ -1161,7 +1161,7 @@ A minimal technique demonstrating key concepts:
 
 ## Related Documentation
 
-- [API Reference](../docs/api-reference.md) — MCP tool catalog
+- [API Reference](../docs/api.md) — MCP tool catalog
 - [Site API](../site/api/tools.html) — wire descriptions generated from source
 - [Development Guide](../docs/development.md) — Building and testing the server
 - [Resolution](../docs/resolution.md) — How a name reaches a technique, resource, activity, or routine

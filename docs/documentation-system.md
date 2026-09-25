@@ -1,6 +1,6 @@
 # Documentation system
 
-How this repository's documentation is organized: what each source is for, who it serves, and where new documentation belongs.
+How this repository's documentation is organized: which layer a fact belongs to, where new documentation belongs, and the conventions all of it follows. A reader looking for a document starts at the [index](README.md).
 
 ## The two layers
 
@@ -26,39 +26,11 @@ Neither can detect a prose divergence between a markdown document and its site p
 
 `site/design/` has no single markdown counterpart: its pages narrate server structure and design decisions, with the code in `src/`, `scripts/`, and `tests/` as the implementation source of truth (each page links to the files it describes). When the implementation or a recorded decision changes, those pages are updated in the same change.
 
-## Source map
-
-| Source | Purpose | Audience |
-|--------|---------|----------|
-| [`README.md`](../README.md) | Project overview, quick start, the workflow model at a glance | Everyone — first contact |
-| [`docs/README.md`](README.md) | Index of this directory, routing by what the reader is doing | Anyone arriving in `docs/` |
-| [`setup.md`](setup.md) | Shared install sequence: transport, deploy, checkout under `HOST_PROJECTS_ROOT`, Cursor workspace, update workflows | Integrators |
-| [`http.md`](http.md) / [`stdio.md`](stdio.md) | Transport-only differences (Docker/HTTP vs local stdio MCP config) | Integrators |
-| [`docs/api-reference.md`](api-reference.md) | Catalog of the tool surface and HTTP routes — brief, linking out for depth | Integrators |
-| [`docs/configuration.md`](configuration.md) | Every flag and environment variable the server reads at startup | Integrators and contributors |
-| [`docs/architecture.md`](architecture.md) | Hub introducing the architecture models and the pressure each answers | Contributors |
-| [`docs/dispatch.md`](dispatch.md), [`checkpoint.md`](checkpoint.md), [`state.md`](state.md), [`resolution.md`](resolution.md), [`delivery.md`](delivery.md), [`fidelity.md`](fidelity.md) | The behavioural models, one concern each | Contributors and agents needing depth |
-| [`site/api/tools.html`](../site/api/tools.html) | Wire tool descriptions and parameter schemas, generated from `src/tools/` | Agents and IDE tooling |
-| [Document corpus](README.md#document-corpus) | The only list of links to definition docs on the `workflows` branch | Workflow authors |
-| [Design canon](README.md#document-corpus) | Where the design principles, anti-pattern catalog, construct inventory and conformance live, and how to reach them | Workflow authors |
-| [`docs/development.md`](development.md) | Building and testing the server, and the two-branch layout | Contributors |
-| [`benchmark/README.md`](../benchmark/README.md) | The three benchmarks, the profiler, and the delivery gate | Contributors changing the delivery path |
-| [`guards/README.md`](../guards/README.md) | Running the guard sweep, the delta runner, and how a ledger entry is a judgement | Contributors and workflow authors |
-| [`docs/documentation-system.md`](documentation-system.md) | This page: what each source is for, where new documentation belongs, and the conventions all of it follows | Anyone adding or changing documentation |
-| [`schemas/README.md`](../schemas/README.md) | Schema guide for authoring workflow definitions | Workflow authors |
-| `schemas/*.schema.json` | JSON Schemas for authoring-time validation. Most are generated from their Zod sources (`npm run build:schemas`); `technique.schema.json` is hand-authored. `npm run check:schemas` verifies the generated set and reports any file in neither | Authoring-time validation and tooling |
-| [`site/`](../site/) | The rendered documentation site: user guide, technical specs, API reference, design | Readers in a browser |
-| [`PROJECT.md`](../PROJECT.md) | Project instructions for this repository. The workspace instructions name this file. It stays in the repository | AI agents |
-| `AGENTS.md`, `CLAUDE.md` | Workspace instructions for AI agents. Deploy writes both into the checkout. Git ignores both paths. They name `PROJECT.md` | AI agents |
-| Engineering root (`.engineering/` or `$HOST_PROJECTS_ROOT/<repo>/.engineering`) | Planning artifacts, work packages, ADRs — engineering process, not product documentation | Project engineering |
-
-Workflow definitions live on the `workflows` branch. Each product workflow also carries documentation in its `techniques/` and `resources/` folders. Links to those docs are the [document corpus](README.md#document-corpus).
-
 ## Where new documentation belongs
 
 - **A user-facing how-to** (installing, configuring, running) → `README.md` for first contact, [`setup.md`](setup.md) for the shared sequence, [`http.md`](http.md) / [`stdio.md`](stdio.md) only for transport differences; plus a page under `site/guide/` if it warrants the illustrated treatment.
 - **A new architecture model or a change to one** → a document under [`docs/`](.), linked from the [`docs/architecture.md`](architecture.md) hub, with a matching page under `site/specs/`.
-- **Tool or schema surface changes** → the code and Zod schemas are the source; regenerate `schemas/` (`npm run build:schemas`) and the site's API pages (`npm run build:site`). Keep [`docs/api-reference.md`](api-reference.md) as a short index (update one-line descriptions and links); put behavioral depth in the relevant architecture model.
+- **Tool or schema surface changes** → the code and Zod schemas are the source; regenerate `schemas/` (`npm run build:schemas`) and the site's API pages (`npm run build:site`). Keep [`docs/api.md`](api.md) as a short index (update one-line descriptions and links); put behavioral depth in the relevant architecture model.
 - **Workflow-authoring contracts** → the [document corpus](README.md#document-corpus). A page that is about one of those documents links the name in the sentence. The [schema guide](../schemas/README.md) stays on this tree, generated from the Zod sources.
 - **How a tool or program is run** → the README beside it. `guards/README.md` documents the guard sweep, because a reader who opens `guards/` should not have to leave it to find out how the programs there run.
 - **Implementation documentation** (module structure, request handling, on-disk state, the guard and test system) → a page under `site/design/`, linking to the source files it describes.

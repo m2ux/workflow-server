@@ -48,7 +48,7 @@
  * Exit: 0 on completed walk; 2 if finalStatus !== completed; 3 on gate failure;
  * 1 on hard failure.
  *
- * See benchmark/README.md § "Token delivery benchmark" and docs/api-reference.md
+ * See benchmark/README.md § "Token delivery benchmark" and docs/api.md
  * § Reference Delivery.
  */
 import { execFileSync } from 'node:child_process';

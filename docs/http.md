@@ -97,7 +97,7 @@ curl -fsS http://127.0.0.1:32772/ready
 
 A green `/health` without `sessionKeyWritable: true` means sessions cannot start. `corpusServes: false` means the mounted tree holds no workflow, so every tool call misses — check the corpus bind against `corpus.dir`.
 
-Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints when the host port is 0). Routes: [api-reference.md](api-reference.md#http-endpoints).
+Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints when the host port is 0). Routes: [api.md](api.md#http-endpoints).
 
 ## Troubleshooting
 

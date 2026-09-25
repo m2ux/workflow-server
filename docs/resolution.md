@@ -1,6 +1,6 @@
 # Resolution
 
-A workflow's instructions are split into artifacts whose grain is chosen so that an agent is handed the exact piece the work needs, and nothing else. A **workflow** is a guide used to reliably direct an agent to fulfill a set of operator objectives. An **activity** is one phase of that guide. A **routine** is a named run of re-usable steps, declared once and spliced into an activity that refers to it. A **technique** is one capability an activity's steps name. A **resource** is reference material a technique points at, not work the step itself carries out.
+A workflow's instructions are split into artifacts whose grain is chosen so that an agent is handed the exact piece of work it needs, and nothing else. A **workflow** is a guide used to reliably direct an agent to fulfill a set of operator objectives. An **activity** is one phase of that guide. A **routine** is a named run of re-usable steps, declared once and spliced into an activity that refers to it. A **technique** is one capability an activity's steps name. A **resource** is reference material a technique points at, not work the step itself carries out.
 
 A **reference** is the name of one of those artifacts: a workflow, an activity, a routine, a technique, or a resource. **Resolution** is how that reference allows the file that holds the artifact to be discovered. A **namespace** is a directory references reach. What then travels, and what it costs, is [delivery](delivery.md).
 

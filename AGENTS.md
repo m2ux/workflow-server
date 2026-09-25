@@ -92,7 +92,7 @@ Reference example: [#395](https://github.com/m2ux/workflow-server/issues/395). [
 
 | For | Read |
 |-----|------|
-| Quick start, schema, API | [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md) |
+| Quick start, schema, API | [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api.md](docs/api.md) |
 | IDE and MCP setup | [setup.md](docs/setup.md), [stdio.md](docs/stdio.md), [http.md](docs/http.md) |
 | Work on the engineering branch | [AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md) |
 
