@@ -5,7 +5,7 @@
 
 ## Project Instructions
 
-- You must read any target: PROJECT.md, AGENTS.md or CLAUDE.md file(s) in each of the first-level sub-folders of /.project (ie ./project/<name>/<target>). Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.
+- You must read any target: PROJECT.md, AGENTS.md or CLAUDE.md file(s) in each of the first-level sub-folders of /.project (ie ./project//). Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.
 
 ## Design principles
 
@@ -19,6 +19,8 @@
 - Decide for the long term. No stopgap meant to be replaced later.
 - Obey SOLID principles (Single responsibility, Open–closed, Liskov substitution, Interface segregation, Dependency inversion) when making changes to both source and documentation.
 
+
+
 ## Code and Documentation
 
 - Follow existing patterns
@@ -29,6 +31,8 @@
   - Exceptions: issue and PR bodies, and commit bodies. A reviewer needs the before-state; nothing that persists past merge does.
   - After a behaviour change, grep out surviving descriptions of the old one — doc comments, tool descriptions, technique `## Rules`, resource prose, READMEs. A stale claim reads as current fact.
 - **Prefer removing the thing that needs a prohibition.** Prose warning "do not also use X" usually means two paths now do one job. Retire one and the warning goes, along with the validation that policed the overlap.
+
+
 
 ## User Interaction
 
@@ -41,11 +45,16 @@
 - When user input is required to reconcile outstanding issues or design choices, present the user a sequence of questions, one-at-a-time, interview-style. Each question should have multiple choice answers with a recommended option. Each question should be preceded by a plain-language paragraph worded to aid the decision kaing process.
 - Always treat user requests at the start of a new chat as an incomplete specification. Use the interview style to illicit further information fromf the user until you are confident you have sufficient understanding to properly proceed.
 
+
+
 ## Commits and pushes
 
+- Commit and push upon completion of any discrete user request to the current branch
 - **A fix belongs in the pull request whose code it fixes.** A defect found while reviewing a branch is corrected on that branch, not carried onto a later one in a stack. Amend, rebase or force-push as needed to put it there — a branch with no other contributors is yours to rewrite.
 - **Commit incrementally while building.** Distinct work lands as its own commit, so the branch records how it was built. That is about not collapsing unrelated changes into one commit; it is never a reason to leave a fix in the wrong place.
 - **Push with plain** `git push`**.** When a push will not fast-forward on a branch someone else may hold, stop and ask rather than rewriting.
+
+
 
 ## Task management
 
@@ -53,3 +62,4 @@
 - For multi-step work, use todos and mark them complete as you finish; only one todo in progress at a time.
 - Request permission before starting a new task or making changes outside the current request.
 - *ALWAYS* use a local work-tree when working on a branch
+
