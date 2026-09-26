@@ -2,7 +2,7 @@
 
 An exemplar agentic workspace layer on top of any project. It aggregates all workspace-level config, hooks, rules, scripts etc such that multiple working environments for agentic and standard engineering can be supported simultaneously without cluttering the root of any given project. It includes helper scripts to check-out, fork and setup individual project component(s) held in external repos for the agents to work on. It is designed to be forked so that the workspace shape and config can be re-used and easily updated from upstream as it evolves.
 
-This workspace is tailored towards the use of the Cursor IDE. To use with Claude Code we recommend: [Claude Code plugin for Cursor](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
+Claude Code, Cursor, and Codex use common rules, skills, and command policy. Harness adapters and generated configuration connect these sources to each environment. See [harness setup and behavior](docs/harnesses.md).
 
 ```text
 ./
@@ -11,14 +11,16 @@ This workspace is tailored towards the use of the Cursor IDE. To use with Claude
 ├── .mcp.json                      # MCP servers (Claude shaped)
 ├── .cursor/                       # Cursor project configuration
 ├── .claude/                       # Claude project configuration
-├── .agents/                       # Agent config (Codex shaped)
+├── .agents/                       # Shared skill discovery for Codex
+├── .codex/                        # Generated Codex instructions, MCP config, and hooks
 ├── rules/                         # Agent rules source
 ├── skills/                        # Agent skills source
-├── config/                        # Reusable config (various IDEs)
-├── hooks/                         # Hook scripts (Claude shaped for now. TBD: needs generalising)
+├── config/                        # Common permissions and URL policy
+├── hooks/                         # Shared classifiers and harness event adapters
 ├── docs/                          # Workspace documentation
 ├── scripts/
 │   ├── deploy-workspace.sh        # checkout the template workspace
+│   ├── render-harnesses.py        # Render local harness configuration
 │   ├── fork-workspace.sh          # Create a fork from this checkout
 │   ├── deploy-engineering.sh      # Deploy engineering worktree
 │   ├── add-component.sh           # Add a project component from an external repo
@@ -88,4 +90,3 @@ Pushes the current branch to `origin` and opens a pull request on the `upstream`
 ```bash
 ./scripts/raise-pr.sh <slug> [--body=TEXT]
 ```
-
