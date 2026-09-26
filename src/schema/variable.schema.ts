@@ -2,20 +2,18 @@ import { z } from 'zod';
 import { enforcement } from './enforcement.js';
 import { EXEMPT_DATA_IDS, QUALIFIED_DATA_ID_PATTERN } from './identifiers.js';
 
-// A variable name is a qualified snake_case noun phrase (AP-60: >=2 words, e.g.
-// `analysis_target`, never bare `target`), or one of the enumerated bare-word exemptions.
 export const VariableNameSchema = z.union([
   z.string().regex(QUALIFIED_DATA_ID_PATTERN, 'a variable name is a qualified snake_case noun phrase (>=2 words, AP-60), e.g. `analysis_target`'),
   z.enum(EXEMPT_DATA_IDS),
-]).describe('Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption.');
+]).describe('Snake_case noun phrase of at least two words, or a listed single-word exemption.');
 
 export const VariableDefinitionSchema = z.object({
   name: VariableNameSchema,
-  type: enforcement(z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes.'), { owner: 'Engine', strictness: 'advisory' }),
+  type: enforcement(z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared variable type.'), { owner: 'Engine', strictness: 'advisory' }),
   description: z.string().optional(),
-  values: enforcement(z.array(z.string()).min(1).optional().describe('The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type.'), { owner: 'Engine', strictness: 'advisory' }),
-  defaultValue: enforcement(z.unknown().optional().describe('Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this).'), { owner: 'Engine', strictness: 'enforced' }),
-  required: enforcement(z.boolean().default(false).describe('Authoring metadata; the server does not check that the variable is ever set.'), { owner: 'Agent', strictness: 'advisory' }),
+  values: enforcement(z.array(z.string()).min(1).optional().describe('Nonempty set of distinct allowed string values, including the default when one is declared.'), { owner: 'Engine', strictness: 'advisory' }),
+  defaultValue: enforcement(z.unknown().optional().describe('Initial variable value; a defaulted variable is already present at the start of a session.'), { owner: 'Engine', strictness: 'enforced' }),
+  required: enforcement(z.boolean().default(false).describe('Whether the workflow requires a value for this variable.'), { owner: 'Agent', strictness: 'advisory' }),
 }).superRefine((variable, ctx) => {
   if (variable.values === undefined) return;
   if (variable.type !== 'string') {
@@ -48,20 +46,8 @@ export function isOutsideValueSet(variable: Pick<VariableDefinition, 'values'>, 
   return variable.values !== undefined && !variable.values.includes(value as string);
 }
 
-/**
- * An activity's variable contract (#493): the session variables it reads, and the variables it
- * writes. Direction is the part a checker acts on — a read with no writer, a write with no reader,
- * and a read no path reaches a write for are each mechanical once the two lists exist.
- *
- * A read is a name: the activity needs the value and does not own it. A write is a full
- * declaration, because the writing activity is where the variable is owned. Including the activity
- * in a workflow's graph contributes its writes to that workflow's variable set — one flat
- * namespace, so two activities naming one variable mean one variable. Two declarations of one name
- * that each name a different type, starting value or value set fail the load; one that is silent
- * about a starting value takes the value another site names.
- */
 export const ActivityVariablesSchema = z.object({
-  reads: enforcement(z.array(VariableNameSchema).optional().describe('Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound techniques\' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here.'), { owner: 'Engine', strictness: 'advisory' }),
-  writes: enforcement(z.array(VariableDefinitionSchema).optional().describe('Session variables this activity puts into the bag: its bound techniques\' outputs (under their declared id or the step binding\'s remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow\'s variable set, defaultValue included.'), { owner: 'Engine', strictness: 'enforced' }),
+  reads: enforcement(z.array(VariableNameSchema).optional().describe('Session variable names required from outside this activity; values produced by its earlier steps are local.'), { owner: 'Engine', strictness: 'advisory' }),
+  writes: enforcement(z.array(VariableDefinitionSchema).optional().describe('Declarations for session variables written by this activity.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict();
 export type ActivityVariables = z.infer<typeof ActivityVariablesSchema>;

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "technique",
-  "description": "Technique definition schema — a capability file parsed from markdown into this shape.",
+  "description": "Technique capability with inputs, protocol, rules, and outputs.",
   "$ref": "#/definitions/technique",
   "definitions": {
     "technique": {
@@ -19,7 +19,7 @@
         },
         "provenance_note": {
           "type": "string",
-          "description": "Delivery-only, populated by the server on a step-bound get_technique: states the output delivery mechanics that the `source:`/`destination:` annotations rely on. Never authored in technique files."
+          "description": "Input and output provenance annotation; omitted from authored technique files."
         },
         "rules": {
           "type": "object",
@@ -46,11 +46,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining techniques."
+                "description": "Stable input identifier with words separated by hyphens."
               },
               "description": {
                 "type": "string",
-                "description": "Human-readable description of this input. Optional inputs say so in prose (a leading \"(optional)\"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag."
+                "description": "Input description, beginning with `(optional)` when the input is optional."
               },
               "default": {
                 "description": "Default value when not supplied"
@@ -61,21 +61,21 @@
                   "anyOf": [
                     {
                       "type": "string",
-                      "description": "The spec or description for that component."
+                      "description": "Component specification or description."
                     },
                     {
                       "type": "object",
                       "properties": {
                         "description": {
                           "type": "string",
-                          "description": "What the component is — the prose above its first `#####` sub-section."
+                          "description": "Component description above its first `#####` field heading."
                         },
                         "entry": {
                           "type": "object",
                           "additionalProperties": {
                             "type": "string"
                           },
-                          "description": "Named fields one entry of this component carries (authored as `#####` sub-sections under the component). Each key is a field id, value its description."
+                          "description": "Field identifiers mapped to descriptions for each list entry, authored as `#####` headings."
                         }
                       },
                       "required": [
@@ -85,11 +85,11 @@
                     }
                   ]
                 },
-                "description": "Named sub-members of a composite input (authored as `####` sub-sections under the input). Mirrors output components."
+                "description": "Named parts of a composite input, authored as `####` headings."
               },
               "source": {
                 "type": "string",
-                "description": "Delivery-only, populated by the server on a step-bound get_technique: where this input's value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default) or UNRESOLVED. Never authored in technique files."
+                "description": "Input value source annotation; omitted from authored technique files."
               }
             },
             "required": [
@@ -97,14 +97,14 @@
             ],
             "additionalProperties": false
           },
-          "description": "Inputs the technique expects from context: array of named items (mirrors output structure for deterministic binding)"
+          "description": "Named inputs accepted by the technique."
         },
         "inherited_inputs": {
           "type": "object",
           "properties": {
             "note": {
               "type": "string",
-              "description": "One-line scope note: why these inputs are shared contract context rather than specific to this technique."
+              "description": "Brief explanation of the shared input scope."
             },
             "items": {
               "$ref": "#/definitions/technique/properties/inputs"
@@ -115,7 +115,7 @@
             "items"
           ],
           "additionalProperties": false,
-          "description": "Inputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique's own inputs."
+          "description": "Shared inputs from the workflow or group contract; omitted from authored technique files."
         },
         "protocol": {
           "type": "array",
@@ -124,7 +124,7 @@
             "properties": {
               "title": {
                 "type": "string",
-                "description": "Optional label for this block (the authored `### Title`, ordinal prefix stripped)."
+                "description": "Block label, authored as a `###` heading."
               },
               "steps": {
                 "type": "array",
@@ -147,7 +147,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename."
+                "description": "Stable output identifier with words separated by hyphens, distinct from its artifact filename."
               },
               "description": {
                 "type": "string",
@@ -155,14 +155,14 @@
               },
               "components": {
                 "$ref": "#/definitions/technique/properties/inputs/items/properties/components",
-                "description": "Named output components: each key is a component id, value is the spec or description for that component, or — where the component holds a list — the fields one entry of it carries"
+                "description": "Component identifiers mapped to descriptions or list-entry field definitions."
               },
               "entry": {
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
                 },
-                "description": "Named fields one entry carries, for an output that IS a list rather than a value with parts (authored as a reserved `#### entry` sub-section whose `#####` children are the fields). Its presence is how an output states that it is a list; `components` names the parts of an output that is not."
+                "description": "List-entry fields under `#### entry` with `#####` field headings; mutually exclusive with `components`."
               },
               "artifact": {
                 "type": "object",
@@ -170,7 +170,7 @@
                   "name": {
                     "type": "string",
                     "pattern": "^(?:[A-Za-z0-9._-]|\\{[A-Za-z0-9._$-]+\\})+\\.[A-Za-z0-9]+$",
-                    "description": "Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). One filename, one path segment, with an extension — a technique writing several files declares one output per artifact. Declare the name here, never hardcode it in Protocol prose."
+                    "description": "Single artifact filename with an extension and optional `{variable}` placeholders; declare one output per artifact."
                   },
                   "action": {
                     "type": "string",
@@ -186,7 +186,7 @@
                   "name"
                 ],
                 "additionalProperties": false,
-                "description": "Optional. When populated, specifies the artifact name to create when persisting this output."
+                "description": "Filename and create-or-update action for a persisted output."
               },
               "audience": {
                 "type": "string",
@@ -194,7 +194,7 @@
                   "human",
                   "agent"
                 ],
-                "description": "Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the `artifactPrefix` rule."
+                "description": "Intended reader of this output or artifact: `human` by default, or `agent`."
               },
               "values": {
                 "type": "array",
@@ -202,7 +202,7 @@
                   "type": "string"
                 },
                 "minItems": 1,
-                "description": "The complete set of values this output admits, one of which a run leaves standing. Authored as a reserved `#### values` section. Absent where the output is not a closed set."
+                "description": "Complete set of allowed output values, authored under `#### values`."
               },
               "fieldValues": {
                 "type": "object",
@@ -213,11 +213,11 @@
                   },
                   "minItems": 1
                 },
-                "description": "The complete set of values one entry field or component admits, keyed by that field. Authored as `#####` children of `#### values`. Absent where no nested field is a closed set."
+                "description": "Field names mapped to allowed value sets, authored as `#####` headings under `#### values`."
               },
               "destination": {
                 "type": "string",
-                "description": "Delivery-only, populated by the server on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique files."
+                "description": "Output variable name annotation when different from its identifier; omitted from authored technique files."
               }
             },
             "required": [
@@ -225,14 +225,14 @@
             ],
             "additionalProperties": false
           },
-          "description": "What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components"
+          "description": "Named outputs with optional descriptions and either components or list-entry fields."
         },
         "inherited_outputs": {
           "type": "object",
           "properties": {
             "note": {
               "type": "string",
-              "description": "One-line scope note: why these outputs are shared contract obligations rather than specific to this technique."
+              "description": "Brief explanation of the shared output obligations."
             },
             "items": {
               "$ref": "#/definitions/technique/properties/outputs"
@@ -243,7 +243,7 @@
             "items"
           ],
           "additionalProperties": false,
-          "description": "Outputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique's own outputs."
+          "description": "Shared outputs from the workflow or group contract; omitted from authored technique files."
         }
       },
       "required": [

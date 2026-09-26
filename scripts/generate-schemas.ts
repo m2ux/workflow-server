@@ -36,10 +36,10 @@ interface GeneratedSchema {
 export const GENERATED_SCHEMAS: GeneratedSchema[] = [
   { name: 'workflow', schema: WorkflowSchema, description: 'Workflow definition schema', refStrategy: 'root' },
   { name: 'condition', schema: ConditionSchema, description: 'Condition expression schema', refStrategy: 'root' },
-  { name: 'session-file', schema: SessionFileSchema, description: 'Server-managed session file (session.json) — canonical session state owned by the workflow server.', refStrategy: 'root' },
-  { name: 'activity', schema: ActivitySchema, description: 'Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop | routine).', refStrategy: 'root' },
-  { name: 'routine', schema: RoutineSchema, description: 'Routine definition schema — a named run of steps declaring its inputs, outputs and internals, materialised into the activity that refers to it.', refStrategy: 'root' },
-  { name: 'technique', schema: TechniqueSchema, description: 'Technique definition schema — a capability file parsed from markdown into this shape.', refStrategy: 'root' },
+  { name: 'session-file', schema: SessionFileSchema, description: 'Session state recorded in session.json.', refStrategy: 'root' },
+  { name: 'activity', schema: ActivitySchema, description: 'Activity definition with ordered steps.', refStrategy: 'root' },
+  { name: 'routine', schema: RoutineSchema, description: 'Reusable steps with declared inputs, outputs, and internals.', refStrategy: 'root' },
+  { name: 'technique', schema: TechniqueSchema, description: 'Technique capability with inputs, protocol, rules, and outputs.', refStrategy: 'root' },
 ];
 
 /** One schema's file content, byte for byte as it is written to disk. */
