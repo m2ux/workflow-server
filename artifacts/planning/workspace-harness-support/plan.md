@@ -89,3 +89,21 @@ Sources: [Codex hooks](https://learn.chatgpt.com/docs/hooks) and
   the renderer's drift check. Its existing MCP server configuration is retained.
 - The user reviews the two Codex hook registrations through `/hooks` in a new
   session. Hosted web tools remain outside local hook coverage.
+
+## Harness directory ownership
+
+Harness-specific adapters and renderers live under `.claude/<function>` and
+`.codex/<function>`. Root folders contain shared policy, protocol utilities,
+and rendering orchestration. Hook directories link explicitly to shared code;
+the common rules and skills retain their existing links.
+
+- [x] Separate harness-specific implementation and update links.
+- [x] Verify generated entry points and adapter behavior.
+- [x] Commit, render active configuration, and push.
+
+Seventeen tests pass across shared policy, renderer orchestration, and the
+harness-owned adapter/configuration suites. Generated hook commands execute the
+relocated adapters from a different working directory. Shared symlinks resolve
+to the root sources. Codex trust setup also belongs to its configuration adapter.
+Implementation commit `7a5aee2d` is published on `workspace`; active workspace
+configuration is rendered and passes the drift check.
